@@ -1,19 +1,35 @@
 <?php
 require_once "./vendor/autoload.php";
-
-$ruta = isset($_GET['c']) ? $_GET['c'] :  "ControladorIniciarSesion/mostrarIniciarSesion";
-$partes = explode("/", $ruta);
-$nomClase = ucfirst($partes['0']);
+$url = isset($_GET['url']) ? $_GET['url'] :  "IniciarSesion/mostrarIniciarSesion";
+$partes = explode("/", $url);
+$controlador = ucfirst($partes['0']);
 $metodo = isset($partes['1']) ? $partes['1'] : "IniciarSesion";
-$url = "src/controladores/" . $partes['0'] . ".php";
+$parametro = "";
 
-if (file_exists($url)) {
-	require_once $url;
+//si partes en la posicion 2 existe es por que se enviaron parametros
+if(isset($partes[2])){
+	for ($i=2; $i < count($partes); $i++) { 
+		$parametro .= $partes[$i].",";
+	}
 
-	$instancia = new $nomClase();
+	//trim en php es para quitar el ultimo caracter en este caso es para quitar la ultima "," del parametro
+	$parametro = trim($parametro, ",");
+	echo $parametro;
+}else{
+	echo "vacio";
+}
+
+$controlador = "Controlador".$controlador;
+
+$directorio = "src/controladores/" . $controlador . ".php";
+
+if (file_exists($directorio)) {
+	require_once $directorio;
+
+	$instancia = new $controlador();
 
 	if (method_exists($instancia, $metodo)) {
-		$instancia->$metodo();
+		$instancia->$metodo($parametro);
 	} else {
 		echo "NO EXISTE EL METODO";
 	}
