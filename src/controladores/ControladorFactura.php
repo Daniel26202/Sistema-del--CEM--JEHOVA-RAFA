@@ -26,6 +26,8 @@ class ControladorFactura
 
 		$insumos = $this->modelo->mostrarInsumos();
 
+		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
+
 		require_once './src/vistas/vistaFactura/vistaFactura.php';
 	}
 

@@ -258,22 +258,22 @@ class ModeloInsumo extends Db
 
 
 
-	public function insumoProximos()
-	{
-		// Obtener la fecha actual
-		$fechaActual = date('Y-m-d');
+	// public function insumoProximos()
+	// {
+	// 	// Obtener la fecha actual
+	// 	$fechaActual = date('Y-m-d');
 
-		// Calcular la fecha límite (10 días a partir de hoy)
-		$fechaLimite = $this->restarDiasDeFecha($fechaActual, -10); // Restar -10 días es sumar 10 días
+	// 	// Calcular la fecha límite (10 días a partir de hoy)
+	// 	$fechaLimite = $this->restarDiasDeFecha($fechaActual, -10); // Restar -10 días es sumar 10 días
 
-		// Actualizar el estado de los productos que están a 10 días o menos de vencer
-		$sql = "UPDATE entrada SET estado = 'por_vencer' WHERE 
-		(SELECT fechaDeVencimiento FROM entrada_insumo WHERE entrada.id_entrada = entrada_insumo.id_entrada)
-		<= :fechaLimite AND estado='ACT' ";
-		$consulta = $this->conexion->prepare($sql);
-		$consulta->bindParam(':fechaLimite', $fechaLimite);
-		$consulta->execute();
-	}
+	// 	// Actualizar el estado de los productos que están a 10 días o menos de vencer
+	// 	$sql = "UPDATE entrada SET estado = 'por_vencer' WHERE 
+	// 	(SELECT fechaDeVencimiento FROM entrada_insumo WHERE entrada.id_entrada = entrada_insumo.id_entrada)
+	// 	<= :fechaLimite AND estado='ACT' ";
+	// 	$consulta = $this->conexion->prepare($sql);
+	// 	$consulta->bindParam(':fechaLimite', $fechaLimite);
+	// 	$consulta->execute();
+	// }
 
 
 

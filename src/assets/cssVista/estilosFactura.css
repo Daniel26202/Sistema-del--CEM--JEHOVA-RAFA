@@ -110,3 +110,29 @@
 .grpFormInCorrectEditar:focus {
 	border-bottom: 2px solid rgb(224, 3, 3);
 }
+
+
+/* insumos en la facturacion */
+
+.caja_insumos_a_seleccionar div{
+	border-radius: 20px;
+}
+
+
+.insumo_no_seleccionado{
+	background-color: #ddd;
+	cursor: pointer;
+	transition: all .7s;
+}
+
+.insumo_no_seleccionado:hover{
+	background-color: rgb(145, 142, 142);
+	transition: all .7s;
+}
+
+.insumo_seleccionado{
+	background-color: #387ADF;
+	color: white;
+	cursor: pointer;
+}
+

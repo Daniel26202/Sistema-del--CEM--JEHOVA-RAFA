@@ -5,8 +5,7 @@
 
 
 <!-- Modal Agregar Servicio Extra-->
-<div class="modal fade" id="modal-agregar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="modal-agregar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog tamaño-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -375,7 +374,96 @@
 
 
 <!-- Modal Agregar Insumo-->
+
 <div class="modal fade" id="modal-agregar-insumos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content tamaño-modal-Seleccionar-Insumo">
+      <div class="modal-header">
+        <div class="fw-bolder d-flex" id="staticBackdropLabel">
+          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
+            class="bi bi-capsule azul me-3" viewBox="0 0 16 16">
+            <path
+              d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+          </svg>
+          <div>SELECCIONAR INSUMOS 1</div>
+        </div>
+        <a type="button" data-bs-dismiss="modal" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+            class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+          </svg>
+        </a>
+      </div>
+
+
+
+      <div class="form-modal  mt-2">
+
+
+
+
+        <!-- Buscador -->
+        <div class="d-flex justify-content-end mt-1 mb-1">
+          <div class="d-flex justify-content-end mb-4 col-6" id="">
+
+            <a class="btn d-none" title="Buscar" id="restablecerTodosLosInsumos" uk-tooltip="Restablecer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                <path
+                  d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                <path fill-rule="evenodd"
+                  d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+              </svg>
+            </a>
+
+            <input class="form-control input-busca" type="text" name="nombre" placeholder="Ingrese el nombre del insumo"
+              id="buscadorDeTodosLosInsumos">
+            <a class="btn boton-buscar" title="Buscar" id="">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+                viewBox="0 0 16 16">
+                <path
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+              </svg>
+            </a>
+
+          </div>
+        </div>
+
+        <div class="">
+          
+
+        <div class="caja_insumos_a_seleccionar">
+                <?php foreach ($todosLosInsumos as $key): ?>
+                  <div class="d-inline-block m-2 p-2 fw-bold insumo_no_seleccionado"><?= $key['nombre']. "  Cantidad: ".$key['cantidad']?></div>
+                <?php endforeach;?>
+        </div>
+
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+            data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn col-3 btn-agregarcita-modal x " data-bs-toggle="modal"
+            data-bs-target="#modal-agregar-insumos-2">Siguiente</button>
+        </div>
+      </div>
+    </div>
+
+
+
+
+  </div>
+</div>
+</div>
+
+
+
+
+<div class="modal fade" id="modal-agregar-insumos-2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
     <div class="modal-content tamaño-modal-Seleccionar-Insumo">
