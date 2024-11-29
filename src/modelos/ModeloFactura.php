@@ -464,7 +464,7 @@ class ModeloFactura extends Db
 
 
 
-    	header("location: ?c=controladorFactura/facturaInicio&id_factura=" . $id_factura . "&idH=" . $id_hospitalizacion);
+    	header("location: ?c=controladorFactura/facturaInicio/" . $id_factura . "/" . $id_hospitalizacion);
 
 
 

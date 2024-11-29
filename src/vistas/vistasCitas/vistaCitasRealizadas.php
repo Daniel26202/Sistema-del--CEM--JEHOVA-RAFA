@@ -86,13 +86,25 @@
     <?php endif ?>
 
 
+    <?php if($parametro != ""):?>
+
+<?php if ($parametro[0] == "eliminado"): ?>
+    <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p class="pe-2">Se ha eliminado correctamente.</p>
+    </div>
+<?php endif ?>
+
+<?php endif?>
+
+
 </div>
 
 <div class="me-4">
     <div class="mt-3 mb-5">
         <ul class="sin-circulos d-flex justify-content-end ">
             <li class="borde-menu activo">
-                <a href="?c=controladorCitas/citas" class="text-decoration-none text-black me-3" id="citaPendiente">
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" class="text-decoration-none text-black me-3" id="citaPendiente">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-clock-history me-1" viewBox="0 0 16 16">
                         <path
@@ -103,7 +115,7 @@
                     </svg>Pendientes</a>
             </li>
             <li class="borde-menu activo">
-                <a href="?c=controladorCitas/citasHoy" class="text-decoration-none text-black me-3" id="citaHoy">
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoy" class="text-decoration-none text-black me-3" id="citaHoy">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-calendar2-check me-1" viewBox="0 0 16 16">
                         <path
@@ -115,7 +127,7 @@
             </li>
 
             <li class="borde-menu activo activo-borde">
-                <a href="?c=controladorCitas/citasRealizadas" class="text-decoration-none text-black"
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas" class="text-decoration-none text-black"
                     id="citaRealizada">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-clipboard2-check me-1" viewBox="0 0 16 16">
@@ -137,10 +149,10 @@
         <!-- Buscador de pacientes -->
         <div class="mover-input-buscar mt-4 validar" id="buscadorCitasP">
             <form id="form" class="d-flex justify-content-end" autocomplete="off" method="POST"
-                action="?c=controladorCitas/mostrarBusquedaRealizadas">
+                action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas">
                 <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
                     placeholder="Ingrese Cedula" required maxlength="8" minlength="6"
-                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"   value="<?= isset($_POST["cedula"]) ? $_POST["cedula"] : ""?>">
 
                 <button class="btn btn-buscar " title="Buscar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -165,7 +177,6 @@
                         <th class=" text-center border-start">Doctor</th>
                         <th class="border-start text-center">Consulta</th>
                         <th class="border-start text-center">Fecha</th>
-                        <th class="border-start text-center d-none">Hora</th>
                         <th class="border-start text-center">Hora</th>
                         <th class="border-start border-end border-top-0 text-center">Estado</th>
                         <th class="border-start text-center">Acción</th>
@@ -264,7 +275,7 @@
                 <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                     type="button">Cancelar</button>
                 <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                    href="?c=controladorCitas/eliminarCitaR&id_cita=<?= $datoCita["id_cita"]; ?>&id_usuario=<?= $_SESSION['id_usuario']?>">Eliminar</a>
+                    href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/eliminarCitaR/<?= $datoCita["id_cita"]; ?>/<?= $_SESSION['id_usuario'];?>">Eliminar</a>
             </div>
 
         </div>
@@ -294,5 +305,17 @@
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="text/javascript" src="./src/assets/js/ayudaCitasRealizadas.js"></script>
-<script type="text/javascript" src="./src/assets/citas.js"></script>
+
+<?php if($parametro !=  ""):?>
+		<?php $concatenarRuta = "";?>
+		<?php foreach($parametro as $p):?>
+			<?php $concatenarRuta .= "../";?>
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaCitasRealizadas.js"></script>
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/citas.js"></script>
+        <?php endforeach;?>
+
+<?php else :?>
+            <script type="text/javascript" src="../src/assets/js/ayudaCitasRealizadas.js"></script>
+            <script type="text/javascript" src="../src/assets/citas.js"></script>
+
+<?php endif;?>

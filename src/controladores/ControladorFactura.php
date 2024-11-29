@@ -19,7 +19,7 @@ class ControladorFactura
 	}
 
 	//metodo para mostrar la vista de facturacion
-	public function facturaInicio($datos = "")
+	public function facturaInicio($parametro)
 	{
 		
 		//aqui instacio y uso el metodo para mostrar los tipos de pago

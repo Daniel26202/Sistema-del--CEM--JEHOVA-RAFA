@@ -72,37 +72,37 @@
 </div>
 
 <div class="d-flex justify-content-center">
-    <?php if (isset($_GET["error"])): ?>
+    
+<?php if($parametro != ""):?>
+
+    <?php if ($parametro[0] == "error"): ?>
         <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">Ya existe una cita registrada para ese día.</p>
         </div>
-    <?php endif ?>
-
-    <?php if (isset($_GET["editado"])): ?>
+    <?php elseif ($parametro[0] == "editado"): ?>
         <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">Se actualizo correctamente.</p>
         </div>
-    <?php endif ?>
-    <?php if (isset($_GET["fechainvalida"])): ?>
+    <?php elseif ($parametro[0] == "fechainvalida"): ?>
         <div class="uk-alert-danger comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">La fecha es inválida, por favor inserte una fecha válida.</p>
         </div>
-    <?php endif ?>
-    <?php if (isset($_GET["eliminado"])): ?>
+    <?php elseif ($parametro[0] == "eliminado"): ?>
         <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">Se ha eliminado correctamente.</p>
         </div>
-    <?php endif ?>
-    <?php if (isset($_GET["agregado"])): ?>
+    <?php elseif ($parametro[0] == "agregado"): ?>
         <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">Se ha agregado correctamente.</p>
         </div>
     <?php endif ?>
+
+<?php endif?>
 
 </div>
 
@@ -110,7 +110,7 @@
     <div class="mt-3 mb-5">
         <ul class="sin-circulos d-flex justify-content-end ">
             <li class="borde-menu activo activo-borde">
-                <a href="?c=controladorCitas/citas" class="text-decoration-none text-black me-3" id="citaPendiente">
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" class="text-decoration-none text-black me-3" id="citaPendiente">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-clock-history me-1" viewBox="0 0 16 16">
                         <path
@@ -121,7 +121,7 @@
                     </svg>Pendientes</a>
             </li>
             <li class="borde-menu activo">
-                <a href="?c=controladorCitas/citasHoy" class="text-decoration-none text-black me-3" id="citaHoy">
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoy" class="text-decoration-none text-black me-3" id="citaHoy">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-calendar2-check me-1" viewBox="0 0 16 16">
                         <path
@@ -133,7 +133,7 @@
             </li>
 
             <li class="borde-menu activo">
-                <a href="?c=controladorCitas/citasRealizadas" class="text-decoration-none text-black"
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas" class="text-decoration-none text-black"
                     id="citaRealizada">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-clipboard2-check me-1" viewBox="0 0 16 16">
@@ -166,10 +166,10 @@
         <!-- Buscador de pacientes -->
         <div class="mover-input-buscar mt-4 validar" id="buscadorCitasP">
             <form id="form" class="d-flex justify-content-end" autocomplete="off" method="POST"
-                action="?c=controladorCitas/mostrarBusquedaPendiente">
+                action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas">
                 <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
                     placeholder="Ingrese Cedula" required maxlength="8" minlength="6"
-                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" value="<?= isset($_POST["cedula"]) ? $_POST["cedula"] : ""?>">
 
                 <button class="btn btn-buscar " title="Buscar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -314,7 +314,7 @@
                     <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                         type="button">Cancelar</button>
                     <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                        href="?c=controladorCitas/eliminarCita&id_cita=<?= $datoCita["id_cita"]; ?>&id_usuario=<?= $_SESSION['id_usuario'];?>">Eliminar</a>
+                        href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/eliminarCita/<?= $datoCita["id_cita"]; ?>/<?= $_SESSION['id_usuario'];?>">Eliminar</a>
                 </div>
 
             </div>
@@ -351,10 +351,10 @@
 
                 </div>
 
-                <form class="form-modal" action="?c=controladorCitas/editarCita&cedulaDb=<?= $datoCita["id_cita"]; ?>" method="POST">
+                <form class="form-modal" action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/editarCita/<?= $datoCita["id_cita"]; ?>" method="POST">
                      <input type="hidden" value="<?php echo $_SESSION['id_usuario'];?>" name="id_usuario">
 
-                  <form class="form-modal" action="?c=controladorCitas/editarCitaHoy&cedulaDb=<?= $datoCita["id_cita"]; ?>" method="POST">
+                  <form class="form-modal" action="/Sistema-del--CEM--JEHOVA-RAFA/editarCitaHoy/<?= $datoCita["id_cita"]; ?>" method="POST">
 
                     <input type="hidden" name="id_cita" value="<?= $datoCita["id_cita"]; ?>">
 
@@ -490,9 +490,23 @@
 <?php require_once './src/vistas/head/footer.php'; ?>
 
 
-<script type="text/javascript" src="./src/assets/js/validacionesCitasRegistrar.js"></script>
-<script type="text/javascript" src="./src/assets/js/ayudaCitasPendientes.js"></script>
-<script type="text/javascript" src="./src/assets/citas.js"></script>
+<?php if($parametro !=  ""):?>
+		<?php $concatenarRuta = "";?>
+		<?php foreach($parametro as $p):?>
+			<?php $concatenarRuta .= "../";?>
+
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/validacionesCitasRegistrar.js"></script>
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaCitasPendientes.js"></script>
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/citas.js"></script>
+
+        <?php endforeach;?>
+
+<?php else :?>
+            <script type="text/javascript" src="../src/assets/js/validacionesCitasRegistrar.js"></script>
+            <script type="text/javascript" src="../src/assets/js/ayudaCitasPendientes.js"></script>
+            <script type="text/javascript" src="../src/assets/citas.js"></script>
+    
+<?php endif;?>
 
 
 

@@ -14,13 +14,9 @@
 	</div>
 
 	<!--  si factura no muestra el btn -->
-	<?php if($datos != ""):?>
-		<h1>LLeno</h1>
-	<?php else:?>
-		<h1>Vacio</h1>
-	<?php endif;?>
 
-	<?php if (isset($_GET["id_factura"]) && isset($_GET["id_cita"]) || isset($_GET["id_factura"]) && isset($_GET["idH"]) || isset($_GET["id_factura"]) || isset($_GET["id_cita"]) || isset($_GET["idH"])): ?>
+
+	<?php if ($parametro[0] !="" && $parametro[1] !="" || $parametro[0] !="" && $parametro[1] ==""): ?>
 <!-- para volver a la parte donde se factura -->
 		<div class="mt-2 w-25 d-flex justify-content-center">
 			<a href="?c=controladorFactura/facturaInicio" class="text-decoration-none" uk-tooltip="Volver para facturar más" title=""
@@ -154,20 +150,20 @@
 <div class="me-4">
 	<div class="mt-3 mb-5">
 
-		<?php if (isset($_GET["id_factura"]) && isset($_GET["id_cita"])): ?>
+		<?php if ($parametro[0] != "" && $parametro[1] != ""): ?>
 
 			<?php //print_r($_GET);
 			
 
-				$datosFactura = $this->modelo->consultarFactura($_GET["id_factura"]);
+				$datosFactura = $this->modelo->consultarFactura($parametro[0]);
 
 
 				//echo "Pagos"."<br><br>";
-				$datosPago = $this->modelo->consultarPagoFactura($_GET["id_factura"]);
+				$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
 
-				$datosServiciosExtras = $this->modelo->consultarServiciosExtras($_GET["id_factura"]);
+				$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
 
-				$datosInsumos = $this->modelo->consultarFacturaInsumo($_GET["id_factura"]);
+				$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
 
 				?>
 
@@ -1144,5 +1140,17 @@
 
 
 <?php require_once './src/vistas/head/footer.php'; ?>
-<script type="text/javascript" src="../src/assets/factura.js"></script>
-<script type="text/javascript" src="../src/assets/js/ayudaFactura.js"></script>
+
+<?php if($parametro !=  ""):?>
+	<?php $concatenarRuta = "";?>
+	<?php foreach($parametro as $p):?>
+		<?php $concatenarRuta .= "../";?>
+
+		<script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/factura.js"></script>
+		<script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaFactura.js"></script>
+
+	<?php endforeach;?>
+<?php else :?>
+		<script type="text/javascript" src="../src/assets/factura.js"></script>
+		<script type="text/javascript" src="../src/assets/js/ayudaFactura.js"></script>
+<?php endif;?>
