@@ -1,0 +1,207 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* .reportess, .granRepor {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+} */
+
+/* .cardReporte, .granReporte, .reReporte {
+    max-width: 300px;
+    height: auto;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: white;
+} */
+
+/* .cardReporte:hover, .granReporte:hover, .reReporte:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+} */
+
+.tamaño-modal {
+    width: 50%;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 10px;
+    padding: 1rem;
+
+
+}
+/* .input-modal,
+input[type="date"] {
+    width: 100%; 
+    max-width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+} */
+@media screen and (max-width: 992px) {
+    .reportess, .granRepor {
+        gap: 0.5rem;
+    }
+
+    .cardReporte, .granReporte, .reReporte {
+        max-width: 200px;
+    }
+
+    .titulo-modal {
+        font-size: 1.2rem;
+    }
+
+    .tamaño-modal {
+        width: 70%;
+
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .reportess, .granRepor {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cardReporte, .granReporte, .reReporte {
+        width: 90%;
+        max-width: none;
+    }
+
+    .t {
+        font-size: 1rem;
+    }
+
+    .tamaño-modal {
+        width: 90%;
+        padding: 1rem;
+        overflow: hidden;
+
+    .input-modal,
+    input[type="date"] {
+        font-size: 1rem;
+        padding: 0.4rem;
+    }
+}
+}
+@media screen and (max-width: 600px) {
+    /* Contenedor de reportes */
+    .reportess {
+    
+        display: flex !important;
+        flex-direction: column;
+        padding: 0.5rem;
+      
+    }
+
+    /* .,   {
+        width: 100%;
+        max-width: none;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+    } */
+.cardReporte{
+    width: 100% !important;
+    padding: 10px !important; 
+ 
+
+
+}
+.cardreporteCitas{
+    padding: 12px;
+}
+
+.granReporte{
+    width: 80% !important;
+    
+   
+}
+.granRepor{
+    margin-top: -25px;
+    height: 33vh !important;
+    
+   
+}
+.reRepor{
+    margin-top: -5px;
+    height: 33vh !important;
+
+    
+}
+.reReporte{
+    width: 80% !important;
+    
+}
+.fecha_citas{
+   padding-top: 30px;
+    
+}
+.fechas_mover{
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ background-color: rgba(0, 0, 0, 0.281);
+ margin: auto;
+ border-radius: 20px;
+}
+ 
+
+
+
+    /* Texto de reportes */
+    .titulo-reporte {
+        font-size: 1rem !important;
+        text-align: center;
+   
+    }
+
+    /* Modales */
+    .tamaño-modal {
+        width: 90%;
+        margin: 0 auto;
+        border-radius: 10px;
+        padding: 1rem;
+
+    }
+
+    .input-modal {
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
+
+    .btn-agregarcita-modal, .btn-primary {
+        width: 100%;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .granReporte, .reReporte {
+        height: auto; 
+    }
+
+    .t {
+        font-size: 0.9rem;
+        word-wrap: break-word !important;
+    }
+    .repor {
+    flex-wrap: wrap;
+ 
+	}
+    input[type="date"] {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    /* .tamaño-modal {
+        width: 100%;
+        padding: 1rem;
+    } */
+}
+
+

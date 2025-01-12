@@ -1,0 +1,11 @@
+# Ignorar la carpeta de dependencias de Composer (PHP)
+vendor/
+
+# Ignorar archivos de configuración local
+.env
+
+# Ignorar archivos de log
+*.log
+
+# Ignorar archivos temporales de sistemas operativos
+*.swp

@@ -1,0 +1,1371 @@
+addEventListener("DOMContentLoaded", function () {
+    /////////////////////////////////////////////////////////////////////////////////////
+    // Ajax //////
+
+    // horas y costo de servicio 
+    const horas = document.querySelector("#horasS");
+    const costoHoras = document.querySelector("#costoHS");
+    const btnGuardarCH = document.querySelector("#btnCH");
+
+    // inputs del costo y las horas del servicio
+    let iHS = document.querySelector("#inpHorasS");
+    let iCS = document.querySelector("#inpCostoHS");
+
+    // para traerme la hora y su costo
+    const traerHoraCosto = async () => {
+        try {
+
+            // llamo la función traer hora y costo
+            let peticion = await fetch("?c=ControladorHospitalizacion/traerHoraCosto");
+            let resultado = await peticion.json();
+
+            // si no se trae nada
+            if (resultado == false) {
+                console.log("No hay datos");
+                btnGuardarCH.classList.add("d-none");
+                //si se trae algo     
+            } else {
+                btnGuardarCH.classList.remove("d-none");
+
+                horas.innerText = resultado.hora;
+                costoHoras.innerText = resultado.costo;
+
+                // agrego el texto del p (en este caso las horas) al valor del input
+                iHS.value = resultado.hora;
+                // agrego el texto del p (en este caso el costo de las horas) al valor del input
+                iCS.value = resultado.costo;
+
+            }
+
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        }
+    }
+
+    // para traerme la hora y su costo
+    const enviarHoraCosto = async () => {
+        try {
+
+            let hora = parseInt(iHS.value);
+            let costo = parseFloat(iCS.value);
+            // llamo la función traer hora y costo
+            await fetch("?c=ControladorHospitalizacion/editarHC&hora=" + hora + "&costo=" + costo);
+
+            traerHoraCosto();
+
+            let inIdH = document.querySelectorAll(".idHosp");
+
+            for (const id of inIdH) {
+                // await es para que espere y no se cargue desordenadamente 
+                await sumaPrecioIH(parseInt(id.value));
+            }
+            vistaTabla();
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        }
+    }
+
+
+
+    // inputs y nombres de editar H
+    const nombreApE = document.querySelector("#NombreAp");
+    const duracionE = document.querySelector("#duracion");
+    const precioHE = document.querySelector("#precioH");
+    const historiaE = document.querySelector("#historiaE");
+
+    async function editar(indice) {
+        // obtenemos los datos del elemento seleccionado
+        const fila = document.querySelectorAll("#tbody tr")[indice];
+        let datos = fila.getElementsByTagName("td");
+
+        let precHoras = document.querySelectorAll(".precioHo")[indice];
+        let hME = document.querySelectorAll(".hME")[indice];
+
+        // colocamos el nombre y apellido. 
+        nombreApE.innerHTML = "";
+        nombreApE.innerHTML = datos[1].innerText + " " + datos[2].innerText;
+        // selecciono el p que tine las horas
+        let hor = datos[5].firstElementChild.firstElementChild.innerText;
+        // y llenamos lo input de la información recolectada
+        duracionE.value = hor;
+        // trim() quita los espacios en el principio y al final
+        historiaE.value = hME.innerText.trim();
+        precioHE.value = precHoras.value;
+
+        let idControl = document.querySelectorAll(".idC")[indice];
+        document.querySelector("#idCE").value = parseInt(idControl.value);
+
+        let idHospitalizacion = document.querySelectorAll(".idHpt")[indice];
+        document.querySelector("#idHptE").value = parseInt(idHospitalizacion.value);
+
+    }
+
+    function botonInputNumber(btn, inputN) {
+
+        let dataI = btn.getAttribute("data-index");
+        let min = inputN.getAttribute("min");
+        let max = inputN.getAttribute("max");
+        let step = inputN.getAttribute("step");
+        let val = inputN.getAttribute("value");
+        let calcStep = (dataI == "aumentar") ? (step * 1) : (dataI == "disminuir") ? (step * -1) : false;
+        let nuevoValor = parseInt(val) + calcStep;
+
+        if (nuevoValor >= min && nuevoValor <= max) {
+            inputN.setAttribute("value", nuevoValor);
+        }
+    }
+
+    // sumar el precio de insumos
+    let totalPI = 0;
+
+    let total = 0;
+
+    const sumarTotalE = () => {
+        // contador del precio de cada insumo
+        let PrecioI = 0;
+
+        totalPI = 0;
+        document.querySelectorAll(".precioInsumE").forEach(pI => {
+
+            // selecciono al p del precio (hermano anterior del input)
+            let pPrecioI = pI.previousElementSibling;
+
+            // selecciono el div del input
+            let divPadre = pI.parentElement;
+            // selecciono el padre del div del input
+            let divPadr = divPadre.parentElement;
+            // selecciono el padre del padre del div del input
+            let divPad = divPadr.parentElement;
+            // selecciono el padre del padre del padre del div del input
+            let divPa = divPad.parentElement;
+            // selecciono el input hermano del div padre
+            let divHermano = divPa.nextElementSibling;
+            // selecciono al hermano del input 
+            let divHer = divHermano.nextElementSibling;
+            // selecciono al hijo del div 
+            let divHijo = divHer.firstElementChild;
+            // selecciono al hijo del hijo del div 
+            let divHi = divHijo.firstElementChild;
+            // selecciono a los hijos del div 
+            let divH = divHi.children;
+
+            // se recolecta el valor del input
+            PrecioI = parseFloat(pI.value);
+
+            // traigo la cantidad
+            let cantidad = parseInt(divH[1].value);
+
+            // suma el total del precio de cada insumo que se multiplico con la cantidad
+            totalPI += PrecioI * cantidad;
+
+            // aquí se recolecta el precio multiplicado con la cantidad (en las dos lineas siguientes, se coloca el precio ya multiplicado en el <p>) 
+            totalPC = PrecioI * cantidad;
+            // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+            totalPC = parseFloat(totalPC.toFixed(2));
+
+            pPrecioI.innerHTML = totalPC + "bs";
+
+        })
+
+
+
+        let valorDividido = parseFloat(costoHoras.innerText) / parseFloat(horas.innerText);
+        let horaInputE = parseFloat(duracionE.value);
+        let precioHor = valorDividido * horaInputE;
+
+        total = parseFloat(precioHor) + totalPI;
+
+        // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+        total = parseFloat(total.toFixed(2));
+        // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+        precioHor = parseFloat(precioHor.toFixed(2));
+
+        document.querySelector("#precioH").value = precioHor;
+        document.querySelector("#PTE").value = total;
+
+        // si no hay números en el total devuelve NaN 
+        if (Number.isNaN(total)) {
+            document.querySelector("#divTPE").classList.add("d-none");
+            // si tiene un numero lo muestra
+        } else {
+            document.querySelector("#divTPE").classList.remove("d-none");
+            document.querySelector("#totalPE").innerHTML = total;
+        }
+
+    }
+
+    ////////////////////////////////////////////////////////////////////
+    //Ajax//
+
+    // envío de datos de la edición
+    const vistaTabla = async () => {
+        try {
+
+            // llamo la función 
+            peticion = await fetch("?c=ControladorHospitalizacion/traerSesion");
+            let resultad = await peticion.json();
+
+            if (resultad.length == 0) {
+                console.log("algo salio mal");
+            } else {
+                await buscarIEx();
+                await traerHoraCosto();
+                mostrarMsj();
+                if (resultad[1] == false) {
+                    html = `<tr>
+                                <td colspan="8" class="text-center">NO HAY REGISTROS
+                                </td>
+                            </tr>`;
+                    document.querySelector("#tbody").innerHTML = html;
+
+                } else {
+
+                    let html = ``;
+                    let htmlModalCon = ``;
+                    let htmlModalElim = ``;
+
+                    console.log(resultad[1]);
+                    // recorro los datos de hospitalización
+                    resultad[1].forEach((res, index) => {
+
+                        // contenido de la tabla.
+                        html += `<tr>
+                                    <td>
+                                        ${res["cedula"]}
+                                    </td>
+                                    <td>
+                                        ${res["nombre"]}
+                                    </td>
+                                    <td>
+                                        ${res["apellido"]}
+                                    </td>
+                                    <td>
+                                        ${res["diagnostico"]}
+                                    </td>
+                                    <td>
+                                        ${res["nombredoc"]} ${res["apellidodoc"]}
+                                    </td>
+                                    <td>
+                                    <div class="d-flex align-items-center"><p>${res["duracion"]}</p><p> h.</p></div>
+                                    </td>`
+
+                        // verifico si es administrador o usuario
+                        if (resultad[0] == "usuario") {
+                            html += `<!--no hay-->`;
+                        }
+                        // verifico si es administrador o usuario
+                        if (resultad[0] == "administrador") {
+                            html += `<td>
+                                        ${res["total"]} bs
+                                    </td>`;
+                        }
+
+                        html += `   <td>
+                                        <div class="d-flex flex-wrap col-12">
+                                            <div class="col-12 col-md-6 col-lg-3">
+
+                                                <!-- btn offcanvas mostrar datos -->
+                                                <button class="btn btn-tabla mb-1 me-1" uk-toggle="target: #offcanvas-mostrar${res["id_hospitalizacion"]}" uk-tooltip="información de hospitalización">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                                        class="bi bi-card-text" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                                                        <path
+                                                            d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-3">
+
+                                                <!-- btn modal editar hospitalización -->
+                                                <button class="btn btn-tabla mb-1 editarH me-1" data-bs-toggle="modal"
+                                                    data-bs-target="#modal-editar-hospitalizacion" uk-tooltip="Modificar hospitalización" data-index="${index}"
+                                                    data-extra="${res["id_hospitalizacion"]}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                                        class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                                    </svg>
+                                                </button>
+                                            </div>`
+
+                        // verifico si es administrador o usuario
+                        if (resultad[0] == "usuario") {
+                            html += `<!--no hay-->`;
+                        }
+                        // verifico si es administrador o usuario
+                        if (resultad[0] == "administrador") {
+                            html += `       
+                                            <div class="col-12 col-md-6 col-lg-3">
+                                                <button class="btn btn-tabla mb-1 me-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar-hospitalizacion${res["id_hospitalizacion"]}" uk-tooltip="Eliminar hospitalización">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                                        class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                    </svg>
+                                                </button>
+                                            </div>`;
+                        }
+                        // verifico si es administrador o usuario
+                        if (resultad[0] == "administrador") {
+                            html += `    
+                                            <div class="col-12 col-md-6 col-lg-3">
+                                                <a href="?c=ControladorFactura/facturaInicio&idH=${res["id_hospitalizacion"]}" class="btn btn-tabla mb-1 me-1" uk-tooltip="Facturar hospitalización" id="" title=""
+                                                    aria-describedby="uk-tooltip-25">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                                    <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
+                                                    <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                                                    </svg>
+                                                </a>
+                                            </div>`;
+                        }
+
+                        html += `  
+                                        </div>
+                                    </td>
+                                </tr>`;
+
+
+
+                        // contenido del modal de consultar
+                        htmlModalCon += `
+                                        <div>
+                                            <input class="precioHo" type="hidden" name="" value="${res.precio_horas}">
+                                            <input class="idC" type="hidden" name="" value="${res.id_control}">
+                                            <input class="idHpt" type="hidden" name="" value="${res.id_hospitalizacion}">
+                                        </div>
+
+                                        <!-- modal off-canvas que sale a la derecha  (CONSULTA)-->
+                                        <div id="offcanvas-mostrar${res.id_hospitalizacion}"
+                                            uk-offcanvas="esc-close: false; mode: reveal; flip: true; overlay: true">
+                                            <div class="uk-offcanvas-bar">
+
+                                                <button class="uk-offcanvas-close" id="closeModal" type="button" uk-close></button>
+
+                                                <div class="d-flex align-items-start">
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                                        class="bi bi-file-text-fill me-1 pt-1 text-white col-1" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z" />
+                                                    </svg>
+                                                    <h3 class="fw-bold">
+                                                        ${res.nombre}
+                                                        ${res.apellido}
+                                                    </h3>
+
+                                                </div>
+                                                <div class="d-flex align-items-start">
+
+                                                    <h4 class="fw-bold me-2 ">C.I:</h4>
+                                                    <p class="fw-bold fs-5">
+                                                        ${res.cedula}
+                                                    </p>
+
+                                                </div>
+
+                                                <div class="d-flex align-items-start mt-4 mb-3 ">
+                                                    <div class="col-12">
+                                                        <h4 class="text-center fw-bold text">Diagnostico</h4>
+                                                        <p class="parrafo-offcanvas">
+                                                            ${res.diagnostico}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-start mb-2 ">
+                                                    <div class="col-5">
+                                                        <h4 class=" fw-bold text">Doctor asignado</h4>
+                                                        <p class="parrafo-offcanvas">
+                                                            ${res.nombredoc}
+                                                            ${res.apellidodoc}
+                                                        </p>
+                                                    </div>
+
+                                                    <p class="col-2"></p> <!-- solo separación -->
+                                                    <div>
+                                                        <h4 class="text-center fw-bold ">Horas de hospitaliza- ción</h4>
+                                                        <p class="parrafo-offcanvas fs-5 text-center">
+                                                            ${res.duracion}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-1">
+                                                    
+                                                </div>
+
+                                                <div>
+                                                    <h4 class="text-center fw-bold">Historia clínica</h4>
+                                                    <p class="parrafo-offcanvas hME">
+                                                        ${res.historiaclinica}
+                                                    </p>
+                                                </div>`
+
+                        // verifico si es administrador o usuario
+                        if (resultad[0] == "usuario") {
+                            htmlModalCon += `<!--no hay-->`;
+                        }
+                        // verifico si es administrador o usuario
+                        if (resultad[0] == "administrador") {
+                            htmlModalCon += `<div class="d-flex align-items-start mt-5">
+
+                                                <h4 class="fw-bold me-2 ">Total a pagar:</h4>
+                                                <p class="fw-bold fs-5">${res.total}bs</p>
+
+                                            </div>`;
+                        }
+
+                        htmlModalCon += `  </div>
+                                        </div>`;
+
+                        // contenido del modal de eliminar
+                        htmlModalElim += `
+                                        <div class="modal fade" id="modal-eliminar-hospitalizacion${res.id_hospitalizacion}"
+                                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-fullscreen-md-down  uk-offcanvas-container">
+                                                <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4">
+
+
+                                                    <div class=" d-flex justify-content-between align-items-center mt-2 pt-0">
+
+                                                        <div class=" d-flex justify-content-center align-items-center ">
+
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                                                                class="bi bi-trash3-fill color-icono me-1 mb-2" viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                            </svg>
+                                                            <h4 class=" fw-bold ">Desea eliminar la hospitalización</h4>
+                                                        </div>
+
+                                                        <!-- btn close -->
+                                                        <div>
+                                                            <a href="#" class="" data-bs-dismiss="modal">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                                                                    class="bi bi-x-circle color-icono" viewBox="0 0 16 16">
+                                                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                                    <path
+                                                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                                                </svg>
+                                                            </a>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <form class="" action="?c=ControladorHospitalizacion/eliminaL" method="post">
+
+                                                        <input type="hidden" name="idH" class="idHosp" value="${res.id_hospitalizacion}">
+
+                                                        <p class="uk-text-center mt-4 ">
+                                                            <button class="uk-button rounded-5 btn-cancelar fw-bold" type="button"
+                                                                data-bs-dismiss="modal">Cancelar</button>
+                                                            <button class="uk-button uk-button-primary rounded-5 ms-2 fw-bold" type="submit"
+                                                                data-bs-dismiss="modal">Eliminar</button>
+                                                        </p>
+
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>`;
+
+                    })
+
+                    document.querySelector("#tbody").innerHTML = html;
+                    document.querySelector("#modalCon").innerHTML = htmlModalCon;
+                    document.querySelector("#modalEli").innerHTML = htmlModalElim;
+
+                    // recorremos los btn editar
+                    document.querySelectorAll(".editarH").forEach(editH => {
+                        editH.addEventListener("click", function () {
+
+                            // para traer el valor del data index 
+                            let index = editH.getAttribute("data-index");
+                            editar(parseInt(index));
+
+                            // para traer el valor del data extra
+                            let extra = editH.getAttribute("data-extra");
+                            // es el id de la hospitalizacion
+                            mostrarIE(parseInt(extra));
+                            // este evento es para buscar el insumo
+                            document.querySelector("#btn-buscarInsumoE").addEventListener("click", function () {
+                                traerInsumosE();
+                            })
+
+                        })
+                    });
+
+                    // es para sumar en el input oculto del total al escribir en el input (precio del insumo).
+                    duracionE.addEventListener("keyup", function () {
+                        sumarTotalE();
+                    })
+
+                    // para validar las cantidades de hospitalizaciones agregadas
+                    // obtenemos la cantidad de filas que existen
+                    const filas = document.querySelectorAll("#tbody tr")
+
+                    if (filas.length === 3) {
+                        // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
+                        document.querySelector("#btnAgregarH").classList.add("d-none");
+                        document.querySelector("#divModal").classList.add("d-none");
+                        document.querySelector("#pModalOculto").classList.remove("d-none");
+                    } else {
+                        // se muestra el modal y el btn de agregar
+                        document.querySelector("#btnAgregarH").classList.remove("d-none");
+                        document.querySelector("#divModal").classList.remove("d-none");
+                        document.querySelector("#pModalOculto").classList.add("d-none");
+                    }
+
+                }
+
+            }
+
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        }
+    }
+
+    vistaTabla();
+
+    let btnAInsumoNoExisteE = document.querySelector("#btnAInsumoNoExisteE");
+    let btnAInsumoExisteE = document.querySelector("#btnAInsumoExisteE");
+    let divDI = document.querySelector("#divDI");
+
+
+    //es para hacer una suma con el precio de los insumo que la hospitalización tiene registrado
+    const sumaPrecioIH = async (id) => {
+        try {
+
+            // llamo la función traer insumos de h
+            let peticionI = await fetch("?c=ControladorHospitalizacion/traerInsuDHEd&idH=" + id);
+            let resultadoI = await peticionI.json();
+
+            // llamo la función traer hora y costo
+            let peticion = await fetch("?c=ControladorHospitalizacion/traerHoraCosto");
+            let resultadoCH = await peticion.json();
+
+            //es para mostrar la duración de la hospitalización
+            // llamo la función
+            let peticionDH = await fetch("?c=ControladorHospitalizacion/mostrarDHos&idH=" + id);
+            let resultadoDH = await peticionDH.json();
+
+            if (resultadoI.length > 0 && resultadoCH != false) {
+
+                // realizamos una división 
+                let dCH = parseFloat(resultadoCH.costo) / parseInt(resultadoCH.hora);
+                // multiplicamos lo dividido con la duración 
+                let precioHoras = parseInt(resultadoI[0].duracion) * parseFloat(dCH);
+
+                let precioIns = 0;
+                resultadoI.forEach(res => {
+                    precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
+                });
+
+                let totalH = parseFloat(precioHoras) + parseFloat(precioIns);
+                // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+                precioIns = parseFloat(precioIns.toFixed(2));
+                // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+                totalH = parseFloat(totalH.toFixed(2));
+                precioHoras.toFixed(2)
+                // await es para que espere 
+                await actualizarHosp(precioHoras, totalH, id);
+
+            } else {
+                if (resultadoDH === false) {
+                    console.log("no se encontró la hospitalización");
+                } else {
+                    // realizamos una división 
+                    let dCH = parseFloat(resultadoCH.costo) / parseInt(resultadoCH.hora);
+                    // multiplicamos lo dividido con la duración 
+                    let precioHoras = parseInt(resultadoDH.duracion) * parseFloat(dCH);
+                    // await es para que espere 
+                    await actualizarHosp(precioHoras.toFixed(2), precioHoras.toFixed(2), id);
+                }
+
+            }
+
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+        }
+    }
+
+    //es para actualizar las hospitalizaciones.
+    const actualizarHosp = async (pH, total, id) => {
+        try {
+            // llamo la función
+            await fetch("?c=ControladorHospitalizacion/editarPHT&precio_h=" + pH + "&total=" + total + "&idH=" + id);
+
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+        }
+    }
+
+    //es para mostrar los insumos de la hospitalización seleccionada
+    const mostrarIE = async (id) => {
+        try {
+
+            // llamo la función buscar Insumos de la hospitalización
+            let peticionI = await fetch("?c=ControladorHospitalizacion/traerInsuDHEd&idH=" + id);
+            let resultadoI = await peticionI.json();
+            let precioIMC = 0;
+
+            if (resultadoI.length > 0) {
+
+                btnAInsumoNoExisteE.classList.toggle("d-none", true);
+                btnAInsumoExisteE.classList.toggle("d-none", false);
+
+                let html = ``;
+                resultadoI.forEach(res => {
+                    // se multiplica el precio con la cantidad.
+                    precioIMC = parseInt(res.precio) * parseInt(res.cantidad);
+
+                    html += `
+                    <p class="text-danger text-center m-0 p-0 d-none">Límite de cantidad alcanzado</p>
+                    <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregados" data-index=>
+
+                        <div class="col-2 ps-4 pb-1">
+                            <a href="#" class="ms-2 eliminarInsE eleEli" data-index="${res.id_insumoDeHospitalizacion}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    fill="currentColor" class="bi bi-x-circle color-icono"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                    <path
+                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <div class="d-flex justify-content-center align-items-center col-8">
+
+                            <div class="borde-input-agregar m-auto col-12">
+
+                                <div class=" d-flex justify-content-center align-items-center pb-2">
+
+                                    <div class="col-6 ms-2">
+                                        <p class="color-letras fw-bold margen-dos-puntos">${res.nombre}</p>
+                                    </div>
+
+                                    <div class="col-2 text-center ">
+                                        <p class=" fw-bold margen-dos-puntos">:</p>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <p class="precio-medicina-agregar ">${precioIMC}bs</p>
+                                        <input type="hidden" class="precioInsumE" value="${res.precio}">
+                                        <input type="hidden" class="" name="id_idh[]" value="${res.id_insumoDeHospitalizacion}">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <input class="inputIdInsuE" type="hidden" name="" data-limite-cantidad="${res.limite_insumo}" value="${res.id_insumo}">
+
+                        <div class="col-2 ms-2 cantidadIns">
+                            <div class="posicion-input-number m-auto">
+                                <div class="contenedorNumber d-flex justify-content-center align-items-center ">
+
+                                    <div class="btn-max-min btn-min-lugar tamano-btn-min fw-bold disminuir masMenos" id="" data-index="disminuir"> - </div>
+
+                                    <!-- readonly : es para que no puedan modificar el numero-->
+                                    <input class="input-number input-numberE fw-bold" name="cantidad[]" type="number" min="1" max="100" step="1" value="${res.cantidad}" id="inputNumber" readonly>
+
+                                    <div class="btn-max-min btn-max-lugar fw-bold aumentar masMenos" id="" data-index="aumentar"> + </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>`
+                });
+
+                divDI.innerHTML = html;
+
+                eliminar();
+                cantidadAD();
+
+                // para que sume al traer insumos (al presionar en el btn de editar).
+                sumarTotalE();
+
+                // para que el input inicie vacío
+                document.getElementById("idInEli").value = "";
+                // para que el input inicie vacío
+                document.getElementById("idInEliDos").value = "";
+
+                let agregandoI = true;
+                // para traerme el id del insumo eliminado, y el [] es para que el array inicie vacío.
+                eleEliminado([], agregandoI)
+
+            } else {
+                btnAInsumoNoExisteE.classList.toggle("d-none", false);
+                btnAInsumoExisteE.classList.toggle("d-none", true);
+
+                divDI.innerHTML = "";
+                // para que sume al no traer insumos (al presionar en el btn de editar).
+                sumarTotalE();
+            }
+
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+        }
+    }
+
+    let inputIE = document.querySelector("#btbtE");
+    let parrafoNoIE = document.querySelector("#p-no-insumosE");
+    let insumoExisteE = document.querySelector("#insumoExisteE");
+    let insumosE = document.querySelector("#insumosE");
+
+    function traerIdIE() {
+        // id del insumos para poder agregarlo
+        let idI = -1;
+        document.querySelectorAll(".divInsumosE").forEach(insumo => {
+
+            //es para traer el id
+            if (insumo) {
+                insumo.addEventListener("click", function () {
+                    idI = parseInt(this.dataset['index']);
+
+                    traerUnInsumoE(idI);
+                })
+            }
+
+        })
+    }
+
+    // es para traer el id del insumo sin necesidad de una búsqueda 
+    let divInsumosE = document.querySelectorAll(".divInsumosE");
+    if (divInsumosE) { traerIdIE(); }
+
+    const traerInsumosE = async () => {
+        try {
+            valorIE = inputIE.value;
+
+            // llamo la función buscar Insumos
+            let peticionInsumos = await fetch("?c=ControladorHospitalizacion/mostrarInsumos&nombre=" + valorIE);
+
+            let resultadoInsu = await peticionInsumos.json();
+
+            //si se trae algo
+            if (resultadoInsu.length > 0) {
+
+                parrafoNoIE.innerText = "";
+
+                insumoExisteE.classList.toggle("d-none", false);
+                insumosE.classList.toggle("d-none", true);
+
+                let html = ``;
+
+                resultadoInsu.forEach((res) => {
+
+                    html += `<div class="col-6 divInsumosE" data-index=${res.id_insumo}>
+                    <a href="#" class="text-center text-decoration-none m-0" data-bs-toggle="modal"
+                        data-bs-target="#modal-editar-hospitalizacion">
+                        <div class="color-icono d-flex align-items-center justify-content-center p-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+                                class="bi bi-plus-circle me-2 " viewBox="0 0 16 16">
+                                <path
+                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                            <p class="mt-3 ">
+                                ${res.nombre}
+                            </p>
+                        </div>
+                    </a>
+                    <input type="hidden" name="" class="inputInsumo" value="">
+                </div>`;
+                })
+
+                insumoExisteE.innerHTML = html;
+
+                // para traer el id del insumo de la base de datos, ademas para que la recolecte la otra función async
+                traerIdIE();
+
+                // si no se trae nada
+            } else {
+
+                parrafoNoIE.innerText = "";
+                parrafoNoIE.innerText = "El insumo no esta registrado";
+
+                insumoExisteE.classList.toggle("d-none", true);
+                insumosE.classList.toggle("d-none", true);
+
+            }
+
+        } catch (error) {
+            console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        }
+    }
+
+    function cantidadAD() {
+        // esto recorre todos los input number de cantidad
+        let div = document.querySelectorAll(".divInsumosAgregados");
+
+        for (const divI of div) {
+            // id del insumo
+            let idI = parseInt(divI.querySelector(".inputIdInsuE").value);
+            let inputN = divI.querySelector(".input-numberE");
+
+            // esto selecciona al p que muestra un mensaje 
+            let p = divI.previousElementSibling;
+            // esto selecciona al div que muestra un - 
+            let menos = inputN.previousElementSibling;
+            // esto selecciona al div que muestra un + 
+            let mas = inputN.nextElementSibling;
+
+            menos.addEventListener("click", async function () {
+                // llamo a la función que hace el calculo (aumentar y disminuir) en este caso disminuye y luego hace el calculo matemático
+                botonInputNumber(menos, inputN);
+                sumarTotalE();
+
+                let objIL = await limiteI();
+                // si no encuentro el id 
+                if (!objIL[idI]) {
+                    p.classList.add("d-none");
+                } else {
+                }
+            })
+
+            mas.addEventListener("click", async function () {
+                let objIL = await limiteI();
+                // si encuentro el id 
+                if (objIL[idI]) {
+                    p.classList.remove("d-none");
+                } else {
+                    p.classList.add("d-none");
+                    // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
+                    botonInputNumber(mas, inputN);
+                }
+
+                sumarTotalE();
+
+            })
+
+        }
+
+    }
+    // para traerme el id del insumo de la hospitalización
+    function eleEliminado(arrayIdIH, agregandoI) {
+        document.querySelectorAll(".eleEli").forEach(elim => {
+
+            elim.addEventListener("click", function () {
+                let idIDHR = 0;
+                if (agregandoI) {
+                    // traemos el id
+                    idIDHR = this.dataset["index"];
+                    // es un array que no tiene nada y luego se va llenando al ir eliminando 
+                    arrayIdIH.push(idIDHR);
+                    // convertimos el valor (array) en un JSON
+                    document.getElementById("idInEli").value = JSON.stringify(arrayIdIH);
+                } else if (agregandoI == false) {
+                    // traemos el id
+                    idIDHR = this.dataset["index"];
+                    // es un array que no tiene nada y luego se va llenando al ir eliminando 
+                    arrayIdIH.push(idIDHR);
+                    // convertimos el valor (array) en un JSON
+                    document.getElementById("idInEliDos").value += idIDHR + ",";
+                    agregandoI = false;
+                }
+            })
+
+        })
+
+    }
+
+    function eliminar() {
+        document.querySelectorAll(".eliminarInsE").forEach(elim => {
+
+            elim.addEventListener("click", function () {
+
+                // selecciono el padre btn
+                let divP = elim.parentElement;
+                // selecciono el padre del div del btn
+                let eliminarI = divP.parentElement;
+                let p = eliminarI.previousElementSibling;
+
+                eliminarI.remove();
+                p.remove();
+
+                //para que reste el insumo que se a eliminado del total
+                sumarTotalE();
+
+            })
+
+        })
+
+    }
+
+    // función async, es para mostrar un (1) insumo seleccionado
+    const traerUnInsumoE = async (id) => {
+        try {
+            // llamo la función buscar un Insumo
+            let peticionUnInsumo = await fetch("?c=ControladorHospitalizacion/mostrarUnInsumo&id=" + id);
+            let resultadoUnInsu = await peticionUnInsumo.json();
+
+            // si no se trae nada
+            if (resultadoUnInsu == false) {
+
+                console.log("hay un problema, el insumo seleccionado no existe");
+
+                btnAInsumoNoExisteE.classList.toggle("d-none", false);
+                btnAInsumoExisteE.classList.toggle("d-none", true);
+
+                //si se trae algo     
+            } else {
+                btnAInsumoNoExisteE.classList.toggle("d-none", true);
+                btnAInsumoExisteE.classList.toggle("d-none", false);
+
+                let existeIn = true;
+
+                // esto recorre todos los input number de cantidad
+                let div = document.querySelectorAll(".divInsumosAgregados");
+                if (div) {
+
+                    let objIL = await limiteI();
+                    // el insumo no existe 
+                    if (objIL[id]) {
+                        existeIn = false;
+                        alert("El insumo alcanzo el limite de su cantidad");
+                    }
+                }
+                for (const divI of div) {
+                    // id del insumo
+                    let idInputI = divI.querySelector(".inputIdInsuE");
+                    // esto selecciona al p que muestra un mensaje 
+                    let p = divI.previousElementSibling;
+
+                    // para la cantidad
+                    // si el insumo existe hace lo siguiente   
+                    if (id == idInputI.value) {
+                        existeIn = false;
+
+                        // selecciono el hermano
+                        let divHermano = idInputI.nextElementSibling
+                        // selecciono el primer hijo
+                        let divHijo = divHermano.firstElementChild
+                        // selecciono el primer hijo del div hijo
+                        let divHDH = divHijo.firstElementChild
+                        // selecciono los hijos del div que es padre del input number.
+                        let divPadreIN = divHDH.children
+
+                        let objIL = await limiteI();
+                        // si encuentro el id no lo agrega su cantidad esta agotada
+                        if (objIL[id]) {
+                            p.classList.remove("d-none");
+                        } else {
+                            p.classList.add("d-none");
+                            // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
+                            // aquí selecciono el div que tiene un ( + ) y el input
+                            botonInputNumber(divPadreIN[2], divPadreIN[1]);
+                        }
+
+                        // para sumar precio, al presionar un insumo ya existente.
+                        sumarTotalE();
+                    } else {
+                    }
+                }
+
+
+
+                let html = ``;
+
+                if (existeIn) {
+
+                    html = `
+                    <p class="text-danger text-center m-0 p-0 d-none">Límite de cantidad alcanzado</p>
+                    <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregados">
+    
+                        <div class="col-2 ps-4 pb-1">
+                            <a href="#" class="ms-2 eliminarInsE">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    fill="currentColor" class="bi bi-x-circle color-icono"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                    <path
+                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <div>
+                            <input type="hidden" name="agrega" value="si">
+                        </div>
+    
+                        <div class="d-flex justify-content-center align-items-center col-8">
+    
+                            <div class="borde-input-agregar m-auto col-12">
+    
+                                <div class=" d-flex justify-content-center align-items-center pb-2">
+    
+                                    <div class="col-6 ms-2">
+                                        <p class="color-letras fw-bold margen-dos-puntos">${resultadoUnInsu.nombre}</p>
+                                    </div>
+    
+                                    <div class="col-2 text-center ">
+                                        <p class=" fw-bold margen-dos-puntos">:</p>
+                                    </div>
+    
+                                    <div class="col-4">
+                                        <p class="precio-medicina-agregar ">${resultadoUnInsu.precio}bs</p>
+                                        <input type="hidden" class="precioInsumE" value="${resultadoUnInsu.precio}">
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+    
+                        </div>
+    
+                        <input class="inputIdInsuE" type="hidden" name="id_insumoA[]" data-limite-cantidad="${resultadoUnInsu.limite_insumo}" value="${resultadoUnInsu.id_insumo}">
+    
+                        <div class="col-2 ms-2 cantidadIns">
+                            <div class="posicion-input-number m-auto">
+                                <div class="contenedorNumber d-flex justify-content-center align-items-center ">
+    
+                                    <div class="btn-max-min btn-min-lugar tamano-btn-min fw-bold disminuir masMenos" id="" data-index="disminuir"> - </div>
+    
+                                    <!-- readonly : es para que no puedan modificar el numero-->
+                                    <input class="input-number input-numberE fw-bold" name="cantidadA[]" type="number" min="1" max="100" step="1" value="1" id="inputNumber" readonly>
+    
+                                    <div class="btn-max-min btn-max-lugar fw-bold aumentar masMenos" id="" data-index="aumentar"> + </div>
+    
+                                </div>
+                            </div>
+                        </div>
+    
+                    </div>`;
+
+                    divDI.innerHTML += html;
+
+                    cantidadAD();
+
+                    let agregando = false;
+                    eleEliminado([], agregando);
+                }
+
+                eliminar()
+                //para la suma total
+                sumarTotalE();
+
+            }
+
+        } catch (error) {
+            console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        }
+    }
+
+
+    function mostrarMsj() {
+        let urlActual = window.location.href;
+
+        if (urlActual.includes("agregado")) {
+
+            // quitar esto (&agregado) de la url
+            let nuevaUrl = urlActual.replace("&agregado", "");
+            // se agrega la nueva url
+            window.history.replaceState(null, null, nuevaUrl);
+
+            // agregamos el comentario
+            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p class="pe-2 pb-1">Se ha agregado correctamente.</p>
+                        </div>`;
+            document.querySelector("#divComentarios").innerHTML = html;
+
+        } else if (urlActual.includes("eliminado")) {
+            // quitar esto (&agregado) de la url
+            let nuevaUrl = urlActual.replace("&eliminado", "");
+            // se agrega la nueva url
+            window.history.replaceState(null, null, nuevaUrl);
+
+            // agregamos el comentario
+            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p class="pe-2 pb-1">Se elimino correctamente.</p>
+                        </div>`;
+            document.querySelector("#divComentarios").innerHTML = html;
+
+        } else if (urlActual.includes("error")) {
+
+            // quitar esto (&agregado) de la url
+            let nuevaUrl = urlActual.replace("&error", "");
+            // se agrega la nueva url
+            window.history.replaceState(null, null, nuevaUrl);
+
+            // agregamos el comentario
+            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p class="pe-2 pb-1">La hospitalización ya existe.</p>
+                        </div>`;
+            document.querySelector("#divComentarios").innerHTML = html;
+
+        }
+
+        //este es el comentario 
+        const comentario = document.querySelector(".comentario");
+        //si existe el comentario lo muestra y después de 8sg lo oculta
+        if (comentario) {
+
+            comentario.style.display = "block";
+
+            setTimeout(function () {
+                comentario.style.display = "none";
+            }, 8000)
+
+        }
+    }
+
+    const formE = document.querySelector("#formularioEditarH");
+    const divME = document.querySelector(".divModalE");
+
+    // envío de datos de la edición
+    const envioDatE = async () => {
+        try {
+
+            const datosFormulario = new FormData(formE);
+
+            const contenidoForm = {
+                method: "POST",
+                body: datosFormulario
+            }
+
+            // llamo la función 
+            await fetch("?c=ControladorHospitalizacion/modificarH", contenidoForm);
+            divME.classList.remove("show");
+        divModal.setAttribute("style", "touch-action: pan-y pinch-zoom; transition: all 0.3s ease-out ;");
+
+            // vista de la tabla
+            vistaTabla();
+
+            // agregamos el comentario
+            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p class="pe-2 pb-1">Se actualizo correctamente.</p>
+                        </div>`;
+            let div = document.querySelector("#divComentarios");
+            div.innerHTML = html;
+
+            //este es el comentario 
+            const comentario = document.querySelector(".comentario");
+            //si existe el comentario lo muestra y después de 8sg lo oculta
+            if (comentario) {
+
+                comentario.style.display = "block";
+
+                setTimeout(function () {
+                    comentario.style.display = "none";
+                }, 8000)
+
+            }
+
+
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        }
+    }
+
+    // para validar el campo de editar para que no envie 0
+    const validarCampoE = () => {
+        let validarHora = {
+            horas: false
+        };
+
+        // ?!asegura que la cadena no acepte algo y el + es mas igual al mismo, $ esto es asta el final
+        const expresionRHora = /^(?!0+$)(?!-)\d+$/;
+
+        let input = document.querySelector("#duracion");
+
+        // el método .test devuelve true si la expresión regular concuerda con el contenido del input
+        if (expresionRHora.test(input.value)) {
+            validarHora[horas] = true;
+        } else {
+            validarHora[horas] = false;
+        }
+        return validarHora[horas];
+    }
+
+    // para enviar los datos de la edición
+    formE.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let validar = validarCampoE();
+        if (validar) {
+            envioDatE();
+        } else {
+            e.preventDefault();
+        }
+    })
+    // para llamar la función de valida
+    document.querySelector("#duracion").addEventListener('keyup', validarCampoE)
+    document.querySelector("#duracion").addEventListener('input', validarCampoE)
+
+    // para el buscador de hospitalización 
+    let inputBuscH = document.querySelector("#inputBuscH");
+    const btnBuscH = document.querySelector("#btnBuscH");
+    const notifi = document.querySelector("#notificacion");
+
+    // buscador de hospitalización 
+    function buscarH() {
+        let contadorH = 0;
+        let contadorHNo = 0;
+
+        // selecciono todos los tr de la tabla
+        const filas = document.querySelectorAll("#tbody tr");
+        // recolecto la cédula del input
+        let cdH = inputBuscH.value;
+
+        // recorro las filas de la tabla
+        filas.forEach(fila => {
+            // cuenta las hospitalizaciones que existen.
+            contadorH = contadorH + 1;
+
+            // verifico si la cédula existe 
+            if (fila.children[0].innerText.includes(cdH)) {
+                fila.classList.remove("d-none");
+                notifi.classList.add("d-none");
+            } else {
+                fila.classList.add("d-none");
+                // cuenta las veces que no encuentra una hospitalización
+                contadorHNo = contadorHNo + 1;
+            }
+        });
+
+        // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes 
+        if (contadorH === contadorHNo) {
+            // muestra el texto.
+            notifi.classList.remove("d-none");
+        }
+    }
+
+    // al presionar click realiza la función
+    btnBuscH.addEventListener("click", function () { buscarH(); })
+
+    document.querySelector("#formCostoHora").addEventListener("submit", function (e) {
+        e.preventDefault();
+        enviarHoraCosto();
+    })
+
+    ///////////////////////////////////////////////////
+    // conteo de insumos
+
+    // buscar insumos existentes
+    const buscarIEx = async () => {
+        try {
+
+            let peticion = await fetch("?c=ControladorHospitalizacion/buscarIExH");
+            let resultado = await peticion.json();
+            let insumosEx = {};
+
+            if (resultado.length > 0) {
+
+                resultado.forEach(res => {
+                    // si no existe la posición del mismo numero del id del insumo
+                    if (!insumosEx[parseInt(res.id_insumo)]) {
+                        // creamos esa posición con ese numero de id, y dentro su contenido 
+                        insumosEx[parseInt(res.id_insumo)] = {
+                            id: parseInt(res.id_insumo),
+                            cantidadT: 0,
+                            limite: parseInt(res.cantidadEx)
+                        }
+                    }
+                    // si existe la posición del mismo numero del id del insumo, sumamos sus cantidades.
+                    insumosEx[res.id_insumo].cantidadT += parseInt(res.cantidad);
+
+                });
+
+                return insumosEx;
+            } else {
+
+            }
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        }
+    }
+
+    // operación matemática para saber cual insumo llego a su limite en cantidad
+    const limiteI = async () => {
+        try {
+
+            let idHosp = parseInt(document.querySelector("#idHptE").value);
+
+            // llamo la función buscar Insumos de la hospitalización
+            let peticionIH = await fetch("?c=ControladorHospitalizacion/traerInsuDHEd&idH=" + idHosp);
+            let resultadoIH = await peticionIH.json();
+            // me traigo los datos (cantidad y id del insumo que esta ya registrado) en un objeto, para almacenarlo en una variable.
+            let objetoIdCTH = await buscarIEx();
+            // si el objeto se encuentra vació devuelve undefined
+            if (objetoIdCTH === undefined) {
+                objetoIdCTH = {}
+            }
+
+            // if (resultadoIH.length > 0) {
+            //variable para insumos traídos de una hospitalización de la db
+            let insumosBdH = {};
+            resultadoIH.forEach(res => {
+                insumosBdH[parseInt(res.id_insumo)] = {
+                    id: parseInt(res.id_insumo),
+                    cantidad: parseInt(res.cantidad)
+                }
+            });
+
+            let insumosExL = {};
+
+            document.querySelectorAll(".divInsumosAgregados").forEach(divI => {
+                // id del insumo
+                let idI = divI.querySelector(".inputIdInsuE");
+                let limiteI = idI.getAttribute("data-limite-cantidad");
+                let cantidad = parseInt(divI.querySelector(".input-numberE").value);
+                idI = parseInt(idI.value);
+
+                // creamos esa posición con ese numero de id, y dentro su contenido 
+                insumosExL[idI] = {
+                    id: parseInt(idI),
+                    cantidadT: cantidad,
+                    limite: parseInt(limiteI)
+                }
+
+            })
+            // recorro el objeto (los insumos de una hospitalización db y los insumos locales)
+            for (const iL in insumosExL) {
+                // si existe la posición del objeto (el id) se resta la cantidad del insumo
+                if (insumosBdH[iL]) {
+                    insumosExL[iL].cantidadT = parseInt(insumosExL[iL].cantidadT) - parseInt(insumosBdH[iL].cantidad);
+                }
+            }
+            // recorro el objeto de los insumos totales de la db
+            for (const iL in insumosExL) {
+                // si existe la posición del objeto (el id del insumo) se suma la cantidad del insumo
+                if (objetoIdCTH[iL]) {
+                    objetoIdCTH[iL].cantidadT = parseInt(objetoIdCTH[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
+
+                    // si no existe se agrega los datos del insumo
+                } else {
+                    objetoIdCTH[iL] = {
+                        id: parseInt(iL),
+                        cantidadT: insumosExL[iL].cantidadT,
+                        limite: insumosExL[iL].limite
+                    }
+                }
+            }
+
+            let objIL = {};
+            // recorro el objeto de los insumos y solo almaceno los limitados
+            for (const iLi in objetoIdCTH) {
+                if (objetoIdCTH[iLi].cantidadT >= objetoIdCTH[iLi].limite) {
+                    objIL[iLi] = objetoIdCTH[iLi];
+                }
+            }
+            return objIL;
+
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        }
+    }
+
+})
+

@@ -1,0 +1,172 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* flechas del carrusel; la oculto */
+.carousel .carousel-control-prev,
+.carousel .carousel-control-next {
+    visibility: hidden;
+    opacity: 3;
+
+}
+
+/* flechas del carrusel; la hago visible */
+.carousel:hover .carousel-control-prev,
+.carousel:hover .carousel-control-next {
+    visibility: visible;
+    animation-duration: 2s;
+    transition-timing-function: linear;
+}
+
+/* (con bootstrap) animación de desvanecimiento de las flechas del carrusel;
+se nota muy mínimo */
+@keyframes FadeInPrev {
+    0% {
+        opacity: 0;
+        padding-left: 40px;
+    }
+
+    100% {
+        opacity: 1;
+        padding-left: 0px;
+    }
+}
+
+/* (con bootstrap) animación de desvanecimiento de las flechas del carrusel;
+se nota muy mínimo*/
+@keyframes FadeInNext {
+    0% {
+        opacity: 0;
+        padding-right: 40px;
+    }
+
+    100% {
+        opacity: 1;
+        padding-right: 0px;
+    }
+}
+
+.linea-titulo {
+    margin-top: 6px;
+    width: 33.4vh;
+    border-bottom: solid 4px #387ADF;
+}
+
+.formulario {
+
+    margin-left: 85px;
+
+}
+
+.input {
+    padding-left: 28.6px;
+    padding-bottom: 4.8px;
+    width: 69vh;
+    border: none;
+    outline: none;
+    border-bottom: solid 0.55vh #387ADF;
+}
+
+.icono {
+
+    color: #387ADF;
+    position: absolute;
+    transform: translateY(1px);
+    transform: translateX(-2px);
+    width: 25px;
+    transition: 0.1s;
+
+}
+
+.icono-animacion {
+
+    color: #387ADF;
+    position: absolute;
+    transform: translateY(1px);
+    transform: translateX(-0.5px);
+    width: 20px;
+    transition: 0.1s;
+
+}
+
+.tamano {
+    height: 100vh;
+    background-color: #387ADF;
+}
+
+.boton {
+    margin-left: 35%;
+    padding: 0% 30px;
+    padding-bottom: 4px;
+    font-size: 1.6rem;
+    letter-spacing: 1.5px;
+}
+
+.comentarioAzul {
+    border: 0.1px solid rgb(236, 236, 253);
+    box-shadow: #ddebfa 0 0 2px;
+}
+
+.comentario {
+    margin: 0;
+    border-radius: 8px;
+}
+
+.posicionCarrusel {
+    position: fixed;
+}
+
+.azul {
+    color: #387ADF;
+}
+
+.btn_ayuda {
+    position: absolute;
+    margin-left: 95%;
+}
+
+@media screen and (max-width: 745px) {
+    .carrusel-responsive {
+        display: none;
+    }
+
+    .linea-titulo {
+        width: 16.5vh;
+    }
+
+    .input {
+        width: 45vh;
+        padding-bottom: 5.9px;
+        margin-bottom: 3px;
+
+    }
+
+    .boton {
+        margin-left: 30.5%;
+        padding: 5px 40px;
+        padding-bottom: 9px;
+        font-size: 1.7rem;
+        letter-spacing: 1.5px;
+    }
+}
+
+@media screen and (max-width: 385px) {
+    .input {
+        width: 39vh;
+        padding-bottom: 7px;
+    }
+
+    .boton {
+        margin-left: 13%;
+        padding: 6px 30px;
+        letter-spacing: 1px;
+    
+    }
+    .formulario {
+
+        margin-left: 62px;
+    
+    }
+}

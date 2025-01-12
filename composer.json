@@ -1,0 +1,16 @@
+{
+    "name": "sistema/clinica",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "WDLSR"
+        }
+    ],
+    "require": {
+        "setasign/fpdf": "^1.8"
+    }
+}

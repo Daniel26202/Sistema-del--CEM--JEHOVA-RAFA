@@ -1,0 +1,918 @@
+.aparecer {
+	display: none;
+}
+.ocultar {
+	display: block;
+}
+
+.input-buscar {
+	border-radius: 0;
+	border: none;
+	border-bottom: 2px solid #387ADF;
+	background-color: transparent;
+	margin-left: 50px;
+}
+
+.input-buscar:focus {
+	outline: 0 !important;
+	box-shadow: none;
+	background: linear-gradient(to bottom, transparent, #E4EBF0);
+}
+
+.btn-buscar {
+
+	border-radius: 0;
+	border-right: #387ADF solid 1px;
+	border-end-end-radius: 10px;
+	border-start-start-radius: 10px;
+	background-color: #387ADF;
+	transition: .4s all;
+	color: #fff;
+}
+
+#reiniciarBusqueda {
+
+	border-radius: 0;
+	border-right: #387ADF solid 1px;
+	border-start-end-radius: 10px;
+	border-end-start-radius: 10px;
+	background-color: #387ADF;
+	transition: .4s all;
+	color: #fff;
+	margin-right: -99px;
+	position: relative;
+	z-index: 10;
+}
+
+#reiniciarBusqueda:hover {
+	border-right: #E4EBF0 solid 1px;
+	background-color: #E4EBF0;
+	transition: .4s all;
+}
+
+#reiniciarBusquedaServ {
+
+	border-radius: 0;
+	border-right: #387ADF solid 1px;
+	border-start-end-radius: 10px;
+	border-end-start-radius: 10px;
+	background-color: #387ADF;
+	transition: .4s all;
+	color: #fff;
+	margin-right: -100px;
+
+	margin-bottom: -62px;
+	position: relative;
+	z-index: 10;
+}
+
+#reiniciarBusquedaInsumo {
+
+	border-radius: 0;
+	border-right: #387ADF solid 1px;
+	border-start-end-radius: 10px;
+	border-end-start-radius: 10px;
+	background-color: #387ADF;
+	transition: .4s all;
+	color: #fff;
+	margin-right: -99px;
+	position: relative;
+	z-index: 10;
+}
+
+#reiniciarBusquedaInsumo:hover {
+	border-right: #E4EBF0 solid 1px;
+	background-color: #E4EBF0;
+	transition: .4s all;
+}
+
+#reiniciarBusquedaEspecialidad {
+	border-radius: 0;
+	border-right: #387ADF solid 1px;
+	border-start-end-radius: 10px;
+	border-end-start-radius: 10px;
+	background-color: #387ADF;
+	transition: .4s all;
+	color: #fff;
+	position: relative;
+	z-index: 10;
+}
+
+#reiniciarBusquedaEspecialidad:hover {
+	border-right: #E4EBF0 solid 1px;
+	background-color: #E4EBF0;
+	transition: .4s all;
+}
+
+
+.btn-buscar:hover {
+	background-color: #E4EBF0;
+	transition: .4s all;
+}
+
+.tamaño-input-buscar {
+	width: 55%;
+}
+
+.mover-input-buscar {
+	margin-right: 15%;
+}
+
+.mover-input-agregarcita {
+	margin-left: 15%;
+}
+
+.btn-agregarConsulta {
+	margin-right: 50px;
+	background-color: transparent;
+	color: black;
+	border: none;
+	border-bottom: 3px solid #387ADF;
+	border-radius: 0;
+	/*transition: all .4s;*/
+	transition-property: background-color;
+	transition-duration: .4s;
+
+}
+
+.azul {
+	color: #387ADF;
+}
+
+
+
+
+.btn-agregarConsulta:hover {
+	background-color: #387ADF;
+	border-bottom: 3px solid #387ADF;
+	transition-property: background-color;
+	transition-duration: .4s;
+	border-radius: 20px;
+	color: #ffff;
+
+}
+
+.btn-tabla {
+	border: none;
+	background-color: #387ADF;
+	transition-property: background-color;
+	transition-duration: .4s;
+	color: #ffffff;
+}
+
+.btn-tabla:hover {
+	border: none;
+	background-color: #E4EBF0;
+	transition-property: background-color;
+	transition-duration: .4s;
+}
+
+.div-tabla {
+	border-radius: 20px;
+	background-color: #F8FCFF;
+	height: 77%;
+
+}
+
+.div-tablaReportes {
+	border-radius: 20px;
+	background-color: #F8FCFF;
+	height: 100%;
+
+}
+
+.contenedor {
+	width: 94%;
+
+}
+
+.tamaño-tabla {
+	width: 98%;
+	height: 60vh;
+}
+
+.titulo-modal {
+	color: black;
+
+}
+
+.tamaño-modal {
+	width: 45%;
+	border-radius: 20px;
+	background-color: #ffffff;
+}
+
+.tamaño-modal-Seleccionar-Insumo {
+	width: 120%;
+	border-radius: 20px;
+	background-color: #ffffff;
+}
+
+.input-modal {
+	border-radius: 0;
+	border: none;
+	border-bottom: 2px solid #387ADF;
+	background-color: transparent;
+	margin-bottom: 15px;
+}
+
+.input-modal:focus {
+	outline: 0 !important;
+	box-shadow: none;
+	/* background: linear-gradient(to bottom, transparent, #E4EBF0); */
+}
+
+
+.placeholder::placeholder {
+	font-size: 24px;
+	color: #387ADF;
+}
+
+.btn-cerrar-modal {
+	border: none;
+	border-radius: 20px;
+	font-weight: bold;
+
+}
+
+/*.btn-cerrar-modal:hover{
+	background-color: #3333;
+	border: 2px solid #3333;
+	color: #387ADF;
+	transition-property: background-color;
+	transition-duration: .4s;
+
+}*/
+
+.btn-agregarcita-modal {
+	border-radius: 20px;
+	background-color: #387ADF;
+	font-weight: bold;
+	color: white;
+}
+
+.btn-agregarcita-modal:hover {
+	background-color: #ffffff;
+	border: 2px solid #387ADF;
+	color: #387ADF;
+	transition-property: background-color;
+	transition-duration: .4s;
+}
+
+.btns-accion {
+	color: black;
+}
+
+.btns-accion:hover {
+	color: #387ADF;
+	border: none;
+}
+
+.sin-circulos {
+	list-style-type: none;
+}
+
+.borde-menu {
+	border-top: 1px solid rgba(0, 0, 0, 0.509);
+}
+
+.activo:hover {
+	border-top: 1px solid #387ADF;
+	transform: scale(1.1);
+	transition: all 0.1s;
+}
+
+.activo-borde {
+	border-top: 1px solid #387ADF;
+}
+
+.activo-borde svg {
+	color: #387ADF;
+}
+
+.btnRetroceder {
+	border: 2px solid #387ADF;
+	border-radius: 50px;
+	height: 50px;
+	width: 50px;
+	background-color: #F8FCFF;
+}
+
+.btnOtrosServ {
+	border: 2px solid #387ADF;
+	border-radius: 50px;
+	height: 40px;
+	width: 40px;
+	background-color: #F8FCFF;
+}
+
+/* .retrocederCitas button{
+	
+} */
+
+/* estilos Control */
+
+.lista-pacientes {
+	width: 350px;
+	height: 350px;
+	overflow-y: auto !important;
+}
+
+.lista-pacientes2 {
+	width: 700px;
+	height: 350px;
+	overflow-y: auto !important;
+}
+
+.tamaño-tabla2 {
+	width: 45%;
+}
+
+.justificar {
+	text-align: justify;
+}
+
+.input-disabled:disabled {
+	background-color: #ffffff;
+}
+
+
+.acordion-paciente {
+	font-size: 17px;
+	font-weight: 500;
+	height: 15px;
+}
+
+/* Estilos Inicio */
+
+.contenedor-inicio {
+	background-color: #E4EBF0;
+	border-radius: 20px;
+	width: 30%;
+
+}
+
+.carrusel {
+	width: 35%;
+	height: 35%;
+}
+
+.borde-img {
+	border-radius: 20px;
+}
+
+.tamaño-letra {
+	font-size: 5rem;
+
+}
+
+.tamaño-tarjertas {
+	width: 25%;
+	height: 25%;
+}
+
+.fondo-tarjetas {
+	background-color: #387ADF;
+}
+
+/* Perfil */
+
+.contenedor-perfil {
+	background-color: #E4EBF0;
+	border-radius: 20px;
+	width: 60%;
+	height: 60%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 2%;
+
+}
+
+.perfil {
+	height: 60% !important;
+}
+
+.perfil .input-group {
+	margin-top: -10px;
+
+}
+
+
+
+
+/*INSUMOS*/
+
+.tar {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.tarjet {
+	height: 60vh;
+}
+
+.tar img {
+	height: 50%;
+}
+
+
+/*Pacientes*/
+
+.margin-inputs {
+	margin-top: -1px;
+}
+
+#modalAgregar input {
+	font-size: 16px;
+}
+
+#modal-agregar-insumos input {
+	font-size: 16px;
+}
+
+#modalAgregarCita input {
+	font-size: 16px;
+}
+
+#modalAgregarControl input {
+	font-size: 16px;
+}
+
+#modal-exampleInsumos input {
+	font-size: 16px;
+}
+
+#modal-exampleEditarInsumos input {
+	font-size: 16px;
+}
+
+#modal-exampleProveedores input {
+	font-size: 16px;
+}
+
+#modal-exampleEntrada input {
+	font-size: 16px;
+}
+
+#editarEntrada input {
+	font-size: 16px;
+}
+
+#editarControlMedico input {
+	font-size: 16px;
+
+}
+
+#modal-exampleEnfermeras input {
+	font-size: 16px;
+}
+
+#modal-examplebuscarserv input {
+	font-size: 16px;
+}
+
+.contenedor_tabla {
+	font-size: 13px;
+	height: 370px;
+	width: 170vh;
+	overflow-y: auto !important;
+}
+
+.contenedor_tabla_entradas {
+	font-size: 13px;
+	height: 370px;
+	overflow-y: auto !important;
+}
+
+#inputCom input {
+	font-size: 16px;
+
+}
+
+#tamanoinputPrecioSerMedico input {
+	font-size: 16px;
+
+}
+
+
+/* Estilos Paciente Modal Buscador  */
+
+.modalBuscador {
+	border-radius: 20px;
+	background-image: url("../img/grafi.jpg");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.modalBuscador li a:hover {
+	color: #387ADF;
+}
+
+#perfil input {
+	font-size: 16px;
+}
+
+.iconoB {
+	filter: hue-rotate(200deg);
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/*USUARIOS*/
+
+
+/*ESTILOS REPORTES*/
+
+.rep {
+	width: 20rem;
+	display: flex;
+	justify-content: center;
+	margin-left: 800px;
+}
+
+.repor {
+	margin-top: 5%;
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+}
+
+.cartaRepor {
+	margin-top: 2%;
+	height: 27vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: #333;
+	font-weight: 600;
+	width: 70vh;
+
+
+}
+
+
+.cardReporte {
+	border-radius: 20px;
+	background-image: url("../img/grafi.jpg");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	transition: transform 0.2s ease-in-out;
+	box-shadow: #333;
+
+}
+
+.cardReporte:hover {
+	transform: scale(1.1);
+}
+
+
+.reportess {
+	margin-top: 5%;
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+}
+
+.granRepor {
+	margin-top: 2%;
+	height: 70vh;
+	width: 70vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: #333;
+	font-weight: 600;
+	border-radius: 20px;
+	background-image: radial-gradient(at 40px 20px, rgba(56, 123, 223, 0.171) 40%, rgba(56, 123, 223, 0.205) 20%, rgba(56, 123, 223, 0.63) 72%);
+
+}
+
+
+.granReporte {
+	background-image: url("../img/graPastel.jpg");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	transition: transform 0.2s ease-in-out;
+
+}
+
+.granReporte:hover {
+	transform: scale(1.1);
+}
+
+
+
+.reRepor {
+	margin-top: 2%;
+	height: 70vh;
+	width: 50vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: #333;
+	font-weight: 600;
+	border-radius: 20px;
+	background-image: radial-gradient(at 40px 20px, rgba(56, 123, 223, 0.171) 40%, rgba(56, 123, 223, 0.205) 20%, rgba(56, 123, 223, 0.63) 72%);
+
+
+}
+
+
+.reReporte {
+	background-image: url("../img/grafico2.jpg");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	transition: transform 0.2s ease-in-out;
+
+}
+
+.reReporte:hover {
+	transform: scale(1.1);
+}
+
+.t {
+	color: #ffff;
+	font-weight: 800;
+	/* box-shadow: ; */
+	text-shadow: rgb(0, 0, 0) 0 0 8px;
+	margin-bottom: 5%;
+}
+
+.leyenda {
+	margin-top: -15px;
+	margin-bottom: 5px;
+	font-size: 10px;
+}
+
+
+
+/*expresiones control*/
+
+.grpFormCorrectControl {
+	border-bottom: 2px solid rgb(13, 240, 13) !important;
+}
+
+.grpFormInCorrectControl {
+	border-bottom: 2px solid rgb(224, 3, 3) !important;
+}
+
+.grpFormCorrectControlEditar {
+	border-bottom: 2px solid rgb(13, 240, 13) !important;
+}
+
+.grpFormInCorrectControlEditar {
+	border-bottom: 2px solid rgb(224, 3, 3) !important;
+}
+
+/* #imgProveedores:hover{
+	filter: hue-rotate(600deg);
+} */
+/* estilos madal de reportes de facturacion  */
+
+.height_modal_factura {
+	background-color: #387ADF;
+}
+
+.btn-cerrar-modalFactura {
+	border: none;
+	margin-top: -40px;
+}
+
+.fullscreen-modal {
+	z-index: 1040;
+	position: fixed;
+
+}
+
+.modalInterno {
+	position: fixed;
+	z-index: 2000;
+}
+
+.madalAnular {
+	position: fixed;
+	z-index: 3000;
+}
+
+@media screen and (max-width: 750px) {
+
+	.tamaño-tarjertas {
+		width: 30%;
+		height: 30%;
+	}
+
+}
+
+@media screen and (max-width: 600px) {
+	.cartaRepor {
+		height: 20vh;
+		width: 35vh;
+		margin-top: 5%;
+
+	}
+
+	.tamaño-input-buscar {
+		width: 9vh;
+	}
+
+	.reReporte {
+		width: 40vh;
+		height: 67vh;
+		background-size: 100% 50%;
+
+	}
+
+	.reRepor {
+		width: 40vh;
+		height: 35vh !important;
+
+	}
+
+	.granRepor {
+		width: 40vh;
+		height: 40vh;
+		margin-left: 2%;
+	}
+
+	.divCartas {
+		display: flex !important;
+		flex-direction: column !important;
+		margin-left: 30%;
+		padding-bottom: 1rem;
+	}
+
+	.tamaño-tarjertas {
+		width: 30vh;
+		height: 30vh;
+		margin-bottom: 47px;
+	}
+
+	.tamaño-modal {
+		width: 90%;
+	}
+
+	.mover-input-agregarcita {
+		margin-right: 25%;
+		margin-left: 0%;
+	}
+
+}
+
+@media screen and (max-width: 370px) {
+	.contInicioRes {
+		display: flex;
+		flex-direction: column;
+		margin-top: 40px;
+	}
+
+	/* .carruselImg{
+		display: none;
+	} */
+}
+
+
+/*.......*/
+
+
+.contenedor_tabla {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+
+
+.table {
+	white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+	.contenedor_tabla {
+		padding: 0.5rem;
+		/* Reducir el espacio interno en móviles */
+		width: 60vh;
+	}
+}
+
+@media screen and (max-width: 400px) {
+
+	#tableControl th,
+	#tableControl td {
+		display: block;
+		width: 100%;
+		text-align: left;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.ocultar {
+		display: none !important;
+	}
+	.aparecer {
+		display: block;
+	}
+	
+	.tamaño-tablaControl {
+		font-size: 12px;
+		width: 100%;
+		height: auto;
+		overflow-x: auto !important;
+		display: block;
+	}
+
+	.btnEditarCP {
+		width: auto;
+	}
+
+	#tableControl th,
+	#tableControl td {
+		padding: 4px;
+		/* Reduce el relleno */
+	}
+
+	.lista-pacientes,
+	.lista-pacientes2 {
+		max-height: 200px;
+		width: 100%;
+	}
+
+	.responsive_patologia {
+		margin-left: 20px;
+	}
+
+	.buscador_responsiv {
+		width: 80%;
+	}
+
+	.registrar_responsiv {
+		width: 60%;
+	}
+
+	.svgPapeleraPatologia {
+		display: none;
+	}
+
+	.ajustar {
+		margin-top: 30px;
+		margin-bottom: -20px;
+		text-align: center;
+	}
+
+	.btnrestablecer {
+		width: 50%;
+		margin-left: 10px;
+	}
+
+	.buscador_responsiv_citas {
+		width: 80%;
+		display: flex;
+		justify-content: end;
+	}
+
+	.modal_responsiv {
+
+		width: 100% !important;
+		padding: 1rem;
+
+	}
+
+	#modalAgregarDoctores input {
+		width: 100%;
+	}
+
+	#modalAgregarDoctores select {
+		width: 100%;
+	}
+
+	.span_inputFile {
+		width: 20% !important;
+
+	}
+
+	.directorio {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.btn_modal_patologias {
+		display: flex;
+		justify-content: end;
+	}
+
+	.btn_agregar_patologia {
+		width: 40% !important;
+	}
+
+
+}

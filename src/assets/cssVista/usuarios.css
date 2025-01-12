@@ -1,0 +1,94 @@
+.btns-accion {
+	color: black;
+}
+
+.btns-accion:hover {
+	color: #387ADF;
+	border: none;
+}
+
+.azula {
+	color: #387ADF;
+}
+
+.azula:hover {
+	color: #0000008f;
+}
+
+.fondo-tabla {
+	padding: 15px;
+	border: #E4EBF0 solid 1px;
+	border-radius: 20px;
+	box-shadow: #E4EBF0 0 0 5px;
+	background-color: #F8FCFF;
+}
+
+.tarjeta img {
+	height: 33vh;
+	width: 92%;
+	border-radius: 1.3vh;
+}
+
+.tarjeta {
+	border-radius: 2.3vh;
+	margin-bottom: 5.5vh;
+}
+
+.btn-User {
+	border-radius: 20px;
+	border: 2px solid #387ADF;
+	background-color: #ffffff;
+	font-weight: bold;
+	color: #387ADF;
+	width: 20vh;
+	padding: 4px;
+
+}
+
+.btn-User:hover {
+	background-color: #387ADF;
+	color: #387ADF;
+	color: white;
+	transition-duration: 0.2s;
+}
+
+.btnMostrar:hover {
+	color: #050505;
+}
+
+.btnMostrar {
+	color: #2761b9;
+	font-weight: 500;
+}
+
+.margen-input-u {
+
+	margin-bottom: 8px;
+
+}
+
+.input-u {
+
+	padding-left: 28.6px;
+	padding-bottom: 5.8px;
+	/* width: auto; */
+	border: none;
+	outline: none;
+	border-bottom: solid 0.55vh #387ADF;
+}
+
+.input-mostrar {
+	border: none;
+	outline: none;
+	color: #666666;
+	background-color: #ffffff;
+}
+.btnMostrarContrase{
+	position: relative;
+	z-index: 30;
+	
+}
+
+@media screen and (max-width: 745px) {
+
+}
