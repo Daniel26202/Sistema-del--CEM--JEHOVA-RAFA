@@ -66,32 +66,34 @@ addEventListener("DOMContentLoaded", function () {
     const alertasVencidos = document.querySelectorAll(".alertas-vencidos");
 
     botones.forEach((ele, index) => {
-      const dataIndex = ele.getAttribute("data-index");
-
-      resultado.forEach((res) => {
-        if (res !== undefined) {
-          console.log(res.id_insumo_e);
-          console.log(dataIndex);
-
-          if (res.id_insumo_e == dataIndex) {
-            console.log("es igual");
+        const dataIndex = ele.getAttribute("data-index");
+        const insumoEncontrado = resultado.find(res => res && res.id_insumo_e == dataIndex);
+        console.log(alertasVencidos[index].children[1])
+        if (insumoEncontrado) {
             alertasVencidos[index].classList.remove("d-none");
-            alertasVencidos[index].innerText = `El insumo ${res.nombre} del lote ${res.numero_de_lote} vence el ${res.fechaDeVencimiento}`;
-            document.getElementById("id_entradaDeInsumo").value =
-              res.id_entradaDeInsumo;
-            document.getElementById("id_insumo").value = res.id_insumo_e;
-          } else {
-            console.log("no es igual");
-            alertasVencidos[index].classList.add("d-none");
-          }
+            alertasVencidos[index].classList.add("uk-alert-danger")
+            alertasVencidos[index].children[1].innerText = `El insumo ${insumoEncontrado.nombre} del lote ${insumoEncontrado.numero_de_lote} vence el ${insumoEncontrado.fechaDeVencimiento}.`;
+            document.getElementById("id_entradaDeInsumo").value = insumoEncontrado.id_entradaDeInsumo;
+            document.getElementById("id_insumo").value = insumoEncontrado.id_insumo_e;
         } else {
-          console.log("indefinido");
+          
+          let tarjeta = alertasVencidos[index].parentElement.parentElement.parentElement;
+          tarjeta.children[0].style.height = "56%";
         }
-      });
     });
-  };
+};
 
-  traerInsumoCasiVencidos();
+traerInsumoCasiVencidos();
+
+
+//evento para que si le da a la x de la alerta la tarjeta se haga mas pequeña
+document.querySelectorAll(".uk-alert-close").forEach(ele=>{
+  ele.addEventListener("click",function(){
+    let tarjeta = this.parentElement.parentElement.parentElement.parentElement;
+    tarjeta.children[0].style.height = "56%";
+  })
+})
+
 
   //ajax
   async function infoInsumos(id_insumo) {
@@ -152,15 +154,15 @@ addEventListener("DOMContentLoaded", function () {
       if (resultado.length > 0) {
         resultado.forEach((res) => {
           html += `<div class="card ms-3 tarjet mt-2" style="width: 16rem;">
-					<img src="./src/assets/img_ingresadas_por_usuarios/insumos/${res.imagen}" class="card-img-top" alt="...">
-					<div class="card-body mt-4 tarjeta-ajax">
-					<h5 class="card-title titulo">${res.nombre}</h5>
-					<p>Skock-Min: ${res.stockMinimo}</p>
-					<p>Cantidad: ${res.cantidad}</p>
-					<a href="#" class="btn btn-agregarcita-modal text-decoration-none botones-mostrar botones-mostrar-buscador" data-index="${res.id_insumo}"
-					uk-toggle="target: #modal-exampleMostrar" id="botones-mostrar-buscador">Mostrar</a>
-					</div>
-					</div>`;
+          <img src="./src/assets/img_ingresadas_por_usuarios/insumos/${res.imagen}" class="card-img-top" alt="...">
+          <div class="card-body mt-4 tarjeta-ajax">
+          <h5 class="card-title titulo">${res.nombre}</h5>
+          <p>Skock-Min: ${res.stockMinimo}</p>
+          <p>Cantidad: ${res.cantidad}</p>
+          <a href="#" class="btn btn-agregarcita-modal text-decoration-none botones-mostrar botones-mostrar-buscador" data-index="${res.id_insumo}"
+          uk-toggle="target: #modal-exampleMostrar" id="botones-mostrar-buscador">Mostrar</a>
+          </div>
+          </div>`;
         });
 
         document.querySelector(".tar").innerHTML = html;
@@ -183,10 +185,10 @@ addEventListener("DOMContentLoaded", function () {
           .classList.remove("d-none");
       } else {
         html += `<div class="mt-2 d-flex justify-content-center">
-				<div>
-				<h4 class="text-center">NO HAY INSUMOS</h4>
-				</div>
-				</div>`;
+        <div>
+        <h4 class="text-center">NO HAY INSUMOS</h4>
+        </div>
+        </div>`;
 
         document.querySelector(".tar").innerHTML = html;
         document
@@ -206,10 +208,10 @@ addEventListener("DOMContentLoaded", function () {
     f.preventDefault();
     if (input.value == "") {
       // html += `<div class="mt-2 d-flex justify-content-center">
-      // 	<div>
-      // 	<h4 class="text-center">EL CAMPO ESTA VACIO</h4>
-      // 	</div>
-      // 	</div>`;
+      //  <div>
+      //  <h4 class="text-center">EL CAMPO ESTA VACIO</h4>
+      //  </div>
+      //  </div>`;
       // document.querySelector(".tar").innerHTML = html
       // document.querySelector(".tar").innerHTML = ""
       // document.querySelector(".tar").classList.add('d-flex', 'justify-content-center')
@@ -227,10 +229,10 @@ addEventListener("DOMContentLoaded", function () {
   });
 
   // document.getElementById("botones-mostrar-buscador").addEventListener("click",function(){
-  // 			console.log("holaa");
-  // 			// console.log(this.getAttribute("data-index"))
-  // 			// infoInsumos(this.getAttribute("data-index"))
-  // 		})
+  //      console.log("holaa");
+  //      // console.log(this.getAttribute("data-index"))
+  //      // infoInsumos(this.getAttribute("data-index"))
+  //    })
 
   //imagenes de los insumos
   archivo.addEventListener("change", function (e) {

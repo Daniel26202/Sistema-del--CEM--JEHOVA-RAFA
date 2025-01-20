@@ -223,18 +223,21 @@
         <hr>
         <div class="tar ">
             <?php foreach ($insumos as $i): ?>
-                <div class="card ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 16rem;">
-                    <img src="./src/assets/img_ingresadas_por_usuarios/insumos/<?= $i["imagen"] ?>" class="card-img-top" alt="...">
+                <div class="card ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
+                    <img src="./src/assets/img_ingresadas_por_usuarios/insumos/<?= $i["imagen"] ?>" class="card-img-top" style="height: 35%;">
                     <div class="card-body mt-4 tarjeta-ajax">
-                        <div class="alert alert-danger text-center alertas-vencidos d-none p-0"> Proximamente Lote de Insumos Se Venceran
-                            <button class="btn btn-danger col-3 mr-0" uk-toggle="target: #modal-exampleSacarEntrada">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-capsule me-1"
-                                    viewBox="0 0 16 16">
-                                    <path
-                                        d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                                </svg>
-                            </button>
+                        <!-- <div class="alert  text-center alertas-vencidos d-none p-0">  -->
+                            <!-- aqui es la alerta de los vencidos -->
+                        <!-- </div> -->
+
+                        <div class="w-100 ">
+                            <div class="fw-bolder alertas-vencidos d-none"  uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p class="pe-2"></p>
+                            </div>
                         </div>
+
+
                         <h5 class="card-title titulo"><?= $i["nombre"] ?></h5>
                         <p class="mt-3">Skock-Min: <?= $i["stockMinimo"] ?></p>
                         <p>Cantidad: <?= $i["cantidad"] ?></p>

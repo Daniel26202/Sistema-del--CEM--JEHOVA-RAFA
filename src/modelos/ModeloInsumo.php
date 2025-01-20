@@ -188,7 +188,7 @@ class ModeloInsumo extends Db
 	//gestionar salidas
 	public function todasLasEntradas()
 	{
-		$consulta = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'por_vencer' AND i.estado = 'ACT' ORDER BY ei.fechaDeVencimiento limit 1 ");
+		$consulta = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  i.estado = 'ACT' AND e.estado = 'ACT' AND fechaDeVencimiento BETWEEN CURRENT_DATE + INTERVAL 1 DAY AND CURRENT_DATE + INTERVAL 7 DAY ORDER BY  ei.fechaDeVencimiento");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 
 
@@ -240,11 +240,11 @@ class ModeloInsumo extends Db
 
 		$cantidadInsumo = ($cantidadInsumoPre - $totalDesactivo) -$totalVencidos;
 
-		 //echo "<h1>"."Pre: " .$cantidadInsumoPre."</h1><br><br>";
-		//echo "<h1>"."Desactivado: ".$totalDesactivo."</h1><br><br>";
-		//echo "<h1>"."id insumo: ".$id_insumo."</h1><br><br>";
-		//echo "<h1>"."Vencidos: ".$totalVencidos."</h1><br><br>";
-		//echo "<h1>"."Cantidad: ".$cantidadInsumo."</h1><br><br>";
+		echo "<h1>"."Pre: " .$cantidadInsumoPre."</h1><br><br>";
+		echo "<h1>"."Desactivado: ".$totalDesactivo."</h1><br><br>";
+		echo "<h1>"."id insumo: ".$id_insumo."</h1><br><br>";
+		echo "<h1>"."Vencidos: ".$totalVencidos."</h1><br><br>";
+		echo "<h1>"."Cantidad: ".$cantidadInsumo."</h1><br><br>";
 		//echo "<h1>"."Fecha: ".date("Y-m-d")."</h1><br><br>";
 
 
@@ -282,22 +282,45 @@ class ModeloInsumo extends Db
 
 	public function vencerInsumos($fecha)
 	{
-		$consulta = $this->conexion->prepare("UPDATE entrada SET estado = 'VEC' WHERE 
-			(SELECT fechaDeVencimiento FROM entrada_insumo WHERE entrada.id_entrada = entrada_insumo.id_entrada)
-			<= :fecha ");
-		$consulta->bindParam(":fecha", $fecha);
-		$consulta->execute();
-		$id_insumoVencidos = $this->id_insumoVencidos();
-		$this->actualizarCantidadEntrada($id_insumoVencidos["id_insumo"]);
 
+		// $consulta = $this->conexion->prepare("UPDATE entrada SET estado = 'VEC' WHERE 
+		// 	(SELECT fechaDeVencimiento FROM entrada_insumo WHERE entrada.id_entrada = entrada_insumo.id_entrada)
+		// 	<= :fecha ");
+		// $consulta->bindParam(":fecha", $fecha);
+		// $consulta->execute();
+		// $id_insumoVencidos = $this->id_insumoVencidos();
+		//print_r($id_insumoVencidos);
 		
+		$insumos = $this->insumos();
+		foreach ($insumos as $key) {
+			//echo $key["id_insumo"]."<br>";
+			$cantidad = $this->actualizar_cantidad_insumo($key["id_insumo"]);
+			// print_r($cantidad[0]["cantidad"]);
+
+			//esto es para actualizar la cantidad de insumos
+			$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
+			$consulta->bindParam(":cantidad",$cantidad[0]["cantidad"]);
+			$consulta->bindParam(":id_insumo",$key["id_insumo"]);
+			$consulta->execute();
+
+
+		}
+		// $this->actualizarCantidadEntrada($id_insumoVencidos["id_insumo"]);
 
 	}
 
 	private function id_insumoVencidos(){
-		$consulta2 = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'VEC' OR e.estado = 'por_vencer'  AND i.estado = 'ACT' ORDER BY ei.fechaDeVencimiento limit 1 ");
-		return ($consulta2->execute()) ? $consulta2->fetch() : false;
+		$consulta2 = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE e.estado = 'VEC' AND i.estado = 'ACT' ORDER BY ei.fechaDeVencimiento");
+		return ($consulta2->execute()) ? $consulta2->fetchAll() : false;
 	}
+
+	//funcion mejorada de actualizacion de la cantidad
+	public function actualizar_cantidad_insumo($id_insumo){
+		$consulta = $this->conexion->prepare(" SELECT id_insumo, fechaDeVencimiento, SUM(cantidad) AS cantidad FROM entrada_insumo WHERE id_insumo =:id_insumo AND fechaDeVencimiento > CURRENT_DATE ");
+		$consulta->bindParam(":id_insumo",$id_insumo);
+		return ($consulta->execute()) ? $consulta->fetchAll() : false;
+	}
+
 
 
 
@@ -321,8 +344,8 @@ class ModeloInsumo extends Db
 
 		// Actualizar el estado de los productos que están a 10 días o menos de vencer
 		$sql = "UPDATE entrada SET estado = 'por_vencer' WHERE 
-			(SELECT fechaDeVencimiento FROM entrada_insumo WHERE entrada.id_entrada = entrada_insumo.id_entrada)
-			<= :fechaLimite AND estado='ACT' ";
+		(SELECT fechaDeVencimiento FROM entrada_insumo WHERE entrada.id_entrada = entrada_insumo.id_entrada)
+		<= :fechaLimite AND estado='ACT' ";
 		$consulta = $this->conexion->prepare($sql);
 		$consulta->bindParam(':fechaLimite', $fechaLimite);
 		$consulta->execute();

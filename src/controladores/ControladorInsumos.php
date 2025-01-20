@@ -21,7 +21,7 @@ class ControladorInsumos
 
 		if ($insumos) {
 			$this->modelo->vencerInsumos(date("Y-m-d"));
-			$this->modelo->insumoProximos();
+			//$this->modelo->insumoProximos();
 		} 
 		require_once './src/vistas/vistaInsumos/insumos.php';
 	}
