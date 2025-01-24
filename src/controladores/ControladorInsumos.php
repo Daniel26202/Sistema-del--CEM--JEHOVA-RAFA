@@ -40,9 +40,12 @@ class ControladorInsumos
 
 	public function info()
 	{
-		$respuesta = $this->modelo->insumosInfo($_GET['id_insumo']);
-		echo json_encode($respuesta);
+		$datosDeInsumo = $this->modelo->insumosInfo($_GET['id_insumo']);
+		$datosDeVencimiento =  $this->modelo->retornarFechaDeVencimiento($_GET['id_insumo']);
+		$informacion = array('insumo' => $datosDeInsumo, 'vencimiento' => $datosDeVencimiento);
+		echo json_encode($informacion);
 	}
+
 
 	public function cantidadInsumos()
 	{
@@ -83,24 +86,6 @@ class ControladorInsumos
 	}
 
 
-
-	public function sacarEntrada()
-	{
-		print_r($_POST);
-		$this->modelo->insertarSalida(date("Y-m-d"), $_POST["cantidad"], $_POST["id_entradaDeInsumo"], $_POST["id_insumo"], $_POST["lote"]);
-		header("location: ?c=controladorInsumos/insumos");
-	}
-
-
-
-
-
-
-
-
-
-
-	///
 	public function papelera()
 	{
 		$desactivos = $this->modelo->papelera();

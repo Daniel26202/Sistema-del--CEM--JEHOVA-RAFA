@@ -399,7 +399,6 @@
 
 
 
-
 /*INSUMOS*/
 
 .tar {
@@ -408,12 +407,20 @@
 }
 
 .tarjet {
-	height: 60vh;
+	height: 73vh;
+}
+
+/*js muy importante*/
+.alertas-vencidos{
+	height: 30%;
+	margin-top: 0;
+	padding-top: 0;
 }
 
 .tar img {
 	height: 50%;
 }
+
 
 
 /*Pacientes*/

@@ -50,6 +50,16 @@ class ModeloInsumo extends Db
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
 
+	//metodo para taerme el insumo que su fecha de vencimiento esta mas cercana para mostrarlo en el modal de info
+	public function retornarFechaDeVencimiento($id_insumo)
+	{
+		$sql = $this->conexion->prepare("SELECT fechaDeVencimiento FROM entrada_insumo WHERE id_insumo =22 ORDER BY fechaDeVencimiento LIMIT 1");
+		$sql->bindParam(":id_insumo", $id_insumo);
+		$sql->execute();
+		return ($sql->execute()) ? $sql->fetchAll() : false;
+	}
+
+
 	//cantidad insumos
 	public function cantidadInsumos($id_insumo)
 	{
@@ -109,12 +119,13 @@ class ModeloInsumo extends Db
 
 		//insertar en la tabla intermedia
 
-		$consulta2 = $this->conexion->prepare("INSERT INTO entrada_insumo VALUES (null, :id_insumo, :id_entrada,:fechaDeVecimiento,:precio, :cantidad)");
+		$consulta2 = $this->conexion->prepare("INSERT INTO entrada_insumo VALUES (null, :id_insumo, :id_entrada,:fechaDeVecimiento,:precio, :cantidad_entrante, :cantidad_disponible)");
 		$consulta2->bindParam(":id_insumo", $id_insumo);
 		$consulta2->bindParam(":id_entrada", $id_entrada);
 		$consulta2->bindParam(":fechaDeVecimiento", $fechaDeVecimiento);
 		$consulta2->bindParam(":precio", $precio);
-		$consulta2->bindParam(":cantidad", $cantidad);
+		$consulta2->bindParam(":cantidad_entrante", $cantidad);
+		$consulta2->bindParam(":cantidad_disponible", $cantidad);
 		$consulta2->execute();
 
 
@@ -188,7 +199,7 @@ class ModeloInsumo extends Db
 	//gestionar salidas
 	public function todasLasEntradas()
 	{
-		$consulta = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  i.estado = 'ACT' AND e.estado = 'ACT' AND fechaDeVencimiento BETWEEN CURRENT_DATE + INTERVAL 1 DAY AND CURRENT_DATE + INTERVAL 7 DAY ORDER BY  ei.fechaDeVencimiento");
+		$consulta = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  i.estado = 'ACT' AND e.estado = 'ACT' AND fechaDeVencimiento BETWEEN CURRENT_DATE + INTERVAL 1 DAY AND CURRENT_DATE + INTERVAL 7 DAY ORDER BY  ei.fechaDeVencimiento");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 
 
@@ -196,87 +207,7 @@ class ModeloInsumo extends Db
 	}
 
 
-	private function actualizarCantidadEntrada($id_insumo)
-	{
-		$consulta = $this->conexion->prepare("SELECT i.id_insumo,SUM(ei.cantidad) AS cantidadInsumo, e.estado FROM insumo i INNER JOIN entrada_insumo ei on ei.id_insumo = i.id_insumo INNER JOIN entrada e on ei.id_entrada = e.id_entrada WHERE i.estado = 'ACT' AND ei.id_insumo =:id_insumo  ");
-		$consulta->bindParam(":id_insumo", $id_insumo);
-		$consulta->execute();
-		$x = $consulta->fetch();
-		$cantidadInsumoPre = $x["cantidadInsumo"];
-		echo $cantidadInsumoPre."<br>";
 
-		$consulta = $this->conexion->prepare("SELECT * FROM entrada e INNER JOIN entrada_insumo ei ON ei.id_entrada = e.id_entrada INNER JOIN insumo i ON i.id_insumo = ei.id_insumo WHERE ei.id_insumo =:id_insumo AND e.estado = 'DES' ");
-		$consulta->bindParam(":id_insumo", $id_insumo);
-		$consulta->execute();
-		$desactivos = $consulta->fetchAll();
-		$totalDesactivo = 0;
-		foreach ($desactivos as $des) {
-			$totalDesactivo += $des["cantidad"];
-		}
-
-
-
-		//insumo vencidos
-		$consulta2 = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'VEC' AND i.estado = 'ACT'AND ei.id_insumo =:id_insumo ");
-		$consulta2->bindParam(":id_insumo", $id_insumo);
-		$consulta2->execute();
-		$vencidos = $consulta2->fetchAll();
-		$totalVencidos = 0;
-		foreach ($vencidos as $vec) {
-			$totalVencidos += $vec["cantidad_entrada"];
-
-		}
-
-		
-		// echo $id_insumo;
-		// $consultaInsumosFacturados = $this->conexion->prepare("SELECT SUM(cantidad) AS total_cantidad_facturada FROM insumodefactura WHERE estado = 'ACT' AND id_insumo =:id_insumo");
-		// $consultaInsumosFacturados->bindParam(":id_insumo", $id_insumo);
-		// $consultaInsumosFacturados->execute();
-		// $facturados = $consultaInsumosFacturados->fetch();
-		
-		// $totalFacturado = $facturados["total_cantidad_facturada"];
-
-		// //esto es para restar los insumos que ya fueron facturados
-
-		$cantidadInsumo = ($cantidadInsumoPre - $totalDesactivo) -$totalVencidos;
-
-		echo "<h1>"."Pre: " .$cantidadInsumoPre."</h1><br><br>";
-		echo "<h1>"."Desactivado: ".$totalDesactivo."</h1><br><br>";
-		echo "<h1>"."id insumo: ".$id_insumo."</h1><br><br>";
-		echo "<h1>"."Vencidos: ".$totalVencidos."</h1><br><br>";
-		echo "<h1>"."Cantidad: ".$cantidadInsumo."</h1><br><br>";
-		//echo "<h1>"."Fecha: ".date("Y-m-d")."</h1><br><br>";
-
-
-		$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad =:cantidadInsumo WHERE id_insumo =:id_insumo");
-		$consulta->bindParam(":id_insumo", $id_insumo);
-		$consulta->bindParam(":cantidadInsumo", $cantidadInsumo);
-		$consulta->execute();
-	}
-
-
-
-
-
-
-	public function insertarSalida($fecha, $cantidad, $id_entradaDeInsumo, $id_insumo, $lote)
-	{
-
-		$consulta = $this->conexion->prepare("INSERT INTO ordensalida VALUES (null, :fecha)");
-		$consulta->bindParam(":fecha", $fecha);
-		$consulta->execute();
-		$id_salida = $this->conexion->lastInsertId();
-
-		//insertar entrada
-
-		$consulta = $this->conexion->prepare("INSERT INTO salidadeinsumo VALUES (null, :id_salida, :id_entradaDeInsumo, :cantidad, 'VEC')");
-		$consulta->bindParam(":id_salida", $id_salida);
-		$consulta->bindParam(":id_entradaDeInsumo", $id_entradaDeInsumo);
-		$consulta->bindParam(":cantidad", $cantidad);
-		$consulta->execute();
-
-		//$this->actualizarCantidadEntrada($id_insumo);
-	}
 
 
 
@@ -316,7 +247,7 @@ class ModeloInsumo extends Db
 
 	//funcion mejorada de actualizacion de la cantidad
 	public function actualizar_cantidad_insumo($id_insumo){
-		$consulta = $this->conexion->prepare(" SELECT id_insumo, fechaDeVencimiento, SUM(cantidad) AS cantidad FROM entrada_insumo WHERE id_insumo =:id_insumo AND fechaDeVencimiento > CURRENT_DATE ");
+		$consulta = $this->conexion->prepare(" SELECT id_insumo, fechaDeVencimiento, SUM(cantidad_disponible) AS cantidad FROM entrada_insumo WHERE id_insumo =:id_insumo AND fechaDeVencimiento > CURRENT_DATE ");
 		$consulta->bindParam(":id_insumo",$id_insumo);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
@@ -325,14 +256,7 @@ class ModeloInsumo extends Db
 
 
 
-	public function restarDiasDeFecha($fecha, $dias)
-	{
-		// Convertir la fecha a un timestamp y restar los días
-		$timestamp = strtotime($fecha) - ($dias * 86400); // 86400 segundos en un día
 
-		// Devolver la nueva fecha en formato 'Y-m-d'
-		return date('Y-m-d', $timestamp);
-	}
 
 	public function insumoProximos()
 	{

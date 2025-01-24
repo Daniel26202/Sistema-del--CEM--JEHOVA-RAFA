@@ -206,7 +206,7 @@
                 <input class="form-control input-buscar tamaño-input-buscar" type="text" name="nombre"
                     placeholder="Codigo o Nombre">
 
-                <button class="btn btn-buscar " title="Buscar" type="submit">
+                <button class="btn btn-buscar " title="Buscar" type="button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-search" viewBox="0 0 16 16">
                         <path
