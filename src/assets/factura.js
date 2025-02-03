@@ -344,6 +344,7 @@ addEventListener("DOMContentLoaded", () => {
       let nuevaCantidad = 0;
 
       listaModalInsumo.forEach((lista, index) => {
+        console.log("e")
         console.log(lista);
         dataInsumo.push(lista);
 
@@ -436,6 +437,7 @@ addEventListener("DOMContentLoaded", () => {
         <td class="border-top border-start text-center"> ${element["nombreInsumo"]}</td>
         <td class="border-top border-start text-center"> ${element["cantidad"]}</td>
         <td class="border-top border-start text-center">${element["precio"]} BS</td>
+        <td class="border-top border-start text-center">${element["numero_de_lote"]}</td>
         <td class="border-top border-start text-center">${element["subTotal"]} BS</td>
 
         <td class="border-top border-start">
@@ -470,13 +472,15 @@ addEventListener("DOMContentLoaded", () => {
   };
 
   //funcion para insertar varios insumos a la vez
-  const insertarVariosInsumos = (id_insumo, nombreInsumo, cantidad, precio) => {
+  const insertarVariosInsumos = (id_insumo, nombreInsumo, cantidad, precio,numero_de_lote) => {
+    let subTotalRedondeado = (parseFloat(cantidad) * parseFloat(precio)).toFixed(2);
     const nuevoObjInsumo = {
       id_insumo: id_insumo,
       nombreInsumo: nombreInsumo,
       cantidad: cantidad,
+      numero_de_lote:numero_de_lote,
       precio: parseFloat(precio),
-      subTotal: parseFloat(cantidad) * parseFloat(precio),
+      subTotal: subTotalRedondeado,
     };
 
     listaModalInsumo.push(nuevoObjInsumo);
@@ -500,9 +504,10 @@ addEventListener("DOMContentLoaded", () => {
       const id_insumo = this.getAttribute("id");
       const nombreInsumo = fila.children[1].innerText; // Columna Insumo
       const precio = fila.children[3].innerText; // Columna precio
+      const numero_de_lote = fila.children[4].innerText; // Columna numero_de_lote
       const cantidad = fila.children[5].children[0].value; // Columna cantidad
 
-      insertarVariosInsumos(id_insumo, nombreInsumo, cantidad, precio);
+      insertarVariosInsumos(id_insumo, nombreInsumo, cantidad, precio,numero_de_lote);
       fila.classList.add("d-none");
     });
   });
@@ -517,6 +522,7 @@ addEventListener("DOMContentLoaded", () => {
         <td class="border-top nombre"><div class="fw-bolder">INSUMO:</div> ${element["nombreInsumo"]}</td>
         <td class="border-top"><div class="fw-bolder">CANTIDAD:</div> ${element["cantidad"]}</td>
         <td class="border-top"><div class="fw-bolder">PRECIO:</div>${element["precio"]} BS</td>
+        <td class="border-top"><div class="fw-bolder">LOTE:</div>${element["numero_de_lote"]}</td>
         <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${element["subTotal"]} BS</td>
         <td class="border-top"></td>
 
@@ -1235,6 +1241,7 @@ addEventListener("DOMContentLoaded", () => {
         <div class="fw-bolder">INSUMO:</div>${element["nombreInsumo"]}</td>
         <td><input type="hidden" name="cantidad[]" value="${element["cantidad"]}"><div class="fw-bolder">CANTIDAD</div> ${element["cantidad"]}</td>
         <td><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
+        <td><input type="hidden" name="numero_de_lote[]" value="${element["numero_de_lote"]}"><div class="fw-bolder">LOTE</div> ${element["numero_de_lote"]}</td>
         <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${element["subTotal"]} BS</td>
         <td>
         <tr>`;

@@ -108,9 +108,10 @@ class ControladorFactura
 		$id_cita = isset($_POST["id_cita"]) ? $_POST["id_cita"] : null;
 		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : null;
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
+		$numero_de_lote = isset($_POST["numero_de_lote"]) ? $_POST["numero_de_lote"] : null;
 		print_r($serviciosExtras);
 
-		$this->modelo->insertaFactura($id_cita, $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia);
+		$this->modelo->insertaFactura($id_cita, $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote);
 
 		
 

@@ -609,6 +609,7 @@
                   <th class=" text-center border-start">Nombre</th>
                   <th class=" text-center border-start">Cantidad</th>
                   <th class=" text-center border-start">Precio</th>
+                  <th class=" text-center border-start">Lote</th>
                   <th class=" text-center border-start">Sub-total</th>
                   <th class=" text-center border-start">Acción</th>
 
