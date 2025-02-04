@@ -27,7 +27,7 @@ class ModeloEntrada extends Db
 
 	public function todasLasEntradas(){
 		//se cambio para que muestre las entradas act y que no estan vencidas
-		$consulta = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY ei.fechaDeVencimiento ");
+		$consulta = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY ei.fechaDeVencimiento ");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
@@ -50,12 +50,13 @@ class ModeloEntrada extends Db
 		$consulta->execute();
 		$id_entrada = $this->conexion->lastInsertId();
 
-		$consulta2 = $this->conexion->prepare("INSERT INTO entrada_insumo VALUES (null, :id_insumo, :id_entrada,:fechaDeVencimiento,:precio, :cantidad)");
+		$consulta2 = $this->conexion->prepare("INSERT INTO entrada_insumo VALUES (null, :id_insumo, :id_entrada,:fechaDeVencimiento,:precio, :cantidad_entrante, :cantidad_disponible)");
 		$consulta2->bindParam(":id_insumo", $id_insumo);
 		$consulta2->bindParam(":id_entrada", $id_entrada);
 		$consulta2->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
 		$consulta2->bindParam(":precio", $precio);
-		$consulta2->bindParam(":cantidad", $cantidad);
+		$consulta2->bindParam(":cantidad_entrante", $cantidad);
+		$consulta2->bindParam(":cantidad_disponible", $cantidad);
 		$consulta2->execute();
 
 		
@@ -108,11 +109,11 @@ class ModeloEntrada extends Db
 	{
 		// $consulta = $this->conexion->prepare("UPDATE entrada SET  id_proveedor =:id_proveedor, cantidad =:cantidad, precio =:precio WHERE id_entrada=:id_entrada");
 
-		$consulta = $this->conexion->prepare("UPDATE entrada_insumo SET fechaDeVencimiento=:fechaDeVencimiento,  precio=:precio,cantidad=:cantidad WHERE id_entrada=:id_entrada");
+		$consulta = $this->conexion->prepare("UPDATE entrada_insumo SET fechaDeVencimiento=:fechaDeVencimiento,  precio=:precio,cantidad_entrante=:cantidad_entrante WHERE id_entrada=:id_entrada");
 
 		//return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		$consulta->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
-		$consulta->bindParam(":cantidad", $cantidad);
+		$consulta->bindParam(":cantidad_entrante", $cantidad);
 		$consulta->bindParam(":precio", $precio);
 		$consulta->bindParam(":id_entrada", $id_entrada);
 		$consulta->execute();

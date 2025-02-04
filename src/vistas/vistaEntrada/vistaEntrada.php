@@ -253,7 +253,7 @@
                                             <th class="text-center">Proveedor</th>
                                             <th class="text-center">Fecha De Ingreso</th>
                                             <th class="text-center">Fecha De Vencimiento</th>
-                                            <th class="text-center">Cantidad</th>
+                                            <th class="text-center">Cantidad Entrante</th>
                                             <th class="text-center">Precio</th>
                                             <th class="text-center">Numero De Lote</th>
                                             <th class="text-center">Acciones</th>
