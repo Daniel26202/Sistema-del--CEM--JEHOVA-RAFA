@@ -375,6 +375,10 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
     input.addEventListener("input", validarFormularioInsumo);
   });
 
+  inputEditar.forEach((input)=>{
+    input.addEventListener("input", validarFormularioInsumoEditar);
+  })
+
   modalAgregarInsumos.addEventListener("submit", function (e) {
     e.preventDefault();
     if (
@@ -406,14 +410,11 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
       camposEditarInsumos.imagen &&
       camposEditarInsumos.nombre &&
       camposEditarInsumos.descripcion &&
-      camposEditarInsumos.cantidad &&
-      camposEditarInsumos.precio &&
-      camposEditarInsumos.fechaDeVencimiento &&
-      camposEditarInsumos.stockMinimo &&
-      camposInsumos.lote
+      camposEditarInsumos.stockMinimo
       ) {
       modalEditarInsumos.submit();
   } else {
+    console.log(camposInsumos.lote)
     document.getElementById("alerta-editar").classList.remove("d-none");
     setTimeout(function () {
       document.getElementById("alerta-editar").classList.add("d-none");
