@@ -73,15 +73,16 @@ class ControladorReportes{
 
 		// $cadena = $_GET["id_insumo"];
 		
+		print_r($_POST);
 
 	 $respuesta = $this->modelo->insumosAnulados($_POST["id_factura"]);
 	 $eliminar = $this->modelo->anularFac($_POST["id_factura"]);
 	
 		foreach($respuesta as $res){
-		$insumo = $this->modelo->cantidadAnulada($res["id_insumo"], $_POST["id_factura"]);
+		$insumo = $this->modelo->cantidadAnulada($res["id_insumo"], $_POST["id_factura"], $res["numero_de_lote"]);
 		}
 		
-		// $respuesta =$this->modelo->cantidadAnulada($array);
+		// // $respuesta =$this->modelo->cantidadAnulada($array);
 		header("location: ?c=ControladorReportes/reportes&anulada");
 		
 

@@ -157,7 +157,7 @@ addEventListener("DOMContentLoaded", function () {
         respuesta3.forEach((r) => {
           idInsumos.push(r.id_insumo)
           console.log(idInsumos)
-          html3 += `<p class="text-center">${r.nombre} Cantidad: ${r.cantidad} Unidad:${r.precio} Bs</p>`;
+          html3 += `<p class="text-center"><input type="hidden" value="${r.numero_de_lote}" name="numero_de_lote">${r.nombre} Cantidad: ${r.cantidad} Unidad:${r.precio} Bs</p>`;
         });
         let insumos = document.querySelectorAll(".insumos");
         insumos.forEach((fa) => {

@@ -1,10 +1,12 @@
 <?php
 namespace App\modelos;
 use App\modelos\Db;
+use App\modelos\ModeloInsumo;
 class ModeloReporte extends Db
 {
 
     private $conexion;
+    private $modelo_insumo;
 
 	public function __construct(){
         // Llama al constructor de la clase padre para establecer la conexión
@@ -13,6 +15,8 @@ class ModeloReporte extends Db
         // Aquí puedes usar $this para acceder a la conexión
 
         $this->conexion = $this; // Guarda la instancia de la conexión
+
+        $this->modelo_insumo = new ModeloInsumo;
     }
 
     public function consultarFactura()
@@ -114,33 +118,28 @@ public function consultarFacturaPDF($id_factura)
 	}
 	public function insumosAnulados($id_factura)
 	{
-		$consulta = $this->conexion->prepare("SELECT i.id_insumo FROM inventario i INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo INNER JOIN insumodefactura idf ON idf.id_inventario = i.id_inventario WHERE idf.id_factura=:id_factura");
+		$consulta = $this->conexion->prepare("SELECT i.id_insumo, i.numero_de_lote FROM inventario i INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo INNER JOIN insumodefactura idf ON idf.id_inventario = i.id_inventario WHERE idf.id_factura=:id_factura");
 		$consulta->bindParam(":id_factura", $id_factura); 
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		
 	}
 
-	public function cantidadAnulada($id_insumo, $id_factura)
+	public function cantidadAnulada($id_insumo, $id_factura, $numero_de_lote)
 	{
-		$consulta = $this->conexion->prepare("SELECT cantidad AS cantidadInsumo FROM insumo WHERE estado = 'ACT' AND id_insumo = :id_insumo");
+		$consulta = $this->conexion->prepare("SELECT inv.id_insumo,inv.numero_de_lote,inv.cantidad AS cantidadInsumo FROM inventario inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE inv.id_insumo =:id_insumo AND inv.numero_de_lote =:numero_de_lote");
 		$consulta->bindParam(":id_insumo", $id_insumo);
+		$consulta->bindParam(":numero_de_lote", $numero_de_lote);
 		$consulta->execute();
 		$x = $consulta->fetch();
 		$cantidadInsumoPre = $x["cantidadInsumo"];
 		// echo $cantidadInsumoPre."<br>";
 
-		$consulta = $this->conexion->prepare("SELECT * FROM entrada e INNER JOIN entrada_insumo ei ON ei.id_entrada = e.id_entrada INNER JOIN insumo i ON i.id_insumo = ei.id_insumo WHERE ei.id_insumo =:id_insumo AND e.estado = 'DES' ");
-		$consulta->bindParam(":id_insumo", $id_insumo);
-		$consulta->execute();
-		$desactivos = $consulta->fetchAll();
-		$totalDesactivo = 0;
-		foreach ($desactivos as $des) {
-			$totalDesactivo += $des["cantidad"];
-		}
+		
 		// echo $id_insumo;
-		$consultaInsumosFacturados = $this->conexion->prepare("SELECT idf.cantidad AS total_cantidad_facturada FROM insumodefactura idf INNER JOIN inventario i ON i.id_inventario = idf.id_inventario INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo WHERE ins.estado = 'ACT' AND i.id_insumo = :id_insumo AND idf.id_factura =:id_factura ");
+		$consultaInsumosFacturados = $this->conexion->prepare("SELECT idf.cantidad AS total_cantidad_facturada FROM insumodefactura idf INNER JOIN inventario i ON i.id_inventario = idf.id_inventario INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo WHERE ins.estado = 'ACT' AND i.id_insumo = :id_insumo AND idf.id_factura =:id_factura AND i.numero_de_lote = :numero_de_lote");
 		$consultaInsumosFacturados->bindParam(":id_insumo", $id_insumo);
 		$consultaInsumosFacturados->bindParam(":id_factura", $id_factura);
+		$consultaInsumosFacturados->bindParam(":numero_de_lote", $numero_de_lote);
 		$consultaInsumosFacturados->execute();
 		$facturados = $consultaInsumosFacturados->fetch();
 		
@@ -148,18 +147,42 @@ public function consultarFacturaPDF($id_factura)
 
 		//esto es para restar los insumos que ya fueron facturados
 
-		$cantidadInsumo = ($cantidadInsumoPre - $totalDesactivo) + $totalFacturado;
+		$cantidadInsumo = $cantidadInsumoPre + $totalFacturado;
 
-		// echo "Pre: " .$cantidadInsumoPre."<br>";
-		// echo "Desactivado: ".$totalDesactivo."<br>";
-		// echo "Factrado: ".$totalFacturado."<br>";
-		// echo "Ttosl: ".$cantidadInsumo;
-
+		echo "<br>"."Pre: " .$cantidadInsumoPre."<br>";
+		echo "Factrado: ".$totalFacturado."<br>";
+		echo "Ttosl: ".$cantidadInsumo;
 
 
-		$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad =:cantidadInsumo WHERE id_insumo =:id_insumo");
-		$consulta->bindParam(":id_insumo", $id_insumo);
-		$consulta->bindParam(":cantidadInsumo", $cantidadInsumo);
+
+		// $consulta = $this->conexion->prepare("UPDATE insumo SET cantidad =:cantidadInsumo WHERE id_insumo =:id_insumo");
+		// $consulta->bindParam(":id_insumo", $id_insumo);
+		// $consulta->bindParam(":cantidadInsumo", $cantidadInsumo);
+		// $consulta->execute();
+
+
+		//actualiza Cantidades
+		$consulta = $this->conexion->prepare("UPDATE entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada SET ei.cantidad_disponible=:cantidad WHERE ei.id_insumo=:id_insumo AND e.numero_de_lote =:numero_de_lote");
+		$consulta->bindParam(":cantidad",$cantidadInsumo);
+		$consulta->bindParam(":id_insumo",$id_insumo);
+		$consulta->bindParam(":numero_de_lote",$numero_de_lote);
+		$consulta->execute();
+
+		$cantidad_actualidad_insumo = $this->modelo_insumo->actualizar_cantidad_insumo($id_insumo);
+			// print_r($cantidad[0]["cantidad"]);
+
+			//esto es para actualizar la cantidad de insumos
+		$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
+		$consulta->bindParam(":cantidad",$cantidad_actualidad_insumo[0]["cantidad"]);
+		$consulta->bindParam(":id_insumo",$id_insumo);
+		$consulta->execute();
+
+		//actualizar tabla inventario segun el numero de lote y la cantidad comprada
+
+		$consulta = $this->conexion->prepare("UPDATE inventario SET cantidad=:cantidad WHERE id_insumo=:id_insumo AND numero_de_lote =:numero_de_lote");
+		$consulta->bindParam(":cantidad",$cantidadInsumo);
+		$consulta->bindParam(":id_insumo",$id_insumo);
+		$consulta->bindParam(":numero_de_lote",$numero_de_lote);
 		$consulta->execute();
 		
 	}
