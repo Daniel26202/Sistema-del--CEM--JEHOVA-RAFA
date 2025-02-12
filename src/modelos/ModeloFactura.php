@@ -127,6 +127,10 @@ class ModeloFactura extends Db
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
+	public function selectTodosLosInsumos(){
+		return $this->modelo_insumo->insumos();
+	}
+
 
 
 
@@ -348,7 +352,7 @@ class ModeloFactura extends Db
 					$consulta->bindParam(":id_factura", $id_factura);
 					$consulta->bindParam(":id_inventario", $id_inventario);
 					$consulta->bindParam(":cantidad", $cantidad[$contador]);
-					$this->actualizarCantidadEntrada($i);
+					//$this->actualizarCantidadEntrada($i);
 				} else {
 					echo "NO";
 				}

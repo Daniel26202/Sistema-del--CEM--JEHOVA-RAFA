@@ -33,6 +33,12 @@ addEventListener("DOMContentLoaded", () => {
   //buscador
   const tablaSevicios = document.getElementById("cuerpoTablaServicios");
 
+
+  //caja de todos los insumos
+  const caja_insumos_a_seleccionar = document.querySelectorAll(".caja_insumos_a_seleccionar div")
+  //input para buscar todos los insumos
+  const buscadorDeTodosLosInsumos = document.getElementById("buscadorDeTodosLosInsumos")
+
   if (window.location.href.includes("id_cita")) {
     console.log("id_cita");
   } else {
@@ -41,7 +47,7 @@ addEventListener("DOMContentLoaded", () => {
       .forEach((ele) => ele.classList.add("d-none"));
   }
 
-  //constantes para el ajax
+
 
   //buscador paciente cuando no tiene cita
   const buscarPaciente = async (formularioPaciente) => {
@@ -333,6 +339,39 @@ addEventListener("DOMContentLoaded", () => {
     ocultarBotones();
   }
 
+
+    //codigo para manejar las cajas de insumos en el modal
+    caja_insumos_a_seleccionar.forEach(ele=>{
+      ele.addEventListener("click",function(){
+        if(ele.classList.contains("insumo_no_seleccionado")){
+          ele.classList.remove("insumo_no_seleccionado")
+          ele.classList.add("insumo_seleccionado")
+        }else{
+          ele.classList.remove("insumo_seleccionado")
+          ele.classList.add("insumo_no_seleccionado")
+        }
+      })
+    })
+
+
+    //codigo para buscar todos los insumos
+    buscadorDeTodosLosInsumos.addEventListener("keyup", function(){
+      caja_insumos_a_seleccionar.forEach(ele=>{
+        if(ele.innerHTML.split("  ")[0].toLowerCase().includes(this.value.toLowerCase())){
+          ele.classList.remove("d-none");
+        }else{
+          ele.classList.add("d-none");
+        }
+      })
+
+    })
+
+
+
+
+
+
+
   document
     .querySelector(".formularios-insumos")
     .addEventListener("submit", function (e) {
@@ -425,6 +464,13 @@ addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+
+
+
+
+
+
 
   //mostrar los insumos en el modal
   const mostrarVariosInusmos = () => {
@@ -550,6 +596,12 @@ addEventListener("DOMContentLoaded", () => {
     document.querySelector(".formularios-insumos").reset();
     mostrarConfirmacion();
   }
+
+
+
+
+
+  
 
   function cantidadesDeInsumos() {
     console.log("funcion");
