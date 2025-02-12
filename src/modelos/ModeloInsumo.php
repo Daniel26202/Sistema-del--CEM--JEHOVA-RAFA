@@ -36,7 +36,7 @@ class ModeloInsumo extends Db
 
 	public function InsumosVencidos()
 	{
-		$sql = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE ");
+		$sql = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE ");
 		$sql->execute();
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
@@ -53,7 +53,7 @@ class ModeloInsumo extends Db
 	//metodo para taerme el insumo que su fecha de vencimiento esta mas cercana para mostrarlo en el modal de info
 	public function retornarFechaDeVencimiento($id_insumo)
 	{
-		$sql = $this->conexion->prepare("SELECT fechaDeVencimiento FROM entrada_insumo WHERE id_insumo =22 ORDER BY fechaDeVencimiento LIMIT 1");
+		$sql = $this->conexion->prepare("SELECT fechaDeVencimiento FROM entrada_insumo WHERE id_insumo =:id_insumo ORDER BY fechaDeVencimiento LIMIT 1");
 		$sql->bindParam(":id_insumo", $id_insumo);
 		$sql->execute();
 		return ($sql->execute()) ? $sql->fetchAll() : false;
