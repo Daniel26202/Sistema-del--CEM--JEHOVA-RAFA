@@ -447,7 +447,7 @@
         <div class="modal-footer">
           <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
             data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn col-3 btn-agregarcita-modal x " data-bs-toggle="modal"
+          <button type="button" class="btn col-3 btn-agregarcita-modal x d-none" id="btnModalInsumos1" data-bs-toggle="modal"
             data-bs-target="#modal-agregar-insumos-2">Siguiente</button>
         </div>
       </div>
