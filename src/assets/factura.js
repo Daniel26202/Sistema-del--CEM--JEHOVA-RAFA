@@ -350,6 +350,14 @@ addEventListener("DOMContentLoaded", () => {
           ele.classList.remove("insumo_seleccionado")
           ele.classList.add("insumo_no_seleccionado")
         }
+        //si ha uno o mas cuadros con la clase insumo_seleccionado es por que al menos un insumo fue selecciona 
+        if (document.querySelectorAll(".insumo_seleccionado").length > 0) {
+          //Aparece el boton
+          document.getElementById("btnModalInsumos1").classList.remove("d-none")
+        } else {
+          //Si no desaparece el boton
+          document.getElementById("btnModalInsumos1").classList.add("d-none")
+        }
       })
     })
 
