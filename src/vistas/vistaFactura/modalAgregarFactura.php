@@ -437,7 +437,7 @@
 
         <div class="caja_insumos_a_seleccionar">
                 <?php foreach ($todosLosInsumos as $key): ?>
-                  <div class="d-inline-block m-2 p-2 fw-bold insumo_no_seleccionado"><?= $key['nombre']. "  Cantidad: ".$key['cantidad']?></div>
+                  <div data-index="<?= $key['nombre']?>" class="d-inline-block m-2 p-2 fw-bold insumo_no_seleccionado"><?= $key['nombre']. "  Cantidad: ".$key['cantidad']?></div>
                 <?php endforeach;?>
         </div>
 
@@ -474,7 +474,7 @@
             <path
               d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
           </svg>
-          <div>SELECCIONAR INSUMOS</div>
+          <div>SELECCIONAR INSUMOS 2</div>
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -544,12 +544,10 @@
 
                 <?php foreach ($insumos as $i): ?>
 
-                  <tr class="tr-desparecer-insumo">
+                  <tr class="tr-desparecer-insumo d-none">
                     <td class="text-center fw-bold">
                       <?php echo $contador++; ?>
                     </td>
-
-
 
                     <td class="text-center border-start">
                       <?php echo $i['nombre']; ?>
@@ -631,7 +629,7 @@
 
         <div class="modal-footer">
           <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
-            data-bs-dismiss="modal">Cancelar</button>
+              data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">Anterior</button>
           <button type="button" class="btn col-3 btn-agregarcita-modal x d-none" data-bs-toggle="modal"
             data-bs-target="#modal-agregar-insumos-confirmar" id="siguienteInsumo">Siguiente</button>
         </div>
@@ -720,7 +718,7 @@
 
           <div class="modal-footer">
             <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
-              data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">Volver</button>
+              data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos-2">Anterior</button>
             <button type="submit" class="btn col-3 btn-agregarcita-modal x" id="insertarInsumo"
               data-bs-dismiss="modal">Insertar</button>
           </div>

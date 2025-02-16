@@ -340,9 +340,15 @@ addEventListener("DOMContentLoaded", () => {
   }
 
 
+    const tbodyinsertarInsumo = document.getElementById("cuerpoTablaInsumos")
     //codigo para manejar las cajas de insumos en el modal
+
+
+
     caja_insumos_a_seleccionar.forEach(ele=>{
+      
       ele.addEventListener("click",function(){
+
         if(ele.classList.contains("insumo_no_seleccionado")){
           ele.classList.remove("insumo_no_seleccionado")
           ele.classList.add("insumo_seleccionado")
@@ -373,6 +379,35 @@ addEventListener("DOMContentLoaded", () => {
       })
 
     })
+
+    //funcion al darle clic al boton siguiente de le modal de insumos 1
+    document.getElementById("btnModalInsumos1").addEventListener("click", function() {
+      
+      let cajas_seleccionadas = document.querySelectorAll(".insumo_seleccionado");
+      let trModalInsums = document.querySelectorAll("#cuerpoTablaInsumos tr");
+
+      trModalInsums.forEach(tr => {
+        //La variable incia en falso por que cuando incia el bucle no hay coincidencias
+          let insumoEncontrado = false;
+          //se hace otro bucle de todas las cajas de insumos
+          cajas_seleccionadas.forEach(caja => {
+              //Si es texto de la caja coincide con alguna fila de la tabla se cambia el valor a true
+              if (caja.innerText.split(" ")[0] === tr.children[1].innerText.trim()) {
+                  insumoEncontrado = true;
+              }
+          });
+
+          //Dependiendo si la variable es true o false se oculta o muestra la tabla
+          if (insumoEncontrado) {
+              //console.log(`Coincidencia encontrada para ${tr.children[1].innerText.trim()}`);
+              tr.classList.remove("d-none")
+          } else {
+              //console.log(`No se encontró coincidencia para ${tr.children[1].innerText.trim()}`);
+              tr.classList.add("d-none")
+          }
+      });
+    });
+
 
 
 
