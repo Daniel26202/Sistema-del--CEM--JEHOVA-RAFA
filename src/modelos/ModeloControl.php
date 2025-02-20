@@ -126,7 +126,7 @@ class ModeloControl extends Db
 	}
 	public function mostrarDoctor()
 	{
-		$sql = $this->conexion->prepare('SELECT sm.id_servicioMedico, sm.id_personal, u.id_usuario, p.nombre AS nombredoc, sm.precio FROM serviciomedico sm INNER JOIN personal p ON sm.id_personal = p.id_personal INNER JOIN usuario u ON p.id_usuario = u.id_usuario WHERE id_categoria = 9 AND sm.estado= "ACT" GROUP BY p.nombre');
+		$sql = $this->conexion->prepare('SELECT c.id_categoria,c.nombre AS categoria,sm.id_servicioMedico, sm.id_personal, u.id_usuario, p.nombre AS nombredoc, sm.precio FROM serviciomedico sm INNER JOIN personal p ON sm.id_personal = p.id_personal INNER JOIN usuario u ON p.id_usuario = u.id_usuario INNER JOIN categoria_servicio c ON c.id_categoria = sm.id_categoria WHERE c.nombre = "Consulta" AND sm.estado= "ACT" GROUP BY p.nombre ');
 
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
