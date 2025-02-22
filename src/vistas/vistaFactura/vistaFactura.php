@@ -352,21 +352,27 @@
 									<?php echo $datoFactura['total'] . " BS" ?>
 								</p>
 								<p>Paciente:
-									<?php echo $datoFactura['nombre'] . "  " . $datoFactura['apellido'] ?>
+									<?php echo $datoFactura['nombre_paciente'] . "  " . $datoFactura['apellido_paciente'] ?>
 								</p>
 								<p>Cedula Paciente:
-									<?php echo $datoFactura['nacionalidad'] . "-" . $datoFactura['cedula'] ?>
+									<?php echo $datoFactura['nacionalidad'] . "-" . $datoFactura['cedula_paciente'] ?>
 								</p>
 
 							<?php endforeach ?>
 						</div>
 						<div style="width:55%;">
 							<h5 class="text-center">Métodos De Pago</h5>
+							<?php $nombres_mostrados = array(); ?>
 							<?php foreach ($datosPago as $datoPago): ?>
+								<?php if(!isset($nombres_mostrados[$datoPago["nombre"]])): ?>
+
 								<p class="text-center">
 									<?php echo $datoPago["nombre"] ?>
 									<?php echo $datoPago["monto"] . " BS" ?>
-								</p>
+								</p> 
+
+								<?php $nombres_mostrados[$datoPago["nombre"]] = true; ?>
+								<?php endif;  ?>
 							<?php endforeach ?>
 
 							<h5 class="text-center">Servicios</h5>

@@ -136,9 +136,10 @@ class ControladorFactura
 		$idH = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : false;
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
 		$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
-	
 
 		$this->modelo->insertaFacturaHospit($idH, $fecha, $_POST["total"], $_POST["formasDePago"],  $insumos, $cantidad, $_POST["montosDePago"], $referencia,$serviciosExtras);
+
+		print_r($_POST);
 
 		
 	}
