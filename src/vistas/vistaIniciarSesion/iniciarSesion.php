@@ -72,7 +72,7 @@
             <form autocomplete="off" action="?c=ControladorIniciarSesion/iniciarSesion" method="POST"
                 id="formiIniciarSesion">
 
-                <div class="w-auto">
+                <div class="w-auto ">
 
                     <div class="mb-5 ms-5 mt-5 pt-2 ps-4 col">
                         <h2 class="titulo fw-bolder mb-1 ">Iniciar sesión</h2>
@@ -80,73 +80,78 @@
                         </div>
                     </div>
 
-                    <div class="col formulario w-auto me-2">
-                        <div class="d-flex flex-column col">
+                    <div class="fondo_rsp">
+                        <div class="col formulario w-auto me-2">
+                            <div class="d-flex flex-column col">
 
-                            <div>
-                                <?php if (isset($_GET["mensaje"])): ?>
-                                    <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                        style="display: none;" uk-alert>
-                                        <a class="uk-alert-close" uk-close></a>
-                                        <p class="pe-2">Usuario o Contraseña incorrectos.</p>
-                                    </div>
-                                <?php endif ?>
-                                <?php if (isset($_GET["campos"])): ?>
-                                    <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                        style="display: none;" uk-alert>
-                                        <a class="uk-alert-close" uk-close></a>
-                                        <p class="pe-2">Tiene que llenar todos los campos.</p>
-                                    </div>
-                                <?php endif ?>
-                            </div>
+                                <div>
+                                    <?php if (isset($_GET["mensaje"])): ?>
+                                        <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                            style="display: none;" uk-alert>
+                                            <a class="uk-alert-close" uk-close></a>
+                                            <p class="pe-2">Usuario o Contraseña incorrectos.</p>
+                                        </div>
+                                    <?php endif ?>
+                                    <?php if (isset($_GET["campos"])): ?>
+                                        <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                            style="display: none;" uk-alert>
+                                            <a class="uk-alert-close" uk-close></a>
+                                            <p class="pe-2">Tiene que llenar todos los campos.</p>
+                                        </div>
+                                    <?php endif ?>
+                                </div>
 
-                            <div class=" mb-3 animacionInput" id="ingresar-usuario">
+                                <div class=" mb-3 animacionInput" id="ingresar-usuario">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" id="icono-uno" width="20" height="20"
-                                    fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
-                                    <path
-                                        d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                                </svg>
-                                <input type="text" name="usuario" id="inputUno" class="input col" placeholder="Usuario">
-                            </div>
-
-                            <div id="input-password">
-
-                                <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
-                                <input type="password" name="password" id="inputDos" class="input col"
-                                    placeholder="Contraseña" maxlength="40">
-                                <a href="#" class="text-decoration-none">
-                                    <svg id="ocultarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
-                                        fill="currentColor" class="bi bi-eye-slash-fill azul d-none"
-                                        viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" id="icono-uno" width="20" height="20"
+                                        fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
                                         <path
-                                            d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
-                                        <path
-                                            d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
+                                            d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                                     </svg>
-                                    <svg id="mostrarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
-                                        fill="currentColor" class="bi bi-eye-fill azul d-none" viewBox="0 0 16 16">
-                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                                        <path
-                                            d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-                                    </svg>
-                                </a>
+                                    <input type="text" name="usuario" id="inputUno" class="input col"
+                                        placeholder="Usuario">
+                                </div>
 
+                                <div id="input-password">
+
+                                    <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
+                                    <input type="password" name="password" id="inputDos" class="input col"
+                                        placeholder="Contraseña" maxlength="40">
+                                    <a href="#" class="text-decoration-none">
+                                        <svg id="ocultarPassword" xmlns="http://www.w3.org/2000/svg" width="23"
+                                            height="23" fill="currentColor" class="bi bi-eye-slash-fill azul d-none"
+                                            viewBox="0 0 16 16">
+                                            <path
+                                                d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
+                                            <path
+                                                d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
+                                        </svg>
+                                        <svg id="mostrarPassword" xmlns="http://www.w3.org/2000/svg" width="23"
+                                            height="23" fill="currentColor" class="bi bi-eye-fill azul d-none"
+                                            viewBox="0 0 16 16">
+                                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                            <path
+                                                d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                        </svg>
+                                    </a>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="w-auto col me-2">
+                        <div class="w-auto col me-2">
 
-                        <!-- <div class="d-flex justify-content-end mt-4 pt-3 col">
-                            <a href="?c=ControladorRecuperarContr/mostrarRecuperarContr"
-                                class="fw-bold pointer-event text-decoration-none text-dark" id="recPassword">Olvide mi
-                                contraseña</a>
-                        </div> -->
-                        <div class="mt-4 pt-3 w-auto ">
-                            <input class="btn btn-primary fw-bold boton col rounded-5" type="submit" name="validar"
-                                value="Ingresar ahora" id="btnInicioSesion">
+                            <div class="d-flex justify-content-end mt-4 pt-3 col">
+                                <a href="?c=ControladorRecuperarContr/mostrarRecuperarContr"
+                                    class="fw-bold pointer-event text-decoration-none text-dark" id="recPassword">Olvide
+                                    mi
+                                    contraseña</a>
+                            </div>
+                            <div class="mt-4 pt-3 w-auto ">
+                                <input class="btn btn-primary fw-bold boton col rounded-5" type="submit" name="validar"
+                                    value="Ingresar ahora" id="btnInicioSesion">
 
+                            </div>
                         </div>
                     </div>
                 </div>

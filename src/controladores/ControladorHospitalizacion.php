@@ -43,11 +43,11 @@ class ControladorHospitalizacion
     }
 
     //traer enfermer@s
-    public function traerEnfermer()
-    {
-        $datosEnf = $this->modelo->buscarEnfermer();
-        echo json_encode($datosEnf);
-    }
+    // public function traerEnfermer()
+    // {
+    //     $datosEnf = $this->modelo->buscarEnfermer();
+    //     echo json_encode($datosEnf);
+    // }
 
     //validar paciente 
     public function validarPaciente()

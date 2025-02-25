@@ -23,12 +23,7 @@ if (isset($_SESSION['usuario'])) {
 	<title>J-R</title>
 	<link rel="stylesheet" type="text/css" href="./src/assets/uikit/css/uikit.min.css">
 	<link rel="stylesheet" type="text/css" href="./src/assets/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/style.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/cssVista/estilosCitas-Control.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/cssVista/doctores.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/cssVista/hospitalizacion.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/cssVista/estilosFactura.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/cssVista/usuarios.css">
+	<link rel="stylesheet" type="text/css" href="./src/assets/cssVista/style.css">
 	<link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs.min.css">
 	<link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs-modern.css">
 </head>
