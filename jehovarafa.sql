@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-02-2025 a las 00:48:50
+-- Tiempo de generación: 04-03-2025 a las 21:24:56
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.3.2
 
@@ -25,6 +25,30 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `bitacora`
+--
+
+CREATE TABLE `bitacora` (
+  `id_bitacora` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `tabla` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `actividad` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `fecha_hora` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `bitacora`
+--
+
+INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fecha_hora`) VALUES
+(1, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-03-04 16:08:23'),
+(2, 1, 'paciente', 'Ha modificado un paciente', '2025-03-04 16:17:04'),
+(3, 1, 'paciente', 'Ha eliminado un  paciente', '2025-03-04 16:18:17'),
+(4, 1, 'paciente', 'Ha restablecido un paciente', '2025-03-04 16:20:36');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `categoria_servicio`
 --
 
@@ -33,10 +57,6 @@ CREATE TABLE `categoria_servicio` (
   `nombre` varchar(25) NOT NULL,
   `estado` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- RELACIONES PARA LA TABLA `categoria_servicio`:
---
 
 --
 -- Volcado de datos para la tabla `categoria_servicio`
@@ -67,20 +87,12 @@ CREATE TABLE `cita` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `cita`:
---   `id_paciente`
---       `paciente` -> `id_paciente`
---   `id_servicioMedico`
---       `serviciomedico` -> `id_servicioMedico`
---
-
---
 -- Volcado de datos para la tabla `cita`
 --
 
 INSERT INTO `cita` (`id_cita`, `id_paciente`, `id_servicioMedico`, `fecha`, `hora`, `estado`) VALUES
 (30, 2, 16, '2024-11-22', '12:37:00', 'Realizadas'),
-(31, 2, 19, '2025-02-21', '20:56:00', 'Pendiente'),
+(31, 2, 16, '2024-11-29', '13:56:00', 'Pendiente'),
 (32, 2, 16, '2024-11-22', '14:00:00', 'Pendiente'),
 (33, 2, 16, '2024-11-22', '15:00:00', 'Pendiente'),
 (34, 2, 16, '2024-11-29', '07:10:00', 'Pendiente'),
@@ -109,14 +121,6 @@ CREATE TABLE `control` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `control`:
---   `id_paciente`
---       `paciente` -> `id_paciente`
---   `id_usuario`
---       `usuario` -> `id_usuario`
---
-
---
 -- Volcado de datos para la tabla `control`
 --
 
@@ -141,12 +145,6 @@ CREATE TABLE `entrada` (
   `fechaDeIngreso` date NOT NULL,
   `estado` varchar(10) CHARACTER SET latin1 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `entrada`:
---   `id_proveedor`
---       `proveedor` -> `id_proveedor`
---
 
 --
 -- Volcado de datos para la tabla `entrada`
@@ -203,14 +201,6 @@ CREATE TABLE `entrada_insumo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- RELACIONES PARA LA TABLA `entrada_insumo`:
---   `id_insumo`
---       `insumo` -> `id_insumo`
---   `id_entrada`
---       `entrada` -> `id_entrada`
---
-
---
 -- Volcado de datos para la tabla `entrada_insumo`
 --
 
@@ -229,10 +219,6 @@ CREATE TABLE `especialidad` (
   `nombre` varchar(25) CHARACTER SET latin1 NOT NULL,
   `estado` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `especialidad`:
---
 
 --
 -- Volcado de datos para la tabla `especialidad`
@@ -257,16 +243,6 @@ CREATE TABLE `factura` (
   `id_hospitalizacion` int(11) DEFAULT NULL,
   `estado` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `factura`:
---   `id_cita`
---       `cita` -> `id_cita`
---   `id_paciente`
---       `paciente` -> `id_paciente`
---   `id_hospitalizacion`
---       `hospitalizacion` -> `id_hospitalizacion`
---
 
 --
 -- Volcado de datos para la tabla `factura`
@@ -343,14 +319,6 @@ CREATE TABLE `facturadeservicio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- RELACIONES PARA LA TABLA `facturadeservicio`:
---   `id_servicioMedico`
---       `serviciomedico` -> `id_servicioMedico`
---   `id_factura`
---       `factura` -> `id_factura`
---
-
---
 -- Volcado de datos para la tabla `facturadeservicio`
 --
 
@@ -372,10 +340,6 @@ CREATE TABLE `horacostohospitalizacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `horacostohospitalizacion`:
---
-
---
 -- Volcado de datos para la tabla `horacostohospitalizacion`
 --
 
@@ -392,10 +356,6 @@ CREATE TABLE `horario` (
   `id_horario` int(11) NOT NULL,
   `diaslaborables` varchar(100) CHARACTER SET latin1 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `horario`:
---
 
 --
 -- Volcado de datos para la tabla `horario`
@@ -423,14 +383,6 @@ CREATE TABLE `horarioydoctor` (
   `horaDeEntrada` time NOT NULL,
   `horaDeSalida` time NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `horarioydoctor`:
---   `id_horario`
---       `horario` -> `id_horario`
---   `id_personal`
---       `personal` -> `id_personal`
---
 
 --
 -- Volcado de datos para la tabla `horarioydoctor`
@@ -465,14 +417,6 @@ CREATE TABLE `hospitalizacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `hospitalizacion`:
---   `id_control`
---       `control` -> `id_control`
---   `id_horacostohospitalizacion`
---       `horacostohospitalizacion` -> `id_horacostohospitalizacion`
---
-
---
 -- Volcado de datos para la tabla `hospitalizacion`
 --
 
@@ -503,10 +447,6 @@ CREATE TABLE `insumo` (
   `stockMinimo` int(11) NOT NULL,
   `estado` varchar(25) CHARACTER SET latin1 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `insumo`:
---
 
 --
 -- Volcado de datos para la tabla `insumo`
@@ -548,14 +488,6 @@ CREATE TABLE `insumodefactura` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `insumodefactura`:
---   `id_factura`
---       `factura` -> `id_factura`
---   `id_inventario`
---       `inventario` -> `id_inventario`
---
-
---
 -- Volcado de datos para la tabla `insumodefactura`
 --
 
@@ -582,14 +514,6 @@ CREATE TABLE `insumodehospitalizacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `insumodehospitalizacion`:
---   `id_insumo`
---       `insumo` -> `id_insumo`
---   `id_hospitalizacion`
---       `hospitalizacion` -> `id_hospitalizacion`
---
-
---
 -- Volcado de datos para la tabla `insumodehospitalizacion`
 --
 
@@ -613,12 +537,6 @@ CREATE TABLE `inventario` (
   `fachaVencimiento` date NOT NULL,
   `numero_de_lote` int(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- RELACIONES PARA LA TABLA `inventario`:
---   `id_insumo`
---       `insumo` -> `id_insumo`
---
 
 --
 -- Volcado de datos para la tabla `inventario`
@@ -655,15 +573,11 @@ CREATE TABLE `paciente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `paciente`:
---
-
---
 -- Volcado de datos para la tabla `paciente`
 --
 
 INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `direccion`, `fn`, `estado`) VALUES
-(1, 'V', '10956121', 'Lissette', 'Torrealba', '04164852843', 'La Lagunita', '2025-02-23', 'ACT'),
+(1, 'V', '10956121', 'Lissettee', 'Torrealba', '04164852843', 'La Lagunita', '2024-11-12', 'ACT'),
 (2, 'V', '30554088', 'Luciano', 'Guedez', '04164852843', 'La Lagunita Calle 1', '2024-10-12', 'ACT'),
 (3, 'V', '10956122', 'Dixon', 'Bastias', '04245120942', 'La otra Banda', '2004-10-08', 'ACT'),
 (4, 'V', '35004765', 'Ana', 'Leal', '04123345236', 'El Tocuyo', '1999-04-13', 'ACT'),
@@ -674,7 +588,15 @@ INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apel
 (10, 'V', '30554145', 'Asdsd', 'Sddss', '04164852843', 'La Lagunita', '2024-11-30', 'ACT'),
 (11, 'V', '2599627', 'Pablo', 'Perez', '04125872132', 'La planta', '2024-11-29', 'ACT'),
 (12, 'V', '67687823', 'Sinfo', 'Ape', '04124322121', 'La lag', '2024-11-21', 'DES'),
-(13, 'V', '12123445', 'Juan', 'Carlos', '04123454321', 'La Lagunita', '2024-11-22', 'ACT');
+(13, 'V', '12123445', 'Juan', 'Carlos', '04123454321', 'La Lagunita', '2024-11-22', 'ACT'),
+(14, 'V', '30553129', 'Pedro', 'Aguilar', '04123454321', 'En su casa', '2010-01-02', 'ACT'),
+(15, 'V', '30554148', 'Pedro', 'Aguilar', '04123232321', 'En su casa', '2009-03-04', 'ACT'),
+(16, 'V', '30334145', 'Pedro', 'Aguilar', '04122222212', 'En su casa', '2011-03-04', 'ACT'),
+(17, 'V', '30551111', 'Pablo', 'Guedez', '04123453435', 'Su direccion es', '2000-03-30', 'ACT'),
+(18, 'V', '30553122', 'Juan', 'Antoja', '04123243333', 'Su direccion es', '2011-02-27', 'ACT'),
+(19, 'V', '423231', 'Juniel', 'Perez', '04122323211', 'En su direccion', '2011-03-13', 'ACT'),
+(20, 'V', '1111114', 'Esteban', 'Peralta', '04123443234', 'Alli mismo', '2005-03-15', 'ACT'),
+(21, 'V', '3011213', 'Pablo', 'Vega', '04121212213', 'Dsgfdgrdfdv', '2011-03-01', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -686,10 +608,6 @@ CREATE TABLE `pago` (
   `id_pago` int(11) NOT NULL,
   `nombre` varchar(25) CHARACTER SET latin1 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `pago`:
---
 
 --
 -- Volcado de datos para la tabla `pago`
@@ -714,14 +632,6 @@ CREATE TABLE `pagodefactura` (
   `referencia` varchar(25) CHARACTER SET latin1 DEFAULT NULL,
   `monto` float(12,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `pagodefactura`:
---   `id_factura`
---       `factura` -> `id_factura`
---   `id_pago`
---       `pago` -> `id_pago`
---
 
 --
 -- Volcado de datos para la tabla `pagodefactura`
@@ -757,10 +667,6 @@ CREATE TABLE `patologia` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `patologia`:
---
-
---
 -- Volcado de datos para la tabla `patologia`
 --
 
@@ -790,14 +696,6 @@ CREATE TABLE `patologiadepaciente` (
   `id_patologia` int(11) DEFAULT NULL,
   `fecha_registro` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `patologiadepaciente`:
---   `id_patologia`
---       `patologia` -> `id_patologia`
---   `id_paciente`
---       `paciente` -> `id_paciente`
---
 
 --
 -- Volcado de datos para la tabla `patologiadepaciente`
@@ -830,14 +728,6 @@ CREATE TABLE `personal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- RELACIONES PARA LA TABLA `personal`:
---   `id_especialidad`
---       `especialidad` -> `id_especialidad`
---   `id_usuario`
---       `usuario` -> `id_usuario`
---
-
---
 -- Volcado de datos para la tabla `personal`
 --
 
@@ -853,7 +743,8 @@ INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apel
 (10, 'V', '33751355', 'Wilmer', 'Perez', '04164852843', 'Hola@gmail.com', 'Administrador', NULL, 29),
 (11, 'V', '20366382', 'Pablo', 'Guedez', '04123452435', 'Hola@gmail.com', 'Administrador', NULL, 30),
 (14, 'V', '10956121', 'David', 'Rodriguez', '04123453456', 'Patata@gmail.com', 'Administrador', NULL, 39),
-(15, 'V', '12234123', 'Isabel', 'Angulo', '04123453453', 'correo@gmail.com', 'Doctor', 1, 40);
+(15, 'V', '12234123', 'Isabel', 'Angulo', '04123453453', 'correo@gmail.com', 'Doctor', 1, 40),
+(16, 'V', '30111345', 'Carlos', 'Hernandez', '04123454512', 'carlos123@gmail.com', 'doctor', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -872,10 +763,6 @@ CREATE TABLE `proveedor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `proveedor`:
---
-
---
 -- Volcado de datos para la tabla `proveedor`
 --
 
@@ -889,40 +776,6 @@ INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `rif`, `telefono`, `email`, `
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `recuperar_contr`
---
-
-CREATE TABLE `recuperar_contr` (
-  `id_recuperar_contr` int(11) NOT NULL,
-  `id_usuario` int(11) NOT NULL,
-  `codigo` varchar(55) NOT NULL,
-  `fecha_expiracion` datetime NOT NULL,
-  `intentos_fallidos` int(11) DEFAULT '0',
-  `fecha_desbloqueo` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- RELACIONES PARA LA TABLA `recuperar_contr`:
---   `id_usuario`
---       `usuario` -> `id_usuario`
---
-
---
--- Volcado de datos para la tabla `recuperar_contr`
---
-
-INSERT INTO `recuperar_contr` (`id_recuperar_contr`, `id_usuario`, `codigo`, `fecha_expiracion`, `intentos_fallidos`, `fecha_desbloqueo`) VALUES
-(26, 1, '345819', '2025-02-22 16:52:03', 0, '0000-00-00 00:00:00'),
-(27, 2, '142412', '2025-02-22 17:11:40', 0, '0000-00-00 00:00:00'),
-(28, 1, '438044', '2025-02-22 18:08:37', 4, '0000-00-00 00:00:00'),
-(29, 1, '194745', '2025-02-22 18:37:49', 0, '0000-00-00 00:00:00'),
-(30, 1, '134250', '2025-02-22 18:37:52', 0, '0000-00-00 00:00:00'),
-(31, 1, '945319', '2025-02-22 18:42:08', 0, '0000-00-00 00:00:00'),
-(32, 1, '220318', '2025-02-22 18:42:51', 0, '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `rol`
 --
 
@@ -930,10 +783,6 @@ CREATE TABLE `rol` (
   `id_rol` int(11) NOT NULL,
   `nombre` varchar(25) CHARACTER SET latin1 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `rol`:
---
 
 --
 -- Volcado de datos para la tabla `rol`
@@ -958,14 +807,6 @@ CREATE TABLE `serviciomedico` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `serviciomedico`:
---   `id_categoria`
---       `categoria_servicio` -> `id_categoria`
---   `id_personal`
---       `personal` -> `id_personal`
---
-
---
 -- Volcado de datos para la tabla `serviciomedico`
 --
 
@@ -986,10 +827,6 @@ CREATE TABLE `sintomas` (
   `nombre` varchar(25) NOT NULL,
   `estado` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- RELACIONES PARA LA TABLA `sintomas`:
---
 
 --
 -- Volcado de datos para la tabla `sintomas`
@@ -1014,14 +851,6 @@ CREATE TABLE `sintomas_control` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- RELACIONES PARA LA TABLA `sintomas_control`:
---   `id_control`
---       `control` -> `id_control`
---   `id_sintomas`
---       `sintomas` -> `id_sintomas`
---
-
---
 -- Volcado de datos para la tabla `sintomas_control`
 --
 
@@ -1043,68 +872,68 @@ INSERT INTO `sintomas_control` (`id_sintomas_control`, `id_sintomas`, `id_contro
 CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL,
   `id_rol` int(11) NOT NULL,
-  `imagen` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `usuario` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `correo` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `imagen` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usuario` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `password` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `estado` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `usuario`:
---   `id_rol`
---       `rol` -> `id_rol`
---
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 1, 'doctor (1).png', 'WD', 'wbaez975@gmail.com', 'Sistema.30', 'ACT'),
-(2, 2, 'doctor (1).png', 'Lucianogp', '', 'Tocuyo*15', 'ACT'),
-(3, 2, 'diagnostico-enfmeria-tipos-1200x600.jpg', 'Julian.123', '', 'Julian.12', 'ACT'),
-(4, 2, 'diagnostico-enfmeria-tipos-1200x600.jpg', 'Avila123', '', 'Avila.30', 'ACT'),
-(5, 2, 'Adenopata_200x223.png', 'MariRon', '', 'Sistema.30', 'ACT'),
-(6, 2, 'gettyimages-713781677-612x612.jpg', 'Carlosjj', '', 'Sistema.30', 'ACT'),
-(7, 2, 'Adenopata_200x223.png', 'lii123', '', 'Sistema.20', 'ACT'),
-(8, 2, 'unnamed.jpg', 'Usuario', '', 'Usuqw123*', 'ACT'),
-(9, 2, 'doctor.png', 'Corre123', '', 'Correo123*', 'ACT'),
-(10, 2, 'images (1).jpg', 'Usua12', '', 'Dixon123*', 'ACT'),
-(11, 2, 'doctor.png', 'Correo123', '', 'Corre432^*', 'ACT'),
-(12, 2, 'doctor.png', 'CDA123', '', 'CD123**1', 'ACT'),
-(13, 2, 'doctor.png', 'Usu123', '', 'Usuario12*', 'ACT'),
-(14, 2, 'doctor.png', 'Dox123', '', 'Cod123^**', 'ACT'),
-(15, 2, 'doctor.png', 'SSS123', '', 'David321*', 'ACT'),
-(16, 2, 'doctor.png', 'SSS123', '', 'David321*', 'ACT'),
-(17, 2, 'doctor.png', 'Moreno123', '', 'Moreno123**', 'ACT'),
-(18, 2, 'doctor.png', 'Sotille1', '', 'Sotille123*', 'ACT'),
-(19, 2, 'doctor.png', 'Lucianogp2003', '', 'Tocuyo*16', 'DES'),
-(20, 1, 'Array', 'kdkhfjks', '', 'kshdksjjfd', 'ACT'),
-(21, 1, 'evidencia5.png', 'kdkhfjks', '', 'kshdksjjfd', 'ACT'),
-(22, 1, 'evidencia5.png', 'kdkhfjks', '', 'kshdksjjfd', 'DES'),
-(23, 1, 'El-virus-de-Epstein-Barr-podria-ser-la-causa-', 'usuario45', '', 'Dixon123*', 'DES'),
-(24, 1, 'gettyimages-713781677-612x612.jpg', 'usuario123*45', '', 'Usuar456*2', 'DES'),
-(25, 1, 'El-virus-de-Epstein-Barr-podria-ser-la-causa-', 'Usuadb123*', '', 'Queso567*', 'DES'),
-(26, 1, 'doctor.png', 'usuario123', '', 'Usua1123*', 'ACT'),
-(27, 1, 'doctor.png', 'usuario123', '', '123', 'ACT'),
-(28, 2, 'doctor.png', 'usuario', '', 'Dsag23.,', 'ACT'),
-(29, 1, 'doctor.png', 'usuariol', '', 'Sin.303240', 'ACT'),
-(30, 1, 'doctor.png', 'usuario', '', 'Dw.,3455677', 'ACT'),
-(31, 1, 'doctor.png', 'usuario123', '', '123', 'ACT'),
-(32, 1, 'doctor.png', ' usuario123', '', '3212', 'ACT'),
-(33, 1, 'doctor.png', ' usuario123', '', 'shsa', 'ACT'),
-(34, 1, 'doctor.png', 'usuario123', '', '243wd', 'ACT'),
-(35, 1, 'doctor.png', 'usuario123**', '', 'Pedro123', 'ACT'),
-(36, 1, 'doctor.png', 'usuario123**', '', '', 'ACT'),
-(37, 1, 'doctor.png', 'usuario123', '', 'Dixon123', 'ACT'),
-(38, 1, 'doctor.png', 'usuario123', '', 'usuario123', 'ACT'),
-(39, 1, 'doctor.png', 'usuario789*', '', 'Queso123*', 'ACT'),
-(40, 2, 'doctor.png', 'Isa123', '', 'Isabel123]A', 'ACT');
+INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `password`, `estado`) VALUES
+(1, 1, 'doctor (1).png', 'WD', 'Sistema.30', 'ACT'),
+(2, 2, 'doctor (1).png', 'Lucianogp', 'Tocuyo*15', 'ACT'),
+(3, 2, 'diagnostico-enfmeria-tipos-1200x600.jpg', 'Julian.123', 'Julian.12', 'ACT'),
+(4, 2, 'diagnostico-enfmeria-tipos-1200x600.jpg', 'Avila123', 'Avila.30', 'ACT'),
+(5, 2, 'Adenopata_200x223.png', 'MariRon', 'Sistema.30', 'ACT'),
+(6, 2, 'gettyimages-713781677-612x612.jpg', 'Carlosjj', 'Sistema.30', 'ACT'),
+(7, 2, 'Adenopata_200x223.png', 'lii123', 'Sistema.20', 'ACT'),
+(8, 2, 'unnamed.jpg', 'Usuario', 'Usuqw123*', 'ACT'),
+(9, 2, 'doctor.png', 'Corre123', 'Correo123*', 'ACT'),
+(10, 2, 'images (1).jpg', 'Usua12', 'Dixon123*', 'ACT'),
+(11, 2, 'doctor.png', 'Correo123', 'Corre432^*', 'ACT'),
+(12, 2, 'doctor.png', 'CDA123', 'CD123**1', 'ACT'),
+(13, 2, 'doctor.png', 'Usu123', 'Usuario12*', 'ACT'),
+(14, 2, 'doctor.png', 'Dox123', 'Cod123^**', 'ACT'),
+(15, 2, 'doctor.png', 'SSS123', 'David321*', 'ACT'),
+(16, 2, 'doctor.png', 'SSS123', 'David321*', 'ACT'),
+(17, 2, 'doctor.png', 'Moreno123', 'Moreno123**', 'ACT'),
+(18, 2, 'doctor.png', 'Sotille1', 'Sotille123*', 'ACT'),
+(19, 2, 'doctor.png', 'Lucianogp2003', 'Tocuyo*16', 'DES'),
+(20, 1, 'Array', 'kdkhfjks', 'kshdksjjfd', 'ACT'),
+(21, 1, 'evidencia5.png', 'kdkhfjks', 'kshdksjjfd', 'ACT'),
+(22, 1, 'evidencia5.png', 'kdkhfjks', 'kshdksjjfd', 'DES'),
+(23, 1, 'El-virus-de-Epstein-Barr-podria-ser-la-causa-', 'usuario45', 'Dixon123*', 'DES'),
+(24, 1, 'gettyimages-713781677-612x612.jpg', 'usuario123*45', 'Usuar456*2', 'DES'),
+(25, 1, 'El-virus-de-Epstein-Barr-podria-ser-la-causa-', 'Usuadb123*', 'Queso567*', 'DES'),
+(26, 1, 'doctor.png', 'usuario123', 'Usua1123*', 'ACT'),
+(27, 1, 'doctor.png', 'usuario123', '123', 'ACT'),
+(28, 2, 'doctor.png', 'usuario', 'Dsag23.,', 'ACT'),
+(29, 1, 'doctor.png', 'usuariol', 'Sin.303240', 'ACT'),
+(30, 1, 'doctor.png', 'usuario', 'Dw.,3455677', 'ACT'),
+(31, 1, 'doctor.png', 'usuario123', '123', 'ACT'),
+(32, 1, 'doctor.png', ' usuario123', '3212', 'ACT'),
+(33, 1, 'doctor.png', ' usuario123', 'shsa', 'ACT'),
+(34, 1, 'doctor.png', 'usuario123', '243wd', 'ACT'),
+(35, 1, 'doctor.png', 'usuario123**', 'Pedro123', 'ACT'),
+(36, 1, 'doctor.png', 'usuario123**', '', 'ACT'),
+(37, 1, 'doctor.png', 'usuario123', 'Dixon123', 'ACT'),
+(38, 1, 'doctor.png', 'usuario123', 'usuario123', 'ACT'),
+(39, 1, 'doctor.png', 'usuario789*', 'Queso123*', 'ACT'),
+(40, 2, 'doctor.png', 'Isa123', 'Isabel123]A', 'ACT');
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `bitacora`
+--
+ALTER TABLE `bitacora`
+  ADD PRIMARY KEY (`id_bitacora`),
+  ADD KEY `id_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `categoria_servicio`
@@ -1273,13 +1102,6 @@ ALTER TABLE `proveedor`
   ADD PRIMARY KEY (`id_proveedor`);
 
 --
--- Indices de la tabla `recuperar_contr`
---
-ALTER TABLE `recuperar_contr`
-  ADD PRIMARY KEY (`id_recuperar_contr`),
-  ADD KEY `id_usuario` (`id_usuario`);
-
---
 -- Indices de la tabla `rol`
 --
 ALTER TABLE `rol`
@@ -1317,6 +1139,12 @@ ALTER TABLE `usuario`
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `bitacora`
+--
+ALTER TABLE `bitacora`
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria_servicio`
@@ -1418,7 +1246,7 @@ ALTER TABLE `inventario`
 -- AUTO_INCREMENT de la tabla `paciente`
 --
 ALTER TABLE `paciente`
-  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
@@ -1448,19 +1276,13 @@ ALTER TABLE `patologiadepaciente`
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
   MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT de la tabla `recuperar_contr`
---
-ALTER TABLE `recuperar_contr`
-  MODIFY `id_recuperar_contr` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -1495,6 +1317,12 @@ ALTER TABLE `usuario`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `bitacora`
+--
+ALTER TABLE `bitacora`
+  ADD CONSTRAINT `bitacora_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `cita`
@@ -1592,12 +1420,6 @@ ALTER TABLE `patologiadepaciente`
 ALTER TABLE `personal`
   ADD CONSTRAINT `personal_ibfk_1` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidad` (`id_especialidad`),
   ADD CONSTRAINT `personal_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
-
---
--- Filtros para la tabla `recuperar_contr`
---
-ALTER TABLE `recuperar_contr`
-  ADD CONSTRAINT `recuperar_contr_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `serviciomedico`
