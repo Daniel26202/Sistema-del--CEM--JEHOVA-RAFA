@@ -1,15 +1,18 @@
 <?php
 
 use App\modelos\ModeloPacientes;
+use App\modelos\ModeloBitacora; 
 
 class ControladorPacientes
 {
 	private $modelo;
+	private $bitacora;
 
 
 	function __construct()
 	{
 		$this->modelo = new ModeloPacientes;
+		$this->bitacora = new ModeloBitacora; // Guarda la instancia de la bitacora
 	}
 
 
@@ -40,7 +43,12 @@ class ControladorPacientes
 			header("location: ?c=ControladorPacientes/getPacientes&errorfecha");
           	
 			}else{
-				$this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'],$_POST["patologias"]);
+
+				// guardar la bitacora
+				$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha Insertado un nuevo paciente");
+
+
+				$this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
 
 				header("location: ?c=ControladorPacientes/getPacientes&registro=1");
 			}
@@ -64,6 +72,9 @@ class ControladorPacientes
 		}
         elseif ($_GET["cedulaDb"] == $_POST["cedulaEditar"]) {
 
+        	// guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha modificado un paciente");
+
             $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidadEditar'], $_POST['cedulaEditar'], $_POST['nombreEditar'], $_POST['apellidoEditar'], $_POST['telefonoEditar'], $_POST['direccionEditar'], $_POST['fnEditar']);
 
 			header("location: ?c=ControladorPacientes/getPacientes&editar=1");
@@ -78,6 +89,9 @@ class ControladorPacientes
 
             } else {
 
+            	// guardar la bitacora
+				$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha modificado un paciente");
+
 				$this->modelo->update($_POST['id_paciente'], $_POST['nacionalidadEditar'], $_POST['cedulaEditar'], $_POST['nombreEditar'], $_POST['apellidoEditar'], $_POST['telefonoEditar'], $_POST['direccionEditar'], $_POST['fnEditar']);
 
 				header("location: ?c=ControladorPacientes/getPacientes&editar=1");
@@ -86,8 +100,11 @@ class ControladorPacientes
 
         } else {
 
+        	// guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha modificado un paciente");
+
             $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidadEditar'], $_POST['cedulaEditar'], $_POST['nombreEditar'], $_POST['apellidoEditar'], $_POST['telefonoEditar'], $_POST['direccionEditar'], $_POST['fnEditar']);
-		header("location: ?c=ControladorPacientes/getPacientes&editar=1");
+			header("location: ?c=ControladorPacientes/getPacientes&editar=1");
 
 	}
 
@@ -95,6 +112,8 @@ class ControladorPacientes
 
 	public function eliminar()
 	{
+		// guardar la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario'],"paciente","Ha eliminado un  paciente");
 		$this->modelo->delete($_GET['id_paciente']);
 		header("location: ?c=ControladorPacientes/getPacientes&eliminar");
 		
@@ -104,6 +123,10 @@ class ControladorPacientes
 	}
 	public function restablecer()
 	{
+
+		// guardar la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario'],"paciente","Ha restablecido un paciente");
+
 		$this->modelo->restablecer($_GET['id_paciente']);
 		header("location: ?c=ControladorPacientes/getPacientes&restablecido");
 		

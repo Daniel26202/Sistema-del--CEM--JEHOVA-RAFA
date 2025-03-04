@@ -28,7 +28,8 @@
       </div>
     </div>
 
-    <form class="form-modal" id="modalAgregar" action="?c=ControladorPacientes/guardar" method="POST">
+    <form class="form-modal" id="modalAgregar" action="?c=ControladorPacientes/guardar" method="POST" autocomplete="off">
+      <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'];?>">
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_cedula">
         <span class="input-modal mt-1">

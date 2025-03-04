@@ -258,6 +258,7 @@
                             </div>
 
                             <form action="?c=ControladorPacientes/setPaciente&cedulaDb=<?php echo $paciente['cedula'] ?>" method="POST" id="formEditar">
+                              <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'];?>">
 
                               <input class="form-control input-modal d-none input-disabled" type="text" name="id_paciente" placeholder="Id-paciente" value="<?php echo $paciente['id_paciente']; ?>">
 
@@ -365,7 +366,7 @@
                             <div class="mt-3 uk-text-right">
                               <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
 
-                              <a href="?c=ControladorPacientes/eliminar&id_paciente=<?php echo $paciente['id_paciente']; ?>">
+                              <a href="?c=ControladorPacientes/eliminar&id_paciente=<?php echo $paciente['id_paciente']; ?>&id_usuario=<?php echo $_SESSION['id_usuario']?>">
                                 <button class="btn col-4 btn-agregarcita-modal" type="button">Eliminar</button>
                               </a>
                             </div>

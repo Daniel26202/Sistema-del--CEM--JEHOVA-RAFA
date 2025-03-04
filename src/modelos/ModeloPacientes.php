@@ -1,5 +1,5 @@
 <?php
-// SELECT n.nacionalidad,p.* FROM paciente p INNER JOIN nacionalidad n ON n.id_nacionalidad = p.id_nacionalidad INNER JOIN patologiadepaciente pdp ON pdp.id_paciente = p.id_paciente WHERE pdp.estado = "ACT" 
+
 namespace App\modelos;
 use App\modelos\Db;
 
@@ -7,6 +7,7 @@ class ModeloPacientes extends Db
 {
 
 	private $conexion;
+	private $bitacora;
 	
 	public function __construct(){
         // Llama al constructor de la clase padre para establecer la conexión
@@ -15,6 +16,7 @@ class ModeloPacientes extends Db
         // Aquí puedes usar $this para acceder a la conexión
 
         $this->conexion = $this; // Guarda la instancia de la conexión
+
     }
 	
 	public function index()
@@ -41,6 +43,7 @@ class ModeloPacientes extends Db
 		$consulta->bindParam(":direccion", $direccion);
 		$consulta->bindParam(":fn", $fn);
 		$consulta->execute();
+
 	}
 
 

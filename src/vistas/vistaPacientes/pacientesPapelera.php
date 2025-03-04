@@ -345,7 +345,7 @@
                         <div class="mt-3 uk-text-right">
                           <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
 
-                          <a href="?c=ControladorPacientes/restablecer&id_paciente=<?php echo $paciente['id_paciente']; ?>">
+                          <a href="?c=ControladorPacientes/restablecer&id_paciente=<?php echo $paciente['id_paciente']; ?>&id_usuario=<?php echo $_SESSION['id_usuario']?>">
                             <button class="btn col-4 btn-agregarcita-modal" type="button">Restablecer</button>
                           </a>
                         </div>
