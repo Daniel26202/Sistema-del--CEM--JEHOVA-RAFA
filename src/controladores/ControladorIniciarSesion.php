@@ -22,22 +22,21 @@ class ControladorIniciarSesion
 
         if (isset($_POST['validar'])) {
 
-            // Clave secreta proporcionada por Google reCAPTCHA.
+            // Clave secreta proporcionada por Google.
             $claveSecreta = '6Le_rOgqAAAAAMEKli0Bp9zdh8i_haVpS008lTxc';
             // Este token está incluido automáticamente en los datos del formulario bajo el nombre 'g-recaptcha-response'.
             $token = $_POST['g-recaptcha-response'];
-            // Esto puede ser útil para agregar una capa adicional de seguridad.(opcional).
+            // Esto es para agregar una capa adicional de seguridad.(opcional).
             $ip = $_SERVER['REMOTE_ADDR'];
-            // Aquí es donde enviarás la solicitud para validar el token generado en el cliente.
+            // Aquí es donde se enviara la solicitud para validar el token generado en el cliente.
             $url = 'https://www.google.com/recaptcha/api/siteverify';
 
-            // Incluyen la clave secreta, el token del cliente y la dirección IP del usuario.
+            // guardamos los datos en un array.
             $datos = array(
                 'secret' => $claveSecreta,
-                // Clave secreta
                 'response' => $token,
-                // Token generado por el cliente
-                'remoteip' => $ip // Dirección IP del usuario (opcional)
+                // Dirección IP del usuario.
+                'remoteip' => $ip 
             );
 
             // Configuración de la solicitud HTTP mediante método POST.
@@ -45,7 +44,7 @@ class ControladorIniciarSesion
                 'http' => array(
                     // Configura los encabezados para que la API sepa cómo procesar los datos.
                     'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                    // Define el método de la solicitud como POST.
+                    // definimos el método de la solicitud como POST.
                     'method' => 'POST',
                     // Codifica los datos como una cadena de consulta para enviarlos en el cuerpo de la solicitud.
                     'content' => http_build_query($datos)
@@ -53,11 +52,11 @@ class ControladorIniciarSesion
             );
 
             // Esto será utilizado para enviar la solicitud a la API de Google.
-            $context = stream_context_create($options);
+            $contexto = stream_context_create($options);
             // file_get_contents envía la solicitud HTTP y recibe la respuesta en formato JSON.
-            $response = file_get_contents($url, false, $context);
+            $respuesta = file_get_contents($url, false, $contexto);
             // Decodifica la respuesta JSON en un arreglo asociativo de PHP.
-            $result = json_decode($response, true);
+            $result = json_decode($respuesta, true);
 
             // Verifica si la respuesta de la API indica éxito ('success' == true).
             if ($result['success']) {
