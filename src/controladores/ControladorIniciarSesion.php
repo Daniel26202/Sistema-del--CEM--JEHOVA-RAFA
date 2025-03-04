@@ -36,7 +36,7 @@ class ControladorIniciarSesion
                 'secret' => $claveSecreta,
                 'response' => $token,
                 // Dirección IP del usuario.
-                'remoteip' => $ip 
+                'remoteip' => $ip
             );
 
             // Configuración de la solicitud HTTP mediante método POST.
@@ -89,7 +89,7 @@ class ControladorIniciarSesion
 
 
             } else {
-                    header("location: ?c=ControladorIniciarSesion/mostrarIniciarSesion&captcha");
+                header("location: ?c=ControladorIniciarSesion/mostrarIniciarSesion&captcha");
             }
 
         }
