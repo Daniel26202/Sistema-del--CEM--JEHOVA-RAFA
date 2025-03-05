@@ -310,7 +310,7 @@
                     <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                         type="button">Cancelar</button>
                     <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                        href="?c=controladorCitas/eliminarCita&id_cita=<?= $datoCita["id_cita"]; ?>">Eliminar</a>
+                        href="?c=controladorCitas/eliminarCita&id_cita=<?= $datoCita["id_cita"]; ?>&id_usuario=<?= $_SESSION['id_usuario'];?>">Eliminar</a>
                 </div>
 
             </div>
@@ -348,10 +348,13 @@
                 </div>
 
                 <form class="form-modal" action="?c=controladorCitas/editarCita&cedulaDb=<?= $datoCita["id_cita"]; ?>" method="POST">
+                     <input type="hidden" value="<?php echo $_SESSION['id_usuario'];?>" name="id_usuario">
 
                   <form class="form-modal" action="?c=controladorCitas/editarCitaHoy&cedulaDb=<?= $datoCita["id_cita"]; ?>" method="POST">
 
                     <input type="hidden" name="id_cita" value="<?= $datoCita["id_cita"]; ?>">
+
+                    <input type="hidden" value="<?php echo $_SESSION['id_usuario'];?>" name="id_usuario">
 
                     <div class="input-group flex-nowrap caja">
                         <span class="input-modal mt-1">

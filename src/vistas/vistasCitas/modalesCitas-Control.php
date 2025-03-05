@@ -43,6 +43,8 @@
         <form class="form-modal" action="?c=controladorCitas/guardarCita" id="modalAgregarCita" method="POST"
             autocomplete="off">
 
+            <input type="hidden" value="<?php echo $_SESSION['id_usuario'] ?>" name="id_usuario">
+
             <div class="input-group flex-nowrap" id="grp_cedula">
 
 

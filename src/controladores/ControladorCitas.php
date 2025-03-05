@@ -1,12 +1,15 @@
 <?php 
 use App\modelos\ModeloCita;
+use App\modelos\ModeloBitacora; 
 
 class ControladorCitas{
 
 	private $modelo;
+	private $bitacora;
 
 	function __construct(){
 		$this->modelo = new ModeloCita();
+		$this->bitacora = new ModeloBitacora;
 	}
 
 	public function mostrarPacienteCita(){
@@ -46,6 +49,10 @@ class ControladorCitas{
   
 			print_r($_POST["dia"]);
 		$this->modelo->insertarCita($_POST["id_paciente"],$_POST["id_servicioMedico"],$_POST["fecha"],$_POST["hora"],$_POST["estado"]);
+
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario'],"cita","Ha Insertado una  cita");
+
 		header("location: ?c=controladorCitas/citas&agregado");
 
 
@@ -54,6 +61,7 @@ class ControladorCitas{
 
 	public function eliminarCita(){
 		$this->modelo->eliminarCita($_GET["id_cita"]);
+		$this->bitacora->insertarBitacora($_GET['id_usuario'],"cita","Ha eliminado una  cita");
 		header("location: ?c=controladorCitas/citas&eliminado");
 	}
 	public function eliminarCitaHoy(){
@@ -125,6 +133,8 @@ class ControladorCitas{
         if ($_GET["cedulaDb"] == $_POST["id_servicioMedico"]) {
 
 			$this->modelo->update($_POST["id_servicioMedico"],$_POST["fecha"],$_POST["hora"],$_POST["id_cita"]);
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario'],"cita","Ha modificado una  cita");
 			header("location: ?c=controladorCitas/citas&editado");
 
             // NOTA: Esto "&&" es "Y"
@@ -138,13 +148,17 @@ class ControladorCitas{
             } else {
 
 				$this->modelo->update($_POST["id_servicioMedico"],$_POST["fecha"],$_POST["hora"],$_POST["id_cita"]);
-		header("location: ?c=controladorCitas/citas&editado");
+				// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario'],"cita","Ha modificado una  cita");
+			header("location: ?c=controladorCitas/citas&editado");
 
             }
 
         } else {
 
 			$this->modelo->update($_POST["id_servicioMedico"],$_POST["fecha"],$_POST["hora"],$_POST["id_cita"]);
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario'],"cita","Ha modificado una  cita");
 			header("location: ?c=controladorCitas/citas&editado");
 
         }if ($_POST["fecha"] < $fecha){

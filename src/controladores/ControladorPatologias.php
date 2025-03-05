@@ -1,15 +1,18 @@
 <?php
 
 use App\modelos\ModeloPatologia;
+use App\modelos\ModeloBitacora; 
 
 
 class ControladorPatologias
 {
 	private $patologia;
+	private $bitacora;
 
 	function __construct()
 	{
 		$this->patologia = new ModeloPatologia();
+		$this->bitacora = new ModeloBitacora();
 	}
 
 	public function patologias()
@@ -34,10 +37,13 @@ class ControladorPatologias
 			header("location:?c=ControladorPatologias/patologias&error");
 
         } else {
-          
-            
+         
 			$this->patologia->insertarPatologia($_POST["nombrePatologia"]);
-		header("location: ?c=ControladorPatologias/patologias&agregado");
+
+			// Guardo la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario'],"patologia","Ha Insertado una patologia");
+
+			header("location: ?c=ControladorPatologias/patologias&agregado");
 
         }
 	}
@@ -45,10 +51,14 @@ class ControladorPatologias
 	//eliminar patologia
 	public function eliminarPatologia(){
 		$this->patologia->eliminarPatologia($_GET["id_patologia"]);
+		// Guardo la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario'],"patologia","Ha eliminado una patologia");
 		header("location: ?c=ControladorPatologias/patologias&eliminado");
 	}
 	public function restablecerPatologia(){
 		$this->patologia->restablecer($_GET["id_patologia"]);
+		// Guardo la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario'],"patologia","Ha restablecido una patologia");
 		header("location: ?c=ControladorPatologias/patologias&restablecida");
 	}
 

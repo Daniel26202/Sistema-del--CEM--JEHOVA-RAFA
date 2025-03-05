@@ -36,8 +36,9 @@
       </div>
     </div>
 
-    <form class="form-modal" id="modalAgregar" action="?c=ControladorPatologias/registrarPatologia" method="POST">
+    <form class="form-modal" id="modalAgregar" action="?c=ControladorPatologias/registrarPatologia" method="POST" autocomplete="off">
 
+      <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['id_usuario']?>">
 
       <div class="input-group flex-nowrap margin-inputs validar" id="grp_nombrePatologia">
         <span class="input-modal mt-1">
