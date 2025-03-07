@@ -1,15 +1,18 @@
 <?php
 
 use App\modelos\ModeloDoctores;
+use App\modelos\ModeloBitacora;
 
 class ControladorDoctores extends ModeloDoctores
 {
 
     private $modelo;
+    private $bitacora;
 
     public function __construct()
     {
         $this->modelo = new ModeloDoctores;
+        $this->bitacora = new ModeloBitacora;
     }
 
     //muestro los datos de las cuatro tablas
@@ -48,7 +51,12 @@ class ControladorDoctores extends ModeloDoctores
                 $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $_POST["password"], $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"]);
             } else {
                 $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $_POST["password"], $_POST["especialidad"], $_POST['email'],  $_POST['nacionalidad'], $imagenPorDefecto, "",$_POST["selectEspecialidad"]);
+
             }
+
+            // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario'],"doctor","Ha Insertado un doctor");
+
 
 
 
@@ -80,6 +88,9 @@ class ControladorDoctores extends ModeloDoctores
 
             $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds,$_POST["horaEntrada"],$_POST["horaSalida"]);
 
+            // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
+
             header("location:?c=ControladorDoctores/doctores&editado");
 
             // NOTA: Esto "&&" es "Y"
@@ -94,12 +105,17 @@ class ControladorDoctores extends ModeloDoctores
 
                 $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds,$_POST["horaEntrada"],$_POST["horaSalida"]);
 
+                // Guardar la bitacora
+                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
+
                 header("location:?c=ControladorDoctores/doctores&editado");
 
             }
         } else {
 
             $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds,$_POST["horaEntrada"],$_POST["horaSalida"]);
+            // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
 
             header("location:?c=ControladorDoctores/doctores&editado");
 
@@ -110,6 +126,9 @@ class ControladorDoctores extends ModeloDoctores
     {
 
         $this->modelo->eliminacionLogica($_POST["cedula"], $_POST["usuario"], $_POST["id_usuario"], $_POST["id_personal"]);
+
+        // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha eliminado un doctor");
 
         header("location:?c=ControladorDoctores/doctores&eliminado");
     }
@@ -123,11 +142,15 @@ class ControladorDoctores extends ModeloDoctores
     public function registrarEspecialidad()
     {
         $this->modelo->Especialidadregistrar($_POST['nombre']);
+        // Guardar la bitacora
+        $this->bitacora->insertarBitacora($_POST['id_usuario'],"especialidad","Ha insertado una nueva especialidad");
         header("location: ?c=ControladorDoctores/doctores&especialidadRegistrar");
     }
     public function eliminarEspecialidad()
     {
         $this->modelo->Especialidadeliminar($_GET['id_especialidad']);
+        //Guardar la bitacora
+        $this->bitacora->insertarBitacora($_GET['id_usuario'],"especialidad","Ha eliminado una especialidad");
         header("location: ?c=ControladorDoctores/doctores&especialidadEliminar");
     }
 

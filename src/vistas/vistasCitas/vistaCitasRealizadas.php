@@ -260,7 +260,7 @@
                 <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                     type="button">Cancelar</button>
                 <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                    href="?c=controladorCitas/eliminarCitaR&id_cita=<?= $datoCita["id_cita"]; ?>">Eliminar</a>
+                    href="?c=controladorCitas/eliminarCitaR&id_cita=<?= $datoCita["id_cita"]; ?>&id_usuario=<?= $_SESSION['id_usuario']?>">Eliminar</a>
             </div>
 
         </div>

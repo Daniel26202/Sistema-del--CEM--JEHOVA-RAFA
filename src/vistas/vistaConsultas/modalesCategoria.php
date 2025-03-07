@@ -48,6 +48,7 @@
                 </a> -->
                 <form action="?c=ControladorDoctores/buscarEspecialidad" method="POST" id="form-buscadorPatologias"
                     class="d-flex justify-content-end" autocomplete="off">
+
                     <input class="form-control input-busca" type="text" name="nombre" placeholder="Ingrese Categoría"
                         id="inputBuscarCategoria">
                     <button class="btn boton-buscar" title="Buscar" id="especialidadBuscar">
@@ -154,7 +155,7 @@
                                                 <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                                                     id="cancelarEliminacion">Cancelar</button>
 
-                                                <a href="?c=ControladorConsultas/eliminarCategoria&id_categoria=<?= $categoria["0"]; ?>">
+                                                <a href="?c=ControladorConsultas/eliminarCategoria&id_categoria=<?= $categoria["0"]; ?>&id_usuario=<?= $_SESSION['id_usuario']?>">
                                                     <button class="btn col-4 btn-agregarcita-modal" id="btnEliminarEspecialidad">Eliminar</button>
                                                 </a>
 
@@ -258,6 +259,7 @@
 
         <form class="form-modal" id="modalAgregar" action="?c=ControladorConsultas/registrarCategoria" method="POST">
 
+            <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']?>">
 
             <div class="input-group flex-nowrap margin-inputs validar" id="grp_nombrePatologia">
                 <span class="input-modal mt-1">

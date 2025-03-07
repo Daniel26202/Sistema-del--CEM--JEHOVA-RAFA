@@ -66,11 +66,13 @@ class ControladorCitas{
 	}
 	public function eliminarCitaHoy(){
 		$this->modelo->eliminarCita($_GET["id_cita"]);
+		$this->bitacora->insertarBitacora($_GET['id_usuario'],"cita","Ha eliminado una  cita");
 		header("location: ?c=controladorCitas/citasHoy&eliminado");
 	}
 	
 	public function eliminarCitaR(){
 		$this->modelo->eliminarCita($_GET["id_cita"]);
+		$this->bitacora->insertarBitacora($_GET['id_usuario'],"cita","Ha eliminado una  cita");
 		header("location: ?c=controladorCitas/citasRealizadas&eliminado");
 	}
 
@@ -181,6 +183,9 @@ class ControladorCitas{
         if ($_GET["cedulaDb"] == $_POST["id_servicioMedico"]) {
 
 			$this->modelo->update($_POST["id_servicioMedico"],$_POST["fecha"],$_POST["hora"],$_POST["id_cita"]);
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario'],"cita","Ha modificado una  cita");
+
 			header("location: ?c=controladorCitas/citasHoy&editado");
 
             // NOTA: Esto "&&" es "Y"
@@ -194,13 +199,15 @@ class ControladorCitas{
             } else {
 
 				$this->modelo->update($_POST["id_servicioMedico"],$_POST["fecha"],$_POST["hora"],$_POST["id_cita"]);
-		header("location: ?c=controladorCitas/citasHoy&editado");
+				$this->bitacora->insertarBitacora($_POST['id_usuario'],"cita","Ha modificado una  cita");
+				header("location: ?c=controladorCitas/citasHoy&editado");
 
             }
 
         } else {
 
 			$this->modelo->update($_POST["id_servicioMedico"],$_POST["fecha"],$_POST["hora"],$_POST["id_cita"]);
+			$this->bitacora->insertarBitacora($_POST['id_usuario'],"cita","Ha modificado una  cita");
 			header("location: ?c=controladorCitas/citasHoy&editado");
 
         }

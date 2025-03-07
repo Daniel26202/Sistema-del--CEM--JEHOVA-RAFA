@@ -28,6 +28,8 @@
 <form class="me-2 ms-2" method="POST" action="?c=ControladorDoctores/agregarDoctor" id="modalAgregarDoctores"
 autocomplete="off" enctype="multipart/form-data">
 
+<input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']?>">
+
 <div class="alert alert-danger d-none" id="alerta-guardar">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
 
 <div class="col w-auto mt-4 mb-4 pb-1">

@@ -415,7 +415,7 @@
                                     <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                                         type="button">Cancelar</button>
                                     <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                                        href="?c=controladorConsultas/restablecer&id_servicioMedico=<?= $servicio["id_servicioMedico"] ?>">Restablecer</a>
+                                        href="?c=controladorConsultas/restablecer&id_servicioMedico=<?= $servicio["id_servicioMedico"] ?>&id_usuario=<?= $_SESSION['id_usuario']?>">Restablecer</a>
                                 </div>
 
                             </div>

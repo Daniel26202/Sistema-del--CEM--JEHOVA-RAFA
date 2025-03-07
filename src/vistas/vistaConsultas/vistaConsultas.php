@@ -198,6 +198,7 @@
             </div>
 
             <form class="form-modal" id="modalAgregar" action="?c=ControladorConsultas/guardar" method="POST" autocomplete="off">
+                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
 
 
                 <div class="input-group flex-nowrap">
@@ -455,6 +456,8 @@
                                 <form action="?c=controladorConsultas/editar" class="form-modal formEditar" id="modalEditar"
                                     method="POST">
 
+                                    <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
+
                                     <input type="hidden" name="id_servicioMedico" value="<?= $servicio["id_servicioMedico"]
                                                                                             ?>">
 
@@ -583,7 +586,7 @@
                                     <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                                         type="button">Cancelar</button>
                                     <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                                        href="?c=controladorConsultas/eliminar&id_servicioMedico=<?= $servicio["id_servicioMedico"] ?>">Eliminar</a>
+                                        href="?c=controladorConsultas/eliminar&id_servicioMedico=<?= $servicio["id_servicioMedico"] ?>&id_usuario=<?= $_SESSION['id_usuario'];?>">Eliminar</a>
                                 </div>
 
                             </div>
