@@ -34,6 +34,8 @@
             <form class="me-3 ms-3 mt-2" method="POST" id="formularioAgregarH"
                 action="?c=ControladorHospitalizacion/agregarH">
 
+
+
                 <div class="mb-5 pb-2">
 
                     <div class="d-flex justify-content-between align-items-center mt-1 ">
@@ -52,6 +54,7 @@
                             
                             <input type="hidden" name="id_control" id="input-id-controlP">
                             <input type="hidden" name="fecha" id="fechaHoy">
+                            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
 
                             <p class="ms-3 mt-4 fw-bolder " id="p-no-paciente"><!-- esto se llena en el js --></p>
                             <a href="?c=ControladorPacientes/getPacientes"

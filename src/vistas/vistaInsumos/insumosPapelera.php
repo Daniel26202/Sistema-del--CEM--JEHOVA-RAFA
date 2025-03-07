@@ -281,7 +281,7 @@
                                   <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                                   id="cancelarEliminacion">Cancelar</button>
 
-                                  <a href="?c=controladorInsumos/restablecerInsumo&id_insumo=<?= $e["id_insumo"]; ?>">
+                                  <a href="?c=controladorInsumos/restablecerInsumo&id_insumo=<?= $e["id_insumo"]; ?>&id_usuario_bitacora=<?= $_SESSION['id_usuario']?>">
                                     <button class="btn col-4 btn-agregarcita-modal btnrestablecer" id="btnEliminarEspecialidad">Restablecer</button>
                                   </a>
 

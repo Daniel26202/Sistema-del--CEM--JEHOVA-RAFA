@@ -901,10 +901,16 @@
 
       <?php if (isset($_GET["idH"])): ?>
         <form action="?c=controladorFactura/guardarFacturaHospit" method="POST" class="form-modal">
+          <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
+          <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
         <?php else: ?>
           <form action="?c=controladorFactura/guardarFactura" method="POST" class="form-modal">
+            <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
+          <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
           <?php endif; ?>
           <form action="?c=controladorFactura/guardarFactura" method="POST" class="form-modal">
+            <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
+          <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
 
             <table class="table table-striped" id="tablaConfirmaroperacion">
               <thead>

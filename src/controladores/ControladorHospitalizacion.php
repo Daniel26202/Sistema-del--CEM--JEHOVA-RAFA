@@ -1,14 +1,17 @@
 <?php
 use App\modelos\ModeloHospitalizacion;
+use App\modelos\ModeloBitacora;
 
 class ControladorHospitalizacion
 {
 
     private $modelo;
+    private $bitacora;
 
     function __construct()
     {
         $this->modelo = new ModeloHospitalizacion();
+        $this->bitacora = new ModeloBitacora();
     }
     // mostrar los datos de la tabla (hospitalizaciones pendientes) 
     public function traerSesion()
@@ -100,7 +103,12 @@ class ControladorHospitalizacion
                 $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
                 $cantidad = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
 
+                
+
                 $this->modelo->insertarH($_POST["id_control"], $_POST["fecha"], $_POST["horas"], $_POST["precioHoras"], $_POST["total"], $idInsumo, $cantidad, $_POST["historial"]);
+
+                // Guardar la bitacora
+                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha Insertado una hospitalizacion");
 
                 header("location: ?c=ControladorHospitalizacion/hospitalizacion&agregado");
 
@@ -176,6 +184,8 @@ class ControladorHospitalizacion
 
         // esto se puede usar $_POST["id_controlE"]. 
         $this->modelo->editarH($_POST["horas"], $_POST["precioHoras"], $_POST["total"], $idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, $_POST["enfermer-e"]);
+        // Guardar la bitacora
+        $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha modificado una hospitalizacion");
         header("location: ?c=ControladorHospitalizacion/hospitalizacion");
     }
 
@@ -185,6 +195,9 @@ class ControladorHospitalizacion
         if (isset($_POST["idH"])) {
 
             $this->modelo->eliminaLogico($_POST["idH"]);
+
+             // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha eliminado una hospitalizacion");
             header("location: ?c=ControladorHospitalizacion/hospitalizacion&eliminado");
 
 

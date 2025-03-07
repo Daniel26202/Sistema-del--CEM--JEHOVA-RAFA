@@ -310,7 +310,7 @@
                                                                 <div class="mt-3 uk-text-right">
                                                                     <button class="uk-button col-6 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
 
-                                                                    <a class="btn col-5 btn-agregarcita-modal" href="?c=controladorEntrada/eliminar&id_entrada=<?= $e["id_entrada"]; ?>&id_insumo=<?= $e["id_insumo"]; ?>">Eliminar</a>
+                                                                    <a class="btn col-5 btn-agregarcita-modal" href="?c=controladorEntrada/eliminar&id_entrada=<?= $e["id_entrada"]; ?>&id_insumo=<?= $e["id_insumo"]; ?>&id_usuario_bitacora=<?= $_SESSION['id_usuario']?>">Eliminar</a>
                                                                 </div>
 
 
@@ -350,6 +350,8 @@
                                                                 <div class="alerta-editar-entrada alert alert-danger d-none">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
 
                                                                 <form class="form-modal  form-enviar-datos" autocomplete="off" id="editarEntrada" method="POST" action="?c=controladorEntrada/editar">
+
+                                                                    <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
 
 
 
@@ -519,6 +521,8 @@
                     <form class="form-modal" method="POST" action="?c=controladorEntrada/guardar" autocomplete="off" id="modalAgregarEntrada">
                         <div id="alerta-guardar-entrada" class="alert alert-danger d-none">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO
                         </div>
+
+                        <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
 
                         <div class="input-group flex-nowrap">
                             <span class="input-modal mt-1">

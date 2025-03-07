@@ -34,6 +34,8 @@
                     <input type="" name="usuario" value="<?php echo $dato["usuario"]; ?>" hidden>
                     <!-- <input type="" name="cedula" value="<?php echo $dato["cedula"]; ?>" hidden> -->
                     <input type="" name="id_usuario" value="<?php echo $dato["id_usuario"]; ?>" hidden>
+
+                    <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
                 </div>
 
                 <div class="mt-3 uk-text-right">

@@ -1,15 +1,18 @@
 <?php
 
 use App\modelos\ModeloInsumo;
+use App\modelos\ModeloBitacora;
 
 class ControladorInsumos
 {
 
 	private $modelo;
+	private $bitacora;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloInsumo();
+		$this->bitacora = new ModeloBitacora();
 	}
 
 
@@ -67,6 +70,10 @@ class ControladorInsumos
 		if (isset($_POST)) {
 			$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
 			$this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $precio_sin_puntos, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"]);
+
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"insumo","Ha Insertado un insumo");
+
 			header("location: ?c=controladorInsumos/insumos&agregado");
 		}
 	}
@@ -74,6 +81,8 @@ class ControladorInsumos
 	public function eliminar()
 	{
 		$this->modelo->eliminar($_GET["id_insumo"]);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"insumo","Ha eliminado un insumo");
 		header("location: ?c=controladorInsumos/insumos&eliminado");
 	}
 
@@ -82,6 +91,8 @@ class ControladorInsumos
 		print_r($_POST);
 
 		$this->modelo->editar($_POST["Codigo"], $_POST["nombre"], $_POST['descripcion'], $_POST["stockMinimo"], $_FILES["imagen"]);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"insumo","Ha modificado un insumo");
 		header("location: ?c=controladorInsumos/insumos&editado");
 	}
 
@@ -95,6 +106,8 @@ class ControladorInsumos
 	public function restablecerInsumo()
 	{
 		$this->modelo->restablecerInsumo($_GET['id_insumo']);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"insumo","Ha restablecido un insumo");
 		print_r($_GET);
 		header("location: ?c=controladorInsumos/papelera");
 	}

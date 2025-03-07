@@ -139,7 +139,7 @@
                         <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                           id="cancelarEliminacion">Cancelar</button>
 
-                        <a href="?c=ControladorControl/eliminarSintoma&id_sintomas=<?= $sintomas["id_sintomas"]; ?>">
+                        <a href="?c=ControladorControl/eliminarSintoma&id_sintomas=<?= $sintomas["id_sintomas"]; ?>&id_usuario_bitacora=<?= $_SESSION['id_usuario'];?>">
                           <button class="btn col-4 btn-agregarcita-modal" id="btnEliminarSintomasM">Eliminar</button>
                         </a>
 
@@ -246,6 +246,8 @@
     </div>
 
     <form class="form-modal" id="modalAgregar" action="?c=ControladorControl/agregarSintoma" method="POST">
+
+      <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
 
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">

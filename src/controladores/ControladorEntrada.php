@@ -1,14 +1,17 @@
 <?php
 
 use App\modelos\ModeloEntrada;
+use App\modelos\ModeloBitacora;
 class ControladorEntrada
 {
 
 	private $modelo;
+	private $bitacora;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloEntrada();
+		$this->bitacora = new ModeloBitacora();
 	}
 
 	public function entrada()
@@ -30,6 +33,8 @@ class ControladorEntrada
 	public function restablecerEntrada()
 	{
 		$this->modelo->restablecerEntrada($_GET['id_entrada']);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"entrada","Ha restablecido una entrada");
 		header("location: ?c=controladorEntrada/papelera");
 	}
 
@@ -50,6 +55,8 @@ class ControladorEntrada
 			print_r($_POST);
 			$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
 			$this->modelo->insertarEntrada($_POST["id_proveedor"], $_POST["id_insumo"], $_POST["fechaDeIngreso"], $_POST["fechaDeVencimiento"], $_POST["cantidad"],$precio_sin_puntos, $_POST["lote"]);
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"entrada","Ha insertado una entrada");
 			header("location: ?c=controladorEntrada/entrada");
 
 		
@@ -57,6 +64,8 @@ class ControladorEntrada
 
 	public function eliminar(){
 		$this->modelo->eliminar($_GET["id_entrada"],$_GET["id_insumo"]);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"entrada","Ha eliminado una entrada");
 		header("location: ?c=controladorEntrada/entrada");
 	}
 
@@ -64,6 +73,9 @@ class ControladorEntrada
 		print_r($_POST);
 		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
 		 $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
+		 // Guardar la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"entrada","Ha modificado una entrada");
+
 		 header("location: ?c=controladorEntrada/entrada");
 
 	}

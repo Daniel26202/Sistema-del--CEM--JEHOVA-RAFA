@@ -26,6 +26,8 @@
 
         <form class="form-modal" id="modalAgregarProveedor" method="POST" action="?c=ControladorProveedores/insertar">
 
+            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
+
             <div class="alert alert-danger d-none text-center" id="alerta-guardar-proveedor" style="font-size: 10px;">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
 
             <div class="input-group flex-nowrap">

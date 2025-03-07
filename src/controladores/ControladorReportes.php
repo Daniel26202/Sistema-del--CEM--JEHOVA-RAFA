@@ -1,14 +1,17 @@
 <?php
 use App\modelos\ModeloReporte;
+use App\modelos\ModeloBitacora;
 // use FPDF\FPDF; 	
 
 class ControladorReportes{
 		
 	private $modelo;
+	private $bitacora;
 
     function __construct()
     {
         $this->modelo = new ModeloReporte();
+        $this->bitacora = new ModeloBitacora();
     }
 
 	
@@ -75,12 +78,15 @@ class ControladorReportes{
 		
 		print_r($_POST);
 
-	 $respuesta = $this->modelo->insumosAnulados($_POST["id_factura"]);
-	 $eliminar = $this->modelo->anularFac($_POST["id_factura"]);
+	 	$respuesta = $this->modelo->insumosAnulados($_POST["id_factura"]);
+	 	$eliminar = $this->modelo->anularFac($_POST["id_factura"]);
 	
 		foreach($respuesta as $res){
 		$insumo = $this->modelo->cantidadAnulada($res["id_insumo"], $_POST["id_factura"], $res["numero_de_lote"]);
 		}
+
+		// Guardo la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha anula una factura");
 		
 		// // $respuesta =$this->modelo->cantidadAnulada($array);
 		header("location: ?c=ControladorReportes/reportes&anulada");

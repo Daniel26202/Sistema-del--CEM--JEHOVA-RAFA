@@ -2,17 +2,20 @@
 //requiero el modelo de factura
 use App\modelos\ModeloFactura;
 use App\modelos\ModeloCategoria;
+use App\modelos\ModeloBitacora;
 
 class ControladorFactura
 {
 
 	private $modelo; //atributo privado
 	private $categoria;
+	private $bitacora;
 
 	//le damos el valor de el  modelo a el atributo $modelo
 	function __construct()
 	{
 		$this->modelo = new ModeloFactura();
+		$this->bitacora = new ModeloBitacora();
 	}
 
 	//metodo para mostrar la vista de facturacion
@@ -115,6 +118,10 @@ class ControladorFactura
 
 		$this->modelo->insertaFactura($id_cita, $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote);
 
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado servicios y/o insumos");
+
+
 		
 
 
@@ -140,6 +147,9 @@ class ControladorFactura
 		$this->modelo->insertaFacturaHospit($idH, $fecha, $_POST["total"], $_POST["formasDePago"],  $insumos, $cantidad, $_POST["montosDePago"], $referencia,$serviciosExtras);
 
 		print_r($_POST);
+
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado una hospitalizacion");
 
 		
 	}

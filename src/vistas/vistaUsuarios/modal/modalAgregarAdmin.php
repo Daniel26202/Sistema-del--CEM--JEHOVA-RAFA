@@ -7,6 +7,8 @@
         <form method="POST" class="formAgregarAdmin" action="?c=ControladorUsuarios/registrarAdmin"
             enctype="multipart/form-data">
 
+            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
+
             <div id="padre">
                 <div class="alert alert-danger text-center d-none" id="alertaAdmin">VERIFIQUE EL FORMULARIO ANTES DE
                     ENVIARLO</div>

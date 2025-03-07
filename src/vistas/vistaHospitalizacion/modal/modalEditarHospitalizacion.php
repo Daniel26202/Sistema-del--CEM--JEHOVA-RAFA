@@ -32,6 +32,8 @@
 
             <form method="post" class="me-3 ms-3 mt-2" id="formularioEditarH">
 
+                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
+
                 <div class="mb-5 pb-2">
 
                     <div class="">

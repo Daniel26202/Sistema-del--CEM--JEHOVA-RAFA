@@ -1,15 +1,18 @@
 <?php
 
 use App\modelos\ModeloProveedores;
+use App\modelos\ModeloBitacora;
 
 class ControladorProveedores
 {
 
 	private $modelo;
+	private $bitacora;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloProveedores();
+		$this->bitacora = new ModeloBitacora();
 	}
 
 	public function proveedores()
@@ -36,6 +39,8 @@ class ControladorProveedores
 
 
 			$this->modelo->agregar($_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha insertado un proveedor");
 			header("location:?c=ControladorProveedores/proveedores&agregado");
 		}
 	}
@@ -45,6 +50,9 @@ class ControladorProveedores
 	{
 		if (isset($_GET["id_proveedor"])) {
 			$this->modelo->update($_GET["id_proveedor"]);
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"proveedor","Ha eliminado un proveedor");
+
 			header("location:?c=ControladorProveedores/proveedores&eliminado");
 		}
 	}
@@ -53,6 +61,9 @@ class ControladorProveedores
 	public function restablecerProveedor()
 	{
 		$this->modelo->restablecerProveedor($_GET["id_proveedor"]);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"proveedor","Ha restablecido un proveedor");
+
 		header("location: ?c=controladorProveedores/papelera&restablecido");
 	}
 
@@ -60,25 +71,16 @@ class ControladorProveedores
 	public function editar()
 	{
 
-
-
-
-
-
-
-
-
-		print_r($_POST);
-
-
-
-
 		$resultadoDeCedula = $this->modelo->validarRif($_POST['rif']);
 
 		// //se verifica si la cédula del input es igual a la cédula ya existente 
 		if ($_GET["cedulaDb"] == $_POST["rif"]) {
 
 			$this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
+
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha modificado un proveedor");
+
 
 			header("location:?c=ControladorProveedores/proveedores&editado");
 
@@ -92,11 +94,15 @@ class ControladorProveedores
 			} else {
 
 				$this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
+				// Guardar la bitacora
+				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha modificado un proveedor");
 				header("location:?c=ControladorProveedores/proveedores&editado");
 			}
 		} else {
 
 			$this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha modificado un proveedor");
 			header("location:?c=ControladorProveedores/proveedores&editado");
 		}
 	}

@@ -457,6 +457,8 @@ addEventListener("DOMContentLoaded", function () {
 
                                                         <input type="hidden" name="idH" class="idHosp" value="${res.id_hospitalizacion}">
 
+                                                        <input type="hidden" name="id_usuario_bitacora" value="${document.querySelector("#modalEli").getAttribute("data-index")}">
+
                                                         <p class="uk-text-center mt-4 ">
                                                             <button class="uk-button rounded-5 btn-cancelar fw-bold" type="button"
                                                                 data-bs-dismiss="modal">Cancelar</button>

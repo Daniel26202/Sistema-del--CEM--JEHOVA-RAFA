@@ -12,6 +12,9 @@ addEventListener("DOMContentLoaded", function () {
     //Expresiones regulres
     const inputsExpresiones = document.querySelectorAll("#modalAgregarControl .inputExpresiones");
 
+
+    const id_usuario_bitacora = document.getElementById("id_usuario_bitacora").value;// constante que guarda el id que inicio session de esa manera podemos realizar la bitacora;
+
     //objeto de las expresiones:
     const expresiones = {
         cedula: /^([1-9]{1})([0-9]{5,7})$/,
@@ -237,6 +240,8 @@ console.log(resultado);
                                             </div>
                                     
                                             <form class="form-modal modalesEditar">
+
+                                                <input type="hidden" name="id_usuario_bitacora" value="${id_usuario_bitacora}">
                                     
                                                 <input type="hidden" name="id_control" value="${res.id_control}">
                                     

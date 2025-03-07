@@ -3,6 +3,7 @@
 use App\modelos\ModeloControl;
 use App\modelos\ModeloSintomas;
 use App\modelos\ModeloPatologia;
+use App\modelos\ModeloBitacora;
 
 class ControladorControl
 {
@@ -10,6 +11,7 @@ class ControladorControl
 	private $modelo;
 	private $modeloSintomas;
 	private $modeloPatologia;
+	private $bitacora;
 
 
 	function __construct()
@@ -17,6 +19,7 @@ class ControladorControl
 		$this->modelo = new ModeloControl();
 		$this->modeloSintomas = new ModeloSintomas();
 		$this->modeloPatologia = new ModeloPatologia();
+		$this->bitacora = new ModeloBitacora();
 	}
 
 	public function control()
@@ -87,7 +90,12 @@ class ControladorControl
 	public function insertarControl()
 	{
 		$patologia = (isset($_POST["patologias"])) ? $_POST["patologias"] : false;
+
 		$this->modelo->insertControl($_POST["doctor"], $_POST["id_paciente"], $_POST["diagnostico"], $_POST["sintomas"], $_POST["indicaciones"], $_POST["fechaRegreso"], $patologia, $_POST["nota"], $_POST["fecha_hora"]);
+
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"control","Ha Insertado un nuevo  control medico");
+
 
 		echo json_encode($_POST);
 	}
@@ -103,6 +111,9 @@ class ControladorControl
 		if ($_POST) {
 
 			$this->modelo->editarControl($_POST["id_control"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["nota_e"]);
+
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"control","Ha modificado un  control medico");
 
 			echo json_encode($_POST);
 		}
@@ -130,12 +141,16 @@ class ControladorControl
 	public function eliminarSintoma()
 	{
 		$this->modeloSintomas->eliminarL($_GET["id_sintomas"]);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"sintomas","Ha eliminado un  sintoma");
 		header("location: ?c=ControladorControl/control");
 	}
 
 	public function agregarSintoma()
 	{
 		$this->modeloSintomas->insertar($_POST["nombreS"]);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"sintomas","Ha Insertado un  sintoma");
 		header("location: ?c=ControladorControl/control");
 	}
 }

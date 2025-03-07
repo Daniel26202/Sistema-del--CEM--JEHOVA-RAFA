@@ -321,7 +321,7 @@
                         <div class="mt-3 uk-text-right">
                             <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                             type="button">Cancelar</button>
-                            <a href="?c=ControladorProveedores/update&id_proveedor=<?php echo $proveedor["id_proveedor"] ?>"
+                            <a href="?c=ControladorProveedores/update&id_proveedor=<?php echo $proveedor["id_proveedor"] ?>&id_usuario_bitacora=<?= $_SESSION['id_usuario'];?>"
                                 class="btn col-3 btn-agregarcita-modal text-decoration-none"
                                 type="button">Eliminar</a>
                             </div>
@@ -362,6 +362,8 @@
 
                         <form class="form-modal" id="modalAgregar" method="POST"
                         action="?c=ControladorProveedores/editar&cedulaDb<?= $proveedor["id_proveedor"]; ?>">
+
+                        <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
 
                         <div class="input-group flex-nowrap d-none">
                             <span class="input-modal mt-1">

@@ -472,6 +472,8 @@
 
 											<form action="?c=ControladorReportes/anularFactura" method="POST">
 												<input type="hidden" value="<?= $factura["id_factura"] ?>" name="id_factura">
+												<input type="hidden" value="<?= $_SESSION['id_usuario'] ?>" name="id_usuario_bitacora">
+
 												<button class="btn col-4 btn-agregarcita-modal " type="submit">Si</button>
 											</form>
 

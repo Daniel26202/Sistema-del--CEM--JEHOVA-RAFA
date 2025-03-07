@@ -114,7 +114,7 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
       
       eliminarInsumo.setAttribute(
         "href",
-        `?c=controladorInsumos/eliminar&id_insumo=${res.id_insumo}`
+        `?c=controladorInsumos/eliminar&id_insumo=${res.id_insumo}&id_usuario_bitacora=${document.getElementById("id_usuario_bitacora").value}`
         );
       inputEditar[0].value = res.id_insumo;
       inputEditar[1].value = res.nombre;

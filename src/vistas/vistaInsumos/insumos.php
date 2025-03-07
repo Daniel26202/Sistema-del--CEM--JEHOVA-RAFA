@@ -3,6 +3,7 @@
 <div class="d-flex align-items-center justify-content-between mt-4 mb-4">
     <div class="ms-5 d-flex align-items-center" id="inicioPacientes">
         <h1 class="fw-bold">INSUMOS</h1>
+        
         <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="currentColor" class="bi bi-capsule ms-2"
             viewBox="0 0 16 16">
             <path
@@ -85,6 +86,9 @@
 
 </div>
 
+
+<!-- input para obteber el id para la bitacora -->
+ <input type="hidden" id="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
 
 <div class="d-flex">
 
@@ -285,10 +289,13 @@
             </div>
 
             <form class="form-modal" method="POST" action="?c=controladorInsumos/guardarInsumo" enctype="multipart/form-data" id="modalAgregarInsumos">
+
                 <div class="alert alert-danger d-none" id="alerta-guardar">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
                 <div id="contenedor-img" class="mb-2">
 
                 </div>
+
+                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
 
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
@@ -456,6 +463,8 @@
             </div>
 
             <form class="form-modal" method="POST" action="?c=controladorInsumos/editar" enctype="multipart/form-data" id="modalEditarInsumos">
+
+                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
 
                 <div class="alert alert-danger d-none" id="alerta-editar">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
 
