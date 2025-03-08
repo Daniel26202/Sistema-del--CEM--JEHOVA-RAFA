@@ -247,7 +247,7 @@ class ModeloInsumo extends Db
 
 	//funcion mejorada de actualizacion de la cantidad
 	public function actualizar_cantidad_insumo($id_insumo){
-		$consulta = $this->conexion->prepare(" SELECT id_insumo, fechaDeVencimiento, SUM(cantidad_disponible) AS cantidad FROM entrada_insumo WHERE id_insumo =:id_insumo AND fechaDeVencimiento > CURRENT_DATE ");
+		$consulta = $this->conexion->prepare(" SELECT ei.id_insumo, ei.fechaDeVencimiento, SUM(ei.cantidad_disponible) AS cantidad FROM entrada_insumo ei INNER JOIN entrada e on e.id_entrada = ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE AND e.estado = 'ACT' ");
 		$consulta->bindParam(":id_insumo",$id_insumo);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
