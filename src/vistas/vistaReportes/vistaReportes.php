@@ -99,6 +99,20 @@
 			</div>
 		</a>
 	</div>
+
+	<div class="cardReporte text-white mb-3">
+		<a class="text-decoration-none"  data-bs-toggle="modal" data-bs-target="#exampleModalBuscadorEntradas">
+			<div class="card-body cartaRepor">
+				<div class="ico">
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-people-fill mb-2 t" viewBox="0 0 16 16">
+                            <path d="M4.98 1a.5.5 0 0 0-.39.188L1.54 5H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0A.5.5 0 0 1 10 5h4.46l-3.05-3.812A.5.5 0 0 0 11.02 1H4.98zM3.81.563A1.5 1.5 0 0 1 4.98 0h6.04a1.5 1.5 0 0 1 1.17.563l3.7 4.625a.5.5 0 0 1 .106.374l-.39 3.124A1.5 1.5 0 0 1 14.117 10H1.883A1.5 1.5 0 0 1 .394 8.686l-.39-3.124a.5.5 0 0 1 .106-.374L3.81.563zM.125 11.17A.5.5 0 0 1 .5 11H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0 .5.5 0 0 1 .5-.5h5.5a.5.5 0 0 1 .496.562l-.39 3.124A1.5 1.5 0 0 1 14.117 16H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .121-.393z" />
+                        </svg>
+				</div>
+				<h4 class="card-title t">Entradas de Insumos</h4>
+				<p class="card-text t text-center">Descargar Reporte de las Entradas de Insumos</p>
+			</div>
+		</a>
+	</div>
 </div>
 
 <div class="reportess">
@@ -609,6 +623,97 @@
 	</div>
 </div>
 
+
+
+
+<!-- Modal -->
+<div class="modal fade modalBuscadorP" id="exampleModalBuscadorEntradas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+
+		<div class="modal-content modalBuscador">
+			<div>
+				<a href="#" data-bs-dismiss="modal" aria-label="Close">
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-circle uk-modal-close-default text-white " viewBox="0 0 16 16">
+						<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+						<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+					</svg>
+				</a>
+				<h5 class="fw-bolder mt-3 ms-3 text-uppercase text-white fecha_entradas" id="exampleModalLabel">Seleccione El Insumo</h5>
+			</div>
+
+			<div class="modal-body ">
+				<div id="alertaDeFechaEntradas" class="alert alert-danger text-center d-none"></div>
+
+
+				<article class="uk-comment" role="comment" id="articulo">
+
+					<div class="uk-grid-medium uk-flex-middle" uk-grid>
+
+						<div class="uk-width-auto">
+
+							<!-- <img src="./src/assets/img/seguro-de-salud.png" width="80" height="80" uk-svg class="iconoB pb-1">  -->
+
+
+
+						</div>
+
+						<div class="d-flex justify-content-center">
+
+
+							<form action="?c=ControladorReportes" method="POST" id="formularioEntradas">
+
+								<select id="selectInsumoEntradas" class="form-control w-100">
+									<option selected disabled>Seleccione un Insumo</option>
+
+									<?php foreach ($insumos as $i): ?>
+										<option value="<?= $i['id_insumo']?>"><?= $i['nombre']?></option>
+									<?php endforeach ?>
+								</select>
+
+
+								<!-- <h5 class="fw-bolder mt-3 ms-3 text-uppercase text-white fecha_entradas"><input type="checkbox" class="form-check-input m-3 card-title t" id="fechas_entradas" >BUSQUÉ POR FECHAS LAS ENTRADAS</h5> -->
+
+								<div id="cajaCheckboxEntrada" class="form-check mt-2 mb-2 d-none">
+								  <input class="form-check-input" type="checkbox" value="" id="checkboxEntradas">
+								  <label class="form-check-label fw-bolder ms-3 text-uppercase text-white fecha_entradas" for="flexCheckDefault">
+								    BUSQUÉ POR FECHAS LAS ENTRADAS
+								  </label>
+								</div>
+
+
+
+
+								<ul class="  uk-subnav-divider uk-margin-remove-top margin d-flex fechas_mover d-none " id="cajaModalEntradas">
+
+									<li><a href="#" class="text-decoration-none fw-bolder text-uppercase text-white me-3" >DESDE<input class="input-expresion form-control  input-disabled input-paciente col-10" type="date" name="desdeFechaEntradas" id="desdeFechaEntradas"></a></li>
+									<li class="li_mover"><a href="#" class="text-decoration-none fw-bolder text-uppercase text-white" >HASTA<input class="input-expresion form-control input-disabled input-paciente col-10" name="fechaHastaEntradas" id="fechaHastaEntradas" type="date"></a></li>
+								</ul>
+
+						</div>
+					</div>
+
+
+
+				</article>
+			</div>
+			<div class="d-flex justify-content-end aling-items-center">
+				<button class="uk-button col-4 uk-button-default uk-modal-close btn-cerrar-modal " data-bs-dismiss="modal" type="button">Cancelar</button>
+
+				<button type="submit" class="btn me-3 d-none" id="botonDeImprimirEntradas"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+						<path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />
+						<path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+					</svg></button>
+				</form>
+			</div>
+
+
+		</div>
+	</div>
+</div>
+
+
+
+
 <!-- facturas Anuladas -->
 
 <div class="modal fade modalCapa " id="myModalAnular" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -992,7 +1097,7 @@
 </div>
 </div>
 
-<script src="./src/assets/js/reporteCita.js"></script>
+<script src="./src/assets/js/reporteCitaYEntradasDeInsumos.js"></script>
 <script src="./src/assets/js/reportes.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
