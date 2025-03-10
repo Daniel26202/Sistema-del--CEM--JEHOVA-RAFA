@@ -28,6 +28,10 @@ class ControladorReportes{
 	public function buscarPDF(){
 		require_once './src/vistas/vistaReportes/vistaReporteCitasPdf.php';
 	}
+
+	public function buscarEntradasInsumosPDF(){
+		require_once './src/vistas/vistaReportes/vistaReporteEntradasPdf.php';
+	}
 	public function factura() {
 		// Verificar si se ha enviado el ID de cita
 		if (isset($_GET["id_cita"]) && !empty($_GET["id_cita"])) {

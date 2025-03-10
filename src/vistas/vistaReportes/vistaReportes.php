@@ -660,9 +660,9 @@
 						<div class="d-flex justify-content-center">
 
 
-							<form action="?c=ControladorReportes" method="POST" id="formularioEntradas">
+							<form action="?c=ControladorReportes/buscarEntradasInsumosPDF" method="POST" id="formularioEntradas">
 
-								<select id="selectInsumoEntradas" class="form-control w-100">
+								<select id="selectInsumoEntradas" name="id_insumo" class="form-control w-100">
 									<option selected disabled>Seleccione un Insumo</option>
 
 									<?php foreach ($insumos as $i): ?>
