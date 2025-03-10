@@ -92,6 +92,13 @@
                                             <p class="pe-2">Usuario o Contraseña incorrectos.</p>
                                         </div>
                                     <?php endif ?>
+                                    <?php if (isset($_GET["captcha"])): ?>
+                                        <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                            style="display: none;" uk-alert>
+                                            <a class="uk-alert-close" uk-close></a>
+                                            <p class="pe-2">Verificación de no soy un robo fallido, o error en su conexión a internet</p>
+                                        </div>
+                                    <?php endif ?>
                                     <?php if (isset($_GET["campos"])): ?>
                                         <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
                                             style="display: none;" uk-alert>
@@ -140,6 +147,10 @@
                         </div>
 
                         <div class="w-auto col me-2">
+                            <!-- recaptcha -->
+                            <div class="d-flex justify-content-end mt-4 pt-3 col">
+                                <div class="g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1"></div>
+                            </div>
 
                             <div class="d-flex justify-content-end mt-4 pt-3 col">
                                 <a href="?c=ControladorRecuperarContr/mostrarRecuperarContr"
@@ -159,7 +170,7 @@
             </form>
         </div>
     </main>
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
     <script type="text/javascript" src="./src/assets/js/inicioSesion.js"></script>
     <script type="text/javascript" src="./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="./src/assets/uikit/js/uikit.min.js"></script>

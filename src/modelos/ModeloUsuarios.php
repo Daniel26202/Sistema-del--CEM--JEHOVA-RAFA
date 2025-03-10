@@ -112,45 +112,47 @@ class ModeloUsuarios extends Db
 
         $consultaDeUsuario->execute();
     }
-    public function AgregarAdministrador($usuario, $password)
+    public function AgregarAdministrador($usuario, $password, $correo)
     {
 
         $resultadoDeUsuario = $this->validarUsuario($_POST['usuario']);
 
-        if($resultadoDeUsuario === "existeU"){
-           
+        if ($resultadoDeUsuario === "existeU") {
+
             header("location: ?c=ControladorUsuarios/administradores&error");
 
-            
-        }else{
+
+        } else {
             $imagenComprobacion = isset($_FILES['imagenUsuario']['name']) ? $_FILES['imagenUsuario']['name'] : false;
             if ($imagenComprobacion) {
                 $nombreImagenUsuario = $_FILES['imagenUsuario']['name'];
-    
-                $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :password, "ACT")';
+
+                $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :correo, :password, "ACT")';
                 $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
                 $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
                 $consultaDeUsuario->bindParam(":usuario", $usuario);
+                $consultaDeUsuario->bindParam(":correo", $correo);
                 $consultaDeUsuario->bindParam(":password", $password);
                 $consultaDeUsuario->execute();
                 $id_usuario = $this->conexion->lastInsertId();
                 $imagen = $id_usuario . "_" . $_FILES['imagenUsuario']['name'];
-    
+
                 $imagen_temporal = $_FILES['imagenUsuario']['tmp_name'];
                 move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
                 return ($id_usuario);
             } else {
                 $nombreImagenUsuario = "doctor.png";
-    
-                $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :password, "ACT")';
+
+                $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :correo, :password, "ACT")';
                 $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
                 $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
                 $consultaDeUsuario->bindParam(":usuario", $usuario);
+                $consultaDeUsuario->bindParam(":correo", $correo);
                 $consultaDeUsuario->bindParam(":password", $password);
                 $consultaDeUsuario->execute();
                 $id_usuario = $this->conexion->lastInsertId();
                 $imagen = $nombreImagenUsuario;
-    
+
                 $imagen_temporal = $_FILES['imagenUsuario']['tmp_name'];
                 move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
                 return ($id_usuario);
@@ -158,10 +160,10 @@ class ModeloUsuarios extends Db
         }
 
 
-       
+
     }
 
 
 
-    
+
 }

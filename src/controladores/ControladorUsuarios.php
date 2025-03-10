@@ -38,51 +38,51 @@ class ControladorUsuarios
     // editar usuario
     public function editarUsuario()
     {
-        
 
-            $resultadoDeUsuario = $this->modelo->validarUsuario($_POST['usuario']);
 
-           
-            // NOTA: Esto "&&" es "Y"
-            //se verifica si el usuario del input no es igual al usuario ya existente.  
-            if ($_POST["usuario"] != $_GET["usuarioDb"]) {
+        $resultadoDeUsuario = $this->modelo->validarUsuario($_POST['usuario']);
 
-                //verifica si el usuario es igual a la información de la base de datos.
-                if ($resultadoDeUsuario === "existeU") {
-                    header("location:?c=ControladorUsuarios/usuarios&error");
 
-                } else {
+        // NOTA: Esto "&&" es "Y"
+        //se verifica si el usuario del input no es igual al usuario ya existente.  
+        if ($_POST["usuario"] != $_GET["usuarioDb"]) {
+
+            //verifica si el usuario es igual a la información de la base de datos.
+            if ($resultadoDeUsuario === "existeU") {
+                header("location:?c=ControladorUsuarios/usuarios&error");
+
+            } else {
 
                     $this->modelo->updateUsuario($_POST["usuario"], $_POST["password"], $_POST["id_usuario"],$_FILES['imagenUsuario']["name"],$_FILES['imagenUsuario']['tmp_name']);
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"usuario","Ha modificado un  usuario");
 
-                    header("location:?c=ControladorUsuarios/usuarios&editado");
+                header("location:?c=ControladorUsuarios/usuarios&editado");
 
-                }
+            }
 
-                //se verifica si el usuario del input es igual al usuario ya existente.  
-            } elseif ($_GET["usuarioDb"] == $_POST["usuario"]) {
+            //se verifica si el usuario del input es igual al usuario ya existente.  
+        } elseif ($_GET["usuarioDb"] == $_POST["usuario"]) {
 
                 $this->modelo->updateUsuario( $_POST["usuario"], $_POST["password"], $_POST["id_usuario"],$_FILES['imagenUsuario']["name"],$_FILES['imagenUsuario']['tmp_name']);
 
                 // Guardar la bitacora
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"usuario","Ha modificado un  usuario");
 
-                header("location:?c=ControladorUsuarios/usuarios&editado");
+            header("location:?c=ControladorUsuarios/usuarios&editado");
 
-            } else {
+        } else {
 
                 $this->modelo->updateUsuario($_POST["usuario"], $_POST["password"], $_POST["id_usuario"],$_FILES['imagenUsuario']["name"],$_FILES['imagenUsuario']['tmp_name']);
 
                 // Guardar la bitacora
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"usuario","Ha modificado un  usuario");
 
-                header("location:?c=ControladorUsuarios/usuarios&editado");
+            header("location:?c=ControladorUsuarios/usuarios&editado");
 
-            }
+        }
 
-        
+
 
     }
 
@@ -101,10 +101,10 @@ class ControladorUsuarios
     public function registrarAdmin()
     {
 
-        
+        // Generamos la contraseña encriptada de la contraseña ingresada
+        $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
-
-        $id_usuario =  $this->modelo->AgregarAdministrador($_POST["usuario"], $_POST["password"]); 
+        $id_usuario = $this->modelo->AgregarAdministrador($_POST["usuario"], $passwordEncrip, $_POST["Correo"]);
 
         $this->doctor->RegistrarAdmin($_POST["nacionalidad"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["Correo"], $id_usuario);
 
@@ -113,11 +113,11 @@ class ControladorUsuarios
 
 
         header("location:?c=ControladorUsuarios/administradores&registrado");
-
     }
 
 
-    public function editarAdministrador(){
+    public function editarAdministrador()
+    {
 
         $id_usuario =  $this->modelo->updateUsuario($_POST["usuario"], $_POST["password"],$_POST["id_usuario"], $_FILES["imagenUsuario"]["name"], $_FILES["imagenUsuario"]["tmp_name"]); 
 
@@ -125,11 +125,12 @@ class ControladorUsuarios
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"usuario","Ha modificado un administador ");
 
         header("location: ?c=ControladorUsuarios/administradores&editado");
-        
+
     }
 
 
-    public function eliminarAdministrador() {
+    public function eliminarAdministrador()
+    {
         $this->modelo->eliminacionLogica($_POST["usuario"], $_POST["id_usuario"]);
 
         // Guardar la bitacora

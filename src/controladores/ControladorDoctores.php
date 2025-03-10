@@ -38,8 +38,9 @@ class ControladorDoctores extends ModeloDoctores
             header("location: ?c=ControladorDoctores/doctores&error");
         } else {
 
-            // convierte el texto en mayúscula
 
+            // Generamos la contraseña encriptada de la contraseña ingresada
+            $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
             // si encuentra la imagen la guardo en la variable si no le doy el valor false
             $imagen = isset($_FILES['imagenDoctores']['name']) ? $_FILES['imagenDoctores']['name'] : false;
@@ -48,10 +49,9 @@ class ControladorDoctores extends ModeloDoctores
 
 
             if ($imagen) {
-                $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $_POST["password"], $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"]);
+                $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"]);
             } else {
-                $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $_POST["password"], $_POST["especialidad"], $_POST['email'],  $_POST['nacionalidad'], $imagenPorDefecto, "",$_POST["selectEspecialidad"]);
-
+                $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $imagenPorDefecto, "", $_POST["selectEspecialidad"]);
             }
 
             // Guardar la bitacora
@@ -62,7 +62,7 @@ class ControladorDoctores extends ModeloDoctores
 
             header("location: ?c=controladorConsultas/consultas&registrado");
         }
-        if($resultadoDeUsuario === "existeU"){
+        if ($resultadoDeUsuario === "existeU") {
             header("location: ?c=ControladorDoctores/doctores&Usuario");
         }
     }
@@ -103,17 +103,21 @@ class ControladorDoctores extends ModeloDoctores
 
             } else {
 
-                $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds,$_POST["horaEntrada"],$_POST["horaSalida"]);
+                $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
 
                 // Guardar la bitacora
-                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
+                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
+
+                // // Guardar la bitacora
+                // $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
 
                 header("location:?c=ControladorDoctores/doctores&editado");
 
             }
         } else {
 
-            $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds,$_POST["horaEntrada"],$_POST["horaSalida"]);
+            $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
+
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
 

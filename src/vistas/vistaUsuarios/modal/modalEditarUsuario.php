@@ -65,6 +65,7 @@
                                 <input type="text" name="apellido" id="inputTres" class="input-u col-12" placeholder="Apellido" value="<?php echo $dato["apellido"]; ?>">
 
                             </div> -->
+                            <p class="text-center fw-bolder mb-1 mt-3">Nombre de usuario</p>
 
                             <div class="margen-input-u w-auto grpFormCorrect">
 
@@ -77,6 +78,7 @@
                                     value="<?php echo $dato["usuario"]; ?>">
 
                             </div>
+
                             <div class="margen-input-u w-auto grpFormCorrect d-flex">
 
                                 <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
