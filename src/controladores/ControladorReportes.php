@@ -1,17 +1,20 @@
 <?php
 use App\modelos\ModeloReporte;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloInsumo;
 // use FPDF\FPDF; 	
 
 class ControladorReportes{
 		
 	private $modelo;
 	private $bitacora;
+	private $insumo;
 
     function __construct()
     {
         $this->modelo = new ModeloReporte();
         $this->bitacora = new ModeloBitacora();
+        $this->insumo = new ModeloInsumo();
     }
 
 	
@@ -19,10 +22,15 @@ class ControladorReportes{
 
 		$facturas = $this->modelo->consultarFactura();
 		$anuladas = $this->modelo->consultarFacturaAnuladas();
+		$insumos = $this->insumo->insumos();
 		require_once './src/vistas/vistaReportes/vistaReportes.php';
 	}
 	public function buscarPDF(){
 		require_once './src/vistas/vistaReportes/vistaReporteCitasPdf.php';
+	}
+
+	public function buscarEntradasInsumosPDF(){
+		require_once './src/vistas/vistaReportes/vistaReporteEntradasPdf.php';
 	}
 	public function factura() {
 		// Verificar si se ha enviado el ID de cita
