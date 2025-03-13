@@ -62,6 +62,35 @@ public function consultarFacturaPDF($id_factura)
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 
 	}
+
+
+	//consulta sql para mostrar el pdf parametrisado
+	public function entradasInsumosPdf($id_insumo,$desdeFecha, $fechaHasta){
+
+		if ($desdeFecha != "" && $fechaHasta != "") {
+			$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND e.fechaDeIngreso BETWEEN :desdeFecha AND :fechaHasta AND ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY e.fechaDeIngreso";
+
+			$consulta = $this->conexion->prepare($sql);
+			$consulta->bindParam(":desdeFecha", $desdeFecha);
+			$consulta->bindParam(":fechaHasta", $fechaHasta);
+		} else {
+			$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY e.fechaDeIngreso";
+			$consulta = $this->conexion->prepare($sql);
+		}
+
+
+		$consulta->bindParam(":id_insumo", $id_insumo);
+		
+		return ($consulta->execute()) ? $consulta->fetchAll() : false;
+
+	}
+
+
+
+
+
+
+
     public function pdfPaciente(){
 		$consulta = $this->conexion->prepare("SELECT * FROM paciente WHERE estado = 'ACT'");
 		
