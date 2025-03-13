@@ -1,4 +1,4 @@
-<!--MODAL MOSTAR-->
+<!--MODAL MOSTRAR-->
 
 <?php foreach ($datosU as $dato): ?>
 
@@ -111,6 +111,10 @@
                         </div>
 
                         <div class="uk-card-footer d-flex justify-content-start">
+                            <a href="#" class="color_lineaText uk-button btnMostrar mt-2 me-4 pe-0 ps-0">Editar usuario</a>
+                            <a href="#" class="uk-button uk-button-text btnMostrar mt-2 btn_editarPassword" uk-toggle="target: #modal-exampleEditarPassword" data-id-u="<?php echo $dato["id_usuario"]; ?>" >Editar contraseña</a>
+                        </div>
+                        <div class="uk-card-footer d-flex justify-content-start">
                             <a href="#" class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close">Cancelar</a>
                             <input type="submit" class="uk-button uk-button-text btnMostrar ms-4 mt-2" name="actualizar"
                                 value="Actualizar">
@@ -119,5 +123,6 @@
             </form>
         </div>
     </div>
+    <?php require_once './src/vistas/vistaUsuarios/modal/modalEditarPasswordAdmin.php'; ?>
 
 <?php endforeach ?>

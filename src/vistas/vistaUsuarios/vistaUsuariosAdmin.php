@@ -139,7 +139,7 @@
                 <ul class="sin-circulos d-flex justify-content-end">
 
                     <li class="li">
-                        <div class="borde-de-menu  mb-1 activo-border"></div>
+                        <div class="borde-de-menu  mb-1 "></div>
                         <div class="hover-grande">
                             <a href="?c=ControladorUsuarios/usuarios" class="text-decoration-none text-black me-3 "
                                 id="DMservicioMedico">
@@ -152,7 +152,7 @@
                         </div>
                     </li>
                     <li class="li">
-                        <div class="borde-de-menu mb-1 "></div>
+                        <div class="borde-de-menu mb-1 activo-border"></div>
                         <div class="hover-grande">
                             <a href="?c=ControladorUsuarios/administradores" class=text-decoration-none me-3 azul me-3
                                 iconoDoctor" id="DMdoctores">
@@ -235,4 +235,5 @@
 <?php require_once './src/vistas/head/footer.php'; ?>
 
 <script type="text/javascript" src="./src/assets/js/imgAdmin.js"></script>
+<script type="text/javascript" src="./src/assets/js/admin.js"></script>
 <!-- <script type="text/javascript" src="./src/assets/js/usuarios.js"></script> -->

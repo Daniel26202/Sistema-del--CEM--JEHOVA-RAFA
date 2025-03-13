@@ -1604,6 +1604,11 @@ con la clase hover-grande cambia de tamaño*/
 
 }
 
+.color_lineaText {
+	color: black !important;
+	line-height: 1.5;
+	border-bottom: 1px solid black;
+}
 
 
 /* /////////////////////////////////////////////////////////////////////////// */
@@ -1750,7 +1755,8 @@ input[type="date"] {
 		margin-top: 5%;
 
 	}
-	.svg_tamaño_rsp{
+
+	.svg_tamaño_rsp {
 		height: 50px;
 		width: 23px;
 		margin-left: 3px;
@@ -1804,8 +1810,8 @@ input[type="date"] {
 }
 
 @media screen and (max-width: 370px) {
-	
-	
+
+
 
 	.contInicioRes {
 		display: flex;
