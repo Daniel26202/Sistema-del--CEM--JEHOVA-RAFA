@@ -14,9 +14,7 @@ if(isset($partes[2])){
 
 	//trim en php es para quitar el ultimo caracter en este caso es para quitar la ultima "," del parametro
 	$parametro = trim($parametro, ",");
-	echo $parametro;
-}else{
-	echo "vacio";
+
 }
 
 $controlador = "Controlador".$controlador;

@@ -4,13 +4,13 @@ session_start();
 
 if (isset($_GET['cerrar'])) {
 	session_destroy();
-	header("location: ?c=ControladorIniciarSesion/mostrarIniciarSesion");
+	header("location: IniciarSesion/mostrarIniciarSesion");
 }
 
 
 if (isset($_SESSION['usuario'])) {
 } else {
-	header("location: ?c=ControladorIniciarSesion/mostrarIniciarSesion");
+	header("location: IniciarSesion/mostrarIniciarSesion");
 }
 ?>
 <!DOCTYPE html>
@@ -19,13 +19,13 @@ if (isset($_SESSION['usuario'])) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="./src/assets/img/logotipo.jpg">
+	<link rel="shortcut icon" href="../src/assets/img/logotipo.jpg">
 	<title>J-R</title>
-	<link rel="stylesheet" type="text/css" href="./src/assets/uikit/css/uikit.min.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/cssVista/style.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs.min.css">
-	<link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs-modern.css">
+	<link rel="stylesheet" type="text/css" href="../src/assets/uikit/css/uikit.min.css">
+	<link rel="stylesheet" type="text/css" href="../src/assets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../src/assets/cssVista/style.css">
+	<link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs.min.css">
+	<link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs-modern.css">
 </head>
 
 <body class="d-flex">
@@ -68,7 +68,7 @@ if (isset($_SESSION['usuario'])) {
 
 		<div class="options opcRes mt-1">
 
-			<a href="?c=controladorInicio/inicio" uk-tooltip="Inicio" id="menuInicio">
+			<a href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio" uk-tooltip="Inicio" id="menuInicio">
 				<div class="" id="menuInicioColor">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-house-fill" viewBox="0 0 16 16">
@@ -83,7 +83,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=controladorPacientes/getPacientes" uk-tooltip="Pacientes" id="menuPacientes">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" uk-tooltip="Pacientes" id="menuPacientes">
 					<div class="" id="menuPacientesColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-people-fill" viewBox="0 0 16 16">
@@ -97,7 +97,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=controladorPatologias/patologias" uk-tooltip="Patologias" id="menuPatologias">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias" uk-tooltip="Patologias" id="menuPatologias">
 					<div class="" id="menuPatologiasColor">
 
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bandaid-fill" viewBox="0 0 16 16">
@@ -113,7 +113,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=controladorFactura/facturaInicio" uk-tooltip="Facturacion" id="menuFacturacion">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio" uk-tooltip="Facturacion" id="menuFacturacion">
 					<div class="" id="menuFacturacionColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
@@ -129,7 +129,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=controladorCitas/citas" uk-tooltip="Citas" id="menuCitas">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" uk-tooltip="Citas" id="menuCitas">
 					<div class="" id="menuCitasColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-calendar2-heart-fill" viewBox="0 0 16 16">
@@ -144,7 +144,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=controladorConsultas/consultas" uk-tooltip="Servicios" id="menuServicios">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas" uk-tooltip="Servicios" id="menuServicios">
 					<div class="" id="menuServiciosColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-heart-fill" viewBox="0 0 16 16">
 							<path fill-rule="evenodd" d="M10.058.501a.501.501 0 0 0-.5-.501h-2.98c-.276 0-.5.225-.5.501A.499.499 0 0 1 5.582 1a.497.497 0 0 0-.497.497V2a.5.5 0 0 0 .5.5h4.968a.5.5 0 0 0 .5-.5v-.503A.497.497 0 0 0 10.555 1a.499.499 0 0 1-.497-.499Z" />
@@ -159,7 +159,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=controladorDoctores/doctores" uk-tooltip="Directorio Médico" id="menuDirectorioMedico">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores" uk-tooltip="Directorio Médico" id="menuDirectorioMedico">
 					<div class="" id="menuDirectorioMedicoColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-clipboard2-pulse-fill" viewBox="0 0 16 16">
@@ -174,7 +174,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php endif ?>
 
 
-			<a href="?c=controladorControl/control" uk-tooltip="Control Médico" id="menuControlMedico">
+			<a href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
 				<div class="" id="menuControlMedicoColor">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-person-fill-gear" viewBox="0 0 16 16">
@@ -185,7 +185,7 @@ if (isset($_SESSION['usuario'])) {
 				</div>
 			</a>
 
-			<a href="?c=ControladorHospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
+			<a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
 				id="menuHospitalizacion">
 				<div class="" id="menuHospitalizacionColor">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -205,7 +205,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=controladorInsumos/insumos" uk-tooltip="Insumos" id="menuInsumos">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos" uk-tooltip="Insumos" id="menuInsumos">
 					<div class="" id="menuInsumosColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-capsule" viewBox="0 0 16 16">
@@ -221,7 +221,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=ControladorUsuarios/usuarios" uk-tooltip="Usuario" id="menuUsuarios">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" uk-tooltip="Usuario" id="menuUsuarios">
 					<div class="" id="menuUsuariosColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-gear-fill" viewBox="0 0 16 16">
@@ -236,7 +236,7 @@ if (isset($_SESSION['usuario'])) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="?c=ControladorReportes/reportes" uk-tooltip="Reportes" id="menuReportes">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes" uk-tooltip="Reportes" id="menuReportes">
 					<div class="" id="menuReportesColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-clipboard-data-fill" viewBox="0 0 16 16">
