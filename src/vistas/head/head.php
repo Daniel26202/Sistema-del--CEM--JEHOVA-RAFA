@@ -19,13 +19,28 @@ if (isset($_SESSION['usuario'])) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="../src/assets/img/logotipo.jpg">
-	<title>J-R</title>
-	<link rel="stylesheet" type="text/css" href="../src/assets/uikit/css/uikit.min.css">
-	<link rel="stylesheet" type="text/css" href="../src/assets/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="../src/assets/cssVista/style.css">
-	<link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs.min.css">
-	<link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs-modern.css">
+
+	<?php if($parametro !=  ""):?>
+		<?php $concatenarRuta = "";?>
+		<?php foreach($parametro as $p):?>
+			<?php $concatenarRuta .= "../";?>
+			<link rel="shortcut icon" href="<?= $concatenarRuta?>../src/assets/img/logotipo.jpg">
+			<title>J-R</title>
+			<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/uikit/css/uikit.min.css">
+			<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/bootstrap/css/bootstrap.min.css">
+			<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/cssVista/style.css">
+			<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/intro/introjs.min.css">
+			<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/intro/introjs-modern.css">
+		<?php endforeach;?>
+	<?php else :?>
+			<link rel="shortcut icon" href="../src/assets/img/logotipo.jpg">
+			<title>J-R</title>
+			<link rel="stylesheet" type="text/css" href="../src/assets/uikit/css/uikit.min.css">
+			<link rel="stylesheet" type="text/css" href="../src/assets/bootstrap/css/bootstrap.min.css">
+			<link rel="stylesheet" type="text/css" href="../src/assets/cssVista/style.css">
+			<link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs.min.css">
+			<link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs-modern.css">
+	<?php endif;?>
 </head>
 
 <body class="d-flex">

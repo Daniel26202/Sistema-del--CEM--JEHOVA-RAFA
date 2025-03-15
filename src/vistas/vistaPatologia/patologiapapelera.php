@@ -88,7 +88,7 @@
             <li class="li">
                 <div class="borde-de-menu  mb-1"></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorPatologias/patologias" class="text-decoration-none text-black me-3" id="DMservicioMedico">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias" class="text-decoration-none text-black me-3" id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bandaid-fill me-1 mb-1" viewBox="0 0 16 16">
 							<path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707 .708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z" />
 						</svg>Patologías</a>
@@ -229,7 +229,7 @@
                         <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                           id="cancelarEliminacion">Cancelar</button>
 
-                        <a href="?c=ControladorPatologias/restablecerPatologia&id_patologia=<?= $patologia["0"]; ?>&id_usuario=<?php echo $_SESSION['id_usuario'] ?>">
+                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/restablecerPatologia/<?= $patologia["0"]; ?>/<?php echo $_SESSION['id_usuario'] ?>">
                           <button class="btn col-4 btn-agregarcita-modal btnrestablecer" id="btnEliminarEspecialidad">Restablecer</button>
                         </a>
 
@@ -288,5 +288,5 @@
 <?php require_once "modalesPatologia.php"; ?>
 <!-- <script type="text/javascript" src="./src/assets/js/validacionesPacientesRegistrar.js"></script> -->
 <!-- <script type="text/javascript" src="./src/assets/js/buscadorPaciente.js"></script> -->
-<script type="text/javascript" src="./src/assets/js/ayudaPaciente.js"></script>
+<script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>

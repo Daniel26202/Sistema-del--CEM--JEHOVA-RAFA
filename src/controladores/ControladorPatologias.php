@@ -34,7 +34,7 @@ class ControladorPatologias
 
 		
 		if ($resultaPatologia === "existeC") {
-			header("location:?c=ControladorPatologias/patologias&error");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias&error");
 
         } else {
          
@@ -43,23 +43,33 @@ class ControladorPatologias
 			// Guardo la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'],"patologia","Ha Insertado una patologia");
 
-			header("location: ?c=ControladorPatologias/patologias&agregado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias&agregado");
 
         }
 	}
 
 	//eliminar patologia
-	public function eliminarPatologia(){
-		$this->patologia->eliminarPatologia($_GET["id_patologia"]);
+	public function eliminarPatologia($datos){
+
+		$id_patologia = $datos[0];
+		$id_usuario = $datos[2];
+
+
+		$this->patologia->eliminarPatologia($id_patologia);
 		// Guardo la bitacora
-		$this->bitacora->insertarBitacora($_GET['id_usuario'],"patologia","Ha eliminado una patologia");
-		header("location: ?c=ControladorPatologias/patologias&eliminado");
+		$this->bitacora->insertarBitacora($id_usuario,"patologia","Ha eliminado una patologia");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias&eliminado");
 	}
-	public function restablecerPatologia(){
-		$this->patologia->restablecer($_GET["id_patologia"]);
+
+
+	public function restablecerPatologia($datos){
+		$id_patologia = $datos[0];
+		$id_usuario = $datos[2];
+
+		$this->patologia->restablecer($id_patologia);
 		// Guardo la bitacora
-		$this->bitacora->insertarBitacora($_GET['id_usuario'],"patologia","Ha restablecido una patologia");
-		header("location: ?c=ControladorPatologias/patologias&restablecida");
+		$this->bitacora->insertarBitacora($id_usuario,"patologia","Ha restablecido una patologia");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias&restablecida");
 	}
 
 	

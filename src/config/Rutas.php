@@ -27,6 +27,8 @@ class Rutas{
 	        //trim en php es para quitar el ultimo caracter en este caso es para quitar la ultima "," del parametro
 	        $parametro = trim($parametro, ",");
 
+            $parametro = explode(",", $parametro);
+
         }
 
         $this->controlador = "Controlador".$this->controlador;

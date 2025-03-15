@@ -14,6 +14,12 @@
 	</div>
 
 	<!--  si factura no muestra el btn -->
+	<?php if($datos != ""):?>
+		<h1>LLeno</h1>
+	<?php else:?>
+		<h1>Vacio</h1>
+	<?php endif;?>
+
 	<?php if (isset($_GET["id_factura"]) && isset($_GET["id_cita"]) || isset($_GET["id_factura"]) && isset($_GET["idH"]) || isset($_GET["id_factura"]) || isset($_GET["id_cita"]) || isset($_GET["idH"])): ?>
 <!-- para volver a la parte donde se factura -->
 		<div class="mt-2 w-25 d-flex justify-content-center">
@@ -1138,5 +1144,5 @@
 
 
 <?php require_once './src/vistas/head/footer.php'; ?>
-<script type="text/javascript" src="./src/assets/factura.js"></script>
-<script type="text/javascript" src="./src/assets/js/ayudaFactura.js"></script>
+<script type="text/javascript" src="../src/assets/factura.js"></script>
+<script type="text/javascript" src="../src/assets/js/ayudaFactura.js"></script>

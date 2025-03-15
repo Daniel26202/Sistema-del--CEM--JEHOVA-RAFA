@@ -69,24 +69,22 @@
 
 
 <div class="div-tabla contenedorII m-auto mt-3" id="alertas">
-  <?php if (isset($_GET['registro'])) { ?>
+
+<?php if($parametro != ""):?>
+  <?php if ($parametro[0] == 'registro'): ?>
       <div class="alert alert-primary w-100 text-center alertas" id="alerta-registrar">EL paciente se registro correctamente</div>
-  <?php } ?>
-  <?php if (isset($_GET['eliminar'])) { ?>
+  <?php elseif ($parametro[0] == 'eliminar'): ?>
       <div class="alert alert-primary w-100 text-center alertas" id="alerta-eliminar">El Paciente se Elimino correctamente</div>
-  <?php } ?>
-  <?php if (isset($_GET['error'])) { ?>
+  <?php elseif ($parametro[0] == 'error'): ?>
       <div class="alert alert-danger w-100 text-center alertas" id="alerta-eliminar">La Cedula ya está registrada</div>
-  <?php } ?>
-  <?php if (isset($_GET['editar'])) { ?>
+  <?php elseif ($parametro[0] == 'editar'): ?>
       <div class="alert alert-primary w-100 text-center alertas" id="alerta-editar">El Paciente se Actualizo correctamente</div>
-  <?php } ?>
-  <?php if (isset($_GET['errorfecha'])) { ?>
+  <?php elseif ($parametro[0] == 'errorfecha'):?>
       <div class="alert alert-danger w-100 text-center alertas" id="alerta-editar">Por Favor Ingrese una fecha de Nacimiento Válida</div>
-  <?php } ?>
-  <?php if (isset($_GET['restablecido'])) { ?>
+  <?php elseif ($parametro[0] == 'restablecido'): ?>
       <div class="alert alert-primary w-100 text-center alertas" id="alerta-editar">El Paciente se restableció correctamente</div>
-  <?php } ?>
+  <?php endif; ?>
+<?php endif;?>
 
   <div class="d-flex">
     <div class=" me-3 mb-4  d-flex justify-content-end w-100">
@@ -429,7 +427,20 @@
 </div>
 
 <?php require_once 'modalPaciente.php'; ?>
- <script type="text/javascript" src="../src/assets/js/validacionesPacientesRegistrar.js"></script>
-<script type="text/javascript" src="../src/assets/js/buscadorPaciente.js"></script>
-<script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
+
+<?php if($parametro != ""):?>
+		<?php $concatenarRuta = "";?>
+		  <?php foreach($parametro as $p):?>
+        <?php $concatenarRuta .= "../";?>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/validacionesPacientesRegistrar.js"></script>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/buscadorPaciente.js"></script>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaPaciente.js"></script>
+
+      <?php endforeach;?>
+<?php else:?>
+      <script type="text/javascript" src="../src/assets/js/validacionesPacientesRegistrar.js"></script>
+      <script type="text/javascript" src="../src/assets/js/buscadorPaciente.js"></script>
+      <script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
+<?php endif;?>
+
 <?php require_once './src/vistas/head/footer.php'; ?>

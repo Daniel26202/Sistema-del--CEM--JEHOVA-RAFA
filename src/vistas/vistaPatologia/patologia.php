@@ -91,7 +91,7 @@
             <li class="li">
                 <div class="borde-de-menu  mb-1"></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorPatologias/papeleraPatologias" class="text-decoration-none text-black me-3" id="DMservicioMedico">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/papeleraPatologias" class="text-decoration-none text-black me-3" id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-recycle me-1 mb-1" viewBox="0 0 16 16">
   <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
 </svg>Papelera Patologías</a>
@@ -240,7 +240,7 @@
                         <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                           id="cancelarEliminacion">Cancelar</button>
 
-                        <a href="?c=ControladorPatologias/eliminarPatologia&id_patologia=<?= $patologia["0"]; ?>&id_usuario=<?php echo $_SESSION['id_usuario'] ?>">
+                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/eliminarPatologia/<?= $patologia["0"]; ?>/<?php echo $_SESSION['id_usuario'] ?>">
                           <button class="btn col-4 btn-agregarcita-modal btnrestablecer" id="btnEliminarEspecialidad">Eliminar</button>
                         </a>
 
@@ -299,5 +299,5 @@
 <?php require_once "modalesPatologia.php"; ?>
 <!-- <script type="text/javascript" src="./src/assets/js/validacionesPacientesRegistrar.js"></script> -->
 <!-- <script type="text/javascript" src="./src/assets/js/buscadorPaciente.js"></script> -->
-<script type="text/javascript" src="./src/assets/js/ayudaPaciente.js"></script>
+<script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>
