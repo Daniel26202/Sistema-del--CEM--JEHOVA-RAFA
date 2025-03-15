@@ -213,6 +213,6 @@
 
 
 
-<script type="text/javascript" src="./src/assets/js/ayudaInicio.js"></script>
-<script src="./src/assets/inicio.js"></script>
+<script type="text/javascript" src="../src/assets/js/ayudaInicio.js"></script>
+<script src="../src/assets/inicio.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>

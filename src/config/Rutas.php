@@ -22,10 +22,10 @@ class Rutas{
         //si partes en la posicion 2 existe es por que se enviaron parametros
         if(isset($this->partes[2])){
 	        for ($i=2; $i < count($this->partes); $i++) { 
-		    $this->parametro .= $this->partes[$i].",";
+		    $parametro .= $this->partes[$i].",";
 	        }       
 	        //trim en php es para quitar el ultimo caracter en este caso es para quitar la ultima "," del parametro
-	        $this->parametro = trim($this->parametro, ",");
+	        $parametro = trim($parametro, ",");
 
         }
 
