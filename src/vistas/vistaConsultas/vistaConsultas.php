@@ -26,7 +26,7 @@
                         </svg>PERFIL
                     </a></li>
                 <li class="uk-nav-divider"></li>
-                <li><a href="#" id="btnayudaPaciente"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
+                <li><a href="#" id="btnayudaServicioMedico"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
                             <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
                         </svg>AYUDA</a></li>
                 <li class="uk-nav-divider"></li>
@@ -68,43 +68,37 @@
 </div>
 
 <div class="d-flex justify-content-center">
-    <?php if (isset($_GET["error"])): ?>
+    <?php if($parametro != ""):?>
+
+        <?php if ($parametro[0] == "error"): ?>
         <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">EL servicio ya exixte.</p>
         </div>
-    <?php endif ?>
-
-    <?php if (isset($_GET["editado"])): ?>
+    <?php elseif ($parametro[0] == "editado"): ?>
         <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">El servicio se actualizo correctamente.</p>
         </div>
-    <?php endif ?>
-    <?php if (isset($_GET["eliminado"])): ?>
+    <?php elseif ($parametro[0] == "eliminado"): ?>
         <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">El servicio se ha eliminado correctamente.</p>
         </div>
-    <?php endif ?>
-    <?php if (isset($_GET["agregado"])): ?>
+    <?php elseif ($parametro[0] == "agregado"): ?>
         <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">El servicio se ha agregado correctamente.</p>
         </div>
-    <?php endif ?>
-    <?php if (isset($_GET["restablecido"])): ?>
+    <?php elseif ($parametro[0] == "restablecido"): ?>
         <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">El servicio se ha restablecido correctamente.</p>
         </div>
-    <?php endif ?>
 
-</div>
 
-</div>
-<?php if (isset($_GET["registrado"])): ?>
-    <div class=" d-flex justify-content-center mb-5 comentarioD" style="display: none;">
+    <?php elseif($parametro[0] == "registrado"):?>
+        <div class=" d-flex justify-content-center mb-5 comentarioD" style="display: none;">
 
         <div class="uk-alert-primary comentario me-4 fw-bolder" uk-alert>
             <a class="uk-alert-close" uk-close></a>
@@ -112,8 +106,16 @@
         </div>
 
     </div>
+    <?php endif ?>
 
-<?php endif ?>
+    
+
+    <?php endif;?>
+
+</div>
+
+</div>
+
 
 
 <div class="d-flex">
@@ -125,7 +127,7 @@
             <li class="li">
                 <div class="borde-de-menu  mb-1"></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorConsultas/papeleraServicio" class="text-decoration-none text-black me-3" id="DMservicioMedico">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/papeleraServicio" class="text-decoration-none text-black me-3" id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-recycle me-1 mb-1" viewBox="0 0 16 16">
   <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z"/>
 </svg>Papelera Servicios</a>
@@ -201,7 +203,7 @@
                 </div>
             </div>
 
-            <form class="form-modal" id="modalAgregar" action="?c=ControladorConsultas/guardar" method="POST" autocomplete="off">
+            <form class="form-modal" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/guardar" method="POST" autocomplete="off">
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
 
 
@@ -312,7 +314,7 @@
             </svg>
         </a>
 
-        <form method="POST" action="?c=ControladorConsultas/buscarOtrosServ" class="d-flex justify-content-end" autocomplete="off" id="buscadorServicioMedico" style="margin-left: -57px;">
+        <form  class="d-flex justify-content-end" autocomplete="off" id="buscadorServicioMedico" style="margin-left: -57px;">
             <input class="form-control input-buscar tamaño-input-buscar" type="text" name="busqueda"
                 placeholder="Servicio" id="inputBuscarOtrosServ">
 
@@ -457,7 +459,7 @@
                                     </div>
                                 </div>
 
-                                <form action="?c=controladorConsultas/editar" class="form-modal formEditar" id="modalEditar"
+                                <form action="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/editar" class="form-modal formEditar" id="modalEditar"
                                     method="POST">
 
                                     <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
@@ -590,7 +592,7 @@
                                     <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                                         type="button">Cancelar</button>
                                     <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                                        href="?c=controladorConsultas/eliminar&id_servicioMedico=<?= $servicio["id_servicioMedico"] ?>&id_usuario=<?= $_SESSION['id_usuario'];?>">Eliminar</a>
+                                        href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/eliminar/<?= $servicio["id_servicioMedico"] ?>/<?= $_SESSION['id_usuario'];?>">Eliminar</a>
                                 </div>
 
                             </div>
@@ -641,13 +643,30 @@
 
 
 
-<script src="./src/assets/js/validacionesServiciosMedicosEditar.js"></script>
-<!-- <script src="./src/assets/js/validacionesServiciosAdicionalesEditar.js"></script> -->
-<!-- <script src="./src/assets/js/buscadorServiciosAdicionales.js"></script> -->
-<script src="./src/assets/js/servicioMedico.js"></script>
-<script src="./src/assets/js/ayudaServicioMedico.js"></script>
-<script src="./src/assets/js/validacionesServiciosMedicosRegistrar.js"></script>
+
+<?php if($parametro != ""):?>
+	<?php $concatenarRuta = "";?>
+	<?php foreach($parametro as $p):?>
+        <?php $concatenarRuta .= "../";?>
+        <script src="<?= $concatenarRuta?>../src/assets/js/validacionesServiciosMedicosEditar.js"></script>
+        <!-- <script src="./src/assets/js/validacionesServiciosAdicionalesEditar.js"></script> -->
+        <!-- <script src="./src/assets/js/buscadorServiciosAdicionales.js"></script> -->
+        <script src="<?= $concatenarRuta?>../src/assets/js/servicioMedico.js"></script>
+        <script src="<?= $concatenarRuta?>../src/assets/js/ayudaServicioMedico.js"></script>
+        <script src="<?= $concatenarRuta?>../src/assets/js/validacionesServiciosMedicosRegistrar.js"></script>
+	<?php endforeach;?>
+
+
+<?php else:?>
+        <script src="../src/assets/js/validacionesServiciosMedicosEditar.js"></script>
+        <!-- <script src="./src/assets/js/validacionesServiciosAdicionalesEditar.js"></script> -->
+        <!-- <script src="./src/assets/js/buscadorServiciosAdicionales.js"></script> -->
+        <script src="../src/assets/js/servicioMedico.js"></script>
+        <script src="../src/assets/js/ayudaServicioMedico.js"></script>
+        <script src="../src/assets/js/validacionesServiciosMedicosRegistrar.js"></script>
+
+<?php endif;?>
+
 <?php require_once './src/vistas/vistaConsultas/modalesCategoria.php'; ?>
-
-
 <?php require_once './src/vistas/head/footer.php'; ?>
+

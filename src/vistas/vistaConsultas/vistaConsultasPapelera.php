@@ -67,47 +67,7 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-center">
-    <?php if (isset($_GET["error"])): ?>
-        <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">EL servicio ya exixte.</p>
-        </div>
-    <?php endif ?>
 
-    <?php if (isset($_GET["editado"])): ?>
-        <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">El servicio se actualizo correctamente.</p>
-        </div>
-    <?php endif ?>
-    <?php if (isset($_GET["eliminado"])): ?>
-        <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">El servicio se ha eliminado correctamente.</p>
-        </div>
-    <?php endif ?>
-    <?php if (isset($_GET["agregado"])): ?>
-        <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">El servicio se ha agregado correctamente.</p>
-        </div>
-    <?php endif ?>
-
-</div>
-
-</div>
-<?php if (isset($_GET["registrado"])): ?>
-    <div class=" d-flex justify-content-center mb-5 comentarioD" style="display: none;">
-
-        <div class="uk-alert-primary comentario me-4 fw-bolder" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2 text-center">El Doctor se agrego correctamente, por favor registre el Servicio Médico del Doctor</p>
-        </div>
-
-    </div>
-
-<?php endif ?>
 
 <div class="d-flex">
     <div class=" me-3 mb-4  d-flex justify-content-end w-100">
@@ -118,7 +78,7 @@
             <li class="li">
                 <div class="borde-de-menu  mb-1"></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorConsultas/consultas" class="text-decoration-none text-black me-3" id="DMservicioMedico">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas" class="text-decoration-none text-black me-3" id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-clipboard-heart mb-1 me-1" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z" />
             <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z" />
@@ -419,7 +379,7 @@
                                     <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                                         type="button">Cancelar</button>
                                     <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                                        href="?c=controladorConsultas/restablecer&id_servicioMedico=<?= $servicio["id_servicioMedico"] ?>&id_usuario=<?= $_SESSION['id_usuario']?>">Restablecer</a>
+                                        href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/restablecer/<?= $servicio["id_servicioMedico"] ?>/<?= $_SESSION['id_usuario']?>">Restablecer</a>
                                 </div>
 
                             </div>
@@ -470,13 +430,19 @@
 
 
 
-<script src="./src/assets/js/validacionesServiciosMedicosEditar.js"></script>
-<!-- <script src="./src/assets/js/validacionesServiciosAdicionalesEditar.js"></script> -->
-<!-- <script src="./src/assets/js/buscadorServiciosAdicionales.js"></script> -->
-<script src="./src/assets/js/servicioMedico.js"></script>
-<script src="./src/assets/js/ayudaServicioMedico.js"></script>
-<script src="./src/assets/js/validacionesServiciosMedicosRegistrar.js"></script>
-<?php require_once './src/vistas/vistaConsultas/modalesCategoria.php'; ?>
+<?php if($parametro != ""):?>
+	<?php $concatenarRuta = "";?>
+	<?php foreach($parametro as $p):?>
+        <?php $concatenarRuta .= "../";?>
 
+        <script src="<?= $concatenarRuta?>../src/assets/js/ayudaServicioMedico.js"></script>
+        <script src="<?= $concatenarRuta?>../src/assets/js/servicioMedico.js"></script>
+	<?php endforeach;?>
+
+
+<?php else:?>
+        <script src="../src/assets/js/ayudaServicioMedico.js"></script>
+        <script src="../src/assets/js/servicioMedico.js"></script>
+<?php endif;?>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
