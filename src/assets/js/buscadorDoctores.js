@@ -11,12 +11,13 @@ addEventListener("DOMContentLoaded", function () {
 
     const traerDatosEspecialidad = async () => {
         try {
+            console.log("f")
             const datosFormulario = new FormData(formBuscadorDoctor);
             const contenido = {
                 method: "POST",
                 body: datosFormulario
             };
-            let peticion = await fetch("?c=ControladorDoctores/buscarDoctor", contenido);
+            let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarDoctor", contenido);
             let resultado = await peticion.json();
 
             // Mostrar todas las filas inicialmente

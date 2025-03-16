@@ -79,46 +79,48 @@
 
 
     <div class="d-flex justify-content-center">
-        <?php if (isset($_GET["error"])): ?>
+        
+        <?php if($parametro != ""):?>
+
+
+            <?php if ($parametro[0] == "error"): ?>
             <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder h-25" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
                 <p class="pe-2">La cédula o el usuario ya existen, intente de nuevo.</p>
             </div>
-        <?php endif ?>
-        <div class="d-flex justify-content-center">
-            <?php if (isset($_GET["Usuario"])): ?>
+            <div class="d-flex justify-content-center">
+            <?php elseif ($parametro[0] == "Usuario"): ?>
                 <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder" uk-alert>
                     <a class="uk-alert-close" uk-close></a>
                     <p class="pe-2">EL usuario ya existe, intente de nuevo.</p>
                 </div>
-            <?php endif ?>
-
-            <?php if (isset($_GET["editado"])): ?>
+            <?php elseif ($parametro[0] == "editado"): ?>
                 <div class="uk-alert-primary comentarioD  me-4 fw-bolder " uk-alert>
                     <a class="uk-alert-close" uk-close></a>
                     <p class="pe-2">Se actualizo correctamente.</p>
                 </div>
-            <?php endif ?>
-            <?php if (isset($_GET["eliminado"])): ?>
+            <?php elseif ($parametro[0] == "eliminado"): ?>
                 <div class="uk-alert-primary comentarioD  me-4 fw-bolder " uk-alert>
                     <a class="uk-alert-close" uk-close></a>
                     <p class="pe-2">Se ha eliminado correctamente.</p>
                 </div>
-            <?php endif ?>
-            <?php if (isset($_GET["especialidadRegistrar"])): ?>
+            <?php elseif ($parametro[0] == "especialidadRegistrar"): ?>
                 <div class="uk-alert-primary comentarioD  me-4 fw-bolder" uk-alert>
                     <a class="uk-alert-close" uk-close></a>
                     <p class="pe-2">Se insertó la Especialidad correctamente.</p>
                 </div>
-            <?php endif ?>
-            <?php if (isset($_GET["especialidadEliminar"])): ?>
+            <?php elseif ($parametro[0] == "especialidadEliminar"): ?>
+                
                 <div class="uk-alert-primary comentarioD  me-4 fw-bolder " uk-alert>
                     <a class="uk-alert-close" uk-close></a>
                     <p class="pe-2">Se eliminó la Especialidad correctamente.</p>
                 </div>
             <?php endif ?>
         </div>
+        <?php endif ?>
 
+    
+    
     </div>
 
     <div class="d-flex">
@@ -126,7 +128,8 @@
         <div class="w-75 ms-5 pb-4">
             <h3 class="fw-bold" id="inicioServicio">DOCTORES
 
-                <img src="./src/assets/img/doctor.png" width="30" height="30" uk-svg class="azul mb-2">
+   
+                <img src="<?=$urlBase?>../src/assets/img/doctor.png" width="30" height="30" uk-svg class="azul mb-2">
 
             </h3>
 
@@ -349,12 +352,27 @@
 <?php require_once './src/vistas/vistaDoctores/modal/modalesEspecialidades.php'; ?>
 <?php require_once './src/vistas/vistaDoctores/modal/infoModalDoctores.php'; ?>
 
+<?php if($parametro != ""):?>
+	<?php $concatenarRuta = "";?>
+	<?php foreach($parametro as $p):?>
+		<?php $concatenarRuta .= "../";?>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/especialidades.js"></script>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaDoctores.js"></script>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/buscadorDoctores.js"></script>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/validacionesDoctoresRegistrar.js"></script>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/validacionesDoctorEditar.js"></script>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/imgDoctores.js"></script>
+        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/doctores.js"></script>
 
-<script type="text/javascript" src="./src/assets/js/especialidades.js"></script>
-<script type="text/javascript" src="./src/assets/js/ayudaDoctores.js"></script>
-<script type="text/javascript" src="./src/assets/js/buscadorDoctores.js"></script>
-<script type="text/javascript" src="./src/assets/js/validacionesDoctoresRegistrar.js"></script>
-<script type="text/javascript" src="./src/assets/js/validacionesDoctorEditar.js"></script>
-<script type="text/javascript" src="./src/assets/js/imgDoctores.js"></script>
-<script type="text/javascript" src="./src/assets/js/doctores.js"></script>
+    <?php endforeach;?>
+
+<?php else:?>
+        <script type="text/javascript" src="../src/assets/js/especialidades.js"></script>
+        <script type="text/javascript" src="../src/assets/js/ayudaDoctores.js"></script>
+        <script type="text/javascript" src="../src/assets/js/buscadorDoctores.js"></script>
+        <script type="text/javascript" src="../src/assets/js/validacionesDoctoresRegistrar.js"></script>
+        <script type="text/javascript" src="../src/assets/js/validacionesDoctorEditar.js"></script>
+        <script type="text/javascript" src="../src/assets/js/imgDoctores.js"></script>
+        <script type="text/javascript" src="../src/assets/js/doctores.js"></script>
+<?php endif;?>
 <?php require_once './src/vistas/head/footer.php'; ?>

@@ -28,7 +28,7 @@
 
 
             <form class="me-2 ms-2 formulario_editar" method="POST"
-                action="?c=controladorDoctores/editarDoctor&cedulaDb=<?php echo $dato["cedula"]; ?>">
+                action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/editarDoctor/<?php echo $dato["cedula"]; ?>">
 
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
 

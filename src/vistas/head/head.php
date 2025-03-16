@@ -43,6 +43,8 @@ if (isset($_SESSION['usuario'])) {
 	<?php endif;?>
 </head>
 
+<?php $urlBase = isset($concatenarRuta) ? $concatenarRuta : "" ?>
+
 <body class="d-flex">
 
 	<div class="aside asideRespo active" id="aside">
