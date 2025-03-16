@@ -286,7 +286,15 @@
 
 
 <?php require_once "modalesPatologia.php"; ?>
-<!-- <script type="text/javascript" src="./src/assets/js/validacionesPacientesRegistrar.js"></script> -->
-<!-- <script type="text/javascript" src="./src/assets/js/buscadorPaciente.js"></script> -->
-<script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>
+<?php if($parametro !=  ""):?>
+	<?php $concatenarRuta = "";?>
+    <?php foreach($parametro as $p):?>
+	    <?php $concatenarRuta .= "../";?>
+      <!-- <script type="text/javascript" src="./src/assets/js/validacionesPacientesRegistrar.js"></script> -->
+      <!-- <script type="text/javascript" src="./src/assets/js/buscadorPaciente.js"></script> -->
+      <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaPaciente.js"></script>
+  <?php endforeach;?>
+<?php else :?>
+  <script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
+<?php endif;?>

@@ -69,18 +69,22 @@
 
 
 <div class="div-tabla contenedorII m-auto mt-3" id="alertas">
-  <?php if (isset($_GET['agregado'])) { ?>
+  
+  <?php if($parametro != ""):?>
+    <?php if ($parametro[0] == 'agregado'): ?>
     <div class="alert alert-primary w-100 text-center alertas" id="alerta-registrar">EL Registro Se Inserto Correctamente</div>
-  <?php } ?>
-  <?php if (isset($_GET['error'])) { ?>
-    <div class="alert alert-danger w-100 text-center alertas" id="alerta-eliminar">Ya existe la Patología</div>
-  <?php } ?>
-  <?php if (isset($_GET['eliminado'])) { ?>
-    <div class="alert alert-primary w-100 text-center alertas" id="alerta-editar">La patología se elimino correctamente</div>
-  <?php } ?>
-  <?php if (isset($_GET['restablecida'])) { ?>
-    <div class="alert alert-primary w-100 text-center alertas" id="alerta-editar">La patología se restableció correctamente</div>
-  <?php } ?>
+
+    <?php elseif ($parametro[0] == 'error'): ?>
+      <div class="alert alert-danger w-100 text-center alertas" id="alerta-eliminar">Ya existe la Patología</div>
+
+    <?php elseif ($parametro[0] == 'eliminado'): ?>
+      <div class="alert alert-primary w-100 text-center alertas" id="alerta-editar">La patología se elimino correctamente</div>
+
+    <?php elseif ($parametro[0] == 'restablecida'): ?>
+      <div class="alert alert-primary w-100 text-center alertas" id="alerta-editar">La patología se restableció correctamente</div>
+    <?php endif; ?>
+
+  <?php endif;?>
 
   <div class="d-flex">
     <div class=" me-3 mb-4  d-flex justify-content-end w-100">
@@ -296,8 +300,17 @@
 </div>
 
 
+
 <?php require_once "modalesPatologia.php"; ?>
-<!-- <script type="text/javascript" src="./src/assets/js/validacionesPacientesRegistrar.js"></script> -->
-<!-- <script type="text/javascript" src="./src/assets/js/buscadorPaciente.js"></script> -->
-<script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>
+<?php if($parametro !=  ""):?>
+	<?php $concatenarRuta = "";?>
+    <?php foreach($parametro as $p):?>
+	    <?php $concatenarRuta .= "../";?>
+      <!-- <script type="text/javascript" src="./src/assets/js/validacionesPacientesRegistrar.js"></script> -->
+      <!-- <script type="text/javascript" src="./src/assets/js/buscadorPaciente.js"></script> -->
+      <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaPaciente.js"></script>
+  <?php endforeach;?>
+<?php else :?>
+  <script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
+<?php endif;?>

@@ -15,12 +15,12 @@ class ControladorPatologias
 		$this->bitacora = new ModeloBitacora();
 	}
 
-	public function patologias()
+	public function patologias($parametro)
 	{
 		$datosPatologias = $this->patologia->mostrarPatologias();
 		require_once './src/vistas/vistaPatologia/patologia.php';
 	}
-	public function papeleraPatologias()
+	public function papeleraPatologias($parametro)
 	{
 		$datosPatologias = $this->patologia->mostrarPatologiasEliminadas();
 		require_once './src/vistas/vistaPatologia/patologiapapelera.php';
@@ -34,7 +34,7 @@ class ControladorPatologias
 
 		
 		if ($resultaPatologia === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias&error");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/error");
 
         } else {
          
@@ -43,7 +43,7 @@ class ControladorPatologias
 			// Guardo la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'],"patologia","Ha Insertado una patologia");
 
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias&agregado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/agregado");
 
         }
 	}
@@ -52,24 +52,24 @@ class ControladorPatologias
 	public function eliminarPatologia($datos){
 
 		$id_patologia = $datos[0];
-		$id_usuario = $datos[2];
+		$id_usuario = $datos[1];
 
 
 		$this->patologia->eliminarPatologia($id_patologia);
 		// Guardo la bitacora
 		$this->bitacora->insertarBitacora($id_usuario,"patologia","Ha eliminado una patologia");
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias&eliminado");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/eliminado");
 	}
 
 
 	public function restablecerPatologia($datos){
 		$id_patologia = $datos[0];
-		$id_usuario = $datos[2];
+		$id_usuario = $datos[1];
 
 		$this->patologia->restablecer($id_patologia);
 		// Guardo la bitacora
 		$this->bitacora->insertarBitacora($id_usuario,"patologia","Ha restablecido una patologia");
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias&restablecida");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/restablecida");
 	}
 
 	
