@@ -30,6 +30,10 @@
                             <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
                         </svg>AYUDA</a></li>
                 <li class="uk-nav-divider"></li>
+                <li><a href="?c=ControladorBitacora/bitacora" ><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
+          <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z"/>
+      </svg> CONFIGURACIÓN</a></li>
+        <li class="uk-nav-divider"></li>
 
                 <li><a href="#" data-bs-toggle="modal" data-bs-target="#eliminar">
                         <img src="./src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
@@ -63,47 +67,7 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-center">
-    <?php if (isset($_GET["error"])): ?>
-        <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">EL servicio ya exixte.</p>
-        </div>
-    <?php endif ?>
 
-    <?php if (isset($_GET["editado"])): ?>
-        <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">El servicio se actualizo correctamente.</p>
-        </div>
-    <?php endif ?>
-    <?php if (isset($_GET["eliminado"])): ?>
-        <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">El servicio se ha eliminado correctamente.</p>
-        </div>
-    <?php endif ?>
-    <?php if (isset($_GET["agregado"])): ?>
-        <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">El servicio se ha agregado correctamente.</p>
-        </div>
-    <?php endif ?>
-
-</div>
-
-</div>
-<?php if (isset($_GET["registrado"])): ?>
-    <div class=" d-flex justify-content-center mb-5 comentarioD" style="display: none;">
-
-        <div class="uk-alert-primary comentario me-4 fw-bolder" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2 text-center">El Doctor se agrego correctamente, por favor registre el Servicio Médico del Doctor</p>
-        </div>
-
-    </div>
-
-<?php endif ?>
 
 <div class="d-flex">
     <div class=" me-3 mb-4  d-flex justify-content-end w-100">
@@ -114,7 +78,7 @@
             <li class="li">
                 <div class="borde-de-menu  mb-1"></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorConsultas/consultas" class="text-decoration-none text-black me-3" id="DMservicioMedico">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas" class="text-decoration-none text-black me-3" id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-clipboard-heart mb-1 me-1" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z" />
             <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z" />
@@ -415,7 +379,7 @@
                                     <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                                         type="button">Cancelar</button>
                                     <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
-                                        href="?c=controladorConsultas/restablecer&id_servicioMedico=<?= $servicio["id_servicioMedico"] ?>&id_usuario=<?= $_SESSION['id_usuario']?>">Restablecer</a>
+                                        href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/restablecer/<?= $servicio["id_servicioMedico"] ?>/<?= $_SESSION['id_usuario']?>">Restablecer</a>
                                 </div>
 
                             </div>
@@ -466,13 +430,19 @@
 
 
 
-<script src="./src/assets/js/validacionesServiciosMedicosEditar.js"></script>
-<!-- <script src="./src/assets/js/validacionesServiciosAdicionalesEditar.js"></script> -->
-<!-- <script src="./src/assets/js/buscadorServiciosAdicionales.js"></script> -->
-<script src="./src/assets/js/servicioMedico.js"></script>
-<script src="./src/assets/js/ayudaServicioMedico.js"></script>
-<script src="./src/assets/js/validacionesServiciosMedicosRegistrar.js"></script>
-<?php require_once './src/vistas/vistaConsultas/modalesCategoria.php'; ?>
+<?php if($parametro != ""):?>
+	<?php $concatenarRuta = "";?>
+	<?php foreach($parametro as $p):?>
+        <?php $concatenarRuta .= "../";?>
 
+        <script src="<?= $concatenarRuta?>../src/assets/js/ayudaServicioMedico.js"></script>
+        <script src="<?= $concatenarRuta?>../src/assets/js/servicioMedico.js"></script>
+	<?php endforeach;?>
+
+
+<?php else:?>
+        <script src="../src/assets/js/ayudaServicioMedico.js"></script>
+        <script src="../src/assets/js/servicioMedico.js"></script>
+<?php endif;?>
 
 <?php require_once './src/vistas/head/footer.php'; ?>

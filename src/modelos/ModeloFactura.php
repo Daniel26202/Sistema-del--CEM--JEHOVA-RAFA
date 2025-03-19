@@ -380,9 +380,9 @@ class ModeloFactura extends Db
 
 
     	if ($id_cita == null) {
-    		header("location: ?c=controladorFactura/facturaInicio&id_factura=" . $id_factura);
+    		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/" . $id_factura);
     	} else {
-    		header("location: ?c=controladorFactura/facturaInicio&id_factura=" . $id_factura . "&id_cita=" . $id_cita);
+    		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/" . $id_factura . "/" . $id_cita);
     	}
 
 
@@ -464,7 +464,7 @@ class ModeloFactura extends Db
 
 
 
-    	header("location: ?c=controladorFactura/facturaInicio&id_factura=" . $id_factura . "&idH=" . $id_hospitalizacion);
+    	header("location: ?c=controladorFactura/facturaInicio/" . $id_factura . "/" . $id_hospitalizacion);
 
 
 

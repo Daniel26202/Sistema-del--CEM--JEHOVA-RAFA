@@ -18,16 +18,19 @@ addEventListener("DOMContentLoaded", () => {
   let validarHora = [];
   let horaarray = [];
   const traerPacienteCita = async (event) => {
-    try {
+    // try {
       const datosFormulario = new FormData(modalAgregarCita);
       const contenido = {
         method: "POST",
         body: datosFormulario,
       };
+      
       let peticion = await fetch(
-        "?c=ControladorCitas/mostrarPacienteCita",
+        "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarPacienteCita",
         contenido
       );
+
+      console.log(peticion)
       let resultado = await peticion.json();
       console.log(resultado);
 
@@ -60,17 +63,17 @@ addEventListener("DOMContentLoaded", () => {
         //desaparecer el boton de enviar el modal si no encuentra al paciente
         document.getElementById("btnAgregarCita").classList.add("d-none");
       }
-    } catch (error) {
-      console.log(
-        "Lamentablemente, algo salió mal. Por favor, intente más tarde..."
-      );
-    }
+    // } catch (error) {
+    //   console.log(
+    //     "Lamentablemente, algo salió mal. Por favor, intente más tarde..."
+    //   );
+    // }
   };
   const traerDoctoresCita = async () => {
-    try {
+    // try {
       let id = especialidad.value;
       console.log(id);
-      let peticion = await fetch("?c=ControladorCitas/mostrarDoctoresCita&id=" + id);
+      let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" + id);
       let resultado = await peticion.json();
       console.log(resultado);
       let html = ``;
@@ -103,17 +106,18 @@ addEventListener("DOMContentLoaded", () => {
         document.getElementById("listaDoctores").innerHTML = "";
         document.getElementById("btnAgregarCita").classList.add("d-none");
       }
-    } catch (error) {
-      console.log(
-        "lamentablemete Algo Salio Mal Por favor Intente Mas Tarde..."
-      );
-    }
+    // } catch (error) {
+    //   console.log(
+    //     "lamentablemete Algo Salio Mal Por favor Intente Mas Tarde..."
+    //   );
+    // }
   };
 
   const traerHorario = async (idD) => {
-    try {
+    
+    // try {
       let peticion = await fetch(
-        "?c=controladorCitas/mostrarHorario&idD=" + idD
+        "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" + idD
       );
       let resultado = await peticion.json();
       document.querySelector(".horario-insertar").innerHTML = "";
@@ -293,9 +297,9 @@ addEventListener("DOMContentLoaded", () => {
       // Variable que contiene el día de la seman; // Ejemplo de variable
 
       // Convertir el día a número
-    } catch (error) {
-      console.log(error);
-    }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   // cedulaCita.addEventListener("keyup", function () {
@@ -323,7 +327,7 @@ addEventListener("DOMContentLoaded", () => {
   ) => {
     try {
       let peticion = await fetch(
-        "?c=ControladorCitas/mostrarDoctoresCita&id=" + id
+        "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" + id
       );
       let resultado = await peticion.json();
       console.log(resultado);
@@ -381,7 +385,7 @@ addEventListener("DOMContentLoaded", () => {
   ) => {
     try {
       let peticion = await fetch(
-        "?c=controladorCitas/mostrarHorario&idD=" + idD
+        "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" + idD
       );
       let resultado = await peticion.json();
 

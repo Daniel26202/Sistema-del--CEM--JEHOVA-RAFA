@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <form class="form-modal" action="?c=controladorCitas/guardarCita" id="modalAgregarCita" method="POST"
+        <form class="form-modal" action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/guardarCita" id="modalAgregarCita" method="POST"
             autocomplete="off">
 
             <input type="hidden" value="<?php echo $_SESSION['id_usuario'] ?>" name="id_usuario">

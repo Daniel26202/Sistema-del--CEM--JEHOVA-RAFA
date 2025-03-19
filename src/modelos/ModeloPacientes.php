@@ -7,7 +7,6 @@ class ModeloPacientes extends Db
 {
 
 	private $conexion;
-	private $bitacora;
 	
 	public function __construct(){
         // Llama al constructor de la clase padre para establecer la conexión

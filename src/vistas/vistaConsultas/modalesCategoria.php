@@ -155,7 +155,7 @@
                                                 <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                                                     id="cancelarEliminacion">Cancelar</button>
 
-                                                <a href="?c=ControladorConsultas/eliminarCategoria&id_categoria=<?= $categoria["0"]; ?>&id_usuario=<?= $_SESSION['id_usuario']?>">
+                                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/eliminarCategoria/<?= $categoria["0"]; ?>/<?= $_SESSION['id_usuario']?>">
                                                     <button class="btn col-4 btn-agregarcita-modal" id="btnEliminarEspecialidad">Eliminar</button>
                                                 </a>
 
@@ -257,7 +257,7 @@
             </div>
         </div>
 
-        <form class="form-modal" id="modalAgregar" action="?c=ControladorConsultas/registrarCategoria" method="POST">
+        <form class="form-modal" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/registrarCategoria" method="POST">
 
             <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']?>">
 

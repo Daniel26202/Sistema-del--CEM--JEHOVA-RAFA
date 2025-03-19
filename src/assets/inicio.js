@@ -6,11 +6,12 @@ addEventListener("DOMContentLoaded", function () {
 
 
 		//funcion ajax para buscar el paciente por la CI
-		
+
+
 		const traerDatos = async () => {
 			try {
 				
-				let peticion = await fetch("?c=ControladorCitas/citasP")
+				let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasP")
 				let resultado = await peticion.json();
                 pendiente.textContent = `${resultado.length}`;
 				
@@ -22,7 +23,7 @@ addEventListener("DOMContentLoaded", function () {
         const traerHoy = async () => {
 			try {
 				
-				let peticion = await fetch("?c=ControladorCitas/citasHoyP")
+				let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoyP")
 				let resultado = await peticion.json();
                 hoy.textContent = `${resultado.length}`;
 				

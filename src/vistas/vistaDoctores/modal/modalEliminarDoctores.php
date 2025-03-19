@@ -1,7 +1,7 @@
 <?php foreach ($datos as $dato): ?>
     <div id="modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>" uk-modal>
         <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-            <form class="" method="POST" action="?c=ControladorDoctores/borrarDoctor">
+            <form class="" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/borrarDoctor">
 
                 <!-- Boton que cierra el modal -->
                 <a href="#">

@@ -55,9 +55,10 @@ addEventListener("DOMContentLoaded", () => {
       const datos = new FormData(formularioPaciente);
       const contenido = { method: "POST", body: datos };
       let peticion = await fetch(
-        "?c=controladorFactura/mostrarPaciente",
+        "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
         contenido
       );
+      console.log(peticion)
       let resultado = await peticion.json();
       console.log(resultado);
       if (resultado[0] != false) {
@@ -121,7 +122,7 @@ addEventListener("DOMContentLoaded", () => {
     console.log(contenido);
 
     let peticion = await fetch(
-      "?c=controladorFactura/mostrarPacienteConCita",
+      "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
       contenido
     );
     let resultado = await peticion.json();

@@ -13,7 +13,7 @@ addEventListener("DOMContentLoaded", function () {
                 method: "POST",
                 body: datosFormulario
             };
-            let peticion = await fetch("?c=ControladorDoctores/buscarEspecialidad", contenido);
+            let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarEspecialidad", contenido);
             let resultado = await peticion.json();
     
           
