@@ -61,7 +61,7 @@ addEventListener("DOMContentLoaded", function () {
   //gestionar insumos vencidos
 
   const traerInsumoCasiVencidos = async () => {
-    let peticion = await fetch("?c=controladorInsumos/retornarLasEntradas");
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Insumos/retornarLasEntradas");
     let resultado = await peticion.json();
     console.log(resultado);
 
@@ -101,7 +101,7 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
   //ajax
   async function infoInsumos(id_insumo) {
     let peticion = await fetch(
-      "?c=controladorInsumos/info&id_insumo=" + id_insumo
+      "/Sistema-del--CEM--JEHOVA-RAFA/Insumos/info/" + id_insumo
       );
     let resultado = await peticion.json();
     let parrafos = document.querySelectorAll(".parrafo");
@@ -114,7 +114,7 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
       
       eliminarInsumo.setAttribute(
         "href",
-        `?c=controladorInsumos/eliminar&id_insumo=${res.id_insumo}&id_usuario_bitacora=${document.getElementById("id_usuario_bitacora").value}`
+        `/Sistema-del--CEM--JEHOVA-RAFA/Insumos/eliminar/${res.id_insumo}/${document.getElementById("id_usuario_bitacora").value}`
         );
       inputEditar[0].value = res.id_insumo;
       inputEditar[1].value = res.nombre;
@@ -130,6 +130,8 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
         );
 
       document.querySelector(".value-img").value = res.imagen;
+
+
     });
   }
 

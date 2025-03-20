@@ -351,4 +351,4 @@
 
       <?php require_once './src/vistas/head/footer.php'; ?>
 
-      <script type="text/javascript" src="./src/assets/entradas.js"></script>
+      <script type="text/javascript" src="<?= $urlBase?>../src/assets/entradas.js"></script>
