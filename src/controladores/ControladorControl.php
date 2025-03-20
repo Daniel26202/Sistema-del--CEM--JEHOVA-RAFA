@@ -22,7 +22,7 @@ class ControladorControl
 		$this->bitacora = new ModeloBitacora();
 	}
 
-	public function control()
+	public function control($parametro)
 	{
 		$datosS = $this->modeloSintomas->selects();
 		$datosD = $this->modelo->mostrarDoctor();
@@ -37,27 +37,31 @@ class ControladorControl
 		echo json_encode($respuesta);
 	}
 
-	public function mostrarBusquedaPacientesJS()
+	public function mostrarBusquedaPacientesJS($datos)
 	{
-		$respuesta = $this->modelo->buscarPacientes($_GET["cedula"]);
+		$cedula = $datos[0];
+		$respuesta = $this->modelo->buscarPacientes($cedula);
 		echo json_encode($respuesta);
 	}
 
-	public function mostrarControlPacientesJS()
+	public function mostrarControlPacientesJS($datos)
 	{
+
 
 		session_start();
 		$sesion = $_SESSION['rol'];
 		$idUsuario = $_SESSION['id_usuario'];
 
+		$cedula = $datos[0];
+
 		if ($sesion == "administrador") {
 
-			$respuestaP = $this->modelo->mostrarControlPacienteA($_GET["cedula"]);
+			$respuestaP = $this->modelo->mostrarControlPacienteA($cedula);
 			//síntomas
-			$registradosS = $this->modelo->mostrarSintomasPa($_GET["cedula"]);
+			$registradosS = $this->modelo->mostrarSintomasPa($cedula);
 			$sintomas = $this->modeloSintomas->selects();
 			// patologías
-			$registradosP = $this->modeloPatologia->buscarPatologiaPaciente($_GET["cedula"]);
+			$registradosP = $this->modeloPatologia->buscarPatologiaPaciente($cedula);
 			$patologias = $this->modeloPatologia->mostrarPatologias();
 
 			// este array tiene tres valores de tres funciones en el modelo
@@ -65,12 +69,12 @@ class ControladorControl
 			echo json_encode($arrayPSS);
 		} elseif ($sesion == "usuario") {
 			// devuelve solo los datos del paciente atendido por el mismo doctor que inicio sesión(Usuario)
-			$respuesta = $this->modelo->mostrarControlPacienteU($_GET["cedula"], $idUsuario);
+			$respuesta = $this->modelo->mostrarControlPacienteU($cedula, $idUsuario);
 			//síntomas
-			$registradosS = $this->modelo->mostrarSintomasPa($_GET["cedula"]);
+			$registradosS = $this->modelo->mostrarSintomasPa($cedula);
 			$sintomas = $this->modeloSintomas->selects();
 			// patologías
-			$registradosP = $this->modeloPatologia->buscarPatologiaPaciente($_GET["cedula"]);
+			$registradosP = $this->modeloPatologia->buscarPatologiaPaciente($cedula);
 			$patologias = $this->modeloPatologia->mostrarPatologias();
 
 			// este array tiene tres valores de tres funciones en el modelo
@@ -79,10 +83,11 @@ class ControladorControl
 		}
 	}
 
-	public function mostrarPacienteJS()
+	public function mostrarPacienteJS($datos)
 	{
+		$cedula = $datos[0];
 		// me traigo los datos de los pacientes
-		$respuesta = $this->modelo->mostrarPaciente($_GET["cedula"]);
+		$respuesta = $this->modelo->mostrarPaciente($cedula);
 
 		echo json_encode($respuesta);
 	}
@@ -100,9 +105,10 @@ class ControladorControl
 		echo json_encode($_POST);
 	}
 
-	public function eliminarControl()
+	public function eliminarControl($datos)
 	{
-		$this->modelo->eliminarControl($_GET["id_control"]);
+		$id_control = $datos[0];
+		$this->modelo->eliminarControl($id_control);
 		echo json_encode($_GET);
 	}
 
@@ -119,31 +125,36 @@ class ControladorControl
 		}
 	}
 	// mostrar síntomas de pacientes
-	public function mostrarSP()
+	public function mostrarSP($datos)
 	{
-		$respuestaS = $this->modelo->mostrarSintomasPaId($_GET["idC"]);
+		$idC = $datos[0];
+		$respuestaS = $this->modelo->mostrarSintomasPaId($idC);
 		echo json_encode($respuestaS);
 	}
 	// mostrar patología de pacientes
-	public function mostrarPP()
+	public function mostrarPP($datos)
 	{
-		$registradosP = $this->modelo->mostrarPatologiaP($_GET["idC"]);
+		$idC = $datos[0];
+		$registradosP = $this->modelo->mostrarPatologiaP($idC);
 		echo json_encode($registradosP);
 	}
 	// mostrar patología de paciente por id del paciente
-	public function mostrarPIdP()
+	public function mostrarPIdP($datos)
 	{
-		$registradosP = $this->modelo->mostrarPatologiaC($_GET["idC"]);
+		$idC = $datos[0];
+		$registradosP = $this->modelo->mostrarPatologiaC($idC);
 		echo json_encode($registradosP);
 	}
 
 	// síntomas 
-	public function eliminarSintoma()
+	public function eliminarSintoma($datos)
 	{
-		$this->modeloSintomas->eliminarL($_GET["id_sintomas"]);
+		$id_sintomas = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		$this->modeloSintomas->eliminarL($id_sintomas);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"sintomas","Ha eliminado un  sintoma");
-		header("location: ?c=ControladorControl/control");
+		$this->bitacora->insertarBitacora($id_usuario_bitacora,"sintomas","Ha eliminado un  sintoma");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control");
 	}
 
 	public function agregarSintoma()
@@ -151,6 +162,6 @@ class ControladorControl
 		$this->modeloSintomas->insertar($_POST["nombreS"]);
 		// Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"sintomas","Ha Insertado un  sintoma");
-		header("location: ?c=ControladorControl/control");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control");
 	}
 }

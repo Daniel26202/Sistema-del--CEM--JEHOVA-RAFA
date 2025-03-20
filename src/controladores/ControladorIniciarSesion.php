@@ -12,7 +12,7 @@ class ControladorIniciarSesion
         $this->modelo = new ModeloInicioSesion;
     }
 
-    public function mostrarIniciarSesion()
+    public function mostrarIniciarSesion($parametro)
     {
         require_once "./src/vistas/vistaIniciarSesion/iniciarSesion.php";
     }
@@ -64,7 +64,7 @@ class ControladorIniciarSesion
 
                 if ($_POST['usuario'] === '' or $_POST['password'] === '') {
 
-                    header("location: ?c=ControladorIniciarSesion/mostrarIniciarSesion&campos");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
 
                 } else {
 
@@ -77,11 +77,11 @@ class ControladorIniciarSesion
                         $_SESSION['rol'] = $validar['rol'];
                         $_SESSION['id_usuario'] = $validar['id_usuario'];
 
-                        header("location: ?c=ControladorInicio/inicio");
+                        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
 
                     } else {
 
-                        header("location: ?c=ControladorIniciarSesion/mostrarIniciarSesion&mensaje");
+                        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/mensaje");
 
                     }
                 }
@@ -89,7 +89,7 @@ class ControladorIniciarSesion
 
 
             // } else {
-            //     header("location: ?c=ControladorIniciarSesion/mostrarIniciarSesion&captcha");
+            //     header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
             // }
 
         }

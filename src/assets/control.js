@@ -181,7 +181,7 @@ addEventListener("DOMContentLoaded", function () {
             // comienza a cargar
             cargando = true;
 
-            let peticion = await fetch("?c=controladorControl/mostrarControlPacientesJS&cedula=" + idPaciente);
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarControlPacientesJS/" + idPaciente);
             let resultado = await peticion.json();
 console.log(resultado);
 
@@ -627,7 +627,7 @@ console.log(resultado);
         fHoy.setHours(0, 0, 0, 0);
         // transformo la fecha y hora en formato iso(YYYY-MM-DD T HH:MM:SSZ) y divido la fecha de la hora, tomando solo la fecha, que es la posición [0].
         let fechaHoy = fHoy.toISOString().split("T")[0];
-        let peticion = await fetch("?c=controladorControl/mostrarPacienteJS&cedula=" + cedula + "&fechaHoy=" + fechaHoy);
+        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacienteJS/" + cedula + "/" + fechaHoy);
         let resultado = await peticion.json();
 
         // resultado de la peticion  
@@ -681,12 +681,12 @@ console.log(resultado);
 
             const datos = new FormData(modalAgregarControl);
             const contenido = { method: "POST", body: datos };
-            let peticion = await fetch("?c=controladorControl/insertarControl", contenido);
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/insertarControl", contenido);
             let resultado = await peticion.json();
             comentariosControl(`Control De CI ${resultado.cedula} Insertado Correctamente`, "primary");
             traerControl(resultado.cedula);
 
-            await traerPacientes("?c=controladorControl/mostrarPacientesJS");
+            await traerPacientes("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacientesJS");
         } catch (error) {
             console.log(error);
         }
@@ -698,7 +698,7 @@ console.log(resultado);
 
             const datos = new FormData(formulario);
             const contenido = { method: "POST", body: datos };
-            let peticion = await fetch("?c=controladorControl/editarControl", contenido);
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/editarControl", contenido);
             let resultado = await peticion.json();
             comentariosControl(`Control De CI ${resultado.cedula} Modificado Correctamente`, "warning");
             await traerControl(resultado.cedula);
@@ -712,11 +712,11 @@ console.log(resultado);
 
     inputBuscador.addEventListener("keyup", function () {
         if (inputBuscador.value != "") {
-            traerPacientes("?c=controladorControl/mostrarBusquedaPacientesJS&cedula=" + inputBuscador.value);
-        } else traerPacientes("?c=controladorControl/mostrarPacientesJS");
+            traerPacientes("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarBusquedaPacientesJS/" + inputBuscador.value);
+        } else traerPacientes("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacientesJS");
     });
 
-    traerPacientes("?c=controladorControl/mostrarPacientesJS");
+    traerPacientes("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacientesJS");
 
     cedulaControl.addEventListener("keyup", function () {
         mostrarPaciente(cedulaControl.value);
@@ -786,7 +786,7 @@ console.log(resultado);
     const patologiaCC = async (idC) => {
         try {
 
-            let peticion = await fetch(`?c=ControladorControl/mostrarPP&idC=` + idC);
+            let peticion = await fetch(`/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPP/` + idC);
             let resultado = await peticion.json();
 
             // if (resultado.length > 0) {
@@ -802,7 +802,7 @@ console.log(resultado);
     const patologiaC = async (idCP, inputPatologia, funcion) => {
         try {
 
-            let peticion = await fetch(`?c=ControladorControl/${funcion}&idC=` + idCP);
+            let peticion = await fetch(`/Sistema-del--CEM--JEHOVA-RAFA/Control/${funcion}/` + idCP);
             let resultado = await peticion.json();
 
             if (resultado.length > 0) {
@@ -839,7 +839,7 @@ console.log(resultado);
     const sintomasC = async (idControl) => {
         try {
 
-            let peticion = await fetch("?c=ControladorControl/mostrarSP&idC=" + idControl);
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarSP/" + idControl);
             let resultado = await peticion.json();
 
             // resultado de la otra peticion

@@ -487,7 +487,7 @@
 </div>
 
 
-<script type="text/javascript" src="./src/assets/control.js"></script>
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/control.js"></script>
 
 <?php require_once './src/vistas/vistaControl/modalesSintomas.php'; ?>
 <?php require_once './src/vistas/head/footer.php'; ?>
