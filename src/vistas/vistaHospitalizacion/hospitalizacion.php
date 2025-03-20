@@ -107,7 +107,7 @@
 
                 <li class="">
                     <div class="borde-de-menu activo-border mb-1"></div>
-                    <a href="?c=ControladorHospitalizacion/hospitalizacion" class="text-decoration-none text-black me-3"
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" class="text-decoration-none text-black me-3"
                         id="DMservicioMedico">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="20" fill="currentColor"
                             class="bi bi-clipboard-pulse me-1 color-activo-svg" viewBox="0 0 16 16">
@@ -118,7 +118,7 @@
                 <li class="li">
                     <div class="borde-de-menu mb-1 color-linea"></div>
                     <div class="hover-grande">
-                        <a href="?c=ControladorHospitalizacion/hospitalizacionesRealizadas"
+                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacionesRealizadas"
                             class="text-decoration-none text-black me-3" id="DMserviciosExtras">
                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="20" fill="currentColor"
                                 class="bi bi-clipboard-check me-1" viewBox="0 0 16 16">
@@ -209,9 +209,9 @@
     <!-- los modales se agregan en js -->
 </div>
 
-<script type="text/javascript" src="./src/assets/js/hospitalizacion/validacioneshospitalizacion.js"></script>
-<script type="text/javascript" src="./src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
-<script type="text/javascript" src="./src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/hospitalizacion/validacioneshospitalizacion.js"></script>
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
 
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarHospitalizacion.php'; ?>

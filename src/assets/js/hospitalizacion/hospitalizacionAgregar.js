@@ -76,7 +76,7 @@ addEventListener("DOMContentLoaded", function () {
             let valorI = inputI.value;
 
             // llamo la función buscar Insumos
-            let peticionInsumos = await fetch("?c=ControladorHospitalizacion/mostrarInsumos&nombre=" + valorI);
+            let peticionInsumos = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInsumos/" + valorI);
 
             let resultadoInsu = await peticionInsumos.json();
 
@@ -246,7 +246,7 @@ addEventListener("DOMContentLoaded", function () {
         try {
 
             // llamo la función buscar un Insumo
-            let peticionUnInsumo = await fetch("?c=ControladorHospitalizacion/mostrarUnInsumo&id=" + id);
+            let peticionUnInsumo = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + id);
 
             let resultadoUnInsu = await peticionUnInsumo.json();
 
@@ -491,15 +491,15 @@ addEventListener("DOMContentLoaded", function () {
             }
 
             // llamo la función validar paciente
-            let peticionValidarP = await fetch("?c=ControladorHospitalizacion/validarPaciente", contenidoForm);
+            let peticionValidarP = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/validarPaciente", contenidoForm);
             let resultadoVP = await peticionValidarP.json();
 
             // llamo la función validar control
-            let peticionValidarC = await fetch("?c=ControladorHospitalizacion/validarControl", contenidoForm);
+            let peticionValidarC = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/validarControl", contenidoForm);
             let resultadoVC = await peticionValidarC.json();
 
             // llamo la función mostrar
-            let peticionMostrar = await fetch("?c=ControladorHospitalizacion/mostrarInformacionPCD", contenidoForm);
+            let peticionMostrar = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInformacionPCD", contenidoForm);
             let resultadoM = await peticionMostrar.json();
 
             if (resultadoVP == false) {
@@ -629,7 +629,7 @@ addEventListener("DOMContentLoaded", function () {
     const buscarIEx = async () => {
         try {
 
-            let peticion = await fetch("?c=ControladorHospitalizacion/buscarIExH");
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/buscarIExH");
             let resultado = await peticion.json();
             let insumosEx = {};
 

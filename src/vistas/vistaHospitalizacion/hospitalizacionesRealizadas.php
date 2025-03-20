@@ -75,7 +75,7 @@
 
             <li class="">
                 <div class="borde-de-menu color-linea mb-1"></div>
-                <a href="?c=ControladorHospitalizacion/hospitalizacion" class="text-decoration-none text-black me-3"
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" class="text-decoration-none text-black me-3"
                     id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="20" fill="currentColor"
                         class="bi bi-clipboard-pulse me-1" viewBox="0 0 16 16">
@@ -86,7 +86,7 @@
             <li class="li">
                 <div class="borde-de-menu mb-1 activo-border"></div>
                 <div class="hover-grande">
-                    <a href="?c=ControladorHospitalizacion/hospitalizacionesRealizadas"
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacionesRealizadas"
                         class="text-decoration-none text-black me-3" id="DMserviciosExtras">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="20" fill="currentColor"
                             class="bi bi-clipboard-check me-1 color-activo-svg" viewBox="0 0 16 16">
@@ -154,6 +154,6 @@
 
 </div>
 
-<script type="text/javascript" src="./src/assets/js/hospitalizacion/hospitalizacionesRealizadas.js"></script>
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/hospitalizacion/hospitalizacionesRealizadas.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
