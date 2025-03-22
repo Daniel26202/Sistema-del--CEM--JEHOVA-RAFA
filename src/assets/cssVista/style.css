@@ -132,8 +132,6 @@ main {
 	width: 100px !important;
 }
 
-
-
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
 
@@ -1102,6 +1100,7 @@ con la clase hover-grande cambia de tamaño*/
 	color: #387ADF;
 }
 
+/* alerta */
 .comentarioRed {
 	border: 0.1px solid #ffe9ec;
 	box-shadow: #e7dcdd 0 0 2px;
@@ -1117,6 +1116,10 @@ con la clase hover-grande cambia de tamaño*/
 	margin: 0;
 	border-radius: 8px;
 	width: 30%;
+}
+.comentarioADinamica {
+	margin: 0;
+	border-radius: 8px;
 }
 
 /* modal */
