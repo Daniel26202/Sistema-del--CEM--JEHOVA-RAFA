@@ -3,20 +3,25 @@ addEventListener("DOMContentLoaded", function () {
     const btnEPassword = document.querySelectorAll(".btn_editarPassword");
     const btnEUsuario = document.getElementById("btnEUsuario");
     const btnAPassw = document.getElementById("btnAPassw");
+    const formUContr = document.getElementById("formUC");
     let idU = "";
     let nameUsuario = "";
 
     btnEPassword.forEach(btn => {
         btn.addEventListener("click", function () {
+            formUContr.reset();
             verificadorClaves = "";
             idU = btn.getAttribute("data-id-u");
             nameUsuario = btn.getAttribute("data-usuario");
             btnEUsuario.setAttribute("uk-toggle", `target: #modal-exampleEditar${idU}`);
+
+            // Oculta el div después del tiempo especificado
+            alertaError.classList.add("d-none");
+            alertaError.classList.remove(`${color}`);
         })
 
     });
 
-    const formUContr = document.getElementById("formUC");
 
     // Ajax
     const verificarPassw = async () => {
@@ -65,13 +70,15 @@ addEventListener("DOMContentLoaded", function () {
             alertaError.classList.remove(`uk-alert-danger`);
 
         }
+        if (time > 1) {
 
-        setTimeout(function () {
-            // Oculta el div después del tiempo especificado
-            alertaError.classList.add("d-none");
-            alertaError.classList.remove(`${color}`);
+            setTimeout(function () {
+                // Oculta el div después del tiempo especificado
+                alertaError.classList.add("d-none");
+                alertaError.classList.remove(`${color}`);
 
-        }, time);
+            }, time);
+        }
     }
 
 
@@ -86,13 +93,18 @@ addEventListener("DOMContentLoaded", function () {
         } else {
             verificadorClaves = "diferente";
             // mensaje de alerta
-            alertaMsj("La contraseña nueva y reescrita no coinciden.", 800000, "rojo");
+            alertaMsj("La contraseña nueva y reescrita no coinciden.", "estático", "rojo");
         }
     })
 
     btnAPassw.addEventListener("click", function () {
-        if (verificadorClaves == "Igual") { verificarPassw(); }
-
+        if (verificadorClaves == "Igual") {
+            verificarPassw();
+            formUContr.reset();
+        } else {
+            // mensaje de alerta
+            alertaMsj("Complete los campos.", 8000, "rojo");
+        }
     })
 
 })
