@@ -3,9 +3,7 @@
 <div id="modal-exampleEditarPassword" uk-modal>
     <div class="uk-modal-dialog uk-modal-body tamaño-modal uk-card  uk-width-1-2@m">
 
-        <form method="POST" class="formEditarUsuario"
-            action="?c=ControladorUsuarios/editarAdministrador&usuarioDb=<?php echo $dato["usuario"]; ?>"
-            enctype="multipart/form-data">
+        <form method="POST" class="formEditarUsuario" id="formUC" enctype="multipart/form-data">
 
             <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
@@ -31,33 +29,24 @@
                 </div>
                 <div class="uk-card-body pt-2">
 
+                <!-- alerta dinámica -->
+                    <div class="h-100">
+
+                        <div class=" comentarioADinamica comentarioRed fw-bolder d-none" id="alerta_errorMEPAc" uk-alert>
+                            <!-- <a class="uk-alert-close" uk-close></a> -->
+                            <p class="pe-2 text-center"></p>
+                        </div>
+                    </div>
+                    
                     <div class="d-flex flex-column w-auto ">
 
-                        <!-- <div class="margen-input-u w-auto grpFormCorrect">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20" fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
-                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                                </svg>
-
-                                <input type="text" name="nombre" id="inputDos" class="input-u col-12" placeholder="Nombre" value="">
-
-                            </div> -->
-                        <!-- <div class="margen-input-u w-auto grpFormCorrect">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" id="icono-tres" width="20" height="20" fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
-                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                                </svg>
-
-                                <input type="text" name="apellido" id="inputTres" class="input-u col-12" placeholder="Apellido" value="">
-
-                            </div> -->
-
+                        <p class="text-center m-0 pb-0 pt-3 fw-bolder">Contraseña actual</p>
                         <div class="margen-input-u w-auto grpFormCorrect d-flex">
 
                             <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
 
-                            <input type="password" name="password" id="inputDos" class="input-u inputDos col-11 "
-                                placeholder="Contraseña" value="">
+                            <input type="password" name="passwordActual" id="inputDos" class="input-u inputDos col-11 "
+                                placeholder="Contraseña actual" value="">
 
                             <a href="#" class="text-decoration-none btnMostrarContrase">
                                 <svg id="ocultarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
@@ -77,12 +66,13 @@
                             </a>
 
                         </div>
+                        <p class="text-center m-0 pb-0 pt-3 fw-bolder">Nueva contraseña</p>
                         <div class="margen-input-u w-auto grpFormCorrect d-flex">
 
                             <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
 
-                            <input type="password" name="password" id="inputDos" class="input-u inputDos col-11 "
-                                placeholder="Contraseña" value="">
+                            <input type="password" name="passwordNew" id="claveNew" class="input-u inputDos col-11 "
+                                placeholder="Nueva contraseña" value="">
 
                             <a href="#" class="text-decoration-none btnMostrarContrase">
                                 <svg id="ocultarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
@@ -102,12 +92,13 @@
                             </a>
 
                         </div>
+                        <p class="text-center m-0 pb-0 pt-4 fw-bolder">Reescribe la contraseña</p>
                         <div class="margen-input-u w-auto grpFormCorrect d-flex">
 
                             <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
 
-                            <input type="password" name="password" id="inputDos" class="input-u inputDos col-11 "
-                                placeholder="Contraseña" value="">
+                            <input type="password" id="inputVClave" class="input-u inputDos col-11 "
+                                placeholder="Reescribe la contraseña">
 
                             <a href="#" class="text-decoration-none btnMostrarContrase">
                                 <svg id="ocultarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
@@ -130,19 +121,16 @@
 
                     </div>
 
-                    <!-- inputs ocultos -->
-                    <div>
-                        <input type="" name="id_usuario" value="" hidden>
-                    </div>
 
                     <div class="uk-card-footer d-flex justify-content-start">
-                        <a href="#" id="btnEUsuario" class="uk-button-text uk-button btnMostrar mt-2 me-4 " uk-toggle="target: #modal-exampleEdita">Editar usuario</a>
-                        <a href="#" class="color_lineaText pe-0 ps-0 uk-button btnMostrar mt-2" >Editar contraseña</a>
+                        <a href="#" id="btnEUsuario" class="uk-button-text uk-button btnMostrar mt-2 me-4 "
+                            uk-toggle="target: #modal-exampleEdita">Editar usuario</a>
+                        <a href="#" class="color_lineaText pe-0 ps-0 uk-button btnMostrar mt-2">Editar contraseña</a>
                     </div>
                     <div class="uk-card-footer d-flex justify-content-start">
                         <a href="#" class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close">Cancelar</a>
-                        <input type="submit" class="uk-button uk-button-text btnMostrar ms-4 mt-2" name="actualizar"
-                            value="Actualizar">
+                        <a href="#" class="uk-button uk-button-text btnMostrar ms-4 mt-2" name="actualizarPassw"
+                            id="btnAPassw">Actualizar</a>
                     </div>
                 </div>
         </form>

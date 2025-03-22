@@ -212,3 +212,5 @@
 
 <script type="text/javascript" src="./src/assets/js/imgUsuarios.js"></script>
 <script type="text/javascript" src="./src/assets/js/usuarios.js"></script>
+<script type="text/javascript" src="./src/assets/js/admin.js"></script>
+

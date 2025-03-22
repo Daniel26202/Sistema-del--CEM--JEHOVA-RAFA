@@ -56,17 +56,15 @@ class ModeloUsuarios extends Db
     }
 
     //esto es para editar un usuario.
-    public function updateUsuario($usuario, $password, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal)
+    public function updateUsuario($usuario, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal)
     {
 
         if ($imagenUsuario == "") {
-            $sql = 'UPDATE usuario SET  usuario = :usuario, password = :password WHERE id_usuario = :id_usuario';
 
+            $sql = 'UPDATE usuario SET  usuario = :usuario WHERE id_usuario = :id_usuario';
             $consulta = $this->conexion->prepare($sql);
-
-
+            
             $consulta->bindParam(":usuario", $usuario);
-            $consulta->bindParam(":password", $password);
             $consulta->bindParam(":id_usuario", $idUsuario);
             $consulta->execute();
         } else {
@@ -77,13 +75,12 @@ class ModeloUsuarios extends Db
             $nombreImagenAntigua = $img["imagen"];
 
             //Editar el usuario.
-            $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario, password = :password WHERE id_usuario = :id_usuario';
+            $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario WHERE id_usuario = :id_usuario';
 
             $consulta = $this->conexion->prepare($sql);
 
             $consulta->bindParam(":imagen", $imagenUsuario);
             $consulta->bindParam(":usuario", $usuario);
-            $consulta->bindParam(":password", $password);
             $consulta->bindParam(":id_usuario", $idUsuario);
             if ($consulta->execute()) {
                 $rutaImagenAntigua = "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $nombreImagenAntigua;
@@ -95,6 +92,17 @@ class ModeloUsuarios extends Db
                 move_uploaded_file($imagenUsuarioTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $imagenUsuario);
             }
         }
+    }
+
+    public function updatePassword($id_usuario, $password)
+    {
+
+            $consulta = $this->conexion->prepare('UPDATE usuario SET  password = :password WHERE id_usuario = :id_usuario');
+            
+            $consulta->bindParam(":password", $password);
+            $consulta->bindParam(":id_usuario", $id_usuario);
+            $consulta->execute();
+
     }
 
     //esto es para editar el estado (en activo a desactivo) del usuario.
