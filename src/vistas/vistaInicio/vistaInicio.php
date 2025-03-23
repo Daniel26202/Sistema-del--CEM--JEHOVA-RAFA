@@ -58,7 +58,7 @@
                         <li class="uk-nav-divider"></li>
 
                         <li class="mt-2"><a href="#" data-bs-toggle="modal" data-bs-target="#eliminar" id="inicioCerrarSesionDos">
-                                <img src="./src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg
+                                <img src="../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg
                                     class="azul" style="margin-left: -4px;">
                                 </svg>SALIR</a></li>
                     </ul>
@@ -115,7 +115,7 @@
                 
             <a href="#" class="text-decoration-none text-black mb-4 ms-3 col-4" data-bs-toggle="modal"
                 data-bs-target="#eliminar" id="inicioCerrarSesion">
-                <img src="./src/assets/img/icono-cerrar-sesion.svg" width="24" height="24" uk-svg class="azul pb-1">
+                <img src="../src/assets/img/icono-cerrar-sesion.svg" width="24" height="24" uk-svg class="azul pb-1">
                 Cerrar sesión
             </a>
         </div>
@@ -131,19 +131,19 @@
                 <li>
                     <div
                         class="uk-position-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left">
-                        <img src="./src/assets/img/logotipo.jpg" uk-cover>
+                        <img src="<?= $urlBase?>../src/assets/img/logotipo.jpg" uk-cover>
                     </div>
                 </li>
                 <li>
                     <div
                         class="uk-position-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-top-right">
-                        <img src="./src/assets/img/Windows-11-Wallpaper-1-1-scaled.jpg" alt="" uk-cover>
+                        <img src="<?= $urlBase?>../src/assets/img/Windows-11-Wallpaper-1-1-scaled.jpg" alt="" uk-cover>
                     </div>
                 </li>
                 <li>
                     <div
                         class="uk-position-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-bottom-left">
-                        <img src="./src/assets/img/Windows-11-Wallpaper-1-1-scaled.jpg" alt="" uk-cover>
+                        <img src="<?= $urlBase?>../src/assets/img/Windows-11-Wallpaper-1-1-scaled.jpg" alt="" uk-cover>
                     </div>
                 </li>
             </ul>

@@ -24,7 +24,7 @@
 
         </div>
 
-        <form class="form-modal" id="modalAgregarProveedor" method="POST" action="?c=ControladorProveedores/insertar">
+        <form class="form-modal" id="modalAgregarProveedor" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/insertar">
 
             <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
 

@@ -15,14 +15,14 @@ class ControladorProveedores
 		$this->bitacora = new ModeloBitacora();
 	}
 
-	public function proveedores()
+	public function proveedores($parametro)
 	{
 		$proveedor = $this->modelo->consultar();
 		require_once './src/vistas/vistaProveedores/vistaProveedores.php';
 	}
 
 
-	public function papelera()
+	public function papelera($parametro)
 	{
 		$proveedor = $this->modelo->papelera();
 		require_once './src/vistas/vistaProveedores/vistaProveedoresPapelera.php';
@@ -34,47 +34,52 @@ class ControladorProveedores
 
 
 		if ($resultadoDeRif === "existeC") {
-			header("location:?c=ControladorProveedores/proveedores&error");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/error");
 		} else {
 
 
 			$this->modelo->agregar($_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha insertado un proveedor");
-			header("location:?c=ControladorProveedores/proveedores&agregado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/agregado");
 		}
 	}
 
 	// eliminación logica
-	public function update()
+	public function update($datos)
 	{
-		if (isset($_GET["id_proveedor"])) {
-			$this->modelo->update($_GET["id_proveedor"]);
-			// Guardar la bitacora
-			$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"proveedor","Ha eliminado un proveedor");
-
-			header("location:?c=ControladorProveedores/proveedores&eliminado");
-		}
-	}
-
-
-	public function restablecerProveedor()
-	{
-		$this->modelo->restablecerProveedor($_GET["id_proveedor"]);
+		$id_proveedor = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		
+		$this->modelo->update($id_proveedor);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"proveedor","Ha restablecido un proveedor");
+		$this->bitacora->insertarBitacora($id_usuario_bitacora,"proveedor","Ha eliminado un proveedor");
 
-		header("location: ?c=controladorProveedores/papelera&restablecido");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/eliminado");
+		
 	}
 
 
-	public function editar()
+	public function restablecerProveedor($datos)
 	{
+		$id_proveedor = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		$this->modelo->restablecerProveedor($id_proveedor);
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($id_usuario_bitacora,"proveedor","Ha restablecido un proveedor");
+
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/papelera/restablecido");
+	}
+
+
+	public function editar($datos)
+	{
+		$cedula = $datos[0];
 
 		$resultadoDeCedula = $this->modelo->validarRif($_POST['rif']);
 
 		// //se verifica si la cédula del input es igual a la cédula ya existente 
-		if ($_GET["cedulaDb"] == $_POST["rif"]) {
+		if ($cedula == $_POST["rif"]) {
 
 			$this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
 
@@ -82,28 +87,29 @@ class ControladorProveedores
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha modificado un proveedor");
 
 
-			header("location:?c=ControladorProveedores/proveedores&editado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editado");
 
 			// NOTA: Esto "&&" es "Y"
 			//se verifica si la cédula del input no es igual a la cédula ya existente.  
-		} elseif ($_GET["cedulaDb"] != $_POST["rif"]) {
+		} elseif ($cedula != $_POST["rif"]) {
 
 			//verifica si la cédula es igual a la información de la base de datos.
 			if ($resultadoDeCedula === "existeC") {
-				header("location:?c=ControladorProveedores/proveedores&error");
+
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/error");
 			} else {
 
 				$this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha modificado un proveedor");
-				header("location:?c=ControladorProveedores/proveedores&editado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editado");
 			}
 		} else {
 
 			$this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha modificado un proveedor");
-			header("location:?c=ControladorProveedores/proveedores&editado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editado");
 		}
 	}
 }

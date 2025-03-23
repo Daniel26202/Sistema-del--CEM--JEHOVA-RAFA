@@ -16,22 +16,22 @@
 	<!--  si factura no muestra el btn -->
 
 
-	<?php if ($parametro[0] !="" && $parametro[1] !="" || $parametro[0] !="" && $parametro[1] ==""): ?>
+	<?php //if ($parametro[0] !="" && $parametro[1] !="" || $parametro[0] !="" && $parametro[1] ==""): ?>
 <!-- para volver a la parte donde se factura -->
-		<div class="mt-2 w-25 d-flex justify-content-center">
-			<a href="?c=controladorFactura/facturaInicio" class="text-decoration-none" uk-tooltip="Volver para facturar más" title=""
-				aria-describedby="uk-tooltip-17">
-				<button class="btnRetroceder" id="btnRetrocederFactura"><svg xmlns="http://www.w3.org/2000/svg" width="36"
-						height="36" fill="currentColor" class="bi bi-reply-fill azul" viewBox="0 0 16 16">
-						<path
-							d="M5.921 11.9 1.353 8.62a.719.719 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z">
-						</path>
-					</svg>
-				</button>
-			</a>
-		</div>
+<!-- <div class="mt-2 w-25 d-flex justify-content-center">
+	<a href="?c=controladorFactura/facturaInicio" class="text-decoration-none" uk-tooltip="Volver para facturar más" title=""
+		aria-describedby="uk-tooltip-17">
+		<button class="btnRetroceder" id="btnRetrocederFactura"><svg xmlns="http://www.w3.org/2000/svg" width="36"
+				height="36" fill="currentColor" class="bi bi-reply-fill azul" viewBox="0 0 16 16">
+				<path
+					d="M5.921 11.9 1.353 8.62a.719.719 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z">
+				</path>
+			</svg>
+		</button>
+	</a>
+</div> -->
 		<!-- si no se ha facturado que muestre el btn -->
-	<?php else: ?>
+	<?php// else: ?>
 
 		<div class="me-4" id="desplegarAyudafactura">
 
@@ -68,7 +68,7 @@
 				</ul>
 			</div>
 		</div>
-	<?php endif ?>
+	<?php //endif ?>
 
 
 
@@ -149,12 +149,13 @@
 <!-- paginacion de la tabla -->
 <div class="me-4">
 	<div class="mt-3 mb-5">
+<?php if($parametro != ""):?>
 
-		<?php if ($parametro[0] != "" && $parametro[1] != ""): ?>
+		<?php if ($parametro[0] != ""): ?>
 
 			<?php //print_r($_GET);
 			
-
+				echo $parametro[0];
 				$datosFactura = $this->modelo->consultarFactura($parametro[0]);
 
 
@@ -297,7 +298,7 @@
 							<?php endforeach ?>
 						</div>
 					</div>
-					<?php $id_factura = $_GET["id_factura"]; ?>
+					<?php $id_factura = $parametro[0]; ?>
 					<div class="d-flex justify-content-end">
 						<div class="uk-card-footer">
 							<a href="?c=controladorFactura/mostrarPDF2&id_factura=<?php echo $id_factura; ?>"
@@ -957,178 +958,190 @@
 			</div>
 
 
-		<?php else: ?>
 
-			<?php $citaFacturar = array(); ?>
+
+	<?php endif; ?>
+
+
+
+
+<?php else: ?>
+	<?php $citaFacturar = array(); ?>
+
+</div>
+</div>
+
+<div> <!-- contenedor de la tabla -->
+
+<div class="div-tablaFactura p-3 ">
+
+
+	<div class="d-flex justify-content-between pb-4">
+
+
+
+
+
+
+		<div class="d-flex justify-content-end">
+
+			<!-- d-flex justify-content-end -->
+
+
+			<!-- Aqui va el nombre del paciente con la perticion ajax -->
+
+			<!-- input para buscar -->
+
 
 		</div>
 	</div>
+	<div class=""
+		style="background: #F8FCFF; border-radius:20px; height: 75vh; margin-top:-30px; overflow-y: auto;">
 
-	<div> <!-- contenedor de la tabla -->
+		<div style="height: 70px;" id="cajaBotones" class="d-flex justify-content-end">
 
-		<div class="div-tablaFactura p-3 ">
+			<button id="botonAgregar"
+				class="d-none btn btn-primary btn-agregar-doctores ms-4 mt-4 btn-agregar-ins-ser btn-factura"
+				data-bs-toggle="modal" data-bs-target="#modal-agregar">
+				<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+					class="bi bi-plus-circle" viewBox="0 0 16 16">
+					<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+					<path
+						d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+				</svg>
+				Agregar Servicio
+			</button>
 
+			<button class="d-none btn ms-4 mt-4  btn-agregar-ins-ser btn-primary btn-agregar-doctores btn-factura"
+				data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos" id="btnInsumos">
+				<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+					class="bi bi-capsule" viewBox="0 0 16 16">
+					<path
+						d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+				</svg>
+				Agregar Insumos
+			</button>
 
-			<div class="d-flex justify-content-between pb-4">
+			<!-- <div class="d-flex mt-3">
+			<form id="form-buscador-factura"  autocomplete="off" >
 
+				<input class="form-control w-75 input-buscar" type="number" name="cedula" placeholder="Ingrese Cedula">
 
+				<button class="btn btn-buscar" title="Buscar">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+						<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+					</svg>
+				</button>
 
+			</form>
+			</div> -->
 
+			<div class="d-flex">
+				<div class="mt-4">
+					<h5 id="datosPaciente" class="mt-3 text-uppercase" style="margin-left: -25px;"></h5>
+					<div class="toast-container position-fixed top-0 end-5 p-3">
+						<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
+							id="myToastfactura">
+							<div class="toast-body">
+								<h5 class="fw-bold text-dark text-center">Haz Click en Registrar para Guardar un
+									Nuevo Paciente</h5>
+								<div class="mt-2 pt-2 border-top">
+									<a href="?c=controladorPacientes/getPacientes">
+										<button type="button" class="btn btn-agregarcita-modal"> Registrar </button>
+									</a>
 
-
-				<div class="d-flex justify-content-end">
-
-					<!-- d-flex justify-content-end -->
-
-
-					<!-- Aqui va el nombre del paciente con la perticion ajax -->
-
-					<!-- input para buscar -->
-
-
-				</div>
-			</div>
-			<div class=""
-				style="background: #F8FCFF; border-radius:20px; height: 75vh; margin-top:-30px; overflow-y: auto;">
-
-				<div style="height: 70px;" id="cajaBotones" class="d-flex justify-content-end">
-
-					<button id="botonAgregar"
-						class="d-none btn btn-primary btn-agregar-doctores ms-4 mt-4 btn-agregar-ins-ser btn-factura"
-						data-bs-toggle="modal" data-bs-target="#modal-agregar">
-						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-							class="bi bi-plus-circle" viewBox="0 0 16 16">
-							<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-							<path
-								d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-						</svg>
-						Agregar Servicio
-					</button>
-
-					<button class="d-none btn ms-4 mt-4  btn-agregar-ins-ser btn-primary btn-agregar-doctores btn-factura"
-						data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos" id="btnInsumos">
-						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-							class="bi bi-capsule" viewBox="0 0 16 16">
-							<path
-								d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-						</svg>
-						Agregar Insumos
-					</button>
-
-					<!-- <div class="d-flex mt-3">
-					<form id="form-buscador-factura"  autocomplete="off" >
-
-						<input class="form-control w-75 input-buscar" type="number" name="cedula" placeholder="Ingrese Cedula">
-
-						<button class="btn btn-buscar" title="Buscar">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-								<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-							</svg>
-						</button>
-
-					</form>
-					</div> -->
-
-					<div class="d-flex">
-						<div class="mt-4">
-							<h5 id="datosPaciente" class="mt-3 text-uppercase" style="margin-left: -25px;"></h5>
-							<div class="toast-container position-fixed top-0 end-5 p-3">
-								<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
-									id="myToastfactura">
-									<div class="toast-body">
-										<h5 class="fw-bold text-dark text-center">Haz Click en Registrar para Guardar un
-											Nuevo Paciente</h5>
-										<div class="mt-2 pt-2 border-top">
-											<a href="?c=controladorPacientes/getPacientes">
-												<button type="button" class="btn btn-agregarcita-modal"> Registrar </button>
-											</a>
-
-											<button type="button" class="uk-button me-3 uk-button-default btn-cerrar-modal"
-												data-bs-dismiss="toast">Cancelar</button>
-										</div>
-									</div>
+									<button type="button" class="uk-button me-3 uk-button-default btn-cerrar-modal"
+										data-bs-dismiss="toast">Cancelar</button>
 								</div>
 							</div>
 						</div>
-						<div class="mt-4 validar" id="form-buscador">
-							<form id="form-buscador-factura" class="d-flex justify-content-end" autocomplete="off">
-								<input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
-									placeholder="Ingrese Cedula" required maxlength="8" minlength="6"
-									oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-									id="inputBusPaCi">
-
-								<button class="btn btn-buscar " title="Buscar">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-										class="bi bi-search" viewBox="0 0 16 16">
-										<path
-											d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-									</svg>
-								</button>
-							</form>
-						</div>
 					</div>
 				</div>
-				<div class="mt-5">
-					<!-- <div class="d-flex justify-content-end me-3">
-								
-							</div> -->
-					<table class="table table-striped" id="ayudaTabla1">
-						<thead>
-							<tr>
-								<th>SERVICIO MÉDICO</th>
+				<div class="mt-4 validar" id="form-buscador">
+					<form id="form-buscador-factura" class="d-flex justify-content-end" autocomplete="off">
+						<input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
+							placeholder="Ingrese Cedula" required maxlength="8" minlength="6"
+							oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+							id="inputBusPaCi">
 
-							</tr>
-						</thead>
-						<tbody>
-
-						</tbody>
-					</table>
-
-					<table class="table table-striped" id="ayudaTabla2">
-
-						<tbody id="tbody">
-
-						</tbody>
-					</table>
-					<table class="table table-striped" id="ayudaTabla3">
-						<thead>
-							<tr>
-								<th>INSUMOS</th>
-
-							</tr>
-						</thead>
-						<tbody id="tbody-insumos">
-
-						</tbody>
-					</table>
-
-					<!-- caja de los botones de vaciar , siguiente, total -->
-					<!-- recoradatorio acomodar esto del color -->
-					<div class="d-flex justify-content-between align-items-center mt-5">
-						<div id="btnVaciar-Siguiente">
-							<div class="d-flex" id="cajaVaciarTotalSiguiente">
-								<button class="btn btn-agregarConsulta ms-3 me-4 btn-escondidos"
-									id="vaciarTabla">VACIAR</button>
-								<button id="btnSiguiente" class="btn btn-agregarConsulta btn-escondidos"
-									data-bs-toggle="modal" data-bs-target="#modal-pago">SIGUIENTE</button>
-							</div>
-						</div>
-						<div id="totalFac">
-
-							<label class="fw-bolder">TOTAL: </label>
-							<label>BS</label>
-							<input type="number" style="margin-left: -1px; padding-left: 6px;"
-								class=" w-25 input-buscar text-center" id="totalFactura" disabled>
-							<input type="hidden" id="inputTotalCita" value="0">
-						</div>
-					</div>
-
+						<button class="btn btn-buscar " title="Buscar">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+								class="bi bi-search" viewBox="0 0 16 16">
+								<path
+									d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+							</svg>
+						</button>
+					</form>
 				</div>
-
 			</div>
 		</div>
+		<div class="mt-5">
+			<!-- <div class="d-flex justify-content-end me-3">
+						
+					</div> -->
+			<table class="table table-striped" id="ayudaTabla1">
+				<thead>
+					<tr>
+						<th>SERVICIO MÉDICO</th>
 
-	<?php endif ?>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+
+			<table class="table table-striped" id="ayudaTabla2">
+
+				<tbody id="tbody">
+
+				</tbody>
+			</table>
+			<table class="table table-striped" id="ayudaTabla3">
+				<thead>
+					<tr>
+						<th>INSUMOS</th>
+
+					</tr>
+				</thead>
+				<tbody id="tbody-insumos">
+
+				</tbody>
+			</table>
+
+			<!-- caja de los botones de vaciar , siguiente, total -->
+			<!-- recoradatorio acomodar esto del color -->
+			<div class="d-flex justify-content-between align-items-center mt-5">
+				<div id="btnVaciar-Siguiente">
+					<div class="d-flex" id="cajaVaciarTotalSiguiente">
+						<button class="btn btn-agregarConsulta ms-3 me-4 btn-escondidos"
+							id="vaciarTabla">VACIAR</button>
+						<button id="btnSiguiente" class="btn btn-agregarConsulta btn-escondidos"
+							data-bs-toggle="modal" data-bs-target="#modal-pago">SIGUIENTE</button>
+					</div>
+				</div>
+				<div id="totalFac">
+
+					<label class="fw-bolder">TOTAL: </label>
+					<label>BS</label>
+					<input type="number" style="margin-left: -1px; padding-left: 6px;"
+						class=" w-25 input-buscar text-center" id="totalFactura" disabled>
+					<input type="hidden" id="inputTotalCita" value="0">
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+
+
+<?php endif; ?>
+
+
+
+
+
 
 </div>
 </div>
