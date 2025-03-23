@@ -18,7 +18,7 @@ class ControladorReportes{
     }
 
 	
-	public function reportes(){
+	public function reportes($parametro){
 
 		$facturas = $this->modelo->consultarFactura();
 		$anuladas = $this->modelo->consultarFacturaAnuladas();

@@ -90,7 +90,7 @@
 	</div>
 
 	<div class="cardReporte text-white mb-3">
-		<a href="?c=ControladorReportes/pacientePDF&pdf" class="text-decoration-none">
+		<a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/pacientePDF&pdf" class="text-decoration-none">
 			<div class="card-body cartaRepor">
 				<div class="ico">
 					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -122,7 +122,7 @@
 
 <div class="reportess">
 	<div class="granReporte text-white  mb-3">
-		<a href="?c=ControladorReportes/insumosPDF&pdf" class="text-decoration-none">
+		<a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/insumosPDF&pdf" class="text-decoration-none">
 			<div class="card-body granRepor">
 				<div class="ico">
 					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -600,7 +600,7 @@
 						<div class="d-flex justify-content-center">
 
 
-							<form action="?c=ControladorReportes/buscarPDF" method="POST" id="formularioCita">
+							<form action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarPDF" method="POST" id="formularioCita">
 								<ul class="  uk-subnav-divider uk-margin-remove-top margin d-flex fechas_mover" id="ul">
 									<li><a href="#" class="text-decoration-none fw-bolder text-uppercase text-white me-3" id="cedulab">DESDE<input class="input-expresion form-control  input-disabled input-paciente col-10" type="date" name="desdeFecha" id="desdeFecha"></a></li>
 									<li class="li_mover"><a href="#" class="text-decoration-none fw-bolder text-uppercase text-white" id="telefonob">HASTA<input class="input-expresion form-control input-disabled input-paciente col-10" name="fechaHasta" id="fechaHasta" type="date"></a></li>
@@ -665,7 +665,7 @@
 						<div class="d-flex justify-content-center">
 
 
-							<form action="?c=ControladorReportes/buscarEntradasInsumosPDF" method="POST" id="formularioEntradas">
+							<form action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarEntradasInsumosPDF" method="POST" id="formularioEntradas">
 
 								<select id="selectInsumoEntradas" name="id_insumo" class="form-control w-100">
 									<option selected disabled>Seleccione un Insumo</option>
@@ -1102,7 +1102,7 @@
 </div>
 </div>
 
-<script src="./src/assets/js/reporteCitaYEntradasDeInsumos.js"></script>
-<script src="./src/assets/js/reportes.js"></script>
+<script src="<?= $urlBase?>../src/assets/js/reporteCitaYEntradasDeInsumos.js"></script>
+<script src="<?= $urlBase?>../src/assets/js/reportes.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
