@@ -16,7 +16,7 @@ class ControladorDoctores extends ModeloDoctores
     }
 
     //muestro los datos de las cuatro tablas
-    public function doctores()
+    public function doctores($parametro)
     {
 
         $datos = $this->modelo->select();
@@ -35,7 +35,7 @@ class ControladorDoctores extends ModeloDoctores
 
         // NOTA: Esto "||" es "o"
         if ($resultadoDeCedula === "existeC" || $resultadoDeUsuario === "existeU") {
-            header("location: ?c=ControladorDoctores/doctores&error");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/error");
         } else {
 
 
@@ -60,16 +60,17 @@ class ControladorDoctores extends ModeloDoctores
 
 
 
-            header("location: ?c=controladorConsultas/consultas&registrado");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/registrado");
         }
         if ($resultadoDeUsuario === "existeU") {
-            header("location: ?c=ControladorDoctores/doctores&Usuario");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/Usuario");
         }
     }
 
     // editar doctor
-    public function editarDoctor()
+    public function editarDoctor($datos)
     {
+        $cedula = $datos[0];
 
         $idDiaDbE = array_diff($_POST["diaAnterio"], $_POST["dias"]);
         $idDiaNuevo = array_diff($_POST["dias"], $_POST["diaAnterio"]);
@@ -84,22 +85,22 @@ class ControladorDoctores extends ModeloDoctores
         $resultadoDeCedula = $this->modelo->validarCedula($_POST['cedula']);
 
         //se verifica si la cédula del input es igual a la cédula ya existente 
-        if ($_GET["cedulaDb"] == $_POST["cedula"]) {
+        if ($cedula == $_POST["cedula"]) {
 
             $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds,$_POST["horaEntrada"],$_POST["horaSalida"]);
 
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
 
-            header("location:?c=ControladorDoctores/doctores&editado");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
 
             // NOTA: Esto "&&" es "Y"
             //se verifica si la cédula del input no es igual a la cédula ya existente.  
-        } elseif ($_GET["cedulaDb"] != $_POST["cedula"]) {
+        } elseif ($cedula != $_POST["cedula"]) {
 
             //verifica si la cédula es igual a la información de la base de datos.
             if ($resultadoDeCedula === "existeC") {
-                header("location:?c=ControladorDoctores/doctores&error");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/error");
 
             } else {
 
@@ -111,7 +112,7 @@ class ControladorDoctores extends ModeloDoctores
                 // // Guardar la bitacora
                 // $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
 
-                header("location:?c=ControladorDoctores/doctores&editado");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
 
             }
         } else {
@@ -121,7 +122,7 @@ class ControladorDoctores extends ModeloDoctores
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
 
-            header("location:?c=ControladorDoctores/doctores&editado");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
 
         }
     }
@@ -134,7 +135,7 @@ class ControladorDoctores extends ModeloDoctores
         // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha eliminado un doctor");
 
-        header("location:?c=ControladorDoctores/doctores&eliminado");
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/eliminado");
     }
 
     //json para editar
@@ -148,14 +149,16 @@ class ControladorDoctores extends ModeloDoctores
         $this->modelo->Especialidadregistrar($_POST['nombre']);
         // Guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario'],"especialidad","Ha insertado una nueva especialidad");
-        header("location: ?c=ControladorDoctores/doctores&especialidadRegistrar");
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/especialidadRegistrar");
     }
-    public function eliminarEspecialidad()
+    public function eliminarEspecialidad($datos)
     {
-        $this->modelo->Especialidadeliminar($_GET['id_especialidad']);
+        $id_especialidad = $datos[0];
+        $id_usuario =  $datos[1];
+        $this->modelo->Especialidadeliminar($id_especialidad);
         //Guardar la bitacora
-        $this->bitacora->insertarBitacora($_GET['id_usuario'],"especialidad","Ha eliminado una especialidad");
-        header("location: ?c=ControladorDoctores/doctores&especialidadEliminar");
+        $this->bitacora->insertarBitacora($id_usuario,"especialidad","Ha eliminado una especialidad");
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/especialidadEliminar");
     }
 
     public function buscarEspecialidad()
@@ -170,9 +173,10 @@ class ControladorDoctores extends ModeloDoctores
     }
 
 
-    public function buscarHorario()
+    public function buscarHorario($datos)
     {
-        $respuesta = $this->modelo->horarioDelDoctor($_GET["id_personal"]);
+        $id_personal = $datos[0];
+        $respuesta = $this->modelo->horarioDelDoctor($id_personal);
         echo json_encode($respuesta);
     }
 }

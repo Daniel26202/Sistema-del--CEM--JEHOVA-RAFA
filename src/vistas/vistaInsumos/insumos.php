@@ -29,6 +29,10 @@
                             <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
                         </svg>AYUDA</a></li>
                 <li class="uk-nav-divider"></li>
+                <li><a href="?c=ControladorBitacora/bitacora" ><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
+          <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z"/>
+      </svg> CONFIGURACIÓN</a></li>
+        <li class="uk-nav-divider"></li>
 
                 <li><a href="#" data-bs-toggle="modal"
                         data-bs-target="#eliminar">
@@ -65,24 +69,24 @@
 
 <div class="d-flex justify-content-center">
 
-    <?php if (isset($_GET["editado"])): ?>
+    <?php if($parametro != ""):?>
+        <?php if ($parametro[0] == "editado"): ?>
         <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">Se actualizo correctamente.</p>
         </div>
-    <?php endif ?>
-    <?php if (isset($_GET["eliminado"])): ?>
-        <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">Se ha eliminado correctamente.</p>
-        </div>
-    <?php endif ?>
-    <?php if (isset($_GET["agregado"])): ?>
-        <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p class="pe-2">Se ha agregado correctamente.</p>
-        </div>
-    <?php endif ?>
+        <?php elseif ($parametro[0] == "eliminado"): ?>
+            <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">Se ha eliminado correctamente.</p>
+            </div>
+        <?php elseif ($parametro[0] == "agregado"): ?>
+            <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">Se ha agregado correctamente.</p>
+            </div>
+        <?php endif ?>
+    <?php endif;?>
 
 </div>
 
@@ -100,7 +104,7 @@
             <li class="li">
                 <div class="borde-de-menu  mb-1 activo-border"></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorInsumos/insumos" class="text-decoration-none text-black me-3" id="DMservicioMedico">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos" class="text-decoration-none text-black me-3" id="DMservicioMedico">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-capsule me-1 azul"
                             viewBox="0 0 16 16">
                             <path
@@ -111,7 +115,7 @@
             <li class="li">
                 <div class="borde-de-menu mb-1 "></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorEntrada/entrada" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-inboxes-fill me-1 mb-1" viewBox="0 0 16 16">
                             <path d="M4.98 1a.5.5 0 0 0-.39.188L1.54 5H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0A.5.5 0 0 1 10 5h4.46l-3.05-3.812A.5.5 0 0 0 11.02 1H4.98zM3.81.563A1.5 1.5 0 0 1 4.98 0h6.04a1.5 1.5 0 0 1 1.17.563l3.7 4.625a.5.5 0 0 1 .106.374l-.39 3.124A1.5 1.5 0 0 1 14.117 10H1.883A1.5 1.5 0 0 1 .394 8.686l-.39-3.124a.5.5 0 0 1 .106-.374L3.81.563zM.125 11.17A.5.5 0 0 1 .5 11H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0 .5.5 0 0 1 .5-.5h5.5a.5.5 0 0 1 .496.562l-.39 3.124A1.5 1.5 0 0 1 14.117 16H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .121-.393z" />
                         </svg>Entradas de Insumo</a>
@@ -122,7 +126,7 @@
                 <div class="borde-de-menu mb-1 color-linea"></div>
                 <div class="hover-grande">
 
-                    <a href="?c=controladorProveedores/proveedores" class="text-decoration-none text-black me-3" id="DMserviciosExtras">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores" class="text-decoration-none text-black me-3" id="DMserviciosExtras">
                         <img src="./src/assets/img/proveedor (3).png" width="20" height="20" uk-svg class="me-1">Proveedores</a>
                 </div>
 
@@ -131,7 +135,7 @@
             <li class="li">
                 <div class="borde-de-menu mb-1 "></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorInsumos/InsumosVencidos" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/InsumosVencidos" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-inboxes-fill me-1 mb-1" viewBox="0 0 16 16">
                             <path d="M4.98 1a.5.5 0 0 0-.39.188L1.54 5H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0A.5.5 0 0 1 10 5h4.46l-3.05-3.812A.5.5 0 0 0 11.02 1H4.98zM3.81.563A1.5 1.5 0 0 1 4.98 0h6.04a1.5 1.5 0 0 1 1.17.563l3.7 4.625a.5.5 0 0 1 .106.374l-.39 3.124A1.5 1.5 0 0 1 14.117 10H1.883A1.5 1.5 0 0 1 .394 8.686l-.39-3.124a.5.5 0 0 1 .106-.374L3.81.563zM.125 11.17A.5.5 0 0 1 .5 11H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0 .5.5 0 0 1 .5-.5h5.5a.5.5 0 0 1 .496.562l-.39 3.124A1.5 1.5 0 0 1 14.117 16H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .121-.393z" />
                         </svg>Entrada de Insumos Vencidas</a>
@@ -157,7 +161,7 @@
             <li class="li">
                 <div class="borde-de-menu mb-1 color-linea "></div>
                 <div class="hover-grande">
-                    <a href="?c=controladorInsumos/papelera" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/papelera" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-recycle me-1 mb-1 " viewBox="0 0 16 16">
                             <path d="M9.302 1.256a1.5 1.5 0 0 0-2.604 0l-1.704 2.98a.5.5 0 0 0 .869.497l1.703-2.981a.5.5 0 0 1 .868 0l2.54 4.444-1.256-.337a.5.5 0 1 0-.26.966l2.415.647a.5.5 0 0 0 .613-.353l.647-2.415a.5.5 0 1 0-.966-.259l-.333 1.242-2.532-4.431zM2.973 7.773l-1.255.337a.5.5 0 1 1-.26-.966l2.416-.647a.5.5 0 0 1 .612.353l.647 2.415a.5.5 0 0 1-.966.259l-.333-1.242-2.545 4.454a.5.5 0 0 0 .434.748H5a.5.5 0 0 1 0 1H1.723A1.5 1.5 0 0 1 .421 12.24l2.552-4.467zm10.89 1.463a.5.5 0 1 0-.868.496l1.716 3.004a.5.5 0 0 1-.434.748h-5.57l.647-.646a.5.5 0 1 0-.708-.707l-1.5 1.5a.498.498 0 0 0 0 .707l1.5 1.5a.5.5 0 1 0 .708-.707l-.647-.647h5.57a1.5 1.5 0 0 0 1.302-2.244l-1.716-3.004z" />
                         </svg>Papelera de Insumos</a>
@@ -228,7 +232,7 @@
         <div class="tar ">
             <?php foreach ($insumos as $i): ?>
                 <div class="card ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
-                    <img src="./src/assets/img_ingresadas_por_usuarios/insumos/<?= $i["imagen"] ?>" class="card-img-top" style="height: 35%;">
+                    <img src="<?= $urlBase?>../src/assets/img_ingresadas_por_usuarios/insumos/<?= $i["imagen"] ?>" class="card-img-top" style="height: 35%;">
                     <div class="card-body mt-4 tarjeta-ajax">
                         <!-- <div class="alert  text-center alertas-vencidos d-none p-0">  -->
                             <!-- aqui es la alerta de los vencidos -->
@@ -244,7 +248,11 @@
 
                         <h5 class="card-title titulo"><?= $i["nombre"] ?></h5>
                         <p class="mt-3">Skock-Min: <?= $i["stockMinimo"] ?></p>
-                        <p>Cantidad: <?= $i["cantidad"] ?></p>
+                        <?php if($i["cantidad"] <= 0): ?>
+                            <p class="text-danger">Cantidad: <?= $i["cantidad"] ?></p>
+                        <?php else: ?>
+                            <p>Cantidad: <?= $i["cantidad"] ?></p>
+                        <?php endif?>
 
                         <a href="#" class="btn btn-agregarcita-modal text-decoration-none botones-mostrar" data-index="<?= $i["id_insumo"] ?>"
                             uk-toggle="target: #modal-exampleMostrar">Mostrar</a>
@@ -288,7 +296,7 @@
 
             </div>
 
-            <form class="form-modal" method="POST" action="?c=controladorInsumos/guardarInsumo" enctype="multipart/form-data" id="modalAgregarInsumos">
+            <form class="form-modal" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/guardarInsumo" enctype="multipart/form-data" id="modalAgregarInsumos">
 
                 <div class="alert alert-danger d-none" id="alerta-guardar">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
                 <div id="contenedor-img" class="mb-2">
@@ -462,7 +470,7 @@
 
             </div>
 
-            <form class="form-modal" method="POST" action="?c=controladorInsumos/editar" enctype="multipart/form-data" id="modalEditarInsumos">
+            <form class="form-modal" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/editar" enctype="multipart/form-data" id="modalEditarInsumos">
 
                  <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
 
@@ -592,7 +600,7 @@
 
             </div>
 
-            <form class="form-modal" method="POST" action="?c=controladorInsumos/sacarEntrada">
+            <form class="form-modal" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFAInsumos/sacarEntrada">
 
                 <input type="hidden" id="id_entradaDeInsumo" name="id_entradaDeInsumo">
                 <input type="hidden" id="id_insumo" name="id_insumo">
@@ -650,4 +658,4 @@
 
     <?php require_once './src/vistas/head/footer.php'; ?>
 
-    <script type="text/javascript" src="./src/assets/insumo.js"></script>
+    <script type="text/javascript" src="<?= $urlBase?>../src/assets/insumo.js"></script>

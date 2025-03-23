@@ -75,6 +75,8 @@
                 <p class="parrafo"></p>
             </div>
 
+            <!-- <div id="alertaStockTerminado">Los insumos ya se vendieron y/o vencieron todos por favor alimenten el stock </div> -->
+
             <!-- Editar insumos -->
             <div class="d-flex justify-content-end mt-4">
                 <div class="me-3">

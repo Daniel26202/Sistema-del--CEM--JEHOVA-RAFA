@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <form class="form-modal" id="modalAgregar" action="?c=ControladorPatologias/registrarPatologia" method="POST" autocomplete="off">
+    <form class="form-modal" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/registrarPatologia" method="POST" autocomplete="off">
 
       <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['id_usuario']?>">
 

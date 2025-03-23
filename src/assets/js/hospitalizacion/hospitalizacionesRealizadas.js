@@ -8,7 +8,7 @@ addEventListener("DOMContentLoaded", function () {
         try {
 
             // llamo la función 
-            peticion = await fetch("?c=ControladorHospitalizacion/traerSesionR");
+            peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesionR");
             let resultad = await peticion.json();
 
             if (resultad.length == 0) {

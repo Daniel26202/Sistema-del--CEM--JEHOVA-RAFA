@@ -16,7 +16,7 @@ class ControladorInsumos
 	}
 
 
-	public function insumos(){
+	public function insumos($parametro){
 
 
 		$proveedores = $this->modelo->selectProveedores();
@@ -35,26 +35,27 @@ class ControladorInsumos
 		echo json_encode($respuesta);
 	}
 
-	public function InsumosVencidos(){
+	public function InsumosVencidos($parametro){
 		$vencidos = $this->modelo->InsumosVencidos();
 		$insumos = $this->modelo->insumos();
 		require_once './src/vistas/vistaInsumos/vistaInsumosVencidos.php';
 	}
 
-	public function info()
+	public function info($datos)
 	{
-		$datosDeInsumo = $this->modelo->insumosInfo($_GET['id_insumo']);
-		$datosDeVencimiento =  $this->modelo->retornarFechaDeVencimiento($_GET['id_insumo']);
+		$id_insumo = $datos[0];
+		$datosDeInsumo = $this->modelo->insumosInfo($id_insumo);
+		$datosDeVencimiento =  $this->modelo->retornarFechaDeVencimiento($id_insumo);
 		$informacion = array('insumo' => $datosDeInsumo, 'vencimiento' => $datosDeVencimiento);
 		echo json_encode($informacion);
 	}
 
 
-	public function cantidadInsumos()
-	{
-		$respuesta = $this->modelo->cantidadInsumos($_GET['id_insumo']);
-		echo json_encode($respuesta);
-	}
+	// public function cantidadInsumos()
+	// {
+	// 	$respuesta = $this->modelo->cantidadInsumos($_GET['id_insumo']);
+	// 	echo json_encode($respuesta);
+	// }
 
 
 
@@ -74,16 +75,18 @@ class ControladorInsumos
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"insumo","Ha Insertado un insumo");
 
-			header("location: ?c=controladorInsumos/insumos&agregado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/agregado");
 		}
 	}
 
-	public function eliminar()
+	public function eliminar($datos)
 	{
-		$this->modelo->eliminar($_GET["id_insumo"]);
+		$id_insumo = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		$this->modelo->eliminar($id_insumo);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"insumo","Ha eliminado un insumo");
-		header("location: ?c=controladorInsumos/insumos&eliminado");
+		$this->bitacora->insertarBitacora($id_usuario_bitacora ,"insumo","Ha eliminado un insumo");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/eliminado");
 	}
 
 	public function editar()
@@ -93,7 +96,7 @@ class ControladorInsumos
 		$this->modelo->editar($_POST["Codigo"], $_POST["nombre"], $_POST['descripcion'], $_POST["stockMinimo"], $_FILES["imagen"]);
 		// Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"insumo","Ha modificado un insumo");
-		header("location: ?c=controladorInsumos/insumos&editado");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/editado");
 	}
 
 
@@ -103,13 +106,15 @@ class ControladorInsumos
 		require_once './src/vistas/vistaInsumos/insumosPapelera.php';
 	}
 
-	public function restablecerInsumo()
+	public function restablecerInsumo($datos)
 	{
-		$this->modelo->restablecerInsumo($_GET['id_insumo']);
+		$id_insumo = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		$this->modelo->restablecerInsumo($id_insumo);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_GET['id_usuario_bitacora'],"insumo","Ha restablecido un insumo");
+		$this->bitacora->insertarBitacora($id_usuario_bitacora,"insumo","Ha restablecido un insumo");
 		print_r($_GET);
-		header("location: ?c=controladorInsumos/papelera");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/papelera");
 	}
 
 

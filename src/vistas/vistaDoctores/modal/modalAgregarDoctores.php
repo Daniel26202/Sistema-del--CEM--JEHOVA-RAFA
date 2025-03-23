@@ -25,7 +25,7 @@
 </div>
 
 
-<form class="me-2 ms-2" method="POST" action="?c=ControladorDoctores/agregarDoctor" id="modalAgregarDoctores"
+<form class="me-2 ms-2" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/agregarDoctor" id="modalAgregarDoctores"
 autocomplete="off" enctype="multipart/form-data">
 
 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']?>">

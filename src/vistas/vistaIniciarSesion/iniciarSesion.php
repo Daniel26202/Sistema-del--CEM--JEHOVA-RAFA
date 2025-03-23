@@ -6,14 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
 
-    <link rel="stylesheet" type="text/css" href="./src/assets/uikit/css/uikit.min.css">
-    <link rel="stylesheet" type="text/css" href="./src/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./src/assets/cssVista/inicioSesion.css">
-    <link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs.min.css">
-    <link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs-modern.css">
+<?php $concatenarRuta = "";?>
+    <?php if($parametro !=  ""):?>
+		<?php foreach($parametro as $p):?>
+			<?php $concatenarRuta .= "../";?>
+            <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/uikit/css/uikit.min.css">
+            <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/bootstrap/css/bootstrap.min.css">
+            <link rel="stylesheet" href="<?= $concatenarRuta?>../src/assets/cssVista/inicioSesion.css">
+            <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/intro/introjs.min.css">
+            <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/intro/introjs-modern.css">
+    		<?php endforeach;?>
+	<?php else :?>
+        <link rel="stylesheet" type="text/css" href="./src/assets/uikit/css/uikit.min.css">
+        <link rel="stylesheet" type="text/css" href="./src/assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./src/assets/cssVista/inicioSesion.css">
+        <link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs.min.css">
+        <link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs-modern.css">
+    <?php endif;?>
 
 </head>
 
+<?php $urlBase = $concatenarRuta != "" ? $concatenarRuta : "" ?>
 <body>
     <main>
 
@@ -42,15 +55,15 @@
                         <div class="carousel-inner">
 
                             <div class="carousel-item active tamano">
-                                <img src="./src/assets/img/inicioSesion1.png"
+                                <img src="<?= $urlBase?>../src/assets/img/inicioSesion1.png"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="./src/assets/img/inicioSesion2.png"
+                                <img src="<?= $urlBase?>../src/assets/img/inicioSesion2.png"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="./src/assets/img/inicioSesion3.jpg"
+                                <img src="<?= $urlBase?>../src/assets/img/inicioSesion3.jpg"
                                     class="d-block h-100 uk-background-blend-multiply " alt="">
                             </div>
 
@@ -69,7 +82,7 @@
                 </div>
             </div>
 
-            <form autocomplete="off" action="?c=ControladorIniciarSesion/iniciarSesion" method="POST"
+            <form autocomplete="off" action="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/iniciarSesion" method="POST"
                 id="formiIniciarSesion">
 
                 <div class="w-auto ">
@@ -85,27 +98,28 @@
                             <div class="d-flex flex-column col">
 
                                 <div>
-                                    <?php if (isset($_GET["mensaje"])): ?>
+                                    <?php if($parametro != ""):?>
+                                        
+                                        <?php if ($parametro[0] == "mensaje"): ?>
                                         <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
                                             style="display: none;" uk-alert>
                                             <a class="uk-alert-close" uk-close></a>
                                             <p class="pe-2">Usuario o Contraseña incorrectos.</p>
                                         </div>
-                                    <?php endif ?>
-                                    <?php if (isset($_GET["captcha"])): ?>
-                                        <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                            style="display: none;" uk-alert>
-                                            <a class="uk-alert-close" uk-close></a>
-                                            <p class="pe-2">Verificación de no soy un robo fallido, o error en su conexión a internet</p>
-                                        </div>
-                                    <?php endif ?>
-                                    <?php if (isset($_GET["campos"])): ?>
-                                        <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                            style="display: none;" uk-alert>
-                                            <a class="uk-alert-close" uk-close></a>
-                                            <p class="pe-2">Tiene que llenar todos los campos.</p>
-                                        </div>
-                                    <?php endif ?>
+                                        <?php elseif ($parametro[0] == "captcha"): ?>
+                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                                style="display: none;" uk-alert>
+                                                <a class="uk-alert-close" uk-close></a>
+                                                <p class="pe-2">Verificación de no soy un robo fallido, o error en su conexión a internet</p>
+                                            </div>
+                                        <?php elseif ($parametro[0] == "campos"): ?>
+                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                                style="display: none;" uk-alert>
+                                                <a class="uk-alert-close" uk-close></a>
+                                                <p class="pe-2">Tiene que llenar todos los campos.</p>
+                                            </div>
+                                        <?php endif ?>
+                                    <?php endif;?>
                                 </div>
 
                                 <div class=" mb-3 animacionInput" id="ingresar-usuario">
@@ -170,12 +184,27 @@
             </form>
         </div>
     </main>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
-    <script type="text/javascript" src="./src/assets/js/inicioSesion.js"></script>
-    <script type="text/javascript" src="./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="./src/assets/uikit/js/uikit.min.js"></script>
-    <script type="text/javascript" src="./src/assets/intro/intro.min.js"></script>
-    <script type="text/javascript" src="./src/assets/js/ayudaInteractiva.js"></script>
+
+    <?php if($parametro !=  ""):?>
+		<?php $concatenarRuta = "";?>
+		<?php foreach($parametro as $p):?>
+		<?php $concatenarRuta .= "../";?>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/inicioSesion.js"></script>
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/uikit/js/uikit.min.js"></script>
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/intro/intro.min.js"></script>
+            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaInteractiva.js"></script>
+        <?php endforeach;?>
+	<?php else :?>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
+        <script type="text/javascript" src="../src/assets/js/inicioSesion.js"></script>
+        <script type="text/javascript" src="../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="../src/assets/uikit/js/uikit.min.js"></script>
+        <script type="text/javascript" src="../src/assets/intro/intro.min.js"></script>
+        <script type="text/javascript" src="../src/assets/js/ayudaInteractiva.js"></script>
+    <?php endif;?>
+    
 
 </body>
 

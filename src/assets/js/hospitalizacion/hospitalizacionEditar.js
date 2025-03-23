@@ -16,7 +16,7 @@ addEventListener("DOMContentLoaded", function () {
         try {
 
             // llamo la función traer hora y costo
-            let peticion = await fetch("?c=ControladorHospitalizacion/traerHoraCosto");
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerHoraCosto");
             let resultado = await peticion.json();
 
             // si no se trae nada
@@ -49,7 +49,7 @@ addEventListener("DOMContentLoaded", function () {
             let hora = parseInt(iHS.value);
             let costo = parseFloat(iCS.value);
             // llamo la función traer hora y costo
-            await fetch("?c=ControladorHospitalizacion/editarHC&hora=" + hora + "&costo=" + costo);
+            await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/editarHC/" + hora + "/" + costo);
 
             traerHoraCosto();
 
@@ -202,7 +202,7 @@ addEventListener("DOMContentLoaded", function () {
         try {
 
             // llamo la función 
-            peticion = await fetch("?c=ControladorHospitalizacion/traerSesion");
+            peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
             let resultad = await peticion.json();
 
             if (resultad.length == 0) {
@@ -310,7 +310,7 @@ addEventListener("DOMContentLoaded", function () {
                         if (resultad[0] == "administrador") {
                             html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <a href="?c=ControladorFactura/facturaInicio&idH=${res["id_hospitalizacion"]}" class="btn btn-tabla mb-1 me-1" uk-tooltip="Facturar hospitalización" id="" title=""
+                                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/${res["id_hospitalizacion"]}" class="btn btn-tabla mb-1 me-1" uk-tooltip="Facturar hospitalización" id="" title=""
                                                     aria-describedby="uk-tooltip-25">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
                                                     <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
@@ -540,16 +540,16 @@ addEventListener("DOMContentLoaded", function () {
         try {
 
             // llamo la función traer insumos de h
-            let peticionI = await fetch("?c=ControladorHospitalizacion/traerInsuDHEd&idH=" + id);
+            let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
             let resultadoI = await peticionI.json();
 
             // llamo la función traer hora y costo
-            let peticion = await fetch("?c=ControladorHospitalizacion/traerHoraCosto");
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerHoraCosto");
             let resultadoCH = await peticion.json();
 
             //es para mostrar la duración de la hospitalización
             // llamo la función
-            let peticionDH = await fetch("?c=ControladorHospitalizacion/mostrarDHos&idH=" + id);
+            let peticionDH = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarDHos&idH=" + id);
             let resultadoDH = await peticionDH.json();
 
             if (resultadoI.length > 0 && resultadoCH != false) {
@@ -596,7 +596,7 @@ addEventListener("DOMContentLoaded", function () {
     const actualizarHosp = async (pH, total, id) => {
         try {
             // llamo la función
-            await fetch("?c=ControladorHospitalizacion/editarPHT&precio_h=" + pH + "&total=" + total + "&idH=" + id);
+            await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/editarPHT/" + pH + "/" + total + "/" + id);
 
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
@@ -608,7 +608,7 @@ addEventListener("DOMContentLoaded", function () {
         try {
 
             // llamo la función buscar Insumos de la hospitalización
-            let peticionI = await fetch("?c=ControladorHospitalizacion/traerInsuDHEd&idH=" + id);
+            let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
             let resultadoI = await peticionI.json();
             let precioIMC = 0;
 
@@ -747,7 +747,7 @@ addEventListener("DOMContentLoaded", function () {
             valorIE = inputIE.value;
 
             // llamo la función buscar Insumos
-            let peticionInsumos = await fetch("?c=ControladorHospitalizacion/mostrarInsumos&nombre=" + valorIE);
+            let peticionInsumos = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInsumos/" + valorIE);
 
             let resultadoInsu = await peticionInsumos.json();
 
@@ -906,7 +906,7 @@ addEventListener("DOMContentLoaded", function () {
     const traerUnInsumoE = async (id) => {
         try {
             // llamo la función buscar un Insumo
-            let peticionUnInsumo = await fetch("?c=ControladorHospitalizacion/mostrarUnInsumo&id=" + id);
+            let peticionUnInsumo = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + id);
             let resultadoUnInsu = await peticionUnInsumo.json();
 
             // si no se trae nada
@@ -1138,7 +1138,7 @@ addEventListener("DOMContentLoaded", function () {
             }
 
             // llamo la función 
-            await fetch("?c=ControladorHospitalizacion/modificarH", contenidoForm);
+            await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/modificarH", contenidoForm);
             divME.classList.remove("show");
         divModal.setAttribute("style", "touch-action: pan-y pinch-zoom; transition: all 0.3s ease-out ;");
 
@@ -1259,7 +1259,7 @@ addEventListener("DOMContentLoaded", function () {
     const buscarIEx = async () => {
         try {
 
-            let peticion = await fetch("?c=ControladorHospitalizacion/buscarIExH");
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/buscarIExH");
             let resultado = await peticion.json();
             let insumosEx = {};
 
@@ -1296,7 +1296,7 @@ addEventListener("DOMContentLoaded", function () {
             let idHosp = parseInt(document.querySelector("#idHptE").value);
 
             // llamo la función buscar Insumos de la hospitalización
-            let peticionIH = await fetch("?c=ControladorHospitalizacion/traerInsuDHEd&idH=" + idHosp);
+            let peticionIH = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + idHosp);
             let resultadoIH = await peticionIH.json();
             // me traigo los datos (cantidad y id del insumo que esta ya registrado) en un objeto, para almacenarlo en una variable.
             let objetoIdCTH = await buscarIEx();

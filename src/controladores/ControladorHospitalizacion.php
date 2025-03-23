@@ -34,13 +34,13 @@ class ControladorHospitalizacion
         echo json_encode($array);
     }
 
-    public function hospitalizacion()
+    public function hospitalizacion($parametro)
     {
         // datos de los insumos
         $datosI = $this->modelo->selectsInsumos();
         require_once "./src/vistas/vistaHospitalizacion/hospitalizacion.php";
     }
-    public function hospitalizacionesRealizadas()
+    public function hospitalizacionesRealizadas($parametro)
     {
         require_once "./src/vistas/vistaHospitalizacion/hospitalizacionesRealizadas.php";
     }
@@ -74,16 +74,18 @@ class ControladorHospitalizacion
     }
 
     //mostrar la información de todos los insumos de la db 
-    public function mostrarInsumos()
+    public function mostrarInsumos($datos)
     {
-        $infoInsumos = $this->modelo->buscarInsumos($_GET["nombre"]);
+        $nombre = $datos[0];
+        $infoInsumos = $this->modelo->buscarInsumos($nombre);
         echo json_encode($infoInsumos);
     }
 
     //mostrar la información de un insumo de la db 
-    public function mostrarUnInsumo()
+    public function mostrarUnInsumo($datos)
     {
-        $infoInsumo = $this->modelo->buscarUnInsumo($_GET["id"]);
+        $id = $datos[0];
+        $infoInsumo = $this->modelo->buscarUnInsumo($id);
         echo json_encode($infoInsumo);
     }
 
@@ -97,7 +99,7 @@ class ControladorHospitalizacion
 
             // es para validar si existe la hospitalización
             if ($verificaH === 1) {
-                header("location: ?c=ControladorHospitalizacion/hospitalizacion&error");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
             } else {
                 // no existe
                 $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
@@ -110,7 +112,7 @@ class ControladorHospitalizacion
                 // Guardar la bitacora
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha Insertado una hospitalizacion");
 
-                header("location: ?c=ControladorHospitalizacion/hospitalizacion&agregado");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
 
 
             }
@@ -120,9 +122,10 @@ class ControladorHospitalizacion
     }
 
     // traer datos de los insumos correspondiendo a la hospitalización que se edita.
-    public function traerInsuDHEd()
+    public function traerInsuDHEd($datos)
     {
-        $datosIDH = $this->modelo->EInsumosM($_GET["idH"]);
+        $idH = $datos[0];
+        $datosIDH = $this->modelo->EInsumosM($idH);
         echo json_encode($datosIDH);
     }
 
@@ -186,7 +189,7 @@ class ControladorHospitalizacion
         $this->modelo->editarH($_POST["horas"], $_POST["precioHoras"], $_POST["total"], $idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, $_POST["enfermer-e"]);
         // Guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha modificado una hospitalizacion");
-        header("location: ?c=ControladorHospitalizacion/hospitalizacion");
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion");
     }
 
     // elimina la hospitalización lógicamente (lo desactiva).
@@ -198,7 +201,7 @@ class ControladorHospitalizacion
 
              // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha eliminado una hospitalizacion");
-            header("location: ?c=ControladorHospitalizacion/hospitalizacion&eliminado");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/eliminado");
 
 
         } else {
@@ -213,23 +216,28 @@ class ControladorHospitalizacion
     }
 
     // editar costo y hora.
-    public function editarHC()
+    public function editarHC($datos)
     {
-        if (isset($_GET["hora"])) {
-            $this->modelo->updateHC($_GET["hora"], $_GET["costo"]);
-        }
+        $hora = $datos[0];
+        $costo = $datos[1];
+        $this->modelo->updateHC($hora, $costo);
+        
     }
 
     // editar el precio de horas y total de la hospitalización
-    public function mostrarDHos()
+    public function mostrarDHos($datos)
     {
-        $datosDHos = $this->modelo->buscarDH($_GET["idH"]);
+        $idH = $datos[0];
+        $datosDHos = $this->modelo->buscarDH($idH);
         echo json_encode($datosDHos);
     }
 
     // editar el precio de horas y total de la hospitalización
-    public function editarPHT()
+    public function editarPHT($datos)
     {
+        $precio_h = $datos[0];
+        $total = $datos[1];
+        $idH = $datos[2];
         $this->modelo->actualizarPHT($_GET["precio_h"], $_GET["total"], $_GET["idH"]);
     }
 

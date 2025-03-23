@@ -4,7 +4,7 @@
 class ControladorInicio
 {
 
-	public function inicio()
+	public function inicio($parametro)
 	{
 		require_once './src/vistas/vistaInicio/vistaInicio.php';
 	}
