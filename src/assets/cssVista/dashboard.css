@@ -1,0 +1,44 @@
+#main-content{
+    background-color: rgb(242, 249, 255);
+}
+
+#sidebar-content{
+    background-color: rgb(205, 227, 255);
+}
+
+.img-logo{
+    width: 50%;
+    height: 50%;
+    padding: 0;
+}
+
+#welcomeCard{
+    color: whitesmoke;
+    background-color: rgb(42, 109, 172);
+    margin-top: 5%;
+    margin-left: 10px;
+}
+
+.card-container{
+    background-color: whitesmoke;
+    margin-left: 2%;
+}
+
+.metric-card {
+    background: white;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.chart-card {
+    margin-left: 10px;
+    max-width: 300px;
+    height: auto;
+    background: white;
+    border-radius: 10px;
+}
+
+/* .main{
+    height: 100%;
+    width: 100%;
+} */

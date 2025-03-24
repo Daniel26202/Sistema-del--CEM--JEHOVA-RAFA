@@ -6,7 +6,7 @@ class ControladorInicio
 
 	public function inicio($parametro)
 	{
-		require_once './src/vistas/vistaInicio/vistaInicio.php';
+		require_once './src/vistas/dashboard.php';
 	}
 	public function manualUsuario()
 	{
