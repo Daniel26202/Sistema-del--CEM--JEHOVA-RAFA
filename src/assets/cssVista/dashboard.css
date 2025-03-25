@@ -1,9 +1,13 @@
+body {
+    font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
+}
+
 #main-content{
     background-color: rgb(242, 249, 255);
 }
 
 #sidebar-content{
-    background-color: rgb(205, 227, 255);
+    background-color: rgb(232 242 255);
 }
 
 .img-logo{
@@ -20,7 +24,7 @@
 }
 
 .card-container{
-    background-color: whitesmoke;
+    background-color: #FDFDFF;
     margin-left: 2%;
 }
 
@@ -34,7 +38,7 @@
     margin-left: 10px;
     max-width: 300px;
     height: auto;
-    background: white;
+    background: #FDFDFF;
     border-radius: 10px;
 }
 
@@ -42,3 +46,54 @@
     height: 100%;
     width: 100%;
 } */
+#calendarCard {
+    width: 355px;
+    height: 315px;
+    background: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+
+
+
+#monthYear {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#calendar-body td {
+
+    /* Menos altura para mayor minimalismo */
+    text-align: center;
+    font-size: 0.8rem;
+    border-style: none;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+#calendar-body tr {
+
+    /* Menos altura para mayor minimalismo */
+    border-style: none;
+
+}
+
+#calendar-body td:hover {
+    background-color: #eaeaea;
+}
+
+#calendar-body td.selected {
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+}
+
+.btn{
+    color: #FDFDFF;
+    background-color: rgb(42, 109, 172);
+}

@@ -8,7 +8,7 @@ require_once 'src/vistas/head/head.php';
 
 <div id="content-wrapper" class="d-flex flex-wrap">
     <!-- Contenedor principal (75%) -->
-    <div class="main-content col-12 col-lg-9 p-4" id="main-content">
+    <div class="main-content col-12 col-lg-8 p-4" id="main-content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
@@ -16,7 +16,7 @@ require_once 'src/vistas/head/head.php';
                         <h3>Bienvenido!</h3>
                         <div class="reminder d-flex justify-content-between align-items-center">
                             <p>Doc. Nombre Apellido </p>
-                            <img class="img-logo" src="../src/assets/Image/123.png" alt="user">
+                            <!-- <img class="img-logo" src="../src/assets/Image/123.png" alt="user"> -->
                         </div>
                     </div>
                 </div>
@@ -63,8 +63,65 @@ require_once 'src/vistas/head/head.php';
     </div>
 
     <!-- Sidebar (25%) -->
-    <div class="sidebar-content col-12 col-lg-3 p-4 min-vh-100" id="sidebar-content">
-        <h5>Menú</h5>
+    <div class="sidebar-content col-12 col-lg-4 p-4 min-vh-100" id="sidebar-content">
+        <h5 style="color: rgb(42, 109, 172);">Calendario</h5>
+        <!-- Calendar Container -->
+        <div class="card shadow-sm my-4" id="calendarCard">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <button id="prev" class="btn btn-sm">Anterior</button>
+                <h2 id="monthYear" class="mb-0"></h2>
+                <button id="next" class="btn btn-sm">Siguiente</button>
+                <button id="today" class="btn btn-primary btn-sm">Hoy</button>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-bordered mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Dom</th>
+                            <th>Lun</th>
+                            <th>Mar</th>
+                            <th>Mié</th>
+                            <th>Jue</th>
+                            <th>Vie</th>
+                            <th>Sáb</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-body">
+                        <!-- Se inyectan días desde calendar.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal para eventos -->
+        <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eventModalLabel">Agregar/Editar Evento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="eventForm">
+                            <div class="form-group">
+                                <label for="eventTitle">Título del Evento</label>
+                                <input type="text" class="form-control" id="eventTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="recurrentCheckbox">Recurrente Anualmente</label>
+                                <input type="checkbox" id="recurrentCheckbox">
+                            </div>
+                            <input type="hidden" id="eventDate">
+                            <button type="submit" class="btn btn-primary" id="guardarEvent">Guardar</button>
+                            <button type="button" class="btn btn-danger" id="deleteEvent">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </div>

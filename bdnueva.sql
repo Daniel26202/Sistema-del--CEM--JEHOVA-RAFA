@@ -11,19 +11,19 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- Schema mydb
 -- -----------------------------------------------------
 -- -----------------------------------------------------
--- Schema jehovarafa
+-- Schema bd
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema jehovarafa
+-- Schema bd
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `jehovarafa` DEFAULT CHARACTER SET utf8mb4 ;
-USE `jehovarafa` ;
+CREATE SCHEMA IF NOT EXISTS `bd` DEFAULT CHARACTER SET utf8mb4 ;
+USE `bd` ;
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`rol`
+-- Table `bd`.`rol`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`rol` (
+CREATE TABLE IF NOT EXISTS `bd`.`rol` (
   `id_rol` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   `estado` VARCHAR(45) NOT NULL,
@@ -36,9 +36,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`usuario`
+-- Table `bd`.`usuario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`usuario` (
+CREATE TABLE IF NOT EXISTS `bd`.`usuario` (
   `id_usuario` INT(11) NOT NULL AUTO_INCREMENT,
   `id_rol` INT(11) NOT NULL,
   `imagen` VARCHAR(255) NOT NULL,
@@ -47,30 +47,30 @@ CREATE TABLE IF NOT EXISTS `jehovarafa`.`usuario` (
   `password` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL,
   `estado` VARCHAR(25) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL,
   PRIMARY KEY (`id_usuario`),
-  INDEX `id_rol` (`id_rol` ASC) VISIBLE,
-  CONSTRAINT `usuario_ibfk_1`
+  INDEX `id_rol` (`id_rol` ASC),
+   CONSTRAINT `usuario_ibfk_1`
     FOREIGN KEY (`id_rol`)
-    REFERENCES `jehovarafa`.`rol` (`id_rol`))
+    REFERENCES `bd`.`rol` (`id_rol`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 41
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
-
+ 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`bitacora`
+-- Table `bd`.`bitacora`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`bitacora` (
+CREATE TABLE IF NOT EXISTS `bd`.`bitacora` (
   `id_bitacora` INT(11) NOT NULL AUTO_INCREMENT,
   `id_usuario` INT(11) NOT NULL,
   `tabla` VARCHAR(30) NOT NULL,
   `actividad` TEXT NOT NULL,
   `fecha_hora` DATETIME NOT NULL,
   PRIMARY KEY (`id_bitacora`),
-  INDEX `id_usuario` (`id_usuario` ASC) VISIBLE,
+  INDEX `id_usuario` (`id_usuario` ASC) ,
   CONSTRAINT `bitacora_ibfk_1`
     FOREIGN KEY (`id_usuario`)
-    REFERENCES `jehovarafa`.`usuario` (`id_usuario`))
+    REFERENCES `bd`.`usuario` (`id_usuario`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8mb4
@@ -78,9 +78,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`categoria_servicio`
+-- Table `bd`.`categoria_servicio`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`categoria_servicio` (
+CREATE TABLE IF NOT EXISTS `bd`.`categoria_servicio` (
   `id_categoria` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(25) NOT NULL,
   `estado` VARCHAR(25) NOT NULL,
@@ -91,9 +91,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`especialidad`
+-- Table `bd`.`especialidad`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`especialidad` (
+CREATE TABLE IF NOT EXISTS `bd`.`especialidad` (
   `id_especialidad` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   `estado` VARCHAR(20) NOT NULL,
@@ -105,9 +105,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`personal`
+-- Table `bd`.`personal`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`personal` (
+CREATE TABLE IF NOT EXISTS `bd`.`personal` (
   `id_personal` INT(11) NOT NULL AUTO_INCREMENT,
   `nacionalidad` VARCHAR(5) NOT NULL,
   `cedula` VARCHAR(20) NOT NULL,
@@ -119,24 +119,24 @@ CREATE TABLE IF NOT EXISTS `jehovarafa`.`personal` (
   `id_especialidad` INT(11) NULL DEFAULT NULL,
   `id_usuario` INT(11) NOT NULL,
   PRIMARY KEY (`id_personal`),
-  UNIQUE INDEX `cedula` (`cedula` ASC) VISIBLE,
-  INDEX `id_especialidad` (`id_especialidad` ASC, `id_usuario` ASC) VISIBLE,
-  INDEX `id_usuario` (`id_usuario` ASC) VISIBLE,
+  UNIQUE INDEX `cedula` (`cedula` ASC) ,
+  INDEX `id_especialidad` (`id_especialidad` ASC, `id_usuario` ASC) ,
+  INDEX `id_usuario` (`id_usuario` ASC) ,
   CONSTRAINT `personal_ibfk_1`
     FOREIGN KEY (`id_especialidad`)
-    REFERENCES `jehovarafa`.`especialidad` (`id_especialidad`),
+    REFERENCES `bd`.`especialidad` (`id_especialidad`),
   CONSTRAINT `personal_ibfk_2`
     FOREIGN KEY (`id_usuario`)
-    REFERENCES `jehovarafa`.`usuario` (`id_usuario`))
+    REFERENCES `bd`.`usuario` (`id_usuario`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 17
 DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`paciente`
+-- Table `bd`.`paciente`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`paciente` (
+CREATE TABLE IF NOT EXISTS `bd`.`paciente` (
   `id_paciente` INT(11) NOT NULL AUTO_INCREMENT,
   `nacionalidad` VARCHAR(12) NOT NULL,
   `cedula` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
@@ -154,9 +154,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`serviciomedico`
+-- Table `bd`.`serviciomedico`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`serviciomedico` (
+CREATE TABLE IF NOT EXISTS `bd`.`serviciomedico` (
   `id_servicioMedico` INT(11) NOT NULL AUTO_INCREMENT,
   `id_categoria` INT(11) NOT NULL,
   `id_personal` INT(11) NOT NULL,
@@ -164,18 +164,18 @@ CREATE TABLE IF NOT EXISTS `jehovarafa`.`serviciomedico` (
   `estado` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   `paciente_id_paciente` INT(11) NOT NULL,
   PRIMARY KEY (`id_servicioMedico`),
-  INDEX `id_doctor` (`id_personal` ASC) VISIBLE,
-  INDEX `id_categoria` (`id_categoria` ASC) VISIBLE,
-  INDEX `fk_serviciomedico_paciente1_idx` (`paciente_id_paciente` ASC) VISIBLE,
+  INDEX `id_doctor` (`id_personal` ASC) ,
+  INDEX `id_categoria` (`id_categoria` ASC) ,
+  INDEX `fk_serviciomedico_paciente1_idx` (`paciente_id_paciente` ASC) ,
   CONSTRAINT `serviciomedico_ibfk_2`
     FOREIGN KEY (`id_categoria`)
-    REFERENCES `jehovarafa`.`categoria_servicio` (`id_categoria`),
+    REFERENCES `bd`.`categoria_servicio` (`id_categoria`),
   CONSTRAINT `serviciomedico_ibfk_3`
     FOREIGN KEY (`id_personal`)
-    REFERENCES `jehovarafa`.`personal` (`id_personal`),
+    REFERENCES `bd`.`personal` (`id_personal`),
   CONSTRAINT `fk_serviciomedico_paciente1`
     FOREIGN KEY (`paciente_id_paciente`)
-    REFERENCES `jehovarafa`.`paciente` (`id_paciente`)
+    REFERENCES `bd`.`paciente` (`id_paciente`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -185,19 +185,19 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`cita`
+-- Table `bd`.`cita`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`cita` (
+CREATE TABLE IF NOT EXISTS `bd`.`cita` (
   `id_cita` INT(11) NOT NULL AUTO_INCREMENT,
   `fecha` DATE NOT NULL,
   `hora` TIME NOT NULL,
   `estado` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   `serviciomedico_id_servicioMedico` INT(11) NOT NULL,
   PRIMARY KEY (`id_cita`),
-  INDEX `fk_cita_serviciomedico1_idx` (`serviciomedico_id_servicioMedico` ASC) VISIBLE,
+  INDEX `fk_cita_serviciomedico1_idx` (`serviciomedico_id_servicioMedico` ASC) ,
   CONSTRAINT `fk_cita_serviciomedico1`
     FOREIGN KEY (`serviciomedico_id_servicioMedico`)
-    REFERENCES `jehovarafa`.`serviciomedico` (`id_servicioMedico`)
+    REFERENCES `bd`.`serviciomedico` (`id_servicioMedico`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -207,9 +207,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`control`
+-- Table `bd`.`control`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`control` (
+CREATE TABLE IF NOT EXISTS `bd`.`control` (
   `id_control` INT(11) NOT NULL AUTO_INCREMENT,
   `id_paciente` INT(11) NOT NULL,
   `id_usuario` INT(11) NOT NULL,
@@ -220,14 +220,14 @@ CREATE TABLE IF NOT EXISTS `jehovarafa`.`control` (
   `nota` VARCHAR(40) NOT NULL,
   `estado` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   PRIMARY KEY (`id_control`),
-  INDEX `id_paciente` (`id_paciente` ASC, `id_usuario` ASC) VISIBLE,
-  INDEX `id_usuario` (`id_usuario` ASC) VISIBLE,
+  INDEX `id_paciente` (`id_paciente` ASC, `id_usuario` ASC) ,
+  INDEX `id_usuario` (`id_usuario` ASC) ,
   CONSTRAINT `control_ibfk_1`
     FOREIGN KEY (`id_paciente`)
-    REFERENCES `jehovarafa`.`paciente` (`id_paciente`),
+    REFERENCES `bd`.`paciente` (`id_paciente`),
   CONSTRAINT `control_ibfk_2`
     FOREIGN KEY (`id_usuario`)
-    REFERENCES `jehovarafa`.`usuario` (`id_usuario`))
+    REFERENCES `bd`.`usuario` (`id_usuario`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 26
 DEFAULT CHARACTER SET = utf8mb4
@@ -235,9 +235,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`proveedor`
+-- Table `bd`.`proveedor`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`proveedor` (
+CREATE TABLE IF NOT EXISTS `bd`.`proveedor` (
   `id_proveedor` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   `rif` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
@@ -253,19 +253,19 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`entrada`
+-- Table `bd`.`entrada`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`entrada` (
+CREATE TABLE IF NOT EXISTS `bd`.`entrada` (
   `id_entrada` INT(11) NOT NULL AUTO_INCREMENT,
   `id_proveedor` INT(11) NOT NULL,
   `numero_de_lote` INT(16) NOT NULL,
   `fechaDeIngreso` DATE NOT NULL,
   `estado` VARCHAR(10) CHARACTER SET 'latin1' NOT NULL,
   PRIMARY KEY (`id_entrada`),
-  INDEX `id_proveedor` (`id_proveedor` ASC) VISIBLE,
+  INDEX `id_proveedor` (`id_proveedor` ASC) ,
   CONSTRAINT `entrada_ibfk_1`
     FOREIGN KEY (`id_proveedor`)
-    REFERENCES `jehovarafa`.`proveedor` (`id_proveedor`))
+    REFERENCES `bd`.`proveedor` (`id_proveedor`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 38
 DEFAULT CHARACTER SET = utf8mb4
@@ -273,9 +273,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`insumo`
+-- Table `bd`.`insumo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`insumo` (
+CREATE TABLE IF NOT EXISTS `bd`.`insumo` (
   `id_insumo` INT(11) NOT NULL AUTO_INCREMENT,
   `imagen` VARCHAR(500) CHARACTER SET 'latin1' NOT NULL,
   `nombre` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
@@ -292,9 +292,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`entrada_insumo`
+-- Table `bd`.`entrada_insumo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`entrada_insumo` (
+CREATE TABLE IF NOT EXISTS `bd`.`entrada_insumo` (
   `id_entradaDeInsumo` INT(11) NOT NULL AUTO_INCREMENT,
   `id_insumo` INT(11) NOT NULL,
   `id_entrada` INT(11) NOT NULL,
@@ -303,33 +303,33 @@ CREATE TABLE IF NOT EXISTS `jehovarafa`.`entrada_insumo` (
   `cantidad_entrante` INT(12) NOT NULL,
   `cantidad_disponible` INT(12) NOT NULL,
   PRIMARY KEY (`id_entradaDeInsumo`),
-  INDEX `id_insumo` (`id_insumo` ASC) VISIBLE,
-  INDEX `id_entrada` (`id_entrada` ASC) VISIBLE,
+  INDEX `id_insumo` (`id_insumo` ASC) ,
+  INDEX `id_entrada` (`id_entrada` ASC) ,
   CONSTRAINT `entrada_insumo_ibfk_1`
     FOREIGN KEY (`id_insumo`)
-    REFERENCES `jehovarafa`.`insumo` (`id_insumo`),
+    REFERENCES `bd`.`insumo` (`id_insumo`),
   CONSTRAINT `entrada_insumo_ibfk_2`
     FOREIGN KEY (`id_entrada`)
-    REFERENCES `jehovarafa`.`entrada` (`id_entrada`))
+    REFERENCES `bd`.`entrada` (`id_entrada`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 32
 DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`factura`
+-- Table `bd`.`factura`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`factura` (
+CREATE TABLE IF NOT EXISTS `bd`.`factura` (
   `id_factura` INT(11) NOT NULL AUTO_INCREMENT,
   `fecha` DATE NOT NULL,
   `total` FLOAT(12,2) NOT NULL,
   `estado` VARCHAR(10) NOT NULL,
   `serviciomedico_id_servicioMedico` INT(11) NOT NULL,
   PRIMARY KEY (`id_factura`),
-  INDEX `fk_factura_serviciomedico1_idx` (`serviciomedico_id_servicioMedico` ASC) VISIBLE,
+  INDEX `fk_factura_serviciomedico1_idx` (`serviciomedico_id_servicioMedico` ASC) ,
   CONSTRAINT `fk_factura_serviciomedico1`
     FOREIGN KEY (`serviciomedico_id_servicioMedico`)
-    REFERENCES `jehovarafa`.`serviciomedico` (`id_servicioMedico`)
+    REFERENCES `bd`.`serviciomedico` (`id_servicioMedico`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -339,9 +339,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`horacostohospitalizacion`
+-- Table `bd`.`horacostohospitalizacion`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`horacostohospitalizacion` (
+CREATE TABLE IF NOT EXISTS `bd`.`horacostohospitalizacion` (
   `id_horacostohospitalizacion` INT(11) NOT NULL AUTO_INCREMENT,
   `hora` INT(11) NOT NULL,
   `costo` FLOAT(12,2) NOT NULL,
@@ -353,9 +353,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`horario`
+-- Table `bd`.`horario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`horario` (
+CREATE TABLE IF NOT EXISTS `bd`.`horario` (
   `id_horario` INT(11) NOT NULL AUTO_INCREMENT,
   `diaslaborables` VARCHAR(100) CHARACTER SET 'latin1' NOT NULL,
   PRIMARY KEY (`id_horario`))
@@ -366,23 +366,23 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`horarioydoctor`
+-- Table `bd`.`horarioydoctor`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`horarioydoctor` (
+CREATE TABLE IF NOT EXISTS `bd`.`horarioydoctor` (
   `id_horarioydoctor` INT(11) NOT NULL AUTO_INCREMENT,
   `id_personal` INT(11) NOT NULL,
   `id_horario` INT(11) NOT NULL,
   `horaDeEntrada` TIME NOT NULL,
   `horaDeSalida` TIME NOT NULL,
   PRIMARY KEY (`id_horarioydoctor`),
-  INDEX `id_doctor` (`id_personal` ASC) VISIBLE,
-  INDEX `id_horario` (`id_horario` ASC) VISIBLE,
+  INDEX `id_doctor` (`id_personal` ASC) ,
+  INDEX `id_horario` (`id_horario` ASC) ,
   CONSTRAINT `horarioydoctor_ibfk_1`
     FOREIGN KEY (`id_horario`)
-    REFERENCES `jehovarafa`.`horario` (`id_horario`),
+    REFERENCES `bd`.`horario` (`id_horario`),
   CONSTRAINT `horarioydoctor_ibfk_2`
     FOREIGN KEY (`id_personal`)
-    REFERENCES `jehovarafa`.`personal` (`id_personal`))
+    REFERENCES `bd`.`personal` (`id_personal`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 30
 DEFAULT CHARACTER SET = utf8mb4
@@ -390,9 +390,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`hospitalizacion`
+-- Table `bd`.`hospitalizacion`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`hospitalizacion` (
+CREATE TABLE IF NOT EXISTS `bd`.`hospitalizacion` (
   `id_hospitalizacion` INT(11) NOT NULL AUTO_INCREMENT,
   `id_horacostohospitalizacion` INT(11) NOT NULL,
   `duracion` INT(25) NOT NULL,
@@ -402,10 +402,10 @@ CREATE TABLE IF NOT EXISTS `jehovarafa`.`hospitalizacion` (
   `fecha_hora` DATETIME NOT NULL,
   `estado` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   PRIMARY KEY (`id_hospitalizacion`),
-  INDEX `id_horacostohospitalizacion` (`id_horacostohospitalizacion` ASC) VISIBLE,
+  INDEX `id_horacostohospitalizacion` (`id_horacostohospitalizacion` ASC) ,
   CONSTRAINT `hospitalizacion_ibfk_2`
     FOREIGN KEY (`id_horacostohospitalizacion`)
-    REFERENCES `jehovarafa`.`horacostohospitalizacion` (`id_horacostohospitalizacion`))
+    REFERENCES `bd`.`horacostohospitalizacion` (`id_horacostohospitalizacion`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8mb4
@@ -413,17 +413,17 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`insumodehospitalizacion`
+-- Table `bd`.`insumodehospitalizacion`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`insumodehospitalizacion` (
+CREATE TABLE IF NOT EXISTS `bd`.`insumodehospitalizacion` (
   `id_insumoDeHospitalizacion` INT(11) NOT NULL AUTO_INCREMENT,
   `id_hospitalizacion` INT(11) NOT NULL,
   `cantidad` INT(13) NOT NULL,
   PRIMARY KEY (`id_insumoDeHospitalizacion`),
-  INDEX `id_hospitalizacion` (`id_hospitalizacion` ASC) VISIBLE,
+  INDEX `id_hospitalizacion` (`id_hospitalizacion` ASC) ,
   CONSTRAINT `insumodehospitalizacion_ibfk_2`
     FOREIGN KEY (`id_hospitalizacion`)
-    REFERENCES `jehovarafa`.`hospitalizacion` (`id_hospitalizacion`))
+    REFERENCES `bd`.`hospitalizacion` (`id_hospitalizacion`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 7
 DEFAULT CHARACTER SET = utf8mb4
@@ -431,28 +431,28 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`inventario`
+-- Table `bd`.`inventario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`inventario` (
+CREATE TABLE IF NOT EXISTS `bd`.`inventario` (
   `id_inventario` INT(11) NOT NULL AUTO_INCREMENT,
   `id_insumo` INT(11) NOT NULL,
   `cantidad` INT(11) NOT NULL,
   `fachaVencimiento` DATE NOT NULL,
   `numero_de_lote` INT(16) NOT NULL,
   PRIMARY KEY (`id_inventario`),
-  INDEX `id_entrada` (`id_insumo` ASC) VISIBLE,
+  INDEX `id_entrada` (`id_insumo` ASC) ,
   CONSTRAINT `inventario_ibfk_1`
     FOREIGN KEY (`id_insumo`)
-    REFERENCES `jehovarafa`.`insumo` (`id_insumo`))
+    REFERENCES `bd`.`insumo` (`id_insumo`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`pago`
+-- Table `bd`.`pago`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`pago` (
+CREATE TABLE IF NOT EXISTS `bd`.`pago` (
   `id_pago` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   PRIMARY KEY (`id_pago`))
@@ -463,23 +463,23 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`pagodefactura`
+-- Table `bd`.`pagodefactura`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`pagodefactura` (
+CREATE TABLE IF NOT EXISTS `bd`.`pagodefactura` (
   `id_pagoDeFactura` INT(11) NOT NULL AUTO_INCREMENT,
   `id_pago` INT(11) NOT NULL,
   `id_factura` INT(11) NOT NULL,
   `referencia` VARCHAR(25) CHARACTER SET 'latin1' NULL DEFAULT NULL,
   `monto` FLOAT(12,2) NOT NULL,
   PRIMARY KEY (`id_pagoDeFactura`),
-  INDEX `id_pago` (`id_pago` ASC) VISIBLE,
-  INDEX `id_factura` (`id_factura` ASC) VISIBLE,
+  INDEX `id_pago` (`id_pago` ASC) ,
+  INDEX `id_factura` (`id_factura` ASC) ,
   CONSTRAINT `pagodefactura_ibfk_1`
     FOREIGN KEY (`id_factura`)
-    REFERENCES `jehovarafa`.`factura` (`id_factura`),
+    REFERENCES `bd`.`factura` (`id_factura`),
   CONSTRAINT `pagodefactura_ibfk_2`
     FOREIGN KEY (`id_pago`)
-    REFERENCES `jehovarafa`.`pago` (`id_pago`))
+    REFERENCES `bd`.`pago` (`id_pago`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 72
 DEFAULT CHARACTER SET = utf8mb4
@@ -487,9 +487,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`patologia`
+-- Table `bd`.`patologia`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`patologia` (
+CREATE TABLE IF NOT EXISTS `bd`.`patologia` (
   `id_patologia` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre_patologia` VARCHAR(25) CHARACTER SET 'latin1' NOT NULL,
   `estado` VARCHAR(12) CHARACTER SET 'latin1' NOT NULL,
@@ -501,22 +501,22 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`patologiadepaciente`
+-- Table `bd`.`patologiadepaciente`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`patologiadepaciente` (
+CREATE TABLE IF NOT EXISTS `bd`.`patologiadepaciente` (
   `id_patologiaDePaciente` INT(11) NOT NULL AUTO_INCREMENT,
   `id_paciente` INT(11) NULL DEFAULT NULL,
   `id_patologia` INT(11) NULL DEFAULT NULL,
   `fecha_registro` DATETIME NOT NULL,
   PRIMARY KEY (`id_patologiaDePaciente`),
-  INDEX `id_paciente` (`id_paciente` ASC) VISIBLE,
-  INDEX `id_patologia` (`id_patologia` ASC) VISIBLE,
+  INDEX `id_paciente` (`id_paciente` ASC) ,
+  INDEX `id_patologia` (`id_patologia` ASC) ,
   CONSTRAINT `patologiadepaciente_ibfk_1`
     FOREIGN KEY (`id_patologia`)
-    REFERENCES `jehovarafa`.`patologia` (`id_patologia`),
+    REFERENCES `bd`.`patologia` (`id_patologia`),
   CONSTRAINT `patologiadepaciente_ibfk_2`
     FOREIGN KEY (`id_paciente`)
-    REFERENCES `jehovarafa`.`paciente` (`id_paciente`))
+    REFERENCES `bd`.`paciente` (`id_paciente`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 16
 DEFAULT CHARACTER SET = utf8mb4
@@ -524,9 +524,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`recuperar_contr`
+-- Table `bd`.`recuperar_contr`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`recuperar_contr` (
+CREATE TABLE IF NOT EXISTS `bd`.`recuperar_contr` (
   `id_recuperar_contr` INT(11) NOT NULL AUTO_INCREMENT,
   `id_usuario` INT(11) NOT NULL,
   `codigo` VARCHAR(55) NOT NULL,
@@ -534,19 +534,19 @@ CREATE TABLE IF NOT EXISTS `jehovarafa`.`recuperar_contr` (
   `intentos_fallidos` INT(11) NULL DEFAULT 0,
   `fecha_desbloqueo` DATETIME NOT NULL,
   PRIMARY KEY (`id_recuperar_contr`),
-  INDEX `id_usuario` (`id_usuario` ASC) VISIBLE,
+  INDEX `id_usuario` (`id_usuario` ASC) ,
   CONSTRAINT `recuperar_contr_ibfk_1`
     FOREIGN KEY (`id_usuario`)
-    REFERENCES `jehovarafa`.`usuario` (`id_usuario`))
+    REFERENCES `bd`.`usuario` (`id_usuario`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 33
 DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`sintomas`
+-- Table `bd`.`sintomas`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`sintomas` (
+CREATE TABLE IF NOT EXISTS `bd`.`sintomas` (
   `id_sintomas` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(25) NOT NULL,
   `estado` VARCHAR(5) NOT NULL,
@@ -557,43 +557,43 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`sintomas_control`
+-- Table `bd`.`sintomas_control`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`sintomas_control` (
+CREATE TABLE IF NOT EXISTS `bd`.`sintomas_control` (
   `id_sintomas_control` INT(11) NOT NULL AUTO_INCREMENT,
   `id_sintomas` INT(11) NOT NULL,
   `id_control` INT(11) NOT NULL,
   PRIMARY KEY (`id_sintomas_control`),
-  INDEX `id_sintomas` (`id_sintomas` ASC) VISIBLE,
-  INDEX `id_control` (`id_control` ASC) VISIBLE,
+  INDEX `id_sintomas` (`id_sintomas` ASC) ,
+  INDEX `id_control` (`id_control` ASC) ,
   CONSTRAINT `sintomas_control_ibfk_1`
     FOREIGN KEY (`id_control`)
-    REFERENCES `jehovarafa`.`control` (`id_control`),
+    REFERENCES `bd`.`control` (`id_control`),
   CONSTRAINT `sintomas_control_ibfk_2`
     FOREIGN KEY (`id_sintomas`)
-    REFERENCES `jehovarafa`.`sintomas` (`id_sintomas`))
+    REFERENCES `bd`.`sintomas` (`id_sintomas`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 37
 DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`hospitalizacion_has_serviciomedico`
+-- Table `bd`.`hospitalizacion_has_serviciomedico`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`hospitalizacion_has_serviciomedico` (
+CREATE TABLE IF NOT EXISTS `bd`.`hospitalizacion_has_serviciomedico` (
   `hospitalizacion_id_hospitalizacion` INT(11) NOT NULL,
   `serviciomedico_id_servicioMedico` INT(11) NOT NULL,
   PRIMARY KEY (`hospitalizacion_id_hospitalizacion`, `serviciomedico_id_servicioMedico`),
-  INDEX `fk_hospitalizacion_has_serviciomedico_serviciomedico1_idx` (`serviciomedico_id_servicioMedico` ASC) VISIBLE,
-  INDEX `fk_hospitalizacion_has_serviciomedico_hospitalizacion1_idx` (`hospitalizacion_id_hospitalizacion` ASC) VISIBLE,
+  INDEX `fk_hospitalizacion_has_serviciomedico_serviciomedico1_idx` (`serviciomedico_id_servicioMedico` ASC) ,
+  INDEX `fk_hospitalizacion_has_serviciomedico_hospitalizacion1_idx` (`hospitalizacion_id_hospitalizacion` ASC) ,
   CONSTRAINT `fk_hospitalizacion_has_serviciomedico_hospitalizacion1`
     FOREIGN KEY (`hospitalizacion_id_hospitalizacion`)
-    REFERENCES `jehovarafa`.`hospitalizacion` (`id_hospitalizacion`)
+    REFERENCES `bd`.`hospitalizacion` (`id_hospitalizacion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_hospitalizacion_has_serviciomedico_serviciomedico1`
     FOREIGN KEY (`serviciomedico_id_servicioMedico`)
-    REFERENCES `jehovarafa`.`serviciomedico` (`id_servicioMedico`)
+    REFERENCES `bd`.`serviciomedico` (`id_servicioMedico`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -602,22 +602,22 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`serviciomedico_has_insumo`
+-- Table `bd`.`serviciomedico_has_insumo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`serviciomedico_has_insumo` (
+CREATE TABLE IF NOT EXISTS `bd`.`serviciomedico_has_insumo` (
   `serviciomedico_id_servicioMedico` INT(11) NOT NULL,
   `insumo_id_insumo` INT(11) NOT NULL,
   PRIMARY KEY (`serviciomedico_id_servicioMedico`, `insumo_id_insumo`),
-  INDEX `fk_serviciomedico_has_insumo_insumo1_idx` (`insumo_id_insumo` ASC) VISIBLE,
-  INDEX `fk_serviciomedico_has_insumo_serviciomedico1_idx` (`serviciomedico_id_servicioMedico` ASC) VISIBLE,
+  INDEX `fk_serviciomedico_has_insumo_insumo1_idx` (`insumo_id_insumo` ASC) ,
+  INDEX `fk_serviciomedico_has_insumo_serviciomedico1_idx` (`serviciomedico_id_servicioMedico` ASC) ,
   CONSTRAINT `fk_serviciomedico_has_insumo_serviciomedico1`
     FOREIGN KEY (`serviciomedico_id_servicioMedico`)
-    REFERENCES `jehovarafa`.`serviciomedico` (`id_servicioMedico`)
+    REFERENCES `bd`.`serviciomedico` (`id_servicioMedico`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_serviciomedico_has_insumo_insumo1`
     FOREIGN KEY (`insumo_id_insumo`)
-    REFERENCES `jehovarafa`.`insumo` (`id_insumo`)
+    REFERENCES `bd`.`insumo` (`id_insumo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -626,9 +626,9 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`permisos`
+-- Table `bd`.`permisos`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`permisos` (
+CREATE TABLE IF NOT EXISTS `bd`.`permisos` (
   `idpermisos` INT NOT NULL,
   `nombre` VARCHAR(45) NULL,
   PRIMARY KEY (`idpermisos`))
@@ -636,22 +636,22 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `jehovarafa`.`rol_has_permisos`
+-- Table `bd`.`rol_has_permisos`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `jehovarafa`.`rol_has_permisos` (
+CREATE TABLE IF NOT EXISTS `bd`.`rol_has_permisos` (
   `rol_id_rol` INT(11) NOT NULL,
   `permisos_idpermisos` INT NOT NULL,
   PRIMARY KEY (`rol_id_rol`, `permisos_idpermisos`),
-  INDEX `fk_rol_has_permisos_permisos1_idx` (`permisos_idpermisos` ASC) VISIBLE,
-  INDEX `fk_rol_has_permisos_rol1_idx` (`rol_id_rol` ASC) VISIBLE,
+  INDEX `fk_rol_has_permisos_permisos1_idx` (`permisos_idpermisos` ASC) ,
+  INDEX `fk_rol_has_permisos_rol1_idx` (`rol_id_rol` ASC) ,
   CONSTRAINT `fk_rol_has_permisos_rol1`
     FOREIGN KEY (`rol_id_rol`)
-    REFERENCES `jehovarafa`.`rol` (`id_rol`)
+    REFERENCES `bd`.`rol` (`id_rol`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_rol_has_permisos_permisos1`
     FOREIGN KEY (`permisos_idpermisos`)
-    REFERENCES `jehovarafa`.`permisos` (`idpermisos`)
+    REFERENCES `bd`.`permisos` (`idpermisos`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
