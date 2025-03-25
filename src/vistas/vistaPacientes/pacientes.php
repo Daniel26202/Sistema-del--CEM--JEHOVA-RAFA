@@ -91,7 +91,7 @@
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">Se actualizo el paciente correctamente.</p>
           </div>
-        <?php elseif ($parametro[0] == "eliminado"): ?>
+        <?php elseif ($parametro[0] == "eliminar"): ?>
           <div class="uk-alert-primary comentarioD  me-4 fw-bolder " uk-alert>
             <a class="uk-alert-close" uk-close></a>
             <p class="pe-2">Se ha eliminado el paciente correctamente.</p>
@@ -204,8 +204,7 @@
 
                           <button class="uk-button fw-bold uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                             data-bs-dismiss="modal">Cancelar</button>
-                          <button class="uk-button uk-button-primary btn-agregarcita-modal ms-2 fw-bold" type="submit"
-                            name="enviar" data-bs-dismiss="modal" href='/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/eliminar/<?= $paciente['id_paciente'] ?>/<?= $_SESSION['id_usuario'] ?>'>Eliminar</button>
+                          <a class="uk-button uk-button-primary btn-agregarcita-modal ms-2 fw-bold"  href='/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/eliminar/<?= $paciente['id_paciente'] ?>/<?= $_SESSION['id_usuario'] ?>'>Eliminar</a>
 
                         </div>
                       </form>
