@@ -72,172 +72,183 @@
 
   <div class="col-12 caja-boton">
 
-  <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8" uk-toggle="target: #modal-examplePaciente" id="">
+    <?php if ($parametro != ""): ?>
+
+
+      <?php if ($parametro[0] == "error"): ?>
+        <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder h-25" uk-alert>
+          <a class="uk-alert-close" uk-close></a>
+          <p class="pe-2">La cédula ya existen, intente de nuevo.</p>
+        </div>
+        <div class="d-flex justify-content-center">
+        <?php elseif ($parametro[0] == "registro"): ?>
+          <div class="uk-alert-primary comentarioD  comentarioRed me-4 fw-bolder" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p class="pe-2">Se registro el paciente correctamente.</p>
+          </div>
+        <?php elseif ($parametro[0] == "editar"): ?>
+          <div class="uk-alert-primary comentarioD  me-4 fw-bolder " uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p class="pe-2">Se actualizo el paciente correctamente.</p>
+          </div>
+        <?php elseif ($parametro[0] == "eliminado"): ?>
+          <div class="uk-alert-primary comentarioD  me-4 fw-bolder " uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p class="pe-2">Se ha eliminado el paciente correctamente.</p>
+          </div>
+        <?php elseif ($parametro[0] == "restablecido"): ?>
+          <div class="uk-alert-primary comentarioD  me-4 fw-bolder" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p class="pe-2">Se ha restablecido el paciente correctamente.</p>
+          </div>
+
+          <div class="d-flex justify-content-center">
+          <?php elseif ($parametro[0] == "errorfecha"): ?>
+            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder" uk-alert>
+              <a class="uk-alert-close" uk-close></a>
+              <p class="pe-2">la fecha de nacimiento no concuerda, intente de nuevo.</p>
+            </div>
+
+          </div>
+        <?php endif ?>
+      <?php endif ?>
+
+      <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8" uk-toggle="target: #modal-examplePaciente" id="">
         <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
           <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z"></path>
         </svg>Registrar Patologia
       </button>
-    
+
+        </div>
+
+
+        <table class="example table-clinic">
+          <thead>
+            <tr>
+              <th>Cedula</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Telefono</th>
+              <th>Dirección</th>
+              <th>Fecha de Nacimiento</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+
+
+            <?php foreach ($pacientes as $paciente): ?>
+              <tr>
+                <td><?= $paciente['cedula'] ?></td>
+                <td><?= $paciente['nombre'] ?></td>
+                <td><?= $paciente['apellido'] ?></td>
+                <td><?= $paciente['telefono'] ?></td>
+                <td><?= $paciente['direccion'] ?></td>
+                <td><?= $paciente['fn'] ?></td>
+                <td>
+                  <button class="btn btn-tabla mb-1 btn-js editar botonesEdi"
+                    uk-toggle="target: #modal-editar-doctores<?php echo $paciente["id_paciente"]; ?>"
+                    id="btneditarDoctor" data-index="<?php echo $dato["id_personal"]; ?>">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                      <path
+                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                    </svg>
+
+                  </button>
+                  <button class="btn btn-tabla mb-1"
+                    uk-toggle="target: #modal-eliminar-pacientes<?php echo $paciente["id_paciente"]; ?>"
+                    id="btnEliminarDoctor">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                      <path
+                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                    </svg>
+                  </button>
+
+
+
+
+                  <div id="modal-eliminar-pacientes<?php echo $paciente["id_paciente"]; ?>" uk-modal>
+                    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+                      <form class="">
+
+                        <!-- Boton que cierra el modal -->
+                        <a href="#">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                            class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path
+                              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                          </svg>
+                        </a>
+
+                        <div class="d-flex align-items-center">
+                          <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                              class="bi bi-trash-fill azul me-2" viewBox="0 0 16 16">
+                              <path
+                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                            </svg>
+                          </div>
+                          <div>
+                            <h5>
+                              ¿Desea eliminar el Paciente <?= $paciente['nombre'] . ' ' . $paciente['apellido'] ?>?
+                            </h5>
+                          </div>
+                        </div>
+
+
+
+                        <div class="mt-3 uk-text-right">
+
+                          <button class="uk-button fw-bold uk-button-default uk-modal-close btn-cerrar-modal" type="button"
+                            data-bs-dismiss="modal">Cancelar</button>
+                          <button class="uk-button uk-button-primary btn-agregarcita-modal ms-2 fw-bold" type="submit"
+                            name="enviar" data-bs-dismiss="modal" href='/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/eliminar/<?= $paciente['id_paciente'] ?>/<?= $_SESSION['id_usuario'] ?>'>Eliminar</button>
+
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+
+          </tbody>
+        </table>
   </div>
 
-
-  <table class="example table-clinic">
-    <thead>
-      <tr>
-        <th>First name</th>
-        <th>Last name</th>
-        <th>Position</th>
-        <th>Office</th>
-        <th>Salary</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Olivia</td>
-        <td>Liang</td>
-        <td>Support Engineer</td>
-        <td>Singapore</td>
-        <td>234500</td>
-      </tr>
-      <tr>
-        <td>Bruno</td>
-        <td>Nash</td>
-        <td>Software Engineer</td>
-        <td>London</td>
-        <td>163500</td>
-      </tr>
-      <tr>
-        <td>Sakura</td>
-        <td>Yamamoto</td>
-        <td>Support Engineer</td>
-        <td>Tokyo</td>
-        <td>139575</td>
-      </tr>
-      <tr>
-        <td>Thor</td>
-        <td>Walton</td>
-        <td>Developer</td>
-        <td>New York</td>
-        <td>98540</td>
-      </tr>
-      <tr>
-        <td>Finn</td>
-        <td>Camacho</td>
-        <td>Support Engineer</td>
-        <td>San Francisco</td>
-        <td>87500</td>
-      </tr>
-      <tr>
-        <td>Serge</td>
-        <td>Baldwin</td>
-        <td>Data Coordinator</td>
-        <td>Singapore</td>
-        <td>138575</td>
-      </tr>
-      <tr>
-        <td>Zenaida</td>
-        <td>Frank</td>
-        <td>Software Engineer</td>
-        <td>New York</td>
-        <td>125250</td>
-      </tr>
-      <tr>
-        <td>Zorita</td>
-        <td>Serrano</td>
-        <td>Software Engineer</td>
-        <td>San Francisco</td>
-        <td>115000</td>
-      </tr>
-      <tr>
-        <td>Jennifer</td>
-        <td>Acosta</td>
-        <td>Junior Javascript Developer</td>
-        <td>Edinburgh</td>
-        <td>75650</td>
-      </tr>
-      <tr>
-        <td>Cara</td>
-        <td>Stevens</td>
-        <td>Sales Assistant</td>
-        <td>New York</td>
-        <td>145600</td>
-      </tr>
-      <tr>
-        <td>Hermione</td>
-        <td>Butler</td>
-        <td>Regional Director</td>
-        <td>London</td>
-        <td>356250</td>
-      </tr>
-      <tr>
-        <td>Lael</td>
-        <td>Greer</td>
-        <td>Systems Administrator</td>
-        <td>London</td>
-        <td>103500</td>
-      </tr>
-      <tr>
-        <td>Jonas</td>
-        <td>Alexander</td>
-        <td>Developer</td>
-        <td>San Francisco</td>
-        <td>86500</td>
-      </tr>
-      <tr>
-        <td>Shad</td>
-        <td>Decker</td>
-        <td>Regional Director</td>
-        <td>Edinburgh</td>
-        <td>183000</td>
-      </tr>
-      <tr>
-        <td>Michael</td>
-        <td>Bruce</td>
-        <td>Javascript Developer</td>
-        <td>Singapore</td>
-        <td>183000</td>
-      </tr>
-      <tr>
-        <td>Donna</td>
-        <td>Snider</td>
-        <td>Customer Support</td>
-        <td>New York</td>
-        <td>112000</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<?php require_once 'modalPaciente.php'; ?>
+  <?php require_once 'modalPaciente.php'; ?>
 
 
-<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/validacionesPacientesRegistrar.js"></script>
-<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/buscadorPaciente.js"></script>
-<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaPaciente.js"></script>
+  <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/validacionesPacientesRegistrar.js"></script>
+  <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/buscadorPaciente.js"></script>
+  <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaPaciente.js"></script>
 
 
 
 
-<?php require_once './src/vistas/head/footer.php'; ?>
+  <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script>
-  $(document).ready(function() {
-    $('#example').DataTable({
-      "pagingType": "full_numbers",
-      "language": {
-        "search": "Buscar:",
-        "paginate": {
-          "first": "Primero",
-          "last": "Último",
-          "next": "Siguiente",
-          "previous": "Anterior"
-        },
-        "info": "",
-        "infoEmpty": "",
-        "lengthMenu": "Mostrar _MENU_ entradas",
-        "zeroRecords": "No se encontraron resultados",
-        "infoFiltered": "(filtrado de _MAX_ registros totales)"
-      }
+  <script>
+    $(document).ready(function() {
+      $('#example').DataTable({
+        "pagingType": "full_numbers",
+        "language": {
+          "search": "Buscar:",
+          "paginate": {
+            "first": "Primero",
+            "last": "Último",
+            "next": "Siguiente",
+            "previous": "Anterior"
+          },
+          "info": "",
+          "infoEmpty": "",
+          "lengthMenu": "Mostrar _MENU_ entradas",
+          "zeroRecords": "No se encontraron resultados",
+          "infoFiltered": "(filtrado de _MAX_ registros totales)"
+        }
+      });
     });
-  });
-</script>
+  </script>
