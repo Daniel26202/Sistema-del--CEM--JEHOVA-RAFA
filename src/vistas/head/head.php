@@ -1,10 +1,6 @@
 <?php
 
 session_start();
-// borrar cache ...
-header("Cache-Control: no-cache, no-store, must-revalidate"); // Combina instrucciones clave
-header("Pragma: no-cache");
-header("Expires: 0"); // Usar "0" es una práctica más común para evitar confusiones
 
 if($parametro != ""){
 	if ($parametro[0] == "cerrar") {	
