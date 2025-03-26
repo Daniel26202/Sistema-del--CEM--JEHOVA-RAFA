@@ -1,26 +1,32 @@
+body {
+    font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
+}
+
 #main-content{
     background-color: rgb(242, 249, 255);
 }
 
 #sidebar-content{
-    background-color: rgb(205, 227, 255);
+    background-color: rgb(232 242 255);
 }
 
 .img-logo{
-    width: 50%;
-    height: 50%;
-    padding: 0;
+    width: 30%;
+    height: 30%;
+
 }
 
 #welcomeCard{
-    color: whitesmoke;
-    background-color: rgb(42, 109, 172);
-    margin-top: 5%;
+    display: flex;
+    flex-direction: column-reverse;
+    color: #FDFDFF;
+    background-color: #387adf;
     margin-left: 10px;
+    justify-content: center;
 }
 
 .card-container{
-    background-color: whitesmoke;
+    background-color: #FDFDFF;
     margin-left: 2%;
 }
 
@@ -34,11 +40,93 @@
     margin-left: 10px;
     max-width: 300px;
     height: auto;
-    background: white;
-    border-radius: 10px;
+    background: #FDFDFF;
+   /*  border-radius: 10px; */
 }
 
 /* .main{
     height: 100%;
     width: 100%;
 } */
+#calendarCard {
+    background: #FDFDFF;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+#next , #day, #prev{
+    background-color: #FDFDFF;
+    border-style: none;
+
+}
+
+
+
+
+#monthYear {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#calendar-body td {
+
+    /* Menos altura para mayor minimalismo */
+    text-align: center;
+    font-size: 0.8rem;
+    border-style: none;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+#calendar-body tr {
+
+    /* Menos altura para mayor minimalismo */
+    border-style: none;
+
+}
+
+#calendar-body td:hover {
+    background-color: #eaeaea;
+}
+
+.btn{
+    color: #FDFDFF;
+    background-color: #78a0f0;
+}
+
+
+#calendar-body td.selected {
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+}
+
+
+.card {
+    border-radius: 16px;
+    background-color: #FDFDFF;
+}
+
+.card-header {
+/*     background-color: rgb(42, 109, 172);
+ */    color: #1d1d1d;
+    /* Evita colores muy llamativos */
+    border-bottom: none;
+    /* Look más minimalista */
+}
+
+.table-borderless tbody tr td {
+    border: none;
+    /* Quita líneas separadoras */
+    font-size: 0.90rem;
+    /* Ajusta el tamaño de texto */
+}
+
+.table td img {
+    border-radius: 50%;
+    /* Si quieres que el icono sea circular */
+}
