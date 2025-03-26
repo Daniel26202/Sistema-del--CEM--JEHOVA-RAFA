@@ -8,6 +8,7 @@ require_once 'src/vistas/head/head.php';
 
 <div id="content-wrapper" class="d-flex flex-wrap">
     <!-- Contenedor principal (75%) -->
+
     <div class="main-content col-12 col-lg-8 p-4" id="main-content">
         <div class="container-fluid">
             <div class="row">
@@ -16,7 +17,7 @@ require_once 'src/vistas/head/head.php';
                         <h3>Bienvenido!</h3>
                         <div class="reminder d-flex justify-content-between align-items-center">
                             <p>Doc. Nombre Apellido </p>
-                            <!-- <img class="img-logo" src="../src/assets/Image/123.png" alt="user"> -->
+                            <img class="img-logo" src="../src/assets/icons/logo.svg" alt="user">
                         </div>
                     </div>
                 </div>
@@ -68,10 +69,10 @@ require_once 'src/vistas/head/head.php';
         <!-- Calendar Container -->
         <div class="card shadow-sm my-4" id="calendarCard">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <button id="prev" class="btn btn-sm">Anterior</button>
+                <button id="prev"><img src="../src/assets/icons/izquierda.svg" alt="anterior" style="width: 16px; height: 16px;"></button>
                 <h2 id="monthYear" class="mb-0"></h2>
-                <button id="next" class="btn btn-sm">Siguiente</button>
-                <button id="today" class="btn btn-primary btn-sm">Hoy</button>
+                <button id="next"> <img src="../src/assets/icons/derecha.svg" alt="siguiente" style="width: 16px; height: 16px;"></button>
+                <button id="today" class="btn btn-sm">Hoy</button>
             </div>
             <div class="card-body p-0">
                 <table class="table table-bordered mb-0">
@@ -121,6 +122,68 @@ require_once 'src/vistas/head/head.php';
                 </div>
             </div>
         </div>
+        <!-- Contenedor de la lista de servicios -->
+        <div class="col-md-12 mt-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Precio consulta</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Lista de servicios -->
+                    <table class="table table-borderless align-middle" id="servicesTable">
+                        <tbody>
+                            <!-- Fila de ejemplo -->
+                            <tr>
+                                <td class="text-center" style="width: 40px;">
+                                    <!-- Ícono del servicio (puedes usar FontAwesome, una imagen, etc.) -->
+                                    <img src="https://via.placeholder.com/24" alt="icono" />
+                                </td>
+                                <td>Pediatría</td>
+                                <td>500 Bss</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    <img src="https://via.placeholder.com/24" alt="icono" />
+                                </td>
+                                <td>Cardiología</td>
+                                <td>800 Bss</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    <img src="https://via.placeholder.com/24" alt="icono" />
+                                </td>
+                                <td>Colonoscopía</td>
+                                <td>600 Bss</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    <img src="https://via.placeholder.com/24" alt="icono" />
+                                </td>
+                                <td>Consulta General</td>
+                                <td>250 Bss</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Paginación de ejemplo -->
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">1 <span class="sr-only">Actual</span></a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
 
 
     </div>
