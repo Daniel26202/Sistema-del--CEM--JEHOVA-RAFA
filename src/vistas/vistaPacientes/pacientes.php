@@ -2,30 +2,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="container-fluid px-4">
   <div class="p-0 m-0 pb-3 d-flex justify-content-between">
     <h1 class="mt-4 mb-0">Pacientes <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
@@ -117,7 +93,7 @@
         <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8" uk-toggle="target: #modal-examplePaciente" id="">
           <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
             <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z"></path>
-          </svg>Registrar Patologia
+          </svg>Registrar paciente
         </button>
 
           </div>
@@ -126,10 +102,10 @@
           <table class="example table-clinic col-12 ">
             <thead>
               <tr>
-                <th class="text-dark">Cedula</th>
+                <th class="text-dark">Cédula</th>
                 <th class="text-dark">Nombre</th>
                 <th class="text-dark">Apellido</th>
-                <th class="text-dark">Telefono</th>
+                <th class="text-dark">Teléfono</th>
                 <th class="text-dark">Dirección</th>
                 <th class="text-dark">Fecha de Nacimiento</th>
                 <th class="text-dark">Acciones</th>
@@ -304,7 +280,7 @@
                             </span>
                             <input  class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" value="<?= $paciente['telefono'] ?>" required maxlength="18">
                           </div>
-                          <p class="p-error-telefono<?= $paciente['id_paciente'] ?> d-none">Telefono</p>
+                          <p class="p-error-telefono<?= $paciente['id_paciente'] ?> d-none">Teléfono</p>
 
                           <div class="input-group flex-nowrap margin-inputs" id="grp_direccion">
                             <span class="input-modal mt-1">
