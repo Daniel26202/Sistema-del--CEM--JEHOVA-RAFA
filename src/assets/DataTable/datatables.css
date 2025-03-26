@@ -794,7 +794,7 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
   border-collapse: collapse;
 }
 .table-clinic thead {
-  background-color:rgb(42, 109, 172);; /* Azul marino */
+  /*background-color:rgb(42, 109, 172);; /* Azul marino */
   color: white;
 }
 .table-clinic tbody tr:nth-child(even) {
@@ -896,12 +896,25 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
   width: 20%;
   margin: 15px 0;
 }
+
+.caja-contenedor-tabla {
+  border-radius: 20px;
+  box-shadow:0 4px 17px rgba(0, 0, 0, 0.1), 0 4px 17px rgba(0, 0, 0, 0.1), 0 4px 17px rgba(0, 0, 0, 0.1);
+
+}
+
 .table-clinic {
-  width: 100%;
-  border-collapse: collapse;
+  border: none;
+  overflow: hidden;
+}
+
+.table-clinic th, .table-clinic td {
+  border: none; /* Quita los bordes de las celdas */
+  padding: 12px;
+  text-align: left;
 }
 .table-clinic thead {
-  background-color:rgb(42, 109, 172); /* Azul marino */
+ /*background-color: #b0b0b0; /* Azul marino */
   color: white;
 }
 .table-clinic tbody tr:nth-child(even) {
@@ -910,14 +923,8 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
 .table-clinic tbody tr:nth-child(odd) {
   background-color: #ffffff; /* Blanco */
 }
-.table-clinic tbody tr:hover {
-  background-color: #cce7ff; /* Azul claro */
-}
-.table-clinic th, .table-clinic td {
-  padding: 12px;
-  text-align: left;
-  border: 1px solid #ddd;
-}
+
+
 .dataTables_wrapper .dataTables_filter input {
   border-radius: 0;
   border: none;
@@ -938,11 +945,42 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
   background-color: #003366; /* Azul marino */
   color: white;
 }
+
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
   background-color: #cce7ff; /* Azul claro */
   color: #003366; /* Azul marino */
 }
-@media (max-width: 767px) {
+
+.dt-layout-row{
+  width: 100% !important;
+}
+/*paginacion*/
+
+.dt-paging-button{
+	box-shadow: #E4EBF0 0 0 5px;
+  background-color: #E4EBF0 !important;
+  color: white;
+  border: 1px solid #003366;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-left: 2px; 
+}
+
+.dt-paging-button:hover{
+  background-color: #387ADF !important;
+  color: white !important;
+}
+
+.previous:hover{
+  background-color: #387ADF !important;
+  color: white !important;
+}
+.next:hover{
+  background-color: #387ADF !important;
+  color: white !important;
+}
+
+@media (max-width: 850px) {
   .header h1 {
     font-size: 18px;
   }
@@ -960,6 +998,10 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
   .btn-guardar-responsive {
     width: 30%;
 
+  }
+
+  .dt-layout-row{
+    width: 100% !important;
   }
 }
 @media (max-width: 330px) {
