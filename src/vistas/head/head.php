@@ -1,16 +1,23 @@
 <?php
 
 session_start();
+// borrar cache ...
+header("Cache-Control: no-cache, no-store, must-revalidate"); // Combina instrucciones clave
+header("Pragma: no-cache");
+header("Expires: 0"); // Usar "0" es una práctica más común para evitar confusiones
 
-if (isset($_GET['cerrar'])) {
-	session_destroy();
-	header("location: IniciarSesion/mostrarIniciarSesion");
+if($parametro != ""){
+	if ($parametro[0] == "cerrar") {	
+		session_destroy();
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+		exit();
+	}
+	
 }
-
 
 if (isset($_SESSION['usuario'])) {
 } else {
-	header("location: IniciarSesion/mostrarIniciarSesion");
+	header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
 }
 
 

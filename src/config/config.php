@@ -4,6 +4,6 @@
 define('host_cos','localhost');
 define('user_cos','root');
 define('pass_cos','Jehova.Rafa*25/11/2024*');
-define('dbname_cos','jehovarafa');
+define('dbname_cos','jehova_rafa');
 
 

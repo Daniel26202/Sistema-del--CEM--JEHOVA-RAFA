@@ -1,5 +1,5 @@
 <?php
-require_once 'src/vistas/head/head.php';
+require_once './src/vistas/head/head.php';
 ?>
 
 <link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/dashboard.css">
