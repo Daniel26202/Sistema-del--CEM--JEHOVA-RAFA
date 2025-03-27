@@ -1,3 +1,22 @@
+<?php
+
+
+$ruta_local = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), '/');
+$concatenadorEspecial =  '.';
+if (str_ends_with($ruta_local, 'Sistema-del--CEM--JEHOVA-RAFA')) {
+    $concatenadorEspecial = "";
+}
+$concatenarRuta = "";
+if (!empty($parametro)) {
+    foreach ($parametro as $p) {
+        $concatenarRuta .= "../";      
+    }
+    
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -5,28 +24,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/uikit/css/uikit.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/cssVista/inicioSesion.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/intro/introjs.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/intro/introjs-modern.css">
 
-<?php $concatenarRuta = "";?>
-    <?php if($parametro !=  ""):?>
-		<?php foreach($parametro as $p):?>
-			<?php $concatenarRuta .= "../";?>
-            <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/uikit/css/uikit.min.css">
-            <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/bootstrap/css/bootstrap.min.css">
-            <link rel="stylesheet" href="<?= $concatenarRuta?>../src/assets/cssVista/inicioSesion.css">
-            <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/intro/introjs.min.css">
-            <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta?>../src/assets/intro/introjs-modern.css">
-    		<?php endforeach;?>
-	<?php else :?>
-        <link rel="stylesheet" type="text/css" href="../src/assets/uikit/css/uikit.min.css">
-        <link rel="stylesheet" type="text/css" href="../src/assets/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="../src/assets/cssVista/inicioSesion.css">
-        <link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs.min.css">
-        <link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs-modern.css">
-    <?php endif;?>
 
 </head>
 
-<?php $urlBase = $concatenarRuta != "" ? $concatenarRuta : "" ?>
+<?php $urlBase =  $concatenarRuta.''.$concatenadorEspecial; ?>
+<?php echo $urlBase; ?>
+
 <body>
     <main>
 
@@ -55,15 +64,15 @@
                         <div class="carousel-inner">
 
                             <div class="carousel-item active tamano">
-                                <img src="<?= $urlBase?>../src/assets/img/inicioSesion1.png"
+                                <img src="<?= $urlBase ?>./src/assets/img/inicioSesion1.png"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="<?= $urlBase?>../src/assets/img/inicioSesion2.png"
+                                <img src="<?= $urlBase ?>./src/assets/img/inicioSesion2.png"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="<?= $urlBase?>../src/assets/img/inicioSesion3.jpg"
+                                <img src="<?= $urlBase ?>./src/assets/img/inicioSesion3.jpg"
                                     class="d-block h-100 uk-background-blend-multiply " alt="">
                             </div>
 
@@ -98,14 +107,14 @@
                             <div class="d-flex flex-column col">
 
                                 <div>
-                                    <?php if($parametro != ""):?>
-                                        
+                                    <?php if ($parametro != ""): ?>
+
                                         <?php if ($parametro[0] == "mensaje"): ?>
-                                        <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                            style="display: none;" uk-alert>
-                                            <a class="uk-alert-close" uk-close></a>
-                                            <p class="pe-2">Usuario o Contraseña incorrectos.</p>
-                                        </div>
+                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                                style="display: none;" uk-alert>
+                                                <a class="uk-alert-close" uk-close></a>
+                                                <p class="pe-2">Usuario o Contraseña incorrectos.</p>
+                                            </div>
                                         <?php elseif ($parametro[0] == "captcha"): ?>
                                             <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
                                                 style="display: none;" uk-alert>
@@ -119,7 +128,7 @@
                                                 <p class="pe-2">Tiene que llenar todos los campos.</p>
                                             </div>
                                         <?php endif ?>
-                                    <?php endif;?>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class=" mb-3 animacionInput" id="ingresar-usuario">
@@ -135,7 +144,7 @@
 
                                 <div id="input-password">
 
-                                    <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
+                                    <img src="<?= $urlBase?>./src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
                                     <input type="password" name="password" id="inputDos" class="input col"
                                         placeholder="Contraseña" maxlength="40">
                                     <a href="#" class="text-decoration-none">
@@ -185,26 +194,14 @@
         </div>
     </main>
 
-    <?php if($parametro !=  ""):?>
-		<?php $concatenarRuta = "";?>
-		<?php foreach($parametro as $p):?>
-		<?php $concatenarRuta .= "../";?>
-            <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
-            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/inicioSesion.js"></script>
-            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/uikit/js/uikit.min.js"></script>
-            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/intro/intro.min.js"></script>
-            <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaInteractiva.js"></script>
-        <?php endforeach;?>
-	<?php else :?>
-        <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
-        <script type="text/javascript" src="../src/assets/js/inicioSesion.js"></script>
-        <script type="text/javascript" src="../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script type="text/javascript" src="../src/assets/uikit/js/uikit.min.js"></script>
-        <script type="text/javascript" src="../src/assets/intro/intro.min.js"></script>
-        <script type="text/javascript" src="../src/assets/js/ayudaInteractiva.js"></script>
-    <?php endif;?>
-    
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/js/inicioSesion.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/uikit/js/uikit.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/intro/intro.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/js/ayudaInteractiva.js"></script>
+
 
 </body>
 

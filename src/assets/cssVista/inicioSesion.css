@@ -129,7 +129,7 @@ se nota muy mínimo*/
 }
 
 
-@media screen and (min-height: 600px) {
+@media screen and (min-height: 800px) {
 
     .carrusel-responsive {
         display: none;
