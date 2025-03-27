@@ -34,7 +34,7 @@ if (!empty($parametro)) {
 </head>
 
 <?php $urlBase =  $concatenarRuta.''.$concatenadorEspecial; ?>
-<?php echo $urlBase; ?>
+
 
 <body>
     <main>
