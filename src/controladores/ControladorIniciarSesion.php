@@ -1,15 +1,18 @@
 <?php
 
 use App\modelos\ModeloInicioSesion;
+use App\modelos\ModeloBitacora;
 
 class ControladorIniciarSesion
 {
 
     private $modelo;
+    private $bitacora;
 
     function __construct()
     {
         $this->modelo = new ModeloInicioSesion;
+        $this->bitacora = new ModeloBitacora();
     }
 
     public function mostrarIniciarSesion($parametro)
@@ -76,6 +79,8 @@ class ControladorIniciarSesion
                         $_SESSION['usuario'] = $_POST['usuario'];
                         $_SESSION['rol'] = $validar['rol'];
                         $_SESSION['id_usuario'] = $validar['id_usuario'];
+
+                        $this->bitacora->insertarBitacora($_SESSION['id_usuario'],"inicio sesion","Ha iniciado una session");
 
                         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
 

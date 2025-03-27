@@ -38,7 +38,7 @@
             <li class="uk-nav-divider"></li>
 
             <li><a href="#" data-bs-toggle="modal" data-bs-target="#eliminar">
-                <img src="./src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
+                <img src="../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
                 </svg>SALIR</a></li>
           </ul>
         </div>

@@ -11,7 +11,7 @@ class ControladorBitacora{
 	}
 
 
-	public function bitacora(){
+	public function bitacora($parametro){
 		require_once "./src/vistas/vistaBitacora/bitacora.php";
 	}
 
