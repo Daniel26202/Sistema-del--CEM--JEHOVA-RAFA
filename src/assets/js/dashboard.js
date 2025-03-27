@@ -1,7 +1,5 @@
 let currentYear, currentMonth;
 let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
-<<<<<<< Updated upstream
-=======
 
 document.addEventListener("DOMContentLoaded", initCalendar);
 
@@ -173,9 +171,7 @@ function deleteEvent() {
   renderCalendar(currentYear, currentMonth);
 }
 
->>>>>>> Stashed changes
 document.addEventListener("DOMContentLoaded", function () {
-
   function initCalendar() {
     const today = new Date();
     currentYear = today.getFullYear();
@@ -192,7 +188,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Manejo de formulario en modal
     document.getElementById("eventForm").addEventListener("submit", saveEvent);
-    document.getElementById("deleteEvent").addEventListener("click", deleteEvent);
+    document
+      .getElementById("deleteEvent")
+      .addEventListener("click", deleteEvent);
 
     // Cargar eventos (desde DB o LocalStorage)
     // loadEventsFromDB(); // Ejemplo
@@ -361,30 +359,27 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   ////////////////////////////////////función Asin/////////////////////////////////////////////////////
 
+  // función async
+  const traerPromPacientes = async () => {
+    try {
+      // llamo la función buscar Insumos
+      let peticionInsumos = await fetch(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInsumos/" +
+          valorI
+      );
 
-    // función async
-    const traerPromPacientes = async () => {
-      try {
+      let resultadoInsu = await peticionInsumos.json();
 
-          // llamo la función buscar Insumos
-          let peticionInsumos = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInsumos/" + valorI);
-
-          let resultadoInsu = await peticionInsumos.json();
-
-          //si se trae algo
-          if (resultadoInsu.length > 0) {
-          } else {
-              
-          }
-
-      } catch (error) {
-          console.log("pacientes lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+      //si se trae algo
+      if (resultadoInsu.length > 0) {
+      } else {
       }
-  }
-
-
-
-  
+    } catch (error) {
+      console.log(
+        "pacientes lamentablemente Algo Salio Mal Por favor Intente Mas Tarde..."
+      );
+    }
+  };
 });
 
 // Tabla de precios
@@ -405,7 +400,6 @@ const traerDatosServicios = async () => {
     console.log("lamentablemete Algo Salio Mal Por favor Intente Mas Tarde...");
   }
 };
-
 
 const traerCitas = async () => {
   try {
@@ -430,7 +424,6 @@ const traerCitashoy = async () => {
     console.log("lamentablemete Algo Salio Mal Por favor Intente Mas Tarde...");
   }
 };
-
 
 traerCitas();
 
