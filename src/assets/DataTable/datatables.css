@@ -787,47 +787,6 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
 
 
 
-/* estilos propios */
-
-.table-clinic {
-  width: 100%;
-  border-collapse: collapse;
-}
-.table-clinic thead {
-  /*background-color:rgb(42, 109, 172);; /* Azul marino */
-  color: white;
-}
-.table-clinic tbody tr:nth-child(even) {
-  background-color: #f2f2f2; /* Gris claro */
-}
-.table-clinic tbody tr:nth-child(odd) {
-  background-color: #ffffff; /* Blanco */
-}
-.table-clinic tbody tr:hover {
-  background-color: #cce7ff; /* Azul claro */
-}
-.table-clinic th, .table-clinic td {
-  padding: 12px;
-  text-align: left;
-  border: 1px solid #ddd;
-}
-.dataTables_wrapper .dataTables_filter input {
-  border: 1px solid #ddd;
-  padding: 5px;
-  border-radius: 4px;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-  padding: 5px 10px;
-  margin-left: 2px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #003366; /* Azul marino */
-  color: white;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-  background-color: #cce7ff; /* Azul claro */
-  color: #003366; /* Azul marino */
-}
 
 
 

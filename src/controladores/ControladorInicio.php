@@ -1,9 +1,23 @@
 <?php
 
+use App\modelos\ModeloInicio;
+use App\modelos\ModeloCita;
+
 
 class ControladorInicio
 {
 
+<<<<<<< Updated upstream
+=======
+    private $modeloInicio;
+    private $modeloCitas;
+
+    public function __construct() {
+        $this->modeloInicio = new ModeloInicio();   
+        $this->modeloCitas = new ModeloCita();
+    }
+
+>>>>>>> Stashed changes
     public function inicio($parametro)
     {
         require_once './src/vistas/dashboard.php';
@@ -36,6 +50,29 @@ class ControladorInicio
         }
     }
 
+<<<<<<< Updated upstream
 }
 
 ?>
+=======
+    public function servicios()
+    {
+        $dataDeServicios = $this->modeloInicio->servicios();
+        echo json_encode($dataDeServicios);
+    }
+
+
+
+    public function citasDeHoy()
+    { 
+        $dataDeCitasHoy = $this->modeloCitas->mostrarCitaHoy(date("Y-m-d"));
+        echo json_encode($dataDeCitasHoy);
+    }
+
+    public function citas()
+    {
+        $dataDeCitas = $this->modeloCitas->mostrarCita();
+        echo json_encode($dataDeCitas);
+    }
+}
+>>>>>>> Stashed changes
