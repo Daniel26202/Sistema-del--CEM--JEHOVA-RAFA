@@ -10,13 +10,11 @@
 	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/intro/intro.min.js"></script>
 	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
 	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
+	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/modificacion.js"></script>
 	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/chart.js"></script>
 
 	<script>
-		console.log("dt-search")
-
-		console.log($(".dt-input "))
-
+		
 		new DataTable('.example', {
 			
 		});
