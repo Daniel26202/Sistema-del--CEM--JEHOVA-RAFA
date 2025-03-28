@@ -9,3 +9,4 @@ vendor/
 
 # Ignorar archivos temporales de sistemas operativos
 *.swp
+src/config/config.php

@@ -1,8 +1,20 @@
 <?php
 
+use App\modelos\ModeloInicio;
+use App\modelos\ModeloCita;
+
 
 class ControladorInicio
 {
+
+    private $modeloInicio;
+    private $modeloCitas;
+
+    public function __construct()
+    {
+        $this->modeloInicio = new ModeloInicio();
+        $this->modeloCitas = new ModeloCita();
+    }
 
     public function inicio($parametro)
     {
@@ -36,6 +48,23 @@ class ControladorInicio
         }
     }
 
-}
+    public function servicios()
+    {
+        $dataDeServicios = $this->modeloInicio->servicios();
+        echo json_encode($dataDeServicios);
+    }
 
-?>
+
+
+    public function citasDeHoy()
+    {
+        $dataDeCitasHoy = $this->modeloCitas->mostrarCitaHoy(date("Y-m-d"));
+        echo json_encode($dataDeCitasHoy);
+    }
+
+    public function citas()
+    {
+        $dataDeCitas = $this->modeloCitas->mostrarCita();
+        echo json_encode($dataDeCitas);
+    }
+}

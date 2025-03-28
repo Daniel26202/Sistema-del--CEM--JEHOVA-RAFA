@@ -23963,14 +23963,15 @@
         .append(str.replace(/_INPUT_/, input));
 
       // add for and id to label and input
-      // input
+      // propios
       filter.find("label").attr("for", "dt-search-" + __searchCounter);
 
 		filter.find("label").text('');
       
       filter.find("input").attr("id", "dt-search-" + __searchCounter);
 
-	  filter.find("input").attr("placeholder", "Buscar...");console.log(filter.find("input").attr("placeholder"));
+	  filter.find("input").attr("placeholder", "Buscar...");
+    console.log(filter.find("input").attr("placeholder"));
 
 	  filter.find("input").focus(function(){
 		$(this).css({

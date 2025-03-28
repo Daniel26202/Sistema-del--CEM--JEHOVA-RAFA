@@ -4,36 +4,27 @@ namespace App\modelos;
 
 use App\modelos\Db;
 
+
 class ModeloInicio extends Db
 {
 
-	private $db;
-
+	private $conexion;
 	public function __construct()
 	{
 		// Llama al constructor de la clase padre para establecer la conexión
 		parent::__construct();
 
 		// Aquí puedes usar $this para acceder a la conexión
-		$this->db = $this; // Guarda la instancia de la conexión
+
+		$this->conexion = $this; // Guarda la instancia de la conexión
 	}
 
-	public function selectsPromPacientes()
+
+
+	public function servicios()
 	{
-		$consulta = $this->db->prepare("SELECT DISTINCT id_paciente
-		FROM control
-		ORDER BY (SELECT COUNT(*) 
-					FROM control AS t2 
-					WHERE t2.id_paciente = control.id_paciente) DESC");
-		$consulta->bindParam(":nacionalidad", $nacionalidad);
-		$consulta->bindParam(":cedula", $cedula);
-		$consulta->execute();
+		$consulta = $this->conexion->prepare("SELECT c.nombre AS categoria, s.precio FROM serviciomedico s INNER JOIN categoria_servicio c ON s.id_categoria = c.id_categoria");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
-
 	}
-
-
 
 }
-
-?>

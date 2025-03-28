@@ -28,19 +28,19 @@ require_once './src/vistas/head/head.php';
                 <div class="col-md-4 col-12">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Citas pendientes</p>
-                        <h4>29</h4>
+                        <h4 id="citasPendentes"></h4>
                     </div>
                 </div>
                 <div class="col-md-4 col-12">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Citas de hoy</p>
-                        <h4>19</h4>
+                        <h4 id="citasDeHoy"></h4>
                     </div>
                 </div>
                 <div class="col-md-4 col-12">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Pacientes Hospitalizados</p>
-                        <h4>5</h4>
+                        <h4 id="hospitalizados"></h4>
                     </div>
                 </div>
             </div>
@@ -130,56 +130,20 @@ require_once './src/vistas/head/head.php';
                 </div>
                 <div class="card-body">
                     <!-- Lista de servicios -->
-                    <table class="table table-borderless align-middle" id="servicesTable">
+                    <table class="table table-borderless align-middle example" id="precios">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <!-- Fila de ejemplo -->
-                            <tr>
-                                <td class="text-center" style="width: 40px;">
-                                    <!-- Ícono del servicio (puedes usar FontAwesome, una imagen, etc.) -->
-                                    <img src="https://via.placeholder.com/24" alt="icono" />
-                                </td>
-                                <td>Pediatría</td>
-                                <td>500 Bss</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                    <img src="https://via.placeholder.com/24" alt="icono" />
-                                </td>
-                                <td>Cardiología</td>
-                                <td>800 Bss</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                    <img src="https://via.placeholder.com/24" alt="icono" />
-                                </td>
-                                <td>Colonoscopía</td>
-                                <td>600 Bss</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                    <img src="https://via.placeholder.com/24" alt="icono" />
-                                </td>
-                                <td>Consulta General</td>
-                                <td>250 Bss</td>
-                            </tr>
                         </tbody>
+
+
                     </table>
 
-                    <!-- Paginación de ejemplo -->
-                    <nav>
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
-                            </li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#">1 <span class="sr-only">Actual</span></a>
-                            </li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Siguiente</a>
-                            </li>
-                        </ul>
-                    </nav>
+
                 </div>
             </div>
         </div>
@@ -190,9 +154,10 @@ require_once './src/vistas/head/head.php';
 </div>
 
 
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
 
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
 <script type="text/javascript" src="../src/assets/js/dashboard.js"></script>
-
 <?php
 require_once 'src/vistas/head/footer.php';
 ?>
