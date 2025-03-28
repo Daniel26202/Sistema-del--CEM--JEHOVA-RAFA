@@ -176,7 +176,7 @@ if (!empty($parametro)) {
                             </div>
 
                             <div class="d-flex justify-content-end mt-4 pt-3 col">
-                                <a href="?c=ControladorRecuperarContr/mostrarRecuperarContr"
+                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/mostrarRecuperarContr"
                                     class="fw-bold pointer-event text-decoration-none text-dark" id="recPassword">Olvide
                                     mi
                                     contraseña</a>
