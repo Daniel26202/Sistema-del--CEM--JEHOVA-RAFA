@@ -38,14 +38,17 @@
             <li class="uk-nav-divider"></li>
 
             <li><a href="#" data-bs-toggle="modal" data-bs-target="#eliminar">
-                <img src="../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
-                </svg>SALIR</a></li>
+                        <img src="<?=$urlBase?>../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul"
+                            style="margin-left: -4px;">
+                        </svg>SALIR</a></li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- modal de cerrar sesión -->
+<?php require_once './src/vistas/modalCierreS/modalCierreS.php'; ?>
   <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 col-11 m-auto">
     <div class="col-12 caja-boton">
 
