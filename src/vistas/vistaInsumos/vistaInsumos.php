@@ -43,8 +43,13 @@
     </div>
 </div>
 
+
 <!-- modal de cerrar sesión -->
 <?php require_once './src/vistas/modalCierreS/modalCierreS.php'; ?>
+
+
+
+<!-- alertas -->
 
 <div class="d-flex justify-content-center">
 
@@ -71,7 +76,8 @@
 
 
 <!-- input para obteber el id para la bitacora -->
- <input type="hidden" id="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
+<input type="hidden" id="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
+
 
 <div class="d-flex">
 
@@ -157,19 +163,13 @@
 </div>
 
 
-
-
-
 <!-- input para optener la fecha local -->
 <input type="hidden" id="fechaLocal" value="<?= date("Y-m-d"); ?>">
 
 
+<div class="fondo-tabla m-auto" style="width:95%;">
 
-<div class="alert alert-danger text-center d-none" id="alertaVencidos">HAY INSUMOS VENCIDOS POR FAVOR VALLA A LAS ENTRADAS PARA DARLE SALIDA A LA ENTRADA</div>
-
-<!--AGREGAR Y BUSCAR-->
-<div class="div-tabla contenedor m-auto mt-3">
-    <div class="d-flex justify-content-between align-items-center">
+<div class="d-flex justify-content-between align-items-center">
         <!-- Boton Agregar Insumos -->
         <div class="mover-input-agregarcita mt-2">
             <button class="btn btn-primary btn-agregar-doctores col-11" uk-toggle="target: #modal-exampleInsumos">
@@ -204,9 +204,12 @@
         </div>
     </div>
 
-    <!--TARJETAS DE INSUMOS-->
+    
 
-    <div id="tarjetas" class="contenedor_tabla mt-4">
+
+     <!--TARJETAS DE INSUMOS-->
+
+     <div id="tarjetas" class="mt-4">
         <hr>
         <div class="tar ">
             <?php foreach ($insumos as $i): ?>
@@ -242,8 +245,6 @@
 
         </div>
     </div>
-
-
 
 
     <!--MODAL REGISTRAR-->
@@ -420,6 +421,7 @@
 
 
 
+
     <!-- Modal editar -->
     <div id="modal-exampleEditarInsumos" uk-modal>
         <div class="uk-modal-dialog uk-modal-body tamaño-modal">
@@ -539,102 +541,13 @@
 
         </div>
     </div>
+</div>
 
 
+<?php require_once 'modalInsumos.php'; ?>
 
+<?php require_once './src/vistas/head/footer.php'; ?>
 
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/insumo.js"></script>
 
-
-
-
-
-
-
-    <!-- Modal editar -->
-    <div id="modal-exampleSacarEntrada" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-            <!-- Boton que cierra el modal -->
-            <a href="#" uk-toggle="target: #modal-exampleMostrar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                    class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path
-                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
-            </a>
-
-            <div class="d-flex align-items-center">
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-capsule azul me-2 mb-3"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                    </svg>
-                </div>
-                <div class="">
-                    <p class="uk-modal-title fs-5">
-                        Sacar Entrada
-                    </p>
-                </div>
-
-            </div>
-
-            <form class="form-modal" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFAInsumos/sacarEntrada">
-
-                <input type="hidden" id="id_entradaDeInsumo" name="id_entradaDeInsumo">
-                <input type="hidden" id="id_insumo" name="id_insumo">
-
-                <div class="input-group flex-nowrap">
-                    <span class="input-modal mt-1 d-flex col-6" style="border-right: 2px solid #387ADF;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack azul" viewBox="0 0 16 16">
-                            <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z" />
-                            <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
-                        </svg>
-                        <div class=" text-center m-auto" style="font-size: 14px;">Numero De Lote</div>
-                    </span>
-                    <input class="form-control input-modal input" type="number" name="lote" required>
-                </div>
-
-
-                <div class="input-group flex-nowrap">
-                    <span class="input-modal mt-1 d-flex col-6" style="border-right: 2px solid #387ADF;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack azul" viewBox="0 0 16 16">
-                            <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z" />
-                            <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
-                        </svg>
-                        <div class=" text-center m-auto" style="font-size: 14px;">Cantidad</div>
-                    </span>
-                    <input class="form-control input-modal input" type="number" name="cantidad" required>
-                </div>
-
-                <!-- nota -->
-                <div class="form-floating input-modal">
-                    <textarea class="form-control border-0 input-modal input-modal-remove"
-                        placeholder="Leave a comment here" id="floatingTextarea2" style="height: 50px;"
-                        name="motivo" required></textarea>
-                    <label for="floatingTextarea2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack azul" viewBox="0 0 16 16">
-                            <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z" />
-                            <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
-                        </svg>Motivo</label>
-                </div>
-
-
-
-                <div class="mt-3 uk-text-right">
-                    <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
-                        type="button">Cancelar</button>
-                    <button class="btn col-3 btn-agregarcita-modal" type="submit">Salir</button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
-
-
-    <?php require_once 'modalInsumos.php'; ?>
-
-    <?php require_once './src/vistas/head/footer.php'; ?>
-
-    <script type="text/javascript" src="<?= $urlBase?>../src/assets/insumo.js"></script>
+<?php require_once './src/vistas/head/footer.php'; ?>
