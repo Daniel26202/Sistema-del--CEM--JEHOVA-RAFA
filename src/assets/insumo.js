@@ -13,7 +13,7 @@ addEventListener("DOMContentLoaded", function () {
   const modalAgregarInsumos = document.getElementById("modalAgregarInsumos");
   const inputs = document.querySelectorAll(
     "#modalAgregarInsumos .input-disabled"
-    );
+  );
 
   //editar
   const modalEditarInsumos = document.getElementById("modalEditarInsumos");
@@ -30,7 +30,7 @@ addEventListener("DOMContentLoaded", function () {
     precio: /^(\d{1,3}\.\d{3},\d{2}|\d{1,3},\d{2})$/,
     fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
     stockMinimo: /^([1-9]{1})([0-9]{1})?$/,
-    lote: /^[A-Za-z0-9-_]{3,10}$/
+    lote: /^[A-Za-z0-9-_]{3,10}$/,
     //^([0-9]+)$
   };
 
@@ -42,7 +42,7 @@ addEventListener("DOMContentLoaded", function () {
     precio: false,
     fechaDeVencimiento: false,
     stockMinimo: false,
-    lote: false
+    lote: false,
   };
 
   const camposEditarInsumos = {
@@ -53,15 +53,59 @@ addEventListener("DOMContentLoaded", function () {
     precio: true,
     fechaDeVencimiento: true,
     stockMinimo: true,
-    lote: true
+    lote: true,
   };
+
+  //funcion para manejar el resonsive de las tarjetas de insumos
+  const cajaDeBuscadorInsumos = document.querySelector(
+    ".caja-de-buscador-insumos"
+  );
+  const tarjetResponsive = () => {
+    let anchoPantalla = window.innerWidth;
+    console.log(anchoPantalla);
+
+    document.querySelectorAll(".tarjetas_iniciales").forEach((tarjet) => {
+      if (anchoPantalla <= 590) {
+        tarjet.style.width = "90%";
+        tarjet.style.margin = "auto";
+        cajaDeBuscadorInsumos.style.flexDirection = "column-reverse";
+        cajaDeBuscadorInsumos.children[0].style.width = "90%";
+        cajaDeBuscadorInsumos.children[1].style.width = "100%";
+        document.querySelector(".input-responsive").style.width = "80%";
+        document.querySelector(".boton-responsive").style.width = "20%";
+        document.querySelector(".form-responsive").style.width = "90%";
+        document.querySelector(".form-responsive").style.margin = "auto";
+        cajaDeBuscadorInsumos.classList.remove('align-items-center');
+      } else {
+        tarjet.style.width = "15rem";
+        tarjet.style.margin = "";
+        cajaDeBuscadorInsumos.style.flexDirection = "";
+        cajaDeBuscadorInsumos.children[0].style.width = "";
+        cajaDeBuscadorInsumos.children[1].style.width = "";
+        document.querySelector(".input-responsive").style.width = "";
+        document.querySelector(".boton-responsive").style.width = "";
+        document.querySelector(".form-responsive").style.width = "";
+        document.querySelector(".form-responsive").style.margin = "";
+        cajaDeBuscadorInsumos.classList.add('align-items-center');
+      }
+    });
+  };
+
+  //iniciar la uncion con el evento de tamano de pantalla
+
+  tarjetResponsive();
+  window.addEventListener("resize", function () {
+    tarjetResponsive();
+  });
 
   //funcion para traer los datos de las entradas de los inusmos que ya se vallan a vencer
 
   //gestionar insumos vencidos
 
   const traerInsumoCasiVencidos = async () => {
-    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Insumos/retornarLasEntradas");
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Insumos/retornarLasEntradas"
+    );
     let resultado = await peticion.json();
     console.log(resultado);
 
@@ -70,17 +114,23 @@ addEventListener("DOMContentLoaded", function () {
 
     botones.forEach((ele, index) => {
       const dataIndex = ele.getAttribute("data-index");
-      const insumoEncontrado = resultado.find(res => res && res.id_insumo_e == dataIndex);
-      console.log(alertasVencidos[index].children[1])
+      const insumoEncontrado = resultado.find(
+        (res) => res && res.id_insumo_e == dataIndex
+      );
+      console.log(alertasVencidos[index].children[1]);
       if (insumoEncontrado) {
         alertasVencidos[index].classList.remove("d-none");
-        alertasVencidos[index].classList.add("uk-alert-danger")
-        alertasVencidos[index].children[1].innerText = `El insumo ${insumoEncontrado.nombre} del lote ${insumoEncontrado.numero_de_lote} vence el ${insumoEncontrado.fechaDeVencimiento}.`;
-        document.getElementById("id_entradaDeInsumo").value = insumoEncontrado.id_entradaDeInsumo;
-        document.getElementById("id_insumo").value = insumoEncontrado.id_insumo_e;
+        alertasVencidos[index].classList.add("uk-alert-danger");
+        alertasVencidos[
+          index
+        ].children[1].innerText = `El insumo ${insumoEncontrado.nombre} del lote ${insumoEncontrado.numero_de_lote} vence el ${insumoEncontrado.fechaDeVencimiento}.`;
+        document.getElementById("id_entradaDeInsumo").value =
+          insumoEncontrado.id_entradaDeInsumo;
+        document.getElementById("id_insumo").value =
+          insumoEncontrado.id_insumo_e;
       } else {
-
-        let tarjeta = alertasVencidos[index].parentElement.parentElement.parentElement;
+        let tarjeta =
+          alertasVencidos[index].parentElement.parentElement.parentElement;
         tarjeta.children[0].style.height = "56%";
       }
     });
@@ -88,34 +138,35 @@ addEventListener("DOMContentLoaded", function () {
 
   traerInsumoCasiVencidos();
 
-
-//evento para que si le da a la x de la alerta la tarjeta se haga mas pequeña
-document.querySelectorAll(".uk-alert-close").forEach(ele=>{
-  ele.addEventListener("click",function(){
-    let tarjeta = this.parentElement.parentElement.parentElement.parentElement;
-    tarjeta.children[0].style.height = "56%";
-  })
-})
-
+  //evento para que si le da a la x de la alerta la tarjeta se haga mas pequeña
+  document.querySelectorAll(".uk-alert-close").forEach((ele) => {
+    ele.addEventListener("click", function () {
+      let tarjeta =
+        this.parentElement.parentElement.parentElement.parentElement;
+      tarjeta.children[0].style.height = "56%";
+    });
+  });
 
   //ajax
   async function infoInsumos(id_insumo) {
     let peticion = await fetch(
       "/Sistema-del--CEM--JEHOVA-RAFA/Insumos/info/" + id_insumo
-      );
+    );
     let resultado = await peticion.json();
     let parrafos = document.querySelectorAll(".parrafo");
     console.log(resultado);
-    resultado['insumo'].forEach((res) => {
+    resultado["insumo"].forEach((res) => {
       parrafos[0].innerText = `${res.nombre}`;
       parrafos[1].innerText = `${res.descripcion}`;
       parrafos[2].innerText = `${res.precio} BS`;
-      parrafos[3].innerText = `${resultado['vencimiento'][0][0]}`;
-      
+      parrafos[3].innerText = `${resultado["vencimiento"][0][0]}`;
+
       eliminarInsumo.setAttribute(
         "href",
-        `/Sistema-del--CEM--JEHOVA-RAFA/Insumos/eliminar/${res.id_insumo}/${document.getElementById("id_usuario_bitacora").value}`
-        );
+        `/Sistema-del--CEM--JEHOVA-RAFA/Insumos/eliminar/${res.id_insumo}/${
+          document.getElementById("id_usuario_bitacora").value
+        }`
+      );
       inputEditar[0].value = res.id_insumo;
       inputEditar[1].value = res.nombre;
       inputEditar[2].value = res.descripcion;
@@ -123,40 +174,39 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
       //inputEditar[4].value = res.fechaDeVencimiento
 
       document
-      .querySelector(".img-editar")
-      .setAttribute(
-        "src",
-        `./src/assets/img_ingresadas_por_usuarios/insumos/${res.imagen}`
+        .querySelector(".img-editar")
+        .setAttribute(
+          "src",
+          `../src/assets/img_ingresadas_por_usuarios/insumos/${res.imagen}`
         );
 
       document.querySelector(".value-img").value = res.imagen;
-
-
     });
   }
 
-  //funcion para buscar insumos 
+  //funcion para buscar insumos
   function buscarInsumos(input) {
-    console.log(input)
-    document.querySelectorAll(".titulo").forEach((ele,index)=>{
+    console.log(input);
+    document.querySelectorAll(".titulo").forEach((ele, index) => {
       let nombre = ele.innerText.toLowerCase();
       let codigo = tarjetas[index].innerText;
 
-      if (input.value != ''){
-        if (nombre.includes(input.value.toLowerCase()) || codigo.includes(input.value)) {
+      if (input.value != "") {
+        if (
+          nombre.includes(input.value.toLowerCase()) ||
+          codigo.includes(input.value)
+        ) {
           tarjetas[index].classList.remove("d-none");
         } else {
           tarjetas[index].classList.add("d-none");
         }
       }
-
-
-    })
+    });
   }
 
   //formulario para buscar insumo
-  formBuscadorInsumo.children[0].addEventListener("keyup", function(){
-    buscarInsumos(this)
+  formBuscadorInsumo.children[0].addEventListener("keyup", function () {
+    buscarInsumos(this);
   });
 
   document.querySelectorAll(".botones-mostrar").forEach((ele) => {
@@ -200,8 +250,8 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
       reader.readAsDataURL(ar[i]);
       reader.addEventListener("load", function (e) {
         document
-        .querySelector(".img-editar")
-        .setAttribute("src", `${e.currentTarget.result}`);
+          .querySelector(".img-editar")
+          .setAttribute("src", `${e.currentTarget.result}`);
         console.log(e.currentTarget.result);
       });
     }
@@ -224,152 +274,152 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
   function validarFormularioInsumo(e) {
     switch (e.target.name) {
       case "imagen":
-      let imagenSeparada = e.target.value.split("\\");
-      let nombreImagen = imagenSeparada.pop();
-      if (expresionesInsumos.imagen.test(nombreImagen)) {
-        e.target.parentElement.classList.remove("grpFormInCorrect");
-        e.target.parentElement.classList.add("grpFormCorrect");
-        camposInsumos["imagen"] = true;
-      } else {
-        e.target.parentElement.classList.remove("grpFormCorrect");
-        e.target.parentElement.classList.add("grpFormInCorrect");
-        camposInsumos["imagen"] = false;
-      }
+        let imagenSeparada = e.target.value.split("\\");
+        let nombreImagen = imagenSeparada.pop();
+        if (expresionesInsumos.imagen.test(nombreImagen)) {
+          e.target.parentElement.classList.remove("grpFormInCorrect");
+          e.target.parentElement.classList.add("grpFormCorrect");
+          camposInsumos["imagen"] = true;
+        } else {
+          e.target.parentElement.classList.remove("grpFormCorrect");
+          e.target.parentElement.classList.add("grpFormInCorrect");
+          camposInsumos["imagen"] = false;
+        }
 
-      break;
+        break;
 
       case "nombre":
-      validarCamposInsumos(
-        expresionesInsumos.nombre,
-        e.target,
-        "nombre",
-        camposInsumos
+        validarCamposInsumos(
+          expresionesInsumos.nombre,
+          e.target,
+          "nombre",
+          camposInsumos
         );
 
-      break;
+        break;
       case "descripcion":
-      validarCamposInsumos(
-        expresionesInsumos.descripcion,
-        e.target,
-        "descripcion",
-        camposInsumos
+        validarCamposInsumos(
+          expresionesInsumos.descripcion,
+          e.target,
+          "descripcion",
+          camposInsumos
         );
 
-      break;
+        break;
 
       case "cantidad":
-      validarCamposInsumos(
-        expresionesInsumos.cantidad,
-        e.target,
-        "cantidad",
-        camposInsumos
+        validarCamposInsumos(
+          expresionesInsumos.cantidad,
+          e.target,
+          "cantidad",
+          camposInsumos
         );
 
-      break;
+        break;
       case "precio":
-      validarCamposInsumos(
-        expresionesInsumos.precio,
-        e.target,
-        "precio",
-        camposInsumos
+        validarCamposInsumos(
+          expresionesInsumos.precio,
+          e.target,
+          "precio",
+          camposInsumos
         );
-      break;
+        break;
       case "fecha_de_vencimiento":
-      validarCamposInsumos(
-        expresionesInsumos.fechaDeVencimiento,
-        e.target,
-        "fechaDeVencimiento",
-        camposInsumos
+        validarCamposInsumos(
+          expresionesInsumos.fechaDeVencimiento,
+          e.target,
+          "fechaDeVencimiento",
+          camposInsumos
         );
-      break;
+        break;
       case "stockMinimo":
-      validarCamposInsumos(
-        expresionesInsumos.stockMinimo,
-        e.target,
-        "stockMinimo",
-        camposInsumos
+        validarCamposInsumos(
+          expresionesInsumos.stockMinimo,
+          e.target,
+          "stockMinimo",
+          camposInsumos
         );
-      break;
+        break;
       case "lote":
-      validarCamposInsumos(
-        expresionesInsumos.lote,
-        e.target,
-        "lote",
-        camposInsumos
+        validarCamposInsumos(
+          expresionesInsumos.lote,
+          e.target,
+          "lote",
+          camposInsumos
         );
-      break;
+        break;
     }
   }
 
   function validarFormularioInsumoEditar(e) {
     switch (e.target.name) {
       case "imagen":
-      let imagenSeparada = e.target.value.split("\\");
-      let nombreImagen = imagenSeparada.pop();
-      if (expresionesInsumos.imagen.test(nombreImagen)) {
-        e.target.parentElement.classList.remove("grpFormInCorrect");
-        e.target.parentElement.classList.add("grpFormCorrect");
-        camposEditarInsumos["imagen"] = true;
-      } else {
-        e.target.parentElement.classList.remove("grpFormCorrect");
-        e.target.parentElement.classList.add("grpFormInCorrect");
-        camposEditarInsumos["imagen"] = false;
-      }
+        let imagenSeparada = e.target.value.split("\\");
+        let nombreImagen = imagenSeparada.pop();
+        if (expresionesInsumos.imagen.test(nombreImagen)) {
+          e.target.parentElement.classList.remove("grpFormInCorrect");
+          e.target.parentElement.classList.add("grpFormCorrect");
+          camposEditarInsumos["imagen"] = true;
+        } else {
+          e.target.parentElement.classList.remove("grpFormCorrect");
+          e.target.parentElement.classList.add("grpFormInCorrect");
+          camposEditarInsumos["imagen"] = false;
+        }
 
-      break;
+        break;
 
       case "nombre":
-      validarCamposInsumos(
-        expresionesInsumos.nombre,
-        e.target,
-        "nombre",
-        camposEditarInsumos
+        validarCamposInsumos(
+          expresionesInsumos.nombre,
+          e.target,
+          "nombre",
+          camposEditarInsumos
         );
 
-      break;
+        break;
       case "descripcion":
-      validarCamposInsumos(
-        expresionesInsumos.descripcion,
-        e.target,
-        "descripcion",
-        camposEditarInsumos
+        validarCamposInsumos(
+          expresionesInsumos.descripcion,
+          e.target,
+          "descripcion",
+          camposEditarInsumos
         );
 
-      break;
+        break;
 
       case "cantidad":
-      validarCamposInsumos(
-        expresionesInsumos.cantidad,
-        e.target,
-        "cantidad",
-        camposEditarInsumos
+        validarCamposInsumos(
+          expresionesInsumos.cantidad,
+          e.target,
+          "cantidad",
+          camposEditarInsumos
         );
 
-      break;
+        break;
       case "fecha_de_vencimiento":
-      validarCamposInsumos(
-        expresionesInsumos.fechaDeVencimiento,
-        e.target,
-        "fechaDeVencimiento",
-        camposEditarInsumos
+        validarCamposInsumos(
+          expresionesInsumos.fechaDeVencimiento,
+          e.target,
+          "fechaDeVencimiento",
+          camposEditarInsumos
         );
-      break;
+        break;
       case "stockMinimo":
-      validarCamposInsumos(
-        expresionesInsumos.stockMinimo,
-        e.target,
-        "stockMinimo",
-        camposEditarInsumos
+        validarCamposInsumos(
+          expresionesInsumos.stockMinimo,
+          e.target,
+          "stockMinimo",
+          camposEditarInsumos
         );
-      break;
+        break;
       case "lote":
-      validarCamposInsumos(
-        expresionesInsumos.lote,
-        e.target,
-        "lote",
-        camposEditarInsumos
+        validarCamposInsumos(
+          expresionesInsumos.lote,
+          e.target,
+          "lote",
+          camposEditarInsumos
         );
-      break;
+        break;
     }
   }
 
@@ -377,9 +427,9 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
     input.addEventListener("input", validarFormularioInsumo);
   });
 
-  inputEditar.forEach((input)=>{
+  inputEditar.forEach((input) => {
     input.addEventListener("input", validarFormularioInsumoEditar);
-  })
+  });
 
   modalAgregarInsumos.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -392,15 +442,15 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
       camposInsumos.fechaDeVencimiento &&
       camposInsumos.stockMinimo &&
       camposInsumos.lote
-      ) {
+    ) {
       modalAgregarInsumos.submit();
-  } else {
-    document.getElementById("alerta-guardar").classList.remove("d-none");
-    setTimeout(function () {
-      document.getElementById("alerta-guardar").classList.add("d-none");
-    }, 8000);
-  }
-});
+    } else {
+      document.getElementById("alerta-guardar").classList.remove("d-none");
+      setTimeout(function () {
+        document.getElementById("alerta-guardar").classList.add("d-none");
+      }, 8000);
+    }
+  });
 
   inputsEditar.forEach((input) => {
     input.addEventListener("input", validarFormularioInsumoEditar);
@@ -413,16 +463,16 @@ document.querySelectorAll(".uk-alert-close").forEach(ele=>{
       camposEditarInsumos.nombre &&
       camposEditarInsumos.descripcion &&
       camposEditarInsumos.stockMinimo
-      ) {
+    ) {
       modalEditarInsumos.submit();
-  } else {
-    console.log(camposInsumos.lote)
-    document.getElementById("alerta-editar").classList.remove("d-none");
-    setTimeout(function () {
-      document.getElementById("alerta-editar").classList.add("d-none");
-    }, 8000);
-  }
-});
+    } else {
+      console.log(camposInsumos.lote);
+      document.getElementById("alerta-editar").classList.remove("d-none");
+      setTimeout(function () {
+        document.getElementById("alerta-editar").classList.add("d-none");
+      }, 8000);
+    }
+  });
 
   //este es el comentario
   const comentario = document.querySelector(".comentario");
