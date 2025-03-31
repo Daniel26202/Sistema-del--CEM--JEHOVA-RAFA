@@ -2,18 +2,20 @@
 
 use App\modelos\ModeloInicio;
 use App\modelos\ModeloCita;
-
+use App\modelos\ModeloBitacora;
 
 class ControladorInicio
 {
 
     private $modeloInicio;
     private $modeloCitas;
+    private $bitacora;
 
     public function __construct()
     {
         $this->modeloInicio = new ModeloInicio();
         $this->modeloCitas = new ModeloCita();
+        $this->bitacora = new ModeloBitacora();
     }
 
     public function inicio($parametro)

@@ -22,20 +22,18 @@ class ControladorUsuarios
         $this->inicioSesion = new ModeloInicioSesion();
     }
 
-    public function usuarios()
+    public function usuarios($parametro)
     {
 
         $datosU = $this->modelo->select();
         require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
-
     }
 
-    public function administradores()
+    public function administradores($parametro)
     {
 
         $datosU = $this->modelo->selectAdmin();
         require_once './src/vistas/vistaUsuarios/vistaUsuariosAdmin.php';
-
     }
 
     // editar usuario
@@ -53,7 +51,6 @@ class ControladorUsuarios
             //verifica si el usuario es igual a la información de la base de datos.
             if ($resultadoDeUsuario === "existeU") {
                 header("location:?c=ControladorUsuarios/usuarios&error");
-
             } else {
 
                 $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
@@ -61,7 +58,6 @@ class ControladorUsuarios
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
 
                 header("location:?c=ControladorUsuarios/usuarios&editado");
-
             }
 
             //se verifica si el usuario del input es igual al usuario ya existente.  
@@ -73,7 +69,6 @@ class ControladorUsuarios
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
 
             header("location:?c=ControladorUsuarios/usuarios&editado");
-
         } else {
 
             $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
@@ -82,11 +77,7 @@ class ControladorUsuarios
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
 
             header("location:?c=ControladorUsuarios/usuarios&editado");
-
         }
-
-
-
     }
 
     // eliminación lógica de usuario
@@ -99,7 +90,6 @@ class ControladorUsuarios
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un  usuario");
 
         header("location:?c=ControladorUsuarios/usuarios&eliminado");
-
     }
     public function registrarAdmin()
     {
@@ -128,7 +118,6 @@ class ControladorUsuarios
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un administrador ");
 
         header("location: ?c=ControladorUsuarios/administradores&editado");
-
     }
 
 
@@ -141,7 +130,6 @@ class ControladorUsuarios
 
 
         header("location: ?c=ControladorUsuarios/administradores&eliminado");
-
     }
 
     public function verificarPassw()
@@ -154,12 +142,8 @@ class ControladorUsuarios
                 $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
                 $this->modelo->updatePassword($datosU["id_usuario"], $passwordEncrip);
-
             }
             echo json_encode($datosU);
         }
     }
-
-
-
 }

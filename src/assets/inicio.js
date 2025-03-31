@@ -11,7 +11,7 @@ addEventListener("DOMContentLoaded", function () {
 		const traerDatos = async () => {
 			try {
 				
-				let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasP")
+				let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasP")
 				let resultado = await peticion.json();
                 pendiente.textContent = `${resultado.length}`;
 				
@@ -23,19 +23,7 @@ addEventListener("DOMContentLoaded", function () {
         const traerHoy = async () => {
 			try {
 				
-				let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoyP")
-				let resultado = await peticion.json();
-                hoy.textContent = `${resultado.length}`;
-				
-			}catch (error) {
-				console.log("lamentablemete Algo Salio Mal Por favor Intente Mas Tarde...");
-			}
-		}
-
-		const traerHospitalizacion = async () => {
-			try {
-				
-				let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA//Hospitalizacion/hospitalizacion")
+				let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoyP")
 				let resultado = await peticion.json();
                 hoy.textContent = `${resultado.length}`;
 				
