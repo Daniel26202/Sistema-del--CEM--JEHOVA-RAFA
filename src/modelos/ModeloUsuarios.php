@@ -94,17 +94,6 @@ class ModeloUsuarios extends Db
         }
     }
 
-    public function updatePassword($id_usuario, $password)
-    {
-
-            $consulta = $this->conexion->prepare('UPDATE usuario SET  password = :password WHERE id_usuario = :id_usuario');
-            
-            $consulta->bindParam(":password", $password);
-            $consulta->bindParam(":id_usuario", $id_usuario);
-            $consulta->execute();
-
-    }
-
     //esto es para editar el estado (en activo a desactivo) del usuario.
     public function eliminacionLogica($usuario, $idUsuario)
     {

@@ -131,11 +131,13 @@ addEventListener("DOMContentLoaded", function () {
     //formulario, usuario correo electr 
     const formUCE = document.getElementById("formVerificarUCE");
     const formC = document.getElementById("formCodigo");
+    const formRC = document.getElementById("formRecuperarPassword");
 
 
     const tituloPg = document.getElementById("tituloText");
-    const btnVC = document.getElementById("btnVerificarC");
-    const btnVUCE = document.getElementById("btnVerificarUCE");
+    const btnVUCE = document.getElementById("divBtnVerificarUCE");
+    const btnVC = document.getElementById("divBtnVerificarC");
+    const btnRC = document.getElementById("divBtnVerificarRC");
 
     const divFormUno = document.getElementById("formUno");
     const divFormDos = document.getElementById("formDos");
@@ -144,7 +146,8 @@ addEventListener("DOMContentLoaded", function () {
     let alertaError = document.getElementById("alerta_error");
 
     const verificar = async (ruta, formulario, numero) => {
-        try {
+        // try {
+            console.log("resultado");
             const datosFormulario = new FormData(formulario);
             const contenido = {
                 method: "POST",
@@ -155,10 +158,12 @@ addEventListener("DOMContentLoaded", function () {
             let resultado = await peticion.json();
 
             console.log(resultado);
-
-            // primer formulario
+            if (resultado === "conexionFallida") {
+                // mensaje de alerta
+                alertaMsj("Envío de código fallido, verifique si tiene conexión a internet", 8000, "rojo");
+            }
+            // primer formulario Verificar usuario y contraseña
             if (numero == "uno") {
-
                 if (resultado == false) {
                     // mensaje de alerta
                     alertaMsj("Usuario o correo electrónico incorrectos.", 8000, "rojo");
@@ -169,33 +174,75 @@ addEventListener("DOMContentLoaded", function () {
                     divFormTres.classList.add("d-none");
                     btnVUCE.classList.remove("d-none");
                     btnVC.classList.add("d-none");
+                    btnRC.classList.add("d-none");
 
-                } else {
+                } else if (resultado != "conexionFallida") {
                     // mensaje de alerta
                     alertaMsj("Datos del personal hallados exitosamente", 8000, "azul");
                     tituloPg.textContent = "Ingresé el código para la recuperación";
 
                     document.querySelector("#idUsuario").value = parseInt(resultado.id_usuario);
+                    document.querySelector("#correoV").value = resultado.correo;
+                    document.querySelector("#idUsuarioDos").value = parseInt(resultado.id_usuario);
+                    document.querySelector("#correoVDos").value = resultado.correo;
+                    document.querySelector("#idUsuarioTres").value = parseInt(resultado.id_usuario);
+                    document.querySelector("#correoVTres").value = resultado.correo;
 
                     divFormUno.classList.add("d-none");
                     divFormDos.classList.remove("d-none");
                     divFormTres.classList.add("d-none");
                     btnVUCE.classList.add("d-none");
                     btnVC.classList.remove("d-none");
+                    btnRC.classList.add("d-none");
+
+                } else{
                     
                 }
 
-            // segundo formulario
+                // segundo formulario verificación de código
             } else if (numero == "dos") {
 
-                
+                if (resultado === "exitoso") {
+                    // mensaje de alerta
+                    alertaMsj("Verificación exitosa", 8000, "azul");
+                    tituloPg.textContent = "Ingresé su nueva contraseña";
+
+                    divFormUno.classList.add("d-none");
+                    divFormDos.classList.add("d-none");
+                    divFormTres.classList.remove("d-none");
+                    btnVUCE.classList.add("d-none");
+                    btnVC.classList.add("d-none");
+                    btnRC.classList.remove("d-none");
+                } else if (resultado === "codigoIncorrecto") {
+                    // mensaje de alerta
+                    alertaMsj("Código invalido", 8000, "rojo");
+                } else if (resultado === "CodExpiro") {
+                    // mensaje de alerta
+                    alertaMsj("Su código expiro.", 8000, "rojo");
+                }
+
+                // tercero formulario, nueva clave
+            } else if (numero == "tres") {
+
+                if (resultado === "Actualizado") {
+                    // mensaje de alerta
+                    alertaMsj("Contraseña actualizada correctamente", 8000, "azul");
+                    tituloPg.textContent = "Olvide mi contraseña";
+
+                    divFormUno.classList.remove("d-none");
+                    divFormDos.classList.add("d-none");
+                    divFormTres.classList.add("d-none");
+                    btnVUCE.classList.remove("d-none");
+                    btnVC.classList.add("d-none");
+                    btnRC.classList.add("d-none");
+                }
 
             }
 
 
-        } catch (error) {
-            console.log(error);
-        }
+        // } catch (error) {
+            // console.log(error);
+        // }
 
     }
 
@@ -231,12 +278,17 @@ addEventListener("DOMContentLoaded", function () {
     // envío del I formularios
     document.querySelector("#btnVerificarUCE").addEventListener("click", function () {
         // en donde este el uno realiza la función
-        verificar("?c=ControladorRecuperarContr/verificarUC", formUCE, "uno");
+        verificar("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/verificarUC", formUCE, "uno");
     });
     // envío del II formularios
     document.querySelector("#btnVerificarC").addEventListener("click", function () {
-        // en donde este el uno realiza la función
-        verificar("?c=ControladorRecuperarContr/verificarCodigo", formC, "dos");
+        // en donde este el dos realiza la función
+        verificar("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/verificarCodigo", formC, "dos");
+    });
+    // envío del III formularios
+    document.querySelector("#btnVerificarRC").addEventListener("click", function () {
+        // en donde este el tres realiza la función
+        verificar("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/cambiarC", formRC, "tres");
     });
 
 })
