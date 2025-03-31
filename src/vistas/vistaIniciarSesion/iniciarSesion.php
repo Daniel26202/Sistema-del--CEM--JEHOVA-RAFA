@@ -2,16 +2,27 @@
 
 
 $ruta_local = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), '/');
-$concatenadorEspecial =  '.';
-if (str_ends_with($ruta_local, 'Sistema-del--CEM--JEHOVA-RAFA')) {
+
+
+$concatenadorEspecial = '.';
+
+function ends_with($haystack, $needle) {
+    $length = strlen($needle);
+    if ($length === 0) {
+        return true;
+    }
+    return substr($haystack, -$length) === $needle;
+}
+
+if (ends_with($ruta_local, 'Sistema-del--CEM--JEHOVA-RAFA')) {
     $concatenadorEspecial = "";
 }
+
 $concatenarRuta = "";
 if (!empty($parametro)) {
     foreach ($parametro as $p) {
-        $concatenarRuta .= "../";      
+        $concatenarRuta .= "../";
     }
-    
 }
 
 ?>
