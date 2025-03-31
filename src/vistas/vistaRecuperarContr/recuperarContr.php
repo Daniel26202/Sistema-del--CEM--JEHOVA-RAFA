@@ -1,3 +1,22 @@
+<?php
+
+
+$ruta_local = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), '/');
+$concatenadorEspecial =  '.';
+if (str_ends_with($ruta_local, 'Sistema-del--CEM--JEHOVA-RAFA')) {
+    $concatenadorEspecial = "";
+}
+$concatenarRuta = "";
+if (!empty($parametro)) {
+    foreach ($parametro as $p) {
+        $concatenarRuta .= "../";      
+    }
+    
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -6,13 +25,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
 
-    <link rel="stylesheet" type="text/css" href="./src/assets/uikit/css/uikit.min.css">
-    <link rel="stylesheet" type="text/css" href="./src/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./src/assets/cssVista/recuperarContr.css">
-    <link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs.min.css">
-    <link rel="stylesheet" type="text/css" href="./src/assets/intro/introjs-modern.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/uikit/css/uikit.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/cssVista/recuperarContr.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/intro/introjs.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/intro/introjs-modern.css">
 
 </head>
+
+<?php $urlBase =  $concatenarRuta.''.$concatenadorEspecial; ?>
 
 <body>
     <main>
@@ -27,15 +48,15 @@
                         <div class="carousel-inner">
 
                             <div class="carousel-item active tamano">
-                                <img src="./src/assets/img/recuperar1.jpg"
+                                <img src="<?= $urlBase;?>./src/assets/img/recuperar1.jpg"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="./src/assets/img/recuperar2.png"
+                                <img src="<?= $urlBase;?>./src/assets/img/recuperar2.png"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="./src/assets/img/recuperar3.jpg"
+                                <img src="<?= $urlBase;?>./src/assets/img/recuperar3.jpg"
                                     class="d-block h-100 uk-background-blend-multiply " alt="">
                             </div>
 
@@ -237,7 +258,7 @@
                         </div> -->
 
                         <div class="d-flex justify-content-end mt-2 me-4">
-                            <a href="?c=ControladorIniciarSesion/mostrarIniciarSesion"
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion"
                                 class="fw-bold pointer-event text-decoration-none text-dark ms-auto margen-resposive-iniciar-sesion"
                                 id="iniciarsesionEnlace">Iniciar
                                 sesión</a>
@@ -249,12 +270,12 @@
         </div>
     </main>
 
-    <script type="text/javascript" src="./src/assets/js/recuperarContr.js"></script>
-    <script type="text/javascript" src="./src/assets/js/validacionesRecuperarContr.js"></script>
-    <script type="text/javascript" src="./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="./src/assets/uikit/js/uikit.min.js"></script>
-    <script type="text/javascript" src="./src/assets/intro/intro.min.js"></script>
-    <script type="text/javascript" src="./src/assets/js/ayudaInteractivarecContrasena.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/js/recuperarContr.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/js/validacionesRecuperarContr.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/uikit/js/uikit.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/intro/intro.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial?>./src/assets/js/ayudaInteractivarecContrasena.js"></script>
 
 </body>
 
