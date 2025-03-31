@@ -1,13 +1,26 @@
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
 body {
     font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
 }
 
+
 #main-content{
     background-color: rgb(242, 249, 255);
+    animation: fadeIn 0.19s ease-in-out;
+       
 }
 
 #sidebar-content{
     background-color: rgb(232 242 255);
+    animation: fadeIn 0.40s ease-in-out;
 }
 
 .img-logo{
@@ -17,7 +30,7 @@ body {
 }
 
 #welcomeCard{
-    display: flex;
+    display: inline-flex;
     flex-direction: column-reverse;
     color: #FDFDFF;
     background-color: #387adf;
@@ -62,7 +75,9 @@ body {
 
 }
 
-
+h5 {
+    font-size: 1.1rem;
+}
 
 
 #monthYear {
@@ -123,7 +138,7 @@ body {
 }
 
 .card-tittle{
-    padding: 15px 12px 12px 12px;
+    padding: 15px 8px 12px 12px;
     color: #2b2b2b;
 }
 
