@@ -9,8 +9,6 @@ class ControladorRecuperarContr
 {
 
     private $modelo;
-    private $codigo;
-    private $tiempoFechaExp;
 
     function __construct()
     {
@@ -49,7 +47,7 @@ class ControladorRecuperarContr
 
             Su código de recuperación es: <strong>$codigoV</strong><br><br>
 
-            Por favor, ingrese este código en la aplicación para restablecer su contraseña. Tenga en cuenta que este código expira en 5 minutos.<br><br><br>
+            Por favor, ingrese este código en la aplicación para restablecer su contraseña. Tenga en cuenta que este código expira en 4 minutos.<br><br><br>
 
 
             Si no solicitó este cambio, por favor ignore este correo.<br><br><br>
@@ -70,8 +68,8 @@ class ControladorRecuperarContr
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             // correo del sistema 
-            $mail->Username = 'innova304050@gmail.com';
-            $mail->Password = 'gxmvlxeeqofivmxt';
+            $mail->Username = 'sistemajehovarafatrayectoiii@gmail.com';
+            $mail->Password = 'zamcdjqyqnyklmrj';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
@@ -88,7 +86,7 @@ class ControladorRecuperarContr
             $mail->CharSet = 'UTF-8';
 
             // Remitente
-            $mail->setFrom('innova304050@gmail.com', 'Clínica JEHOVA RAFA');
+            $mail->setFrom('sistemajehovarafatrayectoiii@gmail.com', 'Clínica JEHOVA RAFA');
             // destinatario. correo del usuario
             $mail->addAddress($correoM);
 
@@ -185,8 +183,10 @@ class ControladorRecuperarContr
     public function cambiarC()
     {
         if (isset($_POST)) {
+            // Generamos la contraseña encriptada de la contraseña ingresada
+            $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
-            $this->modelo->updatePassword($_POST["id_usuario"], $_POST["passwordNew"]);
+            $this->modelo->updatePassword($_POST["id_usuario"], $passwordEncrip);
             // verifica si la sesión esta activa.
             if (session_status() !== PHP_SESSION_ACTIVE) {
                 session_start();
