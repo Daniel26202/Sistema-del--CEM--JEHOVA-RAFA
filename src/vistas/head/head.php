@@ -4,6 +4,8 @@ session_start();
 
 if($parametro != ""){
 	if ($parametro[0] == "cerrar") {	
+		// Destruyen las variables de las sesión 
+		session_unset();
 		session_destroy();
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
 		exit();
