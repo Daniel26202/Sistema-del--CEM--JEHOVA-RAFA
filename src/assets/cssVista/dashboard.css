@@ -20,6 +20,7 @@ body {
 
 #sidebar-content{
     background-color: rgb(232 242 255);
+    animation: fadeIn 0.40s ease-in-out;
 }
 
 .img-logo{
@@ -29,7 +30,7 @@ body {
 }
 
 #welcomeCard{
-    display: flex;
+    display: inline-flex;
     flex-direction: column-reverse;
     color: #FDFDFF;
     background-color: #387adf;
@@ -74,7 +75,9 @@ body {
 
 }
 
-
+h5 {
+    font-size: 1.1rem;
+}
 
 
 #monthYear {

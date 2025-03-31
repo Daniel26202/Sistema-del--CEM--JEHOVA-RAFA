@@ -16,7 +16,7 @@ require_once './src/vistas/head/head.php';
                     <div class="welcome-card p-4 rounded shadow-sm" id="welcomeCard">
                         <h3>Bienvenido!</h3>
                         <div class="reminder d-flex justify-content-between align-items-center">
-                            <p>Doc. <?= $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] ?></p>
+                            <h2>Doc. <?= $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] ?></h2>
                             <img class="img-logo" src="../src/assets/icons/logo.png" alt="user">
                         </div>
                     </div>
