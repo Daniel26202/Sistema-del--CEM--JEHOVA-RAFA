@@ -169,7 +169,7 @@
 
 <div class="fondo-tabla m-auto" style="width:95%;">
 
-<div class="d-flex justify-content-between align-items-center">
+<div class="d-flex justify-content-between  caja-de-buscador-insumos">
         <!-- Boton Agregar Insumos -->
         <div class="mover-input-agregarcita mt-2">
             <button class="btn btn-primary btn-agregar-doctores col-11" uk-toggle="target: #modal-exampleInsumos">
@@ -189,11 +189,11 @@
                     <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
                 </svg>
             </a>
-            <form id="form-buscador-insumo" class="d-flex justify-content-end" autocomplete="off">
-                <input class="form-control input-buscar tamaño-input-buscar" type="text" name="nombre"
+            <form id="form-buscador-insumo" class="d-flex justify-content-end form-responsive" autocomplete="off">
+                <input class="form-control input-buscar tamaño-input-buscar input-responsive" type="text" name="nombre"
                     placeholder="Codigo o Nombre">
 
-                <button class="btn btn-buscar " title="Buscar" type="button">
+                <button class="btn btn-buscar boton-responsive" title="Buscar" type="button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-search" viewBox="0 0 16 16">
                         <path

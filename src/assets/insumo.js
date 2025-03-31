@@ -57,26 +57,44 @@ addEventListener("DOMContentLoaded", function () {
   };
 
   //funcion para manejar el resonsive de las tarjetas de insumos
-
+  const cajaDeBuscadorInsumos = document.querySelector(
+    ".caja-de-buscador-insumos"
+  );
   const tarjetResponsive = () => {
     let anchoPantalla = window.innerWidth;
     console.log(anchoPantalla);
-  
+
     document.querySelectorAll(".tarjetas_iniciales").forEach((tarjet) => {
-      if (anchoPantalla <= 660) {
-        tarjet.style.width = "80%";
+      if (anchoPantalla <= 590) {
+        tarjet.style.width = "90%";
         tarjet.style.margin = "auto";
-      }
-      else{
+        cajaDeBuscadorInsumos.style.flexDirection = "column-reverse";
+        cajaDeBuscadorInsumos.children[0].style.width = "90%";
+        cajaDeBuscadorInsumos.children[1].style.width = "100%";
+        document.querySelector(".input-responsive").style.width = "80%";
+        document.querySelector(".boton-responsive").style.width = "20%";
+        document.querySelector(".form-responsive").style.width = "90%";
+        document.querySelector(".form-responsive").style.margin = "auto";
+        cajaDeBuscadorInsumos.classList.remove('align-items-center');
+      } else {
         tarjet.style.width = "15rem";
         tarjet.style.margin = "";
+        cajaDeBuscadorInsumos.style.flexDirection = "";
+        cajaDeBuscadorInsumos.children[0].style.width = "";
+        cajaDeBuscadorInsumos.children[1].style.width = "";
+        document.querySelector(".input-responsive").style.width = "";
+        document.querySelector(".boton-responsive").style.width = "";
+        document.querySelector(".form-responsive").style.width = "";
+        document.querySelector(".form-responsive").style.margin = "";
+        cajaDeBuscadorInsumos.classList.add('align-items-center');
       }
     });
   };
 
   //iniciar la uncion con el evento de tamano de pantalla
 
-  tarjetResponsive();  window.addEventListener("resize", function () {
+  tarjetResponsive();
+  window.addEventListener("resize", function () {
     tarjetResponsive();
   });
 
