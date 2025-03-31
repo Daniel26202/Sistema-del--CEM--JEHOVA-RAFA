@@ -142,46 +142,7 @@
 <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 col-11 m-auto">
     <div class="col-12 caja-boton">
 
-        <?php if ($parametro != ""): ?>
-
-
-            <?php if ($parametro[0] == "error"): ?>
-                <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder h-25" uk-alert>
-                    <a class="uk-alert-close" uk-close></a>
-                    <p class="pe-2">La cédula ya existen, intente de nuevo.</p>
-                </div>
-                <div class="d-flex justify-content-center">
-                <?php elseif ($parametro[0] == "registro"): ?>
-                    <div class="uk-alert-primary comentarioD  comentarioRed me-4 fw-bolder" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p class="pe-2">Se registro el datoCita correctamente.</p>
-                    </div>
-                <?php elseif ($parametro[0] == "editar"): ?>
-                    <div class="uk-alert-primary comentarioD  me-4 fw-bolder " uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p class="pe-2">Se actualizo el datoCita correctamente.</p>
-                    </div>
-                <?php elseif ($parametro[0] == "eliminar"): ?>
-                    <div class="uk-alert-primary comentarioD  me-4 fw-bolder " uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p class="pe-2">Se ha eliminado el datoCita correctamente.</p>
-                    </div>
-                <?php elseif ($parametro[0] == "restablecido"): ?>
-                    <div class="uk-alert-primary comentarioD  me-4 fw-bolder" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p class="pe-2">Se ha restablecido el datoCita correctamente.</p>
-                    </div>
-
-                    <div class="d-flex justify-content-center">
-                    <?php elseif ($parametro[0] == "errorfecha"): ?>
-                        <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder" uk-alert>
-                            <a class="uk-alert-close" uk-close></a>
-                            <p class="pe-2">la fecha de nacimiento no concuerda, intente de nuevo.</p>
-                        </div>
-
-                    </div>
-                <?php endif ?>
-            <?php endif ?>
+  
 
             <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8" uk-toggle="target: #modal-examplePaciente" id="">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
