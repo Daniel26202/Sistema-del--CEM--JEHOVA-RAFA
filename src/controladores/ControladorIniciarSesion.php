@@ -79,6 +79,8 @@ class ControladorIniciarSesion
                         $_SESSION['usuario'] = $_POST['usuario'];
                         $_SESSION['rol'] = $validar['rol'];
                         $_SESSION['id_usuario'] = $validar['id_usuario'];
+                        $_SESSION['nombre'] = $validar['nombre_personal'];
+                        $_SESSION['apellido'] = $validar['apellido_personal'];
 
                         $this->bitacora->insertarBitacora($_SESSION['id_usuario'],"inicio sesion","Ha iniciado una session");
 
