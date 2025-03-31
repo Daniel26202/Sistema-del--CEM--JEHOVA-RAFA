@@ -3,7 +3,7 @@
 
     <div id="modal-exampleEliminar<?php echo $dato["id_usuario"]; ?>" uk-modal>
         <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-            <form class="" method="POST" action="?c=ControladorUsuarios/eliminarAdministrador">
+            <form class="" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/eliminarAdministrador">
 
                 <!-- Botón que cierra el modal -->
                 <a href="#">

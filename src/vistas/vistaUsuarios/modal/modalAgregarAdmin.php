@@ -4,7 +4,7 @@
 <div id="modal-exampleAgregar" uk-modal>
     <div class="uk-modal-dialog uk-modal-body tamaño-modal uk-card  uk-width-1-2@m">
 
-        <form method="POST" class="formAgregarAdmin" action="?c=ControladorUsuarios/registrarAdmin"
+        <form method="POST" class="formAgregarAdmin" action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/registrarAdmin"
             enctype="multipart/form-data">
 
             <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">

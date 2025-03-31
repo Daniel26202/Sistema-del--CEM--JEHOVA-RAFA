@@ -53,14 +53,14 @@ class ControladorUsuarios
 
             //verifica si el usuario es igual a la información de la base de datos.
             if ($resultadoDeUsuario === "existeU") {
-                header("location:?c=ControladorUsuarios/usuarios&error");
+                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/error");
             } else {
 
                 $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
                 // Guardar la bitacora
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
 
-                header("location:?c=ControladorUsuarios/usuarios&editado");
+                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editado");
             }
 
             //se verifica si el usuario del input es igual al usuario ya existente.  
@@ -71,7 +71,7 @@ class ControladorUsuarios
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
 
-            header("location:?c=ControladorUsuarios/usuarios&editado");
+            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editado");
         } else {
 
             $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
@@ -79,7 +79,7 @@ class ControladorUsuarios
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
 
-            header("location:?c=ControladorUsuarios/usuarios&editado");
+            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editado");
         }
     }
 
@@ -92,7 +92,7 @@ class ControladorUsuarios
         // Guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un  usuario");
 
-        header("location:?c=ControladorUsuarios/usuarios&eliminado");
+        header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/eliminado");
     }
     public function registrarAdmin()
     {
@@ -108,7 +108,7 @@ class ControladorUsuarios
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha insertado un administrador ");
 
 
-        header("location:?c=ControladorUsuarios/administradores&registrado");
+        header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/registrado");
     }
 
 
@@ -120,7 +120,7 @@ class ControladorUsuarios
         // Guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un administrador ");
 
-        header("location: ?c=ControladorUsuarios/administradores&editado");
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/editado");
     }
 
 
@@ -132,7 +132,7 @@ class ControladorUsuarios
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un administador ");
 
 
-        header("location: ?c=ControladorUsuarios/administradores&eliminado");
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/eliminado");
     }
 
     public function verificarPassw()
