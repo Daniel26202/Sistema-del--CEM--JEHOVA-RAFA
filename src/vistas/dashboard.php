@@ -68,7 +68,7 @@ require_once './src/vistas/head/head.php';
         <h5 style="color: rgb(42, 109, 172);">Calendario</h5>
         <!-- Calendar Container -->
         <div class="card shadow-sm my-4" id="calendarCard">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-tittle d-flex justify-content-between align-items-center">
                 <button id="prev"><img src="../src/assets/icons/izquierda.svg" alt="anterior" style="width: 16px; height: 16px;"></button>
                 <h2 id="monthYear" class="mb-0"></h2>
                 <button id="next"> <img src="../src/assets/icons/derecha.svg" alt="siguiente" style="width: 16px; height: 16px;"></button>
@@ -125,7 +125,7 @@ require_once './src/vistas/head/head.php';
         <!-- Contenedor de la lista de servicios -->
         <div class="col-md-12 mt-4">
             <div class="card shadow-sm">
-                <div class="card-header">
+                <div class="card-tittle">
                     <h5 class="mb-0">Precio consulta</h5>
                 </div>
                 <div class="card-body">

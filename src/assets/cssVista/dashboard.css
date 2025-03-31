@@ -54,6 +54,8 @@ body {
     border-radius: 8px;
 }
 
+
+
 #next , #day, #prev{
     background-color: #FDFDFF;
     border-style: none;
@@ -112,11 +114,17 @@ body {
 }
 
 .card-header {
+    padding: 6px 12px;
 /*     background-color: rgb(42, 109, 172);
  */    color: #1d1d1d;
     /* Evita colores muy llamativos */
     border-bottom: none;
     /* Look más minimalista */
+}
+
+.card-tittle{
+    padding: 15px 12px 12px 12px;
+    color: #2b2b2b;
 }
 
 .table-borderless tbody tr td {
