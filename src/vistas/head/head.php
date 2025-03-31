@@ -7,10 +7,13 @@ if($parametro != ""){
 		// Destruyen las variables de las sesión 
 		session_unset();
 		session_destroy();
+		// Guardar la bitacora
+		$this->bitacora->insertarBitacora($_SESSION['id_usuario'], "cerrar session", "Ha cerrado la session ");
+
+		// Redireccionar al inicio
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
 		exit();
 	}
-	
 }
 
 if (isset($_SESSION['usuario'])) {
@@ -21,9 +24,9 @@ if (isset($_SESSION['usuario'])) {
 
 $concatenarRuta = "";
 if (!empty($parametro)) {
-    foreach ($parametro as $p) {
-        $concatenarRuta .= "../";
-    }
+	foreach ($parametro as $p) {
+		$concatenarRuta .= "../";
+	}
 }
 ?>
 
@@ -33,16 +36,16 @@ if (!empty($parametro)) {
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="<?= $concatenarRuta ?>../src/assets/img/logotipo.jpg">
-    <title>J-R</title>
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/uikit/css/uikit.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/cssVista/style.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/intro/introjs.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/intro/introjs-modern.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/DataTable/datatables.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="<?= $concatenarRuta ?>../src/assets/img/logotipo.jpg">
+	<title>J-R</title>
+	<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/uikit/css/uikit.min.css">
+	<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/cssVista/style.css">
+	<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/intro/introjs.min.css">
+	<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/intro/introjs-modern.css">
+	<link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/DataTable/datatables.css">
 </head>
 
 

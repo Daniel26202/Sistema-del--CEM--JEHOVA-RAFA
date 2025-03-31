@@ -19,9 +19,13 @@ class ModeloBitacora extends Db{
     }
 
 
-    public function consultarBitacora($id_usuario){
-    	$consulta = $this->conexion->prepare("SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM bitacora b INNER JOIN usuario u ON u.id_usuario = b.id_usuario INNER JOIN personal p ON p.id_usuario = u.id_usuario WHERE b.id_usuario =:id_usuario");
-        $consulta->bindParam(":id_usuario",$id_usuario);
+    public function consultarBitacora($id_usuario = ""){
+    	if ($id_usuario != '') {
+            $consulta = $this->conexion->prepare("SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM bitacora b INNER JOIN usuario u ON u.id_usuario = b.id_usuario INNER JOIN personal p ON p.id_usuario = u.id_usuario WHERE b.id_usuario =:id_usuario");
+            $consulta->bindParam(":id_usuario",$id_usuario);
+        } else {
+            $consulta = $this->conexion->prepare("SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM bitacora b INNER JOIN usuario u ON u.id_usuario = b.id_usuario INNER JOIN personal p ON p.id_usuario = u.id_usuario ");
+        }    
     	return ($consulta->execute()) ? $consulta->fetchAll() : false; 
     }
 

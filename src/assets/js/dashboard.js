@@ -430,3 +430,28 @@ traerCitas();
 traerCitashoy();
 
 traerDatosServicios();
+
+console.log("DataTable initialized");
+
+$(document).ready(function () {
+  if ($.fn.DataTable.isDataTable("#precios")) {
+    $("#precios").DataTable().destroy(); // Destruye la instancia previa
+  }
+
+  $("#precios").DataTable({
+    paging: true,
+    searching: false,
+    info: false,
+    ordering: true,
+    language: {
+      decimal: ",",
+      thousands: ".",
+      lengthMenu: "",
+      zeroRecords: "No se encontraron resultados",
+      info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+      infoEmpty: "No hay registros disponibles",
+      infoFiltered: "(filtrado de _MAX_ registros en total)",
+      search: "Buscar:",
+    },
+  });
+});

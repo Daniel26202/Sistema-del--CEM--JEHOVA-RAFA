@@ -26,7 +26,7 @@ class ControladorInsumos
 			$this->modelo->vencerInsumos(date("Y-m-d"));
 			//$this->modelo->insumoProximos();
 		} 
-		require_once './src/vistas/vistaInsumos/insumos.php';
+		require_once './src/vistas/vistaInsumos/vistaInsumos.php';
 	}
 
 	public function retornarLasEntradas()

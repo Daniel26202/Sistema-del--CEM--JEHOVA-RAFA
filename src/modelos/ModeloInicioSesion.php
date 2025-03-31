@@ -22,7 +22,7 @@ class ModeloInicioSesion extends Db
 	public function validarIniciarSesion($usuario, $password)
 	{
 
-		$consulta = $this->conexion->prepare("SELECT u.id_usuario, r.id_rol, u.usuario, u.password, r.nombre AS rol FROM usuario u INNER JOIN rol r ON u.id_rol = r.id_rol WHERE u.usuario = :usuario AND u.estado = 'ACT'");
+		$consulta = $this->conexion->prepare("SELECT p.nombre AS nombre_personal, p.apellido AS apellido_personal,u.id_usuario, r.id_rol, u.usuario, u.password, r.nombre AS rol FROM usuario u INNER JOIN rol r ON u.id_rol = r.id_rol INNER JOIN personal p ON p.id_usuario = u.id_usuario WHERE u.usuario = :usuario AND u.estado = 'ACT' ");
 
 		$consulta->bindParam(':usuario', $usuario);
 		$consulta->execute();
