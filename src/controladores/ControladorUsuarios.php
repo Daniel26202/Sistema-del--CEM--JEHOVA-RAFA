@@ -4,6 +4,7 @@ use App\modelos\ModeloUsuarios;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloInicioSesion;
+use App\modelos\ModeloRecuperarContr;
 
 
 class ControladorUsuarios
@@ -13,6 +14,7 @@ class ControladorUsuarios
     private $doctor;
     private $bitacora;
     private $inicioSesion;
+    private $recuperarContr;
 
     public function __construct()
     {
@@ -20,6 +22,7 @@ class ControladorUsuarios
         $this->doctor = new ModeloDoctores();
         $this->bitacora = new ModeloBitacora();
         $this->inicioSesion = new ModeloInicioSesion();
+        $this->recuperarContr = new ModeloRecuperarContr();
     }
 
     public function usuarios()
@@ -153,7 +156,7 @@ class ControladorUsuarios
                 // Generamos la contraseña encriptada de la contraseña ingresada
                 $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
-                $this->modelo->updatePassword($datosU["id_usuario"], $passwordEncrip);
+                $this->recuperarContr->updatePassword($datosU["id_usuario"], $passwordEncrip);
 
             }
             echo json_encode($datosU);
