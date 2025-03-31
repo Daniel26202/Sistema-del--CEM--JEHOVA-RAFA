@@ -18,7 +18,7 @@ class ControladorRecuperarContr
     }
 
 
-    public function mostrarRecuperarContr()
+    public function mostrarRecuperarContr($parametro)
     {
         require_once "./src/vistas/vistaRecuperarContr/recuperarContr.php";
     }

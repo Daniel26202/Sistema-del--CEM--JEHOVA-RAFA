@@ -1,29 +1,44 @@
 <?php
 
 
+// Obtiene la ruta local eliminando barras inclinadas iniciales y finales.
+// $_SERVER["REQUEST_URI"] contiene la URL solicitada al servidor.
+// parse_url() extrae la parte de la URL que corresponde al camino (path).
+// trim() elimina cualquier barra inclinada ('/') al inicio y al final de la cadena resultante.
 $ruta_local = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), '/');
 
-
+// Establece un valor predeterminado para el "concatenador especial" como un punto (.).
 $concatenadorEspecial = '.';
 
+// Define una función personalizada para verificar si una cadena termina con un sufijo dado.
+// $haystack es la cadena principal y $needle es el sufijo buscado.
 function ends_with($haystack, $needle) {
-    $length = strlen($needle);
-    if ($length === 0) {
+    $length = strlen($needle); // Calcula la longitud del sufijo.
+    if ($length === 0) { // Si el sufijo está vacío, siempre retorna true.
         return true;
     }
+    // Verifica si el final de la cadena principal coincide con el sufijo.
     return substr($haystack, -$length) === $needle;
 }
 
+// Verifica si $ruta_local termina con el texto especificado.
+// Si termina con "Sistema-del--CEM--JEHOVA-RAFA", se limpia el valor del "concatenador especial".
 if (ends_with($ruta_local, 'Sistema-del--CEM--JEHOVA-RAFA')) {
     $concatenadorEspecial = "";
 }
 
+// Inicializa una cadena vacía para construir la ruta concatenada.
 $concatenarRuta = "";
+
+// Verifica si el array $parametro no está vacío.
+// Si contiene valores, recorre cada elemento y concatena '../' por cada uno.
+// Esto se usa para construir un camino relativo dependiendo de los valores en $parametro.
 if (!empty($parametro)) {
     foreach ($parametro as $p) {
         $concatenarRuta .= "../";
     }
 }
+
 
 ?>
 

@@ -1,20 +1,16 @@
 <?php
 
 
-// $ruta_local = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), '/');
-// $concatenadorEspecial =  '.';
-// if (str_ends_with($ruta_local, 'Sistema-del--CEM--JEHOVA-RAFA')) {
-//     $concatenadorEspecial = "";
-// }
-// $concatenarRuta = "";
-// if (!empty($parametro)) {
-//     foreach ($parametro as $p) {
-//         $concatenarRuta .= "../";      
-//     }
-
-// }
+$concatenarRuta = "";
+if (!empty($parametro)) {
+	foreach ($parametro as $p) {
+		$concatenarRuta .= "../";
+	}
+}
 
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -25,15 +21,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
 
-    <link rel="stylesheet" type="text/css" href="../src/assets/uikit/css/uikit.min.css">
-    <link rel="stylesheet" type="text/css" href="../src/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../src/assets/cssVista/recuperarContr.css">
-    <link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs.min.css">
-    <link rel="stylesheet" type="text/css" href="../src/assets/intro/introjs-modern.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/uikit/css/uikit.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= $concatenarRuta ?>../src/assets/cssVista/recuperarContr.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/intro/introjs.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/intro/introjs-modern.css">
 
 </head>
-
-<?php //$urlBase =  $concatenarRuta.''.$concatenadorEspecial; ?>
 
 <body>
     <main>
@@ -48,15 +42,15 @@
                         <div class="carousel-inner">
 
                             <div class="carousel-item active tamano">
-                                <img src="<?= $urlBase; ?>./src/assets/img/recuperar1.jpg"
+                                <img src="<?= $concatenarRuta; ?>../src/assets/img/recuperar1.jpg"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="<?= $urlBase; ?>./src/assets/img/recuperar2.png"
+                                <img src="<?= $concatenarRuta; ?>../src/assets/img/recuperar2.png"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="<?= $urlBase; ?>./src/assets/img/recuperar3.jpg"
+                                <img src="<?= $concatenarRuta; ?>../src/assets/img/recuperar3.jpg"
                                     class="d-block h-100 uk-background-blend-multiply " alt="">
                             </div>
 
@@ -329,12 +323,12 @@
         </div>
     </main>
 
-    <script type="text/javascript" src="../src/assets/js/recuperarContr.js"></script>
-    <script type="text/javascript" src="../src/assets/js/validacionesRecuperarContr.js"></script>
-    <script type="text/javascript" src="../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="../src/assets/uikit/js/uikit.min.js"></script>
-    <script type="text/javascript" src="../src/assets/intro/intro.min.js"></script>
-    <script type="text/javascript" src="../src/assets/js/ayudaInteractivarecContrasena.js"></script>
+    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/js/recuperarContr.js"></script>
+    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/js/validacionesRecuperarContr.js"></script>
+    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/uikit/js/uikit.min.js"></script>
+    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/intro/intro.min.js"></script>
+    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/js/ayudaInteractivarecContrasena.js"></script>
 
 </body>
 
