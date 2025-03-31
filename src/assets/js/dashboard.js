@@ -389,6 +389,7 @@ const traerDatosServicios = async () => {
       "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/servicios"
     );
     let resultado = await peticion.json();
+    console.log(resultado);
     const tbody = document.querySelector("#precios tbody");
     tbody.innerHTML = "";
     resultado.forEach((element) => {
@@ -424,17 +425,15 @@ const traerCitashoy = async () => {
     console.log("lamentablemete Algo Salio Mal Por favor Intente Mas Tarde...");
   }
 };
-
 traerCitas();
 
 traerCitashoy();
 
-traerDatosServicios();
-
-console.log("DataTable initialized");
+/* traerDatosServicios(); */
 
 $(document).ready(function () {
   if ($.fn.DataTable.isDataTable("#precios")) {
+    console.log("Destruyendo instancia previa de DataTable...");
     $("#precios").DataTable().destroy(); // Destruye la instancia previa
   }
 
@@ -455,3 +454,9 @@ $(document).ready(function () {
     },
   });
 });
+
+$(document).ready(function () {
+  traerDatosServicios(); // Llama a la función que carga los datos y configura la DataTable
+});
+
+console.log("DataTable inicializada correctamente");

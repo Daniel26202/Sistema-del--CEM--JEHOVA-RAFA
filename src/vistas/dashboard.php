@@ -94,7 +94,7 @@ require_once './src/vistas/head/head.php';
             </div>
         </div>
 
-        <!-- Modal para eventos -->
+        <!-- <!--  <!-- Modal para eventos -->
         <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
