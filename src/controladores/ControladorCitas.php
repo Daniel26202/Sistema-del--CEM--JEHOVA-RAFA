@@ -2,17 +2,28 @@
 
 use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPacientes;
 
 class ControladorCitas
 {
 
 	private $modelo;
 	private $bitacora;
+	private $modeloPacientes;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloCita();
 		$this->bitacora = new ModeloBitacora;
+		$this->modeloPacientes = new ModeloPacientes();
+	}
+
+	public function insertaPaciente(){
+		// guardar la bitacora
+		$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
+
+
+		$this->modeloPacientes->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
 	}
 
 	public function mostrarPacienteCita()

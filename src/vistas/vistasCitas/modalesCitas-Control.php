@@ -457,7 +457,7 @@ uk-tooltip="title: Fecha de regreso; pos: right">
             </div>
         </div>
 
-        <form class="form-modal form-validable" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar" method="POST" autocomplete="off">
+        <form class="form-modal form-validable form-ajax" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar" method="POST" autocomplete="off">
             <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
 
             <div class="input-group flex-nowrap margin-inputs" id="grp_cedula">

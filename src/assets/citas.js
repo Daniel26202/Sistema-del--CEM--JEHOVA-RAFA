@@ -48,10 +48,10 @@ addEventListener("DOMContentLoaded", () => {
       });
     } else {
       formCitas.classList.add("d-none");
-      let valorCedulaPaciente  = cedulaCita.value
+      let valorCedulaPaciente = cedulaCita.value;
       modalAgregarCita.reset();
 
-      cedulaCita.value = valorCedulaPaciente
+      cedulaCita.value = valorCedulaPaciente;
       document.getElementById("iconoCedulaCita").classList.add("d-none");
       document.getElementById("imgCita").classList.remove("d-none");
 
@@ -120,11 +120,35 @@ addEventListener("DOMContentLoaded", () => {
     // }
   };
 
+  //funcion ajax para registrar un paciente que no se encontro
+
+  const insertarPaciente = async (form) => {
+    try {
+      const datosFormulario = new FormData(form);
+      const contenido = {
+        method: "POST",
+        body: datosFormulario,
+      };
+      let peticion = await fetch(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
+        contenido
+      );
+    } catch (error) {
+      console.log("algo salio mal" + error);
+    }
+  };
+  //llamar a la funcion para insertar un paciente que no existe
+
+  document
+    .getElementById("modalAgregar")
+    .addEventListener("submit", function (e) {
+      insertarPaciente(this);
+    });
+
   const traerHorario = async (idD) => {
     // try {
     let peticion = await fetch(
-      "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" +
-        idD
+      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" + idD
     );
     let resultado = await peticion.json();
     document.querySelector(".horario-insertar").innerHTML = "";
@@ -321,7 +345,6 @@ addEventListener("DOMContentLoaded", () => {
       document.getElementById("imgCita").classList.add("d-none");
       traerPacienteCita(event);
     } else {
-      
       document
         .querySelector(".alerta-cedula-paciente")
         .classList.remove("d-none");

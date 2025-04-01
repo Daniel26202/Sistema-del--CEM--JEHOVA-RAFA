@@ -57,7 +57,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (mensajeError) {
           mensajeError.classList.add("d-none");
         }
-        formulario.submit(); // Enviamos el formulario
+
+        //validamos si el formulario contiene la clase form-ajax 
+        if(formulario.classList.contains("form-ajax")){
+          console.log("no se envio por que se va a enviar con ajax"); //si la tiene no se envia al formulario
+        }else{
+          formulario.submit(); // Enviamos el formulario
+        }
+        
       } else {
         // Si hay campos inválidos, mostramos el mensaje de error correspondiente
         const mensajeError = formulario.querySelector(".msjE");
