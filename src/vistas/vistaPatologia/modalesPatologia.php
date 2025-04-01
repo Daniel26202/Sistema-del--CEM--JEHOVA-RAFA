@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <form class="form-modal" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/registrarPatologia" method="POST" autocomplete="off">
+    <form class="form-modal form-validable" id="" action="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/registrarPatologia" method="POST" autocomplete="off">
 
       <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['id_usuario']?>">
 
@@ -50,10 +50,12 @@
 
         </span>
 
-        <input class="form-control input-modal input-disabled input-paciente mayuscula" type="text" id="nombrePatologia"
-          name="nombrePatologia" placeholder="Nombre de la Patologia" required maxlength="20"
+        <input class="form-control input-modal input-disabled input-paciente mayuscula input-validar" type="text" 
+          name="nombre" placeholder="Nombre de la Patologia" required maxlength="20"
           pattern="[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}">
       </div>
+
+      <p class="p-error-nombre d-none">La patologia debe contener solo letras como minimo 3</p>
 
       <div class="mt-3 uk-text-right btn_modal_patologias">
         <button class="uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
@@ -64,7 +66,3 @@
     </form>
   </div>
 </div>
-
-
-
-<script src="./src/assets/js/patologias.js"></script>
