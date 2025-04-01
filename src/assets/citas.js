@@ -19,50 +19,54 @@ addEventListener("DOMContentLoaded", () => {
   let horaarray = [];
   const traerPacienteCita = async (event) => {
     // try {
-      const datosFormulario = new FormData(modalAgregarCita);
-      const contenido = {
-        method: "POST",
-        body: datosFormulario,
-      };
-      
-      let peticion = await fetch(
-        "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarPacienteCita",
-        contenido
-      );
+    const datosFormulario = new FormData(modalAgregarCita);
+    const contenido = {
+      method: "POST",
+      body: datosFormulario,
+    };
 
-      console.log(peticion)
-      let resultado = await peticion.json();
-      console.log(resultado);
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarPacienteCita",
+      contenido
+    );
 
-      if (resultado.length > 0) {
-        resultado.forEach((res) => {
-          console.log(res);
-          paciente.value = res.nombre + " " + res.apellido;
-          telefono.value = res.telefono;
-          document.getElementById("id_paciente").value = res.id_paciente;
+    console.log(peticion);
+    let resultado = await peticion.json();
+    console.log(resultado);
 
-          if (event && event.type === "click") {
-            document.getElementById("myToast").classList.add("d-none");
-            //formCitas.classList.remove('d-none');
-          }
-        });
-      } else {
-        formCitas.classList.add("d-none");
-        document.getElementById("iconoCedulaCita").classList.add("d-none");
-        document.getElementById("imgCita").classList.remove("d-none");
+    if (resultado.length > 0) {
+      resultado.forEach((res) => {
+        console.log(res);
+        paciente.value = res.nombre + " " + res.apellido;
+        telefono.value = res.telefono;
+        document.getElementById("id_paciente").value = res.id_paciente;
 
         if (event && event.type === "click") {
-          document.getElementById("myToast").classList.remove("d-none");
-          const toastElement = document.getElementById("myToast");
-          const toast = new bootstrap.Toast(toastElement, {
-            autohide: false,
-          });
-          toast.show();
+          document.getElementById("myToast").classList.add("d-none");
+          //formCitas.classList.remove('d-none');
         }
+      });
+    } else {
+      formCitas.classList.add("d-none");
+      let valorCedulaPaciente  = cedulaCita.value
+      modalAgregarCita.reset();
 
-        //desaparecer el boton de enviar el modal si no encuentra al paciente
-        document.getElementById("btnAgregarCita").classList.add("d-none");
+      cedulaCita.value = valorCedulaPaciente
+      document.getElementById("iconoCedulaCita").classList.add("d-none");
+      document.getElementById("imgCita").classList.remove("d-none");
+
+      if (event && event.type === "click") {
+        document.getElementById("myToast").classList.remove("d-none");
+        const toastElement = document.getElementById("myToast");
+        const toast = new bootstrap.Toast(toastElement, {
+          autohide: false,
+        });
+        toast.show();
       }
+
+      //desaparecer el boton de enviar el modal si no encuentra al paciente
+      document.getElementById("btnAgregarCita").classList.add("d-none");
+    }
     // } catch (error) {
     //   console.log(
     //     "Lamentablemente, algo salió mal. Por favor, intente más tarde..."
@@ -71,41 +75,44 @@ addEventListener("DOMContentLoaded", () => {
   };
   const traerDoctoresCita = async () => {
     // try {
-      let id = especialidad.value;
-      console.log(id);
-      let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" + id);
-      let resultado = await peticion.json();
-      console.log(resultado);
-      let html = ``;
-      if (resultado.length > 0) {
-        html = ``;
-        resultado.forEach((res) => {
-          html += `<input required class="uk-checkbox doctoresCitas mt-2 mb-2 me-2" type="radio" name="id_doctor" value="${res.id_personal}">  ${res.nombre_doctor} ${res.apellido_doctor}<br>`;
-        });
-        document.getElementById("listaDoctores").innerHTML = html;
+    let id = especialidad.value;
+    console.log(id);
+    let peticion = await fetch(
+      "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" +
+        id
+    );
+    let resultado = await peticion.json();
+    console.log(resultado);
+    let html = ``;
+    if (resultado.length > 0) {
+      html = ``;
+      resultado.forEach((res) => {
+        html += `<input required class="uk-checkbox doctoresCitas mt-2 mb-2 me-2" type="radio" name="id_doctor" value="${res.id_personal}">  ${res.nombre_doctor} ${res.apellido_doctor}<br>`;
+      });
+      document.getElementById("listaDoctores").innerHTML = html;
 
-        document.querySelectorAll(".doctoresCitas").forEach((doctor) => {
-          if (doctor) {
-            doctor.addEventListener("change", function () {
-              let idD = doctor.value;
-              traerHorario(idD);
-              if (doctor.checked) {
-                //desaparecer el boton de enviar el modal si no encuentra al paciente
-                document
-                  .getElementById("btnAgregarCita")
-                  .classList.remove("d-none");
-                console.log("si");
-              }
-            });
-          }
-        });
-        diaNumero = [];
-        document.getElementById("fecha").value = "";
-        document.getElementById("divAcordion").remove();
-      } else {
-        document.getElementById("listaDoctores").innerHTML = "";
-        document.getElementById("btnAgregarCita").classList.add("d-none");
-      }
+      document.querySelectorAll(".doctoresCitas").forEach((doctor) => {
+        if (doctor) {
+          doctor.addEventListener("change", function () {
+            let idD = doctor.value;
+            traerHorario(idD);
+            if (doctor.checked) {
+              //desaparecer el boton de enviar el modal si no encuentra al paciente
+              document
+                .getElementById("btnAgregarCita")
+                .classList.remove("d-none");
+              console.log("si");
+            }
+          });
+        }
+      });
+      diaNumero = [];
+      document.getElementById("fecha").value = "";
+      document.getElementById("divAcordion").remove();
+    } else {
+      document.getElementById("listaDoctores").innerHTML = "";
+      document.getElementById("btnAgregarCita").classList.add("d-none");
+    }
     // } catch (error) {
     //   console.log(
     //     "lamentablemete Algo Salio Mal Por favor Intente Mas Tarde..."
@@ -114,189 +121,186 @@ addEventListener("DOMContentLoaded", () => {
   };
 
   const traerHorario = async (idD) => {
-    
     // try {
-      let peticion = await fetch(
-        "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" + idD
+    let peticion = await fetch(
+      "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" +
+        idD
+    );
+    let resultado = await peticion.json();
+    document.querySelector(".horario-insertar").innerHTML = "";
+    let div = document.createElement("div");
+    let horarioId = [];
+    console.log(resultado);
+    let contador = 0;
+    let arrayyyy = [];
+    resultado.forEach((res) => {
+      function entradaHora() {
+        // Separar la hora y los minutos
+        let [horas, minutos] = res.horaDeEntrada.split(":").map(Number);
+
+        // verificamos si es AM o PM
+        const esPM = horas >= 12;
+        const sufijo = esPM ? "PM" : "AM";
+
+        // Convertir horas de 24 a 12
+        horas = horas % 12 || 12; // Si es 0, se convierte a 12
+
+        // Se formatear los minutos para que siempre tengan dos dígitos
+        minutos = minutos < 10 ? "0" + minutos : minutos;
+
+        // Retornar la hora en formato de 12 horas
+        return `${horas}:${minutos} ${sufijo}`;
+      }
+
+      function salidaHora() {
+        // Separamos la hora y los minutos
+        let [horas, minutos] = res.horaDeSalida.split(":").map(Number);
+
+        // verificamos si es AM o PM
+        const esPM = horas >= 12;
+        const sufijo = esPM ? "PM" : "AM";
+
+        // Convertir horas de 24 a 12
+        horas = horas % 12 || 12; // Si es 0, se convierte a 12
+
+        // Formatear los minutos para que siempre tengan dos dígitos
+        minutos = minutos < 10 ? "0" + minutos : minutos;
+
+        // Retornar la hora en formato de 12 horas
+        return `${horas}:${minutos} ${sufijo}`;
+      }
+
+      const horaEntrada = entradaHora(res.horaDeEntrada);
+      const horaSalida = salidaHora(res.horaDeSalida);
+
+      let diasLaborablesArray = res.diaslaborables.toLowerCase().split(" ");
+
+      const diasSemanaNumeros = {
+        domingo: [0],
+        lunes: [1],
+        martes: [2],
+        miércoles: [3],
+        jueves: [4],
+        viernes: [5],
+        sábado: [6],
+      };
+
+      // Variable que contiene el día de la semana
+      // Ejemplo de variable
+
+      // Convertir el día a número
+
+      diasLaborablesArray.forEach((dia) => {
+        if (diasSemanaNumeros[dia]) {
+          diaNumero.push(...diasSemanaNumeros[dia]);
+          // Agregamos los números al arreglo
+        }
+      });
+
+      // Verificar si el día es válido y mostrar el resultado
+      console.log(
+        `El día ${res.diaslaborables} corresponde al número ${diaNumero}.`
       );
-      let resultado = await peticion.json();
-      document.querySelector(".horario-insertar").innerHTML = "";
-      let div = document.createElement("div");
-      let horarioId = [];
-      console.log(resultado);
-      let contador = 0;
-      let arrayyyy = [];
-      resultado.forEach((res) => {
-        function entradaHora() {
-          // Separar la hora y los minutos
-          let [horas, minutos] = res.horaDeEntrada.split(":").map(Number);
+      console.log(diaNumero);
 
-          // verificamos si es AM o PM
-          const esPM = horas >= 12;
-          const sufijo = esPM ? "PM" : "AM";
-
-          // Convertir horas de 24 a 12
-          horas = horas % 12 || 12; // Si es 0, se convierte a 12
-
-          // Se formatear los minutos para que siempre tengan dos dígitos
-          minutos = minutos < 10 ? "0" + minutos : minutos;
-
-          // Retornar la hora en formato de 12 horas
-          return `${horas}:${minutos} ${sufijo}`;
-        }
-
-        function salidaHora() {
-          // Separamos la hora y los minutos
-          let [horas, minutos] = res.horaDeSalida.split(":").map(Number);
-
-          // verificamos si es AM o PM
-          const esPM = horas >= 12;
-          const sufijo = esPM ? "PM" : "AM";
-
-          // Convertir horas de 24 a 12
-          horas = horas % 12 || 12; // Si es 0, se convierte a 12
-
-          // Formatear los minutos para que siempre tengan dos dígitos
-          minutos = minutos < 10 ? "0" + minutos : minutos;
-
-          // Retornar la hora en formato de 12 horas
-          return `${horas}:${minutos} ${sufijo}`;
-        }
-
-        const horaEntrada = entradaHora(res.horaDeEntrada);
-        const horaSalida = salidaHora(res.horaDeSalida);
-
-        let diasLaborablesArray = res.diaslaborables.toLowerCase().split(" ");
-
-        const diasSemanaNumeros = {
-          domingo: [0],
-          lunes: [1],
-          martes: [2],
-          miércoles: [3],
-          jueves: [4],
-          viernes: [5],
-          sábado: [6],
-        };
-
-        // Variable que contiene el día de la semana
-        // Ejemplo de variable
-
-        // Convertir el día a número
-
-        diasLaborablesArray.forEach((dia) => {
-          if (diasSemanaNumeros[dia]) {
-            diaNumero.push(...diasSemanaNumeros[dia]);
-            // Agregamos los números al arreglo
-          }
-        });
-
-        // Verificar si el día es válido y mostrar el resultado
-        console.log(
-          `El día ${res.diaslaborables} corresponde al número ${diaNumero}.`
-        );
-        console.log(diaNumero);
-
-        div.innerHTML += `
+      div.innerHTML += `
                  <div class="mb-2" id="divAcordion">
                 <div class="d-flex ">Dias Laborables: <h6 class="fw-bold"> ${res.diaslaborables}</h6></div>
               
                 <div class="d-flex">Hora de Entrada: <h6 class="fw-bold"> ${horaEntrada}</h6></div>
                 <div class="d-flex ">Hora de Salida: <h6 class="fw-bold"> ${horaSalida}</h6></div></div>  `;
 
-        validarHora.push(
-          res.diaslaborables,
-          res.horaDeEntrada,
-          res.horaDeSalida
-        );
-        console.log(validarHora);
-        laborables = res.diaslaborables;
+      validarHora.push(res.diaslaborables, res.horaDeEntrada, res.horaDeSalida);
+      console.log(validarHora);
+      laborables = res.diaslaborables;
 
-        horaarray = [
+      horaarray = [
+        diaNumero[contador],
+        res.diaslaborables,
+        res.horaDeEntrada,
+        res.horaDeSalida,
+      ];
+      const persona = {
+        numero: diaNumero[contador],
+        dia: res.diaslaborables,
+        entrada: res.horaDeEntrada,
+        salida: res.horaDeSalida,
+      };
 
-          diaNumero[contador],
-          res.diaslaborables,
-          res.horaDeEntrada,
-          res.horaDeSalida,
-        ];
-        const persona = {
-          numero: diaNumero[contador],
-          dia: res.diaslaborables,
-          entrada: res.horaDeEntrada,
-          salida: res.horaDeSalida,
-        };
+      arrayyyy.push(persona);
 
+      console.log(horaarray);
+      console.log(persona);
+      console.log(arrayyyy);
 
-        arrayyyy.push(persona);
+      //id del ervicio medico
+      document.getElementById("id_servicioMedico").value =
+        res.id_servicioMedico;
 
+      horarioId.push(res.id_horario);
 
-        console.log(horaarray);
-        console.log(persona);
-        console.log(arrayyyy);
+      contador++;
+    });
 
-        //id del ervicio medico
-        document.getElementById("id_servicioMedico").value = res.id_servicioMedico;
+    document.querySelector(".horario-insertar").appendChild(div);
 
-        horarioId.push(res.id_horario);
+    //fecha
+    horarioId.forEach((rec) => {
+      document.getElementById("fecha").addEventListener("blur", function () {
+        let fechaIngresada = this.value;
+        if (fechaIngresada) {
+          let partesFecha = fechaIngresada.split("-");
+          let fecha = new Date(
+            partesFecha[0],
+            partesFecha[1] - 1,
+            partesFecha[2]
+          );
+          let diaSemana = fecha.getDay(); // 0 para domingo, 1 para lunes, etc.
 
+          console.log(diaSemana);
 
-        contador++;
-      });
+          let alertaCita = document.getElementById("alertahorarioCita");
 
-      document.querySelector(".horario-insertar").appendChild(div);
+          if (diaNumero.includes(diaSemana)) {
+            document
+              .getElementById("btnAgregarCita")
+              .classList.remove("d-none");
+            alertaCita.classList.add("d-none");
+            arrayyyy.forEach((entrada) => {
+              console.log(entrada);
+              if (entrada.numero === diaSemana) {
+                document
+                  .getElementById("horaCita")
+                  .setAttribute("min", `${entrada.entrada}`);
+                document
+                  .getElementById("horaCita")
+                  .setAttribute("max", `${entrada.salida}`);
+              }
+              // if(entrada[0] == diaNumero && entrada[1] == diaSemana){
 
-      //fecha
-      horarioId.forEach((rec) => {
-        document.getElementById("fecha").addEventListener("blur", function () {
-          let fechaIngresada = this.value;
-          if (fechaIngresada) {
-            let partesFecha = fechaIngresada.split("-");
-            let fecha = new Date(
-              partesFecha[0],
-              partesFecha[1] - 1,
-              partesFecha[2]
-            );
-            let diaSemana = fecha.getDay(); // 0 para domingo, 1 para lunes, etc.
-
-            console.log(diaSemana);
-
-            let alertaCita = document.getElementById("alertahorarioCita");
-
-            if (diaNumero.includes(diaSemana)) {
-              document
-                .getElementById("btnAgregarCita")
-                .classList.remove("d-none");
-              alertaCita.classList.add("d-none");
-              arrayyyy.forEach((entrada) => {
-                console.log(entrada);
-                if (entrada.numero === diaSemana) {
-                  document.getElementById("horaCita").setAttribute("min", `${entrada.entrada}`);
-                  document.getElementById("horaCita").setAttribute("max", `${entrada.salida}`);
-                }
-                // if(entrada[0] == diaNumero && entrada[1] == diaSemana){
-
-                // }
-              });
-              // document.getElementById("horaCita").setAttribute("min",`${res.horaDeEntrada}`)
-            } else {
-              document.getElementById("btnAgregarCita").classList.add("d-none");
-              alertaCita.classList.remove("d-none");
-              setTimeout(function () {
-                alertaCita.classList.add("d-none");
-              }, 10000);
-            }
+              // }
+            });
+            // document.getElementById("horaCita").setAttribute("min",`${res.horaDeEntrada}`)
           } else {
-            e.preventDefault();
             document.getElementById("btnAgregarCita").classList.add("d-none");
+            alertaCita.classList.remove("d-none");
+            setTimeout(function () {
+              alertaCita.classList.add("d-none");
+            }, 10000);
           }
-        });
+        } else {
+          e.preventDefault();
+          document.getElementById("btnAgregarCita").classList.add("d-none");
+        }
       });
+    });
 
-      //const formularioAgregarCita = document.getElementById('modalAgregarCita');
-      // Objeto que mapea los días de la semana a sus números
+    //const formularioAgregarCita = document.getElementById('modalAgregarCita');
+    // Objeto que mapea los días de la semana a sus números
 
-      // Variable que contiene el día de la seman; // Ejemplo de variable
+    // Variable que contiene el día de la seman; // Ejemplo de variable
 
-      // Convertir el día a número
+    // Convertir el día a número
     // } catch (error) {
     //   console.log(error);
     // }
@@ -305,11 +309,28 @@ addEventListener("DOMContentLoaded", () => {
   // cedulaCita.addEventListener("keyup", function () {
   //   traerPacienteCita();
   // });
+
+  //validar que cumpla la validacion para que aparesca el boton
+
+  //buscar al paciente
+  console.log(btnBuscarCita);
   btnBuscarCita.addEventListener("click", function (event) {
-    formCitas.classList.remove("d-none");
-    document.getElementById("iconoCedulaCita").classList.remove("d-none");
-    document.getElementById("imgCita").classList.add("d-none");
-    traerPacienteCita(event);
+    if (cedulaCita.value.length >= 6) {
+      formCitas.classList.remove("d-none");
+      document.getElementById("iconoCedulaCita").classList.remove("d-none");
+      document.getElementById("imgCita").classList.add("d-none");
+      traerPacienteCita(event);
+    } else {
+      
+      document
+        .querySelector(".alerta-cedula-paciente")
+        .classList.remove("d-none");
+      setTimeout(function () {
+        document
+          .querySelector(".alerta-cedula-paciente")
+          .classList.add("d-none");
+      }, 7000);
+    }
   });
 
   especialidad.addEventListener("change", function () {
@@ -643,7 +664,6 @@ addEventListener("DOMContentLoaded", () => {
     return `${horas}:${minutos} ${sufijo}`;
   }
   if (tabla.rows[1].cells[7] != undefined) {
-
     for (let i = 1; i < tabla.rows.length; i++) {
       let hora = tabla.rows[i].cells[7].innerText;
       horasT.push(hora); // Agregar la hora al arreglo
