@@ -457,6 +457,12 @@ uk-tooltip="title: Fecha de regreso; pos: right">
             </div>
         </div>
 
+        <div class="alert alert-danger d-none alertaErrorCedula" role="alert">
+            <div class="">
+                <p style="font-size: 13px;" class="text-center">La cedula que intenta insertar ya esta registrada por favor inserte otra</p>
+            </div>
+        </div>
+
         <form class="form-modal form-validable form-ajax" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar" method="POST" autocomplete="off">
             <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
 

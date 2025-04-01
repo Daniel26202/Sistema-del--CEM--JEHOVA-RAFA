@@ -44,7 +44,7 @@ addEventListener("DOMContentLoaded", () => {
         if (event && event.type === "click") {
           document.getElementById("myToast").classList.add("d-none");
           //formCitas.classList.remove('d-none');
-        }else{
+        } else {
           document.getElementById("myToast").classList.add("d-none");
         }
       });
@@ -56,10 +56,15 @@ addEventListener("DOMContentLoaded", () => {
       cedulaCita.value = valorCedulaPaciente;
       document.getElementById("iconoCedulaCita").classList.add("d-none");
       document.getElementById("imgCita").classList.remove("d-none");
-      
+
       //se pasa la cedula de el modal de la cita al de registrar al paiente para hacerlo mas amigable
 
       document.querySelector(".cedula-paciente").value = cedulaCita.value;
+
+      //Esto es para que cuando el se pase la cedula de cita a paciente tambien se pinte verde y cumpla la expresion regular
+      document
+        .querySelector(".cedula-paciente")
+        .parentElement.classList.add("grpFormCorrect");
 
       if (event && event.type === "click") {
         document.getElementById("myToast").classList.remove("d-none");
@@ -147,7 +152,7 @@ addEventListener("DOMContentLoaded", () => {
       document.getElementById("id_paciente").value = res.id_paciente;
     });
   };
-  
+
   //funcion ajax para registrar un paciente que no se encontro
 
   const insertarPaciente = async (form, event) => {
@@ -161,32 +166,44 @@ addEventListener("DOMContentLoaded", () => {
         "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
         contenido
       );
-
       let resultado = await peticion.json();
       console.log(resultado);
 
-      //ocultar modal de paciente
-      UIkit.modal("#modal-examplePaciente").hide();
+      // si el resultado es un mensaje es que algo salio mal y la cedula ya eiste si no se inserta normalmente
+      if (resultado.cedula == "error") {
+        console.log(resultado.cedula + " error");
 
-      cedulaCita.value = resultado.cedula;
+        document.querySelector(".alertaErrorCedula").classList.remove("d-none");
+        setTimeout(function () {
+          document.querySelector(".alertaErrorCedula").classList.add("d-none");
+        }, 7000);
+      } else {
+        //ocultar modal de paciente
+        UIkit.modal("#modal-examplePaciente").hide();
 
-      
+        cedulaCita.value = resultado.cedula;
 
-      //que aparezca modal de cita
-      UIkit.modal("#modal-examplecita").show();
+        //que aparezca modal de cita
+        UIkit.modal("#modal-examplecita").show();
 
-      //ocultar el minimodal
-      const toastElement = document.getElementById("myToast");
-      const toast = new bootstrap.Toast(toastElement, {
-        autohide: false,
-      });
-      toast.hide();
+        //ocultar el minimodal
+        const toastElement = document.getElementById("myToast");
+        const toast = new bootstrap.Toast(toastElement, {
+          autohide: false,
+        });
+        toast.hide();
 
-      traerPacienteRegistrado(resultado.nacionalidad, resultado.cedula);
+        traerPacienteRegistrado(resultado.nacionalidad, resultado.cedula);
 
-      //limpiar formulario de oaciente
+        //limpiar formulario de oaciente
 
-      form.reset();
+        form.reset();
+
+        document.querySelectorAll(".input-validar").forEach(input =>{
+          input.parentElement.classList.remove("grpFormCorrect");
+        })
+
+      }
     } catch (error) {
       console.log("algo salio mal" + error);
     }
@@ -196,7 +213,17 @@ addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("modalAgregar")
     .addEventListener("submit", function (e) {
-      insertarPaciente(this, e);
+      let inputsBuenos = [];
+      //validar si todos los inputs nos estan validados no se puede enviar
+      this.querySelectorAll(".input-validar").forEach((input) => {
+        if (input.parentElement.classList.contains("grpFormCorrect")) {
+          inputsBuenos.push(true);
+        }
+      });
+
+      if (inputsBuenos.length == 6) {
+        insertarPaciente(this, e);
+      }
     });
 
   const traerHorario = async (idD) => {

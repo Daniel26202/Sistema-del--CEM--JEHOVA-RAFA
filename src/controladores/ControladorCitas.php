@@ -19,13 +19,22 @@ class ControladorCitas
 	}
 
 	public function insertaPaciente(){
-		// guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
+		//si la cedula eiste le mando un mensaje al usuario y si else pues lo inserto normal
+		$resultadoDeCedula = $this->modeloPacientes->validarCedula($_POST['cedula']);
+		if($resultadoDeCedula === "existeC"){
+			//mensaje de erro
+			$mensajeDeError = array("cedula"=> "error");
+			echo json_encode($mensajeDeError);
+
+		}else{
+			// guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
 
 
-		$this->modeloPacientes->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
+			$this->modeloPacientes->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
 
-		echo json_encode($_POST);
+			echo json_encode($_POST);
+		}
 	}
 
 	public function mostrarPacienteCita()
