@@ -24,11 +24,22 @@ class ControladorCitas
 
 
 		$this->modeloPacientes->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
+
+		echo json_encode($_POST);
 	}
 
 	public function mostrarPacienteCita()
 	{
 		$datosPaciente = $this->modelo->selectPaciente($_POST["nacionalidad"], $_POST["cedula"]);
+		echo json_encode($datosPaciente);
+	}
+
+
+
+	public function mostrarPacienteCitaGet($datos){
+		$nacionalidad = $datos[0];
+		$cedula = $datos[1];
+		$datosPaciente = $this->modelo->selectPaciente($nacionalidad, $cedula);
 		echo json_encode($datosPaciente);
 	}
 

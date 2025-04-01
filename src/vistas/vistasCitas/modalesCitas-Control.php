@@ -473,7 +473,7 @@ uk-tooltip="title: Fecha de regreso; pos: right">
                     </select>
                 </span>
 
-                <input class="form-control input-modal input-disabled input-paciente input-validar" style="width: 7vh !important;" type="number" id="cedula" name="cedula" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                <input class="form-control input-modal input-disabled input-paciente input-validar cedula-paciente" style="width: 7vh !important;" type="number" id="cedula" name="cedula" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
             </div>
 
             <p class="p-error-cedula d-none">Cedula</p>

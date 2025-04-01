@@ -44,6 +44,8 @@ addEventListener("DOMContentLoaded", () => {
         if (event && event.type === "click") {
           document.getElementById("myToast").classList.add("d-none");
           //formCitas.classList.remove('d-none');
+        }else{
+          document.getElementById("myToast").classList.add("d-none");
         }
       });
     } else {
@@ -54,6 +56,10 @@ addEventListener("DOMContentLoaded", () => {
       cedulaCita.value = valorCedulaPaciente;
       document.getElementById("iconoCedulaCita").classList.add("d-none");
       document.getElementById("imgCita").classList.remove("d-none");
+      
+      //se pasa la cedula de el modal de la cita al de registrar al paiente para hacerlo mas amigable
+
+      document.querySelector(".cedula-paciente").value = cedulaCita.value;
 
       if (event && event.type === "click") {
         document.getElementById("myToast").classList.remove("d-none");
@@ -120,9 +126,31 @@ addEventListener("DOMContentLoaded", () => {
     // }
   };
 
+  //funcion para buscar de una vez al paciente segun la cedula insertada
+  const traerPacienteRegistrado = async (nacionalidad, cedula) => {
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarPacienteCitaGet/" +
+        nacionalidad +
+        "/" +
+        cedula
+    );
+
+    console.log(peticion);
+    let resultado = await peticion.json();
+    console.log(resultado);
+
+    resultado.forEach((res) => {
+      console.log(res);
+      document.getElementById("contenedorFormCitas").classList.remove("d-none");
+      paciente.value = res.nombre + " " + res.apellido;
+      telefono.value = res.telefono;
+      document.getElementById("id_paciente").value = res.id_paciente;
+    });
+  };
+  
   //funcion ajax para registrar un paciente que no se encontro
 
-  const insertarPaciente = async (form) => {
+  const insertarPaciente = async (form, event) => {
     try {
       const datosFormulario = new FormData(form);
       const contenido = {
@@ -133,6 +161,32 @@ addEventListener("DOMContentLoaded", () => {
         "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
         contenido
       );
+
+      let resultado = await peticion.json();
+      console.log(resultado);
+
+      //ocultar modal de paciente
+      UIkit.modal("#modal-examplePaciente").hide();
+
+      cedulaCita.value = resultado.cedula;
+
+      
+
+      //que aparezca modal de cita
+      UIkit.modal("#modal-examplecita").show();
+
+      //ocultar el minimodal
+      const toastElement = document.getElementById("myToast");
+      const toast = new bootstrap.Toast(toastElement, {
+        autohide: false,
+      });
+      toast.hide();
+
+      traerPacienteRegistrado(resultado.nacionalidad, resultado.cedula);
+
+      //limpiar formulario de oaciente
+
+      form.reset();
     } catch (error) {
       console.log("algo salio mal" + error);
     }
@@ -142,7 +196,7 @@ addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("modalAgregar")
     .addEventListener("submit", function (e) {
-      insertarPaciente(this);
+      insertarPaciente(this, e);
     });
 
   const traerHorario = async (idD) => {
