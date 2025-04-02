@@ -199,6 +199,7 @@
                                 <?php echo $categoria["nombre"] ?>
 
                             </option>
+                            
                         <?php endforeach ?>
 
                     </select>
