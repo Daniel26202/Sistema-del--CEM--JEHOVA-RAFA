@@ -18,15 +18,15 @@ class ControladorCitas
 		$this->modeloPacientes = new ModeloPacientes();
 	}
 
-	public function insertaPaciente(){
+	public function insertaPaciente()
+	{
 		//si la cedula eiste le mando un mensaje al usuario y si else pues lo inserto normal
 		$resultadoDeCedula = $this->modeloPacientes->validarCedula($_POST['cedula']);
-		if($resultadoDeCedula === "existeC"){
+		if ($resultadoDeCedula === "existeC") {
 			//mensaje de erro
-			$mensajeDeError = array("cedula"=> "error");
+			$mensajeDeError = array("cedula" => "error");
 			echo json_encode($mensajeDeError);
-
-		}else{
+		} else {
 			// guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
 
@@ -45,7 +45,8 @@ class ControladorCitas
 
 
 
-	public function mostrarPacienteCitaGet($datos){
+	public function mostrarPacienteCitaGet($datos)
+	{
 		$nacionalidad = $datos[0];
 		$cedula = $datos[1];
 		$datosPaciente = $this->modelo->selectPaciente($nacionalidad, $cedula);
@@ -88,18 +89,22 @@ class ControladorCitas
 	{
 		date_default_timezone_set('America/Mexico_City');
 		$fecha = date("Y-m-d");
-		$resultadoDeCita = $this->modelo->validarCita($_POST['id_servicioMedico'], $_POST["fecha"], $_POST["hora"]);
+		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fecha"], $_POST["hora"]);
 
 		if ($resultadoDeCita === "existeC") {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/error");
 		} elseif ($_POST["fecha"] < $fecha) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
 		} else {
+			print_r($_POST);
 
-			print_r($_POST["dia"]);
+			echo $_POST["id_servicioMedico"];
+			
 			$this->modelo->insertarCita($_POST["id_paciente"], $_POST["id_servicioMedico"], $_POST["fecha"], $_POST["hora"], $_POST["estado"]);
 
-			// Guardar la bitacora
+			
+
+			// // Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha Insertado una  cita");
 
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/agregado");
@@ -148,7 +153,7 @@ class ControladorCitas
 
 		$vistaActiva = 'realizadas';
 		$datosCitas = $this->modelo->mostrarCitaR();
-		
+
 
 		require_once './src/vistas/vistasCitas/vistaCitas.php';
 	}
@@ -182,7 +187,7 @@ class ControladorCitas
 		$cedula = $datos[0];
 
 
-		$resultadoDeCita = $this->modelo->validarCita($_POST['id_servicioMedico'], $_POST["fecha"], $_POST["hora"]);
+		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fecha"], $_POST["hora"]);
 
 		//se verifica si la cédula del input es igual a la cédula ya existente 
 		if ($cedula == $_POST["id_servicioMedico"]) {
@@ -226,7 +231,7 @@ class ControladorCitas
 		$cedula = $datos[0];
 
 
-		$resultadoDeCita = $this->modelo->validarCita($_POST['id_servicioMedico'], $_POST["fecha"], $_POST["hora"]);
+		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fecha"], $_POST["hora"]);
 
 		//se verifica si la cédula del input es igual a la cédula ya existente 
 		if ($cedula == $_POST["id_servicioMedico"]) {
