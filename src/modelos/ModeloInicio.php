@@ -27,4 +27,18 @@ class ModeloInicio extends Db
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
+	public function especialidades_solicitadas()
+	{
+		$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
+  												COUNT(c.id_cita) AS total_solicitudes
+												FROM cita c
+												INNER JOIN serviciomedico sm 
+												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+												INNER JOIN categoria_servicio cs 
+												ON sm.id_categoria = cs.id_categoria
+												GROUP BY cs.nombre
+												ORDER BY total_solicitudes DESC;
+												");
+		return ($consulta->execute()) ? $consulta->fetchAll() : false;
+	}
 }
