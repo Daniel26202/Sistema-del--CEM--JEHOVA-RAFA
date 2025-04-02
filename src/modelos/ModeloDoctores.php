@@ -86,10 +86,11 @@ class ModeloDoctores extends Db
     {
 
         //agregamos al doctor como usuario.
-        $consultaDeUsuario = $this->conexion->prepare('INSERT INTO usuario(id_rol, imagen, usuario, password, estado) VALUES ("2",:imagen,:usuario,:password,"ACT");');
+        $consultaDeUsuario = $this->conexion->prepare('INSERT INTO usuario(id_rol, imagen, correo, usuario, password, estado) VALUES ("4",:imagen, :correo, :usuario,:password,"ACT");');
 
         $consultaDeUsuario->bindParam(":imagen", $nombreImagen);
         $consultaDeUsuario->bindParam(":usuario", $usuario);
+        $consultaDeUsuario->bindParam(":correo", $email);
         $consultaDeUsuario->bindParam(":password", $password);
 
         $consultaDeUsuario->execute();
@@ -100,13 +101,12 @@ class ModeloDoctores extends Db
 
 
         //agregamos al doctor como usuario.
-        $consultaDePersonal = $this->conexion->prepare('INSERT INTO personal(nacionalidad, cedula, nombre, apellido, telefono, email, tipodecategoria, id_especialidad, id_usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:email,"Doctor",:id_especialidad,:id_usuario)');
+        $consultaDePersonal = $this->conexion->prepare('INSERT INTO personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, id_usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)');
 
         $consultaDePersonal->bindParam(":cedula", $cedula);
         $consultaDePersonal->bindParam(":nombre", $nombre);
         $consultaDePersonal->bindParam(":apellido", $apellido);
         $consultaDePersonal->bindParam(":telefono", $telefono);
-        $consultaDePersonal->bindParam(":email", $email);
         $consultaDePersonal->bindParam(':nacionalidad', $nacionalidad);
         $consultaDePersonal->bindParam(':id_usuario', $idUsuario);
         $consultaDePersonal->bindParam(':id_especialidad', $idEspecialidad);

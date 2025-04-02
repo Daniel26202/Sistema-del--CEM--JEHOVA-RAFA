@@ -18,7 +18,7 @@ class ModeloCategoria extends Db{
 
     
     public function seleccionarCategoria(){
-        $consulta = $this->conexion->prepare(" SELECT * FROM categoria_servicio WHERE estado = 'ACT' AND nombre != 'Consulta' ");
+        $consulta = $this->conexion->prepare(" SELECT * FROM categoria_servicio WHERE estado = 'ACT'  ");
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
 
     }

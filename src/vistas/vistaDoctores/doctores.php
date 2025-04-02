@@ -253,7 +253,7 @@
                                         <?php echo $dato["telefono"]; ?>
                                     </td>
                                     <td class="border-start text-center">
-                                        <?php echo $dato["email"]; ?>
+                                        <?php echo $dato["correo"]; ?>
                                     </td>
                                     <td class="border-start text-center">
                                         <?php echo $dato["nombre"]; ?>

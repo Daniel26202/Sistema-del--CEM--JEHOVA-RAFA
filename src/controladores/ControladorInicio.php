@@ -69,4 +69,10 @@ class ControladorInicio
         $dataDeCitas = $this->modeloCitas->mostrarCita();
         echo json_encode($dataDeCitas);
     }
+
+    public function especialidades_solicitadas()
+    {
+        $especialidades_solicitadas = $this->modeloInicio->especialidades_solicitadas();
+        echo json_encode($especialidades_solicitadas);
+    }
 }

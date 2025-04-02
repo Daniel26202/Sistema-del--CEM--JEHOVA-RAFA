@@ -89,8 +89,7 @@ addEventListener("DOMContentLoaded", () => {
     let id = especialidad.value;
     console.log(id);
     let peticion = await fetch(
-      "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" +
-        id
+      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" + id
     );
     let resultado = await peticion.json();
     console.log(resultado);
@@ -199,10 +198,9 @@ addEventListener("DOMContentLoaded", () => {
 
         form.reset();
 
-        document.querySelectorAll(".input-validar").forEach(input =>{
+        document.querySelectorAll(".input-validar").forEach((input) => {
           input.parentElement.classList.remove("grpFormCorrect");
-        })
-
+        });
       }
     } catch (error) {
       console.log("algo salio mal" + error);
@@ -234,10 +232,9 @@ addEventListener("DOMContentLoaded", () => {
     let resultado = await peticion.json();
     document.querySelector(".horario-insertar").innerHTML = "";
     let div = document.createElement("div");
-    let horarioId = [];
-    console.log(resultado);
-    let contador = 0;
-    let arrayyyy = [];
+    diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
+    let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
+
     resultado.forEach((res) => {
       function entradaHora() {
         // Separar la hora y los minutos
@@ -280,37 +277,16 @@ addEventListener("DOMContentLoaded", () => {
 
       let diasLaborablesArray = res.diaslaborables.toLowerCase().split(" ");
 
-      const diasSemanaNumeros = {
-        domingo: [0],
-        lunes: [1],
-        martes: [2],
-        miércoles: [3],
-        jueves: [4],
-        viernes: [5],
-        sábado: [6],
-      };
-
-      // Variable que contiene el día de la semana
-      // Ejemplo de variable
-
-      // Convertir el día a número
-
       diasLaborablesArray.forEach((dia) => {
-        if (diasSemanaNumeros[dia]) {
-          diaNumero.push(...diasSemanaNumeros[dia]);
-          // Agregamos los números al arreglo
-        }
+        diasLaborablesMap[dia] = {
+          entrada: res.horaDeEntrada,
+          salida: res.horaDeSalida,
+        };
       });
-
-      // Verificar si el día es válido y mostrar el resultado
-      console.log(
-        `El día ${res.diaslaborables} corresponde al número ${diaNumero}.`
-      );
-      console.log(diaNumero);
 
       div.innerHTML += `
                  <div class="mb-2" id="divAcordion">
-                <div class="d-flex ">Dias Laborables: <h6 class="fw-bold"> ${res.diaslaborables}</h6></div>
+                <div class="d-flex ">Días Laborables: <h6 class="fw-bold"> ${res.diaslaborables}</h6></div>
               
                 <div class="d-flex">Hora de Entrada: <h6 class="fw-bold"> ${horaEntrada}</h6></div>
                 <div class="d-flex ">Hora de Salida: <h6 class="fw-bold"> ${horaSalida}</h6></div></div>  `;
@@ -319,96 +295,62 @@ addEventListener("DOMContentLoaded", () => {
       console.log(validarHora);
       laborables = res.diaslaborables;
 
-      horaarray = [
-        diaNumero[contador],
-        res.diaslaborables,
-        res.horaDeEntrada,
-        res.horaDeSalida,
-      ];
+      horaarray = [res.diaslaborables, res.horaDeEntrada, res.horaDeSalida];
       const persona = {
-        numero: diaNumero[contador],
         dia: res.diaslaborables,
         entrada: res.horaDeEntrada,
         salida: res.horaDeSalida,
       };
 
-      arrayyyy.push(persona);
-
       console.log(horaarray);
       console.log(persona);
-      console.log(arrayyyy);
 
       //id del ervicio medico
       document.getElementById("id_servicioMedico").value =
         res.id_servicioMedico;
-
-      horarioId.push(res.id_horario);
-
-      contador++;
     });
 
     document.querySelector(".horario-insertar").appendChild(div);
 
     //fecha
-    horarioId.forEach((rec) => {
-      document.getElementById("fecha").addEventListener("blur", function () {
-        let fechaIngresada = this.value;
-        if (fechaIngresada) {
-          let partesFecha = fechaIngresada.split("-");
-          let fecha = new Date(
-            partesFecha[0],
-            partesFecha[1] - 1,
-            partesFecha[2]
-          );
-          let diaSemana = fecha.getDay(); // 0 para domingo, 1 para lunes, etc.
+    document.getElementById("fecha").addEventListener("blur", function () {
+      let fechaIngresada = this.value;
+      if (fechaIngresada) {
+        let partesFecha = fechaIngresada.split("-");
+        let fecha = new Date(
+          partesFecha[0],
+          partesFecha[1] - 1,
+          partesFecha[2]
+        );
+        let diaSemanaNombre = fecha
+          .toLocaleDateString("es-ES", { weekday: "long" })
+          .toLowerCase();
 
-          console.log(diaSemana);
+        console.log(diaSemanaNombre);
 
-          let alertaCita = document.getElementById("alertahorarioCita");
+        let alertaCita = document.getElementById("alertahorarioCita");
 
-          if (diaNumero.includes(diaSemana)) {
-            document
-              .getElementById("btnAgregarCita")
-              .classList.remove("d-none");
-            alertaCita.classList.add("d-none");
-            arrayyyy.forEach((entrada) => {
-              console.log(entrada);
-              if (entrada.numero === diaSemana) {
-                document
-                  .getElementById("horaCita")
-                  .setAttribute("min", `${entrada.entrada}`);
-                document
-                  .getElementById("horaCita")
-                  .setAttribute("max", `${entrada.salida}`);
-              }
-              // if(entrada[0] == diaNumero && entrada[1] == diaSemana){
+        if (diasLaborablesMap[diaSemanaNombre]) {
+          document.getElementById("btnAgregarCita").classList.remove("d-none");
+          alertaCita.classList.add("d-none");
 
-              // }
-            });
-            // document.getElementById("horaCita").setAttribute("min",`${res.horaDeEntrada}`)
-          } else {
-            document.getElementById("btnAgregarCita").classList.add("d-none");
-            alertaCita.classList.remove("d-none");
-            setTimeout(function () {
-              alertaCita.classList.add("d-none");
-            }, 10000);
-          }
+          let horario = diasLaborablesMap[diaSemanaNombre];
+          document
+            .getElementById("horaCita")
+            .setAttribute("min", horario.entrada);
+          document
+            .getElementById("horaCita")
+            .setAttribute("max", horario.salida);
         } else {
-          e.preventDefault();
           document.getElementById("btnAgregarCita").classList.add("d-none");
+          alertaCita.classList.remove("d-none");
+          setTimeout(() => alertaCita.classList.add("d-none"), 10000);
         }
-      });
+      } else {
+        e.preventDefault();
+        document.getElementById("btnAgregarCita").classList.add("d-none");
+      }
     });
-
-    //const formularioAgregarCita = document.getElementById('modalAgregarCita');
-    // Objeto que mapea los días de la semana a sus números
-
-    // Variable que contiene el día de la seman; // Ejemplo de variable
-
-    // Convertir el día a número
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
 
   // cedulaCita.addEventListener("keyup", function () {
@@ -779,7 +721,7 @@ addEventListener("DOMContentLoaded", () => {
       const horatablita = horaTabla(hora); // Convertir la hora
       let fila = tabla.rows[index + 1];
       let celda = fila.cells[8]; //  (índice 8)
-      celda.textContent = horatablita; // Asignar el valor convertido a la celda
+      //celda.textContent = horatablita; // Asignar el valor convertido a la celda
       console.log(horatablita);
     });
   }
