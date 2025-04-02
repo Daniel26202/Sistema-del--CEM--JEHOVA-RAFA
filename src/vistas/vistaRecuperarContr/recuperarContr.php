@@ -1,11 +1,29 @@
 <?php
 
 
+$ruta_local = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), '/');
+
+
+$concatenadorEspecial = '.';
+
+function ends_with($haystack, $needle)
+{
+    $length = strlen($needle);
+    if ($length === 0) {
+        return true;
+    }
+    return substr($haystack, -$length) === $needle;
+}
+
+if (ends_with($ruta_local, 'Sistema-del--CEM--JEHOVA-RAFA')) {
+    $concatenadorEspecial = "";
+}
+
 $concatenarRuta = "";
 if (!empty($parametro)) {
-	foreach ($parametro as $p) {
-		$concatenarRuta .= "../";
-	}
+    foreach ($parametro as $p) {
+        $concatenarRuta .= "../";
+    }
 }
 
 ?>
@@ -21,13 +39,20 @@ if (!empty($parametro)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
 
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/uikit/css/uikit.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?= $concatenarRuta ?>../src/assets/cssVista/recuperarContr.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/intro/introjs.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>../src/assets/intro/introjs-modern.css">
+    <link rel="stylesheet" type="text/css"
+        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/css/uikit.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet"
+        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/cssVista/recuperarContr.css">
+    <link rel="stylesheet" type="text/css"
+        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/introjs.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/introjs-modern.css">
 
 </head>
+
+<?php $urlBase = $concatenarRuta . '' . $concatenadorEspecial; ?>
 
 <body>
     <main>
@@ -42,15 +67,15 @@ if (!empty($parametro)) {
                         <div class="carousel-inner">
 
                             <div class="carousel-item active tamano">
-                                <img src="<?= $concatenarRuta; ?>../src/assets/img/recuperar1.jpg"
+                                <img src="<?= $urlBase ?>./src/assets/img/recuperar1.jpg"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="<?= $concatenarRuta; ?>../src/assets/img/recuperar2.png"
+                                <img src="<?= $urlBase ?>./src/assets/img/recuperar2.png"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="<?= $concatenarRuta; ?>../src/assets/img/recuperar3.jpg"
+                                <img src="<?= $urlBase ?>./src/assets/img/recuperar3.jpg"
                                     class="d-block h-100 uk-background-blend-multiply " alt="">
                             </div>
 
@@ -98,20 +123,7 @@ if (!empty($parametro)) {
                             <a class="uk-alert-close" uk-close></a>
                             <p class="pe-2 text-center"></p>
                         </div>
-                        <?php if (isset($_GET["exitoso"])): ?>
-                            <div class="uk-alert-primary comentario comentarioAzul me-4 fw-bolder h-25"
-                                style="display: none;" uk-alert>
-                                <a class="uk-alert-close" uk-close></a>
-                                <p class="pe-2">Datos actualizados exitosamente.</p>
-                            </div>
-                        <?php endif ?>
-                        <?php if (isset($_GET["campos"])): ?>
-                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25" style="display: none;"
-                                uk-alert>
-                                <a class="uk-alert-close" uk-close></a>
-                                <p class="pe-2">Tiene que llenar todos los campos.</p>
-                            </div>
-                        <?php endif ?>
+
                         <div class="uk-alert-danger bordeC comentarioRed me-4 fw-bolder h-25 msjE d-none" uk-alert>
                             <a class="uk-alert-close" uk-close></a>
                             <p class="pe-2">Ingrese los datos correctamente</p>
@@ -150,9 +162,9 @@ if (!empty($parametro)) {
 
                                     </div>
                                     <div>
-                                            <input type="hidden" name="id_usuario" id="idUsuario">
-                                            <input type="hidden" name="correo" id="correoV">
-                                        </div>
+                                        <input type="hidden" name="id_usuario" id="idUsuario">
+                                        <input type="hidden" name="correo" id="correoV">
+                                    </div>
                                 </div>
                             </form>
 
@@ -184,7 +196,8 @@ if (!empty($parametro)) {
                             <form action="" method="post" id="formRecuperarPassword">
                                 <div class="d-none" id="formTres">
 
-                                    <div class="ms-2 me-2 mb-3 pb-1 animacionInput w-auto" id="input-usuario-recpassword">
+                                    <div class="ms-2 me-2 mb-3 pb-1 animacionInput w-auto"
+                                        id="input-usuario-recpassword">
                                         <div id="input-new-password">
 
                                             <img src="./src/assets/img/candado.svg" id="icono-cuatro" class="icono"
@@ -230,7 +243,8 @@ if (!empty($parametro)) {
                                         </div>
                                     </div>
 
-                                    <div class="ms-2 me-2 mb-3 pb-1 animacionInput w-auto" id="input-usuario-recpassword">
+                                    <div class="ms-2 me-2 mb-3 pb-1 animacionInput w-auto"
+                                        id="input-usuario-recpassword">
                                         <div id="input-new-password">
 
                                             <img src="./src/assets/img/candado.svg" id="icono-cuatro" class="icono"
@@ -277,9 +291,9 @@ if (!empty($parametro)) {
                                     </div>
 
                                     <div>
-                                            <input type="hidden" name="id_usuario" id="idUsuarioTres">
-                                            <input type="hidden" name="correo" id="correoVTres">
-                                        </div>
+                                        <input type="hidden" name="id_usuario" id="idUsuarioTres">
+                                        <input type="hidden" name="correo" id="correoVTres">
+                                    </div>
                                 </div>
                             </form>
 
@@ -323,12 +337,18 @@ if (!empty($parametro)) {
         </div>
     </main>
 
-    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/js/recuperarContr.js"></script>
-    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/js/validacionesRecuperarContr.js"></script>
-    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/uikit/js/uikit.min.js"></script>
-    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/intro/intro.min.js"></script>
-    <script type="text/javascript" src="<? $concatenarRuta?>../src/assets/js/ayudaInteractivarecContrasena.js"></script>
+    <script type="text/javascript"
+        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/recuperarContr.js"></script>
+    <script type="text/javascript"
+        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/validacionesRecuperarContr.js"></script>
+    <script type="text/javascript"
+        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript"
+        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/js/uikit.min.js"></script>
+    <script type="text/javascript"
+        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/intro.min.js"></script>
+    <script type="text/javascript"
+        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/ayudaInteractivarecContrasena.js"></script>
 
 </body>
 

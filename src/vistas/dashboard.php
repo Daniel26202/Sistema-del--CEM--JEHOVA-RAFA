@@ -130,7 +130,7 @@ require_once './src/vistas/head/head.php';
                 </div>
                 <div class="card-body">
                     <!-- Lista de servicios -->
-                    <table class="table table-borderless align-middle example" id="precios">
+                    <table class="table table-borderless align-middle" id="precios">
                         <thead>
                             <tr>
                                 <th>Nombre</th>

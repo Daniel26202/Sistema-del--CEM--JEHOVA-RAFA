@@ -9,8 +9,6 @@ class ControladorRecuperarContr
 {
 
     private $modelo;
-    private $codigo;
-    private $tiempoFechaExp;
 
     function __construct()
     {
@@ -30,8 +28,8 @@ class ControladorRecuperarContr
 
         // Establecer la zona horaria a 'America/Caracas' para ajustar la hora correctamente
         date_default_timezone_set('America/Caracas');
-        // Generar la fecha de expiración sumando 15 minutos a la hora actual
-        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 minutes'));
+        // Generar la fecha de expiración sumando 5 minutos a la hora actual
+        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+5 minutes'));
 
         // CORREO
         $validarCorreo = false;
@@ -70,8 +68,8 @@ class ControladorRecuperarContr
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             // correo del sistema 
-            $mail->Username = 'innova304050@gmail.com';
-            $mail->Password = 'gxmvlxeeqofivmxt';
+            $mail->Username = 'sistemajehovarafatrayectoiii@gmail.com';
+            $mail->Password = 'zamcdjqyqnyklmrj';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
@@ -88,7 +86,7 @@ class ControladorRecuperarContr
             $mail->CharSet = 'UTF-8';
 
             // Remitente
-            $mail->setFrom('innova304050@gmail.com', 'Clínica JEHOVA RAFA');
+            $mail->setFrom('sistemajehovarafatrayectoiii@gmail.com', 'Clínica JEHOVA RAFA');
             // destinatario. correo del usuario
             $mail->addAddress($correoM);
 
@@ -185,8 +183,10 @@ class ControladorRecuperarContr
     public function cambiarC()
     {
         if (isset($_POST)) {
+            // Generamos la contraseña encriptada de la contraseña ingresada
+            $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
-            $this->modelo->updatePassword($_POST["id_usuario"], $_POST["passwordNew"]);
+            $this->modelo->updatePassword($_POST["id_usuario"], $passwordEncrip);
             // verifica si la sesión esta activa.
             if (session_status() !== PHP_SESSION_ACTIVE) {
                 session_start();
