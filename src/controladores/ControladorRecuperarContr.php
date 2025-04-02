@@ -28,8 +28,8 @@ class ControladorRecuperarContr
 
         // Establecer la zona horaria a 'America/Caracas' para ajustar la hora correctamente
         date_default_timezone_set('America/Caracas');
-        // Generar la fecha de expiración sumando 15 minutos a la hora actual
-        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+1 minutes'));
+        // Generar la fecha de expiración sumando 5 minutos a la hora actual
+        $fechaExpiracion = date('Y-m-d H:i:s', strtotime('+5 minutes'));
 
         // CORREO
         $validarCorreo = false;
@@ -47,7 +47,7 @@ class ControladorRecuperarContr
 
             Su código de recuperación es: <strong>$codigoV</strong><br><br>
 
-            Por favor, ingrese este código en la aplicación para restablecer su contraseña. Tenga en cuenta que este código expira en 4 minutos.<br><br><br>
+            Por favor, ingrese este código en la aplicación para restablecer su contraseña. Tenga en cuenta que este código expira en 5 minutos.<br><br><br>
 
 
             Si no solicitó este cambio, por favor ignore este correo.<br><br><br>
