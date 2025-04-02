@@ -213,6 +213,15 @@ const traerDatosServicios = async () => {
         infoEmpty: "No hay registros disponibles",
         search: "Buscar:",
       },
+      columns: [
+        { data: "categoria" },
+        {
+          data: "precio",
+          render: function (data, type, row) {
+            return data + " BSs";
+          },
+        },
+      ],
     });
   } catch (error) {
     console.log("Error al traer los datos:", error);
