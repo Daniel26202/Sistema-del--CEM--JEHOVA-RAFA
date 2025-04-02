@@ -49,8 +49,8 @@ require_once './src/vistas/head/head.php';
             <div class="row mt-4">
                 <div class="col-md-6 col-12">
                     <div class="chart-card p-4 rounded shadow-sm">
-                        <h5>Body Fluids Compositions</h5>
-                        <canvas id="chartFluids"></canvas>
+                        <h5>Especialidades solicitadas</h5>
+                        <canvas id="especialidades_solicitadas"></canvas>
                     </div>
                 </div>
                 <div class="col-md-6 col-12">
@@ -94,34 +94,6 @@ require_once './src/vistas/head/head.php';
             </div>
         </div>
 
-        <!-- <!--  <!-- Modal para eventos -->
-        <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="eventModalLabel">Agregar/Editar Evento</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="eventForm">
-                            <div class="form-group">
-                                <label for="eventTitle">Título del Evento</label>
-                                <input type="text" class="form-control" id="eventTitle" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="recurrentCheckbox">Recurrente Anualmente</label>
-                                <input type="checkbox" id="recurrentCheckbox">
-                            </div>
-                            <input type="hidden" id="eventDate">
-                            <button type="submit" class="btn btn-primary" id="guardarEvent">Guardar</button>
-                            <button type="button" class="btn btn-danger" id="deleteEvent">Eliminar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Contenedor de la lista de servicios -->
         <div class="col-md-12 mt-4">
             <div class="card shadow-sm">
@@ -130,7 +102,7 @@ require_once './src/vistas/head/head.php';
                 </div>
                 <div class="card-body">
                     <!-- Lista de servicios -->
-                    <table class="table table-borderless align-middle example" id="precios">
+                    <table class="table table-borderless align-middle" id="precios">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
