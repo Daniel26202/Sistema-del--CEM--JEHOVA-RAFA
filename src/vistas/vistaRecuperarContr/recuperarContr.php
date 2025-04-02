@@ -200,8 +200,8 @@ if (!empty($parametro)) {
                                         id="input-usuario-recpassword">
                                         <div id="input-new-password">
 
-                                            <img src="./src/assets/img/candado.svg" id="icono-cuatro" class="icono"
-                                                alt="">
+                                            <img src="<?= $urlBase ?>./src/assets/img/candado.svg" id="icono-cuatro"
+                                                class="icono" alt="">
                                             <input type="password" name="passwordNew" id="inputNewPass" class="input"
                                                 placeholder="Nueva contraseña">
 
@@ -247,8 +247,8 @@ if (!empty($parametro)) {
                                         id="input-usuario-recpassword">
                                         <div id="input-new-password">
 
-                                            <img src="./src/assets/img/candado.svg" id="icono-cuatro" class="icono"
-                                                alt="">
+                                            <img src="<?= $urlBase ?>./src/assets/img/candado.svg" id="icono-cuatro"
+                                                class="icono" alt="">
                                             <input type="password" name="" id="inputReescContr" class="input"
                                                 placeholder="Reescriba la contraseña">
 
@@ -296,6 +296,7 @@ if (!empty($parametro)) {
                                     </div>
                                 </div>
                             </form>
+                            <h5 id="divTime" class="mt-3 mb-0 pb-0 fw-bold text-center d-none">05:00</h5>
 
                         </div>
                     </div>
@@ -304,23 +305,23 @@ if (!empty($parametro)) {
                         <!-- I siguiente paso para verificar -->
                         <div class="mt-3 pt-2 w-auto" id="divBtnVerificarUCE">
 
-                            <input class="btn btn-primary fw-bold boton rounded-5" type="submit" name=""
-                                value="Verificar ahora" id="btnVerificarUCE">
+                            <a href="#" class="btn btn-primary fw-bold boton rounded-5 text-decoration-none" name=""
+                                id="btnVerificarUCE">Verificar ahora</a>
 
                         </div>
                         <!-- II siguiente paso para verificar -->
                         <div class="mt-3 pt-2 w-auto d-none" id="divBtnVerificarC">
 
-                            <input class="btn btn-primary fw-bold boton rounded-5" type="submit" name=""
-                                value="Verificar código" id="btnVerificarC">
+                            <a href="#" class="btn btn-primary fw-bold boton rounded-5 text-decoration-none" name=""
+                                id="btnVerificarC">Verificar código</a>
 
                         </div>
 
                         <!-- III siguiente paso para verificar -->
                         <div class="mt-3 pt-2 w-auto d-none" id="divBtnVerificarRC">
 
-                            <input class="btn btn-primary fw-bold boton rounded-5" type="submit" name=""
-                                value="Actualizar ahora" id="btnVerificarRC">
+                            <a href="#" class="btn btn-primary fw-bold boton rounded-5 text-decoration-none" name=""
+                                id="btnVerificarRC">Actualizar ahora</a>
 
                         </div>
 
@@ -332,7 +333,6 @@ if (!empty($parametro)) {
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
