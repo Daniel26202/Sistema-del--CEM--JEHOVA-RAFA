@@ -440,9 +440,12 @@ $(document).ready(function () {
 
   $("#precios").DataTable({
     paging: true,
-    searching: false,
+    pageLength: 3,
+    searching: true,
     info: false,
     ordering: true,
+    lengthChange: false, // Desactiva el selector de longitud
+    dom: '<"top"f>rt<"bottom"p><"clear">',
     language: {
       decimal: ",",
       thousands: ".",
@@ -452,6 +455,10 @@ $(document).ready(function () {
       infoEmpty: "No hay registros disponibles",
       infoFiltered: "(filtrado de _MAX_ registros en total)",
       search: "Buscar:",
+      paginate: {
+        previous: "Anterior",
+        next: "Siguiente",
+      },
     },
   });
 });
