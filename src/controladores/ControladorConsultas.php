@@ -26,7 +26,7 @@ class ControladorConsultas
 
 
 
-		require_once './src/vistas/vistaConsultas/vistaConsultas.php';
+		require_once './src/vistas/vistaConsultas/vistaServiciosMedicos.php';
 	}
 	public function papeleraServicio($parametro)
 	{

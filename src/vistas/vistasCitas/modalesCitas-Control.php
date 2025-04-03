@@ -133,7 +133,7 @@
 
                 <div class="input-group flex-nowrap">
                     <span class=" mt-1">
-                        <img src="./src/assets/img/doctor (2).png" width="19" height="18" uk-svg class="mb-2 me-1">
+                        <img src="<?= $urlBase?>../src/assets/img/doctor (2).png" width="19" height="18" uk-svg class="mb-2 me-1">
                         Doctor</span>
 
 
@@ -142,6 +142,9 @@
                 <div id="listaDoctores" class="mt-2 mb-2">
 
                 </div>
+
+
+
 
                 <input type="hidden" id="id_servicioMedico" name="id_servicioMedico">
 
