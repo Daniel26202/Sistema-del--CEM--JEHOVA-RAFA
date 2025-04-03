@@ -121,10 +121,10 @@
                         </svg>
                     </span>
                     <select class="form-control input-modal" name="consulta" id="especialidad" required>
-                        <option selected disabled>Seleccionar Especialidad</option>
-                        <?php foreach ($especialidades as $especialidad): ?>
-                            <option value="<?php echo $especialidad["0"] ?>">
-                                <?php echo $especialidad["1"] ?>
+                        <option selected disabled>Seleccionar Servicio</option>
+                        <?php foreach ($servicios as $ser): ?>
+                            <option value="<?php echo $ser["id_servicioMedico"] ?>">
+                                <?php echo $ser["categoria"] ?>
                             </option>
                         <?php endforeach ?>
                     </select>

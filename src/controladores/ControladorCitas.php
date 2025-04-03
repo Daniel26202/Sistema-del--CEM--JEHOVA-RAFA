@@ -58,7 +58,7 @@ class ControladorCitas
 
 		$vistaActiva = 'pendientes';
 
-		$especialidades = $this->modelo->mostrarEspecialidadCita();
+		$servicios = $this->modelo->mostrarServicioDoctor();
 
 		$datosCitas = $this->modelo->mostrarCita();
 
@@ -71,7 +71,7 @@ class ControladorCitas
 		date_default_timezone_set('America/Mexico_City');
 		$fecha = date('Y-m-d');
 
-		$especialidades = $this->modelo->mostrarEspecialidadCita();
+		$servicios = $this->modelo->mostrarServicioDoctor();
 
 
 		$datosCitas = $this->modelo->mostrarCitaHoy($fecha);
