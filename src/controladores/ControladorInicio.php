@@ -70,9 +70,21 @@ class ControladorInicio
         echo json_encode($dataDeCitas);
     }
 
+    public function pacientes_hospitalizados()
+    {
+        $pacientes_hospitalizados = $this->modeloInicio->pacientes_hospitalizados();
+        echo json_encode($pacientes_hospitalizados);
+    }
+
     public function especialidades_solicitadas()
     {
         $especialidades_solicitadas = $this->modeloInicio->especialidades_solicitadas();
         echo json_encode($especialidades_solicitadas);
+    }
+
+    public function sintomas_comunes()
+    {
+        $sintomas_comunes = $this->modeloInicio->sintomas_comunes();
+        echo json_encode($sintomas_comunes);
     }
 }

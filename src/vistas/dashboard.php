@@ -40,7 +40,7 @@ require_once './src/vistas/head/head.php';
                 <div class="col-md-4 col-12">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Pacientes Hospitalizados</p>
-                        <h4 id="hospitalizados"></h4>
+                        <h4 id="pacientes_hospitalizados"></h4>
                     </div>
                 </div>
             </div>
@@ -55,8 +55,8 @@ require_once './src/vistas/head/head.php';
                 </div>
                 <div class="col-md-6 col-12">
                     <div class="chart-card p-4 rounded shadow-sm">
-                        <h5>Upcoming Check-ups</h5>
-                        <div id="calendar"></div>
+                        <h5>sintomas_comunes</h5>
+                        <canvas id="sintomas_comunes"></canvas>
                     </div>
                 </div>
             </div>

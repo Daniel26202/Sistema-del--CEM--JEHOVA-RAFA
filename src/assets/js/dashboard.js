@@ -8,8 +8,10 @@ document.addEventListener("DOMContentLoaded", function () {
   initCalendar(); // Inicializa el calendario
   traerCitas(); // Carga las citas pendientes
   traerCitashoy(); // Carga las citas del día
+  pacientes_hospitalizados(); // Carga los pacientes hospitalizados
   traerDatosServicios(); // Carga los datos de la tabla de precios
   especialidades_chart(); // Genera el gráfico de especialidades
+  sintomas_chart(); // Genera el gráfico de sintomas comunes
 });
 
 // ========================== FUNCIONES DEL CALENDARIO ==========================
@@ -121,59 +123,6 @@ function formatDate(dateObj) {
   return `${year}-${month}-${day}`;
 }
 
-// ========================== FUNCIONES DE EVENTOS ==========================
-
-// Abre el modal para agregar/editar un evento
-function openEventModal(dateString) {
-  document.getElementById("eventDate").value = dateString;
-
-  // Verifica si ya existe un evento para esta fecha
-  let existingEvent = events.find((e) => e.date === dateString);
-  if (existingEvent) {
-    document.getElementById("eventTitle").value = existingEvent.title;
-    document.getElementById("recurrentCheckbox").checked =
-      existingEvent.recurrent || false;
-  } else {
-    // Limpia los campos
-    document.getElementById("eventTitle").value = "";
-    document.getElementById("recurrentCheckbox").checked = false;
-  }
-
-  // Muestra el modal (usando Bootstrap 4)
-  $("#eventModal").modal("show");
-}
-
-// Guarda un evento
-function saveEvent(e) {
-  e.preventDefault();
-  const title = document.getElementById("eventTitle").value;
-  const dateString = document.getElementById("eventDate").value;
-  const recurrent = document.getElementById("recurrentCheckbox").checked;
-
-  // Verifica si ya existe un evento para esta fecha
-  let existingEvent = events.find((e) => e.date === dateString);
-  if (existingEvent) {
-    existingEvent.title = title;
-    existingEvent.recurrent = recurrent;
-  } else {
-    events.push({ date: dateString, title, recurrent });
-  }
-
-  // Oculta el modal y actualiza el calendario
-  $("#eventModal").modal("hide");
-  renderCalendar(currentYear, currentMonth);
-}
-
-// Elimina un evento
-function deleteEvent() {
-  const dateString = document.getElementById("eventDate").value;
-  events = events.filter((e) => e.date !== dateString);
-
-  // Oculta el modal y actualiza el calendario
-  $("#eventModal").modal("hide");
-  renderCalendar(currentYear, currentMonth);
-}
-
 // ========================== FUNCIONES DE DATOS ==========================
 
 // Carga los datos de la tabla de precios
@@ -252,6 +201,20 @@ const traerCitashoy = async () => {
   }
 };
 
+const pacientes_hospitalizados = async () => {
+  try {
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/pacientes_hospitalizados"
+    );
+    let resultado = await peticion.json();
+    document.getElementById("pacientes_hospitalizados").textContent =
+      resultado.length;
+    console.log(resultado);
+  } catch (error) {
+    console.log("Error al traer los pacientes hospitalizados:", error);
+  }
+};
+
 // ========================== FUNCIONES DE GRÁFICOS ==========================
 
 // Genera el gráfico de especialidades
@@ -274,6 +237,40 @@ const especialidades_chart = async () => {
         datasets: [
           {
             data: totalSolicitudes,
+            backgroundColor: [
+              "#387adf",
+              "#78a0f0",
+              "#a4c7ff",
+              "#ffcc00",
+              "#ff6666",
+            ],
+          },
+        ],
+      },
+    });
+  } catch (error) {
+    console.log("Error al generar el gráfico de especialidades:", error);
+  }
+  //Genera el grafico de sintomas comunes
+};
+
+const sintomas_chart = async () => {
+  try {
+    let sintomas_comunes = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes"
+    );
+    let data = await sintomas_comunes.json();
+    let sintomas = data.map((item) => item.sintoma);
+    let total = data.map((item) => item.total);
+
+    let ctx = document.getElementById("sintomas_comunes").getContext("2d");
+    new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: sintomas,
+        datasets: [
+          {
+            data: total,
             backgroundColor: [
               "#387adf",
               "#78a0f0",
