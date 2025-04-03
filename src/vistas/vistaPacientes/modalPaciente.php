@@ -22,14 +22,14 @@
       </div>
 
     </div>
-    <div class="alert alert-danger d-none alertaFormulario" role="alert" >
+    <div class="alert alert-danger d-none alertaFormulario" role="alert">
       <div class="">
         <p style="font-size: 13px;" class="text-center">Por favor, corrige los errores en el formulario.</p>
       </div>
     </div>
 
     <form class="form-modal form-validable" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar" method="POST" autocomplete="off">
-      <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'];?>">
+      <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_cedula">
         <span class="input-modal mt-1">
@@ -47,7 +47,7 @@
         <input class="form-control input-modal input-disabled input-paciente input-validar" style="width: 7vh !important;" type="number" id="cedula" name="cedula" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
       </div>
 
-      <p class="p-error-cedula d-none">Cedula</p>
+      <p class="p-error-cedula d-none">La cedula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">
         <span class="input-modal mt-1">
@@ -59,7 +59,7 @@
         <input class="form-control mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="nombre" name="nombre" placeholder="Nombre" required maxlength="11">
       </div>
 
-      <p class="p-error-nombre d-none">Nombre</p>
+      <p class="p-error-nombre d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_apellido">
         <span class="input-modal mt-1">
@@ -68,10 +68,10 @@
           </svg>
         </span>
         <input class="form-control input-modal mayuscula input-disabled input-paciente input-validar" type="text" id="apellido" name="apellido" placeholder="Apellido" required maxlength="11">
-        
+
       </div>
 
-      <p class="p-error-apellido d-none">Apellido</p>
+      <p class="p-error-apellido d-none">El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_telefono">
         <span class="input-modal mt-1">
@@ -81,7 +81,7 @@
         </span>
         <input class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" required maxlength="18">
       </div>
-      <p class="p-error-telefono d-none">Telefono</p>
+      <p class="p-error-telefono d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_direccion">
         <span class="input-modal mt-1">
@@ -92,7 +92,7 @@
         </span>
         <input class="form-control  mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="direccion" name="direccion" placeholder="Direccion" required maxlength="20">
       </div>
-      <p class="p-error-direccion d-none">Ddireccion</p>
+      <p class="p-error-direccion d-none">Debe estar completa y detallada</p>
 
       <label for="" class=" fw-bold mb-1 mt-2">Fecha de nacimiento</label>
       <div class="input-group flex-nowrap margin-inputs" id="grp_fn">
@@ -104,7 +104,7 @@
         </span>
         <input class="form-control input-modal input-disabled input-paciente input-validar" type="date" id="fn" name="fn" placeholder="Fn" required pattern="\d{4}-\d{2}-\d{2}">
       </div>
-      <p class="p-error-fn d-none">fecha no valida</p>
+      <p class="p-error-fn d-none">No puede ser mayor que la fecha actual</p>
 
 
       <!-- <div class="input-modal mt-3">
@@ -241,7 +241,7 @@
 <!-- <div id="Buscadoreditar" class="modalEditarBuscador" uk-modal>
   <div class="uk-modal-dialog uk-modal-body tamaño-modal">
     <!-- Boton que cierra el modal -->
-    <!-- <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModalBuscador">
+<!-- <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModalBuscador">
       <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
