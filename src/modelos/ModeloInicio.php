@@ -19,6 +19,13 @@ class ModeloInicio extends Db
 		$this->conexion = $this; // Guarda la instancia de la conexión
 	}
 
+	public function pacientes_hospitalizados()
+	{
+		$consulta = $this->conexion->prepare("SELECT COUNT(id_hospitalizacion) AS total_hospitalizados
+FROM hospitalizacion
+WHERE estado = 'ACT';");
+		return ($consulta->execute()) ? $consulta->fetchAll() : false;
+	}
 
 
 	public function servicios()
@@ -38,6 +45,17 @@ class ModeloInicio extends Db
 												ON sm.id_categoria = cs.id_categoria
 												GROUP BY cs.nombre
 												ORDER BY total_solicitudes DESC;
+												");
+		return ($consulta->execute()) ? $consulta->fetchAll() : false;
+	}
+
+	public function sintomas_comunes()
+	{
+		$consulta = $this->conexion->prepare("SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
+											FROM sintomas_control sc
+											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
+											GROUP BY s.nombre
+											ORDER BY total DESC;
 												");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
