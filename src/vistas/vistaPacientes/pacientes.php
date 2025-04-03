@@ -251,7 +251,7 @@
                         <input class="form-control input-modal input-disabled input-paciente input-validar" style="width: 7vh !important;" type="number" id="cedula" name="cedula" value="<?= $paciente['cedula'] ?>" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                       </div>
 
-                      <p class="p-error-cedula<?= $paciente['id_paciente'] ?> d-none">Cedula</p>
+                      <p class="p-error-cedula<?= $paciente['id_paciente'] ?> d-none">La cedula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
 
                       <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">
                         <span class="input-modal mt-1">
@@ -263,7 +263,7 @@
                         <input class="form-control mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="nombre" name="nombre" value="<?= $paciente['nombre'] ?>" placeholder="Nombre" required maxlength="11">
                       </div>
 
-                      <p class="p-error-nombre<?= $paciente['id_paciente'] ?> d-none">Nombre</p>
+                      <p class="p-error-nombre<?= $paciente['id_paciente'] ?> d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
                       <div class="input-group flex-nowrap margin-inputs" id="grp_apellido">
                         <span class="input-modal mt-1">
@@ -275,7 +275,7 @@
 
                       </div>
 
-                      <p class="p-error-apellido<?= $paciente['id_paciente'] ?> d-none">Apellido</p>
+                      <p class="p-error-apellido<?= $paciente['id_paciente'] ?> d-none">El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
                       <div class="input-group flex-nowrap margin-inputs" id="grp_telefono">
                         <span class="input-modal mt-1">
@@ -285,7 +285,7 @@
                         </span>
                         <input class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" value="<?= $paciente['telefono'] ?>" required maxlength="18">
                       </div>
-                      <p class="p-error-telefono<?= $paciente['id_paciente'] ?> d-none">Teléfono</p>
+                      <p class="p-error-telefono<?= $paciente['id_paciente'] ?> d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
 
                       <div class="input-group flex-nowrap margin-inputs" id="grp_direccion">
                         <span class="input-modal mt-1">
@@ -296,7 +296,7 @@
                         </span>
                         <input class="form-control  mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="direccion" name="direccion" value="<?= $paciente['direccion'] ?>" placeholder="Direccion" required maxlength="20">
                       </div>
-                      <p class="p-error-direccion<?= $paciente['id_paciente'] ?> d-none">direccion</p>
+                      <p class="p-error-direccion<?= $paciente['id_paciente'] ?> d-none">Debe estar completa y detallada</p>
 
                       <label for="" class=" fw-bold mb-1 mt-2">Fecha de nacimiento</label>
                       <div class="input-group flex-nowrap margin-inputs" id="grp_fn">
@@ -308,7 +308,7 @@
                         </span>
                         <input class="form-control input-modal input-disabled input-paciente input-validar" type="date" id="fn" name="fn" placeholder="Fn" required pattern="\d{4}-\d{2}-\d{2}" value="<?= $paciente['fn'] ?>">
                       </div>
-                      <p class="p-error-fn<?= $paciente['id_paciente'] ?> d-none">fecha no valida</p>
+                      <p class="p-error-fn<?= $paciente['id_paciente'] ?> d-none">No puede ser mayor que la fecha actual</p>
 
 
 

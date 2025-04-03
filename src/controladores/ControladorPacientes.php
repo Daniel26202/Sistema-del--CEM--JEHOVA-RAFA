@@ -67,13 +67,13 @@ class ControladorPacientes
 
         //se verifica si la cédula del input es igual a la cédula ya existente 
 	
-		if ($fechaEditar <= $_POST['fnEditar'] ) {
+		if ($fechaEditar <= $_POST['fn'] ) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorfecha");
 			exit();
 		}
-        elseif ($cedula == $_POST["cedulaEditar"]) {
+        elseif ($cedula == $_POST["cedula"]) {
 
-        	// guardar la bitacora
+        	//guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha modificado un paciente");
 
             $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
@@ -82,7 +82,7 @@ class ControladorPacientes
 
             // NOTA: Esto "&&" es "Y"
             //se verifica si la cédula del input no es igual a la cédula ya existente.  
-        } elseif ($_GET["cedulaDb"] != $_POST["cedulaEditar"]) {
+        } elseif ($cedula != $_POST["cedula"]) {
 
             //verifica si la cédula es igual a la información de la base de datos.
             if ($resultadoDeCedula === "existeC") {
@@ -90,7 +90,7 @@ class ControladorPacientes
 
             } else {
 
-            	// guardar la bitacora
+            	//guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha modificado un paciente");
 
 				$this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
