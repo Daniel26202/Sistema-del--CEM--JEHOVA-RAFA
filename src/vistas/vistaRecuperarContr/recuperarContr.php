@@ -189,7 +189,18 @@ if (!empty($parametro)) {
                                         </div>
                                     </div>
 
+                                    <h5 id="divTextError" class="text-danger mt-3 mb-0 pb-0 fw-bold text-center d-none">
+                                        Su código expiro.</h5>
+                                    <h5 id="divTime" class="mt-3 mb-0 pb-0 fw-bold text-center d-none">05:00</h5>
+                                    <div class="text-center">
+                                        <a href="#" id="btnEviarCod"
+                                            class="fs-5 mt-3 text-decoration-none text-black fw-bold">Reenviar el
+                                            código</a>
+                                    </div>
+
                                 </div>
+
+
                             </form>
 
                             <!-- III siguiente paso para recuperar -->
@@ -296,7 +307,6 @@ if (!empty($parametro)) {
                                     </div>
                                 </div>
                             </form>
-                            <h5 id="divTime" class="mt-3 mb-0 pb-0 fw-bold text-center d-none">05:00</h5>
 
                         </div>
                     </div>
@@ -325,9 +335,9 @@ if (!empty($parametro)) {
 
                         </div>
 
-                        <div class="d-flex justify-content-end mt-2 me-4">
+                        <div class="d-flex justify-content-end mt-2  pe-5 me-5">
                             <a href="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion"
-                                class="fw-bold pointer-event text-decoration-none text-dark ms-auto margen-resposive-iniciar-sesion"
+                                class="fw-bold pointer-event text-decoration-none text-dark margen-resposive-iniciar-sesion me-5 pe-5"
                                 id="iniciarsesionEnlace">Iniciar
                                 sesión</a>
                         </div>

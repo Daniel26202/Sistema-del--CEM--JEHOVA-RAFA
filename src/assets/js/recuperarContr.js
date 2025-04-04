@@ -136,8 +136,11 @@ addEventListener("DOMContentLoaded", function () {
 
     const tituloPg = document.getElementById("tituloText");
     const btnVUCE = document.getElementById("divBtnVerificarUCE");
+    const btnEC = document.getElementById("btnEviarCod");
     const btnVC = document.getElementById("divBtnVerificarC");
     const btnRC = document.getElementById("divBtnVerificarRC");
+    const divTime = document.getElementById("divTime");
+    const divTextError = document.getElementById("divTextError");
 
     const divFormUno = document.getElementById("formUno");
     const divFormDos = document.getElementById("formDos");
@@ -174,12 +177,13 @@ addEventListener("DOMContentLoaded", function () {
                 divFormTres.classList.add("d-none");
                 btnVUCE.classList.remove("d-none");
                 btnVC.classList.add("d-none");
+                btnEC.classList.add("d-none");
                 divTime.classList.add("d-none");
                 btnRC.classList.add("d-none");
 
             } else if (resultado != "conexionFallida") {
                 // mensaje de alerta
-                alertaMsj("Datos del personal hallados exitosamente", 8000, "azul");
+                alertaMsj("Código enviado al correo exitosamente", 8000, "azul");
                 tituloPg.textContent = "Ingresé el código para la recuperación";
 
                 document.querySelector("#idUsuario").value = parseInt(resultado.id_usuario);
@@ -193,6 +197,7 @@ addEventListener("DOMContentLoaded", function () {
                 divFormDos.classList.remove("d-none");
                 divFormTres.classList.add("d-none");
                 btnVUCE.classList.add("d-none");
+                btnEC.classList.add("d-none");
                 btnVC.classList.remove("d-none");
                 btnRC.classList.add("d-none");
                 divTime.classList.remove("d-none");
@@ -216,6 +221,7 @@ addEventListener("DOMContentLoaded", function () {
                 divFormTres.classList.remove("d-none");
                 btnVUCE.classList.add("d-none");
                 btnVC.classList.add("d-none");
+                btnEC.classList.add("d-none");
                 divTime.classList.add("d-none");
                 btnRC.classList.remove("d-none");
             } else if (resultado === "codigoIncorrecto") {
@@ -231,6 +237,8 @@ addEventListener("DOMContentLoaded", function () {
 
             if (resultado === "Actualizado") {
                 // mensaje de alerta
+                alertaMsj("Contraseña actualizada correctamente", 8000, "azul");
+
                 tituloPg.textContent = "Olvide mi contraseña";
 
                 formC.reset();
@@ -241,11 +249,23 @@ addEventListener("DOMContentLoaded", function () {
                 divFormDos.classList.add("d-none");
                 divFormTres.classList.add("d-none");
                 btnVUCE.classList.remove("d-none");
+                btnEC.classList.add("d-none");
                 btnVC.classList.add("d-none");
                 divTime.classList.add("d-none");
                 btnRC.classList.add("d-none");
             }
 
+        } else if (numero == "cuatro") {
+            if (resultado === true) {
+                alertaMsj("Código enviado al correo exitosamente", 8000, "azul");
+
+                divTime.classList.remove("d-none");
+                divTime.textContent = "05:00";
+
+                btnEC.classList.add("d-none");
+                temporizador();
+
+            }
         }
 
 
@@ -256,31 +276,40 @@ addEventListener("DOMContentLoaded", function () {
     }
 
 
-
-    // Definimos la duración total del temporizador en milisegundos (5m = 300,000 ms)
-    const duracion = 5 * 60 * 1000;
-    // Calculamos el tiempo de finalización sumando la duración a la hora actual
-    const endTime = Date.now() + duracion;
-    const divTime = document.getElementById("divTime");
-
-    // temporizador de los 5 minutos 
     function temporizador() {
-        // Calculamos la diferencia entre la hora final y la hora actual
-        const tiempoMl = endTime - Date.now();
-        // Convertimos milisegundos a minutos
-        const minutos = Math.floor(tiempoMl / 60000);
-        // // Convertimos milisegundos a segundos
-        const segundos = Math.floor((tiempoMl % 60000) / 1000);
-        divTime.textContent = `${minutos}:${segundos < 10 ? "0" : ""}${segundos}`;
 
-        if (tiempoMl <= 0) {
-            alertaMsj("Su código expiro.", 8000, "rojo");
-            divTime.textContent = ""; 
+        // Definimos la duración total del temporizador en milisegundos (5m = 300,000 ms)
+        let duracion = 5 * 60 * 1000;
+        // Calculamos el tiempo de finalización sumando la duración a la hora actual
+        let endTime = Date.now() + duracion;
 
-            return;
+        // temporizador de los 5 minutos, dentro de la función  
+        function temporizadorD() {
+            // Calculamos la diferencia entre la hora final y la hora actual
+            const tiempoMl = endTime - Date.now();
+            // Convertimos milisegundos a minutos
+            const minutos = Math.floor(tiempoMl / 60000);
+            // // Convertimos milisegundos a segundos
+            const segundos = Math.floor((tiempoMl % 60000) / 1000);
+            divTime.textContent = `${minutos}:${segundos < 10 ? "0" : ""}${segundos}`;
+
+            if (tiempoMl <= 0) {
+                btnEC.classList.remove("d-none");
+                divTextError.classList.remove("d-none");
+
+                divTime.textContent = "";
+                setTimeout(function () {
+                    // Oculta el div después del tiempo especificado
+                    divTextError.classList.add("d-none");
+
+                }, 8000);
+
+                return;
+            }
+
+            setTimeout(temporizadorD, 1000);
         }
-
-        setTimeout(temporizador, 1000);
+        temporizadorD()
     }
 
 
@@ -323,20 +352,36 @@ addEventListener("DOMContentLoaded", function () {
     evitarEnvio(formRC);
 
 
-    // envío del I formularios
+    // envío del I(1) formularios
     document.querySelector("#btnVerificarUCE").addEventListener("click", function (e) {
         // en donde este el uno realiza la función
         verificar("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/verificarUC", formUCE, "uno");
     });
-    // envío del II formularios
+    // envío del II(2) formularios
     document.querySelector("#btnVerificarC").addEventListener("click", function (e) {
         // en donde este el dos realiza la función
         verificar("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/verificarCodigo", formC, "dos");
     });
-    // envío del III formularios
+    // envío del III(3) formularios
     document.querySelector("#btnVerificarRC").addEventListener("click", function (e) {
-        // en donde este el tres realiza la función
-        verificar("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/cambiarC", formRC, "tres");
+        let inputNewC = document.getElementById("inputNewPass").value;
+        let inputRescriC = document.getElementById("inputReescContr").value;
+        let validar = false;
+
+        validar = (inputRescriC === inputNewC) ? true : false;
+ 
+        if (validar) {
+            // en donde este el tres realiza la función
+            verificar("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/cambiarC", formRC, "tres");
+        } else {
+            alertaMsj("La contraseña nueva y reescrita no coinciden.", 8000, "rojo");
+
+        }
+    });
+    // reenvío de código IIII(4) 
+    document.querySelector("#btnEviarCod").addEventListener("click", function (e) {
+        // en donde este el cuatro realiza la función
+        verificar("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/reenviarCodigo", formC, "cuatro");
     });
 
 })
