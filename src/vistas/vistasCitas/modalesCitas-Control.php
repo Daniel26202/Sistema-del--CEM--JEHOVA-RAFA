@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <form class="form-modal" action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/guardarCita" id="modalAgregarCita" method="POST"
+        <form class="form-modal form-validable" action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/guardarCita" id="modalAgregarCita" method="POST"
             autocomplete="off">
 
             <input type="hidden" value="<?php echo $_SESSION['id_usuario'] ?>" name="id_usuario">
@@ -53,7 +53,7 @@
             <div class="input-group flex-nowrap" id="grp_cedula">
 
 
-                <img src="<?php echo $urlBase ?>../src/assets/img/seguro-de-salud.png" width="60" height="60" uk-svg class="iconoB me-2"
+                <img src="<?php echo $urlBase ?>../src/assets/img/seguro-de-salud.png" width="60" height="60" uk-svg class="iconoB me-2 d-none"
                     id="imgCita">
 
                 <span class="input-modal mt-1 d-none" id="iconoCedulaCita">
@@ -69,7 +69,7 @@
                     <option value="E">E</option>
                 </select>
 
-                <input class="form-control input-modal input-disabled" type="number" name="cedula" placeholder="Cedula"
+                <input class="form-control input-modal input-disabled input-validar" type="number" name="cedulaCita" placeholder="Cedula"
                     id="cedulaCita" required>
                 <span class="" id="pacienteCitas">
                     <button class="btn btn-buscar " title="Buscar" id="buscarPacienteCita">
@@ -81,6 +81,10 @@
                     </button>
                 </span>
             </div>
+
+
+            <p class="p-error-cedulaCita d-none">La cedula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
+
 
             <input type="hidden" id="id_paciente" name="id_paciente">
 
@@ -133,7 +137,7 @@
 
                 <div class="input-group flex-nowrap">
                     <span class=" mt-1">
-                        <img src="<?= $urlBase?>../src/assets/img/doctor (2).png" width="19" height="18" uk-svg class="mb-2 me-1">
+                        <img src="<?= $urlBase ?>../src/assets/img/doctor (2).png" width="19" height="18" uk-svg class="mb-2 me-1">
                         Doctor</span>
 
 
@@ -189,10 +193,12 @@
                                 d="M16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-6.664-1.21c-1.11 0-1.656-.767-1.703-1.407h.683c.043.37.387.82 1.051.82.844 0 1.301-.848 1.305-2.164h-.027c-.153.414-.637.79-1.383.79-.852 0-1.676-.61-1.676-1.77 0-1.137.871-1.809 1.797-1.809 1.172 0 1.953.734 1.953 2.668 0 1.805-.742 2.871-2 2.871zm-2.89-5.435v5.332H5.77V8.079h-.012c-.29.156-.883.52-1.258.777V8.16a13 13 0 0 1 1.313-.805h.632z" />
                         </svg>
                     </span>
-                    <input class="form-control input-modal" type="date" name="fecha" id="fecha" placeholder="Fecha"
+                    <input class="form-control input-modal input-validar " type="date" name="fechaDeCita" id="fecha" placeholder="Fecha"
                         required>
 
                 </div>
+
+                <p class="p-error-fechaDeCita d-none">fecha no valida</p>
 
 
                 <div class="input-group flex-nowrap" id="grp_hora">
@@ -485,7 +491,7 @@ uk-tooltip="title: Fecha de regreso; pos: right">
                 <input class="form-control input-modal input-disabled input-paciente input-validar cedula-paciente" style="width: 7vh !important;" type="number" id="cedula" name="cedula" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
             </div>
 
-            <p class="p-error-cedula d-none">Cedula</p>
+            <p class="p-error-cedula d-none">La cedula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
 
             <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">
                 <span class="input-modal mt-1">
@@ -497,7 +503,9 @@ uk-tooltip="title: Fecha de regreso; pos: right">
                 <input class="form-control mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="nombre" name="nombre" placeholder="Nombre" required maxlength="11">
             </div>
 
-            <p class="p-error-nombre d-none">Nombre</p>
+            <p class="p-error-nombre d-none">
+
+                El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
             <div class="input-group flex-nowrap margin-inputs" id="grp_apellido">
                 <span class="input-modal mt-1">
@@ -509,7 +517,7 @@ uk-tooltip="title: Fecha de regreso; pos: right">
 
             </div>
 
-            <p class="p-error-apellido d-none">Apellido</p>
+            <p class="p-error-apellido d-none">El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
             <div class="input-group flex-nowrap margin-inputs" id="grp_telefono">
                 <span class="input-modal mt-1">
@@ -519,7 +527,7 @@ uk-tooltip="title: Fecha de regreso; pos: right">
                 </span>
                 <input class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" required maxlength="18">
             </div>
-            <p class="p-error-telefono d-none">Telefono</p>
+            <p class="p-error-telefono d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
 
             <div class="input-group flex-nowrap margin-inputs" id="grp_direccion">
                 <span class="input-modal mt-1">
@@ -530,7 +538,7 @@ uk-tooltip="title: Fecha de regreso; pos: right">
                 </span>
                 <input class="form-control  mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="direccion" name="direccion" placeholder="Direccion" required maxlength="20">
             </div>
-            <p class="p-error-direccion d-none">Ddireccion</p>
+            <p class="p-error-direccion d-none">Debe estar completa y detallada</p>
 
             <label for="" class=" fw-bold mb-1 mt-2">Fecha de nacimiento</label>
             <div class="input-group flex-nowrap margin-inputs" id="grp_fn">

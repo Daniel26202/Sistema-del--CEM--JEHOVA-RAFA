@@ -39,7 +39,7 @@ class ControladorCitas
 
 	public function mostrarPacienteCita()
 	{
-		$datosPaciente = $this->modelo->selectPaciente($_POST["nacionalidad"], $_POST["cedula"]);
+		$datosPaciente = $this->modelo->selectPaciente($_POST["nacionalidad"], $_POST["cedulaCita"]);
 		echo json_encode($datosPaciente);
 	}
 
@@ -89,18 +89,18 @@ class ControladorCitas
 	{
 		date_default_timezone_set('America/Mexico_City');
 		$fecha = date("Y-m-d");
-		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fecha"], $_POST["hora"]);
+		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
 
 		if ($resultadoDeCita === "existeC") {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/error");
-		} elseif ($_POST["fecha"] < $fecha) {
+		} elseif ($_POST["fechaDeCita"] < $fecha) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
 		} else {
 			print_r($_POST);
 
 			echo $_POST["id_servicioMedico"];
 			
-			$this->modelo->insertarCita($_POST["id_paciente"], $_POST["id_servicioMedico"], $_POST["fecha"], $_POST["hora"], $_POST["estado"]);
+			$this->modelo->insertarCita($_POST["id_paciente"], $_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["estado"]);
 
 			
 
@@ -187,12 +187,12 @@ class ControladorCitas
 		$cedula = $datos[0];
 
 
-		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fecha"], $_POST["hora"]);
+		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
 
 		//se verifica si la cédula del input es igual a la cédula ya existente 
 		if ($cedula == $_POST["id_servicioMedico"]) {
 
-			$this->modelo->update($_POST["id_servicioMedico"], $_POST["fecha"], $_POST["hora"], $_POST["id_cita"]);
+			$this->modelo->update($_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");
@@ -206,19 +206,19 @@ class ControladorCitas
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/error");
 			} else {
 
-				$this->modelo->update($_POST["id_servicioMedico"], $_POST["fecha"], $_POST["hora"], $_POST["id_cita"]);
+				$this->modelo->update($_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");
 			}
 		} else {
 
-			$this->modelo->update($_POST["id_servicioMedico"], $_POST["fecha"], $_POST["hora"], $_POST["id_cita"]);
+			$this->modelo->update($_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");
 		}
-		if ($_POST["fecha"] < $fecha) {
+		if ($_POST["fechaDeCita"] < $fecha) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
 		}
 	}

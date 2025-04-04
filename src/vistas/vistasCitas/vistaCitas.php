@@ -186,8 +186,8 @@
                         <td class="text-center">
                             <div class="d-flex justify-content-center align-items-center">
                                 <!-- editar -->
-                                <div class="me-2 <?= $vistaActiva == "realizadas" ? "d-none" : ""; ?>">
-                                    <a href="#" class="btns-accion botonesEditar"
+                                <div class="me-2 botonesEdi <?= $vistaActiva == "realizadas" ? "d-none" : ""; ?>">
+                                    <a href="#" class="btns-accion botonesEditar botonesEdi"
                                         uk-toggle="target: #modal-examplecitaeditar<?= $datoCita["id_cita"]; ?>"
                                         data-index="<?= $datoCita["id_cita"]; ?>" uk-tooltip="Modificar Cita"
                                         id="btnEditarCitaPendiente">
@@ -219,7 +219,7 @@
 
 
 
-                            
+
 
     </div>
     <!-- modal -->
@@ -288,7 +288,7 @@
 
             </div>
 
-            <form class="form-modal"
+            <form class="form-modal form-validable<?= $datoCita["id_cita"]; ?>"
                 action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/editarCita/<?= $datoCita["id_cita"]; ?>"
                 method="POST">
                 <input type="hidden" value="<?php echo $_SESSION['id_usuario']; ?>" name="id_usuario">
@@ -397,11 +397,13 @@
                                     d="M16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-6.664-1.21c-1.11 0-1.656-.767-1.703-1.407h.683c.043.37.387.82 1.051.82.844 0 1.301-.848 1.305-2.164h-.027c-.153.414-.637.79-1.383.79-.852 0-1.676-.61-1.676-1.77 0-1.137.871-1.809 1.797-1.809 1.172 0 1.953.734 1.953 2.668 0 1.805-.742 2.871-2 2.871zm-2.89-5.435v5.332H5.77V8.079h-.012c-.29.156-.883.52-1.258.777V8.16a13 13 0 0 1 1.313-.805h.632z" />
                             </svg>
                         </span>
-                        <input class="form-control input-modal fecha" id="fechaEditar" type="date"
-                            name="fecha" required pattern="\d{2}\/\d{2}\/\d{4}" placeholder="Fecha"
+                        <input class="form-control input-modal fecha input-validar" id="fechaEditar" type="date"
+                            name="fechaDeCita" required pattern="\d{2}\/\d{2}\/\d{4}" placeholder="Fecha"
                             value="<?= $datoCita["fecha"] ?>">
 
                     </div>
+
+                    <p class="p-error-fechaDeCita<?= $datoCita["id_cita"] ?>"></p>
 
                     <div class="input-group flex-nowrap">
                         <span class="input-modal mt-1">

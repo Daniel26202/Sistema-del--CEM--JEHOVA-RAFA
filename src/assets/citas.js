@@ -118,7 +118,7 @@ addEventListener("DOMContentLoaded", () => {
       });
       diaNumero = [];
       document.getElementById("fecha").value = "";
-      document.getElementById("divAcordion").remove();
+      //document.getElementById("divAcordion").remove();
     } else {
       document.getElementById("listaDoctores").innerHTML = "";
       document.getElementById("btnAgregarCita").classList.add("d-none");
@@ -218,8 +218,12 @@ addEventListener("DOMContentLoaded", () => {
           inputsBuenos.push(true);
         }
       });
+      console.log(inputsBuenos)
 
-      if (inputsBuenos.length == 6) {
+      if (
+        inputsBuenos.length == 5 &&
+        document.querySelector(".p-error-fechaDeCita").classList.contains("d-none")
+      ) {
         insertarPaciente(this, e);
       }
     });

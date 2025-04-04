@@ -10,14 +10,15 @@ document.addEventListener("DOMContentLoaded", function () {
     password: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, // Al menos 8 caracteres, una mayúscula, un número y un símbolo
     // Agrega más expresiones según tus necesidades
     cedula: /^([1-9]{1})([0-9]{5,7})$/,
+    cedulaCita: /^([1-9]{1})([0-9]{5,7})$/,
     telefono: /^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/,
-    direccion: /^([A-Za-z0-9\s\.,#-]+)$/,
+    direccion: /^([A-Za-z0-9\s\.,#-]{8,})$/,
     fn: /^\d{4}\-\d{2}\-\d{2}$/,
     fechaDeCita: /^\d{4}\-\d{2}\-\d{2}$/,
   };
 
   // Nueva función para validar fechas no futuras ni pasadas
-  function validarFecha(input, pError, campo) {
+  function validarFecha(input, pError, campo, formulario) {
     const valorFecha = new Date(input.value);
     const fechaHoy = new Date();
     fechaHoy.setHours(0, 0, 0, 0); // Establece el tiempo a la medianoche para comparación
@@ -53,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Si pasa todas las validaciones
     pError.classList.add("d-none");
+   // actualizarEstadoInput(input, "incorrecto", formulario);
     return true;
   }
 
@@ -184,6 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Función que valida los campos cada vez que ocurre un evento en un input
   function validarFormulario(e, formulario, campos) {
+    console.log(e.target);
     const input = e.target; // Obtenemos el input que generó el evento
     const campo = input.name; // Nombre del campo (atributo 'name' del input)
     let pErrorGuardar = document.querySelector(`.p-error-${input.name}`); // Nombre del parrafo que le dira al usuario como cumplir la expresion
@@ -197,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Validamos específicamente el campo de fecha
     if (campo === "fn" || campo === "fechaDeCita") {
-      campos[campo] = validarFecha(input, pErrorGuardar, campo);
+      campos[campo] = validarFecha(input, pErrorGuardar, campo,  formulario);
     } else {
       // Para otros campos, usamos la validación ya existente
       const expresion = expresiones[campo];
@@ -230,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Validamos específicamente el campo de fecha
     if (campo === "fn" || campo === "fechaDeCita") {
-      campos[campo] = validarFecha(input, pErrorEditar, campo);
+      campos[campo] = validarFecha(input, pErrorEditar, campo, formulario);
     } else {
       // Para otros campos, usamos la validación ya existente
       const expresion = expresiones[campo];
@@ -241,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
           campo,
           campos,
           formulario,
-          pErrorGuardar
+          pErrorEditar
         );
       }
     }
@@ -249,6 +252,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Función que valida un campo individual
   function validarCampo(expresion, input, campo, campos, formulario, pError) {
+    console.log(pError)
     pError.classList.add("fw-bold");
     pError.style.color = "rgb(224, 3, 3)";
     console.log(document.querySelector(`.p-error-${input.name}`));
@@ -306,6 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".botonesEdi").forEach((btn) => {
     btn.addEventListener("click", () => {
       let id = btn.getAttribute("data-index");
+      console.log(id)
       let formularioEditar = document.querySelector(".form-validable" + id);
 
       inicializarValidacionFormularioEditar(formularioEditar, id);
