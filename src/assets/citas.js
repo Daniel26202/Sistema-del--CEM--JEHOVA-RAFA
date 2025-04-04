@@ -402,7 +402,7 @@ addEventListener("DOMContentLoaded", () => {
 
       if (resultado.length > 0) {
         resultado.forEach((res) => {
-          html += `<input required class="uk-checkbox checkDes doctoresCitas me-2" type="radio" name="id_doctor" value="${res.id_personal}" id="doctorEditarID">  ${res.nombre_doctor} ${res.apellido_doctor}<br>`;
+          html += `<input required class="uk-checkbox checkDes doctoresCitas me-2" type="radio" name="id_doctor" value="${res.id_personal}" id="doctorEditarID" checked=true disabled>  ${res.nombre_doctor} ${res.apellido_doctor}<br>`;
         });
         listaDEdi.innerHTML = html;
         document.querySelectorAll(".doctoresCitas").forEach((doctor) => {
@@ -423,6 +423,16 @@ addEventListener("DOMContentLoaded", () => {
                 inputFecha
               );
             }
+
+            traerHorarioEdi(
+              idD,
+              horarios,
+              id_servicioMedicoEdi,
+              doctorTabla,
+              inputFecha
+            );
+
+            console.log("hola");
 
             doctor.addEventListener("change", function () {
               traerHorarioEdi(

@@ -187,7 +187,7 @@
                             <div class="d-flex justify-content-center align-items-center">
                                 <!-- editar -->
                                 <div class="me-2 <?= $vistaActiva == "realizadas" ? "d-none" : ""; ?>">
-                                    <a href="#" class="btns-accion"
+                                    <a href="#" class="btns-accion botonesEditar"
                                         uk-toggle="target: #modal-examplecitaeditar<?= $datoCita["id_cita"]; ?>"
                                         data-index="<?= $datoCita["id_cita"]; ?>" uk-tooltip="Modificar Cita"
                                         id="btnEditarCitaPendiente">
@@ -293,10 +293,23 @@
                     action="/Sistema-del--CEM--JEHOVA-RAFA/editarCitaHoy/<?= $datoCita["id_cita"]; ?>"
                     method="POST">
 
+                    <input type="hidden" value="<?php echo $datoCita['id_paciente']; ?>"
+                        name="id_paciente">
+
                     <input type="hidden" name="id_cita" value="<?= $datoCita["id_cita"]; ?>">
 
                     <input type="hidden" value="<?php echo $_SESSION['id_usuario']; ?>"
                         name="id_usuario">
+
+                    <input type="hidden" value="<?php echo $datoCita['serviciomedico_id_servicioMedico']; ?>"
+                        name="id_servicioMedico">
+
+
+
+
+
+
+
 
                     <div class="input-group flex-nowrap caja">
                         <span class="input-modal mt-1">
@@ -310,14 +323,10 @@
                             </svg>
                         </span>
                         <select class="form-control input-modal especialidad" name="consulta">
-                            <option selected disabled value="<?= $datoCita["id_especialidad"] ?>">
-                                <?= $datoCita["especialidad"] ?>
+                            <option selected disabled value="<?= $datoCita["serviciomedico_id_servicioMedico"] ?>">
+                                <?= $datoCita["categoria"] ?>
                             </option>
-                            <?php foreach ($especialidades as $e): ?>
-                                <option value="<?= $e["id_especialidad"] ?>">
-                                    <?= $e["nombre"] ?>
-                                </option>
-                            <?php endforeach ?>
+
                         </select>
                     </div>
 

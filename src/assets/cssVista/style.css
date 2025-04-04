@@ -940,9 +940,9 @@ input[type=number]::-webkit-outer-spin-button {
 	margin: auto;
 }
 
-.form-modal input {
+/* .form-modal input {
 	font-size: 24px;
-}
+} */
 
 .placeholder::placeholder {
 	font-size: 24px;
