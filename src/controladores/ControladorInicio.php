@@ -21,6 +21,10 @@ class ControladorInicio
     public function inicio($parametro)
     {
         if ($parametro != "" && $parametro[0] == "cerrar") {
+            // verifica si la sesión esta activa.
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
             // Guardar la bitácora
             $this->bitacora->insertarBitacora($_SESSION['id_usuario'], "cerrar session", "Ha cerrado la session ");
             // Destruyen las variables de las sesión 
@@ -31,7 +35,7 @@ class ControladorInicio
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
             exit();
         }
-        
+
         require_once './src/vistas/dashboard.php';
     }
     public function manualUsuario()
