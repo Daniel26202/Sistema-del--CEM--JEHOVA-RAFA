@@ -25,7 +25,7 @@ class ControladorProveedores
 	public function papelera($parametro)
 	{
 		$proveedor = $this->modelo->papelera();
-		require_once './src/vistas/vistaProveedores/vistaProveedoresPapelera.php';
+		require_once './src/vistas/vistaProveedores/p.php';
 	}
 
 	public function insertar()

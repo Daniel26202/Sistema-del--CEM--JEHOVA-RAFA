@@ -100,7 +100,7 @@ class ControladorInsumos
 	}
 
 
-	public function papelera()
+	public function papelera($parametro)
 	{
 		$desactivos = $this->modelo->papelera();
 		require_once './src/vistas/vistaInsumos/insumosPapelera.php';
