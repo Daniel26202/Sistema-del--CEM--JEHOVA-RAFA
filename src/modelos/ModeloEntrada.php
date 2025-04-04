@@ -77,7 +77,7 @@ class ModeloEntrada extends Db
 		//insertar en la tabla inventario
 
 
-		$consulta3 = $this->conexion->prepare("INSERT INTO inventario VALUES (null, :id_insumo, :cantidad,:fechaVecimiento,:lote)");
+		$consulta3 = $this->conexion->prepare("INSERT INTO inventario VALUES (null, :id_insumo, :cantidad,:fechaVecimiento,:lote, 7)");
 		$consulta3->bindParam(":id_insumo", $id_insumo);
 		$consulta3->bindParam(":cantidad", $cantidad);
 		$consulta3->bindParam(":fechaVecimiento", $fechaDeVencimiento);
