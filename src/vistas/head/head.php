@@ -2,19 +2,6 @@
 
 session_start();
 
-if($parametro != ""){
-	if ($parametro[0] == "cerrar") {	
-		// Destruyen las variables de las sesión 
-		session_unset();
-		session_destroy();
-		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_SESSION['id_usuario'], "cerrar session", "Ha cerrado la session ");
-
-		// Redireccionar al inicio
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
-		exit();
-	}
-}
 
 if (isset($_SESSION['usuario'])) {
 } else {
