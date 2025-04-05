@@ -1,6 +1,7 @@
 // Variables globales
 let currentYear, currentMonth;
 let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
+
 // ========================== EVENTOS DOM ==========================
 
 // Inicialización del DOM
@@ -14,6 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
   sintomas_chart(); // Genera el gráfico de sintomas comunes
 });
 
+document
+  .getElementById("especialidades")
+  .addEventListener("click", generarReporte);
 // ========================== FUNCIONES DEL CALENDARIO ==========================
 
 // Inicializa el calendario
@@ -246,6 +250,9 @@ const especialidades_chart = async () => {
             ],
           },
         ],
+        options: {
+          responsive: false, // Importante para que respete las dimensiones del canvas
+        },
       },
     });
   } catch (error) {
@@ -286,3 +293,32 @@ const sintomas_chart = async () => {
     console.log("Error al generar el gráfico de especialidades:", error);
   }
 };
+
+function generarReporte() {
+  const imagenBase64 = document
+    .getElementById("especialidades_solicitadas")
+    .toDataURL("image/png");
+
+  // Puedes calcular aquí o tener ya calculados los datos estadísticos (p.ej., moda, media)
+  const descripcion =
+    "El gráfico muestra los servicios más solicitados. La moda es el servicio de color Naranja, siendo el más frecuente.";
+
+  fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/exportar_pdf", {
+    // Actualiza con la ruta correcta de tu endpoint
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      imagen: imagenBase64,
+      descripcion: descripcion,
+    }),
+  })
+    .then((response) => response.blob())
+    .then((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "reporte_servicios_mas_solicitados.pdf";
+      a.click();
+    })
+    .catch((error) => console.error("Error generando el reporte:", error));
+}

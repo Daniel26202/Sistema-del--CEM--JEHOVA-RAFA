@@ -46,12 +46,16 @@ require_once './src/vistas/head/head.php';
             </div>
 
             <!-- AQUI EMPIEZAN LOS GRAFICOS -->
+
             <div class="row mt-4">
+
                 <div class="col-md-6 col-12">
                     <div class="chart-card p-4 rounded shadow-sm">
                         <h5>Especialidades solicitadas</h5>
-                        <canvas id="especialidades_solicitadas"></canvas>
+                        <canvas id="especialidades_solicitadas" width="1920" height="1080"></canvas>
+                        <button id="especialidades" class="btn btn-primary">Descargar</button>
                     </div>
+
                 </div>
                 <div class="col-md-6 col-12">
                     <div class="chart-card p-4 rounded shadow-sm">

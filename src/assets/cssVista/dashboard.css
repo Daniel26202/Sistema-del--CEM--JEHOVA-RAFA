@@ -154,3 +154,8 @@ h5 {
     border-radius: 50%;
     /* Si quieres que el icono sea circular */
 }
+
+#especialidades_solicitadas{
+      width: 1920px;  /* tamaño visual en la página */
+  height: 1080px;
+}
