@@ -15,6 +15,11 @@ document.addEventListener("DOMContentLoaded", function () {
     direccion: /^([A-Za-z0-9\s\.,#-]{8,})$/,
     fn: /^\d{4}\-\d{2}\-\d{2}$/,
     fechaDeCita: /^\d{4}\-\d{2}\-\d{2}$/,
+
+    cantidad: /^([1-9]{1})([0-9]{1,4})?$/,
+    precio: /^(\d{1,3}\.\d{3},\d{2}|\d{1,3},\d{2})$/,
+    fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
+    lote: /^[0-9-_]{4,10}$/,
   };
 
   // Nueva función para validar fechas no futuras ni pasadas
@@ -50,10 +55,21 @@ document.addEventListener("DOMContentLoaded", function () {
         pError.classList.remove("d-none");
         return false;
       }
+    }else if (campo === "fechaDeVencimiento"){
+      if (!expresiones.fechaDeVencimiento.test(input.value)) {
+        // Validamos con la expresión regular
+        pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
+        pError.classList.remove("d-none");
+        return false;
+      } else if (valorFecha <= fechaHoy) {
+        // Validamos que no sea una fecha del pasado
+        pError.textContent = "La fecha de vencimiento no puede ser del pasado o de hoy.";
+        pError.classList.remove("d-none");
+        return false;
+      }
     }
-
-    // Si pasa todas las validaciones
-    pError.classList.add("d-none");
+      // Si pasa todas las validaciones
+      pError.classList.add("d-none");
    // actualizarEstadoInput(input, "incorrecto", formulario);
     return true;
   }
@@ -199,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // const expresion = expresiones[tipoCampo];
 
     // Validamos específicamente el campo de fecha
-    if (campo === "fn" || campo === "fechaDeCita") {
+    if (campo === "fn" || campo === "fechaDeCita" || campo  === "fechaDeVencimiento") {
       campos[campo] = validarFecha(input, pErrorGuardar, campo,  formulario);
     } else {
       // Para otros campos, usamos la validación ya existente

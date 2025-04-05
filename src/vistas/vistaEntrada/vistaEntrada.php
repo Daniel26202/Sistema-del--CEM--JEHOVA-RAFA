@@ -88,7 +88,7 @@
                 <div class="hover-grande">
 
                     <a href="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores" class="text-decoration-none text-black me-3" id="DMserviciosExtras">
-                        <img src="<?= $urlBase?>../src/assets/img/proveedor (3).png" width="20" height="20" uk-svg class="me-1">Proveedores</a>
+                        <img src="<?= $urlBase ?>../src/assets/img/proveedor (3).png" width="20" height="20" uk-svg class="me-1">Proveedores</a>
                 </div>
 
             </li>
@@ -483,7 +483,7 @@
 
         </div>
 
-        <form class="form-modal" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/guardar" autocomplete="off" id="modalAgregarEntrada">
+        <form class="form-modal form-validable" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/guardar" autocomplete="off" id="modalAgregarEntrada">
             <div id="alerta-guardar-entrada" class="alert alert-danger d-none">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO
             </div>
 
@@ -491,11 +491,10 @@
 
             <div class="input-group flex-nowrap">
                 <span class="input-modal mt-1">
-                    <img src="./src/assets/img/proveedor(2).png" width="20" height="20" uk-svg class="me-1">
+                    <img src="../src/assets/img/proveedor(2).png" width="20" height="20" uk-svg class="me-1">
                 </span>
 
                 <select class="form-control input-modal" name="id_proveedor">
-                    <option disabled selected>Selecciona El Proveedor</option>
                     <?php foreach ($proveedores as $proveedor): ?>
                         <option value="<?= $proveedor['id_proveedor'] ?>">
                             <?= $proveedor['nombre'] ?>
@@ -514,7 +513,6 @@
                 </span>
                 <!-- <input class="form-control input-modal input-disabled input" type="text" placeholder="Ingrese el Insumo" id="nombre_insumo" disabled> -->
                 <select class="form-control input-modal" name="id_insumo" id="id_insumoModal">
-                    <option disabled selected value="">Seleccion Insumo</option>
                     <?php foreach ($insumos as $in): ?>
                         <option value="<?= $in["id_insumo"] ?>">
                             <?= $in["nombre"] ?>
@@ -535,12 +533,15 @@
                     <div class=" text-center m-auto" style="font-size: 14px;">Numero de Lote</div>
                 </span>
                 <!-- <input class="form-control input-modal input-disabled input" type="text" placeholder="Ingrese el Insumo" id="nombre_insumo" disabled> -->
-                <input type="number" class="form-control input-modal" name="lote">
+                <input type="number" class="form-control input-modal input-validar" name="lote">
+
 
 
 
                 <!-- <input type="hidden" name="id_insumo" id="id_insumo"> -->
             </div>
+
+            <p class="p-error-lote d-none">El numero de lote solo debe incluir numeros minimos 4</p>
 
             <div class="input-group flex-nowrap d-none">
                 <span class="input-modal mt-1 d-flex col-6" style="border-right: 2px solid #387ADF;">
@@ -559,8 +560,10 @@
                     </svg>
                     <div class=" text-center m-auto" style="font-size: 14px;">Fecha de Vencimiento</div>
                 </span>
-                <input class="form-control input-modal input" type="date" name="fechaDeVencimiento" placeholder="Fecha De Vencimiento" id="fechaDeVencimiento">
+                <input class="form-control input-modal input input-validar" type="date" name="fechaDeVencimiento" placeholder="Fecha De Vencimiento" id="fechaDeVencimiento">
             </div>
+
+            <p class="p-error-fechaDeVencimiento d-none"></p>
 
 
 
@@ -575,8 +578,10 @@
                     </svg>
                     <div class=" text-center m-auto" style="font-size: 14px;">Cantidad</div>
                 </span>
-                <input class="form-control input-modal input" type="text" name="cantidad" placeholder="Cantidad" required>
+                <input class="form-control input-modal input input-validar" type="text" name="cantidad" placeholder="Cantidad" required>
             </div>
+
+            <p class="p-error-cantidad d-none">La cantidad debe ser solo datos numericos</p>
 
 
             <div class="input-group flex-nowrap">
@@ -589,13 +594,13 @@
                     </svg>
                     <div class=" text-center m-auto" style="font-size: 14px;">Precio</div>
                 </span>
-                <input class="form-control input-modal input" type="text" name="precio" placeholder="Precio" required>
+                <input class="form-control input-modal input input-validar" type="text" name="precio" placeholder="Precio" required>
 
             </div>
-            <i id="formatoPrecio" class="d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00 </i>
+            <!-- <i id="formatoPrecio" class="d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00 </i> -->
 
 
-
+            <p class="p-error-precio d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00</p>
 
             <div class="mt-3 uk-text-right">
                 <button class="uk-button col-6 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
@@ -618,4 +623,4 @@
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/entradas.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/expresionesModulares.js"></script>

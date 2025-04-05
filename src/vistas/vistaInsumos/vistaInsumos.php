@@ -490,7 +490,7 @@
                         placeholder="Imagen">
                 </div>
 
-                <p class="p-error-imagen d-none">imagen</p>
+              
 
                 <div class="input-group flex-nowrap d-none">
                     <span class="input-modal mt-1">
@@ -518,9 +518,9 @@
                     </span>
                     <input class="form-control input-modal input-disabled input-editar" type="text" name="nombre"
                         placeholder="Nombre">
-                </div>
+                </div>Editar Insumos 
 
-                <p class="p-error-nombre d-none">nombre</p>
+                
 
 
 
