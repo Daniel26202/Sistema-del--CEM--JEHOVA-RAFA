@@ -298,6 +298,8 @@
                         placeholder="Imagen" required>
                 </div>
 
+                <p class="p-error-imagen d-none">La imagen debe ser .jpg o .png o jpeg</p>
+
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-capsule azul"
@@ -310,13 +312,15 @@
                         placeholder="Nombre" required>
                 </div>
 
+                <p class="p-error-nombre d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
                         <img src="./src/assets/img/proveedor(2).png" width="20" height="20" uk-svg class="me-1">
                     </span>
 
                     <select class="form-control input-modal" name="id_proveedor" required>
-                        <option disabled selected>Selecciona el Proveedor</option>
+                        <!-- <option disabled selected>Selecciona el Proveedor</option> -->
                         <?php foreach ($proveedores as $proveedor): ?>
                             <option value="<?= $proveedor['id_proveedor'] ?>">
                                 <?= $proveedor['nombre'] ?>
@@ -337,6 +341,8 @@
                         placeholder="Descripcion" required>
                 </div>
 
+                <p class="p-error-descripcion d-none">Debe estar completa y detallada</p>
+
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack azul" viewBox="0 0 16 16">
@@ -348,6 +354,8 @@
                         placeholder="Numero De Lote" required>
                 </div>
 
+                <p class="p-error-lote d-none">El numero de lote debe ser de almeno 4 digitos y como maximo 10</p>
+
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack azul" viewBox="0 0 16 16">
@@ -358,6 +366,8 @@
                     <input class="form-control input-modal input-disabled" type="text" name="cantidad"
                         placeholder="Cantidad" required>
                 </div>
+
+                <p class="p-error-cantidad d-none">La cantidad solo puede contener numeros como minimo 1 maximo 4</p>
 
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
@@ -371,6 +381,8 @@
                     <input class="form-control input-modal input-disabled" type="text" name="precio"
                         placeholder="Precio" required>
                 </div>
+
+                <p class="p-error-precio d-none">El precio debe tener solo digitos con 2 decimales ejemplo 1,00 o 10,00 o 100,00</p>
 
 
                 <div class="input-group flex-nowrap d-none">
@@ -399,6 +411,8 @@
                         name="fecha_de_vencimiento" title="Fecha de Vencimiento" required>
                 </div>
 
+                <p class="p-error-fecha_de_vencimiento d-none">Vencimiento</p>
+
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-collection-fill azul" viewBox="0 0 16 16">
@@ -408,6 +422,8 @@
                     <input class="form-control input-modal input-disabled" type="text" name="stockMinimo"
                         placeholder="Stock Minimo" required>
                 </div>
+
+                <p class="p-error-stockMinimo d-none">El stock minimo solo puede contener digitos como minimo 1</p>
 
 
                 <div class="mt-3 uk-text-right">
@@ -474,6 +490,8 @@
                         placeholder="Imagen">
                 </div>
 
+                <p class="p-error-imagen d-none">imagen</p>
+
                 <div class="input-group flex-nowrap d-none">
                     <span class="input-modal mt-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
@@ -501,6 +519,8 @@
                     <input class="form-control input-modal input-disabled input-editar" type="text" name="nombre"
                         placeholder="Nombre">
                 </div>
+
+                <p class="p-error-nombre d-none">nombre</p>
 
 
 

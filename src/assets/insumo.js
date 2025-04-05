@@ -26,11 +26,11 @@ addEventListener("DOMContentLoaded", function () {
     imagen: /([A-Za-z0-9._-]\s?)+\.(jpg|JPG|PNG|png|jpeg|JPEG)+/,
     nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
     descripcion: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
-    cantidad: /^([1-9]{1})([0-9]{1,3})?$/,
+    cantidad: /^([1-9]{1})([0-9]{1,4})?$/,
     precio: /^(\d{1,3}\.\d{3},\d{2}|\d{1,3},\d{2})$/,
     fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
     stockMinimo: /^([1-9]{1})([0-9]{1})?$/,
-    lote: /^[A-Za-z0-9-_]{3,10}$/,
+    lote: /^[0-9-_]{4,10}$/,
     //^([0-9]+)$
   };
 
@@ -75,7 +75,7 @@ addEventListener("DOMContentLoaded", function () {
         document.querySelector(".boton-responsive").style.width = "20%";
         document.querySelector(".form-responsive").style.width = "90%";
         document.querySelector(".form-responsive").style.margin = "auto";
-        cajaDeBuscadorInsumos.classList.remove('align-items-center');
+        cajaDeBuscadorInsumos.classList.remove("align-items-center");
       } else {
         tarjet.style.width = "15rem";
         tarjet.style.margin = "";
@@ -86,7 +86,7 @@ addEventListener("DOMContentLoaded", function () {
         document.querySelector(".boton-responsive").style.width = "";
         document.querySelector(".form-responsive").style.width = "";
         document.querySelector(".form-responsive").style.margin = "";
-        cajaDeBuscadorInsumos.classList.add('align-items-center');
+        cajaDeBuscadorInsumos.classList.add("align-items-center");
       }
     });
   };
@@ -257,32 +257,79 @@ addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Nueva función para validar fechas no futuras ni pasadas
+  function validarFecha(input, pError, campo, campos) {
+    const valorFecha = new Date(input.value);
+    const fechaHoy = new Date();
+    fechaHoy.setHours(0, 0, 0, 0); // Establece el tiempo a la medianoche para comparación
+
+    pError.classList.add("fw-bold");
+    pError.style.color = "rgb(224, 3, 3)";
+
+    if (campo == "fechaDeVencimiento") {
+      if (!expresionesInsumos.fechaDeVencimiento.test(input.value)) {
+        // Validamos con la expresión regular
+        pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
+        pError.classList.remove("d-none");
+        return false;
+      } else if (valorFecha <= fechaHoy) {
+        // Validamos que no sea una fecha del pasado
+        pError.textContent = "La fecha no puede ser del pasado.";
+        pError.classList.remove("d-none");
+        return false;
+      }
+    }
+
+    // Si pasa todas las validaciones
+    pError.classList.add("d-none");
+    // actualizarEstadoInput(input, "incorrecto", formulario);
+    
+    camposInsumos[campo] = true;
+  }
+
   //validaciones de guardar
 
   const validarCamposInsumos = (expresiones, input, campo, camposInsumos) => {
-    if (expresiones.test(input.value)) {
-      input.parentElement.classList.remove("grpFormInCorrect");
-      input.parentElement.classList.add("grpFormCorrect");
-      camposInsumos[campo] = true;
+    const pErrorGuardar = document.querySelector(".p-error-" + input.name);
+    pErrorGuardar.classList.add("fw-bold");
+    pErrorGuardar.style.color = "rgb(224, 3, 3)";
+    console.log(pErrorGuardar);
+    if (input.name == "fecha_de_vencimiento") {
+      console.log("2trabaje con la echa");
+      validarFecha(input, pErrorGuardar, campo, camposInsumos);
     } else {
-      input.parentElement.classList.remove("grpFormCorrect");
-      input.parentElement.classList.add("grpFormInCorrect");
-      camposInsumos[campo] = false;
+      if (expresiones.test(input.value)) {
+        input.parentElement.classList.remove("grpFormInCorrect");
+        input.parentElement.classList.add("grpFormCorrect");
+        pErrorGuardar.classList.add("d-none");
+        camposInsumos[campo] = true;
+      } else {
+        input.parentElement.classList.remove("grpFormCorrect");
+        input.parentElement.classList.add("grpFormInCorrect");
+        pErrorGuardar.classList.remove("d-none");
+        camposInsumos[campo] = false;
+      }
     }
   };
 
   function validarFormularioInsumo(e) {
     switch (e.target.name) {
       case "imagen":
+        const pErrorGuardarImagen = document.querySelector(".p-error-imagen");
+        console.log(pErrorGuardarImagen);
+        pErrorGuardarImagen.classList.add("fw-bold");
+        pErrorGuardarImagen.style.color = "rgb(224, 3, 3)";
         let imagenSeparada = e.target.value.split("\\");
         let nombreImagen = imagenSeparada.pop();
         if (expresionesInsumos.imagen.test(nombreImagen)) {
           e.target.parentElement.classList.remove("grpFormInCorrect");
           e.target.parentElement.classList.add("grpFormCorrect");
+          pErrorGuardarImagen.classList.add("d-none");
           camposInsumos["imagen"] = true;
         } else {
           e.target.parentElement.classList.remove("grpFormCorrect");
           e.target.parentElement.classList.add("grpFormInCorrect");
+          pErrorGuardarImagen.classList.remove("d-none");
           camposInsumos["imagen"] = false;
         }
 
@@ -427,12 +474,23 @@ addEventListener("DOMContentLoaded", function () {
     input.addEventListener("input", validarFormularioInsumo);
   });
 
+  inputs.forEach((input) => {
+    input.addEventListener("keyup", validarFormularioInsumo);
+  });
+
+  inputs.forEach((input) => {
+    input.addEventListener("blur", validarFormularioInsumo);
+  });
+
+
+
   inputEditar.forEach((input) => {
     input.addEventListener("input", validarFormularioInsumoEditar);
   });
 
   modalAgregarInsumos.addEventListener("submit", function (e) {
     e.preventDefault();
+
     if (
       camposInsumos.imagen &&
       camposInsumos.nombre &&
@@ -443,6 +501,7 @@ addEventListener("DOMContentLoaded", function () {
       camposInsumos.stockMinimo &&
       camposInsumos.lote
     ) {
+      console.log("si se envia")
       modalAgregarInsumos.submit();
     } else {
       document.getElementById("alerta-guardar").classList.remove("d-none");
