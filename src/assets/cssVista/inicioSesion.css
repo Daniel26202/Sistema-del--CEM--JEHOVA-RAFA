@@ -4,6 +4,19 @@
     box-sizing: border-box;
 }
 
+.centro{
+    background-color: #fff;
+        max-width: 400px;
+        width: 100%;
+        max-height: 800px;
+        height: 100%;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+}
+
+
 /* flechas del carrusel; la oculto */
 .carousel .carousel-control-prev,
 .carousel .carousel-control-next {
@@ -48,10 +61,21 @@ se nota muy mínimo*/
     }
 }
 
+#formiIniciarSesion{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .linea-titulo {
+    margin-left: 30px;
     margin-top: 6px;
     width: 33.4vh;
     border-bottom: solid 4px #387ADF;
+}
+
+.titulo{
+    margin-left: 30px;
 }
 
 .formulario {
@@ -61,14 +85,16 @@ se nota muy mínimo*/
 }
 
 .input {
-    background-color: #fff;
-    padding-left: 28.6px;
-    padding-bottom: 4.8px;
-    width: 78vh;
-    border: none;
-    outline: none;
-    border-bottom: solid 0.55vh #387ADF;
-}
+    border-radius: 4px;
+        /* background-color: #ffffff; */
+        padding-left: 28.6px;
+        padding-bottom: 6px;
+        width: 40vh;
+        border: none;
+        outline: none;
+        border-bottom: solid 0.55vh #387ADF;
+    }
+
 
 .icono {
 
@@ -97,12 +123,36 @@ se nota muy mínimo*/
     background-color: #387ADF;
 }
 
+#boton_inicio_sesion{
+    margin-top: 5px;
+    background-color: #007bff;
+    color: #fff;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1.2rem;
+}
+
+#boton_inicio_sesion:hover {
+    background-color: #0056b3;
+}
+
 .boton {
-    margin-left: 35%;
+    margin-left: 30%;
+    margin-bottom: 10px;
     padding: 0% 30px;
     padding-bottom: 4px;
     font-size: 1.6rem;
     letter-spacing: 1.5px;
+}
+
+#recuperar_contraseña{
+    margin-left: 26%;
+    margin-top: 10px;
+    margin-bottom:  10px;
+    font-size: 1.2rem;
+    color: #387ADF;
 }
 
 .comentarioAzul {
