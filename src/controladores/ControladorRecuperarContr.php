@@ -21,7 +21,7 @@ class ControladorRecuperarContr
         require_once "./src/vistas/vistaRecuperarContr/recuperarContr.php";
     }
 
-    public function generarCodigo($idUsuario, $correoM)
+    public function generarCodigo($correoM)
     {
         // Generamos un codigoV de 8 caracteres
         $codigoV = random_int(100000, 999999);
@@ -110,12 +110,27 @@ class ControladorRecuperarContr
             $_SESSION["correoD"] = $correoM;
 
         } catch (Exception $e) {
-            $validarCorreo = false;
+            $validarCorreo = "conexionFallida";
             $mensajeError = "Error al enviar el correo: {$mail->ErrorInfo}";
         }
 
         return $validarCorreo;
 
+    }
+    public function reenviarCodigo()
+    {
+        if (isset($_POST)) {
+            $correoM = strtolower($_POST["correo"]);
+            $validarEC = $this->generarCodigo($correoM);
+            if ($validarEC === "conexionFallida") {
+                echo json_encode($validarEC);
+
+            } else if ($validarEC === true) {
+
+                // enviado con éxito
+                echo json_encode($validarEC);
+            }
+        }
     }
 
     public function verificarUC()
@@ -126,12 +141,11 @@ class ControladorRecuperarContr
             // si el usuario y el correo es correcto, pasa lo siguiente de lo contrario retorna false
             if ($res) {
 
+                $validarEC = $this->generarCodigo($correoM);
+                if ($validarEC === "conexionFallida") {
+                    echo json_encode($validarEC);
 
-                $validarEC = $this->generarCodigo($res["id_usuario"], $correoM);
-                if ($validarEC == false) {
-                    echo json_encode("conexionFallida");
-
-                } else {
+                } else if ($validarEC === true) {
 
                     // enviado con éxito
                     echo json_encode($res);
