@@ -26,13 +26,21 @@ class ControladorFactura
 
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 
-		$extras = $this->modelo->mostrarServicioExtra();
+		$extras = $this->modelo->mostrarServicios();
 
 		$insumos = $this->modelo->mostrarInsumos();
 
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 
 		require_once './src/vistas/vistaFactura/vistaFactura.php';
+	}
+	
+	public function factura($parametro){
+		$insumos = $this->modelo->mostrarInsumos();
+		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
+		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
+		$extras = $this->modelo->mostrarServicios();
+		require_once './src/vistas/vistaFactura/factura.php';
 	}
 
 
@@ -59,7 +67,7 @@ class ControladorFactura
 	public function mostrarTodosLosServicios()
 	{
 		//$respuesta = array('id' => $_GET["id"]);
-		$respuesta = $this->modelo->buscarServicioExtra($_POST["nombre"]);
+		$respuesta = $this->modelo->buscarServicio($_POST["nombre"]);
 
 		echo json_encode($respuesta);
 	}

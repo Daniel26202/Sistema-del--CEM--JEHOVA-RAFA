@@ -54,7 +54,7 @@ if (!empty($parametro)) {
 
 				<!-- aquí va la img de Jehova Rafa -->
 				<img class="rounded-circle d-flex justify-content-center" width="65" height="65"
-					src="./src/assets/img/logotipo.jpg">
+					src="<?= $urlBase?>../src/assets/img/logotipo.jpg">
 
 			</div>
 
@@ -124,7 +124,7 @@ if (!empty($parametro)) {
 			<?php if ($_SESSION['rol'] == "usuario"): ?>
 				<!-- no hay -->
 			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
-				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio" uk-tooltip="Facturacion" id="menuFacturacion">
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura" uk-tooltip="Facturacion" id="menuFacturacion">
 					<div class="" id="menuFacturacionColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 							class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">

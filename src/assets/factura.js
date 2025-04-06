@@ -55,7 +55,7 @@ addEventListener("DOMContentLoaded", () => {
       const datos = new FormData(formularioPaciente);
       const contenido = { method: "POST", body: datos };
       let peticion = await fetch(
-        "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
         contenido
       );
       console.log(peticion)
