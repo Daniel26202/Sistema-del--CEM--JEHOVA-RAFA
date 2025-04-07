@@ -50,8 +50,7 @@ class ModeloFactura extends Db
 
 	public function mostrarServicios()
 	{
-		$consulta = $this->conexion->prepare("SELECT cs.id_categoria,cs.nombre, d.nombre AS nombre_d, d.apellido AS apellido_d,sm.*,d.* FROM serviciomedico sm INNER JOIN personal_has_serviciomedico psm ON sm.id_servicioMedico =psm.serviciomedico_id_servicioMedico INNER JOIN
-personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN usuario u ON u.id_usuario = d.id_usuario WHERE sm.estado = 'ACT' AND cs.nombre != 'Consulta' ");
+		$consulta = $this->conexion->prepare("SELECT cs.id_categoria,cs.nombre, d.nombre AS nombre_d, d.apellido AS apellido_d,sm.*,d.*  FROM categoria_servicio cs JOIN serviciomedico sm ON sm.id_categoria = cs.id_categoria JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico JOIN personal d ON psm.personal_id_personal = d.id_personal JOIN usuario u ON  u.id_usuario = d.id_usuario WHERE sm.estado = 'ACT' AND cs.nombre != 'Consulta' ");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
@@ -307,15 +306,14 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 	}
 
 
-	public function insertaFactura($id_cita, $fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $numero_de_lote)
+	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $numero_de_lote)
 	{
 
 
 
 		//insertar factura
-		$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :id_cita, :fecha, :total, :id_paciente, NULL,'ACT')");
+		$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_paciente)");
 
-		$consulta->bindParam(":id_cita", $id_cita);
 		$consulta->bindParam(":fecha", $fecha);
 		$consulta->bindParam(":total", $total);
 		$consulta->bindParam(":id_paciente", $id_paciente);
@@ -323,9 +321,12 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		$id_factura = $this->conexion->lastInsertId();
 		echo $id_factura;
 
-		$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
-		$consulta->bindParam(":id_cita", $id_cita);
-		$consulta->execute();
+
+		//nota esto de la cita se tiene que adaptar cuando se facture una cita
+
+		// $consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
+		// $consulta->bindParam(":id_cita", $id_cita);
+		// $consulta->execute();
 
 
 		$arrayDePago = $formasDePago;
@@ -347,7 +348,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		//insertar servicios extras
 		if ($serviciosExtras) {
 			foreach ($serviciosExtras as $s) {
-				$consulta = $this->conexion->prepare("INSERT INTO facturadeservicio VALUES (null, :id_factura, :s)");
+				$consulta = $this->conexion->prepare("INSERT INTO serviciomedico_has_factura VALUES (:id_factura, :s, NULL)");
 				$consulta->bindParam(":id_factura", $id_factura);
 				$consulta->bindParam(":s", $s);
 				if ($consulta->execute()) {
@@ -377,11 +378,9 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 
 
-		if ($id_cita == null) {
+		
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/" . $id_factura);
-		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/" . $id_factura . "/" . $id_cita);
-		}
+		
 	}
 
 
