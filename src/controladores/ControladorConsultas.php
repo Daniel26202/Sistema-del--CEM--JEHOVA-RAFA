@@ -54,6 +54,9 @@ class ControladorConsultas
           
             $precio_sin_puntos = str_replace('.', '', $_POST['precio']);
 
+
+			print_r($_POST);
+
 			$this->modelo->insertar($_POST['id_categoria'], $_POST['id_doctor'], $precio_sin_puntos);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'],"servicioMedico","Ha Insertado un nuevo  servicio medico");
@@ -88,7 +91,7 @@ class ControladorConsultas
 	{
 
 		$precio_sin_puntos = str_replace('.', '', $_POST['precioEditar']);
-		$this->modelo->editar($_POST["id_servicioMedico"], $_POST["id_doctor"], $precio_sin_puntos);
+		$this->modelo->editar($_POST["id_servicioMedico"], $precio_sin_puntos);
 		// Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario'],"servicioMedico","Ha modificadp un servicio medico");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/editado");

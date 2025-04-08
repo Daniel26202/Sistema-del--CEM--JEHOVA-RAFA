@@ -47,9 +47,8 @@ serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servic
     public function insertar($id_categoria, $id_doctor, $precio)
     {
 
-        $consulta = $this->conexion->prepare("INSERT INTO serviciomedico (id_categoria, id_personal, precio, estado) VALUES (:id_categoria, :id_doctor, :precio, 'ACT')");
+        $consulta = $this->conexion->prepare("INSERT INTO serviciomedico (id_categoria, precio, estado) VALUES (:id_categoria, :precio, 'ACT')");
         $consulta->bindParam(":id_categoria", $id_categoria);
-        $consulta->bindParam(":id_doctor", $id_doctor);
         $consulta->bindParam(":precio", $precio);
         $consulta->execute();
 
@@ -77,10 +76,9 @@ serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servic
     }
 
 
-    public function editar($id_servicioMedico, $id_doctor, $precio)
+    public function editar($id_servicioMedico, $precio)
     {
-        $consulta = $this->conexion->prepare("UPDATE serviciomedico SET id_personal = :id_doctor, precio = :precio WHERE id_servicioMedico = :id_servicioMedico");
-        $consulta->bindParam(":id_doctor", $id_doctor);
+        $consulta = $this->conexion->prepare("UPDATE serviciomedico SET precio = :precio WHERE id_servicioMedico = :id_servicioMedico");
         $consulta->bindParam(":precio", $precio);
         $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
         $consulta->execute();
