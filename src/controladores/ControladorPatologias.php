@@ -30,7 +30,7 @@ class ControladorPatologias
 	public function registrarPatologia(){
 	
 
-		$resultaPatologia = $this->patologia->nombrePatologia($_POST['nombrePatologia']);
+		$resultaPatologia = $this->patologia->nombrePatologia($_POST['nombre']);
 
 		
 		if ($resultaPatologia === "existeC") {
@@ -38,7 +38,7 @@ class ControladorPatologias
 
         } else {
          
-			$this->patologia->insertarPatologia($_POST["nombrePatologia"]);
+			$this->patologia->insertarPatologia($_POST["nombre"]);
 
 			// Guardo la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'],"patologia","Ha Insertado una patologia");
