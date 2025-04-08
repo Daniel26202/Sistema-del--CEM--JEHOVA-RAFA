@@ -33,11 +33,14 @@ addEventListener("DOMContentLoaded", () => {
   //buscador
   const tablaSevicios = document.getElementById("cuerpoTablaServicios");
 
-
   //caja de todos los insumos
-  const caja_insumos_a_seleccionar = document.querySelectorAll(".caja_insumos_a_seleccionar div")
+  const caja_insumos_a_seleccionar = document.querySelectorAll(
+    ".caja_insumos_a_seleccionar div"
+  );
   //input para buscar todos los insumos
-  const buscadorDeTodosLosInsumos = document.getElementById("buscadorDeTodosLosInsumos")
+  const buscadorDeTodosLosInsumos = document.getElementById(
+    "buscadorDeTodosLosInsumos"
+  );
 
   if (window.location.href.includes("id_cita")) {
     console.log("id_cita");
@@ -46,8 +49,6 @@ addEventListener("DOMContentLoaded", () => {
       .querySelectorAll(".btn-escondidos")
       .forEach((ele) => ele.classList.add("d-none"));
   }
-
-
 
   //buscador paciente cuando no tiene cita
   const buscarPaciente = async (formularioPaciente) => {
@@ -58,7 +59,7 @@ addEventListener("DOMContentLoaded", () => {
         "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
         contenido
       );
-      console.log(peticion)
+      console.log(peticion);
       let resultado = await peticion.json();
       console.log(resultado);
       if (resultado[0] != false) {
@@ -106,6 +107,18 @@ addEventListener("DOMContentLoaded", () => {
           autohide: false,
         });
         toast.show();
+
+        //le pasamos el valor de la cedula al paciente 
+        document.getElementById("cedula").value =
+          document.getElementById("inputBusPaCi").value;
+
+          document
+            .getElementById("cedula")
+            .parentElement.classList.add("grpFormCorrect");
+
+
+
+
         document
           .querySelectorAll(".btn-escondidos")
           .forEach((ele) => ele.classList.add("d-none"));
@@ -114,6 +127,77 @@ addEventListener("DOMContentLoaded", () => {
       console.log(error);
     }
   };
+
+  //insertar funcion para Paciente cuando no existe
+  const insertarPaciente = async (form) => {
+    // try {
+      const datosFormulario = new FormData(form);
+      const contenido = {
+        method: "POST",
+        body: datosFormulario,
+      };
+      let peticion = await fetch(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
+        contenido
+      );
+      let resultado = await peticion.json();
+      console.log(resultado);
+
+      // si el resultado es un mensaje es que algo salio mal y la cedula ya eiste si no se inserta normalmente
+      if (resultado.cedula == "error") {
+        console.log(resultado.cedula + " error");
+
+        document.querySelector(".alertaErrorCedula").classList.remove("d-none");
+        setTimeout(function () {
+          document.querySelector(".alertaErrorCedula").classList.add("d-none");
+        }, 7000);
+      } else {
+        //ocultar modal de paciente
+        UIkit.modal("#modal-examplePaciente").hide();
+
+        document.getElementById("inputBusPaCi").value = resultado.cedula;
+
+        //ocultar el minimodal
+        const toastElement = document.getElementById("myToast");
+        const toast = new bootstrap.Toast(toastElement, {
+          autohide: false,
+        });
+        
+
+        buscarPaciente(document.getElementById("form-buscador-factura"));
+
+        //limpiar formulario de oaciente
+
+        form.reset();
+
+        toast.hide();
+      }
+    }
+  //  catch (error) {
+  //     console.log("algo salio mal" + error);
+  //   }
+  // };
+
+  //llamar a la funcion para insertar al paciente
+  document
+    .getElementById("modalAgregar")
+    .addEventListener("submit", function (e) {
+      let inputsBuenos = [];
+      //validar si todos los inputs nos estan validados no se puede enviar
+      this.querySelectorAll(".input-validar").forEach((input) => {
+        if (input.parentElement.classList.contains("grpFormCorrect")) {
+          inputsBuenos.push(true);
+        }
+      });
+      console.log(inputsBuenos);
+
+      if (
+        inputsBuenos.length == 5 &&
+        document.querySelector(".p-error-fn").classList.contains("d-none")
+      ) {
+        insertarPaciente(this);
+      }
+    });
 
   //buscar cuando el paciente una tiene cita
   const buscarPacienteConCita = async (formularioPaciente) => {
@@ -141,9 +225,6 @@ addEventListener("DOMContentLoaded", () => {
     }
   };
 
-
-
-
   if (window.location.href.includes("id_cita")) {
     console.log("si");
   } else if (window.location.href.includes("idH")) {
@@ -159,31 +240,17 @@ addEventListener("DOMContentLoaded", () => {
 
   //buscar servicio por categoria
   selectBuscarCategoria.addEventListener("keyup", function () {
-    const valorBusqueda = this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();
+    const valorBusqueda =
+      this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();
 
-
-    tablaSevicios.querySelectorAll(".tr").forEach(ele => {
-
-
-
+    tablaSevicios.querySelectorAll(".tr").forEach((ele) => {
       if (ele.children[1].innerText.includes(valorBusqueda)) {
         ele.classList.remove("d-none");
-
       } else {
         ele.classList.add("d-none");
-
       }
-
-
-    })
-
-
-  })
-
-
-
-
-
+    });
+  });
 
   // // impedimos que los formularios recarguen la pagina y hacemos las cosas que queremos
   calcularTotal();
@@ -195,9 +262,15 @@ addEventListener("DOMContentLoaded", () => {
       html += `
         <tr class="border-top ">
         <td class="border-top text-center"> ${index + 1}</td>
-        <td class="border-top border-start text-center"> ${element["servicio"]}</td>
-        <td class="border-top border-start text-center"> ${element["doctor"]}</td>
-        <td class="border-top border-start text-center">${element["precio"]} BS</td>
+        <td class="border-top border-start text-center"> ${
+          element["servicio"]
+        }</td>
+        <td class="border-top border-start text-center"> ${
+          element["doctor"]
+        }</td>
+        <td class="border-top border-start text-center">${
+          element["precio"]
+        } BS</td>
 
         <td class="border-top border-start text-center">
 
@@ -340,81 +413,77 @@ addEventListener("DOMContentLoaded", () => {
     ocultarBotones();
   }
 
+  const tbodyinsertarInsumo = document.getElementById("cuerpoTablaInsumos");
+  //codigo para manejar las cajas de insumos en el modal
 
-    const tbodyinsertarInsumo = document.getElementById("cuerpoTablaInsumos")
-    //codigo para manejar las cajas de insumos en el modal
+  caja_insumos_a_seleccionar.forEach((ele) => {
+    ele.addEventListener("click", function () {
+      if (ele.classList.contains("insumo_no_seleccionado")) {
+        ele.classList.remove("insumo_no_seleccionado");
+        ele.classList.add("insumo_seleccionado");
+      } else {
+        ele.classList.remove("insumo_seleccionado");
+        ele.classList.add("insumo_no_seleccionado");
+      }
+      //si ha uno o mas cuadros con la clase insumo_seleccionado es por que al menos un insumo fue selecciona
+      if (document.querySelectorAll(".insumo_seleccionado").length > 0) {
+        //Aparece el boton
+        document.getElementById("btnModalInsumos1").classList.remove("d-none");
+      } else {
+        //Si no desaparece el boton
+        document.getElementById("btnModalInsumos1").classList.add("d-none");
+      }
+    });
+  });
 
+  //codigo para buscar todos los insumos
+  buscadorDeTodosLosInsumos.addEventListener("keyup", function () {
+    caja_insumos_a_seleccionar.forEach((ele) => {
+      if (
+        ele.innerHTML
+          .split("  ")[0]
+          .toLowerCase()
+          .includes(this.value.toLowerCase())
+      ) {
+        ele.classList.remove("d-none");
+      } else {
+        ele.classList.add("d-none");
+      }
+    });
+  });
 
-
-    caja_insumos_a_seleccionar.forEach(ele=>{
-      
-      ele.addEventListener("click",function(){
-
-        if(ele.classList.contains("insumo_no_seleccionado")){
-          ele.classList.remove("insumo_no_seleccionado")
-          ele.classList.add("insumo_seleccionado")
-        }else{
-          ele.classList.remove("insumo_seleccionado")
-          ele.classList.add("insumo_no_seleccionado")
-        }
-        //si ha uno o mas cuadros con la clase insumo_seleccionado es por que al menos un insumo fue selecciona 
-        if (document.querySelectorAll(".insumo_seleccionado").length > 0) {
-          //Aparece el boton
-          document.getElementById("btnModalInsumos1").classList.remove("d-none")
-        } else {
-          //Si no desaparece el boton
-          document.getElementById("btnModalInsumos1").classList.add("d-none")
-        }
-      })
-    })
-
-
-    //codigo para buscar todos los insumos
-    buscadorDeTodosLosInsumos.addEventListener("keyup", function(){
-      caja_insumos_a_seleccionar.forEach(ele=>{
-        if(ele.innerHTML.split("  ")[0].toLowerCase().includes(this.value.toLowerCase())){
-          ele.classList.remove("d-none");
-        }else{
-          ele.classList.add("d-none");
-        }
-      })
-
-    })
-
-    //funcion al darle clic al boton siguiente de le modal de insumos 1
-    document.getElementById("btnModalInsumos1").addEventListener("click", function() {
-      
-      let cajas_seleccionadas = document.querySelectorAll(".insumo_seleccionado");
+  //funcion al darle clic al boton siguiente de le modal de insumos 1
+  document
+    .getElementById("btnModalInsumos1")
+    .addEventListener("click", function () {
+      let cajas_seleccionadas = document.querySelectorAll(
+        ".insumo_seleccionado"
+      );
       let trModalInsums = document.querySelectorAll("#cuerpoTablaInsumos tr");
 
-      trModalInsums.forEach(tr => {
+      trModalInsums.forEach((tr) => {
         //La variable incia en falso por que cuando incia el bucle no hay coincidencias
-          let insumoEncontrado = false;
-          //se hace otro bucle de todas las cajas de insumos
-          cajas_seleccionadas.forEach(caja => {
-              //Si es texto de la caja coincide con alguna fila de la tabla se cambia el valor a true
-              if (caja.innerText.split(" ")[0] === tr.children[1].innerText.trim()) {
-                  insumoEncontrado = true;
-              }
-          });
-
-          //Dependiendo si la variable es true o false se oculta o muestra la tabla
-          if (insumoEncontrado) {
-              //console.log(`Coincidencia encontrada para ${tr.children[1].innerText.trim()}`);
-              tr.classList.remove("d-none")
-          } else {
-              //console.log(`No se encontró coincidencia para ${tr.children[1].innerText.trim()}`);
-              tr.classList.add("d-none")
+        let insumoEncontrado = false;
+        //se hace otro bucle de todas las cajas de insumos
+        cajas_seleccionadas.forEach((caja) => {
+          //Si es texto de la caja coincide con alguna fila de la tabla se cambia el valor a true
+          if (
+            caja.innerText.split(" ")[0] === tr.children[1].innerText.trim()
+          ) {
+            insumoEncontrado = true;
           }
+        });
+
+        //Dependiendo si la variable es true o false se oculta o muestra la tabla
+        if (insumoEncontrado) {
+          //console.log(`Coincidencia encontrada para ${tr.children[1].innerText.trim()}`);
+          tr.classList.remove("d-none");
+        } else {
+          //console.log(`No se encontró coincidencia para ${tr.children[1].innerText.trim()}`);
+          tr.classList.add("d-none");
+        }
       });
     });
-
-
-
-
-
-
-
 
   document
     .querySelector(".formularios-insumos")
@@ -427,7 +496,7 @@ addEventListener("DOMContentLoaded", () => {
       let nuevaCantidad = 0;
 
       listaModalInsumo.forEach((lista, index) => {
-        console.log("e")
+        console.log("e");
         console.log(lista);
         dataInsumo.push(lista);
 
@@ -509,13 +578,6 @@ addEventListener("DOMContentLoaded", () => {
     });
   });
 
-
-
-
-
-
-
-
   //mostrar los insumos en el modal
   const mostrarVariosInusmos = () => {
     let html = ``;
@@ -524,11 +586,21 @@ addEventListener("DOMContentLoaded", () => {
       html += `
         <tr class="border-top ">
         <td class="border-top"> ${index + 1}</td>
-        <td class="border-top border-start text-center"> ${element["nombreInsumo"]}</td>
-        <td class="border-top border-start text-center"> ${element["cantidad"]}</td>
-        <td class="border-top border-start text-center">${element["precio"]} BS</td>
-        <td class="border-top border-start text-center">${element["numero_de_lote"]}</td>
-        <td class="border-top border-start text-center">${element["subTotal"]} BS</td>
+        <td class="border-top border-start text-center"> ${
+          element["nombreInsumo"]
+        }</td>
+        <td class="border-top border-start text-center"> ${
+          element["cantidad"]
+        }</td>
+        <td class="border-top border-start text-center">${
+          element["precio"]
+        } BS</td>
+        <td class="border-top border-start text-center">${
+          element["numero_de_lote"]
+        }</td>
+        <td class="border-top border-start text-center">${
+          element["subTotal"]
+        } BS</td>
 
         <td class="border-top border-start">
 
@@ -562,13 +634,21 @@ addEventListener("DOMContentLoaded", () => {
   };
 
   //funcion para insertar varios insumos a la vez
-  const insertarVariosInsumos = (id_insumo, nombreInsumo, cantidad, precio,numero_de_lote) => {
-    let subTotalRedondeado = (parseFloat(cantidad) * parseFloat(precio)).toFixed(2);
+  const insertarVariosInsumos = (
+    id_insumo,
+    nombreInsumo,
+    cantidad,
+    precio,
+    numero_de_lote
+  ) => {
+    let subTotalRedondeado = (
+      parseFloat(cantidad) * parseFloat(precio)
+    ).toFixed(2);
     const nuevoObjInsumo = {
       id_insumo: id_insumo,
       nombreInsumo: nombreInsumo,
       cantidad: cantidad,
-      numero_de_lote:numero_de_lote,
+      numero_de_lote: numero_de_lote,
       precio: parseFloat(precio),
       subTotal: subTotalRedondeado,
     };
@@ -597,7 +677,13 @@ addEventListener("DOMContentLoaded", () => {
       const numero_de_lote = fila.children[4].innerText; // Columna numero_de_lote
       const cantidad = fila.children[5].children[0].value; // Columna cantidad
 
-      insertarVariosInsumos(id_insumo, nombreInsumo, cantidad, precio,numero_de_lote);
+      insertarVariosInsumos(
+        id_insumo,
+        nombreInsumo,
+        cantidad,
+        precio,
+        numero_de_lote
+      );
       fila.classList.add("d-none");
     });
   });
@@ -640,12 +726,6 @@ addEventListener("DOMContentLoaded", () => {
     document.querySelector(".formularios-insumos").reset();
     mostrarConfirmacion();
   }
-
-
-
-
-
-  
 
   function cantidadesDeInsumos() {
     console.log("funcion");
@@ -1345,7 +1425,7 @@ addEventListener("DOMContentLoaded", () => {
     // Recorremos la lista de arriba y añadimos los datos a la variable html
     tbodyDelModal.innerHTML = html;
     if (window.location.href.includes("idH")) {
-      console.log("si es hospitalizacion")
+      console.log("si es hospitalizacion");
     } else {
       document.getElementById("tbodyInsumos").innerHTML = htmlInsumos;
     }
@@ -1364,7 +1444,6 @@ addEventListener("DOMContentLoaded", () => {
     //   .getElementById("cuerpoTablaConfirmaroperacion")
     //   .classList.remove("d-none");
   } else if (urlActual.includes("idH")) {
-
   } else {
     document.getElementById("desplegarAyudafactura").classList.remove("d-none");
     document
@@ -1375,56 +1454,53 @@ addEventListener("DOMContentLoaded", () => {
       .classList.add("d-none");
   }
 
-
-// .............. buscador de insumos en la vista ................
+  // .............. buscador de insumos en la vista ................
   let inputBuscI = document.querySelector("#inputBuscarI");
   const notifi = document.querySelector(".notifiI");
 
   // buscador de insumos
   function buscarI() {
-      let contadorI = 0;
-      let contadorINo = 0;
+    let contadorI = 0;
+    let contadorINo = 0;
 
-      // selecciono todos los tr de la tabla
-      const filas = document.querySelectorAll(".tbodyI tr");
-      // recolecto el nombre del input
-      let nombreInpI = inputBuscI.value;
+    // selecciono todos los tr de la tabla
+    const filas = document.querySelectorAll(".tbodyI tr");
+    // recolecto el nombre del input
+    let nombreInpI = inputBuscI.value;
+    // se convierte en minúscula
+    nombreInpI = nombreInpI.toLowerCase();
+
+    // recorro las filas de la tabla
+    filas.forEach((fila) => {
+      // cuenta los síntomas que existen.
+      contadorI = contadorI + 1;
+
+      let nombre = fila.children[1].innerText;
+      let lote = fila.children[4].innerText;
       // se convierte en minúscula
-      nombreInpI = nombreInpI.toLowerCase();
-
-      // recorro las filas de la tabla
-      filas.forEach((fila) => {
-          // cuenta los síntomas que existen.
-          contadorI = contadorI + 1;
-
-          let nombre = fila.children[1].innerText;
-          let lote = fila.children[4].innerText;
-          // se convierte en minúscula
-          nombre = nombre.toLowerCase();
-          // verifico si el nombre existe
-          if (nombre.includes(nombreInpI)) {
-              fila.classList.remove("d-none");
-              notifi.classList.add("d-none");
-          } else if(lote.includes(nombreInpI)){
-              fila.classList.remove("d-none");
-              notifi.classList.add("d-none");
-          }else {
-              fila.classList.add("d-none");
-              // cuenta las veces que no encuentra un síntoma
-              contadorINo = contadorINo + 1;
-          }
-      });
-
-      // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes
-      if (contadorI === contadorINo) {
-          // muestra el texto.
-          notifi.classList.remove("d-none");
+      nombre = nombre.toLowerCase();
+      // verifico si el nombre existe
+      if (nombre.includes(nombreInpI)) {
+        fila.classList.remove("d-none");
+        notifi.classList.add("d-none");
+      } else if (lote.includes(nombreInpI)) {
+        fila.classList.remove("d-none");
+        notifi.classList.add("d-none");
+      } else {
+        fila.classList.add("d-none");
+        // cuenta las veces que no encuentra un síntoma
+        contadorINo = contadorINo + 1;
       }
+    });
+
+    // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes
+    if (contadorI === contadorINo) {
+      // muestra el texto.
+      notifi.classList.remove("d-none");
+    }
   }
 
   inputBuscI.addEventListener("keyup", () => {
-      buscarI();
+    buscarI();
   });
-
-
 }); //llave que termina el evento del DOM

@@ -112,8 +112,8 @@
                                 <h5 class="fw-bold text-dark text-center">Haz Click en Registrar para Guardar un
                                     Nuevo Paciente</h5>
                                 <div class="mt-2 pt-2 border-top">
-                                    <a href="?c=controladorPacientes/getPacientes">
-                                        <button type="button" class="btn btn-agregarcita-modal"> Registrar </button>
+                                    <a href="#">
+                                        <button type="button" class="btn btn-agregarcita-modal" uk-toggle="target: #modal-examplePaciente"> Registrar </button>
                                     </a>
 
                                     <button type="button" class="uk-button me-3 uk-button-default btn-cerrar-modal"
