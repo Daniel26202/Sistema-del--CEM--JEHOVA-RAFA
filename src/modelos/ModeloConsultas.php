@@ -29,7 +29,7 @@ class ModeloConsultas extends Db
     public function mostrarConsultas()
     {
         $consulta = $this->conexion->prepare("SELECT serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM personal p INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
-serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' ");
+        serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' ");
         $consulta->execute();
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
@@ -38,7 +38,8 @@ serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servic
 
     public function mostrarConsultasDes()
     {
-        $consulta = $this->conexion->prepare("SELECT serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM personal p INNER JOIN serviciomedico ON p.id_personal = serviciomedico.id_personal INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'DES'  ");
+        $consulta = $this->conexion->prepare("SELECT serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM personal p INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
+        serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'DES' AND categoria_nombre.estado = 'ACT'");
         $consulta->execute();
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
