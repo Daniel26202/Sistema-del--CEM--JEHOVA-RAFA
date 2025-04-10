@@ -319,7 +319,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		$consulta->bindParam(":id_paciente", $id_paciente);
 		$consulta->execute();
 		$id_factura = $this->conexion->lastInsertId();
-		echo $id_factura;
+		echo $id_factura." ";
 
 
 		//nota esto de la cita se tiene que adaptar cuando se facture una cita
