@@ -186,7 +186,7 @@
 
 
                     <div
-                        class="card col-9 col-sm-6 col-lg-3 tarjeta ms-2 me-4 d-flex align-items-center justify-content-center tarjeta">
+                        class="card col-9 col-sm-6 col-lg-3 tarjeta ms-2 me-4 d-flex align-items-center justify-content-center tarjeta" style="max-height: 420px;">
 
 
 
