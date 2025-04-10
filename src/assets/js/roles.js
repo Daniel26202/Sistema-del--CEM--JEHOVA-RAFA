@@ -1,10 +1,10 @@
 addEventListener("DOMContentLoaded", function () {
   console.log("roles");
 
-  const traerPermisos = async (id, caja) => {
+  const traerPermisos = async (caja) => {
     try {
       let peticion = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrarPermisos/" + id
+        "/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrarPermisos/" 
       );
       let resultado = await peticion.json();
       console.log(resultado);
@@ -87,7 +87,7 @@ addEventListener("DOMContentLoaded", function () {
         resultado.forEach((res) => {
           html += `<div class="form-check form-switch d-flex align-items-center">
                         <div>
-                            <input class="form-check-input " checked="true" disabled type="checkbox" role="switch" id="flexSwitchCheckDefault"
+                            <input class="form-check-input checkboxPermiso" type="checkbox" role="switch" id="flexSwitchCheckDefault"
                                 value="${res.idpermisos}">
                         </div>
                         <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
@@ -99,6 +99,20 @@ addEventListener("DOMContentLoaded", function () {
         });
 
         caja.innerHTML = html;
+
+
+        let id_rol =
+          caja.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
+            .getAttribute("id")
+            .substring(20);
+        //Llamar a la funcion para checkear los permisos del rol
+
+       document.querySelectorAll(".checkboxPermiso").forEach(checkbox=>{
+        //console.log(checkbox.getAttribute("data-index"));
+        checkearPermisos(checkbox.value, checkbox, id_rol);
+       })
+
+       
       } else {
         console.log("no hay nada");
       }
@@ -109,19 +123,50 @@ addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  //Recorrer todos los botones de mostrar
-  document.querySelectorAll(".btn-mostrar-permisos").forEach((btn) => {
-    //Llamo a un evento click para que cuando se presione el boton se active la funcion
-    btn.addEventListener("click", function () {
-      //Seleccion la caja especifica que voy a usar
 
-      let cajaModal = document.querySelector(
-        ".caja-de-permisos" + this.getAttribute("data-index")
+
+
+  //funcion para checkear los permisos que tiene el usuario
+
+  const checkearPermisos = async (id, checkbox,rol) =>{
+    // try {
+      let peticion = await fetch(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Roles/permisosRol/"+id+"/"+rol
       );
+      let resultado = await peticion.json();
+      //console.log(resultado)
 
-      console.log("hola");
+      // console.log("id_permisos"+id)
+      // console.log("id_permisos json" + resultado.idpermisos);
 
-      traerPermisos(this.getAttribute("data-index"), cajaModal);
+      // console.log("id_rol" + rol);
+      // console.log("id_rol json" + resultado.id_rol);
+
+      if (id == resultado.idpermisos &&  rol == resultado.id_rol) {
+        console.log(checkbox);
+        checkbox.setAttribute("checked",true);
+      } else {
+        checkbox.setAttribute("checked", false);
+      }
+    // } catch (error) {
+    //   console.log("Algo salio mal al checkear los permisos "+ error);
+    // }
+  }
+
+
+    //Recorrer todos los botones de mostrar
+    document.querySelectorAll(".btn-mostrar-permisos").forEach((btn) => {
+      //Llamo a un evento click para que cuando se presione el boton se active la funcion
+      btn.addEventListener("click", function () {
+        //Seleccion la caja especifica que voy a usar
+
+        let cajaModal = document.querySelector(
+          ".caja-de-permisos" + this.getAttribute("data-index")
+        );
+
+        console.log("hola");
+
+        traerPermisos(cajaModal);
+      });
     });
-  });
 });

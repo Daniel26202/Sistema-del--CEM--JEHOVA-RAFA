@@ -30,4 +30,9 @@ class ControladorRoles {
         $permisos = $this->modelo->permisosModulo($datos[0]);
         echo json_encode($permisos);
     }
+
+    public function permisosRol($datos){
+        $permisos = $this->modelo->permisosRol($datos[0], $datos[1]);
+        echo json_encode($permisos);
+    }
 }
