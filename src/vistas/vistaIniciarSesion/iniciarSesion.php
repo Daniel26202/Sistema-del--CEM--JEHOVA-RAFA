@@ -86,12 +86,12 @@ if (!empty($parametro)) {
         <!-- Fin btn de ayuda Interactiva -->
         <div class="d-flex justify-content-center mt-5 pt-5">
 
-            <div class="centro" style=" ">
-                <img src="<?= $urlBase ?>./src/assets/icons/logo2.png" alt="Logo" class="logo" style="width: 290px; height: 100px; margin-top: 20px; margin-left: 50px;">
+            <div class="centro">
+                <img src="<?= $urlBase ?>./src/assets/icons/logo2.png" alt="Logo" class="logo" >
                 <form autocomplete="off" action="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/iniciarSesion" method="POST"
                     id="formiIniciarSesion">
 
-                    <div class="w-auto ">
+                    <div class=" m-auto">
 
                         <div class="mb-5 ms-5 mt-5 pt-2 ps-4 col">
                             <h2 class="titulo fw-bolder mb-1 " id="titulo">Iniciar sesión</h2>
@@ -99,8 +99,10 @@ if (!empty($parametro)) {
                             </div>
                         </div>
 
-                        <div class="fondo_rsp">
-                            <div class="col formulario w-auto me-2">
+                        <!-- <div class="fondo_rsp"> -->
+
+                           
+                            <div class="col-11 m-auto ">
                                 <div class="d-flex flex-column col">
 
                                     <div>
@@ -136,14 +138,14 @@ if (!empty($parametro)) {
                                                 d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                                         </svg>
                                         <input type="text" name="usuario" id="inputUno" class="input col"
-                                            placeholder="Usuario">
+                                            placeholder="Usuario" required>
                                     </div>
 
                                     <div id="input-password">
 
                                         <img src="<?= $urlBase ?>./src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
                                         <input type="password" name="password" id="inputDos" class="input col"
-                                            placeholder="Contraseña" maxlength="40">
+                                            placeholder="Contraseña" maxlength="40" required>
                                         </input>
 
 
@@ -168,7 +170,7 @@ if (!empty($parametro)) {
 
 
                             </div>
-                        </div>
+                        <!-- </div> -->
                     </div>
 
                 </form>
