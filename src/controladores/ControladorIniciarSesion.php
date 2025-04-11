@@ -23,7 +23,6 @@ class ControladorIniciarSesion
     public function iniciarSesion()
     {
 
-        if (isset($_POST['validar'])) {
 
             // Clave secreta proporcionada por Google.
             $claveSecreta = '6Le_rOgqAAAAAMEKli0Bp9zdh8i_haVpS008lTxc';
@@ -102,7 +101,7 @@ class ControladorIniciarSesion
         }
     }
 
-}
+
 
 
 ?>
