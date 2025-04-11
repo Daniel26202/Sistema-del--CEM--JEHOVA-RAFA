@@ -29,14 +29,14 @@
 						</svg>AYUDA</a></li>
 				<li class="uk-nav-divider"></li>
 
-				<li><a href="?c=ControladorBitacora/bitacora" ><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
-          <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z"/>
-      </svg> CONFIGURACIÓN</a></li>
-        <li class="uk-nav-divider"></li>
+				<li><a href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacora"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
+							<path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z" />
+						</svg> CONFIGURACIÓN</a></li>
+				<li class="uk-nav-divider"></li>
 
 				<li><a href="#" data-bs-toggle="modal"
 						data-bs-target="#eliminar">
-						<img src="./src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
+						<img src="<?= $urlBase?>../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
 						</svg>SALIR</a></li>
 			</ul>
 		</div>
@@ -85,12 +85,12 @@
 	</div>
 
 	<div class="cardReporte text-white mb-3">
-		<a class="text-decoration-none"  data-bs-toggle="modal" data-bs-target="#exampleModalBuscadorEntradas">
+		<a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModalBuscadorEntradas">
 			<div class="card-body cartaRepor">
 				<div class="ico">
 					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-people-fill mb-2 t" viewBox="0 0 16 16">
-                            <path d="M4.98 1a.5.5 0 0 0-.39.188L1.54 5H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0A.5.5 0 0 1 10 5h4.46l-3.05-3.812A.5.5 0 0 0 11.02 1H4.98zM3.81.563A1.5 1.5 0 0 1 4.98 0h6.04a1.5 1.5 0 0 1 1.17.563l3.7 4.625a.5.5 0 0 1 .106.374l-.39 3.124A1.5 1.5 0 0 1 14.117 10H1.883A1.5 1.5 0 0 1 .394 8.686l-.39-3.124a.5.5 0 0 1 .106-.374L3.81.563zM.125 11.17A.5.5 0 0 1 .5 11H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0 .5.5 0 0 1 .5-.5h5.5a.5.5 0 0 1 .496.562l-.39 3.124A1.5 1.5 0 0 1 14.117 16H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .121-.393z" />
-                        </svg>
+						<path d="M4.98 1a.5.5 0 0 0-.39.188L1.54 5H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0A.5.5 0 0 1 10 5h4.46l-3.05-3.812A.5.5 0 0 0 11.02 1H4.98zM3.81.563A1.5 1.5 0 0 1 4.98 0h6.04a1.5 1.5 0 0 1 1.17.563l3.7 4.625a.5.5 0 0 1 .106.374l-.39 3.124A1.5 1.5 0 0 1 14.117 10H1.883A1.5 1.5 0 0 1 .394 8.686l-.39-3.124a.5.5 0 0 1 .106-.374L3.81.563zM.125 11.17A.5.5 0 0 1 .5 11H6a.5.5 0 0 1 .5.5 1.5 1.5 0 0 0 3 0 .5.5 0 0 1 .5-.5h5.5a.5.5 0 0 1 .496.562l-.39 3.124A1.5 1.5 0 0 1 14.117 16H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .121-.393z" />
+					</svg>
 				</div>
 				<h4 class="card-title t">Entradas de Insumos</h4>
 				<p class="card-text t text-center">Descargar Reporte de las Entradas de Insumos</p>
@@ -650,7 +650,7 @@
 									<option selected disabled>Seleccione un Insumo</option>
 
 									<?php foreach ($insumos as $i): ?>
-										<option value="<?= $i['id_insumo']?>"><?= $i['nombre']?></option>
+										<option value="<?= $i['id_insumo'] ?>"><?= $i['nombre'] ?></option>
 									<?php endforeach ?>
 								</select>
 
@@ -658,10 +658,10 @@
 								<!-- <h5 class="fw-bolder mt-3 ms-3 text-uppercase text-white fecha_entradas"><input type="checkbox" class="form-check-input m-3 card-title t" id="fechas_entradas" >BUSQUÉ POR FECHAS LAS ENTRADAS</h5> -->
 
 								<div id="cajaCheckboxEntrada" class="form-check mt-2 mb-2 d-none">
-								  <input class="form-check-input" type="checkbox" value="" id="checkboxEntradas">
-								  <label class="form-check-label fw-bolder ms-3 text-uppercase text-white fecha_entradas" for="flexCheckDefault">
-								    BUSQUÉ POR FECHAS LAS ENTRADAS
-								  </label>
+									<input class="form-check-input" type="checkbox" value="" id="checkboxEntradas">
+									<label class="form-check-label fw-bolder ms-3 text-uppercase text-white fecha_entradas" for="flexCheckDefault">
+										BUSQUÉ POR FECHAS LAS ENTRADAS
+									</label>
 								</div>
 
 
@@ -669,8 +669,8 @@
 
 								<ul class="  uk-subnav-divider uk-margin-remove-top margin d-flex fechas_mover d-none " id="cajaModalEntradas">
 
-									<li><a href="#" class="text-decoration-none fw-bolder text-uppercase text-white me-3" >DESDE<input class="input-expresion form-control  input-disabled input-paciente col-10" type="date" name="desdeFechaEntradas" id="desdeFechaEntradas"></a></li>
-									<li class="li_mover"><a href="#" class="text-decoration-none fw-bolder text-uppercase text-white" >HASTA<input class="input-expresion form-control input-disabled input-paciente col-10" name="fechaHastaEntradas" id="fechaHastaEntradas" type="date"></a></li>
+									<li><a href="#" class="text-decoration-none fw-bolder text-uppercase text-white me-3">DESDE<input class="input-expresion form-control  input-disabled input-paciente col-10" type="date" name="desdeFechaEntradas" id="desdeFechaEntradas"></a></li>
+									<li class="li_mover"><a href="#" class="text-decoration-none fw-bolder text-uppercase text-white">HASTA<input class="input-expresion form-control input-disabled input-paciente col-10" name="fechaHastaEntradas" id="fechaHastaEntradas" type="date"></a></li>
 								</ul>
 
 						</div>
@@ -1081,7 +1081,7 @@
 </div>
 </div>
 
-<script src="<?= $urlBase?>../src/assets/js/reporteCitaYEntradasDeInsumos.js"></script>
-<script src="<?= $urlBase?>../src/assets/js/reportes.js"></script>
+<script src="<?= $urlBase ?>../src/assets/js/reporteCitaYEntradasDeInsumos.js"></script>
+<script src="<?= $urlBase ?>../src/assets/js/reportes.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
