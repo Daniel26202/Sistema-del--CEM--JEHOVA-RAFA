@@ -59,7 +59,7 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="nombre" id="inputDos" class="input mayuscula" placeholder="Nombre" value="<?php echo $dato["9"]; ?>">
+                            <input type="text" name="nombre" id="inputDos" class="input mayuscula" placeholder="Nombre" value="<?php echo $dato["nombre_d"]; ?>">
 
                         </div>
                         <div class="margen-input w-auto grpFormCorrect">
@@ -96,7 +96,7 @@
                             </svg>
 
                             <input type="email" name="email" class="input" placeholder="E_mail"
-                                value="<?php echo $dato["email"]; ?>">
+                                value="<?php echo $dato["correo"]; ?>">
 
                         </div>
 
@@ -114,8 +114,8 @@
 
 
                             <select name="selectEspecialidad" class="input selectEspecialidad " placeholder="Especialidad">
-                                <option selected value="<?php echo $dato[16]; ?>">
-                                    <?php echo $dato[17]; ?>
+                                <option selected value="<?php echo $dato["id_especialidad"]; ?>">
+                                    <?php echo $dato["nombre"]; ?>
                                 </option>
 
                                 <?php foreach ($datosEspecialidades as $e): ?>

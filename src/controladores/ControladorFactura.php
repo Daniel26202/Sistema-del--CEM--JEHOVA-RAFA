@@ -21,18 +21,27 @@ class ControladorFactura
 	//metodo para mostrar la vista de facturacion
 	public function facturaInicio($parametro)
 	{
-		
+
 		//aqui instacio y uso el metodo para mostrar los tipos de pago
 
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 
-		$extras = $this->modelo->mostrarServicioExtra();
+		$extras = $this->modelo->mostrarServicios();
 
 		$insumos = $this->modelo->mostrarInsumos();
 
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 
 		require_once './src/vistas/vistaFactura/vistaFactura.php';
+	}
+
+	public function factura($parametro)
+	{
+		$insumos = $this->modelo->mostrarInsumos();
+		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
+		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
+		$extras = $this->modelo->mostrarServicios();
+		require_once './src/vistas/vistaFactura/factura.php';
 	}
 
 
@@ -48,7 +57,8 @@ class ControladorFactura
 	}
 
 	//aqui mostramos al paciente si tiene cita
-	public function mostrarPacienteConCita(){
+	public function mostrarPacienteConCita()
+	{
 		date_default_timezone_set('America/Mexico_City');
 
 		$fecha = date("Y-m-d");
@@ -59,7 +69,7 @@ class ControladorFactura
 	public function mostrarTodosLosServicios()
 	{
 		//$respuesta = array('id' => $_GET["id"]);
-		$respuesta = $this->modelo->buscarServicioExtra($_POST["nombre"]);
+		$respuesta = $this->modelo->buscarServicio($_POST["nombre"]);
 
 		echo json_encode($respuesta);
 	}
@@ -111,33 +121,36 @@ class ControladorFactura
 		$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
 		$insumos = isset($_POST["insumos"]) ? $_POST["insumos"] : false;
 		$cantidad = isset($_POST["cantidad"]) ? $_POST["cantidad"] : false;
-		$id_cita = isset($_POST["id_cita"]) ? $_POST["id_cita"] : null;
 		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : null;
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
 		$numero_de_lote = isset($_POST["numero_de_lote"]) ? $_POST["numero_de_lote"] : null;
 		print_r($serviciosExtras);
 
-		$this->modelo->insertaFactura($id_cita, $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote);
+		echo "<br><br><br>"."datos por post";
+		print_r($_POST);
 
-		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado servicios y/o insumos");
+		// $this->modelo->insertaFactura($id_cita, $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote);
+
+		// // Guardar la bitacora
+		// $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado servicios y/o insumos");
 
 
-		
+
 
 
 		// echo $fecha."<br><br>";
-// print_r($serviciosExtras)."<br><br>";
+		// print_r($serviciosExtras)."<br><br>";
 
 		// echo "id_cita".$id_cita."<br><br>";
-// echo "paciente".$id_paciente."<br><br>";
-// echo $_POST["total"]."<br><br>";
-// print_r($_POST["formasDePago"])."<br><br>";	
+		// echo "paciente".$id_paciente."<br><br>";
+		// echo $_POST["total"]."<br><br>";
+		// print_r($_POST["formasDePago"])."<br><br>";	
 
 	}
 
 
-	public function guardarFacturaHospit(){
+	public function guardarFacturaHospit()
+	{
 		$fecha = date("Y-m-d");
 		$insumos = isset($_POST["insumosHospi"]) ? $_POST["insumosHospi"] : false;
 		$cantidad = isset($_POST["cantidadInsumosHospi"]) ? $_POST["cantidadInsumosHospi"] : false;
@@ -145,31 +158,27 @@ class ControladorFactura
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
 		$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
 
-		$this->modelo->insertaFacturaHospit($idH, $fecha, $_POST["total"], $_POST["formasDePago"],  $insumos, $cantidad, $_POST["montosDePago"], $referencia,$serviciosExtras);
+		$this->modelo->insertaFacturaHospit($idH, $fecha, $_POST["total"], $_POST["formasDePago"],  $insumos, $cantidad, $_POST["montosDePago"], $referencia, $serviciosExtras);
 
 		print_r($_POST);
 
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado una hospitalizacion");
-
-		
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha facturado una hospitalizacion");
 	}
 
 	public function mostrarPDF()
 	{
-		
+
 		require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
 	}
 	public function mostrarPDF2()
 	{
-		
+
 		require_once './src/vistas/vistaFactura/vistaFacturaPdf2.php';
 	}
 	public function mostrarPDF3()
 	{
-		
+
 		require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
 	}
-
-
 }

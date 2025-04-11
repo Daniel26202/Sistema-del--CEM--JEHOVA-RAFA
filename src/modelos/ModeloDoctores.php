@@ -74,7 +74,7 @@ class ModeloDoctores extends Db
     public function select()
     {
 
-        $sql = 'SELECT u.*, p.*, es.* FROM usuario u INNER JOIN personal p ON p.id_usuario = u.id_usuario INNER JOIN especialidad es ON es.id_especialidad = p.id_especialidad WHERE u.estado = "ACT" ';
+        $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM usuario u INNER JOIN personal p ON p.id_usuario = u.id_usuario INNER JOIN especialidad es ON es.id_especialidad = p.id_especialidad WHERE u.estado = "ACT" ';
 
         $consulta = $this->conexion->prepare($sql);
 
@@ -86,7 +86,7 @@ class ModeloDoctores extends Db
     {
 
         //agregamos al doctor como usuario.
-        $consultaDeUsuario = $this->conexion->prepare('INSERT INTO usuario(id_rol, imagen, correo, usuario, password, estado) VALUES ("4",:imagen, :correo, :usuario,:password,"ACT");');
+        $consultaDeUsuario = $this->conexion->prepare('INSERT INTO usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES ("4",:imagen, :usuario, :correo, :password,"ACT");');
 
         $consultaDeUsuario->bindParam(":imagen", $nombreImagen);
         $consultaDeUsuario->bindParam(":usuario", $usuario);
@@ -157,16 +157,9 @@ class ModeloDoctores extends Db
         $idPersonal = ($consultaU->execute()) ? $consultaU->fetch() : false;
         print_r($_POST["id_especialidad"]);
 
-// print_r($idPersonal["id_personal"]);
-// print_r($cedula);
-// print_r($nombre);
-// print_r($apellido);
-// print_r($telefono);
-// print_r($nacionalidad);
-// print_r($selectEsp);
 
         //Editar el usuario (el usuario del doctor).
-        $consultaDeUsuario = $this->conexion->prepare('UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_especialidad,email=:email WHERE id_personal=:id_personal');
+        $consultaDeUsuario = $this->conexion->prepare('UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_especialidad WHERE id_personal=:id_personal');
 
         $consultaDeUsuario->bindParam(":cedula", $cedula);
         $consultaDeUsuario->bindParam(":nombre", $nombre);
@@ -175,9 +168,18 @@ class ModeloDoctores extends Db
         $consultaDeUsuario->bindParam(":nacionalidad", $nacionalidad);
         $consultaDeUsuario->bindParam(":id_personal", $idPersonal["id_personal"]);
         $consultaDeUsuario->bindParam(":id_especialidad", $_POST["id_especialidad"]);
-        $consultaDeUsuario->bindParam(":email", $email);
+        
 
 
+        $consultaDeUsuario->execute();
+
+
+
+        //Editar el usuario (el correo del doctor).
+        $consultaDeUsuario = $this->conexion->prepare('UPDATE usuario SET correo =:correo WHERE id_usuario=:id_usuario');
+
+        $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
+        $consultaDeUsuario->bindParam(":correo", $email);
         $consultaDeUsuario->execute();
 
         $contadorDias = 0;

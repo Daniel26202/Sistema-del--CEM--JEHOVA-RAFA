@@ -244,7 +244,7 @@
                                         <?php echo $dato["nacionalidad"] . '-' . $dato["cedula"]; ?>
                                     </td>
                                     <td class="border-start text-center">
-                                        <?php echo $dato["9"]; ?>
+                                        <?php echo $dato["nombre_d"]; ?>
                                     </td>
                                     <td class="border-start text-center">
                                         <?php echo $dato["apellido"]; ?>

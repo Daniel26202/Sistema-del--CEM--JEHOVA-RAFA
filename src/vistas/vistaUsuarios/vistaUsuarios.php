@@ -39,7 +39,7 @@
 
                     <li><a href="#" data-bs-toggle="modal"
                             data-bs-target="#eliminar">
-                            <img src="./src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
+                            <img src="<?= $urlBase ?>../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
                             </svg>SALIR</a></li>
                 </ul>
             </div>
@@ -76,29 +76,11 @@
 
     </div>
 
-    <!-- Modal Cerrar Sesion  -->
-    <div class="modal fade" id="eliminar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="m-3">
-                    <?php
 
-                    echo '<h5 class="modal-title" id="exampleModalLabel">
-                    ¿' . $_SESSION['usuario'] . '   ' . 'Desea Cerrar 
-                    la Sesion?
-                    </h5>';
-                    ?>
-                </div>
-                <div class="modal-body ">
-                    Una vez cerrada la sesión tendrá que iniciar sesión nuevamente.
-                </div>
-                <div class="m-3 me-4 d-flex justify-content-end">
-                    <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Cancelar</button>
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio&cerrar" class="btn btn-primary text-decoration-none">Salir</a>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
+    <!-- modal de cerrar sesión -->
+    <?php require_once './src/vistas/modalCierreS/modalCierreS.php'; ?>
 
     <!--AGREGAR Y BUSCAR-->
     <div class="fondo-tabla">
@@ -146,6 +128,21 @@
                                     <path
                                         d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
                                 </svg>Administrador</a>
+                        </div>
+
+                    </li>
+
+
+                    <li class="li">
+                        <div class="borde-de-menu mb-1 "></div>
+                        <div class="hover-grande">
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-person-square ms-2" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                    <path
+                                        d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
+                                </svg>Roles</a>
                         </div>
 
                     </li>
