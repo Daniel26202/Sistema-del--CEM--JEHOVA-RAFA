@@ -2258,3 +2258,23 @@ input[type="date"] {
         padding: 1rem;
     } */
 }
+
+
+/* animacion de la pagina */
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+
+.main-content {
+
+	animation: fadeIn 0.15s ease-in-out;
+
+}

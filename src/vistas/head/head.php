@@ -54,7 +54,7 @@ if (!empty($parametro)) {
 
 				<!-- aquí va la img de Jehova Rafa -->
 				<img class="rounded-circle d-flex justify-content-center" width="65" height="65"
-					src="<?= $urlBase?>../src/assets/img/logotipo.jpg">
+					src="<?= $urlBase ?>../src/assets/img/logotipo.jpg">
 
 			</div>
 
@@ -264,4 +264,4 @@ if (!empty($parametro)) {
 		</div>
 	</div>
 
-	<main id="main">
+	<main id="main" class="main-content">
