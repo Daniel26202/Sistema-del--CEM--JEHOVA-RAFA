@@ -87,9 +87,9 @@ if (!empty($parametro)) {
         <div class="d-flex justify-content-center mt-5 pt-5">
 
             <div class="centro">
-                <img src="<?= $urlBase ?>./src/assets/icons/logo2.png" alt="Logo" class="logo" >
+                <img src="<?= $urlBase ?>./src/assets/icons/logo2.png" alt="Logo" class="logo">
                 <form autocomplete="off" action="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/iniciarSesion" method="POST"
-                    id="formiIniciarSesion">
+                    id="formiIniciarSesion" class="form-validable">
 
                     <div class=" m-auto">
 
@@ -101,75 +101,98 @@ if (!empty($parametro)) {
 
                         <!-- <div class="fondo_rsp"> -->
 
-                           
-                            <div class="col-11 m-auto ">
-                                <div class="d-flex flex-column col">
 
-                                    <div>
-                                        <?php if ($parametro != ""): ?>
+                        <div class="col-11 m-auto ">
+                            <div class="d-flex flex-column col">
 
-                                            <?php if ($parametro[0] == "mensaje"): ?>
-                                                <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                                    style="display: none;" uk-alert>
-                                                    <a class="uk-alert-close" uk-close></a>
-                                                    <p class="pe-2">Usuario o Contraseña incorrectos.</p>
-                                                </div>
-                                            <?php elseif ($parametro[0] == "captcha"): ?>
-                                                <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                                    style="display: none;" uk-alert>
-                                                    <a class="uk-alert-close" uk-close></a>
-                                                    <p class="pe-2">Captcha fallido</p>
-                                                </div>
-                                            <?php elseif ($parametro[0] == "campos"): ?>
-                                                <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                                    style="display: none;" uk-alert>
-                                                    <a class="uk-alert-close" uk-close></a>
-                                                    <p class="pe-2">Tiene que llenar todos los campos.</p>
-                                                </div>
-                                            <?php endif ?>
-                                        <?php endif; ?>
-                                    </div>
+                                <div>
+                                    <?php if ($parametro != ""): ?>
 
-                                    <div class=" mb-3 animacionInput" id="ingresar-usuario">
-
-                                        <svg xmlns="http://www.w3.org/2000/svg" id="icono-uno" width="20" height="20"
-                                            fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
-                                            <path
-                                                d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                                        </svg>
-                                        <input type="text" name="usuario" id="inputUno" class="input col"
-                                            placeholder="Usuario" required>
-                                    </div>
-
-                                    <div id="input-password">
-
-                                        <img src="<?= $urlBase ?>./src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
-                                        <input type="password" name="password" id="inputDos" class="input col"
-                                            placeholder="Contraseña" maxlength="40" required>
-                                        </input>
-
-
-                                    </div>
+                                        <?php if ($parametro[0] == "mensaje"): ?>
+                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                                style="display: none;" uk-alert>
+                                                <a class="uk-alert-close" uk-close></a>
+                                                <p class="pe-2">Usuario o Contraseña incorrectos.</p>
+                                            </div>
+                                        <?php elseif ($parametro[0] == "captcha"): ?>
+                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                                style="display: none;" uk-alert>
+                                                <a class="uk-alert-close" uk-close></a>
+                                                <p class="pe-2">Captcha fallido</p>
+                                            </div>
+                                        <?php elseif ($parametro[0] == "campos"): ?>
+                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                                style="display: none;" uk-alert>
+                                                <a class="uk-alert-close" uk-close></a>
+                                                <p class="pe-2">Tiene que llenar todos los campos.</p>
+                                            </div>
+                                        <?php endif ?>
+                                    <?php endif; ?>
                                 </div>
+
+                                <div class=" mb-3 animacionInput" id="ingresar-usuario">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" id="icono-uno" width="20" height="20"
+                                        fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
+                                        <path
+                                            d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                    </svg>
+                                    <input type="text" name="usuario" id="inputUno" class="input col input-validar"
+                                        placeholder="Usuario" required>
+                                </div>
+
+                                <p class="p-error-usuario d-none">El Usuario debe contener Letras, números, guiones y guion bajo, de 8 a 16 caracteres</p>
+
+                                <div id="input-password">
+
+                                    <img src="<?= $urlBase ?>./src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
+                                    <input type="password" name="password" id="inputDos" class="input col input-validar"
+                                        placeholder="Contraseña" maxlength="40" required>
+                                    </input>
+
+
+                                    <a href="#" class="text-decoration-none btnMostrarContrase">
+                                        <svg id="ocultarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
+                                            fill="currentColor" class="bi bi-eye-slash-fill azul ocultarPassword d-none"
+                                            viewBox="0 0 16 16">
+                                            <path
+                                                d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
+                                            <path
+                                                d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
+                                        </svg>
+                                        <svg id="mostrarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
+                                            fill="currentColor" class="bi bi-eye-fill azul mostrarPassword" viewBox="0 0 16 16">
+                                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                            <path
+                                                d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                        </svg>
+                                    </a>
+
+
+                                </div>
+
+                                <p class="p-error-password d-none">La Contraseña debe contener de 8 a 12 caracteres, una mayúscula, un número y un símbolo
+                                    </p>
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <!-- recaptcha -->
+                            <div class="d-flex justify-content-end mt-4 pt-3 col">
+                                <div class="g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1"></div>
                             </div>
 
                             <div class="">
-                                <!-- recaptcha -->
-                                <div class="d-flex justify-content-end mt-4 pt-3 col">
-                                    <div class="g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1"></div>
-                                </div>
-
-                                <div class="">
-                                    <input class="btn fw-bold boton col rounded-5" id="boton_inicio_sesion" type="submit" name="validar"
-                                        value="Ingresar ahora" id="btnInicioSesion">
-                                    <a id="recuperar_contraseña" href="/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/mostrarRecuperarContr"
-                                        class="fw-bold pointer-event text-decoration-none text-dark" id="recPassword">Recuperar Contraseña</a>
-
-                                </div>
-
-
+                                <input class="btn fw-bold boton col rounded-5" id="boton_inicio_sesion" type="submit" name="validar"
+                                    value="Ingresar ahora" id="btnInicioSesion">
+                                <a id="recuperar_contraseña" href="/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/mostrarRecuperarContr"
+                                    class="fw-bold pointer-event text-decoration-none text-dark" id="recPassword">Recuperar Contraseña</a>
 
                             </div>
+
+
+
+                        </div>
                         <!-- </div> -->
                     </div>
 
@@ -185,6 +208,7 @@ if (!empty($parametro)) {
     <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/uikit/js/uikit.min.js"></script>
     <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/intro/intro.min.js"></script>
     <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/js/ayudaInteractiva.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/js/expresionesModulares.js"></script>
 
 
 </body>

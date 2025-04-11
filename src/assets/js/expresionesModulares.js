@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const expresiones = {
     nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/, // Letras y espacios, pueden llevar acentos, de 1 a 40 caracteres
     apellido: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/, // Igual que 'nombre'
-    usuario: /^[a-zA-Z0-9._-]{5,16}$/, // Letras, números, guiones y guion bajo, de 3 a 16 caracteres
+    usuario: /^[a-zA-Z0-9._-]{8,16}$/, // Letras, números, guiones y guion bajo, de 3 a 16 caracteres
     correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, // Formato de correo electrónico
     password: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, // Al menos 8 caracteres, una mayúscula, un número y un símbolo
     // Agrega más expresiones según tus necesidades
