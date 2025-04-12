@@ -35,4 +35,11 @@ class ControladorRoles {
         $permisos = $this->modelo->permisosRol($datos[0], $datos[1]);
         echo json_encode($permisos);
     }
+
+
+    //guardar el rol
+
+    public function guardarRol(){
+        print_r($_POST);
+    }
 }

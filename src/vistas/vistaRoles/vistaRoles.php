@@ -90,7 +90,7 @@
     <div class="fondo-tabla">
         <div class="d-flex justify-content-between align-items-center">
             <div class="">
-                <button class="btn btn-primary btn-agregar-doctores col-11" uk-toggle="target: #modal-exampleAgregar"
+                <button class="btn btn-primary btn-agregar-doctores col-11" uk-toggle="target: #modal-exampleGuardar"
                     id="btnRegistrarPaciente">
                     <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
                         class="bi bi-person-square me-2" viewBox="0 0 16 16">
