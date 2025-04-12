@@ -283,6 +283,8 @@
 
                                 <?php $permisosPorModulo = "permisosPacientes[]"  ?>
 
+                                <input type="hidden" name="permisos[]" value="permisosPacientes">
+
                                 <div
                                     class="uk-accordion-content"
                                     id="uk-accordion-22-content-0"
@@ -339,6 +341,8 @@
                                 <input type="hidden" name="modulos[]" value="Patologias">
 
                                 <?php $permisosPorModulo = "permisosPatologias[]"  ?>
+
+                                <input type="hidden" name="permisos[]" value="permisosPatologias">
 
                                 <div
                                     class="uk-accordion-content"

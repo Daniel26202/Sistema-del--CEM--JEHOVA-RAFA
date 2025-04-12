@@ -41,5 +41,7 @@ class ControladorRoles {
 
     public function guardarRol(){
         print_r($_POST);
+        $this->modelo->insertar($_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar");
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
 namespace App\modelos;
+
 use App\modelos\Db;
 
-class ModeloRoles extends Db{
+class ModeloRoles extends Db
+{
 
     private $conexion;
 
@@ -45,7 +47,7 @@ class ModeloRoles extends Db{
 
 
     //mostrar los permisos que tiene cada rol en especifico
-    public function permisosRol($id_permiso,$id_rol)
+    public function permisosRol($id_permiso, $id_rol)
     {
         $consulta = $this->conexion->prepare("SELECT *  FROM permisos p INNER JOIN  rol_has_permisos rp ON p.idpermisos = rp.permisos_idpermisos INNER JOIN rol r ON r.id_rol = rp.rol_id_rol WHERE p.idpermisos =:id_permiso AND r.id_rol =:id_rol");
         $consulta->bindParam(":id_permiso", $id_permiso);
@@ -54,5 +56,33 @@ class ModeloRoles extends Db{
     }
 
 
+    //Insertar  Rol
 
+    public function insertar($nombre, $descripcion, $modulo, $permisos)
+    {
+
+        //Insertar Rol
+        $consulta = $this->conexion->prepare("INSERT INTO rol (id_rol, nombre, estado, descripción) VALUES (NULL, :nombre, 'ACT', :descripcion)");
+        $consulta->bindParam(":nombre", $nombre);
+        $consulta->bindParam(":descripcion", $descripcion);
+        $consulta->execute();
+
+        //Me retorna el id del rol
+        $id_rol = $this->conexion->lastInsertId();
+
+        //Recorro los modulos enviados por el formulario
+        foreach ($modulo as $index => $modulo) {
+            //La variable grupoDelPermiso guardar el nombre del grupo de permiso
+            $grupoDelPermiso = $permisos[$index];
+
+            //Uno el array de permisos en una cadena de texto separado por "," 
+            $permiso = implode(",", $_POST[$grupoDelPermiso]);
+
+            $consultaPermiso = $this->conexion->prepare("INSERT INTO permisos (idpermisos, id_rol, permisos, modulo) VALUES (NULL, :id_rol, :permisos, :modulo)");
+            $consultaPermiso->bindParam(":id_rol", $id_rol);
+            $consultaPermiso->bindParam(":permisos", $permiso);
+            $consultaPermiso->bindParam(":modulo", $modulo);
+            $consultaPermiso->execute();
+        }
+    }
 }

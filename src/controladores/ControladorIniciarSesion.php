@@ -24,6 +24,7 @@ class ControladorIniciarSesion
     {
 
 
+        if (isset($_POST)) {
             // Clave secreta proporcionada por Google.
             $claveSecreta = '6Le_rOgqAAAAAMEKli0Bp9zdh8i_haVpS008lTxc';
             // Este token está incluido automáticamente en los datos del formulario bajo el nombre 'g-recaptcha-response'.
@@ -67,7 +68,6 @@ class ControladorIniciarSesion
                 if ($_POST['usuario'] === '' or $_POST['password'] === '') {
 
                     header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
-
                 } else {
 
                     $validar = $this->modelo->validarIniciarSesion($_POST['usuario'], $_POST['password']);
@@ -81,27 +81,17 @@ class ControladorIniciarSesion
                         $_SESSION['nombre'] = $validar['nombre_personal'];
                         $_SESSION['apellido'] = $validar['apellido_personal'];
 
-                        $this->bitacora->insertarBitacora($_SESSION['id_usuario'],"inicio sesion","Ha iniciado una session");
+                        $this->bitacora->insertarBitacora($_SESSION['id_usuario'], "inicio sesion", "Ha iniciado una session");
 
                         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
-
                     } else {
 
                         header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/mensaje");
-
                     }
                 }
-
-
-
             } else {
                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
             }
-
         }
     }
-
-
-
-
-?>
+}
