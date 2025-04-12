@@ -90,9 +90,8 @@
       <?php endif ?>
     <?php endif ?>
 
-
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 col-11 m-auto">
-      <div class="col-12 caja-boton">
+      <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
 
         <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8" uk-toggle="target: #modal-exampleAgregarPatologias" id="">

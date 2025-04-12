@@ -20,7 +20,7 @@ class ControladorConsultas
 	{
 
 		$doctores = $this->modelo->mostrarDoctores();
-		$servicios = $this->modelo->mostrarConsultas();	 
+		$servicios = $this->modelo->mostrarConsultas();
 		$categorias = $this->categoria->seleccionarCategoria();
 		$todasLasCategorias = $this->categoria->seleccionarTodasLasCategoria();
 
@@ -32,37 +32,37 @@ class ControladorConsultas
 	{
 
 		$doctores = $this->modelo->mostrarDoctores();
-		$servicios = $this->modelo->mostrarConsultasDes();	 
+		$servicios = $this->modelo->mostrarConsultasDes();
 		$categorias = $this->categoria->seleccionarCategoria();
 
 
 
-		require_once './src/vistas/vistaConsultas/vistaConsultasPapelera.php';
+		require_once './src/vistas/vistaConsultas/vistaServiciosPapelera.php';
 	}
 
 	public function guardar()
 	{
 
-		
+
 		$resultaServicio = $this->modelo->nombreConsulta($_POST['id_categoria'], $_POST['id_doctor']);
 
-		
+
 		if ($resultaServicio === "existeC") {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/error");
 
-        } else {
-          
-            $precio_sin_puntos = str_replace('.', '', $_POST['precio']);
+		} else {
+
+			$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
 
 
 			print_r($_POST);
 
 			$this->modelo->insertar($_POST['id_categoria'], $_POST['id_doctor'], $precio_sin_puntos);
 			// Guardar la bitacora
-			$this->bitacora->insertarBitacora($_POST['id_usuario'],"servicioMedico","Ha Insertado un nuevo  servicio medico");
+			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha Insertado un nuevo  servicio medico");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/agregado");
 
-        }
+		}
 
 	}
 
@@ -72,7 +72,7 @@ class ControladorConsultas
 		$id_usuario = $datos[1];
 		$this->modelo->eliminar($id_servicioMedico);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($id_usuario,"servicioMedico","Ha eliminado un   servicio medico");
+		$this->bitacora->insertarBitacora($id_usuario, "servicioMedico", "Ha eliminado un   servicio medico");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminado");
 	}
 
@@ -82,7 +82,7 @@ class ControladorConsultas
 		$id_usuario = $datos[1];
 		$this->modelo->restablecerServ($id_servicioMedico);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($id_usuario,"servicioMedico","Ha restablecido un servicio medico");
+		$this->bitacora->insertarBitacora($id_usuario, "servicioMedico", "Ha restablecido un servicio medico");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/restablecido");
 	}
 
@@ -93,7 +93,7 @@ class ControladorConsultas
 		$precio_sin_puntos = str_replace('.', '', $_POST['precioEditar']);
 		$this->modelo->editar($_POST["id_servicioMedico"], $precio_sin_puntos);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario'],"servicioMedico","Ha modificadp un servicio medico");
+		$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha modificadp un servicio medico");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/editado");
 	}
 
@@ -111,20 +111,22 @@ class ControladorConsultas
 		$respuesta = $this->modelo->especialidadDoctor($id_doctor);
 		echo json_encode($respuesta);
 	}
-	
 
-	public function registrarCategoria(){
+
+	public function registrarCategoria()
+	{
 		$this->categoria->registrarCategoria($_POST["nombre"]);
 		// Guardar la bitacora
-			$this->bitacora->insertarBitacora($_POST['id_usuario'],"categoria_servicio","Ha Insertado una nueva  categoria");
+		$this->bitacora->insertarBitacora($_POST['id_usuario'], "categoria_servicio", "Ha Insertado una nueva  categoria");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/agregado");
 	}
-	public function eliminarCategoria($datos){
+	public function eliminarCategoria($datos)
+	{
 		$id_categoria = $datos[0];
 		$id_usuario = $datos[1];
 		$this->categoria->eliminarCategoria($id_categoria);
 		// Guardar la bitacora
-			$this->bitacora->insertarBitacora($id_usuario,"categoria_servicio","Ha eliminado una  categoria");
+		$this->bitacora->insertarBitacora($id_usuario, "categoria_servicio", "Ha eliminado una  categoria");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminado");
 	}
 
