@@ -43,7 +43,7 @@
                                     aria-controls="uk-accordion-22-content-0"
                                     aria-expanded="false"
                                     aria-disabled="false">
-                                    <h6 class="acordion-paciente fw-2">
+                                    <h6 class="acordion-mostrar fw-2">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="20"
@@ -56,6 +56,16 @@
                                         Pacientes
                                     </h6>
                                 </a>
+
+
+                                <input type="hidden" name="modulos[]" value="Pacientes">
+
+                                <?php $permisosPorModulo = "permisosPacientes[]"  ?>
+
+                                <?php $modulo = "Pacientes"  ?>
+
+                                <input type="hidden" name="permisos[]" value="permisosPacientes">
+
 
                                 <div
                                     class="uk-accordion-content"
@@ -95,7 +105,7 @@
                                     aria-controls="uk-accordion-22-content-0"
                                     aria-expanded="false"
                                     aria-disabled="false">
-                                    <h6 class="acordion-paciente fw-2">
+                                    <h6 class="acordion-mostrar fw-2">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="20"
@@ -108,6 +118,15 @@
                                         Patologias
                                     </h6>
                                 </a>
+
+
+                                <input type="hidden" name="modulos[]" value="Patologias">
+
+                                <?php $permisosPorModulo = "permisosPatologias[]"  ?>
+
+                                <?php $modulo = "Patologias"  ?>
+
+                                <input type="hidden" name="permisos[]" value="permisosPatologias">
 
                                 <div
                                     class="uk-accordion-content"
