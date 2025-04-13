@@ -20,12 +20,18 @@ class ControladorRoles {
         require_once './src/vistas/vistaRoles/vistaRoles.php';
     }
 
-
-    public function mostrarPermisos($datos)
-    {
-        $permisos = $this->modelo->rolesPermisos($datos[0]);
-        echo json_encode($permisos);
+    public function mostrarPermisos($id_rol, $modulo){
+       $this->modelo->mostrarPermisos($id_rol, $modulo);
     }
+
+    // in_array($palabra, $array);
+
+
+    // public function mostrarPermisos($datos)
+    // {
+    //     $permisos = $this->modelo->rolesPermisos($datos[0]);
+    //     echo json_encode($permisos);
+    // }
 
 
     public function mostrarPermisosPorModulo($datos)

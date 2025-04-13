@@ -29,6 +29,16 @@ class ModeloRoles extends Db
     }
 
 
+    //Consultar el permiso
+    public function mostrarPermisos($id_rol, $modulo){
+        $consulta = $this->conexion->prepare("SELECT modulo,permisos FROM permisos WHERE id_rol =:id_rol AND modulo =:modulo ");
+        $consulta->bindParam(":id_rol", $id_rol);
+        $consulta->bindParam(":modulo", $modulo);
+        $permisos = ($consulta->execute()) ? $consulta->fetch() : false;
+        return $permisos;
+    }
+
+
     //Consultar los permisos segun el id_rol
     public function rolesPermisos($id_rol)
     {

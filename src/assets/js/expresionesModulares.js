@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     cedulaCita: /^([1-9]{1})([0-9]{5,7})$/,
     telefono: /^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/,
     direccion: /^([A-Za-z0-9\s\.,#-]{8,})$/,
+    descripcion: /^([A-Za-z0-9\s\.,#-]{8,})$/,
     fn: /^\d{4}\-\d{2}\-\d{2}$/,
     fechaDeCita: /^\d{4}\-\d{2}\-\d{2}$/,
 

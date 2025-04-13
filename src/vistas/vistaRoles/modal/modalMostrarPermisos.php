@@ -7,10 +7,7 @@
             <div class="">
 
 
-                <h1 class="text-center">Permisos de <?= $rol["nombre"]; ?></h1>
-
-
-
+                <h1 class="text-center">Modificar Rol <?= $rol["nombre"]; ?></h1>
 
                 <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/modificarRol" method="post">
                     <div class="caja-de-permisos<?= $rol["id_rol"]; ?> ">
@@ -51,6 +48,20 @@
                         <input type="hidden" name="id_rol" value="<?= $rol["id_rol"]; ?>">
 
                         <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
+
+                        <h4 class="mt-3 text-center">Modificar Permisos</h4>
+
+                        <div class="mt-2 form-check form-switch d-flex align-items-center">
+                            <div>
+                                <input class="form-check-input checkboxTodosLosPermisos<?= $rol["id_rol"]; ?>" type="checkbox" role="switch">
+                            </div>
+                            <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
+
+                                    Seleccionar Todos los permisos
+                                </label></div>
+
+                        </div>
+
 
                         <!-- Pacientes -->
                         <div class="input-modal mt-3">
@@ -227,7 +238,7 @@
 
         <div class="">
 
-            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/guardarRol" method="post">
+            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/guardarRol" method="post" class="form-validable">
 
 
 
@@ -246,10 +257,11 @@
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                     </svg>
 
-                    <input type="text" name="nombre" id="inputDos" class="input-u col-12" placeholder="Nombre Del Rol"
+                    <input type="text" name="nombre" id="inputDos" class="input-u col-12 input-validar" placeholder="Nombre Del Rol"
                         required>
 
                 </div>
+                <p class="p-error-nombre d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
 
                 <!-- descripcion -->
@@ -264,20 +276,36 @@
 
                     <!-- <input type="text" name="nombre" id="inputDos" class="input-u col-12" placeholder="Nombre Del Rol"
                     required> -->
-                    <textarea name="descripcion" class="input-u col-12" style="height: 80px;" placeholder="Descripcion del permiso"></textarea>
+                    <input name="descripcion" class="input-u col-12 input-validar" style="height: 80px;" placeholder="Descripcion del permiso">
 
                 </div>
+
+                <p class="p-error-descripcion d-none">La Descripcion debe ser breve de al menos 8 caracteres</p>
 
 
 
                 <h4 class="mb-3 mt-1 text-center">Permisos para el Rol</h4>
+
+
+                <div class="mt-2 form-check form-switch d-flex align-items-center">
+                    <div>
+                        <input class="form-check-input checkboxTodosLosPermisos" type="checkbox" role="switch">
+                    </div>
+                    <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
+
+                            Seleccionar Todos los permisos
+                        </label></div>
+
+                </div>
+
+
 
                 <div class=" caja-de-permisos">
                     <!-- <h4>Pacientes</h4>
                     <div class=" bg-danger d-flex flex-wrap">
                         <div class="form-check form-switch d-flex align-items-center">
                             <div>
-                                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckDefault"
+                                <input class="form-check-input " type="checkbox" role="switch"   
                                     value="">
                             </div>
                             <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
