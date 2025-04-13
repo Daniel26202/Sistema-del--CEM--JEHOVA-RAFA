@@ -86,4 +86,44 @@ class ModeloRoles extends Db
             $consultaPermiso->execute();
         }
     }
+
+
+    //modificar Rol
+    public function editar($id_rol, $nombre, $descripcion, $modulo, $permisos)
+    {
+
+        //Editar Rol
+        $consulta = $this->conexion->prepare("UPDATE rol SET  nombre =:nombre, descripción =:descripcion WHERE id_rol = :id_rol");
+        $consulta->bindParam(":nombre", $nombre);
+        $consulta->bindParam(":descripcion", $descripcion);
+        $consulta->bindParam(":id_rol", $id_rol);
+        $consulta->execute();
+
+
+
+        //Recorro los modulos enviados por el formulario
+        foreach ($modulo as $index => $modulo) {
+            //La variable grupoDelPermiso guardar el nombre del grupo de permiso
+            $grupoDelPermiso = $permisos[$index];
+
+            //Uno el array de permisos en una cadena de texto separado por "," 
+            $permiso = implode(",", $_POST[$grupoDelPermiso]);
+
+            $consultaPermiso = $this->conexion->prepare("UPDATE  permisos SET   permisos =:permisos WHERE modulo =:modulo AND id_rol =:id_rol");
+            $consultaPermiso->bindParam(":id_rol", $id_rol);
+            $consultaPermiso->bindParam(":permisos", $permiso);
+            $consultaPermiso->bindParam(":modulo", $modulo);
+            $consultaPermiso->execute();
+        }
+    }
+
+
+    //eliminar Rol
+
+    public function eliminar($id_rol){
+        //Eliminar Rol
+        $consulta = $this->conexion->prepare("UPDATE rol SET  estado ='DES' WHERE id_rol = :id_rol");
+        $consulta->bindParam(":id_rol", $id_rol);
+        $consulta->execute();
+    }
 }
