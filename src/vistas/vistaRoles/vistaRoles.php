@@ -145,7 +145,7 @@
                 <!-- Buscador de Usuarios -->
                 <div class="d-flex justify-content-end mt-3 mb-3 col-3">
                     <input class="form-control input-busca" type="text" name="" placeholder="Ingrese nombre"
-                        id="Buscarusuario">
+                        id="buscarRol">
                     <button class="btn boton-buscar" title="Buscar">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-search" viewBox="0 0 16 16">
