@@ -10,7 +10,7 @@
                 value="consultar" name="<?= $permisosPorModulo ?>" <?php if ($permisosDelRol != array()) {
                                                                         $permisosSeparados = explode(",", $permisosDelRol);
                                                                         $x = (in_array("consultar", $permisosSeparados)) ? "checked" : "";
-                                                                    };
+                                                                    } else $x = "";
                                                                     echo $x ?>>
         </div>
         <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
@@ -44,7 +44,8 @@
                 value="editar" name="  <?= $permisosPorModulo ?>" data-index="<?= $modulo ?>" <?php if ($permisosDelRol != array()) {
                                                                                                     $permisosSeparados = explode(",", $permisosDelRol);
                                                                                                     $x = (in_array("editar", $permisosSeparados)) ? "checked" : "";
-                                                                                                }else $x="";                                                                               echo $x ?>>
+                                                                                                } else $x = "";
+                                                                                                echo $x ?>>
         </div>
         <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
 
@@ -56,7 +57,11 @@
     <div class="form-check form-switch d-flex align-items-center">
         <div>
             <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
-                value="eliminar" name="  <?= $permisosPorModulo ?>" data-index="<?= $modulo ?>" <?php if ($permisosDelRol != array()) { $permisosSeparados = explode(",", $permisosDelRol); $x = (in_array("eliminar", $permisosSeparados)) ? "checked" : "";}else $x =""; echo $x ?>>
+                value="eliminar" name="  <?= $permisosPorModulo ?>" data-index="<?= $modulo ?>" <?php if ($permisosDelRol != array()) {
+                                                                                                    $permisosSeparados = explode(",", $permisosDelRol);
+                                                                                                    $x = (in_array("eliminar", $permisosSeparados)) ? "checked" : "";
+                                                                                                } else $x = "";
+                                                                                                echo $x ?>>
         </div>
         <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
 
@@ -65,3 +70,9 @@
 
     </div>
 </div>
+
+
+
+
+
+
