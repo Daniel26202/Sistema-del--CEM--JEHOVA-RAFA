@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-04-2025 a las 16:44:41
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 14-04-2025 a las 18:20:04
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -57,8 +57,7 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (20, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-03 20:46:16'),
 (21, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-04 17:18:31'),
 (22, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-04 23:20:21'),
-(23, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-05 09:18:47'),
-(24, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-14 10:40:11');
+(23, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-05 09:18:47');
 
 -- --------------------------------------------------------
 
@@ -261,11 +260,11 @@ CREATE TABLE `horarioydoctor` (
 
 CREATE TABLE `hospitalizacion` (
   `id_hospitalizacion` int(11) NOT NULL,
-  `duracion` int(25) NOT NULL,
+  `fecha_hora_inicio` datetime NOT NULL,
   `precio_horas` float NOT NULL,
   `total` float NOT NULL,
-  `historiaclinica` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `fecha_hora` datetime NOT NULL,
+  `id_control` int(11) NOT NULL,
+  `fecha_hora_final` datetime NOT NULL,
   `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -430,9 +429,7 @@ CREATE TABLE `permisos` (
 --
 
 INSERT INTO `permisos` (`idpermisos`, `id_rol`, `permisos`, `modulo`) VALUES
-(1, 1, 'sjdasoidjsaoijdasoijdisosadsoiajdsaoijdasoid,.sakdiosapdksapodkaspod', 'pacientes'),
-(2, 5, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(3, 5, 'consultar,guardar,editar,eliminar', 'Patologias');
+(1, 1, 'sjdasoidjsaoijdasoijdisosadsoiajdsaoijdasoid,.sakdiosapdksapodkaspod', 'pacientes');
 
 -- --------------------------------------------------------
 
@@ -519,9 +516,7 @@ CREATE TABLE `rol` (
 --
 
 INSERT INTO `rol` (`id_rol`, `nombre`, `estado`, `descripción`) VALUES
-(1, 'administrador', 'ACT', 'administrador'),
-(4, 'Doctor', 'ACT', 'Descripcion'),
-(5, 'Agua', 'ACT', 'ghjjiuhj');
+(1, 'administrador', 'ACT', 'administrador');
 
 -- --------------------------------------------------------
 
@@ -719,7 +714,8 @@ ALTER TABLE `horarioydoctor`
 -- Indices de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  ADD PRIMARY KEY (`id_hospitalizacion`);
+  ADD PRIMARY KEY (`id_hospitalizacion`),
+  ADD KEY `id_control` (`id_control`);
 
 --
 -- Indices de la tabla `insumo`
@@ -855,7 +851,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria_servicio`
@@ -966,12 +962,6 @@ ALTER TABLE `patologiadepaciente`
   MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT de la tabla `permisos`
---
-ALTER TABLE `permisos`
-  MODIFY `idpermisos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
@@ -987,7 +977,7 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `serviciomedico`
@@ -1069,6 +1059,12 @@ ALTER TABLE `factura_has_inventario`
 ALTER TABLE `horarioydoctor`
   ADD CONSTRAINT `horarioydoctor_ibfk_1` FOREIGN KEY (`id_horario`) REFERENCES `horario` (`id_horario`),
   ADD CONSTRAINT `horarioydoctor_ibfk_2` FOREIGN KEY (`id_personal`) REFERENCES `personal` (`id_personal`);
+
+--
+-- Filtros para la tabla `hospitalizacion`
+--
+ALTER TABLE `hospitalizacion`
+  ADD CONSTRAINT `id_control` FOREIGN KEY (`id_control`) REFERENCES `control` (`id_control`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `insumodehospitalizacion`
