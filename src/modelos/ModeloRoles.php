@@ -39,32 +39,6 @@ class ModeloRoles extends Db
     }
 
 
-    //Consultar los permisos segun el id_rol
-    public function rolesPermisos($id_rol)
-    {
-        $consulta = $this->conexion->prepare("SELECT * FROM permisos WHERE id_rol =:id_rol");
-        $consulta->bindParam(":id_rol", $id_rol);
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
-    }
-
-
-    //Consultar los permisos segun el modulo especifico
-    public function permisosModulo($modulo)
-    {
-        $consulta = $this->conexion->prepare("SELECT * FROM rol r INNER JOIN rol_has_permisos rp ON rp.rol_id_rol = r.id_rol INNER JOIN permisos p ON p.idpermisos = rp.permisos_idpermisos WHERE p.modulo =:modulo ");
-        $consulta->bindParam(":modulo", $modulo);
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
-    }
-
-
-    //mostrar los permisos que tiene cada rol en especifico
-    public function permisosRol($id_permiso, $id_rol)
-    {
-        $consulta = $this->conexion->prepare("SELECT *  FROM permisos p INNER JOIN  rol_has_permisos rp ON p.idpermisos = rp.permisos_idpermisos INNER JOIN rol r ON r.id_rol = rp.rol_id_rol WHERE p.idpermisos =:id_permiso AND r.id_rol =:id_rol");
-        $consulta->bindParam(":id_permiso", $id_permiso);
-        $consulta->bindParam(":id_rol", $id_rol);
-        return ($consulta->execute()) ? $consulta->fetch() : false;
-    }
 
 
     //Insertar  Rol
@@ -136,4 +110,19 @@ class ModeloRoles extends Db
         $consulta->bindParam(":id_rol", $id_rol);
         $consulta->execute();
     }
+
+
+    //metodo para validar que no se registren dos roles con el mismo nombre
+    public function validarRol($nombre){
+        $consulta = $this->conexion->prepare("SELECT * FROM rol WHERE nombre =:nombre");
+        $consulta->bindParam(":nombre", $nombre);
+        $consulta->execute();
+        while ($consulta->fetch()) {
+            return true;
+        }
+        return false;
+    }
+
+
+
 }

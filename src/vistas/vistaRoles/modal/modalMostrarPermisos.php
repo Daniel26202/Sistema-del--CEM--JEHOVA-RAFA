@@ -9,7 +9,7 @@
 
                 <h1 class="text-center">Modificar Rol <?= $rol["nombre"]; ?></h1>
 
-                <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/modificarRol" method="post" class="form-validable<?= $rol["id_rol"]; ?>">
+                <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/modificarRol/<?= $rol["nombre"]; ?>" method="post" class="form-validable<?= $rol["id_rol"]; ?>">
                     <div class="caja-de-permisos<?= $rol["id_rol"]; ?> ">
 
 

@@ -92,7 +92,7 @@
         <?php if ($parametro[0] == "error"): ?>
             <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica h-25 text-center" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">La cédula ya existen, intente de nuevo.</p>
+                <p class="pe-2">El nombre del rol ya existen, intente de nuevo con otro nombre.</p>
             </div>
             <div class="d-flex justify-content-center">
             <?php elseif ($parametro[0] == "registro"): ?>
