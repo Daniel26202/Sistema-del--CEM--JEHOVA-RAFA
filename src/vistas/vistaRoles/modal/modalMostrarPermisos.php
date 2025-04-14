@@ -7,9 +7,12 @@
             <div class="">
 
 
+                <div class="modal-body text-center"></div>
+
+
                 <h1 class="text-center">Modificar Rol <?= $rol["nombre"]; ?></h1>
 
-                <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/modificarRol/<?= $rol["nombre"]; ?>" method="post" class="form-validable<?= $rol["id_rol"]; ?>">
+                <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/modificarRol/<?= $rol["nombre"]; ?>" method="post" class="form-ajax form-validable<?= $rol["id_rol"]; ?> form ">
                     <div class="caja-de-permisos<?= $rol["id_rol"]; ?> ">
 
 
@@ -69,7 +72,7 @@
 
                         <!-- Pacientes -->
                         <div class="input-modal mt-3">
-                            <ul uk-accordion="multiple: true" class="uk-accordion">
+                            <ul uk-accordion="multiple: true" class="uk-accordion accordion-section">
                                 <li class="">
                                     <a
                                         class="uk-accordion-title text-decoration-none"
@@ -131,7 +134,7 @@
                         <!-- Patologias -->
 
                         <div class="input-modal mt-3">
-                            <ul uk-accordion="multiple: true" class="uk-accordion">
+                            <ul uk-accordion="multiple: true" class="uk-accordion accordion-section">
                                 <li class="">
                                     <a
                                         class="uk-accordion-title text-decoration-none"
@@ -232,17 +235,11 @@
 
 
 
-
-
-
-
-
-
-
-
         <div class="">
 
-            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/guardarRol" method="post" class="form-validable">
+            <div class="modal-body text-center"></div>
+
+            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/guardarRol" method="post" class="form-validable form form-ajax">
 
 
 
@@ -325,7 +322,7 @@
 
                     <!-- Pacientes -->
                     <div class="input-modal mt-3">
-                        <ul uk-accordion="multiple: true" class="uk-accordion">
+                        <ul uk-accordion="multiple: true" class="uk-accordion accordion-section">
                             <li class="">
                                 <a
                                     class="uk-accordion-title text-decoration-none"
@@ -434,7 +431,7 @@
                     <!-- Patologias -->
 
                     <div class="input-modal mt-3">
-                        <ul uk-accordion="multiple: true" class="uk-accordion">
+                        <ul uk-accordion="multiple: true" class="uk-accordion accordion-section">
                             <li class="">
                                 <a
                                     class="uk-accordion-title text-decoration-none"
