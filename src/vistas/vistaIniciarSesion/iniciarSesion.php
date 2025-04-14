@@ -81,13 +81,10 @@ if (!empty($parametro)) {
                 </div>
             </div>
         </div>
-
-
         <!-- Fin btn de ayuda Interactiva -->
         <div class="d-flex justify-content-center mt-5 pt-5">
-
             <div class="centro">
-                <img src="<?= $urlBase ?>./src/assets/icons/logo2.png" alt="Logo" class="logo">
+                <img src="<?= $urlBase ?>./src/assets/icons/logo2.png" alt="Logo" class="logo" style="width: 290px; height: 100px; margin-top: 20px; margin-left: 50px;">
                 <form autocomplete="off" action="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/iniciarSesion" method="POST"
                     id="formiIniciarSesion" class="form-validable">
 

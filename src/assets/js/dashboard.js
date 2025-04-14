@@ -235,7 +235,7 @@ const especialidades_chart = async () => {
       .getElementById("especialidades_solicitadas")
       .getContext("2d");
     new Chart(ctx, {
-      type: "doughnut",
+      type: "pie",
       data: {
         labels: especialidades,
         datasets: [
@@ -251,7 +251,12 @@ const especialidades_chart = async () => {
           },
         ],
         options: {
-          responsive: false, // Importante para que respete las dimensiones del canvas
+          responsive: false,
+          plugins: {
+            legend: {
+              display: false, // La leyenda la haremos nosotros con jsPDF
+            },
+          },
         },
       },
     });
@@ -301,7 +306,7 @@ function generarReporte() {
 
   // Puedes calcular aquí o tener ya calculados los datos estadísticos (p.ej., moda, media)
   const descripcion =
-    "El gráfico muestra los servicios más solicitados. La moda es el servicio de color Naranja, siendo el más frecuente.";
+    "\n El gráfico muestra los servicios más solicitados. La moda es el servicio X, siendo el más solicitado en el periodo XX-XX-XXXX.";
 
   fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/exportar_pdf", {
     // Actualiza con la ruta correcta de tu endpoint

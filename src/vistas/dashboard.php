@@ -52,7 +52,7 @@ require_once './src/vistas/head/head.php';
                 <div class="col-md-6 col-12">
                     <div class="chart-card p-4 rounded shadow-sm">
                         <h5>Especialidades solicitadas</h5>
-                        <canvas id="especialidades_solicitadas" width="1920" height="1080"></canvas>
+                        <canvas id="especialidades_solicitadas" width="600" height="600"></canvas>
                         <button id="especialidades" class="btn btn-primary">Descargar</button>
                     </div>
 
@@ -128,6 +128,8 @@ require_once './src/vistas/head/head.php';
 
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
