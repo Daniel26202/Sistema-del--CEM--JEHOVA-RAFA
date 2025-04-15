@@ -86,7 +86,7 @@ class ModeloDoctores extends Db
     {
 
         //agregamos al doctor como usuario.
-        $consultaDeUsuario = $this->conexion->prepare('INSERT INTO usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES ("4",:imagen, :usuario, :correo, :password,"ACT");');
+        $consultaDeUsuario = $this->conexion->prepare('INSERT INTO usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES ("8",:imagen, :usuario, :correo, :password,"ACT");');
 
         $consultaDeUsuario->bindParam(":imagen", $nombreImagen);
         $consultaDeUsuario->bindParam(":usuario", $usuario);

@@ -60,8 +60,9 @@ class ModeloRoles extends Db
             //La variable grupoDelPermiso guardar el nombre del grupo de permiso
             $grupoDelPermiso = $permisos[$index];
 
+
             //Uno el array de permisos en una cadena de texto separado por "," 
-            $permiso = implode(",", $_POST[$grupoDelPermiso]);
+            $permiso = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
 
             $consultaPermiso = $this->conexion->prepare("INSERT INTO permisos (idpermisos, id_rol, permisos, modulo) VALUES (NULL, :id_rol, :permisos, :modulo)");
             $consultaPermiso->bindParam(":id_rol", $id_rol);
@@ -90,8 +91,9 @@ class ModeloRoles extends Db
             //La variable grupoDelPermiso guardar el nombre del grupo de permiso
             $grupoDelPermiso = $permisos[$index];
 
+            
             //Uno el array de permisos en una cadena de texto separado por "," 
-            $permiso = implode(",", $_POST[$grupoDelPermiso]);
+            $permiso = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
 
             $consultaPermiso = $this->conexion->prepare("UPDATE  permisos SET   permisos =:permisos WHERE modulo =:modulo AND id_rol =:id_rol");
             $consultaPermiso->bindParam(":id_rol", $id_rol);

@@ -25,6 +25,7 @@ addEventListener("DOMContentLoaded", function () {
     // Validar que al menos "consultar" esté seleccionado en cada sección
     const sections = modal.querySelectorAll(".accordion-section");
     modal.querySelector("form").addEventListener("submit", function (event) {
+      console.log(modal)
       let isValid = true;
       sections.forEach((section) => {
         const consultarCheckbox = section.querySelector('input[value="consultar"]');
@@ -33,6 +34,7 @@ addEventListener("DOMContentLoaded", function () {
           section.classList.add("error"); // Agregar clase para indicar error (opcional)
         } else {
           section.classList.remove("error"); // Remover clase de error si está marcado
+          this.submit(); // Enviar Formulario
         }
       });
 
