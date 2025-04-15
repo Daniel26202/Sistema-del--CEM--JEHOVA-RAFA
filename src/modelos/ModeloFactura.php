@@ -348,7 +348,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		//insertar servicios extras
 		if ($serviciosExtras) {
 			foreach ($serviciosExtras as $s) {
-				$consulta = $this->conexion->prepare("INSERT INTO serviciomedico_has_factura VALUES (:id_factura, :s, NULL)");
+				$consulta = $this->conexion->prepare("INSERT INTO serviciomedico_has_factura  VALUES (:s, :id_factura)");
 				$consulta->bindParam(":id_factura", $id_factura);
 				$consulta->bindParam(":s", $s);
 				if ($consulta->execute()) {
@@ -379,7 +379,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 
 		
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/" . $id_factura);
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $id_factura);
 		
 	}
 
@@ -465,7 +465,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 	public function consultarFactura($id_factura)
 	{
-		$consulta = $this->conexion->prepare("SELECT cs.nombre AS categoria_servicio, d.nombre AS nombre_d, d.apellido AS apellido_d,e.nombre AS especialidad, p.nombre AS nombre_p, p.apellido AS apellido_p, p.nacionalidad, p.cedula AS cedula_p , f.*,c.*,sm.precio AS precio_servicio FROM factura f INNER JOIN cita c ON f.id_cita =c.id_cita  INNER JOIN paciente p ON c.id_paciente = p.id_paciente INNER JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico INNER JOIN personal d ON sm.id_personal = d.id_personal INNER JOIN especialidad e ON  e.id_especialidad = d.id_especialidad INNER JOIN usuario u ON d.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs on cs.id_categoria = sm.id_categoria  WHERE id_factura =:id_factura ");
+		$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente   WHERE id_factura =:id_factura ");
 		$consulta->bindParam(":id_factura", $id_factura);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
@@ -481,7 +481,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 	public function consultarServiciosExtras($id_factura)
 	{
-		$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM factura f INNER JOIN facturadeservicio fs ON f.id_factura = fs.id_factura INNER JOIN serviciomedico s ON s.id_servicioMedico = fs.id_servicioMedico INNER JOIN personal d ON s.id_personal= d.id_personal INNER JOIN usuario u ON u.id_usuario = d.id_usuario INNER JOIN categoria_servicio cs ON s.id_categoria = cs.id_categoria WHERE f.id_factura =:id_factura  AND cs.id_categoria != 9");
+		$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM factura f INNER JOIN serviciomedico_has_factura fs ON f.id_factura = fs.factura_id_factura INNER JOIN serviciomedico s ON s.id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN  personal d ON psm.personal_id_personal = d.id_personal INNER JOIN usuario u ON u.id_usuario = d.id_usuario INNER JOIN categoria_servicio cs ON s.id_categoria = cs.id_categoria WHERE f.id_factura =:id_factura  AND cs.id_categoria != 'Consulta' ");
 		$consulta->bindParam(":id_factura", $id_factura);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
@@ -497,7 +497,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 	public function consultarFacturaInsumo($id_factura)
 	{
-		$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM inventario i INNER JOIN insumodefactura fi ON i.id_inventario = fi.id_inventario INNER JOIN factura f  ON f.id_factura = fi.id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
+		$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM inventario i INNER JOIN factura_has_inventario fi ON i.id_inventario = fi.inventario_id_inventario INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
 		$consulta->bindParam(":id_factura", $id_factura);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}

@@ -19,21 +19,7 @@ class ControladorFactura
 	}
 
 	//metodo para mostrar la vista de facturacion
-	public function facturaInicio($parametro)
-	{
-
-		//aqui instacio y uso el metodo para mostrar los tipos de pago
-
-		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
-
-		$extras = $this->modelo->mostrarServicios();
-
-		$insumos = $this->modelo->mostrarInsumos();
-
-		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
-
-		require_once './src/vistas/vistaFactura/vistaFactura.php';
-	}
+	
 
 	public function factura($parametro)
 	{
@@ -42,6 +28,20 @@ class ControladorFactura
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 		$extras = $this->modelo->mostrarServicios();
 		require_once './src/vistas/vistaFactura/factura.php';
+	}
+
+
+	public function comprobante($parametro){
+
+		if($parametro == "") header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
+		
+		$datosFactura = $this->modelo->consultarFactura($parametro[0]);
+		$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
+		$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
+		$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
+		require_once './src/vistas/vistaFactura/comprobante.php';
+
+
 	}
 
 

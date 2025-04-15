@@ -132,6 +132,7 @@
 			<?php //print_r($_GET);
 			
 				echo $parametro[0];
+				echo "sui";
 				$datosFactura = $this->modelo->consultarFactura($parametro[0]);
 
 

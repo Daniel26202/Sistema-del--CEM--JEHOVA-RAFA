@@ -88,6 +88,8 @@ if (!empty($parametro)) {
                 <form autocomplete="off" action="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/iniciarSesion" method="POST"
                     id="formiIniciarSesion" class="form-validable">
 
+                    <div class="msjE"></div>
+
                     <div class=" m-auto">
 
                         <div class="mb-5 ms-5 mt-5 pt-2 ps-4 col">
@@ -169,7 +171,7 @@ if (!empty($parametro)) {
                                 </div>
 
                                 <p class="p-error-password d-none">La Contraseña debe contener de 8 a 12 caracteres, una mayúscula, un número y un símbolo
-                                    </p>
+                                </p>
                             </div>
                         </div>
 
