@@ -366,7 +366,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 			$contador = 0;
 
 			foreach ($insumos as $i) {
-				$consulta = $this->conexion->prepare("INSERT INTO insumodefactura VALUES (null, :id_factura, :i, :cantidad, 'ACT')");
+				$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :i, :cantidad, 'ACT')");
 				$consulta->bindParam(":id_factura", $id_factura);
 				$consulta->bindParam(":i", $i);
 				$consulta->bindParam(":cantidad", $cantidad[$contador]);

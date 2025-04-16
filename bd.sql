@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-04-2025 a las 18:20:04
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 16-04-2025 a las 15:05:04
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -57,7 +57,30 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (20, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-03 20:46:16'),
 (21, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-04 17:18:31'),
 (22, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-04 23:20:21'),
-(23, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-05 09:18:47');
+(23, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-05 09:18:47'),
+(24, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-14 19:18:06'),
+(25, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-04-14 19:20:24'),
+(26, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-14 19:25:47'),
+(27, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-14 20:33:40'),
+(28, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-14 20:35:37'),
+(29, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-14 20:35:49'),
+(30, 1, 'Roles', 'Ha Eliminado un rol', '2025-04-14 20:36:00'),
+(31, 1, 'Roles', 'Ha Eliminado un rol', '2025-04-14 20:36:17'),
+(32, 1, 'Roles', 'Ha Eliminado un rol', '2025-04-14 20:36:24'),
+(33, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-14 20:36:54'),
+(34, 1, 'doctor', 'Ha Insertado un doctor', '2025-04-14 20:39:06'),
+(35, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-04-14 20:39:21'),
+(36, 1, 'cita', 'Ha Insertado una  cita', '2025-04-14 18:40:33'),
+(37, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-15 10:05:28'),
+(38, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 10:58:40'),
+(39, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-15 15:39:07'),
+(40, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-15 19:39:17'),
+(41, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-15 21:13:58'),
+(42, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-15 21:17:22'),
+(43, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-15 21:32:10'),
+(44, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-15 21:35:22'),
+(45, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-16 08:27:48'),
+(46, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-16 09:02:09');
 
 -- --------------------------------------------------------
 
@@ -105,7 +128,8 @@ INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_ser
 (41, '2025-04-02', '12:33:00', 'ACT', 24, 23),
 (42, '2025-04-02', '12:33:00', 'ACT', 25, 23),
 (43, '2025-04-02', '12:33:00', 'ACT', 22, 23),
-(44, '2025-04-02', '12:33:00', 'ACT', 22, 23);
+(44, '2025-04-02', '12:33:00', 'ACT', 22, 23),
+(45, '2025-04-21', '22:00:00', 'Realizadas', 26, 25);
 
 -- --------------------------------------------------------
 
@@ -176,7 +200,7 @@ CREATE TABLE `entrada_insumo` (
 --
 
 INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `fechaDeVencimiento`, `precio`, `cantidad_entrante`, `cantidad_disponible`) VALUES
-(32, 24, 38, '2030-04-01', 64.00, 25, 25),
+(32, 24, 38, '2030-04-01', 64.00, 25, 20),
 (33, 25, 39, '2030-04-01', 44.00, 25, 25);
 
 -- --------------------------------------------------------
@@ -216,6 +240,19 @@ CREATE TABLE `factura` (
   `paciente_id_paciente` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `factura`
+--
+
+INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_paciente`) VALUES
+(57, '2025-04-14', 1000.00, 'ACT', 25),
+(58, '2025-04-14', 1000.00, 'ACT', 25),
+(61, '2025-04-21', 1123.00, 'ACT', 25),
+(62, '2025-04-15', 1000.00, 'ACT', 25),
+(63, '2025-04-15', 1000.00, 'ACT', 25),
+(64, '2025-04-16', 125.00, 'ACT', 25),
+(65, '2025-04-16', 125.00, 'ACT', 25);
+
 -- --------------------------------------------------------
 
 --
@@ -224,8 +261,17 @@ CREATE TABLE `factura` (
 
 CREATE TABLE `factura_has_inventario` (
   `factura_id_factura` int(11) NOT NULL,
-  `inventario_id_inventario` int(11) NOT NULL
+  `inventario_id_inventario` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `estado` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `factura_has_inventario`
+--
+
+INSERT INTO `factura_has_inventario` (`factura_id_factura`, `inventario_id_inventario`, `cantidad`, `estado`) VALUES
+(65, 1, 5, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -237,6 +283,19 @@ CREATE TABLE `horario` (
   `id_horario` int(11) NOT NULL,
   `diaslaborables` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `horario`
+--
+
+INSERT INTO `horario` (`id_horario`, `diaslaborables`) VALUES
+(8, 'domingo'),
+(9, 'lunes'),
+(10, 'martes'),
+(11, 'miércoles'),
+(12, 'jueves'),
+(13, 'viernes'),
+(14, 'sábado');
 
 -- --------------------------------------------------------
 
@@ -251,6 +310,13 @@ CREATE TABLE `horarioydoctor` (
   `horaDeEntrada` time NOT NULL,
   `horaDeSalida` time NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `horarioydoctor`
+--
+
+INSERT INTO `horarioydoctor` (`id_horarioydoctor`, `id_personal`, `id_horario`, `horaDeEntrada`, `horaDeSalida`) VALUES
+(30, 19, 9, '20:00:00', '22:00:00');
 
 -- --------------------------------------------------------
 
@@ -290,8 +356,8 @@ CREATE TABLE `insumo` (
 --
 
 INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `precio`, `cantidad`, `stockMinimo`, `estado`) VALUES
-(24, '', 'Paracetamol', 'El paracetamol, también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado', 25.00, 25, 1, 'ACT'),
-(25, '', 'Ibuprofeno', 'El ibuprofeno es un antinflamatorio no esteroideo (AINE) que pertenece al subgrupo de fármacos derivados del ácido propiónico.', 33.00, 25, 1, 'ACT');
+(24, '', 'Paracetamol', 'El paracetamol, también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado', 25.00, 0, 1, 'ACT'),
+(25, '', 'Ibuprofeno', 'El ibuprofeno es un antinflamatorio no esteroideo (AINE) que pertenece al subgrupo de fármacos derivados del ácido propiónico.', 33.00, 0, 1, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -315,10 +381,17 @@ CREATE TABLE `inventario` (
   `id_inventario` int(11) NOT NULL,
   `id_insumo` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `fachaVencimiento` date NOT NULL,
-  `numero_de_lote` int(16) NOT NULL,
-  `insumodehospitalizacion_id_insumoDeHospitalizacion` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `fechaDeVencimiento` date NOT NULL,
+  `numero_de_lote` int(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `inventario`
+--
+
+INSERT INTO `inventario` (`id_inventario`, `id_insumo`, `cantidad`, `fechaDeVencimiento`, `numero_de_lote`) VALUES
+(1, 24, 20, '2030-04-01', 1),
+(2, 25, 15, '2030-04-01', 2);
 
 -- --------------------------------------------------------
 
@@ -344,7 +417,8 @@ CREATE TABLE `paciente` (
 
 INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `direccion`, `fn`, `estado`) VALUES
 (23, 'V', '28150004', 'Juan', 'Silva', '04121338031', 'Calle 10 entre 3 y 7', '2001-09-22', 'ACT'),
-(24, 'V', '28329224', 'Rocio', 'Rodriguez', '04121338031', 'URB EL BOSQUE CALLE 12', '2025-04-02', 'ACT');
+(24, 'V', '28329224', 'Rocio', 'Rodriguez', '04121338031', 'URB EL BOSQUE CALLE 12', '2025-04-02', 'ACT'),
+(25, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -356,6 +430,16 @@ CREATE TABLE `pago` (
   `id_pago` int(11) NOT NULL,
   `nombre` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `pago`
+--
+
+INSERT INTO `pago` (`id_pago`, `nombre`) VALUES
+(5, 'Efectivo'),
+(6, 'Pago Movil'),
+(7, 'Transferencia'),
+(8, 'Divisas');
 
 -- --------------------------------------------------------
 
@@ -370,6 +454,26 @@ CREATE TABLE `pagodefactura` (
   `referencia` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `monto` float(12,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `pagodefactura`
+--
+
+INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `referencia`, `monto`) VALUES
+(72, 5, 57, '', 1000.00),
+(73, 5, 58, '', 1000.00),
+(74, 5, 61, '1234', 1000.00),
+(75, 7, 61, '1234', 123.00),
+(76, 5, 62, '1221', 100.00),
+(77, 8, 62, '1221', 600.00),
+(78, 6, 62, '1221', 300.00),
+(79, 5, 63, '1233', 300.00),
+(80, 8, 63, '1233', 300.00),
+(81, 6, 63, '1233', 400.00),
+(82, 5, 64, '1334', 100.00),
+(83, 6, 64, '1334', 25.00),
+(84, 5, 65, '1334', 100.00),
+(85, 6, 65, '1334', 25.00);
 
 -- --------------------------------------------------------
 
@@ -429,7 +533,13 @@ CREATE TABLE `permisos` (
 --
 
 INSERT INTO `permisos` (`idpermisos`, `id_rol`, `permisos`, `modulo`) VALUES
-(1, 1, 'sjdasoidjsaoijdasoijdisosadsoiajdsaoijdasoid,.sakdiosapdksapodkaspod', 'pacientes');
+(1, 1, 'sjdasoidjsaoijdasoijdisosadsoiajdsaoijdasoid,.sakdiosapdksapodkaspod', 'pacientes'),
+(2, 5, 'consultar', 'Pacientes'),
+(3, 6, 'consultar,guardar', 'Pacientes'),
+(4, 7, 'consultar,guardar', 'Pacientes'),
+(5, 7, 'consultar,guardar,editar,eliminar', 'Patologias'),
+(6, 8, 'consultar', 'Pacientes'),
+(7, 8, 'consultar', 'Patologias');
 
 -- --------------------------------------------------------
 
@@ -454,7 +564,8 @@ CREATE TABLE `personal` (
 --
 
 INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `tipodecategoria`, `id_especialidad`, `id_usuario`) VALUES
-(18, 'V', '30554145', 'Dixon', 'Bastias', '04145378241', 'Administrador', NULL, 1);
+(18, 'V', '30554145', 'Dixon', 'Bastias', '04145378241', 'Administrador', NULL, 1),
+(19, 'V', '1232233', 'David', 'Carlos', '04142323233', '', 7, 42);
 
 -- --------------------------------------------------------
 
@@ -472,7 +583,8 @@ CREATE TABLE `personal_has_serviciomedico` (
 --
 
 INSERT INTO `personal_has_serviciomedico` (`personal_id_personal`, `serviciomedico_id_servicioMedico`) VALUES
-(18, 25);
+(18, 25),
+(19, 26);
 
 -- --------------------------------------------------------
 
@@ -516,7 +628,11 @@ CREATE TABLE `rol` (
 --
 
 INSERT INTO `rol` (`id_rol`, `nombre`, `estado`, `descripción`) VALUES
-(1, 'administrador', 'ACT', 'administrador');
+(1, 'administrador', 'ACT', 'administrador'),
+(5, 'Rol', 'DES', 'este es un permiso par los doctores'),
+(6, 'Propio', 'DES', 'descripcio'),
+(7, 'Carlos', 'DES', 'jfhfdsjddjs'),
+(8, 'Doctor', 'ACT', 'en un rol para los doctores');
 
 -- --------------------------------------------------------
 
@@ -539,7 +655,8 @@ INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `es
 (22, 9, 2200.00, 'ACT'),
 (23, 100, 1500.00, 'ACT'),
 (24, 1, 3000.00, 'ACT'),
-(25, 101, 1000.00, 'ACT');
+(25, 101, 1000.00, 'ACT'),
+(26, 2, 123.00, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -551,6 +668,17 @@ CREATE TABLE `serviciomedico_has_factura` (
   `serviciomedico_id_servicioMedico` int(11) NOT NULL,
   `factura_id_factura` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `serviciomedico_has_factura`
+--
+
+INSERT INTO `serviciomedico_has_factura` (`serviciomedico_id_servicioMedico`, `factura_id_factura`) VALUES
+(25, 58),
+(26, 61),
+(25, 61),
+(25, 62),
+(25, 63);
 
 -- --------------------------------------------------------
 
@@ -625,7 +753,8 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 1, '', 'WD', 'depanajuaner@gmail.com', '$2y$10$RTM.OZavxr3atFI8TENRHODY69HaCo94cURs9qwiMjKzEsBP3jmDO', 'ACT');
+(1, 1, '', 'WDaniel123', 'depanajuaner@gmail.com', '$2y$10$RTM.OZavxr3atFI8TENRHODY69HaCo94cURs9qwiMjKzEsBP3jmDO', 'ACT'),
+(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$LeCFcopgGV3C94epNDcYv.d/AfRmTesLed/ZxAf9TbY2GSuTVg46u', 'ACT');
 
 --
 -- Índices para tablas volcadas
@@ -692,7 +821,7 @@ ALTER TABLE `factura`
 -- Indices de la tabla `factura_has_inventario`
 --
 ALTER TABLE `factura_has_inventario`
-  ADD PRIMARY KEY (`factura_id_factura`,`inventario_id_inventario`),
+  ADD PRIMARY KEY (`factura_id_factura`) USING BTREE,
   ADD KEY `fk_factura_has_inventario_inventario1_idx` (`inventario_id_inventario`),
   ADD KEY `fk_factura_has_inventario_factura1_idx` (`factura_id_factura`);
 
@@ -734,9 +863,8 @@ ALTER TABLE `insumodehospitalizacion`
 -- Indices de la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  ADD PRIMARY KEY (`id_inventario`,`insumodehospitalizacion_id_insumoDeHospitalizacion`),
-  ADD KEY `id_entrada` (`id_insumo`),
-  ADD KEY `fk_inventario_insumodehospitalizacion1_idx` (`insumodehospitalizacion_id_insumoDeHospitalizacion`);
+  ADD PRIMARY KEY (`id_inventario`),
+  ADD KEY `id_insumo` (`id_insumo`);
 
 --
 -- Indices de la tabla `paciente`
@@ -851,7 +979,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria_servicio`
@@ -863,7 +991,7 @@ ALTER TABLE `categoria_servicio`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT de la tabla `control`
@@ -893,19 +1021,19 @@ ALTER TABLE `especialidad`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
 --
 ALTER TABLE `horario`
-  MODIFY `id_horario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_horario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
-  MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `hospitalizacion`
@@ -929,25 +1057,25 @@ ALTER TABLE `insumodehospitalizacion`
 -- AUTO_INCREMENT de la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `paciente`
 --
 ALTER TABLE `paciente`
-  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
@@ -962,10 +1090,16 @@ ALTER TABLE `patologiadepaciente`
   MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
+-- AUTO_INCREMENT de la tabla `permisos`
+--
+ALTER TABLE `permisos`
+  MODIFY `idpermisos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
@@ -977,13 +1111,13 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `serviciomedico`
 --
 ALTER TABLE `serviciomedico`
-  MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `sintomas`
@@ -1001,7 +1135,7 @@ ALTER TABLE `sintomas_control`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- Restricciones para tablas volcadas
@@ -1076,7 +1210,6 @@ ALTER TABLE `insumodehospitalizacion`
 -- Filtros para la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  ADD CONSTRAINT `fk_inventario_insumodehospitalizacion1` FOREIGN KEY (`insumodehospitalizacion_id_insumoDeHospitalizacion`) REFERENCES `insumodehospitalizacion` (`id_insumoDeHospitalizacion`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `inventario_ibfk_1` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`id_insumo`);
 
 --
