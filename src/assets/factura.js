@@ -1354,15 +1354,26 @@ addEventListener("DOMContentLoaded", () => {
   });
   //boton del modal de validacion
   const btnValidacion = document.getElementById("btnValidacion");
+  const alertaVariosMetodos = document.querySelector(".alerta-varios-metodos");
   //funcion para validar el precio de las 2 formas en el modal de validacion
   function dosPrecios(precio1, precio2) {
     let precioInt1 = parseFloat(precio1.value) || 0;
     let precioInt2 = parseFloat(precio2.value) || 0;
     let total = parseFloat(document.getElementById("totalFactura").value) || 0;
     let totalInput = precioInt1 + precioInt2;
-    if (totalInput == total) {
-      btnValidacion.classList.remove("d-none");
+    if (totalInput == total && precioInt1 > 0 && precioInt2 > 0) {
+      
+      if (!referencia.classList.contains("d-none")) {
+        if(referencia.value.length == 4 ){
+          alertaVariosMetodos.classList.add("d-none");
+          btnValidacion.classList.remove("d-none");
+        }
+      }else{
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      }
     } else {
+      alertaVariosMetodos.classList.remove("d-none");
       btnValidacion.classList.add("d-none");
     }
   }
@@ -1373,12 +1384,25 @@ addEventListener("DOMContentLoaded", () => {
     let precioInt3 = parseFloat(precio3.value) || 0;
     let total = parseFloat(document.getElementById("totalFactura").value) || 0;
     let totalInput = precioInt1 + precioInt2 + precioInt3;
-    if (totalInput == total) {
-      btnValidacion.classList.remove("d-none");
+    if (totalInput == total  &&  precioInt1 > 0 && precioInt2 > 0 && precioInt3 > 0) {
+
+      if (!referencia.classList.contains("d-none")) {
+        if (referencia.value.length == 4) {
+          alertaVariosMetodos.classList.add("d-none");
+          btnValidacion.classList.remove("d-none");
+        }
+      } else {
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      }
+
     } else {
+      alertaVariosMetodos.classList.remove("d-none");
       btnValidacion.classList.add("d-none");
     }
   }
+
+  
   //aqui se usa un evento para validar los precios de los input de el modal de validacion
   inputsDeValidacion.forEach((inputDeValidacion) => {
     inputDeValidacion.addEventListener("keyup", function () {
@@ -1393,6 +1417,21 @@ addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+
+  referencia.addEventListener("keyup", function () {
+    console.log(referencia);
+    if (inputsDeValidacion[2].classList.contains("d-none")) {
+      dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+    } else {
+      tresPrecios(
+        inputsDeValidacion[0],
+        inputsDeValidacion[1],
+        inputsDeValidacion[2]
+      );
+    }
+  });
+  
   //funcion para llenar el modal de confirmacion
   function mostrarConfirmacion() {
     const tbodyDelModal = document.getElementById("tbodyDelModal");

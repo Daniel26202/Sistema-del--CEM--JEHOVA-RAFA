@@ -835,6 +835,8 @@
         </a>
       </div>
 
+      <div class="alert alert-primary p-1 text-center m-auto alerta-varios-metodos d-none" style="width: 96%;">La cantidad total de todos los inputs tiene que ser equivalente al total y si alguno de los metodos de pago requiere referencia  tambien es obligatori</div>
+
 
       <div class="form-modal mt-2" id="inputCom">
 
