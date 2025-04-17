@@ -108,16 +108,13 @@ addEventListener("DOMContentLoaded", () => {
         });
         toast.show();
 
-        //le pasamos el valor de la cedula al paciente 
+        //le pasamos el valor de la cedula al paciente
         document.getElementById("cedula").value =
           document.getElementById("inputBusPaCi").value;
 
-          document
-            .getElementById("cedula")
-            .parentElement.classList.add("grpFormCorrect");
-
-
-
+        document
+          .getElementById("cedula")
+          .parentElement.classList.add("grpFormCorrect");
 
         document
           .querySelectorAll(".btn-escondidos")
@@ -131,48 +128,47 @@ addEventListener("DOMContentLoaded", () => {
   //insertar funcion para Paciente cuando no existe
   const insertarPaciente = async (form) => {
     // try {
-      const datosFormulario = new FormData(form);
-      const contenido = {
-        method: "POST",
-        body: datosFormulario,
-      };
-      let peticion = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
-        contenido
-      );
-      let resultado = await peticion.json();
-      console.log(resultado);
+    const datosFormulario = new FormData(form);
+    const contenido = {
+      method: "POST",
+      body: datosFormulario,
+    };
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
+      contenido
+    );
+    let resultado = await peticion.json();
+    console.log(resultado);
 
-      // si el resultado es un mensaje es que algo salio mal y la cedula ya eiste si no se inserta normalmente
-      if (resultado.cedula == "error") {
-        console.log(resultado.cedula + " error");
+    // si el resultado es un mensaje es que algo salio mal y la cedula ya eiste si no se inserta normalmente
+    if (resultado.cedula == "error") {
+      console.log(resultado.cedula + " error");
 
-        document.querySelector(".alertaErrorCedula").classList.remove("d-none");
-        setTimeout(function () {
-          document.querySelector(".alertaErrorCedula").classList.add("d-none");
-        }, 7000);
-      } else {
-        //ocultar modal de paciente
-        UIkit.modal("#modal-examplePaciente").hide();
+      document.querySelector(".alertaErrorCedula").classList.remove("d-none");
+      setTimeout(function () {
+        document.querySelector(".alertaErrorCedula").classList.add("d-none");
+      }, 7000);
+    } else {
+      //ocultar modal de paciente
+      UIkit.modal("#modal-examplePaciente").hide();
 
-        document.getElementById("inputBusPaCi").value = resultado.cedula;
+      document.getElementById("inputBusPaCi").value = resultado.cedula;
 
-        //ocultar el minimodal
-        const toastElement = document.getElementById("myToast");
-        const toast = new bootstrap.Toast(toastElement, {
-          autohide: false,
-        });
-        
+      //ocultar el minimodal
+      const toastElement = document.getElementById("myToast");
+      const toast = new bootstrap.Toast(toastElement, {
+        autohide: false,
+      });
 
-        buscarPaciente(document.getElementById("form-buscador-factura"));
+      buscarPaciente(document.getElementById("form-buscador-factura"));
 
-        //limpiar formulario de oaciente
+      //limpiar formulario de oaciente
 
-        form.reset();
+      form.reset();
 
-        toast.hide();
-      }
+      toast.hide();
     }
+  };
   //  catch (error) {
   //     console.log("algo salio mal" + error);
   //   }
@@ -219,7 +215,7 @@ addEventListener("DOMContentLoaded", () => {
         id_cita = `/${res.id_cita}`;
       });
       window.location.href =
-        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita"+id_cita;
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita" + id_cita;
     } else {
       buscarPaciente(formularioPaciente);
     }
@@ -664,6 +660,30 @@ addEventListener("DOMContentLoaded", () => {
       document.getElementById("siguienteInsumo").classList.add("d-none");
       document.getElementById("insertarInsumo").classList.add("d-none");
     }
+
+    //esto lo reviso despues
+   
+    // let inputsOcultosDeNombre = document.querySelector(
+    //   ".nombreInsumo" + element["nombreInsumo"]
+    // );
+    // let inputsOcultosDeCantidad = document.querySelector(
+    //   ".cantidad_tabla" + element["nombreInsumo"]
+    // );
+    // console.log(element["nombreInsumo"]);
+    // console.log(inputsOcultosDeNombre);
+    // if (element["nombreInsumo"] == inputsOcultosDeNombre.value) {
+    //   console.log("es igual");
+    // }
+
+    let cantidad_tabla_disponible = document.querySelector(
+      ".cantidad_tabla_disponible"+nombreInsumo
+    ); 
+
+    
+
+    let cantidad_tabla = parseInt(cantidad_tabla_disponible.innerText) - parseInt(cantidad);
+    cantidad_tabla_disponible.innerText = cantidad_tabla;
+
   };
 
   //boton para añadir los insumos
@@ -692,6 +712,7 @@ addEventListener("DOMContentLoaded", () => {
     calcularTotal();
     let html = ``;
     dataInsumo.forEach((element, index) => {
+      
       html += `
         <tr class="border-top tr">
         <th class="id_insumo_escondido d-none">${element["id_insumo"]}</th>
@@ -1362,13 +1383,12 @@ addEventListener("DOMContentLoaded", () => {
     let total = parseFloat(document.getElementById("totalFactura").value) || 0;
     let totalInput = precioInt1 + precioInt2;
     if (totalInput == total && precioInt1 > 0 && precioInt2 > 0) {
-      
       if (!referencia.classList.contains("d-none")) {
-        if(referencia.value.length == 4 ){
+        if (referencia.value.length == 4) {
           alertaVariosMetodos.classList.add("d-none");
           btnValidacion.classList.remove("d-none");
         }
-      }else{
+      } else {
         alertaVariosMetodos.classList.add("d-none");
         btnValidacion.classList.remove("d-none");
       }
@@ -1384,8 +1404,12 @@ addEventListener("DOMContentLoaded", () => {
     let precioInt3 = parseFloat(precio3.value) || 0;
     let total = parseFloat(document.getElementById("totalFactura").value) || 0;
     let totalInput = precioInt1 + precioInt2 + precioInt3;
-    if (totalInput == total  &&  precioInt1 > 0 && precioInt2 > 0 && precioInt3 > 0) {
-
+    if (
+      totalInput == total &&
+      precioInt1 > 0 &&
+      precioInt2 > 0 &&
+      precioInt3 > 0
+    ) {
       if (!referencia.classList.contains("d-none")) {
         if (referencia.value.length == 4) {
           alertaVariosMetodos.classList.add("d-none");
@@ -1395,14 +1419,12 @@ addEventListener("DOMContentLoaded", () => {
         alertaVariosMetodos.classList.add("d-none");
         btnValidacion.classList.remove("d-none");
       }
-
     } else {
       alertaVariosMetodos.classList.remove("d-none");
       btnValidacion.classList.add("d-none");
     }
   }
 
-  
   //aqui se usa un evento para validar los precios de los input de el modal de validacion
   inputsDeValidacion.forEach((inputDeValidacion) => {
     inputDeValidacion.addEventListener("keyup", function () {
@@ -1418,7 +1440,6 @@ addEventListener("DOMContentLoaded", () => {
     });
   });
 
-
   referencia.addEventListener("keyup", function () {
     console.log(referencia);
     if (inputsDeValidacion[2].classList.contains("d-none")) {
@@ -1431,7 +1452,7 @@ addEventListener("DOMContentLoaded", () => {
       );
     }
   });
-  
+
   //funcion para llenar el modal de confirmacion
   function mostrarConfirmacion() {
     const tbodyDelModal = document.getElementById("tbodyDelModal");

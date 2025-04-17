@@ -375,7 +375,7 @@
 
 <!-- Modal Agregar Insumo-->
 
-<div class="modal fade" id="modal-agregar-insumos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
     <div class="modal-content tamaño-modal-Seleccionar-Insumo">
@@ -463,7 +463,7 @@
 
 
 
-<div class="modal fade" id="modal-agregar-insumos-2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" id="modal-agregar-insumos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
     <div class="modal-content tamaño-modal-Seleccionar-Insumo">
@@ -544,7 +544,7 @@
 
                 <?php foreach ($insumos as $i): ?>
 
-                  <tr class="tr-desparecer-insumo d-none">
+                  <tr class="tr-desparecer-insumo ">
                     <td class="text-center fw-bold">
                       <?php echo $contador++; ?>
                     </td>
@@ -552,7 +552,7 @@
                     <td class="text-center border-start">
                       <?php echo $i['nombre']; ?>
                     </td>
-                    <td class="text-center border-start">
+                    <td class="text-center border-start cantidad_tabla_disponible<?= $i["nombre"] ?>">
                       <?php echo $i['cantidad_inventario']; ?>
                     </td>
                     <td class="text-center border-start">
@@ -835,7 +835,7 @@
         </a>
       </div>
 
-      <div class="alert alert-primary p-1 text-center m-auto alerta-varios-metodos d-none" style="width: 96%;">La cantidad total de todos los inputs tiene que ser equivalente al total y si alguno de los metodos de pago requiere referencia  tambien es obligatori</div>
+      <div class="alert alert-primary p-1 text-center m-auto alerta-varios-metodos d-none" style="width: 96%;">La cantidad total de todos los inputs tiene que ser equivalente al total y si alguno de los metodos de pago requiere referencia tambien es obligatori</div>
 
 
       <div class="form-modal mt-2" id="inputCom">
