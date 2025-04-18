@@ -120,7 +120,9 @@ addEventListener("DOMContentLoaded", () => {
       document.getElementById("fecha").value = "";
       //document.getElementById("divAcordion").remove();
     } else {
-      document.getElementById("listaDoctores").innerHTML = "";
+      document.getElementById("listaDoctores").innerHTML =
+        "NO HAY DOCTORES DISPONIBLES PARA ESTA SERVICIO MEDICO";
+      document.getElementById("divAcordion").remove();
       document.getElementById("btnAgregarCita").classList.add("d-none");
     }
     // } catch (error) {
@@ -218,11 +220,13 @@ addEventListener("DOMContentLoaded", () => {
           inputsBuenos.push(true);
         }
       });
-      console.log(inputsBuenos)
+      console.log(inputsBuenos);
 
       if (
         inputsBuenos.length == 5 &&
-        document.querySelector(".p-error-fechaDeCita").classList.contains("d-none")
+        document
+          .querySelector(".p-error-fechaDeCita")
+          .classList.contains("d-none")
       ) {
         insertarPaciente(this, e);
       }
@@ -240,78 +244,87 @@ addEventListener("DOMContentLoaded", () => {
     let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
 
     resultado.forEach((res) => {
-      function entradaHora() {
-        // Separar la hora y los minutos
-        let [horas, minutos] = res.horaDeEntrada.split(":").map(Number);
+      if (res.length > 0) {
+        function entradaHora() {
+          // Separar la hora y los minutos
+          let [horas, minutos] = res.horaDeEntrada.split(":").map(Number);
 
-        // verificamos si es AM o PM
-        const esPM = horas >= 12;
-        const sufijo = esPM ? "PM" : "AM";
+          // verificamos si es AM o PM
+          const esPM = horas >= 12;
+          const sufijo = esPM ? "PM" : "AM";
 
-        // Convertir horas de 24 a 12
-        horas = horas % 12 || 12; // Si es 0, se convierte a 12
+          // Convertir horas de 24 a 12
+          horas = horas % 12 || 12; // Si es 0, se convierte a 12
 
-        // Se formatear los minutos para que siempre tengan dos dígitos
-        minutos = minutos < 10 ? "0" + minutos : minutos;
+          // Se formatear los minutos para que siempre tengan dos dígitos
+          minutos = minutos < 10 ? "0" + minutos : minutos;
 
-        // Retornar la hora en formato de 12 horas
-        return `${horas}:${minutos} ${sufijo}`;
-      }
+          // Retornar la hora en formato de 12 horas
+          return `${horas}:${minutos} ${sufijo}`;
+        }
 
-      function salidaHora() {
-        // Separamos la hora y los minutos
-        let [horas, minutos] = res.horaDeSalida.split(":").map(Number);
+        function salidaHora() {
+          // Separamos la hora y los minutos
+          let [horas, minutos] = res.horaDeSalida.split(":").map(Number);
 
-        // verificamos si es AM o PM
-        const esPM = horas >= 12;
-        const sufijo = esPM ? "PM" : "AM";
+          // verificamos si es AM o PM
+          const esPM = horas >= 12;
+          const sufijo = esPM ? "PM" : "AM";
 
-        // Convertir horas de 24 a 12
-        horas = horas % 12 || 12; // Si es 0, se convierte a 12
+          // Convertir horas de 24 a 12
+          horas = horas % 12 || 12; // Si es 0, se convierte a 12
 
-        // Formatear los minutos para que siempre tengan dos dígitos
-        minutos = minutos < 10 ? "0" + minutos : minutos;
+          // Formatear los minutos para que siempre tengan dos dígitos
+          minutos = minutos < 10 ? "0" + minutos : minutos;
 
-        // Retornar la hora en formato de 12 horas
-        return `${horas}:${minutos} ${sufijo}`;
-      }
+          // Retornar la hora en formato de 12 horas
+          return `${horas}:${minutos} ${sufijo}`;
+        }
 
-      const horaEntrada = entradaHora(res.horaDeEntrada);
-      const horaSalida = salidaHora(res.horaDeSalida);
+        const horaEntrada = entradaHora(res.horaDeEntrada);
+        const horaSalida = salidaHora(res.horaDeSalida);
 
-      let diasLaborablesArray = res.diaslaborables.toLowerCase().split(" ");
+        let diasLaborablesArray = res.diaslaborables.toLowerCase().split(" ");
 
-      diasLaborablesArray.forEach((dia) => {
-        diasLaborablesMap[dia] = {
-          entrada: res.horaDeEntrada,
-          salida: res.horaDeSalida,
-        };
-      });
+        diasLaborablesArray.forEach((dia) => {
+          diasLaborablesMap[dia] = {
+            entrada: res.horaDeEntrada,
+            salida: res.horaDeSalida,
+          };
+        });
 
-      div.innerHTML += `
+        div.innerHTML += `
                  <div class="mb-2" id="divAcordion">
                 <div class="d-flex ">Días Laborables: <h6 class="fw-bold"> ${res.diaslaborables}</h6></div>
               
                 <div class="d-flex">Hora de Entrada: <h6 class="fw-bold"> ${horaEntrada}</h6></div>
                 <div class="d-flex ">Hora de Salida: <h6 class="fw-bold"> ${horaSalida}</h6></div></div>  `;
 
-      validarHora.push(res.diaslaborables, res.horaDeEntrada, res.horaDeSalida);
-      console.log(validarHora);
-      laborables = res.diaslaborables;
+        validarHora.push(
+          res.diaslaborables,
+          res.horaDeEntrada,
+          res.horaDeSalida
+        );
+        console.log(validarHora);
+        laborables = res.diaslaborables;
 
-      horaarray = [res.diaslaborables, res.horaDeEntrada, res.horaDeSalida];
-      const persona = {
-        dia: res.diaslaborables,
-        entrada: res.horaDeEntrada,
-        salida: res.horaDeSalida,
-      };
+        horaarray = [res.diaslaborables, res.horaDeEntrada, res.horaDeSalida];
+        const persona = {
+          dia: res.diaslaborables,
+          entrada: res.horaDeEntrada,
+          salida: res.horaDeSalida,
+        };
 
-      console.log(horaarray);
-      console.log(persona);
+        console.log(horaarray);
+        console.log(persona);
 
-      //id del ervicio medico
-      document.getElementById("id_servicioMedico").value =
-        res.id_servicioMedico;
+        //id del ervicio medico
+        document.getElementById("id_servicioMedico").value =
+          res.id_servicioMedico;
+      } else {
+        div.innerHTML = `NO HAY HORARIOS DISPONIBLES PARA ESTE DOCTOR`;
+        document.getElementById("btnAgregarCita").classList.add("d-none");
+      }
     });
 
     document.querySelector(".horario-insertar").appendChild(div);
