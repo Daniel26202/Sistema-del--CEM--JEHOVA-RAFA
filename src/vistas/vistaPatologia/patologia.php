@@ -55,7 +55,7 @@
     <?php if ($parametro[0] == "error"): ?>
       <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder h-25" uk-alert>
         <a class="uk-alert-close" uk-close></a>
-        <p class="pe-2">La cédula ya existen, intente de nuevo.</p>
+        <p class="pe-2">La patología ya existe, inserte una nueva.</p>
       </div>
       <div class="d-flex justify-content-center">
       <?php elseif ($parametro[0] == "registro"): ?>

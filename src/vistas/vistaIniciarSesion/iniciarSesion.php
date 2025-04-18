@@ -65,6 +65,7 @@ if (!empty($parametro)) {
 
 <body style=" background-color: #f2f4f8;">
     <main>
+        <br>
 
         <!-- btn de ayuda Interactiva -->
         <div class="btn_ayuda">

@@ -1,4 +1,6 @@
 // Variables globales
+const { jsPDF } = window.jspdf;
+
 let currentYear, currentMonth;
 let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
 
@@ -221,6 +223,50 @@ const pacientes_hospitalizados = async () => {
 
 // ========================== FUNCIONES DE GRÁFICOS ==========================
 
+const especialidades_chart_pdf = async () => {
+  try {
+    let especialidades_solicitadas_pdf = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"
+    );
+    let data = await especialidades_solicitadas_pdf.json();
+    let especialidades = data.map((item) => item.especialidad);
+    let totalSolicitudes = data.map((item) => item.total_solicitudes);
+
+    let ctx = document
+      .getElementById("especialidades_solicitadas_pdf")
+      .getContext("2d");
+    new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: especialidades,
+        datasets: [
+          {
+            data: totalSolicitudes,
+            backgroundColor: [
+              "#387adf",
+              "#78a0f0",
+              "#a4c7ff",
+              "#ffcc00",
+              "#ff6666",
+            ],
+          },
+        ],
+        options: {
+          responsive: false,
+          plugins: {
+            legend: {
+              display: false, // La leyenda la haremos nosotros con jsPDF
+            },
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.log("Error al generar el gráfico de especialidades:", error);
+  }
+  //Genera el grafico de sintomas comunes
+};
+
 // Genera el gráfico de especialidades
 const especialidades_chart = async () => {
   try {
@@ -298,32 +344,124 @@ const sintomas_chart = async () => {
     console.log("Error al generar el gráfico de especialidades:", error);
   }
 };
+/* 
 
-function generarReporte() {
-  const imagenBase64 = document
-    .getElementById("especialidades_solicitadas")
-    .toDataURL("image/png");
+async function generarReporte() {
+  // 1. Elimina el contenido previo si existe
+  const existente = document.getElementById("reporte_pdf");
+  if (existente) existente.remove();
 
-  // Puedes calcular aquí o tener ya calculados los datos estadísticos (p.ej., moda, media)
+  // 2. Crea el contenedor del reporte
+  const contenedor = document.createElement("div");
+  contenedor.id = "reporte_pdf";
+  contenedor.style.width = "800px";
+  contenedor.style.margin = "0 auto";
+  contenedor.style.backgroundColor = "white";
+  contenedor.style.fontFamily = "Arial, sans-serif";
+  contenedor.innerHTML = `
+    <div class="imprimir" id="imprimir">
+      <div class="cabecera" style="display:flex; justify-content: space-between; background-color: #397ae0; color: white; padding: 10px;">
+        <div class="icon">
+          <img
+            src="assets/icons/logo2.png"
+            alt="Logo"
+            class="logo"
+            style="width: 290px; height: 100px; margin-left: 20px;"
+          />
+        </div>
+        <div id="fecha" style="display: flex; align-items: center; padding-right: 20px;">
+          ${new Date().toLocaleDateString()}
+        </div>
+      </div>
+      <div class="contenido" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+        <div class="titulo" id="titulo">
+          <h1>Reporte de Inventario</h1>
+        </div>
+        <div class="canva" style="margin: 20px 0;">
+          <canvas id="especialidades_solicitadas_pdf" width="400" height="400"></canvas>
+        </div>
+        <div class="texto" id="texto" style="width: 90%; text-align: justify; font-size: 14px;">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(contenedor);
+
+  // 3. Espera a que el gráfico se genere
+  await especialidades_chart_pdf();
+
+  // 4. Espera un instante para asegurar que el canvas esté pintado
+  setTimeout(async () => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "pt", "a4");
+    await pdf.html(contenedor, {
+      callback: function (doc) {
+        doc.save("reporte_sintomas.pdf");
+      },
+      x: 10,
+      y: 10,
+      html2canvas: {
+        scale: 0.8,
+        useCORS: true,
+      },
+    });
+  }, 800); // Puedes aumentar este delay si el canvas tarda en renderizar
+}
+ */
+
+async function generarReporte() {
+  // 1) Obtener el canvas de Chart.js y convertirlo en imagen Base64
+  const chartCanvas = document.getElementById("especialidades_solicitadas");
+  if (!chartCanvas) {
+    console.error("No encontré el canvas de Chart.js");
+    return;
+  }
+  const chartImage = chartCanvas.toDataURL("image/png");
+
+  // 2) Configurar y crear el PDF
+  //    - "pt" usa puntos (1/72") para unidades
+  const pdf = new jsPDF("p", "pt", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const margin = 40;
+
+  // 3) Encabezado con título centrado y fecha a la derecha
+  pdf.setFontSize(18);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Reporte: Especialidades más Solicitadas", pageWidth / 2, 40, {
+    align: "center",
+  });
+
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "normal");
+  const fecha = new Date().toLocaleDateString();
+  pdf.text(fecha, pageWidth - margin, 20, { align: "right" });
+
+  // 4) Insertar la imagen del gráfico manteniendo proporción
+  const imgProps = pdf.getImageProperties(chartImage);
+  const pdfImgWidth = pageWidth - margin * 2;
+  const pdfImgHeight = (imgProps.height * pdfImgWidth) / imgProps.width;
+  pdf.addImage(
+    chartImage,
+    "PNG",
+    margin,
+    60, // Y de inicio debajo del encabezado
+    pdfImgWidth,
+    pdfImgHeight
+  );
+
+  // 5) Texto descriptivo debajo del gráfico
+  const startY = 60 + pdfImgHeight + 20;
+  pdf.setFontSize(12);
+  pdf.text("Descripción:", margin, startY);
+  pdf.setFontSize(10);
   const descripcion =
-    "\n El gráfico muestra los servicios más solicitados. La moda es el servicio X, siendo el más solicitado en el periodo XX-XX-XXXX.";
+    "El gráfico muestra las especialidades más solicitadas en el periodo " +
+    "analizado. La moda corresponde a la categoría con mayor número de citas, " +
+    "y la media refleja el promedio de solicitudes por especialidad.";
+  pdf.text(descripcion, margin, startY + 16, { maxWidth: pdfImgWidth });
 
-  fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/exportar_pdf", {
-    // Actualiza con la ruta correcta de tu endpoint
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      imagen: imagenBase64,
-      descripcion: descripcion,
-    }),
-  })
-    .then((response) => response.blob())
-    .then((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "reporte_servicios_mas_solicitados.pdf";
-      a.click();
-    })
-    .catch((error) => console.error("Error generando el reporte:", error));
+  // 6) Finalizar y descargar
+  pdf.save("reporte_especialidades.pdf");
 }
