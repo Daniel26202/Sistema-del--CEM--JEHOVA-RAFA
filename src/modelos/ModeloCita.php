@@ -30,13 +30,13 @@ class ModeloCita extends Db
 
 	public function mostrarServicioDoctor()
 	{
-		$consulta = $this->conexion->prepare("SELECT sm.id_servicioMedico , c.nombre AS categoria FROM serviciomedico sm INNER JOIN categoria_servicio c ON sm.id_categoria = c.id_categoria ");
+		$consulta = $this->conexion->prepare("SELECT * FROM categoria_servicio WHERE estado = 'ACT'");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
 	public function mostrarDoctores($id_servicio)
 	{
-		$consulta = $this->conexion->prepare("SELECT p.id_personal, p.nombre AS nombre_doctor , p.apellido AS apellido_doctor FROM serviciomedico sm INNER JOIN personal_has_serviciomedico psm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN personal p ON p.id_personal = psm.personal_id_personal WHERE sm.estado = 'ACT' AND sm.id_servicioMedico =:id_servicio");
+		$consulta = $this->conexion->prepare("SELECT p.id_personal, p.nombre AS nombre_doctor , p.apellido AS apellido_doctor FROM serviciomedico sm INNER JOIN personal_has_serviciomedico psm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN personal p ON p.id_personal = psm.personal_id_personal WHERE sm.estado = 'ACT' AND sm.id_categoria =:id_servicio");
 
 		$consulta->bindParam(":id_servicio", $id_servicio);
 

@@ -2,7 +2,7 @@ addEventListener("DOMContentLoaded",function(){
 
     async function traerEspecialidadDoctor(id_doctor) {
         try {
-            let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Consultas/mostrarEspecialidad/"+id_doctor);
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Consultas/mostrarEspecialidad/"+id_doctor);
             let resultado = await peticion.json();
             console.log(resultado)
             resultado.forEach(res => {

@@ -127,8 +127,8 @@
                     <select class="form-control input-modal" name="consulta" id="especialidad" required>
                         <option selected disabled>Seleccionar Servicio</option>
                         <?php foreach ($servicios as $ser): ?>
-                            <option value="<?php echo $ser["id_servicioMedico"] ?>">
-                                <?php echo $ser["categoria"] ?>
+                            <option value="<?php echo $ser["id_categoria"] ?>">
+                                <?php echo $ser["nombre"] ?>
                             </option>
                         <?php endforeach ?>
                     </select>

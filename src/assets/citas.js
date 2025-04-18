@@ -242,9 +242,9 @@ addEventListener("DOMContentLoaded", () => {
     let div = document.createElement("div");
     diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
     let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
-
-    resultado.forEach((res) => {
-      if (res.length > 0) {
+    console.log(resultado);
+    if (resultado.length > 0) {
+      resultado.forEach((res) => {
         function entradaHora() {
           // Separar la hora y los minutos
           let [horas, minutos] = res.horaDeEntrada.split(":").map(Number);
@@ -321,11 +321,11 @@ addEventListener("DOMContentLoaded", () => {
         //id del ervicio medico
         document.getElementById("id_servicioMedico").value =
           res.id_servicioMedico;
-      } else {
-        div.innerHTML = `NO HAY HORARIOS DISPONIBLES PARA ESTE DOCTOR`;
-        document.getElementById("btnAgregarCita").classList.add("d-none");
-      }
-    });
+      });
+    } else {
+      div.innerHTML = `NO HAY HORARIOS DISPONIBLES PARA ESTE DOCTOR`;
+      document.getElementById("btnAgregarCita").classList.add("d-none");
+    }
 
     document.querySelector(".horario-insertar").appendChild(div);
 

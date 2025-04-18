@@ -177,7 +177,7 @@
                         <td class="text-center"><?= $datoCita['nombre_p'] ?> <?= $datoCita['apellido_p'] ?></td>
                         <td class="text-center"><?= $datoCita['telefono_p'] ?></td>
                         <td class="text-center"><?= $datoCita['nombre_d'] ?> <?= $datoCita['apellido_d'] ?></td>
-                        <td class="text-center"><?= $datoCita['especialidad'] ?></td>
+                        <td class="text-center"><?= $datoCita['categoria'] ?></td>
                         <td class="text-center"><?= $datoCita['fecha'] ?></td>
                         <td class="text-center"><?= $datoCita['hora'] ?></td>
 
