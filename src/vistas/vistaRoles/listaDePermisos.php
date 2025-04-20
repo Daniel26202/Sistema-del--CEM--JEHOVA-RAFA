@@ -38,7 +38,7 @@
     </div>
 
 
-    <div class="form-check form-switch d-flex align-items-center">
+    <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Patologias" ? "d-none" : ""; ?>">
         <div>
             <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
                 value="editar" name="  <?= $permisosPorModulo ?>" data-index="<?= $modulo ?>" <?php if ($permisosDelRol != array()) {
@@ -54,7 +54,7 @@
 
     </div>
 
-    <div class="form-check form-switch d-flex align-items-center">
+    <div class="form-check form-switch d-flex align-items-center  <?= $modulo == "Control" ? "d-none" : ""; ?>">
         <div>
             <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
                 value="eliminar" name="  <?= $permisosPorModulo ?>" data-index="<?= $modulo ?>" <?php if ($permisosDelRol != array()) {
@@ -70,9 +70,3 @@
 
     </div>
 </div>
-
-
-
-
-
-

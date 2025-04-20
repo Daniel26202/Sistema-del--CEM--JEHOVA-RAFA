@@ -30,7 +30,8 @@ class ModeloRoles extends Db
 
 
     //Consultar el permiso
-    public function mostrarPermisos($id_rol, $modulo){
+    public function mostrarPermisos($id_rol, $modulo)
+    {
         $consulta = $this->conexion->prepare("SELECT modulo,permisos FROM permisos WHERE id_rol =:id_rol AND modulo =:modulo ");
         $consulta->bindParam(":id_rol", $id_rol);
         $consulta->bindParam(":modulo", $modulo);
@@ -91,7 +92,6 @@ class ModeloRoles extends Db
             //La variable grupoDelPermiso guardar el nombre del grupo de permiso
             $grupoDelPermiso = $permisos[$index];
 
-            
             //Uno el array de permisos en una cadena de texto separado por "," 
             $permiso = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
 
@@ -106,7 +106,8 @@ class ModeloRoles extends Db
 
     //eliminar Rol
 
-    public function eliminar($id_rol){
+    public function eliminar($id_rol)
+    {
         //Eliminar Rol
         $consulta = $this->conexion->prepare("UPDATE rol SET  estado ='DES' WHERE id_rol = :id_rol");
         $consulta->bindParam(":id_rol", $id_rol);
@@ -115,7 +116,8 @@ class ModeloRoles extends Db
 
 
     //metodo para validar que no se registren dos roles con el mismo nombre
-    public function validarRol($nombre){
+    public function validarRol($nombre)
+    {
         $consulta = $this->conexion->prepare("SELECT * FROM rol WHERE nombre =:nombre");
         $consulta->bindParam(":nombre", $nombre);
         $consulta->execute();
@@ -124,7 +126,4 @@ class ModeloRoles extends Db
         }
         return false;
     }
-
-
-
 }

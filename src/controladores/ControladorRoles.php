@@ -19,6 +19,7 @@ class ControladorRoles
     public function mostrar($parametro)
     {
         $roles = $this->modelo->roles();
+        $modulos = require_once './src/vistas/vistaRoles/modal/listaModulos.php';
         require_once './src/vistas/vistaRoles/vistaRoles.php';
     }
 
@@ -50,6 +51,7 @@ class ControladorRoles
     //modiicar rol
     public function modificarRol($datos)
     {
+        
         $nombre = $datos[0];
         //instacion el metodo de la validacion de el rol
         $validar = $this->modelo->validarRol($_POST["nombre"]);

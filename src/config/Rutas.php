@@ -47,24 +47,24 @@ class Rutas
                 if (in_array($this->controlador, ["ControladorIniciarSesion", "ControladorRecuperarContr"])) {
                     $instancia->$metodo($parametro ?? []);
                 } else {
-                    if (session_status() === PHP_SESSION_ACTIVE) {
-                        if ($this->controlador == "ControladorInicio") {
+                    // if (session_status() === PHP_SESSION_ACTIVE) {
+                        // if ($this->controlador == "ControladorInicio") {
                             $instancia->$metodo($parametro ?? []);
-                        } else {
+                        // } else {
                             
-                            $permiso = $this->equivalentes[$metodo] ?? $metodo;
-                            $permitido = $this->modelo->gestionarPermisos($_SESSION["id_rol"] ?? null, $permiso, $modulo);
-                            if (!$permitido) {
-                                echo "Error 404";
-                                header("location:  /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
-                                exit;
-                            } else {
-                                $instancia->$metodo($parametro ?? []);
-                            }
-                        }
-                    } else {
-                        echo "Sesión no iniciada";
-                    }
+                        //     $permiso = $this->equivalentes[$metodo] ?? $metodo;
+                        //     $permitido = $this->modelo->gestionarPermisos($_SESSION["id_rol"] ?? null, $permiso, $modulo);
+                        //     if (!$permitido) {
+                        //         echo "Error 404";
+                        //         header("location:  /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+                        //         exit;
+                        //     } else {
+                                //$instancia->$metodo($parametro ?? []);
+                        //     }
+                        // }
+                    // } else {
+                    //     echo "Sesión no iniciada";
+                    // }
                 }
             } else {
                 echo "NO EXISTE EL MÉTODO";
