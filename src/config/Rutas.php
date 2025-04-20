@@ -56,6 +56,7 @@ class Rutas
                             $permitido = $this->modelo->gestionarPermisos($_SESSION["id_rol"] ?? null, $permiso, $modulo);
                             if (!$permitido) {
                                 echo "Error 404";
+                                header("location:  /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
                                 exit;
                             } else {
                                 $instancia->$metodo($parametro ?? []);

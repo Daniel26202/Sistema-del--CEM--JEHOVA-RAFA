@@ -95,4 +95,9 @@ class ControladorIniciarSesion
             }
         }
     }
+
+    //Metodo para mostrar la vista de la pagina de error ç
+    public function error(){
+        require_once "./src/vistas/vistaIniciarSesion/vistaError.php";
+    }
 }
