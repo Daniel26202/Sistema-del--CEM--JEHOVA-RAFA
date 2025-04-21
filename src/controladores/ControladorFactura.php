@@ -30,6 +30,16 @@ class ControladorFactura
 		require_once './src/vistas/vistaFactura/factura.php';
 	}
 
+	function facturaCita($parametro) {
+		$insumos = $this->modelo->mostrarInsumos();
+		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
+		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
+		$extras = $this->modelo->mostrarServicios();
+		$citaFacturar = $this->modelo->mostrarCitaFactura($parametro[0]);
+		require_once './src/vistas/vistaFactura/facturaCita.php';
+		
+	}
+
 
 	public function comprobante($parametro){
 
@@ -40,8 +50,6 @@ class ControladorFactura
 		$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
 		$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
 		require_once './src/vistas/vistaFactura/comprobante.php';
-
-
 	}
 
 
@@ -122,6 +130,7 @@ class ControladorFactura
 		$insumos = isset($_POST["insumos"]) ? $_POST["insumos"] : false;
 		$cantidad = isset($_POST["cantidad"]) ? $_POST["cantidad"] : false;
 		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : null;
+		$id_cita = isset($_POST["id_cita"]) ? $_POST["id_cita"] : null;
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
 		$numero_de_lote = isset($_POST["numero_de_lote"]) ? $_POST["numero_de_lote"] : null;
 		print_r($serviciosExtras);
@@ -129,7 +138,9 @@ class ControladorFactura
 		echo "<br><br><br>"."datos por post";
 		print_r($_POST);
 
-		$this->modelo->insertaFactura( $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote);
+
+
+		$this->modelo->insertaFactura( $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote, $id_cita);
 
 		// Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado servicios y/o insumos");
@@ -166,8 +177,12 @@ class ControladorFactura
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha facturado una hospitalizacion");
 	}
 
-	public function mostrarPDF()
+	public function mostrarPDF($parametro)
 	{
+		$datosFactura = $this->modelo->consultarFacturaSinCita($parametro[0]);
+		$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
+		$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
+		$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
 
 		require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
 	}

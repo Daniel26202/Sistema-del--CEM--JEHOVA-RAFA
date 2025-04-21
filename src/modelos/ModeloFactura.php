@@ -35,7 +35,7 @@ class ModeloFactura extends Db
 
 	public function mostrarCitaFactura($id_cita)
 	{
-		$consulta = $this->conexion->prepare("SELECT d.nombre AS nombre_d,d.apellido AS apellido_d,sm.*,p.id_paciente,p.nacionalidad, p.cedula AS cedula_p,p.nombre AS nombre_p, p.apellido AS apellido_p, p.telefono AS telefono_p ,c.id_cita,c.fecha, c.estado,e.nombre AS especialidad FROM paciente p INNER JOIN cita c ON p.id_paciente = c.id_paciente INNER JOIN serviciomedico s ON s.id_servicioMedico  = c.id_servicioMedico INNER JOIN personal d ON s.id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN usuario u ON u.id_usuario = d.id_usuario INNER JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico WHERE c.id_cita =:id_cita AND u.estado = 'ACT' ");
+		$consulta = $this->conexion->prepare("SELECT d.nombre AS nombre_d,d.apellido AS apellido_d,s.*,p.id_paciente,p.nacionalidad, p.cedula AS cedula_p,p.nombre AS nombre_p, p.apellido AS apellido_p, p.telefono AS telefono_p ,c.id_cita,c.fecha, c.estado,e.nombre AS especialidad FROM paciente p INNER JOIN cita c ON p.id_paciente = c.paciente_id_paciente INNER JOIN serviciomedico s ON s.id_servicioMedico  = c.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = s.id_servicioMedico INNER JOIN personal d ON psm.personal_id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN usuario u ON u.id_usuario = d.id_usuario WHERE c.id_cita =:id_cita AND u.estado = 'ACT' ");
 		$consulta->bindParam(":id_cita", $id_cita);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
@@ -306,7 +306,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 	}
 
 
-	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $numero_de_lote)
+	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $numero_de_lote, $id_cita)
 	{
 
 
@@ -322,11 +322,15 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		echo $id_factura." ";
 
 
-		//nota esto de la cita se tiene que adaptar cuando se facture una cita
+		//Si el id_cita no es null se cambia el estado e la cita
 
-		// $consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
-		// $consulta->bindParam(":id_cita", $id_cita);
-		// $consulta->execute();
+		if($id_cita != null){
+			$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
+			$consulta->bindParam(":id_cita", $id_cita);
+			$consulta->execute();
+		}
+
+		
 
 
 		$arrayDePago = $formasDePago;
@@ -489,7 +493,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 	public function consultarFacturaSinCita($id_factura)
 	{
-		$consulta = $this->conexion->prepare("SELECT p.nacionalidad, p.nombre AS nombre_p,p.apellido AS apellido_p,p.cedula AS cedula_p,f.* FROM factura f INNER JOIN paciente p ON f.id_paciente = p.id_paciente WHERE f.id_factura =:id_factura");
+		$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente WHERE f.id_factura =:id_factura");
 		$consulta->bindParam(":id_factura", $id_factura);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}

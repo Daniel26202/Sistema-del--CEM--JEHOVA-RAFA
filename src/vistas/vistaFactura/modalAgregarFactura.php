@@ -919,13 +919,14 @@
                 </tr>
               </thead>
               <tbody style="font-size: 14px;" id="cuerpoTablaConfirmaroperacion">
-                <?php if (isset($_GET["id_cita"])): ?>
+                <?php if (isset($parametro[0])): ?>
 
                   <?php foreach ($citaFacturar as $datoCita): ?>
                     <tr>
                       <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
                       <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
                         value="<?= $datoCita['id_paciente'] ?>">
+                      <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
                       <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
                       <td>
                         <div class="fw-bolder">CI:</div>

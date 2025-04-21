@@ -1,7 +1,7 @@
 addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded De Factura Dios :( :)");
   // Creamos la variable donde van a estar los datos, y de una vez le ponemos una fila para probar
-  console.log(window.location.href.includes("id_cita"));
+  console.log(window.location.href.includes("facturaCita"));
   var data = [];
   var dataInsumo = [];
   let listaModalServicio = [];
@@ -42,7 +42,7 @@ addEventListener("DOMContentLoaded", () => {
     "buscadorDeTodosLosInsumos"
   );
 
-  if (window.location.href.includes("id_cita")) {
+  if (window.location.href.includes("facturaCita")) {
     console.log("id_cita");
   } else {
     document
@@ -71,7 +71,7 @@ addEventListener("DOMContentLoaded", () => {
           document.getElementById("myToastfactura").classList.add("d-none");
           //formCitas.classList.remove('d-none');
 
-          if (window.location.href.includes("id_cita")) {
+          if (window.location.href.includes("facturaCita")) {
             console.log("id_cita");
           } else {
             let noCita = document.querySelectorAll(".no-cita");
@@ -206,26 +206,26 @@ addEventListener("DOMContentLoaded", () => {
     console.log(contenido);
 
     let peticion = await fetch(
-      "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
+      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
       contenido
     );
     let resultado = await peticion.json();
     console.log(resultado);
     if (resultado.length > 0) {
       console.log("2");
-      let url = window.location.href;
 
       let id_cita = "";
       resultado.forEach((res) => {
-        id_cita = `&id_cita=${res.id_cita}`;
+        id_cita = `/${res.id_cita}`;
       });
-      window.location.href = url.concat(id_cita);
+      window.location.href =
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita"+id_cita;
     } else {
       buscarPaciente(formularioPaciente);
     }
   };
 
-  if (window.location.href.includes("id_cita")) {
+  if (window.location.href.includes("facturaCita")) {
     console.log("si");
   } else if (window.location.href.includes("idH")) {
     console.log("hospitalizacion");
@@ -1435,7 +1435,7 @@ addEventListener("DOMContentLoaded", () => {
 
   let urlActual = window.location.href;
 
-  if (urlActual.includes("id_cita")) {
+  if (urlActual.includes("facturaCita")) {
     // document.getElementById("desplegarAyudafactura").classList.add("d-none");
     // document
     //   .getElementById("desplegarAyudafacturaIDCita")

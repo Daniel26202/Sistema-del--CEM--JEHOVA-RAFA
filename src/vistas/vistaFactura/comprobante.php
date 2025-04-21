@@ -177,7 +177,7 @@
                         <?php endforeach ?>
 
                         <h5 class="text-center">Servicios</h5>
-                       
+
 
                         <?php foreach ($datosServiciosExtras as $d): ?>
                             <div class="d-flex">
@@ -247,7 +247,7 @@
                 <?php $id_factura = $parametro[0]; ?>
                 <div class="d-flex justify-content-end">
                     <div class="uk-card-footer">
-                        <a href="?c=controladorFactura/mostrarPDF2&id_factura=<?php echo $id_factura; ?>"
+                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPDF/<?php echo $id_factura; ?>"
                             class="btn btn-tabla">
                             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
                                 class="bi bi-printer-fill" viewBox="0 0 16 16">
@@ -280,4 +280,3 @@
 <?php require_once './src/vistas/head/footer.php'; ?>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/factura.js"></script>
-

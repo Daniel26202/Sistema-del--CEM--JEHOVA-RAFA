@@ -2,10 +2,7 @@
 
 
 
-$datosFactura = $this->modelo->consultarFacturaSinCita($_GET["id_factura"]);
-$datosPago = $this->modelo->consultarPagoFactura($_GET["id_factura"]);
-$datosServiciosExtras = $this->modelo->consultarServiciosExtras($_GET["id_factura"]);
-$datosInsumos = $this->modelo->consultarFacturaInsumo($_GET["id_factura"]);
+
 // Creación del objeto de la clase heredada
 $pdf = new FPDF();
 
