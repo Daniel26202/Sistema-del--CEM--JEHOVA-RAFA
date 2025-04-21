@@ -203,7 +203,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 	//Metodo para actualizar la cantidad insumos de la hospitalizacion
 
-	public function actualizarCantidadEntradaHospit($id_insumo, $cantidad_requerida, $id_factura, $cantidad_en_la_factura)
+	public function actualizarCantidadEntradaTotales($id_insumo, $cantidad_requerida, $id_factura, $cantidad_en_la_factura)
 	{
 
 		// Consultar lotes disponibles
@@ -275,7 +275,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 					$id_inventario = $datos["id_inventario"]; //id de el inventario
 
-					$consulta = $this->conexion->prepare("INSERT INTO insumodefactura VALUES (null, :id_factura, :id_inventario, :cantidad, 'ACT')");
+					$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :id_inventario, :cantidad, 'ACT')");
 					$consulta->bindParam(":id_factura", $id_factura);
 					$consulta->bindParam(":id_inventario", $id_inventario);
 					$consulta->bindParam(":cantidad", $cantidad_en_la_factura);
@@ -366,12 +366,17 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 			$contador = 0;
 
 			foreach ($insumos as $i) {
+				$sqlInventario =  $this->conexion->prepare("SELECT id_inventario FROM inventario WHERE id_insumo =:i");
+				$sqlInventario->bindParam(":i", $i);
+				$sqlInventario->execute();
+				$id_inventario = $sqlInventario->fetch();
 				$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :i, :cantidad, 'ACT')");
 				$consulta->bindParam(":id_factura", $id_factura);
-				$consulta->bindParam(":i", $i);
+				$consulta->bindParam(":i", $id_inventario["id_inventario"]);
+				
 				$consulta->bindParam(":cantidad", $cantidad[$contador]);
 				if ($consulta->execute()) {
-					$this->actualizarCantidadEntrada($i, $cantidad[$contador], $numero_de_lote[$contador]);
+					$this->actualizarCantidadEntradaTotales($i, $cantidad[$contador], $id_factura, $cantidad[$contador]);
 				} else {
 					echo "NO";
 				}
@@ -449,7 +454,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 			foreach ($insumos as $i) {
 				if ($consulta->execute()) {
-					$this->actualizarCantidadEntradaHospit($i, $cantidad[$contador], $id_factura, $cantidad[$contador]);
+					//$this->actualizarCantidadEntradaHospit($i, $cantidad[$contador], $id_factura, $cantidad[$contador]);
 				} else {
 					echo "NO";
 				}

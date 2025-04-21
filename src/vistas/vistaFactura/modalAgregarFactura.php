@@ -531,7 +531,7 @@
                 <th class=" text-center border-start">Nombre</th>
                 <th class=" text-center border-start">Disponible</th>
                 <th class=" text-center border-start">Precio</th>
-                <th class=" text-center border-start">Lote</th>
+                <!-- <th class=" text-center border-start">Lote</th> -->
                 <th class=" text-center border-start">Cantidad</th>
                 <th class=" text-center border-start">Añadir</th>
 
@@ -553,14 +553,14 @@
                       <?php echo $i['nombre']; ?>
                     </td>
                     <td class="text-center border-start cantidad_tabla_disponible<?= $i["nombre"] ?>">
-                      <?php echo $i['cantidad_inventario']; ?>
+                      <?php echo $i['cantidad']; ?>
                     </td>
                     <td class="text-center border-start">
                       <?php echo $i['precio'] ?> BS
                     </td>
-                    <td class="text-center border-start">
-                      <?php echo $i['numero_de_lote']; ?>
-                    </td>
+                    <!-- <td class="text-center border-start">
+                      <?php //echo $i['numero_de_lote']; ?>
+                    </td> -->
                     <td class="text-center border-start">
                       <input type="number" class="form-control input-buscar m-auto inputs-cantidad-insumos">
                     </td>
@@ -568,8 +568,8 @@
 
                     <td class="border-start text-center  caja-boton">
 
-                      <button class="btn btn-tabla mt-1 insertar_insumo d-none btn<?= $i['id_inventario']; ?>"
-                        id="<?php echo $i['id_inventario']; ?>">
+                      <button class="btn btn-tabla mt-1 insertar_insumo d-none btn<?= $i['id_insumo']; ?>"
+                        id="<?php echo $i['id_insumo']; ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                           class="bi bi-check-square-fill" viewBox="0 0 16 16">
                           <path

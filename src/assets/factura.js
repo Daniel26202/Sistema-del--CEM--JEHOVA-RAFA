@@ -560,7 +560,7 @@ addEventListener("DOMContentLoaded", () => {
         this.parentElement.parentElement.children[2].innerText
       );
       let botonDeAnadir =
-        this.parentElement.parentElement.children[6].children[0];
+        this.parentElement.parentElement.children[5].children[0];
 
       if (
         this.value <= cantidadDisponible &&
@@ -695,7 +695,8 @@ addEventListener("DOMContentLoaded", () => {
       const nombreInsumo = fila.children[1].innerText; // Columna Insumo
       const precio = fila.children[3].innerText; // Columna precio
       const numero_de_lote = fila.children[4].innerText; // Columna numero_de_lote
-      const cantidad = fila.children[5].children[0].value; // Columna cantidad
+      const cantidad = fila.children[4].children[0].value; // Columna cantidad
+     
 
       insertarVariosInsumos(
         id_insumo,

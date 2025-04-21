@@ -23,7 +23,7 @@ class ControladorFactura
 
 	public function factura($parametro)
 	{
-		$insumos = $this->modelo->mostrarInsumos();
+		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 		$extras = $this->modelo->mostrarServicios();
@@ -31,7 +31,7 @@ class ControladorFactura
 	}
 
 	function facturaCita($parametro) {
-		$insumos = $this->modelo->mostrarInsumos();
+		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 		$extras = $this->modelo->mostrarServicios();
