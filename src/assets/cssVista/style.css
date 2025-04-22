@@ -1,4 +1,30 @@
 /* ////////////////////////////////////////////////////// */
+:root {
+	/* Colores claros por defaultt */
+	--color-bg-main: #f2f9ff;
+	--color-bg-sidebar: #e8f2ff;
+	--color-bg-card: #FDFDFF;
+	--color-text: #FDFDFF;
+	--color-text-card: #1b1a1a;
+	--color-primary: #387ADF;
+	--color-primary-contrast: #ffffff;
+	--color-surface: #F8FCFF;
+	--color-border: #f2f9ff;
+}
+
+[data-theme="dark"] {
+	/* Colores oscuros */
+	--color-bg-main: hsl(211, 53%, 11%);
+	--color-bg-sidebar: hsl(211, 43%, 11%);
+	--color-bg-card: #415A77;
+	--color-text: #E0E1DD;
+	--color-text-card: #E0E1DD;
+	--color-primary: #387adf;
+	--color-primary-contrast: #E0E1DD;
+	--color-surface: #415A77;
+	--color-border: #E4EBF0;
+}
+
 /* ...................MENU E INICIO.................... */
 * {
 	padding: 0;
@@ -7,14 +33,22 @@
 	font-family: 'Arial', sans-serif;
 }
 
+a{
+	color: var(--color-text-card) !important;
+}
+
+h1{
+	font-size: 2rem;
+	color: var(--color-text-card);
+}
+
 .aside {
 	height: 100%;
 	width: 25%;
 	padding: 10px;
-	background-color: #387ADF;
+	background-color:var(--color-primary);
 	color: #fff;
 	position: fixed;
-	transition: all .4s ease;
 	z-index: 100;
 	overflow-y: auto !important;
 }
@@ -104,12 +138,19 @@
 
 /* clases del contenedor */
 main {
-	background-color: #fff;
-	width: calc(100vw - 70px);
+	background-color: var(--color-bg-main);
+	width: 100%;
 	height: 100%;
-	margin-left: 70px;
+	margin-left: 68px;
 	transition: all .4s ease;
 }
+
+svg{
+	color: var(--color-text-card);
+}
+
+
+
 
 /*fondo animado*/
 .main {
@@ -165,7 +206,7 @@ main {
 	border-start-start-radius: 10px;
 	background-color: #387ADF;
 	transition: .4s all;
-	color: #fff;
+	color: #fffFFF;
 }
 
 #reiniciarBusqueda {
@@ -174,7 +215,7 @@ main {
 	border-right: #387ADF solid 1px;
 	border-start-end-radius: 10px;
 	border-end-start-radius: 10px;
-	background-color: #387ADF;
+	background-color: var(--color-primary);
 	transition: .4s all;
 	color: #fff;
 	margin-right: -99px;
@@ -184,7 +225,7 @@ main {
 
 #reiniciarBusqueda:hover {
 	border-right: #E4EBF0 solid 1px;
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
@@ -194,7 +235,7 @@ main {
 	border-right: #387ADF solid 1px;
 	border-start-end-radius: 10px;
 	border-end-start-radius: 10px;
-	background-color: #387ADF;
+	background-color: var(--color-primary);
 	transition: .4s all;
 	color: #fff;
 	margin-right: -100px;
@@ -210,7 +251,7 @@ main {
 	border-right: #387ADF solid 1px;
 	border-start-end-radius: 10px;
 	border-end-start-radius: 10px;
-	background-color: #387ADF;
+	background-color: var(--color-primary);
 	transition: .4s all;
 	color: #fff;
 	margin-right: -99px;
@@ -219,8 +260,8 @@ main {
 }
 
 #reiniciarBusquedaInsumo:hover {
-	border-right: #E4EBF0 solid 1px;
-	background-color: #E4EBF0;
+	border-right: var(--color-bg-main) solid 1px;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
@@ -229,7 +270,7 @@ main {
 	border-right: #387ADF solid 1px;
 	border-start-end-radius: 10px;
 	border-end-start-radius: 10px;
-	background-color: #387ADF;
+	background-color: var(--color-primary);
 	transition: .4s all;
 	color: #fff;
 	position: relative;
@@ -237,14 +278,14 @@ main {
 }
 
 #reiniciarBusquedaEspecialidad:hover {
-	border-right: #E4EBF0 solid 1px;
-	background-color: #E4EBF0;
+	border-right: var(--color-bg-main) solid 1px;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
 
 .btn-buscar:hover {
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
@@ -300,7 +341,7 @@ main {
 
 .btn-tabla:hover {
 	border: none;
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	transition-property: background-color;
 	transition-duration: .4s;
 }
@@ -357,7 +398,7 @@ main {
 .input-modal:focus {
 	outline: 0 !important;
 	box-shadow: none;
-	/* background: linear-gradient(to bottom, transparent, #E4EBF0); */
+	/* background: linear-gradient(to bottom, transparent, var(--color-bg-main)); */
 }
 
 
@@ -484,7 +525,7 @@ main {
 /* Estilos Inicio */
 
 .contenedor-inicio {
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	border-radius: 20px;
 	width: 30%;
 
@@ -516,7 +557,7 @@ main {
 /* Perfil */
 
 .contenedor-perfil {
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	border-radius: 20px;
 	width: 60%;
 	height: 60%;
@@ -902,7 +943,7 @@ input[type=number]::-webkit-outer-spin-button {
 .input-buscar:focus {
 	outline: 0 !important;
 	box-shadow: none;
-	background: linear-gradient(to bottom, transparent, #E4EBF0);
+	background: linear-gradient(to bottom, transparent, var(--color-bg-main));
 }
 
 .btn-buscar {
@@ -917,7 +958,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .btn-buscar:hover {
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
@@ -930,7 +971,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .btn-tabla:hover {
 	border: none;
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
@@ -1092,7 +1133,7 @@ con la clase hover-grande cambia de tamaño*/
 
 .btn-tabla:hover {
 	border: none;
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
@@ -1240,7 +1281,7 @@ con la clase hover-grande cambia de tamaño*/
 .btn-tabla:hover {
 	border: #387ADF 0.5px solid;
 	color: #387ADF;
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
@@ -1250,9 +1291,9 @@ con la clase hover-grande cambia de tamaño*/
 
 .fondo-tabla {
 	padding: 15px;
-	border: #E4EBF0 solid 1px;
+	border: var(--color-bg-main) solid 1px;
 	border-radius: 20px;
-	box-shadow: #E4EBF0 0 0 5px;
+	box-shadow: var(--color-bg-main) 0 0 5px;
 	background-color: #F8FCFF;
 }
 
@@ -1300,7 +1341,7 @@ con la clase hover-grande cambia de tamaño*/
 .input-busca:focus {
 	outline: 0 !important;
 	box-shadow: none;
-	background: linear-gradient(to bottom, transparent, #E4EBF0);
+	background: linear-gradient(to bottom, transparent, var(--color-bg-main));
 }
 
 .boton-buscar {
@@ -1315,7 +1356,7 @@ con la clase hover-grande cambia de tamaño*/
 }
 
 .boton-buscar:hover {
-	background-color: #E4EBF0;
+	background-color: var(--color-bg-main);
 	transition: .4s all;
 }
 
@@ -1419,10 +1460,10 @@ con la clase hover-grande cambia de tamaño*/
 
 .fondoPH {
 	padding: 10px;
-	border: #E4EBF0 solid 1px;
+	border: var(--color-bg-main) solid 1px;
 	background-image: radial-gradient(at 40px 20px, rgba(121, 167, 240, 0.171) 40%, rgba(159, 197, 253, 0.205) 20%, rgba(133, 182, 255, 0.63) 72%);
 	border-radius: 10.5px;
-	box-shadow: #E4EBF0 0 0 5px;
+	box-shadow: var(--color-bg-main) 0 0 5px;
 	cursor: pointer;
 	transition: transform 0.11s;
 }
@@ -1534,9 +1575,9 @@ con la clase hover-grande cambia de tamaño*/
 
 .fondo-tabla {
 	padding: 15px;
-	border: #E4EBF0 solid 1px;
+	border: var(--color-bg-main) solid 1px;
 	border-radius: 20px;
-	box-shadow: #E4EBF0 0 0 5px;
+	box-shadow: var(--color-bg-main) 0 0 5px;
 	background-color: #F8FCFF;
 }
 
@@ -1709,7 +1750,6 @@ input[type="date"] {
 		background-color: #fff;
 		width: 100%;
 		margin-left: 0px;
-		transition: all .4s ease;
 	}
 
 	.aside {
@@ -2262,19 +2302,8 @@ input[type="date"] {
 
 /* animacion de la pagina */
 
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-
-	to {
-		opacity: 1;
-	}
+body {
+	font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
+	
 }
 
-
-.main-content {
-
-	animation: fadeIn 0.15s ease-in-out;
-
-}
