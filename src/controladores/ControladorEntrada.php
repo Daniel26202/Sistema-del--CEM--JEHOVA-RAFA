@@ -77,11 +77,11 @@ class ControladorEntrada
 	public function editar(){
 		print_r($_POST);
 		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
-		 $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
+		$this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
 		 // Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"entrada","Ha modificado una entrada");
 
-		 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
 
 	}
 
