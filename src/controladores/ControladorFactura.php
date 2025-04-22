@@ -138,11 +138,14 @@ class ControladorFactura
 		echo "<br><br><br>"."datos por post";
 		print_r($_POST);
 
+	
+
+
 
 
 		$this->modelo->insertaFactura( $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote, $id_cita);
 
-		// Guardar la bitacora
+		//Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado servicios y/o insumos");
 
 

@@ -1473,7 +1473,6 @@ addEventListener("DOMContentLoaded", () => {
         <div class="fw-bolder">INSUMO:</div>${element["nombreInsumo"]}</td>
         <td><input type="hidden" name="cantidad[]" value="${element["cantidad"]}"><div class="fw-bolder">CANTIDAD</div> ${element["cantidad"]}</td>
         <td><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
-        <td><input type="hidden" name="numero_de_lote[]" value="${element["numero_de_lote"]}"><div class="fw-bolder">LOTE</div> ${element["numero_de_lote"]}</td>
         <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${element["subTotal"]} BS</td>
         <td>
         <tr>`;

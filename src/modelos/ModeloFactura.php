@@ -133,7 +133,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 	public function selectTodosLosInsumos()
 	{
-		return $this->modelo_insumo->insumos();
+		return $this->modelo_insumo->insumos(false);
 	}
 
 
@@ -235,6 +235,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		if ($cantidad_requerida <= $cantidad_total) {
 			// Verificar si hay lotes disponibles
 			if ($cantidad_total > 0) {
+				$id_inventario = "";
 				// Iterar sobre los lotes y restar la cantidad requerida
 				foreach ($lotesDisponibles as $fila) {
 					$lote_id = $fila['id_entradaDeInsumo'];
@@ -275,13 +276,6 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 					$id_inventario = $datos["id_inventario"]; //id de el inventario
 
-					$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :id_inventario, :cantidad, 'ACT')");
-					$consulta->bindParam(":id_factura", $id_factura);
-					$consulta->bindParam(":id_inventario", $id_inventario);
-					$consulta->bindParam(":cantidad", $cantidad_en_la_factura);
-					$consulta->execute();
-
-
 					$cantidad_actualidad_insumo = $this->modelo_insumo->actualizar_cantidad_insumo($id_insumo);
 					// print_r($cantidad[0]["cantidad"]);
 
@@ -290,7 +284,20 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 					$consulta->bindParam(":cantidad", $cantidad_actualidad_insumo[0]["cantidad"]);
 					$consulta->bindParam(":id_insumo", $id_insumo);
 					$consulta->execute();
+
+					
+
 				}
+
+				$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :id_inventario, :cantidad, 'ACT')");
+				$consulta->bindParam(":id_factura", $id_factura);
+				$consulta->bindParam(":id_inventario", $id_inventario);
+				$consulta->bindParam(":cantidad", $cantidad_en_la_factura);
+				$consulta->execute();
+
+
+				
+
 
 				if ($cantidad_requerida > 0) {
 					echo "No hay suficientes insumos disponibles para cubrir la cantidad requerida.";
@@ -319,18 +326,18 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		$consulta->bindParam(":id_paciente", $id_paciente);
 		$consulta->execute();
 		$id_factura = $this->conexion->lastInsertId();
-		echo $id_factura." ";
+		echo $id_factura . " ";
 
 
 		//Si el id_cita no es null se cambia el estado e la cita
 
-		if($id_cita != null){
+		if ($id_cita != null) {
 			$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
 			$consulta->bindParam(":id_cita", $id_cita);
 			$consulta->execute();
 		}
 
-		
+
 
 
 		$arrayDePago = $formasDePago;
@@ -366,20 +373,9 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 			$contador = 0;
 
 			foreach ($insumos as $i) {
-				$sqlInventario =  $this->conexion->prepare("SELECT id_inventario FROM inventario WHERE id_insumo =:i");
-				$sqlInventario->bindParam(":i", $i);
-				$sqlInventario->execute();
-				$id_inventario = $sqlInventario->fetch();
-				$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :i, :cantidad, 'ACT')");
-				$consulta->bindParam(":id_factura", $id_factura);
-				$consulta->bindParam(":i", $id_inventario["id_inventario"]);
-				
-				$consulta->bindParam(":cantidad", $cantidad[$contador]);
-				if ($consulta->execute()) {
-					$this->actualizarCantidadEntradaTotales($i, $cantidad[$contador], $id_factura, $cantidad[$contador]);
-				} else {
-					echo "NO";
-				}
+
+				$this->actualizarCantidadEntradaTotales($i, $cantidad[$contador], $id_factura, $cantidad[$contador]);
+
 				$contador++;
 			}
 		}
@@ -387,9 +383,8 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 
 
-		
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $id_factura);
-		
+
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $id_factura);
 	}
 
 

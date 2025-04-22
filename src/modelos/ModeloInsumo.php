@@ -26,9 +26,12 @@ class ModeloInsumo extends Db
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
-	public function insumos()
+	public function insumos($cantidadCero = true)
 	{
-		$sql = $this->conexion->prepare("SELECT * FROM insumo WHERE estado ='ACT' ");
+		$query = "";
+		if($cantidadCero) $query = "SELECT * FROM insumo WHERE estado ='ACT' AND cantidad >= 0 ";
+		else   $query = "SELECT * FROM insumo WHERE estado ='ACT' AND cantidad > 0";
+		$sql = $this->conexion->prepare($query);
 		$sql->execute();
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
