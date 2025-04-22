@@ -4,7 +4,7 @@ use App\modelos\ModeloControl;
 use App\modelos\ModeloSintomas;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloBitacora;
-use App\modelo\ModeloPermisos;
+use App\modelos\ModeloPermisos;
 
 class ControladorControl
 {
@@ -22,6 +22,7 @@ class ControladorControl
 		$this->modeloSintomas = new ModeloSintomas();
 		$this->modeloPatologia = new ModeloPatologia();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();	
 	}
 
 	public function control($parametro)
