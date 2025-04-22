@@ -13,5 +13,31 @@ return [
     "factura" => "consultar", "facturaCita" => "consultar","comprobante" => "consultar","mostrarPaciente" => "consultar","mostrarPacienteConCita" => "consultar","mostrarTodosLosServicios" => "consultar","mostrarTodosLosDoctores" => "consultar","mostrarPrecio" => "consultar","mostrarNombreTodosDoctores" => "consultar","nombreSegunIdC" => "consultar","nombreSegunIdD" => "consultar","insumosAjax" => "consultar","mostrarPDF" => "consultar","mostrarPDF2" => "consultar","mostrarPDF3" => "consultar","guardarFactura" => "guardar","guardarFacturaHospit" => "guardar",
 
     //Citas
+    "mostrarPacienteCita" => "consultar",
+    "mostrarPacienteCitaGet" => "consultar",
+    "citas" => "consultar",
+    "citasHoy" => "consultar",
+    "citasP" => "consultar",
+    "guardarCita" => "guardar",
+    "eliminarCita" => "eliminar",
+    "citasHoyP" => "consultar",
+    "citasRealizadas" => "consultar",
+    "mostrarDoctoresCita" => "consultar",
+    "mostrarHorario" => "consultar",
+    "editarCita" => "editar",
+
+
+    //Servicios Medicos
+    "consultas" => "consultar",
+    "papeleraServicio" => "consultar",
+    "guardar" => "guardar",
+    "eliminar" => "eliminar",
+    "restablecer" => "restablecer",
+    "editar" => "editar",
+    "mostrarEspecialidad" => "consultar",
+    "registrarCategoria" => "guardar",
+    "eliminarCategoria" => "eliminar",
+
+
 
 ];
