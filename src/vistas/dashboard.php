@@ -13,6 +13,7 @@ require_once './src/vistas/head/head.php';
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
+                    
                     <div class="welcome-card p-4 rounded shadow-sm" id="welcomeCard">
                         <h3>Bienvenido!</h3>
                         <div class="reminder d-flex justify-content-between align-items-center">
@@ -69,7 +70,7 @@ require_once './src/vistas/head/head.php';
 
     <!-- Sidebar (25%) -->
     <div class="sidebar-content col-12 col-lg-4 p-4 min-vh-100" id="sidebar-content">
-        <h5 style="color: rgb(42, 109, 172);">Calendario</h5>
+        <h5>Calendario</h5>
         <!-- Calendar Container -->
         <div class="card shadow-sm my-4" id="calendarCard">
             <div class="card-tittle d-flex justify-content-between align-items-center">
@@ -128,9 +129,9 @@ require_once './src/vistas/head/head.php';
 
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
 
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>

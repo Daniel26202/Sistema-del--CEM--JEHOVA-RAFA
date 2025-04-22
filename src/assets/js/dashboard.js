@@ -1,6 +1,6 @@
 // Variables globales
-const { jsPDF } = window.jspdf;
-
+/* const { jsPDF } = window.jspdf;
+ */
 let currentYear, currentMonth;
 let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
 

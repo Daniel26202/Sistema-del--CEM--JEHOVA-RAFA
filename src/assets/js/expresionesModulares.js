@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
         pError.classList.remove("d-none");
         return false;
       }
-    } else if(campo == "fechaDeCita") {
+    } else if (campo == "fechaDeCita") {
       if (!expresiones.fn.test(input.value)) {
         // Validamos con la expresión regular
         pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         pError.classList.remove("d-none");
         return false;
       }
-    }else if (campo === "fechaDeVencimiento"){
+    } else if (campo === "fechaDeVencimiento") {
       if (!expresiones.fechaDeVencimiento.test(input.value)) {
         // Validamos con la expresión regular
         pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
@@ -64,14 +64,15 @@ document.addEventListener("DOMContentLoaded", function () {
         return false;
       } else if (valorFecha <= fechaHoy) {
         // Validamos que no sea una fecha del pasado
-        pError.textContent = "La fecha de vencimiento no puede ser del pasado o de hoy.";
+        pError.textContent =
+          "La fecha de vencimiento no puede ser del pasado o de hoy.";
         pError.classList.remove("d-none");
         return false;
       }
     }
-      // Si pasa todas las validaciones
-      pError.classList.add("d-none");
-   // actualizarEstadoInput(input, "incorrecto", formulario);
+    // Si pasa todas las validaciones
+    pError.classList.add("d-none");
+    // actualizarEstadoInput(input, "incorrecto", formulario);
     return true;
   }
 
@@ -216,8 +217,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // const expresion = expresiones[tipoCampo];
 
     // Validamos específicamente el campo de fecha
-    if (campo === "fn" || campo === "fechaDeCita" || campo  === "fechaDeVencimiento") {
-      campos[campo] = validarFecha(input, pErrorGuardar, campo,  formulario);
+    if (
+      campo === "fn" ||
+      campo === "fechaDeCita" ||
+      campo === "fechaDeVencimiento"
+    ) {
+      campos[campo] = validarFecha(input, pErrorGuardar, campo, formulario);
     } else {
       // Para otros campos, usamos la validación ya existente
       const expresion = expresiones[campo];
@@ -255,21 +260,14 @@ document.addEventListener("DOMContentLoaded", function () {
       // Para otros campos, usamos la validación ya existente
       const expresion = expresiones[campo];
       if (expresion) {
-        validarCampo(
-          expresion,
-          input,
-          campo,
-          campos,
-          formulario,
-          pErrorEditar
-        );
+        validarCampo(expresion, input, campo, campos, formulario, pErrorEditar);
       }
     }
   }
 
   // Función que valida un campo individual
   function validarCampo(expresion, input, campo, campos, formulario, pError) {
-    console.log(pError)
+    console.log(pError);
     pError.classList.add("fw-bold");
     pError.style.color = "rgb(224, 3, 3)";
     console.log(document.querySelector(`.p-error-${input.name}`));
@@ -327,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".botonesEdi").forEach((btn) => {
     btn.addEventListener("click", () => {
       let id = btn.getAttribute("data-index");
-      console.log(id)
+      console.log(id);
       let formularioEditar = document.querySelector(".form-validable" + id);
 
       inicializarValidacionFormularioEditar(formularioEditar, id);
@@ -335,3 +333,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+
