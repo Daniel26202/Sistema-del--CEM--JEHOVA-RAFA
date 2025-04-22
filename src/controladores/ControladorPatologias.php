@@ -1,18 +1,21 @@
 <?php
 
 use App\modelos\ModeloPatologia;
-use App\modelos\ModeloBitacora; 
+use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 
 class ControladorPatologias
 {
 	private $patologia;
 	private $bitacora;
+	private $permisos;
 
 	function __construct()
 	{
 		$this->patologia = new ModeloPatologia();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();
 	}
 
 	public function patologias($parametro)
@@ -72,9 +75,12 @@ class ControladorPatologias
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/restablecida");
 	}
 
-	
 
 
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+	}
 	
 
 }

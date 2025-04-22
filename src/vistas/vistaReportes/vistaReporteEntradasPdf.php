@@ -81,5 +81,6 @@ $pdf->Ln(12);
 // AQUI TERMINAS EL FORECAH
 
 
-
+ob_end_clean(); // Limpia el búfer de salida
 $pdf->Output();
+exit;

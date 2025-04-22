@@ -3,6 +3,7 @@
 use App\modelos\ModeloFactura;
 use App\modelos\ModeloCategoria;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorFactura
 {
@@ -10,12 +11,14 @@ class ControladorFactura
 	private $modelo; //atributo privado
 	private $categoria;
 	private $bitacora;
+	private $permisos;
 
 	//le damos el valor de el  modelo a el atributo $modelo
 	function __construct()
 	{
 		$this->modelo = new ModeloFactura();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();
 	}
 
 	//metodo para mostrar la vista de facturacion
@@ -198,5 +201,11 @@ class ControladorFactura
 	{
 
 		require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
+	}
+
+
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 }

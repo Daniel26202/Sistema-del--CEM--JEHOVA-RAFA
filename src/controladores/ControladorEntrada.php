@@ -2,16 +2,19 @@
 
 use App\modelos\ModeloEntrada;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 class ControladorEntrada
 {
 
 	private $modelo;
 	private $bitacora;
+	private $permisos;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloEntrada();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();
 	}
 
 	public function entrada($parametro)
@@ -91,6 +94,12 @@ class ControladorEntrada
 	public function entradaInsumo(){
 		$respuesta = $this->modelo->insumosEntrada($_GET['id_insumo']);
 		echo json_encode($respuesta);
+	}
+
+
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 
 

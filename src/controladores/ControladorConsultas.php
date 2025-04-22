@@ -3,18 +3,21 @@
 use App\modelos\ModeloCategoria;
 use App\modelos\ModeloConsultas;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorConsultas
 {
 	private $modelo;
 	private $categoria;
 	private $bitacora;
+	private $permisos;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloConsultas;
 		$this->categoria = new ModeloCategoria();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();
 	}
 	public function consultas($parametro)
 	{
@@ -128,6 +131,11 @@ class ControladorConsultas
 		// Guardar la bitacora
 		$this->bitacora->insertarBitacora($id_usuario, "categoria_servicio", "Ha eliminado una  categoria");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminado");
+	}
+
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 
 }

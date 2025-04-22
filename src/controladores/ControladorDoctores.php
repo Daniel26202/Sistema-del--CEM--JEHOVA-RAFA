@@ -2,17 +2,20 @@
 
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorDoctores extends ModeloDoctores
 {
 
     private $modelo;
     private $bitacora;
+    private $permisos;
 
     public function __construct()
     {
         $this->modelo = new ModeloDoctores;
         $this->bitacora = new ModeloBitacora;
+        $this->permisos = new ModeloPermisos;
     }
 
     //muestro los datos de las cuatro tablas
@@ -178,5 +181,10 @@ class ControladorDoctores extends ModeloDoctores
         $id_personal = $datos[0];
         $respuesta = $this->modelo->horarioDelDoctor($id_personal);
         echo json_encode($respuesta);
+    }
+
+    private function permisos($id_rol, $permiso, $modulo)
+    {
+        return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
     }
 }

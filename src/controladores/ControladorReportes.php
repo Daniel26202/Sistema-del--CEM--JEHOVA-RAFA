@@ -2,6 +2,7 @@
 use App\modelos\ModeloReporte;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloInsumo;
+use App\modelos\ModeloPermisos;
 // use FPDF\FPDF; 	
 
 class ControladorReportes{
@@ -9,12 +10,14 @@ class ControladorReportes{
 	private $modelo;
 	private $bitacora;
 	private $insumo;
+	private $permisos;
 
     function __construct()
     {
         $this->modelo = new ModeloReporte();
         $this->bitacora = new ModeloBitacora();
         $this->insumo = new ModeloInsumo();
+		$this->permisos = new ModeloPermisos();
     }
 
 	
@@ -42,7 +45,8 @@ class ControladorReportes{
 			require_once './src/vistas/vistaReportes/vistaFacturaPdf.php';
 		}
 	}
-	public function pacientePDF(){
+	public function pacientePDF($datos){
+		$pacientes = $this->modelo->pdfPaciente($datos[0]);
 		require_once './src/vistas/vistaReportes/vistaPacientePDF.php';
 	}
 	public function insumosPDF(){
@@ -86,7 +90,7 @@ class ControladorReportes{
 		
 		print_r($_POST);
 
-	 	$respuesta = $this->modelo->insumosAnulados($_POST["id_factura"]);
+		$respuesta = $this->modelo->insumosAnulados($_POST["id_factura"]);
 	 	$eliminar = $this->modelo->anularFac($_POST["id_factura"]);
 	
 		foreach($respuesta as $res){
@@ -105,9 +109,13 @@ class ControladorReportes{
 	
 	}
 
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+	}
 	
 
 }
 
 
- ?>
+?>

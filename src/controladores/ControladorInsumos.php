@@ -2,17 +2,20 @@
 
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorInsumos
 {
 
 	private $modelo;
 	private $bitacora;
+	private $permisos;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloInsumo();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();
 	}
 
 
@@ -117,6 +120,10 @@ class ControladorInsumos
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/papelera");
 	}
 
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+	}
 
 
 }

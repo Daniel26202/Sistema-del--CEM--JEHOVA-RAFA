@@ -3,19 +3,21 @@
 use App\modelos\ModeloInicio;
 use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
-
+use App\modelos\ModeloPermisos;
 class ControladorInicio
 {
 
     private $modeloInicio;
     private $modeloCitas;
     private $bitacora;
+    private $permisos;
 
     public function __construct()
     {
         $this->modeloInicio = new ModeloInicio();
         $this->modeloCitas = new ModeloCita();
         $this->bitacora = new ModeloBitacora();
+        $this->permisos = new ModeloPermisos();
     }
 
     public function inicio($parametro)
@@ -153,4 +155,10 @@ class ControladorInicio
         // Eliminar la imagen temporal
         unlink($fileName);
     }
+
+    private function permisos($id_rol, $permiso, $modulo)
+    {
+        return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+    }
+
 }

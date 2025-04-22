@@ -2,17 +2,20 @@
 
 use \App\modelos\ModeloRoles;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorRoles
 {
 
     private $modelo;
     private $bitacora;
+    private $permisos;
 
     function __construct()
     {
         $this->modelo = new ModeloRoles;
         $this->bitacora = new ModeloBitacora; //bitacora
+        $this->permisos = new ModeloPermisos;
     }
 
 
@@ -86,5 +89,11 @@ class ControladorRoles
         // guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Eliminado un rol");
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/eliminar");
+    }
+
+
+    private function permisos($id_rol, $permiso, $modulo)
+    {
+        return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
     }
 }

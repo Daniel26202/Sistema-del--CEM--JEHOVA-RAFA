@@ -3,6 +3,7 @@
 use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPacientes;
+use App\modelos\ModeloPermisos;
 
 class ControladorCitas
 {
@@ -10,12 +11,14 @@ class ControladorCitas
 	private $modelo;
 	private $bitacora;
 	private $modeloPacientes;
+	private $permisos;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloCita();
 		$this->bitacora = new ModeloBitacora;
 		$this->modeloPacientes = new ModeloPacientes();
+		$this->permisos = new ModeloPermisos();
 	}
 
 	public function insertaPaciente()
@@ -206,7 +209,11 @@ class ControladorCitas
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
 		}
 	}
-	
+
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+	}
 
 	// public function prueba(){
 	// 	$respuesta = $this->modelo->prueba();
