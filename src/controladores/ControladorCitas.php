@@ -177,30 +177,30 @@ class ControladorCitas
 		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
 
 		//se verifica si la cédula del input es igual a la cédula ya existente 
-		if ($cedula == $_POST["id_servicioMedico"]) {
+		if ($cedula == $_POST["serviciomedico_id_servicioMedico"]) {
 
-			$this->modelo->update($_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
+			$this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");
 
 			// NOTA: Esto "&&" es "Y"
 			//se verifica si la cédula del input no es igual a la cédula ya existente.  
-		} elseif ($cedula != $_POST["id_servicioMedico"]) {
+		} elseif ($cedula != $_POST["serviciomedico_id_servicioMedico"]) {
 
 			//verifica si la cédula es igual a la información de la base de datos.
 			if ($resultadoDeCita === "existeC") {
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/error");
 			} else {
 
-				$this->modelo->update($_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
+				$this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");
 			}
 		} else {
 
-			$this->modelo->update($_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
+			$this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");

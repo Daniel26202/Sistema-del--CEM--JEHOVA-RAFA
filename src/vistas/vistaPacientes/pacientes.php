@@ -94,7 +94,7 @@
       <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
 
-        <?php if (!$this->permisos($_SESSION["id_rol"], "registrar", "Pacientes")): ?>
+        <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Pacientes")): ?>
           <!-- no hay -->
         <?php else: ?>
 
