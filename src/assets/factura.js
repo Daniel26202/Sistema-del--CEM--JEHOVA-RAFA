@@ -628,12 +628,7 @@ addEventListener("DOMContentLoaded", () => {
   };
 
   //funcion para insertar varios insumos a la vez
-  const insertarVariosInsumos = (
-    id_insumo,
-    nombreInsumo,
-    cantidad,
-    precio,
-  ) => {
+  const insertarVariosInsumos = (id_insumo, nombreInsumo, cantidad, precio) => {
     let subTotalRedondeado = (
       parseFloat(cantidad) * parseFloat(precio)
     ).toFixed(2);
@@ -658,7 +653,7 @@ addEventListener("DOMContentLoaded", () => {
     }
 
     //esto lo reviso despues
-   
+
     // let inputsOcultosDeNombre = document.querySelector(
     //   ".nombreInsumo" + element["nombreInsumo"]
     // );
@@ -672,14 +667,12 @@ addEventListener("DOMContentLoaded", () => {
     // }
 
     let cantidad_tabla_disponible = document.querySelector(
-      ".cantidad_tabla_disponible"+nombreInsumo
-    ); 
+      ".cantidad_tabla_disponible" + nombreInsumo
+    );
 
-    
-
-    let cantidad_tabla = parseInt(cantidad_tabla_disponible.innerText) - parseInt(cantidad);
+    let cantidad_tabla =
+      parseInt(cantidad_tabla_disponible.innerText) - parseInt(cantidad);
     cantidad_tabla_disponible.innerText = cantidad_tabla;
-
   };
 
   //boton para añadir los insumos
@@ -692,15 +685,8 @@ addEventListener("DOMContentLoaded", () => {
       const precio = fila.children[3].innerText; // Columna precio
       //const numero_de_lote = fila.children[4].innerText; // Columna numero_de_lote
       const cantidad = fila.children[4].children[0].value; // Columna cantidad
-     
 
-      insertarVariosInsumos(
-        id_insumo,
-        nombreInsumo,
-        cantidad,
-        precio,
-       
-      );
+      insertarVariosInsumos(id_insumo, nombreInsumo, cantidad, precio);
       fila.classList.add("d-none");
     });
   });
@@ -709,7 +695,6 @@ addEventListener("DOMContentLoaded", () => {
     calcularTotal();
     let html = ``;
     dataInsumo.forEach((element, index) => {
-      
       html += `
         <tr class="border-top tr">
         <th class="id_insumo_escondido d-none">${element["id_insumo"]}</th>
@@ -1438,14 +1423,24 @@ addEventListener("DOMContentLoaded", () => {
 
   referencia.addEventListener("keyup", function () {
     console.log(referencia);
-    if (inputsDeValidacion[2].classList.contains("d-none")) {
-      dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+    if (inputsDeValidacion[1].classList.contains("d-none")) {
+      if (referencia.value.length == 4) {
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      } else {
+        alertaVariosMetodos.classList.remove("d-none");
+        btnValidacion.classList.add("d-none");
+      }
     } else {
-      tresPrecios(
-        inputsDeValidacion[0],
-        inputsDeValidacion[1],
-        inputsDeValidacion[2]
-      );
+      if (inputsDeValidacion[2].classList.contains("d-none")) {
+        dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+      } else {
+        tresPrecios(
+          inputsDeValidacion[0],
+          inputsDeValidacion[1],
+          inputsDeValidacion[2]
+        );
+      }
     }
   });
 
