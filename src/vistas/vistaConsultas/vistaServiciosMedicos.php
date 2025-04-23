@@ -73,25 +73,29 @@
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 col-11 m-auto">
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
+            <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Consultas")): ?>
+                <!-- no hay -->
+            <?php else: ?>
+                <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
+                    uk-toggle="target: #modal-example" id="">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                        class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
+                        <path
+                            d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z">
+                        </path>
+                    </svg>Registrar Servicio
+                </button>
+                <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
+                    uk-toggle="target: #modal-categoria" id="">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                        class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
+                        <path
+                            d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z">
+                        </path>
+                    </svg>Registrar Categoría
+                </button>
 
-            <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
-                uk-toggle="target: #modal-example" id="">
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                    class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
-                    <path
-                        d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z">
-                    </path>
-                </svg>Registrar Servicio
-            </button>
-            <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
-                uk-toggle="target: #modal-categoria" id="">
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                    class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
-                    <path
-                        d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z">
-                    </path>
-                </svg>Registrar Categoría
-            </button>
+            <?php endif; ?>
             <a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/papeleraServicio"
                 class="btn-guardar-responsive btn btn-primary btn-agregar-doctores text-decoration-none col-8" id="">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
@@ -142,32 +146,42 @@
                             <!-- Horario Del Doctor -->
                             <div class="d-flex justify-content-center">
 
-                                <a href="#" class="btns-accion me-2 btnEditarCita botonesEditarSM"
-                                    uk-toggle="target: #modal-exampleEditar" uk-tooltip="Modificar Servicio  "
-                                    id="btnEditarServicioMedico">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                        class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                        <path
-                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                        <path fill-rule="evenodd"
-                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                    </svg>
-                                </a>
+                                <?php if (!$this->permisos($_SESSION["id_rol"], "editar", "Consultas")): ?>
+                                    <!-- no hay -->
+                                <?php else: ?>
+
+                                    <a href="#" class="btns-accion me-2 btnEditarCita botonesEditarSM"
+                                        uk-toggle="target: #modal-exampleEditar" uk-tooltip="Modificar Servicio  "
+                                        id="btnEditarServicioMedico">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                                            class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path
+                                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                            <path fill-rule="evenodd"
+                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                        </svg>
+                                    </a>
+
+                                <?php endif; ?>
 
 
 
                                 <!-- Eliminar CONSULTA-->
 
+                                <?php if (!$this->permisos($_SESSION["id_rol"], "eliminar", "Consultas")): ?>
+                                    <!-- no hay -->
+                                <?php else: ?>
+                                    <a href="#" class="btns-accion me-2"
+                                        uk-toggle="target: #modal-exampleEliminar<?= $servicio['id_servicioMedico'] ?>"
+                                        uk-tooltip="Eliminar Servicio" id="btnEliminarServicioMedico">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                                            class="bi bi-trash3-fill text-black" viewBox="0 0 16 16">
+                                            <path
+                                                d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                        </svg>
+                                    </a>
 
-                                <a href="#" class="btns-accion me-2"
-                                    uk-toggle="target: #modal-exampleEliminar<?= $servicio["id_servicioMedico"] ?>"
-                                    uk-tooltip="Eliminar Servicio" id="btnEliminarServicioMedico">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                        class="bi bi-trash3-fill text-black" viewBox="0 0 16 16">
-                                        <path
-                                            d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                    </svg>
-                                </a>
+                                <?php endif; ?>
 
 
 
@@ -176,6 +190,49 @@
                             </div>
                         </td>
                     </tr>
+
+                    <!-- Modal eliminar servicio -->
+                    <div id="modal-exampleEliminar<?= $servicio['id_servicioMedico'] ?>" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+                            <form class="">
+
+                                <!-- Boton que cierra el modal -->
+                                <a href="#">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                        class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                        <path
+                                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                    </svg>
+                                </a>
+
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                            class="bi bi-trash-fill azul me-2" viewBox="0 0 16 16">
+                                            <path
+                                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h5>
+                                            ¿Desea eliminar el servicio <?= $servicio['nombre_categoria'] ?>?
+                                        </h5>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="mt-3 uk-text-right">
+
+                                    <button class="uk-button fw-bold uk-button-default uk-modal-close btn-cerrar-modal" type="button"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <a class="uk-button uk-button-primary btn-agregarcita-modal ms-2 fw-bold" href='/Sistema-del--CEM--JEHOVA-RAFA/Consultas/eliminar/<?= $servicio['id_servicioMedico'] ?>/<?= $_SESSION['id_usuario'] ?>'>Eliminar</a>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
                     <!-- Modal de editar -->
                     <div id="modal-exampleEditar" uk-modal>
@@ -219,7 +276,7 @@
                                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
 
                                 <input type="hidden" name="id_servicioMedico" value="<?= $servicio["id_servicioMedico"]
-                                    ?>">
+                                                                                        ?>">
 
                                 <div class="input-group flex-nowrap">
                                     <span class="input-modal mt-1">
