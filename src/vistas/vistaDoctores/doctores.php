@@ -1,4 +1,4 @@
-<?php require_once './src/vistas/head/head.php'; ?>
+z<?php require_once './src/vistas/head/head.php'; ?>
 
 <div class="">
 
@@ -26,7 +26,7 @@
                 </svg></a>
             <div class="uk-nav uk-dropdown-nav" uk-dropdown="pos: top-right" id="desplegable2">
                 <ul>
-                    <li id="perfilPaciente"><a href="?c=ControladorPerfil/perfil" class="uk-animation-toggle">
+                    <li id="perfilPaciente"><a href="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil" class="uk-animation-toggle">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                                 class="bi bi-person-fill azul uk-animation-scale-up" viewBox="0 0 16 16">
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
@@ -39,7 +39,7 @@
                                     d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
                             </svg>AYUDA</a></li>
                     <li class="uk-nav-divider"></li>
-                    <li><a href="?c=ControladorBitacora/bitacora"><svg xmlns="http://www.w3.org/2000/svg" width="25"
+                    <li><a href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacora"><svg xmlns="http://www.w3.org/2000/svg" width="25"
                                 height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1"
                                 viewBox="0 0 16 16">
                                 <path
@@ -48,7 +48,7 @@
                     <li class="uk-nav-divider"></li>
 
                     <li><a href="#" data-bs-toggle="modal" data-bs-target="#eliminar">
-                            <img src="./src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg
+                            <img src="<?= $urlBase; ?>../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg
                                 class="azul" style="margin-left: -4px;">
                             </svg>SALIR</a></li>
                 </ul>
@@ -97,8 +97,8 @@
                         <p class="pe-2">Se eliminó la Especialidad correctamente.</p>
                     </div>
                 <?php endif ?>
-            </div>
-        <?php endif ?>
+                </div>
+            <?php endif ?>
 
 
 
@@ -115,42 +115,6 @@
             </h3>
 
         </div>
-
-        <!-- <div class=" me-3 mb-1  d-flex justify-content-end w-100">
-
-
-        <ul class="sin-circulos d-flex justify-content-end">
-
-            <li class="li">
-                <div class="borde-de-menu mb-1 color-linea"></div>
-                <div class="hover-grande">
-                    <a href="?c=controladorConsultas/consultas" class="text-decoration-none text-black me-3"
-                        id="DMservicioMedico">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
-                            class="bi bi-clipboard-heart me-1 " viewBox="0 0 16 16">
-                            <path fill-rule="evenodd"
-                                d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Z" />
-                            <path
-                                d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Z" />
-                            <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982Z" />
-                        </svg>Servicios</a>
-                </div>
-            </li>
-            <li class="li">
-                <div class="borde-de-menu mb-1 color-linea activo-border"></div>
-                <div class="hover-grande">
-                    <a href="?c=ControladorDoctores/doctores" class="text-decoration-none text-black me-3 iconoDoctor "
-                        id="DMdoctores">
-                        <img src="./src/assets/img/doctor (3).png" width="19" height="19" uk-svg
-                            class="azul color-activo-svg">
-                        </svg>Doctores</a>
-                </div>
-
-            </li>
-
-        </ul>
-
-    </div> -->
 
         <div class="d-flex justify-content-end mb-3 me-4">
 
@@ -174,17 +138,19 @@
         <div class="d-flex justify-content-between align-items-center">
 
             <div class="">
-
-                <button class="btn btn-primary btn-agregar-doctores mb-2" uk-toggle="target: #modal-agregar-doctores"
-                    id="btnagregarDoctor">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                        class="bi bi-plus-circle-fill me-1" viewBox="0 0 16 16">
-                        <path
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                    </svg>
-                    Registrar doctor
-                </button>
-
+                <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Doctores")): ?>
+                    <!-- no hay -->
+                <?php else: ?>
+                    <button class="btn btn-primary btn-agregar-doctores mb-2" uk-toggle="target: #modal-agregar-doctores"
+                        id="btnagregarDoctor">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                            class="bi bi-plus-circle-fill me-1" viewBox="0 0 16 16">
+                            <path
+                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                        </svg>
+                        Registrar doctor
+                    </button>
+                <?php endif; ?>
             </div>
             <div class="d-flex justify-content-end mt-4 mb-4 col-5">
 
@@ -200,7 +166,7 @@
                         </svg>
                     </a>
 
-                    <form class="d-flex justify-content-end" action="?c=ControladorDoctores/buscarDoctor" method="POST"
+                    <form class="d-flex justify-content-end" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarDoctor" method="POST"
                         autocomplete="off" id="buscadorDoctores">
 
                         <input class="form-control input-buscar tamaño-input-buscar" type="number" name="busqueda"
@@ -262,25 +228,38 @@
 
                                     <td class="border-start text-center">
                                         <!-- editar -->
-                                        <button class="btn btn-tabla mb-1 btn-js editar botonesEdi"
-                                            uk-toggle="target: #modal-editar-doctores<?php echo $dato["id_personal"]; ?>"
-                                            id="btneditarDoctor" data-index="<?php echo $dato["id_personal"]; ?>">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
-                                            </svg>
 
-                                        </button>
-                                        <button class="btn btn-tabla mb-1"
-                                            uk-toggle="target: #modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>"
-                                            id="btnEliminarDoctor">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                            </svg>
-                                        </button>
+                                        <?php if (!$this->permisos($_SESSION["id_rol"], "editar", "Doctores")): ?>
+                                            <!-- no hay -->
+                                        <?php else: ?>
+                                            <button class="btn btn-tabla mb-1 btn-js editar botonesEdi"
+                                                uk-toggle="target: #modal-editar-doctores<?php echo $dato["id_personal"]; ?>"
+                                                id="btneditarDoctor" data-index="<?php echo $dato["id_personal"]; ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                                    class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
+                                                </svg>
+
+                                            </button>
+
+
+                                        <?php endif; ?>
+
+                                        <?php if (!$this->permisos($_SESSION["id_rol"], "eliminar", "Doctores")): ?>
+                                            <!-- no hay -->
+                                        <?php else: ?>
+                                            <button class="btn btn-tabla mb-1"
+                                                uk-toggle="target: #modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>"
+                                                id="btnEliminarDoctor">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                                    class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                </svg>
+                                            </button>
+
+                                        <?php endif; ?>
                                         <button class="btn btn-tabla mb-1 botonesInfo" title="Horarios Del Doctor"
                                             uk-toggle="target: #modal-info-doctores"
                                             data-index="<?php echo $dato["id_personal"]; ?>">

@@ -69,7 +69,7 @@ return [
     "borrarDoctor" => "eliminar",
     "selectDiasDoctorEditar" => "consultar",
     "registrarEspecialidad" => "guardar",
-    "eliminarEspecialidad" => "eliminar",
+    "EliminarEspecialidad" => "eliminar",
     "buscarEspecialidad" => "consultar",
     "buscarDoctor" => "consultar",
     "buscarHorario" => "consultar",
