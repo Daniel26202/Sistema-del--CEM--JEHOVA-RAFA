@@ -147,57 +147,57 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
-	private function actualizarCantidadEntrada($id_insumo, $cantidad_comprada, $numero_de_lote)
-	{
-		//seleccionar el insumo segun el id_inventario y el numero de lote
-		$consulta = $this->conexion->prepare("SELECT inv.id_insumo FROM inventario inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE inv.id_inventario =:id_insumo AND inv.numero_de_lote = :numero_de_lote");
-		$consulta->bindParam(":id_insumo", $id_insumo);
-		$consulta->bindParam(":numero_de_lote", $numero_de_lote);
-		$consulta->execute();
-		$insumo_inv = $consulta->fetch();
-		$id_insumo_inventario = $insumo_inv["id_insumo"];
+	// private function actualizarCantidadEntrada($id_insumo, $cantidad_comprada, $numero_de_lote)
+	// {
+	// 	//seleccionar el insumo segun el id_inventario y el numero de lote
+	// 	$consulta = $this->conexion->prepare("SELECT inv.id_insumo FROM inventario inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE inv.id_inventario =:id_insumo AND inv.numero_de_lote = :numero_de_lote");
+	// 	$consulta->bindParam(":id_insumo", $id_insumo);
+	// 	$consulta->bindParam(":numero_de_lote", $numero_de_lote);
+	// 	$consulta->execute();
+	// 	$insumo_inv = $consulta->fetch();
+	// 	$id_insumo_inventario = $insumo_inv["id_insumo"];
 
 
 
-		$consulta = $this->conexion->prepare("SELECT ei.id_insumo,e.numero_de_lote, ei.cantidad_disponible AS cantidadInsumo FROM entrada_insumo ei INNER JOIN entrada e ON ei.id_entrada = e.id_entrada WHERE ei.id_insumo =:id_insumo  AND e.numero_de_lote =:numero_de_lote");
-		$consulta->bindParam(":id_insumo", $id_insumo_inventario);
-		$consulta->bindParam(":numero_de_lote", $numero_de_lote);
-		$consulta->execute();
-		$x = $consulta->fetch();
-		$cantidadInsumoPre = $x["cantidadInsumo"];
-		echo "Cantidad pre:" . $id_insumo_inventario . "<br>";
+	// 	$consulta = $this->conexion->prepare("SELECT ei.id_insumo,e.numero_de_lote, ei.cantidad_disponible AS cantidadInsumo FROM entrada_insumo ei INNER JOIN entrada e ON ei.id_entrada = e.id_entrada WHERE ei.id_insumo =:id_insumo  AND e.numero_de_lote =:numero_de_lote");
+	// 	$consulta->bindParam(":id_insumo", $id_insumo_inventario);
+	// 	$consulta->bindParam(":numero_de_lote", $numero_de_lote);
+	// 	$consulta->execute();
+	// 	$x = $consulta->fetch();
+	// 	$cantidadInsumoPre = $x["cantidadInsumo"];
+	// 	echo "Cantidad pre:" . $id_insumo_inventario . "<br>";
 
 
 
-		$cantidadInsumo = $cantidadInsumoPre - $cantidad_comprada;
+	// 	$cantidadInsumo = $cantidadInsumoPre - $cantidad_comprada;
 
-		echo "Pre: " . $cantidadInsumoPre . "<br>";
-		echo "cantidad_comprada: " . $cantidad_comprada . "<br>";
-		echo "total: " . $cantidadInsumo . "<br>";
+	// 	echo "Pre: " . $cantidadInsumoPre . "<br>";
+	// 	echo "cantidad_comprada: " . $cantidad_comprada . "<br>";
+	// 	echo "total: " . $cantidadInsumo . "<br>";
 
-		$consulta = $this->conexion->prepare("UPDATE entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada SET ei.cantidad_disponible=:cantidad WHERE ei.id_insumo=:id_insumo AND e.numero_de_lote =:numero_de_lote");
-		$consulta->bindParam(":cantidad", $cantidadInsumo);
-		$consulta->bindParam(":id_insumo", $id_insumo_inventario);
-		$consulta->bindParam(":numero_de_lote", $numero_de_lote);
-		$consulta->execute();
+	// 	$consulta = $this->conexion->prepare("UPDATE entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada SET ei.cantidad_disponible=:cantidad WHERE ei.id_insumo=:id_insumo AND e.numero_de_lote =:numero_de_lote");
+	// 	$consulta->bindParam(":cantidad", $cantidadInsumo);
+	// 	$consulta->bindParam(":id_insumo", $id_insumo_inventario);
+	// 	$consulta->bindParam(":numero_de_lote", $numero_de_lote);
+	// 	$consulta->execute();
 
-		$cantidad_actualidad_insumo = $this->modelo_insumo->actualizar_cantidad_insumo($id_insumo_inventario);
-		// print_r($cantidad[0]["cantidad"]);
+	// 	$cantidad_actualidad_insumo = $this->modelo_insumo->actualizar_cantidad_insumo($id_insumo_inventario);
+	// 	// print_r($cantidad[0]["cantidad"]);
 
-		//esto es para actualizar la cantidad de insumos
-		$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
-		$consulta->bindParam(":cantidad", $cantidad_actualidad_insumo[0]["cantidad"]);
-		$consulta->bindParam(":id_insumo", $id_insumo_inventario);
-		$consulta->execute();
+	// 	//esto es para actualizar la cantidad de insumos
+	// 	$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
+	// 	$consulta->bindParam(":cantidad", $cantidad_actualidad_insumo[0]["cantidad"]);
+	// 	$consulta->bindParam(":id_insumo", $id_insumo_inventario);
+	// 	$consulta->execute();
 
-		//actualizar tabla inventario segun el numero de lote y la cantidad comprada
+	// 	//actualizar tabla inventario segun el numero de lote y la cantidad comprada
 
-		$consulta = $this->conexion->prepare("UPDATE inventario SET cantidad=:cantidad WHERE id_insumo=:id_insumo AND numero_de_lote =:numero_de_lote");
-		$consulta->bindParam(":cantidad", $cantidadInsumo);
-		$consulta->bindParam(":id_insumo", $id_insumo_inventario);
-		$consulta->bindParam(":numero_de_lote", $numero_de_lote);
-		$consulta->execute();
-	}
+	// 	$consulta = $this->conexion->prepare("UPDATE inventario SET cantidad=:cantidad WHERE id_insumo=:id_insumo AND numero_de_lote =:numero_de_lote");
+	// 	$consulta->bindParam(":cantidad", $cantidadInsumo);
+	// 	$consulta->bindParam(":id_insumo", $id_insumo_inventario);
+	// 	$consulta->bindParam(":numero_de_lote", $numero_de_lote);
+	// 	$consulta->execute();
+	// }
 
 
 
