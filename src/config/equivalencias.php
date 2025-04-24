@@ -48,6 +48,7 @@ return [
     "mostrarDoctoresCita" => "consultar",
     "mostrarHorario" => "consultar",
     "editarCita" => "editar",
+    "insertaPaciente" => "guardar",
 
 
     //Servicios Medicos
