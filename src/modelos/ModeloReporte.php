@@ -21,7 +21,7 @@ class ModeloReporte extends Db
 
     public function consultarFactura()
 	{
-		$consulta = $this->conexion->prepare("SELECT * FROM factura f INNER JOIN serviciomedico_has_factura sf ON sf.factura_id_factura  = f.id_factura INNER JOIN serviciomedico sm ON sm.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = ps.serviciomedico_id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal INNER JOIN usuario u ON p.id_usuario = u.id_usuario INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad WHERE f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC ;");
+		$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente  WHERE f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC ;");
 		
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
@@ -34,7 +34,7 @@ public function consultarFacturaPDF($id_factura)
 	}
     public function consultarReporteFactura($fechaInicio, $fechaFinal)
 	{
-		$consulta = $this->conexion->prepare("SELECT p.nacionalidad, p.nombre AS nombre_p, p.apellido AS apellido_p, p.cedula AS cedula_p, f.*, cs.nombre AS categoria_servicio, d.nombre AS nombre_d, d.apellido AS apellido_d, e.nombre AS especialidad, sm.precio AS precio_servicio FROM factura f INNER JOIN paciente p ON f.id_paciente = p.id_paciente LEFT JOIN cita c ON f.id_cita = c.id_cita LEFT JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico LEFT JOIN personal d ON sm.id_personal = d.id_personal LEFT JOIN especialidad e ON d.id_especialidad = e.id_especialidad LEFT JOIN usuario u ON d.id_usuario = u.id_usuario LEFT JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE f.fecha BETWEEN :fechaInicio AND :fechaFinal AND f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC
+		$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente  WHERE f.fecha BETWEEN :fechaInicio AND :fechaFinal AND f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC
 ");
 		$consulta->bindParam(":fechaInicio", $fechaInicio);
 		$consulta->bindParam(":fechaFinal", $fechaFinal);
@@ -42,7 +42,7 @@ public function consultarFacturaPDF($id_factura)
 	}
     public function consultarReporteFacturaAnuladas($fechaInicioAnulada, $fechaFinalAnulada)
 	{
-		$consulta = $this->conexion->prepare("SELECT p.nacionalidad, p.nombre AS nombre_p, p.apellido AS apellido_p, p.cedula AS cedula_p, f.*, cs.nombre AS categoria_servicio, d.nombre AS nombre_d, d.apellido AS apellido_d, e.nombre AS especialidad, sm.precio AS precio_servicio FROM factura f INNER JOIN paciente p ON f.id_paciente = p.id_paciente LEFT JOIN cita c ON f.id_cita = c.id_cita LEFT JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico LEFT JOIN personal d ON sm.id_personal = d.id_personal LEFT JOIN especialidad e ON d.id_especialidad = e.id_especialidad LEFT JOIN usuario u ON d.id_usuario = u.id_usuario LEFT JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE f.fecha BETWEEN :fechaInicioAnulada AND :fechaFinalAnulada AND f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC
+		$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente  WHERE f.fecha BETWEEN :fechaInicioAnulada AND :fechaFinalAnulada AND f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC
 ");
 		$consulta->bindParam(":fechaInicioAnulada", $fechaInicioAnulada);
 		$consulta->bindParam(":fechaFinalAnulada", $fechaFinalAnulada);
@@ -50,7 +50,7 @@ public function consultarFacturaPDF($id_factura)
 	}
     public function consultarFacturaAnuladas()
 	{
-		$consulta = $this->conexion->prepare("SELECT * FROM factura f INNER JOIN serviciomedico_has_factura sf ON sf.factura_id_factura  = f.id_factura INNER JOIN serviciomedico sm ON sm.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = ps.serviciomedico_id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal INNER JOIN usuario u ON p.id_usuario = u.id_usuario INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad WHERE f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC");
+		$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente WHERE f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC");
 		
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
@@ -106,21 +106,21 @@ public function consultarFacturaPDF($id_factura)
 	public function consultarPagoFactura($id_factura)
 	{
 		$consulta = $this->conexion->prepare("SELECT pf.* , p.nombre
-			FROM pago p INNER JOIN pagodefactura pf ON p.id_pago = pf.id_pago
-			INNER JOIN factura f ON pf.id_factura = f.id_factura WHERE f.id_factura =:id_factura");
+    		FROM pago p INNER JOIN pagodefactura pf ON p.id_pago = pf.id_pago
+    		INNER JOIN factura f ON pf.id_factura = f.id_factura WHERE f.id_factura =:id_factura");
 		$consulta->bindParam(":id_factura", $id_factura);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
  
 	public function consultarServiciosExtras($id_factura) 
 	{ 
-		$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM factura f INNER JOIN facturadeservicio fs ON f.id_factura = fs.id_factura INNER JOIN serviciomedico s ON s.id_servicioMedico = fs.id_servicioMedico INNER JOIN personal d ON s.id_personal= d.id_personal INNER JOIN usuario u ON u.id_usuario = d.id_usuario INNER JOIN categoria_servicio cs ON s.id_categoria = cs.id_categoria WHERE f.id_factura =:id_factura ");
+		$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM factura f INNER JOIN serviciomedico_has_factura fs ON f.id_factura = fs.factura_id_factura INNER JOIN serviciomedico s ON s.id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN  personal d ON psm.personal_id_personal = d.id_personal INNER JOIN usuario u ON u.id_usuario = d.id_usuario INNER JOIN categoria_servicio cs ON s.id_categoria = cs.id_categoria WHERE f.id_factura =:id_factura  ");
 		$consulta->bindParam(":id_factura", $id_factura);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false; 
 	}
 	public function consultarFacturaInsumo($id_factura)
 	{
-		$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM inventario i INNER JOIN insumodefactura fi ON i.id_inventario = fi.id_inventario INNER JOIN factura f  ON f.id_factura = fi.id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura ");
+		$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM inventario i INNER JOIN factura_has_inventario fi ON i.id_inventario = fi.inventario_id_inventario INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura ");
 		$consulta->bindParam(":id_factura", $id_factura);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
@@ -147,7 +147,7 @@ public function consultarFacturaPDF($id_factura)
 	}
 	public function insumosAnulados($id_factura)
 	{
-		$consulta = $this->conexion->prepare("SELECT i.id_insumo, i.numero_de_lote FROM inventario i INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo INNER JOIN insumodefactura idf ON idf.id_inventario = i.id_inventario WHERE idf.id_factura=:id_factura");
+		$consulta = $this->conexion->prepare("SELECT i.id_insumo, i.numero_de_lote FROM inventario i INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo INNER JOIN factura_has_inventario idf ON idf.inventario_id_inventario = i.id_inventario WHERE idf.factura_id_factura=:id_factura");
 		$consulta->bindParam(":id_factura", $id_factura); 
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		
@@ -165,7 +165,7 @@ public function consultarFacturaPDF($id_factura)
 
 		
 		// echo $id_insumo;
-		$consultaInsumosFacturados = $this->conexion->prepare("SELECT idf.cantidad AS total_cantidad_facturada FROM insumodefactura idf INNER JOIN inventario i ON i.id_inventario = idf.id_inventario INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo WHERE ins.estado = 'ACT' AND i.id_insumo = :id_insumo AND idf.id_factura =:id_factura AND i.numero_de_lote = :numero_de_lote");
+		$consultaInsumosFacturados = $this->conexion->prepare("SELECT idf.cantidad AS total_cantidad_facturada FROM factura_has_inventario idf INNER JOIN inventario i ON i.id_inventario = idf.inventario_id_inventario INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo WHERE ins.estado = 'ACT' AND i.id_insumo = :id_insumo AND idf.factura_id_factura =:id_factura AND i.numero_de_lote = :numero_de_lote");
 		$consultaInsumosFacturados->bindParam(":id_insumo", $id_insumo);
 		$consultaInsumosFacturados->bindParam(":id_factura", $id_factura);
 		$consultaInsumosFacturados->bindParam(":numero_de_lote", $numero_de_lote);

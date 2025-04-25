@@ -20,91 +20,29 @@ addEventListener("DOMContentLoaded", function () {
   // const Checks = document.querySelectorAll(".obtenerPrecio input");
   // const obtenerCuota = document.getElementById('tbody2').getElementsByTagName('td');
   // const obtenida = obtenerCuota[2].textContent;
-  let array = [];
-  const informacionCita = async (fac, r) => {
-    // array = [];
-    console.log(r);
-    array.push(r);
-    console.log(array);
-    try {
-      let buscarCita = await fetch(
-        "?c=ControladorReportes/buscarCita&id_factura=" + fac
-      );
-      let respuesta = await buscarCita.json();
-      let html = ``;
-      let htmlServ = ``;
 
-      if (respuesta.length > 0) {
-      
-        console.log(respuesta);
-        html = ``;
-        respuesta.forEach((cita) => {
-          html += `<p class="text-center">${cita.especialidad} Dr ${cita.nombre_d} ${cita.apellido_d} ${cita.precio_servicio} Bs</p> `;
-        });
-
-        console.log(array)
-        array.forEach((mas) => {
-          if (mas.id_categoria != 9) {
-          htmlServ += ` <p class="text-center">${mas.categoria_servicio} Dr ${mas.nombre_d} ${mas.apellido_d} ${mas.precio} Bs</p>
-               `;
-               }
-        });
-
-        let masServ = document.querySelectorAll(".masSer");
-        masServ.forEach((fa) => {
-          fa.innerHTML = html;
-        });
-
-        let masServicios = document.querySelectorAll(".masServicios");
-        masServicios.forEach((fa) => {
-          fa.innerHTML = htmlServ;
-        });
-      } else {
-        console.log("No se econtraron resultados");
-        let masServ = document.querySelectorAll(".masSer");
-        masServ.forEach((fa) => {
-          fa.textContent = "";
-        });
-
-        let masServicios = document.querySelectorAll(".masServicios");
-        masServicios.forEach((fa) => {
-          fa.textContent = "";
-        });
-      }
-      // return html;
-    } catch (error) {
-      console.log("Error en la solicitud:", error);
-    }
-  };
 
   const informacionfactura = async (fac) => {
     try {
       let peticionAjax = await fetch(
-        "?c=ControladorReportes/buscarPago&id_factura=" + fac
+        "/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarPago/" + fac
       );
       let respuesta = await peticionAjax.json();
       let html = ``;
       if (respuesta.length > 0) {
+        console.log("pago");
         console.log(respuesta);
         html = ``;
         respuesta.forEach((r) => {
-          if (r.nombre == "Efectivo") {
+          if (r.nombre == "Efectivo" || r.nombre == "Divisas")
             html += `<p class="text-center">${r.nombre} Monto:  ${r.monto} Bs</p>`;
-          } else {
+          else
             html += `<p class="text-center">${r.nombre} Monto:   ${r.monto} Bs Ref:${r.referencia}</p>`;
-          }
         });
-
-        console.log(html);
-        let pagofac = document.querySelectorAll(".pagoDefac");
-        pagofac.forEach((fa) => {
-          fa.innerHTML = html;
-        });
-      } else {
-        console.log("No se econtraron resultados");
+        document.querySelectorAll(".pagoDefac").forEach((fa) => {fa.innerHTML = html;});
       }
       let peticionAjax2 = await fetch(
-        "?c=ControladorReportes/buscarMasServicios&id_factura=" + fac
+        "/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarMasServicios/" + fac
       );
       let respuesta2 = await peticionAjax2.json();
       let html2 = ``;
@@ -112,23 +50,15 @@ addEventListener("DOMContentLoaded", function () {
         console.log(respuesta2);
         html2 = ``;
         respuesta2.forEach((r) => {
-          if (r.id_cita == null) {
-           console.log("con servicios")
-            
+          console.log(r)
             html2 += `<p class="text-center">${r.categoria_servicio} Dr ${r.nombre_d} ${r.apellido_d} ${r.precio} Bs</p>`;
-            // let imprimirpdf = document.querySelectorAll(".pdf");
-            // console.log(imprimirpdf);let masServ = document.querySelectorAll(".masSer");
-            let masServ = document.querySelectorAll(".masSer");
-            masServ.forEach((fa) => {
-              fa.innerHTML = html2;
-            });
-            
-          } else {
-            console.log("con cita")
-
-            informacionCita(fac, r);
-          }
         });
+
+        document.querySelectorAll(".masSer").forEach((fa) => {
+          fa.innerHTML = html2;
+        });
+
+        console.log(document.querySelectorAll(".masSer"));
         // let masServ = document.querySelectorAll(".masSer");
         // masServ.forEach((fa) => {
         //   fa.innerHTML = html2;
@@ -145,8 +75,9 @@ addEventListener("DOMContentLoaded", function () {
         console.log("No se econtraron resultados");
       }
       let peticionAjax3 = await fetch(
-        "?c=ControladorReportes/buscarInsumos&id_factura=" + fac
+        "/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarInsumos/" + fac
       );
+      
       let respuesta3 = await peticionAjax3.json();
       console.log(respuesta3)
       let html3 = ``;
@@ -180,37 +111,37 @@ addEventListener("DOMContentLoaded", function () {
   //     buscarCreditoCliente(buscarC);
   // });
 
-  const anularFac = async (anular,i) => {
-    try {
-      await fetch("?c=ControladorReportes/anularFactura&id_factura=" + anular+ "&id_insumo="+ i);
+  // const anularFac = async (anular,i) => {
+  //   try {
+  //     await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/anularFactura&id_factura=" + anular+ "&id_insumo="+ i);
       
-      //   let respuesta = await buscarCita.json();
-      //  let html = ``;
-      //   if (respuesta.length > 0) {
-      //       console.log(respuesta);
-      //       html = ``;
-      //       respuesta.forEach((cita) => {
+  //     //   let respuesta = await buscarCita.json();
+  //     //  let html = ``;
+  //     //   if (respuesta.length > 0) {
+  //     //       console.log(respuesta);
+  //     //       html = ``;
+  //     //       respuesta.forEach((cita) => {
 
-      //         html += `<p class="text-center">${cita.especialidad} Dr ${cita.nombre_d} ${cita.apellido_d} ${cita.precio_servicio} Bs</p>
-      //          <p class="text-center">${r.categoria_servicio} Dr ${r.nombre_d} ${r.apellido_d} ${r.precio} Bs</p>`
-      //         ;
+  //     //         html += `<p class="text-center">${cita.especialidad} Dr ${cita.nombre_d} ${cita.apellido_d} ${cita.precio_servicio} Bs</p>
+  //     //          <p class="text-center">${r.categoria_servicio} Dr ${r.nombre_d} ${r.apellido_d} ${r.precio} Bs</p>`
+  //     //         ;
 
-      //       });
+  //     //       });
 
-      //       let masServ =  document.querySelectorAll('.masSer');
-      //       masServ.forEach(fa => {
-      //      fa.innerHTML=html;
+  //     //       let masServ =  document.querySelectorAll('.masSer');
+  //     //       masServ.forEach(fa => {
+  //     //      fa.innerHTML=html;
 
-      //    });
+  //     //    });
 
-      //   }else{
-      //   console.log("No se econtraron resultados");
+  //     //   }else{
+  //     //   console.log("No se econtraron resultados");
 
-      //   }
-    } catch (error) {
-      console.log("Error en la solicitud:", error);
-    }
-  };
+  //     //   }
+  //   } catch (error) {
+  //     console.log("Error en la solicitud:", error);
+  //   }
+  // };
 
   function facturaAnular(anular,i) {
     anularFac(anular,i);
@@ -248,8 +179,7 @@ addEventListener("DOMContentLoaded", function () {
     info.addEventListener("click", () => {
       let fac = info.name;
       array = [];
-      console.log("holaaaa");
-
+      console.log("vuelta")
       informacionfactura(fac);
     });
 

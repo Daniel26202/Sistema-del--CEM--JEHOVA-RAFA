@@ -58,21 +58,22 @@ class ControladorReportes{
 	public function reportesFacturasAnuladas(){
 		require_once './src/vistas/vistaReportes/vistaReporteFacturaAnuladas.php';
 	}
-	public function buscarPago(){
-
-		$respuesta = $this->modelo->consultarPagoFactura($_GET["id_factura"]);
-
-		echo json_encode($respuesta);
-	}
-	public function buscarMasServicios(){
-
-		$respuesta = $this->modelo->consultarServiciosExtras($_GET["id_factura"]);
+	public function buscarPago($datos){
+		$id_factura = $datos[0];
+		$respuesta = $this->modelo->consultarPagoFactura($id_factura);
 
 		echo json_encode($respuesta);
 	}
-	public function buscarInsumos(){
+	public function buscarMasServicios($datos){
+		$id_factura = $datos[0];
+		$respuesta = $this->modelo->consultarServiciosExtras($id_factura);
 
-		$respuesta = $this->modelo->consultarFacturaInsumo($_GET["id_factura"]);
+		echo json_encode($respuesta);
+	}
+	public function buscarInsumos($datos){
+
+		$id_factura = $datos[0];
+		$respuesta = $this->modelo->consultarFacturaInsumo($id_factura);
 
 		echo json_encode($respuesta);
 	}
@@ -101,7 +102,7 @@ class ControladorReportes{
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha anula una factura");
 		
 		// // $respuesta =$this->modelo->cantidadAnulada($array);
-		header("location: ?c=ControladorReportes/reportes&anulada");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/anulada");
 		
 
 	
