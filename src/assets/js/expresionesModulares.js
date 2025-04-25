@@ -50,7 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
         pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
         pError.classList.remove("d-none");
         return false;
-      } else if (valorFecha < fechaHoy) {
+      } else if (valorFecha <= fechaHoy) {
+        console.log(valorFecha)
+        console.log(fechaHoy);
         // Validamos que no sea una fecha del pasado
         pError.textContent = "La fecha no puede ser del pasado.";
         pError.classList.remove("d-none");
