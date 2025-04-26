@@ -59,4 +59,32 @@ WHERE estado = 'ACT';");
 												");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
+
+
+	public function obtenerDiasConMasCitas()
+	{
+		$sql = "
+        SELECT 
+            c.fecha, 
+            COUNT(c.id_cita) AS total_citas,
+            GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) SEPARATOR ', ') AS personal
+        ,fecha as date FROM 
+            cita c
+        INNER JOIN 
+            serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico
+        INNER JOIN 
+            personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+        INNER JOIN 
+            personal p ON p.id_personal = psm.personal_id_personal
+        GROUP BY 
+            c.fecha
+        ORDER BY 
+            total_citas DESC
+        LIMIT 10
+    ";
+
+		$consulta = $this->conexion->prepare($sql);
+		$consulta->execute();
+		return $consulta->fetchAll();
+	}
 }

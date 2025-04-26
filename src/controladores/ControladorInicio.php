@@ -161,4 +161,19 @@ class ControladorInicio
         return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
     }
 
+
+    public function diasConMasCitas()
+    {
+
+        $fechasConMasCitas = [];
+        // Llama al modelo para obtener los datos
+        $diasConMasCitas = $this->modeloInicio->obtenerDiasConMasCitas();
+
+        foreach($diasConMasCitas as $dato){
+            array_push($fechasConMasCitas, $dato["fecha"]);
+        }
+        // Retorna los datos como JSON
+        echo json_encode($diasConMasCitas);
+    }
+
 }

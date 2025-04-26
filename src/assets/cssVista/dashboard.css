@@ -194,3 +194,7 @@ h5 {
       width: 1920px;  /* tamaño visual en la página */
   height: 1080px;
 }
+
+.diasOcupados{
+    background-color: var(--color-primary) !important;
+}
