@@ -15,11 +15,24 @@ document.addEventListener("DOMContentLoaded", function () {
   traerDatosServicios(); // Carga los datos de la tabla de precios
   especialidades_chart(); // Genera el gráfico de especialidades
   sintomas_chart(); // Genera el gráfico de sintomas comunes
+  traerDoctor(); //Cargar doctores en el select
 });
 
 document
   .getElementById("especialidades")
   .addEventListener("click", generarReporte);
+
+//Evento para actualizar la informacion del doctor
+document.getElementById("selectDoctor").addEventListener("change", function () {
+  let allDates = [];
+  document.querySelectorAll(".date").forEach((element) => {
+    allDates.push(element.getAttribute("data-date"));
+    //console.log(date)
+  });
+
+  traerHorarioDoctor(this.value, allDates);
+});
+
 // ========================== FUNCIONES DEL CALENDARIO ==========================
 
 // Inicializa el calendario
@@ -79,6 +92,7 @@ function renderCalendar(year, month) {
         let row = document.createElement("tr"); // Crea una fila
         for (let j = 0; j < 7; j++) {
           let cell = document.createElement("td"); // Crea una celda
+          cell.classList.add("date"); //Agregar clase date
           if (i === 0 && j < firstDay) {
             // Celdas vacías antes del inicio del mes
             cell.innerHTML = "";
@@ -98,10 +112,7 @@ function renderCalendar(year, month) {
               cell.classList.add("diasOcupados", "text-white"); // Clase para marcar días con mayor carga
 
               // Agrega un tooltip de Bootstrap con información adicional
-              cell.setAttribute(
-                "data-bs-toggle",
-                "tooltip"
-              ); // Activa el tooltip de Bootstrap
+              cell.setAttribute("data-bs-toggle", "tooltip"); // Activa el tooltip de Bootstrap
               cell.setAttribute(
                 "title",
                 `Citas: ${workDay.total_citas}
@@ -131,9 +142,6 @@ function renderCalendar(year, month) {
     .catch((error) => {
       console.error("Error al obtener los días de trabajo:", error); // Maneja errores en la petición
     });
-
-
-  
 }
 
 // Cambia el mes del calendario
@@ -165,6 +173,61 @@ function formatDate(dateObj) {
   return `${year}-${month}-${day}`;
 }
 // ========================== FUNCIONES DE DATOS ==========================
+
+//Cargar los doctores en el select
+const traerDoctor = async () => {
+  try {
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/retornarDoctores"
+    );
+    let resultado = await peticion.json();
+
+    if (resultado.length > 0) {
+      let html = "<option selected disabled>Sellccionar Doctor</option>";
+      resultado.forEach((element) => {
+        html += `<option value="${element.id_personal}">${element.nombre_d}  ${element.apellido}</option>`;
+      });
+      console.log(html);
+      document.getElementById("selectDoctor").innerHTML = html;
+      console.log(resultado);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const traerHorarioDoctor = async (id) => {
+  try {
+    // Realiza la petición AJAX
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id
+    );
+    let resultado = await peticion.json(); 
+    //Quitar los dias marcados para marcalos nuevamente
+    document.querySelectorAll(".date").forEach(date =>{
+      date.classList.remove("diasOcupados")
+      date.removeAttribute("data-bs-original-title");
+    })
+    // Itera sobre las fechas recibidas
+    resultado.forEach((res) => {
+      // Busca el <td> con el atributo data-date que coincida con la fecha
+      const td = document.querySelector(`td[data-date="${res.fecha}"]`);
+
+      if (td) {
+        // Si el <td> existe, agrega la clase
+        td.classList.add("diasOcupados");
+        td.setAttribute("data-bs-toggle", "tooltip"); // Activa el tooltip de Bootstrap
+        td.setAttribute(
+          "title",
+          `Citas: ${res.total_citas}
+                DR ${res.personal}` // Muestra el número de citas en el tooltip
+        );
+      } 
+    });
+  } catch (error) {
+    console.error("Error al traer el horario del doctor:", error);
+  }
+};
 
 // Carga los datos de la tabla de precios
 const traerDatosServicios = async () => {

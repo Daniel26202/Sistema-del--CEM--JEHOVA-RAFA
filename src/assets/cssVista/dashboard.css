@@ -191,10 +191,15 @@ h5 {
 }
 
 #especialidades_solicitadas{
-      width: 1920px;  /* tamaño visual en la página */
-  height: 1080px;
+    width: 1920px;  /* tamaño visual en la página */
+    height: 1080px;
 }
 
 .diasOcupados{
     background-color: var(--color-primary) !important;
 }
+
+/* .diasOcupados {
+    background-color: #E4EBF0 !important;
+    color: black;
+} */

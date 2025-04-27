@@ -4,6 +4,8 @@ use App\modelos\ModeloInicio;
 use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloDoctores;
+
 class ControladorInicio
 {
 
@@ -11,6 +13,7 @@ class ControladorInicio
     private $modeloCitas;
     private $bitacora;
     private $permisos;
+    private $modeloDoctores;
 
     public function __construct()
     {
@@ -18,6 +21,7 @@ class ControladorInicio
         $this->modeloCitas = new ModeloCita();
         $this->bitacora = new ModeloBitacora();
         $this->permisos = new ModeloPermisos();
+        $this->modeloDoctores = new ModeloDoctores();
     }
 
     public function inicio($parametro)
@@ -34,12 +38,15 @@ class ControladorInicio
             session_destroy();
 
             // Redireccionar al inicio
+            
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
             exit();
         }
 
         require_once './src/vistas/dashboard.php';
     }
+
+
     public function manualUsuario()
     {
         // Ruta al archivo PDF que deseas descargar
@@ -106,6 +113,8 @@ class ControladorInicio
         echo json_encode($sintomas_comunes);
     }
 
+    public function retornarDoctores(){echo json_encode($this->modeloDoctores->select());}
+
     public function exportar_pdf()
     {
         // Leer los datos JSON enviados por AJAX
@@ -162,18 +171,12 @@ class ControladorInicio
     }
 
 
-    public function diasConMasCitas()
+    public function diasConMasCitas($parametro)
     {
-
-        $fechasConMasCitas = [];
+        $id_personal = isset($parametro[0]) ? $parametro[0] : "";
         // Llama al modelo para obtener los datos
-        $diasConMasCitas = $this->modeloInicio->obtenerDiasConMasCitas();
-
-        foreach($diasConMasCitas as $dato){
-            array_push($fechasConMasCitas, $dato["fecha"]);
-        }
+        $diasConMasCitas = $this->modeloInicio->obtenerDiasConMasCitas($id_personal);
         // Retorna los datos como JSON
         echo json_encode($diasConMasCitas);
     }
-
 }

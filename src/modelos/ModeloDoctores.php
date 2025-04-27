@@ -74,7 +74,7 @@ class ModeloDoctores extends Db
     public function select()
     {
 
-        $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM usuario u INNER JOIN personal p ON p.id_usuario = u.id_usuario INNER JOIN especialidad es ON es.id_especialidad = p.id_especialidad WHERE u.estado = "ACT" ';
+        $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM usuario u INNER JOIN personal p ON p.id_usuario = u.id_usuario INNER JOIN especialidad es ON es.id_especialidad = p.id_especialidad  inner join rol r on r.id_rol = u.id_rol WHERE u.estado = "ACT" AND  r.nombre = "Doctor" ';
 
         $consulta = $this->conexion->prepare($sql);
 

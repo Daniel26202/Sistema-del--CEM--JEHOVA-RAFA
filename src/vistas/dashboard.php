@@ -13,7 +13,7 @@ require_once './src/vistas/head/head.php';
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    
+
                     <div class="welcome-card p-4 rounded shadow-sm" id="welcomeCard">
                         <h3>Bienvenido!</h3>
                         <div class="reminder d-flex justify-content-between align-items-center">
@@ -70,7 +70,34 @@ require_once './src/vistas/head/head.php';
 
     <!-- Sidebar (25%) -->
     <div class="sidebar-content col-12 col-lg-4 p-4 min-vh-100" id="sidebar-content">
-        <h5>Calendario</h5>
+
+        <div class="d-flex justify-content-between">
+            <div class="w-75 ">
+                <div class="d-flex justify-content- ">
+                    <div class="d-flex justify-content-end mb-4 col-8" id="form-buscadorS">
+
+                        <a class="btn d-none" title="Buscar" id="reiniciarBusquedaSintomas" uk-tooltip="Restablecer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                                <path fill-rule="evenodd"
+                                    d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+                            </svg>
+                        </a>
+
+                        <select class="form-control " id="selectDoctor">
+                            <!-- js -->
+                        </select>
+                        <button type="button" class="btn btn-buscar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"></path>
+                            </svg></button>
+
+                    </div>
+                </div>
+            </div>
+            <h5 class="w-25">Calendario</h5>
+        </div>
         <!-- Calendar Container -->
         <div class="card shadow-sm my-4" id="calendarCard">
             <div class="card-tittle d-flex justify-content-between align-items-center">
@@ -129,6 +156,7 @@ require_once './src/vistas/head/head.php';
 
     </div>
 </div>
+
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
