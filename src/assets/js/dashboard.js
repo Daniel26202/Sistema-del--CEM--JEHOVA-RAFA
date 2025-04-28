@@ -27,7 +27,8 @@ document.getElementById("selectDoctor").addEventListener("change", function () {
   let allDates = [];
   document.querySelectorAll(".date").forEach((element) => {
     allDates.push(element.getAttribute("data-date"));
-    //console.log(date)
+
+    
   });
 
   traerHorarioDoctor(this.value, allDates);
@@ -196,18 +197,53 @@ const traerDoctor = async () => {
   }
 };
 
+traerHorarioEspecificoDelDr = async (id) => {
+  // try {
+    // Realiza la petición AJAX
+    console.log(id)
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/mostrarHorario/" + id
+    );
+    let resultado = await peticion.json();
+
+    document.querySelector(".horario-insertar").innerHTML = "";
+    let div = document.createElement("div");
+    // diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
+    // let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
+    console.log(resultado);
+    if (resultado.length > 0) {
+      resultado.forEach((res) => {
+        div.innerHTML += `
+                <div class="mb-2" id="divAcordion">
+                <div class="d-flex ">Días Laborables: <h6 class="fw-bold"> ${res.diaslaborables}</h6> </div>
+              
+                <div class="d-flex">Hora de Entrada: <h6 class="fw-bold"> ${res.horaDeEntrada}</h6></div>
+                <div class="d-flex ">Hora de Salida: <h6 class="fw-bold"> ${res.horaDeSalida}</h6></div></div>  `
+
+  
+      });
+
+      document.getElementById("titulo").innerText = `Horario del Docotor`;
+    }
+
+    document.querySelector(".horario-insertar").appendChild(div);
+  // } catch (error) {
+  //   console.log(error);
+  // }
+};
+
 const traerHorarioDoctor = async (id) => {
   try {
     // Realiza la petición AJAX
     let peticion = await fetch(
       "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id
     );
-    let resultado = await peticion.json(); 
+    let resultado = await peticion.json();
     //Quitar los dias marcados para marcalos nuevamente
-    document.querySelectorAll(".date").forEach(date =>{
-      date.classList.remove("diasOcupados")
+    document.querySelectorAll(".date").forEach((date) => {
+      date.classList.remove("diasOcupados");
       date.removeAttribute("data-bs-original-title");
-    })
+    });
     // Itera sobre las fechas recibidas
     resultado.forEach((res) => {
       // Busca el <td> con el atributo data-date que coincida con la fecha
@@ -222,12 +258,25 @@ const traerHorarioDoctor = async (id) => {
           `Citas: ${res.total_citas}
                 DR ${res.personal}` // Muestra el número de citas en el tooltip
         );
-      } 
+      }
+      //Darle el teto al boton del horario
+      document.getElementById(
+        "btnHorario"
+      ).innerText = `Horario del Dr ${res.personal}`;
+
+      //Llamar funcion para el horario especifico
+      console.log()
+      traerHorarioEspecificoDelDr(id);
     });
+
+    //Aparecer el boton del horario cuando seleccione el doctor
+    document.getElementById("btnHorario").classList.remove("d-none");
   } catch (error) {
     console.error("Error al traer el horario del doctor:", error);
   }
 };
+
+
 
 // Carga los datos de la tabla de precios
 const traerDatosServicios = async () => {

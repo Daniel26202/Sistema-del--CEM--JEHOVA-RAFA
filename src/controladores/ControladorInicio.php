@@ -113,6 +113,9 @@ class ControladorInicio
         echo json_encode($sintomas_comunes);
     }
 
+    //Datos del horario del doctor
+    public function mostrarHorario($datos){echo json_encode($this->modeloCitas->mostrarHorarioDoctores($datos[0])); }
+
     public function retornarDoctores(){echo json_encode($this->modeloDoctores->select());}
 
     public function exportar_pdf()

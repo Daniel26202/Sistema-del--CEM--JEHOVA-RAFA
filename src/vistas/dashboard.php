@@ -71,9 +71,9 @@ require_once './src/vistas/head/head.php';
     <!-- Sidebar (25%) -->
     <div class="sidebar-content col-12 col-lg-4 p-4 min-vh-100" id="sidebar-content">
 
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between ">
             <div class="w-75 ">
-                <div class="d-flex justify-content- ">
+                <div class="d-flex justify-content-between ">
                     <div class="d-flex justify-content-end mb-4 col-8" id="form-buscadorS">
 
                         <a class="btn d-none" title="Buscar" id="reiniciarBusquedaSintomas" uk-tooltip="Restablecer">
@@ -98,8 +98,10 @@ require_once './src/vistas/head/head.php';
             </div>
             <h5 class="w-25">Calendario</h5>
         </div>
+
+        <button id="btnHorario" class="btn btn-primary mb-2 w-100 d-none" uk-toggle="target: #modal-info-doctores"></button>
         <!-- Calendar Container -->
-        <div class="card shadow-sm my-4" id="calendarCard">
+        <div class="card shadow-sm mb-2" id="calendarCard">
             <div class="card-tittle d-flex justify-content-between align-items-center">
                 <button id="prev"><img src="../src/assets/icons/izquierda.svg" alt="anterior" style="width: 16px; height: 16px;"></button>
                 <h2 id="monthYear" class="mb-0"></h2>
@@ -127,7 +129,7 @@ require_once './src/vistas/head/head.php';
         </div>
 
         <!-- Contenedor de la lista de servicios -->
-        <div class="col-md-12 mt-4">
+        <div class="col-md-12 mt-3">
             <div class="card shadow-sm">
                 <div class="card-tittle">
                     <h5 class="mb-0">Precio consulta</h5>
@@ -154,6 +156,48 @@ require_once './src/vistas/head/head.php';
 
 
 
+    </div>
+</div>
+
+
+<!-- Modal de horario del doctor -->
+
+<div id="modal-info-doctores" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+        <form>
+
+            <!-- Botón que cierra el modal -->
+            <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                    class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+            </a>
+
+            <div class="d-flex align-items-center">
+                <div>
+                </div>
+                <div>
+                    <h5 class="text-center" id="titulo">
+                    </h5>
+                </div>
+            </div>
+
+            <div class="modal-body horario-insertar">
+
+            </div>
+
+
+
+            <div class="mt-3 uk-text-right">
+
+                <button class="uk-button fw-bold uk-button-default uk-modal-close btn-cerrar-modal" type="button"
+                    data-bs-dismiss="modal">Cerrar</button>
+
+            </div>
+        </form>
     </div>
 </div>
 
