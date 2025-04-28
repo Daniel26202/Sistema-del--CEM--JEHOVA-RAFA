@@ -22,7 +22,7 @@ class ModeloHospitalizacion extends Db
     public function selectsH()
     {
 
-        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.duracion, h.precio_horas, h.total, con.id_control, con.diagnostico, h.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN serviciomedico sm ON sm.id_personal = pe.id_personal WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND h.estado = "Pendiente" GROUP BY h.id_hospitalizacion;');
+        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, h.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND h.estado = "Pendiente" GROUP BY h.id_hospitalizacion');
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
@@ -30,7 +30,7 @@ class ModeloHospitalizacion extends Db
     public function selectsHR()
     {
 
-        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.duracion, h.precio_horas, h.total, con.id_control, con.diagnostico, h.historiaclinica, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN serviciomedico sm ON sm.id_personal = pe.id_personal WHERE h.estado = "Realizada" GROUP BY h.id_hospitalizacion;');
+        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, h.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE h.estado = "Realizada" GROUP BY h.id_hospitalizacion;');
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
@@ -63,7 +63,7 @@ class ModeloHospitalizacion extends Db
     public function select($cedula)
     {
 
-        $consulta = $this->conexion->prepare('SELECT con.id_control, con.diagnostico, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM control con INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN serviciomedico sm ON sm.id_personal = pe.id_personal WHERE pac.cedula = :cedula AND con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" ORDER by con.id_control DESC LIMIT 1');
+        $consulta = $this->conexion->prepare('SELECT con.id_control, con.diagnostico, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM control con INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE pac.cedula = :cedula AND con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" ORDER by con.id_control DESC LIMIT 1');
 
         $consulta->bindParam(":cedula", $cedula);
 
@@ -119,14 +119,11 @@ class ModeloHospitalizacion extends Db
     {
 
         // insertar hospitalización
-        $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion(id_control, id_horacostohospitalizacion, duracion, precio_horas, total, historiaclinica, fecha_hora, estado) VALUES (:id_control, 1, :duracion, :precio_horas, :total, :historial, :fecha_hora, "Pendiente")');
+        $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion(fecha_hora_inicio, precio_horas, total, id_control, fecha_hora_final, historiaclinica, estado) VALUES ( :fecha_hora_inicio, "null", "null", :id_control,  "null", :historial, "Pendiente")');
 
+        $consulta->bindParam(":fecha_hora_inicio", $fechaHora);
         $consulta->bindParam(":id_control", $idControl);
-        $consulta->bindParam(":duracion", $duracion);
-        $consulta->bindParam(":precio_horas", $precioHoras);
-        $consulta->bindParam(":total", $total);
         $consulta->bindParam(":historial", $historial);
-        $consulta->bindParam(":fecha_hora", $fechaHora);
 
         $consulta->execute();
 
@@ -143,12 +140,19 @@ class ModeloHospitalizacion extends Db
 
                 // insertar insumos de la hospitalización
                 $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_insumo, cantidad) VALUES (:id_hospitalizacion, :id_insumo, :cantidad)');
-
                 $consulta->bindParam(":id_hospitalizacion", $idH);
                 $consulta->bindParam(":id_insumo", $idI);
                 $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
-
                 $consulta->execute();
+
+                // seleccionamos la cantidad de la tabla de insumos
+                $cantidadITI = $this->buscarUnInsumo($idI);
+
+                // resta
+                $resultadoC = $cantidadITI["limite_insumo"] - $cantidad[$contadorC];
+
+                // editar la cantidad de insumos(tabla insumos)
+                $this->editarCDI($idI, $resultadoC);
 
                 $contadorC++;
             }
@@ -163,22 +167,19 @@ class ModeloHospitalizacion extends Db
     public function EInsumosM($id)
     {
 
-        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, idh.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.duracion, ins.cantidad AS limite_insumo FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN serviciomedico sm ON sm.id_personal = pe.id_personal INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN insumo ins ON idh.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo');
+        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, idh.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, ins.cantidad AS limite_insumo FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN insumo ins ON idh.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo');
 
         $consulta->bindValue(":id", $id, PDO::PARAM_INT);
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
-    public function editarH($duracion, $precioHoras, $total, $idInsumosA, $cantidadE, $cantidadA, $historial, $idHos, $idIDH, $idInsElim, $enfermerE)
+    public function editarH($duracion, $precioHoras, $total, $idInsumosA, $cantidadE, $cantidadA, $historial, $idHos, $idIDH, $idInsElim)
     {
 
         // editar hospitalización
-        $consulta = $this->conexion->prepare('UPDATE hospitalizacion SET duracion= :duracion, precio_horas= :precio_horas, total= :total, historiaclinica= :historial WHERE id_hospitalizacion = :idHosp AND estado = "Pendiente";');
+        $consulta = $this->conexion->prepare('UPDATE hospitalizacion SET historiaclinica= :historial WHERE id_hospitalizacion = :idHosp AND estado = "Pendiente";');
 
-        $consulta->bindParam(":duracion", $duracion);
-        $consulta->bindParam(":precio_horas", $precioHoras);
-        $consulta->bindParam(":total", $total);
         $consulta->bindParam(":idHosp", $idHos);
         $consulta->bindParam(":historial", $historial);
 
@@ -192,19 +193,46 @@ class ModeloHospitalizacion extends Db
 
             foreach ($idIDH as $idInDHos) {
 
+                // selecciono la cantidad del insumo existente de la hospitalización
+                $consulta = $this->conexion->prepare('SELECT cantidad, id_insumo FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id');
+                $consulta->bindParam(":id", $idInDHos);
+                $cantidadIHBD = ($consulta->execute()) ? $consulta->fetch() : false;
+
+
                 // se edita los insumos de la hospitalización
                 $consulta = $this->conexion->prepare('UPDATE insumodehospitalizacion SET cantidad= :cantidad WHERE id_insumoDeHospitalizacion = :id_hdi');
-
                 $consulta->bindParam(":cantidad", $cantidadE[$contador]);
                 $consulta->bindParam(":id_hdi", $idInDHos);
-
                 $consulta->execute();
+
+                // seleccionamos la cantidad de la tabla de insumos
+                $cantidadITI = $this->buscarUnInsumo($cantidadIHBD["id_insumo"]);
+
+                // se resta si es mayor al mismo
+                if ($cantidadE[$contador] > $cantidadIHBD["cantidad"]) {
+                    
+                    $cS = $cantidadE[$contador] - $cantidadIHBD["cantidad"];
+                    // suma
+                    $resultadoC = $cantidadITI["limite_insumo"] - $cS;
+                    // editar la cantidad de insumos(tabla insumos)
+                    $this->editarCDI($cantidadIHBD["id_insumo"], $resultadoC);
+
+                    // se suma si es menor al mismo
+                } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
+
+                    $cR = $cantidadIHBD["cantidad"] - $cantidadE[$contador];
+                    // suma
+                    $resultadoC = $cR + $cantidadITI["limite_insumo"];
+
+                    // editar la cantidad de insumos(tabla insumos)
+                    $this->editarCDI($cantidadIHBD["id_insumo"], $resultadoC);
+                }
+
 
                 $contador++;
             }
 
         }
-
 
         // es para agregar insumos
         // si hay un id del insumo devuelve verdadero si no, devuelve falso
@@ -216,12 +244,19 @@ class ModeloHospitalizacion extends Db
 
                 // insertar insumos de la hospitalización
                 $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_insumo, cantidad) VALUES (:id_hospitalizacion, :id_insumo, :cantidad)');
-
                 $consulta->bindParam(":id_hospitalizacion", $idHos);
                 $consulta->bindParam(":id_insumo", $idIA);
                 $consulta->bindParam(":cantidad", $cantidadA[$contadorC]);
-
                 $consulta->execute();
+
+                // seleccionamos la cantidad de la tabla de insumos
+                $cantidadITI = $this->buscarUnInsumo($idIA);
+
+                // resta
+                $resultadoC = $cantidadITI["limite_insumo"] - $cantidadA[$contadorC];
+
+                // editar la cantidad de insumos(tabla insumos)
+                $this->editarCDI($idIA, $resultadoC);
 
                 $contadorC++;
             }
@@ -233,13 +268,29 @@ class ModeloHospitalizacion extends Db
         // si hay un id del insumo eliminado devuelve verdadero si no, devuelve falso
         if ($idInsElim) {
 
+            $contador = 0;
             foreach ($idInsElim as $idIAEl) {
 
-                // insertar insumos de la hospitalización
-                $consulta = $this->conexion->prepare('DELETE FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id_insumo_eliminado');
+                // selecciono la cantidad del insumo existente de la hospitalización
+                $consulta = $this->conexion->prepare('SELECT cantidad, id_insumo FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id');
+                $consulta->bindParam(":id", $idIAEl);
+                $cantidadIH = ($consulta->execute()) ? $consulta->fetch() : false;
 
+                // seleccionamos la cantidad de la tabla de insumos
+                $cantidadITI = $this->buscarUnInsumo($cantidadIH["id_insumo"]);
+                // suma
+                $resultadoC = $cantidadIH["cantidad"] + $cantidadITI["limite_insumo"];
+
+                // editar la cantidad de insumos(tabla insumos)
+                $this->editarCDI($cantidadIH["id_insumo"], $resultadoC);
+
+
+                // elimina insumos de la hospitalización
+                $consulta = $this->conexion->prepare('DELETE FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id_insumo_eliminado');
                 $consulta->bindParam(":id_insumo_eliminado", $idIAEl);
                 $consulta->execute();
+
+                $contador++;
             }
 
         }
@@ -247,8 +298,25 @@ class ModeloHospitalizacion extends Db
     }
 
     // eliminación lógica
-    public function eliminaLogico($idH)
+    public function eliminaLogico($idH, $datosIDH)
     {
+
+        // si hay un id del insumo devuelve verdadero si no, devuelve falso
+        if ($datosIDH) {
+
+            foreach ($datosIDH as $indice => $value) {
+
+                // seleccionamos la cantidad de la tabla de insumos
+                $cantidadITI = $this->buscarUnInsumo($value["id_insumo"]);
+                // suma
+                $resultadoC = $value["cantidad"] + $cantidadITI["limite_insumo"];
+
+                // editar la cantidad de insumos(tabla insumos)
+                $this->editarCDI($value["id_insumo"], $resultadoC);
+
+            }
+
+        }
 
         // editar el estado hospitalización
         $consulta = $this->conexion->prepare('UPDATE hospitalizacion SET estado ="DES" WHERE id_hospitalizacion =:id_h ;');
@@ -257,50 +325,20 @@ class ModeloHospitalizacion extends Db
         $consulta->execute();
     }
 
-    // selecciono la hora y el costo 
-    public function selectHC()
+    // editar la cantidad de insumos(tabla insumos)
+    public function editarCDI($idI, $cantidadI)
     {
-        $consulta = $this->conexion->prepare('SELECT hora, costo FROM horacostohospitalizacion WHERE id_horacostohospitalizacion = 1');
-
-        return ($consulta->execute()) ? $consulta->fetch() : false;
-    }
-    // Actualizo la hora y el costo 
-    public function updateHC($hora, $costo)
-    {
-        $consulta = $this->conexion->prepare('UPDATE horacostohospitalizacion SET hora= :hora, costo= :costo WHERE id_horacostohospitalizacion = 1');
-
-        $consulta->bindParam(":hora", $hora);
-        $consulta->bindParam(":costo", $costo);
-
-        $datosHC = ($consulta->execute()) ? $consulta->fetch() : false;
-
+        $consulta = $this->conexion->prepare('UPDATE insumo SET cantidad = :cantidad WHERE id_insumo = :id_insumo;');
+        $consulta->bindParam(":id_insumo", $idI);
+        $consulta->bindParam(":cantidad", $cantidadI);
+        $consulta->execute();
     }
 
-    // buscar duracion de la hospitalización
-    public function buscarDH($idH)
-    {
-        $consulta = $this->conexion->prepare('SELECT duracion FROM hospitalizacion WHERE id_hospitalizacion = :idH AND estado = "Pendiente"');
-
-        $consulta->bindParam(":idH", $idH);
-        return ($consulta->execute()) ? $consulta->fetch() : false;
-    }
-
-    // actualizar el precio de horas y total de la hospitalización
-    public function actualizarPHT($precio_h, $total, $idH)
-    {
-        $consulta = $this->conexion->prepare('UPDATE hospitalizacion SET precio_horas = :precio_h, total = :total WHERE id_hospitalizacion = :idH;');
-
-        $consulta->bindParam(":precio_h", $precio_h);
-        $consulta->bindParam(":total", $total);
-        $consulta->bindParam(":idH", $idH);
-
-        return ($consulta->execute()) ? $consulta->fetch() : false;
-    }
 
     // buscar insumos de las hospitalizaciones existentes 
     public function buscarIEH()
     {
-        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, idh.id_insumo, idh.cantidad, ins.nombre, ins.cantidad AS cantidadEx, ins.precio, h.duracion FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN serviciomedico sm ON sm.id_personal = pe.id_personal INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN insumo ins ON idh.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.estado = "Pendiente"');
+        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, idh.id_insumo, idh.cantidad, ins.nombre, ins.cantidad AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN insumo ins ON idh.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.estado = "Pendiente"');
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }

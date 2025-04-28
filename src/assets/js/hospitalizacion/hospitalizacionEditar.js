@@ -13,56 +13,55 @@ addEventListener("DOMContentLoaded", function () {
 
     // para traerme la hora y su costo
     const traerHoraCosto = async () => {
-        try {
 
-            // llamo la función traer hora y costo
-            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerHoraCosto");
-            let resultado = await peticion.json();
+        let storedHora = localStorage.getItem("hora");
+        let storedCosto = localStorage.getItem("costo");
 
-            // si no se trae nada
-            if (resultado == false) {
-                console.log("No hay datos");
-                btnGuardarCH.classList.add("d-none");
-                //si se trae algo     
-            } else {
-                btnGuardarCH.classList.remove("d-none");
+        btnGuardarCH.classList.remove("d-none");
 
-                horas.innerText = resultado.hora;
-                costoHoras.innerText = resultado.costo;
+        horas.innerText = storedHora;
+        costoHoras.innerText = storedCosto;
 
-                // agrego el texto del p (en este caso las horas) al valor del input
-                iHS.value = resultado.hora;
-                // agrego el texto del p (en este caso el costo de las horas) al valor del input
-                iCS.value = resultado.costo;
+        if (storedHora != null) {
+            // agrego el texto del p (en este caso las horas) al valor del input
+            iHS.value = storedHora;
+        } else if (storedHora === null) {
+            localStorage.setItem("hora", 0);
+            horas.innerText = 0;
+            iHS.value = 0;
+        }
 
-            }
-
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        if (storedCosto != null) {
+            // agrego el texto del p (en este caso el costo de las horas) al valor del input
+            iCS.value = storedCosto;
+        } else if (storedCosto === null) {
+            localStorage.setItem("costo", 0);
+            costoHoras.innerText = 0;
+            iCS.value = 0;
         }
     }
 
     // para traerme la hora y su costo
     const enviarHoraCosto = async () => {
-        try {
 
-            let hora = parseInt(iHS.value);
-            let costo = parseFloat(iCS.value);
-            // llamo la función traer hora y costo
-            await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/editarHC/" + hora + "/" + costo);
+        let hora = parseInt(iHS.value.trim());
+        let costo = parseFloat(iCS.value.trim());
 
-            traerHoraCosto();
+        hora = (hora === "") ? "00" : hora;
+        costo = (costo === "") ? "00" : costo;
 
-            let inIdH = document.querySelectorAll(".idHosp");
+        localStorage.setItem("hora", hora);
+        localStorage.setItem("costo", costo);
 
-            for (const id of inIdH) {
-                // await es para que espere y no se cargue desordenadamente 
-                await sumaPrecioIH(parseInt(id.value));
-            }
-            vistaTabla();
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        traerHoraCosto();
+
+        let inIdH = document.querySelectorAll(".idHosp");
+
+        for (const id of inIdH) {
+            // await es para que espere y no se cargue desordenadamente 
+            await sumaPrecioIH(parseInt(id.value));
         }
+        vistaTabla();
     }
 
 
@@ -453,7 +452,7 @@ addEventListener("DOMContentLoaded", function () {
 
                                                     </div>
 
-                                                    <form class="" action="?c=ControladorHospitalizacion/eliminaL" method="post">
+                                                    <form class="" action="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/eliminaL" method="post">
 
                                                         <input type="hidden" name="idH" class="idHosp" value="${res.id_hospitalizacion}">
 
@@ -539,23 +538,22 @@ addEventListener("DOMContentLoaded", function () {
     const sumaPrecioIH = async (id) => {
         try {
 
+            let storedHora = localStorage.getItem("hora");
+            let storedCosto = localStorage.getItem("costo");
+
             // llamo la función traer insumos de h
             let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
             let resultadoI = await peticionI.json();
-
-            // llamo la función traer hora y costo
-            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerHoraCosto");
-            let resultadoCH = await peticion.json();
 
             //es para mostrar la duración de la hospitalización
             // llamo la función
             let peticionDH = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarDHos&idH=" + id);
             let resultadoDH = await peticionDH.json();
 
-            if (resultadoI.length > 0 && resultadoCH != false) {
+            if (resultadoI.length > 0) {
 
                 // realizamos una división 
-                let dCH = parseFloat(resultadoCH.costo) / parseInt(resultadoCH.hora);
+                let dCH = parseFloat(storedCosto) / parseInt(storedHora);
                 // multiplicamos lo dividido con la duración 
                 let precioHoras = parseInt(resultadoI[0].duracion) * parseFloat(dCH);
 
@@ -578,7 +576,7 @@ addEventListener("DOMContentLoaded", function () {
                     console.log("no se encontró la hospitalización");
                 } else {
                     // realizamos una división 
-                    let dCH = parseFloat(resultadoCH.costo) / parseInt(resultadoCH.hora);
+                    let dCH = parseFloat(storedCosto) / parseInt(storedHora);
                     // multiplicamos lo dividido con la duración 
                     let precioHoras = parseInt(resultadoDH.duracion) * parseFloat(dCH);
                     // await es para que espere 
@@ -1140,7 +1138,7 @@ addEventListener("DOMContentLoaded", function () {
             // llamo la función 
             await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/modificarH", contenidoForm);
             divME.classList.remove("show");
-        divModal.setAttribute("style", "touch-action: pan-y pinch-zoom; transition: all 0.3s ease-out ;");
+            divModal.setAttribute("style", "touch-action: pan-y pinch-zoom; transition: all 0.3s ease-out ;");
 
             // vista de la tabla
             vistaTabla();
@@ -1266,6 +1264,7 @@ addEventListener("DOMContentLoaded", function () {
             if (resultado.length > 0) {
 
                 resultado.forEach(res => {
+                    console.log(res);
                     // si no existe la posición del mismo numero del id del insumo
                     if (!insumosEx[parseInt(res.id_insumo)]) {
                         // creamos esa posición con ese numero de id, y dentro su contenido 

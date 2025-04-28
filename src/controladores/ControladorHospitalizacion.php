@@ -45,12 +45,6 @@ class ControladorHospitalizacion
         require_once "./src/vistas/vistaHospitalizacion/hospitalizacionesRealizadas.php";
     }
 
-    //traer enfermer@s
-    // public function traerEnfermer()
-    // {
-    //     $datosEnf = $this->modelo->buscarEnfermer();
-    //     echo json_encode($datosEnf);
-    // }
 
     //validar paciente 
     public function validarPaciente()
@@ -196,8 +190,9 @@ class ControladorHospitalizacion
     public function eliminaL()
     {
         if (isset($_POST["idH"])) {
+            $datosIDH = $this->modelo->EInsumosM($_POST["idH"]);
 
-            $this->modelo->eliminaLogico($_POST["idH"]);
+            $this->modelo->eliminaLogico($_POST["idH"], $datosIDH);
 
              // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha eliminado una hospitalizacion");

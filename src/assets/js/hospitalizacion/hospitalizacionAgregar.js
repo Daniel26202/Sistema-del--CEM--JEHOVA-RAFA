@@ -270,7 +270,6 @@ addEventListener("DOMContentLoaded", function () {
                 // esto recorre todos los input number de cantidad
                 let div = document.querySelectorAll(".divInsumosAgregadosA");
                 if (div) {
-                    console.log(id);
 
                     let objIL = await limiteI();
                     // el insumo no existe 
@@ -625,11 +624,11 @@ addEventListener("DOMContentLoaded", function () {
     ///////////////////////////////////////////////////
     // conteo de insumos
 
-    // buscar insumos existentes
-    const buscarIEx = async () => {
+    // buscar insumo existe
+    const buscarIEx = async (id) => {
         try {
 
-            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/buscarIExH");
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/buscarUnInsumo/" + id);
             let resultado = await peticion.json();
             let insumosEx = {};
 
@@ -642,32 +641,25 @@ addEventListener("DOMContentLoaded", function () {
                         insumosEx[parseInt(res.id_insumo)] = {
                             id: parseInt(res.id_insumo),
                             cantidadT: 0,
-                            limite: parseInt(res.cantidadEx)
+                            limite: parseInt(res.limite_insumo)
                         }
                     }
-                    // si existe la posición del mismo numero del id del insumo, sumamos sus cantidades.
-                    insumosEx[res.id_insumo].cantidadT += parseInt(res.cantidad);
 
                 });
 
                 return insumosEx;
-            } else {
-
-            }
+            } else { }
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
         }
     }
 
     // operación matemática para saber cual insumo llego a su limite en cantidad
-    const limiteI = async () => {
+    const limiteI = async (idI) => {
         try {
 
             // me traigo los datos (cantidad y id del insumo que esta ya registrado) en un objeto, para almacenarlo en una variable.
-            let objetoIdCTH = await buscarIEx();
-            if (objetoIdCTH === undefined) {
-                objetoIdCTH = {}
-            }
+            let objetoIdDB = await buscarIEx(idI);
             let insumosExL = {};
             document.querySelectorAll(".divInsumosAgregadosA").forEach(divI => {
                 // id del insumo
@@ -689,12 +681,12 @@ addEventListener("DOMContentLoaded", function () {
             // recorro el objeto de los insumos totales de la db
             for (const iL in insumosExL) {
                 // si existe la posición del objeto (el id del insumo) se suma la cantidad del insumo
-                if (objetoIdCTH[iL]) {
-                    objetoIdCTH[iL].cantidadT = parseInt(objetoIdCTH[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
+                if (objetoIdDB[iL]) {
+                    objetoIdDB[iL].cantidadT = parseInt(objetoIdDB[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
 
                     // si no existe se agrega los datos del insumo
                 } else {
-                    objetoIdCTH[iL] = {
+                    objetoIdDB[iL] = {
                         id: parseInt(iL),
                         cantidadT: insumosExL[iL].cantidadT,
                         limite: insumosExL[iL].limite
@@ -705,9 +697,9 @@ addEventListener("DOMContentLoaded", function () {
 
             let objIL = {};
             // recorro el objeto de los insumos y solo almaceno los limitados
-            for (const iLi in objetoIdCTH) {
-                if (objetoIdCTH[iLi].cantidadT >= objetoIdCTH[iLi].limite) {
-                    objIL[iLi] = objetoIdCTH[iLi];
+            for (const iLi in objetoIdDB) {
+                if (objetoIdDB[iLi].cantidadT >= objetoIdDB[iLi].limite) {
+                    objIL[iLi] = objetoIdDB[iLi];
                 }
             }
             
