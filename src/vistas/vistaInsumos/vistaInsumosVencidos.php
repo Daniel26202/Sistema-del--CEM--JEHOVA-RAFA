@@ -88,7 +88,7 @@
                 <div class="hover-grande">
 
                     <a href="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores" class="text-decoration-none text-black me-3" id="DMserviciosExtras">
-                        <img src="<?= $urlBase?>../src/assets/img/proveedor (3).png" width="20" height="20" uk-svg class="me-1">Proveedores</a>
+                        <img src="<?= $urlBase ?>../src/assets/img/proveedor (3).png" width="20" height="20" uk-svg class="me-1">Proveedores</a>
                 </div>
 
             </li>
@@ -124,7 +124,7 @@
         <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 col-11 m-auto">
 
 
-            <table class="example table-clinic col-12 ">
+            <table class="example  col-12 ">
                 <thead>
                     <tr>
                         <th class="text-dark">Nombre</th>

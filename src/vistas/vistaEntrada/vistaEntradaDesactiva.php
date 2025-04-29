@@ -150,7 +150,7 @@
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 col-11 m-auto">
 
 
-      <table class="example table-clinic col-12 ">
+      <table class="example  col-12 ">
         <thead>
           <tr>
             <th class="text-center text-dark">Nombre</th>

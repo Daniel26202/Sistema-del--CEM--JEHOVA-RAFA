@@ -23,6 +23,9 @@
 	--color-primary-contrast: #E0E1DD;
 	--color-surface: #415A77;
 	--color-border: #E4EBF0;
+	input::placeholder {
+			color: #e8f2ff;
+		}
 }
 
 /* ...................MENU E INICIO.................... */
@@ -31,6 +34,7 @@
 	margin: 0;
 	box-sizing: border-box;
 	font-family: 'Arial', sans-serif;
+	color: var(--color-text-card) !important;
 }
 
 a{
@@ -41,6 +45,7 @@ h1{
 	font-size: 2rem;
 	color: var(--color-text-card);
 }
+
 
 .aside {
 	height: 100%;
@@ -143,6 +148,7 @@ main {
 	height: 100%;
 	margin-left: 68px;
 	transition: all .4s ease;
+	min-height: 100vh;
 }
 
 svg{
@@ -188,14 +194,14 @@ svg{
 	border-radius: 0;
 	border: none;
 	border-bottom: 2px solid #387ADF;
-	background-color: transparent;
+	background: none !important;
 	margin-left: 50px;
 }
 
 .input-buscar:focus {
 	outline: 0 !important;
 	box-shadow: none;
-	background: linear-gradient(to bottom, transparent, #E4EBF0);
+	
 }
 
 .btn-buscar {
@@ -375,10 +381,19 @@ svg{
 
 }
 
+#tablaEspecialidad, #cuerpoTablaEspecialidad{
+	color : var(--color-text-card)!important;
+}
+
 .tamaño-modal {
 	width: 45%;
 	border-radius: 20px;
-	background-color: #ffffff;
+	background-color: var(--color-surface);
+	color: var(--color-text-card) !important;
+}
+
+.form-control input-modal{
+	color: var(--color-text-card) !important;
 }
 
 .tamaño-modal-Seleccionar-Insumo {
@@ -388,6 +403,8 @@ svg{
 }
 
 .input-modal {
+	color: var(--color-text-card) !important;
+	background-color: var(--color-bg-card)!important;
 	border-radius: 0;
 	border: none;
 	border-bottom: 2px solid #387ADF;
@@ -398,7 +415,7 @@ svg{
 .input-modal:focus {
 	outline: 0 !important;
 	box-shadow: none;
-	/* background: linear-gradient(to bottom, transparent, var(--color-bg-main)); */
+	
 }
 
 
@@ -932,18 +949,18 @@ input[type=number]::-webkit-outer-spin-button {
 	margin-left: 60px;
 }
 
-.input-buscar {
+/* .input-buscar {
 	border-radius: 0;
 	border: none;
 	border-bottom: 2px solid #387ADF;
-	background-color: transparent;
+	background: none;
 
 }
-
+ */
 .input-buscar:focus {
 	outline: 0 !important;
 	box-shadow: none;
-	background: linear-gradient(to bottom, transparent, var(--color-bg-main));
+	
 }
 
 .btn-buscar {
@@ -979,6 +996,11 @@ input[type=number]::-webkit-outer-spin-button {
 .form-modal {
 	width: 85%;
 	margin: auto;
+}
+
+.agregar{
+	background-color: var(--color-surface);
+
 }
 
 /* .form-modal input {
@@ -1088,6 +1110,7 @@ con la clase hover-grande cambia de tamaño*/
 .contenedor {
 	padding-left: 8vh;
 	padding-right: 8vh;
+	background-color: var(--color-surface);
 }
 
 .btn-agregar-doctores {
@@ -1118,11 +1141,6 @@ con la clase hover-grande cambia de tamaño*/
 
 }
 
-.fondo-tabla {
-	padding: 15px;
-	border-radius: 20px;
-
-}
 
 .btn-tabla {
 	border: none;
@@ -1289,13 +1307,6 @@ con la clase hover-grande cambia de tamaño*/
 	color: #387ADF;
 }
 
-.fondo-tabla {
-	padding: 15px;
-	border: var(--color-bg-main) solid 1px;
-	border-radius: 20px;
-	box-shadow: var(--color-bg-main) 0 0 5px;
-	background-color: #F8FCFF;
-}
 
 .btn-agregar-pacientes {
 
@@ -1335,13 +1346,14 @@ con la clase hover-grande cambia de tamaño*/
 	border-radius: 0;
 	border: none;
 	border-bottom: 2px solid #387ADF;
-	background-color: transparent;
+	background-color: var(--color-surface);
 }
 
 .input-busca:focus {
 	outline: 0 !important;
 	box-shadow: none;
-	background: linear-gradient(to bottom, transparent, var(--color-bg-main));
+	background-color: var(--color-surface);
+	
 }
 
 .boton-buscar {
@@ -1574,11 +1586,10 @@ con la clase hover-grande cambia de tamaño*/
 }
 
 .fondo-tabla {
+	color: var(--color-text-card);
 	padding: 15px;
-	border: var(--color-bg-main) solid 1px;
 	border-radius: 20px;
-	box-shadow: var(--color-bg-main) 0 0 5px;
-	background-color: #F8FCFF;
+	background-color: var(--color-bg-card);
 }
 
 .tarjeta img {
@@ -2299,11 +2310,4 @@ input[type="date"] {
     } */
 }
 
-
-/* animacion de la pagina */
-
-body {
-	font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
-	
-}
 

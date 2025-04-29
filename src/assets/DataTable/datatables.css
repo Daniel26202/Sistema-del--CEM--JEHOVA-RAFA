@@ -23,6 +23,13 @@
   --dt-html-background: rgb(33, 37, 41);
 }
 
+.dt-paging{
+color: var(--color-bg-card)!important;
+}
+
+.dt-column-title {
+  color: var(--color-text-card)!important;}
+
 table.dataTable td.dt-control {
   text-align: center;
   cursor: pointer;
@@ -593,6 +600,7 @@ div.dt-container .dt-search input {
   background-color: transparent;
   margin-left: 50px;
   box-shadow: none; /* Quitar sombra */
+  background: none !important;
 }
 
 div.dt-container .dt-search input:focus {
@@ -892,17 +900,18 @@ html.dark .dt-container .dt-paging .dt-paging-button:active {
 }
 
 .btn-guardar-responsive {
+  color: var(--color-text-card);
   display: block;
   width: 20%;
   margin: 15px 0;
 }
 
-.caja-contenedor-tabla {
+/* .caja-contenedor-tabla {
   border-radius: 20px;
   box-shadow:0 4px 17px rgba(0, 0, 0, 0.1), 0 4px 17px rgba(0, 0, 0, 0.1), 0 4px 17px rgba(0, 0, 0, 0.1);
 
 }
-
+ */
 .table-clinic {
   border: none;
   overflow: hidden;

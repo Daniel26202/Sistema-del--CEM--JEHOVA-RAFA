@@ -7,7 +7,7 @@
 <!-- Modal Agregar Servicio Extra-->
 <div class="modal fade" id="modal-agregar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog tamaño-modal">
-    <div class="modal-content">
+    <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -185,7 +185,7 @@
 <div class="modal fade" id="modal-agregar-servicio" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog tamaño-modal">
-    <div class="modal-content">
+    <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -378,7 +378,7 @@
 <div class="modal fade" id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
-    <div class="modal-content tamaño-modal-Seleccionar-Insumo">
+    <div class="modal-content agregar tamaño-modal-Seleccionar-Insumo">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -466,7 +466,7 @@
 <div class="modal fade" id="modal-agregar-insumos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
-    <div class="modal-content tamaño-modal-Seleccionar-Insumo">
+    <div class="modal-content agregar tamaño-modal-Seleccionar-Insumo">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -559,7 +559,8 @@
                       <?php echo $i['precio'] ?> BS
                     </td>
                     <!-- <td class="text-center border-start">
-                      <?php //echo $i['numero_de_lote']; ?>
+                      <?php //echo $i['numero_de_lote']; 
+                      ?>
                     </td> -->
                     <td class="text-center border-start">
                       <input type="number" class="form-control input-buscar m-auto inputs-cantidad-insumos">
@@ -649,7 +650,7 @@
 <div class="modal fade" id="modal-agregar-insumos-confirmar" data-bs-backdrop="static" data-bs-keyboard="false"
   tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
-    <div class="modal-content">
+    <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -747,7 +748,7 @@
 <div class="modal fade" id="modal-pago" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog tamaño-modal">
-    <div class="modal-content">
+    <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
@@ -814,7 +815,7 @@
 <div class="modal fade" id="modal-validacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog tamaño-modal">
-    <div class="modal-content">
+    <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -881,7 +882,7 @@
 <div class="modal fade" id="modal-confirmacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog tamaño-modal">
-    <div class="modal-content">
+    <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
