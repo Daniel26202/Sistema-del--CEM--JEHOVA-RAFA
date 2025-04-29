@@ -156,7 +156,7 @@
         </div>
 
 
-        <table class="example table-clinic col-12 " id="tabla">
+        <table class="example  col-12 " id="tabla">
             <thead>
                 <tr>
                     <th class="text-dark">Cédula</th>
