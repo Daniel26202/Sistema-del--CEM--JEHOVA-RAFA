@@ -1,17 +1,20 @@
 <?php
 use App\modelos\ModeloHospitalizacion;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorHospitalizacion
 {
 
     private $modelo;
     private $bitacora;
+    private $permisos;
 
     function __construct()
     {
         $this->modelo = new ModeloHospitalizacion();
         $this->bitacora = new ModeloBitacora();
+        $this->permisos = new ModeloPermisos;
     }
     // mostrar los datos de la tabla (hospitalizaciones pendientes) 
     public function traerSesion()
@@ -204,42 +207,47 @@ class ControladorHospitalizacion
         }
     }
 
-    public function traerHoraCosto()
-    {
-        $datosHC = $this->modelo->selectHC();
-        echo json_encode($datosHC);
-    }
+    // public function traerHoraCosto()
+    // {
+    //     $datosHC = $this->modelo->selectHC();
+    //     echo json_encode($datosHC);
+    // }
 
-    // editar costo y hora.
-    public function editarHC($datos)
-    {
-        $hora = $datos[0];
-        $costo = $datos[1];
-        $this->modelo->updateHC($hora, $costo);
+    // // editar costo y hora.
+    // public function editarHC($datos)
+    // {
+    //     $hora = $datos[0];
+    //     $costo = $datos[1];
+    //     $this->modelo->updateHC($hora, $costo);
         
-    }
+    // }
 
-    // editar el precio de horas y total de la hospitalización
-    public function mostrarDHos($datos)
-    {
-        $idH = $datos[0];
-        $datosDHos = $this->modelo->buscarDH($idH);
-        echo json_encode($datosDHos);
-    }
+    // // editar el precio de horas y total de la hospitalización
+    // public function mostrarDHos($datos)
+    // {
+    //     $idH = $datos[0];
+    //     $datosDHos = $this->modelo->buscarDH($idH);
+    //     echo json_encode($datosDHos);
+    // }
 
-    // editar el precio de horas y total de la hospitalización
-    public function editarPHT($datos)
-    {
-        $precio_h = $datos[0];
-        $total = $datos[1];
-        $idH = $datos[2];
-        $this->modelo->actualizarPHT($_GET["precio_h"], $_GET["total"], $_GET["idH"]);
-    }
+    // // editar el precio de horas y total de la hospitalización
+    // public function editarPHT($datos)
+    // {
+    //     $precio_h = $datos[0];
+    //     $total = $datos[1];
+    //     $idH = $datos[2];
+    //     $this->modelo->actualizarPHT($_GET["precio_h"], $_GET["total"], $_GET["idH"]);
+    // }
 
     // buscar insumos de las hospitalizaciones existentes 
     public function buscarIExH()
     {
         $datosIns = $this->modelo->buscarIEH();
         echo json_encode($datosIns);
+    }
+
+    private function permisos($id_rol, $permiso, $modulo)
+    {
+        return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
     }
 }

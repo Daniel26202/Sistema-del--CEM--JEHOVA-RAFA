@@ -88,7 +88,7 @@ class Rutas
 
                             // Verifica si el usuario tiene permiso para acceder
                             $permitido = $this->modelo->gestionarPermisos($_SESSION["id_rol"] ?? null, $permiso, $modulo);
-
+                            echo $permitido;
                             // Si no tiene permiso, redirige a la página de error
                             if (!$permitido) {
                                 echo "Error 404 ";
