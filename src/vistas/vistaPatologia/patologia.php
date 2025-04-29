@@ -108,7 +108,7 @@
       </div>
 
 
-      <table class="example table-clinic col-12 ">
+      <table class="example  col-12 ">
         <thead>
           <tr>
             <th class="text-dark text-center">#</th>

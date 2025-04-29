@@ -133,7 +133,7 @@ z<?php require_once './src/vistas/head/head.php'; ?>
         </div>
     </div>
 
-    <div class="div-tabla m-auto contenedor">
+    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 col-11 m-auto">
 
         <div class="d-flex justify-content-between align-items-center">
 
@@ -153,9 +153,11 @@ z<?php require_once './src/vistas/head/head.php'; ?>
                 <?php endif; ?>
             </div>
             <div class="d-flex justify-content-end mt-4 mb-4 col-5">
+                <!-- BUSCAR ANTIGUO -->
 
                 <div class="mover-input-buscar d-flex">
 
+                    <!-- <form class="d-flex justify-content-end" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarDoctor" method="POST"
                     <a class="btn d-none" title="Buscar" id="reiniciarBusqueda" uk-tooltip="Restablecer">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-arrow-repeat" viewBox="0 0 16 16">
@@ -166,7 +168,7 @@ z<?php require_once './src/vistas/head/head.php'; ?>
                         </svg>
                     </a>
 
-                    <form class="d-flex justify-content-end" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarDoctor" method="POST"
+
                         autocomplete="off" id="buscadorDoctores">
 
                         <input class="form-control input-buscar tamaño-input-buscar" type="number" name="busqueda"
@@ -180,7 +182,7 @@ z<?php require_once './src/vistas/head/head.php'; ?>
                             </svg>
                         </button>
 
-                    </form>
+                    </form> -->
                 </div>
             </div>
 
@@ -189,7 +191,7 @@ z<?php require_once './src/vistas/head/head.php'; ?>
         <div>
             <div class="contenedor_tabla">
 
-                <table class="table table-striped" id="tabla">
+                <table class="example table-striped" id="tabla">
                     <thead>
                         <tr>
                             <th class="border-start-0 text-center">Cédula</th>

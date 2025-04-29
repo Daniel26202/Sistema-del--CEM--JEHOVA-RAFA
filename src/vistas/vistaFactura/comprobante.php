@@ -134,7 +134,7 @@
 
 
         <div class="pb-3">
-            <div class="uk-card uk-card-default uk-width-1-2@m m-auto" style="background: #F8FCFF;">
+            <div class="uk-card uk-card-default uk-width-1-2@m m-auto" style="background-color: var(--color-surface);">
                 <div class="uk-card-header">
                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                         <div class="uk-width-auto">

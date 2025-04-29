@@ -79,9 +79,6 @@
     </div>
     <!-- modal de cerrar sesión -->
     <?php require_once './src/vistas/modalCierreS/modalCierreS.php'; ?>
-    <?php if ($_SESSION['rol'] == "usuario"): ?>
-        <!-- no hay -->
-    <?php elseif ($_SESSION['rol'] == "administrador"): ?>
 
         <div class=" me-5 pe-1 mb-2 mt-3 d-flex justify-content-end w-100">
 
@@ -118,16 +115,16 @@
             </ul>
 
         </div>
-    <?php endif ?>
+
 
     <div class="fondo-tabla">
 
         <div class="d-flex justify-content-between align-items-center">
             <div class="text-start mb-2">
 
-                <?php if ($_SESSION['rol'] == "usuario"): ?>
+                <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Hospitalizacion")): ?>
                     <!-- no hay -->
-                <?php elseif ($_SESSION['rol'] == "administrador"): ?>
+                <?php else: ?>
                     <button class="btn btn-primary btn-agregar-pacientes mb-2" data-bs-toggle="modal"
                         data-bs-target="#modal-agregar-hospitalizacion" id="btnAgregarH">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
