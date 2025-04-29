@@ -157,7 +157,7 @@ addEventListener("DOMContentLoaded", () => {
   //funcion ajax para registrar un paciente que no se encontro
 
   const insertarPaciente = async (form, event) => {
-    try {
+    // try {
       const datosFormulario = new FormData(form);
       const contenido = {
         method: "POST",
@@ -204,9 +204,9 @@ addEventListener("DOMContentLoaded", () => {
           input.parentElement.classList.remove("grpFormCorrect");
         });
       }
-    } catch (error) {
-      console.log("algo salio mal" + error);
-    }
+    // } catch (error) {
+    //   console.log("algo salio mal" + error);
+    // }
   };
   //llamar a la funcion para insertar un paciente que no existe
 
@@ -221,13 +221,19 @@ addEventListener("DOMContentLoaded", () => {
         }
       });
       console.log(inputsBuenos);
-
+      console.log(document.querySelector(".p-error-fechaDeCita")
+          .classList.contains("d-none"))
       if (
-        inputsBuenos.length == 5 &&
-        document
-          .querySelector(".p-error-fechaDeCita")
-          .classList.contains("d-none")
+        (inputsBuenos.length == 5 &&
+          document
+            .querySelector(".p-error-fechaDeCita")
+            .classList.contains("d-none")) ||
+        (inputsBuenos.length == 5 &&
+          document
+            .querySelector(".p-error-fn")
+            .classList.contains("d-none"))
       ) {
+        console.log("si");
         insertarPaciente(this, e);
       }
     });

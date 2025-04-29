@@ -1,6 +1,11 @@
 <?php
 
-session_start();
+
+// if(session_start() === PHP_SESSION_NONE){
+
+// 	session_start();
+
+// }
 
 
 if (isset($_SESSION['usuario'])) {
@@ -91,9 +96,9 @@ if (!empty($parametro)) {
 				</div>
 			</a>
 
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Pacientes")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" uk-tooltip="Pacientes" id="menuPacientes">
 					<div class="" id="menuPacientesColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -105,9 +110,9 @@ if (!empty($parametro)) {
 					</div>
 				</a>
 			<?php endif ?>
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Patologias")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias" uk-tooltip="Patologias" id="menuPatologias">
 					<div class="" id="menuPatologiasColor">
 
@@ -121,9 +126,9 @@ if (!empty($parametro)) {
 			<?php endif ?>
 
 
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Factura")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura" uk-tooltip="Facturacion" id="menuFacturacion">
 					<div class="" id="menuFacturacionColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -137,9 +142,9 @@ if (!empty($parametro)) {
 			<?php endif ?>
 
 
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Citas")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" uk-tooltip="Citas" id="menuCitas">
 					<div class="" id="menuCitasColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -152,9 +157,9 @@ if (!empty($parametro)) {
 				</a>
 			<?php endif ?>
 
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Consultas")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas" uk-tooltip="Servicios" id="menuServicios">
 					<div class="" id="menuServiciosColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-heart-fill" viewBox="0 0 16 16">
@@ -167,9 +172,9 @@ if (!empty($parametro)) {
 			<?php endif ?>
 
 
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Doctores")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores" uk-tooltip="Directorio Médico" id="menuDirectorioMedico">
 					<div class="" id="menuDirectorioMedicoColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -185,6 +190,10 @@ if (!empty($parametro)) {
 			<?php endif ?>
 
 
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Control")): ?>
+				<!-- no hay -->
+			<?php else: ?>
+
 			<a href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
 				<div class="" id="menuControlMedicoColor">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -196,6 +205,11 @@ if (!empty($parametro)) {
 				</div>
 			</a>
 
+			<?php endif ?>
+
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Hospitalizacion")): ?>
+				<!-- no hay -->	
+			<?php else: ?>
 			<a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
 				id="menuHospitalizacion">
 				<div class="" id="menuHospitalizacionColor">
@@ -210,12 +224,12 @@ if (!empty($parametro)) {
 				</div>
 			</a>
 
+			<?php endif; ?>
 
 
-
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Insumos")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos" uk-tooltip="Insumos" id="menuInsumos">
 					<div class="" id="menuInsumosColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -229,9 +243,9 @@ if (!empty($parametro)) {
 			<?php endif ?>
 
 
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Usuarios")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" uk-tooltip="Usuario" id="menuUsuarios">
 					<div class="" id="menuUsuariosColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -244,9 +258,9 @@ if (!empty($parametro)) {
 				</a>
 			<?php endif ?>
 
-			<?php if ($_SESSION['rol'] == "usuario"): ?>
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Reportes")): ?>
 				<!-- no hay -->
-			<?php elseif ($_SESSION['rol'] == "administrador"): ?>
+			<?php else: ?>
 				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes" uk-tooltip="Reportes" id="menuReportes">
 					<div class="" id="menuReportesColor">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -260,7 +274,7 @@ if (!empty($parametro)) {
 					</div>
 				</a>
 			<?php endif ?>
-
+			<button id="toggleTheme">🌓</button>
 		</div>
 	</div>
 

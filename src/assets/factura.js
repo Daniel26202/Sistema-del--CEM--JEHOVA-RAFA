@@ -560,7 +560,7 @@ addEventListener("DOMContentLoaded", () => {
         this.parentElement.parentElement.children[2].innerText
       );
       let botonDeAnadir =
-        this.parentElement.parentElement.children[6].children[0];
+        this.parentElement.parentElement.children[5].children[0];
 
       if (
         this.value <= cantidadDisponible &&
@@ -591,9 +591,7 @@ addEventListener("DOMContentLoaded", () => {
         <td class="border-top border-start text-center">${
           element["precio"]
         } BS</td>
-        <td class="border-top border-start text-center">${
-          element["numero_de_lote"]
-        }</td>
+
         <td class="border-top border-start text-center">${
           element["subTotal"]
         } BS</td>
@@ -630,13 +628,7 @@ addEventListener("DOMContentLoaded", () => {
   };
 
   //funcion para insertar varios insumos a la vez
-  const insertarVariosInsumos = (
-    id_insumo,
-    nombreInsumo,
-    cantidad,
-    precio,
-    numero_de_lote
-  ) => {
+  const insertarVariosInsumos = (id_insumo, nombreInsumo, cantidad, precio) => {
     let subTotalRedondeado = (
       parseFloat(cantidad) * parseFloat(precio)
     ).toFixed(2);
@@ -644,7 +636,6 @@ addEventListener("DOMContentLoaded", () => {
       id_insumo: id_insumo,
       nombreInsumo: nombreInsumo,
       cantidad: cantidad,
-      numero_de_lote: numero_de_lote,
       precio: parseFloat(precio),
       subTotal: subTotalRedondeado,
     };
@@ -662,7 +653,7 @@ addEventListener("DOMContentLoaded", () => {
     }
 
     //esto lo reviso despues
-   
+
     // let inputsOcultosDeNombre = document.querySelector(
     //   ".nombreInsumo" + element["nombreInsumo"]
     // );
@@ -676,14 +667,12 @@ addEventListener("DOMContentLoaded", () => {
     // }
 
     let cantidad_tabla_disponible = document.querySelector(
-      ".cantidad_tabla_disponible"+nombreInsumo
-    ); 
+      ".cantidad_tabla_disponible" + nombreInsumo
+    );
 
-    
-
-    let cantidad_tabla = parseInt(cantidad_tabla_disponible.innerText) - parseInt(cantidad);
+    let cantidad_tabla =
+      parseInt(cantidad_tabla_disponible.innerText) - parseInt(cantidad);
     cantidad_tabla_disponible.innerText = cantidad_tabla;
-
   };
 
   //boton para añadir los insumos
@@ -694,16 +683,10 @@ addEventListener("DOMContentLoaded", () => {
       const id_insumo = this.getAttribute("id");
       const nombreInsumo = fila.children[1].innerText; // Columna Insumo
       const precio = fila.children[3].innerText; // Columna precio
-      const numero_de_lote = fila.children[4].innerText; // Columna numero_de_lote
-      const cantidad = fila.children[5].children[0].value; // Columna cantidad
+      //const numero_de_lote = fila.children[4].innerText; // Columna numero_de_lote
+      const cantidad = fila.children[4].children[0].value; // Columna cantidad
 
-      insertarVariosInsumos(
-        id_insumo,
-        nombreInsumo,
-        cantidad,
-        precio,
-        numero_de_lote
-      );
+      insertarVariosInsumos(id_insumo, nombreInsumo, cantidad, precio);
       fila.classList.add("d-none");
     });
   });
@@ -712,14 +695,12 @@ addEventListener("DOMContentLoaded", () => {
     calcularTotal();
     let html = ``;
     dataInsumo.forEach((element, index) => {
-      
       html += `
         <tr class="border-top tr">
         <th class="id_insumo_escondido d-none">${element["id_insumo"]}</th>
         <td class="border-top nombre"><div class="fw-bolder">INSUMO:</div> ${element["nombreInsumo"]}</td>
         <td class="border-top"><div class="fw-bolder">CANTIDAD:</div> ${element["cantidad"]}</td>
         <td class="border-top"><div class="fw-bolder">PRECIO:</div>${element["precio"]} BS</td>
-        <td class="border-top"><div class="fw-bolder">LOTE:</div>${element["numero_de_lote"]}</td>
         <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${element["subTotal"]} BS</td>
         <td class="border-top"></td>
 
@@ -1442,14 +1423,24 @@ addEventListener("DOMContentLoaded", () => {
 
   referencia.addEventListener("keyup", function () {
     console.log(referencia);
-    if (inputsDeValidacion[2].classList.contains("d-none")) {
-      dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+    if (inputsDeValidacion[1].classList.contains("d-none")) {
+      if (referencia.value.length == 4) {
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      } else {
+        alertaVariosMetodos.classList.remove("d-none");
+        btnValidacion.classList.add("d-none");
+      }
     } else {
-      tresPrecios(
-        inputsDeValidacion[0],
-        inputsDeValidacion[1],
-        inputsDeValidacion[2]
-      );
+      if (inputsDeValidacion[2].classList.contains("d-none")) {
+        dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+      } else {
+        tresPrecios(
+          inputsDeValidacion[0],
+          inputsDeValidacion[1],
+          inputsDeValidacion[2]
+        );
+      }
     }
   });
 
@@ -1477,7 +1468,6 @@ addEventListener("DOMContentLoaded", () => {
         <div class="fw-bolder">INSUMO:</div>${element["nombreInsumo"]}</td>
         <td><input type="hidden" name="cantidad[]" value="${element["cantidad"]}"><div class="fw-bolder">CANTIDAD</div> ${element["cantidad"]}</td>
         <td><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
-        <td><input type="hidden" name="numero_de_lote[]" value="${element["numero_de_lote"]}"><div class="fw-bolder">LOTE</div> ${element["numero_de_lote"]}</td>
         <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${element["subTotal"]} BS</td>
         <td>
         <tr>`;

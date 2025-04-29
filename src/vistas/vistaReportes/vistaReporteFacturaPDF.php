@@ -64,4 +64,6 @@ $pdf->SetFont('Arial', '', 12);
 
 
 
+ob_end_clean(); // Limpia el búfer de salida
 $pdf->Output();
+exit;

@@ -2,16 +2,19 @@
 
 use App\modelos\ModeloEntrada;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 class ControladorEntrada
 {
 
 	private $modelo;
 	private $bitacora;
+	private $permisos;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloEntrada();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();
 	}
 
 	public function entrada($parametro)
@@ -77,11 +80,11 @@ class ControladorEntrada
 	public function editar(){
 		print_r($_POST);
 		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
-		 $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
+		$this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
 		 // Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"entrada","Ha modificado una entrada");
 
-		 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
 
 	}
 
@@ -91,6 +94,12 @@ class ControladorEntrada
 	public function entradaInsumo(){
 		$respuesta = $this->modelo->insumosEntrada($_GET['id_insumo']);
 		echo json_encode($respuesta);
+	}
+
+
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 
 

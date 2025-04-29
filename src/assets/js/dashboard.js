@@ -1,6 +1,6 @@
 // Variables globales
-const { jsPDF } = window.jspdf;
-
+/* const { jsPDF } = window.jspdf;
+ */
 let currentYear, currentMonth;
 let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
 
@@ -15,11 +15,25 @@ document.addEventListener("DOMContentLoaded", function () {
   traerDatosServicios(); // Carga los datos de la tabla de precios
   especialidades_chart(); // Genera el gráfico de especialidades
   sintomas_chart(); // Genera el gráfico de sintomas comunes
+  traerDoctor(); //Cargar doctores en el select
 });
 
 document
   .getElementById("especialidades")
   .addEventListener("click", generarReporte);
+
+//Evento para actualizar la informacion del doctor
+document.getElementById("selectDoctor").addEventListener("change", function () {
+  let allDates = [];
+  document.querySelectorAll(".date").forEach((element) => {
+    allDates.push(element.getAttribute("data-date"));
+
+    
+  });
+
+  traerHorarioDoctor(this.value, allDates);
+});
+
 // ========================== FUNCIONES DEL CALENDARIO ==========================
 
 // Inicializa el calendario
@@ -37,7 +51,8 @@ function initCalendar() {
     .addEventListener("click", () => changeMonth(1));
   document.getElementById("today").addEventListener("click", goToToday);
 
-  renderCalendar(currentYear, currentMonth); // Renderiza el calendario inicial
+  // Renderiza el calendario inicial
+  renderCalendar(currentYear, currentMonth);
 }
 
 // Renderiza el calendario
@@ -67,37 +82,67 @@ function renderCalendar(year, month) {
   const firstDay = new Date(year, month).getDay();
   const daysInMonth = 32 - new Date(year, month, 32).getDate();
 
-  let date = 1;
-  for (let i = 0; i < 6; i++) {
-    let row = document.createElement("tr"); // Crea una fila
-    for (let j = 0; j < 7; j++) {
-      let cell = document.createElement("td");
-      if (i === 0 && j < firstDay) {
-        cell.innerHTML = ""; // Celdas vacías antes del inicio del mes
-      } else if (date > daysInMonth) {
-        break;
-      } else {
-        let cellDate = new Date(year, month, date);
-        let dateString = formatDate(cellDate); // Formato 'YYYY-MM-DD'
+  // Realiza la petición AJAX para obtener los días con mayor carga de trabajo
+  fetch(`/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas`)
+    .then((response) => response.json())
+    .then((workDays) => {
+      // workDays es un array con los días que más trabaja el doctor, por ejemplo: [{ date: "2025-04-05", citas: 10 }, { date: "2025-04-12", citas: 15 }]
 
-        cell.innerHTML = date;
-        cell.dataset.date = dateString;
+      let date = 1;
+      for (let i = 0; i < 6; i++) {
+        let row = document.createElement("tr"); // Crea una fila
+        for (let j = 0; j < 7; j++) {
+          let cell = document.createElement("td"); // Crea una celda
+          cell.classList.add("date"); //Agregar clase date
+          if (i === 0 && j < firstDay) {
+            // Celdas vacías antes del inicio del mes
+            cell.innerHTML = "";
+          } else if (date > daysInMonth) {
+            // Detiene el bucle si se excede el número de días del mes
+            break;
+          } else {
+            let cellDate = new Date(year, month, date); // Crea un objeto de fecha para el día actual
+            let dateString = formatDate(cellDate); // Formatea la fecha en 'YYYY-MM-DD'
 
-        // Doble clic para abrir el modal de eventos
-        cell.addEventListener("dblclick", () => openEventModal(dateString));
+            cell.innerHTML = date; // Muestra el número del día en la celda
+            cell.dataset.date = dateString; // Agrega un atributo personalizado con la fecha
 
-        // Si hay un evento en este día, aplica estilos
-        let eventToday = events.find((e) => e.date === dateString);
-        if (eventToday) {
-          cell.classList.add("bg-info", "text-white");
+            // Busca si el día actual está en el array de días con mayor carga de trabajo
+            let workDay = workDays.find((day) => day.date === dateString);
+            if (workDay) {
+              cell.classList.add("diasOcupados", "text-white"); // Clase para marcar días con mayor carga
+
+              // Agrega un tooltip de Bootstrap con información adicional
+              cell.setAttribute("data-bs-toggle", "tooltip"); // Activa el tooltip de Bootstrap
+              cell.setAttribute(
+                "title",
+                `Citas: ${workDay.total_citas}
+                DR ${workDay.personal}` // Muestra el número de citas en el tooltip
+              );
+            }
+
+            // Doble clic para abrir el modal de eventos
+            cell.addEventListener("dblclick", () => openEventModal(dateString));
+
+            date++; // Incrementa el día
+          }
+
+          row.appendChild(cell); // Agrega la celda a la fila
         }
-
-        date++;
+        calendarBody.appendChild(row); // Agrega la fila al cuerpo del calendario
       }
-      row.appendChild(cell);
-    }
-    calendarBody.appendChild(row);
-  }
+
+      // Inicializa los tooltips de Bootstrap
+      const tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+      tooltipTriggerList.forEach((tooltipTriggerEl) => {
+        new bootstrap.Tooltip(tooltipTriggerEl); // Crea un tooltip para cada elemento con el atributo 'data-bs-toggle="tooltip"'
+      });
+    })
+    .catch((error) => {
+      console.error("Error al obtener los días de trabajo:", error); // Maneja errores en la petición
+    });
 }
 
 // Cambia el mes del calendario
@@ -128,8 +173,110 @@ function formatDate(dateObj) {
   const day = ("0" + dateObj.getDate()).slice(-2);
   return `${year}-${month}-${day}`;
 }
-
 // ========================== FUNCIONES DE DATOS ==========================
+
+//Cargar los doctores en el select
+const traerDoctor = async () => {
+  try {
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/retornarDoctores"
+    );
+    let resultado = await peticion.json();
+
+    if (resultado.length > 0) {
+      let html = "<option selected disabled>Sellccionar Doctor</option>";
+      resultado.forEach((element) => {
+        html += `<option value="${element.id_personal}">${element.nombre_d}  ${element.apellido}</option>`;
+      });
+      console.log(html);
+      document.getElementById("selectDoctor").innerHTML = html;
+      console.log(resultado);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+traerHorarioEspecificoDelDr = async (id) => {
+  // try {
+    // Realiza la petición AJAX
+    console.log(id)
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/mostrarHorario/" + id
+    );
+    let resultado = await peticion.json();
+
+    document.querySelector(".horario-insertar").innerHTML = "";
+    let div = document.createElement("div");
+    // diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
+    // let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
+    console.log(resultado);
+    if (resultado.length > 0) {
+      resultado.forEach((res) => {
+        div.innerHTML += `
+                <div class="mb-2" id="divAcordion">
+                <div class="d-flex ">Días Laborables: <h6 class="fw-bold"> ${res.diaslaborables}</h6> </div>
+              
+                <div class="d-flex">Hora de Entrada: <h6 class="fw-bold"> ${res.horaDeEntrada}</h6></div>
+                <div class="d-flex ">Hora de Salida: <h6 class="fw-bold"> ${res.horaDeSalida}</h6></div></div>  `
+
+  
+      });
+
+      document.getElementById("titulo").innerText = `Horario del Docotor`;
+    }
+
+    document.querySelector(".horario-insertar").appendChild(div);
+  // } catch (error) {
+  //   console.log(error);
+  // }
+};
+
+const traerHorarioDoctor = async (id) => {
+  try {
+    // Realiza la petición AJAX
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id
+    );
+    let resultado = await peticion.json();
+    //Quitar los dias marcados para marcalos nuevamente
+    document.querySelectorAll(".date").forEach((date) => {
+      date.classList.remove("diasOcupados");
+      date.removeAttribute("data-bs-original-title");
+    });
+    // Itera sobre las fechas recibidas
+    resultado.forEach((res) => {
+      // Busca el <td> con el atributo data-date que coincida con la fecha
+      const td = document.querySelector(`td[data-date="${res.fecha}"]`);
+
+      if (td) {
+        // Si el <td> existe, agrega la clase
+        td.classList.add("diasOcupados");
+        td.setAttribute("data-bs-toggle", "tooltip"); // Activa el tooltip de Bootstrap
+        td.setAttribute(
+          "title",
+          `Citas: ${res.total_citas}
+                DR ${res.personal}` // Muestra el número de citas en el tooltip
+        );
+      }
+      //Darle el teto al boton del horario
+      document.getElementById(
+        "btnHorario"
+      ).innerText = `Horario del Dr ${res.personal}`;
+
+      //Llamar funcion para el horario especifico
+      console.log()
+      traerHorarioEspecificoDelDr(id);
+    });
+
+    //Aparecer el boton del horario cuando seleccione el doctor
+    document.getElementById("btnHorario").classList.remove("d-none");
+  } catch (error) {
+    console.error("Error al traer el horario del doctor:", error);
+  }
+};
+
+
 
 // Carga los datos de la tabla de precios
 const traerDatosServicios = async () => {

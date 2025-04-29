@@ -26,9 +26,12 @@ class ModeloInsumo extends Db
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
-	public function insumos()
+	public function insumos($cantidadCero = true)
 	{
-		$sql = $this->conexion->prepare("SELECT * FROM insumo WHERE estado ='ACT' ");
+		$query = "";
+		if($cantidadCero) $query = "SELECT * FROM insumo WHERE estado ='ACT' AND cantidad >= 0 ";
+		else   $query = "SELECT * FROM insumo WHERE estado ='ACT' AND cantidad > 0";
+		$sql = $this->conexion->prepare($query);
 		$sql->execute();
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
@@ -133,7 +136,7 @@ class ModeloInsumo extends Db
 		//insertar en la tabla inventario
 
 
-		$consulta3 = $this->conexion->prepare("INSERT INTO inventario VALUES (null, :id_insumo, :cantidad,:fechaVecimiento,:lote,  7)");
+		$consulta3 = $this->conexion->prepare("INSERT INTO inventario VALUES (null, :id_insumo, :cantidad,:fechaVecimiento,:lote)");
 		$consulta3->bindParam(":id_insumo", $id_insumo);
 		$consulta3->bindParam(":cantidad", $cantidad);
 		$consulta3->bindParam(":fechaVecimiento", $fechaDeVecimiento);

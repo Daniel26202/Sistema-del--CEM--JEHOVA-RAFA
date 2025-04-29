@@ -2,17 +2,20 @@
 
 use App\modelos\ModeloProveedores;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorProveedores
 {
 
 	private $modelo;
 	private $bitacora;
+	private $permisos;
 
 	function __construct()
 	{
 		$this->modelo = new ModeloProveedores();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();
 	}
 
 	public function proveedores($parametro)
@@ -111,5 +114,11 @@ class ControladorProveedores
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"proveedor","Ha modificado un proveedor");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editado");
 		}
+	}
+
+
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 }

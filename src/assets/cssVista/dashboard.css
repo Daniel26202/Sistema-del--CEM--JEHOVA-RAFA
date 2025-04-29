@@ -1,26 +1,52 @@
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+:root {
+    /* Colores claros por defaultt */
+    --color-bg-main: #f2f9ff;
+    --color-bg-sidebar: #e8f2ff;
+    --color-bg-card: #FDFDFF;
+    --color-text: #FDFDFF;
+    --color-text-card: #1b1a1a;
+    --color-primary: #387ADF;
+    --color-primary-contrast: #ffffff;
+    --color-surface: #F8FCFF;
+    --color-border: #E4EBF0;
 }
+
+[data-theme="dark"] {
+    /* Colores oscuros */
+    --color-bg-main: hsl(211, 53%, 11%);
+    --color-bg-sidebar: hsl(211, 43%, 11%);
+    --color-bg-card: #415A77;
+    --color-text: #E0E1DD;
+    --color-text-card: #E0E1DD;
+    --color-primary: #387adf;
+    --color-primary-contrast: #E0E1DD;
+    --color-surface: #415A77;
+    --color-border: #E4EBF0;
+}
+
+
+
 body {
     font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
+    
+    
 }
+
+
 
 
 #main-content{
-    background-color: rgb(242, 249, 255);
-    animation: fadeIn 0.19s ease-in-out;
-       
+    opacity: 1;
+    background-color: var(--color-bg-main);
+ 
+   
 }
 
 #sidebar-content{
-    background-color: rgb(232 242 255);
-    animation: fadeIn 0.40s ease-in-out;
+    opacity: 1;
+    color: var(--color-text-card);
+    background-color: var(--color-bg-sidebar);
+
 }
 
 .img-logo{
@@ -32,37 +58,44 @@ body {
 #welcomeCard{
     display: inline-flex;
     flex-direction: column-reverse;
-    color: #FDFDFF;
-    background-color: #387adf;
+    color: var(--color-text);
+    background-color: var(--color-primary);
     margin-left: 10px;
     justify-content: center;
 }
 
 .card-container{
-    background-color: #FDFDFF;
+    color: var(--color-text-card);
+    background-color: var(--color-surface);
     margin-left: 2%;
 }
 
 .metric-card {
-    background: white;
+    background: var(--color-surface);
     text-align: center;
     border-radius: 10px;
 }
 
 .chart-card {
+    color: var(--color-text-card);
     margin-left: 10px;
     max-width: 300px;
     height: auto;
-    background: #FDFDFF;
+    background: var(--color-surface);
    /*  border-radius: 10px; */
 }
 
-/* .main{
-    height: 100%;
-    width: 100%;
-} */
+.table{
+    color: var(--color-text-card);
+}
+
+table.dataTable>thead>tr>th,
+table.dataTable>thead>tr>td {
+    border-bottom: 0%;
+}
+
 #calendarCard {
-    background: #FDFDFF;
+    background:var(--color-surface);
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
@@ -70,7 +103,7 @@ body {
 
 
 #next , #day, #prev{
-    background-color: #FDFDFF;
+    background-color: var(--color-surface);
     border-style: none;
 
 }
@@ -83,7 +116,7 @@ h5 {
 #monthYear {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #333;
+    color: var(--color-text-card);
     text-align: center;
     margin-bottom: 10px;
 }
@@ -107,32 +140,34 @@ h5 {
 }
 
 #calendar-body td:hover {
-    background-color: #eaeaea;
+    background-color: var(--color-bg-main);
 }
 
 .btn{
-    color: #FDFDFF;
+    color: var(--color-text-card);
     background-color: #78a0f0;
 }
 
 
 #calendar-body td.selected {
-    background-color: #007bff;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-text-card);
     border-radius: 4px;
 }
 
 
-
+.metric-card{
+    color: var(--color-text-card);
+}
 .card {
     border-radius: 16px;
-    background-color: #FDFDFF;
+    background-color: var(--color-bg-card);
 }
 
 .card-header {
     padding: 6px 12px;
 /*     background-color: rgb(42, 109, 172);
- */    color: #1d1d1d;
+ */    color: var(--color-text-card);
     /* Evita colores muy llamativos */
     border-bottom: none;
     /* Look más minimalista */
@@ -140,7 +175,7 @@ h5 {
 
 .card-tittle{
     padding: 15px 8px 12px 12px;
-    color: #2b2b2b;
+    color: var(--color-text-card);
 }
 
 .table-borderless tbody tr td {
@@ -156,6 +191,15 @@ h5 {
 }
 
 #especialidades_solicitadas{
-      width: 1920px;  /* tamaño visual en la página */
-  height: 1080px;
+    width: 1920px;  /* tamaño visual en la página */
+    height: 1080px;
 }
+
+.diasOcupados{
+    background-color: var(--color-primary) !important;
+}
+
+/* .diasOcupados {
+    background-color: #E4EBF0 !important;
+    color: black;
+} */

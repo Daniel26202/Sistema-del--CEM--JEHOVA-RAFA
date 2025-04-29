@@ -92,6 +92,7 @@ header('Pragma: public');
 header('Expires: 0');
 
 // Generar el PDF y enviarlo al navegador
+ob_end_clean(); // Limpia el búfer de salida
 $pdf->Output('D'); // 'D' indica que se debe descargar el archivo
 exit;
 ?>

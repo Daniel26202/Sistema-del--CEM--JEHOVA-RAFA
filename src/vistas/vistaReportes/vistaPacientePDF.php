@@ -1,6 +1,6 @@
 <?php
 
-$pacientes = $this->modelo->pdfPaciente($_GET["pdf"]);
+
 
 class PDF extends FPDF
 {
@@ -17,8 +17,11 @@ class PDF extends FPDF
     }
 }
 
-// Creación del objeto de la clase heredada
+
+
+// // Creación del objeto de la clase heredada
 $pdf = new PDF();
+
 $pdf->AddPage();
 $pdf->SetFont('Arial', 'B', 15);
 
@@ -60,6 +63,6 @@ $pdf->SetFont('Arial', '', 12);
 
 
 
-
-
+ob_end_clean(); // Limpia el búfer de salida
 $pdf->Output();
+exit;
