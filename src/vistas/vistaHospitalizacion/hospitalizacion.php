@@ -162,14 +162,9 @@
                         <th>Apellido</th>
                         <th>Diagnostico</th>
                         <th>Doctor asignado</th>
-                        <th>Horas</th>
 
                         <?php if ($_SESSION['rol'] == "usuario"): ?>
                             <!-- no hay -->
-                        <?php elseif ($_SESSION['rol'] == "administrador"): ?>
-
-                            <th>Precio total</th>
-
                         <?php endif ?>
 
                         <th>Acciones</th>

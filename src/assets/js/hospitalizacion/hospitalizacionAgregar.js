@@ -243,7 +243,7 @@ addEventListener("DOMContentLoaded", function () {
 
     // función async
     const traerUnInsumos = async (id) => {
-        try {
+        // try {
 
             // llamo la función buscar un Insumo
             let peticionUnInsumo = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + id);
@@ -265,13 +265,13 @@ addEventListener("DOMContentLoaded", function () {
 
                 let existeIn = true;
 
-                let objIL = await limiteI();
+                let objIL = await limiteI(id);
 
                 // esto recorre todos los input number de cantidad
                 let div = document.querySelectorAll(".divInsumosAgregadosA");
                 if (div) {
 
-                    let objIL = await limiteI();
+                    let objIL = await limiteI(id);
                     // el insumo no existe 
                     if (objIL[id]) {
                         existeIn = false;
@@ -403,7 +403,7 @@ addEventListener("DOMContentLoaded", function () {
                             botonInputNumber(menos, inputN);
                             sumarTotal();
 
-                            let objIL = await limiteI();
+                            let objIL = await limiteI(idI);
                             // si no encuentro el id 
                             if (!objIL[idI]) {
                                 p.classList.add("d-none");
@@ -412,7 +412,7 @@ addEventListener("DOMContentLoaded", function () {
                         })
 
                         mas.addEventListener("click", async function () {
-                            let objIL = await limiteI();
+                            let objIL = await limiteI(idI);
                             // si encuentro el id 
                             if (objIL[idI]) {
                                 p.classList.remove("d-none");
@@ -460,9 +460,9 @@ addEventListener("DOMContentLoaded", function () {
 
             }
 
-        } catch (error) {
-            console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
-        }
+        // } catch (error) {
+        //     console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        // }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -624,45 +624,28 @@ addEventListener("DOMContentLoaded", function () {
     ///////////////////////////////////////////////////
     // conteo de insumos
 
-    // buscar insumo existe
-    const buscarIEx = async (id) => {
-        try {
-
-            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/buscarUnInsumo/" + id);
-            let resultado = await peticion.json();
-            let insumosEx = {};
-
-            if (resultado.length > 0) {
-
-                resultado.forEach(res => {
-                    // si no existe la posición del mismo numero del id del insumo
-                    if (!insumosEx[parseInt(res.id_insumo)]) {
-                        // creamos esa posición con ese numero de id, y dentro su contenido 
-                        insumosEx[parseInt(res.id_insumo)] = {
-                            id: parseInt(res.id_insumo),
-                            cantidadT: 0,
-                            limite: parseInt(res.limite_insumo)
-                        }
-                    }
-
-                });
-
-                return insumosEx;
-            } else { }
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
-        }
-    }
-
     // operación matemática para saber cual insumo llego a su limite en cantidad
-    const limiteI = async (idI) => {
+    const limiteI = async (idIn) => {
         try {
+            
+        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
+        let resultado = await peticion.json();
+        
+        console.log(resultado);
 
-            // me traigo los datos (cantidad y id del insumo que esta ya registrado) en un objeto, para almacenarlo en una variable.
-            let objetoIdDB = await buscarIEx(idI);
-            let insumosExL = {};
-            document.querySelectorAll(".divInsumosAgregadosA").forEach(divI => {
-                // id del insumo
+                let insumosLim = {};
+                
+                        // creamos esa posición con ese numero de id, y dentro su contenido 
+                insumosLim[parseInt(resultado.id_insumo)] = {
+                    id: parseInt(resultado.id_insumo),
+                    cantidadT: 0,
+                    limite: parseInt(resultado.limite_insumo)
+                }
+                
+                
+                let insumosExL = {};
+                document.querySelectorAll(".divInsumosAgregadosA").forEach(divI => {
+               // id del insumo
                 let idI = divI.querySelector(".inputIdInsu");
                 let limiteI = idI.getAttribute("data-limite-cantidad");
                 let cantidad = parseInt(divI.querySelector(".input-number").value);
@@ -674,36 +657,35 @@ addEventListener("DOMContentLoaded", function () {
                     cantidadT: cantidad,
                     limite: parseInt(limiteI)
                 }
-
             })
 
-            console.log("objIL");
-            // recorro el objeto de los insumos totales de la db
-            for (const iL in insumosExL) {
-                // si existe la posición del objeto (el id del insumo) se suma la cantidad del insumo
-                if (objetoIdDB[iL]) {
-                    objetoIdDB[iL].cantidadT = parseInt(objetoIdDB[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
+                console.log(insumosExL);
+                // recorro el objeto de los insumos totales de la db
+                for (const iL in insumosExL) {
+                    // si existe la posición del objeto (el id del insumo) se suma la cantidad del insumo
+                    if (insumosLim[iL]) {
+                        insumosLim[iL].cantidadT = parseInt(insumosLim[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
 
-                    // si no existe se agrega los datos del insumo
-                } else {
-                    objetoIdDB[iL] = {
-                        id: parseInt(iL),
-                        cantidadT: insumosExL[iL].cantidadT,
-                        limite: insumosExL[iL].limite
+                        // si no existe se agrega los datos del insumo
+                    } else {
+                        insumosLim[iL] = {
+                            id: parseInt(iL),
+                            cantidadT: insumosExL[iL].cantidadT,
+                            limite: insumosExL[iL].limite
+                        }
                     }
                 }
-            }
-                console.log("objIL2");
 
-            let objIL = {};
-            // recorro el objeto de los insumos y solo almaceno los limitados
-            for (const iLi in objetoIdDB) {
-                if (objetoIdDB[iLi].cantidadT >= objetoIdDB[iLi].limite) {
-                    objIL[iLi] = objetoIdDB[iLi];
+                let objIL = {};
+                // recorro el objeto de los insumos y solo almaceno los limitados
+                for (const iLi in insumosLim) {
+                    if (insumosLim[iLi].cantidadT >= insumosLim[iLi].limite) {
+                        objIL[iLi] = insumosLim[iLi];
+                    }
                 }
-            }
-            
-            return objIL;
+                
+                return objIL;
+
             
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");

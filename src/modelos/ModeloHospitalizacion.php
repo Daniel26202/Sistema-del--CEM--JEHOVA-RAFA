@@ -74,7 +74,7 @@ class ModeloHospitalizacion extends Db
     public function selectsInsumos()
     {
 
-        $consulta = $this->conexion->prepare('SELECT * FROM insumo WHERE estado = "ACT"');
+        $consulta = $this->conexion->prepare('SELECT * FROM insumo WHERE estado = "ACT" AND cantidad > 0');
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
@@ -83,7 +83,7 @@ class ModeloHospitalizacion extends Db
     public function buscarInsumos($nombre)
     {
 
-        $consulta = $this->conexion->prepare('SELECT id_insumo, nombre, precio FROM insumo WHERE estado = "ACT" AND nombre LIKE :nombre');
+        $consulta = $this->conexion->prepare('SELECT id_insumo, nombre, precio FROM insumo WHERE estado = "ACT" AND cantidad > 0 AND nombre LIKE :nombre');
 
         //PDO::PARAM_STR: esto es para que el envió sea de tipo estrin. 
         //bindValue: funciona igual que el bindParam la diferencia es, que después del bindValue no se puede modificar nada de la consulta no lo leerá.
