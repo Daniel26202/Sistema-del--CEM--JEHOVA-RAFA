@@ -2,6 +2,7 @@
 use App\modelos\ModeloReporte;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloInsumo;
+use App\modelos\ModeloPermisos;
 // use FPDF\FPDF; 	
 
 class ControladorReportes{
@@ -9,12 +10,14 @@ class ControladorReportes{
 	private $modelo;
 	private $bitacora;
 	private $insumo;
+	private $permisos;
 
     function __construct()
     {
         $this->modelo = new ModeloReporte();
         $this->bitacora = new ModeloBitacora();
         $this->insumo = new ModeloInsumo();
+		$this->permisos = new ModeloPermisos();
     }
 
 	
@@ -42,7 +45,8 @@ class ControladorReportes{
 			require_once './src/vistas/vistaReportes/vistaFacturaPdf.php';
 		}
 	}
-	public function pacientePDF(){
+	public function pacientePDF($datos){
+		$pacientes = $this->modelo->pdfPaciente($datos[0]);
 		require_once './src/vistas/vistaReportes/vistaPacientePDF.php';
 	}
 	public function insumosPDF(){
@@ -54,21 +58,22 @@ class ControladorReportes{
 	public function reportesFacturasAnuladas(){
 		require_once './src/vistas/vistaReportes/vistaReporteFacturaAnuladas.php';
 	}
-	public function buscarPago(){
-
-		$respuesta = $this->modelo->consultarPagoFactura($_GET["id_factura"]);
-
-		echo json_encode($respuesta);
-	}
-	public function buscarMasServicios(){
-
-		$respuesta = $this->modelo->consultarServiciosExtras($_GET["id_factura"]);
+	public function buscarPago($datos){
+		$id_factura = $datos[0];
+		$respuesta = $this->modelo->consultarPagoFactura($id_factura);
 
 		echo json_encode($respuesta);
 	}
-	public function buscarInsumos(){
+	public function buscarMasServicios($datos){
+		$id_factura = $datos[0];
+		$respuesta = $this->modelo->consultarServiciosExtras($id_factura);
 
-		$respuesta = $this->modelo->consultarFacturaInsumo($_GET["id_factura"]);
+		echo json_encode($respuesta);
+	}
+	public function buscarInsumos($datos){
+
+		$id_factura = $datos[0];
+		$respuesta = $this->modelo->consultarFacturaInsumo($id_factura);
 
 		echo json_encode($respuesta);
 	}
@@ -86,7 +91,7 @@ class ControladorReportes{
 		
 		print_r($_POST);
 
-	 	$respuesta = $this->modelo->insumosAnulados($_POST["id_factura"]);
+		$respuesta = $this->modelo->insumosAnulados($_POST["id_factura"]);
 	 	$eliminar = $this->modelo->anularFac($_POST["id_factura"]);
 	
 		foreach($respuesta as $res){
@@ -97,7 +102,7 @@ class ControladorReportes{
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha anula una factura");
 		
 		// // $respuesta =$this->modelo->cantidadAnulada($array);
-		header("location: ?c=ControladorReportes/reportes&anulada");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/anulada");
 		
 
 	
@@ -105,9 +110,13 @@ class ControladorReportes{
 	
 	}
 
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+	}
 	
 
 }
 
 
- ?>
+?>

@@ -4,6 +4,7 @@ use App\modelos\ModeloControl;
 use App\modelos\ModeloSintomas;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorControl
 {
@@ -12,6 +13,7 @@ class ControladorControl
 	private $modeloSintomas;
 	private $modeloPatologia;
 	private $bitacora;
+	private $permisos;
 
 
 	function __construct()
@@ -20,6 +22,7 @@ class ControladorControl
 		$this->modeloSintomas = new ModeloSintomas();
 		$this->modeloPatologia = new ModeloPatologia();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();	
 	}
 
 	public function control($parametro)
@@ -163,5 +166,10 @@ class ControladorControl
 		// Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"sintomas","Ha Insertado un  sintoma");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control");
+	}
+
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 }

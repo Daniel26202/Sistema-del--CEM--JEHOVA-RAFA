@@ -3,6 +3,7 @@
 use App\modelos\ModeloFactura;
 use App\modelos\ModeloCategoria;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
 
 class ControladorFactura
 {
@@ -10,12 +11,14 @@ class ControladorFactura
 	private $modelo; //atributo privado
 	private $categoria;
 	private $bitacora;
+	private $permisos;
 
 	//le damos el valor de el  modelo a el atributo $modelo
 	function __construct()
 	{
 		$this->modelo = new ModeloFactura();
 		$this->bitacora = new ModeloBitacora();
+		$this->permisos = new ModeloPermisos();
 	}
 
 	//metodo para mostrar la vista de facturacion
@@ -23,7 +26,7 @@ class ControladorFactura
 
 	public function factura($parametro)
 	{
-		$insumos = $this->modelo->mostrarInsumos();
+		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 		$extras = $this->modelo->mostrarServicios();
@@ -31,7 +34,7 @@ class ControladorFactura
 	}
 
 	function facturaCita($parametro) {
-		$insumos = $this->modelo->mostrarInsumos();
+		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 		$extras = $this->modelo->mostrarServicios();
@@ -138,11 +141,14 @@ class ControladorFactura
 		echo "<br><br><br>"."datos por post";
 		print_r($_POST);
 
+	
+
+
 
 
 		$this->modelo->insertaFactura( $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote, $id_cita);
 
-		// Guardar la bitacora
+		//Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado servicios y/o insumos");
 
 
@@ -195,5 +201,11 @@ class ControladorFactura
 	{
 
 		require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
+	}
+
+
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 }

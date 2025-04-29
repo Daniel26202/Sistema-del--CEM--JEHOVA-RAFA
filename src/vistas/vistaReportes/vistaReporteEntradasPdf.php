@@ -1,6 +1,9 @@
 <?php
 
-$entradas = $this->modelo->entradasInsumosPdf($_POST['id_insumo'],$_POST["desdeFechaEntradas"], $_POST["fechaHastaEntradas"]);
+$desdeFecha = isset($_POST["desdeFechaEntradas"]) ? $_POST["desdeFechaEntradas"] : "";
+$fechaHastaEntradas = isset($_POST["fechaHastaEntradas"]) ? $_POST["fechaHastaEntradas"] : "";
+
+$entradas = $this->modelo->entradasInsumosPdf($_POST['id_insumo'],$desdeFecha, $fechaHastaEntradas);
 
 class PDF extends FPDF
 {
@@ -81,5 +84,6 @@ $pdf->Ln(12);
 // AQUI TERMINAS EL FORECAH
 
 
-
+ob_end_clean(); // Limpia el búfer de salida
 $pdf->Output();
+exit;

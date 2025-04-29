@@ -13,6 +13,7 @@ require_once './src/vistas/head/head.php';
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
+
                     <div class="welcome-card p-4 rounded shadow-sm" id="welcomeCard">
                         <h3>Bienvenido!</h3>
                         <div class="reminder d-flex justify-content-between align-items-center">
@@ -69,9 +70,38 @@ require_once './src/vistas/head/head.php';
 
     <!-- Sidebar (25%) -->
     <div class="sidebar-content col-12 col-lg-4 p-4 min-vh-100" id="sidebar-content">
-        <h5 style="color: rgb(42, 109, 172);">Calendario</h5>
+
+        <div class="d-flex justify-content-between ">
+            <div class="w-75 ">
+                <div class="d-flex justify-content-between ">
+                    <div class="d-flex justify-content-end mb-4 col-8" id="form-buscadorS">
+
+                        <a class="btn d-none" title="Buscar" id="reiniciarBusquedaSintomas" uk-tooltip="Restablecer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                                <path fill-rule="evenodd"
+                                    d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+                            </svg>
+                        </a>
+
+                        <select class="form-control " id="selectDoctor">
+                            <!-- js -->
+                        </select>
+                        <button type="button" class="btn btn-buscar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"></path>
+                            </svg></button>
+
+                    </div>
+                </div>
+            </div>
+            <h5 class="w-25">Calendario</h5>
+        </div>
+
+        <button id="btnHorario" class="btn btn-primary mb-2 w-100 d-none" uk-toggle="target: #modal-info-doctores"></button>
         <!-- Calendar Container -->
-        <div class="card shadow-sm my-4" id="calendarCard">
+        <div class="card shadow-sm mb-2" id="calendarCard">
             <div class="card-tittle d-flex justify-content-between align-items-center">
                 <button id="prev"><img src="../src/assets/icons/izquierda.svg" alt="anterior" style="width: 16px; height: 16px;"></button>
                 <h2 id="monthYear" class="mb-0"></h2>
@@ -99,7 +129,7 @@ require_once './src/vistas/head/head.php';
         </div>
 
         <!-- Contenedor de la lista de servicios -->
-        <div class="col-md-12 mt-4">
+        <div class="col-md-12 mt-3">
             <div class="card shadow-sm">
                 <div class="card-tittle">
                     <h5 class="mb-0">Precio consulta</h5>
@@ -128,9 +158,52 @@ require_once './src/vistas/head/head.php';
 
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Modal de horario del doctor -->
+
+<div id="modal-info-doctores" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+        <form>
+
+            <!-- Botón que cierra el modal -->
+            <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                    class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+            </a>
+
+            <div class="d-flex align-items-center">
+                <div>
+                </div>
+                <div>
+                    <h5 class="text-center" id="titulo">
+                    </h5>
+                </div>
+            </div>
+
+            <div class="modal-body horario-insertar">
+
+            </div>
+
+
+
+            <div class="mt-3 uk-text-right">
+
+                <button class="uk-button fw-bold uk-button-default uk-modal-close btn-cerrar-modal" type="button"
+                    data-bs-dismiss="modal">Cerrar</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
 
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>

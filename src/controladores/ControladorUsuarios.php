@@ -5,6 +5,7 @@ use App\modelos\ModeloDoctores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloRecuperarContr;
+use App\modelos\ModeloPermisos;
 
 
 class ControladorUsuarios
@@ -15,6 +16,7 @@ class ControladorUsuarios
     private $bitacora;
     private $inicioSesion;
     private $recuperarContr;
+    private $permisos;
 
     public function __construct()
     {
@@ -23,6 +25,7 @@ class ControladorUsuarios
         $this->bitacora = new ModeloBitacora();
         $this->inicioSesion = new ModeloInicioSesion();
         $this->recuperarContr = new ModeloRecuperarContr();
+        $this->permisos = new ModeloPermisos();
     }
 
     public function usuarios($parametro)
@@ -40,16 +43,16 @@ class ControladorUsuarios
     }
 
     // editar usuario
-    public function editarUsuario()
+    public function editarUsuario($datos)
     {
 
+        $usuarioDb = $datos[0];
 
         $resultadoDeUsuario = $this->modelo->validarUsuario($_POST['usuario']);
 
-
         // NOTA: Esto "&&" es "Y"
         //se verifica si el usuario del input no es igual al usuario ya existente.  
-        if ($_POST["usuario"] != $_GET["usuarioDb"]) {
+        if ($_POST["usuario"] != $usuarioDb) {
 
             //verifica si el usuario es igual a la información de la base de datos.
             if ($resultadoDeUsuario === "existeU") {
@@ -64,7 +67,7 @@ class ControladorUsuarios
             }
 
             //se verifica si el usuario del input es igual al usuario ya existente.  
-        } elseif ($_GET["usuarioDb"] == $_POST["usuario"]) {
+        } elseif ($usuarioDb == $_POST["usuario"]) {
 
             $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
 
@@ -149,5 +152,10 @@ class ControladorUsuarios
             }
             echo json_encode($datosU);
         }
+    }
+
+    private function permisos($id_rol, $permiso, $modulo)
+    {
+        return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
     }
 }

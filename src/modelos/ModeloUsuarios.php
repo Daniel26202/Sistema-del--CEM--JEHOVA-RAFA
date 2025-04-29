@@ -24,7 +24,7 @@ class ModeloUsuarios extends Db
     //buscamos a los usuarios en la base de datos
     public function select()
     {
-        $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.id_rol = 2 AND u.estado= "ACT" ';
+        $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.nombre = "Doctor" AND u.estado= "ACT" ';
 
         $consulta = $this->conexion->prepare($sql);
 
@@ -35,7 +35,7 @@ class ModeloUsuarios extends Db
     //buscamos a los usuarios en la base de datos
     public function selectAdmin()
     {
-        $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.id_rol = 1 AND u.estado= "ACT" ';
+        $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.nombre= "Superadmin" AND u.estado= "ACT" ';
 
         $consulta = $this->conexion->prepare($sql);
 

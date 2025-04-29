@@ -2,21 +2,28 @@
 
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloBitacora; 
+use App\modelos\ModeloPermisos;
 
 class ControladorPacientes
 {
 	private $modelo;
 	private $bitacora;
+	private $permisos;
 
 
 	function __construct()
 	{
 		$this->modelo = new ModeloPacientes;
 		$this->bitacora = new ModeloBitacora; // Guarda la instancia de la bitacora
+		$this->permisos = new ModeloPermisos();
 	}
 
 
 
+	private function permisos($id_rol, $permiso, $modulo)
+	{
+		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+	}
 	public function getPacientes($parametro)
 	{
 		$pacientes = $this->modelo->index();
@@ -41,7 +48,7 @@ class ControladorPacientes
 
         } elseif ($fecha <= $_POST['fn']) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorfecha");
-          	
+        
 			}else{
 
 				// guardar la bitacora

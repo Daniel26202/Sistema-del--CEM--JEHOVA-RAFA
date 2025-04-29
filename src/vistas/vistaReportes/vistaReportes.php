@@ -18,7 +18,7 @@
 			</svg></a>
 		<div class="uk-nav uk-dropdown-nav" uk-dropdown="pos: top-right" id="desplegable2">
 			<ul>
-				<li id="perfilPaciente"><a href="?c=ControladorPerfil/perfil" class="uk-animation-toggle">
+				<li id="perfilPaciente"><a href="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil" class="uk-animation-toggle">
 						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill azul uk-animation-scale-up" viewBox="0 0 16 16">
 							<path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
 						</svg>PERFIL
@@ -36,7 +36,7 @@
 
 				<li><a href="#" data-bs-toggle="modal"
 						data-bs-target="#eliminar">
-						<img src="<?= $urlBase?>../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
+						<img src="<?= $urlBase ?>../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
 						</svg>SALIR</a></li>
 			</ul>
 		</div>
@@ -147,7 +147,7 @@
 			<div class="modal-header height_modal_factura">
 				<div class="d-flex justify-content-center align-items-center">
 					<div>
-						<img class="rounded-circle d-flex justify-content-center " width="75" height="75" src="./src/assets/img/logotipo.jpg">
+						<img class="rounded-circle d-flex justify-content-center " width="75" height="75" src="<?= $urlBase ?>../src/assets/img/logotipo.jpg">
 					</div>
 					<div>
 						<h3 class="modal-title fw-bold text-white ms-4" id="exampleModalLabel">REPORTES DE FACTURACIÓN <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-earmark-text-fill mb-1" viewBox="0 0 16 16">
@@ -173,7 +173,7 @@
 				<div class="d-flex justify-content-between">
 
 					<div class="mover-input-buscar mt-4">
-						<form id="formularioDeFecha" class="d-flex" autocomplete="off" action="?c=ControladorReportes/reportesFactura" method="POST">
+						<form id="formularioDeFecha" class="d-flex" autocomplete="off" action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportesFactura" method="POST">
 
 							<input type="date" name="fechaInicio" id="fechaInicio" class="form-control input-buscar fecha-exp" style="width: 27%;" title="fecha de Inicio">
 
@@ -380,7 +380,7 @@
 																				Dr <?php echo $factura["nombre_d"] ?>
 
 																				<?php echo $factura["apellido_d"] ?><br> <?php echo $factura["precio_servicio"] . " BS" ?>
-																				 <?php echo $factura["precio_servicio"] . " BS" ?>
+																				<?php echo $factura["precio_servicio"] . " BS" ?>
 																			</p> -->
 															</div>
 															<div class="masServicios"> </div>
@@ -406,7 +406,7 @@
 
 												<div class="d-flex justify-content-end">
 													<div class="uk-card-footer">
-														<!-- <a href="?c=controladorReportes/factura&id_factura=<?= $factura["id_factura"] ?>"
+														<!-- <a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/factura&id_factura=<?= $factura["id_factura"] ?>"
 															class="btn btn-tabla pdf">
 															<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
 																class="bi bi-printer-fill" viewBox="0 0 16 16">
@@ -416,7 +416,7 @@
 																	d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
 															</svg>
 														</a> -->
-														<a href="?c=controladorReportes/factura&id_factura=<?= $factura["id_factura"] ?>&id_cita=<?= $factura["id_cita"] ?>"
+														<a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/factura/<?= $factura["id_factura"] ?>"
 															class="btn btn-tabla pdf2">
 															<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
 																class="bi bi-printer-fill" viewBox="0 0 16 16">
@@ -468,7 +468,7 @@
 											<button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
 
 
-											<form action="?c=ControladorReportes/anularFactura" method="POST">
+											<form action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/anularFactura" method="POST">
 												<input type="hidden" value="<?= $factura["id_factura"] ?>" name="id_factura">
 												<input type="hidden" value="<?= $_SESSION['id_usuario'] ?>" name="id_usuario_bitacora">
 
@@ -706,7 +706,7 @@
 			<div class="modal-header height_modal_factura">
 				<div class="d-flex justify-content-center align-items-center">
 					<div>
-						<img class="rounded-circle d-flex justify-content-center " width="75" height="75" src="./src/assets/img/logotipo.jpg">
+						<img class="rounded-circle d-flex justify-content-center " width="75" height="75" src="<?= $urlBase ?>../src/assets/img/logotipo.jpg">
 					</div>
 					<div>
 						<h3 class="modal-title fw-bold text-white ms-4" id="exampleModalLabel">FACTURAS ANULADAS <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-earmark-text-fill mb-1" viewBox="0 0 16 16">
@@ -728,7 +728,7 @@
 					<div class="d-flex justify-content-between">
 
 						<div class="mover-input-buscar mt-4">
-							<form id="formularioDeFechaAnulada" class="d-flex" autocomplete="off" action="?c=ControladorReportes/reportesFacturasAnuladas" method="POST">
+							<form id="formularioDeFechaAnulada" class="d-flex" autocomplete="off" action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportesFacturasAnuladas" method="POST">
 
 								<input type="date" name="fechaInicioAnulada" id="fechaInicioAnulada" class="form-control input-buscar fecha-exp" style="width: 27%;" title="fecha de Inicio">
 
@@ -964,7 +964,7 @@
 
 												<!-- <div class="d-flex justify-content-end">
 													<div class="uk-card-footer">
-														<a href="?c=controladorFactura/mostrarPDF&id_factura"
+														<a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPDF&id_factura"
 															class="btn btn-tabla">
 															<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
 																class="bi bi-printer-fill" viewBox="0 0 16 16">

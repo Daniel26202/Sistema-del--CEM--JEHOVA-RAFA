@@ -48,32 +48,34 @@
 
     <div class="d-flex justify-content-center">
 
-        <?php if (isset($_GET["error"])): ?>
+    <?php if ($parametro != ""): ?>
+        <?php if ($parametro[0] == "error"): ?>
+            
             <div class="uk-alert-danger comentario comentarioRed me-3 ms-5 fw-bolder h-25" style="display: none;"
                 uk-alert>
                 <a class="uk-alert-close" uk-close></a>
                 <p class="pe-2">La cédula o el usuario ya existen, intente de nuevo.</p>
             </div>
         <?php endif ?>
-        <?php if (isset($_GET["editado"])): ?>
+        <?php if ($parametro[0] == "editado"): ?>
             <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
                 <p class="pe-2">Se actualizo correctamente.</p>
             </div>
         <?php endif ?>
-        <?php if (isset($_GET["eliminado"])): ?>
+        <?php if ($parametro[0] == "eliminado"): ?>
             <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
                 <p class="pe-2">Se ha eliminado correctamente.</p>
             </div>
         <?php endif ?>
-        <?php if (isset($_GET["agregado"])): ?>
+        <?php if ($parametro[0] == "agregado"): ?>
             <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
                 <p class="pe-2">Se ha agregado correctamente.</p>
             </div>
         <?php endif ?>
-
+    <?php endif; ?>
     </div>
 
 
@@ -168,19 +170,19 @@
                     <div class="card col-9 col-sm-6 col-lg-3 tarjeta ms-2 me-4 d-flex align-items-center justify-content-center tarjeta">
                         <?php if ($dato["imagen"] != "doctor.png"): ?>
 
-                            <img src="./src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>" class="mt-2" alt="...">
+                            <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>" class="mt-2" alt="...">
                         <?php else: ?>
 
-                            <img src="./src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>" class="mt-2" alt="...">
+                            <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>" class="mt-2" alt="...">
                         <?php endif; ?>
                         <div class="mt-3">
                             <div class="ps-3 pe-3 text-center buscar">
 
                                 <h5 class="card-title mb-1 ">Dr.
-                                    <?php echo $dato["9"] . " " . $dato["apellido"]; ?>
+                                    <?php echo $dato["nombre"] . " " . $dato["apellido"]; ?>
                                 </h5>
                                 <p class="mb-4">
-                                    <?php echo $dato["nombre"]; ?>
+                                    <?php echo $dato["usuario"]; ?>
                                 </p>
 
                             </div>
@@ -211,6 +213,6 @@
 <?php require_once './src/vistas/vistaUsuarios/modal/modalMostrarUsuario.php'; ?>
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="text/javascript" src="./src/assets/js/imgUsuarios.js"></script>
-<script type="text/javascript" src="./src/assets/js/usuarios.js"></script>
-<script type="text/javascript" src="./src/assets/js/admin.js"></script>
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/imgUsuarios.js"></script>
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/usuarios.js"></script>
+<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/admin.js"></script>
