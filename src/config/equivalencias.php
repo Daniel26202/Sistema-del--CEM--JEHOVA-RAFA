@@ -91,6 +91,23 @@ return [
     "eliminarAdministrador" => "eliminar",
     "verificarPassw" => "consultar",
 
+    //Hospitalizacion
+    "traerSesion" => "consultar",
+    "traerSesionR" => "consultar",
+    "hospitalizacion" => "consultar",
+    "hospitalizacionesRealizadas" => "consultar",
+    "validarPaciente"  => "consultar",
+    "validarControl" => "consultar",
+    "mostrarInformacionPCD" => "consultar",
+    "mostrarInsumos" => "consultar",
+    "mostrarUnInsumo" => "consultar",
+    "agregarH" => "guardar",
+    "traerInsuDHEd" => "consultar",
+    "modificarH" => "editar",
+    "eliminaL" => "eliminar",
+    "buscarIExH" => "consultar",
+
+
     //Control
     "control" => "consultar",
     "mostrarPacientesJS" => "consultar",
