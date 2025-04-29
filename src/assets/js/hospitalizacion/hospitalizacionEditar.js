@@ -83,10 +83,7 @@ addEventListener("DOMContentLoaded", function () {
         // colocamos el nombre y apellido. 
         nombreApE.innerHTML = "";
         nombreApE.innerHTML = datos[1].innerText + " " + datos[2].innerText;
-        // selecciono el p que tine las horas
-        let hor = datos[5].firstElementChild.firstElementChild.innerText;
-        // y llenamos lo input de la información recolectada
-        duracionE.value = hor;
+
         // trim() quita los espacios en el principio y al final
         historiaE.value = hME.innerText.trim();
         precioHE.value = precHoras.value;
@@ -195,7 +192,7 @@ addEventListener("DOMContentLoaded", function () {
 
     ////////////////////////////////////////////////////////////////////
     //Ajax//
-
+    let horaInicioHosp= 0;
     // envío de datos de la edición
     const vistaTabla = async () => {
         try {
@@ -203,6 +200,8 @@ addEventListener("DOMContentLoaded", function () {
             // llamo la función 
             peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
             let resultad = await peticion.json();
+
+
 
             if (resultad.length == 0) {
                 console.log("algo salio mal");
@@ -225,6 +224,8 @@ addEventListener("DOMContentLoaded", function () {
                     // console.log(resultad[1]);
                     // recorro los datos de hospitalización
                     resultad[1].forEach((res, index) => {
+
+                        horaInicioHosp = res.fecha_hora_inicio;
 
                         // contenido de la tabla.
                         html += `<tr>
@@ -486,12 +487,7 @@ addEventListener("DOMContentLoaded", function () {
 
                         })
                     });
-
-                    // es para sumar en el input oculto del total al escribir en el input (precio del insumo).
-                    duracionE.addEventListener("keyup", function () {
-                        sumarTotalE();
-                    })
-
+                    
                     // para validar las cantidades de hospitalizaciones agregadas
                     // obtenemos la cantidad de filas que existen
                     const filas = document.querySelectorAll("#tbody tr")
@@ -535,10 +531,10 @@ addEventListener("DOMContentLoaded", function () {
             let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
             let resultadoI = await peticionI.json();
 
-            //es para mostrar la duración de la hospitalización
-            // llamo la función
-            let peticionDH = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarDHos&idH=" + id);
-            let resultadoDH = await peticionDH.json();
+            // //es para mostrar la duración de la hospitalización
+            // // llamo la función
+            // let peticionDH = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarDHos&idH=" + id);
+            // let resultadoDH = await peticionDH.json();
 
             if (resultadoI.length > 0) {
 
