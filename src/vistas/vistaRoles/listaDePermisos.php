@@ -1,8 +1,12 @@
 <div class="d-flex justify-content-between flex-wrap ">
 
-    <?php $permisosDelRol = ($this->modelo->mostrarPermisos($rol["id_rol"], $modulo) == false) ? array() : $this->modelo->mostrarPermisos($rol["id_rol"], $modulo)["permisos"] ?>
-
-
+    <?php $permisosDelRol = ($this->modelo->mostrarPermisos($rol["id_rol"], $modulo["modulo"]) == false) ? array() : $this->modelo->mostrarPermisos($rol["id_rol"], $modulo["modulo"])["permisos"] ?>
+    <?php $permisosPorModulo = $modulo["permisosPorModulo"] . "[]"; ?>
+    <input type="hidden" name="id_rol" value="<?= $rol["id_rol"] ?>">
+    <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION["id_usuario"] ?>">
+    <input type="hidden" name="modulos[]" value="<?= $modulo["modulo"]; ?>">
+    <input type="hidden" name="permisos[]" value="<?= $modulo['permisosPorModulo']; ?>">
+    <?php $modulo = $modulo["modulo"];  ?>
 
     <div class="form-check form-switch d-flex align-items-center">
         <div>

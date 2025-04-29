@@ -54,7 +54,6 @@ class ControladorRoles
     //modiicar rol
     public function modificarRol($datos)
     {
-        
         $nombre = $datos[0];
         //instacion el metodo de la validacion de el rol
         $validar = $this->modelo->validarRol($_POST["nombre"]);
