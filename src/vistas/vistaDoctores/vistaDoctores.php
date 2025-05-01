@@ -226,6 +226,7 @@
 <?php require_once './src/vistas/vistaDoctores/modal/infoModalDoctores.php'; ?>
 
 
+
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/especialidades.js"></script>
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaDoctores.js"></script>
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/buscadorDoctores.js"></script>
