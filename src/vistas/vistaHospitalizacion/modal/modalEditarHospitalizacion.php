@@ -108,12 +108,7 @@
 
                                     <div class="borde-input-agregar m-auto col-12">
                                         <div class="d-flex justify-content-center align-items-center">
-                                            <div class="col-4 ms-4">
 
-                                                <input type="number" name="horas" id="duracion"
-                                                    class="input-agregar w-75" placeholder="Hora" value="" required><span class=" mt-1">h.</span>
-
-                                            </div>
                                             <div class="col-2">
 
                                                 <p class=" fw-bold margen-dos-puntos pb-2">:</p>

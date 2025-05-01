@@ -68,7 +68,6 @@ addEventListener("DOMContentLoaded", function () {
 
     // inputs y nombres de editar H
     const nombreApE = document.querySelector("#NombreAp");
-    const duracionE = document.querySelector("#duracion");
     const precioHE = document.querySelector("#precioH");
     const historiaE = document.querySelector("#historiaE");
 
@@ -83,10 +82,7 @@ addEventListener("DOMContentLoaded", function () {
         // colocamos el nombre y apellido. 
         nombreApE.innerHTML = "";
         nombreApE.innerHTML = datos[1].innerText + " " + datos[2].innerText;
-        // selecciono el p que tine las horas
-        let hor = datos[5].firstElementChild.firstElementChild.innerText;
-        // y llenamos lo input de la información recolectada
-        duracionE.value = hor;
+
         // trim() quita los espacios en el principio y al final
         historiaE.value = hME.innerText.trim();
         precioHE.value = precHoras.value;
@@ -195,14 +191,16 @@ addEventListener("DOMContentLoaded", function () {
 
     ////////////////////////////////////////////////////////////////////
     //Ajax//
-
+    let horaInicioHosp= 0;
     // envío de datos de la edición
     const vistaTabla = async () => {
-        try {
+        // try {
 
             // llamo la función 
             peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
             let resultad = await peticion.json();
+
+
 
             if (resultad.length == 0) {
                 console.log("algo salio mal");
@@ -225,6 +223,8 @@ addEventListener("DOMContentLoaded", function () {
                     // console.log(resultad[1]);
                     // recorro los datos de hospitalización
                     resultad[1].forEach((res, index) => {
+
+                        horaInicioHosp = res.fecha_hora_inicio;
 
                         // contenido de la tabla.
                         html += `<tr>
@@ -375,7 +375,7 @@ addEventListener("DOMContentLoaded", function () {
                                                     <div>
                                                         <h4 class="text-center fw-bold ">Horas de hospitaliza- ción</h4>
                                                         <p class="parrafo-offcanvas fs-5 text-center">
-                                                            ${res.duracion}
+                                                        
                                                         </p>
                                                     </div>
                                                 </div>
@@ -486,12 +486,7 @@ addEventListener("DOMContentLoaded", function () {
 
                         })
                     });
-
-                    // es para sumar en el input oculto del total al escribir en el input (precio del insumo).
-                    duracionE.addEventListener("keyup", function () {
-                        sumarTotalE();
-                    })
-
+                    
                     // para validar las cantidades de hospitalizaciones agregadas
                     // obtenemos la cantidad de filas que existen
                     const filas = document.querySelectorAll("#tbody tr")
@@ -512,9 +507,9 @@ addEventListener("DOMContentLoaded", function () {
 
             }
 
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
-        }
+        // } catch (error) {
+            // console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        // }
     }
 
     vistaTabla();
@@ -535,10 +530,10 @@ addEventListener("DOMContentLoaded", function () {
             let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
             let resultadoI = await peticionI.json();
 
-            //es para mostrar la duración de la hospitalización
-            // llamo la función
-            let peticionDH = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarDHos&idH=" + id);
-            let resultadoDH = await peticionDH.json();
+            // //es para mostrar la duración de la hospitalización
+            // // llamo la función
+            // let peticionDH = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarDHos&idH=" + id);
+            // let resultadoDH = await peticionDH.json();
 
             if (resultadoI.length > 0) {
 
@@ -558,8 +553,31 @@ addEventListener("DOMContentLoaded", function () {
                 // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
                 totalH = parseFloat(totalH.toFixed(2));
                 precioHoras.toFixed(2)
-                // await es para que espere 
-                await actualizarHosp(precioHoras, totalH, id);
+
+
+
+
+
+
+
+                // Suponiendo que el dato que llega tiene formato 'YYYY-MM-DD HH:MM:SS'
+                let fechaGuardada = new Date(resultadoDH); // Convertimos la fecha obtenida
+
+                // Obtener la fecha y hora actual
+                let fechaActual = new Date();
+
+                // Calcular la diferencia en milisegundos
+                let diferenciaMs = fechaActual - fechaGuardada;
+
+                // Convertir la diferencia a otros formatos más legibles
+                let segundos = Math.floor(diferenciaMs / 1000);
+                let minutos = Math.floor(segundos / 60);
+                let horas = Math.floor(minutos / 60);
+                let dias = Math.floor(horas / 24)
+
+
+
+
 
             } else {
                 if (resultadoDH === false) {
@@ -569,22 +587,9 @@ addEventListener("DOMContentLoaded", function () {
                     let dCH = parseFloat(storedCosto) / parseInt(storedHora);
                     // multiplicamos lo dividido con la duración 
                     let precioHoras = parseInt(resultadoDH.duracion) * parseFloat(dCH);
-                    // await es para que espere 
-                    await actualizarHosp(precioHoras.toFixed(2), precioHoras.toFixed(2), id);
                 }
 
             }
-
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
-        }
-    }
-
-    //es para actualizar las hospitalizaciones.
-    const actualizarHosp = async (pH, total, id) => {
-        try {
-            // llamo la función
-            await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/editarPHT/" + pH + "/" + total + "/" + id);
 
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
@@ -1160,39 +1165,10 @@ addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // para validar el campo de editar para que no envie 0
-    const validarCampoE = () => {
-        let validarHora = {
-            horas: false
-        };
-
-        // ?!asegura que la cadena no acepte algo y el + es mas igual al mismo, $ esto es asta el final
-        const expresionRHora = /^(?!0+$)(?!-)\d+$/;
-
-        let input = document.querySelector("#duracion");
-
-        // el método .test devuelve true si la expresión regular concuerda con el contenido del input
-        if (expresionRHora.test(input.value)) {
-            validarHora[horas] = true;
-        } else {
-            validarHora[horas] = false;
-        }
-        return validarHora[horas];
-    }
-
     // para enviar los datos de la edición
     formE.addEventListener("submit", (e) => {
-        e.preventDefault();
-        let validar = validarCampoE();
-        if (validar) {
             envioDatE();
-        } else {
-            e.preventDefault();
-        }
     })
-    // para llamar la función de valida
-    document.querySelector("#duracion").addEventListener('keyup', validarCampoE)
-    document.querySelector("#duracion").addEventListener('input', validarCampoE)
 
     // para el buscador de hospitalización 
     let inputBuscH = document.querySelector("#inputBuscH");
