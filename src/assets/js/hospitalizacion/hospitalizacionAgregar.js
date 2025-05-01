@@ -602,11 +602,6 @@ addEventListener("DOMContentLoaded", function () {
     //    traerInsumos();
     //})
 
-    //es para sumar en el input oculto del total
-    document.querySelector("#duracionA").addEventListener("keyup", function () {
-        sumarTotal();
-    })
-
     //este es el comentario 
     const comentario = document.querySelector(".comentario");
     //si existe el comentario lo muestra y después de 8sg lo oculta

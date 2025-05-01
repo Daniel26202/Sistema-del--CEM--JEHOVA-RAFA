@@ -222,22 +222,14 @@ class ControladorHospitalizacion
         
     // }
 
-    // // editar el precio de horas y total de la hospitalización
-    // public function mostrarDHos($datos)
-    // {
-    //     $idH = $datos[0];
-    //     $datosDHos = $this->modelo->buscarDH($idH);
-    //     echo json_encode($datosDHos);
-    // }
-
-    // // editar el precio de horas y total de la hospitalización
-    // public function editarPHT($datos)
-    // {
-    //     $precio_h = $datos[0];
-    //     $total = $datos[1];
-    //     $idH = $datos[2];
-    //     $this->modelo->actualizarPHT($_GET["precio_h"], $_GET["total"], $_GET["idH"]);
-    // }
+    // editar el precio de horas y total de la hospitalización
+    public function editarPHT($datos)
+    {
+        $precio_h = $datos[0];
+        $total = $datos[1];
+        $idH = $datos[2];
+        $this->modelo->actualizarPHT($_GET["precio_h"], $_GET["total"], $_GET["idH"]);
+    }
 
     // buscar insumos de las hospitalizaciones existentes 
     public function buscarIExH()
