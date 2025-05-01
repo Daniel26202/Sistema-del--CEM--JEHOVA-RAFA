@@ -8,25 +8,12 @@ addEventListener("DOMContentLoaded", () => {
   let listaModalInsumo = [];
   // console.log(data)
 
-  var objInsumos = {
-    id_insumo: "",
-    nombreInsumo: "",
-    cantidad: "",
-    precio: "",
-    subTotal: "",
-  };
   // // Creamos las variables html que usaremos
   const tabla = document.getElementById("tbody");
 
   const forms = document.querySelector(".formularios");
 
-  //insumos
-  const inputInsumo = document.getElementById("inputInsumo");
-  const insumosDisponibles = document.getElementById("insumosDisponibles");
-  const precioInsumo = document.getElementById("precioInsumo");
-  const cantidadInsumosIngresada = document.getElementById(
-    "cantidadInsumosIngresada"
-  );
+
 
   const tbodyInsumos = document.getElementById("tbody-insumos");
 
