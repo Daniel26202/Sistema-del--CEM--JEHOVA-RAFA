@@ -102,12 +102,35 @@ WHERE estado = 'ACT';");
         ORDER BY 
             total_citas DESC";
 			$consulta = $this->conexion->prepare($sql);
-			$consulta->bindParam(":id_personal",$id_personal);
+			$consulta->bindParam(":id_personal", $id_personal);
 		}
-		
 
-		
+
+
 		$consulta->execute();
 		return $consulta->fetchAll();
+	}
+
+
+	//Metodo para validar si un usuario es doctor o no
+
+	public function comprobarCargo($id_usuario)
+	{
+
+		$consulta = $this->conexion->prepare(" SELECT * FROM personal p INNER JOIN usuario u ON u.id_usuario = p.id_usuario WHERE p.id_usuario = :id_usuario AND p.id_especialidad IS NOT null");
+		$consulta->bindParam(":id_usuario", $id_usuario);
+		$consulta->execute();
+		while ($consulta->fetch()) {
+			return 1;
+		}
+		return 0;
+	}
+
+	//Treae los datos del doctor como los personlaes y los profesionales
+	public function datos_doctor($id_usuario)
+	{
+		$consulta = $this->conexion->prepare("SELECT * FROM personal p INNER JOIN usuario u ON u.id_usuario = p.id_usuario WHERE p.id_usuario =:id_usuario AND p.id_especialidad IS NOT null");
+		$consulta->bindParam(":id_usuario", $id_usuario);
+		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 }

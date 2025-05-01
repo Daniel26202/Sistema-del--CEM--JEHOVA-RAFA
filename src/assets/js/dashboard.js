@@ -22,17 +22,23 @@ document
   .getElementById("especialidades")
   .addEventListener("click", generarReporte);
 
-//Evento para actualizar la informacion del doctor
-document.getElementById("selectDoctor").addEventListener("change", function () {
-  let allDates = [];
-  document.querySelectorAll(".date").forEach((element) => {
-    allDates.push(element.getAttribute("data-date"));
 
-    
-  });
 
-  traerHorarioDoctor(this.value, allDates);
-});
+  //alidar que el elemento exista
+
+  if (document.getElementById("selectDoctor")) {
+    //Evento para actualizar la informacion del doctor
+    document
+      .getElementById("selectDoctor")
+      .addEventListener("change", function () {
+        let allDates = [];
+        document.querySelectorAll(".date").forEach((element) => {
+          allDates.push(element.getAttribute("data-date"));
+        });
+
+        traerHorarioDoctor(this.value, allDates);
+      });
+  }
 
 // ========================== FUNCIONES DEL CALENDARIO ==========================
 

@@ -5,7 +5,6 @@ require_once './src/vistas/head/head.php';
 <link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/dashboard.css">
 
 
-
 <div id="content-wrapper" class="d-flex flex-wrap">
     <!-- Contenedor principal (75%) -->
 
@@ -72,34 +71,43 @@ require_once './src/vistas/head/head.php';
     <div class="sidebar-content col-12 col-lg-4 p-4 min-vh-100" id="sidebar-content">
 
         <div class="d-flex justify-content-between ">
-            <div class="w-75 ">
-                <div class="d-flex justify-content-between ">
-                    <div class="d-flex justify-content-end mb-4 col-8" id="form-buscadorS">
+            <?php if ($validarCargo): ?>
+                <!-- Es un doctor asi que no puede ver el boton -->
+            <?php else: ?>
 
-                        <a class="btn d-none" title="Buscar" id="reiniciarBusquedaSintomas" uk-tooltip="Restablecer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat"
-                                viewBox="0 0 16 16">
-                                <path
-                                    d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
-                                <path fill-rule="evenodd"
-                                    d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
-                            </svg>
-                        </a>
+                <div class="w-75 ">
+                    <div class="d-flex justify-content-between ">
+                        <div class="d-flex justify-content-end mb-4 col-8" id="form-buscadorS">
 
-                        <select class="form-control " id="selectDoctor">
-                            <!-- js -->
-                        </select>
-                        <button type="button" class="btn btn-buscar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"></path>
-                            </svg></button>
+                            <a class="btn d-none" title="Buscar" id="reiniciarBusquedaSintomas" uk-tooltip="Restablecer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                                    <path fill-rule="evenodd"
+                                        d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+                                </svg>
+                            </a>
 
+                            <select class="form-control " id="selectDoctor">
+                                <!-- js -->
+                            </select>
+                            <button type="button" class="btn btn-buscar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"></path>
+                                </svg></button>
+
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
             <h5 class="w-25">Calendario</h5>
         </div>
 
-        <button id="btnHorario" class="btn btn-primary mb-2 w-100 d-none" uk-toggle="target: #modal-info-doctores"></button>
+        <?php if ($validarCargo): ?>
+            <!-- Es un doctor asi que no puede ver el boton -->
+        <?php else: ?>
+            <button id="btnHorario" class="btn btn-primary mb-2 w-100 d-none" uk-toggle="target: #modal-info-doctores"></button>
+        <?php endif; ?>
         <!-- Calendar Container -->
         <div class="card shadow-sm mb-2" id="calendarCard">
             <div class="card-tittle d-flex justify-content-between align-items-center">
@@ -131,26 +139,105 @@ require_once './src/vistas/head/head.php';
         <!-- Contenedor de la lista de servicios -->
         <div class="col-md-12 mt-3">
             <div class="card shadow-sm">
-                <div class="card-tittle">
-                    <h5 class="mb-0">Precio consulta</h5>
-                </div>
-                <div class="card-body">
-                    <!-- Lista de servicios -->
-                    <table class="table table-borderless align-middle" id="precios">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Precio</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
+                <?php if ($validarCargo): ?>
+                    <?php foreach ($datos_de_personal as $d): ?>
+                        <div class="card-tittle">
+                            <h5 class="mb-0 fw-bolder text-center pt-3">Doctor: <?= $d["nombre"] ?> <?= $d["apellido"] ?></h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex mt-4">
+                                <div class="col-6 m-auto">
+                                    <form class="form-modal perfil " id="perfil">
+                                        <div class="input-group flex-nowrap">
 
 
-                    </table>
+
+                                            <span class="input-modal">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                                    class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5ZM9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8Zm1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Zm-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96c.026-.163.04-.33.04-.5ZM7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
+                                                </svg>
+                                            </span>
+                                            <input class="form-control input-modal input-perfil" type="text" name="cedula" placeholder="Cedula"
+                                                value="<?= $d["cedula"] ?>" disabled>
+                                        </div>
+
+                                        <div class="input-group flex-nowrap">
+                                            <span class="input-modal mt-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                                    class="bi bi-person-fill azul" viewBox="0 0 16 16">
+                                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                                </svg>
+                                            </span>
+                                            <input class="form-control input-modal input-perfil" type="text" name="nombreyapellido"
+                                                placeholder="Nombre y Apellido" disabled value="<?= $d["usuario"] ?>">
+
+                                        </div>
+                                        <div class="input-group flex-nowrap">
+                                            <span class="input-modal mt-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                                    class="bi bi-telephone-fill azul" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd"
+                                                        d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
+                                                </svg>
+                                            </span>
+                                            <input class="form-control input-modal input-perfil" type="text" name="telefono" placeholder="Teléfono"
+                                                disabled value="<?= $d["telefono"] ?>">
+                                        </div>
+
+                                        <div class="input-group flex-nowrap">
+                                            <span class="input-modal mt-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                                    class="bi bi-person-fill azul" viewBox="0 0 16 16">
+                                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                                </svg>
+                                            </span>
+                                            <input class="form-control input-modal input-perfil" type="text" name="usuario" placeholder="Usuario"
+                                                disabled value="<?= $d["usuario"] ?>">
+                                        </div>
+
+                                        
+                                    </form>
+
+                                </div>
+
+                                <div class="m-auto">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" fill="currentColor"
+                                        class="bi bi-person-fill azul" viewBox="0 0 16 16">
+                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                    </svg>
+                                </div>
+                            <?php endforeach ?>
+
+                            </div>
 
 
-                </div>
+
+                        </div>
+                    <?php else: ?>
+                        <div class="card-tittle">
+                            <h5 class="mb-0">Precio consulta</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Lista de servicios -->
+                            <table class="table table-borderless align-middle" id="precios">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Precio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+
+
+                            </table>
+
+
+                        </div>
+                    <?php endif; ?>
             </div>
         </div>
 
