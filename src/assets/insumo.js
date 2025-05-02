@@ -81,7 +81,7 @@ addEventListener("DOMContentLoaded", function () {
         tarjet.style.margin = "";
         cajaDeBuscadorInsumos.style.flexDirection = "";
         cajaDeBuscadorInsumos.children[0].style.width = "";
-        cajaDeBuscadorInsumos.children[1].style.width = "";
+        (cajaDeBuscadorInsumos.children[1]) ? cajaDeBuscadorInsumos.children[1].style.width = "": false;
         document.querySelector(".input-responsive").style.width = "";
         document.querySelector(".boton-responsive").style.width = "";
         document.querySelector(".form-responsive").style.width = "";
