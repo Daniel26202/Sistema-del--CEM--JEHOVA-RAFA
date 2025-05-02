@@ -83,7 +83,7 @@ class ModeloInsumo extends Db
 
 
 	//insertar insumo
-	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote)
+	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote, $marca, $medida)
 	{
 
 		$promedio_ponderado = number_format(($precio / $cantidad), 2, '.', '');
@@ -100,10 +100,12 @@ class ModeloInsumo extends Db
 
 		move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
-		$consulta = $this->conexion->prepare("INSERT INTO insumo VALUES (null, :imagen, :nombre, :descripcion, :precio , :cantidad, :stockMinimo, 'ACT')");
+		$consulta = $this->conexion->prepare("INSERT INTO insumo VALUES (null, :imagen, :nombre, :descripcion, :marca, :medida, :precio , :cantidad, :stockMinimo, 'ACT')");
 		$consulta->bindParam(":imagen", $imagen);
 		$consulta->bindParam(":nombre", $nombre);
 		$consulta->bindParam(":descripcion", $descripcion);
+		$consulta->bindParam(":marca", $marca);
+		$consulta->bindParam(":medida", $medida);
 		$consulta->bindParam(":precio", $decimal);
 		$consulta->bindParam(":cantidad", $cantidad);
 		$consulta->bindParam(":stockMinimo", $stockMinimo);
@@ -155,7 +157,7 @@ class ModeloInsumo extends Db
 	}
 
 
-	public function editar($id_insumo, $nombre, $descripcion, $stockMinimo, $imagen)
+	public function editar($id_insumo, $nombre, $descripcion, $stockMinimo, $imagen, $marca, $medida)
 	{
 
 		$consulta1 = $this->conexion->prepare("SELECT * FROM insumo WHERE id_insumo =:id_insumo");
@@ -179,20 +181,22 @@ class ModeloInsumo extends Db
 			$imagen_temporal = $_FILES['imagen']['tmp_name'];
 			move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_editar);
 
-			$consulta2 = $this->conexion->prepare("UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo WHERE id_insumo =:id_insumo");
+			$consulta2 = $this->conexion->prepare("UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id_insumo");
 			$consulta2->bindParam(":nombre", $nombre);
 			$consulta2->bindParam(":descripcion", $descripcion);
 			$consulta2->bindParam(":stockMinimo", $stockMinimo);
 			$consulta2->bindParam(":imagen", $imagen_editar);
+			$consulta2->bindParam(":marca", $marca);
+			$consulta2->bindParam(":medida", $medida);
 			$consulta2->bindParam(":id_insumo", $id_insumo);
 			$consulta2->execute();
 		} else {
-
-			echo "Vacio";
-			$consulta3 = $this->conexion->prepare("UPDATE insumo SET nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo WHERE id_insumo =:id_insumo");
+			$consulta3 = $this->conexion->prepare("UPDATE insumo SET nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id_insumo");
 			$consulta3->bindParam(":nombre", $nombre);
 			$consulta3->bindParam(":descripcion", $descripcion);
 			$consulta3->bindParam(":stockMinimo", $stockMinimo);
+			$consulta3->bindParam(":marca", $marca);
+			$consulta3->bindParam(":medida", $medida);
 			$consulta3->bindParam(":id_insumo", $id_insumo);
 			$consulta3->execute();
 		}

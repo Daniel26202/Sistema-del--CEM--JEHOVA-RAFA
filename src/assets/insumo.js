@@ -31,6 +31,8 @@ addEventListener("DOMContentLoaded", function () {
     fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
     stockMinimo: /^([1-9]{1})([0-9]{1})?$/,
     lote: /^[0-9-_]{4,10}$/,
+    marca: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s\d]{4,16}$/,
+    medida: /^\d+\s?(ml|L|g|kg|m|cm|mm)$/,
     //^([0-9]+)$
   };
 
@@ -43,6 +45,8 @@ addEventListener("DOMContentLoaded", function () {
     fechaDeVencimiento: false,
     stockMinimo: false,
     lote: false,
+    marca: false,
+    medida: false,
   };
 
   const camposEditarInsumos = {
@@ -54,6 +58,8 @@ addEventListener("DOMContentLoaded", function () {
     fechaDeVencimiento: true,
     stockMinimo: true,
     lote: true,
+    marca: true,
+    medida: true,
   };
 
   //funcion para manejar el resonsive de las tarjetas de insumos
@@ -81,7 +87,9 @@ addEventListener("DOMContentLoaded", function () {
         tarjet.style.margin = "";
         cajaDeBuscadorInsumos.style.flexDirection = "";
         cajaDeBuscadorInsumos.children[0].style.width = "";
-        (cajaDeBuscadorInsumos.children[1]) ? cajaDeBuscadorInsumos.children[1].style.width = "": false;
+        cajaDeBuscadorInsumos.children[1]
+          ? (cajaDeBuscadorInsumos.children[1].style.width = "")
+          : false;
         document.querySelector(".input-responsive").style.width = "";
         document.querySelector(".boton-responsive").style.width = "";
         document.querySelector(".form-responsive").style.width = "";
@@ -158,8 +166,9 @@ addEventListener("DOMContentLoaded", function () {
     resultado["insumo"].forEach((res) => {
       parrafos[0].innerText = `${res.nombre}`;
       parrafos[1].innerText = `${res.descripcion}`;
-      parrafos[2].innerText = `${res.precio} BS`;
-      parrafos[3].innerText = `${resultado["vencimiento"][0][0]}`;
+      parrafos[2].innerText = `${res.marca}`;
+      parrafos[3].innerText = `${res.precio} BS`;
+      parrafos[4].innerText = `${resultado["vencimiento"][0][0]}`;
 
       eliminarInsumo.setAttribute(
         "href",
@@ -170,7 +179,9 @@ addEventListener("DOMContentLoaded", function () {
       inputEditar[0].value = res.id_insumo;
       inputEditar[1].value = res.nombre;
       inputEditar[2].value = res.descripcion;
-      inputEditar[3].value = res.stockMinimo;
+      inputEditar[3].value = res.marca;
+      inputEditar[4].value = res.medida;
+      inputEditar[5].value = res.stockMinimo;
       //inputEditar[4].value = res.fechaDeVencimiento
 
       document
@@ -283,7 +294,7 @@ addEventListener("DOMContentLoaded", function () {
     // Si pasa todas las validaciones
     pError.classList.add("d-none");
     // actualizarEstadoInput(input, "incorrecto", formulario);
-    
+
     camposInsumos[campo] = true;
   }
 
@@ -291,6 +302,7 @@ addEventListener("DOMContentLoaded", function () {
 
   const validarCamposInsumos = (expresiones, input, campo, camposInsumos) => {
     const pErrorGuardar = document.querySelector(".p-error-" + input.name);
+    console.log(pErrorGuardar);
     pErrorGuardar.classList.add("fw-bold");
     pErrorGuardar.style.color = "rgb(224, 3, 3)";
     console.log(pErrorGuardar);
@@ -395,6 +407,23 @@ addEventListener("DOMContentLoaded", function () {
           camposInsumos
         );
         break;
+
+      case "marca":
+        validarCamposInsumos(
+          expresionesInsumos.marca,
+          e.target,
+          "marca",
+          camposEditarInsumos
+        );
+        break;
+      case "medida":
+        validarCamposInsumos(
+          expresionesInsumos.medida,
+          e.target,
+          "medida",
+          camposEditarInsumos
+        );
+        break;
     }
   }
 
@@ -467,6 +496,22 @@ addEventListener("DOMContentLoaded", function () {
           camposEditarInsumos
         );
         break;
+      case "marca":
+        validarCamposInsumos(
+          expresionesInsumos.marca,
+          e.target,
+          "marca",
+          camposEditarInsumos
+        );
+        break;
+      case "medida":
+        validarCamposInsumos(
+          expresionesInsumos.medida,
+          e.target,
+          "medida",
+          camposEditarInsumos
+        );
+        break;
     }
   }
 
@@ -481,8 +526,6 @@ addEventListener("DOMContentLoaded", function () {
   inputs.forEach((input) => {
     input.addEventListener("blur", validarFormularioInsumo);
   });
-
-
 
   inputEditar.forEach((input) => {
     input.addEventListener("input", validarFormularioInsumoEditar);
@@ -501,7 +544,7 @@ addEventListener("DOMContentLoaded", function () {
       camposInsumos.stockMinimo &&
       camposInsumos.lote
     ) {
-      console.log("si se envia")
+      console.log("si se envia");
       modalAgregarInsumos.submit();
     } else {
       document.getElementById("alerta-guardar").classList.remove("d-none");

@@ -230,6 +230,7 @@
 
 
                         <h5 class="card-title titulo"><?= $i["nombre"] ?></h5>
+                        <p class="mt-3">Medida: <?= $i["medida"] ?></p>
                         <p class="mt-3">Skock-Min: <?= $i["stockMinimo"] ?></p>
                         <?php if ($i["cantidad"] <= 0): ?>
                             <p class="text-danger">Cantidad: <?= $i["cantidad"] ?></p>
@@ -343,6 +344,36 @@
                 </div>
 
                 <p class="p-error-descripcion d-none">Debe estar completa y detallada</p>
+
+                <div class="input-group flex-nowrap">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-text-left azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled" type="text" name="marca"
+                        placeholder="Marca" required>
+                </div>
+
+                <p class="p-error-marca d-none">Debe estar completa y detallada</p>
+
+                <div class="input-group flex-nowrap">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-text-left azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled" type="text" name="medida"
+                        placeholder="Medida" required>
+                </div>
+
+                <p class="p-error-medida d-none">debe ser tal</p>
+
+
 
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
@@ -519,7 +550,7 @@
                     </span>
                     <input class="form-control input-modal input-disabled input-editar" type="text" name="nombre"
                         placeholder="Nombre">
-                </div>Editar Insumos
+                </div>
 
 
 
@@ -536,6 +567,34 @@
                     <input class="form-control input-modal input-disabled input-editar" type="text" name="descripcion"
                         placeholder="Descripción">
                 </div>
+
+                <div class="input-group flex-nowrap grpFormCorrect">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-text-left azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled input-editar" type="text" name="marca"
+                        placeholder="Marca" required>
+                </div>
+
+                <p class="p-error-marca d-none">Debe estar completa y detallada</p>
+
+                <div class="input-group flex-nowrap grpFormCorrect">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-text-left azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled input-editar" type="text" name="medida"
+                        placeholder="Medida" required>
+                </div>
+
+                <p class="p-error-medida d-none">debe ser tal</p>
 
 
 

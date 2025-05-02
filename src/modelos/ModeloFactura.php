@@ -237,6 +237,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 			if ($cantidad_total > 0) {
 				$id_inventario = "";
 				// Iterar sobre los lotes y restar la cantidad requerida
+				$cantidad_actualidad_insumo = [];
 				foreach ($lotesDisponibles as $fila) {
 					$lote_id = $fila['id_entradaDeInsumo'];
 					$lote_cantidad = $fila['cantidad_disponible'];
