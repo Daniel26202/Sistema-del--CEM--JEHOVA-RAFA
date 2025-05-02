@@ -860,9 +860,19 @@
           maxlength="4" minlength="4"
           oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
 
+
+        <div>
+          <p id="total-modal-validacion"></p>
+          <input type="hidden" id="input-validacion-pago">
+        </div>
+
       </div>
 
-      <div class="modal-footer">
+
+
+
+
+      <div class="modal-footer ">
         <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
           data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn col-3 btn-agregarcita-modal d-none suguiente" data-bs-toggle="modal"

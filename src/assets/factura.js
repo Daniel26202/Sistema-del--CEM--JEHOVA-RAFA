@@ -13,8 +13,6 @@ addEventListener("DOMContentLoaded", () => {
 
   const forms = document.querySelector(".formularios");
 
-
-
   const tbodyInsumos = document.getElementById("tbody-insumos");
 
   //buscador
@@ -776,6 +774,12 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("totalFactura").value = total;
     document.getElementById("totalDeConfirmacion").innerText = `${total} BS`;
     document.getElementById("inputTotalDeConfirmacion").value = total;
+
+    //validacion de el modal de validacion...
+    document.getElementById(
+      "total-modal-validacion"
+    ).innerText = `Total a pagar ${total} BS`;
+    document.getElementById("input-validacion-pago").value = total;
   }
   //esto es para ocultar los botones de siguiente y  vaciar
   function ocultarBotones() {
@@ -1396,14 +1400,45 @@ addEventListener("DOMContentLoaded", () => {
   //aqui se usa un evento para validar los precios de los input de el modal de validacion
   inputsDeValidacion.forEach((inputDeValidacion) => {
     inputDeValidacion.addEventListener("keyup", function () {
+      let totalInput = parseFloat(
+        document.getElementById("input-validacion-pago").value
+      );
       if (inputsDeValidacion[2].classList.contains("d-none")) {
         dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+        let inputUno =
+          inputsDeValidacion[0].value == "" ? 0 : inputsDeValidacion[0].value;
+        let inputDos =
+          inputsDeValidacion[1].value == "" ? 0 : inputsDeValidacion[1].value;
+        let total =
+          parseFloat(totalInput) -
+          (parseFloat(inputUno) + parseFloat(inputDos));
+
+        //validacion de el modal de validacion...
+
+        document.getElementById(
+          "total-modal-validacion"
+        ).innerText = `Total a pagar ${total} BS`;
       } else {
         tresPrecios(
           inputsDeValidacion[0],
           inputsDeValidacion[1],
           inputsDeValidacion[2]
         );
+        let inputUno =
+          inputsDeValidacion[0].value == "" ? 0 : inputsDeValidacion[0].value;
+        let inputDos =
+          inputsDeValidacion[1].value == "" ? 0 : inputsDeValidacion[1].value;
+        let inputTres =
+          inputsDeValidacion[2].value == "" ? 0 : inputsDeValidacion[2].value;
+        let total =
+          parseFloat(totalInput) -
+          (parseFloat(inputUno) + parseFloat(inputDos) + parseFloat(inputTres));
+
+        //validacion de el modal de validacion...
+
+        document.getElementById(
+          "total-modal-validacion"
+        ).innerText = `Total a pagar ${total} BS`;
       }
     });
   });

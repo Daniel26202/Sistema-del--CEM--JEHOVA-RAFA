@@ -149,7 +149,7 @@
                 <div class="uk-card-body d-flex">
                     <div style="width:45%;">
                         <?php foreach ($datosFactura as $datoFactura): ?>
-                            <p>Numero Lote:
+                            <p>Codigo:
                                 <?php echo $datoFactura['id_factura'] ?>
                             </p>
                             <p>Fecha:
