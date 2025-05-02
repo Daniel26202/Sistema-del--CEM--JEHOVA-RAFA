@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-04-2025 a las 04:44:37
+-- Tiempo de generación: 02-05-2025 a las 17:54:33
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -159,7 +159,38 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (122, 1, 'sintomas', 'Ha Insertado un  sintoma', '2025-04-27 21:37:41'),
 (123, 1, 'sintomas', 'Ha eliminado un  sintoma', '2025-04-27 21:37:49'),
 (124, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-27 21:56:58'),
-(125, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-27 21:57:29');
+(125, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-27 21:57:29'),
+(126, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-28 14:37:36'),
+(127, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-28 14:38:01'),
+(128, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-04-28 14:38:29'),
+(129, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-28 14:42:27'),
+(130, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 01:41:48'),
+(131, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-04-29 02:54:29'),
+(132, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-04-29 02:54:38'),
+(133, 1, 'insumo', 'Ha Insertado un insumo', '2025-04-29 03:23:45'),
+(134, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-29 03:32:05'),
+(135, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-04-29 03:32:17'),
+(136, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 11:38:32'),
+(137, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:25:47'),
+(138, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-29 12:29:02'),
+(139, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:29:39'),
+(140, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-29 12:35:09'),
+(141, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:35:32'),
+(142, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 11:11:28'),
+(143, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 14:35:55'),
+(144, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:12:29'),
+(145, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:22:06'),
+(146, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:22:47'),
+(147, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:54:12'),
+(148, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-01 16:23:01'),
+(149, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 16:55:24'),
+(150, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 18:01:42'),
+(151, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-02 09:14:38'),
+(152, 1, 'Roles', 'Ha Modiicado un rol', '2025-05-02 09:46:35'),
+(153, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-02 09:46:41'),
+(154, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-02 09:47:54'),
+(155, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-05-02 11:09:19'),
+(156, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-02 11:37:07');
 
 -- --------------------------------------------------------
 
@@ -226,6 +257,7 @@ CREATE TABLE `control` (
   `fecha_control` datetime NOT NULL,
   `fechaRegreso` date NOT NULL,
   `nota` varchar(40) NOT NULL,
+  `historiaclinica` text NOT NULL,
   `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -233,9 +265,9 @@ CREATE TABLE `control` (
 -- Volcado de datos para la tabla `control`
 --
 
-INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`, `medicamentosRecetados`, `fecha_control`, `fechaRegreso`, `nota`, `estado`) VALUES
-(26, 23, 1, 'El chico presenta dificultad para respirar, hinchazón en el cuerpo y dolores de cabeza', 'Cetirizina\r\nSalbutamol\r\nAcetaminofén', '2025-04-02 14:37:34', '2025-04-26', 'Debe hacerse hematología completa', 'ACT'),
-(27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasico\r\nCafeína\r\nViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'ACT');
+INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`, `medicamentosRecetados`, `fecha_control`, `fechaRegreso`, `nota`, `historiaclinica`, `estado`) VALUES
+(26, 23, 1, 'El chico presenta dificultad para respirar, hinchazón en el cuerpo y dolores de cabeza', 'Cetirizina\r\nSalbutamol\r\nAcetaminofén', '2025-04-02 14:37:34', '2025-04-26', 'Debe hacerse hematología completa', '', 'ACT'),
+(27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasico\r\nCafeína\r\nViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'historiaclinica', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -261,7 +293,12 @@ INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeI
 (40, 6, 3435, '2025-04-21', 'ACT'),
 (41, 6, 3435, '2025-04-21', 'ACT'),
 (42, 7, 3456, '2025-04-21', 'ACT'),
-(43, 6, 1233, '2025-04-21', 'ACT');
+(43, 6, 1233, '2025-04-21', 'ACT'),
+(44, 7, 3232, '2025-04-29', 'ACT'),
+(45, 7, 3232, '2025-04-29', 'ACT'),
+(46, 7, 3232, '2025-04-29', 'ACT'),
+(47, 7, 3232, '2025-04-29', 'ACT'),
+(48, 6, 3232, '2025-05-02', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -289,7 +326,12 @@ INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `
 (34, 24, 40, '2025-11-11', 123.00, 10, 0),
 (35, 24, 41, '2025-11-11', 123.00, 10, 0),
 (36, 25, 42, '2025-12-12', 12.00, 10, 1),
-(37, 25, 43, '2034-02-11', 123.00, 5, 0);
+(37, 25, 43, '2034-02-11', 123.00, 5, 0),
+(38, 26, 44, '2025-05-10', 21.00, 10, 10),
+(39, 27, 45, '2025-05-10', 21.00, 10, 10),
+(40, 28, 46, '2025-05-10', 21.00, 10, 10),
+(41, 29, 47, '2025-05-10', 21.00, 10, 4),
+(42, 30, 48, '2025-05-29', 21.00, 10, 10);
 
 -- --------------------------------------------------------
 
@@ -364,7 +406,11 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_pa
 (87, '2025-04-21', 16.55, 'ACT', 25),
 (88, '2025-04-21', 125.30, 'ACT', 25),
 (89, '2025-04-21', 35.80, 'ACT', 25),
-(90, '2025-04-21', 17.90, 'ACT', 25);
+(90, '2025-04-21', 17.90, 'ACT', 25),
+(91, '2025-05-01', 2129.30, 'ACT', 23),
+(92, '2025-05-01', 1127.20, 'ACT', 23),
+(93, '2025-05-01', 1123.00, 'ACT', 23),
+(94, '2025-05-01', 2.10, 'ACT', 23);
 
 -- --------------------------------------------------------
 
@@ -471,7 +517,10 @@ INSERT INTO `factura_has_inventario` (`factura_id_factura`, `inventario_id_inven
 (88, 4, 7, 'ACT'),
 (89, 4, 1, 'ACT'),
 (89, 4, 1, 'ACT'),
-(90, 4, 1, 'ACT');
+(90, 4, 1, 'ACT'),
+(91, 6, 3, 'ACT'),
+(92, 6, 2, 'ACT'),
+(94, 6, 1, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -532,9 +581,17 @@ CREATE TABLE `hospitalizacion` (
   `total` float DEFAULT NULL,
   `id_control` int(11) NOT NULL,
   `fecha_hora_final` datetime DEFAULT NULL,
-  `historiaclinica` text NOT NULL,
   `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `hospitalizacion`
+--
+
+INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `precio_horas`, `total`, `id_control`, `fecha_hora_final`, `estado`) VALUES
+(11, '2025-04-28 18:37:52', 0, 0, 27, '0000-00-00 00:00:00', 'DES'),
+(12, '2025-04-28 18:42:13', 0, 0, 26, '0000-00-00 00:00:00', 'DES'),
+(13, '2025-04-29 07:32:00', 0, 0, 27, '0000-00-00 00:00:00', 'Pendiente');
 
 -- --------------------------------------------------------
 
@@ -547,6 +604,8 @@ CREATE TABLE `insumo` (
   `imagen` varchar(500) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `nombre` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `descripcion` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `marca` varchar(35) NOT NULL,
+  `medida` varchar(35) NOT NULL,
   `precio` float(12,2) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `stockMinimo` int(11) NOT NULL,
@@ -557,9 +616,11 @@ CREATE TABLE `insumo` (
 -- Volcado de datos para la tabla `insumo`
 --
 
-INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `precio`, `cantidad`, `stockMinimo`, `estado`) VALUES
-(24, '', 'Paracetamol', 'El paracetamol, también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado', 10.33, 0, 1, 'ACT'),
-(25, '', 'Ibuprofeno', 'El ibuprofeno es un antinflamatorio no esteroideo (AINE) que pertenece al subgrupo de fármacos derivados del ácido propiónico.', 17.90, 0, 1, 'ACT');
+INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `medida`, `precio`, `cantidad`, `stockMinimo`, `estado`) VALUES
+(24, '', 'Paracetamol', 'El paracetamol, también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado', '', '', 10.33, 0, 1, 'ACT'),
+(25, '', 'Ibuprofeno', 'El ibuprofeno es un antinflamatorio no esteroideo (AINE) que pertenece al subgrupo de fármacos derivados del ácido propiónico.', '', '', 17.90, 0, 1, 'ACT'),
+(29, '2025-04-29_1745911425_WhatsApp Image 2025-04-03 at 11.51.47 PM.jpeg', 'Ibuprofeno', 'descripción', '', '', 2.10, 4, 12, 'ACT'),
+(30, '2025-05-02_1746200226_9amALQfcTkJsr2zlMRcpi99AnctFZBjlnRxibrip.jpg', 'Ibuprofeno', 'descripción', '', '', 2.10, 10, 24, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -573,6 +634,16 @@ CREATE TABLE `insumodehospitalizacion` (
   `id_insumo` int(11) NOT NULL,
   `cantidad` int(13) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `insumodehospitalizacion`
+--
+
+INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospitalizacion`, `id_insumo`, `cantidad`) VALUES
+(7, 11, 24, 1),
+(8, 11, 25, 1),
+(9, 12, 24, 1),
+(10, 13, 29, 6);
 
 -- --------------------------------------------------------
 
@@ -594,10 +665,12 @@ CREATE TABLE `inventario` (
 
 INSERT INTO `inventario` (`id_inventario`, `id_insumo`, `cantidad`, `fechaDeVencimiento`, `numero_de_lote`) VALUES
 (1, 24, 0, '2030-04-01', 1),
-(2, 25, -1, '2030-04-01', 2),
+(2, 25, 0, '2030-04-01', 2),
 (3, 24, 0, '2025-11-11', 3435),
-(4, 25, 1, '2025-12-12', 3456),
-(5, 25, 0, '2034-02-11', 1233);
+(4, 25, 0, '2025-12-12', 3456),
+(5, 25, 0, '2034-02-11', 1233),
+(6, 29, 4, '2025-05-10', 3232),
+(7, 30, 10, '2025-05-29', 3232);
 
 -- --------------------------------------------------------
 
@@ -706,7 +779,15 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (109, 5, 87, '', 16.55),
 (110, 5, 88, '', 125.30),
 (111, 5, 89, '', 35.80),
-(112, 5, 90, '', 17.90);
+(112, 5, 90, '', 17.90),
+(113, 5, 91, '2312', 129.30),
+(114, 8, 91, '2312', 1000.00),
+(115, 6, 91, '2312', 1000.00),
+(116, 5, 92, '', 1127.20),
+(117, 8, 92, '', 0.00),
+(118, 5, 93, '', 1123.00),
+(119, 5, 94, '', 2.10),
+(120, 6, 94, '', 0.00);
 
 -- --------------------------------------------------------
 
@@ -934,7 +1015,14 @@ INSERT INTO `serviciomedico_has_factura` (`serviciomedico_id_servicioMedico`, `f
 (26, 61),
 (25, 61),
 (25, 62),
-(25, 63);
+(25, 63),
+(25, 91),
+(26, 91),
+(25, 91),
+(25, 92),
+(26, 92),
+(25, 93),
+(26, 93);
 
 -- --------------------------------------------------------
 
@@ -1010,7 +1098,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 1, '', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
+(1, 10, '', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
 (42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$LeCFcopgGV3C94epNDcYv.d/AfRmTesLed/ZxAf9TbY2GSuTVg46u', 'ACT'),
 (43, 8, 'img23.jpg', 'Usuario', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT');
 
@@ -1237,7 +1325,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria_servicio`
@@ -1261,13 +1349,13 @@ ALTER TABLE `control`
 -- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidad`
@@ -1279,7 +1367,7 @@ ALTER TABLE `especialidad`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
@@ -1297,25 +1385,25 @@ ALTER TABLE `horarioydoctor`
 -- AUTO_INCREMENT de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
-  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `paciente`
@@ -1333,7 +1421,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
