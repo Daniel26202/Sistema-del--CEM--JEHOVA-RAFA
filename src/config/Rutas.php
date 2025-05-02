@@ -80,7 +80,7 @@ class Rutas
                     // Verifica si la sesión está activa
                     if (session_status() === PHP_SESSION_ACTIVE) {
                         // Si el controlador es Inicio o Perfil, llama al método directamente
-                        if ($this->controlador == "ControladorInicio" || $this->controlador == "ControladorPerfil") {
+                        if ($this->controlador == "ControladorInicio" || $this->controlador == "ControladorPerfil" || $this->controlador == "ControladorBitacora") {
                             $instancia->$metodo($parametro ?? []);
                         } else {
                             // Obtiene el permiso equivalente del método
