@@ -201,9 +201,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 
 
-	//Metodo para actualizar la cantidad insumos de la hospitalizacion
-
-	public function actualizarCantidadEntradaTotales($id_insumo, $cantidad_requerida, $id_factura, $cantidad_en_la_factura)
+	public function updateCantidadEntrada($id_insumo, $cantidad_requerida)
 	{
 
 		// Consultar lotes disponibles
@@ -211,9 +209,6 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		$consultaLote->bindParam(":id_insumo", $id_insumo);
 		$consultaLote->execute();
 		$lotesDisponibles = $consultaLote->fetchAll();
-
-
-
 
 		// Consultar suma de lotes disponibles
 		$consultaLote2 = $this->conexion->prepare("SELECT SUM(cantidad_disponible)AS cantidad_disponible FROM entrada_insumo WHERE id_insumo =:id_insumo GROUP BY id_insumo ORDER BY cantidad_disponible ASC");
@@ -266,7 +261,27 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 					$editarInventario->bindParam(":id_insumo", $id_insumo);
 					$editarInventario->bindParam(":numero_de_lote", $numero_de_lote);
 					$editarInventario->execute();
+				}
+			}
+		}
+		return [$cantidad_total, $lotesDisponibles];
+	}
 
+	//Metodo para actualizar la cantidad insumos de la hospitalizacion
+	public function actualizarCantidadEntradaTotales($id_insumo, $cantidad_requerida, $id_factura, $cantidad_en_la_factura)
+	{
+		$datos = $this->updateCantidadEntrada($id_insumo, $cantidad_requerida);
+		$cantidad_total = $datos[0];
+		$lotesDisponibles = $datos[1];
+
+		if ($cantidad_requerida <= $cantidad_total) {
+			// Verificar si hay lotes disponibles
+			if ($cantidad_total > 0) {
+				$id_inventario = "";
+				// Iterar sobre los lotes y restar la cantidad requerida
+				foreach ($lotesDisponibles as $fila) {
+					$numero_de_lote = $fila['numero_de_lote'];
+					$id_insumo = $fila['id_insumo'];
 
 					$consultaIdInventario = $this->conexion->prepare("SELECT id_inventario FROM inventario WHERE id_insumo =:id_insumo AND numero_de_lote =:numero_de_lote ");
 					$consultaIdInventario->bindParam(":id_insumo", $id_insumo);
@@ -284,9 +299,6 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 					$consulta->bindParam(":cantidad", $cantidad_actualidad_insumo[0]["cantidad"]);
 					$consulta->bindParam(":id_insumo", $id_insumo);
 					$consulta->execute();
-
-					
-
 				}
 
 				$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :id_inventario, :cantidad, 'ACT')");
@@ -296,7 +308,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 				$consulta->execute();
 
 
-				
+
 
 
 				if ($cantidad_requerida > 0) {
