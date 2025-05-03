@@ -156,7 +156,10 @@ svg{
 }
 
 
+.contenido{
 
+	background-color: var(--color-bg-main);
+}
 
 /*fondo animado*/
 .main {

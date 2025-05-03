@@ -53,7 +53,10 @@ require_once './src/vistas/head/head.php';
                     <div class="chart-card p-4 rounded shadow-sm">
                         <h5>Especialidades solicitadas</h5>
                         <canvas id="especialidades_solicitadas" width="600" height="600"></canvas>
-                        <button id="especialidades" class="btn btn-primary">Descargar</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reporte">
+                            Generar Reporte
+                        </button>
+
                     </div>
 
                 </div>
@@ -198,7 +201,7 @@ require_once './src/vistas/head/head.php';
                                                 disabled value="<?= $d["usuario"] ?>">
                                         </div>
 
-                                        
+
                                     </form>
 
                                 </div>
@@ -288,12 +291,49 @@ require_once './src/vistas/head/head.php';
     </div>
 </div>
 
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- modal reporte -->
+<div class="modal fade" id="reporte" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="imprimir" id="imprimir">
+                <div class="cabecera" style="display:flex; justify-content: space-between; background-color: #397ae0; color: white; padding: 10px;">
+                    <div class="icon">
+                        <img
+                            src="../src/assets/icons/logo.png"
+                            alt="Logo"
+                            class="logo"
+                            style="width: 290px; height: 100px; margin-left: 20px;" />
+                    </div>
+                    <div id="fecha" style="display: flex; align-items: center; padding-right: 20px;     color: white !important;">
+                        <?php echo date("d-m-Y"); ?>
+                    </div>
+                </div>
+                <div class="contenido" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+                    <div class="titulo" id="titulo">
+                        <h1>Reporte de Especialidades Solicitadas</h1>
+                    </div>
+                    <div class="canva" style="margin: 20px 0;">
+                        <canvas id="especialidades_solicitadas_pdf" width="400" height="400"></canvas>
+                    </div>
+                    <div class="leyenda-container" style="width: 80%; margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    </div>
+                    <div class="texto" id="texto" style="width: 90%; text-align: justify; font-size: 14px;">
+                        <p>Este reporte muestra las especialidades solicitadas en el sistema. Cada especialidad está representada por un color diferente en el gráfico.</p>
+                        <p>El gráfico de pastel muestra la distribución porcentual de cada especialidad solicitada, lo que permite identificar las áreas de mayor demanda.</p>
+                        <p>Este informe es útil para la toma de decisiones y la planificación de recursos en el ámbito médico.</p>
+                    </div>
+                    <button id="especialidades" class="btn btn-primary">Descargar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/jspdf.umd.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/html2canvas.min.js"></script>
 
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
+<script type=" text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
 <script type="text/javascript" src="../src/assets/js/dashboard.js"></script>
