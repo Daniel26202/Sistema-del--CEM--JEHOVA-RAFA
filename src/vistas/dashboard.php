@@ -275,7 +275,7 @@ require_once './src/vistas/head/head.php';
                 </div>
             </div>
 
-            <div class="modal-body horario-insertar">
+            <div class="modal-body horario-insertar ">
 
             </div>
 

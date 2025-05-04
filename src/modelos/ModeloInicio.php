@@ -85,7 +85,7 @@ WHERE estado = 'ACT';");
 			$consulta = $this->conexion->prepare($sql);
 		} else {
 			$sql = "SELECT 
-            c.fecha, 
+            c.fecha, e.nombre as especialidad,
             COUNT(c.id_cita) AS total_citas,
             GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) SEPARATOR ', ') AS personal
         ,fecha as date FROM 
@@ -96,6 +96,8 @@ WHERE estado = 'ACT';");
             personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
         INNER JOIN 
             personal p ON p.id_personal = psm.personal_id_personal
+        INNER JOIN 
+        	especialidad e ON e.id_especialidad = p.id_especialidad
             WHERE p.id_personal = :id_personal
         GROUP BY 
             c.fecha

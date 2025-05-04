@@ -219,13 +219,13 @@ traerHorarioEspecificoDelDr = async (id) => {
     resultado.forEach((res) => {
       div.innerHTML += `
                 <div class="mb-2" id="divAcordion">
-                <div class="d-flex ">Días Laborables: <h6 class="fw-bold"> ${res.diaslaborables}</h6> </div>
+                <div class="d-flex text-horario">Días Laborables: <h6 class="fw-bold text-horario"> ${res.diaslaborables}</h6> </div>
               
-                <div class="d-flex">Hora de Entrada: <h6 class="fw-bold"> ${res.horaDeEntrada}</h6></div>
-                <div class="d-flex ">Hora de Salida: <h6 class="fw-bold"> ${res.horaDeSalida}</h6></div></div>  `;
+                <div class="d-flex text-horario">Hora de Entrada: <h6 class="fw-bold text-horario"> ${res.horaDeEntrada}</h6></div>
+                <div class="d-flex text-horario">Hora de Salida: <h6 class="fw-bold text-horario"> ${res.horaDeSalida}</h6></div></div>  `;
     });
 
-    document.getElementById("titulo").innerText = `Horario del Docotor`;
+    document.getElementById("titulo").innerText = `Horario del Doctor`;
   }
 
   document.querySelector(".horario-insertar").appendChild(div);
@@ -264,10 +264,9 @@ const traerHorarioDoctor = async (id) => {
       //Darle el teto al boton del horario
       document.getElementById(
         "btnHorario"
-      ).innerText = `Horario del Dr ${res.personal}`;
+      ).innerText = `Horario del Dr ${res.personal} especialidad (${res.especialidad})`;
 
       //Llamar funcion para el horario especifico
-      console.log();
       traerHorarioEspecificoDelDr(id);
     });
 
