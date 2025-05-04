@@ -1,23 +1,15 @@
-.div-fondo{
-    display: flex;
-    /* align-items: center; */
+body {
+    /* background-color: #387ADF; */
     height: 100vh;
-    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom, #7FB3D5, #5499C7, #2980B9) ;
 }
-
-.fondo-tabla-error {
-    padding: 15px;
-    border: #E4EBF0 solid 1px;
-    border-radius: 20px;
-    box-shadow: #E4EBF0 0 0 5px;
-    background-color: #F8FCFF;
-    height: 85%;
-}
-
 .titulo{
-    color: #387ADF;
+    color: #F8FCFF;
 }
-
 .p{
     font-size: 24px;
+    color: #F8FCFF;
 }

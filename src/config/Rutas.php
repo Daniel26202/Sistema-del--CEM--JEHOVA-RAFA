@@ -34,6 +34,14 @@ class Rutas
         // Divide la URL en partes separadas por "/"
         $this->partes = explode("/", $this->url);
 
+
+        // Verifica si la URL contiene ".php"
+        if (strpos($this->url, ".php") !== false) {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            exit;
+        }
+
+
         // Obtiene el controlador de la primera parte de la URL (capitalizado)
         $this->controlador = ucfirst($this->partes[0] ?? "");
 
@@ -105,11 +113,11 @@ class Rutas
                 }
             } else {
                 // Si el método no existe, muestra un mensaje
-                echo "NO EXISTE EL MÉTODO";
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
             }
         } else {
             // Si el controlador no existe, muestra un mensaje
-            echo "NO EXISTE EL CONTROLADOR";
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
         }
     }
 }
