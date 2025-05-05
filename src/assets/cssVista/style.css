@@ -1716,8 +1716,10 @@ input[type="date"] {
 
 
 
-
-
+/* Clase papa mostrar todos los textos rojos cuando la validacion no se cumple */
+.p-error-validaciones{
+    color: rgb(224, 3, 3) !important;
+}
 
 /* /////////////////////////////////////////////////////////////////////////////// */
 /* ............................. RESPONSIVE ..................................... */
