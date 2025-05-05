@@ -45,6 +45,7 @@ class ControladorConsultas
 
 	public function guardar()
 	{
+		$precio_decimal = floatval($_POST['precioD']);
 
 
 		$resultaServicio = $this->modelo->nombreConsulta($_POST['id_categoria'], $_POST['id_doctor']);
@@ -57,10 +58,7 @@ class ControladorConsultas
 
 			$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
 
-
-			print_r($_POST);
-
-			$this->modelo->insertar($_POST['id_categoria'], $_POST['id_doctor'], $precio_sin_puntos);
+			$this->modelo->insertar($_POST['id_categoria'], $_POST['id_doctor'], $precio_decimal);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha Insertado un nuevo  servicio medico");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/agregado");

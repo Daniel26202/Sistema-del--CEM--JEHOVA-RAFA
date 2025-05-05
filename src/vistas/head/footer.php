@@ -11,6 +11,7 @@
 	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
 	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/modificacion.js"></script>
 	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/chart.js"></script>
+	<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/precios.js"></script>
 
 
 

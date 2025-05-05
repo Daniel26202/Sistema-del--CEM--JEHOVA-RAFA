@@ -20,6 +20,7 @@ if (!empty($parametro)) {
 		$concatenarRuta .= "../";
 	}
 }
+
 ?>
 
 
@@ -44,7 +45,11 @@ if (!empty($parametro)) {
 
 <?php $urlBase = $concatenarRuta; ?>
 
+
+
 <body class="d-flex">
+
+<input type="hidden" >
 
 	<div class="aside asideRespo active" id="aside">
 		<div class="head mt-3 d-flex justify-content-center">
