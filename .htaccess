@@ -1,9 +1,15 @@
 Options All -Indexes
 RewriteEngine On
 
+# Bloquea el acceso directo a archivos .php en las carpetas "controladores" y "modelos"
+RewriteRule ^src/(controladores|modelos)/.*\.php$ - [F,L]
+
 # Redirige todo excepto archivos y carpetas existentes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 # Reescribe la URL para que todo pase por index.php
 RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# Redirige errores 403 a la página de error 404
+ErrorDocument 403 /Sistema-del--CEM--JEHOVA-RAFA/404.php
