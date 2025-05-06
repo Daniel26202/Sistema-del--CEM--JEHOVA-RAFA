@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-04-2025 a las 04:44:37
+-- Tiempo de generación: 06-05-2025 a las 02:18:22
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -159,7 +159,81 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (122, 1, 'sintomas', 'Ha Insertado un  sintoma', '2025-04-27 21:37:41'),
 (123, 1, 'sintomas', 'Ha eliminado un  sintoma', '2025-04-27 21:37:49'),
 (124, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-27 21:56:58'),
-(125, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-27 21:57:29');
+(125, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-27 21:57:29'),
+(126, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-28 14:37:36'),
+(127, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-28 14:38:01'),
+(128, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-04-28 14:38:29'),
+(129, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-28 14:42:27'),
+(130, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 01:41:48'),
+(131, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-04-29 02:54:29'),
+(132, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-04-29 02:54:38'),
+(133, 1, 'insumo', 'Ha Insertado un insumo', '2025-04-29 03:23:45'),
+(134, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-29 03:32:05'),
+(135, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-04-29 03:32:17'),
+(136, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 11:38:32'),
+(137, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:25:47'),
+(138, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-29 12:29:02'),
+(139, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:29:39'),
+(140, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-29 12:35:09'),
+(141, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:35:32'),
+(142, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 11:11:28'),
+(143, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 14:35:55'),
+(144, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:12:29'),
+(145, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:22:06'),
+(146, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:22:47'),
+(147, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:54:12'),
+(148, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-01 16:23:01'),
+(149, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 16:55:24'),
+(150, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 18:01:42'),
+(151, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-02 09:14:38'),
+(152, 1, 'Roles', 'Ha Modiicado un rol', '2025-05-02 09:46:35'),
+(153, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-02 09:46:41'),
+(154, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-02 09:47:54'),
+(155, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-05-02 11:09:19'),
+(156, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-02 11:37:07'),
+(157, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-02 15:39:42'),
+(158, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-02 15:49:40'),
+(159, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-02 15:49:46'),
+(160, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-02 15:51:38'),
+(161, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-02 15:52:48'),
+(162, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-02 15:52:56'),
+(163, 1, 'entrada', 'Ha insertado una entrada', '2025-05-02 15:59:16'),
+(164, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:01:29'),
+(165, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:01:50'),
+(166, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:05:15'),
+(167, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:08:31'),
+(168, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:09:52'),
+(169, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 08:08:17'),
+(170, 1, 'cita', 'Ha Insertado una  cita', '2025-05-03 08:02:42'),
+(171, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-03 10:03:37'),
+(172, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-03 10:03:50'),
+(173, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 10:04:05'),
+(174, 42, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 10:05:34'),
+(175, 42, 'cerrar session', 'Ha cerrado la session ', '2025-05-03 10:18:27'),
+(176, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 11:06:03'),
+(177, 1, 'cita', 'Ha Insertado una  cita', '2025-05-03 09:18:06'),
+(178, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-03 11:42:13'),
+(179, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 20:05:34'),
+(180, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 20:28:49'),
+(181, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 21:10:14'),
+(182, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-04 20:33:30'),
+(183, 1, 'patologia', 'Ha Insertado una patologia', '2025-05-04 20:37:52'),
+(184, 1, 'paciente', 'Ha modificado un paciente', '2025-05-04 20:45:17'),
+(185, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-05 09:35:01'),
+(186, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 09:56:34'),
+(187, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 09:58:17'),
+(188, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 10:06:56'),
+(189, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 10:08:30'),
+(190, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:39'),
+(191, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:42'),
+(192, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:46'),
+(193, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:50'),
+(194, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:53'),
+(195, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-05 19:24:49'),
+(196, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-05 20:04:03'),
+(197, 1, 'entrada', 'Ha insertado una entrada', '2025-05-05 20:08:16'),
+(198, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-05 20:10:41'),
+(199, 1, 'entrada', 'Ha eliminado una entrada', '2025-05-05 20:16:24');
 
 -- --------------------------------------------------------
 
@@ -209,7 +283,9 @@ INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_ser
 (43, '2025-04-02', '12:33:00', 'ACT', 22, 23),
 (44, '2025-04-02', '12:33:00', 'ACT', 22, 23),
 (45, '2025-04-21', '22:00:00', 'Realizadas', 26, 25),
-(46, '2025-04-25', '12:00:00', 'Pendiente', 27, 25);
+(46, '2025-04-25', '12:00:00', 'Pendiente', 27, 25),
+(47, '2025-05-05', '20:00:00', 'Realizadas', 26, 25),
+(48, '2025-05-12', '20:00:00', 'Pendiente', 26, 23);
 
 -- --------------------------------------------------------
 
@@ -226,6 +302,7 @@ CREATE TABLE `control` (
   `fecha_control` datetime NOT NULL,
   `fechaRegreso` date NOT NULL,
   `nota` varchar(40) NOT NULL,
+  `historiaclinica` text NOT NULL,
   `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -233,9 +310,9 @@ CREATE TABLE `control` (
 -- Volcado de datos para la tabla `control`
 --
 
-INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`, `medicamentosRecetados`, `fecha_control`, `fechaRegreso`, `nota`, `estado`) VALUES
-(26, 23, 1, 'El chico presenta dificultad para respirar, hinchazón en el cuerpo y dolores de cabeza', 'Cetirizina\r\nSalbutamol\r\nAcetaminofén', '2025-04-02 14:37:34', '2025-04-26', 'Debe hacerse hematología completa', 'ACT'),
-(27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasico\r\nCafeína\r\nViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'ACT');
+INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`, `medicamentosRecetados`, `fecha_control`, `fechaRegreso`, `nota`, `historiaclinica`, `estado`) VALUES
+(26, 23, 1, 'El chico presenta dificultad para respirar, hinchazón en el cuerpo y dolores de cabeza', 'Cetirizina\r\nSalbutamol\r\nAcetaminofén', '2025-04-02 14:37:34', '2025-04-26', 'Debe hacerse hematología completa', '', 'ACT'),
+(27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasico\r\nCafeína\r\nViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'historiaclinica', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -261,7 +338,17 @@ INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeI
 (40, 6, 3435, '2025-04-21', 'ACT'),
 (41, 6, 3435, '2025-04-21', 'ACT'),
 (42, 7, 3456, '2025-04-21', 'ACT'),
-(43, 6, 1233, '2025-04-21', 'ACT');
+(43, 6, 1233, '2025-04-21', 'ACT'),
+(44, 7, 3232, '2025-04-29', 'ACT'),
+(45, 7, 3232, '2025-04-29', 'ACT'),
+(46, 7, 3232, '2025-04-29', 'ACT'),
+(47, 7, 3232, '2025-04-29', 'ACT'),
+(48, 6, 3232, '2025-05-02', 'ACT'),
+(49, 7, 1212, '2025-05-02', 'ACT'),
+(50, 6, 2334, '2025-05-02', 'ACT'),
+(51, 7, 2323, '2025-05-05', 'ACT'),
+(52, 7, 4553, '2025-05-05', 'ACT'),
+(53, 7, 4553, '2025-05-05', 'DES');
 
 -- --------------------------------------------------------
 
@@ -289,7 +376,17 @@ INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `
 (34, 24, 40, '2025-11-11', 123.00, 10, 0),
 (35, 24, 41, '2025-11-11', 123.00, 10, 0),
 (36, 25, 42, '2025-12-12', 12.00, 10, 1),
-(37, 25, 43, '2034-02-11', 123.00, 5, 0);
+(37, 25, 43, '2034-02-11', 123.00, 5, 0),
+(38, 26, 44, '2025-05-10', 21.00, 10, 10),
+(39, 27, 45, '2025-05-10', 21.00, 10, 10),
+(40, 28, 46, '2025-05-10', 21.00, 10, 10),
+(41, 29, 47, '2025-05-10', 21.00, 10, 4),
+(42, 30, 48, '2025-05-29', 21.00, 10, 10),
+(43, 31, 49, '2025-05-31', 923.00, 20, 20),
+(44, 31, 50, '2025-05-31', 23.00, 12, 10),
+(45, 32, 51, '2025-05-31', 12.00, 20, 20),
+(46, 32, 52, '2029-02-12', 34.00, 10, 0),
+(47, 32, 53, '2029-02-12', 34.00, 10, 10);
 
 -- --------------------------------------------------------
 
@@ -364,7 +461,14 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_pa
 (87, '2025-04-21', 16.55, 'ACT', 25),
 (88, '2025-04-21', 125.30, 'ACT', 25),
 (89, '2025-04-21', 35.80, 'ACT', 25),
-(90, '2025-04-21', 17.90, 'ACT', 25);
+(90, '2025-04-21', 17.90, 'ACT', 25),
+(91, '2025-05-01', 2129.30, 'ACT', 23),
+(92, '2025-05-01', 1127.20, 'ACT', 23),
+(93, '2025-05-01', 1123.00, 'ACT', 23),
+(94, '2025-05-01', 2.10, 'ACT', 23),
+(95, '2025-05-03', 182.12, 'ACT', 25),
+(96, '2025-05-03', 1000.00, 'ACT', 25),
+(97, '2025-05-05', 129.00, 'ACT', 25);
 
 -- --------------------------------------------------------
 
@@ -471,7 +575,12 @@ INSERT INTO `factura_has_inventario` (`factura_id_factura`, `inventario_id_inven
 (88, 4, 7, 'ACT'),
 (89, 4, 1, 'ACT'),
 (89, 4, 1, 'ACT'),
-(90, 4, 1, 'ACT');
+(90, 4, 1, 'ACT'),
+(91, 6, 3, 'ACT'),
+(92, 6, 2, 'ACT'),
+(94, 6, 1, 'ACT'),
+(95, 8, 2, 'ACT'),
+(97, 10, 10, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -532,9 +641,17 @@ CREATE TABLE `hospitalizacion` (
   `total` float DEFAULT NULL,
   `id_control` int(11) NOT NULL,
   `fecha_hora_final` datetime DEFAULT NULL,
-  `historiaclinica` text NOT NULL,
   `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `hospitalizacion`
+--
+
+INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `precio_horas`, `total`, `id_control`, `fecha_hora_final`, `estado`) VALUES
+(11, '2025-04-28 18:37:52', 0, 0, 27, '0000-00-00 00:00:00', 'DES'),
+(12, '2025-04-28 18:42:13', 0, 0, 26, '0000-00-00 00:00:00', 'DES'),
+(13, '2025-04-29 07:32:00', 0, 0, 27, '0000-00-00 00:00:00', 'Pendiente');
 
 -- --------------------------------------------------------
 
@@ -547,19 +664,24 @@ CREATE TABLE `insumo` (
   `imagen` varchar(500) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `nombre` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `descripcion` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `marca` varchar(35) NOT NULL,
+  `medida` varchar(35) NOT NULL,
   `precio` float(12,2) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `stockMinimo` int(11) NOT NULL,
-  `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
+  `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `stockMinimo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `insumo`
 --
 
-INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `precio`, `cantidad`, `stockMinimo`, `estado`) VALUES
-(24, '', 'Paracetamol', 'El paracetamol, también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado', 10.33, 0, 1, 'ACT'),
-(25, '', 'Ibuprofeno', 'El ibuprofeno es un antinflamatorio no esteroideo (AINE) que pertenece al subgrupo de fármacos derivados del ácido propiónico.', 17.90, 0, 1, 'ACT');
+INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `medida`, `precio`, `estado`, `stockMinimo`) VALUES
+(24, '', 'Paracetamol', 'El paracetamol, también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado', '', '', 10.33, 'DES', 0),
+(25, '', 'Ibuprofeno', 'El ibuprofeno es un antinflamatorio no esteroideo (AINE) que pertenece al subgrupo de fármacos derivados del ácido propiónico.', '', '', 17.90, 'DES', 0),
+(29, '2025-04-29_1745911425_WhatsApp Image 2025-04-03 at 11.51.47 PM.jpeg', 'Ibuprofeno', 'descripción', '', '', 2.10, 'DES', 0),
+(30, '2025-05-02_1746200226_9amALQfcTkJsr2zlMRcpi99AnctFZBjlnRxibrip.jpg', 'Ibuprofeno', 'descripción', '', '', 2.10, 'DES', 0),
+(31, '2025-05-02_1746216592_img27.jpg', 'Insumo', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '400 ml', 29.56, 'ACT', 1),
+(32, '2025-05-05_1746489843_img23.jpg', 'Lobo', 'Es un lobo malvado', 'Tecno spar 30212 ', '400 ml', 0.60, 'ACT', 1);
 
 -- --------------------------------------------------------
 
@@ -573,6 +695,16 @@ CREATE TABLE `insumodehospitalizacion` (
   `id_insumo` int(11) NOT NULL,
   `cantidad` int(13) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `insumodehospitalizacion`
+--
+
+INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospitalizacion`, `id_insumo`, `cantidad`) VALUES
+(7, 11, 24, 1),
+(8, 11, 25, 1),
+(9, 12, 24, 1),
+(10, 13, 29, 6);
 
 -- --------------------------------------------------------
 
@@ -594,10 +726,16 @@ CREATE TABLE `inventario` (
 
 INSERT INTO `inventario` (`id_inventario`, `id_insumo`, `cantidad`, `fechaDeVencimiento`, `numero_de_lote`) VALUES
 (1, 24, 0, '2030-04-01', 1),
-(2, 25, -1, '2030-04-01', 2),
+(2, 25, 0, '2030-04-01', 2),
 (3, 24, 0, '2025-11-11', 3435),
-(4, 25, 1, '2025-12-12', 3456),
-(5, 25, 0, '2034-02-11', 1233);
+(4, 25, 0, '2025-12-12', 3456),
+(5, 25, 0, '2034-02-11', 1233),
+(6, 29, 4, '2025-05-10', 3232),
+(7, 30, 10, '2025-05-29', 3232),
+(8, 31, 30, '2025-05-31', 1212),
+(9, 31, 30, '2025-05-31', 2334),
+(10, 32, 20, '2025-05-31', 2323),
+(11, 32, 20, '2029-02-12', 4553);
 
 -- --------------------------------------------------------
 
@@ -706,7 +844,20 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (109, 5, 87, '', 16.55),
 (110, 5, 88, '', 125.30),
 (111, 5, 89, '', 35.80),
-(112, 5, 90, '', 17.90);
+(112, 5, 90, '', 17.90),
+(113, 5, 91, '2312', 129.30),
+(114, 8, 91, '2312', 1000.00),
+(115, 6, 91, '2312', 1000.00),
+(116, 5, 92, '', 1127.20),
+(117, 8, 92, '', 0.00),
+(118, 5, 93, '', 1123.00),
+(119, 5, 94, '', 2.10),
+(120, 6, 94, '', 0.00),
+(121, 5, 95, '1234', 100.00),
+(122, 6, 95, '1234', 82.12),
+(123, 5, 96, '7897', 500.00),
+(124, 6, 96, '7897', 500.00),
+(125, 5, 97, '', 129.00);
 
 -- --------------------------------------------------------
 
@@ -725,7 +876,8 @@ CREATE TABLE `patologia` (
 --
 
 INSERT INTO `patologia` (`id_patologia`, `nombre_patologia`, `estado`) VALUES
-(13, 'ASMA', '1');
+(13, 'ASMA', '1'),
+(14, 'Patologia', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -837,7 +989,11 @@ CREATE TABLE `personal_has_serviciomedico` (
 INSERT INTO `personal_has_serviciomedico` (`personal_id_personal`, `serviciomedico_id_servicioMedico`) VALUES
 (18, 25),
 (19, 26),
-(20, 27);
+(19, 29),
+(19, 30),
+(20, 27),
+(20, 28),
+(20, 31);
 
 -- --------------------------------------------------------
 
@@ -911,8 +1067,12 @@ INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `es
 (23, 100, 1500.00, 'ACT'),
 (24, 1, 3000.00, 'ACT'),
 (25, 101, 1000.00, 'ACT'),
-(26, 2, 123.00, 'ACT'),
-(27, 2, 123.00, 'ACT');
+(26, 2, 123.00, 'DES'),
+(27, 2, 123.00, 'DES'),
+(28, 1, 31395.00, 'DES'),
+(29, 1, 16905.00, 'DES'),
+(30, 1, 169.05, 'DES'),
+(31, 101, 1.00, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -934,7 +1094,17 @@ INSERT INTO `serviciomedico_has_factura` (`serviciomedico_id_servicioMedico`, `f
 (26, 61),
 (25, 61),
 (25, 62),
-(25, 63);
+(25, 63),
+(25, 91),
+(26, 91),
+(25, 91),
+(25, 92),
+(26, 92),
+(25, 93),
+(26, 93),
+(27, 95),
+(25, 96),
+(26, 97);
 
 -- --------------------------------------------------------
 
@@ -1010,8 +1180,8 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 1, '', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
-(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$LeCFcopgGV3C94epNDcYv.d/AfRmTesLed/ZxAf9TbY2GSuTVg46u', 'ACT'),
+(1, 10, '', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
+(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
 (43, 8, 'img23.jpg', 'Usuario', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT');
 
 --
@@ -1237,7 +1407,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria_servicio`
@@ -1249,7 +1419,7 @@ ALTER TABLE `categoria_servicio`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `control`
@@ -1261,13 +1431,13 @@ ALTER TABLE `control`
 -- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidad`
@@ -1279,7 +1449,7 @@ ALTER TABLE `especialidad`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
@@ -1297,25 +1467,25 @@ ALTER TABLE `horarioydoctor`
 -- AUTO_INCREMENT de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
-  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `paciente`
@@ -1333,13 +1503,13 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
 --
 ALTER TABLE `patologia`
-  MODIFY `id_patologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_patologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `patologiadepaciente`
@@ -1375,7 +1545,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `serviciomedico`
 --
 ALTER TABLE `serviciomedico`
-  MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `sintomas`
@@ -1426,110 +1596,10 @@ ALTER TABLE `entrada`
   ADD CONSTRAINT `entrada_ibfk_1` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`);
 
 --
--- Filtros para la tabla `entrada_insumo`
---
-ALTER TABLE `entrada_insumo`
-  ADD CONSTRAINT `entrada_insumo_ibfk_1` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`id_insumo`),
-  ADD CONSTRAINT `entrada_insumo_ibfk_2` FOREIGN KEY (`id_entrada`) REFERENCES `entrada` (`id_entrada`);
-
---
 -- Filtros para la tabla `factura`
 --
 ALTER TABLE `factura`
   ADD CONSTRAINT `fk_factura_paciente1` FOREIGN KEY (`paciente_id_paciente`) REFERENCES `paciente` (`id_paciente`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `factura_has_inventario`
---
-ALTER TABLE `factura_has_inventario`
-  ADD CONSTRAINT `fk_factura_has_inventario_factura1` FOREIGN KEY (`factura_id_factura`) REFERENCES `factura` (`id_factura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_factura_has_inventario_inventario1` FOREIGN KEY (`inventario_id_inventario`) REFERENCES `inventario` (`id_inventario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `horarioydoctor`
---
-ALTER TABLE `horarioydoctor`
-  ADD CONSTRAINT `horarioydoctor_ibfk_1` FOREIGN KEY (`id_horario`) REFERENCES `horario` (`id_horario`),
-  ADD CONSTRAINT `horarioydoctor_ibfk_2` FOREIGN KEY (`id_personal`) REFERENCES `personal` (`id_personal`);
-
---
--- Filtros para la tabla `hospitalizacion`
---
-ALTER TABLE `hospitalizacion`
-  ADD CONSTRAINT `id_control` FOREIGN KEY (`id_control`) REFERENCES `control` (`id_control`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `insumodehospitalizacion`
---
-ALTER TABLE `insumodehospitalizacion`
-  ADD CONSTRAINT `insumodehospitalizacion_ibfk_2` FOREIGN KEY (`id_hospitalizacion`) REFERENCES `hospitalizacion` (`id_hospitalizacion`),
-  ADD CONSTRAINT `insumodehospitalizacion_ibfk_3` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`id_insumo`);
-
---
--- Filtros para la tabla `inventario`
---
-ALTER TABLE `inventario`
-  ADD CONSTRAINT `inventario_ibfk_1` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`id_insumo`);
-
---
--- Filtros para la tabla `pagodefactura`
---
-ALTER TABLE `pagodefactura`
-  ADD CONSTRAINT `pagodefactura_ibfk_1` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id_factura`),
-  ADD CONSTRAINT `pagodefactura_ibfk_2` FOREIGN KEY (`id_pago`) REFERENCES `pago` (`id_pago`);
-
---
--- Filtros para la tabla `patologiadepaciente`
---
-ALTER TABLE `patologiadepaciente`
-  ADD CONSTRAINT `patologiadepaciente_ibfk_1` FOREIGN KEY (`id_patologia`) REFERENCES `patologia` (`id_patologia`),
-  ADD CONSTRAINT `patologiadepaciente_ibfk_2` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`);
-
---
--- Filtros para la tabla `permisos`
---
-ALTER TABLE `permisos`
-  ADD CONSTRAINT `id_rol` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `personal`
---
-ALTER TABLE `personal`
-  ADD CONSTRAINT `personal_ibfk_1` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidad` (`id_especialidad`),
-  ADD CONSTRAINT `personal_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
-
---
--- Filtros para la tabla `personal_has_serviciomedico`
---
-ALTER TABLE `personal_has_serviciomedico`
-  ADD CONSTRAINT `fk_personal_has_serviciomedico_personal1` FOREIGN KEY (`personal_id_personal`) REFERENCES `personal` (`id_personal`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_personal_has_serviciomedico_serviciomedico1` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `serviciomedico`
---
-ALTER TABLE `serviciomedico`
-  ADD CONSTRAINT `serviciomedico_ibfk_2` FOREIGN KEY (`id_categoria`) REFERENCES `categoria_servicio` (`id_categoria`);
-
---
--- Filtros para la tabla `serviciomedico_has_factura`
---
-ALTER TABLE `serviciomedico_has_factura`
-  ADD CONSTRAINT `id_factura` FOREIGN KEY (`factura_id_factura`) REFERENCES `factura` (`id_factura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `id_servicio` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `sintomas_control`
---
-ALTER TABLE `sintomas_control`
-  ADD CONSTRAINT `sintomas_control_ibfk_1` FOREIGN KEY (`id_control`) REFERENCES `control` (`id_control`),
-  ADD CONSTRAINT `sintomas_control_ibfk_2` FOREIGN KEY (`id_sintomas`) REFERENCES `sintomas` (`id_sintomas`);
-
---
--- Filtros para la tabla `usuario`
---
-ALTER TABLE `usuario`
-  ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
