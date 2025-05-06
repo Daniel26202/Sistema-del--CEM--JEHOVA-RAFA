@@ -235,7 +235,7 @@
                         <?php if ($i["cantidad"] <= 0): ?>
                             <p class="text-danger">Cantidad: <?= $i["cantidad"] ?></p>
                         <?php else: ?>
-                            <p>Cantidad: <?= $i["cantidad"] ?></p>
+                            <p>Cantidad: <?= $i["cantidad_inventario"] ?></p>
                         <?php endif ?>
 
                         <a href="#" class="btn btn-agregarcita-modal text-decoration-none botones-mostrar" data-index="<?= $i["id_insumo"] ?>"
