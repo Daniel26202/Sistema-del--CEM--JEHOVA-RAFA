@@ -16,6 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
       case "precio":
         validarCampos(expresiones.precio, e.target, "precio");
         break;
+      case "precioD":
+        validarCampos(expresiones.precio, e.target, "precioD");
+        break;
     }
   }
 
@@ -44,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
   inputs.forEach((input) => {
     input.addEventListener("keyup", validarFormulario);
     input.addEventListener("input", validarFormulario);
+    input.addEventListener("blur", validarFormulario);
   });
 
   let alerta = document.getElementById("alerta");
