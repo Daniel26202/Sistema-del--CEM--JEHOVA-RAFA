@@ -34,9 +34,10 @@ WHERE estado = 'ACT';");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
-	public function especialidades_solicitadas()
+	public function especialidades_solicitadas($fechaInicio = "", $fechaFinal = "")
 	{
-		$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
+		if ($fechaInicio == "" && $fechaFinal == "") {
+			$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
   												COUNT(c.id_cita) AS total_solicitudes
 												FROM cita c
 												INNER JOIN serviciomedico sm 
@@ -46,6 +47,21 @@ WHERE estado = 'ACT';");
 												GROUP BY cs.nombre
 												ORDER BY total_solicitudes DESC;
 												");
+		} else {
+			$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
+  												COUNT(c.id_cita) AS total_solicitudes
+												FROM cita c
+												INNER JOIN serviciomedico sm 
+												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+												INNER JOIN categoria_servicio cs 
+												ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
+												GROUP BY cs.nombre 
+												ORDER BY total_solicitudes DESC;;
+												");
+			$consulta->bindParam(":fechaInicio", $fechaInicio);
+			$consulta->bindParam(":fechaFinal", $fechaFinal);
+		}
+
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 

@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
   traerCitashoy(); // Carga las citas del día
   pacientes_hospitalizados(); // Carga los pacientes hospitalizados
   traerDatosServicios(); // Carga los datos de la tabla de precios
-  especialidades_chart(); // Genera el gráfico de especialidades
+  especialidades_chart(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"
+  ); // Genera el gráfico de especialidades
   sintomas_chart(); // Genera el gráfico de sintomas comunes
   traerDoctor(); //Cargar doctores en el select
 });
@@ -22,7 +24,24 @@ document
   .getElementById("especialidades")
   .addEventListener("click", generarReporte);
 
-//alidar que el elemento exista
+//Filtrar grafica de especialidades por fecha
+document.getElementById("buscarFecha").addEventListener("click", function () {
+  let fechaInicio = this.parentElement.firstElementChild;
+  let fechaFinal = this.parentElement.firstElementChild.nextElementSibling;
+  if (fechaInicio.value < fechaFinal.value) {
+    document.getElementById("especialidades").classList.remove("d-none");
+    console.log("removida");
+    document.querySelector(".alertaFechaInicio").classList.add("d-none");
+    especialidades_chart(
+      `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas_filtradas/${fechaInicio.value}/${fechaFinal.value}`
+    );
+  } else {
+    document.querySelector(".alertaFechaInicio").classList.remove("d-none");
+    document.getElementById("especialidades").classList.add("d-none");
+  }
+});
+
+//validar que el elemento exista
 
 if (document.getElementById("selectDoctor")) {
   //Evento para actualizar la informacion del doctor
@@ -370,76 +389,114 @@ const pacientes_hospitalizados = async () => {
 // ========================== FUNCIONES DE GRÁFICOS ==========================
 
 // Genera el gráfico de especialidades
-const especialidades_chart = async () => {
+
+let especialidadesChartModal = null;
+let especialidadesChart = null;
+const especialidades_chart = async (url) => {
   try {
-    let especialidades_solicitadas = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"
-    );
+    let especialidades_solicitadas = await fetch(url);
     let data = await especialidades_solicitadas.json();
     console.log(data);
-    let especialidades = data.map((item) => item.especialidad);
-    let totalSolicitudes = data.map((item) => item.total_solicitudes);
-    generarLeyendaEspecialidades(especialidades, totalSolicitudes); // Genera la leyenda de especialidades
-    let ctx = document
-      .getElementById("especialidades_solicitadas")
-      .getContext("2d");
-    new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: especialidades,
-        datasets: [
-          {
-            data: totalSolicitudes,
-            backgroundColor: [
-              "#387adf",
-              "#78a0f0",
-              "#a4c7ff",
-              "#ffcc00",
-              "#ff6666",
-            ],
+    if (data.length > 0) {
+      //Quitarle lo oculto a los graficos
+      document
+        .getElementById("especialidades_solicitadas")
+        .classList.remove("d-none");
+      document
+        .getElementById("especialidades_solicitadas_pdf")
+        .classList.remove("d-none");
+
+      let especialidades = data.map((item) => item.especialidad);
+      let totalSolicitudes = data.map((item) => item.total_solicitudes);
+      generarLeyendaEspecialidades(especialidades, totalSolicitudes); // Genera la leyenda de especialidades
+      let ctx = document
+        .getElementById("especialidades_solicitadas")
+        .getContext("2d");
+      if (especialidadesChart) {
+        especialidadesChart.destroy();
+      }
+      especialidadesChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: especialidades,
+          datasets: [
+            {
+              data: totalSolicitudes,
+              backgroundColor: [
+                "#387adf",
+                "#78a0f0",
+                "#a4c7ff",
+                "#ffcc00",
+                "#ff6666",
+              ],
+            },
+          ],
+          options: {
+            responsive: false,
+            plugins: {
+              legend: {
+                display: false, // La leyenda la haremos nosotros con jsPDF
+              },
+            },
           },
-        ],
+        },
+      });
+
+      // Renderiza el gráfico en el canvas del modal
+      let ctxModal = document
+        .getElementById("especialidades_solicitadas_pdf")
+        .getContext("2d");
+
+      // Destruye el gráfico existente en el modal si ya fue creado
+      if (especialidadesChartModal) {
+        especialidadesChartModal.destroy();
+      }
+
+      // Crea un nuevo gráfico para el modal y lo asigna a una variable global
+      especialidadesChartModal = new Chart(ctxModal, {
+        type: "pie",
+        data: {
+          labels: especialidades,
+          datasets: [
+            {
+              data: totalSolicitudes,
+              backgroundColor: [
+                "#387adf",
+                "#78a0f0",
+                "#a4c7ff",
+                "#ffcc00",
+                "#ff6666",
+              ],
+            },
+          ],
+        },
         options: {
           responsive: false,
           plugins: {
             legend: {
-              display: false, // La leyenda la haremos nosotros con jsPDF
+              display: false, // La leyenda se genera manualmente
             },
           },
         },
-      },
-    });
-
-    // Renderizar el gráfico en el canvas del modal
-    let ctxModal = document
-      .getElementById("especialidades_solicitadas_pdf")
-      .getContext("2d");
-    new Chart(ctxModal, {
-      type: "pie",
-      data: {
-        labels: especialidades,
-        datasets: [
-          {
-            data: totalSolicitudes,
-            backgroundColor: [
-              "#387adf",
-              "#78a0f0",
-              "#a4c7ff",
-              "#ffcc00",
-              "#ff6666",
-            ],
-          },
-        ],
-      },
-      options: {
-        responsive: false,
-        plugins: {
-          legend: {
-            display: false, // La leyenda la haremos nosotros con jsPDF
-          },
-        },
-      },
-    });
+      });
+      //Aparecer el boton de impirmir
+      document.getElementById("especialidades").classList.remove("d-none");
+      //Aparecer el escrito
+      document
+        .querySelectorAll("#texto p")
+        .forEach((ele) => ele.classList.remove("d-none"));
+    } else {
+      //Vaciando todos los elementos si no hay datos para relizar la grafica
+      document
+        .getElementById("especialidades_solicitadas")
+        .classList.add("d-none");
+      document
+        .getElementById("especialidades_solicitadas_pdf")
+        .classList.add("d-none");
+      document.querySelector(".leyenda-container").innerHTML = "";
+      document.querySelectorAll("#texto p").forEach((ele) => ele.classList.add("d-none"));
+      document.getElementById("especialidades").classList.add("d-none");
+    }
   } catch (error) {
     console.log("Error al generar el gráfico de especialidades:", error);
   }
@@ -484,6 +541,7 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
   console.log(totalSolicitudes);
   // Selecciona el contenedor donde se mostrará la leyenda
   const contenedorLeyenda = document.querySelector(".leyenda-container");
+  console.log(contenedorLeyenda);
 
   // Limpia cualquier contenido previo en el contenedor
   contenedorLeyenda.innerHTML = "";

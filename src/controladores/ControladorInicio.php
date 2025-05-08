@@ -116,6 +116,11 @@ class ControladorInicio
         $especialidades_solicitadas = $this->modeloInicio->especialidades_solicitadas();
         echo json_encode($especialidades_solicitadas);
     }
+    public function especialidades_solicitadas_filtradas($datos)
+    {
+        $especialidades_solicitadas = $this->modeloInicio->especialidades_solicitadas($datos[0],$datos[1]);
+        echo json_encode($especialidades_solicitadas);
+    }
 
     public function sintomas_comunes()
     {
