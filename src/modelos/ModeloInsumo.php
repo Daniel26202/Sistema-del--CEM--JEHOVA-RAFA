@@ -86,9 +86,7 @@ class ModeloInsumo extends Db
 	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote, $marca, $medida)
 	{
 
-		$promedio_ponderado = number_format(($precio), 2, '.', '');
-		$decimal = floatval($promedio_ponderado);
-		echo $decimal;
+		
 
 
 		$tiempo = new DateTime();
@@ -106,7 +104,7 @@ class ModeloInsumo extends Db
 		$consulta->bindParam(":descripcion", $descripcion);
 		$consulta->bindParam(":marca", $marca);
 		$consulta->bindParam(":medida", $medida);
-		$consulta->bindParam(":precio", $decimal);
+		$consulta->bindParam(":precio", $precio);
 		$consulta->bindParam(":stockMinimo", $stockMinimo);
 
 		$consulta->execute();

@@ -474,7 +474,7 @@
             <path
               d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
           </svg>
-          <div>SELECCIONAR INSUMOS 2</div>
+          <div>SELECCIONAR INSUMOS</div>
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -529,6 +529,7 @@
                 </th>
                 <th class=" text-center">#</th>
                 <th class=" text-center border-start">Nombre</th>
+                <th class=" text-center border-start">Medida</th>
                 <th class=" text-center border-start">Disponible</th>
                 <th class=" text-center border-start">Precio</th>
                 <!-- <th class=" text-center border-start">Lote</th> -->
@@ -548,9 +549,12 @@
                     <td class="text-center fw-bold">
                       <?php echo $contador++; ?>
                     </td>
-
                     <td class="text-center border-start">
                       <?php echo $i['nombre']; ?>
+                    </td>
+
+                    <td class="text-center border-start">
+                      <?php echo $i['medida']; ?>
                     </td>
                     <td class="text-center border-start cantidad_tabla_disponible<?= $i["nombre"] ?>">
                       <?php echo $i['cantidad']; ?>
@@ -650,7 +654,7 @@
 <div class="modal fade" id="modal-agregar-insumos-confirmar" data-bs-backdrop="static" data-bs-keyboard="false"
   tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
-    <div class="modal-content agregar">
+    <div class="modal-content agregar" style="width: 40vw;">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -694,6 +698,7 @@
                   </th>
                   <th class=" text-center">#</th>
                   <th class=" text-center border-start">Nombre</th>
+                  <th class=" text-center border-start">Medida</th>
                   <th class=" text-center border-start">Cantidad</th>
                   <th class=" text-center border-start">Precio</th>
                   <th class=" text-center border-start">Sub-total</th>
@@ -835,7 +840,7 @@
         </a>
       </div>
 
-      <div class="alert alert-primary p-1 text-center m-auto alerta-varios-metodos d-none" style="width: 96%;">La cantidad total de todos los inputs tiene que ser equivalente al total y si alguno de los metodos de pago requiere referencia tambien es obligatori</div>
+      <div class="alert alert-primary p-1 text-center m-auto alerta-varios-metodos d-none" style="width: 96%;">La cantidad total de todos los campos tiene que ser equivalente al total y si alguno de los metodos de pago requiere referencia tambien es obligatoria</div>
 
 
       <div class="form-modal mt-2" id="inputCom">
