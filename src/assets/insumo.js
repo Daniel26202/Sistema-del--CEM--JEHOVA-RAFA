@@ -27,7 +27,7 @@ addEventListener("DOMContentLoaded", function () {
     nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
     descripcion: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
     cantidad: /^([1-9]{1})([0-9]{1,4})?$/,
-    precio: /^(\d{1,3}\.\d{3},\d{2}|\d{1,3},\d{2})$/,
+    precio: /^(\d{1,3}\.\d{3}.\d{2}|\d{1,3}.\d{2})$/,
     fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
     stockMinimo: /^([1-9]{1})([0-9]{1})?$/,
     lote: /^[0-9-_]{4,10}$/,
@@ -307,7 +307,7 @@ addEventListener("DOMContentLoaded", function () {
     const pErrorGuardar = document.querySelector(".p-error-" + input.name);
     console.log(pErrorGuardar);
     pErrorGuardar.classList.add("fw-bold");
-    pErrorGuardar.style.color = "rgb(224, 3, 3)";
+    pErrorGuardar.classList.add("p-error-validaciones");
     console.log(pErrorGuardar);
     if (input.name == "fecha_de_vencimiento") {
       console.log("2trabaje con la echa");
@@ -333,7 +333,7 @@ addEventListener("DOMContentLoaded", function () {
         const pErrorGuardarImagen = document.querySelector(".p-error-imagen");
         console.log(pErrorGuardarImagen);
         pErrorGuardarImagen.classList.add("fw-bold");
-        pErrorGuardarImagen.style.color = "rgb(224, 3, 3)";
+        pErrorGuardarImagen.classList.add("p-error-validaciones");
         let imagenSeparada = e.target.value.split("\\");
         let nombreImagen = imagenSeparada.pop();
         if (expresionesInsumos.imagen.test(nombreImagen)) {

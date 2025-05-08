@@ -171,7 +171,7 @@
               <td class="text-center"><?= $e["nombre"]; ?></td>
               <td class="text-center"><?= $e["descripcion"]; ?></td>
               <td class="text-center"><?= $e["precio"]; ?> BSs</td>
-              <td class="text-center"><?= $e["cantidad"]; ?></td>
+              <td class="text-center"><?= $e["cantidad_inventario"]; ?></td>
               <td class="text-center"><?= $e["stockMinimo"]; ?></td>
 
               <td class="d-flex justify-content-center">
