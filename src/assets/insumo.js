@@ -42,6 +42,7 @@ addEventListener("DOMContentLoaded", function () {
     descripcion: false,
     cantidad: false,
     precio: false,
+    precioD: false,
     fechaDeVencimiento: false,
     stockMinimo: false,
     lote: false,
@@ -55,6 +56,7 @@ addEventListener("DOMContentLoaded", function () {
     descripcion: true,
     cantidad: true,
     precio: true,
+    precioD: true,
     fechaDeVencimiento: true,
     stockMinimo: true,
     lote: true,
@@ -167,11 +169,17 @@ addEventListener("DOMContentLoaded", function () {
     let parrafos = document.querySelectorAll(".parrafo");
     console.log(resultado);
     resultado["insumo"].forEach((res) => {
+      console.log(res.nombre)
       parrafos[0].innerText = `${res.nombre}`;
       parrafos[1].innerText = `${res.descripcion}`;
       parrafos[2].innerText = `${res.marca}`;
-      parrafos[3].innerText = `${res.precio} BS`;
-      parrafos[4].innerText = `${resultado["vencimiento"][0][0]}`;
+      parrafos[3].innerText = `${
+        res.precio * parseFloat(resultado["dolar"])
+      } BS`;
+      parrafos[4].innerText = `${parseFloat(res.precio)} $`;
+      parrafos[5].innerText = `${resultado["vencimiento"][0][0]}`;
+
+ 
 
       eliminarInsumo.setAttribute(
         "href",
@@ -383,6 +391,14 @@ addEventListener("DOMContentLoaded", function () {
           expresionesInsumos.precio,
           e.target,
           "precio",
+          camposInsumos
+        );
+        break;
+      case "precioD":
+        validarCamposInsumos(
+          expresionesInsumos.precio,
+          e.target,
+          "precioD",
           camposInsumos
         );
         break;

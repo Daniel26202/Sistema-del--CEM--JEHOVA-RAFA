@@ -47,6 +47,7 @@ class ModeloInsumo extends Db
 
 	public function insumosInfo($id_insumo)
 	{
+		
 		$sql = $this->conexion->prepare("SELECT * FROM insumo WHERE id_insumo =:id_insumo");
 		$sql->bindParam(":id_insumo", $id_insumo);
 		$sql->execute();
