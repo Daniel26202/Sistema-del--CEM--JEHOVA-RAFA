@@ -50,9 +50,10 @@ class ControladorInicio
         require_once './src/vistas/dashboard.php';
     }
 
+    //Retorna el precio  del dolar y guardarlo en la session
     public function valorDolar($datos)
     {
-        $_SESSION["dolar"] = $datos[0];
+        $_SESSION["dolar"] = number_format($datos[0], 2, '.', '.');
         echo json_encode($_SESSION["dolar"]);
     }
 
