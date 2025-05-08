@@ -9,7 +9,7 @@
       </svg></thead>
     </h1>
 
-
+    <?php require_once './src/vistas/tasaBCV.php'; ?>
 
     <div class=" d-flex align-items-end">
       <div class="me-4 mt-0">

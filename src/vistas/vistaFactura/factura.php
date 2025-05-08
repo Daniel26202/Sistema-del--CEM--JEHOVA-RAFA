@@ -16,6 +16,8 @@
             </svg>
         </div>
 
+        <?php require_once './src/vistas/tasaBCV.php'; ?>
+
         <div class="me-4" id="desplegarAyudafactura">
 
             <a><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"

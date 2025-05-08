@@ -14,6 +14,8 @@
 
         </div>
 
+        <?php require_once './src/vistas/tasaBCV.php'; ?>
+
         <div class="me-4">
 
             <a><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
@@ -233,7 +235,7 @@
 
 
 
-                            <img src="<?= $urlBase?>../src/assets/img/logoRol.jpeg" class="mt-2"
+                            <img src="<?= $urlBase ?>../src/assets/img/logoRol.jpeg" class="mt-2"
                                 alt="...">
 
                             <div class="mt-3">

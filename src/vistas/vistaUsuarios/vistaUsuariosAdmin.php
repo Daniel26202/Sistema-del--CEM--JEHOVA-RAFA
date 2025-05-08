@@ -13,6 +13,7 @@
             </svg>
 
         </div>
+        <?php require_once './src/vistas/tasaBCV.php'; ?>
 
         <div class="me-4">
 

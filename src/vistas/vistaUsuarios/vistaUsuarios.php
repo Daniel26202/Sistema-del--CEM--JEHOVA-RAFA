@@ -14,6 +14,8 @@
 
         </div>
 
+        <?php require_once './src/vistas/tasaBCV.php'; ?>
+
         <div class="me-4">
 
             <a><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-wrench-adjustable-circle azul" viewBox="0 0 16 16" id="desplegablefactura">
@@ -48,34 +50,34 @@
 
     <div class="d-flex justify-content-center">
 
-    <?php if ($parametro != ""): ?>
-        <?php if ($parametro[0] == "error"): ?>
-            
-            <div class="uk-alert-danger comentario comentarioRed me-3 ms-5 fw-bolder h-25" style="display: none;"
-                uk-alert>
-                <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">La cédula o el usuario ya existen, intente de nuevo.</p>
-            </div>
-        <?php endif ?>
-        <?php if ($parametro[0] == "editado"): ?>
-            <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-                <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">Se actualizo correctamente.</p>
-            </div>
-        <?php endif ?>
-        <?php if ($parametro[0] == "eliminado"): ?>
-            <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-                <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">Se ha eliminado correctamente.</p>
-            </div>
-        <?php endif ?>
-        <?php if ($parametro[0] == "agregado"): ?>
-            <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
-                <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">Se ha agregado correctamente.</p>
-            </div>
-        <?php endif ?>
-    <?php endif; ?>
+        <?php if ($parametro != ""): ?>
+            <?php if ($parametro[0] == "error"): ?>
+
+                <div class="uk-alert-danger comentario comentarioRed me-3 ms-5 fw-bolder h-25" style="display: none;"
+                    uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p class="pe-2">La cédula o el usuario ya existen, intente de nuevo.</p>
+                </div>
+            <?php endif ?>
+            <?php if ($parametro[0] == "editado"): ?>
+                <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p class="pe-2">Se actualizo correctamente.</p>
+                </div>
+            <?php endif ?>
+            <?php if ($parametro[0] == "eliminado"): ?>
+                <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p class="pe-2">Se ha eliminado correctamente.</p>
+                </div>
+            <?php endif ?>
+            <?php if ($parametro[0] == "agregado"): ?>
+                <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p class="pe-2">Se ha agregado correctamente.</p>
+                </div>
+            <?php endif ?>
+        <?php endif; ?>
     </div>
 
 
@@ -213,6 +215,6 @@
 <?php require_once './src/vistas/vistaUsuarios/modal/modalMostrarUsuario.php'; ?>
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/imgUsuarios.js"></script>
-<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/usuarios.js"></script>
-<script type="text/javascript" src="<?= $urlBase?>../src/assets/js/admin.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/imgUsuarios.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/usuarios.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/admin.js"></script>

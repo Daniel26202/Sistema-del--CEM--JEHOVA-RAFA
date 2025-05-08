@@ -14,6 +14,8 @@
             </svg></thead>
         </h1>
 
+        <?php require_once './src/vistas/tasaBCV.php'; ?>
+
         <div class=" d-flex align-items-end">
             <!-- funcionara para validar como id del btn de ayuda -->
             <p class="d-none">servicio</p>
@@ -154,9 +156,9 @@
                                     <!-- no hay -->
                                 <?php else: ?>
 
-                                    <a href="#" class="btns-accion me-2 btnEditarCita botonesEditarSM"
-                                        uk-toggle="target: #modal-exampleEditar" uk-tooltip="Modificar Servicio  "
-                                        id="btnEditarServicioMedico">
+                                    <a href="#" class="btns-accion me-2 btnEditarCita botonesEditarSM btnPreciosEditar"
+                                        uk-toggle="target: #modal-exampleEditar<?= $servicio['id_servicioMedico'] ?>" uk-tooltip="Modificar Servicio  "
+                                        id="btnEditarServicioMedico" data-index=<?= $servicio['id_servicioMedico'] ?>>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                                             class="bi bi-pencil-square" viewBox="0 0 16 16">
                                             <path
@@ -239,7 +241,7 @@
                     </div>
 
                     <!-- Modal de editar -->
-                    <div id="modal-exampleEditar" uk-modal>
+                    <div id="modal-exampleEditar<?= $servicio['id_servicioMedico'] ?>" uk-modal>
                         <div class="uk-modal-dialog uk-modal-body tamaño-modal">
                             <!-- Boton que cierra el modal -->
                             <a href="#">
@@ -274,7 +276,7 @@
                                 </div>
                             </div>
 
-                            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/editar" class="form-modal formEditar"
+                            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/editar" class="form-modal formEditar form-convercion<?= $servicio['id_servicioMedico'] ?>"
                                 id="modalEditar" method="POST">
 
                                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
@@ -342,8 +344,8 @@
                                         </svg>
                                     </span>
 
-                                    <input class="form-control input-modal" type="text" name="precioEditar"
-                                        placeholder="Precio" required value="<?= $servicio["precio"] ?>">
+                                    <input class="form-control input-modal precioBolivaresEditar" type="text" name="precioEditar"
+                                        placeholder="Precio" required value="<?= $servicio["precio"] * $_SESSION["dolar"] ?>">
                                     <span class="input-modal mt-1">
                                         Bs
                                     </span>
@@ -377,7 +379,7 @@
                                         </svg>
                                     </span>
 
-                                    <input class="form-control input-modal precioDolares" type="text" name="precioD" placeholder="$" required value="<?= $servicio["precio"] * $_SESSION["dolar"] ?>">
+                                    <input class="form-control input-modal precioDolaresEditar" type="text" name="precioD" placeholder="$" required value="<?= $servicio["precio"] ?>">
                                     <span class="input-modal mt-1">$</span>
 
                                 </div>

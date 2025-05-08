@@ -40,13 +40,35 @@ function inicializarConversor() {
 
     if (inputDolares && inputBolivares) {
       // Asignar eventos para conversión automática
-      inputDolares.addEventListener("input", () =>
-        convertirABolivares(inputDolares, inputBolivares)
-      );
+      inputDolares.addEventListener("input", () => {
+        convertirABolivares(inputDolares, inputBolivares);
+        console.log(this);
+      });
       inputBolivares.addEventListener("input", () =>
         convertirADolares(inputBolivares, inputDolares)
       );
     }
+  });
+
+  document.querySelectorAll(`.btnPreciosEditar`).forEach((ele) => {
+    ele.addEventListener("click", function () {
+      let modalEditar = document.querySelector(
+        "#modal-exampleEditar" + this.getAttribute("data-index")
+      );
+      let inputDolaresEditar = modalEditar.querySelector(".precioDolaresEditar");
+      let inputBolivaresEditar = modalEditar.querySelector(".precioBolivaresEditar");
+
+
+      if (inputDolaresEditar && inputBolivaresEditar) {
+        // Asignar eventos para conversión automática
+        inputDolaresEditar.addEventListener("input", () =>
+          convertirABolivares(inputDolaresEditar, inputBolivaresEditar)
+        );
+        inputBolivaresEditar.addEventListener("input", () =>
+          convertirADolares(inputBolivaresEditar, inputDolaresEditar)
+        );
+      }
+    });
   });
 }
 
