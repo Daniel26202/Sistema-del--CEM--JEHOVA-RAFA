@@ -1,10 +1,31 @@
 // Definir el tipo de cambio (puedes actualizarlo dinámicamente)
-const tipoCambio = 80.5; // 1 USD = 80.5 Bs (ejemplo)
+let tipoCambio = 0; // 1 USD = 80.5 Bs (ejemplo)
+
+async function valorDolar() {
+  try {
+    let peticion = await fetch("https://ve.dolarapi.com/v1/dolares/oficial");
+    let resultado = await peticion.json();
+    console.log(resultado);
+    tipoCambio = resultado.promedio;
+    localStorage.setItem("valorDelDolar", tipoCambio);
+    console.log(resultado)
+  } catch (error) {
+    let valorDelDolar = localStorage.getItem("valorDelDolar");
+    tipoCambio = valorDelDolar
+    alert(
+      "NO SE ACTULIZO EL PRECIO DEL DOLAR REVISE SU CONEXION A INTERNET..."
+    );
+  }
+  enviarValorDolar(tipoCambio);
+}
 
 //enviar valor del dolar a php
-fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/valorDolar/" + tipoCambio)
-  .then((response) => response.text())
-  .then((data) => console.log("valor guardado", data));
+
+function enviarValorDolar(tipoCambio) {
+  fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/valorDolar/" + tipoCambio)
+    .then((response) => response.text())
+    .then((data) => console.log("valor guardado", data));
+}
 
 // Función para guardar el tipo de moneda en localStorage
 function guardarTipoMoneda(moneda) {
@@ -33,6 +54,7 @@ function convertirABolivares(inputDolares, inputBolivares) {
 
 // Función para inicializar conversión en cualquier vista
 function inicializarConversor() {
+  valorDolar();
   // Seleccionar todos los modales que tienen inputs de precio
   document.querySelectorAll(".form-convercion").forEach((modal) => {
     let inputDolares = modal.querySelector(".precioDolares");
@@ -55,9 +77,12 @@ function inicializarConversor() {
       let modalEditar = document.querySelector(
         "#modal-exampleEditar" + this.getAttribute("data-index")
       );
-      let inputDolaresEditar = modalEditar.querySelector(".precioDolaresEditar");
-      let inputBolivaresEditar = modalEditar.querySelector(".precioBolivaresEditar");
-
+      let inputDolaresEditar = modalEditar.querySelector(
+        ".precioDolaresEditar"
+      );
+      let inputBolivaresEditar = modalEditar.querySelector(
+        ".precioBolivaresEditar"
+      );
 
       if (inputDolaresEditar && inputBolivaresEditar) {
         // Asignar eventos para conversión automática
