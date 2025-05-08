@@ -129,6 +129,9 @@ addEventListener("DOMContentLoaded", function () {
       if (insumoEncontrado) {
         alertasVencidos[index].classList.remove("d-none");
         alertasVencidos[index].classList.add("uk-alert-danger");
+        alertasVencidos[index].children[1].classList.add(
+          "p-error-validaciones"
+        );
         alertasVencidos[
           index
         ].children[1].innerText = `El insumo ${insumoEncontrado.nombre} del lote ${insumoEncontrado.numero_de_lote} vence el ${insumoEncontrado.fechaDeVencimiento}.`;

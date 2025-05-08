@@ -192,7 +192,7 @@
                     <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
                 </svg>
             </a>
-            <form id="form-buscador-insumo" class="d-flex justify-content-end form-responsive" autocomplete="off">
+            <div id="form-buscador-insumo" class="d-flex justify-content-end form-responsive" autocomplete="off">
                 <input class="form-control input-buscar tamaño-input-buscar input-responsive" type="text" name="nombre"
                     placeholder="Codigo o Nombre">
 
@@ -203,7 +203,7 @@
                             d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                     </svg>
                 </button>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -216,7 +216,7 @@
         <hr>
         <div class="tar ">
             <?php foreach ($insumos as $i): ?>
-                <div class="card ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
+                <div class="contenido card ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
                     <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/insumos/<?= $i["imagen"] ?>" class="card-img-top" style="height: 35%;">
                     <div class="card-body mt-4 tarjeta-ajax">
                         <!-- <div class="alert  text-center alertas-vencidos d-none p-0">  -->
