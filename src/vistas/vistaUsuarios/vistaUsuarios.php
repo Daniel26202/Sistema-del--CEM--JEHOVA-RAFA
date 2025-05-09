@@ -169,7 +169,7 @@
 
                 <?php foreach ($datosU as $dato): ?>
 
-                    <div class="card col-9 col-sm-6 col-lg-3 tarjeta ms-2 me-4 d-flex align-items-center justify-content-center tarjeta">
+                    <div class="card contenido col-9 col-sm-6 col-lg-3 tarjeta ms-2 me-4 d-flex align-items-center justify-content-center tarjeta">
                         <?php if ($dato["imagen"] != "doctor.png"): ?>
 
                             <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>" class="mt-2" alt="...">

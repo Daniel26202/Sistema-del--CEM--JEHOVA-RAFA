@@ -2135,30 +2135,8 @@ input[type="date"] {
 /* ...............................REPORTE.................................... */
 
 
-@media screen and (max-width: 992px) {
 
-	.reportess,
-	.granRepor {
-		gap: 0.5rem;
-	}
-
-	.cardReporte,
-	.granReporte,
-	.reReporte {
-		max-width: 200px;
-	}
-
-	.titulo-modal {
-		font-size: 1.2rem;
-	}
-
-	.tamaño-modal {
-		width: 70%;
-
-	}
-}
-
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 800px) {
 
 	.reportess,
 	.granRepor {

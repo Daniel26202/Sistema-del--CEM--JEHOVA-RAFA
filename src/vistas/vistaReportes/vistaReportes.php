@@ -138,7 +138,7 @@
 <!-- Modal Factura -->
 <div class="modal fade modalCapa " id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-fullscreen-xxl-down fullscreen-modal">
-		<div class="modal-content">
+		<div class="modal-content contenido">
 
 
 
@@ -549,7 +549,7 @@
 <div class="modal fade modalBuscadorP" id="exampleModalBuscador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 
-		<div class="modal-content modalBuscador">
+		<div class="modal-content contenido modalBuscador">
 			<div>
 				<a href="#" data-bs-dismiss="modal" aria-label="Close">
 					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-circle uk-modal-close-default text-white " viewBox="0 0 16 16">
@@ -702,7 +702,7 @@
 
 <div class="modal fade modalCapa " id="myModalAnular" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-fullscreen-xxl-down fullscreen-modal">
-		<div class="modal-content">
+		<div class="modal-content contenido">
 			<div class="modal-header height_modal_factura">
 				<div class="d-flex justify-content-center align-items-center">
 					<div>
@@ -722,9 +722,9 @@
 						</svg></button>
 				</div>
 			</div>
-			<div class="modal-body">
+			<div class="modal-body ">
 
-				<div class="div-tablaReportes">
+				<div class="contenido">
 					<div class="d-flex justify-content-between">
 
 						<div class="mover-input-buscar mt-4">
