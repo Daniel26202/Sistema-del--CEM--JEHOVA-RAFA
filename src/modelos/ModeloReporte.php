@@ -98,7 +98,7 @@ public function consultarFacturaPDF($id_factura)
 
 	}
     public function pdfInsumos(){
-		$consulta = $this->conexion->prepare("SELECT * FROM insumo WHERE estado = 'ACT' AND cantidad > 0");
+		$consulta = $this->conexion->prepare("SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad >= 0  GROUP BY inv.id_insumo ");
 		
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 
