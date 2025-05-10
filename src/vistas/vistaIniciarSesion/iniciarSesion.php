@@ -141,7 +141,7 @@ if (!empty($parametro)) {
                                         placeholder="Usuario" required>
                                 </div>
 
-                                <p class="p-error-usuario d-none">El Usuario debe contener Letras, números, guiones y guion bajo, de 8 a 16 caracteres</p>
+                                <p class="p-error-usuario d-none p-error-validaciones">El Usuario debe contener Letras, números, guiones y guion bajo, de 8 a 16 caracteres</p>
 
                                 <div id="input-password">
 
@@ -171,7 +171,7 @@ if (!empty($parametro)) {
 
                                 </div>
 
-                                <p class="p-error-password d-none">La Contraseña debe contener de 8 a 12 caracteres, una mayúscula, un número y un símbolo
+                                <p class="p-error-password d-none p-error-validaciones">La Contraseña debe contener de 8 a 12 caracteres, una mayúscula, un número y un símbolo
                                 </p>
                             </div>
                         </div>

@@ -193,6 +193,10 @@ se nota muy mínimo*/
   margin-left: 95%;
 }
 
+.p-error-validaciones {
+  color: rgb(224, 3, 3) !important;
+}
+
 /* @media screen and (min-height: 800px) {
   .carrusel-responsive {
     display: none;
