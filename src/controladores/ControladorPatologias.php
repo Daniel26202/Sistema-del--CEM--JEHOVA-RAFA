@@ -20,11 +20,13 @@ class ControladorPatologias
 
 	public function patologias($parametro)
 	{
+		$ayuda = "btnayudaPatologia";
 		$datosPatologias = $this->patologia->mostrarPatologias();
 		require_once './src/vistas/vistaPatologia/patologia.php';
 	}
 	public function papeleraPatologias($parametro)
 	{
+		$ayuda = "btnayudaPatologia";
 		$datosPatologias = $this->patologia->mostrarPatologiasEliminadas();
 		require_once './src/vistas/vistaPatologia/patologiapapelera.php';
 	}
