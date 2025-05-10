@@ -26,6 +26,7 @@ class ControladorPacientes
 	}
 	public function getPacientes($parametro)
 	{
+		$ayuda = "btnayudaPaciente";
 		$pacientes = $this->modelo->index();
 		require_once './src/vistas/vistaPacientes/pacientes.php';
 	}
