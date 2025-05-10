@@ -185,7 +185,11 @@ return [
     "buscarInsumos" => "consultar",
     "buscarCita" => "consultar",
     "buscarCitaPDF" => "consultar",
-    "anularFactura" => "eliminar"
+    "anularFactura" => "eliminar",
+
+
+    //Reportes Estadisticos
+    "estadisticas" => "consultar",
 
 
 ];
