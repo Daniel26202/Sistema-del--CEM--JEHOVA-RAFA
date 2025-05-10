@@ -5,9 +5,9 @@ use App\config\Rutas;
 $url = isset($_GET['url']) ? $_GET['url'] :  "IniciarSesion/mostrarIniciarSesion";
 
 // borrar cache ...
-header("Cache-Control: no-cache, no-store, must-revalidate"); // Combina instrucciones clave
+header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
-header("Expires: 0"); // Usar "0" es una práctica más común para evitar confusiones
+header("Expires: 0");
 
 
 $rutas = new Rutas($url);
