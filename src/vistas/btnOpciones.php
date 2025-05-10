@@ -1,4 +1,4 @@
-<div class="me-4 mt-0">
+<div class="me-4 mt-0 desplegableAyuda">
 
     <a><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
             class="bi bi-wrench-adjustable-circle azul" viewBox="0 0 16 16" id="desplegableservicio">
