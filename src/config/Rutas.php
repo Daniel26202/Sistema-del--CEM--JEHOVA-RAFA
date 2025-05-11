@@ -99,8 +99,8 @@ class Rutas
                             // Si no tiene permiso, redirige a la página de error
                             if (!$permitido) {
                                 echo "Error 404 ";
-                                header("location:  /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
-                                exit;
+                                header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
+                                // exit;
                             } else {
                                 // Si tiene permiso, llama al método con los parámetros
                                 $instancia->$metodo($parametro ?? []);
@@ -113,10 +113,22 @@ class Rutas
                 }
             } else {
                 // Si el método no existe, muestra un mensaje
+
+                // Destruyen las variables de las sesión 
+                session_unset();
+                session_destroy();
+
+                //Y lo mando a la pagina de error
                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
             }
         } else {
-            // Si el controlador no existe, muestra un mensaje
+            // Si el controlador no existe
+
+            // Destruyen las variables de las sesión 
+            session_unset();
+            session_destroy();
+
+            //Y lo mando a la pagina de error
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
         }
     }
