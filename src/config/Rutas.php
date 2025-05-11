@@ -119,11 +119,7 @@ class Rutas
             }
         } else {
             // Si el controlador no existe
-
-            // Destruyen las variables de las sesión 
-            session_unset();
-            session_destroy();
-            // //Y lo mando a la pagina de error
+            // // //Y lo mando a la pagina de error
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
         }
     }
