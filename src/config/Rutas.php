@@ -114,11 +114,7 @@ class Rutas
             } else {
                 // Si el método no existe, muestra un mensaje
 
-                // Destruyen las variables de las sesión 
-                session_unset();
-                session_destroy();
-
-                //Y lo mando a la pagina de error
+                // //Y lo mando a la pagina de error
                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
             }
         } else {
@@ -127,8 +123,7 @@ class Rutas
             // Destruyen las variables de las sesión 
             session_unset();
             session_destroy();
-
-            //Y lo mando a la pagina de error
+            // //Y lo mando a la pagina de error
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
         }
     }
