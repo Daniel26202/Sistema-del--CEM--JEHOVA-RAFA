@@ -1,6 +1,6 @@
 <?php
 
-// Definimos un array de módulos, cada uno con su nombre y el permiso asociado.
+//Array de módulos, cada uno con su nombre y el permiso asociado.
 $modulos = [
     ["modulo" => "Pacientes", "permisosPorModulo" => "permisosPacientes"],
     ["modulo" => "Patologias", "permisosPorModulo" => "permisosPatologias"],
@@ -15,15 +15,16 @@ $modulos = [
     ["modulo" => "Proveedores", "permisosPorModulo" => "permisosProveedores"],
     ["modulo" => "Usuarios", "permisosPorModulo" => "permisosUsuarios"],
     ["modulo" => "Roles", "permisosPorModulo" => "permisosRoles"],
-    ["modulo" => "Reportes", "permisosPorModulo" => "permisosReportes"]
+    ["modulo" => "Reportes", "permisosPorModulo" => "permisosReportes"],
+    ["modulo" => "Estadisticas", "permisosPorModulo" => "permisosEstadisticas"]
 ];
 
-// Definimos las categorías y clasificamos los módulos en ellas.
+// Categorías y clasificamos los módulos en ellas.
 $clasificacion = [
     "Administración" => ["Usuarios", "Roles"],
     "Gestión Médica" => ["Pacientes", "Patologias", "Citas", "Consultas", "Hospitalizacion", "Doctores", "Control"],
     "Inventario" => ["Insumos", "Entrada",  "Proveedores"],
-    "Reportes" => ["Factura", "Reportes"]
+    "Reportes" => ["Factura", "Reportes", "Estadisticas"]
 ];
 
 // Inicializamos un array para almacenar los módulos clasificados por categoría.

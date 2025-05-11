@@ -100,15 +100,6 @@
 
 <?php endforeach ?>
 
-<?php //require_once("./src/vistas/vistaUsuarios/modal/modalEditarAdmin.php") 
-?>
-<?php //require_once("./src/vistas/vistaUsuarios/modal/modalEliminarAdmin.php") 
-?>
-
-
-
-
-
 
 
 
@@ -207,7 +198,7 @@
                                                                                         </label></div>
                                                                                 </div>
 
-                                                                                <div class="form-check form-switch d-flex align-items-center">
+                                                                                <div class="form-check form-switch d-flex align-items-center <?=  $modulo == "Reportes" || $modulo == "Estadisticas" ? "d-none" : ""; ?>">
                                                                                     <div>
                                                                                         <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch" data-index="<?= $modulo ?>"
                                                                                             value="guardar" name="<?= $permisosPorModulo ?>">
@@ -217,7 +208,7 @@
                                                                                         </label></div>
                                                                                 </div>
 
-                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Patologias" ? "d-none" : ""; ?>">
+                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Patologias" || $modulo == "Reportes" || $modulo == "Estadisticas" ? "d-none" : ""; ?>">
                                                                                     <div>
                                                                                         <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
                                                                                             value="editar" name="<?= $permisosPorModulo ?>" data-index="<?= $modulo ?>">
@@ -227,7 +218,7 @@
                                                                                         </label></div>
                                                                                 </div>
 
-                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Control" ? "d-none" : ""; ?>">
+                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Control" || $modulo == "Reportes" || $modulo == "Estadisticas" ? "d-none" : ""; ?>">
                                                                                     <div>
                                                                                         <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
                                                                                             value="eliminar" name="<?= $permisosPorModulo ?>" data-index="<?= $modulo ?>">
