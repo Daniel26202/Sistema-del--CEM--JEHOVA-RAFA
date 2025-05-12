@@ -47,9 +47,8 @@
             <thead>
                 <tr>
                     <th class="text-dark">Servicio</th>
-                    <th class="text-dark">Doctor</th>
-                    <th class="text-dark">Especialidad</th>
-                    <th class="text-dark">Precio</th>
+                    <th class="text-dark">Precio BS</th>
+                    <th class="text-dark">Precio $</th>
                     <th class="text-dark">Acciones</th>
                 </tr>
             </thead>
@@ -59,17 +58,15 @@
                 <?php foreach ($servicios as $servicio): ?>
                     <tr>
                         <td class="text-center">
-                            <?= $servicio['nombre_categoria'] ?>
+                            <?= $servicio['categoria'] ?>
                         </td>
+
                         <td class="text-center">
-                            <?= $servicio['nombre_personal'] ?>
-                            <?= $servicio['apellido_personal'] ?>
+                          <?= $servicio['precio'] * $_SESSION["dolar"]; ?> BS
                         </td>
+
                         <td class="text-center">
-                            <?= $servicio['nombre_especialidad'] ?>
-                        </td>
-                        <td class="text-center">
-                            <?= $servicio['precio'] ?> BSs
+                            <?= $servicio['precio'] ?> $
                         </td>
                         <td class="border-start">
                             <div class="d-flex justify-content-center">

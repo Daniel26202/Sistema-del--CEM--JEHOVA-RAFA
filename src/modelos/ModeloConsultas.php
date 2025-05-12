@@ -110,11 +110,10 @@ class ModeloConsultas extends Db
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
-    public function nombreConsulta($id_categoria, $id_doctor)
+    public function nombreConsulta($id_categoria)
     {
-        $consulta = $this->conexion->prepare("SELECT sm.id_servicioMedico FROM serviciomedico sm INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = psm.personal_id_personal WHERE sm.id_categoria = :id_categoria AND p.id_personal = :id_doctor AND sm.estado = 'ACT'");
+        $consulta = $this->conexion->prepare("SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.id_categoria = :id_categoria AND sm.estado = 'ACT'");
         $consulta->bindParam(":id_categoria", $id_categoria);
-        $consulta->bindParam(":id_doctor", $id_doctor);
         $consulta->execute();
 
         while ($consulta->fetch()) {
