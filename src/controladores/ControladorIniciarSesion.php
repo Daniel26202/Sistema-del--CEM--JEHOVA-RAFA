@@ -98,7 +98,7 @@ class ControladorIniciarSesion
 
                         header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/mensaje");
                     }
-                }
+                // }
             // } else {
             //     header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
             // }
