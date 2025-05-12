@@ -3,6 +3,7 @@
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloConsultas;
 
 class ControladorDoctores extends ModeloDoctores
 {
@@ -10,12 +11,14 @@ class ControladorDoctores extends ModeloDoctores
     private $modelo;
     private $bitacora;
     private $permisos;
+    private $modeloConsultas;
 
     public function __construct()
     {
         $this->modelo = new ModeloDoctores;
         $this->bitacora = new ModeloBitacora;
         $this->permisos = new ModeloPermisos;
+        $this->modeloConsultas = new ModeloConsultas;
     }
 
     //muestro los datos de las cuatro tablas
@@ -26,6 +29,12 @@ class ControladorDoctores extends ModeloDoctores
         $datosEspecialidades = $this->modelo->selectEspecialidad();
         $datosDias = $this->modelo->selectDias();
         require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
+    }
+
+    //metodo para mostrar los servicios de los doctores
+    public function serviciosDoctor($datos)
+    {
+        echo json_encode($this->modeloConsultas->mostrarConsultasDoctor($datos[0]));
     }
 
     // agregar doctor
