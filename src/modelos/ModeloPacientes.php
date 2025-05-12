@@ -30,10 +30,10 @@ class ModeloPacientes extends Db
 	}
 
 
-	public function insertar($nacionalidad, $cedula, $nombre, $apellido, $telefono, $direccion, $fn)
+	public function insertar($nacionalidad, $cedula, $nombre, $apellido, $telefono, $direccion, $fn, $genero)
 	{
 
-		$consulta = $this->conexion->prepare("INSERT INTO paciente (nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, estado) VALUES (:nacionalidad, :cedula, :nombre, :apellido, :telefono, :direccion, :fn, 'ACT')");
+		$consulta = $this->conexion->prepare("INSERT INTO paciente (nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero,estado) VALUES (:nacionalidad, :cedula, :nombre, :apellido, :telefono, :direccion, :fn, :genero, 'ACT')");
 		$consulta->bindParam(":nacionalidad", $nacionalidad);
 		$consulta->bindParam(":cedula", $cedula);
 		$consulta->bindParam(":nombre", $nombre);
@@ -41,15 +41,16 @@ class ModeloPacientes extends Db
 		$consulta->bindParam(":telefono", $telefono);
 		$consulta->bindParam(":direccion", $direccion);
 		$consulta->bindParam(":fn", $fn);
+		$consulta->bindParam(":genero", $genero);
 		$consulta->execute();
 
 	}
 
 
-	public function update($id_paciente, $nacionalidad,  $cedula, $nombre, $apellido, $telefono, $direccion, $fn)
+	public function update($id_paciente, $nacionalidad,  $cedula, $nombre, $apellido, $telefono, $direccion, $fn, $genero)
 	{
 		// UPDATE paciente SET id_nacionalidad=,cedula=],nombre=,apellido=,telefono=,direccion=,fn= WHERE 1
-		$consulta = $this->conexion->prepare("UPDATE paciente SET nacionalidad=:nacionalidad,cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono,direccion=:direccion,fn=:fn WHERE id_paciente = :id_paciente");
+		$consulta = $this->conexion->prepare("UPDATE paciente SET nacionalidad=:nacionalidad,cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono,direccion=:direccion,fn=:fn, genero=:genero WHERE id_paciente = :id_paciente");
 		$consulta->bindParam(":id_paciente", $id_paciente);
 		$consulta->bindParam(":nacionalidad", $nacionalidad);
 		$consulta->bindParam(":cedula", $cedula);
@@ -58,6 +59,7 @@ class ModeloPacientes extends Db
 		$consulta->bindParam(":telefono", $telefono);
 		$consulta->bindParam(":direccion", $direccion);
 		$consulta->bindParam(":fn", $fn);
+		$consulta->bindParam(":genero", $genero);
 		return ($consulta->execute()) ? true : false;
 	}
 

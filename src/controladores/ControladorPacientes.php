@@ -56,7 +56,7 @@ class ControladorPacientes
 				$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha Insertado un nuevo paciente");
 
 
-				$this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
+				$this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/registro");
 			}
@@ -84,7 +84,7 @@ class ControladorPacientes
         	//guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha modificado un paciente");
 
-            $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
+            $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
 
@@ -101,7 +101,7 @@ class ControladorPacientes
             	//guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha modificado un paciente");
 
-				$this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
+				$this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
 
@@ -112,7 +112,7 @@ class ControladorPacientes
         	// guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'],"paciente","Ha modificado un paciente");
 
-            $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn']);
+            $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
 
 	}

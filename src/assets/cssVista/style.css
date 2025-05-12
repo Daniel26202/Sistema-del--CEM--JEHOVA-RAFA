@@ -10,6 +10,7 @@
   --color-primary-contrast: #ffffff;
   --color-surface: #f8fcff;
   --color-border: #f2f9ff;
+  --filter-image: ""; 
 }
 
 [data-theme="dark"] {
@@ -23,6 +24,7 @@
   --color-primary-contrast: #e0e1dd;
   --color-surface: #415a77;
   --color-border: #e4ebf0;
+  --filter-image: brightness(50%) contrast(120%);
   input::placeholder {
     color: #e8f2ff;
   }
@@ -673,6 +675,7 @@ insumos en la facturacion
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
+  filter: var(--filter-image);
 }
 
 .modalBuscador li a:hover {
@@ -712,7 +715,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .cartaRepor {
-  margin-top: 2%;
+  /* margin-top: 2%;
   height: 27vh;
   display: flex;
   flex-direction: column;
@@ -720,21 +723,21 @@ input[type="number"]::-webkit-outer-spin-button {
   justify-content: center;
   color: #333;
   font-weight: 600;
-  width: 70vh;
+  width: 70vh; */
 }
 
 .cardReporte {
-  border-radius: 20px;
   background-image: url("../img/grafi.jpg");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.4s ease-in-out;
   box-shadow: #333;
+  filter: var(--filter-image);
 }
 
 .cardReporte:hover {
-  transform: scale(1.1);
+  transform: scale(1.04);
 }
 
 .reportess {
@@ -2025,12 +2028,12 @@ input[type="date"] {
     align-items: center;
   }
 
-  .cardReporte,
+  /* .cardReporte,
   .granReporte,
   .reReporte {
     width: 90%;
     max-width: none;
-  }
+  } */
 
   .t {
     font-size: 1rem;
@@ -2063,10 +2066,10 @@ input[type="date"] {
         padding: 0.5rem;
         margin-bottom: 1rem;
     } */
-  .cardReporte {
+  /* .cardReporte {
     width: 100% !important;
     padding: 10px !important;
-  }
+  } */
 
   .cardreporteCitas {
     padding: 12px;

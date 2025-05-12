@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fechaHoy.setHours(0, 0, 0, 0); // Establece el tiempo a la medianoche para comparación
 
     pError.classList.add("fw-bold");
-    pError.classList.add("p-error-validaciones");;
+    pError.classList.add("p-error-validaciones");
 
     if (campo == "fn") {
       if (!expresiones.fn.test(input.value)) {
@@ -78,6 +78,25 @@ document.addEventListener("DOMContentLoaded", function () {
     pError.classList.add("d-none");
     // actualizarEstadoInput(input, "incorrecto", formulario);
     return true;
+  }
+
+  // Función para validar los campos de tipo <select>
+  function validarSelect(select, pError, campos) {
+    pError.classList.add("fw-bold");
+    pError.classList.add("p-error-validaciones");
+
+    if (select.value === "selection" || select.value === "") {
+      // Si el valor del select es "selection" o está vacío, no es válido
+      pError.textContent = "Por favor, selecciona una opción válida.";
+      pError.classList.remove("d-none");
+      campos[select.name] = false;
+      return false;
+    } else {
+      // Si el valor es válido
+      pError.classList.add("d-none");
+      campos[select.name] = true;
+      return true;
+    }
   }
 
   // Función que inicializa la validación para un formulario específico
@@ -142,6 +161,9 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelector(".alertaFormulario").classList.add("d-none");
           }, 10000);
         }
+
+        // Evitamos el envío del formulario si hay campos inválidos
+        return false;
       }
     });
   }
@@ -217,15 +239,17 @@ document.addEventListener("DOMContentLoaded", function () {
     // Asumiendo que el 'name' es igual al tipo de campo (por ejemplo, 'nombre', 'correo', etc.)
     const tipoCampo = campo;
 
-    // Obtenemos la expresión regular correspondiente
-    // const expresion = expresiones[tipoCampo];
 
-    // Validamos específicamente el campo de fecha
-    if (
+    //validar select
+    if (input.tagName === "SELECT") {
+      // Si el elemento es un <select>, valida con la función validarSelect
+      validarSelect(input, pErrorGuardar, campos);
+    }else if (
       campo === "fn" ||
       campo === "fechaDeCita" ||
       campo === "fechaDeVencimiento"
     ) {
+      // Validamos específicamente el campo de fecha
       campos[campo] = validarFecha(input, pErrorGuardar, campo, formulario);
     } else {
       // Para otros campos, usamos la validación ya existente

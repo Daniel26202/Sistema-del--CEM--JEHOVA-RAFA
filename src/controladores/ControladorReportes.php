@@ -26,7 +26,7 @@ class ControladorReportes{
 		$facturas = $this->modelo->consultarFactura();
 		$anuladas = $this->modelo->consultarFacturaAnuladas();
 		$insumos = $this->insumo->insumos();
-		require_once './src/vistas/vistaReportes/vistaReportes.php';
+		require_once './src/vistas/vistaReportes/r.php';
 	}
 	public function buscarPDF(){
 		require_once './src/vistas/vistaReportes/vistaReporteCitasPdf.php';
