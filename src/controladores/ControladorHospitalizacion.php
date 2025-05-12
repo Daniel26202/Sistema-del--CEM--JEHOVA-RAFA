@@ -1,7 +1,9 @@
 <?php
+
 use App\modelos\ModeloHospitalizacion;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloInicio;
 
 class ControladorHospitalizacion
 {
@@ -9,18 +11,25 @@ class ControladorHospitalizacion
     private $modelo;
     private $bitacora;
     private $permisos;
+    private $inicio;
 
     function __construct()
     {
         $this->modelo = new ModeloHospitalizacion();
         $this->bitacora = new ModeloBitacora();
-        $this->permisos = new ModeloPermisos;
+        $this->permisos = new ModeloPermisos();
+        $this->inicio = new ModeloInicio();
     }
     // mostrar los datos de la tabla (hospitalizaciones pendientes) 
     public function traerSesion()
     {
-        session_start();
-        $sesion = $_SESSION['rol'];
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $idUsuario = $_SESSION['id_usuario'];
+        $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
+        $sesion = [$_SESSION['rol'], $validacionCargo];
         // datos de las h. pendientes
         $datosH = $this->modelo->selectsH();
         $array = [$sesion, $datosH];
@@ -102,19 +111,15 @@ class ControladorHospitalizacion
                 $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
                 $cantidad = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
 
-                
 
-                $this->modelo->insertarH($_POST["id_control"], $_POST["fecha"], $_POST["horas"], $_POST["precioHoras"], $_POST["total"], $idInsumo, $cantidad, $_POST["historial"]);
+                // print_r($_POST);
+                $this->modelo->insertarH($_POST["id_control"], $_POST["fecha"], $idInsumo, $cantidad, $_POST["historial"]);
 
                 // Guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha Insertado una hospitalizacion");
+                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
 
                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
-
-
             }
-
-
         }
     }
 
@@ -185,7 +190,7 @@ class ControladorHospitalizacion
         // esto se puede usar $_POST["id_controlE"]. 
         $this->modelo->editarH($_POST["horas"], $_POST["precioHoras"], $_POST["total"], $idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, $_POST["enfermer-e"]);
         // Guardar la bitacora
-        $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha modificado una hospitalizacion");
+        $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha modificado una hospitalizacion");
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion");
     }
 
@@ -197,13 +202,10 @@ class ControladorHospitalizacion
 
             $this->modelo->eliminaLogico($_POST["idH"], $datosIDH);
 
-             // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"hospitalizacion","Ha eliminado una hospitalizacion");
+            // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha eliminado una hospitalizacion");
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/eliminado");
-
-
         } else {
-
         }
     }
 
@@ -219,17 +221,17 @@ class ControladorHospitalizacion
     //     $hora = $datos[0];
     //     $costo = $datos[1];
     //     $this->modelo->updateHC($hora, $costo);
-        
+
     // }
 
     // editar el precio de horas y total de la hospitalización
-    public function editarPHT($datos)
-    {
-        $precio_h = $datos[0];
-        $total = $datos[1];
-        $idH = $datos[2];
-        $this->modelo->actualizarPHT($_GET["precio_h"], $_GET["total"], $_GET["idH"]);
-    }
+    // public function editarPHT($datos)
+    // {
+    //     $precio_h = $datos[0];
+    //     $total = $datos[1];
+    //     $idH = $datos[2];
+    //     $this->modelo->actualizarPHT($_GET["precio_h"], $_GET["total"], $_GET["idH"]);
+    // }
 
     // buscar insumos de las hospitalizaciones existentes 
     public function buscarIExH()

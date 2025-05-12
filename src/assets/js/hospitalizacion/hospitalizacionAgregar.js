@@ -215,9 +215,9 @@ addEventListener("DOMContentLoaded", function () {
         })
         // se divide el costo con las horas para saber el costo por cada hora
         let valorDividido = parseFloat(costoHoras.innerText) / parseFloat(horas.innerText);
-        let horaInput = parseFloat(duracion.value);
+        // let horaInput = parseFloat(duracion.value);
         // luego se multiplica el precio con la cantidad de las horas
-        let precioHor = valorDividido * horaInput;
+        let precioHor = valorDividido ;
 
         total = parseFloat(precioHor) + totalPI;
 
