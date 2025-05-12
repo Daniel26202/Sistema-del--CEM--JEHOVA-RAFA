@@ -25,7 +25,7 @@ class ControladorDoctores extends ModeloDoctores
         $datos = $this->modelo->select();
         $datosEspecialidades = $this->modelo->selectEspecialidad();
         $datosDias = $this->modelo->selectDias();
-        require_once "./src/vistas/vistaDoctores/doctores.php";
+        require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
     }
 
     // agregar doctor

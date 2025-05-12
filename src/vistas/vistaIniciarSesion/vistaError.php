@@ -60,11 +60,12 @@ if (!empty($parametro)) {
 <?php $urlBase =  $concatenarRuta . '' . $concatenadorEspecial; ?>
 
 <body>
-    <div class="div-fondo ">
+    <div>
         <div class="fondo-tabla-error w-75 m-auto">
-            <h1 class="titulo text-center display-1 fw-bold">ERROR 404</h1>
+            <h1 class="titulo text-center display-1 fw-bold ">ERROR</h1>
+            <h2 class="titulo text-center display-1 fw-bold ">404</h2>
             <p class="p text-center lead">Lo sentimos, no tiene permiso acceder a esta pagina o no se encuentra disponible.</p>
-            <p class="p text-center lead">Por favor vuelve al <a href="/Sistema-del--CEM--JEHOVA-RAFA/">Inicio session</a> o contacte al administrador si crees que esto es un error.</p>
+            <p class="p text-center lead">Por favor vuelve al <a class="p" href="/Sistema-del--CEM--JEHOVA-RAFA/">Inicio session</a> o contacte al administrador si crees que esto es un error.</p>
         </div>
     </div>
 </body>

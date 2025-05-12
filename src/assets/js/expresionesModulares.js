@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", function () {
     precio: /^(\d{1,3}\.\d{3},\d{2}|\d{1,3},\d{2})$/,
     fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
     lote: /^[0-9-_]{4,10}$/,
+    marca: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/,
+    medida: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/,
   };
 
   // Nueva función para validar fechas no futuras ni pasadas
@@ -30,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fechaHoy.setHours(0, 0, 0, 0); // Establece el tiempo a la medianoche para comparación
 
     pError.classList.add("fw-bold");
-    pError.style.color = "rgb(224, 3, 3)";
+    pError.classList.add("p-error-validaciones");;
 
     if (campo == "fn") {
       if (!expresiones.fn.test(input.value)) {
@@ -51,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
         pError.classList.remove("d-none");
         return false;
       } else if (valorFecha <= fechaHoy) {
-        console.log(valorFecha)
+        console.log(valorFecha);
         console.log(fechaHoy);
         // Validamos que no sea una fecha del pasado
         pError.textContent = "La fecha no puede ser del pasado.";
@@ -269,11 +271,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Función que valida un campo individual
   function validarCampo(expresion, input, campo, campos, formulario, pError) {
-    console.log(pError);
     pError.classList.add("fw-bold");
-    pError.style.color = "rgb(224, 3, 3)";
-    console.log(document.querySelector(`.p-error-${input.name}`));
-    console.log("2");
+    pError.classList.add("p-error-validaciones");
+    console.log(pError);
     if (expresion.test(input.value)) {
       // Si el input cumple con la expresión regular, marcamos como válido
       actualizarEstadoInput(input, "correcto", formulario);
@@ -335,5 +335,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-
-

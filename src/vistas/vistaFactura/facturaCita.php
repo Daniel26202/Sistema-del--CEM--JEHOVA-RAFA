@@ -15,6 +15,8 @@
             </svg>
         </div>
 
+        <?php require_once './src/vistas/tasaBCV.php'; ?>
+
         <div class="me-4" id="desplegarAyudafactura">
 
             <a><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
@@ -23,7 +25,7 @@
                     <path
                         d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0Zm-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.49 4.49 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8Zm-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27.596-.894Z" />
                 </svg></a>
-            <div class="uk-nav uk-dropdown-nav" uk-dropdown="pos: top-right" id="desplegable2">
+            <div class="uk-nav uk-dropdown-nav contenido" uk-dropdown="pos: top-right" id="desplegable2">
                 <ul>
                     <li id="perfilPaciente"><a href="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil" class="uk-animation-toggle">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"

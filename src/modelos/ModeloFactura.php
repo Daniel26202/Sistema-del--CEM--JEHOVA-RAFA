@@ -231,6 +231,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 			// Verificar si hay lotes disponibles
 			if ($cantidad_total > 0) {
 				// Iterar sobre los lotes y restar la cantidad requerida
+				$cantidad_actualidad_insumo = [];
 				foreach ($lotesDisponibles as $fila) {
 					$lote_id = $fila['id_entradaDeInsumo'];
 					$lote_cantidad = $fila['cantidad_disponible'];
@@ -290,8 +291,8 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 					$id_inventario = $datos["id_inventario"]; //id de el inventario
 
-					$cantidad_actualidad_insumo = $this->modelo_insumo->actualizar_cantidad_insumo($id_insumo);
-					// print_r($cantidad[0]["cantidad"]);
+					// $cantidad_actualidad_insumo = $this->modelo_insumo->actualizar_cantidad_insumo($id_insumo);
+					// // print_r($cantidad[0]["cantidad"]);
 
 					//esto es para actualizar la cantidad de insumos
 					$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");

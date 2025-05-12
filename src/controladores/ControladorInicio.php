@@ -38,14 +38,23 @@ class ControladorInicio
             session_destroy();
 
             // Redireccionar al inicio
-            
+
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
             exit();
         }
 
+
         $validarCargo = $this->modeloInicio->comprobarCargo($_SESSION["id_usuario"]);
         $datos_de_personal =  $this->modeloInicio->datos_doctor($_SESSION["id_usuario"]);
+
         require_once './src/vistas/dashboard.php';
+    }
+
+    //Retorna el precio  del dolar y guardarlo en la session
+    public function valorDolar($datos)
+    {
+        $_SESSION["dolar"] = number_format($datos[0], 2, '.', '.');
+        echo json_encode($_SESSION["dolar"]);
     }
 
 
@@ -108,6 +117,11 @@ class ControladorInicio
         $especialidades_solicitadas = $this->modeloInicio->especialidades_solicitadas();
         echo json_encode($especialidades_solicitadas);
     }
+    public function especialidades_solicitadas_filtradas($datos)
+    {
+        $especialidades_solicitadas = $this->modeloInicio->especialidades_solicitadas($datos[0],$datos[1]);
+        echo json_encode($especialidades_solicitadas);
+    }
 
     public function sintomas_comunes()
     {
@@ -116,9 +130,15 @@ class ControladorInicio
     }
 
     //Datos del horario del doctor
-    public function mostrarHorario($datos){echo json_encode($this->modeloCitas->mostrarHorarioDoctores($datos[0])); }
+    public function mostrarHorario($datos)
+    {
+        echo json_encode($this->modeloCitas->mostrarHorarioDoctores($datos[0]));
+    }
 
-    public function retornarDoctores(){echo json_encode($this->modeloDoctores->select());}
+    public function retornarDoctores()
+    {
+        echo json_encode($this->modeloDoctores->select());
+    }
 
     public function exportar_pdf()
     {

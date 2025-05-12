@@ -33,6 +33,15 @@ class ControladorIniciarSesion
         //     $ip = $_SERVER['REMOTE_ADDR'];
         //     // Aquí es donde se enviara la solicitud para validar el token generado en el cliente.
         //     $url = 'https://www.google.com/recaptcha/api/siteverify';
+        // if (isset($_POST)) {
+        //     // Clave secreta proporcionada por Google.
+        //     $claveSecreta = '6Le_rOgqAAAAAMEKli0Bp9zdh8i_haVpS008lTxc';
+        //     // Este token está incluido automáticamente en los datos del formulario bajo el nombre 'g-recaptcha-response'.
+        //     $token = $_POST['g-recaptcha-response'];
+        //     // Esto es para agregar una capa adicional de seguridad.(opcional).
+        //     $ip = $_SERVER['REMOTE_ADDR'];
+        //     // Aquí es donde se enviara la solicitud para validar el token generado en el cliente.
+        //     $url = 'https://www.google.com/recaptcha/api/siteverify';
 
         //     // guardamos los datos en un array.
         //     $datos = array(
@@ -65,10 +74,10 @@ class ControladorIniciarSesion
         //     if ($result['success']) {
 
 
-                if ($_POST['usuario'] === '' or $_POST['password'] === '') {
+        //         if ($_POST['usuario'] === '' or $_POST['password'] === '') {
 
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
-                } else {
+        //             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
+        //         } else {
 
                     $validar = $this->modelo->validarIniciarSesion($_POST['usuario'], $_POST['password']);
 

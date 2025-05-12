@@ -29,8 +29,8 @@ class ModeloInsumo extends Db
 	public function insumos($cantidadCero = true)
 	{
 		$query = "";
-		if($cantidadCero) $query = "SELECT * FROM insumo WHERE estado ='ACT' AND cantidad >= 0 ";
-		else   $query = "SELECT * FROM insumo WHERE estado ='ACT' AND cantidad > 0";
+		if($cantidadCero) $query = "SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad >= 0  GROUP BY inv.id_insumo ";
+		else   $query = "SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad > 0  GROUP BY inv.id_insumo";
 		$sql = $this->conexion->prepare($query);
 		$sql->execute();
 		return ($sql->execute()) ? $sql->fetchAll() : false;
@@ -47,6 +47,7 @@ class ModeloInsumo extends Db
 
 	public function insumosInfo($id_insumo)
 	{
+		
 		$sql = $this->conexion->prepare("SELECT * FROM insumo WHERE id_insumo =:id_insumo");
 		$sql->bindParam(":id_insumo", $id_insumo);
 		$sql->execute();
@@ -83,12 +84,10 @@ class ModeloInsumo extends Db
 
 
 	//insertar insumo
-	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote)
+	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote, $marca, $medida)
 	{
 
-		$promedio_ponderado = number_format(($precio / $cantidad), 2, '.', '');
-		$decimal = floatval($promedio_ponderado);
-		echo $decimal;
+		
 
 
 		$tiempo = new DateTime();
@@ -100,12 +99,13 @@ class ModeloInsumo extends Db
 
 		move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
-		$consulta = $this->conexion->prepare("INSERT INTO insumo VALUES (null, :imagen, :nombre, :descripcion, :precio , :cantidad, :stockMinimo, 'ACT')");
+		$consulta = $this->conexion->prepare("INSERT INTO insumo VALUES (null, :imagen, :nombre, :descripcion, :marca, :medida, :precio , 'ACT',:stockMinimo)");
 		$consulta->bindParam(":imagen", $imagen);
 		$consulta->bindParam(":nombre", $nombre);
 		$consulta->bindParam(":descripcion", $descripcion);
-		$consulta->bindParam(":precio", $decimal);
-		$consulta->bindParam(":cantidad", $cantidad);
+		$consulta->bindParam(":marca", $marca);
+		$consulta->bindParam(":medida", $medida);
+		$consulta->bindParam(":precio", $precio);
 		$consulta->bindParam(":stockMinimo", $stockMinimo);
 
 		$consulta->execute();
@@ -155,7 +155,7 @@ class ModeloInsumo extends Db
 	}
 
 
-	public function editar($id_insumo, $nombre, $descripcion, $stockMinimo, $imagen)
+	public function editar($id_insumo, $nombre, $descripcion, $stockMinimo, $imagen, $marca, $medida)
 	{
 
 		$consulta1 = $this->conexion->prepare("SELECT * FROM insumo WHERE id_insumo =:id_insumo");
@@ -179,20 +179,22 @@ class ModeloInsumo extends Db
 			$imagen_temporal = $_FILES['imagen']['tmp_name'];
 			move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_editar);
 
-			$consulta2 = $this->conexion->prepare("UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo WHERE id_insumo =:id_insumo");
+			$consulta2 = $this->conexion->prepare("UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id_insumo");
 			$consulta2->bindParam(":nombre", $nombre);
 			$consulta2->bindParam(":descripcion", $descripcion);
 			$consulta2->bindParam(":stockMinimo", $stockMinimo);
 			$consulta2->bindParam(":imagen", $imagen_editar);
+			$consulta2->bindParam(":marca", $marca);
+			$consulta2->bindParam(":medida", $medida);
 			$consulta2->bindParam(":id_insumo", $id_insumo);
 			$consulta2->execute();
 		} else {
-
-			echo "Vacio";
-			$consulta3 = $this->conexion->prepare("UPDATE insumo SET nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo WHERE id_insumo =:id_insumo");
+			$consulta3 = $this->conexion->prepare("UPDATE insumo SET nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id_insumo");
 			$consulta3->bindParam(":nombre", $nombre);
 			$consulta3->bindParam(":descripcion", $descripcion);
 			$consulta3->bindParam(":stockMinimo", $stockMinimo);
+			$consulta3->bindParam(":marca", $marca);
+			$consulta3->bindParam(":medida", $medida);
 			$consulta3->bindParam(":id_insumo", $id_insumo);
 			$consulta3->execute();
 		}
@@ -228,12 +230,12 @@ class ModeloInsumo extends Db
 		$insumos = $this->insumos();
 		foreach ($insumos as $key) {
 			//echo $key["id_insumo"]."<br>";
-			$cantidad = $this->actualizar_cantidad_insumo($key["id_insumo"]);
+			$inventario = $this->actualizar_cantidad_insumo($key["id_insumo"]);
 			// print_r($cantidad[0]["cantidad"]);
 
 			//esto es para actualizar la cantidad de insumos
-			$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
-			$consulta->bindParam(":cantidad",$cantidad[0]["cantidad"]);
+			$consulta = $this->conexion->prepare("UPDATE inventario SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
+			$consulta->bindParam(":cantidad",$inventario[0]["cantidad"]);
 			$consulta->bindParam(":id_insumo",$key["id_insumo"]);
 			$consulta->execute();
 
@@ -250,7 +252,7 @@ class ModeloInsumo extends Db
 
 	//funcion mejorada de actualizacion de la cantidad
 	public function actualizar_cantidad_insumo($id_insumo){
-		$consulta = $this->conexion->prepare(" SELECT ei.id_insumo, ei.fechaDeVencimiento, SUM(ei.cantidad_disponible) AS cantidad FROM entrada_insumo ei INNER JOIN entrada e on e.id_entrada = ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE AND e.estado = 'ACT' ");
+		$consulta = $this->conexion->prepare(" SELECT ei.id_insumo, ei.fechaDeVencimiento, SUM(ei.cantidad_disponible) AS cantidad, e.numero_de_lote FROM entrada_insumo ei INNER JOIN entrada e on e.id_entrada = ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE AND e.estado = 'ACT' ");
 		$consulta->bindParam(":id_insumo",$id_insumo);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
@@ -283,7 +285,7 @@ class ModeloInsumo extends Db
 	//
 	public function papelera()
 	{
-		$sql = $this->conexion->prepare("SELECT * FROM insumo WHERE estado ='DES' ");
+		$sql = $this->conexion->prepare("SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad >= 0  GROUP BY inv.id_insumo ");
 		$sql->execute();
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}

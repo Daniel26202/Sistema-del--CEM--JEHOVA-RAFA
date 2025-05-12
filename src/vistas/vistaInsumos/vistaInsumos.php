@@ -11,35 +11,11 @@
         </svg>
     </div>
 
+    <?php require_once './src/vistas/tasaBCV.php'; ?>
+
     <div class="me-4">
-
-        <a><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-wrench-adjustable-circle azul" viewBox="0 0 16 16" id="desplegablePaciente">
-                <path d="M12.496 8a4.491 4.491 0 0 1-1.703 3.526L9.497 8.5l2.959-1.11c.027.2.04.403.04.61Z" />
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0Zm-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.49 4.49 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8Zm-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27.596-.894Z" />
-            </svg></a>
-        <div class="uk-nav uk-dropdown-nav" uk-dropdown="pos: top-right" id="desplegable2">
-            <ul>
-                <li id="perfilPaciente"><a href="?c=ControladorPerfil/perfil" class="uk-animation-toggle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill azul uk-animation-scale-up" viewBox="0 0 16 16">
-                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                        </svg>PERFIL
-                    </a></li>
-                <li class="uk-nav-divider"></li>
-                <li><a href="#" id="btnayudaPaciente"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
-                            <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
-                        </svg>AYUDA</a></li>
-                <li class="uk-nav-divider"></li>
-                <li><a href="?c=ControladorBitacora/bitacora"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
-                            <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z" />
-                        </svg> CONFIGURACIÓN</a></li>
-                <li class="uk-nav-divider"></li>
-
-                <li><a href="#" data-bs-toggle="modal"
-                        data-bs-target="#eliminar">
-                        <img src="./src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg class="azul" style="margin-left: -4px;">
-                        </svg>SALIR</a></li>
-            </ul>
-        </div>
+        <!-- requerir los botones -->
+        <?php require_once './src/vistas/btnOpciones.php'; ?>
     </div>
 </div>
 
@@ -170,16 +146,17 @@
 <div class="fondo-tabla m-auto" style="width:95%;">
 
     <div class="d-flex justify-content-between  caja-de-buscador-insumos">
-        <!-- Boton Agregar Insumos -->
-        <div class="mover-input-agregarcita mt-2">
-            <button class="btn btn-primary btn-agregar-doctores col-11" uk-toggle="target: #modal-exampleInsumos">
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-capsule me-1"
-                    viewBox="0 0 16 16">
-                    <path
-                        d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                </svg>Registrar Insumos
-            </button>
-        </div>
+        <?php if ($this->permisos($_SESSION["id_rol"], "guardar", "Insumos")): ?>
+            <div class="mover-input-agregarcita mt-2">
+                <button class="btn btn-primary btn-agregar-doctores col-11" uk-toggle="target: #modal-exampleInsumos">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-capsule me-1"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+                    </svg>Registrar Insumos
+                </button>
+            </div>
+        <?php endif; ?>
 
         <!-- Buscador de Insumos -->
         <div class="mover-input-buscar d-flex mt-4">
@@ -189,7 +166,7 @@
                     <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
                 </svg>
             </a>
-            <form id="form-buscador-insumo" class="d-flex justify-content-end form-responsive" autocomplete="off">
+            <div id="form-buscador-insumo" class="d-flex justify-content-end form-responsive" autocomplete="off">
                 <input class="form-control input-buscar tamaño-input-buscar input-responsive" type="text" name="nombre"
                     placeholder="Codigo o Nombre">
 
@@ -200,7 +177,7 @@
                             d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                     </svg>
                 </button>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -213,7 +190,7 @@
         <hr>
         <div class="tar ">
             <?php foreach ($insumos as $i): ?>
-                <div class="card ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
+                <div class="contenido card ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
                     <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/insumos/<?= $i["imagen"] ?>" class="card-img-top" style="height: 35%;">
                     <div class="card-body mt-4 tarjeta-ajax">
                         <!-- <div class="alert  text-center alertas-vencidos d-none p-0">  -->
@@ -229,11 +206,12 @@
 
 
                         <h5 class="card-title titulo"><?= $i["nombre"] ?></h5>
+                        <p class="mt-3">Medida: <?= $i["medida"] ?></p>
                         <p class="mt-3">Skock-Min: <?= $i["stockMinimo"] ?></p>
                         <?php if ($i["cantidad"] <= 0): ?>
                             <p class="text-danger">Cantidad: <?= $i["cantidad"] ?></p>
                         <?php else: ?>
-                            <p>Cantidad: <?= $i["cantidad"] ?></p>
+                            <p>Cantidad: <?= $i["cantidad_inventario"] ?></p>
                         <?php endif ?>
 
                         <a href="#" class="btn btn-agregarcita-modal text-decoration-none botones-mostrar" data-index="<?= $i["id_insumo"] ?>"
@@ -276,7 +254,7 @@
 
             </div>
 
-            <form class="form-modal" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/guardarInsumo" enctype="multipart/form-data" id="modalAgregarInsumos">
+            <form class="form-modal form-convercion" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/guardarInsumo" enctype="multipart/form-data" id="modalAgregarInsumos">
 
                 <div class="alert alert-danger d-none" id="alerta-guardar">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
                 <div id="contenedor-img" class="mb-2">
@@ -345,6 +323,36 @@
 
                 <div class="input-group flex-nowrap">
                     <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-text-left azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled" type="text" name="marca"
+                        placeholder="Marca" required>
+                </div>
+
+                <p class="p-error-marca d-none">Debe estar completa y detallada</p>
+
+                <div class="input-group flex-nowrap">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-text-left azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled" type="text" name="medida"
+                        placeholder="Medida" required>
+                </div>
+
+                <p class="p-error-medida d-none">debe ser tal</p>
+
+
+
+                <div class="input-group flex-nowrap">
+                    <span class="input-modal mt-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack azul" viewBox="0 0 16 16">
                             <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z" />
                             <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
@@ -378,11 +386,26 @@
                             <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z" />
                         </svg>
                     </span>
-                    <input class="form-control input-modal input-disabled" type="text" name="precio"
-                        placeholder="Precio" required>
+                    <input class="form-control input-modal input-disabled precioBolivares" type="text" name="precio"
+                        placeholder="Precio en BS" required>
                 </div>
 
-                <p class="p-error-precio d-none">El precio debe tener solo digitos con 2 decimales ejemplo 1,00 o 10,00 o 100,00</p>
+                <p class="p-error-precio d-none">El precio debe tener solo digitos con 2 decimales ejemplo 1.00 o 10.00 o 100.00</p>
+
+                <div class="input-group flex-nowrap">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cash-coin azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0z" />
+                            <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1h-.003zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195l.054.012z" />
+                            <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083c.058-.344.145-.678.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1H1z" />
+                            <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled precioDolares" type="text" name="precioD"
+                        placeholder="Precio en $" required>
+                </div>
+
+                <p class="p-error-precioD d-none">El precio debe tener solo digitos con 2 decimales ejemplo 1.00 o 10.00 o 100.00</p>
 
 
                 <div class="input-group flex-nowrap d-none">
@@ -518,7 +541,7 @@
                     </span>
                     <input class="form-control input-modal input-disabled input-editar" type="text" name="nombre"
                         placeholder="Nombre">
-                </div>Editar Insumos
+                </div>
 
 
 
@@ -535,6 +558,34 @@
                     <input class="form-control input-modal input-disabled input-editar" type="text" name="descripcion"
                         placeholder="Descripción">
                 </div>
+
+                <div class="input-group flex-nowrap grpFormCorrect">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-text-left azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled input-editar" type="text" name="marca"
+                        placeholder="Marca" required>
+                </div>
+
+                <p class="p-error-marca d-none">Debe estar completa y detallada</p>
+
+                <div class="input-group flex-nowrap grpFormCorrect">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-text-left azul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                    <input class="form-control input-modal input-disabled input-editar" type="text" name="medida"
+                        placeholder="Medida" required>
+                </div>
+
+                <p class="p-error-medida d-none">debe ser tal</p>
 
 
 

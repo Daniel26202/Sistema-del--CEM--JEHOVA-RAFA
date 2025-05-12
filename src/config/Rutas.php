@@ -34,6 +34,14 @@ class Rutas
         // Divide la URL en partes separadas por "/"
         $this->partes = explode("/", $this->url);
 
+
+        // Verifica si la URL contiene ".php"
+        if (strpos($this->url, ".php") !== false) {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            exit;
+        }
+
+
         // Obtiene el controlador de la primera parte de la URL (capitalizado)
         $this->controlador = ucfirst($this->partes[0] ?? "");
 
@@ -80,7 +88,7 @@ class Rutas
                     // Verifica si la sesión está activa
                     if (session_status() === PHP_SESSION_ACTIVE) {
                         // Si el controlador es Inicio o Perfil, llama al método directamente
-                        if ($this->controlador == "ControladorInicio" || $this->controlador == "ControladorPerfil") {
+                        if ($this->controlador == "ControladorInicio" || $this->controlador == "ControladorPerfil" || $this->controlador == "ControladorBitacora") {
                             $instancia->$metodo($parametro ?? []);
                         } else {
                             // Obtiene el permiso equivalente del método
@@ -91,8 +99,8 @@ class Rutas
                             // Si no tiene permiso, redirige a la página de error
                             if (!$permitido) {
                                 echo "Error 404 ";
-                                header("location:  /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
-                                exit;
+                                header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
+                                // exit;
                             } else {
                                 // Si tiene permiso, llama al método con los parámetros
                                 $instancia->$metodo($parametro ?? []);
@@ -105,11 +113,14 @@ class Rutas
                 }
             } else {
                 // Si el método no existe, muestra un mensaje
-                echo "NO EXISTE EL MÉTODO";
+
+                // //Y lo mando a la pagina de error
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
             }
         } else {
-            // Si el controlador no existe, muestra un mensaje
-            echo "NO EXISTE EL CONTROLADOR";
+            // Si el controlador no existe
+            // // //Y lo mando a la pagina de error
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
         }
     }
 }

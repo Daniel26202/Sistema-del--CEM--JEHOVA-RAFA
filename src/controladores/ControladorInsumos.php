@@ -49,7 +49,7 @@ class ControladorInsumos
 		$id_insumo = $datos[0];
 		$datosDeInsumo = $this->modelo->insumosInfo($id_insumo);
 		$datosDeVencimiento =  $this->modelo->retornarFechaDeVencimiento($id_insumo);
-		$informacion = array('insumo' => $datosDeInsumo, 'vencimiento' => $datosDeVencimiento);
+		$informacion = array('insumo' => $datosDeInsumo, 'vencimiento' => $datosDeVencimiento, 'dolar' => $_SESSION["dolar"]);
 		echo json_encode($informacion);
 	}
 
@@ -72,8 +72,8 @@ class ControladorInsumos
 	public function guardarInsumo()
 	{
 		if (isset($_POST)) {
-			$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
-			$this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $precio_sin_puntos, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"]);
+			$precio_decimal = floatval($_POST['precioD']);
+			$this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $precio_decimal, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"], $_POST["marca"], $_POST["medida"]);
 
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"insumo","Ha Insertado un insumo");
@@ -96,7 +96,7 @@ class ControladorInsumos
 	{
 		print_r($_POST);
 
-		$this->modelo->editar($_POST["Codigo"], $_POST["nombre"], $_POST['descripcion'], $_POST["stockMinimo"], $_FILES["imagen"]);
+		$this->modelo->editar($_POST["Codigo"], $_POST["nombre"], $_POST['descripcion'], $_POST["stockMinimo"], $_FILES["imagen"], $_POST["marca"], $_POST["medida"]);
 		// Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"insumo","Ha modificado un insumo");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/editado");

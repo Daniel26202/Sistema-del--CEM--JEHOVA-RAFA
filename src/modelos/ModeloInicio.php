@@ -34,9 +34,10 @@ WHERE estado = 'ACT';");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
-	public function especialidades_solicitadas()
+	public function especialidades_solicitadas($fechaInicio = "", $fechaFinal = "")
 	{
-		$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
+		if ($fechaInicio == "" && $fechaFinal == "") {
+			$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
   												COUNT(c.id_cita) AS total_solicitudes
 												FROM cita c
 												INNER JOIN serviciomedico sm 
@@ -46,6 +47,21 @@ WHERE estado = 'ACT';");
 												GROUP BY cs.nombre
 												ORDER BY total_solicitudes DESC;
 												");
+		} else {
+			$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
+  												COUNT(c.id_cita) AS total_solicitudes
+												FROM cita c
+												INNER JOIN serviciomedico sm 
+												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+												INNER JOIN categoria_servicio cs 
+												ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
+												GROUP BY cs.nombre 
+												ORDER BY total_solicitudes DESC;;
+												");
+			$consulta->bindParam(":fechaInicio", $fechaInicio);
+			$consulta->bindParam(":fechaFinal", $fechaFinal);
+		}
+
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
@@ -85,7 +101,7 @@ WHERE estado = 'ACT';");
 			$consulta = $this->conexion->prepare($sql);
 		} else {
 			$sql = "SELECT 
-            c.fecha, 
+            c.fecha, e.nombre as especialidad,
             COUNT(c.id_cita) AS total_citas,
             GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) SEPARATOR ', ') AS personal
         ,fecha as date FROM 
@@ -96,6 +112,8 @@ WHERE estado = 'ACT';");
             personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
         INNER JOIN 
             personal p ON p.id_personal = psm.personal_id_personal
+        INNER JOIN 
+        	especialidad e ON e.id_especialidad = p.id_especialidad
             WHERE p.id_personal = :id_personal
         GROUP BY 
             c.fecha

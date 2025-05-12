@@ -20,6 +20,7 @@ if (!empty($parametro)) {
 		$concatenarRuta .= "../";
 	}
 }
+
 ?>
 
 
@@ -44,7 +45,11 @@ if (!empty($parametro)) {
 
 <?php $urlBase = $concatenarRuta; ?>
 
+
+
 <body class="d-flex">
+
+	<input type="hidden">
 
 	<div class="aside asideRespo active" id="aside">
 		<div class="head mt-3 d-flex justify-content-center">
@@ -194,35 +199,35 @@ if (!empty($parametro)) {
 				<!-- no hay -->
 			<?php else: ?>
 
-			<a href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
-				<div class="" id="menuControlMedicoColor">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-						class="bi bi-person-fill-gear" viewBox="0 0 16 16">
-						<path
-							d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
-					</svg>
-					<span class="option ms-2">Control Médico</span>
-				</div>
-			</a>
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
+					<div class="" id="menuControlMedicoColor">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+							<path
+								d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
+						</svg>
+						<span class="option ms-2">Control Médico</span>
+					</div>
+				</a>
 
 			<?php endif ?>
 
 			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Hospitalizacion")): ?>
-				<!-- no hay -->	
+				<!-- no hay -->
 			<?php else: ?>
-			<a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
-				id="menuHospitalizacion">
-				<div class="" id="menuHospitalizacionColor">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-						class="bi bi-heart-pulse-fill" viewBox="0 0 16 16">
-						<path
-							d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9H1.475Z" />
-						<path
-							d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8H.88Z" />
-					</svg>
-					<span class="option ms-2">Hospitalización</span>
-				</div>
-			</a>
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
+					id="menuHospitalizacion">
+					<div class="" id="menuHospitalizacionColor">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+							class="bi bi-heart-pulse-fill" viewBox="0 0 16 16">
+							<path
+								d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9H1.475Z" />
+							<path
+								d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8H.88Z" />
+						</svg>
+						<span class="option ms-2">Hospitalización</span>
+					</div>
+				</a>
 
 			<?php endif; ?>
 
@@ -271,6 +276,20 @@ if (!empty($parametro)) {
 								d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1ZM10 8a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V8Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z" />
 						</svg>
 						<span class="option ms-2">Reportes</span>
+					</div>
+				</a>
+			<?php endif ?>
+
+
+			<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Estadisticas")): ?>
+				<!-- no hay -->
+			<?php else: ?>
+				<a href="/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/estadisticas" uk-tooltip="Reportes" id="menuReportes">
+					<div class="" id="menuReportesColor">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
+							<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
+						</svg>
+						<span class="option ms-2">Estadisticas</span>
 					</div>
 				</a>
 			<?php endif ?>

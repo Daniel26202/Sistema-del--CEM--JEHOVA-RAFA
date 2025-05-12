@@ -27,10 +27,12 @@ addEventListener("DOMContentLoaded", function () {
     nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
     descripcion: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
     cantidad: /^([1-9]{1})([0-9]{1,4})?$/,
-    precio: /^(\d{1,3}\.\d{3},\d{2}|\d{1,3},\d{2})$/,
+    precio: /^(\d{1,3}\.\d{3}.\d{2}|\d{1,3}.\d{2})$/,
     fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
     stockMinimo: /^([1-9]{1})([0-9]{1})?$/,
     lote: /^[0-9-_]{4,10}$/,
+    marca: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s\d]{4,16}$/,
+    medida: /^\d+\s?(ml|L|g|kg|m|cm|mm)$/,
     //^([0-9]+)$
   };
 
@@ -40,9 +42,12 @@ addEventListener("DOMContentLoaded", function () {
     descripcion: false,
     cantidad: false,
     precio: false,
+    precioD: false,
     fechaDeVencimiento: false,
     stockMinimo: false,
     lote: false,
+    marca: false,
+    medida: false,
   };
 
   const camposEditarInsumos = {
@@ -51,9 +56,12 @@ addEventListener("DOMContentLoaded", function () {
     descripcion: true,
     cantidad: true,
     precio: true,
+    precioD: true,
     fechaDeVencimiento: true,
     stockMinimo: true,
     lote: true,
+    marca: true,
+    medida: true,
   };
 
   //funcion para manejar el resonsive de las tarjetas de insumos
@@ -81,7 +89,9 @@ addEventListener("DOMContentLoaded", function () {
         tarjet.style.margin = "";
         cajaDeBuscadorInsumos.style.flexDirection = "";
         cajaDeBuscadorInsumos.children[0].style.width = "";
-        cajaDeBuscadorInsumos.children[1].style.width = "";
+        cajaDeBuscadorInsumos.children[1]
+          ? (cajaDeBuscadorInsumos.children[1].style.width = "")
+          : false;
         document.querySelector(".input-responsive").style.width = "";
         document.querySelector(".boton-responsive").style.width = "";
         document.querySelector(".form-responsive").style.width = "";
@@ -121,6 +131,9 @@ addEventListener("DOMContentLoaded", function () {
       if (insumoEncontrado) {
         alertasVencidos[index].classList.remove("d-none");
         alertasVencidos[index].classList.add("uk-alert-danger");
+        alertasVencidos[index].children[1].classList.add(
+          "p-error-validaciones"
+        );
         alertasVencidos[
           index
         ].children[1].innerText = `El insumo ${insumoEncontrado.nombre} del lote ${insumoEncontrado.numero_de_lote} vence el ${insumoEncontrado.fechaDeVencimiento}.`;
@@ -156,10 +169,17 @@ addEventListener("DOMContentLoaded", function () {
     let parrafos = document.querySelectorAll(".parrafo");
     console.log(resultado);
     resultado["insumo"].forEach((res) => {
+      console.log(res.nombre)
       parrafos[0].innerText = `${res.nombre}`;
       parrafos[1].innerText = `${res.descripcion}`;
-      parrafos[2].innerText = `${res.precio} BS`;
-      parrafos[3].innerText = `${resultado["vencimiento"][0][0]}`;
+      parrafos[2].innerText = `${res.marca}`;
+      parrafos[3].innerText = `${
+        res.precio * parseFloat(resultado["dolar"])
+      } BS`;
+      parrafos[4].innerText = `${parseFloat(res.precio)} $`;
+      parrafos[5].innerText = `${resultado["vencimiento"][0][0]}`;
+
+ 
 
       eliminarInsumo.setAttribute(
         "href",
@@ -170,7 +190,9 @@ addEventListener("DOMContentLoaded", function () {
       inputEditar[0].value = res.id_insumo;
       inputEditar[1].value = res.nombre;
       inputEditar[2].value = res.descripcion;
-      inputEditar[3].value = res.stockMinimo;
+      inputEditar[3].value = res.marca;
+      inputEditar[4].value = res.medida;
+      inputEditar[5].value = res.stockMinimo;
       //inputEditar[4].value = res.fechaDeVencimiento
 
       document
@@ -283,7 +305,7 @@ addEventListener("DOMContentLoaded", function () {
     // Si pasa todas las validaciones
     pError.classList.add("d-none");
     // actualizarEstadoInput(input, "incorrecto", formulario);
-    
+
     camposInsumos[campo] = true;
   }
 
@@ -291,8 +313,9 @@ addEventListener("DOMContentLoaded", function () {
 
   const validarCamposInsumos = (expresiones, input, campo, camposInsumos) => {
     const pErrorGuardar = document.querySelector(".p-error-" + input.name);
+    console.log(pErrorGuardar);
     pErrorGuardar.classList.add("fw-bold");
-    pErrorGuardar.style.color = "rgb(224, 3, 3)";
+    pErrorGuardar.classList.add("p-error-validaciones");
     console.log(pErrorGuardar);
     if (input.name == "fecha_de_vencimiento") {
       console.log("2trabaje con la echa");
@@ -318,7 +341,7 @@ addEventListener("DOMContentLoaded", function () {
         const pErrorGuardarImagen = document.querySelector(".p-error-imagen");
         console.log(pErrorGuardarImagen);
         pErrorGuardarImagen.classList.add("fw-bold");
-        pErrorGuardarImagen.style.color = "rgb(224, 3, 3)";
+        pErrorGuardarImagen.classList.add("p-error-validaciones");
         let imagenSeparada = e.target.value.split("\\");
         let nombreImagen = imagenSeparada.pop();
         if (expresionesInsumos.imagen.test(nombreImagen)) {
@@ -371,6 +394,14 @@ addEventListener("DOMContentLoaded", function () {
           camposInsumos
         );
         break;
+      case "precioD":
+        validarCamposInsumos(
+          expresionesInsumos.precio,
+          e.target,
+          "precioD",
+          camposInsumos
+        );
+        break;
       case "fecha_de_vencimiento":
         validarCamposInsumos(
           expresionesInsumos.fechaDeVencimiento,
@@ -393,6 +424,23 @@ addEventListener("DOMContentLoaded", function () {
           e.target,
           "lote",
           camposInsumos
+        );
+        break;
+
+      case "marca":
+        validarCamposInsumos(
+          expresionesInsumos.marca,
+          e.target,
+          "marca",
+          camposEditarInsumos
+        );
+        break;
+      case "medida":
+        validarCamposInsumos(
+          expresionesInsumos.medida,
+          e.target,
+          "medida",
+          camposEditarInsumos
         );
         break;
     }
@@ -467,6 +515,22 @@ addEventListener("DOMContentLoaded", function () {
           camposEditarInsumos
         );
         break;
+      case "marca":
+        validarCamposInsumos(
+          expresionesInsumos.marca,
+          e.target,
+          "marca",
+          camposEditarInsumos
+        );
+        break;
+      case "medida":
+        validarCamposInsumos(
+          expresionesInsumos.medida,
+          e.target,
+          "medida",
+          camposEditarInsumos
+        );
+        break;
     }
   }
 
@@ -481,8 +545,6 @@ addEventListener("DOMContentLoaded", function () {
   inputs.forEach((input) => {
     input.addEventListener("blur", validarFormularioInsumo);
   });
-
-
 
   inputEditar.forEach((input) => {
     input.addEventListener("input", validarFormularioInsumoEditar);
@@ -501,7 +563,7 @@ addEventListener("DOMContentLoaded", function () {
       camposInsumos.stockMinimo &&
       camposInsumos.lote
     ) {
-      console.log("si se envia")
+      console.log("si se envia");
       modalAgregarInsumos.submit();
     } else {
       document.getElementById("alerta-guardar").classList.remove("d-none");
