@@ -61,6 +61,7 @@ return [
     "mostrarEspecialidad" => "consultar",
     "registrarCategoria" => "guardar",
     "eliminarCategoria" => "eliminar",
+    "serviciosDoctor" => "consultar",
 
 
     //Doctores

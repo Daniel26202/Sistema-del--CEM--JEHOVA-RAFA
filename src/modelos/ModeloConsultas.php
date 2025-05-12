@@ -34,12 +34,11 @@ class ModeloConsultas extends Db
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
-    public function mostrarConsultasDoctor()
+    public function mostrarConsultasDoctor($id_doctor)
     {
-        $consulta = $this->conexion->prepare("SELECT cs.nombre as categoria, serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM personal p INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
-        serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT'");
-        $consulta->execute();
-
+        $consulta = $this->conexion->prepare("SELECT categoria_nombre.nombre as categoria, serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM personal p INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
+        serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' AND serviciomedico.estado = 'ACT' AND ps.personal_id_personal  = :id_doctor");
+        $consulta->bindParam(":id_doctor", $id_doctor);
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 

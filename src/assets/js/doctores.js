@@ -146,9 +146,16 @@ addEventListener("DOMContentLoaded", function () {
   });
 
   //ajax para checkear los dias que el doctor registro en guardar
-  async function traerDiasCheckeados(idDoctor, dia, inputHoraEntradaEditar, inputHoraSalidaEditar) {
+  async function traerDiasCheckeados(
+    idDoctor,
+    dia,
+    inputHoraEntradaEditar,
+    inputHoraSalidaEditar
+  ) {
     try {
-      let peticion = await fetch("?c=controladorDoctores/selectDiasDoctorEditar&id_personal=" + idDoctor);
+      let peticion = await fetch(
+        "?c=controladorDoctores/selectDiasDoctorEditar&id_personal=" + idDoctor
+      );
       let resultado = await peticion.json();
       console.log(resultado);
       resultado.forEach((res) => {
@@ -180,14 +187,25 @@ addEventListener("DOMContentLoaded", function () {
 
       let idDoctor = atributoBotonEditar[1].substring(22);
 
-      let diasEditar = document.querySelectorAll(`#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .form-check .div-js .diaslaborables`);
+      let diasEditar = document.querySelectorAll(
+        `#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .form-check .div-js .diaslaborables`
+      );
 
-      let inputHoraEntradaEditar = document.querySelectorAll(`#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .caja-js .caja-tiempo .hora-entrada`);
+      let inputHoraEntradaEditar = document.querySelectorAll(
+        `#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .caja-js .caja-tiempo .hora-entrada`
+      );
 
-      let inputHoraSalidaEditar = document.querySelectorAll(`#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .caja-js .caja-tiempo .hora-salida`);
+      let inputHoraSalidaEditar = document.querySelectorAll(
+        `#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .caja-js .caja-tiempo .hora-salida`
+      );
 
       diasEditar.forEach((ele, index) => {
-        traerDiasCheckeados(idDoctor, ele, inputHoraEntradaEditar[index], inputHoraSalidaEditar[index]);
+        traerDiasCheckeados(
+          idDoctor,
+          ele,
+          inputHoraEntradaEditar[index],
+          inputHoraSalidaEditar[index]
+        );
       });
     });
   });
@@ -197,7 +215,8 @@ addEventListener("DOMContentLoaded", function () {
   async function checkearDiasLaborablesDelDoctor(id_personal, checkeboxs) {
     try {
       let peticion = await fetch(
-        "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarHorario/" + id_personal
+        "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarHorario/" +
+          id_personal
       );
       let resultado = await peticion.json();
       console.log(resultado);
@@ -282,7 +301,8 @@ addEventListener("DOMContentLoaded", function () {
 
   async function consultarHorario(id_personal) {
     let peticion = await fetch(
-      "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarHorario/" + id_personal
+      "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarHorario/" +
+        id_personal
     );
     let resultado = await peticion.json();
     console.log(resultado);
@@ -291,11 +311,12 @@ addEventListener("DOMContentLoaded", function () {
     resultado.forEach((res) => {
       document.getElementById(
         "titulo"
-      ).innerText = ` Horarios Del Dr: ${res.nombre} ${res.apellido}`;
+      ).innerText = ` Dr: ${res.nombre} ${res.apellido}`;
       const horaEntradaAMPM = convertirAHoraAMPM(res.horaDeEntrada);
       const horaSalidaAMPM = convertirAHoraAMPM(res.horaDeSalida);
       html += ` 
       <hr>
+      <h5>Horarios</h5>
       <div class="input-group flex-nowrap">
       
                 <h6 class="me-2 mb-1"> <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1"
@@ -325,6 +346,28 @@ addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("cajaDeInfo").innerHTML = html;
+
+    consultarServicios(id_personal);
+  }
+
+  async function consultarServicios(id_personal) {
+    try {
+      // Realizamos una petición para obtener los servicios del doctor
+      let peticion = await fetch(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Doctores/serviciosDoctor/" + id_personal
+      );
+
+      let resultado = await peticion.json();
+      let servicios = "";
+      resultado.forEach((res) => {
+        servicios += res.nombre_categoria + ",";
+      });
+
+      document.getElementById("servicios").innerText = servicios;
+    } catch (error) {
+      // Mostramos un mensaje de error en caso de que algo salga mal
+      console.log("Lamentablemente algo salió mal: " + error);
+    }
   }
 
   //consultar el horario del doctor
@@ -342,14 +385,15 @@ addEventListener("DOMContentLoaded", function () {
     }, 8000);
   }
 
-  let passwordMostrar = document.getElementById("passwordMostrar")
+  let passwordMostrar = document.getElementById("passwordMostrar");
 
   passwordMostrar.addEventListener("keyup", () => {
-    activarMostrarContra.classList.remove('d-none');
+    activarMostrarContra.classList.remove("d-none");
     if (passwordMostrar.value == "") {
-      activarMostrarContra.classList.add('d-none');
+      activarMostrarContra.classList.add("d-none");
       desMostrarContra.classList.add("d-none");
-    } if (passwordMostrar.type == "text" && passwordMostrar.value.length > 0) {
+    }
+    if (passwordMostrar.type == "text" && passwordMostrar.value.length > 0) {
       desMostrarContra.classList.remove("d-none");
       activarMostrarContra.classList.add("d-none");
     }
@@ -367,17 +411,9 @@ addEventListener("DOMContentLoaded", function () {
       passwordMostrar.type = "password";
       desMostrarContra.classList.add("d-none");
       activarMostrarContra.classList.remove("d-none");
-
     }
   }
 
   activarMostrarContra.addEventListener("click", mostrarContrasena);
   desMostrarContra.addEventListener("click", mostrarContrasena);
-
-
-
-
-
-
-
 }); //fin de DOMContentLoaded
