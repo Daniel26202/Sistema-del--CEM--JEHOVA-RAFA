@@ -147,7 +147,7 @@
 
                             <div class="uk-margin">
                                 <textarea name="historial" class="uk-textarea" rows="5" placeholder="Historial médico"
-                                    aria-label="Textarea" id="" required></textarea>
+                                    aria-label="Textarea" id="historia_clinicaA" required></textarea>
                             </div>
                         </div>
 
