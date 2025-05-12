@@ -58,7 +58,7 @@ class ControladorConsultas
 
 
 
-			$this->modelo->insertar($_POST['id_categoria'], $_POST['id_doctor'], $precio_decimal);
+			$this->modelo->insertarDoctorServicio($_POST['id_categoria'],  $precio_decimal);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha Insertado un nuevo  servicio medico");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/agregado");

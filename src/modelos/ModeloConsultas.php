@@ -28,8 +28,16 @@ class ModeloConsultas extends Db
     }
     public function mostrarConsultas()
     {
-        $consulta = $this->conexion->prepare("SELECT serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM personal p INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
-        serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' ");
+        $consulta = $this->conexion->prepare('SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "ACT" AND sm.estado = "ACT" ');
+        $consulta->execute();
+
+        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+    }
+
+    public function mostrarConsultasDoctor()
+    {
+        $consulta = $this->conexion->prepare("SELECT cs.nombre as categoria, serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM personal p INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
+        serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT'");
         $consulta->execute();
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
@@ -38,29 +46,28 @@ class ModeloConsultas extends Db
 
     public function mostrarConsultasDes()
     {
-        $consulta = $this->conexion->prepare("SELECT serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM personal p INNER JOIN personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
-        serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria WHERE serviciomedico.estado = 'DES' AND categoria_nombre.estado = 'ACT'");
+        $consulta = $this->conexion->prepare('SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "DES" OR sm.estado = "DES" ');
         $consulta->execute();
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
-    public function insertar($id_categoria, $id_doctor, $precio)
+    public function insertarSevicio($id_categoria, $precio)
     {
 
         $consulta = $this->conexion->prepare("INSERT INTO serviciomedico (id_categoria, precio, estado) VALUES (:id_categoria, :precio, 'ACT')");
         $consulta->bindParam(":id_categoria", $id_categoria);
         $consulta->bindParam(":precio", $precio);
         $consulta->execute();
+    }
 
 
-        $id_servicioMedico = $this->conexion->lastInsertId();
-
+    public function insertarDoctorServicio($id_doctor, $id_servicioMedico)
+    {
         $consulta = $this->conexion->prepare("INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)");
         $consulta->bindParam(":id_doctor", $id_doctor);
         $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-
-        $consulta->execute();
+        return ($consulta->execute()) ? true : false;
     }
 
     public function eliminar($id_servicioMedico)
