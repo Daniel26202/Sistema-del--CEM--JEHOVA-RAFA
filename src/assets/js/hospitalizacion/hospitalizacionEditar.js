@@ -244,8 +244,9 @@ addEventListener("DOMContentLoaded", function () {
                                         ${res["nombredoc"]} ${res["apellidodoc"]}
                                     </td>`
 
-                        // verifico si es administrador o usuario
-                        if (resultad[0] == "usuario") {
+                        // verifico si es administrador o doctor
+                        // uno es doctor
+                        if (resultad[0][1] == 1) {
                             html += `<!--no hay-->`;
                         }
 
@@ -279,11 +280,13 @@ addEventListener("DOMContentLoaded", function () {
                                             </div>`
 
                         // verifico si es administrador o usuario
-                        if (resultad[0] == "usuario") {
+                        // uno es doctor
+                        if (resultad[0][1] == 1) {
                             html += `<!--no hay-->`;
                         }
                         // verifico si es administrador o usuario
-                        if (resultad[0] == "administrador") {
+                        // cero es administrador mas no doctor 
+                        if (resultad[0][1] == 0) {
                             html += `       
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <button class="btn btn-tabla mb-1 me-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar-hospitalizacion${res["id_hospitalizacion"]}" uk-tooltip="Eliminar hospitalización">
@@ -296,7 +299,8 @@ addEventListener("DOMContentLoaded", function () {
                                             </div>`;
                         }
                         // verifico si es administrador o usuario
-                        if (resultad[0] == "administrador") {
+                        // cero es administrador mas no doctor 
+                        if (resultad[0][1] == 0) {
                             html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/${res["id_hospitalizacion"]}" class="btn btn-tabla mb-1 me-1" uk-tooltip="Facturar hospitalización" id="" title=""
@@ -392,11 +396,13 @@ addEventListener("DOMContentLoaded", function () {
                                                 </div>`
 
                         // verifico si es administrador o usuario
-                        if (resultad[0] == "usuario") {
+                        // uno es doctor
+                        if (resultad[0][1] == 1) {
                             htmlModalCon += `<!--no hay-->`;
                         }
                         // verifico si es administrador o usuario
-                        if (resultad[0] == "administrador") {
+                        // cero es administrador más no doctor 
+                        if (resultad[0][1] == 0) {
                             htmlModalCon += `<div class="d-flex align-items-start mt-5">
 
                                                 <h4 class="fw-bold me-2 ">Cálculo del total:</h4>

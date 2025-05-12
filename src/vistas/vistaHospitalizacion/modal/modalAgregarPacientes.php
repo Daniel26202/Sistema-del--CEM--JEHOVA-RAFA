@@ -142,40 +142,6 @@
 
                         </div>
 
-                        <div>
-                            <div class="m-auto mt-4 pt-1 col-12">
-                                <h6 class="text-center fw-bold">Hora y precio</h6>
-                            </div>
-
-                            <div class="d-flex justify-content-center align-items-center mt-4 ">
-
-                                <div class="borde-input-agregar m-auto col-12 ">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <div class="col-4 ms-4">
-
-                                            <input type="number" name="horas" id="duracionA" class="input-agregar w-75 "
-                                                placeholder="Hora" required><span class=" mt-1">h.</span>
-
-                                        </div>
-                                        <div class="col-2">
-
-                                            <p class=" fw-bold margen-dos-puntos pb-2">:</p>
-
-                                        </div>
-                                        <div class="col-6">
-                                            <input type="number" name="precioHoras" step="any" id="precioHorasH"
-                                                class="input-agregar w-75" placeholder="Precio" required readonly><span class=" mt-1">bs</span>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
                         <div class="mt-4 pt-2">
                             <h4 class="text-center fw-bold">Historia clínica</h4>
 

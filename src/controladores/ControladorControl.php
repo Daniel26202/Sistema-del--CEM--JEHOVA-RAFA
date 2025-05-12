@@ -5,6 +5,7 @@ use App\modelos\ModeloSintomas;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloInicio;
 
 class ControladorControl
 {
@@ -14,6 +15,7 @@ class ControladorControl
 	private $modeloPatologia;
 	private $bitacora;
 	private $permisos;
+	private $inicio;
 
 
 	function __construct()
@@ -22,7 +24,8 @@ class ControladorControl
 		$this->modeloSintomas = new ModeloSintomas();
 		$this->modeloPatologia = new ModeloPatologia();
 		$this->bitacora = new ModeloBitacora();
-		$this->permisos = new ModeloPermisos();	
+		$this->permisos = new ModeloPermisos();
+        $this->inicio = new ModeloInicio();
 	}
 
 	public function control($parametro)
@@ -50,14 +53,18 @@ class ControladorControl
 	public function mostrarControlPacientesJS($datos)
 	{
 
-
-		session_start();
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $idUsuario = $_SESSION['id_usuario'];
+        $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
 		$sesion = $_SESSION['rol'];
-		$idUsuario = $_SESSION['id_usuario'];
 
 		$cedula = $datos[0];
 
-		if ($sesion == "administrador") {
+		// cero es administrador mas no doctor 
+		if ($validacionCargo == 0) {
 
 			$respuestaP = $this->modelo->mostrarControlPacienteA($cedula);
 			//síntomas
@@ -70,7 +77,8 @@ class ControladorControl
 			// este array tiene tres valores de tres funciones en el modelo
 			$arrayPSS = [$respuestaP, $registradosS, $sintomas, $registradosP, $patologias];
 			echo json_encode($arrayPSS);
-		} elseif ($sesion == "usuario") {
+			// uno es doctor
+		} else if ($validacionCargo == 1) {
 			// devuelve solo los datos del paciente atendido por el mismo doctor que inicio sesión(Usuario)
 			$respuesta = $this->modelo->mostrarControlPacienteU($cedula, $idUsuario);
 			//síntomas
@@ -102,7 +110,7 @@ class ControladorControl
 		$this->modelo->insertControl($_POST["doctor"], $_POST["id_paciente"], $_POST["diagnostico"], $_POST["sintomas"], $_POST["indicaciones"], $_POST["fechaRegreso"], $patologia, $_POST["nota"], $_POST["fecha_hora"]);
 
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"control","Ha Insertado un nuevo  control medico");
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha Insertado un nuevo  control medico");
 
 
 		echo json_encode($_POST);
@@ -122,7 +130,7 @@ class ControladorControl
 			$this->modelo->editarControl($_POST["id_control"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["nota_e"]);
 
 			// Guardar la bitacora
-			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"control","Ha modificado un  control medico");
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha modificado un  control medico");
 
 			echo json_encode($_POST);
 		}
@@ -156,7 +164,7 @@ class ControladorControl
 		$id_usuario_bitacora = $datos[1];
 		$this->modeloSintomas->eliminarL($id_sintomas);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($id_usuario_bitacora,"sintomas","Ha eliminado un  sintoma");
+		$this->bitacora->insertarBitacora($id_usuario_bitacora, "sintomas", "Ha eliminado un  sintoma");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control");
 	}
 
@@ -164,7 +172,7 @@ class ControladorControl
 	{
 		$this->modeloSintomas->insertar($_POST["nombreS"]);
 		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"sintomas","Ha Insertado un  sintoma");
+		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "sintomas", "Ha Insertado un  sintoma");
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control");
 	}
 

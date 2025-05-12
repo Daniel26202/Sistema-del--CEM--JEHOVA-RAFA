@@ -185,15 +185,14 @@
 
 <script type="text/javascript"
     src="<?= $urlBase ?>../src/assets/js/hospitalizacion/validacioneshospitalizacion.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
-
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
+    <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
+    <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
+    
+    <?php require_once './src/vistas/head/footer.php'; ?>
+    <?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarHospitalizacion.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEliminarHospitalizacion.php'; ?>
 
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarInsumos.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarInsumos.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalPrecioHora.php'; ?>
-
-<?php require_once './src/vistas/head/footer.php'; ?>
