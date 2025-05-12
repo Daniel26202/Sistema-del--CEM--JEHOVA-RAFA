@@ -313,7 +313,7 @@
                           </svg>
                         </span>
                         <select name="genero" class="form-control input-modal" required id="">
-                          <option selected="" disabled><?= $paciente['genero'] ?></option>
+                          <option selected="<?= $paciente['genero'] ?>" disabled><?= $paciente['genero'] ?></option>
                           <option value="Masculino">Masculino</option>
                           <option value="Femenino">Femenino</option>
                         </select>
