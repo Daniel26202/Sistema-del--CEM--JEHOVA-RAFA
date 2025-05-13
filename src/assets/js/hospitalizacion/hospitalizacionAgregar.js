@@ -162,12 +162,6 @@ addEventListener("DOMContentLoaded", function () {
     // sumar el precio de insumos
     let totalPI = 0;
 
-    let total = 0;
-
-    const horas = document.querySelector("#horasS");
-    const costoHoras = document.querySelector("#costoHS");
-    const duracion = document.querySelector("#duracionA");
-
     const sumarTotal = () => {
         // contador del precio de cada insumo
         let PrecioI = 0;
@@ -213,31 +207,6 @@ addEventListener("DOMContentLoaded", function () {
             pPrecioI.innerHTML = totalPC + "bs";
 
         })
-        // se divide el costo con las horas para saber el costo por cada hora
-        let valorDividido = parseFloat(costoHoras.innerText) / parseFloat(horas.innerText);
-        // let horaInput = parseFloat(duracion.value);
-        // luego se multiplica el precio con la cantidad de las horas
-        let precioHor = valorDividido;
-
-        total = parseFloat(precioHor) + totalPI;
-
-        // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-        total = parseFloat(total.toFixed(2));
-        // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-        precioHor = parseFloat(precioHor.toFixed(2));
-
-        document.querySelector("#precioHorasH").value = precioHor;
-
-        document.querySelector("#PT").value = total;
-
-        // si no hay números en el total devuelve NaN 
-        if (Number.isNaN(total)) {
-            document.querySelector("#divTP").classList.add("d-none");
-            // si tiene un numero lo muestra
-        } else {
-            document.querySelector("#divTP").classList.remove("d-none");
-            document.querySelector("#totalP").innerHTML = total;
-        }
 
     }
 

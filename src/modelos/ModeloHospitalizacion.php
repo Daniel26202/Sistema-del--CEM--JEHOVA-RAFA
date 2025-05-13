@@ -136,13 +136,13 @@ class ModeloHospitalizacion extends Db
         $consulta->bindParam(":fecha_hora_inicio", $fechaHora);
         $consulta->bindParam(":id_control", $idControl);
         $consulta->execute();
+        //devuelve el id de la hospitalización.
+        //obtenemos los datos de la hospitalización que se a agregado. si no se inserta devuelve 0
+        $idH = ($this->conexion->lastInsertId() === 0) ? false : $this->conexion->lastInsertId();
 
         // editar control
         $this->updateHistorial($idControl, $historial);
 
-        //devuelve el id de la hospitalización.
-        //obtenemos los datos de la hospitalización que se a agregado. si no se inserta devuelve 0
-        $idH = ($this->conexion->lastInsertId() === 0) ? false : $this->conexion->lastInsertId();
 
         // si hay un id del insumo devuelve verdadero si no, devuelve falso
         if ($idInsumos) {
