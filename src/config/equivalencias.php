@@ -75,6 +75,7 @@ return [
     "buscarEspecialidad" => "consultar",
     "buscarDoctor" => "consultar",
     "buscarHorario" => "consultar",
+    "guardarDoctores" => "guardar",
 
     //Usuarios
     "usuarios" => "consultar",
