@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="toast-container position-fixed bottom-0 start-0 p-3">
-            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" autohide: false id="myToast">
+            <div class="toast contenido" role="alert" aria-live="assertive" aria-atomic="true" autohide: false id="myToast">
                 <div class="toast-body">
                     <h5 class="fw-bold text-dark text-center">El Paciente no se encuentra Registrado</h5>
                     <div class="mt-2 pt-2 border-top">
