@@ -157,7 +157,7 @@ addEventListener("DOMContentLoaded", () => {
   //funcion ajax para registrar un paciente que no se encontro
 
   const insertarPaciente = async (form, event) => {
-    // try {
+    try {
       const datosFormulario = new FormData(form);
       const contenido = {
         method: "POST",
@@ -204,9 +204,9 @@ addEventListener("DOMContentLoaded", () => {
           input.parentElement.classList.remove("grpFormCorrect");
         });
       }
-    // } catch (error) {
-    //   console.log("algo salio mal" + error);
-    // }
+    } catch (error) {
+      console.log("algo salio mal" + error);
+    }
   };
   //llamar a la funcion para insertar un paciente que no existe
 
