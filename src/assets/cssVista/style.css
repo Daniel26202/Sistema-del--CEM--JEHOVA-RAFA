@@ -714,18 +714,6 @@ input[type="number"]::-webkit-outer-spin-button {
   flex-wrap: wrap;
 }
 
-.cartaRepor {
-  /* margin-top: 2%;
-  height: 27vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-  font-weight: 600;
-  width: 70vh; */
-}
-
 .cardReporte {
   background-image: url("../img/grafi.jpg");
   background-size: 100% 100%;
@@ -740,6 +728,22 @@ input[type="number"]::-webkit-outer-spin-button {
   transform: scale(1.04);
 }
 
+
+
+.cardReporteFactura {
+  background-image: url("../img/grafico.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.4s ease-in-out;
+  box-shadow: #333;
+  filter: var(--filter-image);
+}
+
+.cardReporteFactura:hover {
+  transform: scale(1.04);
+}
+
 .reportess {
   margin-top: 5%;
   display: flex;
@@ -747,33 +751,9 @@ input[type="number"]::-webkit-outer-spin-button {
   flex-wrap: wrap;
 }
 
-.granRepor {
-  margin-top: 2%;
-  height: 70vh;
-  width: 70vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-  font-weight: 600;
-  border-radius: 20px;
-  background-image: radial-gradient(
-    at 40px 20px,
-    rgba(56, 123, 223, 0.171) 40%,
-    rgba(56, 123, 223, 0.205) 20%,
-    rgba(56, 123, 223, 0.63) 72%
-  );
-}
 
-.granReporte {
-  background-image: url("../img/graPastel.jpg");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform 0.2s ease-in-out;
-}
 
+/* 
 .granReporte:hover {
   transform: scale(1.1);
 }
@@ -797,25 +777,7 @@ input[type="number"]::-webkit-outer-spin-button {
   );
 }
 
-.reReporte {
-  background-image: url("../img/grafico2.jpg");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform 0.2s ease-in-out;
-}
 
-.reReporte:hover {
-  transform: scale(1.1);
-}
-
-.t {
-  color: #ffff;
-  font-weight: 800;
-  /* box-shadow: ; */
-  text-shadow: rgb(0, 0, 0) 0 0 8px;
-  margin-bottom: 5%;
-}
 
 .leyenda {
   margin-top: -15px;
@@ -1581,27 +1543,6 @@ con la clase hover-grande cambia de tamaño*/
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-/* .reportess, .granRepor {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem;
-} */
-
-/* .cardReporte, .granReporte, .reReporte {
-    max-width: 300px;
-    height: auto;
-    padding: 1rem;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: white;
-} */
-
-/* .cardReporte:hover, .granReporte:hover, .reReporte:hover {
-    transform: scale(1.05);
-    transition: all 0.3s ease;
-} */
 
 .tamaño-modal {
   width: 50%;
@@ -1743,11 +1684,7 @@ input[type="date"] {
     width: 9vh;
   }
 
-  .reReporte {
-    width: 40vh;
-    height: 67vh;
-    background-size: 100% 50%;
-  }
+
 
   .reRepor {
     width: 40vh;
@@ -2028,12 +1965,7 @@ input[type="date"] {
     align-items: center;
   }
 
-  /* .cardReporte,
-  .granReporte,
-  .reReporte {
-    width: 90%;
-    max-width: none;
-  } */
+
 
   .t {
     font-size: 1rem;
@@ -2089,9 +2021,7 @@ input[type="date"] {
     height: 33vh !important;
   }
 
-  .reReporte {
-    width: 80% !important;
-  }
+
 
   .fecha_citas {
     padding-top: 30px;
@@ -2132,10 +2062,6 @@ input[type="date"] {
     margin-top: 0.5rem;
   }
 
-  .granReporte,
-  .reReporte {
-    height: auto;
-  }
 
   .t {
     font-size: 0.9rem;
