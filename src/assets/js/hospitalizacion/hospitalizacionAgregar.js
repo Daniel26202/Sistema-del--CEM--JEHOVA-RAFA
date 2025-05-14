@@ -162,12 +162,6 @@ addEventListener("DOMContentLoaded", function () {
     // sumar el precio de insumos
     let totalPI = 0;
 
-    let total = 0;
-
-    const horas = document.querySelector("#horasS");
-    const costoHoras = document.querySelector("#costoHS");
-    const duracion = document.querySelector("#duracionA");
-
     const sumarTotal = () => {
         // contador del precio de cada insumo
         let PrecioI = 0;
@@ -213,31 +207,6 @@ addEventListener("DOMContentLoaded", function () {
             pPrecioI.innerHTML = totalPC + "bs";
 
         })
-        // se divide el costo con las horas para saber el costo por cada hora
-        let valorDividido = parseFloat(costoHoras.innerText) / parseFloat(horas.innerText);
-        // let horaInput = parseFloat(duracion.value);
-        // luego se multiplica el precio con la cantidad de las horas
-        let precioHor = valorDividido ;
-
-        total = parseFloat(precioHor) + totalPI;
-
-        // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-        total = parseFloat(total.toFixed(2));
-        // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-        precioHor = parseFloat(precioHor.toFixed(2));
-
-        document.querySelector("#precioHorasH").value = precioHor;
-
-        document.querySelector("#PT").value = total;
-
-        // si no hay números en el total devuelve NaN 
-        if (Number.isNaN(total)) {
-            document.querySelector("#divTP").classList.add("d-none");
-            // si tiene un numero lo muestra
-        } else {
-            document.querySelector("#divTP").classList.remove("d-none");
-            document.querySelector("#totalP").innerHTML = total;
-        }
 
     }
 
@@ -245,82 +214,82 @@ addEventListener("DOMContentLoaded", function () {
     const traerUnInsumos = async (id) => {
         // try {
 
-            // llamo la función buscar un Insumo
-            let peticionUnInsumo = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + id);
+        // llamo la función buscar un Insumo
+        let peticionUnInsumo = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + id);
 
-            let resultadoUnInsu = await peticionUnInsumo.json();
+        let resultadoUnInsu = await peticionUnInsumo.json();
 
-            // si no se trae nada
-            if (resultadoUnInsu == false) {
+        // si no se trae nada
+        if (resultadoUnInsu == false) {
 
-                console.log("hay un problema, el insumo seleccionado no existe");
+            console.log("hay un problema, el insumo seleccionado no existe");
 
-                btnAInsumoNoExiste.classList.toggle("d-none", false);
-                btnAInsumoExiste.classList.toggle("d-none", true);
+            btnAInsumoNoExiste.classList.toggle("d-none", false);
+            btnAInsumoExiste.classList.toggle("d-none", true);
 
-                //si se trae algo     
-            } else {
-                btnAInsumoNoExiste.classList.toggle("d-none", true);
-                btnAInsumoExiste.classList.toggle("d-none", false);
+            //si se trae algo     
+        } else {
+            btnAInsumoNoExiste.classList.toggle("d-none", true);
+            btnAInsumoExiste.classList.toggle("d-none", false);
 
-                let existeIn = true;
+            let existeIn = true;
+
+            let objIL = await limiteI(id);
+
+            // esto recorre todos los input number de cantidad
+            let div = document.querySelectorAll(".divInsumosAgregadosA");
+            if (div) {
 
                 let objIL = await limiteI(id);
+                // el insumo no existe 
+                if (objIL[id]) {
+                    existeIn = false;
+                    alert("El insumo alcanzo el limite de su cantidad");
+                }
+            }
+            for (const divI of div) {
+                // id del insumo
+                let idInputI = divI.querySelector(".inputIdInsu");
+                // esto selecciona al p que muestra un mensaje 
+                let p = divI.previousElementSibling;
 
-                // esto recorre todos los input number de cantidad
-                let div = document.querySelectorAll(".divInsumosAgregadosA");
-                if (div) {
+                // para la cantidad
+                if (id == idInputI.value) {
+                    existeIn = false;
 
-                    let objIL = await limiteI(id);
-                    // el insumo no existe 
+                    // selecciono el hermano
+                    let divHermano = idInputI.nextElementSibling
+                    // selecciono el primer hijo
+                    let divHijo = divHermano.firstElementChild
+                    // selecciono el primer hijo del div hijo
+                    let divHDH = divHijo.firstElementChild
+                    // selecciono los hijos del div que es padre del input number.
+                    let divPadreIN = divHDH.children
+
                     if (objIL[id]) {
-                        existeIn = false;
-                        alert("El insumo alcanzo el limite de su cantidad");
-                    }
-                }
-                for (const divI of div) {
-                    // id del insumo
-                    let idInputI = divI.querySelector(".inputIdInsu");
-                    // esto selecciona al p que muestra un mensaje 
-                    let p = divI.previousElementSibling;
-
-                    // para la cantidad
-                    if (id == idInputI.value) {
-                        existeIn = false;
-
-                        // selecciono el hermano
-                        let divHermano = idInputI.nextElementSibling
-                        // selecciono el primer hijo
-                        let divHijo = divHermano.firstElementChild
-                        // selecciono el primer hijo del div hijo
-                        let divHDH = divHijo.firstElementChild
-                        // selecciono los hijos del div que es padre del input number.
-                        let divPadreIN = divHDH.children
-
-                        if (objIL[id]) {
-                            p.classList.remove("d-none");
-                        } else {
-                            p.classList.add("d-none");
-                            // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
-                            // aquí selecciono el div que tiene un ( + ) y el input
-                            botonInputNumber(divPadreIN[2], divPadreIN[1]);
-                        }
-
-                        sumarTotal();
-
+                        p.classList.remove("d-none");
                     } else {
-                        // el insumo no existe  
+                        p.classList.add("d-none");
+                        // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
+                        // aquí selecciono el div que tiene un ( + ) y el input
+                        botonInputNumber(divPadreIN[2], divPadreIN[1]);
                     }
+
+                    sumarTotal();
+
+                } else {
+                    // el insumo no existe  
                 }
+            }
 
-                let html = ``;
+            let html = ``;
 
-                if (existeIn) {
+            if (existeIn) {
 
-                    //nIA es el contador sirve para eliminar según el numero
-                    nIA++;
+                //nIA es el contador sirve para eliminar según el numero
+                nIA++;
 
-                    html = `
+                html = `
                     <p class="text-danger text-center m-0 p-0 d-none">Límite de cantidad alcanzado</p>
                     <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregadosA" data-index=${nIA}>
     
@@ -381,84 +350,84 @@ addEventListener("DOMContentLoaded", function () {
     
                     </div>`;
 
-                    divInsumosA.innerHTML += html;
+                divInsumosA.innerHTML += html;
 
-                    let div = document.querySelectorAll(".divInsumosAgregadosA");
-                    // esto recorre todos los input number de cantidad
-                    for (const divI of div) {
+                let div = document.querySelectorAll(".divInsumosAgregadosA");
+                // esto recorre todos los input number de cantidad
+                for (const divI of div) {
 
-                        let inputN = divI.querySelector(".input-number")
-                        let idI = parseInt(divI.querySelector(".inputIdInsu").value)
-                        // esto selecciona al p que muestra un mensaje 
-                        let p = divI.previousElementSibling;
+                    let inputN = divI.querySelector(".input-number")
+                    let idI = parseInt(divI.querySelector(".inputIdInsu").value)
+                    // esto selecciona al p que muestra un mensaje 
+                    let p = divI.previousElementSibling;
 
-                        // esto selecciona al div que muestra un - 
-                        let menos = inputN.previousElementSibling;
-                        // esto selecciona al div que muestra un + 
-                        let mas = inputN.nextElementSibling
+                    // esto selecciona al div que muestra un - 
+                    let menos = inputN.previousElementSibling;
+                    // esto selecciona al div que muestra un + 
+                    let mas = inputN.nextElementSibling
 
-                        menos.addEventListener("click", async function () {
+                    menos.addEventListener("click", async function () {
 
-                            // llamo a la función que hace el calculo (aumentar y disminuir) en este caso disminuye y luego hace el calculo matemático
-                            botonInputNumber(menos, inputN);
-                            sumarTotal();
+                        // llamo a la función que hace el calculo (aumentar y disminuir) en este caso disminuye y luego hace el calculo matemático
+                        botonInputNumber(menos, inputN);
+                        sumarTotal();
 
-                            let objIL = await limiteI(idI);
-                            // si no encuentro el id 
-                            if (!objIL[idI]) {
-                                p.classList.add("d-none");
-                            }
+                        let objIL = await limiteI(idI);
+                        // si no encuentro el id 
+                        if (!objIL[idI]) {
+                            p.classList.add("d-none");
+                        }
 
-                        })
+                    })
 
-                        mas.addEventListener("click", async function () {
-                            let objIL = await limiteI(idI);
-                            // si encuentro el id 
-                            if (objIL[idI]) {
-                                p.classList.remove("d-none");
-                            } else {
-                                p.classList.add("d-none");
-                                // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
-                                botonInputNumber(mas, inputN);
-                            }
-                            sumarTotal();
-                        })
-
-                    }
+                    mas.addEventListener("click", async function () {
+                        let objIL = await limiteI(idI);
+                        // si encuentro el id 
+                        if (objIL[idI]) {
+                            p.classList.remove("d-none");
+                        } else {
+                            p.classList.add("d-none");
+                            // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
+                            botonInputNumber(mas, inputN);
+                        }
+                        sumarTotal();
+                    })
 
                 }
 
-                document.querySelectorAll(".eliminarIns").forEach(elim => {
-
-                    elim.addEventListener("click", function () {
-
-                        // esto es para traerme el numero del data-index del <a> (btn)
-                        idI = parseInt(this.dataset['index']);
-
-                        //es para eliminar con el numero del data-index del div, como es el mismo numero el de la <a> y del <div>
-                        let EliminarI = document.querySelector(`.divInsumosAgregadosA[data-index="${idI}"]`);
-                        let p = EliminarI.previousElementSibling;
-                        EliminarI.remove();
-                        p.remove();
-
-                        //para que reste el insumo que se a eliminado del total
-                        sumarTotal();
-
-                    })
-
-                })
-
-                // suma la cantidad al aumentarla o disminuirla
-                document.querySelectorAll(".masMenos").forEach(masMen => {
-                    masMen.addEventListener("click", function () {
-                        sumarTotal();
-                    })
-                })
-
-                //para la suma total
-                sumarTotal();
-
             }
+
+            document.querySelectorAll(".eliminarIns").forEach(elim => {
+
+                elim.addEventListener("click", function () {
+
+                    // esto es para traerme el numero del data-index del <a> (btn)
+                    idI = parseInt(this.dataset['index']);
+
+                    //es para eliminar con el numero del data-index del div, como es el mismo numero el de la <a> y del <div>
+                    let EliminarI = document.querySelector(`.divInsumosAgregadosA[data-index="${idI}"]`);
+                    let p = EliminarI.previousElementSibling;
+                    EliminarI.remove();
+                    p.remove();
+
+                    //para que reste el insumo que se a eliminado del total
+                    sumarTotal();
+
+                })
+
+            })
+
+            // suma la cantidad al aumentarla o disminuirla
+            document.querySelectorAll(".masMenos").forEach(masMen => {
+                masMen.addEventListener("click", function () {
+                    sumarTotal();
+                })
+            })
+
+            //para la suma total
+            sumarTotal();
+
+        }
 
         // } catch (error) {
         //     console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
@@ -473,11 +442,12 @@ addEventListener("DOMContentLoaded", function () {
     let parrafoExP = document.getElementById("p-paciente");
     let parrafoNoP = document.getElementById("p-no-paciente");
     let contenedorForm = document.getElementById("contenedorFormAgregar");
-
+    
     let nombreApellidoInfor = document.getElementById("nombreInfor");
     let diagnosticoInfor = document.getElementById("inforDiagnostico");
-
+    
     let btnEnviar = document.getElementById("btnEnviar");
+    let historiaclinica = document.getElementById("historia_clinicaA");
 
     const traerControlDePaciente = async () => {
         try {
@@ -500,6 +470,7 @@ addEventListener("DOMContentLoaded", function () {
             // llamo la función mostrar
             let peticionMostrar = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInformacionPCD", contenidoForm);
             let resultadoM = await peticionMostrar.json();
+            console.log(resultadoM);
 
             if (resultadoVP == false) {
 
@@ -539,20 +510,8 @@ addEventListener("DOMContentLoaded", function () {
                 } else {
                     if (resultadoM == false) {
 
-                        console.log("El paciente no tiene la cita realizada.");
-                        parrafoNoP.innerText = "";
-                        parrafoNoP.innerText = "El paciente no tiene la cita realizada.";
-                        document.getElementById("input-id-controlP").value = "";
-
-                        // document.querySelector("#aPaciente").classList.add("d-none");
-                        // document.querySelector("#aControl").classList.add("d-none");
-                        // document.querySelector("#aCita").classList.remove("d-none");
-
-                        // parrafoNoP.classList.toggle("d-none", false);
-                        btnInformacionPaciente.classList.toggle("d-none", true);
-                        contenedorForm.classList.toggle("d-none", true);
-                        btnEnviar.classList.toggle("d-none", true);
-
+                        console.log("no hay datos del paciente.");
+        
                     } else {
                         document.querySelector("#aPaciente").classList.add("d-none");
                         document.querySelector("#aControl").classList.add("d-none");
@@ -570,6 +529,10 @@ addEventListener("DOMContentLoaded", function () {
 
                         // recolecto el id del control del paciente
                         document.getElementById("input-id-controlP").value = resultadoM.id_control;
+
+                        let historia = resultadoM.historiaclinica;
+                        // trim() quita los espacios en el principio y al final
+                        historiaclinica.value = historia.trim();
 
                         parrafoNoP.classList.toggle("d-none", true);
                         btnInformacionPaciente.classList.toggle("d-none", false);
@@ -622,25 +585,25 @@ addEventListener("DOMContentLoaded", function () {
     // operación matemática para saber cual insumo llego a su limite en cantidad
     const limiteI = async (idIn) => {
         try {
-            
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
-        let resultado = await peticion.json();
-        
-        console.log(resultado);
 
-                let insumosLim = {};
-                
-                        // creamos esa posición con ese numero de id, y dentro su contenido 
-                insumosLim[parseInt(resultado.id_insumo)] = {
-                    id: parseInt(resultado.id_insumo),
-                    cantidadT: 0,
-                    limite: parseInt(resultado.limite_insumo)
-                }
-                
-                
-                let insumosExL = {};
-                document.querySelectorAll(".divInsumosAgregadosA").forEach(divI => {
-               // id del insumo
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
+            let resultado = await peticion.json();
+
+            console.log(resultado);
+
+            let insumosLim = {};
+
+            // creamos esa posición con ese numero de id, y dentro su contenido 
+            insumosLim[parseInt(resultado.id_insumo)] = {
+                id: parseInt(resultado.id_insumo),
+                cantidadT: 0,
+                limite: parseInt(resultado.limite_insumo)
+            }
+
+
+            let insumosExL = {};
+            document.querySelectorAll(".divInsumosAgregadosA").forEach(divI => {
+                // id del insumo
                 let idI = divI.querySelector(".inputIdInsu");
                 let limiteI = idI.getAttribute("data-limite-cantidad");
                 let cantidad = parseInt(divI.querySelector(".input-number").value);
@@ -654,34 +617,34 @@ addEventListener("DOMContentLoaded", function () {
                 }
             })
 
-                console.log(insumosExL);
-                // recorro el objeto de los insumos totales de la db
-                for (const iL in insumosExL) {
-                    // si existe la posición del objeto (el id del insumo) se suma la cantidad del insumo
-                    if (insumosLim[iL]) {
-                        insumosLim[iL].cantidadT = parseInt(insumosLim[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
+            console.log(insumosExL);
+            // recorro el objeto de los insumos totales de la db
+            for (const iL in insumosExL) {
+                // si existe la posición del objeto (el id del insumo) se suma la cantidad del insumo
+                if (insumosLim[iL]) {
+                    insumosLim[iL].cantidadT = parseInt(insumosLim[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
 
-                        // si no existe se agrega los datos del insumo
-                    } else {
-                        insumosLim[iL] = {
-                            id: parseInt(iL),
-                            cantidadT: insumosExL[iL].cantidadT,
-                            limite: insumosExL[iL].limite
-                        }
+                    // si no existe se agrega los datos del insumo
+                } else {
+                    insumosLim[iL] = {
+                        id: parseInt(iL),
+                        cantidadT: insumosExL[iL].cantidadT,
+                        limite: insumosExL[iL].limite
                     }
                 }
+            }
 
-                let objIL = {};
-                // recorro el objeto de los insumos y solo almaceno los limitados
-                for (const iLi in insumosLim) {
-                    if (insumosLim[iLi].cantidadT >= insumosLim[iLi].limite) {
-                        objIL[iLi] = insumosLim[iLi];
-                    }
+            let objIL = {};
+            // recorro el objeto de los insumos y solo almaceno los limitados
+            for (const iLi in insumosLim) {
+                if (insumosLim[iLi].cantidadT >= insumosLim[iLi].limite) {
+                    objIL[iLi] = insumosLim[iLi];
                 }
-                
-                return objIL;
+            }
 
-            
+            return objIL;
+
+
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
         }

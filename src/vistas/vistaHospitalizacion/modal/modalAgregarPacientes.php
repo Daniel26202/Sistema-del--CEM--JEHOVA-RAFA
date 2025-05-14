@@ -147,23 +147,14 @@
 
                             <div class="uk-margin">
                                 <textarea name="historial" class="uk-textarea" rows="5" placeholder="Historial médico"
-                                    aria-label="Textarea" id="" required></textarea>
+                                    aria-label="Textarea" id="historia_clinicaA" required></textarea>
                             </div>
                         </div>
 
                     </div>
                 </div>
 
-                <div>
-                    <input type="hidden" name="total" id="PT" class="">
-                </div>
-
                 <div class="d-flex mt-5 ms-2 col-12">
-                    <div class="d-flex mt-2 col-3 d-none" id="divTP">
-                        <p class="p-0 m-0 fw-bold">Total:</p>
-                        <p class="p-0 ms-1" id="totalP"></p>
-                        <p class="p-0">bs</p>
-                    </div>
 
                     <p class="uk-text-right col-9">
                         <button class="uk-button rounded-5 btn-cancelar fw-bold " type="button"
