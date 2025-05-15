@@ -657,44 +657,68 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
 }
 
 async function generarReporte() {
-  //hay q buscar el Element del dom
+  // Buscar el elemento del DOM
   const elementoImprimir = document.getElementById("imprimir");
 
   if (!elementoImprimir) {
     console.error("El elemento con ID 'imprimir' no existe.");
     return;
   }
-  // Quitar el color negro del canvas antes de generar el PDF
+
+  // Modificar los canvas dentro del elemento
   const canvasElements = elementoImprimir.querySelectorAll("canvas");
 
   canvasElements.forEach((canvas) => {
     const ctx = canvas.getContext("2d");
     ctx.globalCompositeOperation = "destination-over";
-    // 1. Añadir clase CSS
     canvas.classList.add("contenido");
-    // 2. Obtener color desde CSS
     const bgColor = getComputedStyle(canvas).backgroundColor;
-    ctx.fillStyle = bgColor; // Establecer fondo blanco
+    ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   });
 
-  // Crea una instancia de jsPDF
-  const pdf = new jsPDF("p", "mm", "a4");
-  const pdfWidth = pdf.internal.pageSize.getWidth(); // Ancho de la página PDF
-  const pdfHeight = pdf.internal.pageSize.getHeight(); // Altura de la página PDF
+  // Obtener color de fondo desde la clase CSS
+  const estilo = getComputedStyle(document.querySelectorAll(".contenido")[0]);
+  const bgColor = estilo.backgroundColor;
 
-  // Usa el método html() de jsPDF para renderizar el contenido del div
+  // Crear instancia de jsPDF
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  // Convirtiendo el formato jsPDF (r, g, b)
+  const rgbMatch = bgColor.match(/\d+/g);
+  const r = rgbMatch ? parseInt(rgbMatch[0]) : 255;
+  const g = rgbMatch ? parseInt(rgbMatch[1]) : 255;
+  const b = rgbMatch ? parseInt(rgbMatch[2]) : 255;
+
+  // Se establecer el color de fondo
+  pdf.setFillColor(r, g, b);
+  pdf.rect(
+    0,
+    0,
+    pdf.internal.pageSize.getWidth(),
+    pdf.internal.pageSize.getHeight(),
+    "F"
+  ); // "F" para rellenar
+
+  // Aplicar CSS directamente al elemento para asegurar que el fondo ocupe todo
+  // elementoImprimir.style.width = "100%";
+  // elementoImprimir.style.height = "100vh";
+
+  elementoImprimir.classList.add("carta-imprimir");
+
+  // Generar PDF con fondo adecuado
   pdf.html(elementoImprimir, {
     callback: function (doc) {
-      // Guarda el archivo PDF
       doc.save("reporte_especialidades.pdf");
     },
-    x: 1, // Margen izquierdo
-    y: 1, // Margen superior
-    width: pdfWidth - 10, // Ancho del contenido (ajustado al tamaño de la página A4)
-    height: pdfHeight - 10, // Altura del contenido (ajustado al tamaño de la página A4)
-    scaleFactor: 2, // Factor de escala para mejorar la calidad del PDF
-    windowWidth: 1000, // Ancho de la ventana del navegador (para el escalado)
-    windowWidth: elementoImprimir.scrollWidth, // Ancho del contenido original
+    x: 0,
+    y: 0,
+    width: pdf.internal.pageSize.getWidth(), // Ajuste al ancho de la página
+    height: pdf.internal.pageSize.getHeight(), // Ajuste a la altura de la página
+    scaleFactor: 2,
+    windowWidth: elementoImprimir.scrollWidth,
   });
+  elementoImprimir.classList.remove("carta-imprimir");
+
+
 }
