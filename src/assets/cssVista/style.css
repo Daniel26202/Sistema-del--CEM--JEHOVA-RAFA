@@ -1571,7 +1571,7 @@ input[type="date"] {
 
 .tajeta-estadistica-m {
   width: 40%;
-  height: 50vh;
+  height: 55vh;
   color: var(--color-text-card);
   background-color: var(--color-bg-card);
 }
@@ -1581,6 +1581,21 @@ input[type="date"] {
   height: 50vh;
   color: var(--color-text-card);
   background-color: var(--color-bg-card);
+}
+
+@media screen and (max-width: 1300px) {
+  .tajeta-estadistica-m {
+    width: 60%;
+    height: 80vh;
+  }
+  .tajeta-estadistica-g {
+    width: 90%;
+    height: 40vh;
+  }
+
+  canvas{
+    height: 70% !important;
+  }
 }
 
 /* /////////////////////////////////////////////////////////////////////////////// */

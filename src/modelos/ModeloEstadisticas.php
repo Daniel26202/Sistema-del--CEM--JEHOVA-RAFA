@@ -7,22 +7,22 @@ use App\modelos\Db;
 class ModeloEstadisticas extends Db
 {
 
-    private $conexion;
+  private $conexion;
 
-    public function __construct()
-    {
-        // Llama al constructor de la clase padre para establecer la conexión
-        parent::__construct();
+  public function __construct()
+  {
+    // Llama al constructor de la clase padre para establecer la conexión
+    parent::__construct();
 
-        // Aquí puedes usar $this para acceder a la conexión
+    // Aquí puedes usar $this para acceder a la conexión
 
-        $this->conexion = $this; // Guarda la instancia de la conexión
+    $this->conexion = $this; // Guarda la instancia de la conexión
 
-    }
+  }
 
-    public function distribucion_edad_genero()
-    {
-        $sql = "SELECT
+  public function distribucion_edad_genero()
+  {
+    $sql = "SELECT
   rango_edad,
   SUM(CASE WHEN genero = 'masculino' THEN cantidad ELSE 0 END) AS masculino,
   SUM(CASE WHEN genero = 'femenino' THEN cantidad ELSE 0 END) AS femenino
@@ -44,29 +44,49 @@ FROM (
 GROUP BY rango_edad
 ORDER BY rango_edad;";
 
-        $consulta = $this->conexion->prepare($sql);
+    $consulta = $this->conexion->prepare($sql);
 
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+    return ($consulta->execute()) ? $consulta->fetchAll() : false;
+  }
+
+  public function tasa_morbilidad($fechaInicio = "", $fechaFinal = "")
+  {
+    if ($fechaInicio == "" && $fechaFinal == "") {
+      $sql = "SELECT
+              p.nombre_patologia,
+              COUNT(DISTINCT pp.id_paciente) AS casos,
+              ROUND(
+                COUNT(DISTINCT pp.id_paciente) 
+                / (SELECT COUNT(*) FROM paciente)  -- población total
+                * 1000,
+                2
+              ) AS tasa_por_1000
+            FROM patologiadepaciente pp
+            JOIN patologia p ON pp.id_patologia = p.id_patologia
+            GROUP BY pp.id_patologia
+            ORDER BY casos DESC;
+            ";
+      $consulta = $this->conexion->prepare($sql);
+    } else {
+      $sql = "SELECT
+            p.nombre_patologia,
+            COUNT(DISTINCT pp.id_paciente) AS casos,
+            ROUND(
+              COUNT(DISTINCT pp.id_paciente) 
+              / (SELECT COUNT(*) FROM paciente)  -- población total
+              * 1000,
+              2
+            ) AS tasa_por_1000
+          FROM patologiadepaciente pp
+          JOIN patologia p ON pp.id_patologia = p.id_patologia WHERE pp.fecha_registro BETWEEN :fechaInicio AND :fechaFinal
+          GROUP BY pp.id_patologia
+          ORDER BY casos DESC;";
+      $consulta = $this->conexion->prepare($sql);
+      $consulta->bindParam(":fechaInicio", $fechaInicio);
+      $consulta->bindParam(":fechaFinal", $fechaFinal);
     }
+    
 
-    public function tasa_morbilidad()
-    {
-        $sql = "SELECT
-  p.nombre_patologia,
-  COUNT(DISTINCT pp.id_paciente) AS casos,
-  ROUND(
-    COUNT(DISTINCT pp.id_paciente) 
-    / (SELECT COUNT(*) FROM paciente)  -- población total
-    * 1000,
-    2
-  ) AS tasa_por_1000
-FROM patologiadepaciente pp
-JOIN patologia p ON pp.id_patologia = p.id_patologia
-GROUP BY pp.id_patologia
-ORDER BY casos DESC;
-";
-        $consulta = $this->conexion->prepare($sql);
-
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
-    }
+    return ($consulta->execute()) ? $consulta->fetchAll() : false;
+  }
 }

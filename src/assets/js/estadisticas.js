@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
     "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero"
   );
   tasa_morbilidad("/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad");
+
+
+
 });
 
 const distribucion_edad_genero = async (url) => {
@@ -71,6 +74,8 @@ const distribucion_edad_genero = async (url) => {
   });
 };
 
+let tasaMorbilidadChart = null;
+
 const tasa_morbilidad = async (url) => {
   let tes = await fetch(url);
   let data = await tes.json();
@@ -80,7 +85,12 @@ const tasa_morbilidad = async (url) => {
   const casos = data.map((item) => parseInt(item.casos, 10));
   const tasas = data.map((item) => parseFloat(item.tasa_por_1000));
 
-  new Chart(document.getElementById("tasa_morbilidad"), {
+  // Destruir el gráfico anterior si existe
+  if (tasaMorbilidadChart) {
+    tasaMorbilidadChart.destroy();
+  }
+
+  tasaMorbilidadChart = new Chart(document.getElementById("tasa_morbilidad"), {
     data: {
       labels,
       datasets: [
@@ -123,3 +133,31 @@ const tasa_morbilidad = async (url) => {
     },
   });
 };
+
+
+
+//Funcion para  filtrar por fecha
+
+function filtrar_por_fecha(funcion, fechaInicio, fechaFinal, parametros = "") {
+  if (fechaInicio < fechaFinal) {
+    funcion(parametros)
+  } else {    
+    UIkit.notification({
+      message: '<div style="box-shadow: 0 4px 16px rgba(0,0,0,0.25); border-radius: 6px; padding: 8px 16px;">No se puede filtrar por fecha. La fecha de inicio debe ser menor que la fecha final.</div>',
+      status: 'warning',
+      pos: 'top-right',
+      timeout: 7000
+    });
+  }
+}
+
+  document.getElementById("buscarFecha").addEventListener("click", function () {
+    let fechaInicio = this.parentElement.firstElementChild.value;
+    let fechaFinal = this.parentElement.firstElementChild.nextElementSibling.value;
+    filtrar_por_fecha(
+      tasa_morbilidad,
+      fechaInicio,
+      fechaFinal,
+      `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/filtrar_tasaMorbilidad/${fechaInicio}/${fechaFinal}`
+    );
+  });
