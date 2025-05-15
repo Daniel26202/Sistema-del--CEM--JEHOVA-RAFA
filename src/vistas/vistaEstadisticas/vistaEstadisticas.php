@@ -30,7 +30,7 @@
             <div class="card-body">
                 <canvas id="tasa_morbilidad"></canvas>
 
-                <div class="mt-4 w-100 mb-4 bg-danger text-center">
+                <div class="mt-4 w-100 mb-4 text-center">
                     <div class="alert alert-danger text-center d-none alertaFechaInicio">Por favor la fecha de Inicio tiene que ser Menor a la fech final</div>
                     <div class="d-flex">
 

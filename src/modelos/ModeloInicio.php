@@ -30,7 +30,7 @@ WHERE estado = 'ACT';");
 
 	public function servicios()
 	{
-		$consulta = $this->conexion->prepare("SELECT c.nombre AS categoria, s.precio FROM serviciomedico s INNER JOIN categoria_servicio c ON s.id_categoria = c.id_categoria");
+		$consulta = $this->conexion->prepare("SELECT c.nombre AS categoria, s.precio FROM serviciomedico s INNER JOIN categoria_servicio c ON s.id_categoria = c.id_categoria  WHERE s.estado = 'ACT' ");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
