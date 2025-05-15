@@ -99,37 +99,6 @@
 
                             </div>
 
-                            <div>
-                                <div class="m-auto mt-4 pt-1 col-12">
-                                    <h5 class="text-center fw-bold">Hora y precio</h5>
-                                </div>
-
-                                <div class="d-flex justify-content-center align-items-center mt-4 ">
-
-                                    <div class="borde-input-agregar m-auto col-12">
-                                        <div class="d-flex justify-content-center align-items-center">
-
-                                            <div class="col-2">
-
-                                                <p class=" fw-bold margen-dos-puntos pb-2">:</p>
-
-                                            </div>
-                                            <div class="col-6 d-flex">
-                                                <input type="number" name="precioHoras" step="any" id="precioH"
-                                                    class="input-agregar w-50" placeholder="Precio" value="" required
-                                                    readonly>
-                                                <p class="mt-3 ps-1">bs</p>
-
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
                         </div>
 
                         <div class="mt-4 pt-2">
@@ -144,7 +113,6 @@
                     </div>
                 </div>
                 <div>
-                    <input type="hidden" name="total" id="PTE" class="">
                     <input type="hidden" name="id_controlE" id="idCE">
                     <input type="hidden" name="id_h" id="idHptE">
                     <input type="hidden" name="id_insumos_eliminados[]" id="idInEli">
@@ -152,11 +120,6 @@
                 </div>
 
                 <div class="d-flex mt-5 ms-2 col-12">
-                    <div class="d-flex mt-2 col-3 d-none" id="divTPE">
-                        <p class="p-0 m-0 fw-bold">Total:</p>
-                        <p class="p-0 ms-1" id="totalPE"></p>
-                        <p class="p-0">bs</p>
-                    </div>
                     <p class="uk-text-right col-9">
                         <button class="uk-button rounded-5 btn-cancelar fw-bold " type="button"
                             data-bs-dismiss="modal">Cancelar</button>

@@ -66,17 +66,73 @@ addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
+//  function calcularMontoHospitalizacion(fechaInicioStr, costoPorHora) {
+//     // Convertir la fecha de inicio a objeto Date
+//     const fechaInicio = new Date(fechaInicioStr);
+//     // Obtener la fecha y hora actual
+//     const fechaActual = new Date();
+
+//     // Calcular la diferencia en milisegundos
+//     const diferenciaMs = fechaActual - fechaInicio;
+
+//     // Calcular el total de horas (con decimales)
+//     const horasTotales = diferenciaMs / (1000 * 60 * 60);
+
+//     // Calcular el monto total
+//     const monto = horasTotales * costoPorHora;
+
+//     // Mostrar resultado
+//     console.log(`Horas totales: ${horasTotales.toFixed(2)}, Monto: ${monto.toFixed(2)} Bs`);
+//     return parseFloat(monto.toFixed(2));
+// }
+
+
+
+
+
+    async function mostrarInf(indice) {
+        let fechaInicioM = document.querySelectorAll(".fechaInicio")[indice].value;
+
+        const fechaInicio = new Date(fechaInicioM);
+        const fechaActual = new Date();
+
+        const diferencia = fechaActual - fechaInicio;
+        
+        // el total de horas (con decimales)
+        const horasTotales = diferencia / (1000 * 60 * 60);
+
+        // monto de horas y minutos
+        // const monto = horasTotales * costoPorHora;
+
+
+
+
+
+
+
+        let hMM = document.querySelectorAll(".hME")[indice];
+        let historiaM = document.querySelector("#historiaM");
+
+        // trim() quita los espacios en el principio y al final
+        historiaM.innerText =hMM.value;
+
+    }
+
     // inputs y nombres de editar H
     const nombreApE = document.querySelector("#NombreAp");
     const precioHE = document.querySelector("#precioH");
     const historiaE = document.querySelector("#historiaE");
+
+
 
     async function editar(indice) {
         // obtenemos los datos del elemento seleccionado
         const fila = document.querySelectorAll("#tbody tr")[indice];
         let datos = fila.getElementsByTagName("td");
 
-        let precHoras = document.querySelectorAll(".precioHo")[indice];
+        // let precHoras = document.querySelectorAll(".precioHo")[indice];
         let hME = document.querySelectorAll(".hME")[indice];
 
         // colocamos el nombre y apellido. 
@@ -84,14 +140,16 @@ addEventListener("DOMContentLoaded", function () {
         nombreApE.innerHTML = datos[1].innerText + " " + datos[2].innerText;
 
         // trim() quita los espacios en el principio y al final
-        historiaE.value = hME.innerText.trim();
-        precioHE.value = precHoras.value;
+        historiaE.value = hME.value;
 
         let idControl = document.querySelectorAll(".idC")[indice];
         document.querySelector("#idCE").value = parseInt(idControl.value);
 
         let idHospitalizacion = document.querySelectorAll(".idHpt")[indice];
         document.querySelector("#idHptE").value = parseInt(idHospitalizacion.value);
+
+        console.log(document.querySelectorAll(".fechaInicio")[indice].value);
+        
 
     }
 
@@ -112,8 +170,6 @@ addEventListener("DOMContentLoaded", function () {
 
     // sumar el precio de insumos
     let totalPI = 0;
-
-    let total = 0;
 
     const sumarTotalE = () => {
         // contador del precio de cada insumo
@@ -162,32 +218,18 @@ addEventListener("DOMContentLoaded", function () {
 
         })
 
-
-
-        let valorDividido = parseFloat(costoHoras.innerText) / parseFloat(horas.innerText);
-        let horaInputE = parseFloat(duracionE.value);
-        let precioHor = valorDividido * horaInputE;
-
-        total = parseFloat(precioHor) + totalPI;
-
-        // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-        total = parseFloat(total.toFixed(2));
-        // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-        precioHor = parseFloat(precioHor.toFixed(2));
-
-        document.querySelector("#precioH").value = precioHor;
-        document.querySelector("#PTE").value = total;
-
-        // si no hay números en el total devuelve NaN 
-        if (Number.isNaN(total)) {
-            document.querySelector("#divTPE").classList.add("d-none");
-            // si tiene un numero lo muestra
-        } else {
-            document.querySelector("#divTPE").classList.remove("d-none");
-            document.querySelector("#totalPE").innerHTML = total;
-        }
-
     }
+
+
+
+   
+
+
+
+
+
+
+
 
     ////////////////////////////////////////////////////////////////////
     //Ajax//
@@ -217,11 +259,12 @@ addEventListener("DOMContentLoaded", function () {
                 } else {
 
                     let html = ``;
-                    let htmlModalCon = ``;
                     let htmlModalElim = ``;
 
                     // console.log(resultad[1]);
                     // recorro los datos de hospitalización
+                    console.log(resultad[1]);
+                    
                     resultad[1].forEach((res, index) => {
 
                         horaInicioHosp = res.fecha_hora_inicio;
@@ -255,7 +298,7 @@ addEventListener("DOMContentLoaded", function () {
                                             <div class="col-12 col-md-6 col-lg-3">
 
                                                 <!-- btn offcanvas mostrar datos -->
-                                                <button class="btn btn-tabla mb-1 me-1" uk-toggle="target: #offcanvas-mostrar${res["id_hospitalizacion"]}" uk-tooltip="información de hospitalización">
+                                                <button class="btn btn-tabla mb-1 me-1 informacionH" uk-toggle="target: #offcanvas-mostrarH" uk-tooltip="información de hospitalización" data-fecha-inicial="${res["id_hospitalizacion"]}" data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                                         class="bi bi-card-text" viewBox="0 0 16 16">
                                                         <path
@@ -318,104 +361,17 @@ addEventListener("DOMContentLoaded", function () {
                                     </td>
                                 </tr>`;
 
-
-
-                        // contenido del modal de consultar
-                        htmlModalCon += `
+                        // contenido del modal de eliminar
+                        htmlModalElim += `
                                         <div>
+                                            <input type="hidden" name="" class="fechaInicio" value="${res["fecha_hora_inicio"]}">
                                             <input class="precioHo" type="hidden" name="" value="${res.precio_horas}">
                                             <input class="idC" type="hidden" name="" value="${res.id_control}">
                                             <input class="idHpt" type="hidden" name="" value="${res.id_hospitalizacion}">
+                                            <input class="hME" type="hidden" name="" value="${res.historiaclinica}">
                                         </div>
 
-                                        <!-- modal off-canvas que sale a la derecha  (CONSULTA)-->
-                                        <div id="offcanvas-mostrar${res.id_hospitalizacion}"
-                                            uk-offcanvas="esc-close: false; mode: reveal; flip: true; overlay: true">
-                                            <div class="uk-offcanvas-bar">
 
-                                                <button class="uk-offcanvas-close" id="closeModal" type="button" uk-close></button>
-
-                                                <div class="d-flex align-items-start">
-
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
-                                                        class="bi bi-file-text-fill me-1 pt-1 text-white col-1" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z" />
-                                                    </svg>
-                                                    <h3 class="fw-bold">
-                                                        ${res.nombre}
-                                                        ${res.apellido}
-                                                    </h3>
-
-                                                </div>
-                                                <div class="d-flex align-items-start">
-
-                                                    <h4 class="fw-bold me-2 ">C.I:</h4>
-                                                    <p class="fw-bold fs-5">
-                                                        ${res.cedula}
-                                                    </p>
-
-                                                </div>
-
-                                                <div class="d-flex align-items-start mt-4 mb-3 ">
-                                                    <div class="col-12">
-                                                        <h4 class="text-center fw-bold text">Diagnostico</h4>
-                                                        <p class="parrafo-offcanvas">
-                                                            ${res.diagnostico}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="d-flex align-items-start mb-2 ">
-                                                    <div class="col-5">
-                                                        <h4 class=" fw-bold text">Doctor asignado</h4>
-                                                        <p class="parrafo-offcanvas">
-                                                            ${res.nombredoc}
-                                                            ${res.apellidodoc}
-                                                        </p>
-                                                    </div>
-
-                                                    <p class="col-2"></p> <!-- solo separación -->
-                                                    <div>
-                                                        <h4 class="text-center fw-bold ">Horas de hospitaliza- ción</h4>
-                                                        <p class="parrafo-offcanvas fs-5 text-center">
-                                                        
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="mt-1">
-                                                    
-                                                </div>
-
-                                                <div>
-                                                    <h4 class="text-center fw-bold">Historia clínica</h4>
-                                                    <p class="parrafo-offcanvas hME">
-                                                        ${res.historiaclinica}
-                                                    </p>
-                                                </div>`
-
-                        // verifico si es administrador o usuario
-                        // uno es doctor
-                        if (resultad[0][1] == 1) {
-                            htmlModalCon += `<!--no hay-->`;
-                        }
-                        // verifico si es administrador o usuario
-                        // cero es administrador más no doctor 
-                        if (resultad[0][1] == 0) {
-                            htmlModalCon += `<div class="d-flex align-items-start mt-5">
-
-                                                <h4 class="fw-bold me-2 ">Cálculo del total:</h4>
-                                                <p class="fw-bold fs-5">${res.total}bs</p>
-
-                                            </div>`;
-                        }
-
-                        htmlModalCon += `  </div>
-                                        </div>`;
-
-                        // contenido del modal de eliminar
-                        htmlModalElim += `
                                         <div class="modal fade" id="modal-eliminar-hospitalizacion${res.id_hospitalizacion}"
                                             data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-fullscreen-md-down  uk-offcanvas-container">
@@ -470,7 +426,6 @@ addEventListener("DOMContentLoaded", function () {
                     })
 
                     document.querySelector("#tbody").innerHTML = html;
-                    document.querySelector("#modalCon").innerHTML = htmlModalCon;
                     document.querySelector("#modalEli").innerHTML = htmlModalElim;
 
                     // recorremos los btn editar
@@ -492,7 +447,35 @@ addEventListener("DOMContentLoaded", function () {
 
                         })
                     });
-                    
+                    // recorremos los btn informacion
+                    document.querySelectorAll(".informacionH").forEach(inforH => {
+                        inforH.addEventListener("click", function () {
+
+                            let tr = inforH.closest('tr');
+                            let columnas = tr.children;
+
+                            let nombreAp = document.getElementById("nombreApellidoM");
+                            let cedula = document.getElementById("cedulaM");
+                            let diagnostico = document.getElementById("diagnosticoM");
+                            let doctor = document.getElementById("doctorM");
+                            let historia = document.getElementById("historiaM");
+
+
+                            nombreAp.innerHTML = `${columnas[1].innerText} ${columnas[2].innerText}`;
+                            cedula.innerHTML = columnas[0].innerText;
+                            diagnostico.innerHTML = columnas[3].innerText;
+                            doctor.innerHTML = columnas[4].innerText;
+
+
+
+                            // para traer el valor del data index (la posición)
+                            let index = inforH.getAttribute("data-index");
+                            mostrarInf(parseInt(index));
+
+
+                        })
+                    });
+
                     // para validar las cantidades de hospitalizaciones agregadas
                     // obtenemos la cantidad de filas que existen
                     const filas = document.querySelectorAll("#tbody tr")
@@ -526,81 +509,54 @@ addEventListener("DOMContentLoaded", function () {
 
 
     //es para hacer una suma con el precio de los insumo que la hospitalización tiene registrado
-    const sumaPrecioIH = async (id) => {
-        try {
+    // const sumaPrecioIH = async (id) => {
+    //     try {
 
-            let storedHora = localStorage.getItem("hora");
-            let storedCosto = localStorage.getItem("costo");
+    //         let storedHora = localStorage.getItem("hora");
+    //         let storedCosto = localStorage.getItem("costo");
 
-            // llamo la función traer insumos de h
-            let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
-            let resultadoI = await peticionI.json();
+    //         // llamo la función traer insumos de h
+    //         let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
+    //         let resultadoI = await peticionI.json();
 
-            // //es para mostrar la duración de la hospitalización
-            // // llamo la función
-            // let peticionDH = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarDHos&idH=" + id);
-            // let resultadoDH = await peticionDH.json();
+    //         if (resultadoI.length > 0) {
 
-            if (resultadoI.length > 0) {
+    //             // realizamos una división 
+    //             let dCH = parseFloat(storedCosto) / parseInt(storedHora);
+    //             // multiplicamos lo dividido con la duración 
+    //             let precioHoras = parseInt(resultadoI[0].duracion) * parseFloat(dCH);
 
-                // realizamos una división 
-                let dCH = parseFloat(storedCosto) / parseInt(storedHora);
-                // multiplicamos lo dividido con la duración 
-                let precioHoras = parseInt(resultadoI[0].duracion) * parseFloat(dCH);
+    //             let precioIns = 0;
+    //             resultadoI.forEach(res => {
+    //                 precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
+    //             });
 
-                let precioIns = 0;
-                resultadoI.forEach(res => {
-                    precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
-                });
-
-                let totalH = parseFloat(precioHoras) + parseFloat(precioIns);
-                // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-                precioIns = parseFloat(precioIns.toFixed(2));
-                // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-                totalH = parseFloat(totalH.toFixed(2));
-                precioHoras.toFixed(2)
+    //             let totalH = parseFloat(precioHoras) + parseFloat(precioIns);
+    //             // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+    //             precioIns = parseFloat(precioIns.toFixed(2));
+    //             // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+    //             totalH = parseFloat(totalH.toFixed(2));
+    //             precioHoras.toFixed(2)
 
 
 
 
+    //         } else {
+    //             if (resultadoDH === false) {
+    //                 console.log("no se encontró la hospitalización");
+    //             } else {
+    //                 // realizamos una división 
+    //                 let dCH = parseFloat(storedCosto) / parseInt(storedHora);
+    //                 // multiplicamos lo dividido con la duración 
+    //                 let precioHoras = parseInt(resultadoDH.duracion) * parseFloat(dCH);
+    //             }
 
+    //         }
 
-
-                // Suponiendo que el dato que llega tiene formato 'YYYY-MM-DD HH:MM:SS'
-                let fechaGuardada = new Date(resultadoDH); // Convertimos la fecha obtenida
-
-                // Obtener la fecha y hora actual
-                let fechaActual = new Date();
-
-                // Calcular la diferencia en milisegundos
-                let diferenciaMs = fechaActual - fechaGuardada;
-
-                // Convertir la diferencia a otros formatos más legibles
-                let segundos = Math.floor(diferenciaMs / 1000);
-                let minutos = Math.floor(segundos / 60);
-                let horas = Math.floor(minutos / 60);
-                let dias = Math.floor(horas / 24)
-
-
-
-
-
-            } else {
-                if (resultadoDH === false) {
-                    console.log("no se encontró la hospitalización");
-                } else {
-                    // realizamos una división 
-                    let dCH = parseFloat(storedCosto) / parseInt(storedHora);
-                    // multiplicamos lo dividido con la duración 
-                    let precioHoras = parseInt(resultadoDH.duracion) * parseFloat(dCH);
-                }
-
-            }
-
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
-        }
-    }
+    //     } catch (error) {
+    //         console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+    //     }
+    // }
 
     //es para mostrar los insumos de la hospitalización seleccionada
     const mostrarIE = async (id) => {
