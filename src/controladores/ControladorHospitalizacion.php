@@ -48,8 +48,16 @@ class ControladorHospitalizacion
 
     public function hospitalizacion($parametro)
     {
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        
+        $idUsuario = $_SESSION['id_usuario'];
+        $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
         // datos de los insumos
         $datosI = $this->modelo->selectsInsumos();
+
         require_once "./src/vistas/vistaHospitalizacion/hospitalizacion.php";
     }
     public function hospitalizacionesRealizadas($parametro)
