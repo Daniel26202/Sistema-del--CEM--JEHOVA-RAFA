@@ -45,7 +45,7 @@ WHERE estado = 'ACT';");
 												INNER JOIN categoria_servicio cs 
 												ON sm.id_categoria = cs.id_categoria
 												GROUP BY cs.nombre
-												ORDER BY total_solicitudes DESC;
+												ORDER BY total_solicitudes DESC limit 5;
 												");
 		} else {
 			$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
@@ -56,7 +56,7 @@ WHERE estado = 'ACT';");
 												INNER JOIN categoria_servicio cs 
 												ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
 												GROUP BY cs.nombre 
-												ORDER BY total_solicitudes DESC;;
+												ORDER BY total_solicitudes DESC limit 5;
 												");
 			$consulta->bindParam(":fechaInicio", $fechaInicio);
 			$consulta->bindParam(":fechaFinal", $fechaFinal);

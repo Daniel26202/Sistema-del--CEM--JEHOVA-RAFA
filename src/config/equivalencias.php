@@ -151,7 +151,7 @@ return [
     "selectProveedores" => "consultar",
     "selectInsumos" => "consultar",
     "selectInsumosEditar" => "consultar",
-    
+
 
     //Proveedores
     "proveedores" => "consultar",
@@ -192,6 +192,7 @@ return [
 
     //Reportes Estadisticos
     "estadisticas" => "consultar",
+    "edadGenero" => "consultar",
 
 
 ];

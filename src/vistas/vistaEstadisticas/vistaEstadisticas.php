@@ -20,11 +20,9 @@
 
     <div class="d-flex justify-content-between flex-wrap w-100">
         <div class="card tajeta-estadistica-m mb-5">
-            <h5 class="card-header">TITULO 1</h5>
+            <h5 class="card-header">Distribución de pacientes</h5>
             <div class="card-body">
-                <canvas>
-
-                </canvas>
+                <canvas id="edadgenero"></canvas>
             </div>
         </div>
         <div class="card tajeta-estadistica-m mb-5 contenido">
@@ -65,6 +63,15 @@
 
 </div>
 
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/jspdf.umd.min.js"></script>
+
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/html2canvas.min.js"></script>
+
+
+<script type=" text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
+
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
+<script type="text/javascript" src="../src/assets/js/estadisticas.js"></script>
 
 
 <?php require_once './src/vistas/head/footer.php'; ?>

@@ -1,7 +1,7 @@
 <?php
 
 use App\modelos\ModeloEstadisticas;
-use App\modelos\ModeloBitacora; 
+use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 
 class ControladorEstadisticas
@@ -19,10 +19,17 @@ class ControladorEstadisticas
 	}
 
 
-        
-    public function estadisticas(){
+
+	public function estadisticas()
+	{
 		require_once './src/vistas/vistaEstadisticas/vistaEstadisticas.php';
-    }
+	}
+
+	public function edadGenero()
+	{
+		$edadGenero = $this->modelo->distribucion_edad_genero();
+		echo json_encode($edadGenero);
+	}
 
 	private function permisos($id_rol, $permiso, $modulo)
 	{

@@ -13,7 +13,7 @@
 
 [data-theme="dark"] {
     /* Colores oscuros */
-    --color-bg-main: hsl(211, 53%, 11%);
+    --color-bg-main: #0d1c2b;
     --color-bg-sidebar: hsl(211, 43%, 11%);
     --color-bg-card: #415A77;
     --color-text: #E0E1DD;
@@ -32,6 +32,11 @@ body {
     
 }
 
+.canva{
+    background-color: white !important;
+    border-radius: 8px;
+
+}
 
 
 

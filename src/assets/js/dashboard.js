@@ -482,6 +482,7 @@ const especialidades_chart = async (url) => {
       //Aparecer el boton de impirmir
       document.getElementById("especialidades").classList.remove("d-none");
       //Aparecer el escrito
+      pareto(data);
       document
         .querySelectorAll("#texto p")
         .forEach((ele) => ele.classList.remove("d-none"));
@@ -494,13 +495,71 @@ const especialidades_chart = async (url) => {
         .getElementById("especialidades_solicitadas_pdf")
         .classList.add("d-none");
       document.querySelector(".leyenda-container").innerHTML = "";
-      document.querySelectorAll("#texto p").forEach((ele) => ele.classList.add("d-none"));
+      document
+        .querySelectorAll("#texto p")
+        .forEach((ele) => ele.classList.add("d-none"));
       document.getElementById("especialidades").classList.add("d-none");
     }
   } catch (error) {
     console.log("Error al generar el gráfico de especialidades:", error);
   }
 };
+
+function pareto(data) {
+  document.getElementById("texto").innerHTML = ``;
+
+  // Identifica qué especialidades cubren el 80% de las solicitudes
+
+  let acumulado = 0;
+  const total = data.reduce((sum, item) => sum + item.total_solicitudes, 0);
+
+  const paretoData = data.map((item) => {
+    acumulado += item.total_solicitudes;
+    return {
+      ...item,
+      porcentajeAcumulado: (acumulado * 100) / total,
+    };
+  });
+
+  const puntoCorte = paretoData.findIndex(
+    (item) => item.porcentajeAcumulado >= 80
+  );
+  const especialidadesPareto = data.slice(0, puntoCorte + 1);
+
+  // Agrega esto al texto
+  document.getElementById("texto").innerHTML += `
+    <p>Análisis de Pareto:
+    Las ${puntoCorte + 1} especialidades principales (${especialidadesPareto
+    .map((e) => e.especialidad)
+    .join(", ")}) 
+    representan el 80% de las solicitudes.</p>
+    
+  <p>Este reporte muestra las ${
+    data.length
+  } especialidades médicas mas solicitadas en el sistema. 
+  La especialidad con mayor demanda es ${data[0].especialidad}</strong>, 
+  representando un ${((data[0].total_solicitudes * 100) / total).toFixed(
+    2
+  )}% del total.</p>
+  
+  <p>El gráfico permite identificar áreas prioritarias para la asignación de recursos 
+  y la optimización de servicios médicos.</p>
+`;
+  `;
+
+  // Agrega esto al texto
+  <p>Este reporte muestra las ${
+    data.length
+  } especialidades médicas solicitadas en el sistema. 
+  La especialidad con mayor demanda es ${data[0].especialidad}</strong>, 
+  representando un ${((data[0].total_solicitudes * 100) / total).toFixed(
+    2
+  )}% del total.</p>
+  
+  <p>El gráfico permite identificar áreas prioritarias para la asignación de recursos 
+  y la optimización de servicios médicos.</p>
+`;
+}
 
 //Genera el grafico de sintomas comunes
 const sintomas_chart = async () => {
@@ -583,7 +642,7 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
     // Crea el texto descriptivo para la especialidad
     const textoLeyenda = document.createElement("span");
     textoLeyenda.innerHTML = `
-      <strong>${especialidad}:</strong> 
+      ${especialidad}:
       ${totalSolicitudes[indice]} solicitudes (${porcentaje}%)
     `;
     textoLeyenda.style.fontSize = "14px";
@@ -605,6 +664,19 @@ async function generarReporte() {
     console.error("El elemento con ID 'imprimir' no existe.");
     return;
   }
+  // Quitar el color negro del canvas antes de generar el PDF
+  const canvasElements = elementoImprimir.querySelectorAll("canvas");
+
+  canvasElements.forEach((canvas) => {
+    const ctx = canvas.getContext("2d");
+    ctx.globalCompositeOperation = "destination-over";
+    // 1. Añadir clase CSS
+    canvas.classList.add("contenido");
+    // 2. Obtener color desde CSS
+    const bgColor = getComputedStyle(canvas).backgroundColor;
+    ctx.fillStyle = bgColor; // Establecer fondo blanco
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  });
 
   // Crea una instancia de jsPDF
   const pdf = new jsPDF("p", "mm", "a4");
@@ -620,6 +692,8 @@ async function generarReporte() {
     x: 1, // Margen izquierdo
     y: 1, // Margen superior
     width: pdfWidth - 10, // Ancho del contenido (ajustado al tamaño de la página A4)
+    height: pdfHeight - 10, // Altura del contenido (ajustado al tamaño de la página A4)
+    scaleFactor: 2, // Factor de escala para mejorar la calidad del PDF
     windowWidth: 1000, // Ancho de la ventana del navegador (para el escalado)
     windowWidth: elementoImprimir.scrollWidth, // Ancho del contenido original
   });
