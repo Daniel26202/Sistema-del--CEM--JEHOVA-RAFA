@@ -193,6 +193,7 @@ return [
     //Reportes Estadisticos
     "estadisticas" => "consultar",
     "edadGenero" => "consultar",
+    "tasaMorbilidad" => "consultar",
 
 
 ];

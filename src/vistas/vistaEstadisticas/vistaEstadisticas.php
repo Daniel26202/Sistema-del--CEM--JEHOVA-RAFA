@@ -26,11 +26,9 @@
             </div>
         </div>
         <div class="card tajeta-estadistica-m mb-5 contenido">
-            <h5 class="card-header">TITULO 2</h5>
+            <h5 class="card-header">Tasa de morbilidad</h5>
             <div class="card-body">
-                <canvas>
-
-                </canvas>
+                <canvas id="tasa_morbilidad"></canvas>
             </div>
         </div>
         <div class="card tajeta-estadistica-g m-auto mb-5">

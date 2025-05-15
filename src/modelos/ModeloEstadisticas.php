@@ -48,4 +48,25 @@ ORDER BY rango_edad;";
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
+
+    public function tasa_morbilidad()
+    {
+        $sql = "SELECT
+  p.nombre_patologia,
+  COUNT(DISTINCT pp.id_paciente) AS casos,
+  ROUND(
+    COUNT(DISTINCT pp.id_paciente) 
+    / (SELECT COUNT(*) FROM paciente)  -- población total
+    * 1000,
+    2
+  ) AS tasa_por_1000
+FROM patologiadepaciente pp
+JOIN patologia p ON pp.id_patologia = p.id_patologia
+GROUP BY pp.id_patologia
+ORDER BY casos DESC;
+";
+        $consulta = $this->conexion->prepare($sql);
+
+        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+    }
 }

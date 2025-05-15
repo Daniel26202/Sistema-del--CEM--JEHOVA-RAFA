@@ -31,6 +31,12 @@ class ControladorEstadisticas
 		echo json_encode($edadGenero);
 	}
 
+	public function tasaMorbilidad()
+	{
+		$tasa_morbilidad = $this->modelo->tasa_morbilidad();
+		echo json_encode($tasa_morbilidad);
+	}
+
 	private function permisos($id_rol, $permiso, $modulo)
 	{
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
