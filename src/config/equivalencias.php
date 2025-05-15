@@ -75,6 +75,7 @@ return [
     "buscarEspecialidad" => "consultar",
     "buscarDoctor" => "consultar",
     "buscarHorario" => "consultar",
+    "guardarDoctores" => "guardar",
 
     //Usuarios
     "usuarios" => "consultar",
@@ -150,7 +151,7 @@ return [
     "selectProveedores" => "consultar",
     "selectInsumos" => "consultar",
     "selectInsumosEditar" => "consultar",
-    
+
 
     //Proveedores
     "proveedores" => "consultar",
@@ -191,6 +192,9 @@ return [
 
     //Reportes Estadisticos
     "estadisticas" => "consultar",
+    "edadGenero" => "consultar",
+    "tasaMorbilidad" => "consultar",
+    "filtrar_tasaMorbilidad" => "consultar",
 
 
 ];

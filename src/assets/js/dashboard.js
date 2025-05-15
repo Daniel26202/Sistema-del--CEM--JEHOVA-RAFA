@@ -482,6 +482,7 @@ const especialidades_chart = async (url) => {
       //Aparecer el boton de impirmir
       document.getElementById("especialidades").classList.remove("d-none");
       //Aparecer el escrito
+      totalDeEspecialidades(data);
       document
         .querySelectorAll("#texto p")
         .forEach((ele) => ele.classList.remove("d-none"));
@@ -494,13 +495,36 @@ const especialidades_chart = async (url) => {
         .getElementById("especialidades_solicitadas_pdf")
         .classList.add("d-none");
       document.querySelector(".leyenda-container").innerHTML = "";
-      document.querySelectorAll("#texto p").forEach((ele) => ele.classList.add("d-none"));
+      document
+        .querySelectorAll("#texto p")
+        .forEach((ele) => ele.classList.add("d-none"));
       document.getElementById("especialidades").classList.add("d-none");
     }
   } catch (error) {
     console.log("Error al generar el gráfico de especialidades:", error);
   }
 };
+
+async function totalDeEspecialidades(data) {
+  let peticion = await fetch(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades"
+  );
+  let resultado = await peticion.json();
+  document.getElementById("texto").innerHTML = ``;
+
+  let especialidades = data.map((item) => item.especialidad).join(',  ');
+  
+  // Agrega esto al texto
+  document.getElementById("texto").innerHTML += `
+    <p>De Las ${resultado.total_servicios_por_cita} especialidades médicas, las ${data.length} mas solicitasdas son: ${especialidades}.</p>
+    <p>Esta reporte analiza la distribución y tendencias de las especialidades médicas más solicitadas según la moda en un período determinado</p>
+                        <p>El gráfico de pastel muestra la distribución porcentual de cada especialidad solicitada, identificando las áreas de mayor demanda.</p>
+
+`;
+    
+  
+
+}
 
 //Genera el grafico de sintomas comunes
 const sintomas_chart = async () => {
@@ -583,7 +607,7 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
     // Crea el texto descriptivo para la especialidad
     const textoLeyenda = document.createElement("span");
     textoLeyenda.innerHTML = `
-      <strong>${especialidad}:</strong> 
+      ${especialidad}:
       ${totalSolicitudes[indice]} solicitudes (${porcentaje}%)
     `;
     textoLeyenda.style.fontSize = "14px";
@@ -598,7 +622,7 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
 }
 
 async function generarReporte() {
-  //hay q buscar el Element del dom
+  // Buscar el elemento del DOM
   const elementoImprimir = document.getElementById("imprimir");
 
   if (!elementoImprimir) {
@@ -606,21 +630,57 @@ async function generarReporte() {
     return;
   }
 
-  // Crea una instancia de jsPDF
-  const pdf = new jsPDF("p", "mm", "a4");
-  const pdfWidth = pdf.internal.pageSize.getWidth(); // Ancho de la página PDF
-  const pdfHeight = pdf.internal.pageSize.getHeight(); // Altura de la página PDF
+  // Modificar los canvas dentro del elemento
+  const canvasElements = elementoImprimir.querySelectorAll("canvas");
 
-  // Usa el método html() de jsPDF para renderizar el contenido del div
+  canvasElements.forEach((canvas) => {
+    const ctx = canvas.getContext("2d");
+    ctx.globalCompositeOperation = "destination-over";
+    canvas.classList.add("contenido");
+    const bgColor = getComputedStyle(canvas).backgroundColor;
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  });
+
+  // Obtener color de fondo desde la clase CSS
+  const estilo = getComputedStyle(document.querySelectorAll(".contenido")[0]);
+  const bgColor = estilo.backgroundColor;
+
+  // Crear instancia de jsPDF
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  // Convirtiendo el formato jsPDF (r, g, b)
+  const rgbMatch = bgColor.match(/\d+/g);
+  const r = rgbMatch ? parseInt(rgbMatch[0]) : 255;
+  const g = rgbMatch ? parseInt(rgbMatch[1]) : 255;
+  const b = rgbMatch ? parseInt(rgbMatch[2]) : 255;
+
+  // Se establecer el color de fondo
+  pdf.setFillColor(r, g, b);
+  pdf.rect(
+    0,
+    0,
+    pdf.internal.pageSize.getWidth(),
+    pdf.internal.pageSize.getHeight(),
+    "F"
+  ); // "F" para rellenar
+
+
+  elementoImprimir.classList.add("carta-imprimir");
+
+  // Generar PDF con fondo adecuado
   pdf.html(elementoImprimir, {
     callback: function (doc) {
-      // Guarda el archivo PDF
       doc.save("reporte_especialidades.pdf");
     },
-    x: 1, // Margen izquierdo
-    y: 1, // Margen superior
-    width: pdfWidth - 10, // Ancho del contenido (ajustado al tamaño de la página A4)
-    windowWidth: 1000, // Ancho de la ventana del navegador (para el escalado)
-    windowWidth: elementoImprimir.scrollWidth, // Ancho del contenido original
+    x: 0,
+    y: 0,
+    width: pdf.internal.pageSize.getWidth(), // Ajuste al ancho de la página
+    height: pdf.internal.pageSize.getHeight(), // Ajuste a la altura de la página
+    scaleFactor: 2,
+    windowWidth: elementoImprimir.scrollWidth,
   });
+  elementoImprimir.classList.remove("carta-imprimir");
+
+
 }

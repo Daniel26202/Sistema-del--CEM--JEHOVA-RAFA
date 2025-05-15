@@ -121,4 +121,19 @@ class ModeloConsultas extends Db
 
         return 0;
     }
+
+    //Validdar que un doctor no tenga el mismo servicio
+    public function validarServicioDoctor($id_servicioMedico,$id_doctor)
+    {
+        $consulta = $this->conexion->prepare("SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN  personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal WHERE sm.id_servicioMedico =:id_servicioMedico AND p.id_personal = :id_doctor");
+        $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
+        $consulta->bindParam(":id_doctor", $id_doctor);
+        $consulta->execute();
+
+        while ($consulta->fetch()) {
+            return "existeC";
+        }
+
+        return 0;
+    }
 }

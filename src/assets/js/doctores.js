@@ -319,27 +319,22 @@ addEventListener("DOMContentLoaded", function () {
       <h5>Horarios</h5>
       <div class="input-group flex-nowrap">
       
-                <h6 class="me-2 mb-1"> <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                    </svg>Dia Laborable:</h6>
+                <h6 class="me-2 mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1" viewBox="0 0 16 16">
+  <path d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zm2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z"/>
+</svg>Dia Laborable:</h6>
                 <p>${res.diaslaborables}</p>
             </div>
             <div class="input-group flex-nowrap">
-                <h6 class="me-2 mb-1"> <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                    </svg>Hora De Entrada:</h6>
+                <h6 class="me-2 mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1" viewBox="0 0 16 16">
+  <path d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zm2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z"/>
+</svg>Hora De Entrada:</h6>
                 <p>${horaEntradaAMPM}</p>
             </div>
             <div class="input-group flex-nowrap">
-                <h6 class="me-2 mb-1"> <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                    </svg>Hora De Salida:</h6>
+                <h6 class="me-2 mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1" viewBox="0 0 16 16">
+  <path d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zm2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z"/>
+</svg>Hora De Salida:</h6>
                 <p>${horaSalidaAMPM}</p>
             </div> 
             <hr> `;
@@ -375,6 +370,28 @@ addEventListener("DOMContentLoaded", function () {
     btn.addEventListener("click", function () {
       consultarHorario(this.getAttribute("data-index"));
     });
+  });
+
+
+  async function traerEspecialidadDoctor(id_doctor) {
+    try {
+      let peticion = await fetch(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Consultas/mostrarEspecialidad/" +
+          id_doctor
+      );
+      let resultado = await peticion.json();
+      console.log(resultado);
+      resultado.forEach((res) => {
+        document.getElementById("inputEspecialidad").value = res.nombre;
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+//Traer especialidad segun doctor
+  document.getElementById("id_doctor").addEventListener("change", function () {
+    traerEspecialidadDoctor(this.value);
   });
 
   //si existe el comentario lo muestra y después de 8sg lo oculta

@@ -108,7 +108,7 @@
                 <div class="mt-4">
                     <h5 id="datosPaciente" class="mt-3 text-uppercase" style="margin-left: -25px;"></h5>
                     <div class="toast-container position-fixed top-0 end-5 p-3">
-                        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
+                        <div class="toast contenido" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
                             id="myToastfactura">
                             <div class="toast-body">
                                 <h5 class="fw-bold text-dark text-center">Haz Click en Registrar para Guardar un
