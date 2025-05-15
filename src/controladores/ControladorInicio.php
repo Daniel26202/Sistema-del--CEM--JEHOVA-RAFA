@@ -123,6 +123,12 @@ class ControladorInicio
         echo json_encode($especialidades_solicitadas);
     }
 
+    public function todas_las_especialidades()
+    {
+        $todas_las_especialidades = $this->modeloInicio->todas_las_especialidades();
+        echo json_encode($todas_las_especialidades);
+    }
+
     public function sintomas_comunes()
     {
         $sintomas_comunes = $this->modeloInicio->sintomas_comunes();

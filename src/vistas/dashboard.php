@@ -53,9 +53,11 @@ require_once './src/vistas/head/head.php';
                     <div class="chart-card p-4 rounded shadow-sm">
                         <h5>Especialidades solicitadas</h5>
                         <canvas id="especialidades_solicitadas" width="600" height="600"></canvas>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reporte">
-                            Generar Reporte
-                        </button>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-primary 75 m-auto" data-bs-toggle="modal" data-bs-target="#reporte">
+                                Generar Reporte
+                            </button>
+                        </div>
 
                     </div>
 
@@ -310,7 +312,7 @@ require_once './src/vistas/head/head.php';
                 </div>
                 <div class="contenido content-modal" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
                     <div class="titulo" id="titulo">
-                        <h1>Reporte de Especialidades Solicitadas</h1>
+                        <h1>Reporte de Especialidades Más Solicitadas</h1>
                     </div>
 
                     <!-- filtro de busqueda -->
@@ -321,8 +323,7 @@ require_once './src/vistas/head/head.php';
                     <div class="leyenda-container" style="width: 80%; margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                     </div>
                     <div class="texto" id="texto" style="width: 90%; text-align: justify; font-size: 14px;">
-                        <p>Analizar la distribución y tendencias de las especialidades médicas más solicitadas según la moda en un período determinado</p>
-                        <p>El gráfico de pastel muestra la distribución porcentual de cada especialidad solicitada, identificando las áreas de mayor demanda.</p>
+
 
                     </div>
 

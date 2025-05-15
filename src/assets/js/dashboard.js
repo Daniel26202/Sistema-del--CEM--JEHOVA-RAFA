@@ -482,7 +482,7 @@ const especialidades_chart = async (url) => {
       //Aparecer el boton de impirmir
       document.getElementById("especialidades").classList.remove("d-none");
       //Aparecer el escrito
-      pareto(data);
+      totalDeEspecialidades(data);
       document
         .querySelectorAll("#texto p")
         .forEach((ele) => ele.classList.remove("d-none"));
@@ -505,60 +505,25 @@ const especialidades_chart = async (url) => {
   }
 };
 
-function pareto(data) {
+async function totalDeEspecialidades(data) {
+  let peticion = await fetch(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades"
+  );
+  let resultado = await peticion.json();
   document.getElementById("texto").innerHTML = ``;
 
-  // Identifica qué especialidades cubren el 80% de las solicitudes
-
-  let acumulado = 0;
-  const total = data.reduce((sum, item) => sum + item.total_solicitudes, 0);
-
-  const paretoData = data.map((item) => {
-    acumulado += item.total_solicitudes;
-    return {
-      ...item,
-      porcentajeAcumulado: (acumulado * 100) / total,
-    };
-  });
-
-  const puntoCorte = paretoData.findIndex(
-    (item) => item.porcentajeAcumulado >= 80
-  );
-  const especialidadesPareto = data.slice(0, puntoCorte + 1);
-
+  let especialidades = data.map((item) => item.especialidad).join(',  ');
+  
   // Agrega esto al texto
   document.getElementById("texto").innerHTML += `
-    <p>Análisis de Pareto:
-    Las ${puntoCorte + 1} especialidades principales (${especialidadesPareto
-    .map((e) => e.especialidad)
-    .join(", ")}) 
-    representan el 80% de las solicitudes.</p>
-    
-  <p>Este reporte muestra las ${
-    data.length
-  } especialidades médicas mas solicitadas en el sistema. 
-  La especialidad con mayor demanda es ${data[0].especialidad}</strong>, 
-  representando un ${((data[0].total_solicitudes * 100) / total).toFixed(
-    2
-  )}% del total.</p>
-  
-  <p>El gráfico permite identificar áreas prioritarias para la asignación de recursos 
-  y la optimización de servicios médicos.</p>
-`;
-  `;
+    <p>De Las ${resultado.total_servicios_por_cita} especialidades médicas, las ${data.length} mas solicitasdas son: ${especialidades}.</p>
+    <p>Esta reporte analiza la distribución y tendencias de las especialidades médicas más solicitadas según la moda en un período determinado</p>
+                        <p>El gráfico de pastel muestra la distribución porcentual de cada especialidad solicitada, identificando las áreas de mayor demanda.</p>
 
-  // Agrega esto al texto
-  <p>Este reporte muestra las ${
-    data.length
-  } especialidades médicas solicitadas en el sistema. 
-  La especialidad con mayor demanda es ${data[0].especialidad}</strong>, 
-  representando un ${((data[0].total_solicitudes * 100) / total).toFixed(
-    2
-  )}% del total.</p>
-  
-  <p>El gráfico permite identificar áreas prioritarias para la asignación de recursos 
-  y la optimización de servicios médicos.</p>
 `;
+    
+  
+
 }
 
 //Genera el grafico de sintomas comunes
@@ -700,9 +665,6 @@ async function generarReporte() {
     "F"
   ); // "F" para rellenar
 
-  // Aplicar CSS directamente al elemento para asegurar que el fondo ocupe todo
-  // elementoImprimir.style.width = "100%";
-  // elementoImprimir.style.height = "100vh";
 
   elementoImprimir.classList.add("carta-imprimir");
 

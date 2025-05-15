@@ -65,6 +65,11 @@ WHERE estado = 'ACT';");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
+	public function todas_las_especialidades(){
+		$consulta = $this->conexion->prepare("SELECT COUNT(c.serviciomedico_id_servicioMedico) AS total_servicios_por_cita FROM cita c INNER JOIN serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico");
+		return ($consulta->execute()) ? $consulta->fetch() : false;
+	}
+
 	public function sintomas_comunes()
 	{
 		$consulta = $this->conexion->prepare("SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
