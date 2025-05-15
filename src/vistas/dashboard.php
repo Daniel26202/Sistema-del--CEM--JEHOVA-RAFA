@@ -25,19 +25,19 @@ require_once './src/vistas/head/head.php';
 
             <!-- AQUI EMPIEZAN LAS CARDS -->
             <div class="row mt-4">
-                <div class="col-md-4 col-12">
+                <div class="col-md-4 col-12 mb-2">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Citas pendientes</p>
                         <h4 id="citasPendentes"></h4>
                     </div>
                 </div>
-                <div class="col-md-4 col-12">
+                <div class="col-md-4 col-12 mb-2">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Citas de hoy</p>
                         <h4 id="citasDeHoy"></h4>
                     </div>
                 </div>
-                <div class="col-md-4 col-12">
+                <div class="col-md-4 col-12 mb-2">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Pacientes Hospitalizados</p>
                         <h4 id="pacientes_hospitalizados"></h4>
@@ -49,7 +49,7 @@ require_once './src/vistas/head/head.php';
 
             <div class="row mt-4">
 
-                <div class="col-md-6 col-12">
+                <div class="col-md-6 col-12 mb-2">
                     <div class="chart-card p-4 rounded shadow-sm">
                         <h5>Especialidades solicitadas</h5>
                         <canvas id="especialidades_solicitadas" width="600" height="600"></canvas>
@@ -62,7 +62,7 @@ require_once './src/vistas/head/head.php';
                     </div>
 
                 </div>
-                <div class="col-md-6 col-12">
+                <div class="col-md-6 col-12 mb-2">
                     <div class="chart-card p-4 rounded shadow-sm">
                         <h5>sintomas_comunes</h5>
                         <canvas id="sintomas_comunes"></canvas>
