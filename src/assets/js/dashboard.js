@@ -512,8 +512,8 @@ async function totalDeEspecialidades(data) {
   let resultado = await peticion.json();
   document.getElementById("texto").innerHTML = ``;
 
-  let especialidades = data.map((item) => item.especialidad).join(',  ');
-  
+  let especialidades = data.map((item) => item.especialidad).join(",  ");
+
   // Agrega esto al texto
   document.getElementById("texto").innerHTML += `
     <p>De Las ${resultado.total_servicios_por_cita} especialidades médicas, las ${data.length} mas solicitasdas son: ${especialidades}.</p>
@@ -521,44 +521,85 @@ async function totalDeEspecialidades(data) {
                         <p>El gráfico de pastel muestra la distribución porcentual de cada especialidad solicitada, identificando las áreas de mayor demanda.</p>
 
 `;
-    
-  
-
 }
 
 //Genera el grafico de sintomas comunes
+let sintomasChartModal = null;
+let sintomasChart = null;
 const sintomas_chart = async () => {
-  try {
-    let sintomas_comunes = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes"
-    );
-    let data = await sintomas_comunes.json();
-    let sintomas = data.map((item) => item.sintoma);
-    let total = data.map((item) => item.total);
+  // try {
+  let sintomas_comunes = await fetch(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes"
+  );
+  let data = await sintomas_comunes.json();
+  let sintomas = data.map((item) => item.sintoma);
+  let total = data.map((item) => item.total);
 
-    let ctx = document.getElementById("sintomas_comunes").getContext("2d");
-    new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: sintomas,
-        datasets: [
-          {
-            data: total,
-            backgroundColor: [
-              "#387adf",
-              "#78a0f0",
-              "#a4c7ff",
-              "#ffcc00",
-              "#ff6666",
-            ],
-          },
-        ],
-      },
-    });
-  } catch (error) {
-    console.log("Error al generar el gráfico de especialidades:", error);
+  let ctx = document.getElementById("sintomas_comunes").getContext("2d");
+  if (sintomasChart) {
+    sintomasChart.destroy();
   }
+  sintomasChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: sintomas,
+      datasets: [
+        {
+          data: total,
+          backgroundColor: [
+            "#387adf",
+            "#78a0f0",
+            "#a4c7ff",
+            "#ffcc00",
+            "#ff6666",
+          ],
+        },
+      ],
+    },
+  });
+
+  // Renderiza el gráfico en el canvas del modal
+  let ctxModal = document
+    .getElementById("sintomas_solicitadas_pdf")
+    .getContext("2d");
+
+  console.log(document.getElementById("sintomas_solicitadas_pdf"));
+
+  sintomasChartModal = new Chart(ctxModal, {
+    type: "pie",
+    data: {
+      labels: sintomas,
+      datasets: [
+        {
+          data: total,
+          backgroundColor: [
+            "#387adf",
+            "#78a0f0",
+            "#a4c7ff",
+            "#ffcc00",
+            "#ff6666",
+          ],
+        },
+      ],
+    },
+  });
+
+  // Destruye el gráfico existente en el modal si ya fue creado
+  if (sintomasChartModal) {
+    sintomasChartModal.destroy();
+  }
+
+  //canvas en el modal
+  // } catch (error) {
+  //   console.log("Error al generar el gráfico de sintomas:", error);
+  // }
 };
+
+document
+  .querySelector(".reporte-sintomas")
+  .addEventListener("click", function () {
+    sintomas_chart();
+  });
 
 function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
   console.log(especialidades);
@@ -665,7 +706,6 @@ async function generarReporte() {
     "F"
   ); // "F" para rellenar
 
-
   elementoImprimir.classList.add("carta-imprimir");
 
   // Generar PDF con fondo adecuado
@@ -681,6 +721,4 @@ async function generarReporte() {
     windowWidth: elementoImprimir.scrollWidth,
   });
   elementoImprimir.classList.remove("carta-imprimir");
-
-
 }
