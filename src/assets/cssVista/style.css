@@ -496,9 +496,10 @@ svg {
 }
 
 .lista-pacientes2 {
-  width: 700px;
-  height: 350px;
+  width: 75%;
+  height: 50vh;
   overflow-y: auto !important;
+  margin-left: auto;
 }
 
 .tamaño-tabla2 {
@@ -1610,8 +1611,6 @@ input[type="date"] {
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................MENU E INICIO........................ */
 
-
-
 @media screen and (max-width: 950px) {
   .logo {
     display: none;
@@ -1645,8 +1644,6 @@ input[type="date"] {
   .opcRes {
     display: none;
   }
-
-
 }
 
 @media screen and (max-width: 450px) {
@@ -1676,19 +1673,42 @@ input[type="date"] {
     display: none;
   }
 
-  .head{
+  .head {
     background-color: transparent;
   }
 }
 
-@media screen and (max-width: 360px){
-  .caja-ayuda{
+@media screen and (max-width: 360px) {
+  .caja-ayuda {
     margin: auto;
   }
 }
 
 /* ///////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
+
+/* control nuevo */
+@media screen and (max-width: 1170px) {
+  .lista-pacientes2 {
+    width: 100%;
+    margin-left: "";
+  }
+}
+
+@media screen and (max-width: 900px) {
+  /* .lista-pacientes2 {
+    width: 100%;
+    margin-left: "";
+  } */
+
+  .editar{
+    width: 100%;
+  }
+
+  .lista-pacientes{
+    width: 100%;
+  }
+}
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................DOCTORES..................................... */
