@@ -10,7 +10,7 @@
   --color-primary-contrast: #ffffff;
   --color-surface: #f8fcff;
   --color-border: #f2f9ff;
-  --filter-image: ""; 
+  --filter-image: "";
 }
 
 [data-theme="dark"] {
@@ -113,7 +113,7 @@ h1 {
 }
 
 .aside.active {
-  width: 68px;
+  width: 65px;
   transition: all 0.4s ease;
 }
 
@@ -728,8 +728,6 @@ input[type="number"]::-webkit-outer-spin-button {
   transform: scale(1.04);
 }
 
-
-
 .cardReporteFactura {
   background-image: url("../img/grafico.jpg");
   background-size: 100% 100%;
@@ -750,8 +748,6 @@ input[type="number"]::-webkit-outer-spin-button {
   justify-content: space-around;
   flex-wrap: wrap;
 }
-
-
 
 /* 
 .granReporte:hover {
@@ -1543,7 +1539,6 @@ con la clase hover-grande cambia de tamaño*/
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-
 .tamaño-modal {
   width: 50%;
   max-width: 600px;
@@ -1593,7 +1588,7 @@ input[type="date"] {
     height: 40vh;
   }
 
-  canvas{
+  canvas {
     height: 70% !important;
   }
 }
@@ -1615,32 +1610,51 @@ input[type="date"] {
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................MENU E INICIO........................ */
 
-@media screen and (max-height: 606px) {
-  .aside.active {
-    width: 79px;
-  }
-}
 
-@media screen and (max-width: 1020px) {
+
+@media screen and (max-width: 950px) {
   .logo {
     display: none;
   }
-}
 
-@media screen and (max-width: 755px) {
-  .cerrar {
-    padding: 0;
-    margin: 0;
+  /* clases del contenedor */
+  main {
+    width: 100vw;
+    margin-left: 0px;
   }
 
   .aside {
-    width: 40%;
+    width: 100%;
+    height: -1px;
+    padding: 0px;
+    position: fixed;
   }
+  .aside.active {
+    width: 80px;
+  }
+
+  .asideRespo {
+    color: #000000;
+    background-color: #ffffff63;
+    height: 70px !important;
+    margin-top: -6px !important;
+    margin-left: -10px !important;
+    margin-right: 250px !important;
+  }
+
+  .opcRes {
+    display: none;
+  }
+
+
 }
 
 @media screen and (max-width: 450px) {
-
   /* clases del contenedor */
+  main {
+    width: 100vw;
+    margin-left: 0px;
+  }
 
   .aside {
     width: 100%;
@@ -1661,12 +1675,20 @@ input[type="date"] {
   .opcRes {
     display: none;
   }
+
+  .head{
+    background-color: transparent;
+  }
+}
+
+@media screen and (max-width: 360px){
+  .caja-ayuda{
+    margin: auto;
+  }
 }
 
 /* ///////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
-
-
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................DOCTORES..................................... */
@@ -1772,8 +1794,6 @@ input[type="date"] {
     align-items: center;
   }
 
-
-
   .t {
     font-size: 1rem;
   }
@@ -1828,8 +1848,6 @@ input[type="date"] {
     height: 33vh !important;
   }
 
-
-
   .fecha_citas {
     padding-top: 30px;
   }
@@ -1868,7 +1886,6 @@ input[type="date"] {
     font-size: 1rem;
     margin-top: 0.5rem;
   }
-
 
   .t {
     font-size: 0.9rem;
