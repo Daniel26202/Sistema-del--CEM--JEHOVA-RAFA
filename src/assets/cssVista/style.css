@@ -490,13 +490,15 @@ svg {
 /* estilos Control */
 
 .lista-pacientes {
-  width: 350px;
-  height: 350px;
+  /* width: 350px;
+  height: 350px; */
+  width: 25%;
+  height: 50vh;
   overflow-y: auto !important;
 }
 
 .lista-pacientes2 {
-  width: 75%;
+  width: 70%;
   height: 50vh;
   overflow-y: auto !important;
   margin-left: auto;

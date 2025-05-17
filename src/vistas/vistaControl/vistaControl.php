@@ -80,6 +80,8 @@
         <a class="uk-alert-close" uk-close></a>
         <p class="pe-2"></p>
     </div>
+
+
     <!-- comentario comentarioRed me-4 fw-bolder h-25 mb-2 -->
     <div class="d-flex justify-content-between align-items-center">
         <!-- Boton Agregar control -->
@@ -109,43 +111,40 @@
         </div>
     </div>
     <!-- Tabla -->
-    <div class="tamaño-tabla ms-auto mt-4 ">
-        <table>
-            <div>
-                <div class="">
-                    <th class="">Pacientes</th>
-                    <th class="text-center">Descripción</th>
+
+
+    <div class="container  ms-auto mt-4 ">
+
+        <div>
+            <div class="d-flex justify-content-between">
+                <h5 class="">Pacientes</h5>
+                <h5 class="">Descripción</h5>
+            </div>
+        </div>
+
+        <!-- contenido -->
+
+        <div class=" d-flex justify-content-between flex-wrap">
+            <!-- lista de pacientes -->
+            <div class=" lista-pacientes" id="ul-pacientes"></div>
+            <!-- js -->
+
+            <!-- lista de controles -->
+            <div class=" lista-pacientes2">
+                <input type="hidden" name="" id="id_control">
+                <div class="justificar  mt-5 " id="div-controles">
+                    <ul>
+                        <div id="div"></div>
+                        <!-- js -->
+                    </ul>
                 </div>
             </div>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="lista-pacientes " id="ul-pacientes"></div>
-                        <!-- js -->
 
-                    </td>
+        </div>
 
-                    <td class=" w-100">
-                        <input type="hidden" name="" id="id_control">
-                        <div class="justificar  lista-pacientes2 mt-5  " id="div-controles">
-                            <ul>
-                                <div id="div"></div>
-                                <!-- js -->
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 </div>
 
-
-
-
-
-
-<!-- Modales del modulo Control -->
 
 <!-- agregar Control-->
 <div id="modal-examplecontrol" uk-modal>
@@ -464,10 +463,6 @@
 
     </div>
 </div>
-
-
-
-
 
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/control.js"></script>
