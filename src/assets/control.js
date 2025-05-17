@@ -32,6 +32,7 @@ addEventListener("DOMContentLoaded", function () {
         fechaRegreso: false,
     };
     let idDU = document.querySelector("#idDExisteU");
+    console.log(idDU)
     if (idDU) {
         campos.doctor = true;
     }
@@ -724,6 +725,7 @@ console.log(resultado);
 
     modalAgregarControl.addEventListener("submit", function (f) {
         f.preventDefault();
+        console.log(campos)
 
         if (campos.cedula && campos.sintomas && campos.doctor && campos.diagnostico && campos.indicaciones && campos.fechaRegreso) {
             UIkit.modal("#modal-examplecontrol").hide();
