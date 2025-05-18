@@ -126,6 +126,12 @@ if (!empty($parametro)) {
                                                 <a class="uk-alert-close" uk-close></a>
                                                 <p class="pe-2">Tiene que llenar todos los campos.</p>
                                             </div>
+                                        <?php elseif ($parametro[0] == "errorSession"): ?>
+                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
+                                                style="display: none;" uk-alert>
+                                                <a class="uk-alert-close" uk-close></a>
+                                                <p class="pe-2">Ya tiene una session inciada anteriormente por favor cierrela e intente nuevamente.</p>
+                                            </div>
                                         <?php endif ?>
                                     <?php endif; ?>
                                 </div>

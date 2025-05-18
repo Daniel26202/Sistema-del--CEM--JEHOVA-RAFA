@@ -28,81 +28,79 @@ class Rutas
         $this->equivalentes = require_once "./src/config/equivalencias.php";
     }
 
-    // Método principal para gestionar las rutas
+    //metodo utilizado para gestionar las rutas
     public function gestionarRutas()
     {
-        // Divide la URL en partes separadas por "/"
+        // dividir la URL en partes separadas por "/"
         $this->partes = explode("/", $this->url);
 
-
-        // Verifica si la URL contiene ".php"
+        // se verifica si la URL contiene ".php"
         if (strpos($this->url, ".php") !== false) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
             exit;
         }
+        // obtienemos el controlador de la primera parte del array $this->partes 
+        $this->controlador = ucfirst($this->partes[0]);
 
+        // obtienemos el metodo del controlador de la segunda parte del array $this->partes
+        $metodo = $this->partes[1];
 
-        // Obtiene el controlador de la primera parte de la URL (capitalizado)
-        $this->controlador = ucfirst($this->partes[0] ?? "");
-
-        // Obtiene el método de la segunda parte de la URL o usa "IniciarSesion" por defecto
-        $metodo = $this->partes[1] ?? "IniciarSesion";
-
-        // Inicializa el parámetro como una cadena vacía
+        //el parámetro se inicia  como una cadena vacía
         $parametro = "";
 
-        // Asigna el nombre del módulo al controlador
+        // se asigna el nombre del controlador a la variable modulo
         $modulo =  $this->controlador;
 
-        // Si hay más partes en la URL, las concatena como parámetros
+        // si hay más partes en la url, las concatena como parámetros es decir todo lo que venga despues del metodo es un parametro
         if (isset($this->partes[2])) {
             for ($i = 2; $i < count($this->partes); $i++) {
                 $parametro .= $this->partes[$i] . ",";
             }
-            // Elimina la última coma y convierte los parámetros en un array
+            // aqui se elimina la última coma y convierte los parámetros en un array para menejarlos de una manera mas secilla 
             $parametro = trim($parametro, ",");
             $parametro = explode(",", $parametro);
         }
 
-        // Prepara el nombre del controlador con el prefijo "Controlador"
+        // se prepara el nombre del controlador añadiendole  "Controlador" ejemplo ControladorInicio
         $this->controlador = "Controlador" . $this->controlador;
 
-        // Define la ruta del archivo del controlador
+        // defimos la direccion del archivo del controlador
         $directorio = "src/controladores/" . $this->controlador . ".php";
 
-        // Verifica si el archivo del controlador existe
+        // verificacion si el archivo del controlador existe
         if (file_exists($directorio)) {
-            // Incluye el archivo del controlador
+            // incluimos el archivo del controlador
             require_once $directorio;
 
-            // Crea una instancia del controlador
+            // se crea una instancia del controlador
             $instancia = new $this->controlador();
 
-            // Verifica si el método existe en el controlador
+            // verifica si el método existe en el controlador llamado
             if (method_exists($instancia, $metodo)) {
-                // Si el controlador es de inicio de sesión o recuperación de contraseña
+                // si el controlador es de inicio de sesión o recuperación de contraseña
                 if (in_array($this->controlador, ["ControladorIniciarSesion", "ControladorRecuperarContr"])) {
-                    // Llama al método con los parámetros
+                    // llama al método con los parámetros ya que obviamente no se necesita permiso para el login o recuperacion de contraseña
                     $instancia->$metodo($parametro ?? []);
                 } else {
-                    // Verifica si la sesión está activa
+                    //validacion de los permisos
+                    // primero si la sesión está activa
                     if (session_status() === PHP_SESSION_ACTIVE) {
-                        // Si el controlador es Inicio o Perfil, llama al método directamente
+                        // si el controlador es incio o peril o bitacora, llama al método directamente y no aplica permisologia
                         if ($this->controlador == "ControladorInicio" || $this->controlador == "ControladorPerfil" || $this->controlador == "ControladorBitacora") {
                             $instancia->$metodo($parametro ?? []);
                         } else {
-                            // Obtiene el permiso equivalente del método
+                            // obtenemos el permiso equivalente del método si no encuentra la equivalencia le pasa el noombre del metodo
                             $permiso = $this->equivalentes[$metodo] ?? $metodo;
 
-                            // Verifica si el usuario tiene permiso para acceder
+                            // se verifica si el usuario tiene permiso para acceder gestionarPermisos este metodo el del modelo permisos
                             $permitido = $this->modelo->gestionarPermisos($_SESSION["id_rol"] ?? null, $permiso, $modulo);
-                            // Si no tiene permiso, redirige a la página de error
+                            // si no tiene permiso, redirige a la página de error :( 
                             if (!$permitido) {
                                 echo "Error 404 ";
                                 header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
-                                // exit;
+                                exit;
                             } else {
-                                // Si tiene permiso, llama al método con los parámetros
+                                // si lo tiene 
                                 $instancia->$metodo($parametro ?? []);
                             }
                         }
@@ -111,16 +109,11 @@ class Rutas
                         echo "Sesión no iniciada";
                     }
                 }
-            } else {
-                // Si el método no existe, muestra un mensaje
-
-                // //Y lo mando a la pagina de error
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            } else {  
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error"); //lo mando a la pagina de error
             }
         } else {
-            // Si el controlador no existe
-            // // //Y lo mando a la pagina de error
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error"); //Si el controlador no wxiste lo llama
         }
     }
 }

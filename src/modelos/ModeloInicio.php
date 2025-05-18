@@ -76,7 +76,7 @@ WHERE estado = 'ACT';");
 											FROM sintomas_control sc
 											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
 											GROUP BY s.nombre
-											ORDER BY total DESC;
+											ORDER BY total DESC lIMIT 5;
 												");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
