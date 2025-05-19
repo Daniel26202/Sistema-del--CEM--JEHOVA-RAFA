@@ -147,6 +147,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
+	
 
 
 
@@ -284,6 +285,7 @@ personal d ON d.id_personal = psm.serviciomedico_id_servicioMedico INNER JOIN ca
 
 	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $numero_de_lote, $id_cita)
 	{
+		
 
 
 
