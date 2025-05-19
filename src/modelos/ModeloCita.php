@@ -67,23 +67,24 @@ class ModeloCita extends Db
 
 	public function insertarCita($id_paciente, $id_servicioMedico, $fecha, $hora, $estado)
 	{
+		try {
 
-		$this->conexion->beginTransaction();
+			$this->conexion->beginTransaction();
 
-		$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente) ");
+			$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente) ");
 
 
-		$consulta->bindParam(":id_paciente", $id_paciente);
-		$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-		$consulta->bindParam(":fecha", $fecha);
-		$consulta->bindParam(":hora", $hora);
-		$consulta->bindParam(":estado", $estado);
+			$consulta->bindParam(":id_paciente", $id_paciente);
+			$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
+			$consulta->bindParam(":fecha", $fecha);
+			$consulta->bindParam(":hora", $hora);
+			$consulta->bindParam(":estado", $estado);
+			$consulta->execute();
 
-		if ($consulta->execute()) {
 			$this->conexion->commit();
-			return true;
-		} else {
+		} catch (\Exception $e) {
 			$this->conexion->rollBack();
+			// Puedes manejar el error aquí, por ejemplo, loguearlo o devolver el mensaje
 			return false;
 		}
 	}
