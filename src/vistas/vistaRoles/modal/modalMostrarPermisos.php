@@ -91,7 +91,7 @@
                     <!-- botones -->
                     <div class="uk-card-footer d-flex justify-content-start">
                         <a href="#" class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close" uk-toggle="target: #modal-exampleEliminar<?php echo $rol["id_rol"]; ?>">Eliminar</a>
-                        <button type=" submit" class="uk-button uk-button-text btnMostrar ms-4 mt-2">Modificar</button>
+                        <button type=" submit" class="ico uk-button uk-button-text btnMostrar ms-4 mt-2">Modificar</button>
                     </div>
                 </form>
             </div>
@@ -248,7 +248,7 @@
                 <!-- botones -->
                 <div class="uk-card-footer d-flex justify-content-start">
                     <a href="#" class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close">Cancelar</a>
-                    <input type="submit" class="uk-button uk-button-text btnMostrar ms-4 mt-2" name="guardar"
+                    <input type="submit" class="ico uk-button uk-button-text btnMostrar ms-4 mt-2" name="guardar"
                         value="Registrar">
                 </div>
             </form>

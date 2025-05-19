@@ -8,7 +8,7 @@
             <h1 class="fw-bold">FACTURACIÓN</h1>
 
             <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="currentColor"
-                class="bi bi-file-earmark-text ms-2" viewBox="0 0 16 16">
+                class="bi bi-file-earmark-text ms-2 ico" viewBox="0 0 16 16">
                 <path
                     d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
                 <path

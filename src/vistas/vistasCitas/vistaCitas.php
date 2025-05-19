@@ -5,7 +5,7 @@
         <div class="ms-5 d-flex align-items-center" id="inicioCita">
             <h1 class="fw-bold">CITAS</h1>
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                class="bi bi-calendar2-heart ms-2" viewBox="0 0 16 16">
+                class="bi bi-calendar2-heart ms-2 ico" viewBox="0 0 16 16">
                 <path fill-rule="evenodd"
                     d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5ZM1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3Zm2 .5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V4a.5.5 0 0 0-.5-.5H3Zm5 4.493c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132Z" />
             </svg>
@@ -61,7 +61,7 @@
         <div class="mt-3 mb-5">
             <ul class="sin-circulos d-flex justify-content-end ">
                 <li class="borde-menu activo <?= $vistaActiva == 'pendientes'  ? ' activo-borde ' : '' ?>">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" class="text-decoration-none text-black me-3"
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" class="ico text-decoration-none text-black me-3"
                         id="citaPendiente">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-clock-history me-1" viewBox="0 0 16 16">
@@ -73,7 +73,7 @@
                         </svg>Pendientes</a>
                 </li>
                 <li class="borde-menu activo <?= $vistaActiva == 'hoy'  ? ' activo-borde ' : '' ?>">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoy" class="text-decoration-none text-black me-3"
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoy" class="ico text-decoration-none text-black me-3"
                         id="citaHoy">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-calendar2-check me-1" viewBox="0 0 16 16">
@@ -86,7 +86,7 @@
                 </li>
 
                 <li class="borde-menu activo <?= $vistaActiva == 'realizadas'  ? ' activo-borde ' : '' ?>">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas" class="text-decoration-none text-black"
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas" class="ico text-decoration-none text-black"
                         id="citaRealizada">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-clipboard2-check me-1" viewBox="0 0 16 16">
@@ -228,8 +228,8 @@
                 </div>
             </div>
 
-            <div class="mt-3 uk-text-right">
-                <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
+            <div class=" mt-3 uk-text-right">
+                <button class="tarjeta uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                     type="button">Cancelar</button>
                 <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
                     href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/eliminarCita/<?= $datoCita["id_cita"]; ?>/<?= $_SESSION['id_usuario']; ?>">Eliminar</a>
@@ -402,7 +402,7 @@
 
                     <div class="mt-3 uk-text-right">
                         <button
-                            class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
+                            class="tarjeta uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                             type="button">Cancelar</button>
                         <button class="btn col-3 btn-agregarcita-modal btnEditarCita" id="btnEditarCita"
                             type="submit">Editar</button>

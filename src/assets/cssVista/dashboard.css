@@ -28,12 +28,24 @@ body {
   font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
 }
 
+h1,h2,h5, th{
+  color: var(--color-text-card) !important;
+}
+
+.input-buscar{
+  color: var(--color-text-card) !important;
+}
+
 .icon{
   color: white !important;
 }
 
 svg {
  color: white !important;
+}
+
+.imprimir{
+  color: var(--color-text-card) !important;
 }
 
 

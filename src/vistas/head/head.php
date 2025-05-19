@@ -294,7 +294,6 @@ if (!empty($parametro)) {
 						</div>
 					</a>
 				<?php endif ?>
-				<button id="toggleTheme">🌓</button>
 			</div>
 		</div>
 	</div>
