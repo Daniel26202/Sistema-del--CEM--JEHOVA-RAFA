@@ -4,6 +4,10 @@ const { jsPDF } = window.jspdf;
 let currentYear, currentMonth;
 let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
 
+
+const elementoImprimirEspecialidad= document.getElementById("imprimir");
+const elementoImprimirSintomas = document.getElementById("imprimirSintomas");
+
 // ========================== EVENTOS DOM ==========================
 
 // Inicialización del DOM
@@ -13,17 +17,18 @@ document.addEventListener("DOMContentLoaded", function () {
   traerCitashoy(); // Carga las citas del día
   pacientes_hospitalizados(); // Carga los pacientes hospitalizados
   traerDatosServicios(); // Carga los datos de la tabla de precios
-  especialidades_chart(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"
-  ); // Genera el gráfico de especialidades
+  especialidades_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"); // Genera el gráfico de especialidades
   sintomas_chart(); // Genera el gráfico de sintomas comunes
   traerDoctor(); //Cargar doctores en el select
 });
 
-document
-  .getElementById("especialidades")
-  .addEventListener("click", generarReporte);
+document.getElementById("especialidades").addEventListener("click", function () {
+  generarReporte(elementoImprimirEspecialidad, "reporte_especialidades.pdf");
+});
 
+document.getElementById("sintomas").addEventListener("click", function () {
+  generarReporte(elementoImprimirSintomas, "reporte_sintomas.pdf");
+});
 //Filtrar grafica de especialidades por fecha
 document.getElementById("buscarFecha").addEventListener("click", function () {
   let fechaInicio = this.parentElement.firstElementChild;
@@ -41,20 +46,37 @@ document.getElementById("buscarFecha").addEventListener("click", function () {
   }
 });
 
+
+//Filtrar grafica de sintomas por fecha
+document.getElementById("buscarFechaSintomas").addEventListener("click", function () {
+  let fechaInicio = this.parentElement.firstElementChild;
+  let fechaFinal = this.parentElement.firstElementChild.nextElementSibling;
+  if (fechaInicio.value < fechaFinal.value) {
+    document.getElementById("sintomas").classList.remove("d-none");
+    console.log("removida");
+    document.querySelector(".alertaFechaInicioSintomas").classList.add("d-none");
+    especialidades_chart(
+      `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio.value}/${fechaFinal.value}`
+    );
+  } else {
+    document.querySelector(".alertaFechaInicioSintomas").classList.remove("d-none");
+    document.getElementById("sintomas").classList.add("d-none");
+  }
+});
+
+
 //validar que el elemento exista
 
 if (document.getElementById("selectDoctor")) {
   //Evento para actualizar la informacion del doctor
-  document
-    .getElementById("selectDoctor")
-    .addEventListener("change", function () {
-      let allDates = [];
-      document.querySelectorAll(".date").forEach((element) => {
-        allDates.push(element.getAttribute("data-date"));
-      });
-
-      traerHorarioDoctor(this.value, allDates);
+  document.getElementById("selectDoctor").addEventListener("change", function () {
+    let allDates = [];
+    document.querySelectorAll(".date").forEach((element) => {
+      allDates.push(element.getAttribute("data-date"));
     });
+
+    traerHorarioDoctor(this.value, allDates);
+  });
 }
 
 // ========================== FUNCIONES DEL CALENDARIO ==========================
@@ -66,12 +88,8 @@ function initCalendar() {
   currentMonth = today.getMonth();
 
   // Botones de navegación del calendario
-  document
-    .getElementById("prev")
-    .addEventListener("click", () => changeMonth(-1));
-  document
-    .getElementById("next")
-    .addEventListener("click", () => changeMonth(1));
+  document.getElementById("prev").addEventListener("click", () => changeMonth(-1));
+  document.getElementById("next").addEventListener("click", () => changeMonth(1));
   document.getElementById("today").addEventListener("click", goToToday);
 
   // Renderiza el calendario inicial
@@ -156,9 +174,7 @@ function renderCalendar(year, month) {
       }
 
       // Inicializa los tooltips de Bootstrap
-      const tooltipTriggerList = [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]')
-      );
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
       tooltipTriggerList.forEach((tooltipTriggerEl) => {
         new bootstrap.Tooltip(tooltipTriggerEl); // Crea un tooltip para cada elemento con el atributo 'data-bs-toggle="tooltip"'
       });
@@ -201,9 +217,7 @@ function formatDate(dateObj) {
 //Cargar los doctores en el select
 const traerDoctor = async () => {
   try {
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/retornarDoctores"
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/retornarDoctores");
     let resultado = await peticion.json();
 
     if (resultado.length > 0) {
@@ -224,9 +238,7 @@ traerHorarioEspecificoDelDr = async (id) => {
   // try {
   // Realiza la petición AJAX
   console.log(id);
-  let peticion = await fetch(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/mostrarHorario/" + id
-  );
+  let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/mostrarHorario/" + id);
   let resultado = await peticion.json();
 
   document.querySelector(".horario-insertar").innerHTML = "";
@@ -256,9 +268,7 @@ traerHorarioEspecificoDelDr = async (id) => {
 const traerHorarioDoctor = async (id) => {
   try {
     // Realiza la petición AJAX
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id);
     let resultado = await peticion.json();
     //Quitar los dias marcados para marcalos nuevamente
     document.querySelectorAll(".date").forEach((date) => {
@@ -281,9 +291,7 @@ const traerHorarioDoctor = async (id) => {
         );
       }
       //Darle el teto al boton del horario
-      document.getElementById(
-        "btnHorario"
-      ).innerText = `Horario del Dr ${res.personal} especialidad (${res.especialidad})`;
+      document.getElementById("btnHorario").innerText = `Horario del Dr ${res.personal} especialidad (${res.especialidad})`;
 
       //Llamar funcion para el horario especifico
       traerHorarioEspecificoDelDr(id);
@@ -299,9 +307,7 @@ const traerHorarioDoctor = async (id) => {
 // Carga los datos de la tabla de precios
 const traerDatosServicios = async () => {
   try {
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/servicios"
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/servicios");
     let resultado = await peticion.json();
     console.log(resultado);
     const tbody = document.querySelector("#precios tbody");
@@ -362,9 +368,7 @@ const traerCitas = async () => {
 // Carga las citas del día
 const traerCitashoy = async () => {
   try {
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/citasDeHoy"
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/citasDeHoy");
     let resultado = await peticion.json();
     document.getElementById("citasDeHoy").textContent = resultado.length;
   } catch (error) {
@@ -374,12 +378,9 @@ const traerCitashoy = async () => {
 
 const pacientes_hospitalizados = async () => {
   try {
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/pacientes_hospitalizados"
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/pacientes_hospitalizados");
     let resultado = await peticion.json();
-    document.getElementById("pacientes_hospitalizados").textContent =
-      resultado.length;
+    document.getElementById("pacientes_hospitalizados").textContent = resultado.length;
     console.log(resultado);
   } catch (error) {
     console.log("Error al traer los pacientes hospitalizados:", error);
@@ -399,19 +400,13 @@ const especialidades_chart = async (url) => {
     console.log(data);
     if (data.length > 0) {
       //Quitarle lo oculto a los graficos
-      document
-        .getElementById("especialidades_solicitadas")
-        .classList.remove("d-none");
-      document
-        .getElementById("especialidades_solicitadas_pdf")
-        .classList.remove("d-none");
+      document.getElementById("especialidades_solicitadas").classList.remove("d-none");
+      document.getElementById("especialidades_solicitadas_pdf").classList.remove("d-none");
 
       let especialidades = data.map((item) => item.especialidad);
       let totalSolicitudes = data.map((item) => item.total_solicitudes);
       generarLeyendaEspecialidades(especialidades, totalSolicitudes); // Genera la leyenda de especialidades
-      let ctx = document
-        .getElementById("especialidades_solicitadas")
-        .getContext("2d");
+      let ctx = document.getElementById("especialidades_solicitadas").getContext("2d");
       if (especialidadesChart) {
         especialidadesChart.destroy();
       }
@@ -422,13 +417,7 @@ const especialidades_chart = async (url) => {
           datasets: [
             {
               data: totalSolicitudes,
-              backgroundColor: [
-                "#387adf",
-                "#78a0f0",
-                "#a4c7ff",
-                "#ffcc00",
-                "#ff6666",
-              ],
+              backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
             },
           ],
           options: {
@@ -443,9 +432,7 @@ const especialidades_chart = async (url) => {
       });
 
       // Renderiza el gráfico en el canvas del modal
-      let ctxModal = document
-        .getElementById("especialidades_solicitadas_pdf")
-        .getContext("2d");
+      let ctxModal = document.getElementById("especialidades_solicitadas_pdf").getContext("2d");
 
       // Destruye el gráfico existente en el modal si ya fue creado
       if (especialidadesChartModal) {
@@ -460,13 +447,7 @@ const especialidades_chart = async (url) => {
           datasets: [
             {
               data: totalSolicitudes,
-              backgroundColor: [
-                "#387adf",
-                "#78a0f0",
-                "#a4c7ff",
-                "#ffcc00",
-                "#ff6666",
-              ],
+              backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
             },
           ],
         },
@@ -483,21 +464,13 @@ const especialidades_chart = async (url) => {
       document.getElementById("especialidades").classList.remove("d-none");
       //Aparecer el escrito
       totalDeEspecialidades(data);
-      document
-        .querySelectorAll("#texto p")
-        .forEach((ele) => ele.classList.remove("d-none"));
+      document.querySelectorAll("#texto p").forEach((ele) => ele.classList.remove("d-none"));
     } else {
       //Vaciando todos los elementos si no hay datos para relizar la grafica
-      document
-        .getElementById("especialidades_solicitadas")
-        .classList.add("d-none");
-      document
-        .getElementById("especialidades_solicitadas_pdf")
-        .classList.add("d-none");
+      document.getElementById("especialidades_solicitadas").classList.add("d-none");
+      document.getElementById("especialidades_solicitadas_pdf").classList.add("d-none");
       document.querySelector(".leyenda-container").innerHTML = "";
-      document
-        .querySelectorAll("#texto p")
-        .forEach((ele) => ele.classList.add("d-none"));
+      document.querySelectorAll("#texto p").forEach((ele) => ele.classList.add("d-none"));
       document.getElementById("especialidades").classList.add("d-none");
     }
   } catch (error) {
@@ -506,9 +479,7 @@ const especialidades_chart = async (url) => {
 };
 
 async function totalDeEspecialidades(data) {
-  let peticion = await fetch(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades"
-  );
+  let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades");
   let resultado = await peticion.json();
   document.getElementById("texto").innerHTML = ``;
 
@@ -527,9 +498,7 @@ async function totalDeEspecialidades(data) {
 let sintomasChartModal = null;
 let sintomasChart = null;
 const sintomas_chart = async () => {
-  let sintomas_comunes = await fetch(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes"
-  );
+  let sintomas_comunes = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes");
   let data = await sintomas_comunes.json();
   let sintomas = data.map((item) => item.sintoma);
   let total = data.map((item) => item.total);
@@ -546,13 +515,7 @@ const sintomas_chart = async () => {
       datasets: [
         {
           data: total,
-          backgroundColor: [
-            "#387adf",
-            "#78a0f0",
-            "#a4c7ff",
-            "#ffcc00",
-            "#ff6666",
-          ],
+          backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
         },
       ],
     },
@@ -584,13 +547,7 @@ const sintomas_chart = async () => {
       datasets: [
         {
           data: total,
-          backgroundColor: [
-            "#387adf",
-            "#78a0f0",
-            "#a4c7ff",
-            "#ffcc00",
-            "#ff6666",
-          ],
+          backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
         },
       ],
     },
@@ -603,17 +560,32 @@ const sintomas_chart = async () => {
       },
     },
   });
+
+  generarLeyendaSintomas(sintomas, total); // genera la leyenda de síntomas
+
+  totalDeSintomas(data);
 };
 
-document
-  .querySelector(".reporte-sintomas")
-  .addEventListener("click", function () {
-    sintomas_chart();
-  });
+async function totalDeSintomas(data) {
+  let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todos_los_sintomas");
+  let resultado = await peticion.json();
+  console.log(resultado);
+  document.getElementById("textoSintomas").innerHTML = ``;
+  console.log(data);
+
+  let sintomas = data.map((item) => item.sintoma).join(",  ");
+  console.log(sintomas);
+
+  // Agrega esto al texto
+  document.getElementById("textoSintomas").innerHTML += `
+    <p>De Los ${resultado.total} sintomas registados, los ${data.length}  síntomas registrados, los mas comunes son: ${sintomas}.</p>
+    <p>Este reporte examina la distribución y las tendencias de los síntomas más comunes según su frecuencia en un periodo determinado.</p>
+                        <p>El gráfico de pastel muestra el porcentaje que representa cada uno de estos síntomas dentro del total de consultas, permitiendo identificar rápidamente cuáles son las manifestaciones clínicas que más demanda generan en la población atendida..</p>
+
+`;
+}
 
 function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
-  console.log(especialidades);
-  console.log(totalSolicitudes);
   // Selecciona el contenedor donde se mostrará la leyenda
   const contenedorLeyenda = document.querySelector(".leyenda-container");
   console.log(contenedorLeyenda);
@@ -622,18 +594,12 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
   contenedorLeyenda.innerHTML = "";
 
   // Calcula el total de solicitudes para obtener los porcentajes
-  const totalSolicitudesGlobal = totalSolicitudes.reduce(
-    (acumulado, actual) => acumulado + actual,
-    0
-  );
+  const totalSolicitudesGlobal = totalSolicitudes.reduce((acumulado, actual) => acumulado + actual, 0);
 
   // Recorre cada especialidad y genera un elemento de leyenda
   especialidades.forEach((especialidad, indice) => {
     // Calcula el porcentaje de solicitudes para esta especialidad
-    const porcentaje = (
-      (totalSolicitudes[indice] / totalSolicitudesGlobal) *
-      100
-    ).toFixed(1);
+    const porcentaje = ((totalSolicitudes[indice] / totalSolicitudesGlobal) * 100).toFixed(1);
 
     // Crea el contenedor principal para el elemento de la leyenda
     const elementoLeyenda = document.createElement("div");
@@ -645,13 +611,7 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
     const cuadroColor = document.createElement("div");
     cuadroColor.style.width = "20px";
     cuadroColor.style.height = "20px";
-    cuadroColor.style.backgroundColor = [
-      "#387adf",
-      "#78a0f0",
-      "#a4c7ff",
-      "#ffcc00",
-      "#ff6666",
-    ][indice % 5]; // Selecciona un color basado en el índice
+    cuadroColor.style.backgroundColor = ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"][indice % 5]; // Selecciona un color basado en el índice
     cuadroColor.style.marginRight = "10px";
     cuadroColor.style.borderRadius = "3px";
 
@@ -672,9 +632,55 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
   });
 }
 
-async function generarReporte() {
+function generarLeyendaSintomas(sintomas, total) {
+  // Selecciona el contenedor donde se mostrará la leyenda de síntomas
+  const contenedorLeyenda = document.querySelector(".leyenda-sintomas-container");
+  if (!contenedorLeyenda) return;
+
+  // Limpia cualquier contenido previo en el contenedor
+  contenedorLeyenda.innerHTML = "";
+
+  // Calcula el total de síntomas para obtener los porcentajes
+  const totalGlobal = total.reduce((acumulado, actual) => acumulado + actual, 0);
+
+  // Colores para los síntomas (igual que en el gráfico)
+  const colores = ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"];
+
+  // Recorre cada síntoma y genera un elemento de leyenda
+  sintomas.forEach((sintoma, indice) => {
+    const porcentaje = ((total[indice] / totalGlobal) * 100).toFixed(1);
+
+    // Contenedor principal del elemento de la leyenda
+    const elementoLeyenda = document.createElement("div");
+    elementoLeyenda.style.display = "flex";
+    elementoLeyenda.style.alignItems = "center";
+    elementoLeyenda.style.margin = "5px 0";
+
+    // Cuadro de color
+    const cuadroColor = document.createElement("div");
+    cuadroColor.style.width = "20px";
+    cuadroColor.style.height = "20px";
+    cuadroColor.style.backgroundColor = colores[indice % colores.length];
+    cuadroColor.style.marginRight = "10px";
+    cuadroColor.style.borderRadius = "3px";
+
+    // Texto descriptivo
+    const textoLeyenda = document.createElement("span");
+    textoLeyenda.innerHTML = `
+      ${sintoma}: ${total[indice]} casos (${porcentaje}%)
+    `;
+    textoLeyenda.style.fontSize = "14px";
+
+    elementoLeyenda.appendChild(cuadroColor);
+    elementoLeyenda.appendChild(textoLeyenda);
+
+    contenedorLeyenda.appendChild(elementoLeyenda);
+  });
+}
+
+function generarReporte(elementoImprimir, nombreArchivo) {
   // Buscar el elemento del DOM
-  const elementoImprimir = document.getElementById("imprimir");
+  
 
   if (!elementoImprimir) {
     console.error("El elemento con ID 'imprimir' no existe.");
@@ -708,20 +714,14 @@ async function generarReporte() {
 
   // Se establecer el color de fondo
   pdf.setFillColor(r, g, b);
-  pdf.rect(
-    0,
-    0,
-    pdf.internal.pageSize.getWidth(),
-    pdf.internal.pageSize.getHeight(),
-    "F"
-  ); // "F" para rellenar
+  pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), "F"); // "F" para rellenar
 
   elementoImprimir.classList.add("carta-imprimir");
 
   // Generar PDF con fondo adecuado
   pdf.html(elementoImprimir, {
     callback: function (doc) {
-      doc.save("reporte_especialidades.pdf");
+      doc.save(nombreArchivo || "reporte.pdf"); 
     },
     x: 0,
     y: 0,

@@ -135,6 +135,18 @@ class ControladorInicio
         echo json_encode($sintomas_comunes);
     }
 
+    public function sintomas_comunes_filtrados($datos)
+    {
+        $sintomas_comunes = $this->modeloInicio->sintomas_comunes($datos[0],$datos[1]);
+        echo json_encode($sintomas_comunes);
+    }
+
+    public function todos_los_sintomas()
+    {
+        $todos_los_sintomas = $this->modeloInicio->todos_los_sintomas();
+        echo json_encode($todos_los_sintomas);
+    }
+
     //Datos del horario del doctor
     public function mostrarHorario($datos)
     {
