@@ -12,8 +12,7 @@ addEventListener("DOMContentLoaded", function () {
     //Expresiones regulres
     const inputsExpresiones = document.querySelectorAll("#modalAgregarControl .inputExpresiones");
 
-
-    const id_usuario_bitacora = document.getElementById("id_usuario_bitacora").value;// constante que guarda el id que inicio session de esa manera podemos realizar la bitacora;
+    const id_usuario_bitacora = document.getElementById("id_usuario_bitacora").value; // constante que guarda el id que inicio session de esa manera podemos realizar la bitacora;
 
     //objeto de las expresiones:
     const expresiones = {
@@ -62,11 +61,9 @@ addEventListener("DOMContentLoaded", function () {
                 // Array.from es para convertir el html en array y el .some es para verificar(en una array) si cumple con la condición especifica; devolviendo true si es verdadero y false si es falso
                 let seleccionadoS = Array.from(inputCheS).some((checkbox) => checkbox.checked);
                 if (seleccionadoS) {
-
                     campos["sintomas"] = true;
                 } else {
                     campos["sintomas"] = false;
-
                 }
                 break;
             case "doctor":
@@ -103,7 +100,10 @@ addEventListener("DOMContentLoaded", function () {
                 fechaMaxima.setHours(0, 0, 0, 0);
 
                 if (
-                    expresiones.fechaRegreso.test(document.querySelector(`.grp_control_fechaRegreso`).value) && fechaInput >= hoy && fechaInput <= fechaMaxima) {
+                    expresiones.fechaRegreso.test(document.querySelector(`.grp_control_fechaRegreso`).value) &&
+                    fechaInput >= hoy &&
+                    fechaInput <= fechaMaxima
+                ) {
                     document.querySelector(`.grp_control_fechaRegreso`).style.borderBottom = "2px solid rgb(13, 240, 13)";
                     document.querySelector("#leyendaFec").classList.add("d-none");
 
@@ -160,38 +160,34 @@ addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".li-pacientes").forEach((liPaciente) => {
                 liPaciente.addEventListener("click", async function (e) {
                     let cedula = e.target.innerText.split(" ")[2].substring(2);
-                    
+
                     await traerControl(cedula);
                 });
             });
-
-
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
-    let cargando = false;
+    let semaforo = 0;
 
     //funcion ajax para traer el control
     const traerControl = async (idPaciente) => {
         try {
             // verifico si esta ejecutándose
-            if (cargando) return;
+            if (semaforo === 1) return;
             // comienza a cargar
-            cargando = true;
+            semaforo = 1;
 
             let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarControlPacientesJS/" + idPaciente);
             let resultado = await peticion.json();
-console.log(resultado);
+            console.log(resultado);
 
             let div = document.getElementById("div");
             div.innerHTML = ``;
             console.log(resultado);
             if (resultado[0].length > 0) {
-
                 for (const res of resultado[0]) {
-
                     div.innerHTML += `
                                     <div class="m-3 divNS">
                                         <div class="d-flex ">
@@ -386,10 +382,8 @@ console.log(resultado);
                                     </div>`;
             }
 
-
             let htmlPatologia = ``;
             resultado[4].forEach((resPT) => {
-
                 htmlPatologia += `<div class="form-check form-switch d-flex align-items-center ms-4 mb-1">
                                     <div>
                                         <input class="form-check-input inputExpresiones inputPatologia" type="checkbox"
@@ -398,22 +392,18 @@ console.log(resultado);
                                     </div>
                                     <div>
                                         <label class="form-check-label mt-2" for="flexSwitchCheckDefault">
-                                            ${resPT['nombre_patologia']}
+                                            ${resPT["nombre_patologia"]}
                                         </label>
                                     </div>
 
                                 </div>`;
-
-            })
-
+            });
 
             for (const res of resultado[0]) {
-
                 let patologiasP = await patologiaCC(res.id_control);
 
                 if (patologiasP != undefined) {
                     if (patologiasP.length > 0) {
-
                         for (const resPtlg of patologiasP) {
                             // esta parte es para agregar los nombres de las patologías
                             let pP = document.querySelector(`.divNS .pP${res.id_control}`);
@@ -428,8 +418,9 @@ console.log(resultado);
                                 pP.innerText = textoP;
                             }
 
-
-                            document.querySelector(`.divPE${res.id_control}`).innerHTML += `<div class="form-check form-switch d-flex align-items-center ms-4 mb-1">
+                            document.querySelector(
+                                `.divPE${res.id_control}`
+                            ).innerHTML += `<div class="form-check form-switch d-flex align-items-center ms-4 mb-1">
                                     <div>
                                         <input class="form-check-input inputExpresiones inputPatologia" type="checkbox"
                                             role="switch" id="flexSwitchCheckDefault" name="patologias[]"
@@ -437,26 +428,20 @@ console.log(resultado);
                                     </div>
                                     <div>
                                         <label class="form-check-label mt-2" for="flexSwitchCheckDefault">
-                                            ${resPtlg['nombre_patologia']}
+                                            ${resPtlg["nombre_patologia"]}
                                         </label>
                                     </div>
 
                                 </div>`;
-
                         }
-
                     } else {
                         // esta parte es para agregar los nombres de las patologías
                         let pP = document.querySelector(`.divNS .pP${res.id_control}`);
                         pP.innerText = ` No tiene`;
                     }
-
                 }
 
-
-
                 resultado[1].forEach((resS) => {
-
                     // se le coloca al que tenga el mismo id
                     if (res.id_control == resS.id_control) {
                         // esta parte es para agregar los nombres de los síntomas
@@ -472,7 +457,9 @@ console.log(resultado);
                             p.innerText = texto;
                         }
 
-                        document.querySelector(`.divSE${res.id_control}`).innerHTML += `<div class="form-check form-switch d-flex align-items-center ms-4 mb-1">
+                        document.querySelector(
+                            `.divSE${res.id_control}`
+                        ).innerHTML += `<div class="form-check form-switch d-flex align-items-center ms-4 mb-1">
                         <div>
                             <input class="form-check-input inputExpresiones inputSintomas" type="checkbox" role="switch"
                                 id="flexSwitchCheckDefault" name ="sintomas[]"
@@ -480,22 +467,18 @@ console.log(resultado);
                         </div>
                         <div>
                             <label class="form-check-label mt-1 for=" flexSwitchCheckDefault">
-                                ${resS['nombreS']}
+                                ${resS["nombreS"]}
                             </label>
                         </div>
     
                     </div>`;
-
                     }
-
                 });
-
             }
 
             // enviar formulario de editar
             document.querySelectorAll(".modalesEditar").forEach((ele) => {
                 ele.addEventListener("submit", async function (f) {
-
                     f.preventDefault();
                     if (camposEditar.diagnostico && camposEditar.indicaciones && camposEditar.fechaRegreso) {
                         await EnviarFormularioEditar(ele);
@@ -503,11 +486,11 @@ console.log(resultado);
                         id = ele.parentElement.parentElement.getAttribute("id");
 
                         UIkit.modal(`#${id}`).hide();
-                        
-                        document.querySelectorAll(".divModalE").forEach(div => {
+
+                        document.querySelectorAll(".divModalE").forEach((div) => {
                             div.classList.remove("uk-open");
                             // Quitar todos los estilos inline
-                            div.style.cssText = '';
+                            div.style.cssText = "";
                         });
                     } else {
                         alert("revise el formulario");
@@ -520,18 +503,17 @@ console.log(resultado);
                 ele.addEventListener("click", function () {
                     let idModalEditar = this.getAttribute("uk-toggle").split(" ")[1].substring(1);
                     console.log(idModalEditar);
-                    let inputsEditarControl = document.querySelectorAll(`#${idModalEditar} .uk-modal-dialog .modalesEditar .caja-editar-input .input-modal`);
+                    let inputsEditarControl = document.querySelectorAll(
+                        `#${idModalEditar} .uk-modal-dialog .modalesEditar .caja-editar-input .input-modal`
+                    );
                     console.log(inputsEditarControl);
                     inputsKeyupEditar(inputsEditarControl);
                 });
             });
 
             // termino de cargar
-            cargando = false;
-        } catch (error) {
-
-        }
-
+            semaforo = 0;
+        } catch (error) {}
     };
 
     //función para keyup de los inputs de editar
@@ -540,18 +522,12 @@ console.log(resultado);
             ele.addEventListener("input", function (e) {
                 if (e.target.name == "indicaciones") {
                     if (expresiones.indicaciones.test(e.target.value)) {
-                        e.target.parentElement.classList.remove(
-                            "grpFormInCorrectControlEditar"
-                        );
+                        e.target.parentElement.classList.remove("grpFormInCorrectControlEditar");
                         e.target.parentElement.classList.add("grpFormCorrectControlEditar");
                         camposEditar["indicaciones"] = true;
                     } else {
-                        e.target.parentElement.classList.remove(
-                            "grpFormCorrectControlEditar"
-                        );
-                        e.target.parentElement.classList.add(
-                            "grpFormInCorrectControlEditar"
-                        );
+                        e.target.parentElement.classList.remove("grpFormCorrectControlEditar");
+                        e.target.parentElement.classList.add("grpFormInCorrectControlEditar");
                         camposEditar["indicaciones"] = false;
                     }
                 } else if (e.target.name == "fechaRegreso") {
@@ -570,11 +546,7 @@ console.log(resultado);
                     // para que la hora minutos s mm este en cero, como no lo voy a usar
                     fechaMaxima.setHours(0, 0, 0, 0);
 
-                    if (
-                        expresiones.fechaRegreso.test(e.target.value) &&
-                        fechaInput >= hoy &&
-                        fechaInput <= fechaMaxima
-                    ) {
+                    if (expresiones.fechaRegreso.test(e.target.value) && fechaInput >= hoy && fechaInput <= fechaMaxima) {
                         let input = e.target;
                         input.classList.remove("grpFormInCorrectControlEditar");
                         input.classList.add("grpFormCorrectControlEditar");
@@ -611,13 +583,12 @@ console.log(resultado);
         document.getElementById("mandarRegistrarPaciente").classList.add("d-none");
 
         cedulaControl.value = "";
-    })
+    });
 
     //mostrar paciente cedula
     const mostrarPaciente = async (cedula) => {
-
         // deseleccionar todos los checked de patología
-        document.querySelectorAll(`.inputPP`).forEach(input => {
+        document.querySelectorAll(`.inputPP`).forEach((input) => {
             input.checked = false;
         });
 
@@ -630,7 +601,7 @@ console.log(resultado);
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacienteJS/" + cedula + "/" + fechaHoy);
         let resultado = await peticion.json();
 
-        // resultado de la peticion  
+        // resultado de la peticion
         console.log(resultado);
         if (resultado.length > 0) {
             resultado.forEach((res) => {
@@ -648,24 +619,19 @@ console.log(resultado);
             let verificar = await patologiaC(resultado[0].id_paciente, "inputPP", "mostrarPIdP");
             // si
             if (verificar != undefined) {
-
                 let inputChe = document.querySelectorAll(`.inputPP`);
-
             }
-
 
             document.getElementById("mostrarPaciente").classList.remove("d-none");
             document.getElementById("btnAC").classList.remove("d-none");
             document.getElementById("contenedorF").classList.remove("d-none");
             document.getElementById("mandarRegistrarPaciente").classList.add("d-none");
-
         } else {
             document.getElementById("mostrarPaciente").classList.add("d-none");
             document.getElementById("btnAC").classList.add("d-none");
             document.getElementById("contenedorF").classList.add("d-none");
             document.getElementById("mandarRegistrarPaciente").classList.remove("d-none");
             document.getElementById("No_paciente").innerText = `NO SE ENCONTRÓ AL PACIENTE, PRESIONE CLIC AQUÍ PARA REGISTRAR`;
-
         }
     };
     //enviar formulario
@@ -673,7 +639,7 @@ console.log(resultado);
         try {
             // tomo la fecha de hoy
             let fechaH = new Date();
-            // se le coloca el formato a la fecha 
+            // se le coloca el formato a la fecha
             let fechaHo = fechaH.toISOString().slice(0, 19);
 
             document.querySelector("#fechaHora").value = fechaHo;
@@ -695,14 +661,12 @@ console.log(resultado);
     //enviar formulario editar
     const EnviarFormularioEditar = async (formulario) => {
         try {
-
             const datos = new FormData(formulario);
             const contenido = { method: "POST", body: datos };
             let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/editarControl", contenido);
             let resultado = await peticion.json();
             comentariosControl(`Control De CI ${resultado.cedula} Modificado Correctamente`, "warning");
             await traerControl(resultado.cedula);
-
         } catch (error) {
             console.log(error);
         }
@@ -725,7 +689,14 @@ console.log(resultado);
     modalAgregarControl.addEventListener("submit", function (f) {
         f.preventDefault();
 
-        if (campos.cedula && campos.sintomas && campos.doctor && campos.diagnostico && campos.indicaciones && campos.fechaRegreso) {
+        if (
+            campos.cedula &&
+            campos.sintomas &&
+            campos.doctor &&
+            campos.diagnostico &&
+            campos.indicaciones &&
+            campos.fechaRegreso
+        ) {
             UIkit.modal("#modal-examplecontrol").hide();
             EnviarFormulario();
             modalAgregarControl.reset();
@@ -752,8 +723,7 @@ console.log(resultado);
 
     document.addEventListener("click", async function (e) {
         // contains sirve para verificar si la clase existe ...
-        if (e.target && e.target.classList.contains('btnEditar')) {
-
+        if (e.target && e.target.classList.contains("btnEditar")) {
             let btnE = e.target;
             // sintomas
             let idCon = btnE.getAttribute("data-id-control");
@@ -763,57 +733,52 @@ console.log(resultado);
             // patologías
             // let idPac = btnE.getAttribute("data-id-paciente");
             let arrPi = await patologiaC(idCon, "inputPatologia", "mostrarPP");
-            // si existe una patología 
+            // si existe una patología
             if (arrPi != undefined) {
                 document.querySelector("#idPac").value = arrPi[0];
-                // si no existe una patología 
+                // si no existe una patología
             } else {
                 document.querySelector("#idPac").value = "";
             }
-
-
         }
-    })
+    });
     document.querySelector(".btnNin").addEventListener("click", () => {
         // deseleccionar todos los checked de patología
-        document.querySelectorAll(`.inputPP`).forEach(input => {
+        document.querySelectorAll(`.inputPP`).forEach((input) => {
             input.checked = false;
         });
-    })
+    });
     /////////////////////////////////// patología ////////////////
 
     //  del control del paciente
     const patologiaCC = async (idC) => {
         try {
-
             let peticion = await fetch(`/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPP/` + idC);
             let resultado = await peticion.json();
 
             // if (resultado.length > 0) {
             // }
             return resultado;
-
         } catch (error) {
             console.log(error + " . . . algo a sucedido");
         }
-    }
+    };
 
     //  del control del paciente
     const patologiaC = async (idCP, inputPatologia, funcion) => {
         try {
-
             let peticion = await fetch(`/Sistema-del--CEM--JEHOVA-RAFA/Control/${funcion}/` + idCP);
             let resultado = await peticion.json();
 
             if (resultado.length > 0) {
                 // id de patologías del paciente
                 let idA = [];
-                resultado.forEach(res => {
+                resultado.forEach((res) => {
                     idA.push(res.id_patologia);
                 });
 
-                // 
-                document.querySelectorAll(`.${inputPatologia}`).forEach(input => {
+                //
+                document.querySelectorAll(`.${inputPatologia}`).forEach((input) => {
                     let id = parseInt(input.value);
                     // si el id del input es igual al registro de las patologias del paciente...
                     if (idA.includes(id)) {
@@ -826,19 +791,16 @@ console.log(resultado);
                 let arrayIdV = [idCP, idA];
                 return arrayIdV;
             }
-
-
         } catch (error) {
             console.log(error + " . . . algo a sucedido");
         }
-    }
+    };
 
     /////////////////////////////////// sintomas ////////////////
 
     // sintomas del control del paciente
     const sintomasC = async (idControl) => {
         try {
-
             let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarSP/" + idControl);
             let resultado = await peticion.json();
 
@@ -846,12 +808,12 @@ console.log(resultado);
             if (resultado.length > 0) {
                 // id de sintomas del control
                 let idA = [];
-                resultado.forEach(res => {
+                resultado.forEach((res) => {
                     idA.push(res.id_sintomas);
                 });
 
-                // 
-                document.querySelectorAll(".inputSintomas").forEach(input => {
+                //
+                document.querySelectorAll(".inputSintomas").forEach((input) => {
                     let id = parseInt(input.value);
                     // si el id del input es igual al registro de los sintomas del control...
                     if (idA.includes(id)) {
@@ -861,14 +823,12 @@ console.log(resultado);
                         input.checked = false;
                     }
                 });
-                return idControl
+                return idControl;
             }
-
-
         } catch (error) {
             console.log(error + " . . . algo a sucedido");
         }
-    }
+    };
 
     // para el buscador de Sintomas
     let inputBuscS = document.querySelector("#inputBuscarS");
