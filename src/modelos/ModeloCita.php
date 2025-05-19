@@ -67,6 +67,9 @@ class ModeloCita extends Db
 
 	public function insertarCita($id_paciente, $id_servicioMedico, $fecha, $hora, $estado)
 	{
+
+		$this->conexion->beginTransaction();
+
 		$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente) ");
 
 
@@ -76,7 +79,13 @@ class ModeloCita extends Db
 		$consulta->bindParam(":hora", $hora);
 		$consulta->bindParam(":estado", $estado);
 
-		$consulta->execute();
+		if ($consulta->execute()) {
+			$this->conexion->commit();
+			return true;
+		} else {
+			$this->conexion->rollBack();
+			return false;
+		}
 	}
 
 
