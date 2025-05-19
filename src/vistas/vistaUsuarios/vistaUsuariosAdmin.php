@@ -94,7 +94,7 @@
             <div class=" me-3 mb-4  d-flex justify-content-end w-100">
 
 
-                <ul class="sin-circulos d-flex justify-content-end">
+                <ul class="ico sin-circulos d-flex justify-content-end">
 
                     <li class="li">
                         <div class="borde-de-menu  mb-1 "></div>

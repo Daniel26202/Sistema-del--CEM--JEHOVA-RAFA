@@ -67,16 +67,34 @@ class ModeloCita extends Db
 
 	public function insertarCita($id_paciente, $id_servicioMedico, $fecha, $hora, $estado)
 	{
-		$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente) ");
+		try {
+
+			$this->conexion->beginTransaction();
 
 
-		$consulta->bindParam(":id_paciente", $id_paciente);
-		$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-		$consulta->bindParam(":fecha", $fecha);
-		$consulta->bindParam(":hora", $hora);
-		$consulta->bindParam(":estado", $estado);
+			$disponibilidad =  $this->validarCita($id_paciente, $fecha, $hora);
 
-		$consulta->execute();
+			if ($disponibilidad  == "existeC") {
+				// Ya existe una cita, evitar la inserción
+				$this->conexion->rollBack();
+				return "existeC";
+			}
+
+			// Si no existe, inserta la cita
+			$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente)");
+			$consulta->bindParam(":id_paciente", $id_paciente);
+			$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
+			$consulta->bindParam(":fecha", $fecha);
+			$consulta->bindParam(":hora", $hora);
+			$consulta->bindParam(":estado", $estado);
+			$consulta->execute();
+
+			$this->conexion->commit();
+		} catch (\Exception $e) {
+			$this->conexion->rollBack();
+
+			return false;
+		}
 	}
 
 
@@ -96,6 +114,7 @@ class ModeloCita extends Db
 		$consulta->bindParam(":fecha", $fecha);
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
+
 
 	// SELECT u.nombre AS nombre_d, u.apellido AS apellido_d,sm.*, p.id_paciente, p.cedula AS cedula_p, p.nombre AS nombre_p, p.apellido AS apellido_p, p.telefono AS telefono_p, c.id_cita, c.fecha, c.hora, c.estado, e.nombre AS especialidad, e.id_especialidad, n.nacionalidad AS nacionalidad_p FROM paciente p INNER JOIN cita c ON p.id_paciente = c.id_paciente INNER JOIN serviciomedico s ON s.id_servicioMedico = c.id_servicioMedico INNER JOIN doctor d ON s.id_doctor = d.id_doctor INNER JOIN doctoryespecialidad de ON de.id_doctor = d.id_doctor INNER JOIN especialidad e ON de.id_especialidad = e.id_especialidad INNER JOIN usuario u ON u.id_usuario = d.id_usuario INNER JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico INNER JOIN nacionalidad n ON p.id_nacionalidad = n.id_nacionalidad WHERE u.estado = 'ACT' AND c.estado = 'Pendiente' AND c.fecha = :fecha
 

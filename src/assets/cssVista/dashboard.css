@@ -28,6 +28,27 @@ body {
   font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
 }
 
+h1,h2,h5, th{
+  color: var(--color-text-card) !important;
+}
+
+.input-buscar{
+  color: var(--color-text-card) !important;
+}
+
+.icon{
+  color: white !important;
+}
+
+svg {
+ color: white !important;
+}
+
+.imprimir{
+  color: var(--color-text-card) !important;
+}
+
+
 .canva {
   background-color: white !important;
   border-radius: 8px;
@@ -52,10 +73,19 @@ body {
 #welcomeCard {
   display: inline-flex;
   flex-direction: column-reverse;
-  color: var(--color-text);
   background-color: var(--color-primary);
   margin-left: 10px;
   justify-content: center;
+}
+
+.welcome-card-title {
+  font-size: 1.5rem;
+  color: var(--color-text) !important;
+}
+
+.welcome-card-subtitle {
+  font-size: 1.9rem;
+  color: var(--color-text) !important;
 }
 
 .card-container {
@@ -68,6 +98,10 @@ body {
   background: var(--color-surface);
   text-align: center;
   border-radius: 10px;
+}
+
+canvas{
+  color: var(--color-text) !important;
 }
 
 .chart-card {

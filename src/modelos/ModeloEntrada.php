@@ -61,18 +61,6 @@ class ModeloEntrada extends Db
 
 		
 
-		//se llama a un metodo de el ModeloInsumo para traer la cantidad de insumo que hay disponible y se guarda en una variable llamada cantidadInsumos
-		// $cantidadInsumos = $this->modeloInsumo->actualizar_cantidad_insumo($id_insumo);
-		
-
-		// //esto es para actualizar la cantidad de insumos con el valor de cantidadInsumos
-		// $actulizacionDeCantidad = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
-		// $actulizacionDeCantidad->bindParam(":cantidad",$cantidadInsumos[0]["cantidad"]);
-		// $actulizacionDeCantidad->bindParam(":id_insumo",$id_insumo);
-		// $actulizacionDeCantidad->execute();
-
-		//$this->promedioPonderado($id_insumo);
-
 
 		//insertar en la tabla inventario
 
@@ -122,13 +110,6 @@ class ModeloEntrada extends Db
 		$cantidadInsumos = $this->modeloInsumo->actualizar_cantidad_insumo($id_insumo);
 		
 
-		//esto es para actualizar la cantidad de insumos con el valor de cantidadInsumos
-		// $actulizacionDeCantidad = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
-		// $actulizacionDeCantidad->bindParam(":cantidad",$cantidadInsumos[0]["cantidad"]);
-		// $actulizacionDeCantidad->bindParam(":id_insumo",$id_insumo);
-		// $actulizacionDeCantidad->execute();
-
-		// $this->promedioPonderado($id_insumo);
 	
 	}
 
@@ -146,41 +127,6 @@ class ModeloEntrada extends Db
 
 
 	
-
-	//funcion privada para calcular el precio ponderado de el insumo
-	// private function promedioPonderado($id_insumo)
-	// {
-	// 	//total precio
-	// 	$sqlTotalPrecio = $this->conexion->prepare("SELECT i.nombre, SUM(ei.precio) AS total_precio FROM entrada e INNER JOIN entrada_insumo ei ON e.id_entrada = ei.id_entrada INNER JOIN insumo i ON i.id_insumo = ei.id_insumo GROUP BY ei.id_insumo HAVING ei.id_insumo = :id_insumo");
-	// 	$sqlTotalPrecio->bindParam(":id_insumo", $id_insumo);
-	// 	$precio_total = 0;
-	// 	if ($sqlTotalPrecio->execute()) {
-	// 		$precio_total = $sqlTotalPrecio->fetch();
-	// 		echo "<br>Total Precio: " . $precio_total["total_precio"] . "<br><br>";
-	// 	}
-	// 	//total cantidad
-	// 	$sqlTotalCatidad = $this->conexion->prepare("SELECT i.nombre, i.cantidad AS total_cantidad, e.estado FROM entrada_insumo ei INNER JOIN insumo i ON ei.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada  WHERE i.id_insumo =:id_insumo AND e.estado = 'ACT' LIMIT 1 ");
-	// 	$sqlTotalCatidad->bindParam(":id_insumo", $id_insumo);
-	// 	$cantidad_total = 0;
-	// 	if ($sqlTotalCatidad->execute()) {
-	// 		$cantidad_total = $sqlTotalCatidad->fetch();
-	// 		echo "<br>Total Cantidad: " . $cantidad_total["total_cantidad"] . "<br><br>";
-	// 	}
-
-	// 	$promedio_ponderado = $precio_total["total_precio"] / $cantidad_total["total_cantidad"];
-
-	// 	$con_dos_decimales = number_format($promedio_ponderado, 2, '.', '.');
-
-	// 	echo "<br>Promedio Ponderado: " . $con_dos_decimales . "<br><br>";
-
-	// 	$consulta = $this->conexion->prepare("UPDATE insumo SET precio =:con_dos_decimales WHERE id_insumo =:id_insumo");
-	// 	$consulta->bindParam(":id_insumo", $id_insumo);
-	// 	$consulta->bindParam(":con_dos_decimales", $con_dos_decimales);
-	// 	$consulta->execute();
-
-
-
-	// }
 
 
 	public function seleccionarDesactivos(){

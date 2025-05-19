@@ -31,6 +31,7 @@ addEventListener("DOMContentLoaded", function () {
         fechaRegreso: false,
     };
     let idDU = document.querySelector("#idDExisteU");
+    console.log(idDU)
     if (idDU) {
         campos.doctor = true;
     }
@@ -688,6 +689,7 @@ addEventListener("DOMContentLoaded", function () {
 
     modalAgregarControl.addEventListener("submit", function (f) {
         f.preventDefault();
+        console.log(campos)
 
         if (
             campos.cedula &&

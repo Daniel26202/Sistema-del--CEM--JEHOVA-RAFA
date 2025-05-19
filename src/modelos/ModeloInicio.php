@@ -30,7 +30,7 @@ WHERE estado = 'ACT';");
 
 	public function servicios()
 	{
-		$consulta = $this->conexion->prepare("SELECT c.nombre AS categoria, s.precio FROM serviciomedico s INNER JOIN categoria_servicio c ON s.id_categoria = c.id_categoria");
+		$consulta = $this->conexion->prepare("SELECT c.nombre AS categoria, s.precio FROM serviciomedico s INNER JOIN categoria_servicio c ON s.id_categoria = c.id_categoria  WHERE s.estado = 'ACT' ");
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
@@ -70,15 +70,34 @@ WHERE estado = 'ACT';");
 		return ($consulta->execute()) ? $consulta->fetch() : false;
 	}
 
-	public function sintomas_comunes()
+	public function sintomas_comunes($fechaInicio = "", $fechaFinal = "")
 	{
-		$consulta = $this->conexion->prepare("SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
+		if ($fechaInicio == "" && $fechaFinal == "") {
+			$consulta = $this->conexion->prepare("SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
 											FROM sintomas_control sc
 											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
 											GROUP BY s.nombre
-											ORDER BY total DESC;
+											ORDER BY total DESC lIMIT 5;
 												");
+		} else {
+			$consulta = $this->conexion->prepare("SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
+											FROM sintomas_control sc
+											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
+											INNER JOIN control c ON c.id_control = sc.id_control WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
+											GROUP BY s.nombre
+											ORDER BY total DESC lIMIT 5;
+												");
+			$consulta->bindParam(":fechaInicio", $fechaInicio);
+			$consulta->bindParam(":fechaFinal", $fechaFinal);
+		}
+
 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
+	}
+
+	public function todos_los_sintomas()
+	{
+		$consulta = $this->conexion->prepare("SELECT COUNT(sc.id_sintomas_control) AS total FROM sintomas s INNER JOIN sintomas_control sc ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control");
+		return ($consulta->execute()) ? $consulta->fetch() : false;
 	}
 
 

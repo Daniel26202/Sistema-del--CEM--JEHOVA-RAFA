@@ -79,34 +79,41 @@ class ControladorIniciarSesion
         //             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
         //         } else {
 
-                    $validar = $this->modelo->validarIniciarSesion($_POST['usuario'], $_POST['password']);
+        $validar = $this->modelo->validarIniciarSesion($_POST['usuario'], $_POST['password']);
 
-                    if ($validar) {
+        if ($validar) {
+            $session_inciada_por_usuario = isset($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
 
-                        session_start();
-                        $_SESSION['usuario'] = $_POST['usuario'];
-                        $_SESSION['rol'] = $validar['rol'];
-                        $_SESSION['id_rol'] = $validar['id_rol'];
-                        $_SESSION['id_usuario'] = $validar['id_usuario'];
-                        $_SESSION['nombre'] = $validar['nombre_personal'];
-                        $_SESSION['apellido'] = $validar['apellido_personal'];
+            //Si hay una session actia le decimos al usuario
+            if ($session_inciada_por_usuario) {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/errorSession");
+            } else {
+                session_start();
+                $_SESSION['usuario'] = $_POST['usuario'];
+                $_SESSION['rol'] = $validar['rol'];
+                $_SESSION['id_rol'] = $validar['id_rol'];
+                $_SESSION['id_usuario'] = $validar['id_usuario'];
+                $_SESSION['nombre'] = $validar['nombre_personal'];
+                $_SESSION['apellido'] = $validar['apellido_personal'];
 
-                        $this->bitacora->insertarBitacora($_SESSION['id_usuario'], "inicio sesion", "Ha iniciado una session");
+                $this->bitacora->insertarBitacora($_SESSION['id_usuario'], "inicio sesion", "Ha iniciado una session");
 
-                        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
-                    } else {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
+            }
+        } else {
 
-                        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/mensaje");
-                    }
-                // }
-            // } else {
-            //     header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
-            // }
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/mensaje");
+        }
+        // }
+        // } else {
+        //     header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
+        // }
         // }
     }
 
     //Metodo para mostrar la vista de la pagina de error ç
-    public function error(){
+    public function error()
+    {
         require_once "./src/vistas/vistaIniciarSesion/vistaError.php";
     }
 }

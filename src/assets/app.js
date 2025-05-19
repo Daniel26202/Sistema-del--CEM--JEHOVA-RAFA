@@ -1,20 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
   const root = document.documentElement;
-  const toggle = document.getElementById("toggleTheme");
+  const themeToggleCheckbox = document.getElementById("themeToggleCheckbox");
 
   // 1) Aplicar tema guardado
   if (localStorage.getItem("theme") === "dark") {
     root.setAttribute("data-theme", "dark");
+    if (themeToggleCheckbox) themeToggleCheckbox.checked = true; // Sincronizar estado del checkbox
   }
 
-  // 2) Alternar al hacer clic
-  toggle.addEventListener("click", () => {
-    console.log("Cambiando tema");
-
-    const isDark = root.getAttribute("data-theme") === "dark";
-    root.setAttribute("data-theme", isDark ? "" : "dark");
-    localStorage.setItem("theme", isDark ? "light" : "dark");
-  });
+  // 2) Alternar al cambiar el estado del checkbox
+  if (themeToggleCheckbox) {
+    themeToggleCheckbox.addEventListener("change", () => {
+      const isDark = themeToggleCheckbox.checked;
+      root.setAttribute("data-theme", isDark ? "dark" : "");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+  }
 });
 
 const aside = document.getElementById("aside");

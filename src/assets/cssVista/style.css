@@ -11,6 +11,7 @@
   --color-surface: #f8fcff;
   --color-border: #f2f9ff;
   --filter-image: ""; 
+  --color-error:#917977;
 }
 
 [data-theme="dark"] {
@@ -25,6 +26,7 @@
   --color-surface: #415a77;
   --color-border: #e4ebf0;
   --filter-image: brightness(50%) contrast(120%);
+  --color-error: #B0CAD7;
   input::placeholder {
     color: #e8f2ff;
   }
@@ -36,17 +38,141 @@
   margin: 0;
   box-sizing: border-box;
   font-family: "Arial", sans-serif;
-  color: var(--color-text-card) !important;
+  /* color: var(--color-text-card) !important; */
 }
 
 a {
   color: var(--color-text-card) !important;
 }
 
+
 h1 {
   font-size: 2rem;
   color: var(--color-text-card);
 }
+
+h3,h4{
+  color: var(--color-text-card);
+}
+
+/* From Uiverse.io by lenin55 */
+.cl-toggle-switch {
+  position: relative;
+}
+
+.cl-switch {
+  position: relative;
+  display: inline-block;
+}
+
+/* Input */
+.cl-switch>input {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  z-index: -1;
+  position: absolute;
+  right: 6px;
+  top: -8px;
+  display: block;
+  margin: 0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color: rgb(0, 0, 0, 0.38);
+  outline: none;
+  opacity: 0;
+  transform: scale(1);
+  pointer-events: none;
+  transition: opacity 0.3s 0.1s, transform 0.2s 0.1s;
+}
+
+/* Track */
+.cl-switch>span::before {
+  content: "";
+  float: right;
+  display: inline-block;
+  margin: 5px 0 5px 10px;
+  border-radius: 7px;
+  width: 36px;
+  height: 14px;
+  background-color: rgb(0, 0, 0, 0.38);
+  vertical-align: top;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+/* Thumb */
+.cl-switch>span::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 16px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+/* Checked */
+.cl-switch>input:checked {
+  right: -10px;
+  background-color: #85b8b7;
+}
+
+.cl-switch>input:checked+span::before {
+  background-color: #85b8b7;
+}
+
+.cl-switch>input:checked+span::after {
+  background-color: #018786;
+  transform: translateX(16px);
+}
+
+/* Hover, Focus */
+.cl-switch:hover>input {
+  opacity: 0.04;
+}
+
+.cl-switch>input:focus {
+  opacity: 0.12;
+}
+
+.cl-switch:hover>input:focus {
+  opacity: 0.16;
+}
+
+/* Active */
+.cl-switch>input:active {
+  opacity: 1;
+  transform: scale(0);
+  transition: transform 0s, opacity 0s;
+}
+
+.cl-switch>input:active+span::before {
+  background-color: #8f8f8f;
+}
+
+.cl-switch>input:checked:active+span::before {
+  background-color: #85b8b7;
+}
+
+/* Disabled */
+.cl-switch>input:disabled {
+  opacity: 0;
+}
+
+.cl-switch>input:disabled+span::before {
+  background-color: #ddd;
+}
+
+.cl-switch>input:checked:disabled+span::before {
+  background-color: #bfdbda;
+}
+
+.cl-switch>input:checked:disabled+span::after {
+  background-color: #61b5b4;}
 
 .aside {
   height: 100%;
@@ -88,6 +214,7 @@ h1 {
 /*segunda parte*/
 
 .options div {
+  color: #fff !important;
   display: flex;
   align-items: center;
   padding: 11px 15px;
@@ -130,6 +257,8 @@ h1 {
   margin: auto;
 }
 
+
+
 .desaparecer-icono {
   display: none;
 }
@@ -149,8 +278,12 @@ main {
   min-height: 100vh;
 }
 
-svg {
-  color: var(--color-text-card);
+.icon {
+  color: white !important;
+}
+
+.ico{
+  color: var(--color-text-card) !important;
 }
 
 .contenido {
@@ -447,6 +580,7 @@ svg {
 
 .sin-circulos {
   list-style-type: none;
+  color: var(--color-text-card) !important;
 }
 
 .borde-menu {
@@ -490,15 +624,18 @@ svg {
 /* estilos Control */
 
 .lista-pacientes {
-  width: 350px;
-  height: 350px;
+  /* width: 350px;
+  height: 350px; */
+  width: 25%;
+  height: 50vh;
   overflow-y: auto !important;
 }
 
 .lista-pacientes2 {
-  width: 700px;
-  height: 350px;
+  width: 70%;
+  height: 50vh;
   overflow-y: auto !important;
+  margin-left: auto;
 }
 
 .tamaño-tabla2 {
@@ -547,6 +684,13 @@ svg {
 
 .fondo-tarjetas {
   background-color: #387adf;
+}
+
+.tarjeta-ajax{
+  color: var(--color-text-card) !important;
+}
+.tarjeta{
+  color: var(--color-text-card) !important;
 }
 
 /* Perfil */
@@ -728,8 +872,6 @@ input[type="number"]::-webkit-outer-spin-button {
   transform: scale(1.04);
 }
 
-
-
 .cardReporteFactura {
   background-image: url("../img/grafico.jpg");
   background-size: 100% 100%;
@@ -750,8 +892,6 @@ input[type="number"]::-webkit-outer-spin-button {
   justify-content: space-around;
   flex-wrap: wrap;
 }
-
-
 
 /* 
 .granReporte:hover {
@@ -1170,9 +1310,16 @@ con la clase hover-grande cambia de tamaño*/
 
 .table th,
 .table td {
+  color: var(--color-text-card) !important;
   white-space: nowrap;
   text-align: left;
 }
+
+td{
+  color: var(--color-text-card) !important;
+}
+
+
 
 /* ///////////////////////////////////////////////////////////////////////////////////////// */
 /* ....................................HOSPITALIZACIÓN..................................... */
@@ -1514,6 +1661,8 @@ con la clase hover-grande cambia de tamaño*/
 }
 
 .input-u {
+  color: white;
+  background: none;
   padding-left: 28.6px;
   padding-bottom: 5.8px;
   /* width: auto; */
@@ -1543,7 +1692,6 @@ con la clase hover-grande cambia de tamaño*/
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-
 .tamaño-modal {
   width: 50%;
   max-width: 600px;
@@ -1563,7 +1711,7 @@ input[type="date"] {
 
 /* Clase papa mostrar todos los textos rojos cuando la validacion no se cumple */
 .p-error-validaciones {
-  color: rgb(224, 3, 3) !important;
+  color: var(--color-error) !important;
 }
 
 /* /////////////////////////////////////////////////////////////////////////// */
@@ -1593,7 +1741,7 @@ input[type="date"] {
     height: 40vh;
   }
 
-  canvas{
+  canvas {
     height: 70% !important;
   }
 }
@@ -1615,38 +1763,14 @@ input[type="date"] {
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................MENU E INICIO........................ */
 
-@media screen and (max-height: 606px) {
-  .aside.active {
-    width: 79px;
-  }
-}
-
-@media screen and (max-width: 1020px) {
+@media screen and (max-width: 950px) {
   .logo {
     display: none;
-  }
-}
-
-@media screen and (max-width: 755px) {
-  .cerrar {
-    padding: 0;
-    margin: 0;
-  }
-
-  .aside {
-    width: 40%;
-  }
-}
-
-@media screen and (max-width: 450px) {
-  body {
-    background-color: #fff;
   }
 
   /* clases del contenedor */
   main {
-    background-color: #fff;
-    width: 100%;
+    width: 100vw;
     margin-left: 0px;
   }
 
@@ -1654,8 +1778,10 @@ input[type="date"] {
     width: 100%;
     height: -1px;
     padding: 0px;
-
     position: fixed;
+  }
+  .aside.active {
+    width: 80px;
   }
 
   .asideRespo {
@@ -1672,207 +1798,67 @@ input[type="date"] {
   }
 }
 
-/* ///////////////////////////////////////////////////////////////////// */
-/* .............................PACIENTES CITAS Y CONTROL.......................... */
-
-@media screen and (max-width: 750px) {
-  .tamaño-tarjertas {
-    width: 30%;
-    height: 30%;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .cartaRepor {
-    height: 20vh;
-    width: 35vh;
-    margin-top: 5%;
+@media screen and (max-width: 450px) {
+  /* clases del contenedor */
+  main {
+    width: 100vw;
+    margin-left: 0px;
   }
 
-  .svg_tamaño_rsp {
-    height: 50px;
-    width: 23px;
-    margin-left: 3px;
-  }
-
-  .tamaño-input-buscar {
-    width: 9vh;
-  }
-
-
-
-  .reRepor {
-    width: 40vh;
-    height: 35vh !important;
-  }
-
-  .granRepor {
-    width: 40vh;
-    height: 40vh;
-    margin-left: 2%;
-  }
-
-  .divCartas {
-    display: flex !important;
-    flex-direction: column !important;
-    margin-left: 30%;
-    padding-bottom: 1rem;
-  }
-
-  .tamaño-tarjertas {
-    width: 30vh;
-    height: 30vh;
-    margin-bottom: 47px;
-  }
-
-  .tamaño-modal {
-    width: 90%;
-  }
-
-  .mover-input-agregarcita {
-    margin-right: 25%;
-    margin-left: 0%;
-  }
-}
-
-@media screen and (max-width: 370px) {
-  .contInicioRes {
-    display: flex;
-    flex-direction: column;
-    margin-top: 40px;
-  }
-
-  .svg_ayuda {
-    width: 38px;
-  }
-
-  .contenedor-inicio {
-    width: 46%;
-    margin-left: 50px;
-    margin-top: 13px;
-  }
-
-  .divCartas {
-    margin-left: 24%;
-  }
-
-  /* .carruselImg{
-		display: none;
-	} */
-}
-
-@media screen and (max-width: 768px) {
-  .contenedor_tabla {
-    padding: 0.5rem;
-    /* Reducir el espacio interno en móviles */
-    width: 60vh;
-  }
-}
-
-@media screen and (max-width: 400px) {
-  #tableControl th,
-  #tableControl td {
-    display: block;
+  .aside {
     width: 100%;
-    text-align: left;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .ocultar {
-    display: none !important;
+    height: -1px;
+    padding: 0px;
+    position: fixed;
   }
 
-  .aparecer {
-    display: block;
+  .asideRespo {
+    color: #000000;
+    background-color: #ffffff63;
+    height: 70px !important;
+    margin-top: -6px !important;
+    margin-left: -10px !important;
+    margin-right: 250px !important;
   }
 
-  .tamaño-tablaControl {
-    font-size: 12px;
-    width: 100%;
-    height: auto;
-    overflow-x: auto !important;
-    display: block;
-  }
-
-  .btnEditarCP {
-    width: auto;
-  }
-
-  #tableControl th,
-  #tableControl td {
-    padding: 4px;
-    /* Reduce el relleno */
-  }
-
-  .lista-pacientes,
-  .lista-pacientes2 {
-    max-height: 200px;
-    width: 100%;
-  }
-
-  .responsive_patologia {
-    margin-left: 20px;
-  }
-
-  .buscador_responsiv {
-    width: 80%;
-  }
-
-  .registrar_responsiv {
-    width: 60%;
-  }
-
-  .svgPapeleraPatologia {
+  .opcRes {
     display: none;
   }
 
-  .ajustar {
-    margin-top: 30px;
-    margin-bottom: -20px;
-    text-align: center;
+  .head {
+    background-color: transparent;
   }
+}
 
-  .btnrestablecer {
-    width: 50%;
-    margin-left: 10px;
+@media screen and (max-width: 360px) {
+  .caja-ayuda {
+    margin: auto;
   }
+}
 
-  .buscador_responsiv_citas {
-    width: 80%;
-    display: flex;
-    justify-content: end;
+/* ///////////////////////////////////////////////////////////////////// */
+/* .............................PACIENTES CITAS Y CONTROL.......................... */
+
+/* control nuevo */
+@media screen and (max-width: 1170px) {
+  .lista-pacientes2 {
+    width: 100%;
+    margin-left: "";
   }
+}
 
-  .modal_responsiv {
-    width: 100% !important;
-    padding: 1rem;
-  }
+@media screen and (max-width: 900px) {
+  /* .lista-pacientes2 {
+    width: 100%;
+    margin-left: "";
+  } */
 
-  #modalAgregarDoctores input {
+  .editar{
     width: 100%;
   }
 
-  #modalAgregarDoctores select {
+  .lista-pacientes{
     width: 100%;
-  }
-
-  .span_inputFile {
-    width: 20% !important;
-  }
-
-  .directorio {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .btn_modal_patologias {
-    display: flex;
-    justify-content: end;
-  }
-
-  .btn_agregar_patologia {
-    width: 40% !important;
   }
 }
 
@@ -1980,8 +1966,6 @@ input[type="date"] {
     align-items: center;
   }
 
-
-
   .t {
     font-size: 1rem;
   }
@@ -2036,8 +2020,6 @@ input[type="date"] {
     height: 33vh !important;
   }
 
-
-
   .fecha_citas {
     padding-top: 30px;
   }
@@ -2076,7 +2058,6 @@ input[type="date"] {
     font-size: 1rem;
     margin-top: 0.5rem;
   }
-
 
   .t {
     font-size: 0.9rem;

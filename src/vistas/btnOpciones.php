@@ -29,6 +29,13 @@
                     </svg> CONFIGURACIÓN</a></li>
             <li class="uk-nav-divider"></li>
 
+            <div class="cl-toggle-switch">
+                <label class="cl-switch">
+                    <input type="checkbox" id="themeToggleCheckbox">
+                    <span></span>
+                </label>
+            </div>
+
             <li><a href="#" data-bs-toggle="modal" data-bs-target="#eliminar">
                     <img src="<?= $urlBase ?>../src/assets/img/icono-cerrar-sesion.svg" width="34" height="34" uk-svg
                         class="azul" style="margin-left: -4px;">

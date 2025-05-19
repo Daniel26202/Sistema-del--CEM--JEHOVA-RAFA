@@ -12,6 +12,9 @@ async function valorDolar() {
   } catch (error) {
     let valorDelDolar = localStorage.getItem("valorDelDolar");
     tipoCambio = valorDelDolar
+      ? valorDelDolar
+      : 0;
+    console.log(tipoCambio)
     console.log(
       "NO SE ACTULIZO EL PRECIO DEL DOLAR REVISE SU CONEXION A INTERNET..."
     );

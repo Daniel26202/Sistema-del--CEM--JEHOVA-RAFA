@@ -86,63 +86,60 @@ class ModeloInsumo extends Db
 	//insertar insumo
 	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote, $marca, $medida)
 	{
+		try {
+			$this->conexion->beginTransaction();
 
-		
+			$tiempo = new DateTime();
+			$fecha = date("Y-m-d");
 
+			$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+			$imagen_temporal = $_FILES['imagen']['tmp_name'];
+			move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
-		$tiempo = new DateTime();
-		$fecha = date("Y-m-d");
+			$consulta = $this->conexion->prepare("INSERT INTO insumo VALUES (null, :imagen, :nombre, :descripcion, :marca, :medida, :precio , 'ACT',:stockMinimo)");
+			$consulta->bindParam(":imagen", $imagen);
+			$consulta->bindParam(":nombre", $nombre);
+			$consulta->bindParam(":descripcion", $descripcion);
+			$consulta->bindParam(":marca", $marca);
+			$consulta->bindParam(":medida", $medida);
+			$consulta->bindParam(":precio", $precio);
+			$consulta->bindParam(":stockMinimo", $stockMinimo);
+			$consulta->execute();
+			$id_insumo = $this->conexion->lastInsertId();
 
-		$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+			//insertar entrada
+			$consulta = $this->conexion->prepare("INSERT INTO entrada VALUES (null, :id_proveedor, :lote, :fechaDeIngreso, 'ACT')");
+			$consulta->bindParam(":lote", $lote);
+			$consulta->bindParam(":id_proveedor", $id_proveedor);
+			$consulta->bindParam(":fechaDeIngreso", $fechaDeIngreso);
+			$consulta->execute();
+			$id_entrada = $this->conexion->lastInsertId();
 
-		$imagen_temporal = $_FILES['imagen']['tmp_name'];
+			//insertar en la tabla intermedia
+			$consulta2 = $this->conexion->prepare("INSERT INTO entrada_insumo VALUES (null, :id_insumo, :id_entrada,:fechaDeVecimiento,:precio, :cantidad_entrante, :cantidad_disponible)");
+			$consulta2->bindParam(":id_insumo", $id_insumo);
+			$consulta2->bindParam(":id_entrada", $id_entrada);
+			$consulta2->bindParam(":fechaDeVecimiento", $fechaDeVecimiento);
+			$consulta2->bindParam(":precio", $precio);
+			$consulta2->bindParam(":cantidad_entrante", $cantidad);
+			$consulta2->bindParam(":cantidad_disponible", $cantidad);
+			$consulta2->execute();
 
-		move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
+			//insertar en la tabla inventario
+			$consulta3 = $this->conexion->prepare("INSERT INTO inventario VALUES (null, :id_insumo, :cantidad,:fechaVecimiento,:lote)");
+			$consulta3->bindParam(":id_insumo", $id_insumo);
+			$consulta3->bindParam(":cantidad", $cantidad);
+			$consulta3->bindParam(":fechaVecimiento", $fechaDeVecimiento);
+			$consulta3->bindParam(":lote", $lote);
+			$consulta3->execute();
 
-		$consulta = $this->conexion->prepare("INSERT INTO insumo VALUES (null, :imagen, :nombre, :descripcion, :marca, :medida, :precio , 'ACT',:stockMinimo)");
-		$consulta->bindParam(":imagen", $imagen);
-		$consulta->bindParam(":nombre", $nombre);
-		$consulta->bindParam(":descripcion", $descripcion);
-		$consulta->bindParam(":marca", $marca);
-		$consulta->bindParam(":medida", $medida);
-		$consulta->bindParam(":precio", $precio);
-		$consulta->bindParam(":stockMinimo", $stockMinimo);
-
-		$consulta->execute();
-		$id_insumo = $this->conexion->lastInsertId();
-
-		//insertar entrada
-
-		$consulta = $this->conexion->prepare("INSERT INTO entrada VALUES (null, :id_proveedor, :lote, :fechaDeIngreso, 'ACT')");
-		$consulta->bindParam(":lote", $lote);
-		$consulta->bindParam(":id_proveedor", $id_proveedor);
-		$consulta->bindParam(":fechaDeIngreso", $fechaDeIngreso);
-		$consulta->execute();
-		$id_entrada = $this->conexion->lastInsertId();
-
-		//insertar en la tabla intermedia
-
-		$consulta2 = $this->conexion->prepare("INSERT INTO entrada_insumo VALUES (null, :id_insumo, :id_entrada,:fechaDeVecimiento,:precio, :cantidad_entrante, :cantidad_disponible)");
-		$consulta2->bindParam(":id_insumo", $id_insumo);
-		$consulta2->bindParam(":id_entrada", $id_entrada);
-		$consulta2->bindParam(":fechaDeVecimiento", $fechaDeVecimiento);
-		$consulta2->bindParam(":precio", $precio);
-		$consulta2->bindParam(":cantidad_entrante", $cantidad);
-		$consulta2->bindParam(":cantidad_disponible", $cantidad);
-		$consulta2->execute();
-
-
-
-		//insertar en la tabla inventario
-
-
-		$consulta3 = $this->conexion->prepare("INSERT INTO inventario VALUES (null, :id_insumo, :cantidad,:fechaVecimiento,:lote)");
-		$consulta3->bindParam(":id_insumo", $id_insumo);
-		$consulta3->bindParam(":cantidad", $cantidad);
-		$consulta3->bindParam(":fechaVecimiento", $fechaDeVecimiento);
-		$consulta3->bindParam(":lote", $lote);
-		$consulta3->execute();
-
+			$this->conexion->commit();
+			return true;
+		} catch (\Exception $e) {
+			$this->conexion->rollBack();
+			// Puedes registrar el error si lo deseas: error_log($e->getMessage());
+			return false;
+		}
 	}
 
 
@@ -219,14 +216,6 @@ class ModeloInsumo extends Db
 	public function vencerInsumos($fecha)
 	{
 
-		// $consulta = $this->conexion->prepare("UPDATE entrada SET estado = 'VEC' WHERE 
-		// 	(SELECT fechaDeVencimiento FROM entrada_insumo WHERE entrada.id_entrada = entrada_insumo.id_entrada)
-		// 	<= :fecha ");
-		// $consulta->bindParam(":fecha", $fecha);
-		// $consulta->execute();
-		// $id_insumoVencidos = $this->id_insumoVencidos();
-		//print_r($id_insumoVencidos);
-		
 		$insumos = $this->insumos();
 		foreach ($insumos as $key) {
 			//echo $key["id_insumo"]."<br>";
@@ -260,25 +249,6 @@ class ModeloInsumo extends Db
 
 
 
-
-
-
-	// public function insumoProximos()
-	// {
-	// 	// Obtener la fecha actual
-	// 	$fechaActual = date('Y-m-d');
-
-	// 	// Calcular la fecha límite (10 días a partir de hoy)
-	// 	$fechaLimite = $this->restarDiasDeFecha($fechaActual, -10); // Restar -10 días es sumar 10 días
-
-	// 	// Actualizar el estado de los productos que están a 10 días o menos de vencer
-	// 	$sql = "UPDATE entrada SET estado = 'por_vencer' WHERE 
-	// 	(SELECT fechaDeVencimiento FROM entrada_insumo WHERE entrada.id_entrada = entrada_insumo.id_entrada)
-	// 	<= :fechaLimite AND estado='ACT' ";
-	// 	$consulta = $this->conexion->prepare($sql);
-	// 	$consulta->bindParam(':fechaLimite', $fechaLimite);
-	// 	$consulta->execute();
-	// }
 
 
 
