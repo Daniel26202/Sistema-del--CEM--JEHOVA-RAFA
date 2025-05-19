@@ -178,7 +178,6 @@
 
 </div>
 
-
 <!-- modal consultar -->
 <div id="modalCon">
     <!-- modal off-canvas que sale a la derecha  (CONSULTA)-->
@@ -229,7 +228,7 @@
                 <p class="col-2"></p> <!-- solo separación -->
                 <div>
                     <h4 class="text-center fw-bold ">Horas de hospitaliza- ción</h4>
-                    <p class="parrafo-offcanvas fs-5 text-center"></p>
+                    <p class="parrafo-offcanvas fs-5 text-center" id="hHosM"></p>
                 </div>
             </div>
 
@@ -244,6 +243,21 @@
                 </p>
             </div>
 
+            <div class="d-flex align-items-start mb-2 ">
+                <div class="col-5">
+                    <h4 class=" fw-bold text">Calculo de monto por hora</h4>
+                    <p class="parrafo-offcanvas" id="cMontoHoraM">
+                        <!-- se agrega en el js -->
+                    </p>
+                </div>
+
+                <p class="col-2"></p> <!-- solo separación -->
+                <div>
+                    <h4 class="text-center fw-bold ">Calculo a moneda extranjera</h4>
+                    <p class="parrafo-offcanvas fs-5 text-center"></p>
+                </div>
+            </div>
+
             <!-- verifico si es administrador o usuario -->
             <!-- uno es doctor -->
             <?php if ($validacionCargo == 1) : ?>
@@ -256,7 +270,7 @@
                 <div class="d-flex align-items-start mt-5">
 
                     <h4 class="fw-bold me-2 ">Cálculo del total:</h4>
-                    <p class="fw-bold fs-5">${res.total}bs</p>
+                    <p class="fw-bold fs-5" id="calculoTotal">${res.total}bs</p>
 
                 </div>
             <?php endif ?>
@@ -272,6 +286,7 @@
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
+<?php require_once './src/vistas/vistaPacientes/modalAgregarPaciente.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarHospitalizacion.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEliminarHospitalizacion.php'; ?>

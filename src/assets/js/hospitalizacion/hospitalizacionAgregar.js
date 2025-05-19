@@ -1,5 +1,4 @@
 addEventListener("DOMContentLoaded", function () {
-
     //............... animación de los dos modales ...................
 
     const btnInformacionPaciente = document.querySelector("#inforPaciente");
@@ -8,30 +7,24 @@ addEventListener("DOMContentLoaded", function () {
 
     //............... animación de los dos modales ...................
 
-    // Agregamos clases al modal al presionar el botón de la información del 
+    // Agregamos clases al modal al presionar el botón de la información del
     // paciente.
     btnInformacionPaciente.addEventListener("click", () => {
-
         divModal.classList.add("uk-offcanvas-container", "uk-offcanvas-flip", "uk-offcanvas-container-animation");
         divModal.setAttribute("style", "touch-action: pan-y pinch-zoom; transition: all 0.3s ease-out ;");
-
-    })
+    });
 
     // quitamos clases al modal al presionar en la x
     closeModal.addEventListener("click", () => {
-
         divModal.classList.remove("uk-offcanvas-flip", "uk-offcanvas-container-animation");
-    })
+    });
 
     // quitamos clases al modal AL presionar en el body
-    UIkit.util.on('#offcanvas-reveal', 'hide', function () {
-
-        if (divModal.classList.contains('uk-offcanvas-flip')) {
-
+    UIkit.util.on("#offcanvas-reveal", "hide", function () {
+        if (divModal.classList.contains("uk-offcanvas-flip")) {
             divModal.classList.remove("uk-offcanvas-flip", "uk-offcanvas-container-animation");
         }
-
-    })
+    });
 
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
@@ -45,30 +38,26 @@ addEventListener("DOMContentLoaded", function () {
     let insumoExiste = document.getElementById("insumoExiste");
 
     function traerIdI() {
-
         // id del insumos para poder agregarlo
         let idI = -1;
 
-        document.querySelectorAll(".divInsumos").forEach(insumo => {
-
+        document.querySelectorAll(".divInsumos").forEach((insumo) => {
             //es para traer el id
             if (insumo) {
-
                 insumo.addEventListener("click", function () {
-                    idI = parseInt(this.dataset['index']);
+                    idI = parseInt(this.dataset["index"]);
 
                     traerUnInsumos(idI);
-
-                })
-
+                });
             }
-        })
-
+        });
     }
 
-    // es para traer el id del insumo sin necesidad de una búsqueda 
+    // es para traer el id del insumo sin necesidad de una búsqueda
     let divInsumos = document.querySelectorAll(".divInsumos");
-    if (divInsumos) { traerIdI(); }
+    if (divInsumos) {
+        traerIdI();
+    }
 
     // función async
     const traerInsumos = async () => {
@@ -82,7 +71,6 @@ addEventListener("DOMContentLoaded", function () {
 
             //si se trae algo
             if (resultadoInsu.length > 0) {
-
                 parrafoNoI.innerText = "";
 
                 insumoExiste.classList.toggle("d-none", false);
@@ -91,7 +79,6 @@ addEventListener("DOMContentLoaded", function () {
                 let html = ``;
 
                 resultadoInsu.forEach((res) => {
-
                     html += `<div class="col-6 divInsumos" data-index=${res.id_insumo}>
                     <a href="#" class="text-center text-decoration-none m-0" data-bs-toggle="modal"
                         data-bs-target="#modal-agregar-hospitalizacion">
@@ -110,7 +97,7 @@ addEventListener("DOMContentLoaded", function () {
                     </a>
                     <input type="hidden" name="" class="inputInsumo" value="">
                 </div>`;
-                })
+                });
 
                 insumoExiste.innerHTML = html;
 
@@ -119,31 +106,26 @@ addEventListener("DOMContentLoaded", function () {
 
                 // si no se trae nada
             } else {
-
                 parrafoNoI.innerText = "";
                 parrafoNoI.innerText = "El insumo no esta registrado";
 
                 insumoExiste.classList.toggle("d-none", true);
                 insumos.classList.toggle("d-none", true);
-
             }
-
         } catch (error) {
             console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
         }
-    }
-
+    };
 
     //............... animación del input number de la cantidad de los insumos ..............
 
     function botonInputNumber(btn, inputN) {
-
         let dataI = btn.getAttribute("data-index");
         let min = inputN.getAttribute("min");
         let max = inputN.getAttribute("max");
         let step = inputN.getAttribute("step");
         let val = inputN.getAttribute("value");
-        let calcStep = (dataI == "aumentar") ? (step * 1) : (dataI == "disminuir") ? (step * -1) : false;
+        let calcStep = dataI == "aumentar" ? step * 1 : dataI == "disminuir" ? step * -1 : false;
         let nuevoValor = parseInt(val) + calcStep;
 
         if (nuevoValor >= min && nuevoValor <= max) {
@@ -167,8 +149,7 @@ addEventListener("DOMContentLoaded", function () {
         let PrecioI = 0;
 
         totalPI = 0;
-        document.querySelectorAll(".precioInsum").forEach(pI => {
-
+        document.querySelectorAll(".precioInsum").forEach((pI) => {
             // selecciono al p del precio (hermano anterior del input)
             let pPrecioI = pI.previousElementSibling;
 
@@ -182,13 +163,13 @@ addEventListener("DOMContentLoaded", function () {
             let divPa = divPad.parentElement;
             // selecciono el input hermano del div padre
             let divHermano = divPa.nextElementSibling;
-            // selecciono al hermano del input 
+            // selecciono al hermano del input
             let divHer = divHermano.nextElementSibling;
-            // selecciono al hijo del div 
+            // selecciono al hijo del div
             let divHijo = divHer.firstElementChild;
-            // selecciono al hijo del hijo del div 
+            // selecciono al hijo del hijo del div
             let divHi = divHijo.firstElementChild;
-            // selecciono a los hijos del div 
+            // selecciono a los hijos del div
             let divH = divHi.children;
 
             // se recolecta el valor del input
@@ -200,15 +181,13 @@ addEventListener("DOMContentLoaded", function () {
             // suma el total del precio de cada insumo que se multiplico con la cantidad
             totalPI += PrecioI * cantidad;
 
-            // aquí se recolecta el precio multiplicado con la cantidad (en las dos lineas siguientes, se coloca el precio ya multiplicado en el <p>) 
+            // aquí se recolecta el precio multiplicado con la cantidad (en las dos lineas siguientes, se coloca el precio ya multiplicado en el <p>)
             totalPC = PrecioI * cantidad;
             // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
             totalPC = parseFloat(totalPC.toFixed(2));
             pPrecioI.innerHTML = totalPC + "bs";
-
-        })
-
-    }
+        });
+    };
 
     // función async
     const traerUnInsumos = async (id) => {
@@ -221,13 +200,12 @@ addEventListener("DOMContentLoaded", function () {
 
         // si no se trae nada
         if (resultadoUnInsu == false) {
-
             console.log("hay un problema, el insumo seleccionado no existe");
 
             btnAInsumoNoExiste.classList.toggle("d-none", false);
             btnAInsumoExiste.classList.toggle("d-none", true);
 
-            //si se trae algo     
+            //si se trae algo
         } else {
             btnAInsumoNoExiste.classList.toggle("d-none", true);
             btnAInsumoExiste.classList.toggle("d-none", false);
@@ -239,9 +217,8 @@ addEventListener("DOMContentLoaded", function () {
             // esto recorre todos los input number de cantidad
             let div = document.querySelectorAll(".divInsumosAgregadosA");
             if (div) {
-
                 let objIL = await limiteI(id);
-                // el insumo no existe 
+                // el insumo no existe
                 if (objIL[id]) {
                     existeIn = false;
                     alert("El insumo alcanzo el limite de su cantidad");
@@ -250,7 +227,7 @@ addEventListener("DOMContentLoaded", function () {
             for (const divI of div) {
                 // id del insumo
                 let idInputI = divI.querySelector(".inputIdInsu");
-                // esto selecciona al p que muestra un mensaje 
+                // esto selecciona al p que muestra un mensaje
                 let p = divI.previousElementSibling;
 
                 // para la cantidad
@@ -258,13 +235,13 @@ addEventListener("DOMContentLoaded", function () {
                     existeIn = false;
 
                     // selecciono el hermano
-                    let divHermano = idInputI.nextElementSibling
+                    let divHermano = idInputI.nextElementSibling;
                     // selecciono el primer hijo
-                    let divHijo = divHermano.firstElementChild
+                    let divHijo = divHermano.firstElementChild;
                     // selecciono el primer hijo del div hijo
-                    let divHDH = divHijo.firstElementChild
+                    let divHDH = divHijo.firstElementChild;
                     // selecciono los hijos del div que es padre del input number.
-                    let divPadreIN = divHDH.children
+                    let divPadreIN = divHDH.children;
 
                     if (objIL[id]) {
                         p.classList.remove("d-none");
@@ -276,16 +253,14 @@ addEventListener("DOMContentLoaded", function () {
                     }
 
                     sumarTotal();
-
                 } else {
-                    // el insumo no existe  
+                    // el insumo no existe
                 }
             }
 
             let html = ``;
 
             if (existeIn) {
-
                 //nIA es el contador sirve para eliminar según el numero
                 nIA++;
 
@@ -355,34 +330,31 @@ addEventListener("DOMContentLoaded", function () {
                 let div = document.querySelectorAll(".divInsumosAgregadosA");
                 // esto recorre todos los input number de cantidad
                 for (const divI of div) {
-
-                    let inputN = divI.querySelector(".input-number")
-                    let idI = parseInt(divI.querySelector(".inputIdInsu").value)
-                    // esto selecciona al p que muestra un mensaje 
+                    let inputN = divI.querySelector(".input-number");
+                    let idI = parseInt(divI.querySelector(".inputIdInsu").value);
+                    // esto selecciona al p que muestra un mensaje
                     let p = divI.previousElementSibling;
 
-                    // esto selecciona al div que muestra un - 
+                    // esto selecciona al div que muestra un -
                     let menos = inputN.previousElementSibling;
-                    // esto selecciona al div que muestra un + 
-                    let mas = inputN.nextElementSibling
+                    // esto selecciona al div que muestra un +
+                    let mas = inputN.nextElementSibling;
 
                     menos.addEventListener("click", async function () {
-
                         // llamo a la función que hace el calculo (aumentar y disminuir) en este caso disminuye y luego hace el calculo matemático
                         botonInputNumber(menos, inputN);
                         sumarTotal();
 
                         let objIL = await limiteI(idI);
-                        // si no encuentro el id 
+                        // si no encuentro el id
                         if (!objIL[idI]) {
                             p.classList.add("d-none");
                         }
-
-                    })
+                    });
 
                     mas.addEventListener("click", async function () {
                         let objIL = await limiteI(idI);
-                        // si encuentro el id 
+                        // si encuentro el id
                         if (objIL[idI]) {
                             p.classList.remove("d-none");
                         } else {
@@ -391,18 +363,14 @@ addEventListener("DOMContentLoaded", function () {
                             botonInputNumber(mas, inputN);
                         }
                         sumarTotal();
-                    })
-
+                    });
                 }
-
             }
 
-            document.querySelectorAll(".eliminarIns").forEach(elim => {
-
+            document.querySelectorAll(".eliminarIns").forEach((elim) => {
                 elim.addEventListener("click", function () {
-
                     // esto es para traerme el numero del data-index del <a> (btn)
-                    idI = parseInt(this.dataset['index']);
+                    idI = parseInt(this.dataset["index"]);
 
                     //es para eliminar con el numero del data-index del div, como es el mismo numero el de la <a> y del <div>
                     let EliminarI = document.querySelector(`.divInsumosAgregadosA[data-index="${idI}"]`);
@@ -412,27 +380,24 @@ addEventListener("DOMContentLoaded", function () {
 
                     //para que reste el insumo que se a eliminado del total
                     sumarTotal();
-
-                })
-
-            })
+                });
+            });
 
             // suma la cantidad al aumentarla o disminuirla
-            document.querySelectorAll(".masMenos").forEach(masMen => {
+            document.querySelectorAll(".masMenos").forEach((masMen) => {
                 masMen.addEventListener("click", function () {
                     sumarTotal();
-                })
-            })
+                });
+            });
 
             //para la suma total
             sumarTotal();
-
         }
 
         // } catch (error) {
         //     console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
         // }
-    }
+    };
 
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
@@ -442,22 +407,21 @@ addEventListener("DOMContentLoaded", function () {
     let parrafoExP = document.getElementById("p-paciente");
     let parrafoNoP = document.getElementById("p-no-paciente");
     let contenedorForm = document.getElementById("contenedorFormAgregar");
-    
+
     let nombreApellidoInfor = document.getElementById("nombreInfor");
     let diagnosticoInfor = document.getElementById("inforDiagnostico");
-    
+
     let btnEnviar = document.getElementById("btnEnviar");
     let historiaclinica = document.getElementById("historia_clinicaA");
 
     const traerControlDePaciente = async () => {
         try {
-
             const datosFormulario = new FormData(formularioAgregar);
 
             const contenidoForm = {
                 method: "POST",
-                body: datosFormulario
-            }
+                body: datosFormulario,
+            };
 
             // llamo la función validar paciente
             let peticionValidarP = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/validarPaciente", contenidoForm);
@@ -468,12 +432,14 @@ addEventListener("DOMContentLoaded", function () {
             let resultadoVC = await peticionValidarC.json();
 
             // llamo la función mostrar
-            let peticionMostrar = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInformacionPCD", contenidoForm);
+            let peticionMostrar = await fetch(
+                "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInformacionPCD",
+                contenidoForm
+            );
             let resultadoM = await peticionMostrar.json();
             console.log(resultadoM);
 
             if (resultadoVP == false) {
-
                 console.log("El paciente no esta registrado.");
                 parrafoNoP.innerText = "";
                 parrafoNoP.innerText = "El paciente no esta registrado.";
@@ -483,15 +449,16 @@ addEventListener("DOMContentLoaded", function () {
                 document.querySelector("#aControl").classList.add("d-none");
                 document.querySelector("#aPaciente").classList.remove("d-none");
 
+                document.querySelector("#aPaciente").addEventListener("click", function () {
+                    document.querySelector("#cedula").value = document.querySelector("#bt").value;
+                });
+
                 parrafoNoP.classList.toggle("d-none", false);
                 btnInformacionPaciente.classList.toggle("d-none", true);
                 contenedorForm.classList.toggle("d-none", true);
                 btnEnviar.classList.toggle("d-none", true);
-
             } else {
-
                 if (resultadoVC == false) {
-
                     console.log("El control del paciente no esta registrado.");
                     parrafoNoP.innerText = "";
                     parrafoNoP.innerText = "El control del paciente no esta registrado.";
@@ -505,13 +472,9 @@ addEventListener("DOMContentLoaded", function () {
                     btnInformacionPaciente.classList.toggle("d-none", true);
                     contenedorForm.classList.toggle("d-none", true);
                     btnEnviar.classList.toggle("d-none", true);
-
-
                 } else {
                     if (resultadoM == false) {
-
                         console.log("no hay datos del paciente.");
-        
                     } else {
                         document.querySelector("#aPaciente").classList.add("d-none");
                         document.querySelector("#aControl").classList.add("d-none");
@@ -538,46 +501,57 @@ addEventListener("DOMContentLoaded", function () {
                         btnInformacionPaciente.classList.toggle("d-none", false);
                         contenedorForm.classList.toggle("d-none", false);
                         btnEnviar.classList.toggle("d-none", false);
-
-
                     }
-
                 }
-
             }
-
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...  " + error);
         }
-    }
+    };
 
     // este evento es para buscar al paciente
     document.querySelector("#btn-buscar").addEventListener("click", function () {
+        // if (document.getElementById('existeInput')) {
+        //     // no se agrega
+        // } else{
+        let html = '<input type="hidden" name="verificarH" value="existe" id="existeInput">';
+        document.getElementById("divAPacienteMP").innerHTML = html;
+        // }
+        // Selecciona el div (puedes usar un id o una clase única)
+        const divCedula = document.querySelector(".divGrp_cedula");
+
+        // Verifica si tiene la clase 'grpFormCorrect'
+        if (divCedula.classList.contains("grpFormCorrect")) {
+            // Si tiene la clase grpFormCorrect
+            console.log("El div tiene la clase grpFormCorrect");
+            // Aquí haces lo que necesites
+        } else if (divCedula.classList.contains("grpFormIncorrect")) {
+            // Si tiene la clase grpFormIncorrect
+            console.log("El div tiene la clase grpFormIncorrect");
+            // Aquí haces otra cosa
+        }
         traerControlDePaciente();
-    })
+    });
 
     // este evento es para buscar el insumo
     document.querySelector("#btn-buscarInsumo").addEventListener("click", function () {
         traerInsumos();
-    })
+    });
 
     //inputI.addEventListener("keyup", function () {
     //    traerInsumos();
     //})
 
-    //este es el comentario 
+    //este es el comentario
     const comentario = document.querySelector(".comentario");
     //si existe el comentario lo muestra y después de 8sg lo oculta
     if (comentario) {
-
         comentario.style.display = "block";
 
         setTimeout(function () {
             comentario.style.display = "none";
-        }, 8000)
-
+        }, 8000);
     }
-
 
     ///////////////////////////////////////////////////
     // conteo de insumos
@@ -585,7 +559,6 @@ addEventListener("DOMContentLoaded", function () {
     // operación matemática para saber cual insumo llego a su limite en cantidad
     const limiteI = async (idIn) => {
         try {
-
             let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
             let resultado = await peticion.json();
 
@@ -593,29 +566,28 @@ addEventListener("DOMContentLoaded", function () {
 
             let insumosLim = {};
 
-            // creamos esa posición con ese numero de id, y dentro su contenido 
+            // creamos esa posición con ese numero de id, y dentro su contenido
             insumosLim[parseInt(resultado.id_insumo)] = {
                 id: parseInt(resultado.id_insumo),
                 cantidadT: 0,
-                limite: parseInt(resultado.limite_insumo)
-            }
-
+                limite: parseInt(resultado.limite_insumo),
+            };
 
             let insumosExL = {};
-            document.querySelectorAll(".divInsumosAgregadosA").forEach(divI => {
+            document.querySelectorAll(".divInsumosAgregadosA").forEach((divI) => {
                 // id del insumo
                 let idI = divI.querySelector(".inputIdInsu");
                 let limiteI = idI.getAttribute("data-limite-cantidad");
                 let cantidad = parseInt(divI.querySelector(".input-number").value);
                 idI = parseInt(idI.value);
 
-                // creamos esa posición con ese numero de id, y dentro su contenido 
+                // creamos esa posición con ese numero de id, y dentro su contenido
                 insumosExL[idI] = {
                     id: parseInt(idI),
                     cantidadT: cantidad,
-                    limite: parseInt(limiteI)
-                }
-            })
+                    limite: parseInt(limiteI),
+                };
+            });
 
             console.log(insumosExL);
             // recorro el objeto de los insumos totales de la db
@@ -629,8 +601,8 @@ addEventListener("DOMContentLoaded", function () {
                     insumosLim[iL] = {
                         id: parseInt(iL),
                         cantidadT: insumosExL[iL].cantidadT,
-                        limite: insumosExL[iL].limite
-                    }
+                        limite: insumosExL[iL].limite,
+                    };
                 }
             }
 
@@ -643,22 +615,26 @@ addEventListener("DOMContentLoaded", function () {
             }
 
             return objIL;
-
-
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
         }
+    };
+
+    function obtenerFechaHoraLocal() {
+        const fecha = new Date();
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+        const dia = String(fecha.getDate()).padStart(2, "0");
+        const horas = String(fecha.getHours()).padStart(2, "0");
+        const minutos = String(fecha.getMinutes()).padStart(2, "0");
+        const segundos = String(fecha.getSeconds()).padStart(2, "0");
+        return `${año}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
     }
 
     document.querySelector("#btnAgregarH").addEventListener("click", () => {
         // tomo la fecha de hoy
-        let fechaH = new Date();
-        // se le coloca el formato a la fecha
-        let fechaHoy = fechaH.toISOString().slice(0, 19);
+        let fechaHoy = obtenerFechaHoraLocal();
 
         document.querySelector("#fechaHoy").value = fechaHoy;
-    })
-
-})
-
-
+    });
+});
