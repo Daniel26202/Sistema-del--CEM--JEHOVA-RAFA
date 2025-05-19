@@ -435,7 +435,7 @@ const especialidades_chart = async (url) => {
             responsive: false,
             plugins: {
               legend: {
-                display: false, // La leyenda la haremos nosotros con jsPDF
+                display: false, // La leyenda con jsPDF
               },
             },
           },
@@ -527,7 +527,6 @@ async function totalDeEspecialidades(data) {
 let sintomasChartModal = null;
 let sintomasChart = null;
 const sintomas_chart = async () => {
-  // try {
   let sintomas_comunes = await fetch(
     "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes"
   );
@@ -535,6 +534,7 @@ const sintomas_chart = async () => {
   let sintomas = data.map((item) => item.sintoma);
   let total = data.map((item) => item.total);
 
+  // Generar el primer gráfico (ctx)
   let ctx = document.getElementById("sintomas_comunes").getContext("2d");
   if (sintomasChart) {
     sintomasChart.destroy();
@@ -558,13 +558,25 @@ const sintomas_chart = async () => {
     },
   });
 
-  // Renderiza el gráfico en el canvas del modal
-  let ctxModal = document
-    .getElementById("sintomas_solicitadas_pdf")
-    .getContext("2d");
+  // Verificar que el canvas del modal exista
+  let canvasModal = document.getElementById("sintomas_solicitadas_pdf");
+  if (!canvasModal) {
+    console.error("El canvas 'sintomas_solicitadas_pdf' no existe en el DOM.");
+    return;
+  }
 
-  console.log(document.getElementById("sintomas_solicitadas_pdf"));
+  // Asegurarse de que el canvas no esté oculto
+  canvasModal.classList.remove("d-none");
 
+  // Obtener el contexto del canvas del modal
+  let ctxModal = canvasModal.getContext("2d");
+
+  // Destruir el gráfico existente en el modal antes de crear uno nuevo
+  if (sintomasChartModal) {
+    sintomasChartModal.destroy();
+  }
+
+  // Crear el nuevo gráfico para el modal
   sintomasChartModal = new Chart(ctxModal, {
     type: "pie",
     data: {
@@ -582,17 +594,15 @@ const sintomas_chart = async () => {
         },
       ],
     },
+    options: {
+      responsive: false,
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+    },
   });
-
-  // Destruye el gráfico existente en el modal si ya fue creado
-  if (sintomasChartModal) {
-    sintomasChartModal.destroy();
-  }
-
-  //canvas en el modal
-  // } catch (error) {
-  //   console.log("Error al generar el gráfico de sintomas:", error);
-  // }
 };
 
 document

@@ -10,7 +10,8 @@
   --color-primary-contrast: #ffffff;
   --color-surface: #f8fcff;
   --color-border: #f2f9ff;
-  --filter-image: "";
+  --filter-image: ""; 
+  --color-error:#917977;
 }
 
 [data-theme="dark"] {
@@ -25,6 +26,7 @@
   --color-surface: #415a77;
   --color-border: #e4ebf0;
   --filter-image: brightness(50%) contrast(120%);
+  --color-error: #B0CAD7;
   input::placeholder {
     color: #e8f2ff;
   }
@@ -36,15 +38,24 @@
   margin: 0;
   box-sizing: border-box;
   font-family: "Arial", sans-serif;
-  color: var(--color-text-card) !important;
+  /* color: var(--color-text-card) !important; */
 }
 
 a {
   color: var(--color-text-card) !important;
 }
 
+
 h1 {
   font-size: 2rem;
+  color: var(--color-text-card);
+}
+
+h3{
+  color: var(--color-text-card);
+}
+
+h4 {
   color: var(--color-text-card);
 }
 
@@ -149,8 +160,8 @@ main {
   min-height: 100vh;
 }
 
-svg {
-  color: var(--color-text-card);
+.icon {
+  color: white !important;
 }
 
 .contenido {
@@ -550,6 +561,13 @@ svg {
 
 .fondo-tarjetas {
   background-color: #387adf;
+}
+
+.tarjeta-ajax{
+  color: var(--color-text-card) !important;
+}
+.tarjeta{
+  color: var(--color-text-card) !important;
 }
 
 /* Perfil */
@@ -1561,7 +1579,7 @@ input[type="date"] {
 
 /* Clase papa mostrar todos los textos rojos cuando la validacion no se cumple */
 .p-error-validaciones {
-  color: rgb(224, 3, 3) !important;
+  color: var(--color-error) !important;
 }
 
 /* /////////////////////////////////////////////////////////////////////////// */

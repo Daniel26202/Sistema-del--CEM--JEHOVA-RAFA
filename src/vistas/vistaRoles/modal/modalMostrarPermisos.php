@@ -20,7 +20,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20" fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                         </svg>
-                        <input type="text" name="nombre" id="inputDos" class="input-u col-12 input-validar" placeholder="Nombre Del Rol" required value="<?= $rol["nombre"] ?>">
+                        <input type="text" name="nombre" id="inputDos" class="modal-input input-u col-12 input-validar" placeholder="Nombre Del Rol" required value="<?= $rol["nombre"] ?>">
                     </div>
                     <p class="p-error-nombre d-none">El Nombre debe contener solo letras, iniciar con una letra mayúscula y tener al menos 3 caracteres</p>
 
@@ -198,7 +198,7 @@
                                                                                         </label></div>
                                                                                 </div>
 
-                                                                                <div class="form-check form-switch d-flex align-items-center <?=  $modulo == "Reportes" || $modulo == "Estadisticas" ? "d-none" : ""; ?>">
+                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Reportes" || $modulo == "Estadisticas" ? "d-none" : ""; ?>">
                                                                                     <div>
                                                                                         <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch" data-index="<?= $modulo ?>"
                                                                                             value="guardar" name="<?= $permisosPorModulo ?>">
