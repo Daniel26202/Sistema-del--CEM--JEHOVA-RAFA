@@ -1,6 +1,5 @@
 <?php
 
-
 // if(session_start() === PHP_SESSION_NONE){
 
 // 	session_start();
@@ -22,6 +21,14 @@ if (!empty($parametro)) {
 }
 
 ?>
+<script>
+	(function() {
+		const theme = localStorage.getItem("theme");
+		if (theme === "dark") {
+			document.documentElement.setAttribute("data-theme", "dark");
+		}
+	})();
+</script>
 
 
 

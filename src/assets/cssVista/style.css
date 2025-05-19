@@ -1315,6 +1315,10 @@ con la clase hover-grande cambia de tamaño*/
   text-align: left;
 }
 
+td{
+  color: var(--color-text-card) !important;
+}
+
 
 
 /* ///////////////////////////////////////////////////////////////////////////////////////// */
