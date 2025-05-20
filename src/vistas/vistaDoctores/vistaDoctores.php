@@ -101,6 +101,15 @@
 
                     </div>
 
+                <?php elseif ($parametro[0] == "errorSistem"): ?>
+                    <div class=" d-flex justify-content-center mb-5 comentarioD" style="display: none;">
+                        <div class="uk-alert-primary comentario me-4 fw-bolder" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p class="pe-2 text-center">lamentablemente ocurrio un error por favor intente mas tarde.</p>
+                        </div>
+
+                    </div>
+
                 <?php elseif ($parametro[0] == "errorS"): ?>
                     <div class=" d-flex justify-content-center mb-5 comentarioD" style="display: none;">
 

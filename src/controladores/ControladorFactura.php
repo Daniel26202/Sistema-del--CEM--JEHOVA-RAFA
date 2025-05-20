@@ -1,15 +1,12 @@
 <?php
 //requiero el modelo de factura
 use App\modelos\ModeloFactura;
-use App\modelos\ModeloCategoria;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 
 class ControladorFactura
 {
-
 	private $modelo; //atributo privado
-	private $categoria;
 	private $bitacora;
 	private $permisos;
 
@@ -22,7 +19,7 @@ class ControladorFactura
 	}
 
 	//metodo para mostrar la vista de facturacion
-	
+
 
 	public function factura($parametro)
 	{
@@ -33,29 +30,28 @@ class ControladorFactura
 		require_once './src/vistas/vistaFactura/factura.php';
 	}
 
-	function facturaCita($parametro) {
+	function facturaCita($parametro)
+	{
 		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 		$extras = $this->modelo->mostrarServicios();
 		$citaFacturar = $this->modelo->mostrarCitaFactura($parametro[0]);
 		require_once './src/vistas/vistaFactura/facturaCita.php';
-		
 	}
 
 
-	public function comprobante($parametro){
+	public function comprobante($parametro)
+	{
 
-		if($parametro == "") header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
-		
+		if ($parametro == "") header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
+
 		$datosFactura = $this->modelo->consultarFactura($parametro[0]);
 		$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
 		$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
 		$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
 		require_once './src/vistas/vistaFactura/comprobante.php';
 	}
-
-
 
 
 	//aqui mostramos al paciente de la base de datos
@@ -71,7 +67,6 @@ class ControladorFactura
 	public function mostrarPacienteConCita()
 	{
 		date_default_timezone_set('America/Mexico_City');
-
 		$fecha = date("Y-m-d");
 		$respuesta = $this->modelo->buscarPacientePorCita($_POST["cedula"], $fecha);
 		echo json_encode($respuesta);
@@ -79,51 +74,11 @@ class ControladorFactura
 
 	public function mostrarTodosLosServicios()
 	{
-		//$respuesta = array('id' => $_GET["id"]);
 		$respuesta = $this->modelo->buscarServicio($_POST["nombre"]);
-
 		echo json_encode($respuesta);
 	}
 
-	public function mostrarTodosLosDoctores()
-	{
-		//$respuesta = array('id' => $_GET["id"]);
-		$respuesta = $this->modelo->mostrarDoctores($_GET["id"]);
 
-		echo json_encode($respuesta);
-	}
-
-	public function mostrarPrecio()
-	{
-		$respuesta = $this->modelo->mostrarPrecioDoctores($_GET["idD"], $_GET["id"]);
-		// $respuesta = array('id' => $_GET["id"],'idD' => $_GET["idD"]);
-		echo json_encode($respuesta);
-	}
-
-	public function mostrarNombreTodosDoctores()
-	{
-		$respuesta = $this->modelo->mostrarNombreDoctores($_GET["id_doctor"]);
-		echo json_encode($respuesta);
-	}
-
-	public function nombreSegunIdC()
-	{
-		$respuesta = $this->modelo->seleccionarIdConsulta($_GET["nombreC"], $_GET["nombreD"]);
-		echo json_encode($respuesta);
-	}
-
-	public function nombreSegunIdD()
-	{
-		$respuesta = $this->modelo->seleccionarIdDoctor($_GET["nombreD"]);
-		echo json_encode($respuesta);
-	}
-
-	//insumos
-	public function insumosAjax()
-	{
-		$respuesta = $this->modelo->mostrarInsumos($_GET["id_insumo"]);
-		echo json_encode($respuesta);
-	}
 
 	//metodo para guaradar Factura
 	public function guardarFactura()
@@ -135,34 +90,17 @@ class ControladorFactura
 		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : null;
 		$id_cita = isset($_POST["id_cita"]) ? $_POST["id_cita"] : null;
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
-		$numero_de_lote = isset($_POST["numero_de_lote"]) ? $_POST["numero_de_lote"] : null;
-		print_r($serviciosExtras);
 
-		echo "<br><br><br>"."datos por post";
-		print_r($_POST);
+		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita);
 
-	
+		if ($factura) {
+			//Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha facturado servicios y/o insumos");
 
-
-
-
-		$this->modelo->insertaFactura( $fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia, $numero_de_lote, $id_cita);
-
-		//Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha facturado servicios y/o insumos");
-
-
-
-
-
-		// echo $fecha."<br><br>";
-		// print_r($serviciosExtras)."<br><br>";
-
-		// echo "id_cita".$id_cita."<br><br>";
-		// echo "paciente".$id_paciente."<br><br>";
-		// echo $_POST["total"]."<br><br>";
-		// print_r($_POST["formasDePago"])."<br><br>";	
-
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $factura);
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
+		}
 	}
 
 
@@ -194,15 +132,12 @@ class ControladorFactura
 	}
 	public function mostrarPDF2()
 	{
-
 		require_once './src/vistas/vistaFactura/vistaFacturaPdf2.php';
 	}
 	public function mostrarPDF3()
 	{
-
 		require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
 	}
-
 
 	private function permisos($id_rol, $permiso, $modulo)
 	{
