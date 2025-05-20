@@ -3,6 +3,7 @@
 use App\modelos\ModeloEntrada;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+
 class ControladorEntrada
 {
 
@@ -26,7 +27,8 @@ class ControladorEntrada
 		require_once './src/vistas/vistaEntrada/vistaEntrada.php';
 	}
 
-	public function papelera($parametro){
+	public function papelera($parametro)
+	{
 		$desactivos = $this->modelo->seleccionarDesactivos();
 		$insumos = $this->modelo->insumos();
 		require_once './src/vistas/vistaEntrada/vistaEntradaDesactiva.php';
@@ -35,20 +37,20 @@ class ControladorEntrada
 
 	public function restablecerEntrada($datos)
 	{
-		$id_entrada =$datos[0];
-		$id_usuario_bitacora =$datos[1];
-		$this->modelo->restablecerEntrada($id_entrada);
-		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($id_usuario_bitacora,"entrada","Ha restablecido una entrada");
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/papelera");
+		$id_entrada = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		$restablecimiento = $this->modelo->restablecerEntrada($id_entrada);
+		if ($restablecimiento) {
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($id_usuario_bitacora, "entrada", "Ha restablecido una entrada");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/papelera");
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/papelera/errorSistem");
+		}
 	}
 
-
-	
-
-	
-
-	public function proveedoresEditar(){
+	public function proveedoresEditar()
+	{
 		$respuesta = $this->modelo->selectProveedores();
 		echo json_encode($respuesta);
 	}
@@ -57,53 +59,54 @@ class ControladorEntrada
 
 	public function guardar()
 	{
-			print_r($_POST);
-			$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
-			$this->modelo->insertarEntrada($_POST["id_proveedor"], $_POST["id_insumo"], $_POST["fechaDeIngreso"], $_POST["fechaDeVencimiento"], $_POST["cantidad"],$precio_sin_puntos, $_POST["lote"]);
+		$insercion = $precio_sin_puntos = str_replace('.', '', $_POST['precio']);
+		if ($insercion) {
+			$this->modelo->insertarEntrada($_POST["id_proveedor"], $_POST["id_insumo"], $_POST["fechaDeIngreso"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["lote"]);
 			// Guardar la bitacora
-			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"entrada","Ha insertado una entrada");
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha insertado una entrada");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
-
-		
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
+		}
 	}
 
-	public function eliminar($datos){
+	public function eliminar($datos)
+	{
 		$id_entrada = $datos[0];
-		$id_insumo= $datos[1];
-		$id_usuario_bitacora =$datos[2]; 
-		$this->modelo->eliminar($id_entrada,$id_insumo);
-		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($id_usuario_bitacora,"entrada","Ha eliminado una entrada");
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
+		$id_insumo = $datos[1];
+		$id_usuario_bitacora = $datos[2];
+		$elimincion = $this->modelo->eliminar($id_entrada, $id_insumo);
+		if ($elimincion) {
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($id_usuario_bitacora, "entrada", "Ha eliminado una entrada");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
+		}
 	}
 
-	public function editar(){
-		print_r($_POST);
+	public function editar()
+	{
 		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
-		$this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
-		 // Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"entrada","Ha modificado una entrada");
+		$edicion = $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
 
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
-
+		if ($edicion) {
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha modificado una entrada");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
+		}
 	}
 
-
-
-
-	public function entradaInsumo(){
+	public function entradaInsumo()
+	{
 		$respuesta = $this->modelo->insumosEntrada($_GET['id_insumo']);
 		echo json_encode($respuesta);
 	}
-
 
 	private function permisos($id_rol, $permiso, $modulo)
 	{
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
-
-
-
 }
-
-?>
