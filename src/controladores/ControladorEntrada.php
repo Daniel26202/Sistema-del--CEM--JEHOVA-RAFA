@@ -59,9 +59,9 @@ class ControladorEntrada
 
 	public function guardar()
 	{
-		$insercion = $precio_sin_puntos = str_replace('.', '', $_POST['precio']);
+		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
+		$insercion = $this->modelo->insertarEntrada($_POST["id_proveedor"], $_POST["id_insumo"], $_POST["fechaDeIngreso"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["lote"]);
 		if ($insercion) {
-			$this->modelo->insertarEntrada($_POST["id_proveedor"], $_POST["id_insumo"], $_POST["fechaDeIngreso"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["lote"]);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha insertado una entrada");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");

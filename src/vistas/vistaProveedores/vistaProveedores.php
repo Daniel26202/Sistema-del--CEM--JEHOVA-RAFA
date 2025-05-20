@@ -45,6 +45,11 @@
                     <a class="uk-alert-close" uk-close></a>
                     <p class="pe-2">Se ha agregado correctamente.</p>
                 </div>
+            <?php elseif ($parametro[0] ==  "errorSistem"): ?>
+                <div class="uk-alert-primary comentario me-4 fw-bolder h-25" style="display: none;" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p class="pe-2">lamentablemente ocurrio un error por favor intente mas tarde.</p>
+                </div>
             <?php endif ?>
         <?php endif; ?>
 
