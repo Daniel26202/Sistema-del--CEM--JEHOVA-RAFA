@@ -41,12 +41,15 @@ class ControladorRoles
         if ($validar) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/error");
         } else {
-            $this->modelo->insertar($_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
+            $insercion = $this->modelo->insertar($_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
 
-            // guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Insertado un nuevo rol");
-
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/registro");
+            if ($insercion) {
+                // guardar la bitacora
+                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Insertado un nuevo rol");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/registro");
+            } else {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
+            }
         }
     }
 
@@ -59,35 +62,44 @@ class ControladorRoles
         $validar = $this->modelo->validarRol($_POST["nombre"]);
         if ($nombre == $_POST["nombre"]) {
 
-            $this->modelo->editar($_POST["id_rol"], $_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
+            $edicion =  $this->modelo->editar($_POST["id_rol"], $_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
 
-            // guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Modiicado un rol");
-
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/editar");
+            if ($edicion) {
+                // guardar la bitacora
+                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Modiicado un rol");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/editar");
+            } else {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
+            }
         } else if ($nombre != $_POST["nombre"]) {
             if ($validar) {
                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/error");
             } else {
-                $this->modelo->editar($_POST["id_rol"], $_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
+                $edicion =  $this->modelo->editar($_POST["id_rol"], $_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
 
-                // guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Modiicado un rol");
-
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/editar");
+                if ($edicion) {
+                    // guardar la bitacora
+                    $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Modiicado un rol");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/editar");
+                } else {
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
+                }
             }
-            
-        } 
+        }
     }
 
     //eliminar Rol
     public function eliminarRol()
     {
-        $this->modelo->eliminar($_POST["id_rol"]);
+        $eliminacion = $this->modelo->eliminar($_POST["id_rol"]);
 
-        // guardar la bitacora
-        $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Eliminado un rol");
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/eliminar");
+        if ($eliminacion) {
+            // guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Eliminado un rol");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/eliminar");
+        } else {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
+        }
     }
 
 
