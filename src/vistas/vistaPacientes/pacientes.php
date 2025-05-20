@@ -343,7 +343,9 @@
   </div>
 </div>
 
+
 <?php require_once 'modalPaciente.php'; ?>
+<?php require_once 'modalAgregarPaciente.php'; ?>
 
 
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/expresionesModulares.js"></script>

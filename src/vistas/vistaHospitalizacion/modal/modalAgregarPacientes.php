@@ -31,7 +31,7 @@
             </div>
 
 
-            <form class="me-3 ms-3 mt-2" method="POST" id="formularioAgregarH"
+            <form class="me-3 ms-3 mt-2 form-validable" method="POST" id="formularioAgregarH"
                 action="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/agregarH">
 
 
@@ -51,23 +51,22 @@
                                 <p class="fw-bolder text-center mt-3" id="p-paciente"><!-- esto se llena en el js -->
                                 </p>
                             </a>
-                            
+
                             <input type="hidden" name="id_control" id="input-id-controlP">
                             <input type="hidden" name="fecha" id="fechaHoy">
-                            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
+                            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
                             <p class="ms-3 mt-4 fw-bolder " id="p-no-paciente"><!-- esto se llena en el js --></p>
-                            <a href="?c=ControladorPacientes/getPacientes"
-                                class="d-none ms-3 text-decoration-none fw-bold" id="aPaciente">ir a agregar</a>
-                            <a href="?c=ControladorControl/control" class="d-none ms-3 text-decoration-none fw-bold"
+                            <a href="#" class="d-none ms-3 text-decoration-none fw-bold" id="aPaciente" uk-toggle="target: #modal-examplePaciente" data-bs-dismiss="modal">ir a agregar</a>
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/ControladorControl/control" class="d-none ms-3 text-decoration-none fw-bold"
                                 id="aControl">ir a agregar</a>
                             <a href="?c=ControladorCitas/citas" class="d-none ms-3 text-decoration-none fw-bold"
                                 id="aCita">ir a citas</a>
                         </div>
-
                         <div class="d-flex justify-content-end mt-4 mb-3 col-6 divGrp_cedula" id="">
-                            <input class="form-control input-buscar" type="number" name="cedula"
-                                placeholder="Ingrese cédula" id="bt">
+                            <input class="form-control input-buscar input-validar" type="number" name="cedula" placeholder="Ingrese cédula" id="bt" maxlength="8" minlength="6" required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                            <p class="p-error-cedula d-none">La cédula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
+
                             <a href="#" class="btn btn-buscar" title="Buscar" id="btn-buscar">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-search" viewBox="0 0 16 16">
@@ -160,7 +159,7 @@
                         <button class="uk-button rounded-5 btn-cancelar fw-bold " type="button"
                             data-bs-dismiss="modal">Cancelar</button>
                         <button class="uk-button uk-button-primary rounded-5 fw-bold d-none" type="submit"
-                            id="btnEnviar" >Guardar</button>
+                            id="btnEnviar">Guardar</button>
                     </p>
 
                 </div>
