@@ -85,29 +85,16 @@ class ControladorReportes{
 	}
 	public function anularFactura(){
 
-	
-
-		// $cadena = $_GET["id_insumo"];
-		
-		print_r($_POST);
 
 		$respuesta = $this->modelo->insumosAnulados($_POST["id_factura"]);
-	 	$eliminar = $this->modelo->anularFac($_POST["id_factura"]);
-	
+	 	$eliminar = $this->modelo->anularFac($_POST["id_factura"]);	
 		foreach($respuesta as $res){
 		$insumo = $this->modelo->cantidadAnulada($res["id_insumo"], $_POST["id_factura"], $res["numero_de_lote"]);
 		}
-
 		// Guardo la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"factura","Ha anula una factura");
-		
 		// // $respuesta =$this->modelo->cantidadAnulada($array);
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/anulada");
-		
-
-	
-
-	
 	}
 
 	private function permisos($id_rol, $permiso, $modulo)
