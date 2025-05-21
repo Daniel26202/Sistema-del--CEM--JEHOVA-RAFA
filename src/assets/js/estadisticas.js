@@ -7,6 +7,8 @@ let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: 
 //elementos a imprimir
 const elementoImprimirEspecialidad = document.getElementById("imprimir");
 const elementoImprimirSintomas = document.getElementById("imprimirSintomas");
+const elementoImprimirDistribucionPacientes = document.getElementById("imprimirPacientes");
+
 
 document.addEventListener("DOMContentLoaded", function () {
   distribucion_edad_genero("/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero");
@@ -15,18 +17,68 @@ document.addEventListener("DOMContentLoaded", function () {
   sintomas_chart(`/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes`);
 });
 
+let distribucion_pacientes_chart = null;
+let distribucion_pacientes_chart_modal = null;
 const distribucion_edad_genero = async (url) => {
   let edadGenero = await fetch(url);
   let data = await edadGenero.json();
-  console.log(data);
+
   let label = data.map((item) => item.rango_edad);
   let masculino = data.map((item) => item.masculino);
   let femenino = data.map((item) => item.femenino);
-  console.log(label);
-  console.log(masculino);
-  console.log(femenino);
 
-  new Chart(document.getElementById("edadgenero"), {
+  let ctx = document.getElementById("edadgenero").getContext("2d");
+  distribucion_pacientes_chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: label,
+      datasets: [
+        {
+          label: "Masculino",
+          data: masculino,
+          backgroundColor: "#36A2EB",
+        },
+        {
+          label: "Femenino",
+          data: femenino,
+          backgroundColor: "#FF6384",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Intervalo de Edad",
+          },
+          stacked: false,
+        },
+
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Numero de pacientes",
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          position: "bottom",
+        },
+        tooltip: {
+          mode: "index",
+          intersect: false,
+        },
+      },
+    },
+  });
+
+  let ctxModal = document.getElementById("pacientes_pdf").getContext("2d");
+
+  distribucion_pacientes_chart_modal = new Chart(ctxModal, {
     type: "bar",
     data: {
       labels: label,
@@ -80,7 +132,6 @@ let tasaMorbilidadChart = null;
 const tasa_morbilidad = async (url) => {
   let tes = await fetch(url);
   let data = await tes.json();
-  console.log(data);
 
   const labels = data.map((item) => item.nombre_patologia);
   const casos = data.map((item) => parseInt(item.casos, 10));
@@ -492,6 +543,11 @@ document.getElementById("especialidades").addEventListener("click", function () 
 //generar reporte de sintoams
 document.getElementById("sintomas").addEventListener("click", function () {
   generarReporte(elementoImprimirSintomas, "reporte_sintomas.pdf");
+});
+
+//generar Reporte pacientes
+document.getElementById("pacientes").addEventListener("click", function () {
+  generarReporte(elementoImprimirDistribucionPacientes, "reporte_distribucion_de_pacientes.pdf");
 });
 //funcion generica para imprimir pdf
 function generarReporte(elementoImprimir, nombreArchivo) {
