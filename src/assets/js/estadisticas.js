@@ -8,6 +8,7 @@ let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: 
 const elementoImprimirEspecialidad = document.getElementById("imprimir");
 const elementoImprimirSintomas = document.getElementById("imprimirSintomas");
 const elementoImprimirDistribucionPacientes = document.getElementById("imprimirPacientes");
+const elementoImprimirMorbilidad = document.getElementById("imprimirMorbilidad");
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -128,6 +129,7 @@ const distribucion_edad_genero = async (url) => {
 };
 
 let tasaMorbilidadChart = null;
+let tasaMorbilidadChartModal = null;
 
 const tasa_morbilidad = async (url) => {
   let tes = await fetch(url);
@@ -141,8 +143,54 @@ const tasa_morbilidad = async (url) => {
   if (tasaMorbilidadChart) {
     tasaMorbilidadChart.destroy();
   }
+  ctx = document.getElementById("tasa_morbilidad").getContext("2d");
 
-  tasaMorbilidadChart = new Chart(document.getElementById("tasa_morbilidad"), {
+  tasaMorbilidadChart = new Chart(ctx, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Casos",
+          data: casos,
+          backgroundColor: "#36A2EB",
+          yAxisID: "yCasos",
+        },
+        {
+          type: "line",
+          label: "Tasa por 1000",
+          data: tasas,
+          borderColor: "#8aafff",
+          backgroundColor: "#8aafff",
+          yAxisID: "yTasa",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        yCasos: {
+          type: "linear",
+          position: "left",
+          title: { display: true, text: "Número de Casos" },
+        },
+        yTasa: {
+          type: "linear",
+          position: "right",
+          title: { display: true, text: "Tasa por 1 000 pacientes" },
+          grid: { drawOnChartArea: false },
+        },
+      },
+      plugins: {
+        legend: { position: "bottom" },
+        tooltip: { mode: "index", intersect: false },
+      },
+    },
+  });
+
+  ctxModal = document.getElementById("morbilidad_pdf").getContext("2d");
+
+  tasaMorbilidadChartModal = new Chart(ctxModal, {
     data: {
       labels,
       datasets: [
@@ -549,6 +597,12 @@ document.getElementById("sintomas").addEventListener("click", function () {
 document.getElementById("pacientes").addEventListener("click", function () {
   generarReporte(elementoImprimirDistribucionPacientes, "reporte_distribucion_de_pacientes.pdf");
 });
+
+//repotte morbilidad
+document.getElementById("morbilidad").addEventListener("click", function () {
+  generarReporte(elementoImprimirMorbilidad, "reporte_tasa_de_morbilidad.pdf");
+});
+
 //funcion generica para imprimir pdf
 function generarReporte(elementoImprimir, nombreArchivo) {
   // Buscar el elemento del DOM
