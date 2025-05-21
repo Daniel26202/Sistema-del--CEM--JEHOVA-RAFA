@@ -22,15 +22,15 @@
         <div class=" card tajeta-estadistica-m mb-5">
         <h5 class="card-header">Distribución de pacientes</h5>
         <div class="card-body">
-            <canvas id="edadgenero"></canvas>
+            <canvas id="edadgenero" class="canvas"></canvas>
         </div>
     </div>
     <div class="card tajeta-estadistica-m mb-5 contenido">
         <h5 class="card-header">Tasa de morbilidad</h5>
         <div class="card-body">
-            <canvas id="tasa_morbilidad"></canvas>
+            <canvas id="tasa_morbilidad" class="canvas"></canvas>
 
-            <div class="mt-4 w-100 mb-4 text-center">
+            <!-- <div class="mt-4 w-100 mb-4 text-center">
                 <div class="alert alert-danger text-center d-none alertaFechaInicio">Por favor la fecha de Inicio tiene que ser Menor a la fech final</div>
                 <div class="d-flex">
 
@@ -57,7 +57,7 @@
                 </div>
 
 
-            </div>
+            </div> -->
 
 
         </div>
@@ -65,17 +65,23 @@
     <div class="card tajeta-estadistica-g m-auto mb-5">
         <h5 class="card-header">TITULO 3</h5>
         <div class="card-body">
-            <canvas>
+            <canvas class="canvas">
 
             </canvas>
         </div>
     </div>
     <div class="card tajeta-estadistica-m mb-5">
-        <h5 class="card-header">TITULO 4</h5>
+        <h5 class="card-header">Especialidades mas solicitadas
+        </h5>
         <div class="card-body">
-            <canvas>
+            <canvas id="especialidades_solicitadas" class="canvas">
 
             </canvas>
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-primary 75 m-auto" data-bs-toggle="modal" data-bs-target="#reporte">
+                    Generar Reporte
+                </button>
+            </div>
         </div>
     </div>
     <div class="card tajeta-estadistica-m mb-5">
@@ -92,14 +98,16 @@
 
 </div>
 
+<?php require_once './src/vistas/vistaEstadisticas/modalsEstadisticas.php'; ?>
+
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/jspdf.umd.min.js"></script>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/html2canvas.min.js"></script>
 
 
-<script type=" text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
+<!-- <script type=" text/javascript" src="../src/assets/DataTable/jquery-3.7.1.js"></script>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
+<script type="text/javascript" src="../src/assets/DataTable/datatables.js"></script> -->
 <script type="text/javascript" src="../src/assets/js/estadisticas.js"></script>
 
 
