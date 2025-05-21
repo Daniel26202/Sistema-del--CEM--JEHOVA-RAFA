@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   distribucion_edad_genero("/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero");
   tasa_morbilidad("/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad");
   especialidades_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas");
+  sintomas_chart(`/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes`);
 });
 
 const distribucion_edad_genero = async (url) => {
@@ -287,6 +288,158 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
   });
 }
 
+//Sintomas
+//Genera el grafico de sintomas comunes
+let sintomasChartModal = null;
+let sintomasChart = null;
+const sintomas_chart = async (url) => {
+  let sintomas_comunes = await fetch(url);
+  let data = await sintomas_comunes.json();
+  if (data.length > 0) {
+    //Quitarle lo oculto a los graficos
+    document.getElementById("sintomas_comunes").classList.remove("d-none");
+    document.getElementById("sintomas_solicitadas_pdf").classList.remove("d-none");
+    let sintomas = data.map((item) => item.sintoma);
+    let total = data.map((item) => item.total);
+
+    // Generar el primer gráfico (ctx)
+    let ctx = document.getElementById("sintomas_comunes").getContext("2d");
+    if (sintomasChart) {
+      sintomasChart.destroy();
+    }
+    sintomasChart = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: sintomas,
+        datasets: [
+          {
+            data: total,
+            backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
+          },
+        ],
+      },
+    });
+
+    // Verificar que el canvas del modal exista
+    let canvasModal = document.getElementById("sintomas_solicitadas_pdf");
+    if (!canvasModal) {
+      console.error("El canvas 'sintomas_solicitadas_pdf' no existe en el DOM.");
+      return;
+    }
+
+    // Asegurarse de que el canvas no esté oculto
+    canvasModal.classList.remove("d-none");
+
+    // Obtener el contexto del canvas del modal
+    let ctxModal = canvasModal.getContext("2d");
+
+    // Destruir el gráfico existente en el modal antes de crear uno nuevo
+    if (sintomasChartModal) {
+      sintomasChartModal.destroy();
+    }
+
+    // Crear el nuevo gráfico para el modal
+    sintomasChartModal = new Chart(ctxModal, {
+      type: "pie",
+      data: {
+        labels: sintomas,
+        datasets: [
+          {
+            data: total,
+            backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
+          },
+        ],
+      },
+      options: {
+        responsive: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+      },
+    });
+
+    generarLeyendaSintomas(sintomas, total); // genera la leyenda de síntomas
+    totalDeSintomas(data);
+    //aparece el boton de impirmir
+    document.getElementById("textoSintomas").classList.remove("d-none");
+    document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.remove("d-none"));
+  } else {
+    //vacia todos los elementos si no hay datos para relizar la grafica
+    document.getElementById("sintomas_comunes").classList.add("d-none");
+    document.getElementById("sintomas_solicitadas_pdf").classList.add("d-none");
+    document.querySelector(".leyenda-sintomas-container").innerHTML = "";
+    document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.add("d-none"));
+    document.getElementById("sintomas").classList.add("d-none");
+  }
+};
+
+async function totalDeSintomas(data) {
+  let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todos_los_sintomas");
+  let resultado = await peticion.json();
+  console.log(resultado);
+  document.getElementById("textoSintomas").innerHTML = ``;
+  console.log(data);
+
+  let sintomas = data.map((item) => item.sintoma).join(",  ");
+  console.log(sintomas);
+
+  // Agrega esto al texto
+  document.getElementById("textoSintomas").innerHTML += `
+    <p>De Los ${resultado.total} sintomas registados, los ${data.length}  síntomas registrados, los mas comunes son: ${sintomas}.</p>
+    <p>Este reporte examina la distribución y las tendencias de los síntomas más comunes según su frecuencia en un periodo determinado.</p>
+                        <p>El gráfico de pastel muestra el porcentaje que representa cada uno de estos síntomas dentro del total de consultas, permitiendo identificar rápidamente cuáles son las manifestaciones clínicas que más demanda generan en la población atendida..</p>
+
+`;
+}
+
+function generarLeyendaSintomas(sintomas, total) {
+  // Selecciona el contenedor donde se mostrará la leyenda de síntomas
+  const contenedorLeyenda = document.querySelector(".leyenda-sintomas-container");
+  if (!contenedorLeyenda) return;
+
+  // Limpia cualquier contenido previo en el contenedor
+  contenedorLeyenda.innerHTML = "";
+
+  // Calcula el total de síntomas para obtener los porcentajes
+  const totalGlobal = total.reduce((acumulado, actual) => acumulado + actual, 0);
+
+  // Colores para los síntomas (igual que en el gráfico)
+  const colores = ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"];
+
+  // Recorre cada síntoma y genera un elemento de leyenda
+  sintomas.forEach((sintoma, indice) => {
+    const porcentaje = ((total[indice] / totalGlobal) * 100).toFixed(1);
+
+    // Contenedor principal del elemento de la leyenda
+    const elementoLeyenda = document.createElement("div");
+    elementoLeyenda.style.display = "flex";
+    elementoLeyenda.style.alignItems = "center";
+    elementoLeyenda.style.margin = "5px 0";
+
+    // Cuadro de color
+    const cuadroColor = document.createElement("div");
+    cuadroColor.style.width = "20px";
+    cuadroColor.style.height = "20px";
+    cuadroColor.style.backgroundColor = colores[indice % colores.length];
+    cuadroColor.style.marginRight = "10px";
+    cuadroColor.style.borderRadius = "3px";
+
+    // Texto descriptivo
+    const textoLeyenda = document.createElement("span");
+    textoLeyenda.innerHTML = `
+      ${sintoma}: ${total[indice]} casos (${porcentaje}%)
+    `;
+    textoLeyenda.style.fontSize = "14px";
+
+    elementoLeyenda.appendChild(cuadroColor);
+    elementoLeyenda.appendChild(textoLeyenda);
+
+    contenedorLeyenda.appendChild(elementoLeyenda);
+  });
+}
+
 //Funcion para  filtrar por fecha
 
 function filtrar_por_fecha(funcion, fechaInicio, fechaFinal, parametros = "") {
@@ -305,7 +458,6 @@ function filtrar_por_fecha(funcion, fechaInicio, fechaFinal, parametros = "") {
 
 //filtros por fecha
 
-
 //especialidades por fecha
 document.getElementById("buscarFecha").addEventListener("click", function () {
   let fechaInicio = this.parentElement.firstElementChild.value;
@@ -318,11 +470,29 @@ document.getElementById("buscarFecha").addEventListener("click", function () {
   );
 });
 
+//sintomas por fecha
+document.getElementById("buscarFechaSintomas").addEventListener("click", function () {
+  let fechaInicio = this.parentElement.firstElementChild.value;
+  let fechaFinal = this.parentElement.firstElementChild.nextElementSibling.value;
+  filtrar_por_fecha(
+    sintomas_chart,
+    fechaInicio,
+    fechaFinal,
+    `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio}/${fechaFinal}`
+  );
+});
+
+// seccion de generacion de reportes
+
 //generar reporte de especialidades
 document.getElementById("especialidades").addEventListener("click", function () {
   generarReporte(elementoImprimirEspecialidad, "reporte_especialidades.pdf");
 });
 
+//generar reporte de sintoams
+document.getElementById("sintomas").addEventListener("click", function () {
+  generarReporte(elementoImprimirSintomas, "reporte_sintomas.pdf");
+});
 //funcion generica para imprimir pdf
 function generarReporte(elementoImprimir, nombreArchivo) {
   // Buscar el elemento del DOM

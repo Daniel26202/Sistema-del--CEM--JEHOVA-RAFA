@@ -98,10 +98,9 @@ WHERE estado = 'ACT';");
 											ORDER BY total DESC lIMIT 5;
 												");
 			} else {
-				$consulta = $this->conexion->prepare("SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
+				$consulta = $this->conexion->prepare("SELECT c.fecha_control, s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
 											FROM sintomas_control sc
-											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
-											INNER JOIN control c ON c.id_control = sc.id_control WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
+											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control WHERE c.fecha_control BETWEEN :fechaInicio AND :fechaFinal
 											GROUP BY s.nombre
 											ORDER BY total DESC lIMIT 5;
 												");

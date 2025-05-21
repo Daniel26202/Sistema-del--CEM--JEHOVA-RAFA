@@ -85,11 +85,16 @@
         </div>
     </div>
     <div class="card tajeta-estadistica-m mb-5">
-        <h5 class="card-header">TITULO 5</h5>
+        <h5 class="card-header">Sintomas mas comunes</h5>
         <div class="card-body">
-            <canvas>
+            <canvas id="sintomas_comunes">
 
             </canvas>
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-primary 75 m-auto  reporte-sintomas" data-bs-toggle="modal" data-bs-target="#reporteSintomas">
+                    Generar Reporte
+                </button>
+            </div>
         </div>
     </div>
 </div>

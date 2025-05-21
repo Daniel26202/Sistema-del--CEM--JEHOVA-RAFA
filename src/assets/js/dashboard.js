@@ -4,8 +4,7 @@ const { jsPDF } = window.jspdf;
 let currentYear, currentMonth;
 let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
 
-
-const elementoImprimirEspecialidad= document.getElementById("imprimir");
+const elementoImprimirEspecialidad = document.getElementById("imprimir");
 const elementoImprimirSintomas = document.getElementById("imprimirSintomas");
 
 // ========================== EVENTOS DOM ==========================
@@ -18,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
   pacientes_hospitalizados(); // Carga los pacientes hospitalizados
   traerDatosServicios(); // Carga los datos de la tabla de precios
   especialidades_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"); // Genera el gráfico de especialidades
-  sintomas_chart(); // Genera el gráfico de sintomas comunes
+  sintomas_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes"); // Genera el gráfico de sintomas comunes
   traerDoctor(); //Cargar doctores en el select
 });
 
@@ -46,7 +45,6 @@ document.getElementById("buscarFecha").addEventListener("click", function () {
   }
 });
 
-
 //Filtrar grafica de sintomas por fecha
 document.getElementById("buscarFechaSintomas").addEventListener("click", function () {
   let fechaInicio = this.parentElement.firstElementChild;
@@ -55,15 +53,12 @@ document.getElementById("buscarFechaSintomas").addEventListener("click", functio
     document.getElementById("sintomas").classList.remove("d-none");
     console.log("removida");
     document.querySelector(".alertaFechaInicioSintomas").classList.add("d-none");
-    especialidades_chart(
-      `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio.value}/${fechaFinal.value}`
-    );
+    sintomas_chart(`/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio.value}/${fechaFinal.value}`);
   } else {
     document.querySelector(".alertaFechaInicioSintomas").classList.remove("d-none");
     document.getElementById("sintomas").classList.add("d-none");
   }
 });
-
 
 //validar que el elemento exista
 
@@ -397,7 +392,7 @@ const especialidades_chart = async (url) => {
   try {
     let especialidades_solicitadas = await fetch(url);
     let data = await especialidades_solicitadas.json();
-    console.log(data);
+
     if (data.length > 0) {
       //Quitarle lo oculto a los graficos
       document.getElementById("especialidades_solicitadas").classList.remove("d-none");
@@ -497,73 +492,92 @@ async function totalDeEspecialidades(data) {
 //Genera el grafico de sintomas comunes
 let sintomasChartModal = null;
 let sintomasChart = null;
-const sintomas_chart = async () => {
-  let sintomas_comunes = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes");
+const sintomas_chart = async (url) => {
+  let sintomas_comunes = await fetch(url);
   let data = await sintomas_comunes.json();
-  let sintomas = data.map((item) => item.sintoma);
-  let total = data.map((item) => item.total);
+  console.log(data);
+  if (data.length > 0) {
+    //Quitarle lo oculto a los graficos
+    document.getElementById("sintomas_comunes").classList.remove("d-none");
+    document.getElementById("sintomas_solicitadas_pdf").classList.remove("d-none");
+    let sintomas = data.map((item) => item.sintoma);
+    let total = data.map((item) => item.total);
 
-  // Generar el primer gráfico (ctx)
-  let ctx = document.getElementById("sintomas_comunes").getContext("2d");
-  if (sintomasChart) {
-    sintomasChart.destroy();
-  }
-  sintomasChart = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: sintomas,
-      datasets: [
-        {
-          data: total,
-          backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
-        },
-      ],
-    },
-  });
+    // Generar el primer gráfico (ctx)
+    let ctx = document.getElementById("sintomas_comunes").getContext("2d");
+    if (sintomasChart) {
+      sintomasChart.destroy();
+    }
+    sintomasChart = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: sintomas,
+        datasets: [
+          {
+            data: total,
+            backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
+          },
+        ],
+      },
+    });
 
-  // Verificar que el canvas del modal exista
-  let canvasModal = document.getElementById("sintomas_solicitadas_pdf");
-  if (!canvasModal) {
-    console.error("El canvas 'sintomas_solicitadas_pdf' no existe en el DOM.");
-    return;
-  }
+    // Verificar que el canvas del modal exista
+    let canvasModal = document.getElementById("sintomas_solicitadas_pdf");
+    if (!canvasModal) {
+      console.error("El canvas 'sintomas_solicitadas_pdf' no existe en el DOM.");
+      return;
+    }
 
-  // Asegurarse de que el canvas no esté oculto
-  canvasModal.classList.remove("d-none");
+    // Asegurarse de que el canvas no esté oculto
+    canvasModal.classList.remove("d-none");
 
-  // Obtener el contexto del canvas del modal
-  let ctxModal = canvasModal.getContext("2d");
+    // Obtener el contexto del canvas del modal
+    let ctxModal = canvasModal.getContext("2d");
 
-  // Destruir el gráfico existente en el modal antes de crear uno nuevo
-  if (sintomasChartModal) {
-    sintomasChartModal.destroy();
-  }
+    // Destruir el gráfico existente en el modal antes de crear uno nuevo
+    if (sintomasChartModal) {
+      sintomasChartModal.destroy();
+    }
 
-  // Crear el nuevo gráfico para el modal
-  sintomasChartModal = new Chart(ctxModal, {
-    type: "pie",
-    data: {
-      labels: sintomas,
-      datasets: [
-        {
-          data: total,
-          backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
-        },
-      ],
-    },
-    options: {
-      responsive: false,
-      plugins: {
-        legend: {
-          display: false,
+    // Crear el nuevo gráfico para el modal
+    sintomasChartModal = new Chart(ctxModal, {
+      type: "pie",
+      data: {
+        labels: sintomas,
+        datasets: [
+          {
+            data: total,
+            backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
+          },
+        ],
+      },
+      options: {
+        responsive: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
         },
       },
-    },
-  });
+    });
 
-  generarLeyendaSintomas(sintomas, total); // genera la leyenda de síntomas
+    generarLeyendaSintomas(sintomas, total); // genera la leyenda de síntomas
 
-  totalDeSintomas(data);
+    totalDeSintomas(data);
+
+    //Aparecer el boton de impirmir
+    document.getElementById("textoSintomas").classList.remove("d-none");
+    //Aparecer el escrito
+    totalDeEspecialidades(data);
+    document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.remove("d-none"));
+  } else {
+    //Vaciando todos los elementos si no hay datos para relizar la grafica
+    document.getElementById("sintomas_comunes").classList.add("d-none");
+    document.getElementById("sintomas_solicitadas_pdf").classList.add("d-none");
+    document.querySelector(".leyenda-container").innerHTML = "";
+    document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.add("d-none"));
+    document.getElementById("sintomas").classList.add("d-none");
+  }
 };
 
 async function totalDeSintomas(data) {
@@ -680,7 +694,6 @@ function generarLeyendaSintomas(sintomas, total) {
 
 function generarReporte(elementoImprimir, nombreArchivo) {
   // Buscar el elemento del DOM
-  
 
   if (!elementoImprimir) {
     console.error("El elemento con ID 'imprimir' no existe.");
@@ -721,7 +734,7 @@ function generarReporte(elementoImprimir, nombreArchivo) {
   // Generar PDF con fondo adecuado
   pdf.html(elementoImprimir, {
     callback: function (doc) {
-      doc.save(nombreArchivo || "reporte.pdf"); 
+      doc.save(nombreArchivo || "reporte.pdf");
     },
     x: 0,
     y: 0,
