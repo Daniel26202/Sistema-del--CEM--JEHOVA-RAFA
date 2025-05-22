@@ -131,7 +131,7 @@ class ModeloHospitalizacion extends Db
     {
 
         // insertar hospitalización
-        $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion(fecha_hora_inicio, precio_horas, total, id_control, fecha_hora_final, estado) VALUES ( :fecha_hora_inicio, "null", "null", :id_control,  "null", "Pendiente")');
+        $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion(fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_control, fecha_hora_final, estado) VALUES ( :fecha_hora_inicio, "null", "null", "null", "null", :id_control,  "null", "Pendiente")');
         $consulta->bindParam(":fecha_hora_inicio", $fechaHora);
         $consulta->bindParam(":id_control", $idControl);
         $consulta->execute();
@@ -150,10 +150,17 @@ class ModeloHospitalizacion extends Db
 
             foreach ($idInsumos as $idI) {
 
-                // insertar insumos de la hospitalización
-                $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_insumo, cantidad) VALUES (:id_hospitalizacion, :id_insumo, :cantidad)');
-                $consulta->bindParam(":id_hospitalizacion", $idH);
+                // selecciono id del inventario
+                $consulta = $this->conexion->prepare('SELECT inv.id_inventario FROM inventario inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE inv.id_insumo = :id_insumo AND inv.cantidad >= :cantidad LIMIT 1;');
                 $consulta->bindParam(":id_insumo", $idI);
+                $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
+                $idInventario = ($consulta->execute()) ? $consulta->fetch() : false;
+
+
+                // insertar insumos de la hospitalización
+                $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_inventario, cantidad) VALUES (:id_hospitalizacion, :id_inventario, :cantidad)');
+                $consulta->bindParam(":id_hospitalizacion", $idH);
+                $consulta->bindParam(":id_inventario", $idInventario["id_inventario"]);
                 $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
                 $consulta->execute();
 
@@ -192,7 +199,7 @@ class ModeloHospitalizacion extends Db
         $consulta->bindParam(":idHosp", $idHos);
         $idControl = ($consulta->execute()) ? $consulta->fetch() : false;
         // editar control
-        $this->updateHistorial($idControl, $historial);
+        $this->updateHistorial($idControl["id_control"], $historial);
 
 
         // es para a editar insumos
@@ -204,7 +211,7 @@ class ModeloHospitalizacion extends Db
             foreach ($idIDH as $idInDHos) {
 
                 // selecciono la cantidad del insumo existente de la hospitalización
-                $consulta = $this->conexion->prepare('SELECT cantidad, id_insumo FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id');
+                $consulta = $this->conexion->prepare('SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN inventario inv ON idh.id_inventario = inv.id_inventario INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE id_insumoDeHospitalizacion = :id');
                 $consulta->bindParam(":id", $idInDHos);
                 $cantidadIHBD = ($consulta->execute()) ? $consulta->fetch() : false;
 
@@ -251,10 +258,17 @@ class ModeloHospitalizacion extends Db
 
             foreach ($idInsumosA as $idIA) {
 
-                // insertar insumos de la hospitalización
-                $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_insumo, cantidad) VALUES (:id_hospitalizacion, :id_insumo, :cantidad)');
-                $consulta->bindParam(":id_hospitalizacion", $idHos);
+                // selecciono id del inventario
+                $consulta = $this->conexion->prepare('SELECT inv.id_inventario FROM inventario inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE inv.id_insumo = :id_insumo AND inv.cantidad >= :cantidad LIMIT 1;');
                 $consulta->bindParam(":id_insumo", $idIA);
+                $consulta->bindParam(":cantidad", $cantidadA[$contadorC]);
+                $idInventario = ($consulta->execute()) ? $consulta->fetch() : false;
+
+
+                // insertar insumos de la hospitalización
+                $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_inventario, cantidad) VALUES (:id_hospitalizacion, :id_inventario, :cantidad)');
+                $consulta->bindParam(":id_hospitalizacion", $idHos);
+                $consulta->bindParam(":id_inventario", $idInventario["id_inventario"]);
                 $consulta->bindParam(":cantidad", $cantidadA[$contadorC]);
                 $consulta->execute();
 
@@ -280,7 +294,7 @@ class ModeloHospitalizacion extends Db
             foreach ($idInsElim as $idIAEl) {
 
                 // selecciono la cantidad del insumo existente de la hospitalización
-                $consulta = $this->conexion->prepare('SELECT cantidad, id_insumo FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id');
+                $consulta = $this->conexion->prepare('SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN inventario inv ON idh.id_inventario = inv.id_inventario INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE id_insumoDeHospitalizacion = :id');
                 $consulta->bindParam(":id", $idIAEl);
                 $cantidadIH = ($consulta->execute()) ? $consulta->fetch() : false;
 

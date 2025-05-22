@@ -62,6 +62,38 @@
                                         <input type="number" step="any" name="precioHorasSe" id="inpCostoHS"
                                             class="input-agregar w-50" placeholder="Precio" value="" min="0.10" required>
                                         <p class="mt-3 ps-1">bs</p>
+                                        
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="me-3 ms-3 mt-2">
+                        <div class="m-auto mt-4 pt-1 col-12">
+                            <h5 class="text-center fw-bold">Hora y precio en moneda extranjera</h5>
+                        </div>
+
+                        <div class="d-flex justify-content-center align-items-center mt-4 ">
+
+                            <div class="borde-input-agregar m-auto col-12">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <div class="col-4 ms-4">
+
+                                        <input type="number" name="" id="inpHorasMoEx" class="input-agregar w-75 "
+                                            placeholder="Hora" value="" min="1" required><span class=" mt-1">h.</span>
+
+                                    </div>
+                                    <div class="col-2">
+
+                                        <p class=" fw-bold margen-dos-puntos pb-2">:</p>
+
+                                    </div>
+                                    <div class="col-6 d-flex">
+                                        <input type="number" step="any" name="precioHorasMoEx" id="inpCostoHMoEx"
+                                            class="input-agregar w-50" placeholder="Precio" value="" min="0.10" required>
+                                        <p class="mt-3 ps-1">$</p>
                                     </div>
 
 

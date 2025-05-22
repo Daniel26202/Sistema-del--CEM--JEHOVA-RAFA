@@ -23,9 +23,14 @@
                 <div class="d-flex justify-content-center">
                     <p class="m-0 p-0" id="horasS">0</p>
                     <p class="m-0 p-0">h.</p>
-                    <p class="m-0 pe-1 ps-1 fw-bolder ">=</p>
+                    <p class="m-0 pe-1 fw-bolder">=</p>
+                </div>
+                <div class="d-flex justify-content-center">
                     <p class="m-0 p-0" id="costoHS">0</p>
                     <p class="m-0 p-0">bs</p>
+                    <p class="m-0 p-0 ps-1 pe-1 fw-bolder">o</p>
+                    <p class="m-0 p-0" id="costoHSMoEx">0</p>
+                    <p class="m-0 p-0">$</p>
                 </div>
 
             </div>
@@ -246,15 +251,22 @@
             <div class="d-flex align-items-start mb-2 ">
                 <div class="col-5">
                     <h4 class=" fw-bold text">Calculo de monto por hora</h4>
-                    <p class="parrafo-offcanvas" id="cMontoHoraM">
-                        <!-- se agrega en el js -->
-                    </p>
+                    <div class="d-flex justify-content-center align-items-center text-center">
+                        <p class="parrafo-offcanvas fw-bold fs-5" id="cMontoHoraM">
+                            <!-- se agrega en el js -->
+                        </p>
+                        <p class="parrafo-offcanvas fw-bold fs-5">bs</p>
+                    </div>
+
                 </div>
 
                 <p class="col-2"></p> <!-- solo separación -->
                 <div>
                     <h4 class="text-center fw-bold ">Calculo a moneda extranjera</h4>
-                    <p class="parrafo-offcanvas fs-5 text-center"></p>
+                    <div class="d-flex align-items-center justify-content-center text-center">
+                        <p class="parrafo-offcanvas fs-5 " id="cMoHoraMoExM"></p>
+                        <p class="parrafo-offcanvas fw-bold fs-5">$</p>
+                    </div>
                 </div>
             </div>
 
@@ -270,7 +282,18 @@
                 <div class="d-flex align-items-start mt-5">
 
                     <h4 class="fw-bold me-2 ">Cálculo del total:</h4>
-                    <p class="fw-bold fs-5" id="calculoTotal">${res.total}bs</p>
+                    <div class="">
+                        <div class="d-flex align-items-center justify-content-center text-center">
+                            <p class="fw-bold fs-5" id="calculoTotal">${res.total}bs</p>
+                            <p class="fw-bold fs-5">bs</p>
+                        </div>
+
+                        <h4 class="fw-bold text-center">o</h4>
+                        <div class="d-flex align-items-center justify-content-center text-center">
+                            <p class="fw-bold fs-5" id="calculoTotalME">${res.total}bs</p>
+                            <p class="fw-bold fs-5">$</p>
+                        </div>
+                    </div>
 
                 </div>
             <?php endif ?>

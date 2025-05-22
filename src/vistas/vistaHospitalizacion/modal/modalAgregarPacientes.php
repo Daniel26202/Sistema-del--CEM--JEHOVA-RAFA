@@ -60,8 +60,6 @@
                             <a href="#" class="d-none ms-3 text-decoration-none fw-bold" id="aPaciente" uk-toggle="target: #modal-examplePaciente" data-bs-dismiss="modal">ir a agregar</a>
                             <a href="/Sistema-del--CEM--JEHOVA-RAFA/ControladorControl/control" class="d-none ms-3 text-decoration-none fw-bold"
                                 id="aControl">ir a agregar</a>
-                            <a href="?c=ControladorCitas/citas" class="d-none ms-3 text-decoration-none fw-bold"
-                                id="aCita">ir a citas</a>
                         </div>
                         <div class="d-flex justify-content-end mt-4 mb-3 col-6 divGrp_cedula" id="">
                             <input class="form-control input-buscar input-validar" type="number" name="cedula" placeholder="Ingrese cédula" id="bt" maxlength="8" minlength="6" required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">

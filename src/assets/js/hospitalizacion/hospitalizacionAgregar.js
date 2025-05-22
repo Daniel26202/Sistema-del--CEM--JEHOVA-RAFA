@@ -415,7 +415,7 @@ addEventListener("DOMContentLoaded", function () {
     let historiaclinica = document.getElementById("historia_clinicaA");
 
     const traerControlDePaciente = async () => {
-        try {
+        // try {
             const datosFormulario = new FormData(formularioAgregar);
 
             const contenidoForm = {
@@ -445,7 +445,6 @@ addEventListener("DOMContentLoaded", function () {
                 parrafoNoP.innerText = "El paciente no esta registrado.";
                 document.getElementById("input-id-controlP").value = "";
 
-                document.querySelector("#aCita").classList.add("d-none");
                 document.querySelector("#aControl").classList.add("d-none");
                 document.querySelector("#aPaciente").classList.remove("d-none");
 
@@ -465,7 +464,6 @@ addEventListener("DOMContentLoaded", function () {
                     document.getElementById("input-id-controlP").value = "";
 
                     document.querySelector("#aPaciente").classList.add("d-none");
-                    document.querySelector("#aCita").classList.add("d-none");
                     document.querySelector("#aControl").classList.remove("d-none");
 
                     parrafoNoP.classList.toggle("d-none", false);
@@ -478,7 +476,6 @@ addEventListener("DOMContentLoaded", function () {
                     } else {
                         document.querySelector("#aPaciente").classList.add("d-none");
                         document.querySelector("#aControl").classList.add("d-none");
-                        document.querySelector("#aCita").classList.add("d-none");
 
                         let nombreApellido = `${resultadoM.nombre} ${resultadoM.apellido}`;
                         parrafoExP.innerText = "";
@@ -504,9 +501,9 @@ addEventListener("DOMContentLoaded", function () {
                     }
                 }
             }
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...  " + error);
-        }
+        // } catch (error) {
+            // console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...  " + error);
+        // }
     };
 
     // este evento es para buscar al paciente
