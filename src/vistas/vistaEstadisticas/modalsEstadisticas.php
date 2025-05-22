@@ -244,7 +244,7 @@
                     <!-- filtro de busqueda -->
 
                     <div class="canva contenido" style="margin: 20px 0;">
-                        <canvas class="contenido" id="morbilidad_pdf" width="400" height="400"></canvas>
+                        <canvas class="contenido canvas-modal" id="morbilidad_pdf" width="300" height="300"></canvas>
                     </div>
                     <div class="leyenda-morbilidad-container" style="width: 80%; margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                     </div>

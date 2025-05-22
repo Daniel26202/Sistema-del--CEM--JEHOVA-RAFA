@@ -1,0 +1,30 @@
+/* Cambia el tamaño base del gráfico */
+.canvas-pastel {
+  max-width: 450px;
+  max-height: 310px;
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+
+.canvas-modal {
+  width: 400px;
+  height: 400px;
+}
+
+/* Media query para tablets */
+@media (max-width: 768px) {
+  .canvas-pastel {
+    max-width: 350px;
+    max-height: 480px;
+  }
+}
+
+/* Media query para móviles */
+@media (max-width: 480px) {
+  .canvas-pastel {
+    max-width: 98vw;
+    max-height: 450px;
+  }
+}

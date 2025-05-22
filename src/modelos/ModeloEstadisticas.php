@@ -26,7 +26,10 @@ class ModeloEstadisticas extends Db
       $sql = "SELECT
   rango_edad,
   SUM(CASE WHEN genero = 'masculino' THEN cantidad ELSE 0 END) AS masculino,
-  SUM(CASE WHEN genero = 'femenino' THEN cantidad ELSE 0 END) AS femenino
+  SUM(CASE WHEN genero = 'femenino' THEN cantidad ELSE 0 END) AS femenino,
+  SUM(cantidad) AS total,
+  (SELECT COUNT(*) FROM paciente WHERE genero = 'masculino') AS total_masculino,
+  (SELECT COUNT(*) FROM paciente WHERE genero = 'femenino') AS total_femenino
 FROM (
   SELECT
     CASE
@@ -43,7 +46,7 @@ FROM (
   GROUP BY rango_edad, genero
 ) AS sub
 GROUP BY rango_edad
-ORDER BY rango_edad;
+ORDER BY rango_edad
 
 ";
 

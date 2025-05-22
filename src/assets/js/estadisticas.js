@@ -20,9 +20,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let distribucion_pacientes_chart = null;
 let distribucion_pacientes_chart_modal = null;
+let totalPacientes = 0;
+let totalPacientesMasculinos  = 0;
+let totalPacientesFemeninos = 0;
 const distribucion_edad_genero = async (url) => {
   let edadGenero = await fetch(url);
   let data = await edadGenero.json();
+
+  data.forEach((elemento) => (totalPacientes += parseInt(elemento.total)));
+  data.forEach((elemento) => (totalPacientesMasculinos = parseInt(elemento.total_masculino)));
+  data.forEach((elemento) => (totalPacientesFemeninos = parseInt(elemento.total_femenino)));
 
   let label = data.map((item) => item.rango_edad);
   let masculino = data.map((item) => item.masculino);
@@ -77,6 +84,8 @@ const distribucion_edad_genero = async (url) => {
     },
   });
 
+  document.getElementById("pacientes_pdf").width = 300; // ancho deseado
+  document.getElementById("pacientes_pdf").height = 180; // alto deseado
   let ctxModal = document.getElementById("pacientes_pdf").getContext("2d");
 
   distribucion_pacientes_chart_modal = new Chart(ctxModal, {
@@ -126,6 +135,17 @@ const distribucion_edad_genero = async (url) => {
       },
     },
   });
+  document.getElementById("textoPacientes").innerHTML = `
+    <p  class="text-center">
+      Este gráfico ilustra la distribución de pacientes atendidos, segmentados por intervalos de edad y género.<br>
+      <strong>Total de pacientes:</strong> ${totalPacientes}<br>
+      <strong>Masculino:</strong> ${totalPacientesMasculinos} &nbsp; <strong>Femenino:</strong> ${totalPacientesFemeninos}<br>
+      <strong>Rangos de edad:</strong> ${label.join(", ")}
+    </p>
+    <p class="text-center">
+      El análisis permite identificar los grupos etarios con mayor demanda de atención y comparar la proporción de hombres y mujeres en cada rango de edad, facilitando la toma de decisiones en estrategias de salud y recursos.
+    </p>
+  `;
 };
 
 let tasaMorbilidadChart = null;
@@ -191,7 +211,8 @@ const tasa_morbilidad = async (url) => {
   if (tasaMorbilidadChartModal) {
     tasaMorbilidadChartModal.destroy();
   }
-
+  document.getElementById("morbilidad_pdf").width = 300;
+  document.getElementById("morbilidad_pdf").height = 180;
   ctxModal = document.getElementById("morbilidad_pdf").getContext("2d");
 
   tasaMorbilidadChartModal = new Chart(ctxModal, {
@@ -236,6 +257,24 @@ const tasa_morbilidad = async (url) => {
       },
     },
   });
+
+  // Calcular totales dinámicos
+  const totalCasos = casos.reduce((acumulador, valorActual) => acumulador + valorActual, 0);
+  const patologiaMayor = labels[casos.indexOf(Math.max(...casos))];
+  const tasaMayor = Math.max(...tasas).toFixed(2);
+
+  // Descripción dinámica
+  document.getElementById("textoMorbilidad").innerHTML = `
+  <p class="text-center">
+    Este gráfico muestra la cantidad de casos y la tasa de morbilidad por cada 1 000 pacientes para las patologías más frecuentes.<br>
+    <strong>Total de casos registrados:</strong> ${totalCasos}<br>
+    <strong>Patología con más casos:</strong> ${patologiaMayor}<br>
+    <strong>Mayor tasa registrada:</strong> ${tasaMayor} por 1 000 pacientes
+  </p>
+  <p class="text-center">
+    Analiza visualmente cuáles enfermedades tienen mayor impacto en la población y compara la frecuencia absoluta y relativa de cada una, facilitando la toma de decisiones en salud.
+  </p>
+`;
 };
 
 //  el gráfico de especialidades
