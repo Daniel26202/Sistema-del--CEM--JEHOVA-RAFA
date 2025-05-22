@@ -30,7 +30,7 @@ class ControladorFactura
 		require_once './src/vistas/vistaFactura/factura.php';
 	}
 
-	function facturaCita($parametro)
+	public function facturaCita($parametro)
 	{
 		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
@@ -40,6 +40,15 @@ class ControladorFactura
 		require_once './src/vistas/vistaFactura/facturaCita.php';
 	}
 
+	public function facturarHospitalizacion($parametro)
+	{
+		$insumos = $this->modelo->selectTodosLosInsumos();
+		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
+		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
+		$extras = $this->modelo->mostrarServicios();
+		$citaFacturar = $this->modelo->mostrarCitaFactura($parametro[0]);
+		require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
+	}
 
 	public function comprobante($parametro)
 	{
