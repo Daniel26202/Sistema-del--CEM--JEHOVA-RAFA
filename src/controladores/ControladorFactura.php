@@ -32,21 +32,22 @@ class ControladorFactura
 
 	public function facturaCita($parametro)
 	{
+		$idCita = preg_replace('/\D/', '', $parametro[0]);
 		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
 		$extras = $this->modelo->mostrarServicios();
-		$citaFacturar = $this->modelo->mostrarCitaFactura($parametro[0]);
+		$citaFacturar = $this->modelo->mostrarCitaFactura($idCita);
 		require_once './src/vistas/vistaFactura/facturaCita.php';
 	}
 
 	public function facturarHospitalizacion($parametro)
 	{
-		$insumos = $this->modelo->selectTodosLosInsumos();
+		// Extrae solo los dígitos del parámetro para obtener el ID de hospitalización
+		$idHospitalizacion = preg_replace('/\D/', '', $parametro[0]);
+		$insumosHospitalizacion = $this->modelo->unirInsumosHospitalizacion($idHospitalizacion);
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
-		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
-		$extras = $this->modelo->mostrarServicios();
-		$citaFacturar = $this->modelo->mostrarCitaFactura($parametro[0]);
+		$hostalizacionFacturar =  $this->modelo->mostrarHospitalizacion($idHospitalizacion);
 		require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
 	}
 
@@ -61,7 +62,6 @@ class ControladorFactura
 		$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
 		require_once './src/vistas/vistaFactura/comprobante.php';
 	}
-
 
 	//aqui mostramos al paciente de la base de datos
 	public function mostrarPaciente()
@@ -99,8 +99,9 @@ class ControladorFactura
 		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : null;
 		$id_cita = isset($_POST["id_cita"]) ? $_POST["id_cita"] : null;
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
+		$id_hospitalizacion = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null;
 
-		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita);
+		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita, $id_hospitalizacion);
 
 		if ($factura) {
 			//Guardar la bitacora
@@ -113,22 +114,22 @@ class ControladorFactura
 	}
 
 
-	public function guardarFacturaHospit()
-	{
-		$fecha = date("Y-m-d");
-		$insumos = isset($_POST["insumosHospi"]) ? $_POST["insumosHospi"] : false;
-		$cantidad = isset($_POST["cantidadInsumosHospi"]) ? $_POST["cantidadInsumosHospi"] : false;
-		$idH = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : false;
-		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
-		$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
+	// public function guardarFacturaHospit()
+	// {
+	// 	$fecha = date("Y-m-d");
+	// 	$insumos = isset($_POST["insumosHospi"]) ? $_POST["insumosHospi"] : false;
+	// 	$cantidad = isset($_POST["cantidadInsumosHospi"]) ? $_POST["cantidadInsumosHospi"] : false;
+	// 	$idH = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : false;
+	// 	$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
+	// 	$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
 
-		$this->modelo->insertaFacturaHospit($idH, $fecha, $_POST["total"], $_POST["formasDePago"],  $insumos, $cantidad, $_POST["montosDePago"], $referencia, $serviciosExtras);
+	// 	$this->modelo->insertaFacturaHospit($idH, $fecha, $_POST["total"], $_POST["formasDePago"],  $insumos, $cantidad, $_POST["montosDePago"], $referencia, $serviciosExtras);
 
-		print_r($_POST);
+	// 	print_r($_POST);
 
-		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha facturado una hospitalizacion");
-	}
+	// 	// Guardar la bitacora
+	// 	$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha facturado una hospitalizacion");
+	// }
 
 	public function mostrarPDF($parametro)
 	{

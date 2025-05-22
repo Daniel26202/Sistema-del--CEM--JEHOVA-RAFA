@@ -212,11 +212,14 @@ addEventListener("DOMContentLoaded", () => {
     console.log("hospitalizacion");
   } else {
     const formularioPaciente = document.getElementById("form-buscador-factura");
-    formularioPaciente.addEventListener("submit", function (e) {
-      e.preventDefault();
-      //buscarPaciente(formularioPaciente);
-      buscarPacienteConCita(formularioPaciente);
-    });
+    if (formularioPaciente) {
+      formularioPaciente.addEventListener("submit", function (e) {
+        e.preventDefault();
+        //buscarPaciente(formularioPaciente);
+        buscarPacienteConCita(formularioPaciente);
+      });
+    }
+    
   }
 
   //buscar servicio por categoria

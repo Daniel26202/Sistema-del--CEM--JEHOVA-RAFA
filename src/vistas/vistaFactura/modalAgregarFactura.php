@@ -936,7 +936,64 @@
                 </tr>
               </thead>
               <tbody style="font-size: 14px;" id="cuerpoTablaConfirmaroperacion">
-                <?php if (isset($parametro[0])): ?>
+
+                <!-- Código si contiene una 'h' -->
+                <?php if (isset($parametro[0]) && stripos($parametro[0], 'c') !== false): ?>
+                  <?php foreach ($citaFacturar as $datoCita): ?>
+                    <tr>
+                      <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
+                      <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
+                        value="<?= $datoCita['id_paciente'] ?>">
+                      <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
+                      <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
+                      <td>
+                        <div class="fw-bolder">CI:</div>
+                        <?= $datoCita["cedula_p"]; ?>
+                      </td>
+                      <td>
+                        <div class="fw-bolder">PACIENTE:</div>
+                        <?= $datoCita["nombre_p"]; ?>
+                        <?= $datoCita["apellido_p"]; ?>
+                      </td>
+                      <td>
+                        <div class="fw-bolder">S/M:</div>
+                        <?= $datoCita["especialidad"]; ?>
+                      </td>
+                      <td>
+                        <div class="fw-bolder">FECHA:</div>
+                        <?= $datoCita["fecha"]; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach ?>
+                  <h1>citas</h1>
+                <?php endif; ?>
+
+
+
+                <?php
+                // Validar si el parámetro existe y si contiene una "h" (no distingue mayúsculas/minúsculas)
+                if (isset($parametro[0]) && stripos($parametro[0], 'h') !== false) :
+                ?>
+
+                  <?php foreach ($hostalizacionFacturar as $hos): ?>
+
+                    <tr>
+
+                      <input type="hidden" class="d-none" name="id_hospitalizacion" value="<?= $hos['id_hospitalizacion'] ?>">
+                      <input type="hidden" class="d-none" name="id_paciente" value="<?= $hos['id_paciente'] ?>">
+                      <td>
+                        <div class="fw-bolder">CI:</div>
+
+                        <?= $hos["cedula"]; ?>
+                      </td>
+                      <td>
+                        <div class="fw-bolder">PACIENTE:</div>
+                        <?= $hos["nombre"]; ?>
+                        <?= $hos["apellido"]; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach ?>
+                <?php elseif (isset($parametro[0]) && stripos($parametro[0], 'c') !== false): ?>
 
                   <?php foreach ($citaFacturar as $datoCita): ?>
                     <tr>
@@ -964,42 +1021,7 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-
-                  <!-- condicional de la hospitalizacion  -->
-                <?php elseif (isset($_GET["idH"])): ?>
-
-
-
-
-                  <?php foreach ($hospitalizacionFacturar as $hos): ?>
-
-                    <tr>
-
-                      <input type="text" class="d-none" name="id_hospitalizacion" value="<?= $hos['id_hospitalizacion'] ?>">
-                      <td>
-                        <div class="fw-bolder">CI:</div>
-
-                        <?= $hos["cedula"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">PACIENTE:</div>
-                        <?= $hos["nombre"]; ?>
-                        <?= $hos["apellido"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">DIAGNOSTICO:</div>
-                        <?= $hos["diagnostico"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">HORAS:</div>
-                        <?= $hos["duracion"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">PRECIO:</div>
-                        <?= $hos["precio_horas"] * $hos["duracion"] . " BS"; ?>
-                      </td>
-                    </tr>
-                  <?php endforeach ?>
+                  <h1>citas</h1>
                 <?php else: ?>
 
                   <input type="hidden" class="" id="inputPaciente" name="id_paciente" value="">
@@ -1023,35 +1045,21 @@
                 </tr>
               </thead>
               <tbody style="font-size: 14px;" id="tbodyInsumos">
-                <?php if (isset($_GET["idH"])): ?>
-                  <?php foreach ($hospitalizacionInsumos as $ins): ?>
-                    <tr class="border-top tr">
-                      <th class="id_insumo_escondido d-none">
-                        <input type="hidden" name="insumosHospi[]" value="<?= $ins["id_insumo"] ?>">
-                        <?= $ins["id_insumo"] ?>
-                      </th>
-                      <td class="border-top nombre">
-                        <div class="fw-bolder">INSUMO:</div>
-                        <?= $ins["nombre"] ?>
-                      </td>
-                      <td class="border-top">
-                        <input type="hidden" name="cantidadInsumosHospi[]" value="<?= $ins["cantidad_insumo_hospit"] ?>">
-                        <div class="fw-bolder">CANTIDAD:</div>
-                        <?= $ins["cantidad_insumo_hospit"] ?>
-                      </td>
-                      <td class="border-top">
-                        <div class="fw-bolder">PRECIO:</div>
-                        <?= $ins["precio"] ?> BS
-                      </td>
-                      <td class="border-top">
-                        <div class="fw-bolder">SUB-TOTAL:</div>
-                        <?= $ins["precio"] * $ins["cantidad_insumo_hospit"] ?> BS
-                      </td>
-                      <td class="border-top"></td>
+                <?php if (isset($parametro[0]) && stripos($parametro[0], 'h') !== false): ?>
+
+                  <tr class="border-top tr">
+
+                    <td class="border-top nombre">
+                      <div class="fw-bolder">INSUMO:</div>
+                      <?= $insumosHospitalizacion ?>
+                    </td>
 
 
-                    <tr>
-                    <?php endforeach; ?>
+                    <td class="border-top"></td>
+
+
+                  <tr>
+
                   <?php endif; ?>
               </tbody>
             </table>
