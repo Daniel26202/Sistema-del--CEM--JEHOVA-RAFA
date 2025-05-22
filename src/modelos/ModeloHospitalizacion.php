@@ -130,7 +130,6 @@ class ModeloHospitalizacion extends Db
     public function insertarH($idControl, $fechaHora, $idInsumos, $cantidad, $historial)
     {
 
-
         // insertar hospitalización
         $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion(fecha_hora_inicio, precio_horas, total, id_control, fecha_hora_final, estado) VALUES ( :fecha_hora_inicio, "null", "null", :id_control,  "null", "Pendiente")');
         $consulta->bindParam(":fecha_hora_inicio", $fechaHora);
@@ -178,7 +177,7 @@ class ModeloHospitalizacion extends Db
     public function EInsumosM($id)
     {
 
-        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, idh.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, inv.cantidad AS limite_insumo FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN insumo ins ON idh.id_insumo = ins.id_insumo INNER JOIN inventario inv ON inv.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo');
+        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, inv.cantidad AS limite_insumo FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN inventario inv ON idh.id_inventario = inv.id_inventario INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo');
 
         $consulta->bindValue(":id", $id, PDO::PARAM_INT);
 
@@ -343,7 +342,7 @@ class ModeloHospitalizacion extends Db
     // buscar insumos de las hospitalizaciones existentes 
     public function buscarIEH()
     {
-        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, idh.id_insumo, idh.cantidad, ins.nombre, inv.cantidad AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN insumo ins ON idh.id_insumo = ins.id_insumo INNER JOIN inventario inv ON inv.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.estado = "Pendiente"');
+        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, inv.cantidad AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN inventario inv ON idh.id_inventario = inv.id_inventario INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.estado = "Pendiente"');
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
