@@ -34,7 +34,7 @@
       <ul class="sin-circulos d-flex justify-content-end ">
         <li class="borde-menu activo <?= $vistaActiva == 'Usuario' ? ' activo-borde ' : '' ?>">
           <a href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacoraUsuario"
-            class="text-decoration-none text-black me-3">
+            class="text-decoration-none me-3 color-letras">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
               class="bi bi-person-square ms-2" viewBox="0 0 16 16">
               <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
@@ -46,7 +46,7 @@
 
         <?php if (!$cargo): ?>
           <li class="borde-menu activo <?= $vistaActiva == 'Admin' ? ' activo-borde ' : '' ?>">
-            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacora" class="text-decoration-none text-black me-3">
+            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacora" class="text-decoration-none me-3 color-letras">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-person-square ms-2" viewBox="0 0 16 16">
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>

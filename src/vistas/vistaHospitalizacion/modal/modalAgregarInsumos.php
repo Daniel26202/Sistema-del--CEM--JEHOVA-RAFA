@@ -1,8 +1,8 @@
 <!-- MODAL DE AGREGAR INSUMOS -->
-<div class="modal fade" id="modal-agregar-insumos" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade hospit" id="modal-agregar-insumos" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-md-down  uk-offcanvas-container">
-        <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4">
+        <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4 hospit">
 
 
             <div class=" d-flex justify-content-between align-items-center mt-2 pt-0">
