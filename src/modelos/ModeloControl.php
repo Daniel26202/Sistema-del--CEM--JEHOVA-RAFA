@@ -70,40 +70,49 @@ class ModeloControl extends Db
 	//insertar control
 	public function insertControl($historial, $idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $fechaHora)
 	{
-		if ($patologias) {
+		try {
+			$this->conexion->beginTransaction();
 
-			// primero se registra la patologia del paciente
-			foreach ($patologias as $patologia) {
-				$consulta2 = $this->conexion->prepare("INSERT INTO patologiadepaciente(id_paciente, id_patologia, fecha_registro) VALUES (:id_paciente, :id_patologia, :fechaHora)");
-				$consulta2->bindParam(":id_paciente", $idPaciente);
-				$consulta2->bindParam(":id_patologia", $patologia);
-				$consulta2->bindParam(":fechaHora", $fechaHora);
-				$consulta2->execute();
+			if ($patologias) {
+
+				// primero se registra la patologia del paciente
+				foreach ($patologias as $patologia) {
+					$consulta2 = $this->conexion->prepare("INSERT INTO patologiadepaciente(id_paciente, id_patologia, fecha_registro) VALUES (:id_paciente, :id_patologia, :fechaHora)");
+					$consulta2->bindParam(":id_paciente", $idPaciente);
+					$consulta2->bindParam(":id_patologia", $patologia);
+					$consulta2->bindParam(":fechaHora", $fechaHora);
+					$consulta2->execute();
+				}
 			}
-		}
 
-		$sqlC = $this->conexion->prepare("INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, :fechaHora, :fechaRegreso, :nota, :historial, 'ACT')");
+			$sqlC = $this->conexion->prepare("INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, :fechaHora, :fechaRegreso, :nota, :historial, 'ACT')");
 
-		$sqlC->bindParam(":idPaciente", $idPaciente);
-		$sqlC->bindParam(":idUsuario", $idUsuario);
-		$sqlC->bindParam(":diagnostico", $diagnostico);
-		$sqlC->bindParam(":indicaciones", $indicaciones);
-		$sqlC->bindParam(":fechaHora", $fechaHora);
-		$sqlC->bindParam(":fechaRegreso", $fechaRegreso);
-		$sqlC->bindParam(":nota", $nota);
-		$sqlC->bindParam(":historial", $historial);
+			$sqlC->bindParam(":idPaciente", $idPaciente);
+			$sqlC->bindParam(":idUsuario", $idUsuario);
+			$sqlC->bindParam(":diagnostico", $diagnostico);
+			$sqlC->bindParam(":indicaciones", $indicaciones);
+			$sqlC->bindParam(":fechaHora", $fechaHora);
+			$sqlC->bindParam(":fechaRegreso", $fechaRegreso);
+			$sqlC->bindParam(":nota", $nota);
+			$sqlC->bindParam(":historial", $historial);
 
 
-		$sqlC->execute();
-		//devuelve el id del control.
-		$idControl = ($this->conexion->lastInsertId() == 0) ? false : $this->conexion->lastInsertId();
+			$sqlC->execute();
+			//devuelve el id del control.
+			$idControl = ($this->conexion->lastInsertId() == 0) ? false : $this->conexion->lastInsertId();
 
-		// agrega el síntoma 
-		foreach ($sintomas as $sintoma) {
-			$sql = $this->conexion->prepare("INSERT INTO sintomas_control(id_sintomas, id_control) VALUES (:sintoma,:idControl);");
-			$sql->bindParam(":sintoma", $sintoma);
-			$sql->bindParam(":idControl", $idControl);
-			$sql->execute();
+			// agrega el síntoma 
+			foreach ($sintomas as $sintoma) {
+				$sql = $this->conexion->prepare("INSERT INTO sintomas_control(id_sintomas, id_control) VALUES (:sintoma,:idControl);");
+				$sql->bindParam(":sintoma", $sintoma);
+				$sql->bindParam(":idControl", $idControl);
+				$sql->execute();
+			}
+
+			$this->conexion->commit();
+		} catch (\Exception $e) {
+			$this->conexion->rollBack();
+			print_r($e);
 		}
 	}
 
