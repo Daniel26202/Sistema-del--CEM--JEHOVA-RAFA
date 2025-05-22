@@ -106,7 +106,7 @@
                     <li class="li">
                         <div class="borde-de-menu mb-1 "></div>
                         <div class="hover-grande">
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores" class="text-decoration-none me-3 color-letras iconoDoctor" id="DMdoctores">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-person-square ms-2" viewBox="0 0 16 16">
                                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
@@ -121,7 +121,7 @@
                     <li class="li">
                         <div class="borde-de-menu mb-1 "></div>
                         <div class="hover-grande">
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" class="text-decoration-none text-black me-3 iconoDoctor" id="DMdoctores">
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" class="text-decoration-none me-3 color-letras iconoDoctor" id="DMdoctores">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-person-square ms-2" viewBox="0 0 16 16">
                                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />

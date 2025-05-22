@@ -29,15 +29,15 @@
                 </div>
                 <div class="uk-card-body pt-2">
 
-                <!-- alerta dinámica -->
-                    <div class="h-100">
+                    <!-- alerta dinámica -->
+                    <div class="h-20">
 
                         <div class=" comentarioADinamica comentarioRed fw-bolder d-none" id="alerta_errorMEPAc" uk-alert>
                             <!-- <a class="uk-alert-close" uk-close></a> -->
                             <p class="pe-2 text-center"></p>
                         </div>
                     </div>
-                    
+
                     <div class="d-flex flex-column w-auto ">
 
                         <p class="text-center m-0 pb-0 pt-3 fw-bolder">Contraseña actual</p>

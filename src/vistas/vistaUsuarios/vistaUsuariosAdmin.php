@@ -105,7 +105,7 @@
                     <li class="li">
                         <div class="borde-de-menu  mb-1 "></div>
                         <div class="hover-grande">
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" class="text-decoration-none text-black me-3 "
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" class="text-decoration-none me-3 color-letras "
                                 id="DMservicioMedico">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-person-square ms-2 " viewBox="0 0 16 16">
@@ -133,7 +133,7 @@
                     <li class="li">
                         <div class="borde-de-menu  mb-1 "></div>
                         <div class="hover-grande">
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" class="text-decoration-none text-black me-3 "
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" class="text-decoration-none me-3 color-letras "
                                 id="DMservicioMedico">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-person-square ms-2 " viewBox="0 0 16 16">

@@ -3,7 +3,7 @@
 <div class="modal fade" id="modal-agregar-precio-hora" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-md-down  uk-offcanvas-container">
-        <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4">
+        <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4 hospit">
 
 
             <div class=" d-flex justify-content-between align-items-center mt-2 pt-0">
@@ -49,20 +49,20 @@
                                 <div class="d-flex justify-content-center align-items-center">
                                     <div class="col-4 ms-4">
 
-                                        <input type="number" name="horasSe" id="inpHorasS" class="input-agregar w-75 "
-                                            placeholder="Hora" value="" min="1" required><span class=" mt-1">h.</span>
+                                        <input type="number" name="horasSe" id="inpHorasS" class="input-agregar w-75 input-modal"
+                                            placeholder="Hora" value="" min="1" required><span class=" mt-1 color-letras" ">h</span>
 
                                     </div>
-                                    <div class="col-2">
+                                    <div class=" col-2">
 
-                                        <p class=" fw-bold margen-dos-puntos pb-2">:</p>
+                                            <p class=" fw-bold margen-dos-puntos color-letras pb-2">:</p>
 
                                     </div>
                                     <div class="col-6 d-flex">
                                         <input type="number" step="any" name="precioHorasSe" id="inpCostoHS"
-                                            class="input-agregar w-50" placeholder="Precio" value="" min="0.10" required>
-                                        <p class="mt-3 ps-1">bs</p>
-                                        
+                                            class="input-agregar w-50 input-modal" placeholder="Precio" value="" min="0.10" required>
+                                        <p class="mt-3 ps-1 color-letras">bs</p>
+
                                     </div>
 
                                 </div>
@@ -81,19 +81,19 @@
                                 <div class="d-flex justify-content-center align-items-center">
                                     <div class="col-4 ms-4">
 
-                                        <input type="number" name="" id="inpHorasMoEx" class="input-agregar w-75 "
-                                            placeholder="Hora" value="" min="1" required><span class=" mt-1">h.</span>
+                                        <input type="number" name="" id="inpHorasMoEx" class="input-agregar w-75 input-modal"
+                                            placeholder="Hora" value="" min="1" required><span class=" mt-1 color-letras">h</span>
 
                                     </div>
                                     <div class="col-2">
 
-                                        <p class=" fw-bold margen-dos-puntos pb-2">:</p>
+                                        <p class=" fw-bold margen-dos-puntos pb-2 color-letras">:</p>
 
                                     </div>
                                     <div class="col-6 d-flex">
                                         <input type="number" step="any" name="precioHorasMoEx" id="inpCostoHMoEx"
-                                            class="input-agregar w-50" placeholder="Precio" value="" min="0.10" required>
-                                        <p class="mt-3 ps-1">$</p>
+                                            class="input-agregar w-50 input-modal" placeholder="Precio" value="" min="0.10" required>
+                                        <p class="mt-3 ps-1 color-letras">$</p>
                                     </div>
 
 
