@@ -1639,14 +1639,14 @@ td{
   width: 20vh;
   padding: 4px;
 }
-
+  
 .btn-User:hover {
-  background-color: #387adf;
+background-color: #387adf;
   color: #387adf;
   color: white;
   transition-duration: 0.2s;
-}
 
+}
 .btnMostrar:hover {
   color: #050505;
 }
@@ -1729,6 +1729,12 @@ input[type="date"] {
   height: 50vh;
   color: var(--color-text-card);
   background-color: var(--color-bg-card);
+}
+
+@media screen and (max-height: 606px) {
+	.aside.active {
+		width: 79px;
+	}
 }
 
 @media screen and (max-width: 1300px) {
