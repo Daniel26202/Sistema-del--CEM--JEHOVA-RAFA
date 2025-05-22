@@ -5,25 +5,50 @@ addEventListener("DOMContentLoaded", function () {
     // horas y costo de servicio
     const horas = document.querySelector("#horasS");
     const costoHoras = document.querySelector("#costoHS");
+    const costoHorasMoEx = document.querySelector("#costoHSMoEx");
     const btnGuardarCH = document.querySelector("#btnCH");
 
     // inputs del costo y las horas del servicio
     let iHS = document.querySelector("#inpHorasS");
     let iCS = document.querySelector("#inpCostoHS");
 
+    let iHME = document.querySelector("#inpHorasMoEx");
+    let iCME = document.querySelector("#inpCostoHMoEx");
+    iHS.addEventListener("keyup", function () {
+        iHME.value = iHS.value;
+    });
+    iHME.addEventListener("keyup", function () {
+        iHS.value = iHME.value;
+    });
+
+    iCS.addEventListener("keyup", function () {
+        let storedDolar = localStorage.getItem("valorDelDolar");
+        let montoDolar = iCS.value / storedDolar;
+        iCME.value = montoDolar.toFixed(2);
+    });
+
+    iCME.addEventListener("keyup", function () {
+        let storedDolar = localStorage.getItem("valorDelDolar");
+        let montoBS = iCME.value * storedDolar;
+        iCS.value = montoBS.toFixed(2);
+    });
+
     // para traerme la hora y su costo
     const traerHoraCosto = async () => {
         let storedHora = localStorage.getItem("hora");
         let storedCosto = localStorage.getItem("costo");
+        let storedCostoME = localStorage.getItem("costoMoEx");
 
         btnGuardarCH.classList.remove("d-none");
 
         horas.innerText = storedHora;
         costoHoras.innerText = storedCosto;
 
+        costoHorasMoEx.innerText = storedCostoME;
         if (storedHora != null) {
             // agrego el texto del p (en este caso las horas) al valor del input
             iHS.value = storedHora;
+            iHME.value = storedHora;
         } else if (storedHora === null) {
             localStorage.setItem("hora", 0);
             horas.innerText = 0;
@@ -38,51 +63,37 @@ addEventListener("DOMContentLoaded", function () {
             costoHoras.innerText = 0;
             iCS.value = 0;
         }
+
+        if (storedCostoME != null) {
+            // agrego el texto del p (en este caso el costo de las horas) al valor del input
+            iCME.value = storedCostoME;
+        } else if (storedCostoME === null) {
+            localStorage.setItem("costoMoEx", 0);
+            costoHorasMoEx.innerText = 0;
+            iCME.value = 0;
+        }
     };
 
     // para traerme la hora y su costo
     const enviarHoraCosto = async () => {
         let hora = parseInt(iHS.value.trim());
         let costo = parseFloat(iCS.value.trim());
+        let costoMoEx = parseFloat(iCME.value.trim());
 
         hora = hora === "" ? "00" : hora;
         costo = costo === "" ? "00" : costo;
+        costoMoEx = costoMoEx === "" ? "00" : costoMoEx;
 
         localStorage.setItem("hora", hora);
         localStorage.setItem("costo", costo);
+        localStorage.setItem("costoMoEx", costoMoEx);
 
         traerHoraCosto();
 
-        let inIdH = document.querySelectorAll(".idHosp");
-
-        for (const id of inIdH) {
-            // await es para que espere y no se cargue desordenadamente
-            await sumaPrecioIH(parseInt(id.value));
-        }
         vistaTabla();
     };
-
-    //  function calcularMontoHospitalizacion(fechaInicioStr, costoPorHora) {
-    //     // Convertir la fecha de inicio a objeto Date
-    //     const fechaInicio = new Date(fechaInicioStr);
-    //     // Obtener la fecha y hora actual
-    //     const fechaActual = new Date();
-
-    //     // Calcular la diferencia en milisegundos
-    //     const diferenciaMs = fechaActual - fechaInicio;
-
-    //     // Calcular el total de horas (con decimales)
-    //     const horasTotales = diferenciaMs / (1000 * 60 * 60);
-
-    //     // Calcular el monto total
-    //     const monto = horasTotales * costoPorHora;
-
-    //     // Mostrar resultado
-    //     console.log(`Horas totales: ${horasTotales.toFixed(2)}, Monto: ${monto.toFixed(2)} Bs`);
-    //     return parseFloat(monto.toFixed(2));
-    // }
-
-    async function mostrarInf(indice) {
+    // calculo del dolar en la infomación de la H
+    async function mostrarInf(indice, idH) {
         let fechaInicioM = document.querySelectorAll(".fechaInicio")[indice].value;
 
         let fechaInicio = new Date(fechaInicioM);
@@ -93,29 +104,39 @@ addEventListener("DOMContentLoaded", function () {
         // el total de horas (con decimales)
         let horasTotales = diferencia / (1000 * 60 * 60);
 
-        
         let storedHora = localStorage.getItem("hora");
         let storedCosto = localStorage.getItem("costo");
+        let storedCostoMoEx = localStorage.getItem("costoMoEx");
         let costoH = parseFloat(storedCosto) / parseInt(storedHora);
-        
-        
+        let costoHMoEx = parseFloat(storedCostoMoEx) / parseInt(storedHora);
+
         // monto de horas y minutos
         let monto = horasTotales * costoH;
+        let montoMoEx = horasTotales * costoHMoEx;
 
-        
         console.log(horasTotales);
         console.log("   ");
         console.log(monto);
 
-        horasTotales =parseFloat(horasTotales).toFixed(2);
-        let horasMin = horasTotales.split('.'); 
+        horasTotales = parseFloat(horasTotales).toFixed(2);
+        let horasMin = horasTotales.split(".");
 
         let horas = horasMin[0];
         let minutos = horasMin[1];
-        
+
+        let totalMontoI = await sumaPrecioIH(idH);
+
+        let total = totalMontoI + monto;
+        let storedDolar = localStorage.getItem("valorDelDolar");
+
+        let totalMontoIMoEx = totalMontoI / storedDolar;
+        let totalME = totalMontoIMoEx + montoMoEx;
+
         document.querySelector("#hHosM").innerText = `${horas}h ${minutos}min`;
         document.querySelector("#cMontoHoraM").innerText = parseFloat(monto).toFixed(2);
-
+        document.querySelector("#cMoHoraMoExM").innerText = parseFloat(montoMoEx).toFixed(2);
+        document.querySelector("#calculoTotal").innerText = parseFloat(total).toFixed(2);
+        document.querySelector("#calculoTotalME").innerText = parseFloat(totalME).toFixed(2);
 
         let hMM = document.querySelectorAll(".hME")[indice];
         let historiaM = document.querySelector("#historiaM");
@@ -278,7 +299,7 @@ addEventListener("DOMContentLoaded", function () {
                                             <div class="col-12 col-md-6 col-lg-3">
 
                                                 <!-- btn offcanvas mostrar datos -->
-                                                <button class="btn btn-tabla mb-1 me-1 informacionH" uk-toggle="target: #offcanvas-mostrarH" uk-tooltip="información de hospitalización" data-fecha-inicial="${res["id_hospitalizacion"]}" data-index="${index}">
+                                                <button class="btn btn-tabla mb-1 me-1 informacionH" uk-toggle="target: #offcanvas-mostrarH" uk-tooltip="información de hospitalización" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                                         class="bi bi-card-text" viewBox="0 0 16 16">
                                                         <path
@@ -447,7 +468,8 @@ addEventListener("DOMContentLoaded", function () {
 
                         // para traer el valor del data index (la posición)
                         let index = inforH.getAttribute("data-index");
-                        mostrarInf(parseInt(index));
+                        let idHospit = inforH.getAttribute("data-id-hospitalizacion");
+                        mostrarInf(parseInt(index), parseInt(idHospit));
                     });
                 });
 
@@ -481,51 +503,30 @@ addEventListener("DOMContentLoaded", function () {
     let divDI = document.querySelector("#divDI");
 
     //es para hacer una suma con el precio de los insumo que la hospitalización tiene registrado
-    // const sumaPrecioIH = async (id) => {
-    //     try {
+    const sumaPrecioIH = async (id) => {
+        try {
+            // llamo la función traer insumos de h
+            let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
+            let resultadoI = await peticionI.json();
 
-    //         let storedHora = localStorage.getItem("hora");
-    //         let storedCosto = localStorage.getItem("costo");
+            if (resultadoI.length > 0) {
+                let precioIns = 0;
+                resultadoI.forEach((res) => {
+                    precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
+                });
 
-    //         // llamo la función traer insumos de h
-    //         let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
-    //         let resultadoI = await peticionI.json();
-
-    //         if (resultadoI.length > 0) {
-
-    //             // realizamos una división
-    //             let dCH = parseFloat(storedCosto) / parseInt(storedHora);
-    //             // multiplicamos lo dividido con la duración
-    //             let precioHoras = parseInt(resultadoI[0].duracion) * parseFloat(dCH);
-
-    //             let precioIns = 0;
-    //             resultadoI.forEach(res => {
-    //                 precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
-    //             });
-
-    //             let totalH = parseFloat(precioHoras) + parseFloat(precioIns);
-    //             // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-    //             precioIns = parseFloat(precioIns.toFixed(2));
-    //             // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-    //             totalH = parseFloat(totalH.toFixed(2));
-    //             precioHoras.toFixed(2)
-
-    //         } else {
-    //             if (resultadoDH === false) {
-    //                 console.log("no se encontró la hospitalización");
-    //             } else {
-    //                 // realizamos una división
-    //                 let dCH = parseFloat(storedCosto) / parseInt(storedHora);
-    //                 // multiplicamos lo dividido con la duración
-    //                 let precioHoras = parseInt(resultadoDH.duracion) * parseFloat(dCH);
-    //             }
-
-    //         }
-
-    //     } catch (error) {
-    //         console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
-    //     }
-    // }
+                // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+                precioIns = parseFloat(precioIns.toFixed(2));
+                return precioIns;
+            } else {
+                if (resultadoDH === false) {
+                    console.log("no se encontró la hospitalización");
+                }
+            }
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+        }
+    };
 
     //es para mostrar los insumos de la hospitalización seleccionada
     const mostrarIE = async (id) => {
@@ -1071,6 +1072,7 @@ addEventListener("DOMContentLoaded", function () {
     // para enviar los datos de la edición
     formE.addEventListener("submit", (e) => {
         envioDatE();
+        e.preventDefault();
     });
 
     // para el buscador de hospitalización

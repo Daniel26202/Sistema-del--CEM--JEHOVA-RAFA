@@ -359,7 +359,17 @@ addEventListener("DOMContentLoaded", function () {
                                                     <i>El formato de la fecha es incorrecto. Debe ser mayor que la fecha actual y no debe exceder los 50 años futuros.
                                                     </i>
                                                 </div>
-                                    
+
+                                                <div class="mt-4 pt-2">
+                                                    <h4 class="text-center fw-bold">Historia clínica</h4>
+
+                                                    <div class="uk-margin">
+                                                        <textarea name="historialE" class="uk-textarea" rows="5" placeholder="Historial médico"
+                                                            aria-label="Textarea" id="historia_clinicaA" required>${res.historiaclinica}</textarea>
+                                                    </div>
+                                                </div>
+                                                
+
                                                 <div class="mt-3 uk-text-right">
                                                     <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                                                         type="button">Cancelar</button>
