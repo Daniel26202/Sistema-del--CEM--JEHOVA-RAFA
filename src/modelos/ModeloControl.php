@@ -1,4 +1,5 @@
 <?php
+
 namespace App\modelos;
 
 use App\modelos\Db;
@@ -67,7 +68,7 @@ class ModeloControl extends Db
 	}
 
 	//insertar control
-	public function insertControl($idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $fechaHora)
+	public function insertControl($historial, $idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $fechaHora)
 	{
 		if ($patologias) {
 
@@ -81,7 +82,7 @@ class ModeloControl extends Db
 			}
 		}
 
-		$sqlC = $this->conexion->prepare("INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, estado) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, :fechaHora, :fechaRegreso, :nota, 'ACT')");
+		$sqlC = $this->conexion->prepare("INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, :fechaHora, :fechaRegreso, :nota, :historial, 'ACT')");
 
 		$sqlC->bindParam(":idPaciente", $idPaciente);
 		$sqlC->bindParam(":idUsuario", $idUsuario);
@@ -90,6 +91,8 @@ class ModeloControl extends Db
 		$sqlC->bindParam(":fechaHora", $fechaHora);
 		$sqlC->bindParam(":fechaRegreso", $fechaRegreso);
 		$sqlC->bindParam(":nota", $nota);
+		$sqlC->bindParam(":historial", $historial);
+
 
 		$sqlC->execute();
 		//devuelve el id del control.
@@ -102,7 +105,6 @@ class ModeloControl extends Db
 			$sql->bindParam(":idControl", $idControl);
 			$sql->execute();
 		}
-
 	}
 
 	//eliminar control
@@ -114,15 +116,16 @@ class ModeloControl extends Db
 	}
 
 	//editar control
-	public function editarControl($id_control, $indicaciones, $fechaRegreso, $nota)
+	public function editarControl($historial, $id_control, $indicaciones, $fechaRegreso, $nota)
 	{
-		$sql = $this->conexion->prepare("UPDATE control SET medicamentosRecetados=:indicaciones, fechaRegreso=:fechaRegreso, nota=:nota WHERE id_control=:id_control ");
+		$sql = $this->conexion->prepare("UPDATE control SET medicamentosRecetados=:indicaciones, fechaRegreso=:fechaRegreso, nota=:nota, historiaclinica=:historial WHERE id_control=:id_control ");
 		$sql->bindParam(":id_control", $id_control);
 		$sql->bindParam(":indicaciones", $indicaciones);
 		$sql->bindParam(":nota", $nota);
+		$sql->bindParam(":historial", $historial);
+
 		$sql->bindParam(":fechaRegreso", $fechaRegreso);
 		$sql->execute();
-
 	}
 	public function mostrarDoctor()
 	{
@@ -165,5 +168,4 @@ class ModeloControl extends Db
 
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
-
 }

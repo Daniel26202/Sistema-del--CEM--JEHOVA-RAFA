@@ -25,7 +25,7 @@ class ControladorControl
 		$this->modeloPatologia = new ModeloPatologia();
 		$this->bitacora = new ModeloBitacora();
 		$this->permisos = new ModeloPermisos();
-        $this->inicio = new ModeloInicio();
+		$this->inicio = new ModeloInicio();
 	}
 
 	public function control($parametro)
@@ -33,6 +33,12 @@ class ControladorControl
 		$datosS = $this->modeloSintomas->selects();
 		$datosD = $this->modelo->mostrarDoctor();
 		$datosPatologias = $this->modeloPatologia->mostrarPatologias();
+
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		$idUsuario = $_SESSION['id_usuario'];
+		$validacionCargo = $this->inicio->comprobarCargo($idUsuario);
 
 		require_once './src/vistas/vistaControl/vistaControl.php';
 	}
@@ -53,12 +59,12 @@ class ControladorControl
 	public function mostrarControlPacientesJS($datos)
 	{
 
-        // verifica si la sesión esta activa.
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        $idUsuario = $_SESSION['id_usuario'];
-        $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
+		// verifica si la sesión esta activa.
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		$idUsuario = $_SESSION['id_usuario'];
+		$validacionCargo = $this->inicio->comprobarCargo($idUsuario);
 		$sesion = $_SESSION['rol'];
 
 		$cedula = $datos[0];
@@ -107,7 +113,7 @@ class ControladorControl
 	{
 		$patologia = (isset($_POST["patologias"])) ? $_POST["patologias"] : false;
 
-		$this->modelo->insertControl($_POST["doctor"], $_POST["id_paciente"], $_POST["diagnostico"], $_POST["sintomas"], $_POST["indicaciones"], $_POST["fechaRegreso"], $patologia, $_POST["nota"], $_POST["fecha_hora"]);
+		$this->modelo->insertControl($_POST["historial"], $_POST["doctor"], $_POST["id_paciente"], $_POST["diagnostico"], $_POST["sintomas"], $_POST["indicaciones"], $_POST["fechaRegreso"], $patologia, $_POST["nota"], $_POST["fecha_hora"]);
 
 		// Guardar la bitacora
 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha Insertado un nuevo  control medico");
@@ -127,7 +133,7 @@ class ControladorControl
 	{
 		if ($_POST) {
 
-			$this->modelo->editarControl($_POST["id_control"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["nota_e"]);
+			$this->modelo->editarControl($_POST["historial"], $_POST["id_control"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["nota_e"]);
 
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha modificado un  control medico");

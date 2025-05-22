@@ -272,10 +272,11 @@
                         </li>
                     </ul>
                 </div>
-
-                <?php if ($_SESSION['rol'] == "Doctor"): ?>
+                <!-- uno es doctor -->
+                <?php if ($validacionCargo == 1): ?>
                     <!-- no hay --><input type="hidden" id="idDExisteU" name="doctor" value="<?= $_SESSION['id_usuario'] ?>">
-                <?php elseif ($_SESSION['rol'] == "Superadmin"): ?>
+                    <!-- cero es administrador mas no doctor -->
+                <?php elseif ($validacionCargo == 0): ?>
                     <!-- accordion -->
                     <div class="input-modal">
                         <ul uk-accordion="multiple: true">
@@ -448,6 +449,15 @@
                     <i>El formato de la fecha es incorrecto. Debe ser mayor que la fecha de hoy y no debe exceder los 50
                         años en el futuro.
                     </i>
+                </div>
+
+                <div class="mt-4 pt-2">
+                    <h4 class="text-center fw-bold">Historia clínica</h4>
+
+                    <div class="uk-margin">
+                        <textarea name="historial" class="uk-textarea" rows="5" placeholder="Historial médico"
+                            aria-label="Textarea" id="historia_clinicaA" required></textarea>
+                    </div>
                 </div>
 
             </div>
