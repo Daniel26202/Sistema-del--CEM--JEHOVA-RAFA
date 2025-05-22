@@ -25,7 +25,6 @@ class ControladorDoctores extends ModeloDoctores
     //muestro los datos de las cuatro tablas
     public function doctores($parametro)
     {
-
         $datos = $this->modelo->select();
         $datosEspecialidades = $this->modelo->selectEspecialidad();
         $datosDias = $this->modelo->selectDias();
@@ -49,29 +48,25 @@ class ControladorDoctores extends ModeloDoctores
         if ($servicio === "existeC") {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorS");
         } else {
-
-            $this->modeloConsultas->insertarDoctorServicio($_POST["id_doctor"], $_POST["id_servicioMedico"]);
-
-            // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario'], "Consultas", "Ha añadido un servicio medico a un doctor");
-
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores");
+            $insercion = $this->modeloConsultas->insertarDoctorServicio($_POST["id_doctor"], $_POST["id_servicioMedico"]);
+            if ($insercion) {
+                // Guardar la bitacora
+                $this->bitacora->insertarBitacora($_POST['id_usuario'], "Consultas", "Ha añadido un servicio medico a un doctor");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores");
+            } else {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/errorSistem");
+            }
         }
     }
     // agregar doctor
     public function agregarDoctor()
     {
-
-
         $resultadoDeCedula = $this->modelo->validarCedula($_POST['cedula']);
         $resultadoDeUsuario = $this->modelo->validarUsuario($_POST['usuario']);
-
         // NOTA: Esto "||" es "o"
         if ($resultadoDeCedula === "existeC" || $resultadoDeUsuario === "existeU") {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/error");
         } else {
-
-
             // Generamos la contraseña encriptada de la contraseña ingresada
             $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
@@ -82,18 +77,24 @@ class ControladorDoctores extends ModeloDoctores
 
 
             if ($imagen) {
-                $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"]);
+                $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"]);
+                if ($insercion) {
+                    // Guardar la bitacora
+                    $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registrado");
+                } else {
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+                }
             } else {
-                $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $imagenPorDefecto, "", $_POST["selectEspecialidad"]);
+                $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $imagenPorDefecto, "", $_POST["selectEspecialidad"]);
+                if ($insercion) {
+                    // Guardar la bitacora
+                    $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registrado");
+                } else {
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+                }
             }
-
-            // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
-
-
-
-
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registrado");
         }
         if ($resultadoDeUsuario === "existeU") {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/Usuario");
@@ -120,13 +121,14 @@ class ControladorDoctores extends ModeloDoctores
         //se verifica si la cédula del input es igual a la cédula ya existente 
         if ($cedula == $_POST["cedula"]) {
 
-            $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
-
-            // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
-
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
-
+            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
+            if ($edicion) {
+                // Guardar la bitacora
+                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
+            } else {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+            }
             // NOTA: Esto "&&" es "Y"
             //se verifica si la cédula del input no es igual a la cédula ya existente.  
         } elseif ($cedula != $_POST["cedula"]) {
@@ -135,37 +137,38 @@ class ControladorDoctores extends ModeloDoctores
             if ($resultadoDeCedula === "existeC") {
                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/error");
             } else {
-
-                $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
-
-                // Guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
-
-                // // Guardar la bitacora
-                // $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'],"doctor","Ha modificado un doctor");
-
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
+                $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
+                if ($edicion) {
+                    // Guardar la bitacora
+                    $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
+                } else {
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+                }
             }
         } else {
 
-            $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
-
-            // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
-
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
+            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
+            if ($edicion) {
+                // Guardar la bitacora
+                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editado");
+            } else {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+            }
         }
     }
     // eliminación lógica doctor
     public function borrarDoctor()
     {
-
-        $this->modelo->eliminacionLogica($_POST["cedula"], $_POST["usuario"], $_POST["id_usuario"], $_POST["id_personal"]);
-
-        // Guardar la bitacora
-        $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha eliminado un doctor");
-
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/eliminado");
+        $eliminacion = $this->modelo->eliminacionLogica($_POST["cedula"], $_POST["usuario"], $_POST["id_usuario"], $_POST["id_personal"]);
+        if ($eliminacion) {
+            // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha eliminado un doctor");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/eliminado");
+        } else {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+        }
     }
 
     //json para editar
@@ -176,19 +179,28 @@ class ControladorDoctores extends ModeloDoctores
     }
     public function registrarEspecialidad()
     {
-        $this->modelo->Especialidadregistrar($_POST['nombre']);
-        // Guardar la bitacora
-        $this->bitacora->insertarBitacora($_POST['id_usuario'], "especialidad", "Ha insertado una nueva especialidad");
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/especialidadRegistrar");
+        $insercion = $this->modelo->Especialidadregistrar($_POST['nombre']);
+        if ($insercion) {
+            // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario'], "especialidad", "Ha insertado una nueva especialidad");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/especialidadRegistrar");
+        } else {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+        }
+        
     }
     public function eliminarEspecialidad($datos)
     {
         $id_especialidad = $datos[0];
         $id_usuario =  $datos[1];
-        $this->modelo->Especialidadeliminar($id_especialidad);
+        $eliminacion = $this->modelo->Especialidadeliminar($id_especialidad);
         //Guardar la bitacora
-        $this->bitacora->insertarBitacora($id_usuario, "especialidad", "Ha eliminado una especialidad");
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/especialidadEliminar");
+        if ($eliminacion) {
+            $this->bitacora->insertarBitacora($id_usuario, "especialidad", "Ha eliminado una especialidad");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/especialidadEliminar");
+        } else {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+        }
     }
 
     public function buscarEspecialidad()

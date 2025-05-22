@@ -53,18 +53,14 @@ class ControladorPacientes
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorfecha");
 		} else {
 
-			// guardar la bitacora
-			$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
+			$insercion = $this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 
-			$this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-			
-			$existenciaH = (isset($_POST["verificarH"])) ? "existe" : "noExiste";
-			if ($existenciaH === "existe") {
-				echo $existenciaH;
-				// $this->hospitalizacion->;
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/registroPaciente");
-			} else if ($existenciaH === "noExiste") {
+			if ($insercion) {
+				// guardar la bitacora
+				$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/registro");
+			} else {
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
 			}
 		}
 	}
@@ -83,13 +79,15 @@ class ControladorPacientes
 			exit();
 		} elseif ($cedula == $_POST["cedula"]) {
 
-			//guardar la bitacora
-			$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
+			$edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 
-			$this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
-
+			if ($edicion) {
+				//guardar la bitacora
+				$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
+			} else {
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
+			}
 			// NOTA: Esto "&&" es "Y"
 			//se verifica si la cédula del input no es igual a la cédula ya existente.  
 		} elseif ($cedula != $_POST["cedula"]) {
@@ -99,54 +97,56 @@ class ControladorPacientes
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/error");
 			} else {
 
-				//guardar la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
+				$edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 
-				$this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
+				if ($edicion) {
+					//guardar la bitacora
+					$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
+					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
+				} else {
+					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
+				}
 			}
 		} else {
 
-			// guardar la bitacora
-			$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
+			$edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 
-			$this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
+			if ($edicion) {
+				//guardar la bitacora
+				$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
+			} else {
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
+			}
 		}
 	}
 
 	public function eliminar($datos)
 	{
-
-
 		$id_paciente = $datos[0];
 		$id_usuario = $datos[1];
-
 		// guardar la bitacora
-		$this->bitacora->insertarBitacora($id_usuario, "paciente", "Ha eliminado un  paciente");
-		$this->modelo->delete($id_paciente);
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/eliminar");
+		$eliminacion = $this->modelo->delete($id_paciente);
 
-		//$this->modelo->delete($_GET['getPacientes']);
-		//header("location: ?c=ControladorPacientes/getPacientes&eliminar");
-
+		if ($eliminacion) {
+			$this->bitacora->insertarBitacora($id_usuario, "paciente", "Ha eliminado un  paciente");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/eliminar");
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
+		}
 	}
 	public function restablecer($datos)
 	{
-
 		$id_paciente = $datos[0];
 		$id_usuario = $datos[1];
-
 		// guardar la bitacora
-		$this->bitacora->insertarBitacora($id_usuario, "paciente", "Ha restablecido un paciente");
-
-		$this->modelo->restablecer($id_paciente);
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/restablecido");
-
-		//$this->modelo->delete($_GET['getPacientes']);
-		//header("location: ?c=ControladorPacientes/getPacientes&eliminar");
-
+		$restablecimiento = $this->modelo->restablecer($id_paciente);
+		if ($restablecimiento) {
+			$this->bitacora->insertarBitacora($id_usuario, "paciente", "Ha restablecido un paciente");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/restablecido");
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
+		}
 	}
 
 
@@ -154,10 +154,5 @@ class ControladorPacientes
 	{
 		$respuesta = $this->modelo->buscar($_POST['cedula']);
 		echo json_encode($respuesta);
-	}
-	public function eliminarBuscador()
-	{
-		$this->modelo->delete($_POST['id_paciente']);
-		header("location: ?c=ControladorPacientes/getPacientes/eliminar");
 	}
 }
