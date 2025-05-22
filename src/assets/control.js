@@ -31,7 +31,7 @@ addEventListener("DOMContentLoaded", function () {
         fechaRegreso: false,
     };
     let idDU = document.querySelector("#idDExisteU");
-    console.log(idDU)
+    console.log(idDU);
     if (idDU) {
         campos.doctor = true;
     }
@@ -595,6 +595,16 @@ addEventListener("DOMContentLoaded", function () {
 
         cedulaControl.value = "";
     });
+    function obtenerFechaHoraLocal() {
+        const fecha = new Date();
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+        const dia = String(fecha.getDate()).padStart(2, "0");
+        const horas = String(fecha.getHours()).padStart(2, "0");
+        const minutos = String(fecha.getMinutes()).padStart(2, "0");
+        const segundos = String(fecha.getSeconds()).padStart(2, "0");
+        return [[`${año}-${mes}-${dia}`], [`${horas}:${minutos}:${segundos}`]];
+    }
 
     //mostrar paciente cedula
     const mostrarPaciente = async (cedula) => {
@@ -603,12 +613,9 @@ addEventListener("DOMContentLoaded", function () {
             input.checked = false;
         });
 
-        // obtengo la hora de hoy.
-        let fHoy = new Date();
-        // para que la hora minutos s mm este en cero, como no lo voy a usar
-        fHoy.setHours(0, 0, 0, 0);
-        // transformo la fecha y hora en formato iso(YYYY-MM-DD T HH:MM:SSZ) y divido la fecha de la hora, tomando solo la fecha, que es la posición [0].
-        let fechaHoy = fHoy.toISOString().split("T")[0];
+        let fHoy = obtenerFechaHoraLocal();
+
+        let fechaHoy = fHoy[0][0];
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacienteJS/" + cedula + "/" + fechaHoy);
         let resultado = await peticion.json();
 
@@ -648,10 +655,10 @@ addEventListener("DOMContentLoaded", function () {
     //enviar formulario
     const EnviarFormulario = async () => {
         try {
-            // tomo la fecha de hoy
-            let fechaH = new Date();
+
+            let fHoy = obtenerFechaHoraLocal();
             // se le coloca el formato a la fecha
-            let fechaHo = fechaH.toISOString().slice(0, 19);
+            let fechaHo = `${fHoy[0][0]} ${fHoy[1][0]}`;
 
             document.querySelector("#fechaHora").value = fechaHo;
             console.log(document.querySelector("#fechaHora").value);
@@ -699,7 +706,7 @@ addEventListener("DOMContentLoaded", function () {
 
     modalAgregarControl.addEventListener("submit", function (f) {
         f.preventDefault();
-        console.log(campos)
+        console.log(campos);
 
         if (
             campos.cedula &&

@@ -118,11 +118,8 @@ addEventListener("DOMContentLoaded", function () {
         console.log("   ");
         console.log(monto);
 
-        horasTotales = parseFloat(horasTotales).toFixed(2);
-        let horasMin = horasTotales.split(".");
-
-        let horas = horasMin[0];
-        let minutos = horasMin[1];
+        let horas = Math.floor(horasTotales);
+        let minutos = Math.floor((horasTotales - horas) * 60);
 
         let totalMontoI = await sumaPrecioIH(idH);
 
@@ -281,8 +278,10 @@ addEventListener("DOMContentLoaded", function () {
                                     <td>
                                         ${res["apellido"]}
                                     </td>
-                                    <td>
+                                    <td class="col-11 tdHS">
+                                        
                                         ${res["diagnostico"]}
+                                    
                                     </td>
                                     <td>
                                         ${res["nombredoc"]} ${res["apellidodoc"]}

@@ -256,7 +256,10 @@ h3,h4{
 .aside.active .head svg {
   margin: auto;
 }
-
+.tdHS {
+    white-space: normal !important;
+    word-break: break-word;
+}
 
 
 .desaparecer-icono {
