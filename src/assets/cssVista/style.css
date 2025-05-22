@@ -1719,9 +1719,9 @@ input[type="date"] {
 
 .tajeta-estadistica-m {
   width: 40%;
-  height: 55vh;
+  height: 57vh;
   color: var(--color-text-card);
-  background-color: var(--color-bg-card);
+
 }
 
 .tajeta-estadistica-g {
@@ -1747,8 +1747,8 @@ input[type="date"] {
     height: 40vh;
   }
 
-  canvas {
-    height: 70% !important;
+  .canvas {
+    height: 100% !important;
   }
 }
 

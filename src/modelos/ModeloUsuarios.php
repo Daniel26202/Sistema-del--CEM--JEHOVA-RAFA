@@ -24,22 +24,28 @@ class ModeloUsuarios extends Db
     //buscamos a los usuarios en la base de datos
     public function select()
     {
-        $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.nombre = "Doctor" AND u.estado= "ACT" ';
+        try {
+            $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.nombre = "Doctor" AND u.estado= "ACT" ';
 
-        $consulta = $this->conexion->prepare($sql);
+            $consulta = $this->conexion->prepare($sql);
 
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 
 
     //buscamos a los usuarios en la base de datos
     public function selectAdmin()
     {
-        $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.nombre= "Superadmin" AND u.estado= "ACT" ';
-
-        $consulta = $this->conexion->prepare($sql);
-
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+        try {
+            $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.nombre= "Superadmin" AND u.estado= "ACT" ';
+            $consulta = $this->conexion->prepare($sql);
+            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 
     //validar usuario
@@ -58,109 +64,109 @@ class ModeloUsuarios extends Db
     //esto es para editar un usuario.
     public function updateUsuario($usuario, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal)
     {
+        try {
 
-        if ($imagenUsuario == "") {
+            if ($imagenUsuario == "") {
 
-            $sql = 'UPDATE usuario SET  usuario = :usuario WHERE id_usuario = :id_usuario';
-            $consulta = $this->conexion->prepare($sql);
-            
-            $consulta->bindParam(":usuario", $usuario);
-            $consulta->bindParam(":id_usuario", $idUsuario);
-            $consulta->execute();
-        } else {
-            $consultaImg = $this->conexion->prepare("SELECT imagen FROM usuario WHERE id_usuario=:id_usuario");
-            $consultaImg->bindParam(":id_usuario", $idUsuario);
-            $consultaImg->execute();
-            $img = $consultaImg->fetch();
-            $nombreImagenAntigua = $img["imagen"];
+                $sql = 'UPDATE usuario SET  usuario = :usuario WHERE id_usuario = :id_usuario';
+                $consulta = $this->conexion->prepare($sql);
 
-            //Editar el usuario.
-            $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario WHERE id_usuario = :id_usuario';
+                $consulta->bindParam(":usuario", $usuario);
+                $consulta->bindParam(":id_usuario", $idUsuario);
+                $consulta->execute();
+            } else {
+                $consultaImg = $this->conexion->prepare("SELECT imagen FROM usuario WHERE id_usuario=:id_usuario");
+                $consultaImg->bindParam(":id_usuario", $idUsuario);
+                $consultaImg->execute();
+                $img = $consultaImg->fetch();
+                $nombreImagenAntigua = $img["imagen"];
 
-            $consulta = $this->conexion->prepare($sql);
+                //Editar el usuario.
+                $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario WHERE id_usuario = :id_usuario';
 
-            $consulta->bindParam(":imagen", $imagenUsuario);
-            $consulta->bindParam(":usuario", $usuario);
-            $consulta->bindParam(":id_usuario", $idUsuario);
-            if ($consulta->execute()) {
-                $rutaImagenAntigua = "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $nombreImagenAntigua;
-                if (file_exists($rutaImagenAntigua) && $nombreImagenAntigua != "doctor.png") {
+                $consulta = $this->conexion->prepare($sql);
 
-                    unlink($rutaImagenAntigua);
+                $consulta->bindParam(":imagen", $imagenUsuario);
+                $consulta->bindParam(":usuario", $usuario);
+                $consulta->bindParam(":id_usuario", $idUsuario);
+                if ($consulta->execute()) {
+                    $rutaImagenAntigua = "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $nombreImagenAntigua;
+                    if (file_exists($rutaImagenAntigua) && $nombreImagenAntigua != "doctor.png") {
+
+                        unlink($rutaImagenAntigua);
+                    }
+
+                    move_uploaded_file($imagenUsuarioTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $imagenUsuario);
                 }
-
-                move_uploaded_file($imagenUsuarioTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $imagenUsuario);
             }
+            return 1;
+        } catch (\Exception $e) {
+            return 0;
         }
     }
 
     //esto es para editar el estado (en activo a desactivo) del usuario.
     public function eliminacionLogica($usuario, $idUsuario)
     {
-
-        //editar al doctor.
-        $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario  AND usuario = :usuario;';
-
-        $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-
-
-        $consultaDeUsuario->bindParam(":usuario", $usuario);
-        $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
-
-        $consultaDeUsuario->execute();
+        try {
+            //editar al doctor.
+            $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario  AND usuario = :usuario;';
+            $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
+            $consultaDeUsuario->bindParam(":usuario", $usuario);
+            $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
+            $consultaDeUsuario->execute();
+            return 1;
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
     public function AgregarAdministrador($usuario, $password, $correo)
     {
+        try {
 
-        $resultadoDeUsuario = $this->validarUsuario($_POST['usuario']);
+            $resultadoDeUsuario = $this->validarUsuario($_POST['usuario']);
 
-        if ($resultadoDeUsuario === "existeU") {
+            if ($resultadoDeUsuario === "existeU") {
 
-            header("location: ?c=ControladorUsuarios/administradores&error");
-
-
-        } else {
-            $imagenComprobacion = isset($_FILES['imagenUsuario']['name']) ? $_FILES['imagenUsuario']['name'] : false;
-            if ($imagenComprobacion) {
-                $nombreImagenUsuario = $_FILES['imagenUsuario']['name'];
-
-                $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :correo, :password, "ACT")';
-                $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-                $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
-                $consultaDeUsuario->bindParam(":usuario", $usuario);
-                $consultaDeUsuario->bindParam(":correo", $correo);
-                $consultaDeUsuario->bindParam(":password", $password);
-                $consultaDeUsuario->execute();
-                $id_usuario = $this->conexion->lastInsertId();
-                $imagen = $id_usuario . "_" . $_FILES['imagenUsuario']['name'];
-
-                $imagen_temporal = $_FILES['imagenUsuario']['tmp_name'];
-                move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
-                return ($id_usuario);
+                header("location: ?c=ControladorUsuarios/administradores&error");
             } else {
-                $nombreImagenUsuario = "doctor.png";
+                $imagenComprobacion = isset($_FILES['imagenUsuario']['name']) ? $_FILES['imagenUsuario']['name'] : false;
+                if ($imagenComprobacion) {
+                    $nombreImagenUsuario = $_FILES['imagenUsuario']['name'];
 
-                $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :correo, :password, "ACT")';
-                $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-                $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
-                $consultaDeUsuario->bindParam(":usuario", $usuario);
-                $consultaDeUsuario->bindParam(":correo", $correo);
-                $consultaDeUsuario->bindParam(":password", $password);
-                $consultaDeUsuario->execute();
-                $id_usuario = $this->conexion->lastInsertId();
-                $imagen = $nombreImagenUsuario;
+                    $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :correo, :password, "ACT")';
+                    $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
+                    $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
+                    $consultaDeUsuario->bindParam(":usuario", $usuario);
+                    $consultaDeUsuario->bindParam(":correo", $correo);
+                    $consultaDeUsuario->bindParam(":password", $password);
+                    $consultaDeUsuario->execute();
+                    $id_usuario = $this->conexion->lastInsertId();
+                    $imagen = $id_usuario . "_" . $_FILES['imagenUsuario']['name'];
 
-                $imagen_temporal = $_FILES['imagenUsuario']['tmp_name'];
-                move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
-                return ($id_usuario);
+                    $imagen_temporal = $_FILES['imagenUsuario']['tmp_name'];
+                    move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
+                    return ($id_usuario);
+                } else {
+                    $nombreImagenUsuario = "doctor.png";
+
+                    $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :correo, :password, "ACT")';
+                    $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
+                    $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
+                    $consultaDeUsuario->bindParam(":usuario", $usuario);
+                    $consultaDeUsuario->bindParam(":correo", $correo);
+                    $consultaDeUsuario->bindParam(":password", $password);
+                    $consultaDeUsuario->execute();
+                    $id_usuario = $this->conexion->lastInsertId();
+                    $imagen = $nombreImagenUsuario;
+
+                    $imagen_temporal = $_FILES['imagenUsuario']['tmp_name'];
+                    move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
+                    return ($id_usuario);
+                }
             }
+        } catch (\Exception $e) {
+            return 0;
         }
-
-
-
     }
-
-
-
-
 }

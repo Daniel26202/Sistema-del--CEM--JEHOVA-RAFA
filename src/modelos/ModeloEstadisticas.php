@@ -22,10 +22,14 @@ class ModeloEstadisticas extends Db
 
   public function distribucion_edad_genero()
   {
-    $sql = "SELECT
+    try {
+      $sql = "SELECT
   rango_edad,
   SUM(CASE WHEN genero = 'masculino' THEN cantidad ELSE 0 END) AS masculino,
-  SUM(CASE WHEN genero = 'femenino' THEN cantidad ELSE 0 END) AS femenino
+  SUM(CASE WHEN genero = 'femenino' THEN cantidad ELSE 0 END) AS femenino,
+  SUM(cantidad) AS total,
+  (SELECT COUNT(*) FROM paciente WHERE genero = 'masculino') AS total_masculino,
+  (SELECT COUNT(*) FROM paciente WHERE genero = 'femenino') AS total_femenino
 FROM (
   SELECT
     CASE
@@ -42,17 +46,23 @@ FROM (
   GROUP BY rango_edad, genero
 ) AS sub
 GROUP BY rango_edad
-ORDER BY rango_edad;";
+ORDER BY rango_edad
 
-    $consulta = $this->conexion->prepare($sql);
+";
 
-    return ($consulta->execute()) ? $consulta->fetchAll() : false;
+      $consulta = $this->conexion->prepare($sql);
+
+      return ($consulta->execute()) ? $consulta->fetchAll() : false;
+    } catch (\Exception $e) {
+      return 0;
+    }
   }
 
   public function tasa_morbilidad($fechaInicio = "", $fechaFinal = "")
   {
-    if ($fechaInicio == "" && $fechaFinal == "") {
-      $sql = "SELECT
+    try {
+      if ($fechaInicio == "" && $fechaFinal == "") {
+        $sql = "SELECT
               p.nombre_patologia,
               COUNT(DISTINCT pp.id_paciente) AS casos,
               ROUND(
@@ -66,9 +76,9 @@ ORDER BY rango_edad;";
             GROUP BY pp.id_patologia
             ORDER BY casos DESC;
             ";
-      $consulta = $this->conexion->prepare($sql);
-    } else {
-      $sql = "SELECT
+        $consulta = $this->conexion->prepare($sql);
+      } else {
+        $sql = "SELECT
             p.nombre_patologia,
             COUNT(DISTINCT pp.id_paciente) AS casos,
             ROUND(
@@ -81,12 +91,15 @@ ORDER BY rango_edad;";
           JOIN patologia p ON pp.id_patologia = p.id_patologia WHERE pp.fecha_registro BETWEEN :fechaInicio AND :fechaFinal
           GROUP BY pp.id_patologia
           ORDER BY casos DESC;";
-      $consulta = $this->conexion->prepare($sql);
-      $consulta->bindParam(":fechaInicio", $fechaInicio);
-      $consulta->bindParam(":fechaFinal", $fechaFinal);
-    }
-    
+        $consulta = $this->conexion->prepare($sql);
+        $consulta->bindParam(":fechaInicio", $fechaInicio);
+        $consulta->bindParam(":fechaFinal", $fechaFinal);
+      }
 
-    return ($consulta->execute()) ? $consulta->fetchAll() : false;
+
+      return ($consulta->execute()) ? $consulta->fetchAll() : false;
+    } catch (\Exception $e) {
+      return 0;
+    }
   }
 }
