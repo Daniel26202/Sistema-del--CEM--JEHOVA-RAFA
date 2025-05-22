@@ -253,7 +253,7 @@
 
                 </div>
             </div>
-            <!-- <h5 class="mt-4 text-center">Filtrar la Grafica Segun un Periodo de Tiempo</h5>
+            <h5 class="mt-4 text-center">Filtrar la Grafica Segun un Periodo de Tiempo</h5>
             <div class="mt-4 w-100 mb-4">
                 <div class="alert alert-danger text-center d-none alertaFechaInicioSintomas">Por favor la fecha de Inicio tiene que ser Menor a la fech final</div>
                 <div class="d-flex">
@@ -264,7 +264,7 @@
 
 
 
-                    <a href="#" class="btn btn-buscar " id="buscarFechaPacientes" title="Buscar Entradas Por Fecha">
+                    <a href="#" class="btn btn-buscar " id="buscarFechaMorbilidad" title="Buscar Entradas Por Fecha">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                         </svg>
@@ -275,7 +275,7 @@
                 </div>
 
 
-            </div> -->
+            </div>
 
             <div class="d-flex justify-content-center mb-3">
                 <button id="morbilidad" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">

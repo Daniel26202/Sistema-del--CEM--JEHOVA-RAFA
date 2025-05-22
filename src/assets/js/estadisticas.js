@@ -188,6 +188,10 @@ const tasa_morbilidad = async (url) => {
     },
   });
 
+  if (tasaMorbilidadChartModal) {
+    tasaMorbilidadChartModal.destroy();
+  }
+
   ctxModal = document.getElementById("morbilidad_pdf").getContext("2d");
 
   tasaMorbilidadChartModal = new Chart(ctxModal, {
@@ -578,6 +582,18 @@ document.getElementById("buscarFechaSintomas").addEventListener("click", functio
     fechaInicio,
     fechaFinal,
     `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio}/${fechaFinal}`
+  );
+});
+
+//morbilidad fecha
+document.getElementById("buscarFechaMorbilidad").addEventListener("click", function () {
+  let fechaInicio = this.parentElement.firstElementChild.value;
+  let fechaFinal = this.parentElement.firstElementChild.nextElementSibling.value;
+  filtrar_por_fecha(
+    tasa_morbilidad,
+    fechaInicio,
+    fechaFinal,
+    `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad/${fechaInicio}/${fechaFinal}`
   );
 });
 

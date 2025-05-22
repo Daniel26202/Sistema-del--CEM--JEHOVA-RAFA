@@ -43,7 +43,9 @@ FROM (
   GROUP BY rango_edad, genero
 ) AS sub
 GROUP BY rango_edad
-ORDER BY rango_edad;";
+ORDER BY rango_edad;
+
+";
 
       $consulta = $this->conexion->prepare($sql);
 
