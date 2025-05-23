@@ -62,7 +62,7 @@
     <div class="caja-contenedor-tabla fondo-tabla p-1 mb-2 col-12 m-auto">
 
 
-        <div class="mt-5 ms-2" style="background: #F8FCFF; border-radius:20px; overflow-y: auto;">
+        <div class="mt-5 ms-2" style="border-radius:20px; overflow-y: auto;">
             <div class="">
                 <div style="height: 70px;" class=" d-flex justify-content-around">
 
