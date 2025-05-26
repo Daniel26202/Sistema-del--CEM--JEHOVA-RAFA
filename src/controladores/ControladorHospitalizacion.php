@@ -52,7 +52,7 @@ class ControladorHospitalizacion
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-        
+
         $idUsuario = $_SESSION['id_usuario'];
         $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
         // datos de los insumos
@@ -217,32 +217,15 @@ class ControladorHospitalizacion
         }
     }
 
-    // public function traerHoraCosto()
-    // {
-    //     $datosHC = $this->modelo->selectHC();
-    //     echo json_encode($datosHC);
-    // }
-
-    // // editar costo y hora.
-    // public function editarHC($datos)
-    // {
-    //     $hora = $datos[0];
-    //     $costo = $datos[1];
-    //     $this->modelo->updateHC($hora, $costo);
-
-    // }
-
-    // editar el precio de horas y total de la hospitalización
-    // public function editarPHT($datos)
-    // {
-    //     $precio_h = $datos[0];
-    //     $total = $datos[1];
-    //     $idH = $datos[2];
-    //     $this->modelo->actualizarPHT($_GET["precio_h"], $_GET["total"], $_GET["idH"]);
-    // }
-
     // buscar insumos de las hospitalizaciones existentes 
     public function buscarIExH()
+    {
+        $datosIns = $this->modelo->buscarIEH();
+        echo json_encode($datosIns);
+    }
+
+    // enviar los datos de la hospitalización a factura 
+    public function enviarAFacturar()
     {
         $datosIns = $this->modelo->buscarIEH();
         echo json_encode($datosIns);
