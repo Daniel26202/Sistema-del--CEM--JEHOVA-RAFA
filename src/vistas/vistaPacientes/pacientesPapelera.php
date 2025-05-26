@@ -28,9 +28,9 @@
               <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
             </svg>AYUDA</a></li>
         <li class="uk-nav-divider"></li>
-        <li><a href="?c=ControladorBitacora/bitacora" ><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
-          <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z"/>
-      </svg> CONFIGURACIÓN</a></li>
+        <li><a href="?c=ControladorBitacora/bitacora"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-question-octagon-fill azul me-1" viewBox="0 0 16 16">
+              <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z" />
+            </svg> CONFIGURACIÓN</a></li>
         <li class="uk-nav-divider"></li>
 
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#eliminar">
@@ -64,26 +64,26 @@
     <div class=" me-3 mb-4  d-flex justify-content-end w-100">
 
 
-        <ul class="sin-circulos d-flex justify-content-end">
+      <ul class="sin-circulos d-flex justify-content-end">
 
-            <li class="li">
-                <div class="borde-de-menu  mb-1"></div>
-                <div class="hover-grande">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" class="text-decoration-none text-black me-3" id="DMservicioMedico">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-people me-1 mb-1" viewBox="0 0 16 16">
-      <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
-    </svg>Pacientes</a>
-                </div>
-            </li>
-          
+        <li class="li">
+          <div class="borde-de-menu  mb-1"></div>
+          <div class="hover-grande">
+            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" class="text-decoration-none me-3 color-letras" id="DMservicioMedico">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-people me-1 mb-1" viewBox="0 0 16 16">
+                <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
+              </svg>Pacientes</a>
+          </div>
+        </li>
 
-        </ul>
+
+      </ul>
 
     </div>
-</div>
+  </div>
   <div class="d-flex justify-content-end align-items-center">
     <!-- Boton Agregar Pacientes -->
-   
+
 
 
 
@@ -170,7 +170,7 @@
 
                 <td class="border-start text-center"><?php echo $paciente['fn']; ?></td>
 
-               
+
 
 
                 <td class="border-start">
@@ -179,10 +179,10 @@
 
                     <div class="me-2">
                       <a href="#" uk-toggle="target:#eliminar<?php echo $paciente['id_paciente']; ?>" title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise text-black" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
-  <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
-</svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise text-black" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
+                          <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
+                        </svg>
                       </a>
                     </div>
 
@@ -228,7 +228,7 @@
                             </span>
                             <span class="">
                               <select class="form-control input-modal" aria-label="2" placeholder="Nacionalidad" name="nacionalidadEditar">
-                                
+
                                 <option value="V">V</option>
                                 <option value="E">E</option>
                               </select>
@@ -284,8 +284,8 @@
                             <input class="form-control input-modal input-disabled input-paciente" type="date" id="fnEditar" name="fnEditar" placeholder="Fn" required pattern="\d{2}\/\d{2}\/\d{4}" maxlength="8" value="<?php echo $paciente['fn']; ?>">
                           </div>
 
-                          
-                          
+
+
                           <div class="mt-3 uk-text-right">
                             <button class="uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
                             <button class="btn col-4 btn-agregarcita-modal" type="sumit">Modificar</button>
@@ -310,10 +310,10 @@
 
                         <div class="d-flex align-items-center">
                           <div>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-arrow-counterclockwise azul me-2 mb-1 " viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
-  <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
-</svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-arrow-counterclockwise azul me-2 mb-1 " viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
+                              <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
+                            </svg>
                           </div>
                           <div>
                             <h6>
@@ -325,7 +325,7 @@
                         <div class="mt-3 uk-text-right">
                           <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
 
-                          <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/restablecer/<?php echo $paciente['id_paciente']; ?>/<?php echo $_SESSION['id_usuario']?>">
+                          <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/restablecer/<?php echo $paciente['id_paciente']; ?>/<?php echo $_SESSION['id_usuario'] ?>">
                             <button class="btn col-4 btn-agregarcita-modal" type="button">Restablecer</button>
                           </a>
                         </div>
@@ -363,18 +363,18 @@
 </table>
 
 <table class="table table-striped d-none" style="margin-top: -16px;" id="noresultados">
-                <thead>
+  <thead>
 
-                </thead>
-                <tbody>
-                    <tr class="" >
-                        <td colspan="9" class="text-center">NO HAY REGISTROS
+  </thead>
+  <tbody>
+    <tr class="">
+      <td colspan="9" class="text-center">NO HAY REGISTROS
 
-                        </td>
-                    </tr>
-                </tbody>
+      </td>
+    </tr>
+  </tbody>
 
-            </table>
+</table>
 
 
 
@@ -385,19 +385,19 @@
 
 <?php require_once 'modalPaciente.php'; ?>
 
-<?php if($parametro != ""):?>
-		<?php $concatenarRuta = "";?>
-		  <?php foreach($parametro as $p):?>
-        <?php $concatenarRuta .= "../";?>
-        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/validacionesPacientesRegistrar.js"></script>
-        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/buscadorPaciente.js"></script>
-        <script type="text/javascript" src="<?= $concatenarRuta?>../src/assets/js/ayudaPaciente.js"></script>
+<?php if ($parametro != ""): ?>
+  <?php $concatenarRuta = ""; ?>
+  <?php foreach ($parametro as $p): ?>
+    <?php $concatenarRuta .= "../"; ?>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/js/validacionesPacientesRegistrar.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/js/buscadorPaciente.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>../src/assets/js/ayudaPaciente.js"></script>
 
-      <?php endforeach;?>
-<?php else:?>
-      <script type="text/javascript" src="../src/assets/js/validacionesPacientesRegistrar.js"></script>
-      <script type="text/javascript" src="../src/assets/js/buscadorPaciente.js"></script>
-      <script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
-<?php endif;?>
+  <?php endforeach; ?>
+<?php else: ?>
+  <script type="text/javascript" src="../src/assets/js/validacionesPacientesRegistrar.js"></script>
+  <script type="text/javascript" src="../src/assets/js/buscadorPaciente.js"></script>
+  <script type="text/javascript" src="../src/assets/js/ayudaPaciente.js"></script>
+<?php endif; ?>
 
 <?php require_once './src/vistas/head/footer.php'; ?>

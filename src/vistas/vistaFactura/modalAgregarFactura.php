@@ -105,12 +105,14 @@
 
                     <td class="border-start text-center">
 
-                      <button class="btn btn-tabla mt-1 insertar_servicio" id="<?php echo $e['id_servicioMedico']; ?>"
+                      <button class="btn mt-1 insertar_servicio" id="<?php echo $e['id_servicioMedico']; ?>"
                         data-bs-toggle="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-app"
-                          viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
+                          class="bi bi-clipboard2-plus-fill azul me-3" viewBox="0 0 16 16">
                           <path
-                            d="M11 2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3h6zM5 1a4 4 0 0 0-4 4v6a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4V5a4 4 0 0 0-4-4H5z" />
+                            d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z" />
+                          <path
+                            d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0Z" />
                         </svg>
                       </button>
 
@@ -936,7 +938,64 @@
                 </tr>
               </thead>
               <tbody style="font-size: 14px;" id="cuerpoTablaConfirmaroperacion">
-                <?php if (isset($parametro[0])): ?>
+
+                <!-- Código si contiene una 'h' -->
+                <?php if (isset($parametro[0]) && stripos($parametro[0], 'c') !== false): ?>
+                  <?php foreach ($citaFacturar as $datoCita): ?>
+                    <tr>
+                      <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
+                      <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
+                        value="<?= $datoCita['id_paciente'] ?>">
+                      <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
+                      <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
+                      <td>
+                        <div class="fw-bolder">CI:</div>
+                        <?= $datoCita["cedula_p"]; ?>
+                      </td>
+                      <td>
+                        <div class="fw-bolder">PACIENTE:</div>
+                        <?= $datoCita["nombre_p"]; ?>
+                        <?= $datoCita["apellido_p"]; ?>
+                      </td>
+                      <td>
+                        <div class="fw-bolder">S/M:</div>
+                        <?= $datoCita["especialidad"]; ?>
+                      </td>
+                      <td>
+                        <div class="fw-bolder">FECHA:</div>
+                        <?= $datoCita["fecha"]; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach ?>
+                  <h1>citas</h1>
+                <?php endif; ?>
+
+
+
+                <?php
+                // Validar si el parámetro existe y si contiene una "h" (no distingue mayúsculas/minúsculas)
+                if (isset($parametro[0]) && stripos($parametro[0], 'h') !== false) :
+                ?>
+
+                  <?php foreach ($hostalizacionFacturar as $hos): ?>
+
+                    <tr>
+
+                      <input type="hidden" class="d-none" name="id_hospitalizacion" value="<?= $hos['id_hospitalizacion'] ?>">
+                      <input type="hidden" class="d-none" name="id_paciente" value="<?= $hos['id_paciente'] ?>">
+                      <td>
+                        <div class="fw-bolder">CI:</div>
+
+                        <?= $hos["cedula"]; ?>
+                      </td>
+                      <td>
+                        <div class="fw-bolder">PACIENTE:</div>
+                        <?= $hos["nombre"]; ?>
+                        <?= $hos["apellido"]; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach ?>
+                <?php elseif (isset($parametro[0]) && stripos($parametro[0], 'c') !== false): ?>
 
                   <?php foreach ($citaFacturar as $datoCita): ?>
                     <tr>
@@ -964,42 +1023,7 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-
-                  <!-- condicional de la hospitalizacion  -->
-                <?php elseif (isset($_GET["idH"])): ?>
-
-
-
-
-                  <?php foreach ($hospitalizacionFacturar as $hos): ?>
-
-                    <tr>
-
-                      <input type="text" class="d-none" name="id_hospitalizacion" value="<?= $hos['id_hospitalizacion'] ?>">
-                      <td>
-                        <div class="fw-bolder">CI:</div>
-
-                        <?= $hos["cedula"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">PACIENTE:</div>
-                        <?= $hos["nombre"]; ?>
-                        <?= $hos["apellido"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">DIAGNOSTICO:</div>
-                        <?= $hos["diagnostico"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">HORAS:</div>
-                        <?= $hos["duracion"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">PRECIO:</div>
-                        <?= $hos["precio_horas"] * $hos["duracion"] . " BS"; ?>
-                      </td>
-                    </tr>
-                  <?php endforeach ?>
+                  <h1>citas</h1>
                 <?php else: ?>
 
                   <input type="hidden" class="" id="inputPaciente" name="id_paciente" value="">
@@ -1023,35 +1047,21 @@
                 </tr>
               </thead>
               <tbody style="font-size: 14px;" id="tbodyInsumos">
-                <?php if (isset($_GET["idH"])): ?>
-                  <?php foreach ($hospitalizacionInsumos as $ins): ?>
-                    <tr class="border-top tr">
-                      <th class="id_insumo_escondido d-none">
-                        <input type="hidden" name="insumosHospi[]" value="<?= $ins["id_insumo"] ?>">
-                        <?= $ins["id_insumo"] ?>
-                      </th>
-                      <td class="border-top nombre">
-                        <div class="fw-bolder">INSUMO:</div>
-                        <?= $ins["nombre"] ?>
-                      </td>
-                      <td class="border-top">
-                        <input type="hidden" name="cantidadInsumosHospi[]" value="<?= $ins["cantidad_insumo_hospit"] ?>">
-                        <div class="fw-bolder">CANTIDAD:</div>
-                        <?= $ins["cantidad_insumo_hospit"] ?>
-                      </td>
-                      <td class="border-top">
-                        <div class="fw-bolder">PRECIO:</div>
-                        <?= $ins["precio"] ?> BS
-                      </td>
-                      <td class="border-top">
-                        <div class="fw-bolder">SUB-TOTAL:</div>
-                        <?= $ins["precio"] * $ins["cantidad_insumo_hospit"] ?> BS
-                      </td>
-                      <td class="border-top"></td>
+                <?php if (isset($parametro[0]) && stripos($parametro[0], 'h') !== false): ?>
+
+                  <tr class="border-top tr">
+
+                    <td class="border-top nombre">
+                      <div class="fw-bolder">INSUMO:</div>
+                      <?= $insumosHospitalizacion ?>
+                    </td>
 
 
-                    <tr>
-                    <?php endforeach; ?>
+                    <td class="border-top"></td>
+
+
+                  <tr>
+
                   <?php endif; ?>
               </tbody>
             </table>

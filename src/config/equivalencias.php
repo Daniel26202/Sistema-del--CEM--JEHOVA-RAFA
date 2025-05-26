@@ -34,6 +34,7 @@ return [
     "mostrarPDF3" => "consultar",
     "guardarFactura" => "guardar",
     "guardarFacturaHospit" => "guardar",
+    "facturarHospitalizacion" => "consultar",
 
     //Citas
     "mostrarPacienteCita" => "consultar",

@@ -4,6 +4,7 @@
   --color-bg-main: #f2f9ff;
   --color-bg-sidebar: #e8f2ff;
   --color-bg-card: #fdfdff;
+  --color-bg-card-estadisticas: #fdfdff;
   --color-text: #fdfdff;
   --color-text-card: #1b1a1a;
   --color-primary: #387adf;
@@ -19,6 +20,7 @@
   --color-bg-main: hsl(211, 53%, 11%);
   --color-bg-sidebar: hsl(211, 43%, 11%);
   --color-bg-card: #415a77;
+  --color-bg-card-estadisticas: #1e3c5e;
   --color-text: #e0e1dd;
   --color-text-card: #e0e1dd;
   --color-primary: #387adf;
@@ -51,7 +53,7 @@ h1 {
   color: var(--color-text-card);
 }
 
-h3,h4{
+h3,h4,h5,h6{
   color: var(--color-text-card);
 }
 
@@ -1418,6 +1420,7 @@ td{
 }
 
 .precio-medicina-agregar {
+  color: var(--color-text-card);
   position: absolute;
   transform: translateY(-6px);
 }
@@ -1428,7 +1431,7 @@ td{
 }
 
 .color-letras {
-  color: black;
+  color: var(--color-text-card);
 }
 
 /* off-canvas */
@@ -1663,9 +1666,12 @@ background-color: #387adf;
   margin-bottom: 8px;
 }
 
+.hospit{
+  background-color: var(--color-bg-card);
+}
+
 .input-u {
-  color: white;
-  background: none;
+  color: var(--color-text-card) !important;
   padding-left: 28.6px;
   padding-bottom: 5.8px;
   /* width: auto; */
@@ -1724,6 +1730,7 @@ input[type="date"] {
   width: 40%;
   height: 57vh;
   color: var(--color-text-card);
+  background-color: var(--color-bg-card-estadisticas);
 
 }
 
@@ -1744,8 +1751,10 @@ input[type="date"] {
   .tajeta-estadistica-m {
     width: 60%;
     height: 80vh;
+    background-color: var(--color-bg-card-estadisticas);
   }
   .tajeta-estadistica-g {
+    background-color: var(--color-bg-card-estadisticas);
     width: 90%;
     height: 40vh;
   }
@@ -1761,10 +1770,12 @@ input[type="date"] {
 
 @media screen and (max-width: 1000px) {
   .tajeta-estadistica-m {
+    background-color: var(--color-bg-card-estadisticas);
     width: 100%;
   }
 
   .tajeta-estadistica-g {
+    background-color: var(--color-bg-card-estadisticas);
     width: 100%;
   }
 }
@@ -2056,7 +2067,12 @@ input[type="date"] {
     padding: 1rem;
   }
 
+  .input-agregar{
+      background-color: var(--color-bg-card);
+    }
+
   .input-modal {
+    background-color: var(--color-bg-card);
     font-size: 1rem;
     padding: 0.8rem;
   }

@@ -48,6 +48,40 @@ class ModeloFactura extends Db
 		}
 	}
 
+	public function mostrarHospitalizacion($id_hospitalizacion)
+	{
+
+		try {
+			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND h.estado = "Pendiente"  AND  h.id_hospitalizacion =:id_hospitalizacion GROUP BY h.id_hospitalizacion');
+			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
+			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+	public function unirInsumosHospitalizacion($id_hospitalizacion)
+	{
+		try {
+			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, inv.cantidad AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN inventario inv ON idh.id_inventario = inv.id_inventario INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.estado = "Pendiente" AND h.id_hospitalizacion =:id_hospitalizacion ');
+			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
+			$consulta->execute();
+			$insumos = $consulta->fetchAll();
+			if (!is_array($insumos)) {
+				return "";
+			}
+			$cadena = "";
+			foreach ($insumos as $insumo) {
+				$cadena .= $insumo['nombre'] . " Cantidad (" . $insumo['cantidad'] . "), ";
+			}
+			// Quitar la última coma y espacio
+			$cadena = rtrim($cadena, ', ');
+			return $cadena;
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
 	public function buscar($cedula)
 	{
 		try {
@@ -246,7 +280,7 @@ class ModeloFactura extends Db
 			}
 			return [$cantidad_total, $lotesDisponibles];
 		} catch (\Exception $e) {
-			
+
 			return 0;
 		}
 	}
@@ -258,7 +292,7 @@ class ModeloFactura extends Db
 			$this->conexion->beginTransaction();
 
 			$datos = $this->updateCantidadEntrada($id_insumo, $cantidad_requerida);
-			
+
 			if ($datos) {
 				$cantidad_total = $datos[0];
 				$lotesDisponibles = $datos[1];
@@ -309,7 +343,7 @@ class ModeloFactura extends Db
 					echo "NO..";
 				}
 			}
-			
+
 
 			$this->conexion->commit();
 		} catch (\Exception $e) {
@@ -320,7 +354,7 @@ class ModeloFactura extends Db
 	}
 
 
-	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $id_cita)
+	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $id_cita, $id_hospitalizacion)
 	{
 
 		try {
@@ -334,10 +368,18 @@ class ModeloFactura extends Db
 			$consulta->bindParam(":id_paciente", $id_paciente);
 			$consulta->execute();
 			$id_factura = $this->conexion->lastInsertId();
+
 			//Si el id_cita no es null se cambia el estado e la cita
 			if ($id_cita != null) {
 				$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
 				$consulta->bindParam(":id_cita", $id_cita);
+				$consulta->execute();
+			}
+
+			//Si el id_hospitalizacion no es null se cambia el estado e la cita
+			if ($id_hospitalizacion != null) {
+				$consulta = $this->conexion->prepare("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id_hospitalizacion");
+				$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 				$consulta->execute();
 			}
 
@@ -375,7 +417,7 @@ class ModeloFactura extends Db
 					$insumo = $this->actualizarCantidadEntradaTotales($i, $cantidad[$contador], $id_factura, $cantidad[$contador]);
 					if ($insumo) {
 						$contador++;
-					}		
+					}
 				}
 			}
 

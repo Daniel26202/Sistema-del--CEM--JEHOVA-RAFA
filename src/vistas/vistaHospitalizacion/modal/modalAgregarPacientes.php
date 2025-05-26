@@ -1,8 +1,8 @@
-<div class="modal fade" id="modal-agregar-hospitalizacion" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade " id="modal-agregar-hospitalizacion" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <p class="text-center text-white fw-bolder" id="pModalOculto" data-bs-dismiss="modal">Presione clic</p>
     <div class="modal-dialog uk-offcanvas-container" id="divModal">
-        <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4">
+        <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4 hospit">
 
 
             <div class=" d-flex justify-content-between align-items-center mt-2 pt-0">
@@ -143,7 +143,7 @@
                             <h4 class="text-center fw-bold">Historia clínica</h4>
 
                             <div class="uk-margin">
-                                <textarea name="historial" class="uk-textarea" rows="5" placeholder="Historial médico"
+                                <textarea name="historial" class="uk-textarea input-modal" rows="5" placeholder="Historial médico"
                                     aria-label="Textarea" id="historia_clinicaA" required></textarea>
                             </div>
                         </div>

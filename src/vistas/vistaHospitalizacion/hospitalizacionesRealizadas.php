@@ -79,7 +79,7 @@
             <li class="">
                 <div class="borde-de-menu color-linea mb-1"></div>
                 <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion"
-                    class="text-decoration-none text-black me-3" id="DMservicioMedico">
+                    class="text-decoration-none me-3 color-letras" id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="20" fill="currentColor"
                         class="bi bi-clipboard-pulse me-1" viewBox="0 0 16 16">
                         <path fill-rule="evenodd"
@@ -90,7 +90,7 @@
                 <div class="borde-de-menu mb-1 activo-border"></div>
                 <div class="hover-grande">
                     <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacionesRealizadas"
-                        class="text-decoration-none text-black me-3" id="DMserviciosExtras">
+                        class="text-decoration-none me-3 color-letras" id="DMserviciosExtras">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="20" fill="currentColor"
                             class="bi bi-clipboard-check me-1 color-activo-svg" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
