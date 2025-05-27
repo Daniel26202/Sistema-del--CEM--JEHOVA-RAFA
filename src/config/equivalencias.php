@@ -198,6 +198,7 @@ return [
     "edadGenero" => "consultar",
     "tasaMorbilidad" => "consultar",
     "filtrar_tasaMorbilidad" => "consultar",
+    "insumos" => "consultar",
 
 
 ];

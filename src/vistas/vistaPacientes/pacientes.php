@@ -91,7 +91,7 @@
     </div>
 
 
-    <table class="example  col-12 ">
+    <table class="example col-12 ">
       <thead>
         <tr>
           <th class="text-dark">Cédula</th>
@@ -109,7 +109,7 @@
 
         <?php foreach ($pacientes as $paciente): ?>
           <tr>
-            <td class="text-center"><?= $paciente['cedula'] ?></td>
+            <td class="text-center"><?= $paciente['nacionalidad'] . $paciente['cedula'] ?></td>
             <td class="text-center"><?= $paciente['nombre'] ?></td>
             <td class="text-center"><?= $paciente['apellido'] ?></td>
             <td class="text-center"><?= $paciente['telefono'] ?></td>
