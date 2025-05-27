@@ -60,6 +60,7 @@ class ControladorCitas
 
 	public function citas($parametro)
 	{
+		$ayuda = "btnayudaCitaP";
 		$vistaActiva = 'pendientes';
 		$servicios = $this->modelo->mostrarServicioDoctor();
 		$datosCitas = $this->modelo->mostrarCita();
@@ -67,6 +68,7 @@ class ControladorCitas
 	}
 	public function citasHoy($parametro)
 	{
+		$ayuda = "btnayudaCitaP";
 		$vistaActiva = 'hoy';
 		date_default_timezone_set('America/Mexico_City');
 		$fecha = date('Y-m-d');
@@ -126,6 +128,7 @@ class ControladorCitas
 
 	public function citasRealizadas($parametro)
 	{
+		$ayuda = "btnayudaCitaP";
 		$vistaActiva = 'realizadas';
 		$datosCitas = $this->modelo->mostrarCitaR();
 		require_once './src/vistas/vistasCitas/vistaCitas.php';
@@ -201,5 +204,9 @@ class ControladorCitas
 	private function permisos($id_rol, $permiso, $modulo)
 	{
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+	}
+
+	public function validarHorariosDisponlibles($datos){
+		echo  json_encode($this->modelo->validarHorariosDisponlibles($datos[0],$datos[1]));
 	}
 }

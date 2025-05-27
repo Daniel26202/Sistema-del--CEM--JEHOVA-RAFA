@@ -7,11 +7,11 @@ document.getElementById('btnayudaFactura').addEventListener("click", function() 
     
       {
           element: document.querySelector('#inicioFactura'),
-          intro: "DESDE AQUÍ PODRÁS FACTURAR LOS SERVICIOS MÉDICOS, LOS SERVICIOS EXTRAS Y LOS INSUMOS"
+          intro: "DESDE AQUÍ PODRÁS FACTURAR LOS SERVICIOS MÉDICOS, Y LOS INSUMOS"
         },
         {
             element: document.querySelector('#botonAgregar'),
-            intro: "CON ESTE BOTÓN PUEDES INSERTAR SERVICIOS EXTRAS A LA FACTURA"
+            intro: "CON ESTE BOTÓN PUEDES INSERTAR SERVICIOS MEDICOS A LA FACTURA"
           },
         {
             element: document.querySelector('#btnInsumos'),
@@ -20,16 +20,13 @@ document.getElementById('btnayudaFactura').addEventListener("click", function() 
         
         {
             element: document.querySelector('#form-buscador'),
-            intro: "AQUÍ TIENES UN BUSCADOR PARA BUSCAR EL PACIENTE AL CUAL SE VA A REALIZAR LA FACTURA"
+            intro: "AQUÍ TIENES UN BUSCADOR PARA BUSCAR EL PACIENTE POR CEDULA AL CUAL SE VA A REALIZAR LA FACTURA"
           },
         {
           element: document.querySelector('#ayudaTabla1'),
           intro: "EN ESTA SECCIÓN SE VA A MOSTRAR EL SERVICIO MÉDICO A FACTURAR"
         },
-        {
-          element: document.querySelector('#ayudaTabla2'),
-          intro: "EN ESTA SECCIÓN SE VAN A MOSTRAR LOS SERVICIOS EXTRAS INSERTADOS"
-        },
+        
         {
           element: document.querySelector('#ayudaTabla3'),
           intro: "EN ESTA SECCIÓN SE VAN A MOSTRAR LOS INSUMOS QUE AGREGUES A LA FACTURA"

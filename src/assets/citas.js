@@ -25,10 +25,7 @@ addEventListener("DOMContentLoaded", () => {
       body: datosFormulario,
     };
 
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarPacienteCita",
-      contenido
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarPacienteCita", contenido);
 
     console.log(peticion);
     let resultado = await peticion.json();
@@ -62,9 +59,7 @@ addEventListener("DOMContentLoaded", () => {
       document.querySelector(".cedula-paciente").value = cedulaCita.value;
 
       //Esto es para que cuando el se pase la cedula de cita a paciente tambien se pinte verde y cumpla la expresion regular
-      document
-        .querySelector(".cedula-paciente")
-        .parentElement.classList.add("grpFormCorrect");
+      document.querySelector(".cedula-paciente").parentElement.classList.add("grpFormCorrect");
 
       if (event && event.type === "click") {
         document.getElementById("myToast").classList.remove("d-none");
@@ -88,9 +83,7 @@ addEventListener("DOMContentLoaded", () => {
     // try {
     let id = especialidad.value;
     console.log(id);
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" + id
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" + id);
     let resultado = await peticion.json();
     console.log(resultado);
     let html = ``;
@@ -108,9 +101,7 @@ addEventListener("DOMContentLoaded", () => {
             traerHorario(idD);
             if (doctor.checked) {
               //desaparecer el boton de enviar el modal si no encuentra al paciente
-              document
-                .getElementById("btnAgregarCita")
-                .classList.remove("d-none");
+              document.getElementById("btnAgregarCita").classList.remove("d-none");
               console.log("si");
             }
           });
@@ -120,8 +111,7 @@ addEventListener("DOMContentLoaded", () => {
       document.getElementById("fecha").value = "";
       //document.getElementById("divAcordion").remove();
     } else {
-      document.getElementById("listaDoctores").innerHTML =
-        "NO HAY DOCTORES DISPONIBLES PARA ESTA SERVICIO MEDICO";
+      document.getElementById("listaDoctores").innerHTML = "NO HAY DOCTORES DISPONIBLES PARA ESTA SERVICIO MEDICO";
       document.getElementById("divAcordion").remove();
       document.getElementById("btnAgregarCita").classList.add("d-none");
     }
@@ -134,12 +124,7 @@ addEventListener("DOMContentLoaded", () => {
 
   //funcion para buscar de una vez al paciente segun la cedula insertada
   const traerPacienteRegistrado = async (nacionalidad, cedula) => {
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarPacienteCitaGet/" +
-        nacionalidad +
-        "/" +
-        cedula
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarPacienteCitaGet/" + nacionalidad + "/" + cedula);
 
     console.log(peticion);
     let resultado = await peticion.json();
@@ -163,10 +148,7 @@ addEventListener("DOMContentLoaded", () => {
         method: "POST",
         body: datosFormulario,
       };
-      let peticion = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
-        contenido
-      );
+      let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente", contenido);
       let resultado = await peticion.json();
       console.log(resultado);
 
@@ -210,39 +192,31 @@ addEventListener("DOMContentLoaded", () => {
   };
   //llamar a la funcion para insertar un paciente que no existe
 
-  document
-    .getElementById("modalAgregar")
-    .addEventListener("submit", function (e) {
-      let inputsBuenos = [];
-      //validar si todos los inputs nos estan validados no se puede enviar
-      this.querySelectorAll(".input-validar").forEach((input) => {
-        if (input.parentElement.classList.contains("grpFormCorrect")) {
-          inputsBuenos.push(true);
-        }
-      });
-      console.log(inputsBuenos);
-      console.log(document.querySelector(".p-error-fechaDeCita")
-          .classList.contains("d-none"))
-      if (
-        (inputsBuenos.length == 5 &&
-          document
-            .querySelector(".p-error-fechaDeCita")
-            .classList.contains("d-none")) ||
-        (inputsBuenos.length == 5 &&
-          document
-            .querySelector(".p-error-fn")
-            .classList.contains("d-none"))
-      ) {
-        console.log("si");
-        insertarPaciente(this, e);
+  document.getElementById("modalAgregar").addEventListener("submit", function (e) {
+    let inputsBuenos = [];
+    //validar si todos los inputs nos estan validados no se puede enviar
+    this.querySelectorAll(".input-validar").forEach((input) => {
+      if (input.parentElement.classList.contains("grpFormCorrect")) {
+        inputsBuenos.push(true);
       }
     });
+    console.log(inputsBuenos);
+    console.log(document.querySelector(".p-error-fechaDeCita").classList.contains("d-none"));
+    if (
+      (inputsBuenos.length == 5 && document.querySelector(".p-error-fechaDeCita").classList.contains("d-none")) ||
+      (inputsBuenos.length == 5 && document.querySelector(".p-error-fn").classList.contains("d-none"))
+    ) {
+      console.log("si");
+      insertarPaciente(this, e);
+    }
+  });
+
+  let fechaIngresoGlobal;
+  let idDGobal;
 
   const traerHorario = async (idD) => {
     // try {
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" + idD
-    );
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" + idD);
     let resultado = await peticion.json();
     document.querySelector(".horario-insertar").innerHTML = "";
     let div = document.createElement("div");
@@ -306,11 +280,7 @@ addEventListener("DOMContentLoaded", () => {
                 <div class="d-flex">Hora de Entrada: <h6 class="fw-bold"> ${horaEntrada}</h6></div>
                 <div class="d-flex ">Hora de Salida: <h6 class="fw-bold"> ${horaSalida}</h6></div></div>  `;
 
-        validarHora.push(
-          res.diaslaborables,
-          res.horaDeEntrada,
-          res.horaDeSalida
-        );
+        validarHora.push(res.diaslaborables, res.horaDeEntrada, res.horaDeSalida);
         console.log(validarHora);
         laborables = res.diaslaborables;
 
@@ -325,8 +295,7 @@ addEventListener("DOMContentLoaded", () => {
         console.log(persona);
 
         //id del ervicio medico
-        document.getElementById("id_servicioMedico").value =
-          res.id_servicioMedico;
+        document.getElementById("id_servicioMedico").value = res.id_servicioMedico;
       });
     } else {
       div.innerHTML = `NO HAY HORARIOS DISPONIBLES PARA ESTE DOCTOR`;
@@ -340,14 +309,8 @@ addEventListener("DOMContentLoaded", () => {
       let fechaIngresada = this.value;
       if (fechaIngresada) {
         let partesFecha = fechaIngresada.split("-");
-        let fecha = new Date(
-          partesFecha[0],
-          partesFecha[1] - 1,
-          partesFecha[2]
-        );
-        let diaSemanaNombre = fecha
-          .toLocaleDateString("es-ES", { weekday: "long" })
-          .toLowerCase();
+        let fecha = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
+        let diaSemanaNombre = fecha.toLocaleDateString("es-ES", { weekday: "long" }).toLowerCase();
 
         console.log(diaSemanaNombre);
 
@@ -358,12 +321,8 @@ addEventListener("DOMContentLoaded", () => {
           alertaCita.classList.add("d-none");
 
           let horario = diasLaborablesMap[diaSemanaNombre];
-          document
-            .getElementById("horaCita")
-            .setAttribute("min", horario.entrada);
-          document
-            .getElementById("horaCita")
-            .setAttribute("max", horario.salida);
+          document.getElementById("horaCita").setAttribute("min", horario.entrada);
+          document.getElementById("horaCita").setAttribute("max", horario.salida);
         } else {
           document.getElementById("btnAgregarCita").classList.add("d-none");
           alertaCita.classList.remove("d-none");
@@ -373,13 +332,60 @@ addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         document.getElementById("btnAgregarCita").classList.add("d-none");
       }
+
+      /* validacion de las goras disponibles */
+      validarHorarioDisponible(fechaIngresada, idD);
+      fechaIngresoGlobal = fechaIngresada;
+      idDGobal = idD;
     });
   };
 
-  // cedulaCita.addEventListener("keyup", function () {
-  //   traerPacienteCita();
-  // });
+  /*  validacionn d e las horas disponibles */
+  async function validarHorarioDisponible(fecha, id_personal) {
+    let peticion = await fetch(`/Sistema-del--CEM--JEHOVA-RAFA/Citas/validarHorariosDisponlibles/${fecha}/${id_personal}`);
+    let resultado = await peticion.json();
+    let html = "";
+    resultado.forEach((res, index) => {
+      html += `
+    <div class="mb-2" id="divAcordion">
+    <h5 class="mb-2 ">Cita  ${index + 1}</h5>
+      <div class="d-flex ">
+        Hora de entrada: <h6 class="fw-bold"> ${res.hora}</h6>
+      </div>
 
+      <div class="d-flex">
+        Hora de salida: <h6 class="fw-bold"> ${res.hora_salida}</h6>
+      </div>
+    </div>`;
+
+      let citaInicio = res.hora;
+      let citaFin = res.hora_salida;
+      let nuevaInicio = document.getElementById("horaCita").value;
+      let fecha = new Date(`${res.fecha}T$${res.hora}:00`);
+      fecha.setMinutes(fecha.getMinutes + 55);
+      nuevaFin = fecha.toLocaleDateString("es-ES",{hour:"2-digit", minute: "2-digit", second: "2-digit"})
+      if (
+        (nuevaInicio >= citaInicio && nuevaInicio < citaFin) ||
+        (nuevaFin > citaInicio && nuevaFin <= citaFin) ||
+        (nuevaInicio <= citaInicio && nuevaFin >= citaFin)
+      ) {
+        console.log("Conflicto de horario: La cita se cruza con otra existente.");
+        document.getElementById("btnAgregarCita").classList.add("d-none");
+      } else {
+        console.log("Horario disponible.");
+        document.getElementById("btnAgregarCita").classList.remove("d-none");
+      }
+    });
+
+    document.querySelector(".horario-ocupados").innerHTML = html;
+  }
+
+
+  /* llamar a la funcion de la horaa */
+
+  document.getElementById("horaCita").addEventListener("keyup", function() {
+    validarHorarioDisponible(fechaIngresoGlobal, idDGobal);
+  })
   //validar que cumpla la validacion para que aparesca el boton
 
   //buscar al paciente
@@ -391,13 +397,9 @@ addEventListener("DOMContentLoaded", () => {
       document.getElementById("imgCita").classList.add("d-none");
       traerPacienteCita(event);
     } else {
-      document
-        .querySelector(".alerta-cedula-paciente")
-        .classList.remove("d-none");
+      document.querySelector(".alerta-cedula-paciente").classList.remove("d-none");
       setTimeout(function () {
-        document
-          .querySelector(".alerta-cedula-paciente")
-          .classList.add("d-none");
+        document.querySelector(".alerta-cedula-paciente").classList.add("d-none");
       }, 7000);
     }
   });
@@ -407,18 +409,9 @@ addEventListener("DOMContentLoaded", () => {
   });
 
   //editar
-  const traerDoctoresCitaEdi = async (
-    id,
-    listaDEdi,
-    horarios,
-    id_servicioMedicoEdi,
-    doctorTabla = undefined,
-    inputFecha
-  ) => {
+  const traerDoctoresCitaEdi = async (id, listaDEdi, horarios, id_servicioMedicoEdi, doctorTabla = undefined, inputFecha) => {
     try {
-      let peticion = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" + id
-      );
+      let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/" + id);
       let resultado = await peticion.json();
       console.log(resultado);
       let html = ``;
@@ -438,55 +431,27 @@ addEventListener("DOMContentLoaded", () => {
               console.log("valor indefinido");
             } else if (doctorTabla.trim() == doctor.value) {
               doctor.setAttribute("checked", true);
-              traerHorarioEdi(
-                idD,
-                horarios,
-                id_servicioMedicoEdi,
-                doctorTabla,
-                inputFecha
-              );
+              traerHorarioEdi(idD, horarios, id_servicioMedicoEdi, doctorTabla, inputFecha);
             }
 
-            traerHorarioEdi(
-              idD,
-              horarios,
-              id_servicioMedicoEdi,
-              doctorTabla,
-              inputFecha
-            );
+            traerHorarioEdi(idD, horarios, id_servicioMedicoEdi, doctorTabla, inputFecha);
 
             console.log("hola");
 
             doctor.addEventListener("change", function () {
-              traerHorarioEdi(
-                idD,
-                horarios,
-                id_servicioMedicoEdi,
-                doctorTabla,
-                inputFecha
-              );
+              traerHorarioEdi(idD, horarios, id_servicioMedicoEdi, doctorTabla, inputFecha);
             });
           }
         });
       }
     } catch (error) {
-      console.log(
-        "lamentablemete Algo Salio Mal Por favor Intente Mas Tarde..."
-      );
+      console.log("lamentablemete Algo Salio Mal Por favor Intente Mas Tarde...");
     }
   };
 
-  const traerHorarioEdi = async (
-    idD,
-    horarios,
-    id_servicioMedicoEdi,
-    doctorTabla,
-    inputFecha
-  ) => {
+  const traerHorarioEdi = async (idD, horarios, id_servicioMedicoEdi, doctorTabla, inputFecha) => {
     try {
-      let peticion = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" + idD
-      );
+      let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/" + idD);
       let resultado = await peticion.json();
 
       horarios.innerHTML = ``;
@@ -537,9 +502,7 @@ addEventListener("DOMContentLoaded", () => {
         const horaEntrada = entradaHora(res.horaDeEntrada);
         const horaSalida = salidaHora(res.horaDeSalida);
 
-        let diasLaborablesArrayEdi = res.diaslaborables
-          .toLowerCase()
-          .split(" ");
+        let diasLaborablesArrayEdi = res.diaslaborables.toLowerCase().split(" ");
 
         const diasSemanaNumerosEdi = {
           domingo: [0],
@@ -564,9 +527,7 @@ addEventListener("DOMContentLoaded", () => {
         });
 
         // Verificar si el día es válido y mostrar el resultado
-        console.log(
-          `El día ${res.diaslaborables} corresponde al número ${diaNumeroEdi}.`
-        );
+        console.log(`El día ${res.diaslaborables} corresponde al número ${diaNumeroEdi}.`);
         console.log(diaNumeroEdi);
 
         div.innerHTML += `
@@ -589,11 +550,7 @@ addEventListener("DOMContentLoaded", () => {
           let fechaIngresada = this.value;
           if (fechaIngresada) {
             let partesFecha = fechaIngresada.split("-");
-            let fecha = new Date(
-              partesFecha[0],
-              partesFecha[1] - 1,
-              partesFecha[2]
-            );
+            let fecha = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
             let diaSemana = fecha.getDay(); // 0 para domingo, 1 para lunes, etc.
 
             console.log(diaSemana);
@@ -625,33 +582,17 @@ addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll(".especialidad").forEach((ele) => {
     ele.addEventListener("change", function () {
-      let listaDEdi = document.querySelector(
-        `#${this.parentElement.parentElement.getAttribute("id")} .listaDoctores`
-      );
-      let horarios = document.querySelector(
-        `#${this.parentElement.parentElement.getAttribute(
-          "id"
-        )} .uk-accordion-content`
-      );
+      let listaDEdi = document.querySelector(`#${this.parentElement.parentElement.getAttribute("id")} .listaDoctores`);
+      let horarios = document.querySelector(`#${this.parentElement.parentElement.getAttribute("id")} .uk-accordion-content`);
       console.log(horarios);
       let id_servicioMedicoEdi = document.querySelector(
-        `#${this.parentElement.parentElement.getAttribute(
-          "id"
-        )} .id_servicioMedico`
+        `#${this.parentElement.parentElement.getAttribute("id")} .id_servicioMedico`
       );
 
-      let fechaFormulario2 = document.querySelector(
-        `#${this.parentElement.parentElement.getAttribute("id")} .fecha`
-      );
+      let fechaFormulario2 = document.querySelector(`#${this.parentElement.parentElement.getAttribute("id")} .fecha`);
       console.log("fecha cambio" + fechaFormulario2.value);
 
-      traerDoctoresCitaEdi(
-        ele.value,
-        listaDEdi,
-        horarios,
-        id_servicioMedicoEdi,
-        fechaFormulario2
-      );
+      traerDoctoresCitaEdi(ele.value, listaDEdi, horarios, id_servicioMedicoEdi, fechaFormulario2);
     });
   });
 
@@ -666,37 +607,23 @@ addEventListener("DOMContentLoaded", () => {
       let esp = document.querySelector(`#${nombreDeID} .caja .especialidad`);
 
       //parametro 2
-      let listDocEi = document.querySelector(
-        `#${nombreDeID} .uk-modal-dialog .listaDoctores`
-      );
+      let listDocEi = document.querySelector(`#${nombreDeID} .uk-modal-dialog .listaDoctores`);
 
       //parametro 3
-      let divHorarioEdi = document.querySelector(
-        `#${nombreDeID} .uk-modal-dialog .uk-accordion-content`
-      );
+      let divHorarioEdi = document.querySelector(`#${nombreDeID} .uk-modal-dialog .uk-accordion-content`);
 
       console.log(divHorarioEdi);
       //parametro 4
-      let id_serMedEdi = document.querySelector(
-        `#${nombreDeID} .uk-modal-dialog .id_servicioMedico`
-      );
-      let doctorT =
-        this.parentElement.parentElement.parentElement.parentElement.children[3]
-          .innerText;
+      let id_serMedEdi = document.querySelector(`#${nombreDeID} .uk-modal-dialog .id_servicioMedico`);
+      let doctorT = this.parentElement.parentElement.parentElement.parentElement.children[3].innerText;
       console.log(doctorT);
 
       //parametro 5
-      fechaFormulario = document.querySelector(
-        `#${nombreDeID} .uk-modal-dialog .fecha`
-      );
+      fechaFormulario = document.querySelector(`#${nombreDeID} .uk-modal-dialog .fecha`);
       console.log("fecha click " + fechaFormulario.value);
 
-      alertaEditar = document.querySelector(
-        `#${nombreDeID} .uk-modal-dialog .alertaClassEditar`
-      );
-      btnEditar = document.querySelector(
-        `#${nombreDeID} .uk-modal-dialog .btnEditarCita`
-      );
+      alertaEditar = document.querySelector(`#${nombreDeID} .uk-modal-dialog .alertaClassEditar`);
+      btnEditar = document.querySelector(`#${nombreDeID} .uk-modal-dialog .btnEditarCita`);
 
       Modalll = nombreDeID;
 
@@ -709,14 +636,7 @@ addEventListener("DOMContentLoaded", () => {
       //     console.log('Modal has been closed!')
       //   })
 
-      traerDoctoresCitaEdi(
-        esp.value,
-        listDocEi,
-        divHorarioEdi,
-        id_serMedEdi,
-        doctorT,
-        fechaFormulario
-      );
+      traerDoctoresCitaEdi(esp.value, listDocEi, divHorarioEdi, id_serMedEdi, doctorT, fechaFormulario);
     });
   });
 

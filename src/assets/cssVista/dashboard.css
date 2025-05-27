@@ -83,6 +83,10 @@ svg {
   color: var(--color-text) !important;
 }
 
+.welcome-user-name{
+  color: var(--color-text) !important;
+}
+
 .welcome-card-subtitle {
   font-size: 1.9rem;
   color: var(--color-text) !important;

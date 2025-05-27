@@ -23,6 +23,7 @@ class ControladorFactura
 
 	public function factura($parametro)
 	{
+		$ayuda = "btnayudaFactura";
 		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
