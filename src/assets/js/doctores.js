@@ -124,7 +124,7 @@ addEventListener("DOMContentLoaded", function () {
     ele.addEventListener("change", function () {
       //evento
 
-      //si es checkeado muestors los inputs de la hora
+      //si es checkeado muestro los inputs de la hora
       if (this.checked) {
         horaEntada[index].classList.remove("d-none");
         horaSalida[index].classList.remove("d-none");

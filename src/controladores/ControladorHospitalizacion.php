@@ -225,10 +225,16 @@ class ControladorHospitalizacion
     }
 
     // enviar los datos de la hospitalización a factura 
-    public function enviarAFacturar()
+    public function enviarAFacturar($datos)
     {
-        $datosIns = $this->modelo->buscarIEH();
-        echo json_encode($datosIns);
+        $idH = $datos[0];
+        $fechaHF = $datos[1];
+        $monto = $datos[2];
+        $montoME = $datos[3];
+        $total = $datos[4];
+        $totalME = $datos[5];
+        $info = $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME);
+        echo json_encode($info);
     }
 
     private function permisos($id_rol, $permiso, $modulo)

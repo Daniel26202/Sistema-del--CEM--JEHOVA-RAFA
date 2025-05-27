@@ -109,6 +109,7 @@ return [
     "modificarH" => "editar",
     "eliminaL" => "eliminar",
     "buscarIExH" => "consultar",
+    "enviarAFacturar" => "editar",
 
 
     //Control
