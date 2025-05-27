@@ -205,4 +205,8 @@ class ControladorCitas
 	{
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
+
+	public function validarHorariosDisponlibles($datos){
+		echo  json_encode($this->modelo->validarHorariosDisponlibles($datos[0],$datos[1]));
+	}
 }

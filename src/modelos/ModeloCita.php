@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\Db;
+use DateTime;
 
 class ModeloCita extends Db
 {
@@ -83,6 +84,12 @@ class ModeloCita extends Db
 		try {
 
 			$this->conexion->beginTransaction();
+
+			$fecha_hora = new DateTime($hora);
+			$fecha_hora->modify('+1 hour +5 minutes');
+			$hora_salida = $fecha_hora->format("H:m:s");
+
+
 			$disponibilidad =  $this->validarCita($id_paciente, $fecha, $hora);
 
 			if ($disponibilidad  == "existeC") {
@@ -90,13 +97,15 @@ class ModeloCita extends Db
 				$this->conexion->rollBack();
 				return "existeC";
 			}
+			
 			// Si no existe, inserta la cita
-			$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente)");
+			$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente, hora_salida) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente,:hora_salida)");
 			$consulta->bindParam(":id_paciente", $id_paciente);
 			$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
 			$consulta->bindParam(":fecha", $fecha);
 			$consulta->bindParam(":hora", $hora);
 			$consulta->bindParam(":estado", $estado);
+			$consulta->bindParam(":hora_salida", $hora_salida);
 			$consulta->execute();
 
 			$this->conexion->commit();
@@ -180,5 +189,17 @@ class ModeloCita extends Db
 		}
 	}
 
+	/* metodo para validar que tiempos libres tiene el doctor */
+
+	public function validarHorariosDisponlibles($fecha, $id_personal){
+		try {
+			$consulta = $this->conexion->prepare('SELECT c.fecha , c.hora, c.hora_salida FROM cita c INNER JOIN serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = psm.personal_id_personal WHERE fecha =:fecha AND p.id_personal = :id_personal');
+			$consulta->bindParam(":fecha", $fecha);
+			$consulta->bindParam(":id_personal", $id_personal);
+			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
 
 }

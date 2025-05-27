@@ -50,6 +50,7 @@ return [
     "mostrarHorario" => "consultar",
     "editarCita" => "editar",
     "insertaPaciente" => "guardar",
+    "validarHorariosDisponlibles" => "consultar",
 
 
     //Servicios Medicos
