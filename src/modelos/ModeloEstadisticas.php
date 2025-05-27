@@ -54,7 +54,25 @@ ORDER BY rango_edad
 
       return ($consulta->execute()) ? $consulta->fetchAll() : false;
     } catch (\Exception $e) {
-      return 0;
+      return $e->getMessage();
+    }
+  }
+
+
+  public function insumos()
+  {
+    try {
+      $sql = "
+      SELECT i.nombre AS nombre_insumo, SUM(fhi.cantidad)
+      AS total_usado FROM factura_has_inventario fhi 
+      JOIN inventario inv ON fhi.inventario_id_inventario = inv.id_inventario 
+      JOIN insumo i ON inv.id_insumo = i.id_insumo 
+      GROUP BY i.id_insumo ORDER BY `total_usado` DESC";
+      $consulta = $this->conexion->prepare($sql);
+
+      return ($consulta->execute()) ? $consulta->fetchAll() : false;
+    } catch (\Exception $e) {
+      return $e->getMessage();
     }
   }
 
@@ -67,8 +85,8 @@ ORDER BY rango_edad
               COUNT(DISTINCT pp.id_paciente) AS casos,
               ROUND(
                 COUNT(DISTINCT pp.id_paciente) 
-                / (SELECT COUNT(*) FROM paciente)  -- población total
-                * 1000,
+                / (SELECT COUNT(*) FROM paciente)  
+                * 1000,/* -- población total */
                 2
               ) AS tasa_por_1000
             FROM patologiadepaciente pp
@@ -83,8 +101,8 @@ ORDER BY rango_edad
             COUNT(DISTINCT pp.id_paciente) AS casos,
             ROUND(
               COUNT(DISTINCT pp.id_paciente) 
-              / (SELECT COUNT(*) FROM paciente)  -- población total
-              * 1000,
+              / (SELECT COUNT(*) FROM paciente)  
+              * 1000,/* -- población total */
               2
             ) AS tasa_por_1000
           FROM patologiadepaciente pp
@@ -99,7 +117,7 @@ ORDER BY rango_edad
 
       return ($consulta->execute()) ? $consulta->fetchAll() : false;
     } catch (\Exception $e) {
-      return 0;
+      return $e->getMessage();
     }
   }
 }

@@ -51,10 +51,10 @@
                 </div>
             </div>
         </div>
-        <div class="card tajeta-estadistica-g m-auto mb-5">
-            <h5 class="card-header">TITULO 3</h5>
-            <div class="card-body">
-                <canvas class="canvas">
+        <div class="card tajeta-estadistica-g m-auto mb-5 ">
+            <h5 class="card-header">Moda Insumos</h5>
+            <div class="card-body ">
+                <canvas id="insumos" class="canvas">
 
                 </canvas>
             </div>

@@ -47,4 +47,10 @@ class ControladorEstadisticas
 	{
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
+
+	public function insumos()
+	{
+		$insumos = $this->modelo->insumos();
+		echo json_encode($insumos);
+	}
 }
