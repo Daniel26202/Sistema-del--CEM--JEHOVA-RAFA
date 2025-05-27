@@ -98,7 +98,6 @@ addEventListener("DOMContentLoaded", function () {
 
         let fechaInicio = new Date(fechaInicioM);
         let fechaActual = new Date();
-
         let diferencia = fechaActual - fechaInicio;
 
         // el total de horas (con decimales)
@@ -140,6 +139,8 @@ addEventListener("DOMContentLoaded", function () {
 
         // trim() quita los espacios en el principio y al final
         historiaM.innerText = hMM.value;
+
+        return [[fechaActual], [monto], [montoMoEx], [total], [totalME]];
     }
 
     // inputs y nombres de editar H
@@ -183,6 +184,11 @@ addEventListener("DOMContentLoaded", function () {
         if (nuevoValor >= min && nuevoValor <= max) {
             inputN.setAttribute("value", nuevoValor);
         }
+    }
+
+    async function ediDatosParaFac() {
+        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
+        let resultado = await peticion.json();
     }
 
     // sumar el precio de insumos
@@ -346,8 +352,8 @@ addEventListener("DOMContentLoaded", function () {
                     if (resultad[0][1] == 0) {
                         html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/h${res["id_hospitalizacion"]}" class="btn btn-tabla mb-1 me-1" uk-tooltip="Facturar hospitalización" id="" title=""
-                                                    aria-describedby="uk-tooltip-25">
+                                                <a href="#" class="btn btn-tabla mb-1 me-1 btnFH" uk-tooltip="Facturar hospitalización" id="" title=""
+                                                    aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]} data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
                                                     <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
                                                     <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
@@ -469,6 +475,25 @@ addEventListener("DOMContentLoaded", function () {
                         let index = inforH.getAttribute("data-index");
                         let idHospit = inforH.getAttribute("data-id-hospitalizacion");
                         mostrarInf(parseInt(index), parseInt(idHospit));
+                    });
+                });
+
+                document.querySelectorAll(".btnFH").forEach((factH) => {
+                    factH.addEventListener("click", async function () {
+                        // para traer el valor del data index
+                        let index = factH.getAttribute("data-index");
+                        let idHospit = inforH.getAttribute("data-id-hospitalizacion");
+                        let datos = mostrarInf(parseInt(index), parseInt(idHospit));
+                        let fecha = datos[0][0];
+                        let monto = datos[0][1];
+                        let montoME = datos[0][2];
+                        let total = datos[0][3];
+                        let totalME = datos[0][4];
+                        
+                        // llamo la función
+                        peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
+                        let resultad = await peticion.json();
+                        // window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/${res["id_hospitalizacion"]}";
                     });
                 });
 
