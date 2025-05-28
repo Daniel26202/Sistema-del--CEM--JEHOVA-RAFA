@@ -5,7 +5,7 @@ require_once './src/vistas/head/head.php';
 
 
 
-<div id="content-wrapper" class="d-flex flex-wrap">
+<div id="content-wrapper" class="d-flex flex-wrap Inicioh1">
     <!-- Contenedor principal (75%) -->
 
     <div class="main-content col-12 col-lg-8 p-4" id="main-content">
@@ -25,19 +25,19 @@ require_once './src/vistas/head/head.php';
 
             <!-- AQUI EMPIEZAN LAS CARDS -->
             <div class="row mt-4">
-                <div class="col-md-4 col-12 mb-2">
+                <div class="col-md-4 col-12 mb-2" id="tarjetaInicio1">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Citas pendientes</p>
                         <h4 id="citasPendentes"></h4>
                     </div>
                 </div>
-                <div class="col-md-4 col-12 mb-2">
+                <div class="col-md-4 col-12 mb-2" id="tarjetaInicio2">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Citas de hoy</p>
                         <h4 id="citasDeHoy"></h4>
                     </div>
                 </div>
-                <div class="col-md-4 col-12 mb-2">
+                <div class="col-md-4 col-12 mb-2" id="tarjetaInicio3">
                     <div class="metric-card p-3 rounded shadow-sm card-container">
                         <p>Pacientes Hospitalizados</p>
                         <h4 id="pacientes_hospitalizados"></h4>
@@ -50,11 +50,11 @@ require_once './src/vistas/head/head.php';
             <div class="row mt-4">
 
                 <div class="col-md-6 col-12 mb-2">
-                    <div class="chart-card p-4 rounded shadow-sm">
+                    <div class="chart-card p-4 rounded shadow-sm" id="grafica1">
                         <h5>Especialidades solicitadas</h5>
                         <canvas id="especialidades_solicitadas" width="600" height="600"></canvas>
                         <div class="text-center mt-4">
-                            <button type="button" class="btn btn-primary 75 m-auto" data-bs-toggle="modal" data-bs-target="#reporte">
+                            <button id="btnGrafica1" type="button" class="btn btn-primary 75 m-auto" data-bs-toggle="modal" data-bs-target="#reporte">
                                 Generar Reporte
                             </button>
                         </div>
@@ -63,11 +63,11 @@ require_once './src/vistas/head/head.php';
 
                 </div>
                 <div class="col-md-6 col-12 mb-2">
-                    <div class="chart-card p-4 rounded shadow-sm">
+                    <div class="chart-card p-4 rounded shadow-sm" id="grafica2">
                         <h5>Sintomas comunes</h5>
                         <canvas id="sintomas_comunes"></canvas>
                         <div class="text-center mt-4">
-                            <button type="button" class="btn btn-primary 75 m-auto  reporte-sintomas" data-bs-toggle="modal" data-bs-target="#reporteSintomas">
+                            <button id="btnGrafica2" type="button" class="btn btn-primary 75 m-auto  reporte-sintomas" data-bs-toggle="modal" data-bs-target="#reporteSintomas">
                                 Generar Reporte
                             </button>
                         </div>
@@ -149,7 +149,7 @@ require_once './src/vistas/head/head.php';
         </div>
 
         <!-- Contenedor de la lista de servicios -->
-        <div class="col-md-12 mt-3">
+        <div class="col-md-12 mt-3" id="precioConsultas">
             <div class="card shadow-sm">
                 <?php if ($validarCargo): ?>
                     <?php foreach ($datos_de_personal as $d): ?>
@@ -311,7 +311,8 @@ require_once './src/vistas/head/head.php';
 <script type=" text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
-<script type="text/javascript" src="../src/assets/js/dashboard.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/dashboard.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaDashboard.js"></script>
 <?php
 require_once 'src/vistas/head/footer.php';
 ?>
