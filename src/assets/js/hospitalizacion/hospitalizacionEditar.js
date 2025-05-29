@@ -303,7 +303,7 @@ addEventListener("DOMContentLoaded", function () {
                         }
 
                         html += `   <td>
-                                        <div class="d-flex flex-wrap col-12">
+                                        <div class="d-flex flex-wrap col-12 tdTBtn">
                                             <div class="col-12 col-md-6 col-lg-3">
 
                                                 <!-- btn offcanvas mostrar datos -->
