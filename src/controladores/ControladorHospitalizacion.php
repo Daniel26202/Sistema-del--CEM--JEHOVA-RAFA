@@ -123,8 +123,8 @@ class ControladorHospitalizacion
             session_start();
         }
         if ($_SESSION["semaforo"] >= 2) {
-            // header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errSemaforo");
-            echo "Las camillas disponibles estan ocupadas";
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errSemaforo");
+            // echo "Las camillas disponibles estan ocupadas";
         } else {
 
             $verificaH = $this->modelo->verificaHA($_POST["id_control"]);

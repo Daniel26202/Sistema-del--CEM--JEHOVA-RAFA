@@ -1040,6 +1040,18 @@ addEventListener("DOMContentLoaded", function () {
                             <p class="pe-2 pb-1">El paciente fue registrado exitosamente.</p>
                         </div>`;
             document.querySelector("#divComentarios").innerHTML = html;
+        }else if (urlActual.includes("errSemaforo")) {
+            // quitar esto (&agregado) de la url
+            let nuevaUrl = urlActual.replace("/errSemaforo", "");
+            // se agrega la nueva url
+            window.history.replaceState(null, null, nuevaUrl);
+
+            // agregamos el comentario
+            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p class="pe-2 pb-1">En estos momentos, no hay camillas disponibles.</p>
+                        </div>`;
+            document.querySelector("#divComentarios").innerHTML = html;
         }
 
         //este es el comentario
