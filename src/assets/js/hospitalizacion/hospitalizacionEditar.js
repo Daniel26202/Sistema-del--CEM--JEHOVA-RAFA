@@ -92,6 +92,7 @@ addEventListener("DOMContentLoaded", function () {
 
         vistaTabla();
     };
+
     // calculo del dolar en la infomación de la H
     async function mostrarInf(indice, idH) {
         let fechaInicioM = document.querySelectorAll(".fechaInicio")[indice].value;
@@ -122,25 +123,33 @@ addEventListener("DOMContentLoaded", function () {
 
         let totalMontoI = await sumaPrecioIH(idH);
 
+        if (totalMontoI === undefined) {
+            totalMontoI = 0;
+        }
+
         let total = totalMontoI + monto;
         let storedDolar = localStorage.getItem("valorDelDolar");
 
         let totalMontoIMoEx = totalMontoI / storedDolar;
         let totalME = totalMontoIMoEx + montoMoEx;
 
+        monto = parseFloat(monto);
+        montoMoEx = parseFloat(montoMoEx);
+        total = parseFloat(total);
+        totalME = parseFloat(totalME);
+
         document.querySelector("#hHosM").innerText = `${horas}h ${minutos}min`;
-        document.querySelector("#cMontoHoraM").innerText = parseFloat(monto).toFixed(2);
-        document.querySelector("#cMoHoraMoExM").innerText = parseFloat(montoMoEx).toFixed(2);
-        document.querySelector("#calculoTotal").innerText = parseFloat(total).toFixed(2);
-        document.querySelector("#calculoTotalME").innerText = parseFloat(totalME).toFixed(2);
+        document.querySelector("#cMontoHoraM").innerText = monto.toFixed(2);
+        document.querySelector("#cMoHoraMoExM").innerText = montoMoEx.toFixed(2);
+        document.querySelector("#calculoTotal").innerText = total.toFixed(2);
+        document.querySelector("#calculoTotalME").innerText = totalME.toFixed(2);
 
         let hMM = document.querySelectorAll(".hME")[indice];
         let historiaM = document.querySelector("#historiaM");
 
         // trim() quita los espacios en el principio y al final
         historiaM.innerText = hMM.value;
-
-        return [[fechaActual], [monto], [montoMoEx], [total], [totalME]];
+        return [monto, montoMoEx, total, totalME];
     }
 
     // inputs y nombres de editar H
@@ -184,11 +193,6 @@ addEventListener("DOMContentLoaded", function () {
         if (nuevoValor >= min && nuevoValor <= max) {
             inputN.setAttribute("value", nuevoValor);
         }
-    }
-
-    async function ediDatosParaFac() {
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
-        let resultado = await peticion.json();
     }
 
     // sumar el precio de insumos
@@ -353,7 +357,7 @@ addEventListener("DOMContentLoaded", function () {
                         html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <a href="#" class="btn btn-tabla mb-1 me-1 btnFH" uk-tooltip="Facturar hospitalización" id="" title=""
-                                                    aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]} data-index="${index}">
+                                                    aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
                                                     <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
                                                     <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
@@ -437,6 +441,26 @@ addEventListener("DOMContentLoaded", function () {
                 document.querySelector("#tbody").innerHTML = html;
                 document.querySelector("#modalEli").innerHTML = htmlModalElim;
 
+                let aFacH = document.querySelectorAll(".btnFH");
+                // aFacH
+                for (const factH of aFacH) {
+                    factH.addEventListener("click", async function () {
+                        // para traer el valor del data index
+                        let index = this.getAttribute("data-index");
+                        let idHospit = this.getAttribute("data-id-hospitalizacion");
+                        console.log(idHospit + " id hospitalizacion");
+
+                        let datos = await mostrarInf(parseInt(index), parseInt(idHospit));
+                        let monto = datos[0];
+                        let montoME = datos[1];
+                        let total = datos[2];
+                        let totalME = datos[3];
+
+                        window.location.href = `/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/enviarAFacturar/${idHospit}/${monto}/${montoME}/${total}/${totalME}`;
+                        
+                    });
+                }
+
                 // recorremos los btn editar
                 document.querySelectorAll(".editarH").forEach((editH) => {
                     editH.addEventListener("click", function () {
@@ -478,25 +502,6 @@ addEventListener("DOMContentLoaded", function () {
                     });
                 });
 
-                document.querySelectorAll(".btnFH").forEach((factH) => {
-                    factH.addEventListener("click", async function () {
-                        // para traer el valor del data index
-                        let index = factH.getAttribute("data-index");
-                        let idHospit = inforH.getAttribute("data-id-hospitalizacion");
-                        let datos = mostrarInf(parseInt(index), parseInt(idHospit));
-                        let fecha = datos[0][0];
-                        let monto = datos[0][1];
-                        let montoME = datos[0][2];
-                        let total = datos[0][3];
-                        let totalME = datos[0][4];
-                        
-                        // llamo la función
-                        peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
-                        let resultad = await peticion.json();
-                        // window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/${res["id_hospitalizacion"]}";
-                    });
-                });
-
                 // para validar las cantidades de hospitalizaciones agregadas
                 // obtenemos la cantidad de filas que existen
                 const filas = document.querySelectorAll("#tbody tr");
@@ -528,28 +533,28 @@ addEventListener("DOMContentLoaded", function () {
 
     //es para hacer una suma con el precio de los insumo que la hospitalización tiene registrado
     const sumaPrecioIH = async (id) => {
-        try {
-            // llamo la función traer insumos de h
-            let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
-            let resultadoI = await peticionI.json();
+        // try {
+        // llamo la función traer insumos de h
+        let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
+        let resultadoI = await peticionI.json();
 
-            if (resultadoI.length > 0) {
-                let precioIns = 0;
-                resultadoI.forEach((res) => {
-                    precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
-                });
+        if (resultadoI.length > 0) {
+            let precioIns = 0;
+            resultadoI.forEach((res) => {
+                precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
+            });
 
-                // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-                precioIns = parseFloat(precioIns.toFixed(2));
-                return precioIns;
-            } else {
-                if (resultadoDH === false) {
-                    console.log("no se encontró la hospitalización");
-                }
-            }
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+            // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+            precioIns = parseFloat(precioIns.toFixed(2));
+            return precioIns;
+        } else {
+            // if (resultadoDH === false) {
+            console.log("no se encontró la hospitalización");
+            // }
         }
+        // } catch (error) {
+        //     console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+        // }
     };
 
     //es para mostrar los insumos de la hospitalización seleccionada

@@ -19,7 +19,17 @@ class ControladorHospitalizacion
         $this->bitacora = new ModeloBitacora();
         $this->permisos = new ModeloPermisos();
         $this->inicio = new ModeloInicio();
+        $this->semaforo();
     }
+
+    public function semaforo(){
+         // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $_SESSION['semaforo'] = $this->modelo->semaforo();
+    }
+
     // mostrar los datos de la tabla (hospitalizaciones pendientes) 
     public function traerSesion()
     {
@@ -228,13 +238,14 @@ class ControladorHospitalizacion
     public function enviarAFacturar($datos)
     {
         $idH = $datos[0];
-        $fechaHF = $datos[1];
-        $monto = $datos[2];
-        $montoME = $datos[3];
-        $total = $datos[4];
-        $totalME = $datos[5];
-        $info = $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME);
-        echo json_encode($info);
+        date_default_timezone_set('America/Caracas');
+        $fechaHF = date("Y-m-d H:i:s");
+        $monto = $datos[1];
+        $montoME = $datos[2];
+        $total = $datos[3];
+        $totalME = $datos[4];
+        $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME);
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/$idH");
     }
 
     private function permisos($id_rol, $permiso, $modulo)
