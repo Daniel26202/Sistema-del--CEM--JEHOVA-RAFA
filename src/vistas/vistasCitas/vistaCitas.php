@@ -234,7 +234,7 @@
             </div>
 
             <div class=" mt-3 uk-text-right">
-                <button class="tarjeta uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
+                <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                     type="button">Cancelar</button>
                 <a class="btn col-3 btn-agregarcita-modal text-decoration-none"
                     href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/eliminarCita/<?= $datoCita["id_cita"]; ?>/<?= $_SESSION['id_usuario']; ?>">Eliminar</a>
@@ -407,7 +407,7 @@
 
                     <div class="mt-3 uk-text-right">
                         <button
-                            class="tarjeta uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
+                            class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
                             type="button">Cancelar</button>
                         <button class="btn col-3 btn-agregarcita-modal btnEditarCita" id="btnEditarCita"
                             type="submit">Editar</button>
