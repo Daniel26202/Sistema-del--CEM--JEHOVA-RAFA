@@ -41,7 +41,7 @@ class ControladorHospitalizacion
         }
         $idUsuario = $_SESSION['id_usuario'];
         $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
-        $sesion = [$_SESSION['rol'], $validacionCargo];
+        $sesion = [$_SESSION['rol'], $validacionCargo, $_SESSION['semaforo']];
         // datos de las h. pendientes
         $datosH = $this->modelo->selectsH();
         $array = [$sesion, $datosH];

@@ -438,6 +438,8 @@ addEventListener("DOMContentLoaded", function () {
                                         </div>`;
                 });
 
+                document.querySelector("#semaforo").value = resultad[0][2];
+
                 document.querySelector("#tbody").innerHTML = html;
                 document.querySelector("#modalEli").innerHTML = htmlModalElim;
 
@@ -457,7 +459,6 @@ addEventListener("DOMContentLoaded", function () {
                         let totalME = datos[3];
 
                         window.location.href = `/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/enviarAFacturar/${idHospit}/${monto}/${montoME}/${total}/${totalME}`;
-                        
                     });
                 }
 
@@ -526,6 +527,19 @@ addEventListener("DOMContentLoaded", function () {
     };
 
     vistaTabla();
+    document.querySelector("#btnAgregarH").addEventListener("click", async function () {
+        await vistaTabla();
+        let semaforo = document.querySelector("#semaforo").value;
+        if (parseInt(semaforo) >= 2) {
+            document.querySelector("#btnAgregarH").classList.add("d-none");
+            document.querySelector("#divModal").classList.add("d-none");
+            document.querySelector("#pModalOculto").classList.remove("d-none");
+        } else {
+            document.querySelector("#btnAgregarH").classList.remove("d-none");
+            document.querySelector("#divModal").classList.remove("d-none");
+            document.querySelector("#pModalOculto").classList.add("d-none");
+        }
+    });
 
     let btnAInsumoNoExisteE = document.querySelector("#btnAInsumoNoExisteE");
     let btnAInsumoExisteE = document.querySelector("#btnAInsumoExisteE");
@@ -1040,7 +1054,7 @@ addEventListener("DOMContentLoaded", function () {
                             <p class="pe-2 pb-1">El paciente fue registrado exitosamente.</p>
                         </div>`;
             document.querySelector("#divComentarios").innerHTML = html;
-        }else if (urlActual.includes("errSemaforo")) {
+        } else if (urlActual.includes("errSemaforo")) {
             // quitar esto (&agregado) de la url
             let nuevaUrl = urlActual.replace("/errSemaforo", "");
             // se agrega la nueva url
