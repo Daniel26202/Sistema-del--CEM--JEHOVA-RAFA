@@ -408,9 +408,9 @@ class ModeloHospitalizacion extends Db
         // try {
 
         // verifica cuantas hospitalizaciones hay pendiente
-        $consulta = $this->conexion->prepare("SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'pendiente';");
+        $consulta = $this->conexion->prepare("SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'Pendiente';");
 
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+        return ($consulta->execute()) ? $consulta->fetch() : false;
 
         // } catch (\Exception $e) {
         // print_r("ocurrio un error en hospitalización, intente mas tarde");

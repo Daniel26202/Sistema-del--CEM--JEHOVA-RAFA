@@ -28,7 +28,8 @@ class ControladorHospitalizacion
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-        $_SESSION['semaforo'] = $this->modelo->semaforo();
+        $cantidadHP = $this->modelo->semaforo();
+        $_SESSION['semaforo'] = $cantidadHP[0];
     }
 
     // mostrar los datos de la tabla (hospitalizaciones pendientes) 
@@ -117,8 +118,13 @@ class ControladorHospitalizacion
     //para agregar hospitalización
     public function agregarH()
     {
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
         if ($_SESSION["semaforo"] >= 2) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errorSemaforo");
+            // header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errSemaforo");
+            echo "Las camillas disponibles estan ocupadas";
         } else {
 
             $verificaH = $this->modelo->verificaHA($_POST["id_control"]);
