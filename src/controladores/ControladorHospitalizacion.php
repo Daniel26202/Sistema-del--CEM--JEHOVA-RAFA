@@ -22,8 +22,9 @@ class ControladorHospitalizacion
         $this->semaforo();
     }
 
-    public function semaforo(){
-         // verifica si la sesión esta activa.
+    public function semaforo()
+    {
+        // verifica si la sesión esta activa.
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
@@ -116,27 +117,32 @@ class ControladorHospitalizacion
     //para agregar hospitalización
     public function agregarH()
     {
-        $verificaH = $this->modelo->verificaHA($_POST["id_control"]);
+        if ($_SESSION["semaforo"] >= 2) {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errorSemaforo");
+        } else {
 
-        print_r($verificaH);
-        if (isset($_POST["id_control"])) {
+            $verificaH = $this->modelo->verificaHA($_POST["id_control"]);
 
-            // es para validar si existe la hospitalización
-            if ($verificaH === 1) {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
-            } else {
-                // no existe
-                $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
-                $cantidad = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
+            print_r($verificaH);
+            if (isset($_POST["id_control"])) {
+
+                // es para validar si existe la hospitalización
+                if ($verificaH === 1) {
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
+                } else {
+                    // no existe
+                    $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
+                    $cantidad = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
 
 
-                // print_r($_POST);
-                $this->modelo->insertarH($_POST["id_control"], $_POST["fecha"], $idInsumo, $cantidad, $_POST["historial"]);
+                    // print_r($_POST);
+                    $this->modelo->insertarH($_POST["id_control"], $_POST["fecha"], $idInsumo, $cantidad, $_POST["historial"]);
 
-                // Guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
+                    // Guardar la bitacora
+                    $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
 
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
+                }
             }
         }
     }
