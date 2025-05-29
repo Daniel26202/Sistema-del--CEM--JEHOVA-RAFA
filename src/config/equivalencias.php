@@ -109,8 +109,8 @@ return [
     "traerInsuDHEd" => "consultar",
     "modificarH" => "editar",
     "eliminaL" => "eliminar",
+    "enviarAFacturar" => "guardar",
     "buscarIExH" => "consultar",
-    "enviarAFacturar" => "editar",
 
 
     //Control
@@ -126,7 +126,7 @@ return [
     "mostrarPP" => "consultar",
     "mostrarPIdP" => "consultar",
     "eliminarSintoma" => "eliminar",
-    "agregarSintoma" => "guardar",
+    "agregarSintoma" => "editar",
 
     //Insumos
     "insumos" => "consultar",
@@ -198,6 +198,7 @@ return [
     "edadGenero" => "consultar",
     "tasaMorbilidad" => "consultar",
     "filtrar_tasaMorbilidad" => "consultar",
+    "insumos" => "consultar",
 
 
 ];

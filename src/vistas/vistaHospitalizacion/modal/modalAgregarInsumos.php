@@ -31,7 +31,7 @@
             </div>
 
 
-
+            <input type="hidden" id="semaforo">
 
             <div class="mb-5 pb-2">
                 <form class="me-3 ms-3 mt-2" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/agregarH">

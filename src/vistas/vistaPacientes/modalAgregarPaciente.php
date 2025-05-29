@@ -42,7 +42,7 @@
         </span>
         <span class="">
           <select class="form-control input-modal" aria-label="2" placeholder="Nacionalidad" name="nacionalidad">
-            <option value="Z" selected>V</option>
+            <option value="V" selected>V</option>
             <option value="E">E</option>
           </select>
         </span>

@@ -384,4 +384,36 @@ class ModeloHospitalizacion extends Db
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
+
+    public function facturarH($idH, $fechaHoraFinal, $monto, $montoME,  $total, $totalME)
+    {
+        // try {
+
+        // editar hospitalización
+        $consulta = $this->conexion->prepare("UPDATE hospitalizacion SET precio_horas = :precio_horas ,precio_horas_MoEx = :precio_horas_me ,total= :total ,total_MoEx = :total_me ,fecha_hora_final = :fecha_hora_final WHERE id_hospitalizacion = :id_hospitalizacion");
+        $consulta->bindParam(":precio_horas", $monto);
+        $consulta->bindParam(":precio_horas_me", $montoME);
+        $consulta->bindParam(":total", $total);
+        $consulta->bindParam(":total_me", $totalME);
+        $consulta->bindParam(":fecha_hora_final", $fechaHoraFinal);
+        $consulta->bindParam(":id_hospitalizacion", $idH);
+        return ($consulta->execute()) ? true : false;
+
+        // } catch (\Exception $e) {
+        // print_r("ocurrio un error en hospitalización, intente mas tarde");
+        // }
+    }
+    public function semaforo()
+    {
+        // try {
+
+        // verifica cuantas hospitalizaciones hay pendiente
+        $consulta = $this->conexion->prepare("SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'Pendiente';");
+
+        return ($consulta->execute()) ? $consulta->fetch() : false;
+
+        // } catch (\Exception $e) {
+        // print_r("ocurrio un error en hospitalización, intente mas tarde");
+        // }
+    }
 }

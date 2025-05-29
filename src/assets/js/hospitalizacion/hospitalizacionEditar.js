@@ -92,6 +92,7 @@ addEventListener("DOMContentLoaded", function () {
 
         vistaTabla();
     };
+
     // calculo del dolar en la infomación de la H
     async function mostrarInf(indice, idH) {
         let fechaInicioM = document.querySelectorAll(".fechaInicio")[indice].value;
@@ -122,25 +123,33 @@ addEventListener("DOMContentLoaded", function () {
 
         let totalMontoI = await sumaPrecioIH(idH);
 
+        if (totalMontoI === undefined) {
+            totalMontoI = 0;
+        }
+
         let total = totalMontoI + monto;
         let storedDolar = localStorage.getItem("valorDelDolar");
 
         let totalMontoIMoEx = totalMontoI / storedDolar;
         let totalME = totalMontoIMoEx + montoMoEx;
 
+        monto = parseFloat(monto);
+        montoMoEx = parseFloat(montoMoEx);
+        total = parseFloat(total);
+        totalME = parseFloat(totalME);
+
         document.querySelector("#hHosM").innerText = `${horas}h ${minutos}min`;
-        document.querySelector("#cMontoHoraM").innerText = parseFloat(monto).toFixed(2);
-        document.querySelector("#cMoHoraMoExM").innerText = parseFloat(montoMoEx).toFixed(2);
-        document.querySelector("#calculoTotal").innerText = parseFloat(total).toFixed(2);
-        document.querySelector("#calculoTotalME").innerText = parseFloat(totalME).toFixed(2);
+        document.querySelector("#cMontoHoraM").innerText = monto.toFixed(2);
+        document.querySelector("#cMoHoraMoExM").innerText = montoMoEx.toFixed(2);
+        document.querySelector("#calculoTotal").innerText = total.toFixed(2);
+        document.querySelector("#calculoTotalME").innerText = totalME.toFixed(2);
 
         let hMM = document.querySelectorAll(".hME")[indice];
         let historiaM = document.querySelector("#historiaM");
 
         // trim() quita los espacios en el principio y al final
         historiaM.innerText = hMM.value;
-
-        return [[fechaActual], [monto], [montoMoEx], [total], [totalME]];
+        return [monto, montoMoEx, total, totalME];
     }
 
     // inputs y nombres de editar H
@@ -184,11 +193,6 @@ addEventListener("DOMContentLoaded", function () {
         if (nuevoValor >= min && nuevoValor <= max) {
             inputN.setAttribute("value", nuevoValor);
         }
-    }
-
-    async function ediDatosParaFac() {
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
-        let resultado = await peticion.json();
     }
 
     // sumar el precio de insumos
@@ -245,36 +249,35 @@ addEventListener("DOMContentLoaded", function () {
     let horaInicioHosp = 0;
     // envío de datos de la edición
     const vistaTabla = async () => {
-        // try {
+        try {
+            // llamo la función
+            peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
+            let resultad = await peticion.json();
 
-        // llamo la función
-        peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
-        let resultad = await peticion.json();
-
-        if (resultad.length == 0) {
-            console.log("algo salio mal");
-        } else {
-            await traerHoraCosto();
-            mostrarMsj();
-            if (resultad[1] == false) {
-                html = `<tr>
+            if (resultad.length == 0) {
+                console.log("algo salio mal");
+            } else {
+                await traerHoraCosto();
+                mostrarMsj();
+                if (resultad[1] == false) {
+                    html = `<tr>
                                 <td colspan="8" class="text-center">NO HAY REGISTROS
                                 </td>
                             </tr>`;
-                document.querySelector("#tbody").innerHTML = html;
-            } else {
-                let html = ``;
-                let htmlModalElim = ``;
+                    document.querySelector("#tbody").innerHTML = html;
+                } else {
+                    let html = ``;
+                    let htmlModalElim = ``;
 
-                // console.log(resultad[1]);
-                // recorro los datos de hospitalización
-                console.log(resultad[1]);
+                    // console.log(resultad[1]);
+                    // recorro los datos de hospitalización
+                    console.log(resultad[1]);
 
-                resultad[1].forEach((res, index) => {
-                    horaInicioHosp = res.fecha_hora_inicio;
+                    resultad[1].forEach((res, index) => {
+                        horaInicioHosp = res.fecha_hora_inicio;
 
-                    // contenido de la tabla.
-                    html += `<tr>
+                        // contenido de la tabla.
+                        html += `<tr>
                                     <td>
                                         ${res["cedula"]}
                                     </td>
@@ -293,14 +296,14 @@ addEventListener("DOMContentLoaded", function () {
                                         ${res["nombredoc"]} ${res["apellidodoc"]}
                                     </td>`;
 
-                    // verifico si es administrador o doctor
-                    // uno es doctor
-                    if (resultad[0][1] == 1) {
-                        html += `<!--no hay-->`;
-                    }
+                        // verifico si es administrador o doctor
+                        // uno es doctor
+                        if (resultad[0][1] == 1) {
+                            html += `<!--no hay-->`;
+                        }
 
-                    html += `   <td>
-                                        <div class="d-flex flex-wrap col-12">
+                        html += `   <td>
+                                        <div class="d-flex flex-wrap col-12 tdTBtn">
                                             <div class="col-12 col-md-6 col-lg-3">
 
                                                 <!-- btn offcanvas mostrar datos -->
@@ -328,15 +331,15 @@ addEventListener("DOMContentLoaded", function () {
                                                 </button>
                                             </div>`;
 
-                    // verifico si es administrador o usuario
-                    // uno es doctor
-                    if (resultad[0][1] == 1) {
-                        html += `<!--no hay-->`;
-                    }
-                    // verifico si es administrador o usuario
-                    // cero es administrador mas no doctor
-                    if (resultad[0][1] == 0) {
-                        html += `       
+                        // verifico si es administrador o usuario
+                        // uno es doctor
+                        if (resultad[0][1] == 1) {
+                            html += `<!--no hay-->`;
+                        }
+                        // verifico si es administrador o usuario
+                        // cero es administrador mas no doctor
+                        if (resultad[0][1] == 0) {
+                            html += `       
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <button class="btn btn-tabla mb-1 me-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar-hospitalizacion${res["id_hospitalizacion"]}" uk-tooltip="Eliminar hospitalización">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
@@ -346,29 +349,29 @@ addEventListener("DOMContentLoaded", function () {
                                                     </svg>
                                                 </button>
                                             </div>`;
-                    }
-                    // verifico si es administrador o usuario
-                    // cero es administrador mas no doctor
-                    if (resultad[0][1] == 0) {
-                        html += `    
+                        }
+                        // verifico si es administrador o usuario
+                        // cero es administrador mas no doctor
+                        if (resultad[0][1] == 0) {
+                            html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <a href="#" class="btn btn-tabla mb-1 me-1 btnFH" uk-tooltip="Facturar hospitalización" id="" title=""
-                                                    aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]} data-index="${index}">
+                                                    aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
                                                     <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
                                                     <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
                                                     </svg>
                                                 </a>
                                             </div>`;
-                    }
+                        }
 
-                    html += `  
+                        html += `  
                                         </div>
                                     </td>
                                 </tr>`;
 
-                    // contenido del modal de eliminar
-                    htmlModalElim += `
+                        // contenido del modal de eliminar
+                        htmlModalElim += `
                                         <div>
                                             <input type="hidden" name="" class="fechaInicio" value="${res["fecha_hora_inicio"]}">
                                             <input class="precioHo" type="hidden" name="" value="${res.precio_horas}">
@@ -432,95 +435,109 @@ addEventListener("DOMContentLoaded", function () {
                                                 </div>
                                             </div>
                                         </div>`;
-                });
+                    });
 
-                document.querySelector("#tbody").innerHTML = html;
-                document.querySelector("#modalEli").innerHTML = htmlModalElim;
+                    document.querySelector("#semaforo").value = resultad[0][2];
 
-                // recorremos los btn editar
-                document.querySelectorAll(".editarH").forEach((editH) => {
-                    editH.addEventListener("click", function () {
-                        // para traer el valor del data index
-                        let index = editH.getAttribute("data-index");
-                        editar(parseInt(index));
+                    document.querySelector("#tbody").innerHTML = html;
+                    document.querySelector("#modalEli").innerHTML = htmlModalElim;
 
-                        // para traer el valor del data extra
-                        let extra = editH.getAttribute("data-extra");
-                        // es el id de la hospitalizacion
-                        mostrarIE(parseInt(extra));
-                        // este evento es para buscar el insumo
-                        document.querySelector("#btn-buscarInsumoE").addEventListener("click", function () {
-                            traerInsumosE();
+                    let aFacH = document.querySelectorAll(".btnFH");
+                    // aFacH
+                    for (const factH of aFacH) {
+                        factH.addEventListener("click", async function () {
+                            // para traer el valor del data index
+                            let index = this.getAttribute("data-index");
+                            let idHospit = this.getAttribute("data-id-hospitalizacion");
+                            console.log(idHospit + " id hospitalizacion");
+
+                            let datos = await mostrarInf(parseInt(index), parseInt(idHospit));
+                            let monto = datos[0];
+                            let montoME = datos[1];
+                            let total = datos[2];
+                            let totalME = datos[3];
+
+                            window.location.href = `/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/enviarAFacturar/${idHospit}/${monto}/${montoME}/${total}/${totalME}`;
+                        });
+                    }
+
+                    // recorremos los btn editar
+                    document.querySelectorAll(".editarH").forEach((editH) => {
+                        editH.addEventListener("click", function () {
+                            // para traer el valor del data index
+                            let index = editH.getAttribute("data-index");
+                            editar(parseInt(index));
+
+                            // para traer el valor del data extra
+                            let extra = editH.getAttribute("data-extra");
+                            // es el id de la hospitalizacion
+                            mostrarIE(parseInt(extra));
+                            // este evento es para buscar el insumo
+                            document.querySelector("#btn-buscarInsumoE").addEventListener("click", function () {
+                                traerInsumosE();
+                            });
                         });
                     });
-                });
-                // recorremos los btn informacion
-                document.querySelectorAll(".informacionH").forEach((inforH) => {
-                    inforH.addEventListener("click", function () {
-                        let tr = inforH.closest("tr");
-                        let columnas = tr.children;
+                    // recorremos los btn informacion
+                    document.querySelectorAll(".informacionH").forEach((inforH) => {
+                        inforH.addEventListener("click", function () {
+                            let tr = inforH.closest("tr");
+                            let columnas = tr.children;
 
-                        let nombreAp = document.getElementById("nombreApellidoM");
-                        let cedula = document.getElementById("cedulaM");
-                        let diagnostico = document.getElementById("diagnosticoM");
-                        let doctor = document.getElementById("doctorM");
-                        let historia = document.getElementById("historiaM");
+                            let nombreAp = document.getElementById("nombreApellidoM");
+                            let cedula = document.getElementById("cedulaM");
+                            let diagnostico = document.getElementById("diagnosticoM");
+                            let doctor = document.getElementById("doctorM");
+                            let historia = document.getElementById("historiaM");
 
-                        nombreAp.innerHTML = `${columnas[1].innerText} ${columnas[2].innerText}`;
-                        cedula.innerHTML = columnas[0].innerText;
-                        diagnostico.innerHTML = columnas[3].innerText;
-                        doctor.innerHTML = columnas[4].innerText;
+                            nombreAp.innerHTML = `${columnas[1].innerText} ${columnas[2].innerText}`;
+                            cedula.innerHTML = columnas[0].innerText;
+                            diagnostico.innerHTML = columnas[3].innerText;
+                            doctor.innerHTML = columnas[4].innerText;
 
-                        // para traer el valor del data index (la posición)
-                        let index = inforH.getAttribute("data-index");
-                        let idHospit = inforH.getAttribute("data-id-hospitalizacion");
-                        mostrarInf(parseInt(index), parseInt(idHospit));
+                            // para traer el valor del data index (la posición)
+                            let index = inforH.getAttribute("data-index");
+                            let idHospit = inforH.getAttribute("data-id-hospitalizacion");
+                            mostrarInf(parseInt(index), parseInt(idHospit));
+                        });
                     });
-                });
 
-                document.querySelectorAll(".btnFH").forEach((factH) => {
-                    factH.addEventListener("click", async function () {
-                        // para traer el valor del data index
-                        let index = factH.getAttribute("data-index");
-                        let idHospit = inforH.getAttribute("data-id-hospitalizacion");
-                        let datos = mostrarInf(parseInt(index), parseInt(idHospit));
-                        let fecha = datos[0][0];
-                        let monto = datos[0][1];
-                        let montoME = datos[0][2];
-                        let total = datos[0][3];
-                        let totalME = datos[0][4];
-                        
-                        // llamo la función
-                        peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
-                        let resultad = await peticion.json();
-                        // window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaInicio/${res["id_hospitalizacion"]}";
-                    });
-                });
+                    // para validar las cantidades de hospitalizaciones agregadas
+                    // obtenemos la cantidad de filas que existen
+                    const filas = document.querySelectorAll("#tbody tr");
 
-                // para validar las cantidades de hospitalizaciones agregadas
-                // obtenemos la cantidad de filas que existen
-                const filas = document.querySelectorAll("#tbody tr");
-
-                if (filas.length === 3) {
-                    // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
-                    document.querySelector("#btnAgregarH").classList.add("d-none");
-                    document.querySelector("#divModal").classList.add("d-none");
-                    document.querySelector("#pModalOculto").classList.remove("d-none");
-                } else {
-                    // se muestra el modal y el btn de agregar
-                    document.querySelector("#btnAgregarH").classList.remove("d-none");
-                    document.querySelector("#divModal").classList.remove("d-none");
-                    document.querySelector("#pModalOculto").classList.add("d-none");
+                    if (filas.length === 2) {
+                        // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
+                        document.querySelector("#btnAgregarH").classList.add("d-none");
+                        document.querySelector("#divModal").classList.add("d-none");
+                        document.querySelector("#pModalOculto").classList.remove("d-none");
+                    } else {
+                        // se muestra el modal y el btn de agregar
+                        document.querySelector("#btnAgregarH").classList.remove("d-none");
+                        document.querySelector("#divModal").classList.remove("d-none");
+                        document.querySelector("#pModalOculto").classList.add("d-none");
+                    }
                 }
             }
+        } catch (error) {
+            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
         }
-
-        // } catch (error) {
-        // console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
-        // }
     };
 
     vistaTabla();
+    document.querySelector("#btnAgregarH").addEventListener("click", async function () {
+        await vistaTabla();
+        let semaforo = document.querySelector("#semaforo").value;
+        if (parseInt(semaforo) >= 2) {
+            document.querySelector("#btnAgregarH").classList.add("d-none");
+            document.querySelector("#divModal").classList.add("d-none");
+            document.querySelector("#pModalOculto").classList.remove("d-none");
+        } else {
+            document.querySelector("#btnAgregarH").classList.remove("d-none");
+            document.querySelector("#divModal").classList.remove("d-none");
+            document.querySelector("#pModalOculto").classList.add("d-none");
+        }
+    });
 
     let btnAInsumoNoExisteE = document.querySelector("#btnAInsumoNoExisteE");
     let btnAInsumoExisteE = document.querySelector("#btnAInsumoExisteE");
@@ -543,9 +560,9 @@ addEventListener("DOMContentLoaded", function () {
                 precioIns = parseFloat(precioIns.toFixed(2));
                 return precioIns;
             } else {
-                if (resultadoDH === false) {
-                    console.log("no se encontró la hospitalización");
-                }
+                // if (resultadoDH === false) {
+                console.log("no se encontró la hospitalización");
+                // }
             }
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
@@ -1033,6 +1050,18 @@ addEventListener("DOMContentLoaded", function () {
             let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
                             <a class="uk-alert-close" uk-close></a>
                             <p class="pe-2 pb-1">El paciente fue registrado exitosamente.</p>
+                        </div>`;
+            document.querySelector("#divComentarios").innerHTML = html;
+        } else if (urlActual.includes("errSemaforo")) {
+            // quitar esto (&agregado) de la url
+            let nuevaUrl = urlActual.replace("/errSemaforo", "");
+            // se agrega la nueva url
+            window.history.replaceState(null, null, nuevaUrl);
+
+            // agregamos el comentario
+            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p class="pe-2 pb-1">En estos momentos, no hay camillas disponibles.</p>
                         </div>`;
             document.querySelector("#divComentarios").innerHTML = html;
         }

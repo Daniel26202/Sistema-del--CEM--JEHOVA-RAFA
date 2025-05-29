@@ -58,7 +58,7 @@
 
                             <p class="ms-3 mt-4 fw-bolder " id="p-no-paciente"><!-- esto se llena en el js --></p>
                             <a href="#" class="d-none ms-3 text-decoration-none fw-bold" id="aPaciente" uk-toggle="target: #modal-examplePaciente" data-bs-dismiss="modal">ir a agregar</a>
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/ControladorControl/control" class="d-none ms-3 text-decoration-none fw-bold"
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" class="d-none ms-3 text-decoration-none fw-bold"
                                 id="aControl">ir a agregar</a>
                         </div>
                         <div class="d-flex justify-content-end mt-4 mb-3 col-6 divGrp_cedula" id="">

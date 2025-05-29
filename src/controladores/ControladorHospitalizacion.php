@@ -19,7 +19,19 @@ class ControladorHospitalizacion
         $this->bitacora = new ModeloBitacora();
         $this->permisos = new ModeloPermisos();
         $this->inicio = new ModeloInicio();
+        $this->semaforo();
     }
+
+    public function semaforo()
+    {
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $cantidadHP = $this->modelo->semaforo();
+        $_SESSION['semaforo'] = $cantidadHP[0];
+    }
+
     // mostrar los datos de la tabla (hospitalizaciones pendientes) 
     public function traerSesion()
     {
@@ -29,7 +41,7 @@ class ControladorHospitalizacion
         }
         $idUsuario = $_SESSION['id_usuario'];
         $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
-        $sesion = [$_SESSION['rol'], $validacionCargo];
+        $sesion = [$_SESSION['rol'], $validacionCargo, $_SESSION['semaforo']];
         // datos de las h. pendientes
         $datosH = $this->modelo->selectsH();
         $array = [$sesion, $datosH];
@@ -106,27 +118,37 @@ class ControladorHospitalizacion
     //para agregar hospitalización
     public function agregarH()
     {
-        $verificaH = $this->modelo->verificaHA($_POST["id_control"]);
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if ($_SESSION["semaforo"] >= 2) {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errSemaforo");
+            // echo "Las camillas disponibles estan ocupadas";
+        } else {
 
-        print_r($verificaH);
-        if (isset($_POST["id_control"])) {
+            $verificaH = $this->modelo->verificaHA($_POST["id_control"]);
 
-            // es para validar si existe la hospitalización
-            if ($verificaH === 1) {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
-            } else {
-                // no existe
-                $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
-                $cantidad = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
+            print_r($verificaH);
+            if (isset($_POST["id_control"])) {
+
+                // es para validar si existe la hospitalización
+                if ($verificaH === 1) {
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
+                } else {
+                    // no existe
+                    $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
+                    $cantidad = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
 
 
-                // print_r($_POST);
-                $this->modelo->insertarH($_POST["id_control"], $_POST["fecha"], $idInsumo, $cantidad, $_POST["historial"]);
+                    // print_r($_POST);
+                    $this->modelo->insertarH($_POST["id_control"], $_POST["fecha"], $idInsumo, $cantidad, $_POST["historial"]);
 
-                // Guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
+                    // Guardar la bitacora
+                    $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
 
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
+                }
             }
         }
     }
@@ -228,13 +250,14 @@ class ControladorHospitalizacion
     public function enviarAFacturar($datos)
     {
         $idH = $datos[0];
-        $fechaHF = $datos[1];
-        $monto = $datos[2];
-        $montoME = $datos[3];
-        $total = $datos[4];
-        $totalME = $datos[5];
-        $info = $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME);
-        echo json_encode($info);
+        date_default_timezone_set('America/Caracas');
+        $fechaHF = date("Y-m-d H:i:s");
+        $monto = $datos[1];
+        $montoME = $datos[2];
+        $total = $datos[3];
+        $totalME = $datos[4];
+        $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME);
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/$idH");
     }
 
     private function permisos($id_rol, $permiso, $modulo)

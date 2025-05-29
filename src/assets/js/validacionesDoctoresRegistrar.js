@@ -86,6 +86,15 @@ document.addEventListener("DOMContentLoaded", function () {
             mens.classList.add("d-none");
             campos.horas = true;
         } else {
+            if (e.target.name === "horaEntrada[]") {
+                // map(Number) es para transformar el string en numero, cuando le pertenece a un array
+                let [hora, minutos] = horaEntrada.split(":").map(Number);
+                hora = hora + 1;
+                if (hora >= 24) hora = 0;
+                // padStart : se asegura que la cadena tenga al menos 2 caracteres, si no los tiene agrega un 0 ejemplo : 9 a 09
+                horaEntrada = `${hora.toString().padStart(2, "0")}:${minutos.toString().padStart(2, "0")}`;
+            }
+
             if (horaEntrada < horaSalida) {
                 mens.classList.add("d-none");
                 campos.horas = true;
@@ -128,14 +137,14 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
             form.submit();
         } else {
-          e.preventDefault();
-          
-          document.getElementById("alerta-guardar").classList.remove("d-none");
-          if (campos.dia) {
-            document.querySelector("#leyendaDia").classList.add("d-none");
-          } else {
-            document.querySelector("#leyendaDia").classList.remove("d-none");
-          }
+            e.preventDefault();
+
+            document.getElementById("alerta-guardar").classList.remove("d-none");
+            if (campos.dia) {
+                document.querySelector("#leyendaDia").classList.add("d-none");
+            } else {
+                document.querySelector("#leyendaDia").classList.remove("d-none");
+            }
         }
     });
 

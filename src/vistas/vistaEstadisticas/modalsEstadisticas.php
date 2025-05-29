@@ -1,3 +1,55 @@
+<!-- Reporte d insumos -->
+<!-- Modal Reporte de Insumos -->
+<div class="modal fade" id="reporteInsumos" tabindex="-1" aria-labelledby="reporteInsumosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content contenido">
+            <div class="imprimir" id="imprimirInsumos">
+                <div class="cabecera" style="display:flex; justify-content: space-between; background-color: #397ae0; color: white; padding: 10px;">
+                    <div class="icon">
+                        <img
+                            src="../src/assets/icons/logo.png"
+                            alt="Logo"
+                            class="logo"
+                            style="width: 290px; height: 100px; margin-left: 20px;" />
+                    </div>
+                    <div id="fecha" style="display: flex; align-items: center; padding-right: 20px; color: white !important;">
+                        <?php echo date("d-m-Y"); ?>
+                    </div>
+                </div>
+                <div class="contenido content-modal" style="display: flex; flex-direction: column;  padding: 20px;">
+                    <div class="titulo">
+                        <h1>Reporte de Insumos Más Usados</h1>
+                    </div>
+
+                    <!-- Canvas para el gráfico -->
+                    <div class="canva contenido" style="margin: 20px 0;">
+                        <canvas id="insumos_canva_pdf"></canvas>
+                    </div>
+
+                    <!-- Leyenda -->
+                    <!--  <div class="leyenda-insumos-container" style="width: 80%; margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    </div> -->
+
+                    <!-- Texto descriptivo -->
+                    <div class="texto" id="textoInsumos" style="width: 90%; text-align: center; font-size: 14px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones del modal -->
+            <div class="d-flex justify-content-center mb-3">
+                <button id="descargarInsumos" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- modal reporte especialidades-->
 <div class="modal fade" id="reporte" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
