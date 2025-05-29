@@ -51,12 +51,15 @@
                 </div>
             </div>
         </div>
-        <div class="card tajeta-estadistica-g m-auto mb-5 ">
+        <div class="card tajeta-estadistica col-12 col-md-12 col-lg-8 mb-4">
             <h5 class="card-header">Moda Insumos</h5>
             <div class="card-body ">
-                <canvas id="insumos" class="canvas">
-
-                </canvas>
+                <canvas id="insumos" class="canvas" style="object-fit: contain !important;"></canvas>
+                <div class="text-center mt-4 pb-2">
+                    <button type="button" class="btn btn-primary 75 m-auto" data-bs-toggle="modal" data-bs-target="#reporteInsumos">
+                        Generar Reporte
+                    </button>
+                </div>
             </div>
         </div>
         <div class="card tajeta-estadistica-m mb-5">

@@ -2,7 +2,8 @@
 const { jsPDF } = window.jspdf;
 
 let currentYear, currentMonth;
-let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
+let events =
+  []; /* Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...] */
 
 //elementos a imprimir
 const elementoImprimirEspecialidad = document.getElementById("imprimir");
@@ -11,7 +12,7 @@ const elementoImprimirDistribucionPacientes =
   document.getElementById("imprimirPacientes");
 const elementoImprimirMorbilidad =
   document.getElementById("imprimirMorbilidad");
-const elementoImprimirinsumos = document.getElementById("imprimirinsumos");
+const elementoImprimirinsumos = document.getElementById("imprimirInsumos");
 
 document.addEventListener("DOMContentLoaded", function () {
   distribucion_edad_genero(
@@ -166,12 +167,12 @@ let insumosChart = null;
 let insumosChartModal = null;
 
 const insumos = async (url) => {
-  console.log("Cargando insumos desde:", url);
   let res = await fetch(url);
   let data = await res.json();
 
   const labels = data.map((item) => item.nombre_insumo);
   const cantidades = data.map((item) => parseInt(item.total_usado, 10));
+  console.log("Datos de insumos:", data);
 
   // Destruir gráfico anterior si existe
   if (insumosChart) {
@@ -216,8 +217,19 @@ const insumos = async (url) => {
   /*   document.getElementById("insumos_pdf").width = 300; */
   /*   document.getElementById("insumos_pdf").height = 180; */
 
-  const ctxModal = document.getElementById("insumos_pdf").getContext("2d");
+  const ctxModal = document
+    .getElementById("insumos_canva_pdf")
+    .getContext("2d");
+  if (insumosChartModal) {
+    insumosChartModal.destroy();
+  }
 
+  console.log(
+    "Creando gráfico modal de insumos ctxModal:",
+    ctxModal,
+    "labels:",
+    labels
+  );
   insumosChartModal = new Chart(ctxModal, {
     type: "bar",
     data: {
@@ -256,7 +268,9 @@ const insumos = async (url) => {
   <p class="text-center">
     Este gráfico muestra los insumos más utilizados en el sistema.<br>
     <strong>Total de unidades registradas:</strong> ${totalUsos}<br>
-    <strong>Insumo más utilizado:</strong> ${insumoTop}
+    <strong>Insumo más utilizado:</strong> ${insumoTop} con un total de ${Math.max(
+    ...cantidades
+  )} unidades.
   </p>
   <p class="text-center">
     Esta información permite conocer cuáles insumos tienen mayor rotación y planificar mejor la reposición y abastecimiento.
@@ -294,7 +308,7 @@ const tasa_morbilidad = async (url) => {
         },
         {
           type: "line",
-          label: "Tasa por 1000",
+          label: "Tasa por cada 1000 pacientes",
           data: tasas,
           borderColor: "#8aafff",
           backgroundColor: "#8aafff",
@@ -344,7 +358,7 @@ const tasa_morbilidad = async (url) => {
         },
         {
           type: "line",
-          label: "Tasa por 1000",
+          label: "Tasa por cada 1000 pacientes",
           data: tasas,
           borderColor: "#8aafff",
           backgroundColor: "#8aafff",
@@ -712,7 +726,7 @@ async function totalDeSintomas(data) {
 
   // Agrega esto al texto
   document.getElementById("textoSintomas").innerHTML += `
-    <p>De Los ${resultado.total} sintomas registados, los ${data.length}  síntomas registrados, los mas comunes son: ${sintomas}.</p>
+    <p>De Los ${resultado.total} sintomas registados ${data.length}  síntomas registrados, los mas comunes son: ${sintomas}.</p>
     <p>Este reporte examina la distribución y las tendencias de los síntomas más comunes según su frecuencia en un periodo determinado.</p>
                         <p>El gráfico de pastel muestra el porcentaje que representa cada uno de estos síntomas dentro del total de consultas, permitiendo identificar rápidamente cuáles son las manifestaciones clínicas que más demanda generan en la población atendida..</p>
 
@@ -854,9 +868,21 @@ document.getElementById("pacientes").addEventListener("click", function () {
 });
 
 //repotte morbilidad
-document.getElementById("morbilidad").addEventListener("click", function () {
-  generarReporte(elementoImprimirMorbilidad, "reporte_tasa_de_morbilidad.pdf");
-});
+document
+  .getElementById("descargarInsumos")
+  .addEventListener("click", function () {
+    generarReporte(
+      elementoImprimirMorbilidad,
+      "reporte_tasa_de_morbilidad.pdf"
+    );
+  });
+
+//repotte insumos
+document
+  .getElementById("descargarInsumos")
+  .addEventListener("click", function () {
+    generarReporte(elementoImprimirinsumos, "imprimirInsumos.pdf");
+  });
 
 //funcion generica para imprimir pdf
 function generarReporte(elementoImprimir, nombreArchivo) {
