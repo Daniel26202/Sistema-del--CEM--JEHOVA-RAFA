@@ -357,7 +357,7 @@ class ModeloFactura extends Db
 	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $id_cita, $id_hospitalizacion)
 	{
 
-		try {
+		// try {
 
 
 			//insertar factura
@@ -422,9 +422,9 @@ class ModeloFactura extends Db
 			}
 
 			return $id_factura;
-		} catch (\Exception $e) {
-			return 0;
-		}
+		// } catch (\Exception $e) {
+		// 	return 0;
+		// }
 	}
 
 

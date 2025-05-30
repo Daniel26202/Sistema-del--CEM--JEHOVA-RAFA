@@ -197,8 +197,9 @@ addEventListener("DOMContentLoaded", () => {
 
       let id_cita = "";
       resultado.forEach((res) => {
-        id_cita = `/${res.id_cita}`;
+        id_cita = `/c${res.id_cita}`;
       });
+      console.log(id_cita)
       window.location.href =
         "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita" + id_cita;
     } else {

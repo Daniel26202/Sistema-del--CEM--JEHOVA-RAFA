@@ -946,7 +946,7 @@
                       <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
                       <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
                         value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
+                      <input type="text" class="d-none" name="id_pacient" value="<?= $datoCita['id_paciente'] ?>">
                       <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
                       <td>
                         <div class="fw-bolder">CI:</div>
@@ -967,7 +967,7 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-                  <h1>citas</h1>
+                  
                 <?php endif; ?>
 
 
@@ -995,7 +995,7 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-                <?php elseif (isset($parametro[0]) && stripos($parametro[0], 'c') !== false): ?>
+                
 
                   <?php foreach ($citaFacturar as $datoCita): ?>
                     <tr>
@@ -1023,7 +1023,7 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-                  <h1>citas</h1>
+                  
                 <?php else: ?>
 
                   <input type="hidden" class="" id="inputPaciente" name="id_paciente" value="">
