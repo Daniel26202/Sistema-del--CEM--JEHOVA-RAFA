@@ -43,6 +43,20 @@
     /* color: var(--color-text-card) !important; */
 }
 
+
+
+
+/* menu de pruebas
+ */
+
+.sb-sidenav-blue{
+    background-color: #387adf;
+}
+
+.navbar-blue{
+    background-color: #387adf;
+}
+
 a {
     color: var(--color-text-card) !important;
 }
@@ -220,26 +234,27 @@ h6 {
 
 .options div {
     color: #fff !important;
-    display: flex;
+    /* display: flex;
     align-items: center;
-    padding: 11px 15px;
+    padding: 11px 15px; */
     cursor: pointer;
-    margin-bottom: 5px;
-    border-radius: 10px;
-    font-size: 1.08rem;
+    /* margin-bottom: 5px;
+    border-radius: 10px; */
+    /* font-size: 1.07rem; */
 }
 
 .options a {
     text-decoration: none;
-    color: #fff;
+    color: #fff !important;
 }
+
 
 .options a:hover {
     color: rgb(242, 249, 255);
     text-decoration: none;
 }
 
-.options div:hover {
+.options a:hover {
     background: rgba(255, 255, 255, 0.254);
     transition: all 0.4s ease-in-out;
 }
@@ -275,15 +290,13 @@ h6 {
     margin-top: -30px;
 }
 
-/* clases del contenedor */
-main {
+html{
+    /* background-color: var(--color-bg-main); */
     background-color: var(--color-bg-main);
-    width: 100%;
-    height: 100%;
-    margin-left: 68px;
-    transition: all 0.4s ease;
-    min-height: 100vh;
 }
+
+/* clases del contenedor */
+
 
 .icon {
     color: white !important;
