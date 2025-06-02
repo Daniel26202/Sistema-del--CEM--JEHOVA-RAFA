@@ -56,14 +56,14 @@ class ControladorUsuarios
 
             //verifica si el usuario es igual a la información de la base de datos.
             if ($resultadoDeUsuario === "existeU") {
-                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/error");
+                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/Usuario");
             } else {
 
                 $edicion = $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
 
                 if ($edicion) {
                     $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
-                    header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editado");
+                    header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editar");
                 } else {
                     header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/errorSistem");
                 }
@@ -76,7 +76,7 @@ class ControladorUsuarios
 
             if ($edicion) {
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
-                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editado");
+                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editar");
             } else {
                 header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/errorSistem");
             }
@@ -84,7 +84,7 @@ class ControladorUsuarios
             $edicion = $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
             if ($edicion) {
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
-                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editado");
+                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editar");
             } else {
                 header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/errorSistem");
             }
@@ -98,7 +98,7 @@ class ControladorUsuarios
         if ($eliminacion) {
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un  usuario");
-            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/eliminado");
+            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/eliminar");
         } else {
             header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/errorSistem");
         }
@@ -114,7 +114,7 @@ class ControladorUsuarios
         if ($insercion) {
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha insertado un administrador ");
-            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/registrado");
+            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/registro");
         } else {
             header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/errorSistem");
         }
@@ -129,7 +129,7 @@ class ControladorUsuarios
         // Guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un administrador ");
 
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/editado");
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/editar");
     }
 
 
@@ -139,7 +139,7 @@ class ControladorUsuarios
         if ($eliminacion) {
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un administador ");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/eliminado");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/eliminar");
         } else {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/errorSistem");
         }

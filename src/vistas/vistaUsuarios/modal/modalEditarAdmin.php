@@ -9,8 +9,8 @@
                 action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/editarAdministrador/<?php echo $dato["usuario"]; ?>"
                 enctype="multipart/form-data">
 
-                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
-                
+                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
+
                 <div id="padre<?php echo $dato["id_usuario"]; ?>">
                     <div class="alert alert-danger text-center d-none" id="alertaUsuario">VERIFIQUE EL FORMULARIO ANTES DE
                         ENVIARLO</div>
@@ -19,11 +19,11 @@
                             <div class="uk-width-auto">
                                 <?php if ($dato["imagen"] != "doctor.png"): ?>
 
-                                    <img src="./src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>"
+                                    <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>"
                                         class="uk-border-circle" width="55" height="55" alt="Avatar">
                                 <?php else: ?>
 
-                                    <img src="./src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>"
+                                    <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>"
                                         class="uk-border-circle" width="55" height="55" alt="Avatar">
                                 <?php endif; ?>
 
@@ -58,7 +58,7 @@
                                     value="<?php echo $dato["usuario"]; ?>">
 
                             </div>
-                            
+
 
                         </div>
 
@@ -69,7 +69,7 @@
 
                         <div class="uk-card-footer d-flex justify-content-start">
                             <a href="#" class="color_lineaText uk-button btnMostrar mt-2 me-4 pe-0 ps-0">Editar usuario</a>
-                            <a href="#" class="uk-button uk-button-text btnMostrar mt-2 btn_editarPassword" uk-toggle="target: #modal-exampleEditarPassword" data-usuario="<?php echo $dato["usuario"]; ?>" data-id-u="<?php echo $dato["id_usuario"]; ?>" >Editar contraseña</a>
+                            <a href="#" class="uk-button uk-button-text btnMostrar mt-2 btn_editarPassword" uk-toggle="target: #modal-exampleEditarPassword" data-usuario="<?php echo $dato["usuario"]; ?>" data-id-u="<?php echo $dato["id_usuario"]; ?>">Editar contraseña</a>
                         </div>
                         <div class="uk-card-footer d-flex justify-content-start">
                             <a href="#" class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close">Cancelar</a>
