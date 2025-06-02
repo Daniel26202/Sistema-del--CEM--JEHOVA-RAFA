@@ -30,7 +30,7 @@ class ControladorDoctores extends ModeloDoctores
         $datosDias = $this->modelo->selectDias();
         $doctores = $this->modeloConsultas->mostrarDoctores();
         $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
-        require_once "./src/vistas/vistaDoctores/v.php";
+        require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
     }
 
     //metodo para mostrar los servicios de los doctores
@@ -52,7 +52,7 @@ class ControladorDoctores extends ModeloDoctores
             if ($insercion) {
                 // Guardar la bitacora
                 $this->bitacora->insertarBitacora($_POST['id_usuario'], "Consultas", "Ha añadido un servicio medico a un doctor");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registro");
             } else {
                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/errorSistem");
             }
