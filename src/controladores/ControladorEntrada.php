@@ -43,7 +43,7 @@ class ControladorEntrada
 		if ($restablecimiento) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "entrada", "Ha restablecido una entrada");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/papelera");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/papelera/restablecido");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/papelera/errorSistem");
 		}
@@ -64,7 +64,7 @@ class ControladorEntrada
 		if ($insercion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha insertado una entrada");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/registro");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
 		}
@@ -79,7 +79,7 @@ class ControladorEntrada
 		if ($elimincion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "entrada", "Ha eliminado una entrada");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/eliminar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
 		}
@@ -93,7 +93,7 @@ class ControladorEntrada
 		if ($edicion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha modificado una entrada");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/editar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
 		}

@@ -85,6 +85,13 @@
                 <p class="pe-2">EL usuario ya existe, intente de nuevo.</p>
             </div>
 
+        <?php elseif ($parametro[0] == "errorRif"): ?>
+
+            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">EL Rif ya existe, intente de nuevo.</p>
+            </div>
+
 
 
 

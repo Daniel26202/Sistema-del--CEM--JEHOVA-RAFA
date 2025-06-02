@@ -67,7 +67,7 @@ class ControladorInsumos
 			if ($insercion) {
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "insumo", "Ha Insertado un insumo");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/agregado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/registro");
 			} else {
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/errorSistem");
 			}
@@ -81,7 +81,7 @@ class ControladorInsumos
 		$eliminacion = $this->modelo->eliminar($id_insumo);
 		if ($eliminacion) {
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "insumo", "Ha eliminado un insumo");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/eliminado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/eliminar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/errorSistem");
 		}
@@ -93,7 +93,7 @@ class ControladorInsumos
 		if ($edicion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "insumo", "Ha modificado un insumo");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/editado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/editar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/errorSistem");
 		}
