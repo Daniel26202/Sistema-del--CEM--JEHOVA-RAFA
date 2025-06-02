@@ -47,13 +47,20 @@
         <?php elseif ($parametro[0] == "errorCita"): ?>
             <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">error en la cita.</p>
+                <p class="pe-2">error la cita ya existe.</p>
             </div>
 
         <?php elseif ($parametro[0] == "fechainvalida"): ?>
             <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
                 <p class="pe-2">La fecha no es valida por favor intente nuevamente.</p>
+            </div>
+
+
+        <?php elseif ($parametro[0] == "errorServicio"): ?>
+            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">error el servicio medico ya existe.</p>
             </div>
 
 
