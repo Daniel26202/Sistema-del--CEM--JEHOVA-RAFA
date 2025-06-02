@@ -22,7 +22,7 @@ class ControladorPatologias
 	{
 		$ayuda = "btnayudaPatologia";
 		$datosPatologias = $this->patologia->mostrarPatologias();
-		require_once './src/vistas/vistaPatologia/v.php';
+		require_once './src/vistas/vistaPatologia/patologia.php';
 	}
 	public function papeleraPatologias($parametro)
 	{

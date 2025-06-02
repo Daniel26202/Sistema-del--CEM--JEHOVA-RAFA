@@ -193,108 +193,94 @@ h6 {
     background-color: #61b5b4;
 }
 
-.aside {
-    height: 100%;
-    width: 25%;
-    padding: 10px;
-    background-color: var(--color-primary);
-    color: #fff;
-    position: fixed;
-    z-index: 100;
-    overflow-y: auto !important;
-}
-
-.head {
-    display: flex;
-    align-items: center;
-    height: 50px;
-    margin-left: 10px;
-    /*margin-bottom: 30px;*/
-}
-
-.profile {
-    display: flex;
-    align-items: center;
-}
-
-.profile p {
-    margin-left: 20px;
-    font-size: 20px;
-}
-
-.icono-hamburguesa {
-    cursor: pointer;
-}
-
-.opcRes {
-    display: block;
-}
-
-/*segunda parte*/
-
-.options div {
-    color: #fff !important;
-    /* display: flex;
-    align-items: center;
-    padding: 11px 15px; */
-    cursor: pointer;
-    /* margin-bottom: 5px;
-    border-radius: 10px; */
-    /* font-size: 1.07rem; */
-}
-
-.options a {
-    text-decoration: none;
-    color: #fff !important;
-}
 
 
-.options a:hover {
-    color: rgb(242, 249, 255);
-    text-decoration: none;
-}
 
-.options a:hover {
-    background: rgba(255, 255, 255, 0.254);
-    transition: all 0.4s ease-in-out;
-}
 
-.aside.active {
-    width: 68px;
-    transition: all 0.4s ease;
-}
 
-.aside.active .option,
-.aside.active .profile {
-    display: none;
-}
-
-.aside.active .head {
-    margin-left: 0px;
-}
-
-.aside.active .head svg {
-    margin: auto;
-}
-.tdHS {
-    white-space: normal !important;
-    word-break: break-word;
-}
-
-.desaparecer-icono {
-    display: none;
-}
-
-#cerrarMenu {
-    margin-left: 140px;
-    margin-top: -30px;
-}
 
 html{
     /* background-color: var(--color-bg-main); */
     background-color: var(--color-bg-main);
 }
 
+.contenedor-fondo{
+    background-color: var(--color-bg-main) !important;
+}
+
+
+
+/* Menu */
+       /* Estilo del menú lateral */
+       .sidenav {
+        height: 100vh;
+        width: 250px;
+        position: fixed;
+        top: 0;
+        left: -250px;
+        background-color: #387adf;
+        /* Azul Bootstrap */
+        transition: 0.3s;
+        padding-top: 60px;
+        z-index: 1000;
+        overflow-y: auto;
+        /* Scroll si es necesario */
+    }
+
+    .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        /* font-size: 25px; */
+        color: white !important;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .navbarHorizontal {
+        background-color: #387adf !important;
+        /* Azul Bootstrap */
+    }
+
+    .sidenav a:hover {
+        color: #387adf !important;
+        background-color: #ffffff;
+    }
+
+    .open-sidenav {
+        left: 0;
+    }
+
+    /* Botón cerrar en la esquina */
+    .closebtn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 36px;
+        color: white;
+        text-decoration: none;
+        z-index: 1100;
+    }
+
+    /* Menú lateral siempre visible en PC (md en adelante) */
+    @media (min-width: 992px) {
+        .sidenav {
+            left: 0 !important;
+            width: 250px;
+            padding-top: 60px;
+        }
+
+        #main {
+            margin-left: 250px;
+        }
+
+        .closebtn {
+            display: none;
+        }
+
+        .navbar-toggler {
+            display: none;
+        }
+    }
 /* clases del contenedor */
 
 
