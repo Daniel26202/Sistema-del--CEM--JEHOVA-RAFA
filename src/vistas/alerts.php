@@ -64,6 +64,31 @@
             </div>
 
 
+        <?php elseif ($parametro[0] == "errorS"): ?>
+
+            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">El Doctor ya presta ese Servicio.</p>
+            </div>
+
+        <?php elseif ($parametro[0] == "errorD"): ?>
+
+            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">La cédula o el usuario ya existen, intente de nuevo.</p>
+            </div>
+
+        <?php elseif ($parametro[0] == "Usuario"): ?>
+
+            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">EL usuario ya existe, intente de nuevo.</p>
+            </div>
+
+
+
+
+
         <?php endif ?>
 
 
