@@ -10,58 +10,10 @@
         d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
     </svg></h5>
 
+    <!-- alertas -->
 
-  <div class="w-50 m-auto">
-    <?php if ($parametro != ""): ?>
-
-
-      <?php if ($parametro[0] == "error"): ?>
-        <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2">La cédula ya existen, intente de nuevo.</p>
-        </div>
-      <?php elseif ($parametro[0] == "registro"): ?>
-        <div class="uk-alert-primary comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2">Se registro el paciente correctamente.</p>
-        </div>
-      <?php elseif ($parametro[0] == "editar"): ?>
-        <div class="uk-alert-primary comentarioD  me-4 fw-bolder  alertaGenerica text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2">Se actualizo el paciente correctamente.</p>
-        </div>
-      <?php elseif ($parametro[0] == "eliminar"): ?>
-        <div class="uk-alert-primary comentarioD  me-4 fw-bolder  alertaGenerica text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2">Se ha eliminado el paciente correctamente.</p>
-        </div>
-      <?php elseif ($parametro[0] == "restablecido"): ?>
-        <div class="uk-alert-primary comentarioD  me-4 fw-bolder alertaGenerica text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2">Se ha restablecido el paciente correctamente.</p>
-        </div>
-
-
-      <?php elseif ($parametro[0] == "errorfecha"): ?>
-        <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2 ">la fecha de nacimiento no concuerda, intente de nuevo.</p>
-        </div>
-
-
-      <?php elseif ($parametro[0] == "errorSintem"): ?>
-        <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder  text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2">lamentablemente ocurrio un error por favor intente mas tarde.</p>
-        </div>
-
-
-      <?php endif ?>
-    <?php endif ?>
-
-
-  </div>
-
+    <?php require_once "./src/vistas/alerts.php" ?>
+    
   <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
     <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 

@@ -25,7 +25,7 @@ class ControladorConsultas
 		$servicios = $this->modelo->mostrarConsultas();
 		$categorias = $this->categoria->seleccionarCategoria();
 		$todasLasCategorias = $this->categoria->seleccionarTodasLasCategoria();
-		require_once './src/vistas/vistaConsultas/vistaServiciosMedicos.php';
+		require_once './src/vistas/vistaConsultas/s.php';
 	}
 	public function papeleraServicio($parametro)
 	{

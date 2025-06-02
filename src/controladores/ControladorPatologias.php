@@ -44,7 +44,7 @@ class ControladorPatologias
 			if ($insercion) {
 				// // Guardo la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "patologia", "Ha Insertado una patologia");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/agregado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/registro");
 			} else {
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/errorSistem");
 			}
@@ -62,7 +62,7 @@ class ControladorPatologias
 		if ($eliminar) {
 			// Guardo la bitacora
 			$this->bitacora->insertarBitacora($id_usuario, "patologia", "Ha eliminado una patologia");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/eliminado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/eliminar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/errorSintem");
 		}
@@ -78,7 +78,7 @@ class ControladorPatologias
 		if ($restablecer) {
 			// Guardo la bitacora
 			$this->bitacora->insertarBitacora($id_usuario, "patologia", "Ha restablecido una patologia");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/restablecida");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/restablecido");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/errorSistem");
 		}
