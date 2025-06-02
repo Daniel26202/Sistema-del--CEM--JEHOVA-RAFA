@@ -14,7 +14,8 @@
 
 
 
-
+<!-- modal de cerrar sesión -->
+<?php require_once './src/vistas/modalCierreS/modalCierreS.php'; ?>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/uikit/js/uikit.min.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="<?= $urlBase ?>../src/assets/app.js"></script>
