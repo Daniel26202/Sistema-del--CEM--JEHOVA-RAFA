@@ -22,7 +22,7 @@ class ControladorEstadisticas
 
 	public function estadisticas()
 	{
-		require_once './src/vistas/vistaEstadisticas/vistaEstadisticas.php';
+		require_once './src/vistas/vistaEstadisticas/e.php';
 	}
 
 	public function edadGenero()

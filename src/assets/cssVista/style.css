@@ -1736,10 +1736,8 @@ input[type="date"] {
 }
 
 .tajeta-estadistica-g {
-    width: 70%;
-    height: 50vh;
     color: var(--color-text-card);
-    background-color: var(--color-bg-card);
+    background-color: var(--color-bg-card-estadisticas);
 }
 
 @media screen and (max-height: 652px) {
