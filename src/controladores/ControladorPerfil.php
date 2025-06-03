@@ -13,7 +13,7 @@ class ControladorPerfil{
 		$this->permisos = new ModeloPermisos();
 	}
 	
-	public function perfil(){
+	public function perfil($parametro){
 		require_once './src/vistas/vistaPerfil/vistaPerfil.php';
 	}
 
