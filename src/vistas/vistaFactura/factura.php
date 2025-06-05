@@ -13,6 +13,10 @@
         </svg>
     </h5>
 
+    <!-- alertas -->
+
+    <?php require_once "./src/vistas/alerts.php" ?>
+
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto " style="width: 95%; ">
 
