@@ -133,7 +133,7 @@ class ControladorHospitalizacion
             if (isset($_POST["id_control"])) {
 
                 // es para validar si existe la hospitalización
-                if ($verificaH === 1) {
+                if ($verificaH) {
                     header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
                 } else {
                     // no existe
