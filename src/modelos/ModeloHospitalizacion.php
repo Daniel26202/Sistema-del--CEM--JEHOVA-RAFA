@@ -112,11 +112,15 @@ class ModeloHospitalizacion extends Db
     // verifica si la hospitalización existe
     public function verificaHA($idC)
     {
-        $consulta = $this->conexion->prepare('SELECT id_hospitalizacion FROM hospitalizacion WHERE id_control = :id_c AND estado = "Pendiente"');
+        try {
+            $consulta = $this->conexion->prepare('SELECT id_hospitalizacion FROM hospitalizacion WHERE id_control = :id_c AND estado = "Pendiente"');
 
-        $consulta->bindParam(":id_c", $idC);
-        $consulta->execute();
-        return ($consulta->fetch()) ? 1 : false;
+            $consulta->bindParam(":id_c", $idC);
+            $consulta->execute();
+            return ($consulta->fetch()) ? true : false;
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     public function updateHistorial($idControl, $historial)
