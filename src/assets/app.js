@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const root = document.documentElement;
   const themeToggleCheckbox = document.getElementById("themeToggleCheckbox");
+  const textModo = document.getElementById("text-modo");
+  textModo.innerText = `Modo ${localStorage.getItem("Modo")}`;
 
   // 1) Aplicar tema guardado
   if (localStorage.getItem("theme") === "dark") {
@@ -14,6 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const isDark = themeToggleCheckbox.checked;
       root.setAttribute("data-theme", isDark ? "dark" : "");
       localStorage.setItem("theme", isDark ? "dark" : "light");
+
+      /* text para saber en que modo esta */
+      localStorage.setItem("modo", isDark ? "Oscuro" : "Claro");
+      textModo.innerText = (isDark) ? "Modo Oscuro" : "Modo Claro";
     });
   }
 

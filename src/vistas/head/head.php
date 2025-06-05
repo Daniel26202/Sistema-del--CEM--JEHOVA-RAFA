@@ -48,11 +48,13 @@ if (!empty($parametro)) {
 
 		<p style="cursor: pointer;" href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</p>
 
-		<div class=" mx-4 cl-toggle-switch">
+		<div class=" mx-4 cl-toggle-switch d-flex justify-content-between" style="width: 60%;">
 			<label class="cl-switch">
 				<input type="checkbox" id="themeToggleCheckbox">
 				<span></span>
 			</label>
+
+			<p style="color: white;" id="text-modo"></p>
 		</div>
 
 
@@ -341,6 +343,6 @@ if (!empty($parametro)) {
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<!-- < class="navbar-brand" href="#">Mi Sitio Web</> -->
-			<img class="" src="<?= $urlBase ?>../src/assets/icons/logo.png" style="width: 240px; height: 55px;">
+			<img class="" src="<?= $urlBase ?>../src/assets/icons/logo.png" style="width: 180px; height: 55px;">
 
 		</nav>
