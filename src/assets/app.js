@@ -2,8 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const root = document.documentElement;
   const themeToggleCheckbox = document.getElementById("themeToggleCheckbox");
   const textModo = document.getElementById("text-modo");
-  textModo.innerText = `Modo ${localStorage.getItem("Modo")}`;
-
+  if (textModo) {
+    textModo.innerText = `Modo ${localStorage.getItem("Modo")}`;
+  }
+  
   // 1) Aplicar tema guardado
   if (localStorage.getItem("theme") === "dark") {
     root.setAttribute("data-theme", "dark");
