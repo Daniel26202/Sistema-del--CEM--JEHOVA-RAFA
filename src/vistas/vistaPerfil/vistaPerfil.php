@@ -132,6 +132,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder  text-center" uk-alert>
+          <a class="uk-alert-close" uk-close></a>
+          <p class="pe-2">Atención si edita su perfil tendra que iniciar session nuevamente por seguridad </p>
+        </div>
 
         <form class="form-modal form-validable1" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/guardar" method="POST" autocomplete="off">
           <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">

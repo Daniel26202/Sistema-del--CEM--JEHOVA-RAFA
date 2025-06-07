@@ -37,7 +37,7 @@ class ModeloPerfil extends Db{
 			$consulta2 = $this->conexion->prepare("UPDATE usuario SET usuario=:usuario WHERE id_usuario = :id_usuario");
 			$consulta2->bindParam(":id_usuario", $id_usuario);
 			$consulta2->bindParam(":usuario", $usuario);
-			$consulta->execute();
+			$consulta2->execute();
 
 			return 1;
 		} catch (\Exception $e) {

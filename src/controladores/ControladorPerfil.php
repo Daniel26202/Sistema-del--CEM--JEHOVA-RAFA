@@ -38,6 +38,7 @@ class ControladorPerfil
 			if ($edicion) {
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST["id_usuario"], "Perfil", "Ha modificado un perfil");
+				session_destroy();
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil/editar");
 			} else {
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil/errorSistem");

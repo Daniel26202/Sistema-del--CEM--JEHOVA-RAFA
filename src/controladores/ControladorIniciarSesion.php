@@ -24,60 +24,60 @@ class ControladorIniciarSesion
     {
 
 
-        if (isset($_POST)) {
-            // Clave secreta proporcionada por Google.
-            $claveSecreta = '6Le_rOgqAAAAAMEKli0Bp9zdh8i_haVpS008lTxc';
-            // Este token está incluido automáticamente en los datos del formulario bajo el nombre 'g-recaptcha-response'.
-            $token = $_POST['g-recaptcha-response'];
-            // Esto es para agregar una capa adicional de seguridad.(opcional).
-            $ip = $_SERVER['REMOTE_ADDR'];
-            // Aquí es donde se enviara la solicitud para validar el token generado en el cliente.
-            $url = 'https://www.google.com/recaptcha/api/siteverify';
-            if (isset($_POST)) {
-                // Clave secreta proporcionada por Google.
-                $claveSecreta = '6Le_rOgqAAAAAMEKli0Bp9zdh8i_haVpS008lTxc';
-                // Este token está incluido automáticamente en los datos del formulario bajo el nombre 'g-recaptcha-response'.
-                $token = $_POST['g-recaptcha-response'];
-                // Esto es para agregar una capa adicional de seguridad.(opcional).
-                $ip = $_SERVER['REMOTE_ADDR'];
-                // Aquí es donde se enviara la solicitud para validar el token generado en el cliente.
-                $url = 'https://www.google.com/recaptcha/api/siteverify';
+        // if (isset($_POST)) {
+        //     // Clave secreta proporcionada por Google.
+        //     $claveSecreta = '6Le_rOgqAAAAAMEKli0Bp9zdh8i_haVpS008lTxc';
+        //     // Este token está incluido automáticamente en los datos del formulario bajo el nombre 'g-recaptcha-response'.
+        //     $token = $_POST['g-recaptcha-response'];
+        //     // Esto es para agregar una capa adicional de seguridad.(opcional).
+        //     $ip = $_SERVER['REMOTE_ADDR'];
+        //     // Aquí es donde se enviara la solicitud para validar el token generado en el cliente.
+        //     $url = 'https://www.google.com/recaptcha/api/siteverify';
+        //     if (isset($_POST)) {
+        //         // Clave secreta proporcionada por Google.
+        //         $claveSecreta = '6Le_rOgqAAAAAMEKli0Bp9zdh8i_haVpS008lTxc';
+        //         // Este token está incluido automáticamente en los datos del formulario bajo el nombre 'g-recaptcha-response'.
+        //         $token = $_POST['g-recaptcha-response'];
+        //         // Esto es para agregar una capa adicional de seguridad.(opcional).
+        //         $ip = $_SERVER['REMOTE_ADDR'];
+        //         // Aquí es donde se enviara la solicitud para validar el token generado en el cliente.
+        //         $url = 'https://www.google.com/recaptcha/api/siteverify';
 
-                // guardamos los datos en un array.
-                $datos = array(
-                    'secret' => $claveSecreta,
-                    'response' => $token,
-                    // Dirección IP del usuario.
-                    'remoteip' => $ip
-                );
+        //         // guardamos los datos en un array.
+        //         $datos = array(
+        //             'secret' => $claveSecreta,
+        //             'response' => $token,
+        //             // Dirección IP del usuario.
+        //             'remoteip' => $ip
+        //         );
 
-                // Configuración de la solicitud HTTP mediante método POST.
-                $options = array(
-                    'http' => array(
-                        // Configura los encabezados para que la API sepa cómo procesar los datos.
-                        'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                        // definimos el método de la solicitud como POST.
-                        'method' => 'POST',
-                        // Codifica los datos como una cadena de consulta para enviarlos en el cuerpo de la solicitud.
-                        'content' => http_build_query($datos)
-                    )
-                );
+        //         // Configuración de la solicitud HTTP mediante método POST.
+        //         $options = array(
+        //             'http' => array(
+        //                 // Configura los encabezados para que la API sepa cómo procesar los datos.
+        //                 'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+        //                 // definimos el método de la solicitud como POST.
+        //                 'method' => 'POST',
+        //                 // Codifica los datos como una cadena de consulta para enviarlos en el cuerpo de la solicitud.
+        //                 'content' => http_build_query($datos)
+        //             )
+        //         );
 
-                // Esto será utilizado para enviar la solicitud a la API de Google.
-                $contexto = stream_context_create($options);
-                // file_get_contents envía la solicitud HTTP y recibe la respuesta en formato JSON.
-                $respuesta = file_get_contents($url, false, $contexto);
-                // Decodifica la respuesta JSON en un arreglo asociativo de PHP.
-                $result = json_decode($respuesta, true);
+        //         // Esto será utilizado para enviar la solicitud a la API de Google.
+        //         $contexto = stream_context_create($options);
+        //         // file_get_contents envía la solicitud HTTP y recibe la respuesta en formato JSON.
+        //         $respuesta = file_get_contents($url, false, $contexto);
+        //         // Decodifica la respuesta JSON en un arreglo asociativo de PHP.
+        //         $result = json_decode($respuesta, true);
 
-                // Verifica si la respuesta de la API indica éxito ('success' == true).
-                if ($result['success']) {
+        //         // Verifica si la respuesta de la API indica éxito ('success' == true).
+        //         if ($result['success']) {
 
 
-                    if ($_POST['usuario'] === '' or $_POST['password'] === '') {
+        //             if ($_POST['usuario'] === '' or $_POST['password'] === '') {
 
-                        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
-                    } else {
+        //                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
+        //             } else {
 
                         $validar = $this->modelo->validarIniciarSesion($_POST['usuario'], $_POST['password']);
 
@@ -104,12 +104,12 @@ class ControladorIniciarSesion
 
                             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/mensaje");
                         }
-                    }
-                } else {
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
-                }
-            }
-        }
+        //             }
+        //         } else {
+        //             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
+        //         }
+        //     }
+        // }
     }
 
     //Metodo para mostrar la vista de la pagina de error ç
