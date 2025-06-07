@@ -110,31 +110,43 @@ class ModeloControl extends Db
 			}
 
 			$this->conexion->commit();
+			return 1;
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			print_r($e);
+			return 0;
 		}
 	}
 
 	//eliminar control
 	public function eliminarControl($id_control)
 	{
-		$sql = $this->conexion->prepare("UPDATE control SET estado ='DES' WHERE id_control=:id_control ");
-		$sql->bindParam(":id_control", $id_control);
-		$sql->execute();
+		try {
+			$sql = $this->conexion->prepare("UPDATE control SET estado ='DES' WHERE id_control=:id_control ");
+			$sql->bindParam(":id_control", $id_control);
+			$sql->execute();
+			return 1;
+		} catch (\Exception $e) {
+			return 0;
+		}
 	}
 
 	//editar control
 	public function editarControl($historial, $id_control, $indicaciones, $fechaRegreso, $nota)
 	{
-		$sql = $this->conexion->prepare("UPDATE control SET medicamentosRecetados=:indicaciones, fechaRegreso=:fechaRegreso, nota=:nota, historiaclinica=:historial WHERE id_control=:id_control ");
-		$sql->bindParam(":id_control", $id_control);
-		$sql->bindParam(":indicaciones", $indicaciones);
-		$sql->bindParam(":nota", $nota);
-		$sql->bindParam(":historial", $historial);
+		try {
+			$sql = $this->conexion->prepare("UPDATE control SET medicamentosRecetados=:indicaciones, fechaRegreso=:fechaRegreso, nota=:nota, historiaclinica=:historial WHERE id_control=:id_control ");
+			$sql->bindParam(":id_control", $id_control);
+			$sql->bindParam(":indicaciones", $indicaciones);
+			$sql->bindParam(":nota", $nota);
+			$sql->bindParam(":historial", $historial);
 
-		$sql->bindParam(":fechaRegreso", $fechaRegreso);
-		$sql->execute();
+			$sql->bindParam(":fechaRegreso", $fechaRegreso);
+			$sql->execute();
+			return 1;
+		} catch (\Exception $e) {
+			return 0;
+		}
 	}
 	public function mostrarDoctor()
 	{
