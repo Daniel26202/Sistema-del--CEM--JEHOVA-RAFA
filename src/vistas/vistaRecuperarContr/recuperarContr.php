@@ -55,7 +55,7 @@ if (!empty($parametro)) {
 <?php $urlBase = $concatenarRuta . '' . $concatenadorEspecial; ?>
 
 <body>
-    <main>
+    <main class="contenedor">
 
         <div class=" d-flex w-auto col">
             <!-- carrusel -->
@@ -113,7 +113,7 @@ if (!empty($parametro)) {
                 <div class="w-auto ">
 
                     <div class="ms-5 mt-4 ps-4 col me-2 titulo">
-                        <h2 class=" fw-bolder mb-1 " id="tituloText">Olvide mi contraseña</h2>
+                        <h2 class=" fw-bolder mb-1 text-theme " id="tituloText">Olvide mi contraseña</h2>
                         <div class="linea-titulo "></div>
                     </div>
 
@@ -337,7 +337,7 @@ if (!empty($parametro)) {
 
                         <div class="d-flex justify-content-end mt-2  pe-5 me-5">
                             <a href="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion"
-                                class="fw-bold pointer-event text-decoration-none text-dark margen-resposive-iniciar-sesion me-5 pe-5"
+                                class="fw-bold pointer-event text-decoration-none text-theme margen-resposive-iniciar-sesion me-5 pe-5"
                                 id="iniciarsesionEnlace">Iniciar
                                 sesión</a>
                         </div>
@@ -359,6 +359,9 @@ if (!empty($parametro)) {
         src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/intro.min.js"></script>
     <script type="text/javascript"
         src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/ayudaInteractivarecContrasena.js"></script>
+    <script type="text/javascript"
+        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/app.js"></script>
+
 
 </body>
 

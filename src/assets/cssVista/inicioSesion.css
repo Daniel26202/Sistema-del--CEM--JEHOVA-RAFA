@@ -166,6 +166,7 @@ se nota muy mínimo*/
   border: none;
   outline: none;
   border-bottom: solid 0.55vh #387adf;
+  background-color: var(--color-bg-card);
 }
 
 .icono {
