@@ -1,5 +1,5 @@
 <!-- Modal Cerrar Sesion  -->
-<div class="modal fade" id="eliminar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="cerrar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content contenido">
             <div class="m-3">
