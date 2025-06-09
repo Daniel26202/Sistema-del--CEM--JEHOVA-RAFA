@@ -2,9 +2,9 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\DbSistem;
 
-class ModeloSintomas extends Db
+class ModeloSintomas extends DbSistem
 {
 
     private $conexion;

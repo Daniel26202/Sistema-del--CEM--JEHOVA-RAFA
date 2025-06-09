@@ -2,10 +2,10 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\DbSistem;
 
 
-class ModeloInicio extends Db
+class ModeloInicio extends DbSistem
 {
 
 	private $conexion;

@@ -1,11 +1,11 @@
 <?php 
 
 namespace App\modelos;
-use App\modelos\Db;
+use App\modelos\DbSistem;
 
 date_default_timezone_set("America/Caracas");
 
-class ModeloBitacora extends Db{
+class ModeloBitacora extends DbSistem{
 	
 	private $conexion;
 

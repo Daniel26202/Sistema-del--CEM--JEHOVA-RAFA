@@ -2,10 +2,10 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\DbSistem;
 use DateTime;
 
-class ModeloCita extends Db
+class ModeloCita extends DbSistem
 {
 
 	private $conexion;
@@ -72,7 +72,7 @@ class ModeloCita extends Db
 	public function mostrarCita()
 	{
 		try {
-			$consulta = $this->conexion->prepare('SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM serviciomedico sm INNER JOIN  cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN usuario u ON pe.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE c.estado = "Pendiente" AND c.fecha >= CURRENT_DATE');
+			$consulta = $this->conexion->prepare('SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM bd.serviciomedico sm INNER JOIN  bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE c.estado = "Pendiente" AND c.fecha >= CURRENT_DATE');
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
 			return 0;
@@ -134,7 +134,7 @@ class ModeloCita extends Db
 	public function mostrarCitaHoy($fecha)
 	{
 		try {
-			$consulta = $this->conexion->prepare('SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM serviciomedico sm INNER JOIN  cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN usuario u ON pe.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE c.estado = "Pendiente" AND c.fecha = :fecha');
+			$consulta = $this->conexion->prepare('SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM bd.serviciomedico sm INNER JOIN  bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE c.estado = "Pendiente" AND c.fecha = :fecha');
 			$consulta->bindParam(":fecha", $fecha);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -146,7 +146,7 @@ class ModeloCita extends Db
 	public function mostrarCitaR()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM serviciomedico sm INNER JOIN  cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN usuario u ON pe.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE  c.estado ='Realizadas' ");
+			$consulta = $this->conexion->prepare("SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM bd.serviciomedico sm INNER JOIN  bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE  c.estado ='Realizadas' ");
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
 			return 0;

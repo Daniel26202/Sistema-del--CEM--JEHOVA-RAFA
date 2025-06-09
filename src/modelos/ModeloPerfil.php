@@ -15,7 +15,7 @@ class ModeloPerfil extends Db{
         $this->conexion = $this; // Guarda la instancia de la conexión
     }
 	public function seleccionarUsuario($usuario){
-		$consulta = $this->conexion->prepare("SELECT * FROM usuario u INNER JOIN  personal p ON p.id_usuario = u.id_usuario  WHERE usuario =:usuario");
+		$consulta = $this->conexion->prepare("SELECT * FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario");
 		
 		$consulta->bindParam(":usuario", $usuario);
 		return($consulta->execute()) ? $consulta->fetchAll() : false;

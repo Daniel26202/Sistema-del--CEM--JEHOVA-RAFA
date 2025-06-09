@@ -48,7 +48,7 @@
 
             <div class="d-flex">
                 <div class="mt-4">
-                    <h5 id="datosPaciente" class="mt-3 text-uppercase" style="margin-left: 15px;"></h5>
+                    <h5 id="datosPaciente" class="mt-3 text-uppercase" style="font-size: 15px; "></h5>
                     <div class="toast-container position-fixed top-0 end-5 p-3">
                         <div class="toast contenido" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
                             id="myToastfactura">

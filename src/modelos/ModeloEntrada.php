@@ -74,18 +74,6 @@ class ModeloEntrada extends Db
 			$consulta2->bindParam(":cantidad_disponible", $cantidad);
 			$consulta2->execute();
 
-
-
-
-			//insertar en la tabla inventario
-
-
-			$consulta3 = $this->conexion->prepare("INSERT INTO inventario VALUES (null, :id_insumo, :cantidad,:fechaVecimiento,:lote)");
-			$consulta3->bindParam(":id_insumo", $id_insumo);
-			$consulta3->bindParam(":cantidad", $cantidad);
-			$consulta3->bindParam(":fechaVecimiento", $fechaDeVencimiento);
-			$consulta3->bindParam(":lote", $lote);
-			$consulta3->execute();
 			$this->conexion->commit();
 			return 1;
 		} catch (\Exception $e) {
@@ -101,16 +89,6 @@ class ModeloEntrada extends Db
 			$consulta = $this->conexion->prepare("UPDATE entrada SET estado='DES' WHERE id_entrada =:id_entrada");
 			$consulta->bindParam(":id_entrada", $id_entrada);
 			$consulta->execute();
-			//se llama a un metodo de el ModeloInsumo para traer la cantidad de insumo que hay disponible y se guarda en una variable llamada cantidadInsumos
-			$cantidadInsumos = $this->modeloInsumo->actualizar_cantidad_insumo($id_insumo);
-
-
-			//esto es para actualizar la cantidad de insumos con el valor de cantidadInsumos
-			$actulizacionDeCantidad = $this->conexion->prepare("UPDATE inventario SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
-			$actulizacionDeCantidad->bindParam(":cantidad", $cantidadInsumos[0]["cantidad"]);
-			$actulizacionDeCantidad->bindParam(":id_insumo", $id_insumo);
-			$actulizacionDeCantidad->execute();
-
 			$this->conexion->commit();
 			return 1;
 		} catch (\Exception $e) {

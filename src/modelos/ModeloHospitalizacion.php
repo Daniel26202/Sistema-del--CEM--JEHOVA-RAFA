@@ -2,12 +2,12 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\DbSistem;
 use App\modelos\ModeloFactura;
 use Exception;
 use PDO;
 
-class ModeloHospitalizacion extends Db
+class ModeloHospitalizacion extends DbSistem
 {
 
     private $conexion;

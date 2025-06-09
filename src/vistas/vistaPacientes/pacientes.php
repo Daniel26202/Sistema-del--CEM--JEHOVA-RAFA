@@ -1,7 +1,7 @@
 <?php require_once './src/vistas/head/head.php';  ?>
 
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo">
+<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
 
   <h5 style="width: 95%; " class="m-auto mb-3">Pacientes<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"

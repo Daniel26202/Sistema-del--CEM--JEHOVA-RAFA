@@ -2,10 +2,10 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\DbSistem;
 use App\modelos\ModeloInsumo;
 
-class ModeloFactura extends Db
+class ModeloFactura extends DbSistem
 {
 
 	private $conexion;
