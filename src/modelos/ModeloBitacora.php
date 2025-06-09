@@ -5,7 +5,7 @@ use App\modelos\DbSistem;
 
 date_default_timezone_set("America/Caracas");
 
-class ModeloBitacora extends DbSistem{
+class ModeloBitacora extends Db{
 	
 	private $conexion;
 
@@ -21,10 +21,10 @@ class ModeloBitacora extends DbSistem{
 
     public function consultarBitacora($id_usuario = ""){
     	if ($id_usuario != '') {
-            $consulta = $this->conexion->prepare("SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM bitacora b INNER JOIN usuario u ON u.id_usuario = b.id_usuario INNER JOIN personal p ON p.id_usuario = u.id_usuario WHERE b.id_usuario =:id_usuario");
+            $consulta = $this->conexion->prepare("SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE b.id_usuario =:id_usuario");
             $consulta->bindParam(":id_usuario",$id_usuario);
         } else {
-            $consulta = $this->conexion->prepare("SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM bitacora b INNER JOIN usuario u ON u.id_usuario = b.id_usuario INNER JOIN personal p ON p.id_usuario = u.id_usuario ");
+            $consulta = $this->conexion->prepare("SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario ");
         }    
     	return ($consulta->execute()) ? $consulta->fetchAll() : false; 
     }

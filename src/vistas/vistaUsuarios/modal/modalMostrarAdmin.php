@@ -33,7 +33,7 @@
                     <div class="d-flex align-items-center col-12 mb-2">
                         <h5 class="me-2 col-5">Usuario:</h5>
                         <p class="m-0 col-5">
-                            <?php echo $dato["usuario"]; ?>
+                            <?php echo $dato["user"]; ?>
                         </p>
                     </div>
 

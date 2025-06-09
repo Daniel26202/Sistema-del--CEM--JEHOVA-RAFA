@@ -3,11 +3,13 @@
 namespace App\modelos;
 
 use App\modelos\DbSistem;
+use App\modelos\ModeloUsuarios;
 
 class ModeloDoctores extends DbSistem
 {
 
     private $conexion;
+    private $modeloUsuario;
 
     public function __construct()
     {
@@ -17,6 +19,7 @@ class ModeloDoctores extends DbSistem
         // Aquí puedes usar $this para acceder a la conexión
 
         $this->conexion = $this; // Guarda la instancia de la conexión
+        $this->modeloUsuario = new ModeloUsuarios();
     }
 
     //seleccionar especialidad
@@ -88,7 +91,7 @@ class ModeloDoctores extends DbSistem
     public function select()
     {
         try {
-            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM usuario u INNER JOIN personal p ON p.id_usuario = u.id_usuario INNER JOIN especialidad es ON es.id_especialidad = p.id_especialidad  inner join rol r on r.id_rol = u.id_rol WHERE u.estado = "ACT" AND  r.nombre = "Doctor" ';
+            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad  inner join segurity.rol r on r.id_rol = u.id_rol WHERE u.estado = "ACT" AND  r.nombre = "Doctor" ';
             $consulta = $this->conexion->prepare($sql);
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {
@@ -102,19 +105,17 @@ class ModeloDoctores extends DbSistem
 
         try {
             $this->conexion->beginTransaction();
-            //agregamos al doctor como usuario.
-            $consultaDeUsuario = $this->conexion->prepare('INSERT INTO usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES ("8",:imagen, :usuario, :correo, :password,"ACT");');
-            $consultaDeUsuario->bindParam(":imagen", $nombreImagen);
-            $consultaDeUsuario->bindParam(":usuario", $usuario);
-            $consultaDeUsuario->bindParam(":correo", $email);
-            $consultaDeUsuario->bindParam(":password", $password);
-            $consultaDeUsuario->execute();
-            //devuelve el id del usuario.
-            //obtenemos los datos del usuario que se a agregado. si no se inserta devuelve 0
-            $idUsuario = ($this->conexion->lastInsertId() == 0) ? false : $this->conexion->lastInsertId();
+            //agregamos al doctor como usuario
 
+            $idUsuario = $this->modeloUsuario->AgregarUsuarios($usuario, $password, $email);
+
+            if (!$idUsuario) {
+                return 0;
+            }
+
+        
             //agregamos al doctor como usuario.
-            $consultaDePersonal = $this->conexion->prepare('INSERT INTO personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, id_usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)');
+            $consultaDePersonal = $this->conexion->prepare('INSERT INTO personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)');
             $consultaDePersonal->bindParam(":cedula", $cedula);
             $consultaDePersonal->bindParam(":nombre", $nombre);
             $consultaDePersonal->bindParam(":apellido", $apellido);
@@ -192,12 +193,15 @@ class ModeloDoctores extends DbSistem
 
 
 
+
             //Editar el usuario (el correo del doctor).
             $consultaDeUsuario = $this->conexion->prepare('UPDATE usuario SET correo =:correo WHERE id_usuario=:id_usuario');
 
             $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
             $consultaDeUsuario->bindParam(":correo", $email);
             $consultaDeUsuario->execute();
+
+            // $this->modeloUsuario->updateUsuario($usuario, $idUsuario,);
 
             $contadorDias = 0;
             foreach ($checkeds as $idD) {
@@ -332,7 +336,7 @@ class ModeloDoctores extends DbSistem
     public function horarioDelDoctor($id_personal)
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT pe.id_personal,pe.nombre,pe.apellido,pe.cedula,hyd.horaDeEntrada,hyd.horaDeSalida,h.diaslaborables,h.id_horario FROM horarioydoctor hyd INNER JOIN personal pe ON pe.id_personal = hyd.id_personal INNER JOIN usuario u ON u.id_usuario = pe.id_usuario INNER JOIN horario h ON h.id_horario = hyd.id_horario WHERE pe.id_personal =:id_personal AND u.estado = 'ACT' ");
+            $consulta = $this->conexion->prepare("SELECT pe.id_personal,pe.nombre,pe.apellido,pe.cedula,hyd.horaDeEntrada,hyd.horaDeSalida,h.diaslaborables,h.id_horario FROM bd.horarioydoctor hyd INNER JOIN bd.personal pe ON pe.id_personal = hyd.id_personal INNER JOIN segurity.usuario u ON u.id_usuario = pe.usuario INNER JOIN bd.horario h ON h.id_horario = hyd.id_horario WHERE pe.id_personal =:id_personal AND u.estado = 'ACT' ");
             $consulta->bindParam(":id_personal", $id_personal);
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {
