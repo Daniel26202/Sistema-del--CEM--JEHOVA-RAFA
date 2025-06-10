@@ -26,7 +26,7 @@
 
     </div>
 
-    <div class="fondo-tabla col-7 m-auto pb-5 mb-5">
+    <div class="fondo-tabla col-7 m-auto pb-5 mb-5 h-75">
       <form class="form-modal perfil pb-5 " id="perfil">
         <div class="m-auto  w-50">
           <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" fill="currentColor"

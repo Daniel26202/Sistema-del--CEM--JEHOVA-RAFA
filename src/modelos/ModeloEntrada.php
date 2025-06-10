@@ -5,7 +5,7 @@ namespace App\modelos;
 use App\modelos\Db;
 use App\modelos\ModeloInsumo;
 
-class ModeloEntrada extends Db
+class ModeloEntrada extends DbSistem
 {
 
 	private $conexion;
