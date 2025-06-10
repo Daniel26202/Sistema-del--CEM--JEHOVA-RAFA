@@ -116,22 +116,7 @@ class ControladorFactura
 	}
 
 
-	// public function guardarFacturaHospit()
-	// {
-	// 	$fecha = date("Y-m-d");
-	// 	$insumos = isset($_POST["insumosHospi"]) ? $_POST["insumosHospi"] : false;
-	// 	$cantidad = isset($_POST["cantidadInsumosHospi"]) ? $_POST["cantidadInsumosHospi"] : false;
-	// 	$idH = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : false;
-	// 	$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
-	// 	$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
 
-	// 	$this->modelo->insertaFacturaHospit($idH, $fecha, $_POST["total"], $_POST["formasDePago"],  $insumos, $cantidad, $_POST["montosDePago"], $referencia, $serviciosExtras);
-
-	// 	print_r($_POST);
-
-	// 	// Guardar la bitacora
-	// 	$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha facturado una hospitalizacion");
-	// }
 
 	public function mostrarPDF($parametro)
 	{

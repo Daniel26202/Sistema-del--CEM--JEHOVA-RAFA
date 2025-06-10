@@ -93,6 +93,7 @@ class ControladorIniciarSesion
                                 $_SESSION['rol'] = $validar['rol'];
                                 $_SESSION['id_rol'] = $validar['id_rol'];
                                 $_SESSION['id_usuario'] = $validar['id_usuario'];
+                                $_SESSION['id_personal'] = $validar['id_personal'];
                                 $_SESSION['nombre'] = $validar['nombre_personal'];
                                 $_SESSION['apellido'] = $validar['apellido_personal'];
 

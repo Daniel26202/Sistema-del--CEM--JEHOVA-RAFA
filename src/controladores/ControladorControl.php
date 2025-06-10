@@ -37,8 +37,8 @@ class ControladorControl
 		if (session_status() !== PHP_SESSION_ACTIVE) {
 			session_start();
 		}
-		$idUsuario = $_SESSION['id_usuario'];
-		$validacionCargo = $this->inicio->comprobarCargo($idUsuario);
+		$idPersonal = $_SESSION['id_personal'];
+		$validacionCargo = $this->inicio->comprobarCargo($idPersonal);
 
 		require_once './src/vistas/vistaControl/vistaControl.php';
 	}

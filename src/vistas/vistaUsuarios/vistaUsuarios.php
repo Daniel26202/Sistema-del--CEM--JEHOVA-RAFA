@@ -122,7 +122,7 @@
                                         <?php echo $dato["nombre"] . " " . $dato["apellido"]; ?>
                                     </h5>
                                     <p class="mb-4">
-                                        <?php echo $dato["usuario"]; ?>
+                                        <?php echo $dato["user"]; ?>
                                     </p>
 
                                 </div>

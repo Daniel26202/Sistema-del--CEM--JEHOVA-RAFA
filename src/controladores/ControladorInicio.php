@@ -45,7 +45,7 @@ class ControladorInicio
         }
 
 
-        $validarCargo = $this->modeloInicio->comprobarCargo($_SESSION["id_usuario"]);
+        $validarCargo = $this->modeloInicio->comprobarCargo($_SESSION["id_personal"]);
         $datos_de_personal =  $this->modeloInicio->datos_doctor($_SESSION["id_usuario"]);
 
         $ayuda = "btnayudaInicio";

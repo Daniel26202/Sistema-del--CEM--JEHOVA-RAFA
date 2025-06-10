@@ -2,10 +2,10 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\DbSistem;
 use App\modelos\ModeloInsumo;
 
-class ModeloFactura extends Db
+class ModeloFactura extends DbSistem
 {
 
 	private $conexion;
@@ -97,7 +97,7 @@ class ModeloFactura extends Db
 	public function mostrarServicios()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.id_categoria,cs.nombre, d.nombre AS nombre_d, d.apellido AS apellido_d,sm.*,d.*  FROM categoria_servicio cs JOIN serviciomedico sm ON sm.id_categoria = cs.id_categoria JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico JOIN personal d ON psm.personal_id_personal = d.id_personal JOIN usuario u ON  u.id_usuario = d.id_usuario WHERE sm.estado = 'ACT' AND cs.nombre != 'Consulta' ");
+			$consulta = $this->conexion->prepare("SELECT cs.id_categoria,cs.nombre, d.nombre AS nombre_d, d.apellido AS apellido_d,sm.*,d.*  FROM bd.categoria_servicio cs JOIN bd.serviciomedico sm ON sm.id_categoria = cs.id_categoria JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico JOIN bd.personal d ON psm.personal_id_personal = d.id_personal JOIN segurity.usuario u ON  u.id_usuario = d.usuario WHERE sm.estado = 'ACT' AND cs.nombre != 'Consulta' ");
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
 			return 0;
@@ -534,7 +534,7 @@ class ModeloFactura extends Db
 	public function consultarServiciosExtras($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM factura f INNER JOIN serviciomedico_has_factura fs ON f.id_factura = fs.factura_id_factura INNER JOIN serviciomedico s ON s.id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN  personal d ON psm.personal_id_personal = d.id_personal INNER JOIN usuario u ON u.id_usuario = d.id_usuario INNER JOIN categoria_servicio cs ON s.id_categoria = cs.id_categoria WHERE f.id_factura =:id_factura ");
+			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM bd.factura f INNER JOIN bd.serviciomedico_has_factura fs ON f.id_factura = fs.factura_id_factura INNER JOIN bd.serviciomedico s ON s.id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN  bd.personal d ON psm.personal_id_personal = d.id_personal INNER JOIN segurity.usuario u ON u.id_usuario = d.usuario INNER JOIN bd.categoria_servicio cs ON s.id_categoria = cs.id_categoria WHERE f.id_factura =:id_factura ");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -558,7 +558,7 @@ class ModeloFactura extends Db
 	public function consultarFacturaInsumo($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM inventario i INNER JOIN factura_has_inventario fi ON i.id_inventario = fi.inventario_id_inventario INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
+			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.inventario_id_inventario INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {

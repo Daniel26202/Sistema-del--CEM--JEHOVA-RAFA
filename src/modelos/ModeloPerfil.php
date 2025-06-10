@@ -15,17 +15,17 @@ class ModeloPerfil extends Db{
         $this->conexion = $this; // Guarda la instancia de la conexión
     }
 	public function seleccionarUsuario($usuario){
-		$consulta = $this->conexion->prepare("SELECT * FROM usuario u INNER JOIN  personal p ON p.id_usuario = u.id_usuario  WHERE usuario =:usuario");
+		$consulta = $this->conexion->prepare("SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario");
 		
 		$consulta->bindParam(":usuario", $usuario);
 		return($consulta->execute()) ? $consulta->fetchAll() : false;
 	}
 
-	public function update($id_usuario,  $cedula, $nombre, $apellido, $telefono, $usuario)
+	public function update($id_usuario,  $cedula, $nombre, $apellido, $telefono, $usuario,$correo)
 	{
 		try {
 			// UPDATE paciente SET id_cedula=,cedula=],nombre=,apellido=,telefono=,direccion=,fn= WHERE 1
-			$consulta = $this->conexion->prepare("UPDATE personal SET cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono WHERE id_usuario = :id_usuario");
+			$consulta = $this->conexion->prepare("UPDATE bd.personal SET cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono WHERE usuario = :id_usuario");
 			$consulta->bindParam(":id_usuario", $id_usuario);
 			$consulta->bindParam(":cedula", $cedula);
 			$consulta->bindParam(":nombre", $nombre);
@@ -34,9 +34,10 @@ class ModeloPerfil extends Db{
 			$consulta->execute();
 
 
-			$consulta2 = $this->conexion->prepare("UPDATE usuario SET usuario=:usuario WHERE id_usuario = :id_usuario");
+			$consulta2 = $this->conexion->prepare("UPDATE segurity.usuario SET usuario=:usuario, correo =:correo WHERE id_usuario = :id_usuario");
 			$consulta2->bindParam(":id_usuario", $id_usuario);
 			$consulta2->bindParam(":usuario", $usuario);
+			$consulta2->bindParam(":correo", $correo);
 			$consulta2->execute();
 
 			return 1;

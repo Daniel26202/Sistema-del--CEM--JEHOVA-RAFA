@@ -2,7 +2,7 @@
 
 
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo">
+<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
 
     <h5 style="width: 95%; " class="m-auto mb-3">Insumos<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-capsule ms-2"
@@ -122,7 +122,7 @@
                                     <h5 class="card-title titulo"><?= $i["nombre"] ?></h5>
                                     <p class="mt-3">Medida: <?= $i["medida"] ?></p>
                                     <p class="mt-3">Skock-Min: <?= $i["stockMinimo"] ?></p>
-                                    <?php if ($i["cantidad"] <= 0): ?>
+                                    <?php if ($i["cantidad_disponible"] <= 0): ?>
                                         <p class="text-danger">Cantidad: <?= $i["cantidad"] ?></p>
                                     <?php else: ?>
                                         <p>Cantidad: <?= $i["cantidad_inventario"] ?></p>
