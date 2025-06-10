@@ -22,7 +22,7 @@ class ModeloConsultas extends DbSistem
     public function mostrarDoctores()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT doctor.nombre, doctor.apellido, doctor.id_personal FROM segurity.usuario u INNER JOIN bd.personal doctor on u.id_usuario = doctor.usuario INNER JOIN rol r ON r.id_rol = u.id_rol WHERE u.estado = 'ACT' AND r.nombre = 'Doctor' ");
+            $consulta = $this->conexion->prepare("SELECT doctor.nombre, doctor.apellido, doctor.id_personal FROM segurity.usuario u INNER JOIN bd.personal doctor on u.id_usuario = doctor.usuario INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = 'ACT' AND r.nombre = 'Doctor' ");
             $consulta->execute();
 
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
