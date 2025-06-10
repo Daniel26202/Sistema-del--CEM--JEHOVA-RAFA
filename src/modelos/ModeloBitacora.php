@@ -33,7 +33,7 @@ class ModeloBitacora extends Db{
     public function insertarBitacora($id_usuario, $tabla, $actividad)
     {
         $fecha_hora = date('Y-m-d H:i:s');
-    	$consulta = $this->conexion->prepare("INSERT INTO bitacora (id_usuario, tabla, actividad, fecha_hora) VALUES (:id_usuario, :tabla, :actividad, :fecha_hora) ");
+    	$consulta = $this->conexion->prepare("INSERT INTO segurity.bitacora (id_usuario, tabla, actividad, fecha_hora) VALUES (:id_usuario, :tabla, :actividad, :fecha_hora) ");
     	$consulta->bindParam(":id_usuario", $id_usuario);
     	$consulta->bindParam(":tabla", $tabla);
     	$consulta->bindParam(":actividad", $actividad);
