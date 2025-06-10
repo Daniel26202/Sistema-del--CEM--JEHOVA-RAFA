@@ -23,31 +23,7 @@ class ModeloEstadisticas extends DbSistem
   public function distribucion_edad_genero()
   {
     try {
-      $sql = "SELECT
-  rango_edad,
-  SUM(CASE WHEN genero = 'masculino' THEN cantidad ELSE 0 END) AS masculino,
-  SUM(CASE WHEN genero = 'femenino' THEN cantidad ELSE 0 END) AS femenino,
-  SUM(cantidad) AS total,
-  (SELECT COUNT(*) FROM paciente WHERE genero = 'masculino') AS total_masculino,
-  (SELECT COUNT(*) FROM paciente WHERE genero = 'femenino') AS total_femenino
-FROM (
-  SELECT
-    CASE
-      WHEN TIMESTAMPDIFF(YEAR, fn, CURDATE()) BETWEEN 0 AND 12 THEN '0-12'
-      WHEN TIMESTAMPDIFF(YEAR, fn, CURDATE()) BETWEEN 13 AND 19 THEN '13-19'
-      WHEN TIMESTAMPDIFF(YEAR, fn, CURDATE()) BETWEEN 20 AND 35 THEN '20-35'
-      WHEN TIMESTAMPDIFF(YEAR, fn, CURDATE()) BETWEEN 36 AND 50 THEN '36-50'
-      WHEN TIMESTAMPDIFF(YEAR, fn, CURDATE()) BETWEEN 51 AND 65 THEN '51-65'
-      ELSE '66+'
-    END AS rango_edad,
-    genero,
-    COUNT(*) AS cantidad
-  FROM paciente
-  GROUP BY rango_edad, genero
-) AS sub
-GROUP BY rango_edad
-ORDER BY rango_edad
-
+      $sql = "SELECT * FROM distribucion_edad_genero
 ";
 
       $consulta = $this->conexion->prepare($sql);
@@ -62,12 +38,7 @@ ORDER BY rango_edad
   public function insumos()
   {
     try {
-      $sql = "
-      SELECT i.nombre AS nombre_insumo, SUM(fhi.cantidad)
-      AS total_usado FROM factura_has_inventario fhi 
-      JOIN inventario inv ON fhi.inventario_id_inventario = inv.id_inventario 
-      JOIN insumo i ON inv.id_insumo = i.id_insumo 
-      GROUP BY i.id_insumo ORDER BY `total_usado` DESC";
+      $sql = "SELECT * FROM insumos";
       $consulta = $this->conexion->prepare($sql);
 
       return ($consulta->execute()) ? $consulta->fetchAll() : false;
@@ -80,19 +51,7 @@ ORDER BY rango_edad
   {
     try {
       if ($fechaInicio == "" && $fechaFinal == "") {
-        $sql = "SELECT
-              p.nombre_patologia,
-              COUNT(DISTINCT pp.id_paciente) AS casos,
-              ROUND(
-                COUNT(DISTINCT pp.id_paciente) 
-                / (SELECT COUNT(*) FROM paciente)  
-                * 1000,/* -- población total */
-                2
-              ) AS tasa_por_1000
-            FROM patologiadepaciente pp
-            JOIN patologia p ON pp.id_patologia = p.id_patologia
-            GROUP BY pp.id_patologia
-            ORDER BY casos DESC;
+        $sql = "SELECT * FROM tasa_morbilidad;
             ";
         $consulta = $this->conexion->prepare($sql);
       } else {
