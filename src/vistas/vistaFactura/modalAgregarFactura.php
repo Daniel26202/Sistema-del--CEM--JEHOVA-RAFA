@@ -388,7 +388,7 @@
             <path
               d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
           </svg>
-          <div>SELECCIONAR INSUMOS 1</div>
+          <div>SELECCIONAR INSUMOS</div>
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -559,7 +559,7 @@
                       <?php echo $i['medida']; ?>
                     </td>
                     <td class="text-center border-start cantidad_tabla_disponible<?= $i["nombre"] ?>">
-                      <?php echo $i['cantidad']; ?>
+                      <?php echo $i['cantidad_disponible']; ?>
                     </td>
                     <td class="text-center border-start">
                       <?php echo $i['precio'] ?> BS

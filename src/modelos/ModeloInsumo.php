@@ -5,7 +5,7 @@ namespace App\modelos;
 use App\modelos\Db;
 use DateTime;
 
-class ModeloInsumo extends Db
+class ModeloInsumo extends DbSistem
 {
 
 	private $conexion;
