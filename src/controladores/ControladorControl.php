@@ -135,7 +135,7 @@ class ControladorControl
 
 				echo json_encode($_POST);
 			} else {
-				echo json_encode(["mensaje"=> "lamentablemente ocurrio un error por favor intente mas tarde."]);
+				echo json_encode(["mensaje"=> "lamentablemente ocurrió un error por favor intente mas tarde."]);
 			}
 			
 		}
