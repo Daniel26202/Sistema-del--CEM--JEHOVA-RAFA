@@ -1703,13 +1703,13 @@ td {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-.tamaño-modal {
+/* .tamaño-modal {
     width: 50%;
     max-width: 600px;
     margin: 0 auto;
     border-radius: 10px;
     padding: 1rem;
-}
+} */
 
 /* .input-modal,
 input[type="date"] {
@@ -1985,127 +1985,3 @@ input[type="date"] {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-@media screen and (max-width: 800px) {
-    .reportess,
-    .granRepor {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .t {
-        font-size: 1rem;
-    }
-
-    .tamaño-modal {
-        width: 90%;
-        padding: 1rem;
-        overflow: hidden;
-
-        .input-modal,
-        input[type="date"] {
-            font-size: 1rem;
-            padding: 0.4rem;
-        }
-    }
-}
-
-@media screen and (max-width: 600px) {
-    /* Contenedor de reportes */
-    .reportess {
-        display: flex !important;
-        flex-direction: column;
-        padding: 0.5rem;
-    }
-
-    /* .,   {
-        width: 100%;
-        max-width: none;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-    } */
-    /* .cardReporte {
-    width: 100% !important;
-    padding: 10px !important;
-  } */
-
-    .cardreporteCitas {
-        padding: 12px;
-    }
-
-    .granReporte {
-        width: 80% !important;
-    }
-
-    .granRepor {
-        margin-top: -25px;
-        height: 33vh !important;
-    }
-
-    .reRepor {
-        margin-top: -5px;
-        height: 33vh !important;
-    }
-
-    .fecha_citas {
-        padding-top: 30px;
-    }
-
-    .fechas_mover {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        background-color: rgba(0, 0, 0, 0.281);
-        margin: auto;
-        border-radius: 20px;
-    }
-
-    /* Texto de reportes */
-    .titulo-reporte {
-        font-size: 1rem !important;
-        text-align: center;
-    }
-
-    /* Modales */
-    .tamaño-modal {
-        width: 90%;
-        margin: 0 auto;
-        border-radius: 10px;
-        padding: 1rem;
-    }
-
-    .input-agregar {
-        background-color: var(--color-bg-card);
-    }
-
-    .input-modal {
-        background-color: var(--color-bg-card);
-        font-size: 1rem;
-        padding: 0.8rem;
-    }
-
-    .btn-agregarcita-modal,
-    .btn-primary {
-        width: 100%;
-        font-size: 1rem;
-        margin-top: 0.5rem;
-    }
-
-    .t {
-        font-size: 0.9rem;
-        word-wrap: break-word !important;
-    }
-
-    .repor {
-        flex-wrap: wrap;
-    }
-
-    input[type="date"] {
-        width: 100%;
-        font-size: 0.9rem;
-    }
-
-    /* .tamaño-modal {
-        width: 100%;
-        padding: 1rem;
-    } */
-}

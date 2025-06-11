@@ -9,6 +9,10 @@
             <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1ZM10 8a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V8Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z"></path>
         </svg></h5>
 
+    <!-- alertas -->
+
+    <?php require_once "./src/vistas/alerts.php" ?>
+
 
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
@@ -272,7 +276,7 @@
 <!-- Modal Factura -->
 <div class="modal fade modalCapa " id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-xxl-down fullscreen-modal">
-        <div class="modal-content contenido">
+        <div class="modal-content contenido" style="width: 100vw;">
 
 
 
@@ -449,7 +453,7 @@
                                                 <div class="uk-card-header">
                                                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                                                         <div class="uk-width-auto">
-                                                            <img class="uk-border-circle" width="40" height="40" src="./src/assets/img/logotipo.jpg"
+                                                            <img class="uk-border-circle" width="40" height="40" src="<?= $urlBase ?>../src/assets/img/logotipo.jpg"
                                                                 alt="Avatar">
                                                         </div>
                                                         <div class="uk-width-expand">
@@ -678,7 +682,7 @@
 
 <div class="modal fade modalCapa " id="myModalAnular" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-xxl-down fullscreen-modal">
-        <div class="modal-content contenido">
+        <div class="modal-content contenido" style="width: 100vw;">
             <div class="modal-header height_modal_factura">
                 <div class="d-flex justify-content-center align-items-center">
                     <div>
@@ -847,7 +851,7 @@
                                                     <div class="uk-card-header">
                                                         <div class="uk-grid-small uk-flex-middle" uk-grid>
                                                             <div class="uk-width-auto">
-                                                                <img class="uk-border-circle" width="40" height="40" src="./src/assets/img/logotipo.jpg"
+                                                                <img class="uk-border-circle" width="40" height="40" src="<?php echo $urlBase ?>../src/assets/img/logotipo.jpg"
                                                                     alt="Avatar">
                                                             </div>
                                                             <div class="uk-width-expand">

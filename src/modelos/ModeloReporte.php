@@ -5,6 +5,7 @@ namespace App\modelos;
 use App\modelos\DbSistem;
 use App\modelos\ModeloInsumo;
 
+
 class ModeloReporte extends DbSistem
 {
 
@@ -153,7 +154,7 @@ class ModeloReporte extends DbSistem
 	public function consultarServiciosExtras($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM factura f INNER JOIN serviciomedico_has_factura fs ON f.id_factura = fs.factura_id_factura INNER JOIN serviciomedico s ON s.id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN  personal d ON psm.personal_id_personal = d.id_personal INNER JOIN usuario u ON u.id_usuario = d.id_usuario INNER JOIN categoria_servicio cs ON s.id_categoria = cs.id_categoria WHERE f.id_factura =:id_factura  ");
+			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM factura f INNER JOIN serviciomedico_has_factura fs ON f.id_factura = fs.factura_id_factura INNER JOIN serviciomedico s ON s.id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN  personal d ON psm.personal_id_personal = d.id_personal INNER JOIN segurity.usuario u ON u.id_usuario = d.usuario INNER JOIN categoria_servicio cs ON s.id_categoria = cs.id_categoria  WHERE f.id_factura =:id_factura  ");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -163,7 +164,7 @@ class ModeloReporte extends DbSistem
 	public function consultarFacturaInsumo($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM inventario i INNER JOIN factura_has_inventario fi ON i.id_inventario = fi.inventario_id_inventario INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura ");
+			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.inventario_id_inventario INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura ");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -193,7 +194,7 @@ class ModeloReporte extends DbSistem
 	public function consultarFacturaSinCita($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT p.nacionalidad, p.nombre AS  nombre_p,p.apellido AS apellido_p,p.cedula AS cedula_p,f.* FROM factura f INNER JOIN paciente p ON f.id_paciente = p.id_paciente WHERE f.id_factura =:id_factura");
+			$consulta = $this->conexion->prepare("SELECT p.nacionalidad, p.nombre AS  nombre_p,p.apellido AS apellido_p,p.cedula AS cedula_p,f.* FROM factura f INNER JOIN paciente p ON f.paciente_id_paciente = p.id_paciente WHERE f.id_factura =:id_factura");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {

@@ -92,6 +92,11 @@
                 <p class="pe-2">EL Rif ya existe, intente de nuevo.</p>
             </div>
 
+        <?php elseif ($parametro[0] == "anulada"): ?>
+            <div class="uk-alert-primary comentarioD  me-4 fw-bolder alertaGenerica text-center" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">Se anulo la factura correctamente.</p>
+            </div>
 
 
 

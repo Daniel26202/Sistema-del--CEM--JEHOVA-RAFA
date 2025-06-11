@@ -35,7 +35,11 @@ class ControladorReportes{
 	public function buscarEntradasInsumosPDF(){
 		require_once './src/vistas/vistaReportes/vistaReporteEntradasPdf.php';
 	}
-	public function factura() {
+	public function factura($parametro) {
+		$datosFactura = $this->modelo->consultarFacturaSinCita($parametro[0]);
+		$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
+		$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
+		$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
 		// Verificar si se ha enviado el ID de cita
 		if (isset($_GET["id_cita"]) && !empty($_GET["id_cita"])) {
 			// Si se cumple la condición, requerir el primer archivo
