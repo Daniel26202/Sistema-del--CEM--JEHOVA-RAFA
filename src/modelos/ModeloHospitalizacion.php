@@ -68,7 +68,7 @@ class ModeloHospitalizacion extends DbSistem
     public function select($cedula)
     {
 
-        $consulta = $this->conexion->prepare('SELECT con.id_control, con.historiaclinica, con.diagnostico, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM control con INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE pac.cedula = :cedula AND con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" ORDER by con.id_control DESC LIMIT 1');
+        $consulta = $this->conexion->prepare('SELECT con.id_control, con.historiaclinica, con.diagnostico, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM control con INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE pac.cedula = :cedula AND con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" ORDER by con.id_control DESC LIMIT 1');
 
         $consulta->bindParam(":cedula", $cedula);
 
@@ -79,7 +79,7 @@ class ModeloHospitalizacion extends DbSistem
     public function selectsInsumos()
     {
 
-        $consulta = $this->conexion->prepare('SELECT ins.*, inv.cantidad FROM insumo ins INNER JOIN inventario inv ON inv.id_insumo = ins.id_insumo WHERE estado = "ACT" AND inv.cantidad > 0');
+        $consulta = $this->conexion->prepare('SELECT ins.*, inv.cantidad_disponible AS cantidad FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo WHERE estado = "ACT" AND inv.cantidad_disponible > 0');
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
