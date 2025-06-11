@@ -65,20 +65,20 @@ class ControladorControl
 		}
 		$idUsuario = $_SESSION['id_usuario'];
 		$validacionCargo = $this->inicio->comprobarCargo($idUsuario);
-		$sesion = $_SESSION['rol'];
 
 		$cedula = $datos[0];
+
+		//síntomas
+		$registradosS = $this->modelo->mostrarSintomasPa($cedula);
+		$sintomas = $this->modeloSintomas->selects();
+		// patologías
+		$registradosP = $this->modeloPatologia->buscarPatologiaPaciente($cedula);
+		$patologias = $this->modeloPatologia->mostrarPatologias();
 
 		// cero es administrador mas no doctor 
 		if ($validacionCargo == 0) {
 
 			$respuestaP = $this->modelo->mostrarControlPacienteA($cedula);
-			//síntomas
-			$registradosS = $this->modelo->mostrarSintomasPa($cedula);
-			$sintomas = $this->modeloSintomas->selects();
-			// patologías
-			$registradosP = $this->modeloPatologia->buscarPatologiaPaciente($cedula);
-			$patologias = $this->modeloPatologia->mostrarPatologias();
 
 			// este array tiene tres valores de tres funciones en el modelo
 			$arrayPSS = [$respuestaP, $registradosS, $sintomas, $registradosP, $patologias];
@@ -87,12 +87,6 @@ class ControladorControl
 		} else if ($validacionCargo == 1) {
 			// devuelve solo los datos del paciente atendido por el mismo doctor que inicio sesión(Usuario)
 			$respuesta = $this->modelo->mostrarControlPacienteU($cedula, $idUsuario);
-			//síntomas
-			$registradosS = $this->modelo->mostrarSintomasPa($cedula);
-			$sintomas = $this->modeloSintomas->selects();
-			// patologías
-			$registradosP = $this->modeloPatologia->buscarPatologiaPaciente($cedula);
-			$patologias = $this->modeloPatologia->mostrarPatologias();
 
 			// este array tiene tres valores de tres funciones en el modelo
 			$arrayPSS = [$respuesta, $registradosS, $sintomas, $registradosP, $patologias];

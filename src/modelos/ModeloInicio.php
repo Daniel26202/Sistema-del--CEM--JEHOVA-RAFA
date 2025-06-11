@@ -185,7 +185,7 @@ WHERE estado = 'ACT';");
 	{
 		try {
 
-			$consulta = $this->conexion->prepare(" SELECT * FROM personal p INNER JOIN usuario u ON u.id_usuario = p.id_usuario WHERE p.id_usuario = :id_usuario AND p.id_especialidad IS NOT null");
+			$consulta = $this->conexion->prepare("SELECT * FROM personal p INNER JOIN usuario u ON u.id_usuario = p.id_usuario WHERE p.id_usuario = :id_usuario AND p.id_especialidad IS NOT null");
 			$consulta->bindParam(":id_usuario", $id_usuario);
 			$consulta->execute();
 			while ($consulta->fetch()) {

@@ -218,7 +218,7 @@ class ControladorHospitalizacion
         }
 
         // esto se puede usar $_POST["id_controlE"]. 
-        $this->modelo->editarH($_POST["horas"], $_POST["precioHoras"], $_POST["total"], $idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, $_POST["enfermer-e"]);
+        $this->modelo->editarH($idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim);
         // Guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha modificado una hospitalizacion");
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion");
