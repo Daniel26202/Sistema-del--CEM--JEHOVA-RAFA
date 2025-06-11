@@ -28,7 +28,7 @@ class ControladorProveedores
 	public function papelera($parametro)
 	{
 		$proveedor = $this->modelo->papelera();
-		require_once './src/vistas/vistaProveedores/p.php';
+		require_once './src/vistas/vistaProveedores/vistaProveedoresPapelera.php';
 	}
 
 	public function insertar()
@@ -36,13 +36,13 @@ class ControladorProveedores
 		$resultadoDeRif = $this->modelo->validarRif($_POST['rif']);
 
 		if ($resultadoDeRif === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/error");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/errorRif");
 		} else {
 			$insercion = $this->modelo->agregar($_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
 			if ($insercion) {
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "proveedor", "Ha insertado un proveedor");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/agregado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/registro");
 			} else {
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/errorSistem");
 			}
@@ -60,7 +60,7 @@ class ControladorProveedores
 		if ($eliminacion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "proveedor", "Ha eliminado un proveedor");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/eliminado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/eliminar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/errorSistem");
 		}
@@ -94,7 +94,7 @@ class ControladorProveedores
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "proveedor", "Ha modificado un proveedor");
 
 
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editar");
 
 			// NOTA: Esto "&&" es "Y"
 			//se verifica si la cédula del input no es igual a la cédula ya existente.  
@@ -103,20 +103,20 @@ class ControladorProveedores
 			//verifica si la cédula es igual a la información de la base de datos.
 			if ($resultadoDeCedula === "existeC") {
 
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/error");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/errorRif");
 			} else {
 
 				$this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "proveedor", "Ha modificado un proveedor");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editar");
 			}
 		} else {
 
 			$this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "proveedor", "Ha modificado un proveedor");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores/editar");
 		}
 	}
 

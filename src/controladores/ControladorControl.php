@@ -127,12 +127,17 @@ class ControladorControl
 	{
 		if ($_POST) {
 
-			$this->modelo->editarControl($_POST["historial"], $_POST["id_control"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["nota_e"]);
+			$editar = $this->modelo->editarControl($_POST["historialE"], $_POST["id_control"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["nota_e"]);
 
-			// Guardar la bitacora
-			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha modificado un  control medico");
+			if ($editar) {
+				// Guardar la bitacora
+				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha modificado un  control medico");
 
-			echo json_encode($_POST);
+				echo json_encode($_POST);
+			} else {
+				echo json_encode(["mensaje"=> "lamentablemente ocurrio un error por favor intente mas tarde."]);
+			}
+			
 		}
 	}
 	// mostrar síntomas de pacientes
@@ -162,18 +167,26 @@ class ControladorControl
 	{
 		$id_sintomas = $datos[0];
 		$id_usuario_bitacora = $datos[1];
-		$this->modeloSintomas->eliminarL($id_sintomas);
-		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($id_usuario_bitacora, "sintomas", "Ha eliminado un  sintoma");
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control");
+		$eliminar = $this->modeloSintomas->eliminarL($id_sintomas);
+		if ($eliminar) {
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($id_usuario_bitacora, "sintomas", "Ha eliminado un  sintoma");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/eliminar");
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/errorSistem");
+		}
 	}
 
 	public function agregarSintoma()
 	{
-		$this->modeloSintomas->insertar($_POST["nombreS"]);
-		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "sintomas", "Ha Insertado un  sintoma");
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control");
+		$insertar = $this->modeloSintomas->insertar($_POST["nombreS"]);
+		if ($insertar) {
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "sintomas", "Ha Insertado un  sintoma");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/registro");
+		} else {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/errorSistem");
+		}
 	}
 
 	private function permisos($id_rol, $permiso, $modulo)

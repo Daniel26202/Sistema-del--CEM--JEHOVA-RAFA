@@ -1,224 +1,262 @@
+:root {
+  /* Colores claros por defaultt */
+  --color-bg-main: #f2f9ff;
+  --color-bg-sidebar: #e8f2ff;
+  --color-bg-card: #fdfdff;
+  --color-bg-card-estadisticas: #fdfdff;
+  --color-text: #1b1a1a;
+  --color-text-card: #1b1a1a;
+  --color-primary: #387adf;
+  --color-primary-contrast: #ffffff;
+  --color-surface: #f8fcff;
+  --color-border: #f2f9ff;
+  --filter-image: "";
+  --color-error: #917977;
+}
+
+[data-theme="dark"] {
+  /* Colores oscuros */
+  --color-bg-main: hsl(211, 53%, 11%);
+  --color-bg-sidebar: hsl(211, 43%, 11%);
+  --color-bg-card: #415a77;
+  --color-bg-card-estadisticas: #1e3c5e;
+  --color-text: #e0e1dd;
+  --color-text-card: #e0e1dd;
+  --color-primary: #387adf;
+  --color-primary-contrast: #e0e1dd;
+  --color-surface: #415a77;
+  --color-border: #e4ebf0;
+  --filter-image: brightness(50%) contrast(120%);
+  --color-error: #b0cad7;
+  input::placeholder {
+    color: #e8f2ff;
+  }
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-bg-main);
+  height: 100vh;
+}
+.contenedor {
+  /* --color-bg-main */
+  background-color: var(--color-bg-main);
 }
 
 /* flechas del carrusel; la oculto */
 .carousel .carousel-control-prev,
 .carousel .carousel-control-next {
-    visibility: hidden;
-    opacity: 3;
-
+  visibility: hidden;
+  opacity: 3;
 }
 
 /* flechas del carrusel; la hago visible */
 .carousel:hover .carousel-control-prev,
 .carousel:hover .carousel-control-next {
-    visibility: visible;
-    animation-duration: 2s;
-    transition-timing-function: linear;
+  visibility: visible;
+  animation-duration: 2s;
+  transition-timing-function: linear;
 }
 
 /* (con bootstrap) animación de desvanecimiento de las flechas del carrusel;
 se nota muy mínimo */
 @keyframes FadeInPrev {
-    0% {
-        opacity: 0;
-        padding-left: 40px;
-    }
+  0% {
+    opacity: 0;
+    padding-left: 40px;
+  }
 
-    100% {
-        opacity: 1;
-        padding-left: 0px;
-    }
+  100% {
+    opacity: 1;
+    padding-left: 0px;
+  }
 }
 
 /* (con bootstrap) animación de desvanecimiento de las flechas del carrusel;
 se nota muy mínimo*/
 @keyframes FadeInNext {
-    0% {
-        opacity: 0;
-        padding-right: 40px;
-    }
+  0% {
+    opacity: 0;
+    padding-right: 40px;
+  }
 
-    100% {
-        opacity: 1;
-        padding-right: 0px;
-    }
+  100% {
+    opacity: 1;
+    padding-right: 0px;
+  }
 }
 
 .linea-titulo {
-    margin-top: 7px;
-    width: 50.42vh;
-    border-bottom: solid 4px #387ADF;
+  margin-top: 7px;
+  width: 50.42vh;
+  border-bottom: solid 4px #387adf;
 }
 
 .titulo {
-    margin-bottom: 7.3vh;
+  margin-bottom: 7.3vh;
 }
 
 .posicionCarrusel {
-    position: fixed;
+  position: fixed;
 }
 
 .formulario {
-    margin-left: 58px;
-    border: #E4EBF0 solid 1px;
-    border-radius: 7vh;
-    box-shadow: #E4EBF0 0 0 5px;
-    background-color: #F8FCFF;
+  margin-left: 58px;
+  border: #e4ebf0 solid 1px;
+  border-radius: 7vh;
+  box-shadow: #e4ebf0 0 0 5px;
+  background-color: var(--color-bg-card);
 }
 
 .fondo-formulario {
-
-    padding: 8.3vh;
-    padding-top: 6.9vh;
-    padding-bottom: 7.8vh;
+  padding: 8.3vh;
+  padding-top: 6.9vh;
+  padding-bottom: 7.8vh;
 }
 
 .input {
-    padding-left: 28.6px;
-    padding-bottom: 4.8px;
-    width: 69vh;
-    border: none;
-    outline: none;
-    border-bottom: solid 0.55vh #387ADF;
-    background-color: #F8FCFF;
+  padding-left: 28.6px;
+  padding-bottom: 4.8px;
+  width: 69vh;
+  border: none;
+  outline: none;
+  border-bottom: solid 0.55vh #387adf;
+  background-color: var(--color-bg-card);
+}
+
+.text-theme {
+  color: var(--color-text) !important;
 }
 
 .inputError {
-    border-bottom: solid 0.55vh rgb(224, 3, 3) !important;
-
+  border-bottom: solid 0.55vh rgb(224, 3, 3) !important;
 }
 
 .inputCorrecto {
-    border-bottom: solid 0.55vh rgb(13, 240, 13) !important;
-
+  border-bottom: solid 0.55vh rgb(13, 240, 13) !important;
 }
 
 .icono {
-
-    color: #387ADF;
-    position: absolute;
-    transform: translateY(1px);
-    transform: translateX(-2px);
-    width: 25px;
-    transition: 0.1s;
-
+  color: #387adf;
+  position: absolute;
+  transform: translateY(1px);
+  transform: translateX(-2px);
+  width: 25px;
+  transition: 0.1s;
 }
 
 .iconoError {
-    color: rgb(224, 3, 3) !important;
+  color: rgb(224, 3, 3) !important;
 }
 
 .iconoCorrecto {
-    color: rgb(13, 240, 13) !important;
+  color: rgb(13, 240, 13) !important;
 }
 
 .imgCorrecto {
-    /* esto es para alterar el color de la imagen (esto es verde) */
-    filter: invert(50%) sepia(100%) saturate(1000%) hue-rotate(90deg) brightness(100%) contrast(130%) !important;
+  /* esto es para alterar el color de la imagen (esto es verde) */
+  filter: invert(50%) sepia(100%) saturate(1000%) hue-rotate(90deg) brightness(100%) contrast(130%) !important;
 }
 .imgError {
-    /* esto es para alterar el color de la imagen (esto es rojo) */
-    filter: invert(20%) sepia(800%) saturate(8000%) hue-rotate(-10deg) brightness(80%) contrast(130%) !important;
+  /* esto es para alterar el color de la imagen (esto es rojo) */
+  filter: invert(20%) sepia(800%) saturate(8000%) hue-rotate(-10deg) brightness(80%) contrast(130%) !important;
 }
 
 .icono-animacion {
-
-    color: #387ADF;
-    position: absolute;
-    transform: translateY(1px);
-    transform: translateX(-0.5px);
-    width: 20px;
-    transition: 0.1s;
-
+  color: #387adf;
+  position: absolute;
+  transform: translateY(1px);
+  transform: translateX(-0.5px);
+  width: 20px;
+  transition: 0.1s;
 }
 
 .icono-respuesta-seguridad {
-    width: 23.5px;
-    color: #387ADF;
-    position: absolute;
-    transform: translateY(1px);
-    transform: translateX(-2px);
-    transition: 0.1s;
+  width: 23.5px;
+  color: #387adf;
+  position: absolute;
+  transform: translateY(1px);
+  transform: translateX(-2px);
+  transition: 0.1s;
 }
 
 .icono-respuesta-seguridad-animacion {
-    width: 19px;
-    color: #387ADF;
-    position: absolute;
-    transform: translateY(1px);
-    transform: translateX(-0.5px);
-    transition: 0.1s;
+  width: 19px;
+  color: #387adf;
+  position: absolute;
+  transform: translateY(1px);
+  transform: translateX(-0.5px);
+  transition: 0.1s;
 }
 
 .tamano {
-    height: 100vh;
-    background-color: #387ADF;
+  height: 100vh;
+  background-color: #387adf;
 }
 
 .boton {
-    margin-left: 44.5%;
-    padding: 0% 30px;
-    padding-bottom: 4px;
-    font-size: 1.6rem;
-    letter-spacing: 1.5px;
+  margin-left: 44.5%;
+  padding: 0% 30px;
+  padding-bottom: 4px;
+  font-size: 1.6rem;
+  letter-spacing: 1.5px;
 }
 
-
 .comentarioRed {
-    border: 0.1px solid #ffe9ec;
-    box-shadow: #e7dcdd 0 0 2px;
+  border: 0.1px solid #ffe9ec;
+  box-shadow: #e7dcdd 0 0 2px;
 }
 
 .comentarioAzul {
-    border: 0.1px solid rgb(236, 236, 253);
-    box-shadow: #ddebfa 0 0 2px;
+  border: 0.1px solid rgb(236, 236, 253);
+  box-shadow: #ddebfa 0 0 2px;
 }
 
 .comentario {
-    margin: 0;
-    border-radius: 8px;
+  margin: 0;
+  border-radius: 8px;
 }
 .bordeC {
-    margin: 0;
-    border-radius: 8px;
+  margin: 0;
+  border-radius: 8px;
 }
 
 @media screen and (max-width: 745px) {
-    .carrusel-responsive {
-        display: none;
-    }
+  .carrusel-responsive {
+    display: none;
+  }
 
-    .linea-titulo {
-        width: 28.5vh;
-    }
+  .linea-titulo {
+    width: 28.5vh;
+  }
 
-    .input {
-        width: 45vh;
-        padding-bottom: 5.9px;
-    }
+  .input {
+    width: 45vh;
+    padding-bottom: 5.9px;
+  }
 
-    .boton {
-        margin-left: 30.5%;
-        padding: 5px 40px;
-        padding-bottom: 9px;
-        font-size: 1.7rem;
-        letter-spacing: 1.5px;
-    }
+  .boton {
+    margin-left: 30.5%;
+    padding: 5px 40px;
+    padding-bottom: 9px;
+    font-size: 1.7rem;
+    letter-spacing: 1.5px;
+  }
 
-    .fondo-formulario {
+  .fondo-formulario {
+    padding: 5.3vh;
+    padding-top: 5.5vh;
+    padding-bottom: 5.9vh;
+  }
 
-        padding: 5.3vh;
-        padding-top: 5.5vh;
-        padding-bottom: 5.9vh;
-    }
-
-    .margen-resposive-iniciar-sesion {
-        margin: auto;
-        margin-right: 104px;
-        margin-top: 10px;
-    }
+  .margen-resposive-iniciar-sesion {
+    margin: auto;
+    margin-right: 104px;
+    margin-top: 10px;
+  }
 }

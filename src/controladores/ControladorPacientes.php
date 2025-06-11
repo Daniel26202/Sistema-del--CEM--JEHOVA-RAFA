@@ -48,7 +48,7 @@ class ControladorPacientes
 		$fecha = date("Y-m-d");
 
 		if ($resultadoDeCedula === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/error");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorCedula");
 		} elseif ($fecha <= $_POST['fn']) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorfecha");
 		} else {

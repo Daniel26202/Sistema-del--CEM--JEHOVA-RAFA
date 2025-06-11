@@ -946,8 +946,8 @@
                       <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
                       <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
                         value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
+                      <input type="text" class="d-none"  name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
+                      <input type="text" class="d-none"  name="id_cita" value="<?= $datoCita['id_cita'] ?>">
                       <td>
                         <div class="fw-bolder">CI:</div>
                         <?= $datoCita["cedula_p"]; ?>
@@ -967,14 +967,10 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-                  <h1>citas</h1>
-                <?php endif; ?>
-
-
-
+                  
                 <?php
                 // Validar si el parámetro existe y si contiene una "h" (no distingue mayúsculas/minúsculas)
-                if (isset($parametro[0]) && stripos($parametro[0], 'h') !== false) :
+                elseif (isset($parametro[0]) && stripos($parametro[0], 'h') !== false) :
                 ?>
 
                   <?php foreach ($hostalizacionFacturar as $hos): ?>
@@ -995,35 +991,7 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-                <?php elseif (isset($parametro[0]) && stripos($parametro[0], 'c') !== false): ?>
-
-                  <?php foreach ($citaFacturar as $datoCita): ?>
-                    <tr>
-                      <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
-                      <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
-                        value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
-                      <td>
-                        <div class="fw-bolder">CI:</div>
-                        <?= $datoCita["cedula_p"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">PACIENTE:</div>
-                        <?= $datoCita["nombre_p"]; ?>
-                        <?= $datoCita["apellido_p"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">S/M:</div>
-                        <?= $datoCita["especialidad"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">FECHA:</div>
-                        <?= $datoCita["fecha"]; ?>
-                      </td>
-                    </tr>
-                  <?php endforeach ?>
-                  <h1>citas</h1>
+                  
                 <?php else: ?>
 
                   <input type="hidden" class="" id="inputPaciente" name="id_paciente" value="">

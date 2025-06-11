@@ -89,7 +89,7 @@ class ControladorCitas
 		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
 
 		if ($resultadoDeCita === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/error");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorCita");
 		} elseif ($_POST["fechaDeCita"] < $fecha) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
 		} else {
@@ -98,9 +98,9 @@ class ControladorCitas
 			if ($insercion) {
 				// // Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha Insertado una  cita");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/agregado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/registro");
 			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSintem");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
 			}
 		}
 	}
@@ -112,7 +112,7 @@ class ControladorCitas
 		$eliminacion = $this->modelo->eliminarCita($id_cita);
 		if ($eliminacion) {
 			$this->bitacora->insertarBitacora($id_usuario, "cita", "Ha eliminado una  cita");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/eliminado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/eliminar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
 		}
@@ -163,7 +163,7 @@ class ControladorCitas
 			if ($edicion) {
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
 			} else {
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
 			}
@@ -181,7 +181,7 @@ class ControladorCitas
 				if ($edicion) {
 					// Guardar la bitacora
 					$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");
+					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
 				} else {
 					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
 				}
@@ -191,7 +191,7 @@ class ControladorCitas
 			if ($edicion) {
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
 			} else {
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
 			}

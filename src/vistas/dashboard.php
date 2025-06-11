@@ -79,9 +79,7 @@ require_once './src/vistas/head/head.php';
 
     <!-- Sidebar (25%) -->
     <div class="sidebar-content col-12 col-lg-4 p-4 min-vh-100" id="sidebar-content">
-        <div class=" d-flex justify-content-end pb-3">
-            <?php require_once "btnOpciones.php" ?>
-        </div>
+        
         <div class="d-flex justify-content-between ">
             <?php if ($validarCargo): ?>
                 <!-- Es un doctor asi que no puede ver el boton -->

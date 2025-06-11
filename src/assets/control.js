@@ -683,8 +683,14 @@ addEventListener("DOMContentLoaded", function () {
             const contenido = { method: "POST", body: datos };
             let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Control/editarControl", contenido);
             let resultado = await peticion.json();
-            comentariosControl(`Control De CI ${resultado.cedula} Modificado Correctamente`, "warning");
-            await traerControl(resultado.cedula);
+            console.log(resultado)
+            if (!resultado.mensaje) {
+                comentariosControl(`Control De CI ${resultado.cedula} Modificado Correctamente`, "warning");
+                await traerControl(resultado.cedula);
+            } else {
+                comentariosControl(`lamentablemente ocurrio un error por favor intente mas tarde.`, "danger");
+            }
+
         } catch (error) {
             console.log(error);
         }

@@ -63,8 +63,8 @@ if (!empty($parametro)) {
 <?php $urlBase =  $concatenarRuta . '' . $concatenadorEspecial; ?>
 
 
-<body style=" background-color: #f2f4f8;">
-    <main>
+<body>
+    <main class="contenedor">
         <br>
 
         <!-- btn de ayuda Interactiva -->
@@ -94,7 +94,7 @@ if (!empty($parametro)) {
                     <div class=" m-auto">
 
                         <div class="mb-5 ms-5 mt-5 pt-2 ps-4 col">
-                            <h2 class="titulo fw-bolder mb-1 " id="titulo">Iniciar sesión</h2>
+                            <h2 class="titulo text-theme fw-bolder mb-1 " id="titulo">Iniciar sesión</h2>
                             <div class="linea-titulo ">
                             </div>
                         </div>
@@ -130,7 +130,9 @@ if (!empty($parametro)) {
                                             <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
                                                 style="display: none;" uk-alert>
                                                 <a class="uk-alert-close" uk-close></a>
-                                                <p class="pe-2">Ya tiene una session iniciada anteriormente por favor ciérrala (o cierre el navegador) e inténtelo nuevamente.</p>
+                                                <p class="pe-2">Ya tiene una session abierta por favor ciérrela e inténtelo nuevamente.</p>
+
+                                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/cerrar">Cerrar Session</a>
                                             </div>
                                         <?php endif ?>
                                     <?php endif; ?>
@@ -192,7 +194,7 @@ if (!empty($parametro)) {
                                 <input class="btn fw-bold boton col rounded-5" id="boton_inicio_sesion" type="submit" name="validar"
                                     value="Ingresar ahora" id="btnInicioSesion">
                                 <a id="recuperar_contraseña" href="/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/mostrarRecuperarContr"
-                                    class="fw-bold pointer-event text-decoration-none text-dark" id="recPassword">Recuperar Contraseña</a>
+                                    class="fw-bold pointer-event text-decoration-none text-theme " id="recPassword">Recuperar Contraseña</a>
 
                             </div>
 
@@ -215,6 +217,7 @@ if (!empty($parametro)) {
     <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/intro.min.js"></script>
     <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/ayudaInteractiva.js"></script>
     <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/expresionesModulares.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/app.js"></script>
 
 
 </body>

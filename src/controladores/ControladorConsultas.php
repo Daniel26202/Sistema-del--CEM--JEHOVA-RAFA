@@ -39,14 +39,14 @@ class ControladorConsultas
 	{
 		$resultaServicio = $this->modelo->nombreConsulta($_POST['id_categoria'], $_POST['id_doctor']);
 		if ($resultaServicio === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/error");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorServicio");
 		} else {
 			$precio_decimal = floatval($_POST['precioD']);
 			$insercion = $this->modelo->insertarSevicio($_POST['id_categoria'],  $precio_decimal);
 			if ($insercion) {
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha Insertado un nuevo  servicio medico");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/agregado");
+				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/registro");
 			} else {
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
 			}
@@ -61,7 +61,7 @@ class ControladorConsultas
 		if ($eliminacion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($id_usuario, "servicioMedico", "Ha eliminado un   servicio medico");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
 		}
@@ -90,7 +90,7 @@ class ControladorConsultas
 		if ($edicion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha modificadp un servicio medico");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/editado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/editar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
 		}
@@ -110,7 +110,7 @@ class ControladorConsultas
 		if ($insercion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "categoria_servicio", "Ha Insertado una nueva  categoria");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/agregado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/registro");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
 		}
@@ -123,7 +123,7 @@ class ControladorConsultas
 		if ($eliminacion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($id_usuario, "categoria_servicio", "Ha eliminado una  categoria");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminado");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
 		}

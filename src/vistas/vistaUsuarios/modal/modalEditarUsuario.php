@@ -19,11 +19,11 @@
                             <div class="uk-width-auto">
                                 <?php if ($dato["imagen"] != "doctor.png"): ?>
 
-                                    <img src="./src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>"
+                                    <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>"
                                         class="uk-border-circle" width="55" height="55" alt="Avatar">
                                 <?php else: ?>
 
-                                    <img src="./src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>"
+                                    <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>"
                                         class="uk-border-circle" width="55" height="55" alt="Avatar">
                                 <?php endif; ?>
 

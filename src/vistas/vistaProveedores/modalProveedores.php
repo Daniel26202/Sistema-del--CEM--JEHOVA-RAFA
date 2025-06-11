@@ -14,7 +14,7 @@
 
         <div class="d-flex align-items-center">
             <div>
-                <img src="./src/assets/img/proveedor(2).png" width="25" height="25" uk-svg class="me-2 mb-3">
+                <img src="<?$urlBase?>../src/assets/img/proveedor(2).png" width="25" height="25" uk-svg class="me-2 mb-3">
             </div>
             <div class="">
                 <p class="uk-modal-title fs-5">
@@ -26,7 +26,7 @@
 
         <form class="form-modal" id="modalAgregarProveedor" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/insertar">
 
-            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
+            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
 
             <div class="alert alert-danger d-none text-center" id="alerta-guardar-proveedor" style="font-size: 10px;">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
 
@@ -87,9 +87,9 @@
                 <input class="form-control input-modal input-disabled" type="text" name="direccion" placeholder="Direccion" required>
             </div>
 
-            
 
-            
+
+
 
 
             <div class="mt-3 uk-text-right">

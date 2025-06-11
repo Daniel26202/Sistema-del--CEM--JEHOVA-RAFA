@@ -97,10 +97,11 @@ class ControladorFactura
 		$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
 		$insumos = isset($_POST["insumos"]) ? $_POST["insumos"] : false;
 		$cantidad = isset($_POST["cantidad"]) ? $_POST["cantidad"] : false;
-		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : null;
+		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : false;
 		$id_cita = isset($_POST["id_cita"]) ? $_POST["id_cita"] : null;
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
 		$id_hospitalizacion = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null;
+		print_r($_POST);
 
 		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita, $id_hospitalizacion);
 
