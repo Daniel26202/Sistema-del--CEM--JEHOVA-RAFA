@@ -36,6 +36,9 @@ class ControladorPerfil
 			$edicion = $this->modelo->update($_POST["id_usuario"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $_POST["correo"]);
 
 			if ($edicion) {
+				$_SESSION['usuario'] = $_POST['usuario'];
+				$_SESSION['nombre'] = $_POST['nombre'];
+				$_SESSION['apellido'] = $_POST['apellido'];
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST["id_usuario"], "Perfil", "Ha modificado un perfil");
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil/editar");

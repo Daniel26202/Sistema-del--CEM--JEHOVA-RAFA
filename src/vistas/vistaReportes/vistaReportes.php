@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="card  cardReporte tajeta-estadistica-g m-auto mb-5 contenido">
+            <div class="card cardReporte tajeta-estadistica-m mb-5 contenido">
                 <h3 class="card-header text-center fw-bold">Entradas</h3>
                 <div class="card-body ">
                     <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModalBuscadorEntradas">
