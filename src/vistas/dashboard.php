@@ -79,13 +79,13 @@ require_once './src/vistas/head/head.php';
 
     <!-- Sidebar (25%) -->
     <div class="sidebar-content col-12 col-lg-4 p-4 min-vh-100" id="sidebar-content">
-        
-        <div class="d-flex justify-content-between ">
+
+        <div class=" caja_buscador_calendario">
             <?php if ($validarCargo): ?>
                 <!-- Es un doctor asi que no puede ver el boton -->
             <?php else: ?>
 
-                <div class="w-75 ">
+                <div class=" caja-select-doctor ">
                     <div class="d-flex justify-content-between ">
                         <div class="d-flex justify-content-end mb-4 col-8" id="form-buscadorS">
 
@@ -110,7 +110,7 @@ require_once './src/vistas/head/head.php';
                     </div>
                 </div>
             <?php endif; ?>
-            <h5 class="w-25">Calendario</h5>
+            <h5 class="text-calendario">Calendario</h5>
         </div>
 
         <?php if ($validarCargo): ?>
@@ -119,7 +119,7 @@ require_once './src/vistas/head/head.php';
             <button id="btnHorario" class="btn btn-primary mb-2 w-100 d-none" uk-toggle="target: #modal-info-doctores"></button>
         <?php endif; ?>
         <!-- Calendar Container -->
-        <div class="card shadow-sm mb-2" id="calendarCard">
+        <div class="card shadow-sm mb-2 table table-responsive" id="calendarCard">
             <div class="card-tittle d-flex justify-content-between align-items-center">
                 <button id="prev"><img src="../src/assets/icons/izquierda.svg" alt="anterior" style="width: 16px; height: 16px;"></button>
                 <h2 id="monthYear" class="mb-0"></h2>
@@ -147,7 +147,7 @@ require_once './src/vistas/head/head.php';
         </div>
 
         <!-- Contenedor de la lista de servicios -->
-        <div class="col-md-12 mt-3" id="precioConsultas">
+        <div class="col-md-12 mt-3 " id="precioConsultas">
             <div class="card shadow-sm">
                 <?php if ($validarCargo): ?>
                     <?php foreach ($datos_de_personal as $d): ?>
@@ -230,7 +230,7 @@ require_once './src/vistas/head/head.php';
                         <div class="card-tittle">
                             <h5 class="mb-0">Precio consulta</h5>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body table table-responsive">
                             <!-- Lista de servicios -->
                             <table class="table table-borderless align-middle" id="precios">
                                 <thead>

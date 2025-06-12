@@ -350,58 +350,6 @@ html{
     color: #ffffff;
 }
 
-#reiniciarBusqueda {
-    border-radius: 0;
-    border-right: #387adf solid 1px;
-    border-start-end-radius: 10px;
-    border-end-start-radius: 10px;
-    background-color: var(--color-primary);
-    transition: 0.4s all;
-    color: #fff;
-    margin-right: -99px;
-    position: relative;
-    z-index: 10;
-}
-
-#reiniciarBusqueda:hover {
-    border-right: #e4ebf0 solid 1px;
-    background-color: var(--color-bg-main);
-    transition: 0.4s all;
-}
-
-#reiniciarBusquedaServ {
-    border-radius: 0;
-    border-right: #387adf solid 1px;
-    border-start-end-radius: 10px;
-    border-end-start-radius: 10px;
-    background-color: var(--color-primary);
-    transition: 0.4s all;
-    color: #fff;
-    margin-right: -100px;
-
-    margin-bottom: -62px;
-    position: relative;
-    z-index: 10;
-}
-
-#reiniciarBusquedaInsumo {
-    border-radius: 0;
-    border-right: #387adf solid 1px;
-    border-start-end-radius: 10px;
-    border-end-start-radius: 10px;
-    background-color: var(--color-primary);
-    transition: 0.4s all;
-    color: #fff;
-    margin-right: -99px;
-    position: relative;
-    z-index: 10;
-}
-
-#reiniciarBusquedaInsumo:hover {
-    border-right: var(--color-bg-main) solid 1px;
-    background-color: var(--color-bg-main);
-    transition: 0.4s all;
-}
 
 #reiniciarBusquedaEspecialidad {
     border-radius: 0;
@@ -701,23 +649,6 @@ html{
 
 /* Perfil */
 
-.contenedor-perfil {
-    background-color: var(--color-bg-main);
-    border-radius: 20px;
-    width: 60%;
-    height: 60%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 2%;
-}
-
-.perfil {
-    height: 60% !important;
-}
-
-.perfil .input-group {
-    margin-top: -10px;
-}
 
 /*INSUMOS*/
 
@@ -817,34 +748,7 @@ insumos en la facturacion
     font-size: 16px;
 }
 
-/* Estilos Paciente Modal Buscador  */
 
-.modalBuscador {
-    border-radius: 20px;
-    background-image: url("../img/grafi.jpg");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    filter: var(--filter-image);
-}
-
-.modalBuscador li a:hover {
-    color: #387adf;
-}
-
-#perfil input {
-    font-size: 16px;
-}
-
-.iconoB {
-    filter: hue-rotate(200deg);
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
 
 /*USUARIOS*/
 
@@ -899,37 +803,6 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-wrap: wrap;
 }
 
-/* 
-.granReporte:hover {
-  transform: scale(1.1);
-}
-
-.reRepor {
-  margin-top: 2%;
-  height: 70vh;
-  width: 50vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-  font-weight: 600;
-  border-radius: 20px;
-  background-image: radial-gradient(
-    at 40px 20px,
-    rgba(56, 123, 223, 0.171) 40%,
-    rgba(56, 123, 223, 0.205) 20%,
-    rgba(56, 123, 223, 0.63) 72%
-  );
-}
-
-
-
-.leyenda {
-  margin-top: -15px;
-  margin-bottom: 5px;
-  font-size: 10px;
-}
 
 /*expresiones control*/
 
@@ -949,9 +822,7 @@ input[type="number"]::-webkit-outer-spin-button {
     border-bottom: 2px solid rgb(224, 3, 3) !important;
 }
 
-/* #imgProveedores:hover{
-	filter: hue-rotate(600deg);
-} */
+
 /* estilos madal de reportes de facturacion  */
 
 .height_modal_factura {
@@ -1014,14 +885,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-left: 60px;
 }
 
-/* .input-buscar {
-	border-radius: 0;
-	border: none;
-	border-bottom: 2px solid #387ADF;
-	background: none;
 
-}
- */
 .input-buscar:focus {
     outline: 0 !important;
     box-shadow: none;
@@ -1529,27 +1393,6 @@ td {
 
 /* Lo comento porque no estaba incluida en el head */
 
-/* .contenedor-insumos {
-	padding: 16px;
-}
-
-.tarjetas-contenedor {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 16px;
-	justify-content: space-around;
-}
-
-/* .tarjeta {
-	width: 300px;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	text-align: center;
-	background: #fff;
-	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
-} */
 
 .tarjeta:hover {
     transform: scale(1.05);
@@ -1703,22 +1546,6 @@ td {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-/* .tamaño-modal {
-    width: 50%;
-    max-width: 600px;
-    margin: 0 auto;
-    border-radius: 10px;
-    padding: 1rem;
-} */
-
-/* .input-modal,
-input[type="date"] {
-    width: 100%; 
-    max-width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-    box-sizing: border-box;
-} */
 
 /* Clase papa mostrar todos los textos rojos cuando la validacion no se cumple */
 .p-error-validaciones {
@@ -1782,81 +1609,6 @@ input[type="date"] {
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................MENU E INICIO........................ */
 
-@media screen and (max-width: 950px) {
-    .logo {
-        display: none;
-    }
-
-    /* clases del contenedor */
-    main {
-        width: 100vw;
-        margin-left: 0px;
-    }
-
-    .aside {
-        width: 100%;
-        height: -1px;
-        padding: 0px;
-        position: fixed;
-    }
-    .aside.active {
-        width: 80px;
-    }
-
-    .asideRespo {
-        color: #000000;
-        background-color: #ffffff63;
-        height: 70px !important;
-        margin-top: -6px !important;
-        margin-left: -10px !important;
-        margin-right: 250px !important;
-    }
-
-    .opcRes {
-        display: none;
-    }
-    .tdTBtn {
-        width: 13vh;
-    }
-}
-
-@media screen and (max-width: 450px) {
-    /* clases del contenedor */
-    main {
-        width: 100vw;
-        margin-left: 0px;
-    }
-
-    .aside {
-        width: 100%;
-        height: -1px;
-        padding: 0px;
-        position: fixed;
-    }
-
-    .asideRespo {
-        color: #000000;
-        background-color: #ffffff63;
-        height: 70px !important;
-        margin-top: -6px !important;
-        margin-left: -10px !important;
-        margin-right: 250px !important;
-    }
-
-    .opcRes {
-        display: none;
-    }
-
-    .head {
-        background-color: transparent;
-    }
-}
-
-@media screen and (max-width: 360px) {
-    .caja-ayuda {
-        margin: auto;
-    }
-}
 
 /* ///////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
@@ -1870,11 +1622,6 @@ input[type="date"] {
 }
 
 @media screen and (max-width: 900px) {
-    /* .lista-pacientes2 {
-    width: 100%;
-    margin-left: "";
-  } */
-
     .editar {
         width: 100%;
     }
@@ -1887,16 +1634,7 @@ input[type="date"] {
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................DOCTORES..................................... */
 
-@media screen and (max-width: 768px) {
-    .table th,
-    .table td {
-        font-size: 14px;
-    }
 
-    .tdTBtn {
-        width: 10vh;
-    }
-}
 
 @media screen and (max-width: 600px) {
     .input-buscar {
@@ -1915,73 +1653,10 @@ input[type="date"] {
 
 /* Lo comento porque no estaba incluida en el head */
 
-/* @media screen and (max-width: 1024px) {
-    .tarjeta {
-        width: 45%;
-    }
-}
 
-@media screen and (max-width: 768px) {
-    .tarjeta {
-        width: 90%;
-    }
-    .contenedor_tabla {
-        width: auto;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tarjeta img {
-        height: 150px;
-    }
-
-    .tarjeta h3 {
-        font-size: 1rem;
-    }
-
-    .tarjeta p {
-        font-size: 0.9rem;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .tarjeta .btn {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tarjeta .btn {
-        font-size: 0.8rem;
-        padding: 6px;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .contenedor-tabla {
-        padding: 10px;
-    }
-    .tamaño-tabla {
-        font-size: 0.9rem;
-        width: 100%;
-    }
-    .tamaño-tabla th, .tamaño-tabla td {
-        padding: 8px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tamaño-tabla th, .tamaño-tabla td {
-        display: block;
-        width: 100%;
-        text-align: left;
-    }
-} */
 
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................USUARIO................................... */
 
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
-

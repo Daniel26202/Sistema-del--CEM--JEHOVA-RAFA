@@ -28,23 +28,26 @@ body {
   font-family: "Arial Rounded MT Bold", "Arial Rounded", Arial, sans-serif;
 }
 
-h1,h2,h5, th{
+h1,
+h2,
+h5,
+th {
   color: var(--color-text-card) !important;
 }
 
-.input-buscar{
+.input-buscar {
   color: var(--color-text-card) !important;
 }
 
-.icon{
+.icon {
   color: white !important;
 }
 
 svg {
- color: white !important;
+  color: white !important;
 }
 
-.imprimir{
+.imprimir {
   color: var(--color-text-card) !important;
 }
 
@@ -83,7 +86,7 @@ svg {
   color: var(--color-text) !important;
 }
 
-.welcome-user-name{
+.welcome-user-name {
   color: var(--color-text) !important;
 }
 
@@ -104,7 +107,7 @@ svg {
   border-radius: 10px;
 }
 
-canvas{
+canvas {
   color: var(--color-text) !important;
 }
 
@@ -121,8 +124,8 @@ canvas{
   color: var(--color-text-card);
 }
 
-table.dataTable > thead > tr > th,
-table.dataTable > thead > tr > td {
+table.dataTable>thead>tr>th,
+table.dataTable>thead>tr>td {
   border-bottom: 0%;
 }
 
@@ -184,6 +187,7 @@ h5 {
 .metric-card {
   color: var(--color-text-card);
 }
+
 .card {
   border-radius: 16px;
   background-color: var(--color-bg-card);
@@ -217,7 +221,8 @@ h5 {
 }
 
 #especialidades_solicitadas {
-  width: 1920px; /* tamaño visual en la página */
+  width: 1920px;
+  /* tamaño visual en la página */
   height: 1080px;
 }
 
@@ -229,6 +234,7 @@ h5 {
 .text-horario {
   font-size: 18px;
 }
+
 /* .diasOcupados {
     background-color: #E4EBF0 !important;
     color: black;
@@ -236,5 +242,34 @@ h5 {
 
 .carta-imprimir {
   width: 100%;
-  height: 100vh; /* Ocupa toda la pantalla */
+  height: 100vh;
+  /* Ocupa toda la pantalla */
+}
+
+.caja_buscador_calendario {
+  display: flex;
+  justify-content: space-between;
+}
+
+.caja-select-doctor{
+  width: 75%;
+}
+
+.text-calendario{
+  width: 25%;
+}
+
+@media screen and (max-width: 340px) {
+  .caja_buscador_calendario {
+    flex-direction: column;
+  }
+
+    .caja-select-doctor {
+      width: 100%;
+    }
+  
+    .text-calendario {
+      width: 100%;
+      text-align: center;
+    }
 }
