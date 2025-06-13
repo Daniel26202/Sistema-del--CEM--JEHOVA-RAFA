@@ -64,7 +64,7 @@ require_once './src/vistas/head/head.php';
                 </div>
                 <div class="col-md-6 col-12 mb-2">
                     <div class="chart-card p-4 rounded shadow-sm" id="grafica2">
-                        <h5>Sintomas comunes</h5>
+                        <h5>Síntomas comunes</h5>
                         <canvas id="sintomas_comunes"></canvas>
                         <div class="text-center mt-4">
                             <button id="btnGrafica2" type="button" class="btn btn-primary 75 m-auto  reporte-sintomas" data-bs-toggle="modal" data-bs-target="#reporteSintomas">
