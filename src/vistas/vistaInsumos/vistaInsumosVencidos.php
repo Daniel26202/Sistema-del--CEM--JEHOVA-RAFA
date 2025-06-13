@@ -10,7 +10,7 @@
 
     <?php require_once "./src/vistas/alerts.php" ?>
 
-    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
+    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto table-responsive" style="width: 95%; ">
 
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
@@ -18,7 +18,7 @@
 
 
 
-            
+
         </div>
 
 
@@ -50,7 +50,7 @@
 
 
 
-                           
+
                         </tr>
                     <?php endforeach; ?>
 

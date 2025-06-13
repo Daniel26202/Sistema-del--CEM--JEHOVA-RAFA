@@ -283,7 +283,7 @@ class ModeloInsumo extends DbSistem
 	public function papelera()
 	{
 		try {
-			$sql = $this->conexion->prepare("SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad >= 0  GROUP BY inv.id_insumo ");
+			$sql = $this->conexion->prepare("SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ");
 			$sql->execute();
 			return ($sql->execute()) ? $sql->fetchAll() : false;
 		} catch (\Exception $e) {

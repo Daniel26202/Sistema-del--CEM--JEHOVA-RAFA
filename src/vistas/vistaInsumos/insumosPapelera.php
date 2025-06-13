@@ -1,7 +1,7 @@
 <?php require_once './src/vistas/head/head.php';  ?>
 
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo">
+<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
 
   <h5 style="width: 95%; " class="m-auto mb-3">Insumos Papelera <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-recycle me-1 mb-1 " viewBox="0 0 16 16">
@@ -12,7 +12,7 @@
 
   <?php require_once "./src/vistas/alerts.php" ?>
 
-  <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
+  <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto table-responsive" style="width: 95%; ">
     <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
       <?php require_once "./src/vistas/vistaInsumos/paginationInsumos.php" ?>
     </div>

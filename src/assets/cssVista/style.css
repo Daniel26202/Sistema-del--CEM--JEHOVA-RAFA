@@ -1599,6 +1599,38 @@ td {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................INSIMOS.................................... */
 
+.caja-de-buscador-insumos{
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+@media screen and (max-width: 600px){
+    .caja-de-buscador-insumos{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .caja-insumos{
+        width: 80%;
+        margin: auto !important;
+        margin-bottom: 10px !important ;
+    }
+    .children-caja-insumos{
+        width: 80% !important;
+    }
+
+    .caja-tarjets-responsive-insumos{
+        width: 100% !important;
+    }
+    .tarjet{
+        width: 100% !important;
+    }
+
+    .botones-mostrar{
+        width: 100% !important;
+    }
+}
 /* Lo comento porque no estaba incluida en el head */
 
 
