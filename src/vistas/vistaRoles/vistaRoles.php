@@ -18,12 +18,12 @@
 
     <?php require_once "./src/vistas/alerts.php" ?>
 
-    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
+    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto table-responsive" style="width: 95%; ">
 
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
             <div class="d-flex justify-content-end align-items-center">
                 <!-- Buscador de Usuarios -->
-                <div class="d-flex justify-content-end mt-3 mb-3 col-3">
+                <div class="d-flex justify-content-end mt-3 mb-3 col-3 caja-buscador-usuario">
                     <input class="form-control input-busca" type="text" name="" placeholder="Ingrese nombre"
                         id="buscarRol">
                     <button class="btn boton-buscar" title="Buscar">
@@ -35,60 +35,38 @@
                     </button>
                 </div>
             </div>
-
-            <div class="d-flex">
-
-                <div class=" me-3 mb-4  d-flex justify-content-end w-100">
-
-
-                    <ul class="ico sin-circulos d-flex justify-content-end">
-
-                        <li class="li">
-                            <div class="borde-de-menu  mb-1 activo-border"></div>
-                            <div class="hover-grande">
-                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" class="text-decoration-none me-3 azul" id="DMservicioMedico">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-person-square ms-2 " viewBox="0 0 16 16">
-                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                        <path
-                                            d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
-                                    </svg>Usuario</a>
-                            </div>
+            <div class="me-4">
+                <div class="mt-3 mb-5">
+                    <ul class="sin-circulos d-flex justify-content-end ">
+                        <li class="borde-menu activo <?= $vistaActiva == 'usuarios'  ? ' activo-borde ' : '' ?>">
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" class="ico text-decoration-none me-3 color-letras">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-clock-history me-1" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                    <path
+                                        d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
+                                </svg>Usuarios</a>
                         </li>
-                        <li class="li">
-                            <div class="borde-de-menu mb-1 "></div>
-                            <div class="hover-grande">
-                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores" class="text-decoration-none me-3 color-letras iconoDoctor" id="DMdoctores">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-person-square ms-2" viewBox="0 0 16 16">
-                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                        <path
-                                            d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
-                                    </svg>Administrador</a>
-                            </div>
-
+                        <li class="borde-menu activo <?= $vistaActiva == 'administradores'  ? ' activo-borde ' : '' ?>">
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores" class="ico text-decoration-none me-3 color-letras">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-clock-history me-1" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                    <path
+                                        d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
+                                </svg>Administradores</a>
                         </li>
 
-
-                        <li class="li">
-                            <div class="borde-de-menu mb-1 "></div>
-                            <div class="hover-grande">
-                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" class="text-decoration-none me-3 color-letras iconoDoctor" id="DMdoctores">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-person-square ms-2" viewBox="0 0 16 16">
-                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                        <path
-                                            d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
-                                    </svg>Roles</a>
-                            </div>
-
+                        <li class="borde-menu activo <?= $vistaActiva == 'roles'  ? ' activo-borde ' : '' ?>">
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" class="ico text-decoration-none text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-clock-history me-1" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                    <path
+                                        d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
+                                </svg>Roles </a>
                         </li>
-
-
-
-
                     </ul>
-
                 </div>
             </div>
 
@@ -97,7 +75,7 @@
                 <!-- no hay -->
             <?php else: ?>
                 <div class="">
-                    <button class="btn btn-primary btn-agregar-doctores col-3" uk-toggle="target: #modal-exampleGuardar"
+                    <button class="btn btn-primary btn-usuarios btn-agregar-doctores col-3" uk-toggle="target: #modal-exampleGuardar"
                         id="btnRegistrarrol">
                         <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
                             class="bi bi-person-square me-2" viewBox="0 0 16 16">
@@ -119,7 +97,7 @@
             <!-- linea -->
             <hr class="mb-4 pb-2">
 
-            <div class="d-flex flex-wrap justify-content-center ms-5 me-5 ">
+            <div class="d-flex flex-wrap justify-content-center caja-tarjets-responsive  ">
                 <?php if ($roles): ?>
 
                     <?php foreach ($roles as $dato): ?>

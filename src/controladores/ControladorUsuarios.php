@@ -31,13 +31,14 @@ class ControladorUsuarios
     public function usuarios($parametro)
     {
 
+        $vistaActiva = "usuarios";
         $datosU = $this->modelo->select();
         require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
     }
 
     public function administradores($parametro)
     {
-
+        $vistaActiva = "administradores";
         $datosU = $this->modelo->selectAdmin();
         require_once './src/vistas/vistaUsuarios/vistaUsuariosAdmin.php';
     }
