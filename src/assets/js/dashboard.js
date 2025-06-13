@@ -630,7 +630,7 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
     cuadroColor.style.borderRadius = "3px";
 
     // Crea el texto descriptivo para la especialidad
-    const textoLeyenda = document.createElement("span");
+    const textoLeyenda = document.createElement("h5");
     textoLeyenda.innerHTML = `
       ${especialidad}:
       ${totalSolicitudes[indice]} solicitudes (${porcentaje}%)
@@ -679,7 +679,7 @@ function generarLeyendaSintomas(sintomas, total) {
     cuadroColor.style.borderRadius = "3px";
 
     // Texto descriptivo
-    const textoLeyenda = document.createElement("span");
+    const textoLeyenda = document.createElement("h5");
     textoLeyenda.innerHTML = `
       ${sintoma}: ${total[indice]} casos (${porcentaje}%)
     `;

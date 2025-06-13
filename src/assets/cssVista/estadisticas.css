@@ -1,6 +1,28 @@
+/* /////////////////////////////////////////////////////////////////////////// */
+/* ...............................ESTADISTICAS.................................... */
+
+.tajeta-estadistica-m {
+  width: 45%;
+  height: 53vh;
+  color: var(--color-text-card);
+  background-color: var(--color-bg-card-estadisticas);
+}
+
+.tajeta-estadistica-g {
+  color: var(--color-text-card);
+  background-color: var(--color-bg-card-estadisticas);
+}
+
+.tarjetaa-pastel {
+  width: 45%;
+  height: 65vh;
+  color: var(--color-text-card);
+  background-color: var(--color-bg-card-estadisticas);
+}
+
 /* Cambia el tamaño base del gráfico */
 .canvas-pastel {
-  max-width: 450px;
+  max-width: 410px;
   max-height: 310px;
   width: 100% !important;
   height: auto !important;
@@ -11,6 +33,27 @@
 .canvas-modal {
   width: 400px;
   height: 400px;
+}
+
+
+/* /////////////////////////////////////////////////////////////////////////////// */
+/* ............................. RESPONSIVE ..................................... */
+/* ///////////////////////////////////////////////////////////////////////////// */
+
+@media screen and (max-width: 1000px) {
+  .tajeta-estadistica-m {
+    width: 100%;
+    height: 60%;
+  }
+
+  .tajeta-estadistica-g {
+    width: 100%;
+  }
+
+ .tarjetaa-pastel {
+    width: 100%;
+    height: 60%;
+  }
 }
 
 /* Media query para tablets */
@@ -27,4 +70,6 @@
     max-width: 98vw;
     max-height: 450px;
   }
+
+
 }

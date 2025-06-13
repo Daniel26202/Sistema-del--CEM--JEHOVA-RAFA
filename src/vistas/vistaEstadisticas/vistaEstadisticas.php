@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card tajeta-estadistica-g col-12 col-md-12 col-lg-8 mb-4">
+            <div class="card tajeta-estadistica-g m-auto col-12 col-md-12 col-lg-8 mb-4">
                 <h5 class="card-header">Moda Insumos</h5>
                 <div class="card-body ">
                     <canvas id="insumos" class="canvas" style="object-fit: contain !important;"></canvas>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card tajeta-estadistica-m mb-5">
+            <div class="card tarjetaa-pastel mb-5">
                 <h5 class="card-header">Especialidades mas solicitadas
                 </h5>
                 <div class="card-body">
@@ -72,7 +72,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card tajeta-estadistica-m mb-5">
+            <div class="card tarjetaa-pastel mb-5">
                 <h5 class="card-header">Sintomas mas comunes</h5>
                 <div class="card-body">
                     <canvas id="sintomas_comunes" class="canvas canvas-pastel">

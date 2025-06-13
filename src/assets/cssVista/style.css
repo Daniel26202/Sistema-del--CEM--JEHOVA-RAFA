@@ -1552,59 +1552,7 @@ td {
     color: var(--color-error) !important;
 }
 
-/* /////////////////////////////////////////////////////////////////////////// */
-/* ...............................ESTADISTICAS.................................... */
 
-.tajeta-estadistica-m {
-    width: 40%;
-    height: 57vh;
-    color: var(--color-text-card);
-    background-color: var(--color-bg-card-estadisticas);
-}
-
-.tajeta-estadistica-g {
-    color: var(--color-text-card);
-    background-color: var(--color-bg-card-estadisticas);
-}
-
-@media screen and (max-height: 652px) {
-    .aside.active {
-        width: 79px;
-    }
-}
-
-@media screen and (max-width: 1300px) {
-    .tajeta-estadistica-m {
-        width: 60%;
-        height: 80vh;
-        background-color: var(--color-bg-card-estadisticas);
-    }
-    .tajeta-estadistica-g {
-        background-color: var(--color-bg-card-estadisticas);
-        width: 90%;
-        height: 40vh;
-    }
-
-    .canvas {
-        height: 100% !important;
-    }
-}
-
-/* /////////////////////////////////////////////////////////////////////////////// */
-/* ............................. RESPONSIVE ..................................... */
-/* ///////////////////////////////////////////////////////////////////////////// */
-
-@media screen and (max-width: 1000px) {
-    .tajeta-estadistica-m {
-        background-color: var(--color-bg-card-estadisticas);
-        width: 100%;
-    }
-
-    .tajeta-estadistica-g {
-        background-color: var(--color-bg-card-estadisticas);
-        width: 100%;
-    }
-}
 
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................MENU E INICIO........................ */
