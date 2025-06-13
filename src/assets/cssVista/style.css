@@ -29,6 +29,7 @@
     --color-border: #e4ebf0;
     --filter-image: brightness(50%) contrast(120%);
     --color-error: #b0cad7;
+
     input::placeholder {
         color: #e8f2ff;
     }
@@ -49,11 +50,11 @@
 /* menu de pruebas
  */
 
-.sb-sidenav-blue{
+.sb-sidenav-blue {
     background-color: #387adf;
 }
 
-.navbar-blue{
+.navbar-blue {
     background-color: #387adf;
 }
 
@@ -84,7 +85,7 @@ h6 {
 }
 
 /* Input */
-.cl-switch > input {
+.cl-switch>input {
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -106,7 +107,7 @@ h6 {
 }
 
 /* Track */
-.cl-switch > span::before {
+.cl-switch>span::before {
     content: "";
     float: right;
     display: inline-block;
@@ -120,7 +121,7 @@ h6 {
 }
 
 /* Thumb */
-.cl-switch > span::after {
+.cl-switch>span::after {
     content: "";
     position: absolute;
     top: 2px;
@@ -134,62 +135,62 @@ h6 {
 }
 
 /* Checked */
-.cl-switch > input:checked {
+.cl-switch>input:checked {
     right: -10px;
     background-color: #85b8b7;
 }
 
-.cl-switch > input:checked + span::before {
+.cl-switch>input:checked+span::before {
     background-color: #85b8b7;
 }
 
-.cl-switch > input:checked + span::after {
+.cl-switch>input:checked+span::after {
     background-color: #018786;
     transform: translateX(16px);
 }
 
 /* Hover, Focus */
-.cl-switch:hover > input {
+.cl-switch:hover>input {
     opacity: 0.04;
 }
 
-.cl-switch > input:focus {
+.cl-switch>input:focus {
     opacity: 0.12;
 }
 
-.cl-switch:hover > input:focus {
+.cl-switch:hover>input:focus {
     opacity: 0.16;
 }
 
 /* Active */
-.cl-switch > input:active {
+.cl-switch>input:active {
     opacity: 1;
     transform: scale(0);
     transition: transform 0s, opacity 0s;
 }
 
-.cl-switch > input:active + span::before {
+.cl-switch>input:active+span::before {
     background-color: #8f8f8f;
 }
 
-.cl-switch > input:checked:active + span::before {
+.cl-switch>input:checked:active+span::before {
     background-color: #85b8b7;
 }
 
 /* Disabled */
-.cl-switch > input:disabled {
+.cl-switch>input:disabled {
     opacity: 0;
 }
 
-.cl-switch > input:disabled + span::before {
+.cl-switch>input:disabled+span::before {
     background-color: #ddd;
 }
 
-.cl-switch > input:checked:disabled + span::before {
+.cl-switch>input:checked:disabled+span::before {
     background-color: #bfdbda;
 }
 
-.cl-switch > input:checked:disabled + span::after {
+.cl-switch>input:checked:disabled+span::after {
     background-color: #61b5b4;
 }
 
@@ -199,88 +200,89 @@ h6 {
 
 
 
-html{
+html {
     /* background-color: var(--color-bg-main); */
     background-color: var(--color-bg-main);
 }
 
-.contenedor-fondo{
+.contenedor-fondo {
     background-color: var(--color-bg-main) !important;
 }
 
 
 
 /* Menu */
-       /* Estilo del menú lateral */
-       .sidenav {
-        height: 100vh;
+/* Estilo del menú lateral */
+.sidenav {
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    background-color: #387adf;
+    /* Azul Bootstrap */
+    transition: 0.3s;
+    padding-top: 60px;
+    z-index: 1000;
+    overflow-y: auto;
+    /* Scroll si es necesario */
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    /* font-size: 25px; */
+    color: white !important;
+    display: block;
+    transition: 0.3s;
+}
+
+.navbarHorizontal {
+    background-color: #387adf !important;
+    /* Azul Bootstrap */
+}
+
+.sidenav a:hover {
+    color: #387adf !important;
+    background-color: #ffffff;
+}
+
+.open-sidenav {
+    left: 0;
+}
+
+/* Botón cerrar en la esquina */
+.closebtn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 36px;
+    color: white;
+    text-decoration: none;
+    z-index: 1100;
+}
+
+/* Menú lateral siempre visible en PC (md en adelante) */
+@media (min-width: 992px) {
+    .sidenav {
+        left: 0 !important;
         width: 250px;
-        position: fixed;
-        top: 0;
-        left: -250px;
-        background-color: #387adf;
-        /* Azul Bootstrap */
-        transition: 0.3s;
         padding-top: 60px;
-        z-index: 1000;
-        overflow-y: auto;
-        /* Scroll si es necesario */
     }
 
-    .sidenav a {
-        padding: 8px 8px 8px 32px;
-        text-decoration: none;
-        /* font-size: 25px; */
-        color: white !important;
-        display: block;
-        transition: 0.3s;
+    #main {
+        margin-left: 250px;
     }
 
-    .navbarHorizontal {
-        background-color: #387adf !important;
-        /* Azul Bootstrap */
-    }
-
-    .sidenav a:hover {
-        color: #387adf !important;
-        background-color: #ffffff;
-    }
-
-    .open-sidenav {
-        left: 0;
-    }
-
-    /* Botón cerrar en la esquina */
     .closebtn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 36px;
-        color: white;
-        text-decoration: none;
-        z-index: 1100;
+        display: none;
     }
 
-    /* Menú lateral siempre visible en PC (md en adelante) */
-    @media (min-width: 992px) {
-        .sidenav {
-            left: 0 !important;
-            width: 250px;
-            padding-top: 60px;
-        }
-
-        #main {
-            margin-left: 250px;
-        }
-
-        .closebtn {
-            display: none;
-        }
-
-        .navbar-toggler {
-            display: none;
-        }
+    .navbar-toggler {
+        display: none;
     }
+}
+
 /* clases del contenedor */
 
 
@@ -643,6 +645,7 @@ html{
 .tarjeta-ajax {
     color: var(--color-text-card) !important;
 }
+
 .tarjeta {
     color: var(--color-text-card) !important;
 }
@@ -1086,6 +1089,7 @@ con la clase hover-grande cambia de tamaño*/
     border-radius: 8px;
     width: 30%;
 }
+
 .comentarioADinamica {
     margin: 0;
     border-radius: 8px;
@@ -1372,12 +1376,10 @@ td {
 .fondoPH {
     padding: 10px;
     border: var(--color-bg-main) solid 1px;
-    background-image: radial-gradient(
-        at 40px 20px,
-        rgba(121, 167, 240, 0.171) 40%,
-        rgba(159, 197, 253, 0.205) 20%,
-        rgba(133, 182, 255, 0.63) 72%
-    );
+    background-image: radial-gradient(at 40px 20px,
+            rgba(121, 167, 240, 0.171) 40%,
+            rgba(159, 197, 253, 0.205) 20%,
+            rgba(133, 182, 255, 0.63) 72%);
     border-radius: 10.5px;
     box-shadow: var(--color-bg-main) 0 0 5px;
     cursor: pointer;
@@ -1439,10 +1441,8 @@ td {
     height: 100%;
     overflow: hidden;
 }
+
 */
-
-
-
 /* //////////////////////////////////////////////////////////////////////////////// */
 /* ...................................USUARIO.................................... */
 
@@ -1498,6 +1498,7 @@ td {
     color: white;
     transition-duration: 0.2s;
 }
+
 .btnMostrar:hover {
     color: #050505;
 }
@@ -1599,38 +1600,41 @@ td {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................INSIMOS.................................... */
 
-.caja-de-buscador-insumos{
-        display: flex;
-        justify-content: space-between;
-    }
+.caja-de-buscador-insumos {
+    display: flex;
+    justify-content: space-between;
+}
 
 
-@media screen and (max-width: 600px){
-    .caja-de-buscador-insumos{
+@media screen and (max-width: 600px) {
+    .caja-de-buscador-insumos {
         display: flex;
         flex-direction: column;
     }
 
-    .caja-insumos{
+    .caja-insumos {
         width: 80%;
         margin: auto !important;
-        margin-bottom: 10px !important ;
+        margin-bottom: 10px !important;
     }
-    .children-caja-insumos{
+
+    .children-caja-insumos {
         width: 80% !important;
     }
 
-    .caja-tarjets-responsive-insumos{
-        width: 100% !important;
-    }
-    .tarjet{
+    .caja-tarjets-responsive-insumos {
         width: 100% !important;
     }
 
-    .botones-mostrar{
+    .tarjet {
+        width: 100% !important;
+    }
+
+    .botones-mostrar {
         width: 100% !important;
     }
 }
+
 /* Lo comento porque no estaba incluida en el head */
 
 
@@ -1638,23 +1642,65 @@ td {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................USUARIO................................... */
 @media screen and (max-width: 550px) {
-    .caja-buscador-usuario{
+    .caja-buscador-usuario {
         width: 100%;
     }
 }
+
 @media screen and (max-width: 400px) {
 
-    .caja-tarjets-responsive{
-        width: 100%;
-    }
-    .tarjeta{
+    .caja-tarjets-responsive {
         width: 100%;
     }
 
-    .btn-usuarios{
+    .tarjeta {
+        width: 100%;
+    }
+
+    .btn-usuarios {
         width: 95%;
     }
 }
 
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
+
+.modalBuscador {
+    border-radius: 20px;
+    background-image: url("../img/grafi.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: var(--filter-image);
+}
+
+.modalBuscador li a:hover {
+    color: #387adf;
+}
+
+.tajeta-estadistica-m {
+    width: 45%;
+    height: 53vh;
+    color: var(--color-text-card);
+    background-color: var(--color-bg-card-estadisticas);
+}
+
+.tajeta-estadistica-g {
+    color: var(--color-text-card);
+    background-color: var(--color-bg-card-estadisticas);
+}
+
+/* /////////////////////////////////////////////////////////////////////////////// */
+/* ............................. RESPONSIVE ..................................... */
+/* ///////////////////////////////////////////////////////////////////////////// */
+
+@media screen and (max-width: 1000px) {
+    .tajeta-estadistica-m {
+        width: 100%;
+        height: 60%;
+    }
+
+    .tajeta-estadistica-g {
+        width: 100%;
+    }
+}

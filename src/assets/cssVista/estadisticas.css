@@ -1,17 +1,7 @@
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................ESTADISTICAS.................................... */
 
-.tajeta-estadistica-m {
-  width: 45%;
-  height: 53vh;
-  color: var(--color-text-card);
-  background-color: var(--color-bg-card-estadisticas);
-}
 
-.tajeta-estadistica-g {
-  color: var(--color-text-card);
-  background-color: var(--color-bg-card-estadisticas);
-}
 
 .tarjetaa-pastel {
   width: 45%;
@@ -36,26 +26,14 @@
 }
 
 
-/* /////////////////////////////////////////////////////////////////////////////// */
-/* ............................. RESPONSIVE ..................................... */
-/* ///////////////////////////////////////////////////////////////////////////// */
-
 @media screen and (max-width: 1000px) {
-  .tajeta-estadistica-m {
-    width: 100%;
-    height: 60%;
-  }
 
-  .tajeta-estadistica-g {
-    width: 100%;
-  }
 
- .tarjetaa-pastel {
+   .tarjetaa-pastel {
     width: 100%;
     height: 60%;
   }
 }
-
 /* Media query para tablets */
 @media (max-width: 768px) {
   .canvas-pastel {

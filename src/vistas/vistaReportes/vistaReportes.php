@@ -1,7 +1,7 @@
 <?php require_once './src/vistas/head/head.php';  ?>
 
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo">
+<div class="col-12 m-auto pt-3 contenedor-fondo"style="height: 100vh;">
 
 
     <h5 style="width: 95%; " class="m-auto mb-3">Reportes <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-clipboard-data-fill" viewBox="0 0 16 16">
