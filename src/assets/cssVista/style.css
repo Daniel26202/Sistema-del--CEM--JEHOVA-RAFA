@@ -13,6 +13,7 @@
     --color-border: #f2f9ff;
     --filter-image: "";
     --color-error: #917977;
+    --color-hr:#1b1a1a;
 }
 
 [data-theme="dark"] {
@@ -29,6 +30,7 @@
     --color-border: #e4ebf0;
     --filter-image: brightness(50%) contrast(120%);
     --color-error: #b0cad7;
+    --color-hr:#fff;
 
     input::placeholder {
         color: #e8f2ff;
@@ -671,7 +673,7 @@ html {
     height: 50%;
 }
 
-insumos en la facturacion
+/* insumos en la facturacion */
 /*Pacientes*/
 
 .margin-inputs {
@@ -863,6 +865,9 @@ insumos en la facturacion
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................FACTURA..................................... */
+hr{
+color: var(--color-hr);
+}
 
 .btn-agregar-factura {
     background: none;
@@ -1025,6 +1030,10 @@ insumos en la facturacion
     width: 55%;
 }
 
+.div-total{
+    background-color: var(--color-primary);
+    border-radius: 10px;
+}
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................DOCTORES..................................... */
@@ -1657,7 +1666,7 @@ td {
         gap: 20px;
     }
 
-    .caja-comprobante-datos-p > h5{
+    /* .caja-comprobante-datos-p > h5{
         font-size: 20px;
     }
     .caja-comprobante-datos-d{
@@ -1666,7 +1675,9 @@ td {
 
     .caja-comprobante-datos-d > h5{
         font-size: 20px;
-    }
+    } */
+
+
 
     
 }

@@ -5,7 +5,7 @@
     }
 </style>
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
-    <h5 style="width: 95%; " class="m-auto mb-3">Facturación
+    <h5 style="width: 95%; " class="m-auto mb-3">Comprobante
 
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
             class="bi bi-file-earmark-text ms-2 ico" viewBox="0 0 16 16">
@@ -33,113 +33,105 @@
                 <div class="uk-card uk-card-default uk-width-1-2@m m-auto" style="background-color: var(--color-surface);">
                     <div class="uk-card-header">
                         <div class="uk-grid-small uk-flex-middle" uk-grid>
-                            <div class="uk-width-auto">
-                                <img class="uk-border-circle" width="40" height="40" src="<?= $urlBase ?>../src/assets/img/logotipo.jpg"
-                                    alt="Avatar">
+                            <div class=" m-auto d-flex justify-content-center" style="width: 40%;">
+                                <img  src="<?= $urlBase ?>../src/assets/icons/logo2.png">
                             </div>
-                            <div class="uk-width-expand">
-                                <h3>Factura J-R</h3>
-                            </div>
+
                         </div>
                     </div>
-                    <div class="uk-card-body d-flex card-comprobarnte">
-                        <div class="caja-comprobante-datos-p">
+
+
+                    <div class="uk-card-body">
+                        <div class="">
                             <?php foreach ($datosFactura as $datoFactura): ?>
-                                <h5 class="h5-comprobante ">Codigo:
-                                    <?php echo $datoFactura['id_factura'] ?>
-                                </h5><br>
-                                <h5 class="h5-comprobante ">Fecha:
-                                    <?php echo $datoFactura['fecha'] ?>
-                                </h5><br>
-                                <h5 class="h5-comprobante ">Total:
-                                    <?php echo $datoFactura['total'] . " BS" ?>
-                                </h5><br>
-                                <h5 class="h5-comprobante ">Paciente:
-                                    <?php echo $datoFactura['nombre_p'] . "  " . $datoFactura['apellido_p'] ?>
-                                </h5><br>
-                                <h5 class="h5-comprobante ">Cedula Paciente:
-                                    <?php echo $datoFactura['nacionalidad'] . "-" . $datoFactura['cedula_p'] ?>
-                                </h5>
+                                <div class="div-total p-2 mb-2">
+                                    <h5 class="text-center"> <?php echo $datoFactura['total'] . " BS" ?></h5>
+                                </div>
+
+                                <div class="d-flex justify-content-between  ">
+                                    <h5 class="h5-comprobante ">Codigo:</h5>
+                                    <h5 class="h5-comprobante ">
+                                        <?php echo $datoFactura['id_factura'] ?>
+                                    </h5>
+
+                                </div>
+
+                                <div class="d-flex justify-content-between  ">
+                                    <h5 class="h5-comprobante ">Fecha:</h5>
+                                    <h5 class="h5-comprobante ">
+                                        <?php echo $datoFactura['fecha'] ?>
+                                    </h5>
+
+                                </div>
+                                <div class="d-flex justify-content-between  ">
+                                    <h5 class="h5-comprobante ">Cedula Paciente:</h5>
+                                    <h5 class="h5-comprobante ">
+                                        <?php echo $datoFactura['nacionalidad'] . "-" . $datoFactura['cedula_p'] ?>
+                                    </h5>
+
+                                </div>
+                                <div class="d-flex justify-content-between  ">
+                                    <h5 class="h5-comprobante ">Paciente:</h5>
+                                    <h5 class="h5-comprobante ">
+                                        <?php echo $datoFactura['nombre_p'] . " " . $datoFactura['apellido_p'] ?>
+                                    </h5>
+
+                                </div>
 
                             <?php endforeach ?>
                         </div>
-                        <div class="caja-comprobante-datos-d">
-                            <h5 class="text-center">Métodos de pago</h5>
-                            <?php foreach ($datosPago as $datoPago): ?>
-                                <h5 class="text-center h5-comprobante">
-                                    <?php echo $datoPago["nombre"] ?>
-                                    <?php echo $datoPago["monto"] . " BS" ?>
+                        <hr>
+
+                        <h5 class="text-center">Servicios</h5>
+
+
+                        <?php foreach ($datosServiciosExtras as $d): ?>
+                            <div class="d-flex justify-content-between  ">
+                                <h5 class="h5-comprobante "><?php echo $d["categoria_servicio"] ?></h5>
+                                <h5 class="h5-comprobante ">
+                                    DR: <?php echo $d["nombre_d"] ?>
+                                    <?php echo $d["apellido_d"] ?>
+                                    <?php echo $d["precio"] . " BS" ?>
                                 </h5>
-                            <?php endforeach ?>
-                            <br>
-                            <h5 class="text-center">Servicios</h5>
-
-
-                            <?php foreach ($datosServiciosExtras as $d): ?>
-                                <div class="d-flex">
-                                    <div class="w-50">
-                                        <h5 class="text-center h5-comprobante">
-                                            <?php echo $d["categoria_servicio"] ?>
-                                        </h5>
-                                    </div>
-
-                                    <div class="w-50">
-                                        <h5 class="text-center h5-comprobante">
-                                            Doctor:
-                                            <?php echo $d["nombre_d"] ?>
-                                            <?php echo $d["apellido_d"] ?>
-                                            <?php echo $d["precio"] . " BS" ?>
-                                        </h5>
-                                    </div>
-
-                                </div>
-
-                            <?php endforeach ?>
-                            <br>
-
-                            <h5 class="text-center">Insumos</h5>
-                            <div class="d-flex">
-                                <div class="w-50">
-                                    <h5 class="text-center ">
-                                        Insumo:
-                                    </h5>
-                                </div>
-                                <div class="w-50">
-                                    <h5 class="text-center ">
-                                        Cantidad:
-                                    </h5>
-                                </div>
-
-                                <div class="w-50">
-                                    <h5 class="text-center ">
-                                        Precio:
-                                    </h5>
-                                </div>
 
                             </div>
-                            <?php foreach ($datosInsumos as $d): ?>
-                                <div class="d-flex">
-                                    <div class="w-50">
-                                        <h5 class="text-center h5-comprobante">
-                                            <?php echo $d["nombre"] ?>
-                                        </h5>
-                                    </div>
-                                    <div class="w-50">
-                                        <h5 class="text-center h5-comprobante">
-                                            <?php echo $d["cantidad"] ?>
-                                        </h5>
-                                    </div>
+                        <?php endforeach ?>
 
-                                    <div class="w-50">
-                                        <h5 class="text-center h5-comprobante">
-                                            <?php echo $d["precio"] . " BS" ?>
-                                        </h5>
-                                    </div>
 
-                                </div>
+                        <hr>
+                        <h5 class="text-center">Insumos</h5>
+                        <?php foreach ($datosInsumos as $d): ?>
+                            <div class="d-flex justify-content-between  ">
+                                <h5 class="h5-comprobante ">Insumo</h5>
+                                <h5 class="h5-comprobante ">
+                                    <?php echo $d["nombre"] ?>
+                                </h5>
+                            </div>
+                            <div class="d-flex justify-content-between  ">
+                                <h5 class="h5-comprobante ">Cantidad</h5>
+                                <h5 class="h5-comprobante ">
+                                    <?php echo $d["cantidad"] ?>
+                                </h5>
+                            </div>
+                            <div class="d-flex justify-content-between  ">
+                                <h5 class="h5-comprobante ">Precio</h5>
+                                <h5 class="h5-comprobante ">
+                                    <?php echo $d["precio"] . " BS" ?>
+                                </h5>
+                            </div>
 
-                            <?php endforeach ?>
-                        </div>
+                        <?php endforeach ?>
+                        <hr>
+
+                        <h5 class="text-center">Métodos de pago</h5>
+                        <?php foreach ($datosPago as $datoPago): ?>
+                            <div class="d-flex justify-content-between  ">
+                                <h5 class="h5-comprobante "><?php echo $datoPago["nombre"] ?></h5>
+                                <h5 class="h5-comprobante ">
+                                    <?php echo $datoPago["monto"] . " BS" ?>
+                                </h5>
+                            </div>
+                        <?php endforeach ?>
                     </div>
                     <?php $id_factura = $parametro[0]; ?>
                     <hr>
