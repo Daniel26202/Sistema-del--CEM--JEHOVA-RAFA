@@ -26,7 +26,7 @@
 
     </div>
 
-    <div class="fondo-tabla col-7 m-auto pb-5 mb-5 h-75">
+    <div class="fondo-tabla fondo-perfil col-7 m-auto pb-5 mb-5 h-75">
       <form class="form-modal perfil pb-5 " id="perfil">
         <div class="m-auto  w-50">
           <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" fill="currentColor"
@@ -143,10 +143,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder  text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2">Atención si edita su perfil tendra que iniciar session nuevamente por seguridad </p>
-        </div>
+
 
         <form class="form-modal form-validable1" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/guardar" method="POST" autocomplete="off">
           <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">

@@ -13,7 +13,7 @@
     --color-border: #f2f9ff;
     --filter-image: "";
     --color-error: #917977;
-    --color-hr:#1b1a1a;
+    --color-hr: #1b1a1a;
 }
 
 [data-theme="dark"] {
@@ -30,7 +30,7 @@
     --color-border: #e4ebf0;
     --filter-image: brightness(50%) contrast(120%);
     --color-error: #b0cad7;
-    --color-hr:#fff;
+    --color-hr: #fff;
 
     input::placeholder {
         color: #e8f2ff;
@@ -865,8 +865,8 @@ html {
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................FACTURA..................................... */
-hr{
-color: var(--color-hr);
+hr {
+    color: var(--color-hr);
 }
 
 .btn-agregar-factura {
@@ -1021,16 +1021,16 @@ color: var(--color-hr);
     cursor: pointer;
 }
 
-.caja-comprobante-datos-p{
+.caja-comprobante-datos-p {
     width: 45%;
 
 }
 
-.caja-comprobante-datos-d{
+.caja-comprobante-datos-d {
     width: 55%;
 }
 
-.div-total{
+.div-total {
     background-color: var(--color-primary);
     border-radius: 10px;
 }
@@ -1595,8 +1595,13 @@ td {
 
 
 /* ////////////////////////////////////////////////////////////////// */
-/* ............................MENU E INICIO........................ */
+/* ............................Perfil........................ */
 
+@media screen and (max-width: 700px) {
+    .fondo-perfil {
+        width: 93% !important;
+    }
+}
 
 /* ///////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
@@ -1640,24 +1645,25 @@ td {
 /* ....................................FACTURA..................................... */
 
 @media screen and (max-width: 700px) {
-    #cajaBotones{
+    #cajaBotones {
         display: flex;
         flex-direction: column !important;
     }
-    
-    .caja-buscador-paciente-factura{
+
+    .caja-buscador-paciente-factura {
         width: 100%;
     }
+
     .tamaño-input-buscar {
         width: 100%;
     }
 
-    .card-comprobarnte{
+    .card-comprobarnte {
         flex-direction: column;
         padding: 10px;
     }
 
-    .caja-comprobante-datos-p{
+    .caja-comprobante-datos-p {
         width: 100%;
         margin-bottom: 10px;
         display: flex;
@@ -1679,7 +1685,7 @@ td {
 
 
 
-    
+
 }
 
 
