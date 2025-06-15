@@ -42,8 +42,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="uk-card-body d-flex">
-                        <div style="width:45%;">
+                    <div class="uk-card-body d-flex card-comprobarnte">
+                        <div class="caja-comprobante-datos-p">
                             <?php foreach ($datosFactura as $datoFactura): ?>
                                 <h5 class="h5-comprobante ">Codigo:
                                     <?php echo $datoFactura['id_factura'] ?>
@@ -63,7 +63,7 @@
 
                             <?php endforeach ?>
                         </div>
-                        <div style="width:55%;">
+                        <div class="caja-comprobante-datos-d">
                             <h5 class="text-center">Métodos de pago</h5>
                             <?php foreach ($datosPago as $datoPago): ?>
                                 <h5 class="text-center h5-comprobante">

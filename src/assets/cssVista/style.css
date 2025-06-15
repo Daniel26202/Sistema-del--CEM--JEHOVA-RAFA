@@ -459,7 +459,7 @@ html {
 }
 
 .tamaño-modal {
-    width: 45%;
+    /* width: 45%; */
     border-radius: 20px;
     background-color: var(--color-surface);
     color: var(--color-text-card) !important;
@@ -469,11 +469,7 @@ html {
     color: var(--color-text-card) !important;
 }
 
-.tamaño-modal-Seleccionar-Insumo {
-    width: 120%;
-    border-radius: 20px;
-    background-color: #ffffff;
-}
+
 
 .input-modal {
     color: var(--color-text-card) !important;
@@ -868,6 +864,30 @@ insumos en la facturacion
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................FACTURA..................................... */
 
+.btn-agregar-factura {
+    background: none;
+    border: none;
+    border-bottom: #387adf solid 2px;
+    border-radius: 0;
+    color: #387adf;
+    padding-left: 0;
+    padding-right: 0;
+    transition: 0.2s;
+    margin: 8px 10px;
+}
+
+.btn-agregar-factura:hover {
+    border-radius: 25px;
+    padding: 6px 10px;
+    transition: 0.1s;
+}
+
+.btn-agregar-factura:hover img {
+    filter: hue-rotate(0deg) saturate(0) brightness(800%);
+}
+
+
+
 .btn-agregarConsulta {
     margin-right: 50px;
     background-color: transparent;
@@ -995,6 +1015,16 @@ insumos en la facturacion
     color: white;
     cursor: pointer;
 }
+
+.caja-comprobante-datos-p{
+    width: 45%;
+
+}
+
+.caja-comprobante-datos-d{
+    width: 55%;
+}
+
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................DOCTORES..................................... */
@@ -1596,6 +1626,51 @@ td {
         margin-left: 30px;
     }
 }
+
+/* ///////////////////////////////////////////////////////////////////////////////// */
+/* ....................................FACTURA..................................... */
+
+@media screen and (max-width: 700px) {
+    #cajaBotones{
+        display: flex;
+        flex-direction: column !important;
+    }
+    
+    .caja-buscador-paciente-factura{
+        width: 100%;
+    }
+    .tamaño-input-buscar {
+        width: 100%;
+    }
+
+    .card-comprobarnte{
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .caja-comprobante-datos-p{
+        width: 100%;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .caja-comprobante-datos-p > h5{
+        font-size: 20px;
+    }
+    .caja-comprobante-datos-d{
+        width: 100%;
+    }
+
+    .caja-comprobante-datos-d > h5{
+        font-size: 20px;
+    }
+
+    
+}
+
 
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................INSIMOS.................................... */

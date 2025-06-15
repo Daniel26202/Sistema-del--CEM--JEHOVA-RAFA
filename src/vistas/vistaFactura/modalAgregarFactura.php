@@ -64,7 +64,7 @@
 
 
 
-        <div class="">
+        <div class="table-responsive">
           <table class="table table-striped " id="tablaPatologia">
             <thead>
               <tr>
@@ -242,7 +242,7 @@
 
 
 
-          <div class="">
+          <div class="table-responsive">
             <table class="table table-striped " id="tablaPatologia">
               <thead>
                 <tr>
@@ -380,7 +380,7 @@
 <div class="modal fade" id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
-    <div class="modal-content agregar tamaño-modal-Seleccionar-Insumo">
+    <div class="modal-content agregar ">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -468,7 +468,7 @@
 <div class="modal fade" id="modal-agregar-insumos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
-    <div class="modal-content agregar tamaño-modal-Seleccionar-Insumo">
+    <div class="modal-content agregar ">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -522,7 +522,7 @@
           </div>
         </div>
 
-        <div class="">
+        <div class="table-responsive">
           <table class="table table-striped " id="tablaInsumos">
             <thead>
               <tr>
@@ -656,7 +656,7 @@
 <div class="modal fade" id="modal-agregar-insumos-confirmar" data-bs-backdrop="static" data-bs-keyboard="false"
   tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
-    <div class="modal-content agregar" style="width: 40vw;">
+    <div class="modal-content agregar" >
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -691,7 +691,7 @@
 
 
 
-          <div class="">
+          <div class="table-responsive">
             <table class="table table-striped ">
               <thead>
                 <tr>
@@ -899,7 +899,7 @@
 <div class="modal fade" id="modal-confirmacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog tamaño-modal">
-    <div class="modal-content agregar">
+    <div class="modal-content agregar table-responsive">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
