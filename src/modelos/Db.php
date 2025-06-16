@@ -2,7 +2,7 @@
 
 namespace App\modelos;
 
-require_once 'src/config/config.php'; // Asegúrate de que esta ruta sea correcta
+require_once __DIR__ . "/../config/config.php";
 
 use PDO;
 use PDOException;
@@ -32,7 +32,6 @@ class Db extends PDO
             // Configuración para manejar caracteres especiales
             $this->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES utf8");
         } catch (PDOException $e) {
-            // Manejo de errores
             echo "Error de conexión: " . $e->getMessage();
         }
     }
