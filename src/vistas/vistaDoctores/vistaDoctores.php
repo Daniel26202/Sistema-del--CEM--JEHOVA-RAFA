@@ -163,7 +163,6 @@
 </div>
 
 
-!-- modal agregar servicios -->
 <!-- modal de agregar -->
 <div id="modal-example-servicio" uk-modal>
     <div class="uk-modal-dialog uk-modal-body tamaño-modal">

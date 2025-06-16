@@ -2,10 +2,10 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\DbSistem;
 
 
-class ModeloInicio extends Db
+class ModeloInicio extends DbSistem
 {
 
 	private $conexion;
@@ -47,7 +47,7 @@ WHERE estado = 'ACT';");
 		try {
 			if ($fechaInicio == "" && $fechaFinal == "") {
 				$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
-  												COUNT(c.id_cita) AS total_solicitudes
+COUNT(c.id_cita) AS total_solicitudes
 												FROM cita c
 												INNER JOIN serviciomedico sm 
 												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
@@ -58,7 +58,7 @@ WHERE estado = 'ACT';");
 												");
 			} else {
 				$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
-  												COUNT(c.id_cita) AS total_solicitudes
+COUNT(c.id_cita) AS total_solicitudes
 												FROM cita c
 												INNER JOIN serviciomedico sm 
 												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
@@ -181,12 +181,12 @@ WHERE estado = 'ACT';");
 
 	//Metodo para validar si un usuario es doctor o no
 
-	public function comprobarCargo($id_usuario)
+	public function comprobarCargo($id_personal)
 	{
 		try {
 
-			$consulta = $this->conexion->prepare("SELECT * FROM personal p INNER JOIN usuario u ON u.id_usuario = p.id_usuario WHERE p.id_usuario = :id_usuario AND p.id_especialidad IS NOT null");
-			$consulta->bindParam(":id_usuario", $id_usuario);
+			$consulta = $this->conexion->prepare(" SELECT * FROM personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.id_personal =:id_personal AND p.id_especialidad IS NOT null");
+			$consulta->bindParam(":id_personal", $id_personal);
 			$consulta->execute();
 			while ($consulta->fetch()) {
 				return 1;

@@ -4,4 +4,3 @@
 define('host_cos', 'localhost');
 define('user_cos', 'root');
 define('pass_cos', '');
-define('dbname_cos', 'bd');

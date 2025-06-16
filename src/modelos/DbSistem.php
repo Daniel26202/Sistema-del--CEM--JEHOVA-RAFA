@@ -7,7 +7,7 @@ require_once 'src/config/config.php'; // Asegúrate de que esta ruta sea correct
 use PDO;
 use PDOException;
 
-class Db extends PDO
+class DbSistem extends PDO
 {
     private $host;
     private $user;
@@ -21,7 +21,7 @@ class Db extends PDO
         $this->host = host_cos;
         $this->user = user_cos;
         $this->pass = pass_cos;
-        $this->dbname = "segurity";
+        $this->dbname = "bd";
 
 
         try {

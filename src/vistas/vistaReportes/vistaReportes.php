@@ -1,13 +1,17 @@
 <?php require_once './src/vistas/head/head.php';  ?>
 
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo">
+<div class="col-12 m-auto pt-3 contenedor-fondo"style="height: 100vh;">
 
 
     <h5 style="width: 95%; " class="m-auto mb-3">Reportes <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-clipboard-data-fill" viewBox="0 0 16 16">
             <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"></path>
             <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1ZM10 8a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V8Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z"></path>
         </svg></h5>
+
+    <!-- alertas -->
+
+    <?php require_once "./src/vistas/alerts.php" ?>
 
 
 
@@ -53,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="card  cardReporte tajeta-estadistica-g m-auto mb-5 contenido">
+            <div class="card cardReporte tajeta-estadistica-m mb-5 contenido">
                 <h3 class="card-header text-center fw-bold">Entradas</h3>
                 <div class="card-body ">
                     <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModalBuscadorEntradas">
@@ -272,7 +276,7 @@
 <!-- Modal Factura -->
 <div class="modal fade modalCapa " id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-xxl-down fullscreen-modal">
-        <div class="modal-content contenido">
+        <div class="modal-content contenido" style="width: 100vw;">
 
 
 
@@ -449,7 +453,7 @@
                                                 <div class="uk-card-header">
                                                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                                                         <div class="uk-width-auto">
-                                                            <img class="uk-border-circle" width="40" height="40" src="./src/assets/img/logotipo.jpg"
+                                                            <img class="uk-border-circle" width="40" height="40" src="<?= $urlBase ?>../src/assets/img/logotipo.jpg"
                                                                 alt="Avatar">
                                                         </div>
                                                         <div class="uk-width-expand">
@@ -678,7 +682,7 @@
 
 <div class="modal fade modalCapa " id="myModalAnular" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-xxl-down fullscreen-modal">
-        <div class="modal-content contenido">
+        <div class="modal-content contenido" style="width: 100vw;">
             <div class="modal-header height_modal_factura">
                 <div class="d-flex justify-content-center align-items-center">
                     <div>
@@ -847,7 +851,7 @@
                                                     <div class="uk-card-header">
                                                         <div class="uk-grid-small uk-flex-middle" uk-grid>
                                                             <div class="uk-width-auto">
-                                                                <img class="uk-border-circle" width="40" height="40" src="./src/assets/img/logotipo.jpg"
+                                                                <img class="uk-border-circle" width="40" height="40" src="<?php echo $urlBase ?>../src/assets/img/logotipo.jpg"
                                                                     alt="Avatar">
                                                             </div>
                                                             <div class="uk-width-expand">

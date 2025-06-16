@@ -18,15 +18,16 @@
     <?php require_once "./src/vistas/alerts.php" ?>
 
 
-    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto " style="width: 95%; ">
+    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto " style="width: 98%; ">
 
 
-        <div style="height: 70px;" id="cajaBotones" class="d-flex justify-content-end">
+        <div   id="cajaBotones" class="d-flex justify-content-end " >
 
+            <!-- <div class="bg-info"> -->
             <button id="botonAgregar"
-                class="d-none btn btn-primary btn-agregar-doctores ms-4 mt-4 btn-agregar-ins-ser btn-factura"
+                class="d-none btn btn-primary btn-agregar-factura ms-4 mt-4 btn-agregar-ins-ser btn-factura"
                 data-bs-toggle="modal" data-bs-target="#modal-agregar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                     class="bi bi-plus-circle" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                     <path
@@ -35,20 +36,21 @@
                 Agregar Servicio
             </button>
 
-            <button class="d-none btn ms-4 mt-4  btn-agregar-ins-ser btn-primary btn-agregar-doctores btn-factura"
+            <button class="d-none btn ms-4 mt-4  btn-agregar-ins-ser btn-primary btn-agregar-factura btn-factura"
                 data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos" id="btnInsumos">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                     class="bi bi-capsule" viewBox="0 0 16 16">
                     <path
                         d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
                 </svg>
                 Agregar Insumos
             </button>
+            <!-- </div> -->
 
 
             <div class="d-flex">
                 <div class="mt-4">
-                    <h5 id="datosPaciente" class="mt-3 text-uppercase" style="margin-left: 15px;"></h5>
+                    <h5 id="datosPaciente" class="mt-3 text-uppercase" style="font-size: 15px; "></h5>
                     <div class="toast-container position-fixed top-0 end-5 p-3">
                         <div class="toast contenido" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
                             id="myToastfactura">
@@ -67,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-4 validar" id="form-buscador">
+                <div class="mt-4 validar caja-buscador-paciente-factura" id="form-buscador">
                     <form id="form-buscador-factura" class="d-flex justify-content-end" autocomplete="off">
                         <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
                             placeholder="Ingrese Cedula" required maxlength="8" minlength="6"

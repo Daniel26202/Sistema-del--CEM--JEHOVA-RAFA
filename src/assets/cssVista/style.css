@@ -13,6 +13,7 @@
     --color-border: #f2f9ff;
     --filter-image: "";
     --color-error: #917977;
+    --color-hr: #1b1a1a;
 }
 
 [data-theme="dark"] {
@@ -29,6 +30,8 @@
     --color-border: #e4ebf0;
     --filter-image: brightness(50%) contrast(120%);
     --color-error: #b0cad7;
+    --color-hr: #fff;
+
     input::placeholder {
         color: #e8f2ff;
     }
@@ -49,11 +52,11 @@
 /* menu de pruebas
  */
 
-.sb-sidenav-blue{
+.sb-sidenav-blue {
     background-color: #387adf;
 }
 
-.navbar-blue{
+.navbar-blue {
     background-color: #387adf;
 }
 
@@ -84,7 +87,7 @@ h6 {
 }
 
 /* Input */
-.cl-switch > input {
+.cl-switch>input {
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -106,7 +109,7 @@ h6 {
 }
 
 /* Track */
-.cl-switch > span::before {
+.cl-switch>span::before {
     content: "";
     float: right;
     display: inline-block;
@@ -120,7 +123,7 @@ h6 {
 }
 
 /* Thumb */
-.cl-switch > span::after {
+.cl-switch>span::after {
     content: "";
     position: absolute;
     top: 2px;
@@ -134,62 +137,62 @@ h6 {
 }
 
 /* Checked */
-.cl-switch > input:checked {
+.cl-switch>input:checked {
     right: -10px;
     background-color: #85b8b7;
 }
 
-.cl-switch > input:checked + span::before {
+.cl-switch>input:checked+span::before {
     background-color: #85b8b7;
 }
 
-.cl-switch > input:checked + span::after {
+.cl-switch>input:checked+span::after {
     background-color: #018786;
     transform: translateX(16px);
 }
 
 /* Hover, Focus */
-.cl-switch:hover > input {
+.cl-switch:hover>input {
     opacity: 0.04;
 }
 
-.cl-switch > input:focus {
+.cl-switch>input:focus {
     opacity: 0.12;
 }
 
-.cl-switch:hover > input:focus {
+.cl-switch:hover>input:focus {
     opacity: 0.16;
 }
 
 /* Active */
-.cl-switch > input:active {
+.cl-switch>input:active {
     opacity: 1;
     transform: scale(0);
     transition: transform 0s, opacity 0s;
 }
 
-.cl-switch > input:active + span::before {
+.cl-switch>input:active+span::before {
     background-color: #8f8f8f;
 }
 
-.cl-switch > input:checked:active + span::before {
+.cl-switch>input:checked:active+span::before {
     background-color: #85b8b7;
 }
 
 /* Disabled */
-.cl-switch > input:disabled {
+.cl-switch>input:disabled {
     opacity: 0;
 }
 
-.cl-switch > input:disabled + span::before {
+.cl-switch>input:disabled+span::before {
     background-color: #ddd;
 }
 
-.cl-switch > input:checked:disabled + span::before {
+.cl-switch>input:checked:disabled+span::before {
     background-color: #bfdbda;
 }
 
-.cl-switch > input:checked:disabled + span::after {
+.cl-switch>input:checked:disabled+span::after {
     background-color: #61b5b4;
 }
 
@@ -199,88 +202,89 @@ h6 {
 
 
 
-html{
+html {
     /* background-color: var(--color-bg-main); */
     background-color: var(--color-bg-main);
 }
 
-.contenedor-fondo{
+.contenedor-fondo {
     background-color: var(--color-bg-main) !important;
 }
 
 
 
 /* Menu */
-       /* Estilo del menú lateral */
-       .sidenav {
-        height: 100vh;
+/* Estilo del menú lateral */
+.sidenav {
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    background-color: #387adf;
+    /* Azul Bootstrap */
+    transition: 0.3s;
+    padding-top: 60px;
+    z-index: 1000;
+    overflow-y: auto;
+    /* Scroll si es necesario */
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    /* font-size: 25px; */
+    color: white !important;
+    display: block;
+    transition: 0.3s;
+}
+
+.navbarHorizontal {
+    background-color: #387adf !important;
+    /* Azul Bootstrap */
+}
+
+.sidenav a:hover {
+    color: #387adf !important;
+    background-color: #ffffff;
+}
+
+.open-sidenav {
+    left: 0;
+}
+
+/* Botón cerrar en la esquina */
+.closebtn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 36px;
+    color: white;
+    text-decoration: none;
+    z-index: 1100;
+}
+
+/* Menú lateral siempre visible en PC (md en adelante) */
+@media (min-width: 992px) {
+    .sidenav {
+        left: 0 !important;
         width: 250px;
-        position: fixed;
-        top: 0;
-        left: -250px;
-        background-color: #387adf;
-        /* Azul Bootstrap */
-        transition: 0.3s;
         padding-top: 60px;
-        z-index: 1000;
-        overflow-y: auto;
-        /* Scroll si es necesario */
     }
 
-    .sidenav a {
-        padding: 8px 8px 8px 32px;
-        text-decoration: none;
-        /* font-size: 25px; */
-        color: white !important;
-        display: block;
-        transition: 0.3s;
+    #main {
+        margin-left: 250px;
     }
 
-    .navbarHorizontal {
-        background-color: #387adf !important;
-        /* Azul Bootstrap */
-    }
-
-    .sidenav a:hover {
-        color: #387adf !important;
-        background-color: #ffffff;
-    }
-
-    .open-sidenav {
-        left: 0;
-    }
-
-    /* Botón cerrar en la esquina */
     .closebtn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 36px;
-        color: white;
-        text-decoration: none;
-        z-index: 1100;
+        display: none;
     }
 
-    /* Menú lateral siempre visible en PC (md en adelante) */
-    @media (min-width: 992px) {
-        .sidenav {
-            left: 0 !important;
-            width: 250px;
-            padding-top: 60px;
-        }
-
-        #main {
-            margin-left: 250px;
-        }
-
-        .closebtn {
-            display: none;
-        }
-
-        .navbar-toggler {
-            display: none;
-        }
+    .navbar-toggler {
+        display: none;
     }
+}
+
 /* clases del contenedor */
 
 
@@ -350,58 +354,6 @@ html{
     color: #ffffff;
 }
 
-#reiniciarBusqueda {
-    border-radius: 0;
-    border-right: #387adf solid 1px;
-    border-start-end-radius: 10px;
-    border-end-start-radius: 10px;
-    background-color: var(--color-primary);
-    transition: 0.4s all;
-    color: #fff;
-    margin-right: -99px;
-    position: relative;
-    z-index: 10;
-}
-
-#reiniciarBusqueda:hover {
-    border-right: #e4ebf0 solid 1px;
-    background-color: var(--color-bg-main);
-    transition: 0.4s all;
-}
-
-#reiniciarBusquedaServ {
-    border-radius: 0;
-    border-right: #387adf solid 1px;
-    border-start-end-radius: 10px;
-    border-end-start-radius: 10px;
-    background-color: var(--color-primary);
-    transition: 0.4s all;
-    color: #fff;
-    margin-right: -100px;
-
-    margin-bottom: -62px;
-    position: relative;
-    z-index: 10;
-}
-
-#reiniciarBusquedaInsumo {
-    border-radius: 0;
-    border-right: #387adf solid 1px;
-    border-start-end-radius: 10px;
-    border-end-start-radius: 10px;
-    background-color: var(--color-primary);
-    transition: 0.4s all;
-    color: #fff;
-    margin-right: -99px;
-    position: relative;
-    z-index: 10;
-}
-
-#reiniciarBusquedaInsumo:hover {
-    border-right: var(--color-bg-main) solid 1px;
-    background-color: var(--color-bg-main);
-    transition: 0.4s all;
-}
 
 #reiniciarBusquedaEspecialidad {
     border-radius: 0;
@@ -509,7 +461,7 @@ html{
 }
 
 .tamaño-modal {
-    width: 45%;
+    /* width: 45%; */
     border-radius: 20px;
     background-color: var(--color-surface);
     color: var(--color-text-card) !important;
@@ -519,11 +471,7 @@ html{
     color: var(--color-text-card) !important;
 }
 
-.tamaño-modal-Seleccionar-Insumo {
-    width: 120%;
-    border-radius: 20px;
-    background-color: #ffffff;
-}
+
 
 .input-modal {
     color: var(--color-text-card) !important;
@@ -695,29 +643,13 @@ html{
 .tarjeta-ajax {
     color: var(--color-text-card) !important;
 }
+
 .tarjeta {
     color: var(--color-text-card) !important;
 }
 
 /* Perfil */
 
-.contenedor-perfil {
-    background-color: var(--color-bg-main);
-    border-radius: 20px;
-    width: 60%;
-    height: 60%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 2%;
-}
-
-.perfil {
-    height: 60% !important;
-}
-
-.perfil .input-group {
-    margin-top: -10px;
-}
 
 /*INSUMOS*/
 
@@ -741,7 +673,7 @@ html{
     height: 50%;
 }
 
-insumos en la facturacion
+/* insumos en la facturacion */
 /*Pacientes*/
 
 .margin-inputs {
@@ -817,34 +749,7 @@ insumos en la facturacion
     font-size: 16px;
 }
 
-/* Estilos Paciente Modal Buscador  */
 
-.modalBuscador {
-    border-radius: 20px;
-    background-image: url("../img/grafi.jpg");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    filter: var(--filter-image);
-}
-
-.modalBuscador li a:hover {
-    color: #387adf;
-}
-
-#perfil input {
-    font-size: 16px;
-}
-
-.iconoB {
-    filter: hue-rotate(200deg);
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
 
 /*USUARIOS*/
 
@@ -899,37 +804,6 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-wrap: wrap;
 }
 
-/* 
-.granReporte:hover {
-  transform: scale(1.1);
-}
-
-.reRepor {
-  margin-top: 2%;
-  height: 70vh;
-  width: 50vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-  font-weight: 600;
-  border-radius: 20px;
-  background-image: radial-gradient(
-    at 40px 20px,
-    rgba(56, 123, 223, 0.171) 40%,
-    rgba(56, 123, 223, 0.205) 20%,
-    rgba(56, 123, 223, 0.63) 72%
-  );
-}
-
-
-
-.leyenda {
-  margin-top: -15px;
-  margin-bottom: 5px;
-  font-size: 10px;
-}
 
 /*expresiones control*/
 
@@ -949,9 +823,7 @@ input[type="number"]::-webkit-outer-spin-button {
     border-bottom: 2px solid rgb(224, 3, 3) !important;
 }
 
-/* #imgProveedores:hover{
-	filter: hue-rotate(600deg);
-} */
+
 /* estilos madal de reportes de facturacion  */
 
 .height_modal_factura {
@@ -993,6 +865,33 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................FACTURA..................................... */
+hr {
+    color: var(--color-hr);
+}
+
+.btn-agregar-factura {
+    background: none;
+    border: none;
+    border-bottom: #387adf solid 2px;
+    border-radius: 0;
+    color: #387adf;
+    padding-left: 0;
+    padding-right: 0;
+    transition: 0.2s;
+    margin: 8px 10px;
+}
+
+.btn-agregar-factura:hover {
+    border-radius: 25px;
+    padding: 6px 10px;
+    transition: 0.1s;
+}
+
+.btn-agregar-factura:hover img {
+    filter: hue-rotate(0deg) saturate(0) brightness(800%);
+}
+
+
 
 .btn-agregarConsulta {
     margin-right: 50px;
@@ -1014,14 +913,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-left: 60px;
 }
 
-/* .input-buscar {
-	border-radius: 0;
-	border: none;
-	border-bottom: 2px solid #387ADF;
-	background: none;
 
-}
- */
 .input-buscar:focus {
     outline: 0 !important;
     box-shadow: none;
@@ -1129,6 +1021,20 @@ input[type="number"]::-webkit-outer-spin-button {
     cursor: pointer;
 }
 
+.caja-comprobante-datos-p {
+    width: 45%;
+
+}
+
+.caja-comprobante-datos-d {
+    width: 55%;
+}
+
+.div-total {
+    background-color: var(--color-primary);
+    border-radius: 10px;
+}
+
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................DOCTORES..................................... */
 
@@ -1222,6 +1128,7 @@ con la clase hover-grande cambia de tamaño*/
     border-radius: 8px;
     width: 30%;
 }
+
 .comentarioADinamica {
     margin: 0;
     border-radius: 8px;
@@ -1508,12 +1415,10 @@ td {
 .fondoPH {
     padding: 10px;
     border: var(--color-bg-main) solid 1px;
-    background-image: radial-gradient(
-        at 40px 20px,
-        rgba(121, 167, 240, 0.171) 40%,
-        rgba(159, 197, 253, 0.205) 20%,
-        rgba(133, 182, 255, 0.63) 72%
-    );
+    background-image: radial-gradient(at 40px 20px,
+            rgba(121, 167, 240, 0.171) 40%,
+            rgba(159, 197, 253, 0.205) 20%,
+            rgba(133, 182, 255, 0.63) 72%);
     border-radius: 10.5px;
     box-shadow: var(--color-bg-main) 0 0 5px;
     cursor: pointer;
@@ -1529,27 +1434,6 @@ td {
 
 /* Lo comento porque no estaba incluida en el head */
 
-/* .contenedor-insumos {
-	padding: 16px;
-}
-
-.tarjetas-contenedor {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 16px;
-	justify-content: space-around;
-}
-
-/* .tarjeta {
-	width: 300px;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	text-align: center;
-	background: #fff;
-	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
-} */
 
 .tarjeta:hover {
     transform: scale(1.05);
@@ -1596,10 +1480,8 @@ td {
     height: 100%;
     overflow: hidden;
 }
+
 */
-
-
-
 /* //////////////////////////////////////////////////////////////////////////////// */
 /* ...................................USUARIO.................................... */
 
@@ -1655,6 +1537,7 @@ td {
     color: white;
     transition-duration: 0.2s;
 }
+
 .btnMostrar:hover {
     color: #050505;
 }
@@ -1703,158 +1586,20 @@ td {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-.tamaño-modal {
-    width: 50%;
-    max-width: 600px;
-    margin: 0 auto;
-    border-radius: 10px;
-    padding: 1rem;
-}
-
-/* .input-modal,
-input[type="date"] {
-    width: 100%; 
-    max-width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-    box-sizing: border-box;
-} */
 
 /* Clase papa mostrar todos los textos rojos cuando la validacion no se cumple */
 .p-error-validaciones {
     color: var(--color-error) !important;
 }
 
-/* /////////////////////////////////////////////////////////////////////////// */
-/* ...............................ESTADISTICAS.................................... */
 
-.tajeta-estadistica-m {
-    width: 40%;
-    height: 57vh;
-    color: var(--color-text-card);
-    background-color: var(--color-bg-card-estadisticas);
-}
-
-.tajeta-estadistica-g {
-    color: var(--color-text-card);
-    background-color: var(--color-bg-card-estadisticas);
-}
-
-@media screen and (max-height: 652px) {
-    .aside.active {
-        width: 79px;
-    }
-}
-
-@media screen and (max-width: 1300px) {
-    .tajeta-estadistica-m {
-        width: 60%;
-        height: 80vh;
-        background-color: var(--color-bg-card-estadisticas);
-    }
-    .tajeta-estadistica-g {
-        background-color: var(--color-bg-card-estadisticas);
-        width: 90%;
-        height: 40vh;
-    }
-
-    .canvas {
-        height: 100% !important;
-    }
-}
-
-/* /////////////////////////////////////////////////////////////////////////////// */
-/* ............................. RESPONSIVE ..................................... */
-/* ///////////////////////////////////////////////////////////////////////////// */
-
-@media screen and (max-width: 1000px) {
-    .tajeta-estadistica-m {
-        background-color: var(--color-bg-card-estadisticas);
-        width: 100%;
-    }
-
-    .tajeta-estadistica-g {
-        background-color: var(--color-bg-card-estadisticas);
-        width: 100%;
-    }
-}
 
 /* ////////////////////////////////////////////////////////////////// */
-/* ............................MENU E INICIO........................ */
+/* ............................Perfil........................ */
 
-@media screen and (max-width: 950px) {
-    .logo {
-        display: none;
-    }
-
-    /* clases del contenedor */
-    main {
-        width: 100vw;
-        margin-left: 0px;
-    }
-
-    .aside {
-        width: 100%;
-        height: -1px;
-        padding: 0px;
-        position: fixed;
-    }
-    .aside.active {
-        width: 80px;
-    }
-
-    .asideRespo {
-        color: #000000;
-        background-color: #ffffff63;
-        height: 70px !important;
-        margin-top: -6px !important;
-        margin-left: -10px !important;
-        margin-right: 250px !important;
-    }
-
-    .opcRes {
-        display: none;
-    }
-    .tdTBtn {
-        width: 13vh;
-    }
-}
-
-@media screen and (max-width: 450px) {
-    /* clases del contenedor */
-    main {
-        width: 100vw;
-        margin-left: 0px;
-    }
-
-    .aside {
-        width: 100%;
-        height: -1px;
-        padding: 0px;
-        position: fixed;
-    }
-
-    .asideRespo {
-        color: #000000;
-        background-color: #ffffff63;
-        height: 70px !important;
-        margin-top: -6px !important;
-        margin-left: -10px !important;
-        margin-right: 250px !important;
-    }
-
-    .opcRes {
-        display: none;
-    }
-
-    .head {
-        background-color: transparent;
-    }
-}
-
-@media screen and (max-width: 360px) {
-    .caja-ayuda {
-        margin: auto;
+@media screen and (max-width: 700px) {
+    .fondo-perfil {
+        width: 93% !important;
     }
 }
 
@@ -1870,11 +1615,6 @@ input[type="date"] {
 }
 
 @media screen and (max-width: 900px) {
-    /* .lista-pacientes2 {
-    width: 100%;
-    margin-left: "";
-  } */
-
     .editar {
         width: 100%;
     }
@@ -1887,16 +1627,7 @@ input[type="date"] {
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................DOCTORES..................................... */
 
-@media screen and (max-width: 768px) {
-    .table th,
-    .table td {
-        font-size: 14px;
-    }
 
-    .tdTBtn {
-        width: 10vh;
-    }
-}
 
 @media screen and (max-width: 600px) {
     .input-buscar {
@@ -1910,202 +1641,158 @@ input[type="date"] {
     }
 }
 
+/* ///////////////////////////////////////////////////////////////////////////////// */
+/* ....................................FACTURA..................................... */
+
+@media screen and (max-width: 700px) {
+    #cajaBotones {
+        display: flex;
+        flex-direction: column !important;
+    }
+
+    .caja-buscador-paciente-factura {
+        width: 100%;
+    }
+
+    .tamaño-input-buscar {
+        width: 100%;
+    }
+
+    .card-comprobarnte {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .caja-comprobante-datos-p {
+        width: 100%;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    /* .caja-comprobante-datos-p > h5{
+        font-size: 20px;
+    }
+    .caja-comprobante-datos-d{
+        width: 100%;
+    }
+
+    .caja-comprobante-datos-d > h5{
+        font-size: 20px;
+    } */
+
+
+
+
+}
+
+
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................INSIMOS.................................... */
 
+.caja-de-buscador-insumos {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+@media screen and (max-width: 600px) {
+    .caja-de-buscador-insumos {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .caja-insumos {
+        width: 80%;
+        margin: auto !important;
+        margin-bottom: 10px !important;
+    }
+
+    .children-caja-insumos {
+        width: 80% !important;
+    }
+
+    .caja-tarjets-responsive-insumos {
+        width: 100% !important;
+    }
+
+    .tarjet {
+        width: 100% !important;
+    }
+
+    .botones-mostrar {
+        width: 100% !important;
+    }
+}
+
 /* Lo comento porque no estaba incluida en el head */
 
-/* @media screen and (max-width: 1024px) {
-    .tarjeta {
-        width: 45%;
-    }
-}
 
-@media screen and (max-width: 768px) {
-    .tarjeta {
-        width: 90%;
-    }
-    .contenedor_tabla {
-        width: auto;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tarjeta img {
-        height: 150px;
-    }
-
-    .tarjeta h3 {
-        font-size: 1rem;
-    }
-
-    .tarjeta p {
-        font-size: 0.9rem;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .tarjeta .btn {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tarjeta .btn {
-        font-size: 0.8rem;
-        padding: 6px;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .contenedor-tabla {
-        padding: 10px;
-    }
-    .tamaño-tabla {
-        font-size: 0.9rem;
-        width: 100%;
-    }
-    .tamaño-tabla th, .tamaño-tabla td {
-        padding: 8px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tamaño-tabla th, .tamaño-tabla td {
-        display: block;
-        width: 100%;
-        text-align: left;
-    }
-} */
 
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................USUARIO................................... */
+@media screen and (max-width: 550px) {
+    .caja-buscador-usuario {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 400px) {
+
+    .caja-tarjets-responsive {
+        width: 100%;
+    }
+
+    .tarjeta {
+        width: 100%;
+    }
+
+    .btn-usuarios {
+        width: 95%;
+    }
+}
 
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-@media screen and (max-width: 800px) {
-    .reportess,
-    .granRepor {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .t {
-        font-size: 1rem;
-    }
-
-    .tamaño-modal {
-        width: 90%;
-        padding: 1rem;
-        overflow: hidden;
-
-        .input-modal,
-        input[type="date"] {
-            font-size: 1rem;
-            padding: 0.4rem;
-        }
-    }
+.modalBuscador {
+    border-radius: 20px;
+    background-image: url("../img/grafi.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: var(--filter-image);
 }
 
-@media screen and (max-width: 600px) {
-    /* Contenedor de reportes */
-    .reportess {
-        display: flex !important;
-        flex-direction: column;
-        padding: 0.5rem;
-    }
+.modalBuscador li a:hover {
+    color: #387adf;
+}
 
-    /* .,   {
+.tajeta-estadistica-m {
+    width: 45%;
+    height: 53vh;
+    color: var(--color-text-card);
+    background-color: var(--color-bg-card-estadisticas);
+}
+
+.tajeta-estadistica-g {
+    color: var(--color-text-card);
+    background-color: var(--color-bg-card-estadisticas);
+}
+
+/* /////////////////////////////////////////////////////////////////////////////// */
+/* ............................. RESPONSIVE ..................................... */
+/* ///////////////////////////////////////////////////////////////////////////// */
+
+@media screen and (max-width: 1000px) {
+    .tajeta-estadistica-m {
         width: 100%;
-        max-width: none;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-    } */
-    /* .cardReporte {
-    width: 100% !important;
-    padding: 10px !important;
-  } */
-
-    .cardreporteCitas {
-        padding: 12px;
+        height: 60%;
     }
 
-    .granReporte {
-        width: 80% !important;
-    }
-
-    .granRepor {
-        margin-top: -25px;
-        height: 33vh !important;
-    }
-
-    .reRepor {
-        margin-top: -5px;
-        height: 33vh !important;
-    }
-
-    .fecha_citas {
-        padding-top: 30px;
-    }
-
-    .fechas_mover {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        background-color: rgba(0, 0, 0, 0.281);
-        margin: auto;
-        border-radius: 20px;
-    }
-
-    /* Texto de reportes */
-    .titulo-reporte {
-        font-size: 1rem !important;
-        text-align: center;
-    }
-
-    /* Modales */
-    .tamaño-modal {
-        width: 90%;
-        margin: 0 auto;
-        border-radius: 10px;
-        padding: 1rem;
-    }
-
-    .input-agregar {
-        background-color: var(--color-bg-card);
-    }
-
-    .input-modal {
-        background-color: var(--color-bg-card);
-        font-size: 1rem;
-        padding: 0.8rem;
-    }
-
-    .btn-agregarcita-modal,
-    .btn-primary {
+    .tajeta-estadistica-g {
         width: 100%;
-        font-size: 1rem;
-        margin-top: 0.5rem;
     }
-
-    .t {
-        font-size: 0.9rem;
-        word-wrap: break-word !important;
-    }
-
-    .repor {
-        flex-wrap: wrap;
-    }
-
-    input[type="date"] {
-        width: 100%;
-        font-size: 0.9rem;
-    }
-
-    /* .tamaño-modal {
-        width: 100%;
-        padding: 1rem;
-    } */
 }

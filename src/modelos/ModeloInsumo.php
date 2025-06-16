@@ -5,7 +5,7 @@ namespace App\modelos;
 use App\modelos\Db;
 use DateTime;
 
-class ModeloInsumo extends Db
+class ModeloInsumo extends DbSistem
 {
 
 	private $conexion;
@@ -34,8 +34,10 @@ class ModeloInsumo extends Db
 	{
 		try {
 			$query = "";
-			if ($cantidadCero) $query = "SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad >= 0  GROUP BY inv.id_insumo ";
-			else   $query = "SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad > 0  GROUP BY inv.id_insumo";
+			if ($cantidadCero) $query = "SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
+
+			else   $query = "SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible > 0  GROUP BY inv.id_insumo ";
+
 			$sql = $this->conexion->prepare($query);
 			$sql->execute();
 			return ($sql->execute()) ? $sql->fetchAll() : false;
@@ -152,14 +154,6 @@ class ModeloInsumo extends Db
 			$consulta2->bindParam(":cantidad_disponible", $cantidad);
 			$consulta2->execute();
 
-			//insertar en la tabla inventario
-			$consulta3 = $this->conexion->prepare("INSERT INTO inventario VALUES (null, :id_insumo, :cantidad,:fechaVecimiento,:lote)");
-			$consulta3->bindParam(":id_insumo", $id_insumo);
-			$consulta3->bindParam(":cantidad", $cantidad);
-			$consulta3->bindParam(":fechaVecimiento", $fechaDeVecimiento);
-			$consulta3->bindParam(":lote", $lote);
-			$consulta3->execute();
-
 			$this->conexion->commit();
 			return 1;
 		} catch (\Exception $e) {
@@ -267,16 +261,6 @@ class ModeloInsumo extends Db
 		}
 	}
 
-	private function id_insumoVencidos()
-	{
-		try {
-			$consulta2 = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE e.estado = 'VEC' AND i.estado = 'ACT' ORDER BY ei.fechaDeVencimiento");
-			return ($consulta2->execute()) ? $consulta2->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
-
 	//funcion mejorada de actualizacion de la cantidad
 	public function actualizar_cantidad_insumo($id_insumo)
 	{
@@ -299,7 +283,7 @@ class ModeloInsumo extends Db
 	public function papelera()
 	{
 		try {
-			$sql = $this->conexion->prepare("SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad >= 0  GROUP BY inv.id_insumo ");
+			$sql = $this->conexion->prepare("SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ");
 			$sql->execute();
 			return ($sql->execute()) ? $sql->fetchAll() : false;
 		} catch (\Exception $e) {

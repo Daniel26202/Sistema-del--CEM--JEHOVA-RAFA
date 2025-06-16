@@ -31,13 +31,14 @@ class ControladorUsuarios
     public function usuarios($parametro)
     {
 
+        $vistaActiva = "usuarios";
         $datosU = $this->modelo->select();
         require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
     }
 
     public function administradores($parametro)
     {
-
+        $vistaActiva = "administradores";
         $datosU = $this->modelo->selectAdmin();
         require_once './src/vistas/vistaUsuarios/vistaUsuariosAdmin.php';
     }
@@ -108,11 +109,11 @@ class ControladorUsuarios
 
         // Generamos la contraseña encriptada de la contraseña ingresada
         $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
-        $id_usuario = $this->modelo->AgregarAdministrador($_POST["usuario"], $passwordEncrip, $_POST["Correo"]);
+        $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["Correo"]);
 
         $insercion = $this->doctor->RegistrarAdmin($_POST["nacionalidad"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["Correo"], $id_usuario);
         if ($insercion) {
-            // Guardar la bitacora
+            // Guardar la bitacorasaa
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha insertado un administrador ");
             header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/registro");
         } else {

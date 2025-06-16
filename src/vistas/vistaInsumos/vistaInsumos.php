@@ -2,7 +2,7 @@
 
 
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo">
+<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
 
     <h5 style="width: 95%; " class="m-auto mb-3">Insumos<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-capsule ms-2"
@@ -19,7 +19,7 @@
     <input type="hidden" id="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
 
-    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
+    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto table-responsive" style="width: 95%; ">
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
             <?php require_once "./src/vistas/vistaInsumos/paginationInsumos.php" ?>
@@ -57,12 +57,12 @@
             <input type="hidden" id="fechaLocal" value="<?= date("Y-m-d"); ?>">
 
 
-            <div class="fondo-tabla m-auto" style="width:95%;">
+            <div class="fondo-tabla m-auto " style="width:95%;">
 
-                <div class="d-flex justify-content-between  caja-de-buscador-insumos">
+                <div class=" caja-de-buscador-insumos">
                     <?php if ($this->permisos($_SESSION["id_rol"], "guardar", "Insumos")): ?>
-                        <div class="mover-input-agregarcita mt-2">
-                            <button class="btn btn-primary btn-agregar-doctores col-11" uk-toggle="target: #modal-exampleInsumos">
+                        <div class="mover-input-agregarcita caja-insumos mt-2">
+                            <button class="btn children-caja-insumos btn-primary btn-agregar-doctores" uk-toggle="target: #modal-exampleInsumos">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-capsule me-1"
                                     viewBox="0 0 16 16">
                                     <path
@@ -73,14 +73,14 @@
                     <?php endif; ?>
 
                     <!-- Buscador de Insumos -->
-                    <div class="mover-input-buscar d-flex mt-3">
-                        <a href="?c=controladorInsumos/insumos" class="btn d-none" title="Buscar" id="reiniciarBusquedaInsumo" uk-tooltip="Restablecer">
+                    <div class="mover-input-buscar d-flex mt-3 caja-insumos">
+                        <a href="" class="btn d-none" title="Buscar" id="reiniciarBusquedaInsumo" uk-tooltip="Restablecer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
                                 <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
                                 <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
                             </svg>
                         </a>
-                        <div id="form-buscador-insumo" class="d-flex justify-content-end form-responsive" autocomplete="off">
+                        <div id="form-buscador-insumo" class="d-flex justify-content-end form-responsive children-caja-insumos" autocomplete="off">
                             <input class="form-control input-buscar tamaño-input-buscar input-responsive" type="text" name="nombre"
                                 placeholder="Codigo o Nombre">
 
@@ -102,9 +102,9 @@
 
                 <div id="tarjetas" class="">
                     <hr>
-                    <div class="tar ">
+                    <div class="tar caja-tarjets-responsive-insumos ">
                         <?php foreach ($insumos as $i): ?>
-                            <div class="contenido card ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
+                            <div class="contenido card   ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
                                 <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/insumos/<?= $i["imagen"] ?>" class="card-img-top" style="height: 35%;">
                                 <div class="card-body mt-4 tarjeta-ajax">
                                     <!-- <div class="alert  text-center alertas-vencidos d-none p-0">  -->
@@ -122,7 +122,7 @@
                                     <h5 class="card-title titulo"><?= $i["nombre"] ?></h5>
                                     <p class="mt-3">Medida: <?= $i["medida"] ?></p>
                                     <p class="mt-3">Skock-Min: <?= $i["stockMinimo"] ?></p>
-                                    <?php if ($i["cantidad"] <= 0): ?>
+                                    <?php if ($i["cantidad_disponible"] <= 0): ?>
                                         <p class="text-danger">Cantidad: <?= $i["cantidad"] ?></p>
                                     <?php else: ?>
                                         <p>Cantidad: <?= $i["cantidad_inventario"] ?></p>

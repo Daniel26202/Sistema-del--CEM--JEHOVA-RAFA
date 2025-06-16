@@ -26,7 +26,7 @@
 
     </div>
 
-    <div class="fondo-tabla col-7 m-auto pb-5 mb-5">
+    <div class="fondo-tabla fondo-perfil col-7 m-auto pb-5 mb-5 h-75">
       <form class="form-modal perfil pb-5 " id="perfil">
         <div class="m-auto  w-50">
           <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" fill="currentColor"
@@ -94,7 +94,18 @@
             </svg>
           </span>
           <input class="form-control input-modal input-perfil" type="text" name="usuario" placeholder="Usuario"
-            disabled uk-tooltip="Usuario" value="<?= $d["usuario"] ?>">
+            disabled uk-tooltip="Usuario" value="<?= $d["user"] ?>">
+        </div>
+
+        <div class="input-group flex-nowrap">
+          <span class="input-modal mt-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+              class="bi bi-person-fill azul" viewBox="0 0 16 16">
+              <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+            </svg>
+          </span>
+          <input class="form-control input-modal input-perfil" type="email" name="correo" placeholder="Correo"
+            disabled uk-tooltip="Correo" value="<?= $d["correo"] ?>">
         </div>
 
         <div class="d-flex justify-content-end mb-5">
@@ -132,10 +143,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder  text-center" uk-alert>
-          <a class="uk-alert-close" uk-close></a>
-          <p class="pe-2">Atención si edita su perfil tendra que iniciar session nuevamente por seguridad </p>
-        </div>
+
 
         <form class="form-modal form-validable1" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/guardar" method="POST" autocomplete="off">
           <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
@@ -199,15 +207,27 @@
                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-4.118 9.79c1.258 0 2-1.067 2-2.872 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684c.047.64.594 1.406 1.703 1.406zm-2.89-5.435h-.633A12.6 12.6 0 0 0 4.5 8.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675V7.354z" />
               </svg>
             </span>
-            <input class="form-control input-modal input-disabled input-paciente input-validar" type="text" id="Usuario" name="usuario" placeholder="Usuario" value="<?= $d["usuario"] ?>" required>
+            <input class="form-control input-modal input-disabled input-paciente input-validar" type="text" id="Usuario" name="usuario" placeholder="Usuario" value="<?= $d["user"] ?>" required>
           </div>
           <p class="p-error-usuario1 d-none">El usuario esta mal</p>
+
+
+          <div class="input-group flex-nowrap margin-inputs" id="grp_fn">
+            <span class="input-modal mt-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calendar2-date-fill azul" viewBox="0 0 16 16">
+                <path d="M9.402 10.246c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2z" />
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-4.118 9.79c1.258 0 2-1.067 2-2.872 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684c.047.64.594 1.406 1.703 1.406zm-2.89-5.435h-.633A12.6 12.6 0 0 0 4.5 8.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675V7.354z" />
+              </svg>
+            </span>
+            <input class="form-control input-modal input-disabled input-paciente input-validar" type="text" id="" name="correo" placeholder="Correo" value="<?= $d["correo"] ?>" required>
+          </div>
+          <p class="p-error-correo1 d-none">El correo esta mal</p>
 
 
 
           <div class="mt-3 uk-text-right">
             <button class="uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
-            <button class="btn col-5 btn-agregarcita-modal" type="sumit" name="crear" id="botonEnviar">Agregar</button>
+            <button class="btn col-5 btn-agregarcita-modal" type="sumit" name="crear" id="botonEnviar">Modificar</button>
           </div>
         </form>
       </div>

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-05-2025 a las 23:42:01
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 11-06-2025 a las 03:02:33
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,297 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `bd`
 --
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `bitacora`
---
-
-CREATE TABLE `bitacora` (
-  `id_bitacora` int(11) NOT NULL,
-  `id_usuario` int(11) NOT NULL,
-  `tabla` varchar(30) NOT NULL,
-  `actividad` text NOT NULL,
-  `fecha_hora` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `bitacora`
---
-
-INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fecha_hora`) VALUES
-(6, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 11:14:41'),
-(7, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 12:05:23'),
-(8, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 12:22:08'),
-(9, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 12:54:08'),
-(10, 1, 'cerrar session', 'Ha cerrado la session ', '2025-03-31 12:54:37'),
-(11, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 12:56:04'),
-(12, 1, 'cerrar session', 'Ha cerrado la session ', '2025-03-31 13:32:42'),
-(13, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 13:32:52'),
-(14, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 13:47:10'),
-(15, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 16:10:52'),
-(16, 1, 'inicio sesion', 'Ha iniciado una session', '2025-03-31 17:04:02'),
-(17, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-02 10:05:43'),
-(18, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-02 11:30:21'),
-(19, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-02 11:54:59'),
-(20, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-03 20:46:16'),
-(21, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-04 17:18:31'),
-(22, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-04 23:20:21'),
-(23, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-05 09:18:47'),
-(24, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-14 19:18:06'),
-(25, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-04-14 19:20:24'),
-(26, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-14 19:25:47'),
-(27, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-14 20:33:40'),
-(28, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-14 20:35:37'),
-(29, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-14 20:35:49'),
-(30, 1, 'Roles', 'Ha Eliminado un rol', '2025-04-14 20:36:00'),
-(31, 1, 'Roles', 'Ha Eliminado un rol', '2025-04-14 20:36:17'),
-(32, 1, 'Roles', 'Ha Eliminado un rol', '2025-04-14 20:36:24'),
-(33, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-14 20:36:54'),
-(34, 1, 'doctor', 'Ha Insertado un doctor', '2025-04-14 20:39:06'),
-(35, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-04-14 20:39:21'),
-(36, 1, 'cita', 'Ha Insertado una  cita', '2025-04-14 18:40:33'),
-(37, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-15 10:05:28'),
-(38, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 10:58:40'),
-(39, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-15 15:39:07'),
-(40, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-15 19:39:17'),
-(41, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-15 21:13:58'),
-(42, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-15 21:17:22'),
-(43, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-15 21:32:10'),
-(44, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-15 21:35:22'),
-(45, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-16 08:27:48'),
-(46, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-16 09:02:09'),
-(47, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-16 19:16:15'),
-(48, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-17 10:30:25'),
-(49, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-17 10:47:58'),
-(50, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-17 11:41:58'),
-(51, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-17 11:42:22'),
-(52, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-17 15:14:04'),
-(53, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-17 15:27:56'),
-(54, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-17 16:16:48'),
-(55, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-17 16:16:56'),
-(56, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-17 17:05:12'),
-(57, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-17 17:05:56'),
-(58, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-18 10:40:46'),
-(59, 1, 'doctor', 'Ha Insertado un doctor', '2025-04-18 10:53:27'),
-(60, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-04-18 10:56:52'),
-(61, 1, 'cita', 'Ha Insertado una  cita', '2025-04-18 09:01:22'),
-(62, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-19 10:54:18'),
-(63, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-19 11:17:57'),
-(64, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-19 11:58:37'),
-(65, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-19 21:09:28'),
-(66, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-19 21:11:06'),
-(67, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-19 21:17:04'),
-(68, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-20 10:04:51'),
-(69, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:19:51'),
-(70, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:20:18'),
-(71, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:35:40'),
-(72, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:49:30'),
-(73, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:50:25'),
-(74, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:52:12'),
-(75, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:52:59'),
-(76, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:53:02'),
-(77, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:54:04'),
-(78, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:54:36'),
-(79, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:54:48'),
-(80, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:54:53'),
-(81, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 10:55:11'),
-(82, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 11:07:04'),
-(83, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 11:07:27'),
-(84, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 11:08:45'),
-(85, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 11:09:04'),
-(86, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 11:09:19'),
-(87, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-20 11:13:53'),
-(88, 1, 'Roles', 'Ha Eliminado un rol', '2025-04-20 11:14:09'),
-(89, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 11:17:33'),
-(90, 1, 'Roles', 'Ha Modiicado un rol', '2025-04-20 11:17:42'),
-(91, 1, 'categoria_servicio', 'Ha eliminado una  categoria', '2025-04-20 11:24:29'),
-(92, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-21 16:13:23'),
-(93, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 16:46:06'),
-(94, 1, 'entrada', 'Ha insertado una entrada', '2025-04-21 16:48:42'),
-(95, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 17:15:28'),
-(96, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 17:16:21'),
-(97, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 17:30:59'),
-(98, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-21 19:31:34'),
-(99, 1, 'entrada', 'Ha insertado una entrada', '2025-04-21 19:39:46'),
-(100, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 19:41:28'),
-(101, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 19:51:30'),
-(102, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 19:54:51'),
-(103, 1, 'entrada', 'Ha insertado una entrada', '2025-04-21 19:59:19'),
-(104, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 20:00:00'),
-(105, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 20:03:13'),
-(106, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-04-21 20:05:17'),
-(107, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-21 20:08:29'),
-(108, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-22 10:45:39'),
-(109, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-22 10:47:29'),
-(110, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-22 11:09:02'),
-(111, 1, 'proveedor', 'Ha modificado un proveedor', '2025-04-22 11:28:19'),
-(112, 1, 'Roles', 'Ha Insertado un nuevo rol', '2025-04-22 12:41:55'),
-(113, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-22 12:42:49'),
-(114, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-22 12:43:20'),
-(115, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-27 21:00:54'),
-(116, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-27 21:03:03'),
-(117, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-27 21:26:17'),
-(118, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-27 21:28:33'),
-(119, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-27 21:28:43'),
-(120, 1, 'control', 'Ha modificado un  control medico', '2025-04-27 21:33:26'),
-(121, 1, 'control', 'Ha modificado un  control medico', '2025-04-27 21:33:39'),
-(122, 1, 'sintomas', 'Ha Insertado un  sintoma', '2025-04-27 21:37:41'),
-(123, 1, 'sintomas', 'Ha eliminado un  sintoma', '2025-04-27 21:37:49'),
-(124, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-27 21:56:58'),
-(125, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-27 21:57:29'),
-(126, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-28 14:37:36'),
-(127, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-28 14:38:01'),
-(128, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-04-28 14:38:29'),
-(129, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-28 14:42:27'),
-(130, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 01:41:48'),
-(131, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-04-29 02:54:29'),
-(132, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-04-29 02:54:38'),
-(133, 1, 'insumo', 'Ha Insertado un insumo', '2025-04-29 03:23:45'),
-(134, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-04-29 03:32:05'),
-(135, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-04-29 03:32:17'),
-(136, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 11:38:32'),
-(137, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:25:47'),
-(138, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-29 12:29:02'),
-(139, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:29:39'),
-(140, 1, 'cerrar session', 'Ha cerrado la session ', '2025-04-29 12:35:09'),
-(141, 1, 'inicio sesion', 'Ha iniciado una session', '2025-04-29 12:35:32'),
-(142, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 11:11:28'),
-(143, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 14:35:55'),
-(144, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:12:29'),
-(145, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:22:06'),
-(146, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:22:47'),
-(147, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-01 15:54:12'),
-(148, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-01 16:23:01'),
-(149, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 16:55:24'),
-(150, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-01 18:01:42'),
-(151, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-02 09:14:38'),
-(152, 1, 'Roles', 'Ha Modiicado un rol', '2025-05-02 09:46:35'),
-(153, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-02 09:46:41'),
-(154, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-02 09:47:54'),
-(155, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-05-02 11:09:19'),
-(156, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-02 11:37:07'),
-(157, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-02 15:39:42'),
-(158, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-02 15:49:40'),
-(159, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-02 15:49:46'),
-(160, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-02 15:51:38'),
-(161, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-02 15:52:48'),
-(162, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-02 15:52:56'),
-(163, 1, 'entrada', 'Ha insertado una entrada', '2025-05-02 15:59:16'),
-(164, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:01:29'),
-(165, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:01:50'),
-(166, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:05:15'),
-(167, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:08:31'),
-(168, 1, 'insumo', 'Ha modificado un insumo', '2025-05-02 16:09:52'),
-(169, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 08:08:17'),
-(170, 1, 'cita', 'Ha Insertado una  cita', '2025-05-03 08:02:42'),
-(171, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-03 10:03:37'),
-(172, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-03 10:03:50'),
-(173, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 10:04:05'),
-(174, 42, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 10:05:34'),
-(175, 42, 'cerrar session', 'Ha cerrado la session ', '2025-05-03 10:18:27'),
-(176, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 11:06:03'),
-(177, 1, 'cita', 'Ha Insertado una  cita', '2025-05-03 09:18:06'),
-(178, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-03 11:42:13'),
-(179, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 20:05:34'),
-(180, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 20:28:49'),
-(181, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-03 21:10:14'),
-(182, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-04 20:33:30'),
-(183, 1, 'patologia', 'Ha Insertado una patologia', '2025-05-04 20:37:52'),
-(184, 1, 'paciente', 'Ha modificado un paciente', '2025-05-04 20:45:17'),
-(185, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-05 09:35:01'),
-(186, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 09:56:34'),
-(187, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 09:58:17'),
-(188, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 10:06:56'),
-(189, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 10:08:30'),
-(190, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:39'),
-(191, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:42'),
-(192, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:46'),
-(193, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:50'),
-(194, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 10:19:53'),
-(195, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-05 19:24:49'),
-(196, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-05 20:04:03'),
-(197, 1, 'entrada', 'Ha insertado una entrada', '2025-05-05 20:08:16'),
-(198, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-05 20:10:41'),
-(199, 1, 'entrada', 'Ha eliminado una entrada', '2025-05-05 20:16:24'),
-(200, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-05 20:39:13'),
-(201, 1, 'servicioMedico', 'Ha modificadp un servicio medico', '2025-05-05 20:42:53'),
-(202, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-05 20:43:12'),
-(203, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-07 16:16:11'),
-(204, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-07 21:27:14'),
-(205, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-07 21:30:01'),
-(206, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-07 21:30:49'),
-(207, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-07 21:31:45'),
-(208, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-07 21:32:10'),
-(209, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-07 21:35:10'),
-(210, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-07 21:35:50'),
-(211, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-07 21:39:45'),
-(212, 1, 'servicioMedico', 'Ha modificadp un servicio medico', '2025-05-07 22:14:16'),
-(213, 1, 'proveedor', 'Ha modificado un proveedor', '2025-05-07 22:23:23'),
-(214, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-07 22:25:18'),
-(215, 42, 'inicio sesion', 'Ha iniciado una session', '2025-05-07 22:25:22'),
-(216, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-07 22:25:39'),
-(217, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-07 22:25:56'),
-(218, 42, 'inicio sesion', 'Ha iniciado una session', '2025-05-07 22:25:59'),
-(219, 42, 'patologia', 'Ha Insertado una patologia', '2025-05-07 22:26:27'),
-(220, 42, 'cerrar session', 'Ha cerrado la session ', '2025-05-07 22:26:33'),
-(221, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-07 22:26:36'),
-(222, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-08 09:58:46'),
-(223, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-08 10:25:09'),
-(224, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-08 10:25:48'),
-(225, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-08 10:39:37'),
-(226, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-08 10:43:52'),
-(227, 1, 'insumo', 'Ha eliminado un insumo', '2025-05-08 10:43:59'),
-(228, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-09 10:48:22'),
-(229, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-12 09:28:51'),
-(230, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-12 11:20:25'),
-(231, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-12 11:23:03'),
-(232, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-12 11:27:59'),
-(233, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-12 11:33:54'),
-(234, 1, 'servicioMedico', 'Ha modificadp un servicio medico', '2025-05-12 13:07:37'),
-(235, 1, 'Roles', 'Ha Modiicado un rol', '2025-05-12 13:49:08'),
-(236, 1, 'Roles', 'Ha Modiicado un rol', '2025-05-12 13:50:19'),
-(237, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-12 13:50:35'),
-(238, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-12 13:50:38'),
-(239, 1, 'categoria_servicio', 'Ha Insertado una nueva  categoria', '2025-05-12 14:50:13'),
-(240, 1, 'categoria_servicio', 'Ha Insertado una nueva  categoria', '2025-05-12 14:50:24'),
-(241, 1, 'categoria_servicio', 'Ha Insertado una nueva  categoria', '2025-05-12 14:51:02'),
-(242, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-12 14:51:11'),
-(243, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-12 14:51:18'),
-(244, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-05-12 14:51:26'),
-(245, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-12 14:51:33'),
-(246, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-05-12 14:51:40'),
-(247, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-15 09:49:59'),
-(248, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-15 09:57:46'),
-(249, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-05-15 10:20:04'),
-(250, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-05-15 10:20:50'),
-(251, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-15 11:59:34'),
-(252, 1, 'insumo', 'Ha Insertado un insumo', '2025-05-22 12:49:23'),
-(253, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-05-22 12:49:56'),
-(254, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-05-22 14:02:01'),
-(255, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-22 20:23:40'),
-(256, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-23 08:10:11'),
-(257, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-23 08:10:27'),
-(258, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-23 08:10:44'),
-(259, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-23 08:16:29'),
-(260, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-23 08:17:03'),
-(261, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-23 08:17:14'),
-(262, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-23 08:17:32'),
-(263, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-23 08:17:42'),
-(264, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-05-23 08:19:25'),
-(265, 1, 'Consultas', 'Ha añadido un servicio medico a un doctor', '2025-05-23 09:05:29'),
-(266, 1, 'cerrar session', 'Ha cerrado la session ', '2025-05-24 09:39:07'),
-(267, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-24 11:09:46'),
-(268, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-25 21:03:46'),
-(269, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-26 19:08:40'),
-(270, 1, 'inicio sesion', 'Ha iniciado una session', '2025-05-27 15:18:09'),
-(271, 1, 'cita', 'Ha Insertado una  cita', '2025-05-27 14:10:10'),
-(272, 1, 'cita', 'Ha Insertado una  cita', '2025-05-27 15:11:35'),
-(273, 1, 'cita', 'Ha Insertado una  cita', '2025-05-27 15:21:09'),
-(274, 1, 'cita', 'Ha Insertado una  cita', '2025-05-27 15:23:28'),
-(275, 1, 'cita', 'Ha Insertado una  cita', '2025-05-27 15:30:42'),
-(276, 1, 'cita', 'Ha Insertado una  cita', '2025-05-27 15:40:57');
 
 -- --------------------------------------------------------
 
@@ -372,7 +81,8 @@ INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_ser
 (51, '2025-06-02', '22:00:00', 'Pendiente', 24, 25, '22:05:00'),
 (52, '2025-06-02', '22:10:00', 'Pendiente', 24, 25, '23:05:00'),
 (53, '2025-06-09', '20:00:00', 'Pendiente', 24, 25, '21:05:00'),
-(54, '2025-06-09', '21:11:00', 'Pendiente', 24, 25, '22:05:00');
+(54, '2025-06-09', '21:11:00', 'Pendiente', 24, 25, '22:05:00'),
+(55, '2025-06-16', '20:00:00', 'Pendiente', 24, 34, '21:06:00');
 
 -- --------------------------------------------------------
 
@@ -399,7 +109,24 @@ CREATE TABLE `control` (
 
 INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`, `medicamentosRecetados`, `fecha_control`, `fechaRegreso`, `nota`, `historiaclinica`, `estado`) VALUES
 (26, 23, 1, 'El chico presenta dificultad para respirar, hinchazón en el cuerpo y dolores de cabeza', 'Cetirizina\r\nSalbutamol\r\nAcetaminofén', '2025-04-02 14:37:34', '2025-04-26', 'Debe hacerse hematología completa', 'historia', 'ACT'),
-(27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasico\r\nCafeína\r\nViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'historiaclinica', 'ACT');
+(27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasico\r\nCafeína\r\nViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'historiaclinica', 'ACT'),
+(28, 25, 43, 'diagnostico', 'indicaciones', '2025-06-10 10:11:51', '2026-06-24', 'nota', 'historial\r\n\r\n', 'ACT'),
+(29, 25, 42, 'jfsdjfsdnfds', 'indicaciones', '2025-06-10 20:07:54', '2026-06-18', 'alguito', 'mhnfdjg algo mas', 'ACT');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `distribucion_edad_genero`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `distribucion_edad_genero` (
+`rango_edad` varchar(5)
+,`masculino` decimal(42,0)
+,`femenino` decimal(42,0)
+,`total` decimal(42,0)
+,`total_masculino` bigint(21)
+,`total_femenino` bigint(21)
+);
 
 -- --------------------------------------------------------
 
@@ -440,7 +167,8 @@ INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeI
 (55, 6, 2323, '2025-05-08', 'ACT'),
 (56, 6, 2323, '2025-05-08', 'ACT'),
 (57, 6, 1212, '2025-05-08', 'ACT'),
-(58, 6, 5664, '2025-05-22', 'ACT');
+(58, 6, 5664, '2025-05-22', 'ACT'),
+(59, 7, 8098, '2025-06-10', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -463,7 +191,8 @@ CREATE TABLE `entrada_insumo` (
 --
 
 INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `fechaDeVencimiento`, `precio`, `cantidad_entrante`, `cantidad_disponible`) VALUES
-(52, 37, 58, '2025-05-25', 9.00, 89, 88);
+(52, 37, 58, '2025-05-25', 9.00, 89, 88),
+(53, 36, 59, '2026-02-11', 79.00, 34, 34);
 
 -- --------------------------------------------------------
 
@@ -485,8 +214,20 @@ INSERT INTO `especialidad` (`id_especialidad`, `nombre`, `estado`) VALUES
 (3, 'Cardiología', 'ACT'),
 (4, 'Paramedico', 'ACT'),
 (5, 'Enfermeria', 'ACT'),
-(6, 'administrador', 'ACT'),
+(6, 'administrador', 'DES'),
 (7, 'Cirugia', 'ACT');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `especialidades_solicitadas`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `especialidades_solicitadas` (
+`especialidad` varchar(25)
+,`fecha` date
+,`total_solicitudes` bigint(21)
+);
 
 -- --------------------------------------------------------
 
@@ -551,7 +292,8 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_pa
 (100, '2025-05-07', 30.16, 'ACT', 25),
 (101, '2025-05-07', 0.60, 'ACT', 25),
 (102, '2025-05-07', 1230.00, 'ACT', 25),
-(103, '2025-05-22', 1.00, 'ACT', 24);
+(103, '2025-05-22', 1.00, 'ACT', 24),
+(104, '2025-06-09', 1000.00, 'ACT', 25);
 
 -- --------------------------------------------------------
 
@@ -565,111 +307,6 @@ CREATE TABLE `factura_has_inventario` (
   `cantidad` int(11) NOT NULL,
   `estado` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `factura_has_inventario`
---
-
-INSERT INTO `factura_has_inventario` (`factura_id_factura`, `inventario_id_inventario`, `cantidad`, `estado`) VALUES
-(65, 1, 5, 'ACT'),
-(66, 1, 5, 'ACT'),
-(67, 2, 4, 'ACT'),
-(68, 2, 1, 'ACT'),
-(69, 2, 10, 'ACT'),
-(70, 1, 1, 'ACT'),
-(71, 2, 10, 'ACT'),
-(72, 2, 3, 'ACT'),
-(73, 2, 1, 'ACT'),
-(74, 2, 1, 'ACT'),
-(75, 2, 1, 'ACT'),
-(76, 1, 1, 'ACT'),
-(77, 1, 1, 'ACT'),
-(77, 1, 2, 'ACT'),
-(78, 1, 1, 'ACT'),
-(80, 1, 10, 'ACT'),
-(81, 1, 1, 'ACT'),
-(82, 1, 1, 'ACT'),
-(82, 3, 1, 'ACT'),
-(82, 3, 1, 'ACT'),
-(82, 1, 11, 'ACT'),
-(82, 3, 11, 'ACT'),
-(82, 3, 11, 'ACT'),
-(83, 1, 1, 'ACT'),
-(83, 3, 1, 'ACT'),
-(84, 1, 1, 'ACT'),
-(84, 3, 1, 'ACT'),
-(84, 1, 2, 'ACT'),
-(84, 3, 2, 'ACT'),
-(85, 1, 1, 'ACT'),
-(85, 3, 1, 'ACT'),
-(85, 2, 2, 'ACT'),
-(85, 4, 2, 'ACT'),
-(86, 1, 1, 'ACT'),
-(86, 3, 1, 'ACT'),
-(86, 2, 1, 'ACT'),
-(86, 4, 1, 'ACT'),
-(87, 1, 1, 'ACT'),
-(87, 2, 1, 'ACT'),
-(88, 5, 7, 'ACT'),
-(88, 4, 7, 'ACT'),
-(89, 4, 1, 'ACT'),
-(89, 4, 1, 'ACT'),
-(90, 4, 1, 'ACT'),
-(65, 1, 5, 'ACT'),
-(66, 1, 5, 'ACT'),
-(67, 2, 4, 'ACT'),
-(68, 2, 1, 'ACT'),
-(69, 2, 10, 'ACT'),
-(70, 1, 1, 'ACT'),
-(71, 2, 10, 'ACT'),
-(72, 2, 3, 'ACT'),
-(73, 2, 1, 'ACT'),
-(74, 2, 1, 'ACT'),
-(75, 2, 1, 'ACT'),
-(76, 1, 1, 'ACT'),
-(77, 1, 1, 'ACT'),
-(77, 1, 2, 'ACT'),
-(78, 1, 1, 'ACT'),
-(80, 1, 10, 'ACT'),
-(81, 1, 1, 'ACT'),
-(82, 1, 1, 'ACT'),
-(82, 3, 1, 'ACT'),
-(82, 3, 1, 'ACT'),
-(82, 1, 11, 'ACT'),
-(82, 3, 11, 'ACT'),
-(82, 3, 11, 'ACT'),
-(83, 1, 1, 'ACT'),
-(83, 3, 1, 'ACT'),
-(84, 1, 1, 'ACT'),
-(84, 3, 1, 'ACT'),
-(84, 1, 2, 'ACT'),
-(84, 3, 2, 'ACT'),
-(85, 1, 1, 'ACT'),
-(85, 3, 1, 'ACT'),
-(85, 2, 2, 'ACT'),
-(85, 4, 2, 'ACT'),
-(86, 1, 1, 'ACT'),
-(86, 3, 1, 'ACT'),
-(86, 2, 1, 'ACT'),
-(86, 4, 1, 'ACT'),
-(87, 1, 1, 'ACT'),
-(87, 2, 1, 'ACT'),
-(88, 5, 7, 'ACT'),
-(88, 4, 7, 'ACT'),
-(89, 4, 1, 'ACT'),
-(89, 4, 1, 'ACT'),
-(90, 4, 1, 'ACT'),
-(91, 6, 3, 'ACT'),
-(92, 6, 2, 'ACT'),
-(94, 6, 1, 'ACT'),
-(95, 8, 2, 'ACT'),
-(97, 10, 10, 'ACT'),
-(98, 10, 2, 'ACT'),
-(99, 8, 1, 'ACT'),
-(100, 8, 1, 'ACT'),
-(100, 10, 1, 'ACT'),
-(101, 10, 1, 'ACT'),
-(102, 12, 10, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -715,7 +352,12 @@ CREATE TABLE `horarioydoctor` (
 
 INSERT INTO `horarioydoctor` (`id_horarioydoctor`, `id_personal`, `id_horario`, `horaDeEntrada`, `horaDeSalida`) VALUES
 (30, 19, 9, '20:00:00', '23:00:00'),
-(31, 20, 13, '10:00:00', '13:00:00');
+(31, 20, 13, '10:00:00', '13:00:00'),
+(32, 21, 9, '10:00:00', '12:00:00'),
+(33, 21, 11, '11:00:00', '17:00:00'),
+(34, 22, 9, '10:00:00', '13:00:00'),
+(35, 22, 10, '14:00:00', '16:00:00'),
+(36, 23, 13, '09:00:00', '10:01:00');
 
 -- --------------------------------------------------------
 
@@ -743,7 +385,8 @@ INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `preci
 (11, '2025-04-28 18:37:52', 0, NULL, 0, NULL, 27, '0000-00-00 00:00:00', 'DES'),
 (12, '2025-04-28 18:42:13', 0, NULL, 0, NULL, 26, '0000-00-00 00:00:00', 'DES'),
 (13, '2025-04-29 07:32:00', 0, NULL, 1, NULL, 27, '0000-00-00 00:00:00', 'Realizadas'),
-(14, '2025-05-23 08:17:49', 0, 0, 0, 0, 26, '0000-00-00 00:00:00', 'Pendiente');
+(14, '2025-05-23 08:17:49', 0, 0, 0, 0, 26, '0000-00-00 00:00:00', 'Pendiente'),
+(15, '2025-06-10 20:20:19', 0, 0, 0, 0, 29, '0000-00-00 00:00:00', 'Pendiente');
 
 -- --------------------------------------------------------
 
@@ -793,49 +436,16 @@ CREATE TABLE `insumodehospitalizacion` (
   `cantidad` int(13) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Volcado de datos para la tabla `insumodehospitalizacion`
---
-
-INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospitalizacion`, `id_inventario`, `cantidad`) VALUES
-(11, 13, 16, 9),
-(12, 14, 16, 1);
-
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `inventario`
+-- Estructura Stand-in para la vista `insumos`
+-- (Véase abajo para la vista actual)
 --
-
-CREATE TABLE `inventario` (
-  `id_inventario` int(11) NOT NULL,
-  `id_insumo` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `fechaDeVencimiento` date NOT NULL,
-  `numero_de_lote` int(16) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `inventario`
---
-
-INSERT INTO `inventario` (`id_inventario`, `id_insumo`, `cantidad`, `fechaDeVencimiento`, `numero_de_lote`) VALUES
-(1, 24, 0, '2030-04-01', 1),
-(2, 25, 0, '2030-04-01', 2),
-(3, 24, 0, '2025-11-11', 3435),
-(4, 25, 0, '2025-12-12', 3456),
-(5, 25, 0, '2034-02-11', 1233),
-(6, 29, 4, '2025-05-10', 3232),
-(7, 30, 10, '2025-05-29', 3232),
-(8, 31, 0, '2025-05-31', 1212),
-(9, 31, 0, '2025-05-31', 2334),
-(10, 32, 20, '2025-05-31', 2323),
-(11, 32, 20, '2029-02-12', 4553),
-(12, 33, 0, '2025-05-12', 2323),
-(13, 34, 12, '2025-05-25', 2323),
-(14, 35, 12, '2026-05-31', 2323),
-(15, 36, 0, '2029-05-08', 1212),
-(16, 37, 88, '2025-05-25', 5664);
+CREATE TABLE `insumos` (
+`nombre_insumo` varchar(25)
+,`total_usado` decimal(32,0)
+);
 
 -- --------------------------------------------------------
 
@@ -1027,7 +637,8 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (129, 5, 100, '', 29.56),
 (130, 5, 101, '', 0.60),
 (131, 5, 102, '', 1230.00),
-(132, 5, 103, '', 1.00);
+(132, 5, 103, '', 1.00),
+(133, 5, 104, '', 1000.00);
 
 -- --------------------------------------------------------
 
@@ -1136,52 +747,14 @@ INSERT INTO `patologiadepaciente` (`id_patologiaDePaciente`, `id_paciente`, `id_
 (218, 51, 14, '2025-05-15 19:44:51'),
 (219, 58, 14, '2025-05-15 19:44:51'),
 (220, 46, 14, '2025-05-15 19:45:12'),
-(221, 35, 9, '2025-05-15 19:45:12');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `permisos`
---
-
-CREATE TABLE `permisos` (
-  `idpermisos` int(11) NOT NULL,
-  `id_rol` int(11) NOT NULL,
-  `permisos` varchar(200) NOT NULL,
-  `modulo` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `permisos`
---
-
-INSERT INTO `permisos` (`idpermisos`, `id_rol`, `permisos`, `modulo`) VALUES
-(1, 1, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(2, 5, 'consultar', 'Pacientes'),
-(3, 6, 'consultar,guardar', 'Pacientes'),
-(4, 7, 'consultar,guardar', 'Pacientes'),
-(5, 7, 'consultar,guardar,editar,eliminar', 'Patologias'),
-(6, 8, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(7, 8, 'consultar,guardar,eliminar', 'Patologias'),
-(8, 9, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(9, 9, 'consultar,guardar,eliminar', 'Patologias'),
-(10, 1, 'consultar,guardar,editar,eliminar', 'Roles'),
-(11, 1, 'consultar,guardar,editar,eliminar', 'Usuarios'),
-(12, 10, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(13, 10, 'consultar,guardar,editar,eliminar', 'Patologias'),
-(14, 10, 'consultar,guardar,editar,eliminar', 'Factura'),
-(15, 10, 'consultar,guardar,editar,eliminar', 'Citas'),
-(16, 10, 'consultar,guardar,editar,eliminar', 'Consultas'),
-(17, 10, 'consultar,guardar,editar,eliminar', 'Doctores'),
-(18, 10, 'consultar,guardar,editar,eliminar', 'Control'),
-(19, 10, 'consultar,guardar,editar,eliminar', 'Hospitalizacion'),
-(20, 10, 'consultar,guardar,editar,eliminar', 'Insumos'),
-(21, 10, 'consultar,guardar,editar,eliminar', 'Entrada'),
-(22, 10, 'consultar,guardar,editar,eliminar', 'Proveedores'),
-(23, 10, 'consultar,guardar,editar,eliminar', 'Usuarios'),
-(24, 10, 'consultar,guardar,editar,eliminar', 'Roles'),
-(25, 10, 'consultar,guardar,editar,eliminar', 'Reportes'),
-(26, 10, 'consultar,guardar,editar,eliminar', 'Estadisticas');
+(221, 35, 9, '2025-05-15 19:45:12'),
+(222, 25, 6, '2025-06-10 10:11:51'),
+(223, 25, 8, '2025-06-10 10:11:51'),
+(224, 25, 5, '2025-06-10 20:07:54'),
+(225, 25, 6, '2025-06-10 20:07:54'),
+(226, 25, 7, '2025-06-10 20:07:54'),
+(227, 25, 8, '2025-06-10 20:07:54'),
+(228, 25, 9, '2025-06-10 20:07:54');
 
 -- --------------------------------------------------------
 
@@ -1198,17 +771,20 @@ CREATE TABLE `personal` (
   `telefono` varchar(20) NOT NULL,
   `tipodecategoria` varchar(25) NOT NULL,
   `id_especialidad` int(11) DEFAULT NULL,
-  `id_usuario` int(11) NOT NULL
+  `usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `personal`
 --
 
-INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `tipodecategoria`, `id_especialidad`, `id_usuario`) VALUES
-(18, 'V', '30554145', 'Dixon', 'Bastias', '04145378241', 'Administrador', NULL, 1),
+INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `tipodecategoria`, `id_especialidad`, `usuario`) VALUES
+(18, 'V', '30554053', 'Wilmer', 'Baez', '04145378010', 'Administrador', NULL, 1),
 (19, 'V', '1232233', 'David', 'Carlos', '04142323233', '', 7, 42),
-(20, 'V', '12123343', 'Carlos', 'Garcia', '04244546565', '', 7, 43);
+(20, 'V', '12123343', 'Carlos', 'Garcia', '04244546565', '', 7, 43),
+(21, 'V', '12020333', 'Ana', 'Bracho', '04122323422', '', 6, 45),
+(22, 'V', '6755654', 'Julian', 'Valdez', '04122323212', '', 4, 46),
+(23, 'V', '867548', 'Jaun', 'Edlkfjfdsk', '04243943432', '', 5, 49);
 
 -- --------------------------------------------------------
 
@@ -1233,6 +809,7 @@ INSERT INTO `personal_has_serviciomedico` (`personal_id_personal`, `serviciomedi
 (19, 30),
 (19, 32),
 (19, 33),
+(20, 24),
 (20, 27),
 (20, 28),
 (20, 31);
@@ -1260,32 +837,6 @@ CREATE TABLE `proveedor` (
 INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `rif`, `telefono`, `email`, `direccion`, `estado`) VALUES
 (6, 'Juan Jose', '281500045', '04121338031', 'depanajuaner@gmail.com', 'en su casa', 'ACT'),
 (7, 'Ricardo Perez', '296236571', '04124466999', 'sisisi@gmail.com', 'hfygh', 'ACT');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `rol`
---
-
-CREATE TABLE `rol` (
-  `id_rol` int(11) NOT NULL,
-  `nombre` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `estado` varchar(45) NOT NULL,
-  `descripción` varchar(45) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `rol`
---
-
-INSERT INTO `rol` (`id_rol`, `nombre`, `estado`, `descripción`) VALUES
-(1, 'administrador', 'ACT', 'administrador'),
-(5, 'Rol', 'DES', 'este es un permiso par los doctores'),
-(6, 'Propio', 'DES', 'descripcio'),
-(7, 'Carlos', 'DES', 'jfhfdsjddjs'),
-(8, 'Doctor', 'ACT', 'en un rol para los doctores'),
-(9, 'Roletazo', 'DES', 'es un permiso de pruebas'),
-(10, 'Superadmin', 'ACT', 'lsafdfjfd');
 
 -- --------------------------------------------------------
 
@@ -1351,7 +902,8 @@ INSERT INTO `serviciomedico_has_factura` (`serviciomedico_id_servicioMedico`, `f
 (26, 93),
 (27, 95),
 (25, 96),
-(26, 97);
+(26, 97),
+(25, 104);
 
 -- --------------------------------------------------------
 
@@ -1372,7 +924,7 @@ CREATE TABLE `sintomas` (
 INSERT INTO `sintomas` (`id_sintomas`, `nombre`, `estado`) VALUES
 (5, 'Disnea', 'ACT'),
 (6, 'Fiebre', 'ACT'),
-(7, 'Vomito', 'ACT'),
+(7, 'Vomito', 'DES'),
 (8, 'Dolor de cabeza', 'ACT'),
 (9, 'Malestar general', 'ACT'),
 (10, 'Inchazon', 'ACT'),
@@ -1404,43 +956,65 @@ INSERT INTO `sintomas_control` (`id_sintomas_control`, `id_sintomas`, `id_contro
 (39, 8, 26),
 (40, 8, 27),
 (41, 9, 27),
-(42, 7, 27);
+(42, 7, 27),
+(43, 5, 28),
+(44, 6, 28),
+(45, 7, 28),
+(46, 5, 29),
+(47, 6, 29),
+(48, 8, 29);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuario`
+-- Estructura Stand-in para la vista `tasa_morbilidad`
+-- (Véase abajo para la vista actual)
 --
+CREATE TABLE `tasa_morbilidad` (
+`nombre_patologia` varchar(25)
+,`casos` bigint(21)
+,`tasa_por_1000` decimal(27,2)
+);
 
-CREATE TABLE `usuario` (
-  `id_usuario` int(11) NOT NULL,
-  `id_rol` int(11) NOT NULL,
-  `imagen` varchar(255) NOT NULL,
-  `usuario` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `correo` varchar(100) NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `estado` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- --------------------------------------------------------
 
 --
--- Volcado de datos para la tabla `usuario`
+-- Estructura para la vista `distribucion_edad_genero`
 --
+DROP TABLE IF EXISTS `distribucion_edad_genero`;
 
-INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 10, '', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
-(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
-(43, 8, 'img23.jpg', 'Usuario', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT');
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `distribucion_edad_genero`  AS SELECT `sub`.`rango_edad` AS `rango_edad`, sum(case when `sub`.`genero` = 'masculino' then `sub`.`cantidad` else 0 end) AS `masculino`, sum(case when `sub`.`genero` = 'femenino' then `sub`.`cantidad` else 0 end) AS `femenino`, sum(`sub`.`cantidad`) AS `total`, (select count(0) from `paciente` where `paciente`.`genero` = 'masculino') AS `total_masculino`, (select count(0) from `paciente` where `paciente`.`genero` = 'femenino') AS `total_femenino` FROM (select case when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 0 and 12 then '0-12' when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 13 and 19 then '13-19' when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 20 and 35 then '20-35' when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 36 and 50 then '36-50' when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 51 and 65 then '51-65' else '66+' end AS `rango_edad`,`paciente`.`genero` AS `genero`,count(0) AS `cantidad` from `paciente` group by case when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 0 and 12 then '0-12' when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 13 and 19 then '13-19' when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 20 and 35 then '20-35' when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 36 and 50 then '36-50' when timestampdiff(YEAR,`paciente`.`fn`,curdate()) between 51 and 65 then '51-65' else '66+' end,`paciente`.`genero`) AS `sub` GROUP BY `sub`.`rango_edad` ORDER BY `sub`.`rango_edad` ASC ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `especialidades_solicitadas`
+--
+DROP TABLE IF EXISTS `especialidades_solicitadas`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `especialidades_solicitadas`  AS SELECT `cs`.`nombre` AS `especialidad`, `c`.`fecha` AS `fecha`, count(`c`.`id_cita`) AS `total_solicitudes` FROM ((`cita` `c` join `serviciomedico` `sm` on(`c`.`serviciomedico_id_servicioMedico` = `sm`.`id_servicioMedico`)) join `categoria_servicio` `cs` on(`sm`.`id_categoria` = `cs`.`id_categoria`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `insumos`
+--
+DROP TABLE IF EXISTS `insumos`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `insumos`  AS SELECT `i`.`nombre` AS `nombre_insumo`, sum(`fhi`.`cantidad`) AS `total_usado` FROM ((`factura_has_inventario` `fhi` join `entrada_insumo` `inv` on(`fhi`.`inventario_id_inventario` = `inv`.`id_entradaDeInsumo`)) join `insumo` `i` on(`inv`.`id_insumo` = `i`.`id_insumo`)) GROUP BY `i`.`id_insumo` ORDER BY sum(`fhi`.`cantidad`) DESC ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `tasa_morbilidad`
+--
+DROP TABLE IF EXISTS `tasa_morbilidad`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `tasa_morbilidad`  AS SELECT `p`.`nombre_patologia` AS `nombre_patologia`, count(distinct `pp`.`id_paciente`) AS `casos`, round(count(distinct `pp`.`id_paciente`) / (select count(0) from `paciente`) * 1000,2) AS `tasa_por_1000` FROM (`patologiadepaciente` `pp` join `patologia` `p` on(`pp`.`id_patologia` = `p`.`id_patologia`)) GROUP BY `pp`.`id_patologia` ORDER BY count(distinct `pp`.`id_paciente`) DESC ;
 
 --
 -- Índices para tablas volcadas
 --
-
---
--- Indices de la tabla `bitacora`
---
-ALTER TABLE `bitacora`
-  ADD PRIMARY KEY (`id_bitacora`),
-  ADD KEY `id_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `categoria_servicio`
@@ -1535,13 +1109,6 @@ ALTER TABLE `insumodehospitalizacion`
   ADD KEY `id_insumo` (`id_inventario`);
 
 --
--- Indices de la tabla `inventario`
---
-ALTER TABLE `inventario`
-  ADD PRIMARY KEY (`id_inventario`),
-  ADD KEY `id_insumo` (`id_insumo`);
-
---
 -- Indices de la tabla `paciente`
 --
 ALTER TABLE `paciente`
@@ -1576,20 +1143,12 @@ ALTER TABLE `patologiadepaciente`
   ADD KEY `id_patologia` (`id_patologia`);
 
 --
--- Indices de la tabla `permisos`
---
-ALTER TABLE `permisos`
-  ADD PRIMARY KEY (`idpermisos`),
-  ADD KEY `id_rol` (`id_rol`);
-
---
 -- Indices de la tabla `personal`
 --
 ALTER TABLE `personal`
   ADD PRIMARY KEY (`id_personal`),
   ADD UNIQUE KEY `cedula` (`cedula`),
-  ADD KEY `id_especialidad` (`id_especialidad`,`id_usuario`),
-  ADD KEY `id_usuario` (`id_usuario`);
+  ADD KEY `id_especialidad` (`id_especialidad`);
 
 --
 -- Indices de la tabla `personal_has_serviciomedico`
@@ -1604,12 +1163,6 @@ ALTER TABLE `personal_has_serviciomedico`
 --
 ALTER TABLE `proveedor`
   ADD PRIMARY KEY (`id_proveedor`);
-
---
--- Indices de la tabla `rol`
---
-ALTER TABLE `rol`
-  ADD PRIMARY KEY (`id_rol`);
 
 --
 -- Indices de la tabla `serviciomedico`
@@ -1640,21 +1193,8 @@ ALTER TABLE `sintomas_control`
   ADD KEY `id_control` (`id_control`);
 
 --
--- Indices de la tabla `usuario`
---
-ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD KEY `id_rol` (`id_rol`);
-
---
 -- AUTO_INCREMENT de las tablas volcadas
 --
-
---
--- AUTO_INCREMENT de la tabla `bitacora`
---
-ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=277;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria_servicio`
@@ -1666,25 +1206,25 @@ ALTER TABLE `categoria_servicio`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT de la tabla `control`
 --
 ALTER TABLE `control`
-  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidad`
@@ -1696,7 +1236,7 @@ ALTER TABLE `especialidad`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
@@ -1708,13 +1248,13 @@ ALTER TABLE `horario`
 -- AUTO_INCREMENT de la tabla `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
-  MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo`
@@ -1727,12 +1267,6 @@ ALTER TABLE `insumo`
 --
 ALTER TABLE `insumodehospitalizacion`
   MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT de la tabla `inventario`
---
-ALTER TABLE `inventario`
-  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `paciente`
@@ -1750,7 +1284,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=134;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
@@ -1762,31 +1296,19 @@ ALTER TABLE `patologia`
 -- AUTO_INCREMENT de la tabla `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
-  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=222;
-
---
--- AUTO_INCREMENT de la tabla `permisos`
---
-ALTER TABLE `permisos`
-  MODIFY `idpermisos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
 
 --
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
   MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT de la tabla `rol`
---
-ALTER TABLE `rol`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `serviciomedico`
@@ -1804,23 +1326,11 @@ ALTER TABLE `sintomas`
 -- AUTO_INCREMENT de la tabla `sintomas_control`
 --
 ALTER TABLE `sintomas_control`
-  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
-
---
--- AUTO_INCREMENT de la tabla `usuario`
---
-ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- Restricciones para tablas volcadas
 --
-
---
--- Filtros para la tabla `bitacora`
---
-ALTER TABLE `bitacora`
-  ADD CONSTRAINT `bitacora_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
 -- Filtros para la tabla `cita`
@@ -1833,8 +1343,7 @@ ALTER TABLE `cita`
 -- Filtros para la tabla `control`
 --
 ALTER TABLE `control`
-  ADD CONSTRAINT `control_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`),
-  ADD CONSTRAINT `control_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+  ADD CONSTRAINT `control_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`);
 
 --
 -- Filtros para la tabla `entrada`
@@ -1859,8 +1368,8 @@ ALTER TABLE `factura`
 -- Filtros para la tabla `factura_has_inventario`
 --
 ALTER TABLE `factura_has_inventario`
-  ADD CONSTRAINT `factura_has_inventario_ibfk_1` FOREIGN KEY (`inventario_id_inventario`) REFERENCES `inventario` (`id_inventario`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `factura_has_inventario_ibfk_2` FOREIGN KEY (`factura_id_factura`) REFERENCES `factura` (`id_factura`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `factura_has_inventario_ibfk_2` FOREIGN KEY (`factura_id_factura`) REFERENCES `factura` (`id_factura`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `factura_has_inventario_ibfk_3` FOREIGN KEY (`inventario_id_inventario`) REFERENCES `entrada_insumo` (`id_entradaDeInsumo`);
 
 --
 -- Filtros para la tabla `horarioydoctor`
@@ -1880,13 +1389,7 @@ ALTER TABLE `hospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
   ADD CONSTRAINT `insumodehospitalizacion_ibfk_1` FOREIGN KEY (`id_hospitalizacion`) REFERENCES `hospitalizacion` (`id_hospitalizacion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `insumodehospitalizacion_ibfk_2` FOREIGN KEY (`id_inventario`) REFERENCES `inventario` (`id_inventario`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `inventario`
---
-ALTER TABLE `inventario`
-  ADD CONSTRAINT `inventario_ibfk_1` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`id_insumo`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `insumodehospitalizacion_ibfk_2` FOREIGN KEY (`id_inventario`) REFERENCES `entrada_insumo` (`id_entradaDeInsumo`);
 
 --
 -- Filtros para la tabla `pagodefactura`
@@ -1903,17 +1406,10 @@ ALTER TABLE `patologiadepaciente`
   ADD CONSTRAINT `id_patologia` FOREIGN KEY (`id_patologia`) REFERENCES `patologia` (`id_patologia`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `permisos`
---
-ALTER TABLE `permisos`
-  ADD CONSTRAINT `permisos_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Filtros para la tabla `personal`
 --
 ALTER TABLE `personal`
-  ADD CONSTRAINT `personal_ibfk_1` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidad` (`id_especialidad`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `personal_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `personal_ibfk_1` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidad` (`id_especialidad`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `personal_has_serviciomedico`
@@ -1941,12 +1437,6 @@ ALTER TABLE `serviciomedico_has_factura`
 ALTER TABLE `sintomas_control`
   ADD CONSTRAINT `sintomas_control_ibfk_1` FOREIGN KEY (`id_sintomas`) REFERENCES `sintomas` (`id_sintomas`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `sintomas_control_ibfk_2` FOREIGN KEY (`id_control`) REFERENCES `control` (`id_control`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `usuario`
---
-ALTER TABLE `usuario`
-  ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

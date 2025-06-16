@@ -20,7 +20,7 @@ class ControladorEntrada
 
 	public function entrada($parametro)
 	{
-		$vistaActiva = 'activas';
+		$vistaActiva = "entradas";
 		$insumos = $this->modelo->insumos();
 		$proveedores = $this->modelo->selectProveedores();
 		$entradas = $this->modelo->todasLasEntradas();

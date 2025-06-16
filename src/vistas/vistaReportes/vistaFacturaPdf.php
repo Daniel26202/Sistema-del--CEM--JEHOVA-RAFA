@@ -1,15 +1,9 @@
 <?php
 
 
-
-$datosFactura = $this->modelo->consultarFacturaSinCita($_GET["id_factura"]);
-$datosPago = $this->modelo->consultarPagoFactura($_GET["id_factura"]);
-$datosServiciosExtras = $this->modelo->consultarServiciosExtras($_GET["id_factura"]);
-$datosInsumos = $this->modelo->consultarFacturaInsumo($_GET["id_factura"]);
 // Creación del objeto de la clase heredada
+
 $pdf = new FPDF();
-
-
 
 $pdf->AddPage();
 
@@ -99,18 +93,17 @@ $pdf->Ln(90);
 
 $pdf->Cell(10);
 $pdf->SetTextColor(14, 169, 181);
-$pdf->Cell(110, 10, 'METODOS DE PAGO', 0, 0, 'L',0);
-$pdf->SetTextColor(255,255,255);
+$pdf->Cell(110, 10, 'METODOS DE PAGO', 0, 0, 'L', 0);
+$pdf->SetTextColor(255, 255, 255);
 $pdf->SetFillColor(14, 169, 181);
-$pdf->Cell(50, 10, 'TOTAL:  '.$datosFactura[0]['total'] . " BS", 0, 1, 'C',1);
+$pdf->Cell(50, 10, 'TOTAL:  ' . $datosFactura[0]['total'] . " BS", 0, 1, 'C', 1);
 $pdf->SetTextColor(14, 169, 181);
 
-foreach($datosPago as $Value){
+foreach ($datosPago as $Value) {
 	$pdf->Cell(10);
-	$pdf->Cell(110, 10, strtoupper($Value["nombre"]. " ". $Value["monto"] . " Bs "), 0, 1, 'L',0);
+	$pdf->Cell(110, 10, strtoupper($Value["nombre"] . " " . $Value["monto"] . " Bs "), 0, 1, 'L', 0);
 }
-$pdf->Cell(10);
-$pdf->Cell(140, 10, strtoupper('REFERENCIA: '." ".$Value["referencia"]), 0, 1, 'L',0);
+
 $pdf->SetFont('Arial', 'B', 12);
 
 $pdf->Output();

@@ -20,6 +20,7 @@ class ControladorInsumos
 
 	public function insumos($parametro)
 	{
+		$vistaActiva = "insumos";
 		$proveedores = $this->modelo->selectProveedores();
 		$insumos = $this->modelo->insumos();
 		if ($insumos) {
@@ -37,6 +38,7 @@ class ControladorInsumos
 
 	public function InsumosVencidos($parametro)
 	{
+		$vistaActiva = "vencidos";
 		$vencidos = $this->modelo->InsumosVencidos();
 		$insumos = $this->modelo->insumos();
 		require_once './src/vistas/vistaInsumos/vistaInsumosVencidos.php';

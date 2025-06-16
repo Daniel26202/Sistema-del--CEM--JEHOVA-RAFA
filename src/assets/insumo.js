@@ -64,49 +64,7 @@ addEventListener("DOMContentLoaded", function () {
     medida: true,
   };
 
-  //funcion para manejar el resonsive de las tarjetas de insumos
-  const cajaDeBuscadorInsumos = document.querySelector(
-    ".caja-de-buscador-insumos"
-  );
-  const tarjetResponsive = () => {
-    let anchoPantalla = window.innerWidth;
-    console.log(anchoPantalla);
 
-    document.querySelectorAll(".tarjetas_iniciales").forEach((tarjet) => {
-      if (anchoPantalla <= 590) {
-        tarjet.style.width = "90%";
-        tarjet.style.margin = "auto";
-        cajaDeBuscadorInsumos.style.flexDirection = "column-reverse";
-        cajaDeBuscadorInsumos.children[0].style.width = "90%";
-        cajaDeBuscadorInsumos.children[1].style.width = "100%";
-        document.querySelector(".input-responsive").style.width = "80%";
-        document.querySelector(".boton-responsive").style.width = "20%";
-        document.querySelector(".form-responsive").style.width = "90%";
-        document.querySelector(".form-responsive").style.margin = "auto";
-        cajaDeBuscadorInsumos.classList.remove("align-items-center");
-      } else {
-        tarjet.style.width = "15rem";
-        tarjet.style.margin = "";
-        cajaDeBuscadorInsumos.style.flexDirection = "";
-        cajaDeBuscadorInsumos.children[0].style.width = "";
-        cajaDeBuscadorInsumos.children[1]
-          ? (cajaDeBuscadorInsumos.children[1].style.width = "")
-          : false;
-        document.querySelector(".input-responsive").style.width = "";
-        document.querySelector(".boton-responsive").style.width = "";
-        document.querySelector(".form-responsive").style.width = "";
-        document.querySelector(".form-responsive").style.margin = "";
-        cajaDeBuscadorInsumos.classList.add("align-items-center");
-      }
-    });
-  };
-
-  //iniciar la uncion con el evento de tamano de pantalla
-
-  tarjetResponsive();
-  window.addEventListener("resize", function () {
-    tarjetResponsive();
-  });
 
   //funcion para traer los datos de las entradas de los inusmos que ya se vallan a vencer
 
@@ -173,18 +131,16 @@ addEventListener("DOMContentLoaded", function () {
       parrafos[0].innerText = `${res.nombre}`;
       parrafos[1].innerText = `${res.descripcion}`;
       parrafos[2].innerText = `${res.marca}`;
-      parrafos[3].innerText = `${
-        res.precio * parseFloat(resultado["dolar"])
-      } BS`;
+      parrafos[3].innerText = `${res.precio * parseFloat(resultado["dolar"])
+        } BS`;
       parrafos[4].innerText = `${parseFloat(res.precio)} $`;
       parrafos[5].innerText = `${resultado["vencimiento"][0][0]}`;
 
- 
+
 
       eliminarInsumo.setAttribute(
         "href",
-        `/Sistema-del--CEM--JEHOVA-RAFA/Insumos/eliminar/${res.id_insumo}/${
-          document.getElementById("id_usuario_bitacora").value
+        `/Sistema-del--CEM--JEHOVA-RAFA/Insumos/eliminar/${res.id_insumo}/${document.getElementById("id_usuario_bitacora").value
         }`
       );
       inputEditar[0].value = res.id_insumo;
@@ -222,6 +178,8 @@ addEventListener("DOMContentLoaded", function () {
         } else {
           tarjetas[index].classList.add("d-none");
         }
+      }else{
+        tarjetas[index].classList.remove("d-none");
       }
     });
   }

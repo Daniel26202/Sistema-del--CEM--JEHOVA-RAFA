@@ -27,6 +27,7 @@ class ControladorInicio
     public function inicio($parametro)
     {
         if ($parametro != "" && $parametro[0] == "cerrar") {
+            echo $_SESSION["id_usuario"];
             // verifica si la sesión esta activa.
             if (session_status() !== PHP_SESSION_ACTIVE) {
                 session_start();
@@ -44,7 +45,7 @@ class ControladorInicio
         }
 
 
-        $validarCargo = $this->modeloInicio->comprobarCargo($_SESSION["id_usuario"]);
+        $validarCargo = $this->modeloInicio->comprobarCargo($_SESSION["id_personal"]);
         $datos_de_personal =  $this->modeloInicio->datos_doctor($_SESSION["id_usuario"]);
 
         $ayuda = "btnayudaInicio";

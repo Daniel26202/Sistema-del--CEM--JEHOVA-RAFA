@@ -2,12 +2,14 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\DbSistem;
+use App\modelos\ModeloUsuarios;
 
-class ModeloDoctores extends Db
+class ModeloDoctores extends DbSistem
 {
 
     private $conexion;
+    private $modeloUsuario;
 
     public function __construct()
     {
@@ -17,6 +19,7 @@ class ModeloDoctores extends Db
         // Aquí puedes usar $this para acceder a la conexión
 
         $this->conexion = $this; // Guarda la instancia de la conexión
+        $this->modeloUsuario = new ModeloUsuarios();
     }
 
     //seleccionar especialidad
@@ -88,7 +91,7 @@ class ModeloDoctores extends Db
     public function select()
     {
         try {
-            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM usuario u INNER JOIN personal p ON p.id_usuario = u.id_usuario INNER JOIN especialidad es ON es.id_especialidad = p.id_especialidad  inner join rol r on r.id_rol = u.id_rol WHERE u.estado = "ACT" AND  r.nombre = "Doctor" ';
+            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad  inner join segurity.rol r on r.id_rol = u.id_rol WHERE u.estado = "ACT" AND  r.nombre = "Doctor" ';
             $consulta = $this->conexion->prepare($sql);
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {
@@ -103,7 +106,7 @@ class ModeloDoctores extends Db
         try {
             $this->conexion->beginTransaction();
             //agregamos al doctor como usuario.
-            $consultaDeUsuario = $this->conexion->prepare('INSERT INTO usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES ("8",:imagen, :usuario, :correo, :password,"ACT");');
+            $consultaDeUsuario = $this->conexion->prepare('INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES ("8",:imagen, :usuario, :correo, :password,"ACT");');
             $consultaDeUsuario->bindParam(":imagen", $nombreImagen);
             $consultaDeUsuario->bindParam(":usuario", $usuario);
             $consultaDeUsuario->bindParam(":correo", $email);
@@ -114,7 +117,7 @@ class ModeloDoctores extends Db
             $idUsuario = ($this->conexion->lastInsertId() == 0) ? false : $this->conexion->lastInsertId();
 
             //agregamos al doctor como usuario.
-            $consultaDePersonal = $this->conexion->prepare('INSERT INTO personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, id_usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)');
+            $consultaDePersonal = $this->conexion->prepare('INSERT INTO bd.personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)');
             $consultaDePersonal->bindParam(":cedula", $cedula);
             $consultaDePersonal->bindParam(":nombre", $nombre);
             $consultaDePersonal->bindParam(":apellido", $apellido);
@@ -143,7 +146,7 @@ class ModeloDoctores extends Db
             if ($dias != "NO") {
                 $contadorDias = 0;
                 foreach ($dias as $d) {
-                    $sqlHorario = $this->conexion->prepare("INSERT INTO horarioydoctor (id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal,:id_horario,:horarioDeEntrada,:horaDeSalida)");
+                    $sqlHorario = $this->conexion->prepare("INSERT INTO bd.horarioydoctor (id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal,:id_horario,:horarioDeEntrada,:horaDeSalida)");
                     $sqlHorario->bindParam(":id_personal", $idPersonal);
                     $sqlHorario->bindParam(":id_horario", $d);
                     $sqlHorario->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
@@ -167,13 +170,10 @@ class ModeloDoctores extends Db
         try {
             $this->conexion->beginTransaction();
 
-            $consultaU = $this->conexion->prepare('SELECT id_personal FROM personal p INNER JOIN usuario u ON p.id_usuario = u.id_usuario WHERE u.id_usuario = :id_usuario');
-
+            $consultaU = $this->conexion->prepare('SELECT id_personal FROM personal  WHERE usuario = :id_usuario');
             $consultaU->bindParam(":id_usuario", $idUsuario);
             $consultaU->execute();
             $idPersonal = ($consultaU->execute()) ? $consultaU->fetch() : false;
-            print_r($_POST["id_especialidad"]);
-
 
             //Editar el usuario (el usuario del doctor).
             $consultaDeUsuario = $this->conexion->prepare('UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_especialidad WHERE id_personal=:id_personal');
@@ -184,20 +184,21 @@ class ModeloDoctores extends Db
             $consultaDeUsuario->bindParam(":telefono", $telefono);
             $consultaDeUsuario->bindParam(":nacionalidad", $nacionalidad);
             $consultaDeUsuario->bindParam(":id_personal", $idPersonal["id_personal"]);
-            $consultaDeUsuario->bindParam(":id_especialidad", $_POST["id_especialidad"]);
-
-
+            $consultaDeUsuario->bindParam(":id_especialidad", $_POST["selectEspecialidad"]);
 
             $consultaDeUsuario->execute();
+
 
 
 
             //Editar el usuario (el correo del doctor).
-            $consultaDeUsuario = $this->conexion->prepare('UPDATE usuario SET correo =:correo WHERE id_usuario=:id_usuario');
+            $consultaDeUsuario = $this->conexion->prepare('UPDATE segurity.usuario SET correo =:correo WHERE id_usuario=:id_usuario');
 
             $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
             $consultaDeUsuario->bindParam(":correo", $email);
             $consultaDeUsuario->execute();
+
+            // $this->modeloUsuario->updateUsuario($usuario, $idUsuario,);
 
             $contadorDias = 0;
             foreach ($checkeds as $idD) {
@@ -255,20 +256,11 @@ class ModeloDoctores extends Db
             $this->conexion->beginTransaction();
 
             //editar al doctor.
-            $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario AND usuario = :usuario;';
-
+            $sqlUsuario = 'UPDATE segurity.usuario SET estado = "DES" WHERE id_usuario = :id_usuario ';
             $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-
-            $consultaDeUsuario->bindParam(":usuario", $usuario);
             $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
 
             $consultaDeUsuario->execute();
-
-
-            $sqlServiciosMedicos = 'UPDATE serviciomedico SET estado = "DES" WHERE id_personal = :id_personal';
-            $consultaDeServicio = $this->conexion->prepare($sqlServiciosMedicos);
-            $consultaDeServicio->bindParam(":id_personal", $id_personal);
-            $consultaDeServicio->execute();
 
             $this->conexion->commit();
             return 1;
@@ -332,7 +324,7 @@ class ModeloDoctores extends Db
     public function horarioDelDoctor($id_personal)
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT pe.id_personal,pe.nombre,pe.apellido,pe.cedula,hyd.horaDeEntrada,hyd.horaDeSalida,h.diaslaborables,h.id_horario FROM horarioydoctor hyd INNER JOIN personal pe ON pe.id_personal = hyd.id_personal INNER JOIN usuario u ON u.id_usuario = pe.id_usuario INNER JOIN horario h ON h.id_horario = hyd.id_horario WHERE pe.id_personal =:id_personal AND u.estado = 'ACT' ");
+            $consulta = $this->conexion->prepare("SELECT pe.id_personal,pe.nombre,pe.apellido,pe.cedula,hyd.horaDeEntrada,hyd.horaDeSalida,h.diaslaborables,h.id_horario FROM bd.horarioydoctor hyd INNER JOIN bd.personal pe ON pe.id_personal = hyd.id_personal INNER JOIN segurity.usuario u ON u.id_usuario = pe.usuario INNER JOIN bd.horario h ON h.id_horario = hyd.id_horario WHERE pe.id_personal =:id_personal AND u.estado = 'ACT' ");
             $consulta->bindParam(":id_personal", $id_personal);
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {

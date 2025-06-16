@@ -25,7 +25,7 @@ class ModeloUsuarios extends Db
     public function select()
     {
         try {
-            $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.nombre = "Doctor" AND u.estado= "ACT" ';
+            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE r.nombre = "Doctor" AND u.estado= "ACT" ';
 
             $consulta = $this->conexion->prepare($sql);
 
@@ -40,7 +40,7 @@ class ModeloUsuarios extends Db
     public function selectAdmin()
     {
         try {
-            $sql = 'SELECT u.*, p.* FROM usuario u INNER JOIN personal p on p.id_usuario = u.id_usuario INNER JOIN rol r on u.id_rol = r.id_rol WHERE r.nombre= "Superadmin" AND u.estado= "ACT" ';
+            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE r.nombre != "Doctor" AND u.estado= "ACT" ';
             $consulta = $this->conexion->prepare($sql);
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {
@@ -60,6 +60,10 @@ class ModeloUsuarios extends Db
             return "existeU";
         }
     }
+
+
+
+
 
     //esto es para editar un usuario.
     public function updateUsuario($usuario, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal)
@@ -120,7 +124,7 @@ class ModeloUsuarios extends Db
             return 0;
         }
     }
-    public function AgregarAdministrador($usuario, $password, $correo)
+    public function AgregarUsuarios($usuario, $password, $correo)
     {
         try {
 

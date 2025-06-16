@@ -31,8 +31,8 @@
                     </div> -->
 
                     <!-- Texto descriptivo -->
-                    <div class="texto" id="textoInsumos" style="width: 90%; text-align: center; font-size: 14px;">
-                    </div>
+                    <h5 class="texto" id="textoInsumos" style="width: 90%; text-align: center; font-size: 14px;">
+                    </h5>
                 </div>
             </div>
 
@@ -79,10 +79,10 @@
                     </div>
                     <div class="leyenda-container reporte" style="width: 80%; margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                     </div>
-                    <div class="texto reporte" id="texto" style="width: 90%; text-align: justify; font-size: 14px;">
+                    <h5 class="texto reporte" id="texto" style="width: 90%; text-align: justify; font-size: 14px;">
 
 
-                    </div>
+                    </h5>
 
                 </div>
             </div>
@@ -159,8 +159,8 @@
                     </div>
                     <div class="leyenda-sintomas-container" style="width: 80%; margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                     </div>
-                    <div class="texto" id="textoSintomas" style="width: 90%; text-align: justify; font-size: 14px;">
-                    </div>
+                    <h5 class="texto" id="textoSintomas" style="width: 90%; text-align: justify; font-size: 14px;">
+                    </h5>
 
                 </div>
             </div>
@@ -231,8 +231,8 @@
                     </div>
                     <div class="leyenda-pacientes-container" style="width: 80%; margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                     </div>
-                    <div class="texto" id="textoPacientes" style="width: 90%; text-align: justify; font-size: 14px;">
-                    </div>
+                    <h5 class="texto" id="textoPacientes" style="width: 90%; text-align: justify; font-size: 14px;">
+                    </h5>
 
                 </div>
             </div>
@@ -300,8 +300,8 @@
                     </div>
                     <div class="leyenda-morbilidad-container" style="width: 80%; margin: 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                     </div>
-                    <div class="texto" id="textoMorbilidad" style="width: 90%; text-align: justify; font-size: 14px;">
-                    </div>
+                    <h5 class="texto" id="textoMorbilidad" style="width: 90%; text-align: justify; font-size: 14px;">
+                    </h5>
 
                 </div>
             </div>
