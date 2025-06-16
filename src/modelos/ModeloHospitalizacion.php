@@ -203,7 +203,7 @@ class ModeloHospitalizacion extends DbSistem
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
-    public function editarH($duracion, $precioHoras, $total, $idInsumosA, $cantidadE, $cantidadA, $historial, $idHos, $idIDH, $idInsElim)
+    public function editarH($idInsumosA, $cantidadE, $cantidadA, $historial, $idHos, $idIDH, $idInsElim)
     {
         try {
             $this->conexion->beginTransaction();

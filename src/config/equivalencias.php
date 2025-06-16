@@ -199,6 +199,8 @@ return [
     "tasaMorbilidad" => "consultar",
     "filtrar_tasaMorbilidad" => "consultar",
     "insumos" => "consultar",
-
+    
+    //Mantenimiento
+    "mantenimiento" => "consultar",
 
 ];
