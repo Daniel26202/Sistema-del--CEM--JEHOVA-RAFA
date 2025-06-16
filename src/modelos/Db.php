@@ -21,7 +21,7 @@ class Db extends PDO
         $this->host = host_cos;
         $this->user = user_cos;
         $this->pass = pass_cos;
-        $this->dbname = "segurity";
+        $this->dbname = dbsegname_cos;
 
 
         try {

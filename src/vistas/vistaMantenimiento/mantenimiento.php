@@ -46,7 +46,7 @@
         <div class="row mt-4">
             <div class="col">
                 <div class="alert alert-info " role="alert">
-                    Recuerda que estas operaciones son críticas, asegúrate de tener los permisos necesarios.
+                    Esta acción puede afectar la integridad de los datos. Si no estás seguro, contacta al administrador antes de continuar.
                 </div>
             </div>
         </div>

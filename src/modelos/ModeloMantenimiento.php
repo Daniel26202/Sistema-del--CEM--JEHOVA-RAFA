@@ -12,6 +12,7 @@ class ModeloMantenimiento extends Db
 	private $user;
 	private $password;
 	private $dbname;
+	private $dbsegname;
 	private $dbHost;
 
 	public function __construct()
@@ -30,6 +31,7 @@ class ModeloMantenimiento extends Db
 		$this->user = user_cos;
 		$this->password = pass_cos;
 		$this->dbname = dbname_cos;
+		$this->dbsegname = dbsegname_cos;
 		$this->dbHost = host_cos;
 	}
 	
