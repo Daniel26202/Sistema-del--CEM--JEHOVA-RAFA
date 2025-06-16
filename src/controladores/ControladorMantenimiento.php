@@ -10,12 +10,27 @@ class ControladorMantenimiento
 	private $modelo;
 	private $bitacora;
 	private $permisos;
+	private $backupCarpeta = __DIR__ . "/../config/backups/";
+
+
+	// Para descargar la base de datos
+	private $dbUser     = "tu_usuario";
+	private $dbPassword = "tu_contraseña";
+	private $dbHost     = "localhost";
+	private $dbName     = "tu_base_datos";
+
+	// Clave de cifrado fija (sin variables de entorno)
+	private $encryptionKey = "mi_clave_segura";
 
 	function __construct()
 	{
 		$this->modelo = new ModeloMantenimiento();
 		$this->bitacora = new ModeloBitacora;
 		$this->permisos = new ModeloPermisos();
+		// Crea la carpeta de respaldos si no existe
+		if (!is_dir($this->backupCarpeta)) {
+			mkdir($this->backupCarpeta, 0777, true);
+		}
 	}
 
 	public function mantenimiento()
@@ -27,186 +42,72 @@ class ControladorMantenimiento
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 
+	// Función para generar, cifrar y descargar el respaldo
+	public function generateBackup()
+	{
+		$date = date('Y-m-d');
+		$backupFile = $this->backupCarpeta . "backup-$date.sql";
 
-	// public function insertaPaciente()
-	// {
-	// 	// si la cedula eiste le mando un mensaje al usuario y si else pues lo inserto normal
-	// 	// $resultadoDeCedula = $this->modeloPacientes->validarCedula($_POST['cedula']);
-	// 	// //mensaje de erro
-	// 	// $mensajeDeError = array("cedula" => "error");
-	// 	// if ($resultadoDeCedula === "existeC") {
-	// 	// 	echo json_encode($mensajeDeError);
-	// 	// } else {
-	// 	// 	$insercion = $this->modeloPacientes->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST["genero"]);
+		// Comando para generar el respaldo con mysqldump
+		$dumpCommand = "mysqldump --opt --user={$this->dbUser} --password={$this->dbPassword} --host={$this->dbHost} {$this->dbName} > $backupFile";
+		exec($dumpCommand, $output, $result);
 
-	// 	// 	if ($insercion) {
-	// 	// 		// guardar la bitacora
-	// 	// 		$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
-	// 	// 		echo json_encode($_POST);
-	// 	// 	} else {
-	// 	// 		echo json_encode($mensajeDeError);
-	// 	// 	}
-	// 	// }
-	// }
+		if ($result === 0 && file_exists($backupFile)) {
+			// Nombre del archivo cifrado
+			$encryptedFile = $backupFile . ".enc";
 
-	// public function mostrarPacienteCitaGet($datos)
-	// {
-	// 	$nacionalidad = $datos[0];
-	// 	$cedula = $datos[1];
-	// 	$datosPaciente = $this->modelo->selectPaciente($nacionalidad, $cedula);
-	// 	echo json_encode($datosPaciente);
-	// }
+			// Comando para cifrar el respaldo usando OpenSSL
+			$encryptionCommand = "openssl enc -aes-256-cbc -salt -in $backupFile -out $encryptedFile -pass pass:{$this->encryptionKey}";
+			exec($encryptionCommand, $outputEnc, $resultEnc);
 
-	// public function citas($parametro)
-	// {
-	// 	$ayuda = "btnayudaCitaP";
-	// 	$vistaActiva = 'pendientes';
-	// 	$servicios = $this->modelo->mostrarServicioDoctor();
-	// 	$datosCitas = $this->modelo->mostrarCita();
-	// 	require_once './src/vistas/vistasCitas/vistaCitas.php';
-	// }
-	// public function citasHoy($parametro)
-	// {
-	// 	$ayuda = "btnayudaCitaP";
-	// 	$vistaActiva = 'hoy';
-	// 	date_default_timezone_set('America/Mexico_City');
-	// 	$fecha = date('Y-m-d');
-	// 	$servicios = $this->modelo->mostrarServicioDoctor();
-	// 	$datosCitas = $this->modelo->mostrarCitaHoy($fecha);
-	// 	require_once './src/vistas/vistasCitas/vistaCitas.php';
-	// }
-	// public function citasP($parametro)
-	// {
-	// 	$datosCitas = $this->modelo->mostrarCita();
-	// 	echo json_encode($datosCitas);
-	// }
+			if ($resultEnc === 0 && file_exists($encryptedFile)) {
+				// Se elimina el archivo sin cifrar
+				unlink($backupFile);
 
-	// public function guardarCita()
-	// {
-	// 	date_default_timezone_set('America/Mexico_City');
-	// 	$fecha = date("Y-m-d");
-	// 	$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
+				// Se configuran los encabezados para la descarga del archivo cifrado
+				header('Content-Type: application/octet-stream');
+				header('Content-Disposition: attachment; filename="' . basename($encryptedFile) . '"');
+				header('Content-Length: ' . filesize($encryptedFile));
+				readfile($encryptedFile);
+				exit;
+			} else {
+				echo "Error al cifrar el respaldo.";
+			}
+		} else {
+			echo "Error al generar el respaldo.";
+		}
+	}
 
-	// 	if ($resultadoDeCita === "existeC") {
-	// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorCita");
-	// 	} elseif ($_POST["fechaDeCita"] < $fecha) {
-	// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
-	// 	} else {
-	// 		$insercion = $this->modelo->insertarCita($_POST["id_paciente"], $_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["estado"]);
+	// Función para restaurar la base de datos a partir de un respaldo cifrado
+	public function restoreBackup()
+	{
+		$date = date('Y-m-d');
+		$encryptedFile = $this->backupCarpeta . "backup-$date.sql.enc";
+		$decryptedFile = $this->backupCarpeta . "backup-$date.sql";
 
-	// 		if ($insercion) {
-	// 			// // Guardar la bitacora
-	// 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha Insertado una  cita");
-	// 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/registro");
-	// 		} else {
-	// 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-	// 		}
-	// 	}
-	// }
+		if (!file_exists($encryptedFile)) {
+			echo "El archivo de respaldo cifrado no existe.";
+			return;
+		}
 
-	// public function eliminarCita($datos)
-	// {
-	// 	$id_cita = $datos[0];
-	// 	$id_usuario = $datos[1];
-	// 	$eliminacion = $this->modelo->eliminarCita($id_cita);
-	// 	if ($eliminacion) {
-	// 		$this->bitacora->insertarBitacora($id_usuario, "cita", "Ha eliminado una  cita");
-	// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/eliminar");
-	// 	} else {
-	// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-	// 	}
-	// }
+		// Comando para descifrar el archivo de respaldo
+		$decryptCommand = "openssl enc -aes-256-cbc -d -in $encryptedFile -out $decryptedFile -pass pass:{$this->encryptionKey}";
+		exec($decryptCommand, $outputDec, $resultDec);
 
-	// public function citasHoyP()
-	// {
-	// 	date_default_timezone_set('America/Mexico_City');
-	// 	$fecha = date("Y-m-d");
-	// 	$datosCitasHoy = $this->modelo->mostrarCitaHoy($fecha);
-	// 	echo json_encode($datosCitasHoy);
-	// }
+		if ($resultDec === 0 && file_exists($decryptedFile)) {
+			// Comando para restaurar la base de datos desde el respaldo descifrado
+			$restoreCommand = "mysql --user={$this->dbUser} --password={$this->dbPassword} --host={$this->dbHost} {$this->dbName} < $decryptedFile";
+			exec($restoreCommand, $outputRestore, $resultRestore);
 
-	// public function citasRealizadas($parametro)
-	// {
-	// 	$ayuda = "btnayudaCitaP";
-	// 	$vistaActiva = 'realizadas';
-	// 	$datosCitas = $this->modelo->mostrarCitaR();
-	// 	require_once './src/vistas/vistasCitas/vistaCitas.php';
-	// }
-
-	// public function mostrarDoctoresCita($datos)
-	// {
-	// 	$id = $datos[0];
-	// 	$respuesta = $this->modelo->mostrarDoctores($id);
-	// 	echo json_encode($respuesta);
-	// }
-
-	// public function mostrarHorario($datos)
-	// {
-	// 	$idD = $datos[0];
-	// 	$respuesta = $this->modelo->mostrarHorarioDoctores($idD);
-	// 	echo json_encode($respuesta);
-	// }
-
-
-	// public function editarCita($datos)
-	// {
-	// 	date_default_timezone_set('America/Mexico_City');
-	// 	$fecha = date("Y-m-d");
-	// 	$cedula = $datos[0];
-
-	// 	$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
-
-	// 	//se verifica si la cédula del input es igual a la cédula ya existente 
-	// 	if ($cedula == $_POST["serviciomedico_id_servicioMedico"]) {
-	// 		$edicion = $this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
-	// 		if ($edicion) {
-	// 			// Guardar la bitacora
-	// 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-	// 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
-	// 		} else {
-	// 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-	// 		}
-
-	// 		// NOTA: Esto "&&" es "Y"
-	// 		//se verifica si la cédula del input no es igual a la cédula ya existente.  
-	// 	} elseif ($cedula != $_POST["serviciomedico_id_servicioMedico"]) {
-
-	// 		//verifica si la cédula es igual a la información de la base de datos.
-	// 		if ($resultadoDeCita === "existeC") {
-	// 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/error");
-	// 		} else {
-
-	// 			$edicion = $this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
-	// 			if ($edicion) {
-	// 				// Guardar la bitacora
-	// 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-	// 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
-	// 			} else {
-	// 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-	// 			}
-	// 		}
-	// 	} else {
-	// 		$edicion = $this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
-	// 		if ($edicion) {
-	// 			// Guardar la bitacora
-	// 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-	// 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
-	// 		} else {
-	// 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-	// 		}
-	// 	}
-	// 	if ($_POST["fechaDeCita"] < $fecha) {
-	// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
-	// 	}
-	// }
-
-	// private function permisos($id_rol, $permiso, $modulo)
-	// {
-	// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-	// }
-
-	// public function validarHorariosDisponlibles($datos)
-	// {
-	// 	echo  json_encode($this->modelo->validarHorariosDisponlibles($datos[0], $datos[1]));
-	// }
+			if ($resultRestore === 0) {
+				// Se elimina el archivo descifrado por seguridad
+				unlink($decryptedFile);
+				echo "Base de datos restaurada exitosamente.";
+			} else {
+				echo "Error al restaurar la base de datos.";
+			}
+		} else {
+			echo "Error al descifrar el respaldo.";
+		}
+	}
 }

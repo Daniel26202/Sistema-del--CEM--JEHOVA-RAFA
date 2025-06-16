@@ -9,7 +9,7 @@
 
         <div class="row mb-4 mt-2">
             <div class="col text-center">
-                <h1>Mantenimiento de Base de Datos</h1>
+                <h1>Mantenimiento del sistema</h1>
                 <p>Realiza operaciones básicas como descarga de respaldo y restauración.</p>
             </div>
         </div>
