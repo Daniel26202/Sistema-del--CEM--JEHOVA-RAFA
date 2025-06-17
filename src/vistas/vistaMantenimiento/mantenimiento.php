@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Haz clic para generar y descargar una copia de seguridad de tu base de datos.</p>
-                            <a href="ruta_a_descargar.php" class="btn btn-primary btn-block w-100 text-white text-decoration-none">Descargar Respaldo</a>
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/generarRespaldo" class="btn btn-primary btn-block w-100 text-white text-decoration-none">Descargar Respaldo</a>
                         </div>
                     </div>
                 </div>
