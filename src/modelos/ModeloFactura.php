@@ -216,7 +216,21 @@ class ModeloFactura extends DbSistem
 		}
 	}
 
+	
 
+	public  function selectId_entrada($id_insumo)
+	{
+		try {
+			$consulta = $this->conexion->prepare("SELECT ei.id_entradaDeInsumo FROM entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.cantidad_disponible > 0 ORDER BY e.fechaDeIngreso  LIMIT 1");
+			$consulta->bindParam(":id_insumo", $id_insumo);
+			$consulta->execute();
+			$datos = $consulta->fetch();
+			$id_entrada = $datos["id_entradaDeInsumo"];
+			return $id_entrada;
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
 
 
 	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $id_cita, $id_hospitalizacion)
@@ -279,6 +293,8 @@ class ModeloFactura extends DbSistem
 		if ($insumos) {
 			$contador = 0;
 			foreach ($insumos as $i) {
+				//actualizar la cantidad de insumos
+				$id_entrada = $this->selectId_entrada($i);
 				$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :i, :cantidad, 'ACT')");
 				$consulta->bindParam(":id_factura", $id_factura);
 				$consulta->bindParam(":i", $id_entrada);
