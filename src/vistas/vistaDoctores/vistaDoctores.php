@@ -28,7 +28,7 @@
             <?php else: ?>
 
 
-                <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8 " uk-toggle="target: #modal-agregar-doctores" id="">
+                <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8 " uk-toggle="target: #modal-agregar-doctores" id="btnagregarDoctor">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                         class="bi bi-plus-circle-fill me-1" viewBox="0 0 16 16">
                         <path
@@ -39,7 +39,7 @@
             <?php endif; ?>
 
             <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
-                uk-toggle="target: #modal-especialidad" id="">
+                uk-toggle="target: #modal-especialidad" id="btnEspecialidades">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-lungs-fill azul" viewBox="0 0 16 16">
                     <path
@@ -53,7 +53,7 @@
             <?php else: ?>
 
                 <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
-                    uk-toggle="target: #modal-example-servicio" id="">
+                    uk-toggle="target: #modal-example-servicio" id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                         class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                         <path

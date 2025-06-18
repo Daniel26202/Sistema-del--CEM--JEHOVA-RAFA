@@ -20,6 +20,7 @@ class ControladorInsumos
 
 	public function insumos($parametro)
 	{
+		$ayuda = "btnayudaInsumo";
 		$vistaActiva = "insumos";
 		$proveedores = $this->modelo->selectProveedores();
 		$insumos = $this->modelo->insumos();

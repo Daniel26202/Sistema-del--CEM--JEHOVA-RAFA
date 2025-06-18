@@ -25,7 +25,7 @@
                 <!-- no hay -->
             <?php else: ?>
                 <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
-                    uk-toggle="target: #modal-example" id="">
+                    uk-toggle="target: #modal-example" id="btnAgregarServicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                         class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                         <path
@@ -34,7 +34,7 @@
                     </svg>Registrar Servicio
                 </button>
                 <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
-                    uk-toggle="target: #modal-categoria" id="">
+                    uk-toggle="target: #modal-categoria" id="btnAgregarCategoria">
                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                         class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                         <path
@@ -45,7 +45,7 @@
 
             <?php endif; ?>
             <a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/papeleraServicio"
-                class="btn-guardar-responsive btn btn-primary btn-agregar-doctores text-decoration-none col-8" id="">
+                class="btn-guardar-responsive btn btn-primary btn-agregar-doctores text-decoration-none col-8" id="btnAgregarServicioMedicoPapelera">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                     <path

@@ -437,7 +437,13 @@ class ModeloFactura extends DbSistem
 				$consulta->bindParam(":i", $id_entrada);
 				$consulta->bindParam(":cantidad", $cantidad[$contador]);
 				if ($consulta->execute()) {
-					
+					$consulta2 =  $this->conexion->prepare("
+					BEGIN
+    					CALL DescontarLotes(:id_entrada, :cantidad);
+					END");
+					$consulta2->bindParam(":id_entrada", $id_entrada);
+					$consulta2->bindParam(":cantidad", $cantidad[$contador]);
+					$consulta2->execute();
 				} else {
 					echo "NO";
 				}

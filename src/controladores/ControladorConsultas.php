@@ -21,6 +21,7 @@ class ControladorConsultas
 	}
 	public function consultas($parametro)
 	{
+		$ayuda = "btnayudaServicioMedico";
 		$doctores = $this->modelo->mostrarDoctores();
 		$servicios = $this->modelo->mostrarConsultas();
 		$categorias = $this->categoria->seleccionarCategoria();
