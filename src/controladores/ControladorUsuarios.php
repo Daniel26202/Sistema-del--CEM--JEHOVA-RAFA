@@ -6,6 +6,7 @@ use App\modelos\ModeloBitacora;
 use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloRecuperarContr;
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloRoles;
 
 
 class ControladorUsuarios
@@ -17,6 +18,7 @@ class ControladorUsuarios
     private $inicioSesion;
     private $recuperarContr;
     private $permisos;
+    private $roles;
 
     public function __construct()
     {
@@ -26,11 +28,11 @@ class ControladorUsuarios
         $this->inicioSesion = new ModeloInicioSesion();
         $this->recuperarContr = new ModeloRecuperarContr();
         $this->permisos = new ModeloPermisos();
+        $this->roles = new ModeloRoles();
     }
 
     public function usuarios($parametro)
     {
-
         $vistaActiva = "usuarios";
         $datosU = $this->modelo->select();
         require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
@@ -40,6 +42,7 @@ class ControladorUsuarios
     {
         $vistaActiva = "administradores";
         $datosU = $this->modelo->selectAdmin();
+        $datosRoles = $this->roles->roles();
         require_once './src/vistas/vistaUsuarios/vistaUsuariosAdmin.php';
     }
 
@@ -109,7 +112,7 @@ class ControladorUsuarios
 
         // Generamos la contraseña encriptada de la contraseña ingresada
         $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
-        $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["Correo"]);
+        $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["Correo"], $_POST["id_rol"]);
 
         $insercion = $this->doctor->RegistrarAdmin($_POST["nacionalidad"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["Correo"], $id_usuario);
         if ($insercion) {

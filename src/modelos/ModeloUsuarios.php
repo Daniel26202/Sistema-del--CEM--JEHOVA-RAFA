@@ -13,19 +13,13 @@ class ModeloUsuarios extends Db
 
     public function __construct()
     {
-        // Llama al constructor de la clase padre para establecer la conexión
-        parent::__construct();
-
-        // Aquí puedes usar $this para acceder a la conexión
-
-        $this->conexion = $this; // Guarda la instancia de la conexión
-
+        $this->conexion = $this->connectionSegurity();
     }
     //buscamos a los usuarios en la base de datos
     public function select()
     {
         try {
-            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE r.nombre = "Doctor" AND u.estado= "ACT" ';
+            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS NOT null';
 
             $consulta = $this->conexion->prepare($sql);
 
@@ -124,7 +118,7 @@ class ModeloUsuarios extends Db
             return 0;
         }
     }
-    public function AgregarUsuarios($usuario, $password, $correo)
+    public function AgregarUsuarios($usuario, $password, $correo,$id_rol)
     {
         try {
 
@@ -138,12 +132,13 @@ class ModeloUsuarios extends Db
                 if ($imagenComprobacion) {
                     $nombreImagenUsuario = $_FILES['imagenUsuario']['name'];
 
-                    $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :correo, :password, "ACT")';
+                    $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, :id_rol, :imagen, :usuario, :correo, :password, "ACT")';
                     $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
                     $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
                     $consultaDeUsuario->bindParam(":usuario", $usuario);
                     $consultaDeUsuario->bindParam(":correo", $correo);
                     $consultaDeUsuario->bindParam(":password", $password);
+                    $consultaDeUsuario->bindParam(":id_rol", $id_rol);
                     $consultaDeUsuario->execute();
                     $id_usuario = $this->conexion->lastInsertId();
                     $imagen = $id_usuario . "_" . $_FILES['imagenUsuario']['name'];
@@ -154,12 +149,13 @@ class ModeloUsuarios extends Db
                 } else {
                     $nombreImagenUsuario = "doctor.png";
 
-                    $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, 1, :imagen, :usuario, :correo, :password, "ACT")';
+                    $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, :id_rol, :imagen, :usuario, :correo, :password, "ACT")';
                     $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
                     $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
                     $consultaDeUsuario->bindParam(":usuario", $usuario);
                     $consultaDeUsuario->bindParam(":correo", $correo);
                     $consultaDeUsuario->bindParam(":password", $password);
+                    $consultaDeUsuario->bindParam(":id_rol", $id_rol);
                     $consultaDeUsuario->execute();
                     $id_usuario = $this->conexion->lastInsertId();
                     $imagen = $nombreImagenUsuario;

@@ -6,14 +6,10 @@ class ModeloPerfil extends Db{
 	
 	private $conexion;
 
-	public function __construct(){
-        // Llama al constructor de la clase padre para establecer la conexión
-        parent::__construct();
-        
-        // Aquí puedes usar $this para acceder a la conexión
-
-        $this->conexion = $this; // Guarda la instancia de la conexión
-    }
+	public function __construct()
+	{
+		$this->conexion = $this->connectionSegurity();
+	}
 	public function seleccionarUsuario($usuario){
 		$consulta = $this->conexion->prepare("SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario");
 		

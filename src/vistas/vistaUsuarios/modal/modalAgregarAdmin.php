@@ -7,7 +7,7 @@
         <form method="POST" class="formAgregarAdmin" action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/registrarAdmin"
             enctype="multipart/form-data">
 
-            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
+            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
             <div id="padre">
                 <div class="alert alert-danger text-center d-none" id="alertaAdmin">VERIFIQUE EL FORMULARIO ANTES DE
@@ -59,7 +59,7 @@
                                 </select>
                             </span>
 
-                            <input class="form-control input-modal input-disabled input-paciente input-u"
+                            <input class="form-control input-modal input-modal input-disabled input-paciente input-u"
                                 style="width: 7vh !important;" type="number" id="cedula" name="cedula"
                                 placeholder="Cedula" required maxlength="8" minlength="6"
                                 oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
@@ -71,7 +71,7 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="nombre" id="inputDos" class="input-u col-12" placeholder="Nombre"
+                            <input type="text" name="nombre" id="inputDos" class="input-modal input-u col-12" placeholder="Nombre"
                                 required>
 
                         </div>
@@ -82,7 +82,7 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="apellido" id="inputTres" class="input-u col-12"
+                            <input type="text" name="apellido" id="inputTres" class="input-modal input-u col-12"
                                 placeholder="Apellido" required>
 
                         </div>
@@ -93,18 +93,18 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="number" name="telefono" id="inputTres" class="input-u col-12"
+                            <input type="number" name="telefono" id="inputTres" class="input-modal input-u col-12"
                                 placeholder="Telefono" required>
 
                         </div>
-                        <div class="margen-input-u w-auto">
+                        <div class="margen-input-modal -u w-auto">
 
                             <svg xmlns="http://www.w3.org/2000/svg" id="icono-tres" width="20" height="20"
                                 fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="email" name="Correo" id="inputTres" class="input-u col-12" placeholder="Gamil"
+                            <input type="email" name="Correo" id="inputTres" class="input-modal input-u col-12" placeholder="Gamil"
                                 required>
 
                         </div>
@@ -116,15 +116,33 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="usuario" id="inputDos" class="input-u col-12" placeholder="Usuario"
+                            <input type="text" name="usuario" id="inputDos" class="input-modal input-u col-12" placeholder="Usuario"
                                 required>
 
                         </div>
+
+                        <div class="margen-input-u w-auto ">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20"
+                                fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            </svg>
+
+                            <select name="id_rol" class="input-modal input-u col-12" id="">
+                                <option selected disabled>Seleccionar Rol</option>
+                                <?php foreach ($datosRoles as $dato): ?>
+                                    <option value="<?= $dato["id_rol"] ?>"><?= $dato["nombre"] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
+                        </div>
+
+
                         <div class="margen-input-u w-auto grpFormCorrect d-flex">
 
-                            <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
+                            <img src="<?= $urlBase; ?>../src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
 
-                            <input type="password" name="password" id="inputDos" class="input-u inputDos col-11 "
+                            <input type="password" name="password" id="inputDos" class="input-modal input-u inputDos col-11 "
                                 placeholder="Contraseña" required>
 
                             <a href="#" class="text-decoration-none btnMostrarContrase">

@@ -7,33 +7,33 @@ require_once 'src/config/config.php'; // Asegúrate de que esta ruta sea correct
 use PDO;
 use PDOException;
 
-class Db extends PDO
+class Db
 {
-    private $host;
-    private $user;
-    private $pass;
-    private $dbname;
+    private $host = host_cos;
+    private $user = user_cos;
+    private $pass = pass_cos;
 
-
-    public function __construct()
+    // Conexión a base de datos principal
+    public function connectionSistema()
     {
-
-        $this->host = host_cos;
-        $this->user = user_cos;
-        $this->pass = pass_cos;
-        $this->dbname = "segurity";
-
-
         try {
-            // Conexión a la base de datos con soporte para caracteres especiales
-            parent::__construct("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->user, $this->pass);
-            // Configuración de atributos para manejar errores
-            $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            // Configuración para manejar caracteres especiales
-            $this->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES utf8");
+            $pdo = new PDO("mysql:host={$this->host};dbname=bd", $this->user, $this->pass);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $pdo;
         } catch (PDOException $e) {
-            // Manejo de errores
-            echo "Error de conexión: " . $e->getMessage();
+            die("Error en conexión a bd_sistema: " . $e->getMessage());
+        }
+    }
+
+    // Conexión a base de datos secundaria
+    public function connectionSegurity()
+    {
+        try {
+            $pdo = new PDO("mysql:host={$this->host};dbname=segurity", $this->user, $this->pass);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $pdo;
+        } catch (PDOException $e) {
+            die("Error en conexión a bd_reportes: " . $e->getMessage());
         }
     }
 }
