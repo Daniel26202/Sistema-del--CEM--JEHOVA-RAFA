@@ -34,7 +34,7 @@ class ModeloUsuarios extends Db
     public function selectAdmin()
     {
         try {
-            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE r.nombre != "Doctor" AND u.estado= "ACT" ';
+            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS null ';
             $consulta = $this->conexion->prepare($sql);
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {

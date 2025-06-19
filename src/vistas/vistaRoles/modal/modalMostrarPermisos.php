@@ -20,7 +20,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20" fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                         </svg>
-                        <input type="text" name="nombre" id="inputDos" class="modal-input input-u col-12 input-validar" placeholder="Nombre Del Rol" required value="<?= $rol["nombre"] ?>">
+                        <input type="text" name="nombre" id="inputDos" class="modal-input input-modal input-u col-12 input-validar" placeholder="Nombre Del Rol" required value="<?= $rol["nombre"] ?>">
                     </div>
                     <p class="p-error-nombre d-none">El Nombre debe contener solo letras, iniciar con una letra mayúscula y tener al menos 3 caracteres</p>
 
@@ -30,7 +30,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20" fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                         </svg>
-                        <input name="descripcion" class="input-u col-12 input-validar" style="height: 80px;" placeholder="Descripcion del permiso" value="<?= $rol["descripción"] ?>">
+                        <input name="descripcion" class="input-u col-12 input-modal input-validar" style="height: 80px;" placeholder="Descripcion del permiso" value="<?= $rol["descripción"] ?>">
                     </div>
                     <p class="p-error-descripcion d-none">La Descripcion debe ser breve y tener al menos 8 caracteres</p>
 
@@ -128,7 +128,7 @@
                         fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                     </svg>
-                    <input type="text" name="nombre" id="inputDos" class="input-u col-12 input-validar" placeholder="Nombre Del Rol"
+                    <input type="text" name="nombre" id="inputDos" class="input-u input-modal col-12 input-validar" placeholder="Nombre Del Rol"
                         required>
                 </div>
                 <p class="p-error-nombre d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
@@ -140,7 +140,7 @@
                         fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                     </svg>
-                    <input name="descripcion" class="input-u col-12 input-validar" style="height: 80px;" placeholder="Descripcion del permiso">
+                    <input name="descripcion" class="input-u col-12 input-validar input-modal" style="height: 80px;" placeholder="Descripcion del permiso">
                 </div>
                 <p class="p-error-descripcion d-none">La Descripcion debe ser breve de al menos 8 caracteres</p>
 
