@@ -330,19 +330,18 @@ class ModeloDoctores extends Db
     public function RegistrarAdmin($nacionalidad, $cedula, $nombre, $apellido, $telefono, $email, $id_usuario)
     {
         try {
-            $sql = 'INSERT INTO personal VALUES (Null, :nacionalidad, :cedula, :nombre, :apellido, :telefono, :email, "Administrador", Null, :id_usuario)';
+            $sql = 'INSERT INTO personal VALUES (Null, :nacionalidad, :cedula, :nombre, :apellido, :telefono, "Administrador", Null, :id_usuario)';
             $consulta = $this->conexion->prepare($sql);
             $consulta->bindParam(":nacionalidad", $nacionalidad);
             $consulta->bindParam(":cedula", $cedula);
             $consulta->bindParam(":nombre", $nombre);
             $consulta->bindParam(":apellido", $apellido);
             $consulta->bindParam(":telefono", $telefono);
-            $consulta->bindParam(":email", $email);
             $consulta->bindParam(":id_usuario", $id_usuario);
             $consulta->execute();
             return 1;
         } catch (\Exception $e) {
-            return 0;
+            return $e;
         }
     }
 }

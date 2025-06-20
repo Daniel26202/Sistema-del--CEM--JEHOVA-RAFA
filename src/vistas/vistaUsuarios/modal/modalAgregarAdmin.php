@@ -4,7 +4,7 @@
 <div id="modal-exampleAgregar" uk-modal>
     <div class="uk-modal-dialog uk-modal-body tamaño-modal uk-card  uk-width-1-2@m">
 
-        <form method="POST" class="formAgregarAdmin" action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/registrarAdmin"
+        <form method="POST" class="formAgregarAdmin form-validable" action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/registrarAdmin"
             enctype="multipart/form-data">
 
             <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
@@ -59,11 +59,13 @@
                                 </select>
                             </span>
 
-                            <input class="form-control input-modal input-modal input-disabled input-paciente input-u"
+                            <input class="form-control input-modal input-modal input-disabled input-paciente input-u input-validar"
                                 style="width: 7vh !important;" type="number" id="cedula" name="cedula"
                                 placeholder="Cedula" required maxlength="8" minlength="6"
                                 oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                         </div>
+                        <p class="p-error-cedula d-none">La cedula debe contener únicamente números y estar entre 7 a 8 caracteres</p>
+
                         <div class="margen-input-u w-auto ">
 
                             <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20"
@@ -71,10 +73,12 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="nombre" id="inputDos" class="input-modal input-u col-12" placeholder="Nombre"
+                            <input type="text" name="nombre" id="inputDos" class="input-validar input-modal input-u col-12" placeholder="Nombre"
                                 required>
 
                         </div>
+                        <p class="p-error-nombre d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+
                         <div class="margen-input-u w-auto">
 
                             <svg xmlns="http://www.w3.org/2000/svg" id="icono-tres" width="20" height="20"
@@ -82,10 +86,14 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="apellido" id="inputTres" class="input-modal input-u col-12"
+                            <input type="text" name="apellido" id="inputTres" class="input-validar input-modal input-u col-12"
                                 placeholder="Apellido" required>
 
                         </div>
+
+                        <p class="p-error-apellido d-none">El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+
+
                         <div class="margen-input-u w-auto">
 
                             <svg xmlns="http://www.w3.org/2000/svg" id="icono-tres" width="20" height="20"
@@ -93,10 +101,13 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="number" name="telefono" id="inputTres" class="input-modal input-u col-12"
+                            <input type="number" name="telefono" id="inputTres" class="input-validar input-modal input-u col-12"
                                 placeholder="Telefono" required>
 
                         </div>
+                        <p class="p-error-telefono d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
+
+
                         <div class="margen-input-modal -u w-auto">
 
                             <svg xmlns="http://www.w3.org/2000/svg" id="icono-tres" width="20" height="20"
@@ -104,10 +115,13 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="email" name="Correo" id="inputTres" class="input-modal input-u col-12" placeholder="Gamil"
+                            <input type="email" name="correo" id="inputTres" class="input-validar input-modal input-u col-12" placeholder="Gamil"
                                 required>
 
                         </div>
+
+                        <p class="p-error-correo d-none">El correo debe contener letras , numeros y/o caracteres especiales y que contenga el @</p>
+
 
                         <div class="margen-input-u w-auto ">
 
@@ -116,10 +130,12 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="usuario" id="inputDos" class="input-modal input-u col-12" placeholder="Usuario"
+                            <input type="text" name="usuario" id="inputDos" class="input-validar input-modal input-u col-12" placeholder="Usuario"
                                 required>
 
                         </div>
+
+                        <p class="p-error-usuario d-none">El usuario debe contener letras,numeros y caracteres especiales con ._- ademas iniciar con una letra mayúscula y tenga entre 8 a 16 caracteres</p>
 
                         <div class="margen-input-u w-auto ">
 
@@ -128,7 +144,7 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <select name="id_rol" class="input-modal input-u col-12" id="">
+                            <select name="id_rol" class="input-modal input-u col-12" required>
                                 <option selected disabled>Seleccionar Rol</option>
                                 <?php foreach ($datosRoles as $dato): ?>
                                     <option value="<?= $dato["id_rol"] ?>"><?= $dato["nombre"] ?></option>
@@ -142,7 +158,7 @@
 
                             <img src="<?= $urlBase; ?>../src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
 
-                            <input type="password" name="password" id="inputDos" class="input-modal input-u inputDos col-11 "
+                            <input type="password" name="password" id="inputDos" class="input-validar input-modal input-u inputDos col-11 "
                                 placeholder="Contraseña" required>
 
                             <a href="#" class="text-decoration-none btnMostrarContrase">
@@ -163,6 +179,8 @@
                             </a>
 
                         </div>
+
+                        <p class="p-error-password d-none">La Contraseña debe contener de 8 a 12 caracteres, una mayúscula, un número y un símbolo</p>
 
                     </div>
 
