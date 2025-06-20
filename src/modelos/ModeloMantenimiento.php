@@ -3,198 +3,128 @@
 namespace App\modelos;
 
 use App\modelos\Db;
-use DateTime;
+use ZipArchive;
 
 class ModeloMantenimiento extends Db
 {
 
 	private $conexion;
 
+	private $user;
+	private $password;
+	private $dbname;
+	private $dbsegname;
+	private $dbHost;
+
+	private $contrRespaldb;
+
+
 	public function __construct()
 	{
-		$this->conexion = $this->connectionSegurity();
+		// Llama al constructor de la clase padre para establecer la conexión
+		parent::__construct();
+		// Aquí puedes usar $this para acceder a la conexión
+		$this->conexion = $this;
+
+		require_once __DIR__ . "/../config/config.php";
+		$this->user = user_cos;
+		$this->password = pass_cos;
+		$this->dbname = dbname_cos;
+		$this->dbsegname = dbsegname_cos;
+		$this->dbHost = host_cos;
+		$this->contrRespaldb = passwordResp_cos;
 	}
 
-	public function selectPaciente($nacionalidad, $cedula)
+	public function generateBackup($backupRuta)
 	{
-		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM paciente WHERE nacionalidad = :nacionalidad AND cedula =:cedula AND estado = 'ACT'");
-			$consulta->bindParam(":nacionalidad", $nacionalidad);
-			$consulta->bindParam(":cedula", $cedula);
-			$consulta->execute();
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+		$date = date('Y-m-d');
+		$bdSistema = $backupRuta . "bdsistema-$date.sql";
+		$bdSeguridad = $backupRuta . "bdseguridad-$date.sql";
 
-	public function mostrarServicioDoctor()
-	{
-		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM categoria_servicio WHERE estado = 'ACT'");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+		// Comando para generar el respaldo con mysqldump
+		$mysqldumpDbSi = "mysqldump --opt --user=$this->user --password=$this->password --host=$this->dbHost bd > $bdSistema";
+		exec($mysqldumpDbSi, $ALGO, $OTRA);
 
-	public function mostrarDoctores($id_servicio)
-	{
-		try {
-			$consulta = $this->conexion->prepare("SELECT p.id_personal, p.nombre AS nombre_doctor , p.apellido AS apellido_doctor FROM serviciomedico sm INNER JOIN personal_has_serviciomedico psm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN personal p ON p.id_personal = psm.personal_id_personal WHERE sm.estado = 'ACT' AND sm.id_categoria =:id_servicio");
-			$consulta->bindParam(":id_servicio", $id_servicio);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+		$mysqldumpDbSe = "mysqldump --opt --user={$this->user} --password={$this->password} --host={$this->dbHost} {$this->dbsegname} > $bdSeguridad";
+		$verdbs = shell_exec($mysqldumpDbSe);
 
+		if (file_exists($bdSistema) && file_exists($bdSeguridad)) {
 
-	public function mostrarHorarioDoctores($id_doctor)
-	{
-		try {
-			$consulta = $this->conexion->prepare(" SELECT sm.*, hyd.*, h.diaslaborables FROM horarioydoctor hyd INNER JOIN personal d ON d.id_personal = hyd.id_personal INNER JOIN horario h ON h.id_horario = hyd.id_horario INNER JOIN personal_has_serviciomedico psm ON d.id_personal = psm.personal_id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE d.id_personal = :id_doctor GROUP by hyd.id_horarioydoctor ");
-			$consulta->bindParam(":id_doctor", $id_doctor);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+			$bdSiEncrypt = $bdSistema . ".enc";
+			$bdSeEncrypt = $bdSeguridad . ".enc";
 
+			// // cifrar el respaldo
+			// $CommandoBdSi = "openssl enc -aes-256-cbc -salt -in $bdSistema -out $bdSiEncrypt -pass pass:{$this->contrRespaldb}";
+			// shell_exec($CommandoBdSi);
 
-	//esto es lo de la base de datos mas actualizadas lo de arriba lo Acomodo otro dia
+			// $CommandoBdSe = "openssl enc -aes-256-cbc -salt -in $bdSeguridad -out $bdSeEncrypt -pass pass:{$this->contrRespaldb}";
+			// shell_exec($CommandoBdSe);
+			// para no mostrar descarga en el navegador
+	
+			if (file_exists("") && file_exists($bdSeEncrypt)) {
 
-	public function mostrarCita()
-	{
-		try {
-			$consulta = $this->conexion->prepare('SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM serviciomedico sm INNER JOIN  cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN usuario u ON pe.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE c.estado = "Pendiente" AND c.fecha >= CURRENT_DATE');
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+				// se comprimen los archivos
+				$zip = new ZipArchive();
+				$nombreZip = $backupRuta . "bd-$date.zip";
 
-	public function insertarCita($id_paciente, $id_servicioMedico, $fecha, $hora, $estado)
-	{
-		try {
+				if ($zip->open($nombreZip, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+					$zip->addFile($bdSiEncrypt, basename($bdSiEncrypt));
+					$zip->addFile($bdSeEncrypt, basename($bdSeEncrypt));
+					$zip->close();
+				} else {
+					return "errorZip";
+				}
 
-			$this->conexion->beginTransaction();
+				// Se elimina el archivo
+				unlink($bdSistema);
+				unlink($bdSeguridad);
 
-			$fecha_hora = new DateTime($hora);
-			$fecha_hora->modify('+1 hour +5 minutes');
-			$hora_salida = $fecha_hora->format("H:m:s");
+				// para no mostrar descarga en el navegador
+				header('Content-Type: application/octet-stream');
+				header('Content-Disposition: attachment; filename="' . basename($nombreZip) . '"');
+				header('Content-Length: ' . filesize($nombreZip));
+				readfile($nombreZip);
+				exit;
+			} else {
 
-
-			$disponibilidad =  $this->validarCita($id_paciente, $fecha, $hora);
-
-			if ($disponibilidad  == "existeC") {
-				// Ya existe una cita, evitar la inserción
-				$this->conexion->rollBack();
-				return "existeC";
+				echo "ErrorCifrar ... ".$OTRA . " " . $verdbs ;
+				print_r($ALGO);
 			}
-			
-			// Si no existe, inserta la cita
-			$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente, hora_salida) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente,:hora_salida)");
-			$consulta->bindParam(":id_paciente", $id_paciente);
-			$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-			$consulta->bindParam(":fecha", $fecha);
-			$consulta->bindParam(":hora", $hora);
-			$consulta->bindParam(":estado", $estado);
-			$consulta->bindParam(":hora_salida", $hora_salida);
-			$consulta->execute();
-
-			$this->conexion->commit();
-			return 1;
-		} catch (\Exception $e) {
-			$this->conexion->rollBack();
-			return false;
+		} else {
+			echo "ErrorRespaldo";
 		}
 	}
 
+	//restaurar la base de datos
+	// public function restaurarBackup($backupRuta)
+	// {
+	// 	$date = date('Y-m-d');
+	// 	$encryptedFile = $backupRuta . "backup-$date.sql.enc";
+	// 	$decryptedFile = $backupRuta . "backup-$date.sql";
 
-	public function eliminarCita($id_cita)
-	{
-		try {
-			$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'DES' WHERE id_cita =:id_cita ");
-			$consulta->bindParam(":id_cita", $id_cita);
-			$consulta->execute();
-			return 1;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+	// 	if (!file_exists($encryptedFile)) {
+	// 		echo "El archivo de respaldo cifrado no existe.";
+	// 		return;
+	// 	}
 
+	// 	// Comando para descifrar el archivo de respaldo
+	// 	$decryptCommand = "openssl enc -aes-256-cbc -d -in $encryptedFile -out $decryptedFile -pass pass:{$this->encryptionKey}";
+	// 	shell_exec($decryptCommandec);
 
-	//citas de hoy
-	public function mostrarCitaHoy($fecha)
-	{
-		try {
-			$consulta = $this->conexion->prepare('SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM serviciomedico sm INNER JOIN  cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN usuario u ON pe.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE c.estado = "Pendiente" AND c.fecha = :fecha');
-			$consulta->bindParam(":fecha", $fecha);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+	// 	if ($resultDec === 0 && file_exists($decryptedFile)) {
+	// 		// Comando para restaurar la base de datos desde el respaldo descifrado
+	// 		$restoreCommand = "mysql --user={$this->dbUser} --password={$this->dbPassword} --host={$this->dbHost} {$this->dbName} < $decryptedFile";
+	// 		shell_exec($restoreCommandultRestore);
 
-	//citas de realizadas
-	public function mostrarCitaR()
-	{
-		try {
-			$consulta = $this->conexion->prepare("SELECT p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria ,c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado,c.fecha, c.hora, c.estado, pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo,  pe.id_especialidad,  p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion FROM serviciomedico sm INNER JOIN  cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN paciente p ON p.id_paciente = c.paciente_id_paciente INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal pe ON pe.id_personal = psm.personal_id_personal INNER  JOIN especialidad e ON e.id_especialidad = pe.id_especialidad  INNER JOIN usuario u ON pe.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE  c.estado ='Realizadas' ");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
-
-	//editar
-
-	public function update($id_servicioMedico, $fecha, $hora, $id_cita)
-	{
-		try {
-			$consulta = $this->conexion->prepare("UPDATE cita SET serviciomedico_id_servicioMedico=:id_servicioMedico,fecha=:fecha,hora=:hora WHERE id_cita =:id_cita");
-			$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-			$consulta->bindParam(":fecha", $fecha);
-			$consulta->bindParam(":hora", $hora);
-			$consulta->bindParam(":id_cita", $id_cita);
-			$consulta->execute();
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
-
-
-	public function validarCita($id_paciente, $fecha, $hora)
-	{
-		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM cita WHERE paciente_id_paciente = :id_paciente AND fecha=:fecha AND hora = :hora");
-			$consulta->bindParam(":id_paciente", $id_paciente);
-			$consulta->bindParam(":fecha", $fecha);
-			$consulta->bindParam(":hora", $hora);
-			$consulta->execute();
-
-			while ($consulta->fetch()) {
-				return "existeC";
-			}
-
-			return "noExisteC";
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
-
-	/* metodo para validar que tiempos libres tiene el doctor */
-
-	public function validarHorariosDisponlibles($fecha, $id_personal){
-		try {
-			$consulta = $this->conexion->prepare('SELECT c.fecha , c.hora, c.hora_salida FROM cita c INNER JOIN serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = psm.personal_id_personal WHERE fecha =:fecha AND p.id_personal = :id_personal');
-			$consulta->bindParam(":fecha", $fecha);
-			$consulta->bindParam(":id_personal", $id_personal);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
-
+	// 		if ($resultRestore === 0) {
+	// 			// Se elimina el archivo descifrado por seguridad
+	// 			unlink($decryptedFile);
+	// 			echo "Base de datos restaurada exitosamente.";
+	// 		} else {
+	// 			echo "Error al restaurar la base de datos.";
+	// 		}
+	// 	} else {
+	// 		echo "Error al descifrar el respaldo.";
+	// 	}
+	// }
 }

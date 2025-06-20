@@ -9,7 +9,7 @@
 
         <div class="row mb-4 mt-2">
             <div class="col text-center">
-                <h1>Mantenimiento de Base de Datos</h1>
+                <h1>Mantenimiento del sistema</h1>
                 <p>Realiza operaciones básicas como descarga de respaldo y restauración.</p>
             </div>
         </div>
@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Haz clic para generar y descargar una copia de seguridad de tu base de datos.</p>
-                            <a href="ruta_a_descargar.php" class="btn btn-primary btn-block w-100 text-white text-decoration-none">Descargar Respaldo</a>
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/generarRespaldo" class="btn btn-primary btn-block w-100 text-white text-decoration-none">Descargar Respaldo</a>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
         <div class="row mt-4">
             <div class="col">
                 <div class="alert alert-info " role="alert">
-                    Recuerda que estas operaciones son críticas, asegúrate de tener los permisos necesarios.
+                    Esta acción puede afectar la integridad de los datos. Si no estás seguro, contacta al administrador antes de continuar.
                 </div>
             </div>
         </div>
