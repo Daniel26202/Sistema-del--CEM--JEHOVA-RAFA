@@ -12,12 +12,14 @@ class Db
     private $host = host_cos;
     private $user = user_cos;
     private $pass = pass_cos;
+    private $dbname = dbname_cos;
+    private $dbsegname = dbsegname_cos;
 
     // Conexión a base de datos principal
     public function connectionSistema()
     {
         try {
-            $pdo = new PDO("mysql:host={$this->host};dbname=bd", $this->user, $this->pass);
+            $pdo = new PDO("mysql:host={$this->host};dbname={$this->dbname}", $this->user, $this->pass);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $pdo;
         } catch (PDOException $e) {
@@ -29,7 +31,7 @@ class Db
     public function connectionSegurity()
     {
         try {
-            $pdo = new PDO("mysql:host={$this->host};dbname=segurity", $this->user, $this->pass);
+            $pdo = new PDO("mysql:host={$this->host};dbname={$this->dbsegname}", $this->user, $this->pass);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $pdo;
         } catch (PDOException $e) {
