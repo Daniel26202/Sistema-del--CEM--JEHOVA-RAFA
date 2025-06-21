@@ -120,34 +120,20 @@ class ModeloInsumo extends Db
 			$imagen_temporal = $_FILES['imagen']['tmp_name'];
 			move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
-			$consulta = $this->conexion->prepare("INSERT INTO insumo VALUES (null, :imagen, :nombre, :descripcion, :marca, :medida, :precio , 'ACT',:stockMinimo)");
+			$consulta = $this->conexion->prepare("call insert_insumo(:imagen, :nombre, :id_proveedor, :descripcion, :fechaDeIngreso, :fechaDeVecimiento, :precio, :cantidad, :stockMinimo, :lote, :marca, :medida)");
 			$consulta->bindParam(":imagen", $imagen);
 			$consulta->bindParam(":nombre", $nombre);
+			$consulta->bindParam(":id_proveedor", $id_proveedor);
 			$consulta->bindParam(":descripcion", $descripcion);
+			$consulta->bindParam(":fechaDeIngreso", $fechaDeIngreso);
+			$consulta->bindParam(":fechaDeVecimiento", $fechaDeVecimiento);
+			$consulta->bindParam(":precio", $precio);
+			$consulta->bindParam(":cantidad", $cantidad);
+			$consulta->bindParam(":stockMinimo", $stockMinimo);
+			$consulta->bindParam(":lote", $lote);
 			$consulta->bindParam(":marca", $marca);
 			$consulta->bindParam(":medida", $medida);
-			$consulta->bindParam(":precio", $precio);
-			$consulta->bindParam(":stockMinimo", $stockMinimo);
 			$consulta->execute();
-			$id_insumo = $this->conexion->lastInsertId();
-
-			//insertar entrada
-			$consulta = $this->conexion->prepare("INSERT INTO entrada VALUES (null, :id_proveedor, :lote, :fechaDeIngreso, 'ACT')");
-			$consulta->bindParam(":lote", $lote);
-			$consulta->bindParam(":id_proveedor", $id_proveedor);
-			$consulta->bindParam(":fechaDeIngreso", $fechaDeIngreso);
-			$consulta->execute();
-			$id_entrada = $this->conexion->lastInsertId();
-
-			//insertar en la tabla intermedia
-			$consulta2 = $this->conexion->prepare("INSERT INTO entrada_insumo VALUES (null, :id_insumo, :id_entrada,:fechaDeVecimiento,:precio, :cantidad_entrante, :cantidad_disponible)");
-			$consulta2->bindParam(":id_insumo", $id_insumo);
-			$consulta2->bindParam(":id_entrada", $id_entrada);
-			$consulta2->bindParam(":fechaDeVecimiento", $fechaDeVecimiento);
-			$consulta2->bindParam(":precio", $precio);
-			$consulta2->bindParam(":cantidad_entrante", $cantidad);
-			$consulta2->bindParam(":cantidad_disponible", $cantidad);
-			$consulta2->execute();
 
 			$this->conexion->commit();
 			return 1;

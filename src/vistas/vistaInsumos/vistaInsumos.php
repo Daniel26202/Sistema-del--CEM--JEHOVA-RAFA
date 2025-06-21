@@ -208,7 +208,7 @@
 
                             <div class="input-group flex-nowrap">
                                 <span class="input-modal mt-1">
-                                    <img src="./src/assets/img/proveedor(2).png" width="20" height="20" uk-svg class="me-1">
+                                    <img src="<?= $urlBase?>../src/assets/img/proveedor(2).png" width="20" height="20" uk-svg class="me-1">
                                 </span>
 
                                 <select class="form-control input-modal" name="id_proveedor" required>
