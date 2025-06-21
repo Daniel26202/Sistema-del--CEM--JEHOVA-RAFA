@@ -559,7 +559,7 @@
                       <?php echo $i['medida']; ?>
                     </td>
                     <td class="text-center border-start cantidad_tabla_disponible<?= $i["nombre"] ?>">
-                      <?php echo $i['cantidad_disponible']; ?>
+                      <?php echo $i['cantidad_inventario']; ?>
                     </td>
                     <td class="text-center border-start">
                       <?php echo $i['precio'] ?> BS

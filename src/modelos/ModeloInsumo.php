@@ -29,9 +29,9 @@ class ModeloInsumo extends Db
 	{
 		try {
 			$query = "";
-			if ($cantidadCero) $query = "SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
+			if ($cantidadCero) $query = "SELECT *,sum(inv.cantidad_disponible) cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
 
-			else   $query = "SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible > 0  GROUP BY inv.id_insumo ";
+			else   $query = "SELECT *,sum(inv.cantidad_disponible) as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible > 0  GROUP BY inv.id_insumo ";
 
 			$sql = $this->conexion->prepare($query);
 			$sql->execute();
