@@ -122,8 +122,8 @@
                                     <h5 class="card-title titulo"><?= $i["nombre"] ?></h5>
                                     <p class="mt-3">Medida: <?= $i["medida"] ?></p>
                                     <p class="mt-3">Skock-Min: <?= $i["stockMinimo"] ?></p>
-                                    <?php if ($i["cantidad_disponible"] <= 0): ?>
-                                        <p class="text-danger">Cantidad: <?= $i["cantidad"] ?></p>
+                                    <?php if ($i["cantidad_inventario"] <= 0): ?>
+                                        <p class="text-danger">Cantidad: <?= $i["cantidad_inventario"] ?></p>
                                     <?php else: ?>
                                         <p>Cantidad: <?= $i["cantidad_inventario"] ?></p>
                                     <?php endif ?>

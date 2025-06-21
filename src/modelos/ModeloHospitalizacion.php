@@ -23,7 +23,7 @@ class ModeloHospitalizacion extends Db
     public function selectsH()
     {
 
-        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND h.estado = "Pendiente" GROUP BY h.id_hospitalizacion');
+        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND h.estado = "Pendiente" GROUP BY h.id_hospitalizacion');
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
@@ -75,7 +75,7 @@ class ModeloHospitalizacion extends Db
     public function selectsInsumos()
     {
 
-        $consulta = $this->conexion->prepare('SELECT ins.*, inv.cantidad_disponible AS cantidad FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo WHERE estado = "ACT" AND inv.cantidad_disponible > 0');
+        $consulta = $this->conexion->prepare('SELECT ins.*, sum(inv.cantidad_disponible) AS cantidad FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo WHERE estado = "ACT" AND inv.cantidad_disponible > 0 GROUP BY inv.id_insumo');
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
@@ -96,7 +96,7 @@ class ModeloHospitalizacion extends Db
     public function buscarUnInsumo($id)
     {
 
-        $consulta = $this->conexion->prepare('SELECT ins.id_insumo, ins.nombre, ins.precio, inv.cantidad_disponible AS limite_insumo FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada = inv.id_entrada  WHERE ins.estado = "ACT" AND ins.id_insumo =:id ORDER BY e.fechaDeIngreso');
+        $consulta = $this->conexion->prepare('SELECT ins.id_insumo, ins.nombre, ins.precio, sum(inv.cantidad_disponible) AS limite_insumo FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada = inv.id_entrada  WHERE ins.estado = "ACT" AND ins.id_insumo =:id ORDER BY e.fechaDeIngreso');
 
         //PDO::PARAM_INT: esto es para que el envió sea de tipo entero. 
         //bindValue: funciona igual que el bindParam la diferencia es, que después del bindValue no se puede modificar nada de la consulta no lo leerá.
@@ -129,8 +129,8 @@ class ModeloHospitalizacion extends Db
 
     public function insertarH($idControl, $fechaHora, $idInsumos, $cantidad, $historial)
     {
-        // try {
-        //     $this->conexion->beginTransaction();
+        try {
+            $this->conexion->beginTransaction();
 
         // insertar hospitalización
         $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion(fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_control, fecha_hora_final, estado) VALUES ( :fecha_hora_inicio, "null", "null", "null", "null", :id_control,  "null", "Pendiente")');
@@ -176,12 +176,12 @@ class ModeloHospitalizacion extends Db
             }
         }
 
-        //     $this->conexion->commit();
-        //     return 1;
-        // } catch (\Exception $e) {
-        //     $this->conexion->rollBack();
-        //     print_r($e);
-        // }
+            $this->conexion->commit();
+            return 1;
+        } catch (\Exception $e) {
+            $this->conexion->rollBack();
+            print_r($e);
+        }
     }
 
 
@@ -189,7 +189,7 @@ class ModeloHospitalizacion extends Db
     public function EInsumosM($id)
     {
 
-        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, inv.cantidad AS limite_insumo FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.id_usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN inventario inv ON idh.id_inventario = inv.id_inventario INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo');
+        $consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, inv.cantidad_disponible AS limite_insumo FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_inventario = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.id_hospitalizacion =:id GROUP BY ins.id_insumo');
 
         $consulta->bindValue(":id", $id, PDO::PARAM_INT);
 
@@ -239,7 +239,7 @@ class ModeloHospitalizacion extends Db
                         // suma
                         $resultadoC = $cantidadITI["limite_insumo"] - $cS;
                         // editar la cantidad de insumos(tabla insumos)
-                        $this->editarCDI($cantidadIHBD["id_insumo"], $resultadoC);
+
 
                         // se suma si es menor al mismo
                     } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
@@ -248,8 +248,6 @@ class ModeloHospitalizacion extends Db
                         // suma
                         $resultadoC = $cR + $cantidadITI["limite_insumo"];
 
-                        // editar la cantidad de insumos(tabla insumos)
-                        $this->editarCDI($cantidadIHBD["id_insumo"], $resultadoC);
                     }
 
 
@@ -286,8 +284,6 @@ class ModeloHospitalizacion extends Db
                     $resultadoC = $cantidadITI["limite_insumo"] - $cantidadA[$contadorC];
 
                     // editar la cantidad de insumos(tabla insumos)
-                    $this->editarCDI($idIA, $resultadoC);
-
                     $contadorC++;
                 }
             }
@@ -310,8 +306,6 @@ class ModeloHospitalizacion extends Db
                     // suma
                     $resultadoC = $cantidadIH["cantidad"] + $cantidadITI["limite_insumo"];
 
-                    // editar la cantidad de insumos(tabla insumos)
-                    $this->editarCDI($cantidadIH["id_insumo"], $resultadoC);
 
 
                     // elimina insumos de la hospitalización
@@ -346,8 +340,6 @@ class ModeloHospitalizacion extends Db
                     // suma
                     $resultadoC = $value["cantidad"] + $cantidadITI["limite_insumo"];
 
-                    // editar la cantidad de insumos(tabla insumos)
-                    $this->editarCDI($value["id_insumo"], $resultadoC);
                 }
             }
 
@@ -362,15 +354,6 @@ class ModeloHospitalizacion extends Db
             $this->conexion->rollBack();
             print_r($e);
         }
-    }
-
-    // editar la cantidad de insumos(tabla insumos)
-    public function editarCDI($idI, $cantidadI)
-    {
-        $consulta = $this->conexion->prepare('UPDATE inventario SET cantidad = :cantidad WHERE id_insumo = :id_insumo;');
-        $consulta->bindParam(":id_insumo", $idI);
-        $consulta->bindParam(":cantidad", $cantidadI);
-        $consulta->execute();
     }
 
 
@@ -402,15 +385,15 @@ class ModeloHospitalizacion extends Db
     }
     public function semaforo()
     {
-        // try {
+        try {
 
         // verifica cuantas hospitalizaciones hay pendiente
         $consulta = $this->conexion->prepare("SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'Pendiente';");
 
         return ($consulta->execute()) ? $consulta->fetch() : false;
 
-        // } catch (\Exception $e) {
-        // print_r("ocurrio un error en hospitalización, intente mas tarde");
-        // }
+        } catch (\Exception $e) {
+        print_r("ocurrio un error en hospitalización, intente mas tarde");
+        }
     }
 }
