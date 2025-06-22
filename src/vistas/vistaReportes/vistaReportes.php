@@ -1,7 +1,7 @@
 <?php require_once './src/vistas/head/head.php';  ?>
 
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo"style="height: 100vh;">
+<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
 
     <h5 style="width: 95%; " class="m-auto mb-3">Reportes <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-clipboard-data-fill" viewBox="0 0 16 16">
@@ -420,7 +420,7 @@
 
 
                                 <div id="modal-example<?= $factura["id_factura"] ?>" uk-modal class="modalCapa modalInterno">
-                                    <div class="uk-modal-dialog uk-modal-body contenido" style="border-radius: 20px;">
+                                    <div class="uk-modal-dialog uk-modal-body contenido" style="border-radius: 20px; background-color: var(--color-surface);">
                                         <!-- Boton que cierra el modal -->
                                         <a href="#">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -430,142 +430,107 @@
                                                     d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                                             </svg>
                                         </a>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-info-circle azul me-3 mb-3" viewBox="0 0 16 16">
-                                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                                </svg>
-                                            </div>
-                                            <div class="">
-                                                <p class="uk-modal-title fs-5 ">
-                                                    Información
-                                                </p>
-
-                                            </div>
-
-
-                                        </div>
-
 
                                         <div class="pb-3">
-                                            <div class="uk-card uk-card-default m-auto shadow contenido" style="width:100%;">
+                                            <div class="uk-card   m-auto contenido" style="width:100%;background-color: var(--color-surface);">
                                                 <div class="uk-card-header">
                                                     <div class="uk-grid-small uk-flex-middle" uk-grid>
-                                                        <div class="uk-width-auto">
-                                                            <img class="uk-border-circle" width="40" height="40" src="<?= $urlBase ?>../src/assets/img/logotipo.jpg"
-                                                                alt="Avatar">
+                                                        <div class=" m-auto d-flex justify-content-center" style="width: 40%;">
+                                                            <img src="<?= $urlBase ?>../src/assets/icons/logo2.png">
                                                         </div>
-                                                        <div class="uk-width-expand">
-                                                            <h3 class="uk-card-title uk-margin-remove-bottom">Factura J-R</h3>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="uk-card-body d-flex">
-                                                    <div style="width:45%;">
-
-                                                        <p>Codigo:<?php echo $factura["id_factura"] ?>
-
-                                                        </p>
-                                                        <p>Fecha:<?php echo $factura["fecha"] ?>
-
-                                                        </p>
-                                                        <p>Total:<?php echo $factura["total"] . " BS" ?>
-
-                                                        </p>
-                                                        <!-- <p>Iva:
-									
-								</p> -->
-                                                        <!-- <p>Total: -->
-
-                                                        </p>
-                                                        <p>Paciente:<?php echo $factura["nombre_p"] . " " . $factura["apellido_p"]  ?>
-
-                                                        </p>
-                                                        <p>Cedula Paciente: <br> <?php echo $factura["nacionalidad"] . "-" . $factura["cedula_p"] ?>
-
-                                                        </p>
-                                                        <h5 class="text-center pago" id="pagoDefac">
-
-                                                        </h5>
-
-
-                                                    </div>
-                                                    <div style="width:55%;">
-                                                        <h5 class="text-center">Metodos De Pago</h5>
-
-                                                        <div class="pagoDefac" id="pagoDefac">
-
-                                                        </div>
-
-
-
-
-                                                        <h5 class="text-center">Servicios</h5>
-                                                        <div class="text-center pago" id="pago">
-
-                                                        </div>
-                                                        <div class="d-flex justify-content-center w-100">
-                                                            <!-- <div class="w-50 ">
-																			 <p class="text-center">
-																				<?php echo $factura["categoria_servicio"] ?>
-																			</p> 
-																		</div> -->
-
-                                                            <div class="w-100 masSer">
-                                                                <!--  <p class="">
-
-																				Dr <?php echo $factura["nombre_d"] ?>
-
-																				<?php echo $factura["apellido_d"] ?><br> <?php echo $factura["precio_servicio"] . " BS" ?>
-																				<?php echo $factura["precio_servicio"] . " BS" ?>
-																			</p> -->
-                                                            </div>
-                                                            <div class="masServicios"> </div>
-
-                                                        </div>
-
-
-
-                                                        <h5 class="text-center">Insumos</h5>
-
-                                                        <div class="">
-                                                            <div class="w-100">
-                                                                <p class="text-center insumos">
-
-                                                                </p>
-                                                            </div>
-
-                                                        </div>
-
 
                                                     </div>
                                                 </div>
+                                                <div class="uk-card-body ">
+                                                    <div class="">
 
-                                                <div class="d-flex justify-content-end">
-                                                    <div class="uk-card-footer">
-                                                        <!-- <a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/factura&id_factura=<?= $factura["id_factura"] ?>"
-															class="btn btn-tabla pdf">
-															<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
-																class="bi bi-printer-fill" viewBox="0 0 16 16">
-																<path
-																	d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-																<path
-																	d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-															</svg>
-														</a> -->
-                                                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/factura/<?= $factura["id_factura"] ?>"
-                                                            class="btn btn-tabla pdf2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
-                                                                class="bi bi-printer-fill" viewBox="0 0 16 16">
-                                                                <path
-                                                                    d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-                                                                <path
-                                                                    d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                                                            </svg>
-                                                        </a>
+                                                        <div class="div-total p-2 mb-2">
+                                                            <h5 class="text-center"> <?php echo $factura['total'] . " BS" ?></h5>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between">
+                                                            <h5 class="h5-comprobante ">Codigo:</h5>
+                                                            <h5 class="h5-comprobante ">
+                                                                <?php echo $factura['id_factura'] ?>
+                                                            </h5>
+
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between  ">
+                                                            <h5 class="h5-comprobante ">Fecha:</h5>
+                                                            <h5 class="h5-comprobante ">
+                                                                <?php echo $factura['fecha'] ?>
+                                                            </h5>
+
+                                                        </div>
+                                                        <div class="d-flex justify-content-between  ">
+                                                            <h5 class="h5-comprobante ">Cedula Paciente:</h5>
+                                                            <h5 class="h5-comprobante ">
+                                                                <?php echo $factura['nacionalidad'] . "-" . $factura['cedula_p'] ?>
+                                                            </h5>
+
+                                                        </div>
+                                                        <div class="d-flex justify-content-between  ">
+                                                            <h5 class="h5-comprobante ">Paciente:</h5>
+                                                            <h5 class="h5-comprobante ">
+                                                                <?php echo $factura['nombre_p'] . " " . $factura['apellido_p'] ?>
+                                                            </h5>
+
+                                                        </div>
+
 
                                                     </div>
+
+                                                    <!-- servicios -->
+                                                    <hr>
+                                                    <h5 class="text-center">Servicios</h5>
+
+
+
+                                                    <div class="d-flex justify-content-between masSer ">
+
+                                                    </div>
+
+                                                    <!--  insumos -->
+
+                                                    <hr>
+                                                    <h5 class="text-center">Insumos</h5>
+
+
+                                                    <div class="insumos">
+
+                                                    </div>
+
+                                                    <hr>
+
+                                                    <h5 class="text-center">Métodos de pago</h5>
+
+                                                    <div class="d-flex justify-content-between  pagoDefac" id="pagoDefac">
+
+                                                    </div>
+
+
+
+                                                </div>
+
+
+
+
+                                            </div>
+
+                                            <div class="d-flex justify-content-end">
+                                                <div class="uk-card-footer">
+                                                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/factura/<?= $factura["id_factura"] ?>"
+                                                        class="btn btn-tabla pdf2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
+                                                            class="bi bi-printer-fill" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                                                            <path
+                                                                d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                                                        </svg>
+                                                    </a>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -574,108 +539,110 @@
                                                 type="button">Cerrar</button>
                                             <button class="btn col-5 btn-agregarcita-modal" type="sumit" name="guardar" uk-toggle="target:#eliminar<?= $factura["id_factura"] ?>">Anular</button>
                                         </div>
-
                                     </div>
+
+
                                 </div>
-
-
-                                <div id="eliminar<?= $factura["id_factura"] ?>" uk-modal class="madalAnular">
-                                    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-                                        <!-- Boton que cierra el modal -->
-                                        <a href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                                            </svg>
-                                        </a>
-
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill azul me-2 mb-2" viewBox="0 0 16 16">
-                                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <h5>
-                                                    ¿Está seguro de Anular la Factura?
-                                                </h5>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-3 uk-text-right">
-                                            <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
-
-
-                                            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/anularFactura" method="POST">
-                                                <input type="hidden" value="<?= $factura["id_factura"] ?>" name="id_factura">
-                                                <input type="hidden" value="<?= $_SESSION['id_usuario'] ?>" name="id_usuario_bitacora">
-
-                                                <button class="btn col-4 btn-agregarcita-modal " type="submit">Si</button>
-                                            </form>
-
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            <?php endforeach ?>
-
-                        </tbody>
-                    </table>
-
-                    <table class="table table-striped d-none" style="margin-top: -16px;" id="noresultados">
-                        <thead>
-
-                        </thead>
-                        <tbody>
-                            <tr class="">
-                                <td colspan="9" class="text-center">NO HAY REGISTROS
-
-                                </td>
-                            </tr>
-                        </tbody>
-
-                    </table>
                 </div>
+
+
+                <div id="eliminar<?= $factura["id_factura"] ?>" uk-modal class="madalAnular">
+                    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+                        <!-- Boton que cierra el modal -->
+                        <a href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                            </svg>
+                        </a>
+
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill azul me-2 mb-2" viewBox="0 0 16 16">
+                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h5>
+                                    ¿Está seguro de Anular la Factura?
+                                </h5>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 uk-text-right">
+                            <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
+
+
+                            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/anularFactura" method="POST">
+                                <input type="hidden" value="<?= $factura["id_factura"] ?>" name="id_factura">
+                                <input type="hidden" value="<?= $_SESSION['id_usuario'] ?>" name="id_usuario_bitacora">
+
+                                <button class="btn col-4 btn-agregarcita-modal " type="submit">Si</button>
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <?php endforeach ?>
+
+            </tbody>
+            </table>
+
+            <table class="table table-striped d-none" style="margin-top: -16px;" id="noresultados">
+                <thead>
+
+                </thead>
+                <tbody>
+                    <tr class="">
+                        <td colspan="9" class="text-center">NO HAY REGISTROS
+
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
             </div>
+        </div>
 
 
-            <div class="modal-footer d-flex justify-content-between">
-                <div class="">
-                    <a href="#" uk-tooltip="Ayuda">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                            class="bi bi-question-octagon-fill azul ms-4" viewBox="0 0 16 16" id="btnayudaEspecialidades">
-                            <path
-                                d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
-                        </svg>
-                    </a>
-                </div>
-                <div class="me-4">
-                    <button type="button" class="btn uk-button-default uk-modal-close btn-cerrar-modal" data-bs-dismiss="modal">CERRAR</button>
-                    <button type="button" class="btn btn-agregarcita-modal" data-bs-toggle="modal" data-bs-target="#myModalAnular">Facturas Anuladas</button>
-                </div>
+        <div class="modal-footer d-flex justify-content-between">
+            <div class="">
+                <a href="#" uk-tooltip="Ayuda">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                        class="bi bi-question-octagon-fill azul ms-4" viewBox="0 0 16 16" id="btnayudaEspecialidades">
+                        <path
+                            d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
+                    </svg>
+                </a>
+            </div>
+            <div class="me-4">
+                <button type="button" class="btn uk-button-default uk-modal-close btn-cerrar-modal" data-bs-dismiss="modal">CERRAR</button>
+                <button type="button" class="btn btn-agregarcita-modal" data-bs-toggle="modal" data-bs-target="#myModalAnular">Facturas Anuladas</button>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- facturas Anuladas -->

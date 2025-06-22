@@ -9,7 +9,6 @@ addEventListener("DOMContentLoaded", function () {
   const fechaFinal = document.getElementById("fechaFinal");
   const alertaFecha = document.getElementById("alerta-fecha");
 
-
   const formularioDeFechaAnulada = document.getElementById("formularioDeFechaAnulada");
   const fechaInicioAnulada = document.getElementById("fechaInicioAnulada");
   const fechaFinalAnulada = document.getElementById("fechaFinalAnulada");
@@ -21,12 +20,9 @@ addEventListener("DOMContentLoaded", function () {
   // const obtenerCuota = document.getElementById('tbody2').getElementsByTagName('td');
   // const obtenida = obtenerCuota[2].textContent;
 
-
   const informacionfactura = async (fac) => {
     try {
-      let peticionAjax = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarPago/" + fac
-      );
+      let peticionAjax = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarPago/" + fac);
       let respuesta = await peticionAjax.json();
       let html = ``;
       if (respuesta.length > 0) {
@@ -34,24 +30,30 @@ addEventListener("DOMContentLoaded", function () {
         console.log(respuesta);
         html = ``;
         respuesta.forEach((r) => {
-          if (r.nombre == "Efectivo" || r.nombre == "Divisas")
-            html += `<p class="text-center">${r.nombre} Monto:  ${r.monto} Bs</p>`;
-          else
-            html += `<p class="text-center">${r.nombre} Monto:   ${r.monto} Bs Ref:${r.referencia}</p>`;
+          html += `<h5 class="h5-comprobante ">${r.nombre}</h5>
+                                                            <h5 class="h5-comprobante ">
+                                                            ${r.monto} BS
+                                                            </h5>`;
         });
-        document.querySelectorAll(".pagoDefac").forEach((fa) => {fa.innerHTML = html;});
+        document.querySelectorAll(".pagoDefac").forEach((fa) => {
+          fa.innerHTML = html;
+        });
       }
-      let peticionAjax2 = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarMasServicios/" + fac
-      );
+      let peticionAjax2 = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarMasServicios/" + fac);
       let respuesta2 = await peticionAjax2.json();
       let html2 = ``;
       if (respuesta2.length > 0) {
         console.log(respuesta2);
         html2 = ``;
         respuesta2.forEach((r) => {
-          console.log(r)
-            html2 += `<p class="text-center">${r.categoria_servicio} Dr ${r.nombre_d} ${r.apellido_d} ${r.precio} Bs</p>`;
+          console.log(r);
+
+          html2 += `<h5 class="h5-comprobante ">${r.categoria_servicio}</h5>
+                                                        <h5 class="h5-comprobante ">
+                                                            Dr: ${r.nombre_d}
+                                                            ${r.apellido_d}
+                                                            ${r.precio} Bs
+                                                        </h5>`;
         });
 
         document.querySelectorAll(".masSer").forEach((fa) => {
@@ -59,10 +61,6 @@ addEventListener("DOMContentLoaded", function () {
         });
 
         console.log(document.querySelectorAll(".masSer"));
-        // let masServ = document.querySelectorAll(".masSer");
-        // masServ.forEach((fa) => {
-        //   fa.innerHTML = html2;
-        // });
       } else {
         let masServ = document.querySelectorAll(".masSer");
         masServ.forEach((fa) => {
@@ -74,21 +72,37 @@ addEventListener("DOMContentLoaded", function () {
         });
         console.log("No se econtraron resultados");
       }
-      let peticionAjax3 = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarInsumos/" + fac
-      );
-      
+      let peticionAjax3 = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarInsumos/" + fac);
+
       let respuesta3 = await peticionAjax3.json();
-      console.log(respuesta3)
+      console.log(respuesta3);
       let html3 = ``;
 
       if (respuesta3.length > 0) {
         console.log(respuesta3);
         html3 = ``;
         respuesta3.forEach((r) => {
-          idInsumos.push(r.id_insumo)
-          console.log(idInsumos)
-          html3 += `<p class="text-center"><input type="hidden" value="${r.numero_de_lote}" name="numero_de_lote">${r.nombre} Cantidad: ${r.cantidad} Unidad:${r.precio} Bs</p>`;
+          idInsumos.push(r.id_insumo);
+          console.log(idInsumos);
+
+          html3 += `<div class="d-flex justify-content-between  ">
+                                                            <h5 class="h5-comprobante ">Insumo</h5>
+                                                            <h5 class="h5-comprobante ">
+                                                            ${r.nombre}
+                                                            </h5>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between  ">
+                                                            <h5 class="h5-comprobante ">Cantidad</h5>
+                                                            <h5 class="h5-comprobante ">
+                                                            ${r.cantidad}
+                                                            </h5>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between  ">
+                                                            <h5 class="h5-comprobante ">Precio</h5>
+                                                            <h5 class="h5-comprobante ">
+                                                            ${r.precio} BS
+                                                            </h5>
+                                                        </div>`;
         });
         let insumos = document.querySelectorAll(".insumos");
         insumos.forEach((fa) => {
@@ -102,7 +116,7 @@ addEventListener("DOMContentLoaded", function () {
         });
       }
     } catch (error) {
-      console.log("Error en la solicitud:"+ error);
+      console.log("Error en la solicitud:" + error);
     }
   };
 
@@ -114,7 +128,7 @@ addEventListener("DOMContentLoaded", function () {
   // const anularFac = async (anular,i) => {
   //   try {
   //     await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/anularFactura&id_factura=" + anular+ "&id_insumo="+ i);
-      
+
   //     //   let respuesta = await buscarCita.json();
   //     //  let html = ``;
   //     //   if (respuesta.length > 0) {
@@ -143,8 +157,8 @@ addEventListener("DOMContentLoaded", function () {
   //   }
   // };
 
-  function facturaAnular(anular,i) {
-    anularFac(anular,i);
+  function facturaAnular(anular, i) {
+    anularFac(anular, i);
     // selecciono todos los tr de la tabla
     const filas = document.querySelectorAll(".tbody tr");
     // recolecto el nombre del input
@@ -179,14 +193,14 @@ addEventListener("DOMContentLoaded", function () {
     info.addEventListener("click", () => {
       let fac = info.name;
       array = [];
-      console.log("vuelta")
+      console.log("vuelta");
       informacionfactura(fac);
     });
 
     anularFactura.forEach((anu) => {
       anu.addEventListener("click", () => {
         let anular = anu.name;
-        facturaAnular(anular,idInsumos);
+        facturaAnular(anular, idInsumos);
       });
     });
   });
@@ -195,8 +209,7 @@ addEventListener("DOMContentLoaded", function () {
   const traerPorFecha = () => {
     if (fechaInicio.value >= fechaFinal.value) {
       alertaFecha.classList.remove("d-none");
-      alertaFecha.innerText =
-        "VERIFIQUE QUE LA FECHA DE  INICIO SEA MENOR A LA FECHA FINAL";
+      alertaFecha.innerText = "VERIFIQUE QUE LA FECHA DE  INICIO SEA MENOR A LA FECHA FINAL";
 
       //funcion de js para el tiempo
       setTimeout(function () {
@@ -209,28 +222,20 @@ addEventListener("DOMContentLoaded", function () {
         .forEach((ele) => {
           //y este es para un insumo en espifico
 
-          if (
-            ele.children[3].innerText >= fechaInicio.value &&
-            ele.children[3].innerText <= fechaFinal.value
-          ) {
+          if (ele.children[3].innerText >= fechaInicio.value && ele.children[3].innerText <= fechaFinal.value) {
             console.log("W");
             document.getElementById("btnImprimir").classList.remove("d-none");
             ele.classList.remove("d-none");
-            
           } else {
             ele.classList.add("d-none");
-           
           }
         });
     }
   };
 
-  document.getElementById("btnImprimir").addEventListener("click",function(){
+  document.getElementById("btnImprimir").addEventListener("click", function () {
     formularioDeFecha.submit();
-  })
-
-
-
+  });
 
   //sirve para buscar las entradas por rango de fecha de las facturas
   const traerPorFechaAnulada = () => {
@@ -238,7 +243,6 @@ addEventListener("DOMContentLoaded", function () {
       // alertaFecha.classList.remove("d-none");
       // alertaFecha.innerText =
       //   "VERIFIQUE QUE LA FECHA DE  INICIO SEA MENOR A LA FECHA FINAL";
-
       // //funcion de js para el tiempo
       // setTimeout(function () {
       //   alertaFecha.classList.add("d-none");
@@ -250,49 +254,38 @@ addEventListener("DOMContentLoaded", function () {
         .forEach((ele) => {
           //y este es para un insumo en espifico
 
-          if (
-            ele.children[3].innerText >= fechaInicioAnulada.value &&
-            ele.children[3].innerText <= fechaFinalAnulada.value
-          ) {
+          if (ele.children[3].innerText >= fechaInicioAnulada.value && ele.children[3].innerText <= fechaFinalAnulada.value) {
             console.log("W");
             document.getElementById("btnImprimirAnulada").classList.remove("d-none");
             ele.classList.remove("d-none");
           } else {
             ele.classList.add("d-none");
-           
           }
         });
     }
   };
 
-  document.getElementById("btnImprimirAnulada").addEventListener("click",function(){
+  document.getElementById("btnImprimirAnulada").addEventListener("click", function () {
     formularioDeFechaAnulada.submit();
-  })
+  });
 
-
-
-  formularioDeFecha.addEventListener("submit",function(e){
+  formularioDeFecha.addEventListener("submit", function (e) {
     e.preventDefault();
-  })
+  });
 
-  document.getElementById("buscarFecha").addEventListener("click",function(){
+  document.getElementById("buscarFecha").addEventListener("click", function () {
     traerPorFecha();
+  });
 
-  })
-
-
-
-//anuladas
-  formularioDeFechaAnulada.addEventListener("submit",function(e){
+  //anuladas
+  formularioDeFechaAnulada.addEventListener("submit", function (e) {
     e.preventDefault();
-  })
+  });
 
-  document.getElementById("buscarFechaAnulada").addEventListener("click",function(){
-
+  document.getElementById("buscarFechaAnulada").addEventListener("click", function () {
     traerPorFechaAnulada();
-
-  })
-  console.log(document.getElementById("buscarFechaAnulada"))
+  });
+  console.log(document.getElementById("buscarFechaAnulada"));
 
   let inputPaciente = document.querySelector("#inputBuscarEspecialidad");
 
@@ -380,9 +373,7 @@ addEventListener("DOMContentLoaded", function () {
     });
 
     if (coincidenciasEncontradas === 0) {
-      document
-        .getElementById("noresultadosAnuladas")
-        .classList.remove("d-none");
+      document.getElementById("noresultadosAnuladas").classList.remove("d-none");
     } else {
       document.getElementById("noresultadosAnuladas").classList.add("d-none");
     }

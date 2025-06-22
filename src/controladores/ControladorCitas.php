@@ -84,6 +84,7 @@ class ControladorCitas
 
 	public function guardarCita()
 	{
+		print_r($_POST);
 		date_default_timezone_set('America/Mexico_City');
 		$fecha = date("Y-m-d");
 		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);

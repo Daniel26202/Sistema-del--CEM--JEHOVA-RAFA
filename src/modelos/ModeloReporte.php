@@ -158,7 +158,7 @@ class ModeloReporte extends Db
 	public function consultarFacturaInsumo($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.inventario_id_inventario INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura ");
+			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.id_entradaDeInsumo INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -180,7 +180,12 @@ class ModeloReporte extends Db
 		try {
 			$consulta = $this->conexion->prepare("UPDATE factura SET estado = 'Anulada' WHERE id_factura = :id_factura");
 			$consulta->bindParam(":id_factura", $id_factura);
-			return ($consulta->execute()) ? true : false;
+			if ($consulta->execute()) {
+				$consulta2 =  $this->conexion->prepare("CALL devolver_cantidad_insumos(:id_factura);");
+				$consulta2->bindParam(":id_factura", $id_factura);
+				$consulta2->execute();
+			}
+			return 1;
 		} catch (\Exception $e) {
 			return 0;
 		}
