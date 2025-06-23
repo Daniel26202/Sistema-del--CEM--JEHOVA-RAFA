@@ -203,5 +203,6 @@ return [
     //Mantenimiento
     "mantenimiento" => "consultar",
     "generarRespaldo" => "guardar",
+    "restaurarRespaldo" => "guardar",
 
 ];

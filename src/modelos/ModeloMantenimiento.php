@@ -38,93 +38,93 @@ class ModeloMantenimiento extends Db
 	public function generateBackup($backupRuta)
 	{
 		$date = date('Y-m-d');
-		$bdSistema = $backupRuta . "bdsistema-$date.sql";
-		$bdSeguridad = $backupRuta . "bdseguridad-$date.sql";
+		$bdSistema = $backupRuta . "bd_$date.sql";
+		$bdSeguridad = $backupRuta . "bdseguri_$date.sql";
 
 		// Comando para generar el respaldo con mysqldump
-		$mysqldumpDbSi = "mysqldump --opt --user=$this->user --password=$this->password --host=$this->dbHost bd > $bdSistema";
-		exec($mysqldumpDbSi, $ALGO, $OTRA);
+		$mysqldumpDbSi = "\"C:\\xampp\\mysql\\bin\\mysqldump\" -u $this->user $this->dbname > \"$bdSistema\"";
+		system($mysqldumpDbSi, $estado);
 
-		$mysqldumpDbSe = "mysqldump --opt --user={$this->user} --password={$this->password} --host={$this->dbHost} {$this->dbsegname} > $bdSeguridad";
-		$verdbs = shell_exec($mysqldumpDbSe);
+		$mysqldumpDbSe = "\"C:\\xampp\\mysql\\bin\\mysqldump\" -u $this->user $this->dbsegname > \"$bdSeguridad\"";
+		system($mysqldumpDbSe, $estado);
 
 		if (file_exists($bdSistema) && file_exists($bdSeguridad)) {
 
-			$bdSiEncrypt = $bdSistema . ".enc";
-			$bdSeEncrypt = $bdSeguridad . ".enc";
+			// se comprimen los archivos
+			$zip = new ZipArchive();
+			$nombreZip = $backupRuta . "bd-$date.zip";
 
-			// // cifrar el respaldo
-			// $CommandoBdSi = "openssl enc -aes-256-cbc -salt -in $bdSistema -out $bdSiEncrypt -pass pass:{$this->contrRespaldb}";
-			// shell_exec($CommandoBdSi);
-
-			// $CommandoBdSe = "openssl enc -aes-256-cbc -salt -in $bdSeguridad -out $bdSeEncrypt -pass pass:{$this->contrRespaldb}";
-			// shell_exec($CommandoBdSe);
-			// para no mostrar descarga en el navegador
-	
-			if (file_exists("") && file_exists($bdSeEncrypt)) {
-
-				// se comprimen los archivos
-				$zip = new ZipArchive();
-				$nombreZip = $backupRuta . "bd-$date.zip";
-
-				if ($zip->open($nombreZip, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-					$zip->addFile($bdSiEncrypt, basename($bdSiEncrypt));
-					$zip->addFile($bdSeEncrypt, basename($bdSeEncrypt));
-					$zip->close();
-				} else {
-					return "errorZip";
-				}
-
-				// Se elimina el archivo
-				unlink($bdSistema);
-				unlink($bdSeguridad);
-
-				// para no mostrar descarga en el navegador
-				header('Content-Type: application/octet-stream');
-				header('Content-Disposition: attachment; filename="' . basename($nombreZip) . '"');
-				header('Content-Length: ' . filesize($nombreZip));
-				readfile($nombreZip);
-				exit;
+			if ($zip->open($nombreZip, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+				$zip->addFile($bdSistema, basename($bdSistema));
+				$zip->addFile($bdSeguridad, basename($bdSeguridad));
+				$zip->close();
 			} else {
-
-				echo "ErrorCifrar ... ".$OTRA . " " . $verdbs ;
-				print_r($ALGO);
+				echo "errorZip";
 			}
+
+			// Se elimina el archivo
+			unlink($bdSistema);
+			unlink($bdSeguridad);
+
+			exit;
 		} else {
 			echo "ErrorRespaldo";
 		}
 	}
 
-	//restaurar la base de datos
-	// public function restaurarBackup($backupRuta)
-	// {
-	// 	$date = date('Y-m-d');
-	// 	$encryptedFile = $backupRuta . "backup-$date.sql.enc";
-	// 	$decryptedFile = $backupRuta . "backup-$date.sql";
+	public function restaurarBackup($backupRuta)
+	{
 
-	// 	if (!file_exists($encryptedFile)) {
-	// 		echo "El archivo de respaldo cifrado no existe.";
-	// 		return;
-	// 	}
+		$date = date('Y-m-d');
+		$nombreZip = $backupRuta . "bd-$date.zip";
 
-	// 	// Comando para descifrar el archivo de respaldo
-	// 	$decryptCommand = "openssl enc -aes-256-cbc -d -in $encryptedFile -out $decryptedFile -pass pass:{$this->encryptionKey}";
-	// 	shell_exec($decryptCommandec);
 
-	// 	if ($resultDec === 0 && file_exists($decryptedFile)) {
-	// 		// Comando para restaurar la base de datos desde el respaldo descifrado
-	// 		$restoreCommand = "mysql --user={$this->dbUser} --password={$this->dbPassword} --host={$this->dbHost} {$this->dbName} < $decryptedFile";
-	// 		shell_exec($restoreCommandultRestore);
+		if (file_exists($nombreZip)) {
+			// Crear carpeta
+			$carpetaDesconp = $backupRuta . "desconp/";
+			if (!file_exists($carpetaDesconp)) {
+				mkdir($carpetaDesconp, 0777, true);
+			}
 
-	// 		if ($resultRestore === 0) {
-	// 			// Se elimina el archivo descifrado por seguridad
-	// 			unlink($decryptedFile);
-	// 			echo "Base de datos restaurada exitosamente.";
-	// 		} else {
-	// 			echo "Error al restaurar la base de datos.";
-	// 		}
-	// 	} else {
-	// 		echo "Error al descifrar el respaldo.";
-	// 	}
-	// }
+			// Extraer el ZIP 
+			$zip = new ZipArchive();
+			if ($zip->open($nombreZip) === TRUE) {
+				$zip->extractTo($carpetaDesconp);
+				$zip->close();
+			} else {
+				echo "Error al abrir el ZIP: $nombreZip";
+			}
+
+			// buscar archivos SQL extraídos
+			$archivosSql = glob($carpetaDesconp . "*.sql");
+			if (empty($archivosSql)) {
+				echo "No se encontraron archivos SQL en el respaldo.";
+			}
+
+			foreach ($archivosSql as $archiSql) {
+				// Si el nombre contiene bdseguri
+				if (strpos($archiSql, 'bdseguri') != false) {
+					$bd = $this->dbsegname;
+				} else {
+					$bd = $this->dbname;
+				}
+
+				$comando = "\"C:\\xampp\\mysql\\bin\\mysql\" -u $this->user $bd < \"$archiSql\"";
+				system($comando, $estado);
+
+				if ($estado === 0) {
+					echo "Restauración exitosa de la $bd";
+				} else {
+					echo "Error restaurando: $bd";
+				}
+			}
+
+			// elimina bds extraídos
+			foreach ($archivosSql as $archiSql) {
+				unlink($archiSql);
+			}
+		} else {
+			echo "noExisteRespaldo";
+		}
+	}
 }

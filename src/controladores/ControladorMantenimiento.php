@@ -37,6 +37,10 @@ class ControladorMantenimiento
 	{
 		return $this->modelo->generateBackup($this->backupRuta);
 	}
+	public function restaurarRespaldo()
+	{
+		return $this->modelo->restaurarBackup($this->backupRuta);
+	}
 
 
 
