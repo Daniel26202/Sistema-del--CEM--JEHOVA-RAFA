@@ -62,7 +62,7 @@
                 <div class=" caja-de-buscador-insumos">
                     <?php if ($this->permisos($_SESSION["id_rol"], "guardar", "Insumos")): ?>
                         <div class="mover-input-agregarcita caja-insumos mt-2">
-                            <button class="btn children-caja-insumos btn-primary btn-agregar-doctores" uk-toggle="target: #modal-exampleInsumos">
+                            <button class="btn children-caja-insumos btn-primary btn-agregar-doctores" uk-toggle="target: #modal-exampleInsumos" id="registrarInsumo">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-capsule me-1"
                                     viewBox="0 0 16 16">
                                     <path
@@ -537,5 +537,5 @@
 
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/insumo.js"></script>
-
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInsumos.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>

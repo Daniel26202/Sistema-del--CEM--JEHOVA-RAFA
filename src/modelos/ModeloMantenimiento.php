@@ -21,10 +21,7 @@ class ModeloMantenimiento extends Db
 
 	public function __construct()
 	{
-		// Llama al constructor de la clase padre para establecer la conexión
-		parent::__construct();
-		// Aquí puedes usar $this para acceder a la conexión
-		$this->conexion = $this;
+		$this->conexion = $this->connectionSistema();
 
 		require_once __DIR__ . "/../config/config.php";
 		$this->user = user_cos;

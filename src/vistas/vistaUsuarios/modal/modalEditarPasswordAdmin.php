@@ -15,11 +15,11 @@
                         <div class="uk-width-auto">
                             <?php if ($dato["imagen"] != "doctor.png"): ?>
 
-                                <img src="./src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>"
+                                <img src=" <?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>"
                                     class="uk-border-circle" width="55" height="55" alt="Avatar">
                             <?php else: ?>
 
-                                <img src="./src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>"
+                                <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>"
                                     class="uk-border-circle" width="55" height="55" alt="Avatar">
                             <?php endif; ?>
 
@@ -43,9 +43,9 @@
                         <p class="text-center m-0 pb-0 pt-3 fw-bolder">Contraseña actual</p>
                         <div class="margen-input-u w-auto grpFormCorrect d-flex">
 
-                            <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
+                            <img src="<?= $urlBase ?>../src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
 
-                            <input type="password" name="passwordActual" id="inputDos" class="input-u inputDos col-11 "
+                            <input type="password" name="passwordActual" id="inputDos" class="input-u input-modal inputDos col-11 "
                                 placeholder="Contraseña actual" value="">
 
                             <a href="#" class="text-decoration-none btnMostrarContrase">
@@ -69,9 +69,9 @@
                         <p class="text-center m-0 pb-0 pt-3 fw-bolder">Nueva contraseña</p>
                         <div class="margen-input-u w-auto grpFormCorrect d-flex">
 
-                            <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
+                            <img src="<?= $urlBase ?>../src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
 
-                            <input type="password" name="passwordNew" id="claveNew" class="input-u inputDos col-11 "
+                            <input type="password" name="passwordNew" id="claveNew" class="input-u inputDos input-modal col-11 "
                                 placeholder="Nueva contraseña" value="">
 
                             <a href="#" class="text-decoration-none btnMostrarContrase">
@@ -95,9 +95,9 @@
                         <p class="text-center m-0 pb-0 pt-4 fw-bolder">Reescribe la contraseña</p>
                         <div class="margen-input-u w-auto grpFormCorrect d-flex">
 
-                            <img src="./src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
+                            <img src="<?= $urlBase ?>../src/assets/img/candado.svg" id="icono-dos" class="icono" alt="">
 
-                            <input type="password" id="inputVClave" class="input-u inputDos col-11 "
+                            <input type="password" id="inputVClave" class="input-u inputDos col-11 input-modal"
                                 placeholder="Reescribe la contraseña">
 
                             <a href="#" class="text-decoration-none btnMostrarContrase">

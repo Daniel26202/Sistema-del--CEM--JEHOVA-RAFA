@@ -2,10 +2,10 @@
 
 namespace App\modelos;
 
-use App\modelos\DbSistem;
+use App\modelos\Db;
 use App\modelos\ModeloInsumo;
 
-class ModeloFactura extends DbSistem
+class ModeloFactura extends Db
 {
 
 	private $conexion;
@@ -13,12 +13,7 @@ class ModeloFactura extends DbSistem
 
 	public function __construct()
 	{
-		// Llama al constructor de la clase padre para establecer la conexión
-		parent::__construct();
-
-		// Aquí puedes usar $this para acceder a la conexión
-
-		$this->conexion = $this; // Guarda la instancia de la conexión
+		$this->conexion = $this->connectionSistema();
 		$this->modelo_insumo = new ModeloInsumo;
 	}
 	//buscar Paciente tambien por la cita
@@ -216,139 +211,18 @@ class ModeloFactura extends DbSistem
 		}
 	}
 
-	public function updateCantidadEntrada($id_insumo, $cantidad_requerida)
-	{
+	
 
-		try {
-			// Consultar lotes disponibles
-			$consultaLote = $this->conexion->prepare("SELECT ei.*,e.numero_de_lote FROM entrada_insumo ei INNER JOIN entrada e ON e.id_entrada = ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.cantidad_disponible > 0 ORDER BY ei.cantidad_disponible ASC");
-			$consultaLote->bindParam(":id_insumo", $id_insumo);
-			$consultaLote->execute();
-			$lotesDisponibles = $consultaLote->fetchAll();
-
-			// Consultar suma de lotes disponibles
-			$consultaLote2 = $this->conexion->prepare("SELECT SUM(cantidad_disponible)AS cantidad_disponible FROM entrada_insumo WHERE id_insumo =:id_insumo GROUP BY id_insumo ORDER BY cantidad_disponible ASC");
-			$consultaLote2->bindParam(":id_insumo", $id_insumo);
-			$consultaLote2->execute();
-			$lotesDisponibles2 = $consultaLote2->fetchAll();
-
-			//cantidad total
-			$cantidad_total = 0;
-
-			//llenar en el bucle la cantidad total
-			foreach ($lotesDisponibles2 as $fila) {
-				$cantidad_total += $fila["cantidad_disponible"];
-			}
-
-
-			if ($cantidad_requerida <= $cantidad_total) {
-				// Verificar si hay lotes disponibles
-				if ($cantidad_total > 0) {
-					// Iterar sobre los lotes y restar la cantidad requerida
-					$cantidad_actualidad_insumo = [];
-					foreach ($lotesDisponibles as $fila) {
-						$lote_id = $fila['id_entradaDeInsumo'];
-						$lote_cantidad = $fila['cantidad_disponible'];
-						$numero_de_lote = $fila['numero_de_lote'];
-						$id_insumo = $fila['id_insumo'];
-
-						if ($lote_cantidad >= $cantidad_requerida) {
-							// Suficiente cantidad en el lote actual
-							$nuevo_lote_cantidad = $lote_cantidad - $cantidad_requerida;
-							$cantidad_requerida = 0;
-						} else {
-							// No hay suficiente cantidad en el lote actual
-							$nuevo_lote_cantidad = 0;
-							$cantidad_requerida -= $lote_cantidad;
-						}
-
-						// Actualizar la cantidad en el lote
-
-						$editarLote = $this->conexion->prepare("UPDATE entrada_insumo SET cantidad_disponible = :nuevo_lote_cantidad WHERE id_entradaDeInsumo = :lote_id");
-						$editarLote->bindParam(":nuevo_lote_cantidad", $nuevo_lote_cantidad);
-						$editarLote->bindParam(":lote_id", $lote_id);
-						$editarLote->execute();
-
-						// Actualizar la cantidad en el inventario
-						$editarInventario = $this->conexion->prepare("UPDATE inventario SET cantidad = :nuevo_lote_cantidad WHERE id_insumo =:id_insumo AND numero_de_lote =:numero_de_lote");
-						$editarInventario->bindParam(":nuevo_lote_cantidad", $nuevo_lote_cantidad);
-						$editarInventario->bindParam(":id_insumo", $id_insumo);
-						$editarInventario->bindParam(":numero_de_lote", $numero_de_lote);
-						$editarInventario->execute();
-					}
-				}
-			}
-			return [$cantidad_total, $lotesDisponibles];
-		} catch (\Exception $e) {
-
-			return 0;
-		}
-	}
-
-	//Metodo para actualizar la cantidad insumos de la hospitalizacion
-	public function actualizarCantidadEntradaTotales($id_insumo, $cantidad_requerida, $id_factura, $cantidad_en_la_factura)
+	public  function selectId_entrada($id_insumo)
 	{
 		try {
-			$this->conexion->beginTransaction();
-
-			$datos = $this->updateCantidadEntrada($id_insumo, $cantidad_requerida);
-
-			if ($datos) {
-				$cantidad_total = $datos[0];
-				$lotesDisponibles = $datos[1];
-
-				if ($cantidad_requerida <= $cantidad_total) {
-					// Verificar si hay lotes disponibles
-					if ($cantidad_total > 0) {
-						$id_inventario = "";
-						// Iterar sobre los lotes y restar la cantidad requerida
-						foreach ($lotesDisponibles as $fila) {
-							$numero_de_lote = $fila['numero_de_lote'];
-							$id_insumo = $fila['id_insumo'];
-
-							$consultaIdInventario = $this->conexion->prepare("SELECT id_inventario FROM inventario WHERE id_insumo =:id_insumo AND numero_de_lote =:numero_de_lote ");
-							$consultaIdInventario->bindParam(":id_insumo", $id_insumo);
-							$consultaIdInventario->bindParam(":numero_de_lote", $numero_de_lote);
-							$consultaIdInventario->execute();
-							$datos = $consultaIdInventario->fetch();
-
-							$id_inventario = $datos["id_inventario"]; //id de el inventario
-
-							// $cantidad_actualidad_insumo = $this->modelo_insumo->actualizar_cantidad_insumo($id_insumo);
-							// // print_r($cantidad[0]["cantidad"]);
-
-							//esto es para actualizar la cantidad de insumos
-
-						}
-
-						$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :id_inventario, :cantidad, 'ACT')");
-						$consulta->bindParam(":id_factura", $id_factura);
-						$consulta->bindParam(":id_inventario", $id_inventario);
-						$consulta->bindParam(":cantidad", $cantidad_en_la_factura);
-						$consulta->execute();
-
-
-
-
-
-						if ($cantidad_requerida > 0) {
-							echo "No hay suficientes insumos disponibles para cubrir la cantidad requerida.";
-						} else {
-							echo "Venta realizada exitosamente.";
-						}
-					} else {
-						echo "No hay lotes disponibles.";
-					}
-				} else {
-					echo "NO..";
-				}
-			}
-
-
-			$this->conexion->commit();
+			$consulta = $this->conexion->prepare("SELECT ei.id_entradaDeInsumo FROM entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.cantidad_disponible > 0 ORDER BY e.fechaDeIngreso  LIMIT 1");
+			$consulta->bindParam(":id_insumo", $id_insumo);
+			$consulta->execute();
+			$datos = $consulta->fetch();
+			$id_entrada = $datos["id_entradaDeInsumo"];
+			return $id_entrada;
 		} catch (\Exception $e) {
-			$this->conexion->rollBack();
-			// Puedes manejar el error aquí, por ejemplo, loguearlo o devolver el mensaje
 			return 0;
 		}
 	}
@@ -360,66 +234,77 @@ class ModeloFactura extends DbSistem
 		try {
 
 
-			//insertar factura
-			$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_paciente)");
+		//insertar factura
+		$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_paciente)");
 
-			$consulta->bindParam(":fecha", $fecha);
-			$consulta->bindParam(":total", $total);
-			$consulta->bindParam(":id_paciente", $id_paciente);
+		$consulta->bindParam(":fecha", $fecha);
+		$consulta->bindParam(":total", $total);
+		$consulta->bindParam(":id_paciente", $id_paciente);
+		$consulta->execute();
+		$id_factura = $this->conexion->lastInsertId();
+
+		//Si el id_cita no es null se cambia el estado e la cita
+		if ($id_cita != null) {
+			$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
+			$consulta->bindParam(":id_cita", $id_cita);
 			$consulta->execute();
-			$id_factura = $this->conexion->lastInsertId();
+		}
 
-			//Si el id_cita no es null se cambia el estado e la cita
-			if ($id_cita != null) {
-				$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
-				$consulta->bindParam(":id_cita", $id_cita);
-				$consulta->execute();
+		//Si el id_hospitalizacion no es null se cambia el estado e la cita
+		if ($id_hospitalizacion != null) {
+			$consulta = $this->conexion->prepare("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id_hospitalizacion");
+			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
+			$consulta->execute();
+		}
+
+		$arrayDePago = $formasDePago;
+		//insertar tipos de pago
+		$contador = 0;
+		foreach ($arrayDePago as $aP) {
+			echo "insertado en id: " . $aP . "<br><br>";
+			$consulta = $this->conexion->prepare("INSERT INTO pagodefactura VALUES (null, :aP, :id_factura, :referencia, :montosDePago)");
+			$consulta->bindParam(":aP", $aP);
+			$consulta->bindParam(":id_factura", $id_factura);
+			$consulta->bindParam(":referencia", $referencia);
+			$consulta->bindParam(":montosDePago", $montosDePago[$contador]);
+			if ($consulta->execute()) {
+			} else {
+				echo "NO";
 			}
-
-			//Si el id_hospitalizacion no es null se cambia el estado e la cita
-			if ($id_hospitalizacion != null) {
-				$consulta = $this->conexion->prepare("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id_hospitalizacion");
-				$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
-				$consulta->execute();
-			}
-
-			$arrayDePago = $formasDePago;
-			//insertar tipos de pago
-			$contador = 0;
-			foreach ($arrayDePago as $aP) {
-				echo "insertado en id: " . $aP . "<br><br>";
-				$consulta = $this->conexion->prepare("INSERT INTO pagodefactura VALUES (null, :aP, :id_factura, :referencia, :montosDePago)");
-				$consulta->bindParam(":aP", $aP);
+			$contador++;
+		}
+		//insertar servicios extras
+		if ($serviciosExtras) {
+			foreach ($serviciosExtras as $s) {
+				$consulta = $this->conexion->prepare("INSERT INTO serviciomedico_has_factura  VALUES (:s, :id_factura)");
 				$consulta->bindParam(":id_factura", $id_factura);
-				$consulta->bindParam(":referencia", $referencia);
-				$consulta->bindParam(":montosDePago", $montosDePago[$contador]);
+				$consulta->bindParam(":s", $s);
 				if ($consulta->execute()) {
+				} else {
+					echo "NO";
+				}
+			}
+		}
+		if ($insumos) {
+			$contador = 0;
+			foreach ($insumos as $i) {
+				//actualizar la cantidad de insumos
+				$id_entrada = $this->selectId_entrada($i);
+				$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :i, :cantidad, 'ACT')");
+				$consulta->bindParam(":id_factura", $id_factura);
+				$consulta->bindParam(":i", $id_entrada);
+				$consulta->bindParam(":cantidad", $cantidad[$contador]);
+				if ($consulta->execute()) {
+					$consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
+					$consulta2->bindParam(":i", $i);
+					$consulta2->bindParam(":cantidad", $cantidad[$contador]);
+					$consulta2->execute();
 				} else {
 					echo "NO";
 				}
 				$contador++;
 			}
-			//insertar servicios extras
-			if ($serviciosExtras) {
-				foreach ($serviciosExtras as $s) {
-					$consulta = $this->conexion->prepare("INSERT INTO serviciomedico_has_factura  VALUES (:s, :id_factura)");
-					$consulta->bindParam(":id_factura", $id_factura);
-					$consulta->bindParam(":s", $s);
-					if ($consulta->execute()) {
-					} else {
-						echo "NO";
-					}
-				}
-			}
-			if ($insumos) {
-				$contador = 0;
-				foreach ($insumos as $i) {
-					$insumo = $this->actualizarCantidadEntradaTotales($i, $cantidad[$contador], $id_factura, $cantidad[$contador]);
-					if ($insumo) {
-						$contador++;
-					}
-				}
-			}
+		}
 
 			return $id_factura;
 		} catch (\Exception $e) {
@@ -558,7 +443,7 @@ class ModeloFactura extends DbSistem
 	public function consultarFacturaInsumo($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.inventario_id_inventario INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
+			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.id_entradaDeInsumo INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {

@@ -37,9 +37,15 @@
 
 
         <?php elseif ($parametro[0] == "errorSistem"): ?>
-            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder  text-center" uk-alert>
+            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica  text-center" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
                 <p class="pe-2">lamentablemente ocurrio un error por favor intente mas tarde.</p>
+            </div>
+
+        <?php elseif ($parametro[0] == "error"): ?>
+            <div class="uk-alert-danger comentarioD  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">la patologia ya existe por favor intente con otra.</p>
             </div>
 
 

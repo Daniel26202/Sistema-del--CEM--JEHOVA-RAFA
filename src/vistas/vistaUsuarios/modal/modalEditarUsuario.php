@@ -6,7 +6,7 @@
         <div class="uk-modal-dialog uk-modal-body tamaño-modal uk-card  uk-width-1-2@m">
 
             <form method="POST" class="formEditarUsuario"
-                action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/editarUsuario/<?php echo $dato["usuario"]; ?>"
+                action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/editarUsuario/<?php echo $dato["user"]; ?>"
                 enctype="multipart/form-data">
 
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
@@ -56,8 +56,8 @@
                                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                                 </svg>
 
-                                <input type="text" name="usuario" id="inputDos" class="input-u col-12" placeholder="Usuario"
-                                    value="<?php echo $dato["usuario"]; ?>">
+                                <input type="text" name="usuario" id="inputDos" class="input-modal input-u col-12" placeholder="Usuario"
+                                    value="<?php echo $dato["user"]; ?>">
 
                             </div>
 

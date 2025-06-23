@@ -1,4 +1,4 @@
-<div class="me-4">
+<div class="me-4" id="paginationInsumos">
     <div class="mt-3 mb-5">
         <ul class="sin-circulos d-flex justify-content-end ">
             <li class="borde-menu activo <?= $vistaActiva == 'insumos'  ? ' activo-borde ' : '' ?>">

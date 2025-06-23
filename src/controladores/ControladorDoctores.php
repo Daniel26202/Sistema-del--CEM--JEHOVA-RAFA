@@ -25,6 +25,7 @@ class ControladorDoctores extends ModeloDoctores
     //muestro los datos de las cuatro tablas
     public function doctores($parametro)
     {
+        $ayuda = "btnayudaDoctores";
         $datos = $this->modelo->select();
         $datosEspecialidades = $this->modelo->selectEspecialidad();
         $datosDias = $this->modelo->selectDias();

@@ -2,25 +2,21 @@
 
 namespace App\modelos;
 
-use App\modelos\DbSistem;
+use App\modelos\Db;
 use App\modelos\ModeloFactura;
 use Exception;
 use PDO;
 
-class ModeloHospitalizacion extends DbSistem
+class ModeloHospitalizacion extends Db
 {
 
     private $conexion;
     private $modeloFactura;
+
     public function __construct()
     {
-        // Llama al constructor de la clase padre para establecer la conexión
-        parent::__construct();
-
-        // Aquí puedes usar $this para acceder a la conexión
-
-        $this->conexion = $this; // Guarda la instancia de la conexión
-        $this->modeloFactura = new ModeloFactura(); // Guarda la instancia de la conexión
+        $this->conexion = $this->connectionSistema();
+        $this->modeloFactura = new ModeloFactura();
     }
 
     // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito, para mostrarlo en la tabla de la vista (de las hospitalizaciones pendientes)

@@ -2,11 +2,11 @@
 
 namespace App\modelos;
 
-use App\modelos\DbSistem;
+use App\modelos\Db;
 use App\modelos\ModeloInsumo;
 
 
-class ModeloReporte extends DbSistem
+class ModeloReporte extends Db
 {
 
 	private $conexion;
@@ -14,13 +14,7 @@ class ModeloReporte extends DbSistem
 
 	public function __construct()
 	{
-		// Llama al constructor de la clase padre para establecer la conexión
-		parent::__construct();
-
-		// Aquí puedes usar $this para acceder a la conexión
-
-		$this->conexion = $this; // Guarda la instancia de la conexión
-
+		$this->conexion = $this->connectionSistema();
 		$this->modelo_insumo = new ModeloInsumo;
 	}
 

@@ -420,7 +420,7 @@
 
 
                                 <div id="modal-example<?= $factura["id_factura"] ?>" uk-modal class="modalCapa modalInterno">
-                                    <div class="uk-modal-dialog uk-modal-body " style="border-radius: 20px;">
+                                    <div class="uk-modal-dialog uk-modal-body contenido" style="border-radius: 20px;">
                                         <!-- Boton que cierra el modal -->
                                         <a href="#">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -449,7 +449,7 @@
 
 
                                         <div class="pb-3">
-                                            <div class="uk-card uk-card-default m-auto shadow " style="background: #F8FCFF; width:100%;">
+                                            <div class="uk-card uk-card-default m-auto shadow contenido" style="width:100%;">
                                                 <div class="uk-card-header">
                                                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                                                         <div class="uk-width-auto">

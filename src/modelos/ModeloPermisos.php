@@ -6,9 +6,9 @@ class ModeloPermisos extends Db{
 	
 	private $conexion;
 
-	public function __construct(){
-        parent::__construct();
-        $this->conexion = $this; 
+    public function __construct()
+    {
+        $this->conexion = $this->connectionSistema();
     }
 
 
