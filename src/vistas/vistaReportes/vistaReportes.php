@@ -547,7 +547,7 @@
 
 
                 <div id="eliminar<?= $factura["id_factura"] ?>" uk-modal class="madalAnular">
-                    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+                    <div class="uk-modal-dialog uk-modal-body tamaño-modal contenido">
                         <!-- Boton que cierra el modal -->
                         <a href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">

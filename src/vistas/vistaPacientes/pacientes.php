@@ -1,6 +1,7 @@
 <?php require_once './src/vistas/head/head.php';  ?>
 
 <!-- Contenido  -->
+
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
 
