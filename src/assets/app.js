@@ -5,14 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (textModo) {
     textModo.innerText = `Modo ${localStorage.getItem("modo")}`;
   }
-  
+
   // 1) Aplicar tema guardado
   if (localStorage.getItem("theme") === "dark") {
     root.setAttribute("data-theme", "dark");
-    if (themeToggleCheckbox) themeToggleCheckbox.checked = true; // Sincronizar estado del checkbox
+    if (themeToggleCheckbox)
+      themeToggleCheckbox.checked = true; /*  Sincronizando el checkbox */
   }
 
-  // 2) Alternar al cambiar el estado del checkbox
   if (themeToggleCheckbox) {
     themeToggleCheckbox.addEventListener("change", () => {
       const isDark = themeToggleCheckbox.checked;
@@ -21,10 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       /* text para saber en que modo esta */
       localStorage.setItem("modo", isDark ? "Oscuro" : "Claro");
-      textModo.innerText = (isDark) ? "Modo Oscuro" : "Modo Claro";
+      textModo.innerText = isDark ? "Modo Oscuro" : "Modo Claro";
     });
   }
-
-
+  $(".loader-wrapper").fadeOut("slow");
 });
-

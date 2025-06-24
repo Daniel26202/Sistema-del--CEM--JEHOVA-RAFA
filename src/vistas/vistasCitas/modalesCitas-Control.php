@@ -327,139 +327,6 @@
 
 
 
-<!-- modal editar -->
-<!-- <div id="modal-examplecontroleditar" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body tamaño-modal"> -->
-<!-- Boton que cierra el modal -->
-<!-- <a href="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-            class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-            <path
-            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-        </svg>
-    </a>
-
-    <div class="d-flex align-items-center">
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-            class="bi bi-person-lines-fill azul me-3 mb-3" viewBox="0 0 16 16">
-            <path
-            d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />
-        </svg>
-    </div>
-    <div>
-        <p class="uk-modal-title fs-5">
-            Editar Control
-        </p>
-    </div>
-
-</div>
-
-<form class="form-modal" id="modalAgregar">
-
-
-<div class="form-floating input-modal">
-    <textarea class="form-control border-0 input-modal" placeholder="Leave a comment here"
-    id="floatingTextarea2" style="height: 50px;" name="Síntomas"></textarea>
-    <label for="floatingTextarea2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-        class="bi bi-thermometer-half azul" viewBox="0 0 16 16">
-        <path d="M9.5 12.5a1.5 1.5 0 1 1-2-1.415V6.5a.5.5 0 0 1 1 0v4.585a1.5 1.5 0 0 1 1 1.415" />
-        <path
-        d="M5.5 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0zM8 1a1.5 1.5 0 0 0-1.5 1.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0l-.166-.15V2.5A1.5 1.5 0 0 0 8 1" />
-    </svg>Síntomas</label>
-</div>
-<div class="form-floating input-modal">
-    <textarea class="form-control border-0 input-modal" placeholder="Leave a comment here"
-    id="floatingTextarea2" style="height: 50px;" name="Síntomas"></textarea>
-    <label for="floatingTextarea2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-        class="bi bi-heart-pulse-fill azul me-2" viewBox="0 0 16 16">
-        <path
-        d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9z" />
-        <path
-        d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8z" />
-    </svg>Diagnóstico</label>
-</div>
-<div class="form-floating input-modal">
-    <textarea class="form-control border-0 input-modal" placeholder="Leave a comment here"
-    id="floatingTextarea2" style="height: 50px;" name="Síntomas"></textarea>
-    <label for="floatingTextarea2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-        class="bi bi-receipt-cutoff azul me-1" viewBox="0 0 16 16">
-        <path
-        d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z" />
-        <path
-        d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z" />
-    </svg>
-</svg>Prescripciones e indicaciones</label>
-</div>
-
-<div class="input-group flex-nowrap">
-    <span class="input-modal mt-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-        class="bi bi-calendar-date-fill azul" viewBox="0 0 16 16">
-        <path
-        d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zm5.402 9.746c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2" />
-        <path
-        d="M16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-6.664-1.21c-1.11 0-1.656-.767-1.703-1.407h.683c.043.37.387.82 1.051.82.844 0 1.301-.848 1.305-2.164h-.027c-.153.414-.637.79-1.383.79-.852 0-1.676-.61-1.676-1.77 0-1.137.871-1.809 1.797-1.809 1.172 0 1.953.734 1.953 2.668 0 1.805-.742 2.871-2 2.871zm-2.89-5.435v5.332H5.77V8.079h-.012c-.29.156-.883.52-1.258.777V8.16a13 13 0 0 1 1.313-.805h.632z" />
-    </svg>
-</span>
-<input class="form-control input-modal" type="date" name="fecha" placeholder="Fecha"
-uk-tooltip="title: Fecha de regreso; pos: right">
-</div>
-</form>
-
-<div class="mt-3 uk-text-right">
-    <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
-    type="button">Cancelar</button>
-    <button class="btn col-3 btn-agregarcita-modal" type="button">Editar</button>
-</div>
-</div>
-</div> -->
-
-<!-- Modal eliminar -->
-
-<!-- <div id="modal-exampleEliminarcontrol" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body tamaño-modal"> -->
-<!-- Boton que cierra el modal -->
-<!-- <a href="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-            class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-            <path
-            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-        </svg>
-    </a>
-
-    <div class="d-flex align-items-center">
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-            class="bi bi-trash-fill azul me-2" viewBox="0 0 16 16">
-            <path
-            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-        </svg>
-    </div>
-    <div>
-        <h5>
-            ¿Desea eliminar el registro?
-        </h5>
-    </div>
-</div>
-
-<div class="mt-3 uk-text-right">
-    <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
-    type="button">Cancelar</button>
-    <button class="btn col-3 btn-agregarcita-modal" type="button">Eliminar</button>
-</div>
-
-</div>
-</div> -->
-
-
-
-
 
 <!-- registrar paciente desde la cita -->
 
@@ -518,7 +385,7 @@ uk-tooltip="title: Fecha de regreso; pos: right">
                 <input class="form-control input-modal input-disabled input-paciente input-validar cedula-paciente" style="width: 7vh !important;" type="number" id="cedula" name="cedula" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
             </div>
 
-            <p class="p-error-cedula d-none">La cedula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
+            <p class="p-error-cedula d-none">La cedula debe contener únicamente números y estar entre 7 a 8 caracteres</p>
 
             <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">
                 <span class="input-modal mt-1">

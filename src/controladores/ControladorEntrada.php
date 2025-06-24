@@ -20,6 +20,7 @@ class ControladorEntrada
 
 	public function entrada($parametro)
 	{
+		$ayuda = "btnayudaEntrada";
 		$vistaActiva = "entradas";
 		$insumos = $this->modelo->insumos();
 		$proveedores = $this->modelo->selectProveedores();

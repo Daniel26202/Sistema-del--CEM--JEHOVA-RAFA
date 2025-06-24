@@ -20,6 +20,7 @@ class ControladorProveedores
 
 	public function proveedores($parametro)
 	{
+		$ayuda = "btnayudaProveedor";
 		$vistaActiva = "proveedores";
 		$proveedor = $this->modelo->consultar();
 		require_once './src/vistas/vistaProveedores/vistaProveedores.php';

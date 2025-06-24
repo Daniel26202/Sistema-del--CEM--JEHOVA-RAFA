@@ -126,7 +126,7 @@ class ModeloUsuarios extends Db
 
             if ($resultadoDeUsuario === "existeU") {
 
-                header("location: ?c=ControladorUsuarios/administradores&error");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/Usuario");
             } else {
                 $imagenComprobacion = isset($_FILES['imagenUsuario']['name']) ? $_FILES['imagenUsuario']['name'] : false;
                 if ($imagenComprobacion) {

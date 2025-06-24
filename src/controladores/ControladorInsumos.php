@@ -39,6 +39,7 @@ class ControladorInsumos
 
 	public function InsumosVencidos($parametro)
 	{
+		$ayuda = "btnayudaVencido";
 		$vistaActiva = "vencidos";
 		$vencidos = $this->modelo->InsumosVencidos();
 		$insumos = $this->modelo->insumos();

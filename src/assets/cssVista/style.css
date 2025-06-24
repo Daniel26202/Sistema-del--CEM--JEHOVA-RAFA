@@ -46,7 +46,14 @@
     /* color: var(--color-text-card) !important; */
 }
 
-
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.5); /* Opcional: borde blanco */
+    border: none;
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255,255,255,1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    
+}
 
 
 /* menu de pruebas
@@ -212,10 +219,73 @@ html {
 }
 
 
+/* Loader */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.loader-wrapper {
+   
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-main);
+    z-index: 9999;
+}
+
+#content {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color:var(--color-primary);
+}
+
+.loading-bar {
+    width: 130px;
+    height: 5px;
+    margin: 0 auto;
+    border-radius: 5px;
+    background-color: #fff;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transform: rotateY(0);
+    transition: transform .3s ease-in
+}
+
+.blue-bar {
+    height: 100%;
+    width: 68px;
+    position: absolute;
+    transform: translate(-34px);
+    background-color: #0a66c2;
+    border-radius: 2px;
+    animation: initial-loading 1.5s ease infinite
+}
+
+@keyframes initial-loading {
+    0% {
+        transform: translate(-34px)
+    }
+
+    50% {
+        transform: translate(96px)
+    }
+
+    to {
+        transform: translate(-34px)
+    } }
 
 /* Menu */
 /* Estilo del menú lateral */
 .sidenav {
+    scrollbar-width: none;
     height: 100vh;
     width: 250px;
     position: fixed;

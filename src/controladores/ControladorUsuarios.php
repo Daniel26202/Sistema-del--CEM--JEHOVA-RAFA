@@ -112,14 +112,15 @@ class ControladorUsuarios
 
         // Generamos la contraseña encriptada de la contraseña ingresada
         $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
-        $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["Correo"], $_POST["id_rol"]);
+        $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["correo"], $_POST["id_rol"]);
 
-        $insercion = $this->doctor->RegistrarAdmin($_POST["nacionalidad"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["Correo"], $id_usuario);
+        $insercion = $this->doctor->RegistrarAdmin($_POST["nacionalidad"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["correo"], $id_usuario);
         if ($insercion) {
             // Guardar la bitacorasaa
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha insertado un administrador ");
             header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/registro");
         } else {
+            print_r($insercion);
             header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/errorSistem");
         }
     }

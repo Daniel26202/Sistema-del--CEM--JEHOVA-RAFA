@@ -54,22 +54,16 @@ class ModeloEntrada extends Db
 	{
 		try {
 			$this->conexion->beginTransaction();
-
-			$consulta = $this->conexion->prepare("INSERT INTO entrada VALUES (null, :id_proveedor, :lote, :fechaDeIngreso, 'ACT')");
+			
+			$consulta = $this->conexion->prepare("call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)");
 			$consulta->bindParam(":lote", $lote);
 			$consulta->bindParam(":id_proveedor", $id_proveedor);
 			$consulta->bindParam(":fechaDeIngreso", $fechaDeIngreso);
+			$consulta->bindParam(":id_insumo", $id_insumo);
+			$consulta->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
+			$consulta->bindParam(":precio", $precio);
+			$consulta->bindParam(":cantidad_disponible", $cantidad);
 			$consulta->execute();
-			$id_entrada = $this->conexion->lastInsertId();
-
-			$consulta2 = $this->conexion->prepare("INSERT INTO entrada_insumo VALUES (null, :id_insumo, :id_entrada,:fechaDeVencimiento,:precio, :cantidad_entrante, :cantidad_disponible)");
-			$consulta2->bindParam(":id_insumo", $id_insumo);
-			$consulta2->bindParam(":id_entrada", $id_entrada);
-			$consulta2->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
-			$consulta2->bindParam(":precio", $precio);
-			$consulta2->bindParam(":cantidad_entrante", $cantidad);
-			$consulta2->bindParam(":cantidad_disponible", $cantidad);
-			$consulta2->execute();
 
 			$this->conexion->commit();
 			return 1;
@@ -109,8 +103,6 @@ class ModeloEntrada extends Db
 			$consulta->bindParam(":id_entrada", $id_entrada);
 			$consulta->execute();
 
-			//se llama a un metodo de el ModeloInsumo para traer la cantidad de insumo que hay disponible y se guarda en una variable llamada cantidadInsumos
-			$cantidadInsumos = $this->modeloInsumo->actualizar_cantidad_insumo($id_insumo);
 			$this->conexion->commit();
 			return 1;
 		} catch (\Exception $e) {

@@ -43,6 +43,7 @@
 body{
   background-color: var(--color-bg-main);
   height: 100vh;
+  width: 100vw;
 }
 .contenedor {
   /* --color-bg-main */
@@ -137,6 +138,7 @@ se nota muy mínimo*/
 }
 
 #formiIniciarSesion {
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -158,6 +160,7 @@ se nota muy mínimo*/
 }
 
 .input {
+  color: var(--color-text-card) !important;
   border-radius: 4px;
   /* background-color: #ffffff; */
   padding-left: 28.6px;

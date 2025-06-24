@@ -216,7 +216,7 @@ const traerDoctor = async () => {
     let resultado = await peticion.json();
 
     if (resultado.length > 0) {
-      let html = "<option selected disabled>Sellccionar Doctor</option>";
+      let html = "<option selected disabled>Seleccionar Doctor</option>";
       resultado.forEach((element) => {
         html += `<option value="${element.id_personal}">${element.nombre_d}  ${element.apellido}</option>`;
       });
