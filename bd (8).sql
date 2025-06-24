@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-06-2025 a las 20:13:38
+-- Tiempo de generación: 24-06-2025 a las 20:35:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -718,6 +718,17 @@ INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospita
 -- --------------------------------------------------------
 
 --
+-- Estructura Stand-in para la vista `insumos_estadisticas`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `insumos_estadisticas` (
+`nombre_insumo` varchar(25)
+,`total_usado` decimal(32,0)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `paciente`
 --
 
@@ -1330,6 +1341,15 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `especialidades_solicitadas`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `especialidades_solicitadas`  AS SELECT `cs`.`nombre` AS `especialidad`, `c`.`fecha` AS `fecha`, count(`c`.`id_cita`) AS `total_solicitudes` FROM ((`cita` `c` join `serviciomedico` `sm` on(`c`.`serviciomedico_id_servicioMedico` = `sm`.`id_servicioMedico`)) join `categoria_servicio` `cs` on(`sm`.`id_categoria` = `cs`.`id_categoria`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `insumos_estadisticas`
+--
+DROP TABLE IF EXISTS `insumos_estadisticas`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `insumos_estadisticas`  AS SELECT `i`.`nombre` AS `nombre_insumo`, sum(`fhi`.`cantidad`) AS `total_usado` FROM ((`factura_has_inventario` `fhi` join `entrada_insumo` `inv` on(`fhi`.`id_entradaDeInsumo` = `inv`.`id_entradaDeInsumo`)) join `insumo` `i` on(`inv`.`id_insumo` = `i`.`id_insumo`)) GROUP BY `i`.`id_insumo` ORDER BY sum(`fhi`.`cantidad`) DESC ;
 
 -- --------------------------------------------------------
 

@@ -32,7 +32,7 @@ class ModeloEstadisticas extends Db
   public function insumos()
   {
     try {
-      $sql = "SELECT * FROM insumos";
+      $sql = "SELECT * FROM insumos_estadisticas";
       $consulta = $this->conexion->prepare($sql);
 
       return ($consulta->execute()) ? $consulta->fetchAll() : false;
