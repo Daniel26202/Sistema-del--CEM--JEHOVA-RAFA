@@ -36,7 +36,8 @@
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Selecciona un respaldo previamente descargado para restaurar la base de datos.</p>
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo" class="btn btn-secondary btn-block w-100 text-decoration-none">Restaurar Base</a>
+                            <a href="#" class="btn btn-secondary btn-block w-100 text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Restaurar Base</a>
+
                         </div>
                     </div>
                 </div>
@@ -55,101 +56,69 @@
 
 
 
-
 </div>
-
-
-
-
 
 <div class="modal fade" id="modalBaseDatos" tabindex="-1" aria-labelledby="modalBaseDatosLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalBaseDatosLabel">Seleccionar Base de Datos</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="d-flex justify-content-between align-items-center ps-4 pe-4 ms-1 me-1 pt-4 ">
+                <h4 class="fw-bold" id="modalBaseDatosLabel">Seleccionar Base de Datos</h4>
+                <a href="#" class="" data-bs-dismiss="modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-x-circle color-icono" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"></path>
+                    </svg>
+                </a>
             </div>
-            <div class="modal-body">
-                <!-- Campo de búsqueda -->
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre o fecha">
-                </div>
+                <div class="modal-body ms-3 mt-3 me-3">
+                    <!-- campo de búsqueda -->
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="buscarBD" placeholder="Buscar por nombre o fecha">
+                    </div>
 
-                <!-- Tabla de bases de datos -->
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Fecha</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="datosTable">
-                            <!-- Ejemplo de datos. Puedes generar estas filas dinámicamente con JavaScript -->
-                            <tr>
-                                <td>Base de Datos 1</td>
-                                <td>2025-06-01</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary btn-sm">Seleccionar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Base de Datos 2</td>
-                                <td>2025-06-15</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary btn-sm">Seleccionar</button>
-                                </td>
-                            </tr>
-                            <!-- Agrega más filas según requieras -->
-                        </tbody>
-                    </table>
+                    <!-- tabla de bases de datos -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nombre y Fecha</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="datosTable">
+                                <?php foreach ($respaldos as $db) : ?>
+                                    <tr>
+                                        <td><?= basename($db) ?></td>
+                                        <td>
+                                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/<?= basename($db) ?>" class="p-2 uk-button-primary rounded-5 fw-bold text-decoration-none text-white" type="button" id="btnEnviar">Seleccionar</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                <!-- Agrega más filas según requieras -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
+                <div class="d-flex justify-content-end align-items-center ps-4 pe-4 ms-1 me-1 pt-3 pb-4">
+                    <button class="uk-button rounded-5 btn-cancelar fw-bold " type="button" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo"><button class="uk-button uk-button-primary rounded-5 fw-bold ms-4" type="submit" id="btnEnviar">Restaurar el más resiente</button></a>
+                </div>
         </div>
     </div>
 </div>
 
-<!-- Incluye el JS Bundle de Bootstrap (que ya trae Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Script para filtrar la tabla -->
 <script>
-    document.getElementById('searchInput').addEventListener('input', function() {
-        const filter = this.value.toUpperCase();
-        const rows = document.querySelectorAll('#datosTable tr');
+    document.getElementById('buscarBD').addEventListener('input', function() {
+        const textMayuscl = this.value.toUpperCase();
+        const trs = document.querySelectorAll('#datosTable tr');
 
-        rows.forEach(row => {
-            // Concatenamos el contenido de las celdas de nombre y fecha para una búsqueda sencilla
-            const value = row.cells[0].textContent.toUpperCase() + " " + row.cells[1].textContent.toUpperCase();
-            row.style.display = value.includes(filter) ? "" : "none";
+        trs.forEach(tr => {
+            // nombre de la celda
+            const valor = tr.cells[0].textContent.toUpperCase();
+            tr.style.display = valor.includes(textMayuscl) ? "" : "none";
         });
     });
 </script>
 
 
-
-
-
-
-
-
-
-<script type="text/javascript"
-    src="<?= $urlBase ?>../src/assets/js/hospitalizacion/validacioneshospitalizacion.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
-
-
 <?php require_once './src/vistas/head/footer.php'; ?>
-<?php require_once './src/vistas/vistaPacientes/modalAgregarPaciente.php'; ?>
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarHospitalizacion.php'; ?>
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalEliminarHospitalizacion.php'; ?>
-
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarInsumos.php'; ?>
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarInsumos.php'; ?>
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalPrecioHora.php'; ?>

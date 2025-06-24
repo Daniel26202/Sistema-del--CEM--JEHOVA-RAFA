@@ -63,18 +63,46 @@ class ModeloMantenimiento extends Db
 			unlink($bdSistema);
 			unlink($bdSeguridad);
 
-			exit;
 		} else {
 			echo "ErrorRespaldo";
 		}
 	}
 
-	public function restaurarBackup($backupRuta)
+	public function traerBds($backupRuta)
 	{
+		// buscar todos los archivos ZIP de respaldo
+		$archivosZip = glob($backupRuta . "bd-*.zip");
+		if (!empty($archivosZip)) {
+			// Ordenar por fecha de modificación
+			usort($archivosZip, function ($a, $b) {
+				return filemtime($b) - filemtime($a);
+			});
 
-		$date = date('Y-m-d');
-		$nombreZip = $backupRuta . "bd-$date.zip";
+			return $archivosZip;
+		} else {
+			return "noExisteRespaldos";
+		}
+	}
+	public function restaurarBackup($backupRuta, $nombreBd)
+	{
+		if ($nombreBd === null) {
+			// buscar todos los archivos ZIP de respaldo
+			$archivosZip = glob($backupRuta . "bd-*.zip");
 
+			if (!empty($archivosZip)) {
+				// Ordenar por fecha de modificación
+				usort($archivosZip, function ($a, $b) {
+					return filemtime($b) - filemtime($a);
+				});
+
+				$nombreZip = $archivosZip[0];
+			} else {
+				echo "noExisteRespaldo";
+			}
+		} else {
+			$nombreZip = $backupRuta . $nombreBd;
+		}
+		
 
 		if (file_exists($nombreZip)) {
 			// Crear carpeta
@@ -110,9 +138,9 @@ class ModeloMantenimiento extends Db
 				system($comando, $estado);
 
 				if ($estado === 0) {
-					echo "Restauración exitosa de la $bd";
+					echo "Restauración exitosa de la $bd, $archiSql ";
 				} else {
-					echo "Error restaurando: $bd";
+					echo "Error restaurando: $bd, $archiSql , el zip: $nombreZip ";
 				}
 			}
 
@@ -121,7 +149,7 @@ class ModeloMantenimiento extends Db
 				unlink($archiSql);
 			}
 		} else {
-			echo "noExisteRespaldo";
+			echo "noExisteSql";
 		}
 	}
 }

@@ -280,12 +280,9 @@ addEventListener("DOMContentLoaded", function () {
 
         // Definimos la duración total del temporizador en milisegundos (5m = 300,000 ms)
         let duracion = 5 * 60 * 1000;
-        // Calculamos el tiempo de finalización sumando la duración a la hora actual
         let endTime = Date.now() + duracion;
 
-        // temporizador de los 5 minutos, dentro de la función  
         function temporizadorD() {
-            // Calculamos la diferencia entre la hora final y la hora actual
             const tiempoMl = endTime - Date.now();
             // Convertimos milisegundos a minutos
             const minutos = Math.floor(tiempoMl / 60000);

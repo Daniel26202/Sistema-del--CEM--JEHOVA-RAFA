@@ -25,6 +25,7 @@ class ControladorMantenimiento
 
 	public function mantenimiento()
 	{
+		$respaldos = $this->modelo->traerBds($this->backupRuta);
 		require_once './src/vistas/vistaMantenimiento/mantenimiento.php';
 	}
 
@@ -36,12 +37,17 @@ class ControladorMantenimiento
 	public function generarRespaldo()
 	{
 		return $this->modelo->generateBackup($this->backupRuta);
+		header("location:/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento");
 	}
-	public function restaurarRespaldo()
+	public function restaurarRespaldo($parametro)
 	{
-		return $this->modelo->restaurarBackup($this->backupRuta);
+
+		if (isset($parametro[0])) {
+			$nombreBd = $parametro[0];
+		} else {
+			$nombreBd = null;
+		}
+		$this->modelo->restaurarBackup($this->backupRuta, $nombreBd);
+		header("location:/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento");
 	}
-
-
-
 }
