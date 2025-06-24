@@ -216,6 +216,7 @@ html {
 /* Menu */
 /* Estilo del menú lateral */
 .sidenav {
+    scrollbar-width: none;
     height: 100vh;
     width: 250px;
     position: fixed;
