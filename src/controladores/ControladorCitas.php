@@ -94,7 +94,7 @@ class ControladorCitas
 		} elseif ($_POST["fechaDeCita"] < $fecha) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
 		} else {
-			$insercion = $this->modelo->insertarCita($_POST["id_paciente"], $_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["estado"]);
+			$insercion = $this->modelo->insertarCita($_POST["id_paciente"], $_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["estado"], $_POST["id_doctor"]);
 
 			if ($insercion) {
 				// // Guardar la bitacora

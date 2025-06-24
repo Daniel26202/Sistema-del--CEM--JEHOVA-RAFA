@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-06-2025 a las 16:19:06
+-- Tiempo de generación: 24-06-2025 a las 20:13:38
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -158,36 +158,39 @@ CREATE TABLE `cita` (
   `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `serviciomedico_id_servicioMedico` int(11) NOT NULL,
   `paciente_id_paciente` int(11) NOT NULL,
-  `hora_salida` time NOT NULL
+  `hora_salida` time NOT NULL,
+  `doctor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `cita`
 --
 
-INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_servicioMedico`, `paciente_id_paciente`, `hora_salida`) VALUES
-(41, '2025-04-02', '12:33:00', 'ACT', 24, 23, '00:00:00'),
-(42, '2025-04-02', '12:33:00', 'ACT', 25, 23, '00:00:00'),
-(43, '2025-04-02', '12:33:00', 'ACT', 22, 23, '00:00:00'),
-(44, '2025-04-02', '12:33:00', 'ACT', 22, 23, '00:00:00'),
-(45, '2025-04-21', '22:00:00', 'Realizadas', 26, 25, '00:00:00'),
-(46, '2025-04-25', '12:00:00', 'Pendiente', 27, 25, '00:00:00'),
-(47, '2025-05-05', '20:00:00', 'Realizadas', 26, 25, '00:00:00'),
-(48, '2025-05-12', '20:00:00', 'Pendiente', 26, 23, '00:00:00'),
-(49, '2025-06-02', '20:00:00', 'Pendiente', 24, 25, '21:00:00'),
-(50, '2025-06-02', '21:00:00', 'Pendiente', 24, 25, '21:00:00'),
-(51, '2025-06-02', '22:00:00', 'Pendiente', 24, 25, '22:05:00'),
-(52, '2025-06-02', '22:10:00', 'Pendiente', 24, 25, '23:05:00'),
-(53, '2025-06-09', '20:00:00', 'Pendiente', 24, 25, '21:05:00'),
-(54, '2025-06-09', '21:11:00', 'Pendiente', 24, 25, '22:05:00'),
-(55, '2025-06-16', '20:00:00', 'Pendiente', 24, 34, '21:06:00'),
-(56, '2025-06-20', '10:05:00', 'Pendiente', 24, 25, '11:06:00'),
-(57, '2025-06-27', '10:00:00', 'Pendiente', 24, 25, '11:06:00'),
-(58, '2025-06-27', '11:07:00', 'Pendiente', 24, 25, '12:06:00'),
-(59, '2025-06-27', '12:07:00', 'Pendiente', 24, 25, '13:06:00'),
-(60, '2025-07-04', '10:00:00', 'Pendiente', 24, 25, '11:06:00'),
-(61, '2025-07-04', '11:07:00', 'Pendiente', 24, 25, '12:06:00'),
-(62, '2025-07-11', '10:00:00', 'Pendiente', 24, 25, '11:06:00');
+INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_servicioMedico`, `paciente_id_paciente`, `hora_salida`, `doctor`) VALUES
+(41, '2025-04-02', '12:33:00', 'ACT', 24, 23, '00:00:00', 0),
+(42, '2025-04-02', '12:33:00', 'ACT', 25, 23, '00:00:00', 0),
+(43, '2025-04-02', '12:33:00', 'ACT', 22, 23, '00:00:00', 0),
+(44, '2025-04-02', '12:33:00', 'ACT', 22, 23, '00:00:00', 0),
+(45, '2025-04-21', '22:00:00', 'Realizadas', 26, 25, '00:00:00', 0),
+(46, '2025-04-25', '12:00:00', 'Pendiente', 27, 25, '00:00:00', 0),
+(47, '2025-05-05', '20:00:00', 'Realizadas', 26, 25, '00:00:00', 0),
+(48, '2025-05-12', '20:00:00', 'Pendiente', 26, 23, '00:00:00', 0),
+(49, '2025-06-02', '20:00:00', 'Pendiente', 24, 25, '21:00:00', 0),
+(50, '2025-06-02', '21:00:00', 'Pendiente', 24, 25, '21:00:00', 0),
+(51, '2025-06-02', '22:00:00', 'Pendiente', 24, 25, '22:05:00', 0),
+(52, '2025-06-02', '22:10:00', 'Pendiente', 24, 25, '23:05:00', 0),
+(53, '2025-06-09', '20:00:00', 'Pendiente', 24, 25, '21:05:00', 0),
+(54, '2025-06-09', '21:11:00', 'Pendiente', 24, 25, '22:05:00', 0),
+(55, '2025-06-16', '20:00:00', 'Pendiente', 24, 34, '21:06:00', 0),
+(56, '2025-06-20', '10:05:00', 'Pendiente', 24, 25, '11:06:00', 0),
+(57, '2025-06-27', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0),
+(58, '2025-06-27', '11:07:00', 'Pendiente', 24, 25, '12:06:00', 0),
+(59, '2025-06-27', '12:07:00', 'Pendiente', 24, 25, '13:06:00', 0),
+(60, '2025-07-04', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0),
+(61, '2025-07-04', '11:07:00', 'Pendiente', 24, 25, '12:06:00', 0),
+(62, '2025-07-11', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0),
+(63, '2025-07-28', '20:00:00', 'Pendiente', 24, 25, '21:06:00', 19),
+(64, '2025-07-25', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 20);
 
 -- --------------------------------------------------------
 
@@ -357,7 +360,7 @@ INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `
 (57, 36, 65, '2026-06-21', 12.00, 1, 1),
 (58, 31, 66, '2026-06-21', 12.00, 1, 0),
 (59, 37, 67, '2025-06-29', 13.00, 2, 2),
-(60, 31, 68, '2027-06-21', 120.00, 9, 9),
+(60, 31, 68, '2027-06-21', 120.00, 9, 8),
 (61, 41, 69, '2025-06-29', 12.00, 5, 5),
 (62, 36, 70, '2025-06-29', 12.00, 2, 2),
 (63, 36, 71, '2025-06-29', 190.00, 1, 1);
@@ -508,7 +511,8 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_pa
 (148, '2025-06-21', 9.00, 'ACT', 25),
 (149, '2025-06-21', 160.00, 'ACT', 25),
 (150, '2025-06-22', 1000.00, 'ACT', 25),
-(151, '2025-06-22', 240.00, 'Anulada', 25);
+(151, '2025-06-22', 240.00, 'Anulada', 25),
+(152, '2025-06-24', 29.56, 'ACT', 25);
 
 -- --------------------------------------------------------
 
@@ -550,7 +554,8 @@ INSERT INTO `factura_has_inventario` (`factura_id_factura`, `id_entradaDeInsumo`
 (147, 53, 7, 'ACT'),
 (148, 54, 1, 'ACT'),
 (149, 53, 2, 'ACT'),
-(151, 53, 3, 'ACT');
+(151, 53, 3, 'ACT'),
+(152, 60, 1, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -951,7 +956,8 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (178, 5, 148, '', 9.00),
 (179, 5, 149, '', 160.00),
 (180, 5, 150, '', 1000.00),
-(181, 5, 151, '', 240.00);
+(181, 5, 151, '', 240.00),
+(182, 6, 152, '1234', 29.56);
 
 -- --------------------------------------------------------
 
@@ -1536,7 +1542,7 @@ ALTER TABLE `categoria_servicio`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT de la tabla `control`
@@ -1566,7 +1572,7 @@ ALTER TABLE `especialidad`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_estados`
@@ -1620,7 +1626,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=182;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
