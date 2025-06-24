@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-06-2025 a las 03:02:33
+-- Tiempo de generación: 24-06-2025 a las 09:57:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,104 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `bd`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT, IN `cantidad_requerida` INT)   BEGIN
+    DECLARE cantidad_restante INT DEFAULT cantidad_requerida;
+    DECLARE lote_id INT;
+    DECLARE lote_cantidad INT;
+
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE lote_cursor CURSOR FOR
+        SELECT ei.id_entradaDeInsumo, ei.cantidad_disponible
+        FROM entrada_insumo ei INNER JOIN entrada e 
+        ON e.id_entrada = ei.id_entrada
+        WHERE ei.id_insumo = insumo_id AND ei.cantidad_disponible > 0
+        ORDER BY e.fechaDeIngreso ASC; -- FIFO
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN lote_cursor;
+
+    lectura_lote: LOOP
+        FETCH lote_cursor INTO lote_id, lote_cantidad;
+        IF done THEN
+            LEAVE lectura_lote;
+        END IF;
+
+        IF cantidad_restante <= lote_cantidad THEN
+            UPDATE entrada_insumo
+            SET cantidad_disponible = cantidad_disponible - cantidad_restante
+            WHERE id_entradaDeInsumo = lote_id;
+            SET cantidad_restante = 0;
+            LEAVE lectura_lote;
+        ELSE
+            UPDATE entrada_insumo
+            SET cantidad_disponible = 0
+            WHERE id_entradaDeInsumo = lote_id;
+            SET cantidad_restante = cantidad_restante - lote_cantidad;
+        END IF;
+    END LOOP;
+
+    CLOSE lote_cursor;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_factura` INT)   BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE entrada_id INT; -- Cambié el nombre de la variable para evitar confusiones
+    DECLARE cantidad_en_factura  INT;
+
+    -- Cursor para recorrer las entradas de insumos
+    DECLARE insumo_cursor CURSOR FOR 
+        SELECT id_entradaDeInsumo, cantidad FROM bd.factura_has_inventario WHERE factura_id_factura = id_factura;
+
+    -- Manejo de excepciones para el cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Abrir el cursor
+    OPEN insumo_cursor;
+
+    -- Bucle para recorrer las entradas de insumos
+    read_loop: LOOP
+        FETCH insumo_cursor INTO entrada_id, cantidad_en_factura;
+
+        IF done THEN
+            LEAVE read_loop; -- Salir del bucle si no hay más filas
+        END IF;
+        
+        update bd.entrada_insumo set cantidad_disponible = cantidad_disponible + cantidad_en_factura where id_entradaDeInsumo = entrada_id;
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE insumo_cursor;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT, IN `id_proveedor` INT, IN `fechaDeIngreso` DATE, IN `fechaDeVecimiento` DATE, IN `precio` FLOAT, IN `cantidad` INT, IN `lote` TEXT)   BEGIN
+    declare id_entrada int;
+    
+    INSERT INTO entrada VALUES (null, id_proveedor, lote, fechaDeIngreso, 'ACT');
+    set id_entrada =  last_insert_id();
+    
+    INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, IN `nombre` TEXT, IN `id_proveedor` INT, IN `descripcion` TEXT, IN `fechaDeIngreso` DATE, IN `fechaDeVecimiento` DATE, IN `precio` FLOAT, IN `cantidad` INT, IN `stockMinimo` INT, IN `lote` TEXT, IN `marca` TEXT, IN `medida` TEXT)   BEGIN
+	declare id_insumo int;
+    declare id_entrada int;
+    
+	INSERT INTO insumo VALUES (null, imagen, nombre, descripcion, marca, medida, precio , 'ACT',stockMinimo);
+    set id_insumo = last_insert_id();
+    
+    INSERT INTO entrada VALUES (null, id_proveedor, lote, fechaDeIngreso, 'ACT');
+    set id_entrada =  last_insert_id();
+    
+    INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -82,7 +180,14 @@ INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_ser
 (52, '2025-06-02', '22:10:00', 'Pendiente', 24, 25, '23:05:00'),
 (53, '2025-06-09', '20:00:00', 'Pendiente', 24, 25, '21:05:00'),
 (54, '2025-06-09', '21:11:00', 'Pendiente', 24, 25, '22:05:00'),
-(55, '2025-06-16', '20:00:00', 'Pendiente', 24, 34, '21:06:00');
+(55, '2025-06-16', '20:00:00', 'Pendiente', 24, 34, '21:06:00'),
+(56, '2025-06-20', '10:05:00', 'Pendiente', 24, 25, '11:06:00'),
+(57, '2025-06-27', '10:00:00', 'Pendiente', 24, 25, '11:06:00'),
+(58, '2025-06-27', '11:07:00', 'Pendiente', 24, 25, '12:06:00'),
+(59, '2025-06-27', '12:07:00', 'Pendiente', 24, 25, '13:06:00'),
+(60, '2025-07-04', '10:00:00', 'Pendiente', 24, 25, '11:06:00'),
+(61, '2025-07-04', '11:07:00', 'Pendiente', 24, 25, '12:06:00'),
+(62, '2025-07-11', '10:00:00', 'Pendiente', 24, 25, '11:06:00');
 
 -- --------------------------------------------------------
 
@@ -108,10 +213,11 @@ CREATE TABLE `control` (
 --
 
 INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`, `medicamentosRecetados`, `fecha_control`, `fechaRegreso`, `nota`, `historiaclinica`, `estado`) VALUES
-(26, 23, 1, 'El chico presenta dificultad para respirar, hinchazón en el cuerpo y dolores de cabeza', 'Cetirizina\r\nSalbutamol\r\nAcetaminofén', '2025-04-02 14:37:34', '2025-04-26', 'Debe hacerse hematología completa', 'historia', 'ACT'),
+(26, 23, 1, 'El chico presenta dificultad para respirar, hinchazón en el cuerpo y dolores de cabeza', 'Cetirizina\r\nSalbutamol\r\nAcetaminofén', '2025-04-02 14:37:34', '2025-04-26', 'Debe hacerse hematología completa', 'historia denose', 'ACT'),
 (27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasico\r\nCafeína\r\nViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'historiaclinica', 'ACT'),
 (28, 25, 43, 'diagnostico', 'indicaciones', '2025-06-10 10:11:51', '2026-06-24', 'nota', 'historial\r\n\r\n', 'ACT'),
-(29, 25, 42, 'jfsdjfsdnfds', 'indicaciones', '2025-06-10 20:07:54', '2026-06-18', 'alguito', 'mhnfdjg algo mas', 'ACT');
+(29, 25, 42, 'jfsdjfsdnfds', 'indicaciones', '2025-06-10 20:07:54', '2026-06-18', 'alguito', 'mhnfdjg algo mas', 'ACT'),
+(30, 25, 43, 'diagnostivo', 'indicaciones', '2025-06-19 20:29:30', '2025-07-06', 'nota', 'historial clinico  de algo', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -168,7 +274,18 @@ INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeI
 (56, 6, 2323, '2025-05-08', 'ACT'),
 (57, 6, 1212, '2025-05-08', 'ACT'),
 (58, 6, 5664, '2025-05-22', 'ACT'),
-(59, 7, 8098, '2025-06-10', 'ACT');
+(59, 7, 8098, '2025-06-10', 'ACT'),
+(61, 7, 5656, '2025-06-20', 'ACT'),
+(62, 7, 1234, '2025-06-21', 'ACT'),
+(63, 6, 5651, '2025-06-21', 'ACT'),
+(64, 7, 2134, '2025-06-21', 'ACT'),
+(65, 7, 2134, '2025-06-21', 'ACT'),
+(66, 6, 2134, '2025-06-21', 'ACT'),
+(67, 7, 3012, '2025-06-21', 'ACT'),
+(68, 7, 4532, '2025-06-21', 'ACT'),
+(69, 7, 2342, '2025-06-21', 'ACT'),
+(70, 7, 1223, '2025-06-21', 'ACT'),
+(71, 6, 4564, '2025-06-21', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -191,8 +308,18 @@ CREATE TABLE `entrada_insumo` (
 --
 
 INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `fechaDeVencimiento`, `precio`, `cantidad_entrante`, `cantidad_disponible`) VALUES
-(52, 37, 58, '2025-05-25', 9.00, 89, 88),
-(53, 36, 59, '2026-02-11', 79.00, 34, 34);
+(52, 37, 58, '2025-05-25', 9.00, 89, 85),
+(53, 36, 59, '2026-02-11', 79.00, 34, 18),
+(54, 41, 62, '2026-06-29', 9.00, 20, 19),
+(55, 42, 63, '2025-06-27', 8.00, 12, 12),
+(56, 36, 64, '2026-06-21', 12.00, 1, 1),
+(57, 36, 65, '2026-06-21', 12.00, 1, 1),
+(58, 31, 66, '2026-06-21', 12.00, 1, 0),
+(59, 37, 67, '2025-06-29', 13.00, 2, 2),
+(60, 31, 68, '2027-06-21', 120.00, 9, 9),
+(61, 41, 69, '2025-06-29', 12.00, 5, 5),
+(62, 36, 70, '2025-06-29', 12.00, 2, 2),
+(63, 36, 71, '2025-06-29', 190.00, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -293,7 +420,54 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_pa
 (101, '2025-05-07', 0.60, 'ACT', 25),
 (102, '2025-05-07', 1230.00, 'ACT', 25),
 (103, '2025-05-22', 1.00, 'ACT', 24),
-(104, '2025-06-09', 1000.00, 'ACT', 25);
+(104, '2025-06-09', 1000.00, 'ACT', 25),
+(105, '2025-06-14', 1000.00, 'ACT', 25),
+(106, '2025-06-14', 1000.00, 'ACT', 25),
+(107, '2025-06-14', 3000.00, 'ACT', 25),
+(108, '2025-06-15', 80.00, 'ACT', 25),
+(109, '2025-06-15', 4000.00, 'ACT', 25),
+(110, '2025-06-16', 240.00, 'ACT', 25),
+(111, '2025-06-16', 240.00, 'ACT', 25),
+(112, '2025-06-16', 240.00, 'ACT', 25),
+(113, '2025-06-16', 240.00, 'ACT', 25),
+(114, '2025-06-16', 80.00, 'ACT', 25),
+(115, '2025-06-16', 80.00, 'ACT', 25),
+(116, '2025-06-16', 80.00, 'ACT', 25),
+(117, '2025-06-16', 9.00, 'ACT', 25),
+(118, '2025-06-16', 240.00, 'ACT', 25),
+(119, '2025-06-16', 63.00, 'ACT', 25),
+(120, '2025-06-16', 36.00, 'ACT', 25),
+(121, '2025-06-16', 80.00, 'ACT', 25),
+(122, '2025-06-16', 9.00, 'ACT', 25),
+(123, '2025-06-16', 240.00, 'ACT', 25),
+(124, '2025-06-16', 240.00, 'ACT', 25),
+(125, '2025-06-16', 240.00, 'ACT', 25),
+(126, '2025-06-16', 240.00, 'ACT', 25),
+(127, '2025-06-16', 240.00, 'ACT', 25),
+(128, '2025-06-16', 240.00, 'ACT', 25),
+(129, '2025-06-16', 240.00, 'ACT', 25),
+(130, '2025-06-16', 240.00, 'ACT', 25),
+(131, '2025-06-16', 240.00, 'ACT', 25),
+(132, '2025-06-16', 240.00, 'ACT', 25),
+(133, '2025-06-16', 240.00, 'ACT', 25),
+(134, '2025-06-17', 240.00, 'ACT', 25),
+(135, '2025-06-17', 240.00, 'ACT', 25),
+(136, '2025-06-17', 80.00, 'ACT', 25),
+(137, '2025-06-18', 80.00, 'ACT', 25),
+(138, '2025-06-18', 80.00, 'ACT', 25),
+(139, '2025-06-18', 80.00, 'ACT', 25),
+(140, '2025-06-18', 160.00, 'ACT', 25),
+(141, '2025-06-18', 36.00, 'ACT', 25),
+(142, '2025-06-18', 80.00, 'ACT', 25),
+(143, '2025-06-18', 80.00, 'ACT', 25),
+(144, '2025-06-18', 116.00, 'ACT', 25),
+(145, '2025-06-18', 80.00, 'ACT', 25),
+(146, '2025-06-18', 98.00, 'ACT', 25),
+(147, '2025-06-19', 560.00, 'ACT', 25),
+(148, '2025-06-21', 9.00, 'ACT', 25),
+(149, '2025-06-21', 160.00, 'ACT', 25),
+(150, '2025-06-22', 1000.00, 'ACT', 25),
+(151, '2025-06-22', 240.00, 'Anulada', 25);
 
 -- --------------------------------------------------------
 
@@ -303,10 +477,39 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_pa
 
 CREATE TABLE `factura_has_inventario` (
   `factura_id_factura` int(11) NOT NULL,
-  `inventario_id_inventario` int(11) NOT NULL,
+  `id_entradaDeInsumo` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `estado` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `factura_has_inventario`
+--
+
+INSERT INTO `factura_has_inventario` (`factura_id_factura`, `id_entradaDeInsumo`, `cantidad`, `estado`) VALUES
+(117, 52, 1, 'ACT'),
+(118, 52, 3, 'ACT'),
+(119, 52, 3, 'ACT'),
+(119, 52, 1, 'ACT'),
+(130, 53, 3, 'ACT'),
+(132, 53, 3, 'ACT'),
+(133, 53, 3, 'ACT'),
+(134, 53, 3, 'ACT'),
+(135, 53, 3, 'ACT'),
+(136, 53, 1, 'ACT'),
+(137, 53, 1, 'ACT'),
+(138, 53, 1, 'ACT'),
+(139, 53, 1, 'ACT'),
+(140, 53, 2, 'ACT'),
+(143, 53, 1, 'ACT'),
+(144, 53, 1, 'ACT'),
+(144, 52, 4, 'ACT'),
+(146, 53, 1, 'ACT'),
+(146, 52, 2, 'ACT'),
+(147, 53, 7, 'ACT'),
+(148, 54, 1, 'ACT'),
+(149, 53, 2, 'ACT'),
+(151, 53, 3, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -386,7 +589,9 @@ INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `preci
 (12, '2025-04-28 18:42:13', 0, NULL, 0, NULL, 26, '0000-00-00 00:00:00', 'DES'),
 (13, '2025-04-29 07:32:00', 0, NULL, 1, NULL, 27, '0000-00-00 00:00:00', 'Realizadas'),
 (14, '2025-05-23 08:17:49', 0, 0, 0, 0, 26, '0000-00-00 00:00:00', 'Pendiente'),
-(15, '2025-06-10 20:20:19', 0, 0, 0, 0, 29, '0000-00-00 00:00:00', 'Pendiente');
+(15, '2025-06-10 20:20:19', 0, 0, 0, 0, 29, '0000-00-00 00:00:00', 'DES'),
+(16, '2025-06-21 19:36:00', 0, 0, 0, 0, 30, '0000-00-00 00:00:00', 'DES'),
+(17, '2025-06-21 19:48:25', 0, 0, 0, 0, 30, '0000-00-00 00:00:00', 'DES');
 
 -- --------------------------------------------------------
 
@@ -420,8 +625,12 @@ INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `
 (33, '2025-05-07_1746668110_img16.jpg', 'Spidermas', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '600 ml', 123.00, 'ACT', 1),
 (34, '2025-05-08_1746714309_img5.jpg', 'Caballero', 'El ibuprofeno es un antinflamaupo de fármacos derivados del ácido propiónico.', 'Tecno spar 30212', '600 ml', 2040.00, 'DES', 1),
 (35, '2025-05-08_1746715177_img29.jpg', 'Insumodolar', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '200 ml', 870.00, 'DES', 5),
-(36, '2025-05-08_1746715431_img7.jpg', 'Ansumo', 'El ibuprofeno e', 'Tecno spar 3022 ', '400 ml', 80.00, 'ACT', 2),
-(37, '2025-05-22_1747932563_img16.jpg', 'Spiderman', 'descripcio1', 'Spidermas', '100 g', 9.00, 'ACT', 1);
+(36, '2025-06-21_1750492799_img30.png', 'Ansumo', 'El ibuprofeno e', 'Tecno spar 3022 ', '400 ml', 80.00, 'ACT', 2),
+(37, '2025-05-22_1747932563_img16.jpg', 'Spiderman', 'descripcio1', 'Spidermas', '100 g', 9.00, 'ACT', 1),
+(39, '2025-06-20_1750445529_4992462.jpg', 'Carlos', 'es un SO ', 'Microsoft', '1 g', 5.00, 'ACT', 1),
+(40, '2025-06-21_1750492468_Neon03.jpg', 'Disparador', 'es una descripcion', 'Lenovo', '1 g', 9.00, 'ACT', 5),
+(41, '2025-06-21_1750492543_Neon03.jpg', 'Disparador', 'es una descripcion', 'Lenovo', '1 g', 9.00, 'ACT', 5),
+(42, '2025-06-21_1750492723_1259289.jpg', 'Card', 'es una descripcion', 'Microsoft', '1 g', 8.00, 'ACT', 5);
 
 -- --------------------------------------------------------
 
@@ -436,16 +645,13 @@ CREATE TABLE `insumodehospitalizacion` (
   `cantidad` int(13) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
+--
+-- Volcado de datos para la tabla `insumodehospitalizacion`
+--
 
---
--- Estructura Stand-in para la vista `insumos`
--- (Véase abajo para la vista actual)
---
-CREATE TABLE `insumos` (
-`nombre_insumo` varchar(25)
-,`total_usado` decimal(32,0)
-);
+INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospitalizacion`, `id_inventario`, `cantidad`) VALUES
+(13, 16, 58, 1),
+(14, 17, 52, 2);
 
 -- --------------------------------------------------------
 
@@ -475,7 +681,7 @@ INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apel
 (24, 'V', '28329224', 'Rocio', 'Rodriguez', '04121338031', 'URB EL BOSQUE CALLE 12', '2025-04-02', 'femenino', 'ACT'),
 (25, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'masculino', 'ACT'),
 (26, 'V', '17664525', 'Sofia', 'Sofia', '4121338031', 'Direccion', '2001-09-22', 'Femenino', 'ACT'),
-(27, 'V', '158961', 'Aaaa', 'Aaaa', '4121338032', 'Direccion', '2001-09-22', 'Masculino', 'ACT'),
+(27, 'V', '158961', 'Aaaa', 'Aaaa', '4121338032', 'Direccion', '2001-09-22', 'Masculino', 'DES'),
 (28, 'V', '2000001', 'Argentina', 'Apellido_1', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT'),
 (29, 'V', '2000002', 'Brasil', 'Apellido_2', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT'),
 (30, 'V', '2000003', 'Chile', 'Apellido_3', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT'),
@@ -535,7 +741,8 @@ INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apel
 (84, 'V', '2000057', 'Nicaragua', 'Apellido_57', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT'),
 (85, 'V', '2000058', 'Cuba', 'Apellido_58', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT'),
 (86, 'V', '2000059', 'República Dominicana', 'Apellido_59', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT'),
-(87, 'V', '2000060', 'Puerto Rico', 'Apellido_60', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT');
+(87, 'V', '2000060', 'Puerto Rico', 'Apellido_60', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT'),
+(88, 'V', '1480973', 'Liam', 'Hendrick', '04128649495', 'En su casa ', '1997-06-28', 'Masculino', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -638,7 +845,55 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (130, 5, 101, '', 0.60),
 (131, 5, 102, '', 1230.00),
 (132, 5, 103, '', 1.00),
-(133, 5, 104, '', 1000.00);
+(133, 5, 104, '', 1000.00),
+(134, 5, 105, '', 1000.00),
+(135, 5, 106, '', 1000.00),
+(136, 5, 107, '', 3000.00),
+(137, 5, 108, '', 80.00),
+(138, 5, 109, '1257', 3000.00),
+(139, 6, 109, '1257', 1000.00),
+(140, 5, 110, '', 240.00),
+(141, 5, 111, '', 240.00),
+(142, 5, 112, '', 240.00),
+(143, 5, 113, '', 240.00),
+(144, 5, 114, '', 80.00),
+(145, 5, 115, '', 80.00),
+(146, 5, 116, '', 80.00),
+(147, 5, 117, '', 9.00),
+(148, 5, 118, '', 240.00),
+(149, 5, 119, '', 63.00),
+(150, 5, 120, '', 36.00),
+(151, 5, 121, '', 80.00),
+(152, 5, 122, '', 9.00),
+(153, 5, 123, '', 240.00),
+(154, 5, 124, '', 240.00),
+(155, 5, 125, '', 240.00),
+(156, 5, 126, '', 240.00),
+(157, 5, 127, '', 240.00),
+(158, 5, 128, '', 240.00),
+(159, 5, 129, '', 240.00),
+(160, 5, 130, '', 240.00),
+(161, 5, 131, '', 240.00),
+(162, 5, 132, '', 240.00),
+(163, 5, 133, '', 240.00),
+(164, 5, 134, '', 240.00),
+(165, 5, 135, '', 240.00),
+(166, 5, 136, '', 80.00),
+(167, 5, 137, '', 80.00),
+(168, 5, 138, '', 80.00),
+(169, 5, 139, '', 80.00),
+(170, 5, 140, '', 160.00),
+(171, 5, 141, '', 36.00),
+(172, 5, 142, '', 80.00),
+(173, 5, 143, '', 80.00),
+(174, 5, 144, '', 116.00),
+(175, 5, 145, '', 80.00),
+(176, 5, 146, '', 98.00),
+(177, 5, 147, '', 560.00),
+(178, 5, 148, '', 9.00),
+(179, 5, 149, '', 160.00),
+(180, 5, 150, '', 1000.00),
+(181, 5, 151, '', 240.00);
 
 -- --------------------------------------------------------
 
@@ -657,7 +912,7 @@ CREATE TABLE `patologia` (
 --
 
 INSERT INTO `patologia` (`id_patologia`, `nombre_patologia`, `estado`) VALUES
-(2, 'DIABETES TIPO 1', 'ACT'),
+(2, 'DIABETES TIPO 1', 'DES'),
 (3, 'DIABETES TIPO 2', 'ACT'),
 (5, 'EPOC', 'ACT'),
 (6, 'ARTRITIS REUMATOIDE', 'ACT'),
@@ -754,7 +1009,15 @@ INSERT INTO `patologiadepaciente` (`id_patologiaDePaciente`, `id_paciente`, `id_
 (225, 25, 6, '2025-06-10 20:07:54'),
 (226, 25, 7, '2025-06-10 20:07:54'),
 (227, 25, 8, '2025-06-10 20:07:54'),
-(228, 25, 9, '2025-06-10 20:07:54');
+(228, 25, 9, '2025-06-10 20:07:54'),
+(229, 25, 5, '2025-06-19 20:29:30'),
+(230, 25, 6, '2025-06-19 20:29:30'),
+(231, 25, 7, '2025-06-19 20:29:30'),
+(232, 25, 8, '2025-06-19 20:29:30'),
+(233, 25, 9, '2025-06-19 20:29:30'),
+(234, 25, 186, '2025-06-19 20:29:30'),
+(235, 25, 190, '2025-06-19 20:29:30'),
+(236, 25, 192, '2025-06-19 20:29:30');
 
 -- --------------------------------------------------------
 
@@ -779,12 +1042,13 @@ CREATE TABLE `personal` (
 --
 
 INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `tipodecategoria`, `id_especialidad`, `usuario`) VALUES
-(18, 'V', '30554053', 'Wilmer', 'Baez', '04145378010', 'Administrador', NULL, 1),
+(18, 'V', '30554053', 'Wilmer', 'Baez', '04145378699', 'Administrador', NULL, 1),
 (19, 'V', '1232233', 'David', 'Carlos', '04142323233', '', 7, 42),
 (20, 'V', '12123343', 'Carlos', 'Garcia', '04244546565', '', 7, 43),
 (21, 'V', '12020333', 'Ana', 'Bracho', '04122323422', '', 6, 45),
 (22, 'V', '6755654', 'Julian', 'Valdez', '04122323212', '', 4, 46),
-(23, 'V', '867548', 'Jaun', 'Edlkfjfdsk', '04243943432', '', 5, 49);
+(23, 'V', '867548', 'Jaun', 'Edlkfjfdsk', '04243943432', '', 5, 49),
+(24, 'V', '1223211', 'Auto', 'Auto', '04122232323', 'Administrador', NULL, 50);
 
 -- --------------------------------------------------------
 
@@ -809,6 +1073,7 @@ INSERT INTO `personal_has_serviciomedico` (`personal_id_personal`, `serviciomedi
 (19, 30),
 (19, 32),
 (19, 33),
+(19, 36),
 (20, 24),
 (20, 27),
 (20, 28),
@@ -903,7 +1168,13 @@ INSERT INTO `serviciomedico_has_factura` (`serviciomedico_id_servicioMedico`, `f
 (27, 95),
 (25, 96),
 (26, 97),
-(25, 104);
+(25, 104),
+(25, 105),
+(25, 106),
+(24, 107),
+(24, 109),
+(25, 109),
+(25, 150);
 
 -- --------------------------------------------------------
 
@@ -922,7 +1193,7 @@ CREATE TABLE `sintomas` (
 --
 
 INSERT INTO `sintomas` (`id_sintomas`, `nombre`, `estado`) VALUES
-(5, 'Disnea', 'ACT'),
+(5, 'Disnea', 'DES'),
 (6, 'Fiebre', 'ACT'),
 (7, 'Vomito', 'DES'),
 (8, 'Dolor de cabeza', 'ACT'),
@@ -962,7 +1233,9 @@ INSERT INTO `sintomas_control` (`id_sintomas_control`, `id_sintomas`, `id_contro
 (45, 7, 28),
 (46, 5, 29),
 (47, 6, 29),
-(48, 8, 29);
+(48, 8, 29),
+(49, 5, 30),
+(50, 6, 30);
 
 -- --------------------------------------------------------
 
@@ -993,15 +1266,6 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `especialidades_solicitadas`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `especialidades_solicitadas`  AS SELECT `cs`.`nombre` AS `especialidad`, `c`.`fecha` AS `fecha`, count(`c`.`id_cita`) AS `total_solicitudes` FROM ((`cita` `c` join `serviciomedico` `sm` on(`c`.`serviciomedico_id_servicioMedico` = `sm`.`id_servicioMedico`)) join `categoria_servicio` `cs` on(`sm`.`id_categoria` = `cs`.`id_categoria`)) ;
-
--- --------------------------------------------------------
-
---
--- Estructura para la vista `insumos`
---
-DROP TABLE IF EXISTS `insumos`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `insumos`  AS SELECT `i`.`nombre` AS `nombre_insumo`, sum(`fhi`.`cantidad`) AS `total_usado` FROM ((`factura_has_inventario` `fhi` join `entrada_insumo` `inv` on(`fhi`.`inventario_id_inventario` = `inv`.`id_entradaDeInsumo`)) join `insumo` `i` on(`inv`.`id_insumo` = `i`.`id_insumo`)) GROUP BY `i`.`id_insumo` ORDER BY sum(`fhi`.`cantidad`) DESC ;
 
 -- --------------------------------------------------------
 
@@ -1070,8 +1334,8 @@ ALTER TABLE `factura`
 -- Indices de la tabla `factura_has_inventario`
 --
 ALTER TABLE `factura_has_inventario`
-  ADD KEY `fk_factura_has_inventario_inventario1_idx` (`inventario_id_inventario`),
-  ADD KEY `fk_factura_has_inventario_factura1_idx` (`factura_id_factura`);
+  ADD KEY `fk_factura_has_inventario_factura1_idx` (`factura_id_factura`),
+  ADD KEY `id_entradaDeInsumo` (`id_entradaDeInsumo`);
 
 --
 -- Indices de la tabla `horario`
@@ -1206,25 +1470,25 @@ ALTER TABLE `categoria_servicio`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT de la tabla `control`
 --
 ALTER TABLE `control`
-  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidad`
@@ -1236,7 +1500,7 @@ ALTER TABLE `especialidad`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
@@ -1254,25 +1518,25 @@ ALTER TABLE `horarioydoctor`
 -- AUTO_INCREMENT de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
-  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `paciente`
 --
 ALTER TABLE `paciente`
-  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
@@ -1284,7 +1548,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=134;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=182;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
@@ -1296,13 +1560,13 @@ ALTER TABLE `patologia`
 -- AUTO_INCREMENT de la tabla `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
-  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
+  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=237;
 
 --
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
@@ -1326,7 +1590,7 @@ ALTER TABLE `sintomas`
 -- AUTO_INCREMENT de la tabla `sintomas_control`
 --
 ALTER TABLE `sintomas_control`
-  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- Restricciones para tablas volcadas
@@ -1369,7 +1633,7 @@ ALTER TABLE `factura`
 --
 ALTER TABLE `factura_has_inventario`
   ADD CONSTRAINT `factura_has_inventario_ibfk_2` FOREIGN KEY (`factura_id_factura`) REFERENCES `factura` (`id_factura`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `factura_has_inventario_ibfk_3` FOREIGN KEY (`inventario_id_inventario`) REFERENCES `entrada_insumo` (`id_entradaDeInsumo`);
+  ADD CONSTRAINT `factura_has_inventario_ibfk_3` FOREIGN KEY (`id_entradaDeInsumo`) REFERENCES `entrada_insumo` (`id_entradaDeInsumo`);
 
 --
 -- Filtros para la tabla `horarioydoctor`
