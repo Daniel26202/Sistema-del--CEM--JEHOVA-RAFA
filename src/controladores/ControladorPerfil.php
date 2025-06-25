@@ -21,6 +21,7 @@ class ControladorPerfil
 
 	public function perfil($parametro)
 	{
+		$ayuda ="btnayudaPerfil";
 		require_once './src/vistas/vistaPerfil/vistaPerfil.php';
 	}
 

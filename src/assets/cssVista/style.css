@@ -1666,12 +1666,21 @@ td {
 
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................Perfil........................ */
-
+.fondo-perfil {
+    height: 85% !important;
+}
+@media screen and (max-width: 1000px) {
+    .fondo-perfil {
+        height: 75%!important;
+    }
+}
 @media screen and (max-width: 700px) {
     .fondo-perfil {
         width: 93% !important;
+        height: 85% !important;
     }
 }
+
 
 /* ///////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
