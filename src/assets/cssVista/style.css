@@ -846,7 +846,7 @@ html {
     background-position: center;
     transition: transform 0.4s ease-in-out;
     box-shadow: #333;
-    filter: var(--filter-image);
+    /* filter: var(--filter-image); */
 }
 
 .cardReporte:hover {
@@ -860,7 +860,7 @@ html {
     background-position: center;
     transition: transform 0.4s ease-in-out;
     box-shadow: #333;
-    filter: var(--filter-image);
+    /* filter: var(--filter-image); */
 }
 
 .cardReporteFactura:hover {
@@ -1833,7 +1833,7 @@ td {
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
-    filter: var(--filter-image);
+    /* filter: var(--filter-image); */
 }
 
 .modalBuscador li a:hover {
@@ -1850,6 +1850,14 @@ td {
 .tajeta-estadistica-g {
     color: var(--color-text-card);
     background-color: var(--color-bg-card-estadisticas);
+}
+
+.card-text-reporte{
+    color: #1b1a1a !important;
+}
+
+.icono-card-reporte{
+    color: #1b1a1a !important;
 }
 
 /* /////////////////////////////////////////////////////////////////////////////// */

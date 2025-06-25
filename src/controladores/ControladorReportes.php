@@ -23,6 +23,7 @@ class ControladorReportes{
 	
 	public function reportes($parametro){
 
+		$ayuda = "btnayudaReporte";
 		$facturas = $this->modelo->consultarFactura();
 		$anuladas = $this->modelo->consultarFacturaAnuladas();
 		$insumos = $this->insumo->insumos();
