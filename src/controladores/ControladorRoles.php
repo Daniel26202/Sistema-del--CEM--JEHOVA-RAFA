@@ -21,6 +21,7 @@ class ControladorRoles
 
     public function mostrar($parametro)
     {
+        $ayuda = "btnayudaRoles";
         $vistaActiva = "roles";
         $roles = $this->modelo->roles();
         $modulos = require_once './src/vistas/vistaRoles/modal/listaModulos.php';

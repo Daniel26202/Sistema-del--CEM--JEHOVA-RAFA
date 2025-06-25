@@ -37,7 +37,7 @@
             </div>
             <div class="me-4">
                 <div class="mt-3 mb-5">
-                    <ul class="sin-circulos d-flex justify-content-end ">
+                    <ul class="sin-circulos d-flex justify-content-end paginacion">
                         <li class="borde-menu activo <?= $vistaActiva == 'usuarios'  ? ' activo-borde ' : '' ?>">
                             <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" class="ico text-decoration-none me-3 color-letras">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -120,8 +120,8 @@
                                 </div>
 
                                 <div class="d-flex align-items-center justify-content-center flex-column">
-                                    <div class=" mb-3">
-                                        <a href="#" class="btn btn-User text-decoration-none"
+                                    <div class="mostrar mb-3">
+                                        <a href="#" class="btn btn-User  text-decoration-none"
                                             uk-toggle="target: #modal-exampleMostrar<?php echo $dato["id_rol"]; ?>">Mostrar</a>
                                     </div>
 
@@ -148,3 +148,4 @@
 <?php require_once './src/vistas/head/footer.php'; ?>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/roles.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaRoles.js"></script>

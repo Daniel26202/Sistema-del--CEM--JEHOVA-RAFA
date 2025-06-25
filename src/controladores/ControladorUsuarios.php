@@ -33,6 +33,7 @@ class ControladorUsuarios
 
     public function usuarios($parametro)
     {
+        $ayuda = "btnayudaUsuario";
         $vistaActiva = "usuarios";
         $datosU = $this->modelo->select();
         require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
@@ -40,6 +41,7 @@ class ControladorUsuarios
 
     public function administradores($parametro)
     {
+        $ayuda = "btnayudaAdministrador";
         $vistaActiva = "administradores";
         $datosU = $this->modelo->selectAdmin();
         $datosRoles = $this->roles->roles();
