@@ -3,12 +3,11 @@ require_once './src/vistas/head/head.php';
 ?>
 <link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/dashboard.css">
 
-
-
 <div id="content-wrapper" class="d-flex flex-wrap Inicioh1">
     <!-- Contenedor principal (75%) -->
 
     <div class="main-content col-12 col-lg-8 p-4" id="main-content">
+        <?php require_once './src/vistas/alerts.php'; ?>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
@@ -17,7 +16,7 @@ require_once './src/vistas/head/head.php';
                         <h3 class="welcome-card-title">Bienvenido!</h3>
                         <div class="reminder d-flex justify-content-between align-items-center">
                             <h2 class="welcome-user-name"><?= $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] ?></h2>
-                            <img class="img-logo" src="../src/assets/icons/logo.png" alt="user">
+                            <img class="img-logo" src="<?= $urlBase ?>../src/assets/icons/logo.png" alt="user">
                         </div>
                     </div>
                 </div>

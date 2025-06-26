@@ -42,7 +42,7 @@
               <td class="text-center"><?= $e["proveedor"]; ?></td>
               <td class="text-center"><?= $e["fechaDeIngreso"]; ?></td>
               <td class="text-center"><?= $e["fechaDeVencimiento"]; ?></td>
-              <td class="text-center"><?= $e["cantidad"]; ?></td>
+              <td class="text-center"><?= $e["cantidad_entrada"]; ?></td>
               <td class="text-center"><?= $e["precio"]; ?></td>
               <td class="text-center"><?= $e["numero_de_lote"]; ?></td>
 

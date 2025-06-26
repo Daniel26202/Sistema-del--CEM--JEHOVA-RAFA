@@ -119,7 +119,7 @@ class ControladorInsumos
 		if ($restablecimiento) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "insumo", "Ha restablecido un insumo");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/papelera");
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/papelera/restablecido");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/papelera/errorSistem");
 		}

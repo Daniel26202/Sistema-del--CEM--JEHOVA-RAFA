@@ -8,13 +8,14 @@ return [
     "guardar" => "guardar",
     "setPaciente"  => "editar",
     "eliminar" => "eliminar",
-    "restablecer" => "restablecer",
+    "restablecer" => "eliminar",
 
     //Patlogias
     "patologias" => "consultar",
     "papeleraPatologias" => "consultar",
     "registrarPatologia" => "guardar",
     "eliminarPatologia" => "eliminar",
+    "restablecerPatologia" => "eliminar",
 
     //Factura
     "factura" => "consultar",
@@ -64,6 +65,7 @@ return [
     "registrarCategoria" => "guardar",
     "eliminarCategoria" => "eliminar",
     "serviciosDoctor" => "consultar",
+    "restablecer" => "eliminar",
 
 
     //Doctores
@@ -138,7 +140,7 @@ return [
     "guardarInsumo" => "guardar",
     "editar" => "editar",
     "eliminar" => "eliminar",
-    "restablecerInsumo" => "restablecer",
+    "restablecerInsumo" => "eliminar",
     "cantidadInsumos" => "consultar",
     "cantidadInsumosVencidos" => "consultar",
 
@@ -149,7 +151,7 @@ return [
     "eliminar" => "eliminar",
     "editar" => "editar",
     "entradaInsumo" => "consultar",
-    "restablecerEntrada" => "restablecer",
+    "restablecerEntrada" => "eliminar",
     "proveedoresEditar" => "consultar",
     "selectProveedores" => "consultar",
     "selectInsumos" => "consultar",
@@ -161,7 +163,7 @@ return [
     "papelera" => "consultar",
     "insertar" => "guardar",
     "update" => "eliminar",
-    "restablecerProveedor" => "restablecer",
+    "restablecerProveedor" => "eliminar",
     "editar" => "editar",
     "validarRif" => "consultar",
     "validarRifEditar" => "consultar",
