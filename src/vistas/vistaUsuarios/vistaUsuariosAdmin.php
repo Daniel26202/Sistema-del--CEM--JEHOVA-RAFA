@@ -113,7 +113,7 @@
                             <div class="mt-3">
                                 <div class="ps-3 pe-3 text-center buscar">
 
-                                    <h5 class="card-title mb-1 ">Dr.
+                                    <h5 class="card-title mb-1 ">Admin: 
                                         <?php echo $dato["nombre"] . " " . $dato["apellido"]; ?>
                                     </h5>
                                     <p class="mb-4">
