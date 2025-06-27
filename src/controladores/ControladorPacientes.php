@@ -38,7 +38,7 @@ class ControladorPacientes
 	}
 
 	/* hay q hacerlo con ajax, pero lo hice sencillo, no se si se vaya a pasar a ajax to esto, pa despues del sabado ;) */
-	public function getHistorialSalud()
+	public function getHistorialSalud($parametro)
 	{
 		$historial = $this->modelo->indexHistorial();
 		$vistaActiva = 'historial';
