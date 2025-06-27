@@ -9,6 +9,7 @@ return [
     "setPaciente"  => "editar",
     "eliminar" => "eliminar",
     "restablecer" => "eliminar",
+    "getHistorialSalud" => "consultar",
 
     //Patlogias
     "patologias" => "consultar",
@@ -201,7 +202,7 @@ return [
     "tasaMorbilidad" => "consultar",
     "filtrar_tasaMorbilidad" => "consultar",
     "insumos" => "consultar",
-    
+
     //Mantenimiento
     "mantenimiento" => "consultar",
     "generarRespaldo" => "guardar",
