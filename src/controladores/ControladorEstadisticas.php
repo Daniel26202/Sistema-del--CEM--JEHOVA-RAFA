@@ -22,6 +22,7 @@ class ControladorEstadisticas
 
 	public function estadisticas()
 	{
+		$ayuda = "btnayudaEstadistica";
 		require_once './src/vistas/vistaEstadisticas/vistaEstadisticas.php';
 	}
 
