@@ -23,6 +23,30 @@ class ModeloPacientes extends Db
 			return 0;
 		}
 	}
+	public function indexHistorial()
+	{
+		try {
+			$consulta = $this->conexion->prepare("SELECT 
+				h.id_historial,
+				h.id_paciente,
+				p.nombre AS nombre_paciente,
+				p.apellido AS apellido_paciente,
+				p.cedula AS cedula_paciente,
+				h.estado_anterior,
+				h.estado_nuevo,
+				h.fecha_cambio,
+				h.id_control,
+				h.id_usuario
+			FROM 
+				historial_estados h
+			JOIN 
+				paciente p ON h.id_paciente = p.id_paciente");
+			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
 	public function indexPapelera()
 	{
 		try {

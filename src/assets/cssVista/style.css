@@ -39,6 +39,8 @@
 
 /* ...................MENU E INICIO.................... */
 * {
+    scrollbar-width: thin;
+    scrollbar-color: #f2f9ff #387adf;
     padding: 0;
     margin: 0;
     box-sizing: border-box;
@@ -285,7 +287,7 @@ html {
 /* Menu */
 /* Estilo del menú lateral */
 .sidenav {
-    scrollbar-width: none;
+   
     height: 100vh;
     width: 250px;
     position: fixed;
@@ -392,6 +394,19 @@ html {
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
+
+.lista-menu-pacientes{
+            background: none;
+            border: none;
+            border-bottom: #387adf solid 2px;
+            border-radius: 0;
+            color: var(--color-text-card) !important;
+            padding-left: 0;
+            padding-right: 0;
+            transition: 0.2s;
+            margin: 8px 10px;
+}
+
 
 .aparecer {
     display: none;
@@ -1153,6 +1168,7 @@ con la clase hover-grande cambia de tamaño*/
     padding-right: 0;
     transition: 0.2s;
     margin: 8px 10px;
+    width: 100% !important;
 }
 
 .btn-agregar-doctores:hover {

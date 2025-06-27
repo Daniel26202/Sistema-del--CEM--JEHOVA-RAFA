@@ -27,12 +27,24 @@ class ControladorPacientes
 	{
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
+
+
 	public function getPacientes($parametro)
 	{
 		$ayuda = "btnayudaPaciente";
 		$pacientes = $this->modelo->index();
+		$vistaActiva = 'pacientes';
 		require_once './src/vistas/vistaPacientes/pacientes.php';
 	}
+
+	/* hay q hacerlo con ajax, pero lo hice sencillo, no se si se vaya a pasar a ajax to esto, pa despues del sabado ;) */
+	public function getHistorialSalud()
+	{
+		$historial = $this->modelo->indexHistorial();
+		$vistaActiva = 'historial';
+		require './src/vistas/vistaPacientes/pacientes.php';
+	}
+
 	public function papeleraPaciente($parametro)
 	{
 		$pacientes = $this->modelo->indexPapelera();
