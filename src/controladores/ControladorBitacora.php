@@ -21,6 +21,7 @@ class ControladorBitacora
 
 	public function bitacoraUsuario($parametro)
 	{
+		$ayuda = "btnayudaBitacora";
 		$vistaActiva = 'Usuario';
 		$cargo = $this->modeloInicio->comprobarCargo($_SESSION["id_usuario"]);
 		require_once "./src/vistas/vistaBitacora/bitacora.php";
@@ -28,6 +29,7 @@ class ControladorBitacora
 
 	public function bitacora($parametro)
 	{
+		$ayuda = "btnayudaBitacora";
 		$vistaActiva = 'Admin';
 		$cargo = $this->modeloInicio->comprobarCargo($_SESSION["id_usuario"]);
 		require_once "./src/vistas/vistaBitacora/bitacora.php";
