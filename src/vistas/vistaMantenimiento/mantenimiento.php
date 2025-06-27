@@ -10,13 +10,13 @@
         <div class="row mb-4 mt-2">
             <div class="col text-center">
                 <h1>Mantenimiento del sistema</h1>
-                <p>Realiza operaciones básicas como descarga de respaldo y restauración.</p>
+                <p class="p-mantenimiento">Realiza operaciones básicas como descarga de respaldo y restauración.</p>
             </div>
         </div>
 
         <div class="row ">
             <div class="col-md-6 mb-3">
-                <div class="card p-2 h-100">
+                <div class="card card-mentenimiento p-2 h-100">
                     <div class="fw-bold ms-3 mt-3 me-3 fs-4">
                         Descargar Respaldo
                     </div>
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="col-md-6 mb-3 ">
-                <div class="card p-2 h-100">
+                <div class="card card-mentenimiento p-2 h-100">
                     <div class="fw-bold ms-3 mt-3 me-3 fs-4">
                         Restaurar Base de Datos
                     </div>
@@ -60,7 +60,7 @@
 
 <div class="modal fade" id="modalBaseDatos" tabindex="-1" aria-labelledby="modalBaseDatosLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
+        <div class="contenido modal-content">
             <div class="d-flex justify-content-between align-items-center ps-4 pe-4 ms-1 me-1 pt-4 ">
                 <h4 class="fw-bold" id="modalBaseDatosLabel">Seleccionar Base de Datos</h4>
                 <a href="#" class="" data-bs-dismiss="modal">
@@ -70,39 +70,39 @@
                     </svg>
                 </a>
             </div>
-                <div class="modal-body ms-3 mt-3 me-3">
-                    <!-- campo de búsqueda -->
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="buscarBD" placeholder="Buscar por nombre o fecha">
-                    </div>
+            <div class="modal-body ms-3 mt-3 me-3">
+                <!-- campo de búsqueda -->
+                <div class="mb-3">
+                    <input type="text" class="form-control input-modal" id="buscarBD" placeholder="Buscar por nombre o fecha">
+                </div>
 
-                    <!-- tabla de bases de datos -->
-                    <div class="table-responsive">
-                        <table class="table table-hover table-striped">
-                            <thead>
+                <!-- tabla de bases de datos -->
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre y Fecha</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="datosTable">
+                            <?php foreach ($respaldos as $db) : ?>
                                 <tr>
-                                    <th>Nombre y Fecha</th>
-                                    <th>Acción</th>
+                                    <td><?= basename($db) ?></td>
+                                    <td>
+                                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/<?= basename($db) ?>" class="p-2 uk-button-primary rounded-5 fw-bold text-decoration-none text-white" type="button" id="btnEnviar">Seleccionar</a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody id="datosTable">
-                                <?php foreach ($respaldos as $db) : ?>
-                                    <tr>
-                                        <td><?= basename($db) ?></td>
-                                        <td>
-                                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/<?= basename($db) ?>" class="p-2 uk-button-primary rounded-5 fw-bold text-decoration-none text-white" type="button" id="btnEnviar">Seleccionar</a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                                <!-- Agrega más filas según requieras -->
-                            </tbody>
-                        </table>
-                    </div>
+                            <?php endforeach; ?>
+                            <!-- Agrega más filas según requieras -->
+                        </tbody>
+                    </table>
                 </div>
-                <div class="d-flex justify-content-end align-items-center ps-4 pe-4 ms-1 me-1 pt-3 pb-4">
-                    <button class="uk-button rounded-5 btn-cancelar fw-bold " type="button" data-bs-dismiss="modal">Cancelar</button>
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo"><button class="uk-button uk-button-primary rounded-5 fw-bold ms-4" type="submit" id="btnEnviar">Restaurar el más resiente</button></a>
-                </div>
+            </div>
+            <div class="d-flex justify-content-end align-items-center ps-4 pe-4 ms-1 me-1 pt-3 pb-4">
+                <button class="uk-button rounded-5 btn-cancelar fw-bold " type="button" data-bs-dismiss="modal">Cancelar</button>
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo"><button class="uk-button uk-button-primary rounded-5 fw-bold ms-4" type="submit" id="btnEnviar">Restaurar el más resiente</button></a>
+            </div>
         </div>
     </div>
 </div>
