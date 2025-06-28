@@ -23,26 +23,49 @@ document.addEventListener("DOMContentLoaded", function () {
               "ESTA ESTADISTICA MUESTRA LA DISTRIBUCIÓN DE PACIENTES QUE HAY REGISTRADOS  SEPARANDOLOS EN GRUPOS DE GENERO Y EDAD",
           },
           {
+            element: document.querySelector(".btn-reporte-distribucion"),
+            intro:
+              "CON UN CLICK SE DESPLEGARA UN MODAL CON LA GRAFICA ANTES MENCIONA CON LA OPCION DE DESCARGARLO EN FORMATO PDF ",
+          },
+          {
             element: document.querySelector(".reporte-morbilidad"),
             intro:
               "ESTA ESTADISTICA MUESTRA LA TASA DE MORBILIDAD EN LA CLINICA (LA MORBILIDAD ES LA CANTIDAD DE PERSONASQUE PRESENTANT ALGUNA ENERMEDAD) EN ESTE CASO, POR CADA 1000 ATENDIDOS",
           },
           {
-            element: document.querySelector(".reporte-entradas"),
+            element: document.querySelector(".btn-reporte-morbilidad"),
             intro:
-              "AL PULSAR ESTA TARJETA SE VA A DESPLEGAR UN MODAL PARA FILTRAR TODAS LAS ENTRADAS DE INSUMOS  EN UN RANGO DE TIEMPO DETERMINADO LUEGO QUE SE FILTRE SE PUEDE IMPRIMIR ESA INFORMACION EN UN PDF",
+              "CON UN CLICK SE DESPLEGARA UN MODAL CON LA GRAFICA ANTES MENCIONA CON LA OPCION DE DESCARGARLO EN FORMATO PDF Y FILTRAR POR FECHA",
           },
           {
-            element: document.querySelector(".reporte-insumos"),
-            intro: "AL PULSAR ESTA TARJETA TE VA A MOSTRAR UN PDF CON LOS DATOS DE TODOS LOS INSUMOS REGISTRADOS EN EL SISTEMA.",
+            element: document.querySelector(".reporte-insumo"),
+            intro: "ESTA ESTADISTICA MUESTRA LOS INSUMOS UTILIZADOS EN LA CLINICA",
           },
           {
-            element: document.querySelector(".reporte-facturas"),
+            element: document.querySelector(".btn-reporte-insumo"),
             intro:
-              "AL PULSAR ESTA TARJETA SE VA A DESPLEGAR UN MODAL PARA CON TODAS LAS FACTURAS REALIZADAS SE PUEDEN ANULAR (SI ESA FACTURA CINTENIA INSUMOS ESOSVUELVEN AL STOCK) ASI MISMO SE  PUEDEN IMPRIMIR CADA FACTURA INDIVIDUALMENTE.",
+              "CON UN CLICK SE DESPLEGARA UN MODAL CON LA GRAFICA ANTES MENCIONA CON LA OPCION DE DESCARGARLO EN FORMATO PDF ",
           },
           {
-            intro: "FIN DEL RECORRIDO POR EL MÓDULO DE USUARIOS, ESPERO HABERTE AYUDADO",
+            element: document.querySelector(".reporte-especialidades"),
+            intro: "AQUÍ PODRÁS VISUALIZAR INFORMACION DE LAS 5 ESPECIALIDADES MAS SOLICITADAS EN FORMA GRAFICA.",
+          },
+          {
+            element: document.querySelector(".btn-reporte-especialidades"),
+            intro:
+              "CON UN CLICK SE DESPLEGARA UN MODAL CON LA GRAFICA ANTES MENCIONA CON LA OPCION DE DESCARGARLO EN FORMATO PDF Y FILTRAR POR FECHA",
+          },
+          {
+            element: document.querySelector(".reporte-sintoma"),
+            intro: "AQUÍ PODRÁS VISUALIZAR INFORMACION DE LAS 5 SINTOMAS MAS COMUNES EN FORMA GRAFICA",
+          },
+          {
+            element: document.querySelector(".btn-reporte-sintoma"),
+            intro:
+              "CON UN CLICK SE DESPLEGARA UN MODAL CON LA GRAFICA ANTES MENCIONA CON LA OPCION DE DESCARGARLO EN FORMATO PDF Y FILTRAR POR FECHA",
+          },
+          {
+            intro: "FIN DEL RECORRIDO POR EL MÓDULO DE REPORTES ESTADISTICOS, ESPERO HABERTE AYUDADO",
           },
         ],
 
