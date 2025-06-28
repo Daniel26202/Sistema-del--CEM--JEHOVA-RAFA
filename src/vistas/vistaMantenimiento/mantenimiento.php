@@ -3,10 +3,11 @@
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
 
-
+    <div class="d-flex justify-content-center">
+        <?php require_once './src/vistas/alerts.php'; ?>
+    </div>
 
     <div class="container mt-5 col-md-9">
-
         <div class="row mb-4 mt-2">
             <div class="col text-center">
                 <h1>Mantenimiento del sistema</h1>
@@ -23,7 +24,7 @@
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Haz clic para generar y descargar una copia de seguridad de tu base de datos.</p>
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/generarRespaldo" class="btn btn-primary btn-block w-100 text-white text-decoration-none">Descargar Respaldo</a>
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/generarRespaldo/<?= $_SESSION["id_usuario"] ?>" class="btn btn-primary btn-block w-100 text-white text-decoration-none">Descargar Respaldo</a>
                         </div>
                     </div>
                 </div>
@@ -72,8 +73,13 @@
             </div>
             <div class="modal-body ms-3 mt-3 me-3">
                 <!-- campo de búsqueda -->
-                <div class="mb-3">
-                    <input type="text" class="form-control input-modal" id="buscarBD" placeholder="Buscar por nombre o fecha">
+                <div class="d-flex justify-content-end mb-4 mt-2 me-2 col">
+                    <input class="form-control input-busca" type="text" name="" placeholder="Buscar por nombre o fecha" id="buscarBD">
+                    <button class="btn boton-buscar" title="Buscar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                        </svg>
+                    </button>
                 </div>
 
                 <!-- tabla de bases de datos -->
@@ -90,7 +96,7 @@
                                 <tr>
                                     <td><?= basename($db) ?></td>
                                     <td>
-                                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/<?= basename($db) ?>" class="p-2 uk-button-primary rounded-5 fw-bold text-decoration-none text-white" type="button" id="btnEnviar">Seleccionar</a>
+                                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/<?= basename($db) ?>/<?= $_SESSION["id_usuario"] ?>" class="p-2 uk-button-primary rounded-5 fw-bold text-decoration-none text-white" type="button" id="btnEnviar">Seleccionar</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -101,7 +107,7 @@
             </div>
             <div class="d-flex justify-content-end align-items-center ps-4 pe-4 ms-1 me-1 pt-3 pb-4">
                 <button class="uk-button rounded-5 btn-cancelar fw-bold " type="button" data-bs-dismiss="modal">Cancelar</button>
-                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo"><button class="uk-button uk-button-primary rounded-5 fw-bold ms-4" type="submit" id="btnEnviar">Restaurar el más resiente</button></a>
+                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/nohay/<?= $_SESSION["id_usuario"] ?>"><button class="uk-button uk-button-primary rounded-5 fw-bold ms-4" type="submit" id="btnEnviar">Restaurar el más reciente</button></a>
             </div>
         </div>
     </div>

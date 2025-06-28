@@ -1,4 +1,9 @@
 /* ////////////////////////////////////////////////////// */
+/* de la x de lo modales */
+.uk-icon:not(.uk-preserve) [stroke*="#"]:not(.uk-preserve) {
+    stroke: rgb(27 27 27) !important;
+}
+
 :root {
     /* Colores claros por defaultt */
     --color-bg-main: #f2f9ff;
@@ -47,14 +52,12 @@
 }
 
 .navbar-toggler {
-    border-color: rgba(255,255,255,0.5); /* Opcional: borde blanco */
+    border-color: rgba(255, 255, 255, 0.5); /* Opcional: borde blanco */
     border: none;
 }
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255,255,255,1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-    
 }
-
 
 /* menu de pruebas
  */
@@ -94,7 +97,7 @@ h6 {
 }
 
 /* Input */
-.cl-switch>input {
+.cl-switch > input {
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -116,7 +119,7 @@ h6 {
 }
 
 /* Track */
-.cl-switch>span::before {
+.cl-switch > span::before {
     content: "";
     float: right;
     display: inline-block;
@@ -130,7 +133,7 @@ h6 {
 }
 
 /* Thumb */
-.cl-switch>span::after {
+.cl-switch > span::after {
     content: "";
     position: absolute;
     top: 2px;
@@ -144,70 +147,64 @@ h6 {
 }
 
 /* Checked */
-.cl-switch>input:checked {
+.cl-switch > input:checked {
     right: -10px;
     background-color: #85b8b7;
 }
 
-.cl-switch>input:checked+span::before {
+.cl-switch > input:checked + span::before {
     background-color: #85b8b7;
 }
 
-.cl-switch>input:checked+span::after {
+.cl-switch > input:checked + span::after {
     background-color: #018786;
     transform: translateX(16px);
 }
 
 /* Hover, Focus */
-.cl-switch:hover>input {
+.cl-switch:hover > input {
     opacity: 0.04;
 }
 
-.cl-switch>input:focus {
+.cl-switch > input:focus {
     opacity: 0.12;
 }
 
-.cl-switch:hover>input:focus {
+.cl-switch:hover > input:focus {
     opacity: 0.16;
 }
 
 /* Active */
-.cl-switch>input:active {
+.cl-switch > input:active {
     opacity: 1;
     transform: scale(0);
     transition: transform 0s, opacity 0s;
 }
 
-.cl-switch>input:active+span::before {
+.cl-switch > input:active + span::before {
     background-color: #8f8f8f;
 }
 
-.cl-switch>input:checked:active+span::before {
+.cl-switch > input:checked:active + span::before {
     background-color: #85b8b7;
 }
 
 /* Disabled */
-.cl-switch>input:disabled {
+.cl-switch > input:disabled {
     opacity: 0;
 }
 
-.cl-switch>input:disabled+span::before {
+.cl-switch > input:disabled + span::before {
     background-color: #ddd;
 }
 
-.cl-switch>input:checked:disabled+span::before {
+.cl-switch > input:checked:disabled + span::before {
     background-color: #bfdbda;
 }
 
-.cl-switch>input:checked:disabled+span::after {
+.cl-switch > input:checked:disabled + span::after {
     background-color: #61b5b4;
 }
-
-
-
-
-
-
 
 html {
     /* background-color: var(--color-bg-main); */
@@ -218,7 +215,6 @@ html {
     background-color: var(--color-bg-main) !important;
 }
 
-
 /* Loader */
 * {
     margin: 0;
@@ -226,7 +222,6 @@ html {
 }
 
 .loader-wrapper {
-   
     position: fixed;
     top: 0;
     left: 0;
@@ -243,7 +238,7 @@ html {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-color:var(--color-primary);
+    background-color: var(--color-primary);
 }
 
 .loading-bar {
@@ -256,7 +251,7 @@ html {
     overflow: hidden;
     z-index: 1;
     transform: rotateY(0);
-    transition: transform .3s ease-in
+    transition: transform 0.3s ease-in;
 }
 
 .blue-bar {
@@ -266,21 +261,22 @@ html {
     transform: translate(-34px);
     background-color: #0a66c2;
     border-radius: 2px;
-    animation: initial-loading 1.5s ease infinite
+    animation: initial-loading 1.5s ease infinite;
 }
 
 @keyframes initial-loading {
     0% {
-        transform: translate(-34px)
+        transform: translate(-34px);
     }
 
     50% {
-        transform: translate(96px)
+        transform: translate(96px);
     }
 
     to {
-        transform: translate(-34px)
-    } }
+        transform: translate(-34px);
+    }
+}
 
 /* Menu */
 /* Estilo del menú lateral */
@@ -356,7 +352,6 @@ html {
 
 /* clases del contenedor */
 
-
 .icon {
     color: white !important;
 }
@@ -392,18 +387,17 @@ html {
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
 
-.lista-menu-pacientes{
-            background: none;
-            border: none;
-            border-bottom: #387adf solid 2px;
-            border-radius: 0;
-            color: var(--color-text-card) !important;
-            padding-left: 0;
-            padding-right: 0;
-            transition: 0.2s;
-            margin: 8px 10px;
+.lista-menu-pacientes {
+    background: none;
+    border: none;
+    border-bottom: #387adf solid 2px;
+    border-radius: 0;
+    color: var(--color-text-card) !important;
+    padding-left: 0;
+    padding-right: 0;
+    transition: 0.2s;
+    margin: 8px 10px;
 }
-
 
 .aparecer {
     display: none;
@@ -435,7 +429,6 @@ html {
     transition: 0.4s all;
     color: #ffffff;
 }
-
 
 #reiniciarBusquedaEspecialidad {
     border-radius: 0;
@@ -552,8 +545,6 @@ html {
 .form-control input-modal {
     color: var(--color-text-card) !important;
 }
-
-
 
 .input-modal {
     color: var(--color-text-card) !important;
@@ -732,7 +723,6 @@ html {
 
 /* Perfil */
 
-
 /*INSUMOS*/
 
 .tar {
@@ -831,8 +821,6 @@ html {
     font-size: 16px;
 }
 
-
-
 /*USUARIOS*/
 
 /*ESTILOS REPORTES*/
@@ -886,7 +874,6 @@ html {
     flex-wrap: wrap;
 }
 
-
 /*expresiones control*/
 
 .grpFormCorrectControl {
@@ -904,7 +891,6 @@ html {
 .grpFormInCorrectControlEditar {
     border-bottom: 2px solid rgb(224, 3, 3) !important;
 }
-
 
 /* estilos madal de reportes de facturacion  */
 
@@ -973,8 +959,6 @@ hr {
     filter: hue-rotate(0deg) saturate(0) brightness(800%);
 }
 
-
-
 .btn-agregarConsulta {
     margin-right: 50px;
     background-color: transparent;
@@ -994,7 +978,6 @@ hr {
 .caja-paciente {
     margin-left: 60px;
 }
-
 
 .input-buscar:focus {
     outline: 0 !important;
@@ -1105,7 +1088,6 @@ hr {
 
 .caja-comprobante-datos-p {
     width: 45%;
-
 }
 
 .caja-comprobante-datos-d {
@@ -1207,9 +1189,7 @@ con la clase hover-grande cambia de tamaño*/
 }
 
 .comentario {
-    margin: 0;
     border-radius: 8px;
-    width: 30%;
 }
 
 .comentarioADinamica {
@@ -1498,10 +1478,12 @@ td {
 .fondoPH {
     padding: 10px;
     border: var(--color-bg-main) solid 1px;
-    background-image: radial-gradient(at 40px 20px,
-            rgba(121, 167, 240, 0.171) 40%,
-            rgba(159, 197, 253, 0.205) 20%,
-            rgba(133, 182, 255, 0.63) 72%);
+    background-image: radial-gradient(
+        at 40px 20px,
+        rgba(121, 167, 240, 0.171) 40%,
+        rgba(159, 197, 253, 0.205) 20%,
+        rgba(133, 182, 255, 0.63) 72%
+    );
     border-radius: 10.5px;
     box-shadow: var(--color-bg-main) 0 0 5px;
     cursor: pointer;
@@ -1516,7 +1498,6 @@ td {
 /* ...............................INSIMOS................................... */
 
 /* Lo comento porque no estaba incluida en el head */
-
 
 .tarjeta:hover {
     transform: scale(1.05);
@@ -1669,13 +1650,10 @@ td {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................REPORTE.................................... */
 
-
 /* Clase papa mostrar todos los textos rojos cuando la validacion no se cumple */
 .p-error-validaciones {
     color: var(--color-error) !important;
 }
-
-
 
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................Perfil........................ */
@@ -1684,7 +1662,7 @@ td {
 }
 @media screen and (max-width: 1000px) {
     .fondo-perfil {
-        height: 75%!important;
+        height: 75% !important;
     }
 }
 @media screen and (max-width: 700px) {
@@ -1693,7 +1671,6 @@ td {
         height: 85% !important;
     }
 }
-
 
 /* ///////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
@@ -1718,8 +1695,6 @@ td {
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................DOCTORES..................................... */
-
-
 
 @media screen and (max-width: 600px) {
     .input-buscar {
@@ -1774,12 +1749,7 @@ td {
     .caja-comprobante-datos-d > h5{
         font-size: 20px;
     } */
-
-
-
-
 }
-
 
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................INSIMOS.................................... */
@@ -1788,7 +1758,6 @@ td {
     display: flex;
     justify-content: space-between;
 }
-
 
 @media screen and (max-width: 600px) {
     .caja-de-buscador-insumos {
@@ -1821,8 +1790,6 @@ td {
 
 /* Lo comento porque no estaba incluida en el head */
 
-
-
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................USUARIO................................... */
 @media screen and (max-width: 550px) {
@@ -1832,7 +1799,6 @@ td {
 }
 
 @media screen and (max-width: 400px) {
-
     .caja-tarjets-responsive {
         width: 100%;
     }
@@ -1874,21 +1840,21 @@ td {
     background-color: var(--color-bg-card-estadisticas);
 }
 
-.card-text-reporte{
+.card-text-reporte {
     color: #1b1a1a !important;
 }
 
-.icono-card-reporte{
+.icono-card-reporte {
     color: #1b1a1a !important;
 }
 
 /* /////////////////////////////////////////////////////////////////////////////// */
 /* ............................. MANTENIMIENTO ..................................... */
 /* ///////////////////////////////////////////////////////////////////////////// */
-.card-mentenimiento{
+.card-mentenimiento {
     background-color: var(--color-bg-card);
 }
-.card-mentenimiento div{
+.card-mentenimiento div {
     color: var(--color-text-card);
 }
 

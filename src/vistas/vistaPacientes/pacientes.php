@@ -32,9 +32,9 @@
 
 
       <div class="d-flex flex-column flex-md-row">
-        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/papeleraPaciente" class="btn me-md-2 lista-menu-pacientes">Papelera</a>
-        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" class="btn me-md-2 lista-menu-pacientes <?= $vistaActiva == 'pacientes' ? 'active' : '' ?>">Pacientes</a>
-        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getHistorialSalud" class="btn me-md-2 lista-menu-pacientes <?= $vistaActiva == 'historial' ? 'active' : '' ?>">Historial de Salud</a>
+        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/papeleraPaciente" class="btn me-md-2 lista-menu-pacientes text-decoration-none">Papelera</a>
+        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" class="text-decoration-none btn me-md-2 lista-menu-pacientes <?= $vistaActiva == 'pacientes' ? 'active' : '' ?>">Pacientes</a>
+        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getHistorialSalud" class="text-decoration-none btn me-md-2 lista-menu-pacientes <?= $vistaActiva == 'historial' ? 'active' : '' ?>">Historial de Salud</a>
       </div>
 
     </div>

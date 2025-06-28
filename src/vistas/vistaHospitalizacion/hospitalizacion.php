@@ -1,7 +1,9 @@
 <?php require_once './src/vistas/head/head.php'; ?>
 
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
-
+    <div class="col mt-2">
+        <div id="divComentarios" class="ms-3 col-12 d-flex justify-content-center"></div>
+    </div>
     <div class="m-auto" style="width: 95%;">
         <div class=" d-flex justify-content-between mb-2">
             <div class=" d-flex align-items-center ">
@@ -12,9 +14,6 @@
                     <path
                         d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                 </svg>
-            </div>
-            <div class="col-5 mt-2">
-                <div id="divComentarios" class="ms-3 col-9"></div>
             </div>
 
             <div class="d-flex justify-content-end">

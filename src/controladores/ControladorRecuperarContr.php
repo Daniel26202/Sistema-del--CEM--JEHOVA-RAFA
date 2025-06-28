@@ -8,6 +8,26 @@ use PHPMailer\PHPMailer\Exception;
 class ControladorRecuperarContr
 {
 
+// 		$this->semaforo();
+
+// 	public function semaforo()
+// 	{
+// 		// verifica si la sesión esta activa.
+// 		if (session_status() !== PHP_SESSION_ACTIVE) {
+// 			session_start();
+// 		}
+// 		if (!isset($_SESSION['semaforo_mant'])) {
+// 			$_SESSION['semaforo_mant'] = 0;
+// 		}
+// 	}
+// // verifica si la sesión esta activa.
+// 		if (session_status() !== PHP_SESSION_ACTIVE) {
+// 			session_start();
+// 		}
+// 		if ($_SESSION['semaforo_mant'] === 1) return;
+// 		$_SESSION['semaforo_mant'] = 1;
+// 		$_SESSION['semaforo_mant'] = 0;
+
     private $modelo;
 
     function __construct()

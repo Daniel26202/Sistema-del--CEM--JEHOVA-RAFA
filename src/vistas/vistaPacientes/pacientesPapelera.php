@@ -22,7 +22,7 @@
 
 
 
-      <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8 btnRegistrarPaciente">
+      <a href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8 btnRegistrarPaciente text-decoration-none">
         <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
           class="bi bi-bandaid-fill mx-2" viewBox="0 0 16 16">
           <path
