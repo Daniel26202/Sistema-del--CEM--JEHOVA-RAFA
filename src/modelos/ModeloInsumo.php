@@ -108,7 +108,7 @@ class ModeloInsumo extends Db
 
 
 	//insertar insumo
-	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote, $marca, $medida)
+	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote, $marca, $medida, $iva)
 	{
 		try {
 			$this->conexion->beginTransaction();
@@ -120,7 +120,7 @@ class ModeloInsumo extends Db
 			$imagen_temporal = $_FILES['imagen']['tmp_name'];
 			move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
-			$consulta = $this->conexion->prepare("call insert_insumo(:imagen, :nombre, :id_proveedor, :descripcion, :fechaDeIngreso, :fechaDeVecimiento, :precio, :cantidad, :stockMinimo, :lote, :marca, :medida)");
+			$consulta = $this->conexion->prepare("call insert_insumo(:imagen, :nombre, :id_proveedor, :descripcion, :fechaDeIngreso, :fechaDeVecimiento, :precio, :cantidad, :stockMinimo, :lote, :marca, :medida, :iva)");
 			$consulta->bindParam(":imagen", $imagen);
 			$consulta->bindParam(":nombre", $nombre);
 			$consulta->bindParam(":id_proveedor", $id_proveedor);
@@ -133,6 +133,7 @@ class ModeloInsumo extends Db
 			$consulta->bindParam(":lote", $lote);
 			$consulta->bindParam(":marca", $marca);
 			$consulta->bindParam(":medida", $medida);
+			$consulta->bindParam(":iva", $iva);
 			$consulta->execute();
 
 			$this->conexion->commit();

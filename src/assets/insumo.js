@@ -134,7 +134,8 @@ addEventListener("DOMContentLoaded", function () {
       parrafos[3].innerText = `${res.precio * parseFloat(resultado["dolar"])
         } BS`;
       parrafos[4].innerText = `${parseFloat(res.precio)} $`;
-      parrafos[5].innerText = `${resultado["vencimiento"][0][0]}`;
+      parrafos[5].innerText = `${(res.iva) ? "Contiene IVA" : "Excento de IVA"}`;
+      parrafos[6].innerText = `${resultado["vencimiento"][0][0]}`;
 
 
 
@@ -562,4 +563,16 @@ addEventListener("DOMContentLoaded", function () {
       comentario.style.display = "none";
     }, 8000);
   }
+
+
+
+
+  //funcion para manejar el checkbox del iva
+  document.querySelector(".checkboxIva").addEventListener("change",function () {
+    if (this.checked) {
+      this.value = 1;
+    } else {
+      this.value = 0;
+    }
+  })
 });

@@ -208,7 +208,7 @@
 
                             <div class="input-group flex-nowrap">
                                 <span class="input-modal mt-1">
-                                    <img src="<?= $urlBase?>../src/assets/img/proveedor(2).png" width="20" height="20" uk-svg class="me-1">
+                                    <img src="<?= $urlBase ?>../src/assets/img/proveedor(2).png" width="20" height="20" uk-svg class="me-1">
                                 </span>
 
                                 <select class="form-control input-modal" name="id_proveedor" required>
@@ -361,6 +361,17 @@
                             </div>
 
                             <p class="p-error-stockMinimo d-none">El stock minimo solo puede contener digitos como minimo 1</p>
+
+
+                            <div class="form-check form-switch d-flex align-items-center">
+                                <div>
+                                    <input class="form-check-input checkboxIva" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="iva" value=0>
+                                </div>
+                                <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
+                                        IVA </label></div>
+
+                            </div>
+
 
 
                             <div class="mt-3 uk-text-right">
