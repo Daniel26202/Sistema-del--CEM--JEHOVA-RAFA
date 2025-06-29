@@ -17,27 +17,27 @@
 
         <div class="row ">
             <div class="col-md-6 mb-3">
-                <div class="card card-mentenimiento p-2 h-100">
+                <div class="card card-mentenimiento card-descarga p-2 h-100">
                     <div class="fw-bold ms-3 mt-3 me-3 fs-4">
                         Descargar Respaldo
                     </div>
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Haz clic para generar y descargar una copia de seguridad de tu base de datos.</p>
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/generarRespaldo/<?= $_SESSION["id_usuario"] ?>" class="btn btn-primary btn-block w-100 text-white text-decoration-none">Descargar Respaldo</a>
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/generarRespaldo/<?= $_SESSION["id_usuario"] ?>" class="btn btn-primary btn-block w-100 text-white text-decoration-none card-descarga-btn">Descargar Respaldo</a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 mb-3 ">
-                <div class="card card-mentenimiento p-2 h-100">
+                <div class="card card-mentenimiento card-restaurar p-2 h-100">
                     <div class="fw-bold ms-3 mt-3 me-3 fs-4">
                         Restaurar Base de Datos
                     </div>
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Selecciona un respaldo previamente descargado para restaurar la base de datos.</p>
-                            <a href="#" class="btn btn-secondary btn-block w-100 text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Restaurar Base</a>
+                            <a href="#" class="btn btn-secondary card-restaurar-btn btn-block w-100 text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Restaurar Base</a>
 
                         </div>
                     </div>
@@ -128,3 +128,4 @@
 
 
 <?php require_once './src/vistas/head/footer.php'; ?>
+<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaMantenimiento.js"></script>

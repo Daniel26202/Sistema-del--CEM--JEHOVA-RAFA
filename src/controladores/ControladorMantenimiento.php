@@ -29,6 +29,7 @@ class ControladorMantenimiento
 
 	public function mantenimiento($parametro)
 	{
+		$ayuda = "btnayudaMantenimiento";
 		$respaldos = $this->modelo->traerBds($this->backupRuta);
 		require_once './src/vistas/vistaMantenimiento/mantenimiento.php';
 	}
