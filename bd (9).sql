@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-06-2025 a las 20:35:18
+-- Tiempo de generación: 29-06-2025 a las 22:21:57
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -104,11 +104,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT
     INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, IN `nombre` TEXT, IN `id_proveedor` INT, IN `descripcion` TEXT, IN `fechaDeIngreso` DATE, IN `fechaDeVecimiento` DATE, IN `precio` FLOAT, IN `cantidad` INT, IN `stockMinimo` INT, IN `lote` TEXT, IN `marca` TEXT, IN `medida` TEXT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, IN `nombre` TEXT, IN `id_proveedor` INT, IN `descripcion` TEXT, IN `fechaDeIngreso` DATE, IN `fechaDeVecimiento` DATE, IN `precio` FLOAT, IN `cantidad` INT, IN `stockMinimo` INT, IN `lote` TEXT, IN `marca` TEXT, IN `medida` TEXT, IN `iva` BOOLEAN)   BEGIN
 	declare id_insumo int;
     declare id_entrada int;
     
-	INSERT INTO insumo VALUES (null, imagen, nombre, descripcion, marca, medida, precio , 'ACT',stockMinimo);
+	INSERT INTO insumo VALUES (null, imagen, nombre, descripcion, marca, medida, precio , 'ACT',stockMinimo, iva);
     set id_insumo = last_insert_id();
     
     INSERT INTO entrada VALUES (null, id_proveedor, lote, fechaDeIngreso, 'ACT');
@@ -221,7 +221,8 @@ INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`,
 (27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasico\r\nCafeína\r\nViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'historiaclinica', 'ACT', 'LEVE'),
 (28, 25, 43, 'diagnostico', 'indicaciones', '2025-06-10 10:11:51', '2026-06-24', 'nota', 'historial\r\n\r\n', 'ACT', 'LEVE'),
 (29, 25, 42, 'jfsdjfsdnfds', 'indicaciones', '2025-06-10 20:07:54', '2026-06-18', 'alguito', 'mhnfdjg algo mas', 'ACT', 'LEVE'),
-(30, 25, 43, 'diagnostivo', 'indicaciones', '2025-06-19 20:29:30', '2025-07-06', 'nota', 'historial clinico  de algo', 'ACT', 'LEVE');
+(30, 25, 43, 'diagnostivo', 'indicaciones', '2025-06-19 20:29:30', '2025-07-06', 'nota', 'historial clinico  de algo no se \r\n', 'ACT', 'LEVE'),
+(31, 89, 42, 'este enfermedad crónica', 'es una indicacion', '2025-06-27 19:24:28', '2025-06-29', 'es una nota', 'este en un historial', 'ACT', 'LEVE');
 
 --
 -- Disparadores `control`
@@ -237,10 +238,10 @@ DELIMITER $$
 CREATE TRIGGER `after_control_insert` AFTER INSERT ON `control` FOR EACH ROW BEGIN
     DECLARE enfermedad_cronica BOOLEAN;
     
-    -- Verificar  diagnóstico
+    
     SET enfermedad_cronica = (NEW.diagnostico LIKE '%crónic%' OR NEW.diagnostico LIKE '%permanente%');
     
-    -- Actualizar estado del paciente 
+    
     IF NEW.severidad = 'GRAVE' OR enfermedad_cronica THEN
         UPDATE paciente 
         SET estado_salud = IF(enfermedad_cronica, 'CRONICO', 'ENFERMO')
@@ -251,7 +252,7 @@ CREATE TRIGGER `after_control_insert` AFTER INSERT ON `control` FOR EACH ROW BEG
         WHERE id_paciente = NEW.id_paciente;
     END IF;
     
-    -- Registrar en tabla de historial
+    
     INSERT INTO historial_estados (id_paciente, estado_anterior, estado_nuevo, fecha_cambio)
     VALUES (NEW.id_paciente, 
             (SELECT estado_salud FROM paciente WHERE id_paciente = NEW.id_paciente),
@@ -329,7 +330,9 @@ INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeI
 (68, 7, 4532, '2025-06-21', 'ACT'),
 (69, 7, 2342, '2025-06-21', 'ACT'),
 (70, 7, 1223, '2025-06-21', 'ACT'),
-(71, 6, 4564, '2025-06-21', 'ACT');
+(71, 6, 4564, '2025-06-21', 'DES'),
+(72, 7, 5656, '2025-06-29', 'ACT'),
+(73, 7, 5656, '2025-06-29', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -352,18 +355,20 @@ CREATE TABLE `entrada_insumo` (
 --
 
 INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `fechaDeVencimiento`, `precio`, `cantidad_entrante`, `cantidad_disponible`) VALUES
-(52, 37, 58, '2025-05-25', 9.00, 89, 85),
-(53, 36, 59, '2026-02-11', 79.00, 34, 18),
-(54, 41, 62, '2026-06-29', 9.00, 20, 19),
+(52, 37, 58, '2025-05-25', 9.00, 89, 84),
+(53, 36, 59, '2026-02-11', 79.00, 34, 17),
+(54, 41, 62, '2026-06-29', 9.00, 20, 18),
 (55, 42, 63, '2025-06-27', 8.00, 12, 12),
 (56, 36, 64, '2026-06-21', 12.00, 1, 1),
 (57, 36, 65, '2026-06-21', 12.00, 1, 1),
 (58, 31, 66, '2026-06-21', 12.00, 1, 0),
 (59, 37, 67, '2025-06-29', 13.00, 2, 2),
-(60, 31, 68, '2027-06-21', 120.00, 9, 8),
+(60, 31, 68, '2027-06-21', 120.00, 9, 6),
 (61, 41, 69, '2025-06-29', 12.00, 5, 5),
 (62, 36, 70, '2025-06-29', 12.00, 2, 2),
-(63, 36, 71, '2025-06-29', 190.00, 1, 1);
+(63, 36, 71, '2025-06-29', 190.00, 1, 1),
+(64, 43, 72, '2026-07-06', 8.00, 12, 11),
+(65, 44, 73, '2027-06-30', 2.80, 12, 12);
 
 -- --------------------------------------------------------
 
@@ -512,7 +517,15 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_pa
 (149, '2025-06-21', 160.00, 'ACT', 25),
 (150, '2025-06-22', 1000.00, 'ACT', 25),
 (151, '2025-06-22', 240.00, 'Anulada', 25),
-(152, '2025-06-24', 29.56, 'ACT', 25);
+(152, '2025-06-24', 29.56, 'ACT', 25),
+(153, '2025-06-27', 9.00, 'ACT', 25),
+(154, '2025-06-28', 29.56, 'Anulada', 25),
+(155, '2025-06-28', 1080.00, 'ACT', 25),
+(156, '2025-06-28', 29.56, 'ACT', 25),
+(157, '2025-06-29', 478692.00, 'ACT', 23),
+(158, '2025-06-29', 123.00, 'ACT', 25),
+(159, '2025-06-29', 1.88, 'ACT', 25),
+(160, '2025-06-29', 17.00, 'ACT', 25);
 
 -- --------------------------------------------------------
 
@@ -555,7 +568,13 @@ INSERT INTO `factura_has_inventario` (`factura_id_factura`, `id_entradaDeInsumo`
 (148, 54, 1, 'ACT'),
 (149, 53, 2, 'ACT'),
 (151, 53, 3, 'ACT'),
-(152, 60, 1, 'ACT');
+(152, 60, 1, 'ACT'),
+(153, 52, 1, 'ACT'),
+(154, 60, 1, 'ACT'),
+(155, 53, 1, 'ACT'),
+(156, 60, 1, 'ACT'),
+(160, 54, 1, 'ACT'),
+(160, 64, 1, 'ACT');
 
 -- --------------------------------------------------------
 
@@ -572,6 +591,13 @@ CREATE TABLE `historial_estados` (
   `id_control` int(11) DEFAULT NULL,
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historial_estados`
+--
+
+INSERT INTO `historial_estados` (`id_historial`, `id_paciente`, `estado_anterior`, `estado_nuevo`, `fecha_cambio`, `id_control`, `id_usuario`) VALUES
+(1, 89, 'CRONICO', 'CRONICO', '2025-06-27 19:24:28', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -650,10 +676,12 @@ INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `preci
 (11, '2025-04-28 18:37:52', 0, NULL, 0, NULL, 27, '0000-00-00 00:00:00', 'DES'),
 (12, '2025-04-28 18:42:13', 0, NULL, 0, NULL, 26, '0000-00-00 00:00:00', 'DES'),
 (13, '2025-04-29 07:32:00', 0, NULL, 1, NULL, 27, '0000-00-00 00:00:00', 'Realizadas'),
-(14, '2025-05-23 08:17:49', 0, 0, 0, 0, 26, '0000-00-00 00:00:00', 'Pendiente'),
+(14, '2025-05-23 08:17:49', 478692, 4447.81, 478692, 4447.81, 26, '2025-06-29 03:51:35', 'Realizada'),
 (15, '2025-06-10 20:20:19', 0, 0, 0, 0, 29, '0000-00-00 00:00:00', 'DES'),
 (16, '2025-06-21 19:36:00', 0, 0, 0, 0, 30, '0000-00-00 00:00:00', 'DES'),
-(17, '2025-06-21 19:48:25', 0, 0, 0, 0, 30, '0000-00-00 00:00:00', 'DES');
+(17, '2025-06-21 19:48:25', 0, 0, 0, 0, 30, '0000-00-00 00:00:00', 'DES'),
+(18, '2025-06-29 19:26:13', 0, 0, 123, 0, 30, '2025-06-29 14:02:01', 'Realizada'),
+(19, '2025-06-29 20:11:25', 1.88073, 0.017475, 1.88073, 0.017475, 30, '2025-06-29 14:11:37', 'Realizada');
 
 -- --------------------------------------------------------
 
@@ -670,29 +698,32 @@ CREATE TABLE `insumo` (
   `medida` varchar(35) NOT NULL,
   `precio` float(12,2) NOT NULL,
   `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `stockMinimo` int(11) NOT NULL
+  `stockMinimo` int(11) NOT NULL,
+  `iva` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `insumo`
 --
 
-INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `medida`, `precio`, `estado`, `stockMinimo`) VALUES
-(24, '', 'Paracetamol', 'El paracetamol, también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado', '', '', 10.33, 'DES', 0),
-(25, '', 'Ibuprofeno', 'El ibuprofeno es un antinflamatorio no esteroideo (AINE) que pertenece al subgrupo de fármacos derivados del ácido propiónico.', '', '', 17.90, 'DES', 0),
-(29, '2025-04-29_1745911425_WhatsApp Image 2025-04-03 at 11.51.47 PM.jpeg', 'Ibuprofeno', 'descripción', '', '', 2.10, 'DES', 0),
-(30, '2025-05-02_1746200226_9amALQfcTkJsr2zlMRcpi99AnctFZBjlnRxibrip.jpg', 'Ibuprofeno', 'descripción', '', '', 2.10, 'DES', 0),
-(31, '2025-05-02_1746216592_img27.jpg', 'Insumo', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '400 ml', 29.56, 'ACT', 1),
-(32, '2025-05-05_1746489843_img23.jpg', 'Lobo', 'Es un lobo malvado', 'Tecno spar 30212 ', '400 ml', 0.60, 'DES', 1),
-(33, '2025-05-07_1746668110_img16.jpg', 'Spidermas', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '600 ml', 123.00, 'ACT', 1),
-(34, '2025-05-08_1746714309_img5.jpg', 'Caballero', 'El ibuprofeno es un antinflamaupo de fármacos derivados del ácido propiónico.', 'Tecno spar 30212', '600 ml', 2040.00, 'DES', 1),
-(35, '2025-05-08_1746715177_img29.jpg', 'Insumodolar', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '200 ml', 870.00, 'DES', 5),
-(36, '2025-06-21_1750492799_img30.png', 'Ansumo', 'El ibuprofeno e', 'Tecno spar 3022 ', '400 ml', 80.00, 'ACT', 2),
-(37, '2025-05-22_1747932563_img16.jpg', 'Spiderman', 'descripcio1', 'Spidermas', '100 g', 9.00, 'ACT', 1),
-(39, '2025-06-20_1750445529_4992462.jpg', 'Carlos', 'es un SO ', 'Microsoft', '1 g', 5.00, 'ACT', 1),
-(40, '2025-06-21_1750492468_Neon03.jpg', 'Disparador', 'es una descripcion', 'Lenovo', '1 g', 9.00, 'ACT', 5),
-(41, '2025-06-21_1750492543_Neon03.jpg', 'Disparador', 'es una descripcion', 'Lenovo', '1 g', 9.00, 'ACT', 5),
-(42, '2025-06-21_1750492723_1259289.jpg', 'Card', 'es una descripcion', 'Microsoft', '1 g', 8.00, 'ACT', 5);
+INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `medida`, `precio`, `estado`, `stockMinimo`, `iva`) VALUES
+(24, '', 'Paracetamol', 'El paracetamol, también conocido como acetaminofén o acetaminofeno, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado', '', '', 10.33, 'DES', 0, 0),
+(25, '', 'Ibuprofeno', 'El ibuprofeno es un antinflamatorio no esteroideo (AINE) que pertenece al subgrupo de fármacos derivados del ácido propiónico.', '', '', 17.90, 'DES', 0, 0),
+(29, '2025-04-29_1745911425_WhatsApp Image 2025-04-03 at 11.51.47 PM.jpeg', 'Ibuprofeno', 'descripción', '', '', 2.10, 'DES', 0, 0),
+(30, '2025-05-02_1746200226_9amALQfcTkJsr2zlMRcpi99AnctFZBjlnRxibrip.jpg', 'Ibuprofeno', 'descripción', '', '', 2.10, 'DES', 0, 0),
+(31, '2025-05-02_1746216592_img27.jpg', 'Insumo', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '400 ml', 29.56, 'ACT', 1, 0),
+(32, '2025-05-05_1746489843_img23.jpg', 'Lobo', 'Es un lobo malvado', 'Tecno spar 30212 ', '400 ml', 0.60, 'DES', 1, 0),
+(33, '2025-05-07_1746668110_img16.jpg', 'Spidermas', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '600 ml', 123.00, 'ACT', 1, 0),
+(34, '2025-05-08_1746714309_img5.jpg', 'Caballero', 'El ibuprofeno es un antinflamaupo de fármacos derivados del ácido propiónico.', 'Tecno spar 30212', '600 ml', 2040.00, 'DES', 1, 0),
+(35, '2025-05-08_1746715177_img29.jpg', 'Insumodolar', 'Es un antinflamatorio son derivados del ácido propiónico.', 'Tecno spar 30212 ', '200 ml', 870.00, 'DES', 5, 0),
+(36, '2025-06-21_1750492799_img30.png', 'Ansumo', 'El ibuprofeno e', 'Tecno spar 3022 ', '400 ml', 80.00, 'ACT', 2, 0),
+(37, '2025-05-22_1747932563_img16.jpg', 'Spiderman', 'descripcio1', 'Spidermas', '100 g', 9.00, 'ACT', 1, 0),
+(39, '2025-06-20_1750445529_4992462.jpg', 'Carlos', 'es un SO ', 'Microsoft', '1 g', 5.00, 'ACT', 1, 0),
+(40, '2025-06-21_1750492468_Neon03.jpg', 'Disparador', 'es una descripcion', 'Lenovo', '1 g', 9.00, 'ACT', 5, 0),
+(41, '2025-06-21_1750492543_Neon03.jpg', 'Disparador', 'es una descripcion', 'Lenovo', '1 g', 9.00, 'ACT', 5, 0),
+(42, '2025-06-21_1750492723_1259289.jpg', 'Card', 'es una descripcion', 'Microsoft', '1 g', 8.00, 'DES', 5, 0),
+(43, '2025-06-29_1751222978_img5.jpg', 'Julio', 'es un SO ', 'Microsoft', '1 g', 8.00, 'ACT', 1, 1),
+(44, '2025-06-29_1751228448_img16.jpg', 'Preuva', 'es un SO ', 'Microsoft', '1 g', 2.80, 'ACT', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -713,7 +744,8 @@ CREATE TABLE `insumodehospitalizacion` (
 
 INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospitalizacion`, `id_inventario`, `cantidad`) VALUES
 (13, 16, 58, 1),
-(14, 17, 52, 2);
+(14, 17, 52, 2),
+(15, 18, 60, 1);
 
 -- --------------------------------------------------------
 
@@ -754,7 +786,7 @@ INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apel
 (23, 'V', '28150004', 'Juan', 'Silva', '04121338031', 'Calle 10 entre 3 y 7', '2001-09-22', 'masculino', 'ACT', 'SALUDABLE'),
 (24, 'V', '28329224', 'Rocio', 'Rodriguez', '04121338031', 'URB EL BOSQUE CALLE 12', '2025-04-02', 'femenino', 'ACT', 'SALUDABLE'),
 (25, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'masculino', 'ACT', 'SALUDABLE'),
-(26, 'V', '17664525', 'Sofia', 'Sofia', '4121338031', 'Direccion', '2001-09-22', 'Femenino', 'ACT', 'SALUDABLE'),
+(26, 'V', '17664525', 'Sofia', 'Sofia', '4121338031', 'Direccion', '2001-09-22', '', 'ACT', 'SALUDABLE'),
 (27, 'V', '158961', 'Aaaa', 'Aaaa', '4121338032', 'Direccion', '2001-09-22', 'Masculino', 'DES', 'SALUDABLE'),
 (28, 'V', '2000001', 'Argentina', 'Apellido_1', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
 (29, 'V', '2000002', 'Brasil', 'Apellido_2', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
@@ -816,7 +848,8 @@ INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apel
 (85, 'V', '2000058', 'Cuba', 'Apellido_58', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
 (86, 'V', '2000059', 'República Dominicana', 'Apellido_59', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
 (87, 'V', '2000060', 'Puerto Rico', 'Apellido_60', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(88, 'V', '1480973', 'Liam', 'Hendrick', '04128649495', 'En su casa ', '1997-06-28', 'Masculino', 'ACT', 'SALUDABLE');
+(88, 'V', '1480973', 'Liam', 'Hendrick', '04128649495', 'En su casa ', '1997-06-28', 'Femenino', 'DES', 'SALUDABLE'),
+(89, 'V', '341234', 'Gol', 'Peterson', '04123433454', 'California', '2000-06-05', 'Masculino', 'ACT', 'CRONICO');
 
 -- --------------------------------------------------------
 
@@ -968,7 +1001,17 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (179, 5, 149, '', 160.00),
 (180, 5, 150, '', 1000.00),
 (181, 5, 151, '', 240.00),
-(182, 6, 152, '1234', 29.56);
+(182, 6, 152, '1234', 29.56),
+(183, 5, 153, '', 9.00),
+(184, 5, 154, '', 29.56),
+(185, 6, 154, '', 0.00),
+(186, 5, 155, '4326', 200.00),
+(187, 6, 155, '4326', 880.00),
+(188, 5, 156, '', 29.56),
+(189, 5, 157, '', 478692.00),
+(190, 5, 158, '', 123.00),
+(191, 5, 159, '', 1.88),
+(192, 5, 160, '', 17.00);
 
 -- --------------------------------------------------------
 
@@ -988,7 +1031,7 @@ CREATE TABLE `patologia` (
 
 INSERT INTO `patologia` (`id_patologia`, `nombre_patologia`, `estado`) VALUES
 (2, 'DIABETES TIPO 1', 'DES'),
-(3, 'DIABETES TIPO 2', 'ACT'),
+(3, 'DIABETES TIPO 2', 'DES'),
 (5, 'EPOC', 'ACT'),
 (6, 'ARTRITIS REUMATOIDE', 'ACT'),
 (7, 'ENFERMEDAD CELÍACA', 'ACT'),
@@ -1092,7 +1135,9 @@ INSERT INTO `patologiadepaciente` (`id_patologiaDePaciente`, `id_paciente`, `id_
 (233, 25, 9, '2025-06-19 20:29:30'),
 (234, 25, 186, '2025-06-19 20:29:30'),
 (235, 25, 190, '2025-06-19 20:29:30'),
-(236, 25, 192, '2025-06-19 20:29:30');
+(236, 25, 192, '2025-06-19 20:29:30'),
+(237, 89, 5, '2025-06-27 19:24:28'),
+(238, 89, 7, '2025-06-27 19:24:28');
 
 -- --------------------------------------------------------
 
@@ -1117,13 +1162,14 @@ CREATE TABLE `personal` (
 --
 
 INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `tipodecategoria`, `id_especialidad`, `usuario`) VALUES
-(18, 'V', '30554053', 'Wilmer', 'Baez', '04145378699', 'Administrador', NULL, 1),
+(18, 'V', '30554053', 'Wilmer', 'Baez', '04145378608', 'Administrador', NULL, 1),
 (19, 'V', '1232233', 'David', 'Carlos', '04142323233', '', 7, 42),
 (20, 'V', '12123343', 'Carlos', 'Garcia', '04244546565', '', 7, 43),
 (21, 'V', '12020333', 'Ana', 'Bracho', '04122323422', '', 6, 45),
 (22, 'V', '6755654', 'Julian', 'Valdez', '04122323212', '', 4, 46),
 (23, 'V', '867548', 'Jaun', 'Edlkfjfdsk', '04243943432', '', 5, 49),
-(24, 'V', '1223211', 'Auto', 'Auto', '04122232323', 'Administrador', NULL, 50);
+(24, 'V', '1223211', 'Auto', 'Auto', '04122232323', 'Administrador', NULL, 50),
+(25, 'V', '5675324', 'Alen', 'Alenrere', '04123434343', 'Administrador', NULL, 51);
 
 -- --------------------------------------------------------
 
@@ -1249,7 +1295,8 @@ INSERT INTO `serviciomedico_has_factura` (`serviciomedico_id_servicioMedico`, `f
 (24, 107),
 (24, 109),
 (25, 109),
-(25, 150);
+(25, 150),
+(25, 155);
 
 -- --------------------------------------------------------
 
@@ -1310,7 +1357,9 @@ INSERT INTO `sintomas_control` (`id_sintomas_control`, `id_sintomas`, `id_contro
 (47, 6, 29),
 (48, 8, 29),
 (49, 5, 30),
-(50, 6, 30);
+(50, 6, 30),
+(51, 6, 31),
+(52, 8, 31);
 
 -- --------------------------------------------------------
 
@@ -1568,19 +1617,19 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT de la tabla `control`
 --
 ALTER TABLE `control`
-  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidad`
@@ -1592,13 +1641,13 @@ ALTER TABLE `especialidad`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_estados`
 --
 ALTER TABLE `historial_estados`
-  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_historial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
@@ -1616,25 +1665,25 @@ ALTER TABLE `horarioydoctor`
 -- AUTO_INCREMENT de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
-  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `paciente`
 --
 ALTER TABLE `paciente`
-  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
@@ -1646,7 +1695,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
@@ -1658,13 +1707,13 @@ ALTER TABLE `patologia`
 -- AUTO_INCREMENT de la tabla `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
-  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=237;
+  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=239;
 
 --
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
@@ -1688,7 +1737,7 @@ ALTER TABLE `sintomas`
 -- AUTO_INCREMENT de la tabla `sintomas_control`
 --
 ALTER TABLE `sintomas_control`
-  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- Restricciones para tablas volcadas
