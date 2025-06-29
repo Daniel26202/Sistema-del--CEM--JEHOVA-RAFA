@@ -484,11 +484,6 @@ addEventListener("DOMContentLoaded", () => {
         console.log("e");
         console.log(lista);
         dataInsumo.push(lista);
-
-        // let insumo = dataInsumo.find(i => i.nombreInsumo === lista.nombreInsumo);
-        // console.log(insumo
-
-        //insumo.cantidad -=
       });
 
       // actualizamos la tabla
@@ -549,7 +544,7 @@ addEventListener("DOMContentLoaded", () => {
         this.parentElement.parentElement.children[3].innerText
       );
       let botonDeAnadir =
-        this.parentElement.parentElement.children[6].children[0];
+        this.parentElement.parentElement.children[7].children[0];
 
       if (
         this.value <= cantidadDisponible &&
@@ -571,22 +566,13 @@ addEventListener("DOMContentLoaded", () => {
       html += `
         <tr class="border-top ">
         <td class="border-top"> ${index + 1}</td>
-        <td class="border-top border-start text-center"> ${
-          element["nombreInsumo"]
-        }</td>
-        <td class="border-top border-start text-center"> ${
-          element["medidaInsumo"]
-        }</td>
-        <td class="border-top border-start text-center"> ${
-          element["cantidad"]
-        }</td>
-        <td class="border-top border-start text-center">${
-          element["precio"]
-        } BS</td>
+        <td class="border-top border-start text-center"> ${element["nombreInsumo"]}</td>
+        <td class="border-top border-start text-center"> ${element["medidaInsumo"]}</td>
+        <td class="border-top border-start text-center"> ${element["cantidad"]}</td>
+        <td class="border-top border-start text-center">${element["precio"] - (element["iva"] == "No contiene" ? 0 : element["iva"])} BS</td>
+        <td class="border-top border-start text-center">${element["iva"]} BS</td>
 
-        <td class="border-top border-start text-center">${
-          element["subTotal"]
-        } BS</td>
+        <td class="border-top border-start text-center">${element["subTotal"]} BS</td>
 
         <td class="border-top border-start">
 
@@ -620,7 +606,7 @@ addEventListener("DOMContentLoaded", () => {
   };
 
   //funcion para insertar varios insumos a la vez
-  const insertarVariosInsumos = (id_insumo, nombreInsumo, cantidad, precio,medidaInsumo) => {
+  const insertarVariosInsumos = (id_insumo, nombreInsumo, iva,cantidad, precio,medidaInsumo) => {
     let subTotalRedondeado = (
       parseFloat(cantidad) * parseFloat(precio)
     ).toFixed(2);
@@ -630,7 +616,8 @@ addEventListener("DOMContentLoaded", () => {
       cantidad: cantidad,
       precio: parseFloat(precio),
       subTotal: subTotalRedondeado,
-      medidaInsumo: medidaInsumo
+      medidaInsumo: medidaInsumo,
+      iva: iva != "No contiene" ? parseFloat(precio) * 0.3 : "No contiene",
     };
 
     listaModalInsumo.push(nuevoObjInsumo);
@@ -677,10 +664,11 @@ addEventListener("DOMContentLoaded", () => {
       const nombreInsumo = fila.children[1].innerText; // Columna Insumo
       const medidaInsumo = fila.children[2].innerText;//Columna Medida
       const precio = fila.children[4].innerText; // Columna precio
-      //const numero_de_lote = fila.children[4].innerText; // Columna numero_de_lote
-      const cantidad = fila.children[5].children[0].value; // Columna cantidad
+      const iva = fila.children[5].innerText; // Columna numero_de_lote
+      const cantidad = fila.children[6].children[0].value; // Columna cantidad
+      console.log(cantidad)
 
-      insertarVariosInsumos(id_insumo, nombreInsumo, cantidad, precio, medidaInsumo);
+      insertarVariosInsumos(id_insumo, nombreInsumo, iva, cantidad, precio, medidaInsumo);
       fila.classList.add("d-none");
     });
   });
@@ -695,7 +683,10 @@ addEventListener("DOMContentLoaded", () => {
         <td class="border-top nombre"><div class="fw-bolder">INSUMO:</div> ${element["nombreInsumo"]}</td>
         <td class="border-top nombre"><div class="fw-bolder">Medida:</div> ${element["medidaInsumo"]}</td>
         <td class="border-top"><div class="fw-bolder">CANTIDAD:</div> ${element["cantidad"]}</td>
-        <td class="border-top"><div class="fw-bolder">PRECIO:</div>${element["precio"]} BS</td>
+        <td class="border-top"><div class="fw-bolder">PRECIO:</div>${
+          element["precio"] - (element["iva"] == "No contiene" ? 0 : element["iva"])
+        } BS</td>
+        <td class="border-top"><div class="fw-bolder">IVA:</div>${element["iva"]} BS</td>
         <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${element["subTotal"]} BS</td>
         <td class="border-top"></td>
 

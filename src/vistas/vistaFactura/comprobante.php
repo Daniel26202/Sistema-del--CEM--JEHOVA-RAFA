@@ -34,7 +34,7 @@
                     <div class="uk-card-header">
                         <div class="uk-grid-small uk-flex-middle" uk-grid>
                             <div class=" m-auto d-flex justify-content-center" style="width: 40%;">
-                                <img  src="<?= $urlBase ?>../src/assets/icons/logo2.png">
+                                <img src="<?= $urlBase ?>../src/assets/icons/logo2.png">
                             </div>
 
                         </div>
@@ -116,9 +116,16 @@
                             <div class="d-flex justify-content-between  ">
                                 <h5 class="h5-comprobante ">Precio</h5>
                                 <h5 class="h5-comprobante ">
-                                    <?php echo $d["precio"] . " BS" ?>
+                                    <?php echo ($d["iva"]) ? $d["precio"] - ($d["precio"] * 0.30) . " BS"  : $d["precio"] . " BS"?>
                                 </h5>
                             </div>
+                            <div class="d-flex justify-content-between  ">
+                                <h5 class="h5-comprobante ">IVA</h5>
+                                <h5 class="h5-comprobante ">
+                                    <?php echo ($d["iva"]) ? $d["precio"] * 0.30 . " BS"  : "0" ." BS"?>
+                                </h5>
+                            </div>
+                            <hr>
 
                         <?php endforeach ?>
                         <hr>

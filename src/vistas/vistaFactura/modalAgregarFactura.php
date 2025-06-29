@@ -534,7 +534,7 @@
                 <th class=" text-center border-start">Medida</th>
                 <th class=" text-center border-start">Disponible</th>
                 <th class=" text-center border-start">Precio</th>
-                <!-- <th class=" text-center border-start">Lote</th> -->
+                <th class=" text-center border-start">IVA</th>
                 <th class=" text-center border-start">Cantidad</th>
                 <th class=" text-center border-start">Añadir</th>
 
@@ -562,12 +562,12 @@
                       <?php echo $i['cantidad_inventario']; ?>
                     </td>
                     <td class="text-center border-start">
-                      <?php echo $i['precio'] ?> BS
+                      <?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> BS
                     </td>
-                    <!-- <td class="text-center border-start">
-                      <?php //echo $i['numero_de_lote']; 
+                    <td class="text-center border-start">
+                      <?php echo ($i['iva']) ? $i['precio'] * 0.30 : "No contiene" ; 
                       ?>
-                    </td> -->
+                    </td>
                     <td class="text-center border-start">
                       <input type="number" class="form-control input-buscar m-auto inputs-cantidad-insumos">
                     </td>
@@ -656,7 +656,7 @@
 <div class="modal fade" id="modal-agregar-insumos-confirmar" data-bs-backdrop="static" data-bs-keyboard="false"
   tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog ">
-    <div class="modal-content agregar" >
+    <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -703,6 +703,7 @@
                   <th class=" text-center border-start">Medida</th>
                   <th class=" text-center border-start">Cantidad</th>
                   <th class=" text-center border-start">Precio</th>
+                  <th class=" text-center border-start">IVA</th>
                   <th class=" text-center border-start">Sub-total</th>
                   <th class=" text-center border-start">Acción</th>
 
@@ -946,8 +947,8 @@
                       <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
                       <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
                         value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none"  name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none"  name="id_cita" value="<?= $datoCita['id_cita'] ?>">
+                      <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
+                      <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
                       <td>
                         <div class="fw-bolder">CI:</div>
                         <?= $datoCita["cedula_p"]; ?>
@@ -967,7 +968,7 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-                  
+
                 <?php
                 // Validar si el parámetro existe y si contiene una "h" (no distingue mayúsculas/minúsculas)
                 elseif (isset($parametro[0]) && stripos($parametro[0], 'h') !== false) :
@@ -991,7 +992,7 @@
                       </td>
                     </tr>
                   <?php endforeach ?>
-                  
+
                 <?php else: ?>
 
                   <input type="hidden" class="" id="inputPaciente" name="id_paciente" value="">
