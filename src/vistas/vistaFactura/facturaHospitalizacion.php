@@ -158,8 +158,8 @@
                         <label class="fw-bolder">TOTAL: </label>
                         <label>BS</label>
                         <?php foreach ($hostalizacionFacturar as $datoH): ?>
-                            <input type="number" style="margin-left: -1px; padding-left: 6px;"
-                                class=" w-25 input-buscar text-center" id="totalFactura" disabled>
+                            <input type="text" style="margin-left: -1px; padding-left: 6px;"
+                                class=" w-25 input-buscar text-center" id="totalFactura" disabled value=<?= $datoH['total'] ?>>
                             <input type="hidden" id="inputTotalCita" value="<?= $datoH['total'] ?>">
                         <?php endforeach; ?>
 
@@ -178,8 +178,7 @@
 </div>
 
 
-
+<?php require_once 'modalAgregarFactura.php'; ?>
 <?php require_once './src/vistas/head/footer.php'; ?>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/factura.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaFactura.js"></script>
