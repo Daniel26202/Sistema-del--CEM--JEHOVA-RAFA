@@ -257,7 +257,7 @@ class ControladorHospitalizacion
         $total = $datos[3];
         $totalME = $datos[4];
         $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME);
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/$idH");
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H$idH");
     }
 
     private function permisos($id_rol, $permiso, $modulo)
