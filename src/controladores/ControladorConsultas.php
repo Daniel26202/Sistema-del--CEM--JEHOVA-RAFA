@@ -43,7 +43,7 @@ class ControladorConsultas
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorServicio");
 		} else {
 			$precio_decimal = floatval($_POST['precioD']);
-			$insercion = $this->modelo->insertarSevicio($_POST['id_categoria'],  $precio_decimal);
+			$insercion = $this->modelo->insertarSevicio($_POST['id_categoria'],  $precio_decimal, $_POST['tipo']);
 			if ($insercion) {
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha Insertado un nuevo  servicio medico");
@@ -87,7 +87,7 @@ class ControladorConsultas
 	{
 		$precio_decimal = floatval($_POST['precioD']);
 	
-		$edicion = $this->modelo->editar($_POST["id_servicioMedico"], $precio_decimal);
+		$edicion = $this->modelo->editar($_POST["id_servicioMedico"], $precio_decimal, $_POST['tipo']);
 		if ($edicion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha modificadp un servicio medico");

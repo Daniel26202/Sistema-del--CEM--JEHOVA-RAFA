@@ -60,12 +60,13 @@ class ModeloConsultas extends Db
         }
     }
 
-    public function insertarSevicio($id_categoria, $precio)
+    public function insertarSevicio($id_categoria, $precio, $tipo)
     {
         try {
-            $consulta = $this->conexion->prepare("INSERT INTO serviciomedico (id_categoria, precio, estado) VALUES (:id_categoria, :precio, 'ACT')");
+            $consulta = $this->conexion->prepare("INSERT INTO serviciomedico (id_categoria, precio, estado, tipo) VALUES (:id_categoria, :precio, 'ACT', :tipo)");
             $consulta->bindParam(":id_categoria", $id_categoria);
             $consulta->bindParam(":precio", $precio);
+            $consulta->bindParam(":tipo", $tipo);
             $consulta->execute();
             return 1;
         } catch (\Exception $e) {
@@ -111,12 +112,13 @@ class ModeloConsultas extends Db
     }
 
 
-    public function editar($id_servicioMedico, $precio)
+    public function editar($id_servicioMedico, $precio, $tipo)
     {
         try {
-            $consulta = $this->conexion->prepare("UPDATE serviciomedico SET precio = :precio WHERE id_servicioMedico = :id_servicioMedico");
+            $consulta = $this->conexion->prepare("UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id_servicioMedico");
             $consulta->bindParam(":precio", $precio);
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
+            $consulta->bindParam(":tipo", $tipo);
             $consulta->execute();
             return 1;
         } catch (\Exception $e) {

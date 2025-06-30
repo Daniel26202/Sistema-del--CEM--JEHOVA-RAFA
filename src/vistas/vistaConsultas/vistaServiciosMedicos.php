@@ -298,6 +298,12 @@
 
                                     </div>
 
+                                    <select class="form-control input-modal" aria-label=""
+                                        name="tipo" >
+                                        <option value="Cita">Cita</option>
+                                        <option value="Examenes">Examenes</option>
+                                    </select>
+
 
 
 
@@ -425,6 +431,18 @@
                 <span class="input-modal mt-1">$</span>
 
             </div>
+
+            <select class="form-control input-modal" aria-label=""
+                name="tipo" required>
+                <option value="" selected disabled>Seleccione el de Servicio</option>
+
+
+                <option value="Cita">Cita</option>
+                <option value="Examenes">Examenes</option>
+
+
+
+            </select>
 
 
 

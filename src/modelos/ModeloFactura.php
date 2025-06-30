@@ -92,7 +92,7 @@ class ModeloFactura extends Db
 	public function mostrarServicios()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.id_categoria,cs.nombre, d.nombre AS nombre_d, d.apellido AS apellido_d,sm.*,d.*  FROM bd.categoria_servicio cs JOIN bd.serviciomedico sm ON sm.id_categoria = cs.id_categoria JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico JOIN bd.personal d ON psm.personal_id_personal = d.id_personal JOIN segurity.usuario u ON  u.id_usuario = d.usuario WHERE sm.estado = 'ACT' AND cs.nombre != 'Consulta' ");
+			$consulta = $this->conexion->prepare("SELECT cs.id_categoria,cs.nombre, d.nombre AS nombre_d, d.apellido AS apellido_d,sm.*,d.*  FROM bd.categoria_servicio cs JOIN bd.serviciomedico sm ON sm.id_categoria = cs.id_categoria JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico JOIN bd.personal d ON psm.personal_id_personal = d.id_personal JOIN segurity.usuario u ON  u.id_usuario = d.usuario WHERE sm.estado = 'ACT' AND cs.nombre != 'Consulta' AND tipo != 'Cita' ");
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
 			return 0;

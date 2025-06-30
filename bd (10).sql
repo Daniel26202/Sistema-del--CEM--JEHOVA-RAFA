@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-06-2025 a las 22:21:57
+-- Tiempo de generación: 30-06-2025 a las 10:13:57
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -143,7 +143,8 @@ INSERT INTO `categoria_servicio` (`id_categoria`, `nombre`, `estado`) VALUES
 (101, 'Emergencia', 'ACT'),
 (102, 'Acupuntura', 'ACT'),
 (103, 'Oftalmología', 'ACT'),
-(104, 'Odontología', 'ACT');
+(104, 'Odontología', 'ACT'),
+(105, 'Hello', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -525,7 +526,19 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `paciente_id_pa
 (157, '2025-06-29', 478692.00, 'ACT', 23),
 (158, '2025-06-29', 123.00, 'ACT', 25),
 (159, '2025-06-29', 1.88, 'ACT', 25),
-(160, '2025-06-29', 17.00, 'ACT', 25);
+(160, '2025-06-29', 17.00, 'ACT', 25),
+(161, '2025-06-30', 3000.00, 'ACT', 25),
+(162, '2025-06-30', 6000.00, 'ACT', 25),
+(163, '2025-06-30', 6000.00, 'ACT', 25),
+(164, '2025-06-30', 6000.00, 'ACT', 25),
+(165, '2025-06-30', 6000.00, 'ACT', 25),
+(166, '2025-06-30', 6000.00, 'ACT', 25),
+(167, '2025-06-30', 6000.00, 'ACT', 25),
+(168, '2025-06-30', 6000.00, 'ACT', 25),
+(169, '2025-06-30', 6000.00, 'ACT', 25),
+(170, '2025-06-30', 6000.00, 'ACT', 25),
+(171, '2025-06-30', 6000.00, 'ACT', 25),
+(172, '2025-06-30', 6000.00, 'ACT', 25);
 
 -- --------------------------------------------------------
 
@@ -1011,7 +1024,19 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (189, 5, 157, '', 478692.00),
 (190, 5, 158, '', 123.00),
 (191, 5, 159, '', 1.88),
-(192, 5, 160, '', 17.00);
+(192, 5, 160, '', 17.00),
+(193, 5, 161, '', 3000.00),
+(194, 5, 162, '', 6000.00),
+(195, 5, 163, '', 6000.00),
+(196, 5, 164, '', 6000.00),
+(197, 5, 165, '', 6000.00),
+(198, 5, 166, '', 6000.00),
+(199, 5, 167, '', 6000.00),
+(200, 5, 168, '', 6000.00),
+(201, 5, 169, '', 6000.00),
+(202, 5, 170, '', 6000.00),
+(203, 5, 171, '', 6000.00),
+(204, 5, 172, '', 6000.00);
 
 -- --------------------------------------------------------
 
@@ -1234,29 +1259,31 @@ CREATE TABLE `serviciomedico` (
   `id_servicioMedico` int(11) NOT NULL,
   `id_categoria` int(11) NOT NULL,
   `precio` float(12,2) NOT NULL,
-  `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
+  `estado` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `tipo` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `serviciomedico`
 --
 
-INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `estado`) VALUES
-(22, 9, 2200.00, 'ACT'),
-(23, 100, 1500.00, 'ACT'),
-(24, 1, 3000.00, 'ACT'),
-(25, 101, 1000.00, 'ACT'),
-(26, 2, 123.00, 'DES'),
-(27, 2, 123.00, 'DES'),
-(28, 1, 31395.00, 'DES'),
-(29, 1, 16905.00, 'DES'),
-(30, 1, 169.05, 'DES'),
-(31, 101, 12.00, 'DES'),
-(32, 1, 479.78, 'DES'),
-(33, 100, 1.07, 'DES'),
-(34, 104, 24.95, 'ACT'),
-(35, 103, 60.66, 'ACT'),
-(36, 102, 46.81, 'ACT');
+INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `estado`, `tipo`) VALUES
+(22, 9, 2200.00, 'ACT', 'Examenes'),
+(23, 100, 1500.00, 'ACT', 'Cita'),
+(24, 1, 3000.00, 'ACT', 'Cita'),
+(25, 101, 1000.00, 'ACT', 'Examenes'),
+(26, 2, 123.00, 'DES', ''),
+(27, 2, 123.00, 'DES', ''),
+(28, 1, 31395.00, 'DES', ''),
+(29, 1, 16905.00, 'DES', ''),
+(30, 1, 169.05, 'DES', ''),
+(31, 101, 12.00, 'DES', ''),
+(32, 1, 479.78, 'DES', ''),
+(33, 100, 1.07, 'DES', ''),
+(34, 104, 24.95, 'ACT', 'Cita'),
+(35, 103, 60.66, 'ACT', 'Cita'),
+(36, 102, 46.81, 'ACT', 'Cita'),
+(37, 105, 5.48, 'ACT', 'Examenes');
 
 -- --------------------------------------------------------
 
@@ -1266,37 +1293,44 @@ INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `es
 
 CREATE TABLE `serviciomedico_has_factura` (
   `serviciomedico_id_servicioMedico` int(11) NOT NULL,
-  `factura_id_factura` int(11) NOT NULL
+  `factura_id_factura` int(11) NOT NULL,
+  `doctor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `serviciomedico_has_factura`
 --
 
-INSERT INTO `serviciomedico_has_factura` (`serviciomedico_id_servicioMedico`, `factura_id_factura`) VALUES
-(25, 58),
-(26, 61),
-(25, 61),
-(25, 62),
-(25, 63),
-(25, 91),
-(26, 91),
-(25, 91),
-(25, 92),
-(26, 92),
-(25, 93),
-(26, 93),
-(27, 95),
-(25, 96),
-(26, 97),
-(25, 104),
-(25, 105),
-(25, 106),
-(24, 107),
-(24, 109),
-(25, 109),
-(25, 150),
-(25, 155);
+INSERT INTO `serviciomedico_has_factura` (`serviciomedico_id_servicioMedico`, `factura_id_factura`, `doctor`) VALUES
+(25, 58, 0),
+(26, 61, 0),
+(25, 61, 0),
+(25, 62, 0),
+(25, 63, 0),
+(25, 91, 0),
+(26, 91, 0),
+(25, 91, 0),
+(25, 92, 0),
+(26, 92, 0),
+(25, 93, 0),
+(26, 93, 0),
+(27, 95, 0),
+(25, 96, 0),
+(26, 97, 0),
+(25, 104, 0),
+(25, 105, 0),
+(25, 106, 0),
+(24, 107, 0),
+(24, 109, 0),
+(25, 109, 0),
+(25, 150, 0),
+(25, 155, 0),
+(24, 170, 19),
+(24, 170, 20),
+(24, 171, 19),
+(24, 171, 20),
+(24, 172, 19),
+(24, 172, 20);
 
 -- --------------------------------------------------------
 
@@ -1605,7 +1639,7 @@ ALTER TABLE `sintomas_control`
 -- AUTO_INCREMENT de la tabla `categoria_servicio`
 --
 ALTER TABLE `categoria_servicio`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
@@ -1641,7 +1675,7 @@ ALTER TABLE `especialidad`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=173;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_estados`
@@ -1695,7 +1729,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
@@ -1725,7 +1759,7 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `serviciomedico`
 --
 ALTER TABLE `serviciomedico`
-  MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `sintomas`
