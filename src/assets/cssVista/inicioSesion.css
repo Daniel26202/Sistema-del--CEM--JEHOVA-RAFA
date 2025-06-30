@@ -39,6 +39,10 @@
   padding: 0;
   box-sizing: border-box;
 }
+html {
+  /* background-color: var(--color-bg-main); */
+  background-color: var(--color-bg-main);
+}
 
 body{
   background-color: var(--color-bg-main);
