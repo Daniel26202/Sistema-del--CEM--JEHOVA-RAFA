@@ -27,6 +27,7 @@
             </button>
         </div>
 
+
         <!-- Aqui se guarda el id del usuario que inicio session -->
         <input type="hidden" id="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
 
@@ -158,7 +159,7 @@
                     name="cedula" id="cedulaControl" placeholder="Cedula">
             </div>
 
-            <!-- accordion -->
+            <!-- acordion -->
             <div class="input-modal">
                 <ul uk-accordion="multiple: true">
                     <li>
@@ -190,8 +191,17 @@
             </div>
 
             <div class="d-none" id="contenedorF">
+                <div class="mb-3">
+                    <label for="severidad" class="form-label">Severidad</label>
+                    <select class="form-select" id="severidad" name="severidad" required>
+                        <option value="LEVE">Leve</option>
+                        <option value="MODERADA">Moderada</option>
+                        <option value="GRAVE">Grave</option>
+                    </select>
+                </div>
 
-                <!-- accordion -->
+
+                <!-- acordion -->
                 <div class="input-modal">
                     <ul uk-accordion="multiple: true">
                         <li class="uk-open">
@@ -300,6 +310,7 @@
                                     Añadir Patología Paciente
                                 </h6>
                             </a>
+
 
                             <div class="uk-accordion-content">
                                 <div class="d-flex justify-content-center">
