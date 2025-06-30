@@ -88,6 +88,10 @@ h6 {
     color: var(--color-text-card);
 }
 
+label {
+    color: var(--color-text-card) !important;
+}
+
 /* From Uiverse.io by lenin55 */
 .cl-toggle-switch {
     position: relative;
@@ -411,6 +415,7 @@ html {
 }
 
 .input-buscar {
+    color: var(--color-text-card) !important;
     border-radius: 0;
     border: none;
     border-bottom: 2px solid #387adf;
@@ -468,17 +473,7 @@ html {
     margin-left: 15%;
 }
 
-.btn-agregarConsulta {
-    margin-right: 50px;
-    background-color: transparent;
-    color: black;
-    border: none;
-    border-bottom: 3px solid #387adf;
-    border-radius: 0;
-    /*transition: all .4s;*/
-    transition-property: background-color;
-    transition-duration: 0.4s;
-}
+
 
 .azul {
     color: #387adf;
@@ -530,7 +525,7 @@ html {
 }
 
 .titulo-modal {
-    color: black;
+    color: var(--color-text-card) !important;
 }
 
 #tablaEspecialidad,
@@ -539,7 +534,7 @@ html {
 }
 
 .tamaño-modal {
-    /* width: 45%; */
+    padding: 20px;
     border-radius: 20px;
     background-color: var(--color-surface);
     color: var(--color-text-card) !important;
@@ -570,6 +565,7 @@ html {
 }
 
 .btn-cerrar-modal {
+    color: var(--color-text-card) !important;
     border: none;
     border-radius: 20px;
     font-weight: bold;
@@ -965,7 +961,7 @@ hr {
 .btn-agregarConsulta {
     margin-right: 50px;
     background-color: transparent;
-    color: black;
+    color: var(--color-text-card) !important;
     border: none;
     border-bottom: 3px solid #387adf;
     border-radius: 0;
@@ -1022,7 +1018,8 @@ hr {
 }
 
 .agregar {
-    background-color: var(--color-surface);
+    background-color: var(--color-surface) !important;
+    border: none !important;
 }
 
 /* .form-modal input {
