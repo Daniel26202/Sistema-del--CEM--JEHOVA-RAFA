@@ -90,7 +90,7 @@
                 <table class="table table-striped" id="tablaDB">
                     <thead>
                         <tr>
-                            <th class="fw-bolder mb-0 mt-2">HOSPITALIZACION
+                            <th class="fw-bolder mb-0 mt-2">HOSPITALIZACIÓN
                             </th>
                         </tr>
                     </thead>
@@ -149,17 +149,17 @@
                 <div class="d-flex justify-content-between align-items-center mt-5">
 
                     <div class="d-flex" id="cajaVaciarTotalSiguiente">
-                        <button class="btn btn-agregarConsulta ms-3 me-4 " id="vaciarTabla">VACIAR</button>
-                        <button id="siguienteFact" class="btn btn-agregarConsulta " data-bs-toggle="modal"
+                        <button class="ico btn btn-agregarConsulta ms-3 me-4 " id="vaciarTabla">VACIAR</button>
+                        <button id="siguienteFact" class="ico btn btn-agregarConsulta " data-bs-toggle="modal"
                             data-bs-target="#modal-pago">SIGUIENTE</button>
                     </div>
 
-                    <div class=" " id="totalFac">
+                    <div class="ico " id="totalFac">
                         <label class="fw-bolder">TOTAL: </label>
                         <label>BS</label>
                         <?php foreach ($hostalizacionFacturar as $datoH): ?>
                             <input type="text" style="margin-left: -1px; padding-left: 6px;"
-                                class=" w-25 input-buscar text-center" id="totalFactura" disabled value=<?= $datoH['total'] ?>>
+                                class="ico w-25 input-buscar text-center" id="totalFactura" disabled value=<?= $datoH['total'] ?>>
                             <input type="hidden" id="inputTotalCita" value="<?= $datoH['total'] ?>">
                         <?php endforeach; ?>
 

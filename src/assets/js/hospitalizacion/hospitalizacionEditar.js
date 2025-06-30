@@ -355,7 +355,7 @@ addEventListener("DOMContentLoaded", function () {
                         if (resultad[0][1] == 0) {
                             html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <a href="#" class="btn btn-tabla mb-1 me-1 btnFH" uk-tooltip="Facturar hospitalización" id="" title=""
+                                                <a href="#" class="btn btn-tabla mb-1 me-1 btnFH text-white" uk-tooltip="Facturar hospitalización" id="" title=""
                                                     aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
                                                     <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>

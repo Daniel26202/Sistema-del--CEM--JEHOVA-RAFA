@@ -166,9 +166,9 @@
 
 
         <div class="modal-footer">
-          <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+          <button type="button" class="ico uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
             data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn col-3 btn-agregarcita-modal x d-none" id="siguiente" data-bs-toggle="modal"
+          <button type="button" class=" btn col-3 btn-agregarcita-modal x d-none" id="siguiente" data-bs-toggle="modal"
             data-bs-target="#modal-agregar-servicio">Siguente</button>
         </div>
 
@@ -447,7 +447,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+          <button type="button" class="ico uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
             data-bs-dismiss="modal">Cancelar</button>
           <button type="button" class="btn col-3 btn-agregarcita-modal x d-none" id="btnModalInsumos1" data-bs-toggle="modal"
             data-bs-target="#modal-agregar-insumos-2">Siguiente</button>
@@ -803,9 +803,9 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+        <button type="button" class="ico uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
           data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn col-3 btn-agregarcita-modal d-none" data-bs-dismiss="modal"
+        <button type="button" class=" btn col-3 btn-agregarcita-modal d-none" data-bs-dismiss="modal"
           id="btnTipoDePago">Siguiente</button>
       </div>
 
@@ -881,7 +881,7 @@
 
 
       <div class="modal-footer ">
-        <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+        <button type="button" class="ico uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
           data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn col-3 btn-agregarcita-modal d-none suguiente" data-bs-toggle="modal"
           data-bs-target="#modal-confirmacion" id="btnValidacion">Siguiente</button>
@@ -1075,7 +1075,7 @@
 
 
             <div class="modal-footer">
-              <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+              <button type="button" class="ico uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
                 data-bs-dismiss="modal">Cancelar</button>
               <button type="submit" class="btn col-3 btn-agregarcita-modal">Confirmar</button>
             </div>
@@ -1232,7 +1232,7 @@
       </div>
 
       <div class="mt-3 uk-text-right">
-        <button class="uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
+        <button class="ico uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
         <button class="btn col-5 btn-agregarcita-modal" type="sumit" name="crear" id="botonEnviar">Agregar</button>
       </div>
     </form>
