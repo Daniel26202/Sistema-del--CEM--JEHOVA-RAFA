@@ -296,13 +296,15 @@ addEventListener("DOMContentLoaded", () => {
     id_servicioMedico,
     servicio,
     doctor,
-    precio
+    precio,
+    id_personal
   ) => {
     const nuevoObj = {
       id_servicioMedico: id_servicioMedico,
       servicio: servicio,
       doctor: doctor,
       precio: parseFloat(precio),
+      id_personal: id_personal,
     };
     console.log("nuevoObj");
     console.log(nuevoObj);
@@ -319,11 +321,12 @@ addEventListener("DOMContentLoaded", () => {
       console.log(fila);
       const id_servicioMedico = this.getAttribute("id");
       console.log(id_servicioMedico);
+      const id_personal = fila.children[0].getAttribute("data-index"); // Columna Servicio
       const servicio = fila.children[1].innerText; // Columna Servicio
       const doctor = fila.children[2].innerText; // Columna Doctor
       const precio = fila.children[3].innerText; // Columna Precio
 
-      insertarVariosServicios(id_servicioMedico, servicio, doctor, precio);
+      insertarVariosServicios(id_servicioMedico, servicio, doctor, precio, id_personal);
 
       fila.classList.add("d-none");
 
@@ -1478,7 +1481,7 @@ addEventListener("DOMContentLoaded", () => {
         <tr>
         <td><input type="hidden" name="servicios[]" value="${element["id_servicioMedico"]}">
         <div class="fw-bolder">S/E:</div>${element["servicio"]}</td>
-        <td><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
+        <td><input type="hidden" name="doctores[]" value="${element["id_personal"]}"><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
         <td><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
         <td>
         <tr>`;

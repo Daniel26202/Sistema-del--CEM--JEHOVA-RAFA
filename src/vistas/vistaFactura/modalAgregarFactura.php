@@ -88,7 +88,7 @@
 
                   <tr class="tr-desparecer tr">
 
-                    <td class="text-center fw-bold">
+                    <td class="text-center fw-bold" data-index="<?php echo $e['id_personal']; ?>">
                       <?php echo $contador++; ?>
                     </td>
 
@@ -565,7 +565,7 @@
                       <?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> BS
                     </td>
                     <td class="text-center border-start">
-                      <?php echo ($i['iva']) ? $i['precio'] * 0.30 : "No contiene" ; 
+                      <?php echo ($i['iva']) ? $i['precio'] * 0.30 : "No contiene";
                       ?>
                     </td>
                     <td class="text-center border-start">

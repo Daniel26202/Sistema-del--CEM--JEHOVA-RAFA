@@ -148,7 +148,7 @@ class ModeloReporte extends Db
 	public function consultarServiciosExtras($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, fs.*,s.*,f.*,d.nombre AS nombre_d, d.apellido AS apellido_d FROM factura f INNER JOIN serviciomedico_has_factura fs ON f.id_factura = fs.factura_id_factura INNER JOIN serviciomedico s ON s.id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = fs.serviciomedico_id_servicioMedico INNER JOIN  personal d ON psm.personal_id_personal = d.id_personal INNER JOIN segurity.usuario u ON u.id_usuario = d.usuario INNER JOIN categoria_servicio cs ON s.id_categoria = cs.id_categoria  WHERE f.id_factura =:id_factura  ");
+			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, sf.*,s.*,p.nombre AS nombre_d, p.apellido AS apellido_d FROM serviciomedico_has_factura sf INNER JOIN personal p  ON sf.doctor = p.id_personal INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria  WHERE factura_id_factura =:id_factura  ");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {

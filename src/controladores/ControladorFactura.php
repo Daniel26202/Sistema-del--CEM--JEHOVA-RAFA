@@ -95,6 +95,7 @@ class ControladorFactura
 	{
 		$fecha = date("Y-m-d");
 		$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
+		$doctor = isset($_POST["doctores"]) ? $_POST["doctores"] : false;
 		$insumos = isset($_POST["insumos"]) ? $_POST["insumos"] : false;
 		$cantidad = isset($_POST["cantidad"]) ? $_POST["cantidad"] : false;
 		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : false;
@@ -103,7 +104,7 @@ class ControladorFactura
 		$id_hospitalizacion = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null;
 		print_r($_POST);
 
-		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita, $id_hospitalizacion);
+		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita, $id_hospitalizacion, $doctor);
 
 		if ($factura) {
 			//Guardar la bitacora
