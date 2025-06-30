@@ -82,6 +82,11 @@
 
 
         <div class="table table-responsive">
+            <!--  <?php
+                    echo '<pre>';
+                    print_r($datosCitas);
+                    echo '</pre>';
+                    ?> -->
             <table class="example table table-striped" id="tabla">
                 <thead>
                     <tr>
@@ -98,7 +103,6 @@
                     </tr>
                 </thead>
                 <tbody>
-
 
                     <?php foreach ($datosCitas as $datoCita): ?>
                         <tr>

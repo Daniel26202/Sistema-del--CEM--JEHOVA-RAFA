@@ -219,7 +219,11 @@
                 id="cerrarModalEspecialidad">CERRAR</button>
             <a href="#" class="text-decoration-none">
                 <button class="btn col-5 btn-agregarcita-modal" id="botonAgregarEspecialidad"
-                    uk-toggle="target: #modal-exampleAgregarPatologias">Nueva</button></a>
+                    uk-toggle="target: #modal-exampleAgregarPatologias">
+                    <span id="agregar">Registrar</span>
+                    <span id="spinner-cargando" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </a>
 
         </div>
 
@@ -288,8 +292,11 @@
             <div class="mt-3 uk-text-right">
                 <button class="uk-button col-6 me-2 uk-button-default btn-cerrar-modal" type="button"
                     uk-toggle="target: #modal-patologia" id="cancelarRegistroespecialidades">Cancelar</button>
-                <button class="btn col-5 btn-agregarcita-modal" type="submit" name="crear"
-                    id="botonEnviarEspecialidad">Agregar</button>
+                <button class="btn col-5 btn-agregarcita-modal" name="crear"
+                    id="botonEnviarEspecialidad">
+                    <span id="agregar">Agregar</span>
+                    <span id="spinner-cargando" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
             </div>
         </form>
     </div>

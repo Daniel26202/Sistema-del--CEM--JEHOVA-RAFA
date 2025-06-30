@@ -172,7 +172,10 @@
 
       <div class="mt-3 uk-text-right">
         <button class="uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
-        <button class="btn col-5 btn-agregarcita-modal" type="sumit" name="crear" id="botonEnviar">Agregar</button>
+        <button class="btn col-5 btn-agregarcita-modal" name="crear" id="botonEnviar">
+          <span id="agregar">Registrar</span>
+          <span id="spinner-cargando" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+        </button>
       </div>
     </form>
   </div>
