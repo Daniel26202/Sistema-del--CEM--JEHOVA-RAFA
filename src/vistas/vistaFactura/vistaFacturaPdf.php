@@ -67,16 +67,20 @@ $pdf->Cell(70, 10, strtoupper('PRECIO: '.$d['precio'].' Bs'), 0, 0, 'L',0);
 
 
 }
-foreach($datosInsumos as $insumo){
+
 $pdf->Ln(14);
 
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetFillColor(14, 169, 181);
-$pdf->SetTextColor(255,255,255);
-$pdf->Cell(170, 10, utf8_decode('INSUMOS'), 0, 0, 'C',1);
+$pdf->SetTextColor(255, 255, 255);
+$pdf->Cell(170, 10, utf8_decode('INSUMOS'), 0, 0, 'C', 1);
 $pdf->Ln(14);
+foreach($datosInsumos as $insumo){
+$pdf->Ln(14);
+
+
 
 
 $pdf->Cell(10);
