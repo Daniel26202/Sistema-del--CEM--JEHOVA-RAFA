@@ -252,10 +252,10 @@ class ControladorHospitalizacion
         $idH = $datos[0];
         date_default_timezone_set('America/Caracas');
         $fechaHF = date("Y-m-d H:i:s");
-        $monto = $datos[1];
-        $montoME = $datos[2];
-        $total = $datos[3];
-        $totalME = $datos[4];
+        $monto = round($datos[1], 2);
+        $montoME = round($datos[2], 2);
+        $total = round($datos[3], 2);
+        $totalME = round($datos[4], 2);
         $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME);
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H$idH");
     }
