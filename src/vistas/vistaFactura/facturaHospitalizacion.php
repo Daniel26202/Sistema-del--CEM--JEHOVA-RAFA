@@ -145,7 +145,7 @@
                     </tbody>
                 </table>
                 <!-- caja de los botones de vaciar , siguiente, total -->
-                <!-- recoradatorio acomodar esto del color -->
+                <!-- recordatorio acomodar esto del color -->
                 <div class="d-flex justify-content-between align-items-center mt-5">
 
                     <div class="d-flex" id="cajaVaciarTotalSiguiente">

@@ -38,7 +38,7 @@
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Selecciona un respaldo previamente descargado para restaurar la base de datos.</p>
-                            <a href="#" class="btn btn-secondary card-restaurar-btn btn-block w-100 text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Restaurar Base</a>
+                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/bajarBdsNube" class="btn btn-secondary card-restaurar-btn btn-block w-100 text-decoration-none" id="">Restaurar Base</a>
 
                         </div>
                     </div>

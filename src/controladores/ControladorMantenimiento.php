@@ -25,13 +25,17 @@ class ControladorMantenimiento
 		}
 	}
 
-
-
 	public function mantenimiento($parametro)
 	{
 		$ayuda = "btnayudaMantenimiento";
 		$respaldos = $this->modelo->traerBds($this->backupRuta);
 		require_once './src/vistas/vistaMantenimiento/mantenimiento.php';
+	}
+
+	public function bajarBdsNube($parametro)
+	{
+		$resultado= $this->modelo->traerBdsNube($this->backupRuta);
+		// echo json_encode($resultado);
 	}
 
 	public function generarRespaldo($parametro)
@@ -42,10 +46,9 @@ class ControladorMantenimiento
 
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento/guardado");
 	}
+
 	public function restaurarRespaldo($parametro)
 	{
-		
-
 		// buscar todos los archivos ZIP de respaldo
 		$archivosZip = glob($this->backupRuta . "bd-*.zip");
 

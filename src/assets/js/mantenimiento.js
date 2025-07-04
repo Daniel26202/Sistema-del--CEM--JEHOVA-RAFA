@@ -18,5 +18,22 @@ addEventListener("DOMContentLoaded", function () {
             document.querySelector(".loader-wrapper").style.display = "block";
         });
     });
-    
+
+    const bajarBdsNube = async () => {
+        try {
+            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/bajarBdsNube");
+            let resultado = await peticion.text();
+console.log(resultado);
+
+            // if (resultado.length > 0) {
+            // } else {
+            // }
+        } catch (error) {
+            console.log("intente Mas Tarde...");
+        }
+    };
+
+    document.querySelector("#btnRD").addEventListener("click", function () {
+        bajarBdsNube();
+    })
 });
