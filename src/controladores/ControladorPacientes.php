@@ -135,10 +135,10 @@ class ControladorPacientes
 
 	public function eliminar($datos)
 	{
-		$id_paciente = $datos[0];
+		$cedula = $datos[0];
 		$id_usuario = $datos[1];
 		// guardar la bitacora
-		$eliminacion = $this->modelo->delete($id_paciente);
+		$eliminacion = $this->modelo->delete($cedula);
 
 		if ($eliminacion) {
 			$this->bitacora->insertarBitacora($id_usuario, "paciente", "Ha eliminado un  paciente");

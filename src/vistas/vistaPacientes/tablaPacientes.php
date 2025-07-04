@@ -97,7 +97,7 @@
 
                                         <button class="uk-button fw-bold uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                                             data-bs-dismiss="modal">Cancelar</button>
-                                        <a class="uk-button uk-button-primary btn-agregarcita-modal ms-2 fw-bold" href='/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/eliminar/<?= $paciente['id_paciente'] ?>/<?= $_SESSION['id_usuario'] ?>'>Eliminar</a>
+                                        <a class="uk-button uk-button-primary btn-agregarcita-modal ms-2 fw-bold" href='/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/eliminar/<?= $paciente['cedula'] ?>/<?= $_SESSION['id_usuario'] ?>'>Eliminar</a>
 
                                     </div>
                                 </form>

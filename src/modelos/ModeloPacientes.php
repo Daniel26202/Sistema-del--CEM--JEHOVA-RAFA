@@ -100,11 +100,11 @@ class ModeloPacientes extends Db
 		}
 	}
 
-	public function delete($id_paciente)
+	public function delete($cedula)
 	{
 		try {
-			$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'DES' WHERE id_paciente = :id_paciente");
-			$consulta->bindParam(":id_paciente", $id_paciente);
+			$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'DES' WHERE cedula = :cedula");
+			$consulta->bindParam(":cedula", $cedula);
 			$consulta->execute();
 			return 1;
 		} catch (\Exception $e) {
