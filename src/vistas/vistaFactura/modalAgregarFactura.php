@@ -949,6 +949,7 @@
                         value="<?= $datoCita['id_paciente'] ?>">
                       <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
                       <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
+                      <input type="text" class="d-none" name="doctores[]" value="<?= $datoCita['doctor'] ?>">
                       <td>
                         <div class="fw-bolder">CI:</div>
                         <?= $datoCita["cedula_p"]; ?>

@@ -76,9 +76,7 @@ class ControladorFactura
 	//aqui mostramos al paciente si tiene cita
 	public function mostrarPacienteConCita()
 	{
-		date_default_timezone_set('America/Mexico_City');
-		$fecha = date("Y-m-d");
-		$respuesta = $this->modelo->buscarPacientePorCita($_POST["cedula"], $fecha);
+		$respuesta = $this->modelo->buscarPacientePorCita($_POST["cedula"]);
 		echo json_encode($respuesta);
 	}
 
