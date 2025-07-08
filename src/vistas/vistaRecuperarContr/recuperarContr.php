@@ -40,15 +40,15 @@ if (!empty($parametro)) {
     <title>J-R</title>
 
     <link rel="stylesheet" type="text/css"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/css/uikit.min.css">
+        href="<?= $concatenarRuta ?>src/assets/uikit/css/uikit.min.css">
     <link rel="stylesheet" type="text/css"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/css/bootstrap.min.css">
+        href="<?= $concatenarRuta ?>src/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/cssVista/recuperarContr.css">
+        href="<?= $concatenarRuta ?>src/assets/cssVista/recuperarContr.css">
     <link rel="stylesheet" type="text/css"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/introjs.min.css">
+        href="<?= $concatenarRuta ?>src/assets/intro/introjs.min.css">
     <link rel="stylesheet" type="text/css"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/introjs-modern.css">
+        href="<?= $concatenarRuta ?>src/assets/intro/introjs-modern.css">
 
 </head>
 
@@ -348,19 +348,19 @@ if (!empty($parametro)) {
     </main>
 
     <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/recuperarContr.js"></script>
+        src="<?= $concatenarRuta ?>src/assets/js/recuperarContr.js"></script>
     <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/validacionesRecuperarContr.js"></script>
+        src="<?= $concatenarRuta ?>src/assets/js/validacionesRecuperarContr.js"></script>
     <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+        src="<?= $concatenarRuta ?>src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/js/uikit.min.js"></script>
+        src="<?= $concatenarRuta ?>src/assets/uikit/js/uikit.min.js"></script>
     <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/intro.min.js"></script>
+        src="<?= $concatenarRuta ?>src/assets/intro/intro.min.js"></script>
     <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/ayudaInteractivarecContrasena.js"></script>
+        src="<?= $concatenarRuta ?>src/assets/js/ayudaInteractivarecContrasena.js"></script>
     <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/app.js"></script>
+        src="<?= $concatenarRuta ?>src/assets/app.js"></script>
 
 
 </body>

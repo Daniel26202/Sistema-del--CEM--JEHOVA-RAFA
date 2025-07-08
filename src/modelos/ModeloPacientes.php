@@ -103,7 +103,7 @@ class ModeloPacientes extends Db
 	public function delete($cedula)
 	{
 		try {
-			$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'DES' WHERE cedula = :cedula");
+			$consulta = $this->conexion->prepare("DELETE from paciente  WHERE cedula = :cedula");
 			$consulta->bindParam(":cedula", $cedula);
 			$consulta->execute();
 			return 1;

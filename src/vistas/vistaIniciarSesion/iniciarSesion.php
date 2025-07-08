@@ -51,11 +51,11 @@ if (!empty($parametro)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/css/uikit.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/cssVista/inicioSesion.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/introjs.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/introjs-modern.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>src/assets/uikit/css/uikit.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>src/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= $concatenarRuta ?>src/assets/cssVista/inicioSesion.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>src/assets/intro/introjs.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?>src/assets/intro/introjs-modern.css">
 
 
 </head>
@@ -211,13 +211,13 @@ if (!empty($parametro)) {
 
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/inicioSesion.js"></script>
-    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/js/uikit.min.js"></script>
-    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/intro.min.js"></script>
-    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/ayudaInteractiva.js"></script>
-    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/expresionesModulares.js"></script>
-    <script type="text/javascript" src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/app.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>src/assets/js/inicioSesion.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>src/assets/uikit/js/uikit.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>src/assets/intro/intro.min.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>src/assets/js/ayudaInteractiva.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>src/assets/js/expresionesModulares.js"></script>
+    <script type="text/javascript" src="<?= $concatenarRuta ?>src/assets/app.js"></script>
 
 
 </body>
