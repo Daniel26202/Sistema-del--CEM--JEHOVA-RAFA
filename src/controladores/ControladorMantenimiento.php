@@ -28,14 +28,25 @@ class ControladorMantenimiento
 	public function mantenimiento($parametro)
 	{
 		$ayuda = "btnayudaMantenimiento";
-		$respaldos = $this->modelo->traerBds($this->backupRuta);
 		require_once './src/vistas/vistaMantenimiento/mantenimiento.php';
 	}
 
 	public function bajarBdsNube($parametro)
 	{
-		$resultado= $this->modelo->traerBdsNube($this->backupRuta);
-		// echo json_encode($resultado);
+		$resultado = $this->modelo->traerBdsNube($this->backupRuta);
+		echo json_encode($resultado);
+	}
+
+	public function consultarBd($parametro)
+	{
+		// verifica si la sesión esta activa.
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		$idUsuario = $_SESSION["id_usuario"];
+		$respaldos = $this->modelo->traerBds($this->backupRuta);
+		$arrayRU = [$respaldos, $idUsuario];
+		echo json_encode($arrayRU);
 	}
 
 	public function generarRespaldo($parametro)
@@ -76,6 +87,12 @@ class ControladorMantenimiento
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento/noExisteRespaldo");
 		}
+	}
+
+	public function verificacionU($parametro)
+	{
+		$resultado = $this->modelo->verifU($_POST["usuario"], $_POST["password"]);
+		echo json_encode($resultado);
 	}
 
 	private function permisos($id_rol, $permiso, $modulo)

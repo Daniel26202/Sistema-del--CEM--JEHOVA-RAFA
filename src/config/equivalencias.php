@@ -206,7 +206,9 @@ return [
     //Mantenimiento
     "mantenimiento" => "consultar",
     "bajarBdsNube" => "consultar",
+    "consultarBd" => "consultar",
     "generarRespaldo" => "guardar",
     "restaurarRespaldo" => "guardar",
+    "verificacionU" => "consultar",
 
 ];
