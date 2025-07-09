@@ -67,16 +67,17 @@ class ControladorMantenimiento
 
 			print_r($parametro);
 			if (isset($parametro[0]) && $parametro[0] != "nohay") {
-				$nombreBd = $parametro[0];
+				$nombreBd = $this->backupRuta .  $parametro[0] . ".zip";
 				$nombreZip = $parametro[0];
 				$id_usuario = $parametro[1];
 			} else {
-				$nombreBd = null;
 				// Ordenar por fecha de modificación
 				usort($archivosZip, function ($a, $b) {
 					return filemtime($b) - filemtime($a);
 				});
 				$nombreZip = basename($archivosZip[0]);
+
+				$nombreBd = $archivosZip[0];
 				$id_usuario = $parametro[1];
 			}
 			$this->modelo->restaurarBackup($this->backupRuta, $nombreBd);

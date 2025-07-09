@@ -115,26 +115,8 @@ class ModeloMantenimiento extends Db
 		}
 	}
 
-	public function restaurarBackup($backupRuta, $nombreBd)
+	public function restaurarBackup($backupRuta, $nombreZip)
 	{
-		if ($nombreBd === null) {
-			// buscar todos los archivos ZIP de respaldo
-			$archivosZip = glob($backupRuta . "bd-*.zip");
-
-			if (!empty($archivosZip)) {
-				// Ordenar por fecha de modificación
-				usort($archivosZip, function ($a, $b) {
-					return filemtime($b) - filemtime($a);
-				});
-
-				$nombreZip = $archivosZip[0];
-			} else {
-				echo "noExisteRespaldo";
-			}
-		} else {
-			$nombreZip = $backupRuta . $nombreBd;
-		}
-
 
 		if (file_exists($nombreZip)) {
 			// Crear carpeta

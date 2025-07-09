@@ -89,7 +89,7 @@ addEventListener("DOMContentLoaded", function () {
                                                 <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                                                     data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Cancelar</button>
 
-                                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/${res}/${resultadoConsulBd[0]}" class="seleccionar">
+                                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/${res}/${resultadoConsulBd[1]}" class="seleccionar">
                                                     <button class="btn col-4 btn-agregarcita-modal btnrestablecer"
                                                         id="">Restaurar</button>
                                                 </a>
@@ -148,17 +148,31 @@ addEventListener("DOMContentLoaded", function () {
         // }
     };
 
+    // llamar la funcion para evitar repetir evento
+    function manejadorDescargarBD() {
+        VerificacionUsuario("modalDescargarBD");
+    }
+    function manejadorRestablecerBD() {
+        VerificacionUsuario("modalRestablecerBD");
+    }
+
+    const btnVerifi = document.querySelector("#btnVerifi");
+
     document.querySelector("#descarBd").addEventListener("click", function () {
         formularioVU.reset();
-        document.querySelector("#btnVerifi").addEventListener("click", function () {
-            VerificacionUsuario("modalDescargarBD");
-        });
+        // quitar evento existente
+        btnVerifi.removeEventListener("click", manejadorRestablecerBD);
+        btnVerifi.removeEventListener("click", manejadorDescargarBD);
+
+        btnVerifi.addEventListener("click", manejadorDescargarBD);
     });
 
     document.querySelector("#btnRD").addEventListener("click", function () {
         formularioVU.reset();
-        document.querySelector("#btnVerifi").addEventListener("click", function () {
-            VerificacionUsuario("modalRestablecerBD");
-        });
+        // quitar evento existente
+        btnVerifi.removeEventListener("click", manejadorRestablecerBD);
+        btnVerifi.removeEventListener("click", manejadorDescargarBD);
+
+        btnVerifi.addEventListener("click", manejadorRestablecerBD);
     });
 });

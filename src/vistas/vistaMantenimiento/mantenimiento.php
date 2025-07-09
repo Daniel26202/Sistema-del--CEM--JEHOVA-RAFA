@@ -66,7 +66,7 @@
 
 <div class="modal fade" id="modalBaseDatos" tabindex="-1" aria-labelledby="modalBaseDatosLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="contenido modal-content">
+        <div class="tamaño-modal modal-content">
             <div class="d-flex justify-content-between align-items-center ps-4 pe-4 ms-1 me-1 pt-4 ">
                 <h4 class="fw-bold" id="modalBaseDatosLabel">Seleccionar Base de Datos</h4>
                 <a href="#" class="" data-bs-dismiss="modal">
