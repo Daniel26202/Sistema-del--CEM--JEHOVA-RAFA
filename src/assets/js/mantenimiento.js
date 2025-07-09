@@ -90,7 +90,7 @@ addEventListener("DOMContentLoaded", function () {
                                                     data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Cancelar</button>
 
                                                 <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/${res}/${resultadoConsulBd[1]}" class="seleccionar">
-                                                    <button class="btn col-4 btn-agregarcita-modal btnrestablecer"
+                                                    <button class="seleccionar btn col-4 btn-agregarcita-modal btnrestablecer"
                                                         id="">Restaurar</button>
                                                 </a>
 
@@ -114,10 +114,15 @@ addEventListener("DOMContentLoaded", function () {
 
     const formularioVU = document.querySelector("#fVerificacionU");
     const mensajeP = document.querySelector(".mensajeP");
-
+    let semaforo = 0;
     mensajeP.classList.add("d-none");
     const VerificacionUsuario = async (tipoBtn) => {
         // try {
+        document.querySelector("#loaderModal").classList.add("desvanecimiento");
+
+        if (semaforo === 1) return;
+        semaforo = 1;
+
         const datosFormulario = new FormData(formularioVU);
 
         const contenidoForm = {
@@ -142,7 +147,10 @@ addEventListener("DOMContentLoaded", function () {
                 var modal = new bootstrap.Modal(document.getElementById("modalBaseDatos"));
                 modal.show();
             }
+            semaforo = 0;
         }
+        document.querySelector("#loaderModal").classList.remove("desvanecimiento");
+
         // } catch (error) {
         // console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...  " + error);
         // }
@@ -170,9 +178,11 @@ addEventListener("DOMContentLoaded", function () {
     document.querySelector("#btnRD").addEventListener("click", function () {
         formularioVU.reset();
         // quitar evento existente
-        btnVerifi.removeEventListener("click", manejadorRestablecerBD);
-        btnVerifi.removeEventListener("click", manejadorDescargarBD);
+        if (semaforo === 0) {
+            btnVerifi.removeEventListener("click", manejadorRestablecerBD);
+            btnVerifi.removeEventListener("click", manejadorDescargarBD);
 
-        btnVerifi.addEventListener("click", manejadorRestablecerBD);
+            btnVerifi.addEventListener("click", manejadorRestablecerBD);
+        }
     });
 });

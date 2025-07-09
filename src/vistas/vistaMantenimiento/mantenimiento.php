@@ -102,7 +102,7 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end align-items-center ps-4 pe-4 ms-1 me-1 pt-3 pb-4">
-                
+
                 <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button" data-bs-dismiss="modal">Cancelar</button>
 
                 <a href="#" data-bs-dismiss="modal"
@@ -224,7 +224,7 @@
                             </div>
                         </div>
                         <div>
-            
+
                             <p class="mensajeP ms-4 me-4 ico fw-bolder">El usuario tiene que ser super administrador, y el usuario, además de la contraseña, debe ser correcta</p>
                         </div>
                         <!-- <div class="fondo_rsp"> -->
@@ -332,7 +332,11 @@
 
 
 
-
+<div class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center loader-overlay " style="z-index: 9999;" id="loaderModal">
+    <div class="spinner-border text-light" role="status" style="width: 4rem; height: 4rem;">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+</div>
 
 
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaMantenimiento.js"></script>

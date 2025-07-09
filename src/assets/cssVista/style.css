@@ -287,7 +287,6 @@ html {
 /* Menu */
 /* Estilo del menú lateral */
 .sidenav {
-   
     height: 100vh;
     width: 250px;
     position: fixed;
@@ -357,7 +356,17 @@ html {
     }
 }
 
-/* clases del contenedor */
+.loader-overlay {
+    background: rgba(30, 30, 30, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.loader-overlay.desvanecimiento {
+    opacity: 1;
+    pointer-events: auto;
+}
 
 .icon {
     color: white !important;
@@ -472,8 +481,6 @@ html {
 .mover-input-agregarcita {
     margin-left: 15%;
 }
-
-
 
 .azul {
     color: #387adf;
@@ -1150,8 +1157,6 @@ con la clase hover-grande cambia de tamaño*/
     /* width: 100% !important; */
 }
 
-
-
 .btn-agregar-doctores:hover {
     border-radius: 25px;
     padding: 6px 10px;
@@ -1694,10 +1699,9 @@ td {
         width: 100%;
         height: 35vh;
     }
-    .caja-btn-margin{
+    .caja-btn-margin {
         margin: auto !important;
     }
-    
 }
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
@@ -1713,7 +1717,7 @@ td {
         width: 20vw;
         margin-left: 30px;
     }
-    .btn-sintomas{
+    .btn-sintomas {
         width: 100% !important;
         margin: auto;
     }
@@ -1721,10 +1725,9 @@ td {
         margin-left: 0;
     }
 
-    .caja-boton-buscador-control{
+    .caja-boton-buscador-control {
         flex-direction: column !important;
     }
-
 }
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
