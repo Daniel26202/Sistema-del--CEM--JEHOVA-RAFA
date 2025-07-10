@@ -332,7 +332,7 @@
 
 
 
-<div class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center loader-overlay " style="z-index: 9999;" id="loaderModal">
+<div id="loaderModal" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center loader-overlay" style="z-index: 9999;">
     <div class="spinner-border text-light" role="status" style="width: 4rem; height: 4rem;">
         <span class="visually-hidden">Cargando...</span>
     </div>

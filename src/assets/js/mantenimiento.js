@@ -113,14 +113,15 @@ addEventListener("DOMContentLoaded", function () {
     };
 
     const formularioVU = document.querySelector("#fVerificacionU");
-    const mensajeP = document.querySelector(".mensajeP");
+    let mensajeP = document.querySelector(".mensajeP");
     let semaforo = 0;
     mensajeP.classList.add("d-none");
     const VerificacionUsuario = async (tipoBtn) => {
         // try {
-        document.querySelector("#loaderModal").classList.add("desvanecimiento");
-
+            console.log(semaforo);
+            
         if (semaforo === 1) return;
+        document.querySelector("#loaderModal").classList.add("desvanecimiento");
         semaforo = 1;
 
         const datosFormulario = new FormData(formularioVU);
@@ -132,7 +133,6 @@ addEventListener("DOMContentLoaded", function () {
 
         let peticionValidarU = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/verificacionU", contenidoForm);
         let resultadoVU = await peticionValidarU.json();
-
         if (resultadoVU == false) {
             console.log("El usuario no esta activo o no es super administrador.");
             mensajeP.classList.remove("d-none");
@@ -141,14 +141,16 @@ addEventListener("DOMContentLoaded", function () {
             if (tipoBtn === "modalDescargarBD") {
                 // abre el modal de iukit
                 UIkit.modal("#descargarBd").show();
+                document.querySelector("#loaderModal").classList.remove("desvanecimiento");
             } else if (tipoBtn === "modalRestablecerBD") {
                 await bajarBdsNube();
                 // abre el modal de Bootstrap
+
                 var modal = new bootstrap.Modal(document.getElementById("modalBaseDatos"));
                 modal.show();
             }
-            semaforo = 0;
         }
+        semaforo = 0;
         document.querySelector("#loaderModal").classList.remove("desvanecimiento");
 
         // } catch (error) {
@@ -178,11 +180,10 @@ addEventListener("DOMContentLoaded", function () {
     document.querySelector("#btnRD").addEventListener("click", function () {
         formularioVU.reset();
         // quitar evento existente
-        if (semaforo === 0) {
-            btnVerifi.removeEventListener("click", manejadorRestablecerBD);
-            btnVerifi.removeEventListener("click", manejadorDescargarBD);
+        console.log(semaforo);
+        btnVerifi.removeEventListener("click", manejadorRestablecerBD);
+        btnVerifi.removeEventListener("click", manejadorDescargarBD);
 
-            btnVerifi.addEventListener("click", manejadorRestablecerBD);
-        }
+        btnVerifi.addEventListener("click", manejadorRestablecerBD);
     });
 });
