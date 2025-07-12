@@ -223,19 +223,7 @@ addEventListener("DOMContentLoaded", () => {
     
   }
 
-  //buscar servicio por categoria
-  selectBuscarCategoria.addEventListener("keyup", function () {
-    const valorBusqueda =
-      this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();
 
-    tablaSevicios.querySelectorAll(".tr").forEach((ele) => {
-      if (ele.children[1].innerText.includes(valorBusqueda)) {
-        ele.classList.remove("d-none");
-      } else {
-        ele.classList.add("d-none");
-      }
-    });
-  });
 
   // // impedimos que los formularios recarguen la pagina y hacemos las cosas que queremos
   calcularTotal();
@@ -424,21 +412,7 @@ addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  //codigo para buscar todos los insumos
-  buscadorDeTodosLosInsumos.addEventListener("keyup", function () {
-    caja_insumos_a_seleccionar.forEach((ele) => {
-      if (
-        ele.innerHTML
-          .split("  ")[0]
-          .toLowerCase()
-          .includes(this.value.toLowerCase())
-      ) {
-        ele.classList.remove("d-none");
-      } else {
-        ele.classList.add("d-none");
-      }
-    });
-  });
+
 
   //funcion al darle clic al boton siguiente de le modal de insumos 1
   document
@@ -516,28 +490,7 @@ addEventListener("DOMContentLoaded", () => {
         `#tbody-insumos tr .nombre`
       );
 
-      // let canti = 0;
-      // dataInsumo.forEach((ele, index)=>{
-      //     console.log(dataInsumo[index])
-      //     console.log(ele.id_insumo)
-      //     console.log(valorDeIdInsumo[index].innerText)
-
-      //     let nombreInsumo = valorDeNombreInsumo[index].innerText.replace("INSUMO:", "").trim()
-
-      //    if(ele.id_insumo == valorDeIdInsumo[index].innerText && nombreInsumo == dataInsumo[index].nombreInsumo){
-      //     console.log(nombreInsumo)
-      //     console.log(dataInsumo[index].nombreInsumo)
-      //     canti += parseFloat(ele.cantidad)
-      //     console.log(canti)
-      //     console.log(nombreInsumo.length)
-      //     console.log(dataInsumo[index].nombreInsumo.length)
-
-      //     let button = document.querySelectorAll(`#cuerpoTablaInsumos tr td `)[5].children[0];
-
-      //     const insumo = dataInsumo.find(insumo => insumo.id_insumo == parseInt(button.getAttribute("id")));
-      //     console.log(insumo)
-      //    }
-      // })
+      
     });
 
   //evento para que cada vez tecle al input de la cantidad se actualiza los insumos disponibles

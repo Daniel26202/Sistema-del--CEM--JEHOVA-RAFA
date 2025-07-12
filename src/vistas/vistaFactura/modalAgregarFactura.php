@@ -5,9 +5,11 @@
 
 
 <!-- Modal Agregar Servicio Extra-->
-<div class="modal fade" id="modal-agregar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog tamaño-modal">
-    <div class="modal-content agregar">
+
+
+<div class="modal fade" id="modal-agregar" tabindex="-1" aria-labelledby="modalBaseDatosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen margin-modal-factura">
+    <div class="modal-content agregar ">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
@@ -17,10 +19,10 @@
             <path
               d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0Z" />
           </svg>
-          <div>SELECCIONAR SERVICIOS</div>
+          <h5>SELECCIONAR SERVICIOS</h5>
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
             class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
@@ -31,46 +33,14 @@
 
 
 
-      <div class=" mt-2">
+      <div class="m-4">
 
 
-
-        <!-- Buscador -->
-        <div class="d-flex justify-content-end">
-
-
-
-
-          <div class="d-flex justify-content-end mb-4 col-10">
-
-
-            <div class="d-flex justify-content-end" autocomplete="off" id="form-buscador">
-
-              <input type="text" class="form-control input-buscar tamaño-input-buscar" id="selectBuscarCategoria"
-                placeholder="Ingrese la Categoria">
-
-
-              <button class="btn boton-buscar" title="Buscar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
-                  viewBox="0 0 16 16">
-                  <path
-                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                </svg>
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-
-
-        <div class="table-responsive">
-          <table class="table table-striped " id="tablaPatologia">
+        <div class="table-responsive m-2">
+          <table class="table table-striped example">
             <thead>
               <tr>
-                <th class="d-none">
-                  Id
-                </th>
+
                 <th class=" text-center">#</th>
                 <th class=" text-center border-start">Servicio</th>
                 <th class=" text-center border-start">Doctor</th>
@@ -81,82 +51,47 @@
             </thead>
             <tbody id="cuerpoTablaServicios">
 
-              <?php if ($extras): ?>
-                <?php $contador = 1; ?>
 
-                <?php foreach ($extras as $e): ?>
+              <?php $contador = 1; ?>
 
-                  <tr class="tr-desparecer tr">
+              <?php foreach ($extras as $e): ?>
 
-                    <td class="text-center fw-bold" data-index="<?php echo $e['id_personal']; ?>">
-                      <?php echo $contador++; ?>
-                    </td>
+                <tr class="tr-desparecer tr">
 
-                    <td class="text-center border-start">
-                      <?php echo $e['1']; ?>
-                    </td>
-                    <td class="text-center border-start">
-                      <?php echo $e['nombre_d'] . " " . $e["apellido_d"]; ?>
-                    </td>
-                    <td class="text-center border-start">
-                      <?php echo $e['precio'] . " " . "BS"; ?>
-                    </td>
+                  <td class="text-center fw-bold" data-index="<?php echo $e['id_personal']; ?>">
+                    <?php echo $contador++; ?>
+                  </td>
 
-
-                    <td class="border-start text-center">
-
-                      <button class="btn mt-1 insertar_servicio" id="<?php echo $e['id_servicioMedico']; ?>"
-                        data-bs-toggle="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
-                          class="bi bi-clipboard2-plus-fill azul me-3" viewBox="0 0 16 16">
-                          <path
-                            d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z" />
-                          <path
-                            d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0Z" />
-                        </svg>
-                      </button>
-
-                    </td>
-
-                  </tr>
-                <?php endforeach ?>
+                  <td class="text-center border-start">
+                    <?php echo $e['1']; ?>
+                  </td>
+                  <td class="text-center border-start">
+                    <?php echo $e['nombre_d'] . " " . $e["apellido_d"]; ?>
+                  </td>
+                  <td class="text-center border-start">
+                    <?php echo $e['precio'] . " " . "BS"; ?>
+                  </td>
 
 
+                  <td class="border-start text-center">
 
-
-
-
-              <?php else: ?>
-
-
-                <tr>
-                  <td colspan="9" class="text-center">NO HAY REGISTROS
+                    <button class="btn mt-1 insertar_servicio" id="<?php echo $e['id_servicioMedico']; ?>"
+                      data-bs-toggle="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
+                        class="bi bi-clipboard2-plus-fill azul me-3" viewBox="0 0 16 16">
+                        <path
+                          d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z" />
+                        <path
+                          d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0Z" />
+                      </svg>
+                    </button>
 
                   </td>
+
                 </tr>
-              <?php endif ?>
-
-              <tr id="noEncontrados" class="d-none">
-                <td colspan="5" class="text-center">NO HAY REGISTROS
-
-                </td>
-              </tr>
+              <?php endforeach ?>
 
             </tbody>
-          </table>
-
-          <table class="table table-striped " style="margin-top: -16px;">
-            <thead>
-
-            </thead>
-            <tbody>
-              <tr class="d-none" id="noResultado">
-                <td colspan="9" class="text-center">NO HAY REGISTROS
-
-                </td>
-              </tr>
-            </tbody>
-
           </table>
 
 
@@ -176,17 +111,15 @@
 
 
     </div>
-
   </div>
-</div>
 </div>
 
 
 <!-- modal par confirmar la insercion de los servicios medicos -->
 <!-- Modal Agregar Servicio Extra-->
-<div class="modal fade" id="modal-agregar-servicio" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog tamaño-modal">
+
+<div class="modal fade" id="modal-agregar-servicio" tabindex="-1" aria-labelledby="modalBaseDatosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen margin-modal-factura">
     <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
@@ -197,10 +130,10 @@
             <path
               d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0Z" />
           </svg>
-          <div>INSERTAR SERVICIOS</div>
+          <h5>INSERTAR SERVICIOS</h5>
         </div>
         <a type="button" aria-label="Close" data-bs-toggle="modal" data-bs-target="#modal-agregar">
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
             class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
@@ -211,7 +144,7 @@
 
       <form class="formularios">
 
-        <div class="form-modal mt-2">
+        <div class="form-modal m-4 " style="width: 96%;">
 
 
 
@@ -220,24 +153,6 @@
 
 
 
-
-            <!-- <div class="d-flex justify-content-end mb-4 col-6" id="form-buscador">
-
-              <a class="btn boton-buscar d-none" title="Buscar" id="reiniciarBusquedaPatologia" uk-tooltip="Restablecer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-                  <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
-                  <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
-                </svg>
-              </a>
-              <form action="?c=ControladorDoctores/buscarEspecialidad" method="POST" id="form-buscadorPatologias" class="d-flex justify-content-end" autocomplete="off">
-                <input class="form-control input-busca" type="text" name="nombre" id="inputBuscarPatologia">
-                <button class="btn boton-buscar" title="Buscar" id="especialidadBuscar">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                  </svg>
-                </button>
-              </form>
-            </div> -->
           </div>
 
 
@@ -285,9 +200,7 @@
       </form>
 
     </div>
-
   </div>
-</div>
 </div>
 
 
@@ -377,9 +290,13 @@
 
 <!-- Modal Agregar Insumo-->
 
+
+
+
+
 <div class="modal fade" id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog ">
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen margin-modal-factura">
     <div class="modal-content agregar ">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
@@ -388,10 +305,10 @@
             <path
               d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
           </svg>
-          <div>SELECCIONAR INSUMOS</div>
+          <h5>SELECCIONAR INSUMOS</h5>
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
             class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
@@ -454,20 +371,13 @@
         </div>
       </div>
     </div>
-
-
-
-
   </div>
 </div>
-</div>
-
-
 
 
 <div class="modal fade" id="modal-agregar-insumos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog ">
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen margin-modal-factura">
     <div class="modal-content agregar ">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
@@ -476,7 +386,220 @@
             <path
               d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
           </svg>
-          <div>SELECCIONAR INSUMOS</div>
+          <h5>SELECCIONAR INSUMOS </h5>
+        </div>
+        <a type="button" data-bs-dismiss="modal" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
+            class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+          </svg>
+        </a>
+      </div>
+
+
+
+      <div class="form-modal  m-2 " style="width: 97%;">
+
+
+        <div class="table-responsive">
+          <table class="table table-striped example" id="tablaInsumos">
+            
+            <thead>
+              <th class=" text-center">#</th>
+              <th class=" text-center border-start">Nombre</th>
+              <th class=" text-center border-start">Medida</th>
+              <th class=" text-center border-start">Disponible</th>
+              <th class=" text-center border-start">Precio</th>
+              <th class=" text-center border-start">IVA</th>
+              <th class=" text-center border-start">Cantidad</th>
+              <th class=" text-center border-start">Añadir</th>
+            </thead>
+            <tbody id="cuerpoTablaInsumos" class="tbodyI">
+
+              <?php if ($insumos): ?>
+                <?php $contador = 1; ?>
+
+                <?php foreach ($insumos as $i): ?>
+
+                  <tr class="tr-desparecer-insumo ">
+                    <td class="text-center fw-bold">
+                      <?php echo $contador++; ?>
+                    </td>
+                    <td class="text-center border-start">
+                      <?php echo $i['nombre']; ?>
+                    </td>
+
+                    <td class="text-center border-start">
+                      <?php echo $i['medida']; ?>
+                    </td>
+                    <td class="text-center border-start cantidad_tabla_disponible<?= $i["nombre"] ?>">
+                      <?php echo $i['cantidad_inventario']; ?>
+                    </td>
+                    <td class="text-center border-start">
+                      <?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> BS
+                    </td>
+                    <td class="text-center border-start">
+                      <?php echo ($i['iva']) ? $i['precio'] * 0.30 : "No contiene";
+                      ?>
+                    </td>
+                    <td class="text-center border-start">
+                      <input type="number" class="form-control input-buscar m-auto inputs-cantidad-insumos">
+                    </td>
+
+
+                    <td class="border-start text-center  caja-boton">
+
+                      <button class="btn btn-tabla mt-1 insertar_insumo d-none btn<?= $i['id_insumo']; ?>"
+                        id="<?php echo $i['id_insumo']; ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                          class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                          <path
+                            d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z" />
+                        </svg>
+                      </button>
+
+                    </td>
+
+                  </tr>
+                <?php endforeach ?>
+
+
+
+
+
+
+              <?php else: ?>
+
+
+                <tr>
+                  <td colspan="9" class="text-center">NO HAY REGISTROS
+
+                  </td>
+                </tr>
+              <?php endif ?>
+
+
+
+            </tbody>
+          </table>
+
+
+
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+            data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">Anterior</button>
+          <button type="button" class="btn col-3 btn-agregarcita-modal x d-none" data-bs-toggle="modal"
+            data-bs-target="#modal-agregar-insumos-confirmar" id="siguienteInsumo">Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="modal-agregar-insumos-confirmar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen margin-modal-factura">
+    <div class="modal-content agregar">
+      <div class="modal-header">
+        <div class="fw-bolder d-flex" id="staticBackdropLabel">
+          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
+            class="bi bi-capsule azul me-3" viewBox="0 0 16 16">
+            <path
+              d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+          </svg>
+          <div>AÑADIR INSUMOS</div>
+        </div>
+        <a type="button" data-bs-dismiss="modal" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
+            class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+          </svg>
+        </a>
+      </div>
+
+
+      <form class="formularios-insumos">
+        <div class="form-modal  mt-2">
+
+
+          <div class="d-flex justify-content-end">
+
+
+
+
+
+          </div>
+
+
+
+          <div class="table-responsive">
+            <table class="table table-striped ">
+              <thead>
+                <tr>
+                  <th class="d-none">
+                    Id
+                  </th>
+                  <th class=" text-center">#</th>
+                  <th class=" text-center border-start">Nombre</th>
+                  <th class=" text-center border-start">Medida</th>
+                  <th class=" text-center border-start">Cantidad</th>
+                  <th class=" text-center border-start">Precio</th>
+                  <th class=" text-center border-start">IVA</th>
+                  <th class=" text-center border-start">Sub-total</th>
+                  <th class=" text-center border-start">Acción</th>
+
+                </tr>
+              </thead>
+              <tbody id="tbody_insumos">
+
+                <!-- js -->
+
+
+
+              </tbody>
+
+
+            </table>
+
+
+
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+              data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos-2">Anterior</button>
+            <button type="submit" class="btn col-3 btn-agregarcita-modal x" id="insertarInsumo"
+              data-bs-dismiss="modal">Insertar</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modal-agregar-insumos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen margin-modal-factura">
+    <div class="modal-content agregar ">
+      <div class="modal-header">
+        <div class="fw-bolder d-flex" id="staticBackdropLabel">
+          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
+            class="bi bi-capsule azul me-3" viewBox="0 0 16 16">
+            <path
+              d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+          </svg>
+          <h5>SELECCIONAR INSUMOS</h5>
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -642,106 +765,8 @@
         </div>
       </div>
     </div>
-
-
-
-
   </div>
 </div>
-</div>
-
-
-
-
-<div class="modal fade" id="modal-agregar-insumos-confirmar" data-bs-backdrop="static" data-bs-keyboard="false"
-  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog ">
-    <div class="modal-content agregar">
-      <div class="modal-header">
-        <div class="fw-bolder d-flex" id="staticBackdropLabel">
-          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
-            class="bi bi-capsule azul me-3" viewBox="0 0 16 16">
-            <path
-              d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-          </svg>
-          <div>AÑADIR INSUMOS</div>
-        </div>
-        <a type="button" data-bs-dismiss="modal" aria-label="Close">
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-            class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-            <path
-              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-          </svg>
-        </a>
-      </div>
-
-
-      <form class="formularios-insumos">
-        <div class="form-modal  mt-2">
-
-
-          <div class="d-flex justify-content-end">
-
-
-
-
-
-          </div>
-
-
-
-          <div class="table-responsive">
-            <table class="table table-striped ">
-              <thead>
-                <tr>
-                  <th class="d-none">
-                    Id
-                  </th>
-                  <th class=" text-center">#</th>
-                  <th class=" text-center border-start">Nombre</th>
-                  <th class=" text-center border-start">Medida</th>
-                  <th class=" text-center border-start">Cantidad</th>
-                  <th class=" text-center border-start">Precio</th>
-                  <th class=" text-center border-start">IVA</th>
-                  <th class=" text-center border-start">Sub-total</th>
-                  <th class=" text-center border-start">Acción</th>
-
-                </tr>
-              </thead>
-              <tbody id="tbody_insumos">
-
-                <!-- js -->
-
-
-
-              </tbody>
-
-
-            </table>
-
-
-
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
-              data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos-2">Anterior</button>
-            <button type="submit" class="btn col-3 btn-agregarcita-modal x" id="insertarInsumo"
-              data-bs-dismiss="modal">Insertar</button>
-          </div>
-        </div>
-
-      </form>
-    </div>
-
-
-
-
-  </div>
-</div>
-</div>
-
 
 
 
@@ -899,7 +924,7 @@
 
 <div class="modal fade" id="modal-confirmacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog tamaño-modal">
+  <div class="modal-dialog tamaño-modal modal-fullscreen margin-modal-factura">
     <div class="modal-content agregar table-responsive">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
@@ -910,7 +935,7 @@
           </svg>CONFIRMAR OPERACIÓN
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
             class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
@@ -920,15 +945,15 @@
       </div>
 
       <?php if (isset($_GET["idH"])): ?>
-        <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFacturaHospit" method="POST" class="form-modal">
+        <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFacturaHospit" method="POST" class="">
           <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
           <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
         <?php else: ?>
-          <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" class="form-modal">
+          <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" class="">
             <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
             <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
           <?php endif; ?>
-          <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" class="form-modal">
+          <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" class="">
             <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
             <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
 
