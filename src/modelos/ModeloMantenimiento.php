@@ -56,7 +56,7 @@ class ModeloMantenimiento extends Db
 				$zip->addFile($bdSeguridad, basename($bdSeguridad));
 				$zip->close();
 
-				$rclone = '"C:\\Users\\Usuario\\Downloads\\rclone-v1.70.2-windows-amd64\\rclone.exe"';
+				$rclone = '"C:\\rclone-v1.70.2-windows-amd64\\rclone.exe"';
 				$comando = "$rclone copy $nombreZip almacen:/bases/";
 				system($comando, $estado);
 
@@ -103,7 +103,7 @@ class ModeloMantenimiento extends Db
 	{
 		// cambiamos todas / por \\ y eliminamos la ultima.
 		$backupRuta = rtrim(str_replace('/', '\\', $backupRuta), '\\');
-		$rclone = '"C:\\Users\\Usuario\\Downloads\\rclone-v1.70.2-windows-amd64\\rclone.exe"';
+		$rclone = '"C:\\rclone-v1.70.2-windows-amd64\\rclone.exe"';
 
 		// dentro del comando se agrega las comillas con el delimitador \"
 		$comando = "$rclone copy almacen:/bases/ \"$backupRuta\" --include \"*.zip\" --ignore-existing -v";

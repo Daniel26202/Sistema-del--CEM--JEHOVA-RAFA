@@ -90,7 +90,7 @@ addEventListener("DOMContentLoaded", function () {
                                                     data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Cancelar</button>
 
                                                 <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/${res}/${resultadoConsulBd[1]}" class="seleccionar">
-                                                    <button class="seleccionar btn col-4 btn-agregarcita-modal btnrestablecer"
+                                                    <button class=" btn col-4 btn-agregarcita-modal btnrestablecer"
                                                         id="">Restaurar</button>
                                                 </a>
 
