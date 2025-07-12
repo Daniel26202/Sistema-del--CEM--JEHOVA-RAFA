@@ -130,7 +130,7 @@ if (!empty($parametro)) {
                                             <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
                                                 style="display: none;" uk-alert>
                                                 <a class="uk-alert-close" uk-close></a>
-                                                <p class="pe-2">Ya tiene una session abierta por favor ciérrela e inténtelo nuevamente.</p>
+                                                <p class="pe-2">Ya tiene una session abierta por favor ciérrala e inténtelo nuevamente.</p>
 
                                                 <a href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/cerrar">Cerrar Session</a>
                                             </div>

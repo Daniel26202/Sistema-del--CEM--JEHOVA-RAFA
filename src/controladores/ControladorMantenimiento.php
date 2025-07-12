@@ -25,13 +25,28 @@ class ControladorMantenimiento
 		}
 	}
 
-
-
 	public function mantenimiento($parametro)
 	{
 		$ayuda = "btnayudaMantenimiento";
-		$respaldos = $this->modelo->traerBds($this->backupRuta);
 		require_once './src/vistas/vistaMantenimiento/mantenimiento.php';
+	}
+
+	public function bajarBdsNube($parametro)
+	{
+		$resultado = $this->modelo->traerBdsNube($this->backupRuta);
+		echo json_encode($resultado);
+	}
+
+	public function consultarBd($parametro)
+	{
+		// verifica si la sesión esta activa.
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		$idUsuario = $_SESSION["id_usuario"];
+		$respaldos = $this->modelo->traerBds($this->backupRuta);
+		$arrayRU = [$respaldos, $idUsuario];
+		echo json_encode($arrayRU);
 	}
 
 	public function generarRespaldo($parametro)
@@ -42,10 +57,9 @@ class ControladorMantenimiento
 
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento/guardado");
 	}
+
 	public function restaurarRespaldo($parametro)
 	{
-		
-
 		// buscar todos los archivos ZIP de respaldo
 		$archivosZip = glob($this->backupRuta . "bd-*.zip");
 
@@ -53,16 +67,17 @@ class ControladorMantenimiento
 
 			print_r($parametro);
 			if (isset($parametro[0]) && $parametro[0] != "nohay") {
-				$nombreBd = $parametro[0];
+				$nombreBd = $this->backupRuta .  $parametro[0] . ".zip";
 				$nombreZip = $parametro[0];
 				$id_usuario = $parametro[1];
 			} else {
-				$nombreBd = null;
 				// Ordenar por fecha de modificación
 				usort($archivosZip, function ($a, $b) {
 					return filemtime($b) - filemtime($a);
 				});
 				$nombreZip = basename($archivosZip[0]);
+
+				$nombreBd = $archivosZip[0];
 				$id_usuario = $parametro[1];
 			}
 			$this->modelo->restaurarBackup($this->backupRuta, $nombreBd);
@@ -73,6 +88,12 @@ class ControladorMantenimiento
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento/noExisteRespaldo");
 		}
+	}
+
+	public function verificacionU($parametro)
+	{
+		$resultado = $this->modelo->verifU($_POST["usuario"], $_POST["password"]);
+		echo json_encode($resultado);
 	}
 
 	private function permisos($id_rol, $permiso, $modulo)
