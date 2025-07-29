@@ -106,7 +106,7 @@
 <!-- modal de registrar nuevo rol -->
 
 
-<!--MODAL MOSTRAR-->
+<!--MODAL Guardar-->
 
 <div id="modal-exampleGuardar" uk-modal>
     <div class="uk-modal-dialog uk-modal-body tamaño-modal uk-card uk-card-default uk-width-1-2@m">
@@ -208,7 +208,7 @@
                                                                                         </label></div>
                                                                                 </div>
 
-                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Patologias" || $modulo == "Reportes" || $modulo == "Estadisticas" ? "d-none" : ""; ?>">
+                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Patologias" || $modulo == "Reportes" || $modulo == "Estadisticas" || $modulo == "Factura" || $modulo == "Mantenimiento" ? "d-none" : ""; ?>">
                                                                                     <div>
                                                                                         <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
                                                                                             value="editar" name="<?= $permisosPorModulo ?>" data-index="<?= $modulo ?>">
@@ -218,7 +218,7 @@
                                                                                         </label></div>
                                                                                 </div>
 
-                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Control" || $modulo == "Reportes" || $modulo == "Estadisticas" ? "d-none" : ""; ?>">
+                                                                                <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Control" || $modulo == "Reportes" || $modulo == "Estadisticas" || $modulo == "Mantenimiento" ? "d-none" : ""; ?>">
                                                                                     <div>
                                                                                         <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
                                                                                             value="eliminar" name="<?= $permisosPorModulo ?>" data-index="<?= $modulo ?>">

@@ -42,7 +42,7 @@
     </div>
 
 
-    <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Patologias" || $modulo == "Estadisticas" || $modulo == "Reportes" ? "d-none" : ""; ?>">
+    <div class="form-check form-switch d-flex align-items-center <?= $modulo == "Patologias" || $modulo == "Estadisticas" || $modulo == "Reportes" || $modulo == "Factura" || $modulo == "Mantenimiento" ? "d-none" : ""; ?>">
         <div>
             <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
                 value="editar" name="  <?= $permisosPorModulo ?>" data-index="<?= $modulo ?>" <?php if ($permisosDelRol != array()) {
@@ -58,7 +58,7 @@
 
     </div>
 
-    <div class="form-check form-switch d-flex align-items-center  <?= $modulo == "Control" || $modulo == "Estadisticas" || $modulo == "Reportes" ? "d-none" : ""; ?>">
+    <div class="form-check form-switch d-flex align-items-center  <?= $modulo == "Control" || $modulo == "Estadisticas" || $modulo == "Reportes" || $modulo == "Mantenimiento" ? "d-none" : ""; ?>">
         <div>
             <input class="form-check-input form-check-js checkboxPermiso" type="checkbox" role="switch"
                 value="eliminar" name="  <?= $permisosPorModulo ?>" data-index="<?= $modulo ?>" <?php if ($permisosDelRol != array()) {
