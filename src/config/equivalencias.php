@@ -118,7 +118,6 @@ return [
 
     //Control
     "control" => "consultar",
-    "mostrarPacientesJS" => "consultar",
     "mostrarBusquedaPacientesJS" => "consultar",
     "mostrarControlPacientesJS" => "consultar",
     "mostrarPacienteJS" => "consultar",
@@ -130,6 +129,7 @@ return [
     "mostrarPIdP" => "consultar",
     "eliminarSintoma" => "eliminar",
     "agregarSintoma" => "editar",
+    "listPacientesJS" => "consultar",
 
     //Insumos
     "insumos" => "consultar",

@@ -40,10 +40,10 @@ class ControladorControl
 		$idPersonal = $_SESSION['id_personal'];
 		$validacionCargo = $this->inicio->comprobarCargo($idPersonal);
 
-		require_once './src/vistas/vistaControl/vistaControl.php';
+		require_once './src/vistas/vistaControl/c.php';
 	}
 
-	public function mostrarPacientesJS()
+	public function listPacientesJS()
 	{
 		$respuesta = $this->modelo->consultarPacientes();
 		echo json_encode($respuesta);
