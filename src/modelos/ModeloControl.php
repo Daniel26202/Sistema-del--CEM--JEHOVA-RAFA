@@ -63,7 +63,7 @@ class ModeloControl extends Db
 	}
 
 	//insertar control
-	public function insertControl($historial, $idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $fechaHora)
+	public function insertControl($historial, $idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota)
 	{
 		try {
 			$this->conexion->beginTransaction();
@@ -72,21 +72,19 @@ class ModeloControl extends Db
 
 				// primero se registra la patologia del paciente
 				foreach ($patologias as $patologia) {
-					$consulta2 = $this->conexion->prepare("INSERT INTO patologiadepaciente(id_paciente, id_patologia, fecha_registro) VALUES (:id_paciente, :id_patologia, :fechaHora)");
+					$consulta2 = $this->conexion->prepare("INSERT INTO patologiadepaciente(id_paciente, id_patologia, fecha_registro) VALUES (:id_paciente, :id_patologia, NOW())");
 					$consulta2->bindParam(":id_paciente", $idPaciente);
 					$consulta2->bindParam(":id_patologia", $patologia);
-					$consulta2->bindParam(":fechaHora", $fechaHora);
 					$consulta2->execute();
 				}
 			}
 
-			$sqlC = $this->conexion->prepare("INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, :fechaHora, :fechaRegreso, :nota, :historial, 'ACT')");
+			$sqlC = $this->conexion->prepare("INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, NOW(), :fechaRegreso, :nota, :historial, 'ACT')");
 
 			$sqlC->bindParam(":idPaciente", $idPaciente);
 			$sqlC->bindParam(":idUsuario", $idUsuario);
 			$sqlC->bindParam(":diagnostico", $diagnostico);
 			$sqlC->bindParam(":indicaciones", $indicaciones);
-			$sqlC->bindParam(":fechaHora", $fechaHora);
 			$sqlC->bindParam(":fechaRegreso", $fechaRegreso);
 			$sqlC->bindParam(":nota", $nota);
 			$sqlC->bindParam(":historial", $historial);

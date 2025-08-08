@@ -5,6 +5,16 @@ addEventListener("DOMContentLoaded", function () {
   const tbodyPacientes = document.getElementById("tbody-pacientes");
   const textStartControl = document.getElementById("text-start");
   const loaderControlMedico = document.getElementById("loader-control-medico");
+  const modalAddControl = document.getElementById("modalAgregarControl"); //modal control
+  const cedulaControl = document.getElementById("cedulaControl"); //input cedula
+  const showPaciente = document.getElementById("mostrarPaciente");
+  const btnAC = document.getElementById("btnAC");
+  const contentF = document.getElementById("contenedorF");
+  const mandarAddPaciente = document.getElementById("mandarRegistrarPaciente");
+  const Not_paciente = this.document.getElementById("No_paciente");
+  const edad = document.getElementById("edad");
+  const dataPaciente = document.getElementById("datosPaciente");
+  const idPaciente = document.getElementById("idPaciente");
   let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
 
   //funtion generica for execute petiticon ajax
@@ -126,7 +136,7 @@ addEventListener("DOMContentLoaded", function () {
 
       result[0].forEach((element, index) => {
         console.log(element);
-        html += returnFragmentControl(result[0],element, index);
+        html += returnFragmentControl(result[0], element, index);
         tbodyControl.parentElement.classList.remove("d-none");
         textStartControl.classList.add("d-none");
       });
@@ -134,10 +144,71 @@ addEventListener("DOMContentLoaded", function () {
       tbodyControl.innerHTML = html;
     } catch (error) {
       console.error("hola el error es :" + error);
-    }finally{
+    } finally {
       loaderControlMedico.classList.add("d-none");
     }
   };
 
+  const dataPacienteModal = async (cedula) => {
+    try {
+      let result = await executePetition(url + "/mostrarPacienteJS/" + cedula, "GET");
+
+      if (result.length > 0) {
+        result.forEach((res) => {
+          // calcula la edad
+          const fechaNac = new Date(res.fn);
+          const edadDif = Date.now() - fechaNac.getTime();
+          const edadFecha = new Date(edadDif);
+          edad.innerText = `Edad: ${Math.abs(edadFecha.getUTCFullYear() - 1970)}`;
+          dataPaciente.innerText = `Paciente: ${res.nombre} ${res.apellido}`;
+          idPaciente.value = res.id_paciente;
+        });
+        // console.log(result[0].id_paciente);
+        // // mostrarPIdP es la función...
+        // let verificar = await patologiaC(result[0].id_paciente, "inputPP", "mostrarPIdP");
+        // // si
+        // if (verificar != undefined) {
+        //   let inputChe = document.querySelectorAll(`.inputPP`);
+        // }
+
+        showPaciente.classList.remove("d-none");
+        btnAC.classList.remove("d-none");
+        contentF.classList.remove("d-none");
+        mandarAddPaciente.classList.add("d-none");
+        Not_paciente.innerText = "";
+      } else {
+        showPaciente.classList.add("d-none");
+        btnAC.classList.add("d-none");
+        contentF.classList.add("d-none");
+        mandarAddPaciente.classList.remove("d-none");
+        Not_paciente.innerText = `NO SE ENCONTRÓ AL PACIENTE, PRESIONE CLIC AQUÍ PARA REGISTRAR`;
+      }
+    } catch (error) {
+      console.log("error funtion dataPacienteModal" + error);
+    }
+  };
+
+  //funtion for save the control
+  const saveControl = async () => {
+    // try {
+      const data = new FormData(modalAddControl);
+      console.log(data);
+      let result = await executePetition(url + "/insertarControl", "POST", data);
+      alert(result);
+      // readControl(result.cedula);
+    // } catch (error) {
+    //   alert(error);
+    // }
+  };
+
   readPacientes();
+
+  cedulaControl.addEventListener("keyup", function () {
+    dataPacienteModal(this.value);
+  });
+
+  modalAddControl.addEventListener("submit", function (e) {
+    e.preventDefault();
+    saveControl();
+  });
 });
