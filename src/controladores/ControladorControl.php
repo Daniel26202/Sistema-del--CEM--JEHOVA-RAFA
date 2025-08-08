@@ -107,13 +107,13 @@ class ControladorControl
 	{
 		$patologia = (isset($_POST["patologias"])) ? $_POST["patologias"] : false;
 
-		$this->modelo->insertControl($_POST["historial"], $_POST["doctor"], $_POST["id_paciente"], $_POST["diagnostico"], $_POST["sintomas"], $_POST["indicaciones"], $_POST["fechaRegreso"], $patologia, $_POST["nota"]);
+		$registro = $this->modelo->insertControl($_POST["historial"], $_POST["doctor"], $_POST["id_paciente"], $_POST["diagnostico"], $_POST["sintomas"], $_POST["indicaciones"], $_POST["fechaRegreso"], $patologia, $_POST["nota"]);
 
-		// Guardar la bitacora
-		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha Insertado un nuevo  control medico");
-
-
-		echo json_encode($_POST);
+		if ($registro) {
+			// Guardar la bitacora
+			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha Insertado un nuevo  control medico");	
+		} 
+		echo json_encode(["success" => $registro, "data" => $_POST]);
 	}
 
 	public function eliminarControl($datos)

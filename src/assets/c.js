@@ -15,19 +15,22 @@ addEventListener("DOMContentLoaded", function () {
   const edad = document.getElementById("edad");
   const dataPaciente = document.getElementById("datosPaciente");
   const idPaciente = document.getElementById("idPaciente");
+  const alertControl = document.getElementById("alert-control");
   let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
 
   //funtion generica for execute petiticon ajax
   const executePetition = async (url, method, data = null) => {
     try {
-      const options = {
-        method: method,
-        headers: {
-          "Content-Type": "Aplication/json",
-        },
-      };
+      const options = {method: method};
 
-      if (data) options.body = JSON.stringify(data);
+      if (data instanceof FormData) {
+        options.body = data;
+      } else if (data && typeof data === "object") {
+        options.headers = {
+          "Content-Type": "application/json",
+        };
+        options.body = JSON.stringify(data);
+      }
 
       let response = await fetch(url, options);
       return response.json();
@@ -190,15 +193,16 @@ addEventListener("DOMContentLoaded", function () {
 
   //funtion for save the control
   const saveControl = async () => {
-    // try {
+    try {
       const data = new FormData(modalAddControl);
       console.log(data);
       let result = await executePetition(url + "/insertarControl", "POST", data);
-      alert(result);
-      // readControl(result.cedula);
-    // } catch (error) {
-    //   alert(error);
-    // }
+      alertControl.classList.remove("d-none");
+      alertControl.innerText = `Se registro correctamente el control medico del paciente con la cedula ${result.data.cedula}`;
+      readControl(result.data.cedula);
+    } catch (error) {
+      alertControl.innerText = `Lamenteblemente algo salio mal por favor intente mas tarde`;
+    }
   };
 
   readPacientes();
@@ -209,6 +213,8 @@ addEventListener("DOMContentLoaded", function () {
 
   modalAddControl.addEventListener("submit", function (e) {
     e.preventDefault();
+    UIkit.modal("#modal-examplecontrol").hide();
     saveControl();
   });
+
 });
