@@ -21,7 +21,7 @@ addEventListener("DOMContentLoaded", function () {
   //funtion generica for execute petiticon ajax
   const executePetition = async (url, method, data = null) => {
     try {
-      const options = {method: method};
+      const options = { method: method };
 
       if (data instanceof FormData) {
         options.body = data;
@@ -193,17 +193,32 @@ addEventListener("DOMContentLoaded", function () {
 
   //funtion for save the control
   const saveControl = async () => {
+    let textAlert = "", classAlert = "";
     try {
       const data = new FormData(modalAddControl);
-      console.log(data);
       let result = await executePetition(url + "/insertarControl", "POST", data);
       alertControl.classList.remove("d-none");
-      alertControl.innerText = `Se registro correctamente el control medico del paciente con la cedula ${result.data.cedula}`;
+      textAlert = `Se registro correctamente el control medico del paciente con la cedula ${result.data.cedula}`;
+      classAlert = "uk-alert-primary";
       readControl(result.data.cedula);
     } catch (error) {
-      alertControl.innerText = `Lamenteblemente algo salio mal por favor intente mas tarde`;
+      textAlert = `Lamenteblemente algo salio mal por favor intente mas tarde`;
+      classAlert = "uk-alert-danger";
+    }finally{
+      showAlert(alertControl, textAlert, classAlert);
     }
   };
+
+  //funtion for show and hidden alert the control
+  const showAlert = (alert, text, classAlert) => {
+    alert.classList.add(`${classAlert}`);
+    alert.innerText = `${text}`;
+    alert.classList.remove("d-none");
+    setTimeout(() => {
+      alert.classList.add("d-none");
+    }, 7000);
+  };
+
 
   readPacientes();
 
@@ -216,5 +231,4 @@ addEventListener("DOMContentLoaded", function () {
     UIkit.modal("#modal-examplecontrol").hide();
     saveControl();
   });
-
 });

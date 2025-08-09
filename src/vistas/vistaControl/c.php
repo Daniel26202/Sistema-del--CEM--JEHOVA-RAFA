@@ -9,7 +9,7 @@
         </svg></h5>
     <!-- alertas -->
 
-    <div class="uk-alert-primary comentario  comentarioRed me-4 fw-bolder alertaGenerica text-center d-none" id="alert-control" uk-alert>
+    <div class="comentario  comentarioRed me-4 fw-bolder  text-center d-none" id="alert-control" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <p class="pe-2"></p>
     </div>
