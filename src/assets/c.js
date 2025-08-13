@@ -2,19 +2,19 @@ addEventListener("DOMContentLoaded", function () {
   console.log("hello control medico");
 
   const tbodyControl = document.getElementById("tbody-control");
-  const tbodyPacientes = document.getElementById("tbody-pacientes");
+  const tbodyPatients = document.getElementById("tbody-pacientes");
   const textStartControl = document.getElementById("text-start");
   const loaderControlMedico = document.getElementById("loader-control-medico");
   const modalAddControl = document.getElementById("modalAgregarControl"); //modal control
   const cedulaControl = document.getElementById("cedulaControl"); //input cedula
-  const showPaciente = document.getElementById("mostrarPaciente");
+  const showPatient = document.getElementById("mostrarPaciente");
   const btnAC = document.getElementById("btnAC");
   const contentF = document.getElementById("contenedorF");
-  const mandarAddPaciente = document.getElementById("mandarRegistrarPaciente");
-  const Not_paciente = this.document.getElementById("No_paciente");
+  const mandarAddPatient = document.getElementById("mandarRegistrarPaciente");
+  const Not_Patient = this.document.getElementById("No_paciente");
   const edad = document.getElementById("edad");
-  const dataPaciente = document.getElementById("datosPaciente");
-  const idPaciente = document.getElementById("idPaciente");
+  const dataPatient = document.getElementById("datosPaciente");
+  const idPatient = document.getElementById("idPaciente");
   const alertControl = document.getElementById("alert-control");
   let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
 
@@ -39,14 +39,14 @@ addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  //funtion for add pacientes in table
-  const readPacientes = async () => {
+  //funtion for add Patients in table
+  const readPatients = async () => {
     try {
       let result = await executePetition(url + "/listPacientesJS", "GET");
       let html = "";
       result.forEach((element) => {
         html += `
-            <tr class="row-pacientes">
+            <tr class="row-Patients">
                             <td>${element.cedula}</td>
                             <td>${element.nombre}</td>
                             <td>${element.fn}</td>
@@ -54,13 +54,13 @@ addEventListener("DOMContentLoaded", function () {
                         </tr>
             `;
       });
-      tbodyPacientes.innerHTML = html;
+      tbodyPatients.innerHTML = html;
 
-      //Bucle and Event for selected the paciente and control medico
-      document.querySelectorAll(".row-pacientes").forEach((row) => {
+      //Bucle and Event for selected the Patient and control medico
+      document.querySelectorAll(".row-Patients").forEach((row) => {
         row.addEventListener("click", function () {
           let background = row.style.backgroundColor;
-          document.querySelectorAll(".row-pacientes").forEach((row) => {
+          document.querySelectorAll(".row-Patients").forEach((row) => {
             row.style.backgroundColor = "";
           });
           row.style.backgroundColor = background == "var(--color-primary)" ? "" : "var(--color-primary)";
@@ -70,7 +70,7 @@ addEventListener("DOMContentLoaded", function () {
         });
       });
     } catch (error) {
-      console.log(error);
+      console.log("Error in the function readPatients "+ error);
     }
   };
 
@@ -85,8 +85,8 @@ addEventListener("DOMContentLoaded", function () {
                                 <button class="btn col-3 btn-agregarcita-modal editar btnEditar" type="button"
                                     uk-toggle="target: #modal-examplecontroleditar${element.id_control}" data-id-control="${
         element.id_control
-      }" data-id-paciente="${
-        element.id_paciente
+      }" data-id-Patient="${
+        element.id_Patient
       }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                         <path
@@ -130,10 +130,10 @@ addEventListener("DOMContentLoaded", function () {
   };
 
   //funtion for add control medico in table
-  const readControl = async (cedulaPaciente) => {
+  const readControl = async (cedulaPatient) => {
     try {
       loaderControlMedico.classList.remove("d-none");
-      let result = await executePetition(url + "/mostrarControlPacientesJS/" + cedulaPaciente, "GET");
+      let result = await executePetition(url + "/mostrarControlPacientesJS/" + cedulaPatient, "GET");
       let html = "";
       tbodyControl.innerHTML = ``;
 
@@ -152,9 +152,9 @@ addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  const dataPacienteModal = async (cedula) => {
+  const dataPatientModal = async (cedula) => {
     try {
-      let result = await executePetition(url + "/mostrarPacienteJS/" + cedula, "GET");
+      let result = await executePetition(url + "/mostrarPatientJS/" + cedula, "GET");
 
       if (result.length > 0) {
         result.forEach((res) => {
@@ -163,31 +163,31 @@ addEventListener("DOMContentLoaded", function () {
           const edadDif = Date.now() - fechaNac.getTime();
           const edadFecha = new Date(edadDif);
           edad.innerText = `Edad: ${Math.abs(edadFecha.getUTCFullYear() - 1970)}`;
-          dataPaciente.innerText = `Paciente: ${res.nombre} ${res.apellido}`;
-          idPaciente.value = res.id_paciente;
+          dataPatient.innerText = `Patient: ${res.nombre} ${res.apellido}`;
+          idPatient.value = res.id_Patient;
         });
-        // console.log(result[0].id_paciente);
+        // console.log(result[0].id_Patient);
         // // mostrarPIdP es la función...
-        // let verificar = await patologiaC(result[0].id_paciente, "inputPP", "mostrarPIdP");
+        // let verificar = await patologiaC(result[0].id_Patient, "inputPP", "mostrarPIdP");
         // // si
         // if (verificar != undefined) {
         //   let inputChe = document.querySelectorAll(`.inputPP`);
         // }
 
-        showPaciente.classList.remove("d-none");
+        showPatient.classList.remove("d-none");
         btnAC.classList.remove("d-none");
         contentF.classList.remove("d-none");
-        mandarAddPaciente.classList.add("d-none");
-        Not_paciente.innerText = "";
+        mandarAddPatient.classList.add("d-none");
+        Not_Patient.innerText = "";
       } else {
-        showPaciente.classList.add("d-none");
+        showPatient.classList.add("d-none");
         btnAC.classList.add("d-none");
         contentF.classList.add("d-none");
-        mandarAddPaciente.classList.remove("d-none");
-        Not_paciente.innerText = `NO SE ENCONTRÓ AL PACIENTE, PRESIONE CLIC AQUÍ PARA REGISTRAR`;
+        mandarAddPatient.classList.remove("d-none");
+        Not_Patient.innerText = `NO SE ENCONTRÓ AL Patient, PRESIONE CLIC AQUÍ PARA REGISTRAR`;
       }
     } catch (error) {
-      console.log("error funtion dataPacienteModal" + error);
+      console.log("error funtion dataPatientModal" + error);
     }
   };
 
@@ -198,7 +198,7 @@ addEventListener("DOMContentLoaded", function () {
       const data = new FormData(modalAddControl);
       let result = await executePetition(url + "/insertarControl", "POST", data);
       alertControl.classList.remove("d-none");
-      textAlert = `Se registro correctamente el control medico del paciente con la cedula ${result.data.cedula}`;
+      textAlert = `Se registro correctamente el control medico del Patient con la cedula ${result.data.cedula}`;
       classAlert = "uk-alert-primary";
       readControl(result.data.cedula);
     } catch (error) {
@@ -220,10 +220,10 @@ addEventListener("DOMContentLoaded", function () {
   };
 
 
-  readPacientes();
+  readPatients();
 
   cedulaControl.addEventListener("keyup", function () {
-    dataPacienteModal(this.value);
+    dataPatientModal(this.value);
   });
 
   modalAddControl.addEventListener("submit", function (e) {
