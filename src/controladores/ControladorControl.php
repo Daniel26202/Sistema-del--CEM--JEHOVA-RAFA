@@ -132,11 +132,9 @@ class ControladorControl
 			if ($editar) {
 				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha modificado un  control medico");
-
-				echo json_encode($_POST);
-			} else {
-				echo json_encode(["mensaje"=> "lamentablemente ocurrió un error por favor intente mas tarde."]);
 			}
+
+			echo json_encode(["success" => $editar, "data" => $_POST]);
 			
 		}
 	}

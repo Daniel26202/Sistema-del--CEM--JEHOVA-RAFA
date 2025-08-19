@@ -6,6 +6,7 @@ addEventListener("DOMContentLoaded", function () {
   const textStartControl = document.getElementById("text-start");
   const loaderControlMedico = document.getElementById("loader-control-medico");
   const modalAddControl = document.getElementById("modalAgregarControl"); //modal control
+  const modalEditControl = document.getElementById("modalEditar");
   const cedulaControl = document.getElementById("cedulaControl"); //input cedula
   const showPatient = document.getElementById("mostrarPaciente");
   const btnAC = document.getElementById("btnAC");
@@ -16,9 +17,14 @@ addEventListener("DOMContentLoaded", function () {
   const dataPatient = document.getElementById("datosPaciente");
   const idPatient = document.getElementById("idPaciente");
   const alertControl = document.getElementById("alert-control");
+  const showDataPatientEdit = document.querySelectorAll(".showDataPatientEdit");
+  const id_usuario_bitacora = document.getElementById("id_usuario_bitacora").value; // constante que guarda el id que inicio session de esa manera podemos realizar la bitacora;
+  const divSintomas = document.querySelector(".divSintomas");
+  const divPatologias = document.querySelector(".divPatologias");
+
   let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
 
-  //funtion generica for execute petiticon ajax
+  //function generica for execute petiticon ajax
   const executePetition = async (url, method, data = null) => {
     try {
       const options = { method: method };
@@ -39,7 +45,7 @@ addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  //funtion for add Patients in table
+  //function for add Patients in table
   const readPatients = async () => {
     try {
       let result = await executePetition(url + "/listPacientesJS", "GET");
@@ -70,7 +76,7 @@ addEventListener("DOMContentLoaded", function () {
         });
       });
     } catch (error) {
-      console.log("Error in the function readPatients "+ error);
+      console.log("Error in the function readPatients " + error);
     }
   };
 
@@ -82,10 +88,10 @@ addEventListener("DOMContentLoaded", function () {
                             <td>${element.fecha_control.split(" ")[0]}</td>
                             <td>${element.fechaRegreso}</td>
                             <td>
-                                <button class="btn col-3 btn-agregarcita-modal editar btnEditar" type="button"
-                                    uk-toggle="target: #modal-examplecontroleditar${element.id_control}" data-id-control="${
-        element.id_control
-      }" data-id-Patient="${
+                                <button class="btn col-3 btn-agregarcita-modal editar btnEditar buttomEditControl" type="button"
+                                    uk-toggle="target: #modal-examplecontroleditar" data-id-control="${
+                                      element.id_control
+                                    }" data-id-Patient="${
         element.id_Patient
       }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -129,7 +135,26 @@ addEventListener("DOMContentLoaded", function () {
     return fragment;
   };
 
-  //funtion for add control medico in table
+  const returnFrangmentCheckbox = (nameInput, element, checked = false) => {
+    let fragment = "";
+
+    console.log(element);
+    fragment = `                        
+                                        <div class="form-check form-switch d-flex align-items-center">
+                                            <div>
+                                                <input class="form-check-input inputExpresiones inpSin" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked=${checked} disabled name=${nameInput} value="16">
+                                            </div>
+                                            <div>
+                                                <label class="form-check-label mt-1 for=" flexswitchcheckdefault"="">
+                                                    ${element}                                              </label>
+                                            </div>
+
+                                        </div>  `;
+
+    return fragment;
+  };
+
+  //function for add control medico in table
   const readControl = async (cedulaPatient) => {
     try {
       loaderControlMedico.classList.remove("d-none");
@@ -145,6 +170,11 @@ addEventListener("DOMContentLoaded", function () {
       });
 
       tbodyControl.innerHTML = html;
+      document.querySelectorAll(".buttomEditControl").forEach((element) => {
+        element.addEventListener("click", function (e) {
+          showDataPatient(this.getAttribute("data-id-control"), result);
+        });
+      });
     } catch (error) {
       console.error("hola el error es :" + error);
     } finally {
@@ -154,7 +184,7 @@ addEventListener("DOMContentLoaded", function () {
 
   const dataPatientModal = async (cedula) => {
     try {
-      let result = await executePetition(url + "/mostrarPatientJS/" + cedula, "GET");
+      let result = await executePetition(url + "/mostrarPacienteJS/" + cedula, "GET");
 
       if (result.length > 0) {
         result.forEach((res) => {
@@ -166,14 +196,6 @@ addEventListener("DOMContentLoaded", function () {
           dataPatient.innerText = `Patient: ${res.nombre} ${res.apellido}`;
           idPatient.value = res.id_Patient;
         });
-        // console.log(result[0].id_Patient);
-        // // mostrarPIdP es la función...
-        // let verificar = await patologiaC(result[0].id_Patient, "inputPP", "mostrarPIdP");
-        // // si
-        // if (verificar != undefined) {
-        //   let inputChe = document.querySelectorAll(`.inputPP`);
-        // }
-
         showPatient.classList.remove("d-none");
         btnAC.classList.remove("d-none");
         contentF.classList.remove("d-none");
@@ -187,29 +209,54 @@ addEventListener("DOMContentLoaded", function () {
         Not_Patient.innerText = `NO SE ENCONTRÓ AL Patient, PRESIONE CLIC AQUÍ PARA REGISTRAR`;
       }
     } catch (error) {
-      console.log("error funtion dataPatientModal" + error);
+      console.log("error function dataPatientModal" + error);
     }
   };
 
-  //funtion for save the control
+  //function for save the control
   const saveControl = async () => {
-    let textAlert = "", classAlert = "";
+    let textAlert = "",
+      classAlert = "";
     try {
       const data = new FormData(modalAddControl);
       let result = await executePetition(url + "/insertarControl", "POST", data);
       alertControl.classList.remove("d-none");
-      textAlert = `Se registro correctamente el control medico del Patient con la cedula ${result.data.cedula}`;
+      textAlert = `Se registro correctamente el control medico del Paciente con la cedula ${result.data.cedula}`;
       classAlert = "uk-alert-primary";
       readControl(result.data.cedula);
     } catch (error) {
       textAlert = `Lamenteblemente algo salio mal por favor intente mas tarde`;
       classAlert = "uk-alert-danger";
-    }finally{
+    } finally {
       showAlert(alertControl, textAlert, classAlert);
     }
   };
 
-  //funtion for show and hidden alert the control
+  //function for edit the control
+  const editControl = async () => {
+    let textAlert = "",
+      classAlert = "";
+    try {
+      const data = new FormData(modalEditControl);
+      let result = await executePetition(url + "/editarControl", "POST", data);
+      console.log(result);
+      if (!result.mensaje) {
+        await readControl(result.data.cedula);
+        console.log(result.data.cedula);
+        textAlert = `Se modifico correctamente el control medico del Paciente con la cedula ${result.data.cedula}`;
+        classAlert = "uk-alert-primary";
+      } else {
+        textAlert = `Lamenteblemente algo salio mal por favor intente mas tarde`;
+        classAlert = "uk-alert-danger";
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      showAlert(alertControl, textAlert, classAlert);
+    }
+  };
+
+  //function for show and hidden alert the control
   const showAlert = (alert, text, classAlert) => {
     alert.classList.add(`${classAlert}`);
     alert.innerText = `${text}`;
@@ -219,6 +266,34 @@ addEventListener("DOMContentLoaded", function () {
     }, 7000);
   };
 
+  //function for show the data the patient in edit
+  const showDataPatient = (idControl, data) => {
+    let dataControl = data[0].find((element) => element.id_control == idControl);
+    console.log(dataControl);
+    showDataPatientEdit[0].value = id_usuario_bitacora;
+    showDataPatientEdit[1].value = dataControl.id_control;
+    showDataPatientEdit[2].value = dataControl.cedula;
+    showDataPatientEdit[3].value = dataControl.id_paciente;
+    showDataPatientEdit[4].innerText = dataControl.nota;
+    showDataPatientEdit[5].innerText = dataControl.medicamentosRecetados;
+    showDataPatientEdit[6].value = dataControl.fechaRegreso;
+    showDataPatientEdit[7].innerText = dataControl.historiaclinica;
+
+    let htmlSintomas = "";
+    let htmlPatologias = "";
+
+    data[1].forEach((element) => {
+      htmlSintomas += returnFrangmentCheckbox("sintomas[]", element.nombreS, true);
+    });
+
+    data[3].forEach((element) => {
+      htmlPatologias += returnFrangmentCheckbox("patologias[]", element.nombre_patologia, true);
+    });
+
+    divSintomas.innerHTML = htmlSintomas;
+
+    divPatologias.innerHTML = htmlPatologias;
+  };
 
   readPatients();
 
@@ -230,5 +305,11 @@ addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
     UIkit.modal("#modal-examplecontrol").hide();
     saveControl();
+  });
+
+  modalEditControl.addEventListener("submit", function (e) {
+    e.preventDefault();
+    UIkit.modal("#modal-examplecontroleditar").hide();
+    editControl();
   });
 });
