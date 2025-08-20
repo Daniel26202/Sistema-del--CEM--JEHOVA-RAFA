@@ -46,15 +46,15 @@
           </svg>
         </a>
 
-          <input class="form-control input-busca" type="text" name="nombre" placeholder="Ingrese el síntoma"
-            id="inputBuscarS">
-          <button class="btn boton-buscar" title="Buscar" id="sintomasBuscar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
-              viewBox="0 0 16 16">
-              <path
-                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-            </svg>
-          </button>
+        <input class="form-control input-busca" type="text" name="nombre" placeholder="Ingrese el síntoma"
+          id="inputBuscarS">
+        <button class="btn boton-buscar" title="Buscar" id="sintomasBuscar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+            viewBox="0 0 16 16">
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+          </svg>
+        </button>
 
       </div>
     </div>
@@ -139,7 +139,7 @@
                         <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                           id="cancelarEliminacion">Cancelar</button>
 
-                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Control/eliminarSintoma/<?= $sintomas["id_sintomas"]; ?>/<?= $_SESSION['id_usuario'];?>">
+                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Control/eliminarSintoma/<?= $sintomas["id_sintomas"]; ?>/<?= $_SESSION['id_usuario']; ?>">
                           <button class="btn col-4 btn-agregarcita-modal" id="btnEliminarSintomasM">Eliminar</button>
                         </a>
 
@@ -245,9 +245,9 @@
       </div>
     </div>
 
-    <form class="form-modal" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Control/agregarSintoma" method="POST">
+    <form class="form-modal form-validable" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Control/agregarSintoma" method="POST">
 
-      <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
+      <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">
@@ -261,9 +261,10 @@
           </svg>
         </span>
 
-        <input class="form-control input-modal input-disabled input-paciente" type="text" id="nombre" name="nombreS"
+        <input class="form-control input-modal input-disabled input-paciente input-validar" type="text" id="nombre" name="nombre"
           placeholder="Nombre del Síntoma" required maxlength="20">
       </div>
+      <p class="p-error-nombre fw-bold p-error-validaciones d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
       <div class="mt-3 uk-text-right">
         <button class="uk-button col-6 me-2 uk-button-default btn-cerrar-modal" type="button"

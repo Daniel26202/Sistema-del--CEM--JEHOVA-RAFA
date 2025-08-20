@@ -177,7 +177,7 @@ class ControladorControl
 
 	public function agregarSintoma()
 	{
-		$insertar = $this->modeloSintomas->insertar($_POST["nombreS"]);
+		$insertar = $this->modeloSintomas->insertar($_POST["nombre"]);
 		if ($insertar) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "sintomas", "Ha Insertado un  sintoma");

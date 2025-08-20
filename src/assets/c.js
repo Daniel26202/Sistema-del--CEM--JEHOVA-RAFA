@@ -21,8 +21,198 @@ addEventListener("DOMContentLoaded", function () {
   const id_usuario_bitacora = document.getElementById("id_usuario_bitacora").value; // constante que guarda el id que inicio session de esa manera podemos realizar la bitacora;
   const divSintomas = document.querySelector(".divSintomas");
   const divPatologias = document.querySelector(".divPatologias");
+  const inputsExpresiones = document.querySelectorAll("#modalAgregarControl .inputExpresiones");
+  const inputsEdit = document.querySelectorAll("#modalEditar .input-edit");
+
 
   let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
+
+  //Secction the expresion regular
+
+  //objeto de las expresiones:
+  const expresiones = {
+    cedula: /^([1-9]{1})([0-9]{5,7})$/,
+    diagnostico: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
+    indicaciones: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
+    fechaRegreso: /^\d{4}\-\d{2}\-\d{2}$/,
+  };
+
+  const campos = {
+    cedula: false,
+    sintomas: false,
+    doctor: false,
+    diagnostico: false,
+    indicaciones: false,
+    fechaRegreso: false,
+  };
+  let idDU = document.querySelector("#idDExisteU");
+  console.log(idDU);
+  if (idDU) {
+    campos.doctor = true;
+  }
+
+  const camposEditar = {
+    diagnostico: true,
+    indicaciones: true,
+    fechaRegreso: true,
+  };
+
+  //validar forumlario
+  function validarFormularioControl(e) {
+    switch (e.target.name) {
+      case "cedula":
+        if (expresiones.cedula.test(cedulaControl.value)) {
+          cedulaControl.style.borderBottom = "2px solid rgb(13, 240, 13)";
+          campos["cedula"] = true;
+        } else {
+          cedulaControl.style.borderBottom = "2px solid rgb(224, 3, 3)";
+          campos["cedula"] = false;
+        }
+        break;
+
+      case "sintomas[]":
+        // recolecto los inputs
+        let inputCheS = document.querySelectorAll(`.inpSin`);
+
+        // Array.from es para convertir el html en array y el .some es para verificar(en una array) si cumple con la condición especifica; devolviendo true si es verdadero y false si es falso
+        let seleccionadoS = Array.from(inputCheS).some((checkbox) => checkbox.checked);
+        if (seleccionadoS) {
+          campos["sintomas"] = true;
+        } else {
+          campos["sintomas"] = false;
+        }
+        break;
+      case "doctor":
+        if (e.target.checked) {
+          campos["doctor"] = true;
+        } else {
+          campos["doctor"] = false;
+        }
+
+        break;
+      case "diagnostico":
+        validarCamposControl(expresiones.diagnostico, e.target, "diagnostico");
+
+        break;
+
+      case "indicaciones":
+        validarCamposControl(expresiones.indicaciones, e.target, "indicaciones");
+
+        break;
+      case "fechaRegreso":
+        // obtengo la hora de hoy.
+        let hoy = new Date();
+        // para que la hora minutos s mm este en cero, como no lo voy a usar
+        hoy.setHours(0, 0, 0, 0);
+        // tomo la fecha del input
+        let fechaInput = document.querySelector(`.grp_control_fechaRegreso`).value;
+        fechaInput = new Date(fechaInput);
+
+        // obtengo la hora de hoy.
+        let fechaMaxima = new Date();
+        // actualizamos la fecha de hoy, sumándole la fecha(en este caso el año) de hoy más 50
+        fechaMaxima.setFullYear(hoy.getFullYear() + 50);
+        // para que la hora minutos s mm este en cero, como no lo voy a usar
+        fechaMaxima.setHours(0, 0, 0, 0);
+
+        if (
+          expresiones.fechaRegreso.test(document.querySelector(`.grp_control_fechaRegreso`).value) &&
+          fechaInput >= hoy &&
+          fechaInput <= fechaMaxima
+        ) {
+          document.querySelector(`.grp_control_fechaRegreso`).style.borderBottom = "2px solid rgb(13, 240, 13)";
+          document.querySelector("#leyendaFec").classList.add("d-none");
+
+          campos["fechaRegreso"] = true;
+        } else {
+          document.querySelector(`.grp_control_fechaRegreso`).style.borderBottom = "2px solid rgb(224, 3, 3)";
+          document.querySelector("#leyendaFec").classList.remove("d-none");
+
+          campos["fechaRegreso"] = false;
+        }
+        break;
+    }
+  }
+
+  const validarCamposControl = (expresiones, input, campo) => {
+    if (expresiones.test(input.value)) {
+      input.parentElement.classList.remove("grpFormInCorrectControl");
+      input.parentElement.classList.add("grpFormCorrectControl");
+
+      campos[campo] = true;
+    } else {
+      input.parentElement.classList.remove("grpFormCorrectControl");
+      input.parentElement.classList.add("grpFormInCorrectControl");
+      campos[campo] = false;
+    }
+  };
+
+  inputsExpresiones.forEach((input) => {
+    input.addEventListener("input", validarFormularioControl);
+  });
+
+
+
+  //expresionesedit
+
+  //función para keyup de los inputs de editar
+  function inputsKeyupEditar(arrayControl) {
+    arrayControl.forEach((ele) => {
+      ele.addEventListener("input", function (e) {
+        if (e.target.name == "indicaciones") {
+          if (expresiones.indicaciones.test(e.target.value)) {
+            e.target.parentElement.classList.remove("grpFormInCorrectControlEditar");
+            e.target.parentElement.classList.add("grpFormCorrectControlEditar");
+            camposEditar["indicaciones"] = true;
+          } else {
+            e.target.parentElement.classList.remove("grpFormCorrectControlEditar");
+            e.target.parentElement.classList.add("grpFormInCorrectControlEditar");
+            camposEditar["indicaciones"] = false;
+          }
+        } else if (e.target.name == "fechaRegreso") {
+          // obtengo la hora de hoy.
+          let hoy = new Date();
+          // para que la hora minutos s mm este en cero, como no lo voy a usar
+          hoy.setHours(0, 0, 0, 0);
+          // tomo la fecha del input
+          let fechaInput = e.target.value;
+          fechaInput = new Date(fechaInput);
+
+          // obtengo la hora de hoy.
+          let fechaMaxima = new Date();
+          // actualizamos la fecha de hoy, sumándole la fecha(en este caso el año) de hoy más 50
+          fechaMaxima.setFullYear(hoy.getFullYear() + 50);
+          // para que la hora minutos s mm este en cero, como no lo voy a usar
+          fechaMaxima.setHours(0, 0, 0, 0);
+
+          if (expresiones.fechaRegreso.test(e.target.value) && fechaInput >= hoy && fechaInput <= fechaMaxima) {
+            let input = e.target;
+            input.classList.remove("grpFormInCorrectControlEditar");
+            input.classList.add("grpFormCorrectControlEditar");
+
+            // selecciono el padre del input
+            let div = input.parentElement;
+            // selecciono el hermano del div (en donde esta el texto de alerta)
+            let divD = div.nextElementSibling;
+
+            divD.classList.add("d-none");
+            camposEditar["fechaRegreso"] = true;
+          } else {
+            let input = e.target;
+            input.classList.remove("grpFormCorrectControlEditar");
+            input.classList.add("grpFormInCorrectControlEditar");
+            // selecciono el padre del input
+            let div = input.parentElement;
+            // selecciono el hermano del div (en donde esta el texto de alerta)
+            let divD = div.nextElementSibling;
+
+            divD.classList.remove("d-none");
+            camposEditar["fechaRegreso"] = false;
+          }
+        }
+      });
+    });
+  }
 
   //function generica for execute petiticon ajax
   const executePetition = async (url, method, data = null) => {
@@ -173,6 +363,7 @@ addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll(".buttomEditControl").forEach((element) => {
         element.addEventListener("click", function (e) {
           showDataPatient(this.getAttribute("data-id-control"), result);
+          inputsKeyupEditar(inputsEdit)
         });
       });
     } catch (error) {
@@ -305,13 +496,38 @@ addEventListener("DOMContentLoaded", function () {
 
   modalAddControl.addEventListener("submit", function (e) {
     e.preventDefault();
-    UIkit.modal("#modal-examplecontrol").hide();
-    saveControl();
+    if (campos.cedula && campos.sintomas && campos.doctor && campos.diagnostico && campos.indicaciones && campos.fechaRegreso) {
+      UIkit.modal("#modal-examplecontrol").hide();
+      saveControl();
+      modalAgregarControl.reset();
+      document.querySelectorAll(`#modalAgregarControl .input-modal-remove`).forEach((ele) => {
+        if (ele.parentElement.classList.contains("grpFormCorrectControl")) {
+          ele.parentElement.classList.remove("grpFormCorrectControl");
+        } else {
+          ele.setAttribute("style", "");
+        }
+      });
+    } else {
+      alert("Por favor verifique el formulario antes de enviarlo");
+    }
   });
 
   modalEditControl.addEventListener("submit", function (e) {
     e.preventDefault();
-    UIkit.modal("#modal-examplecontroleditar").hide();
-    editControl();
+
+    if (camposEditar.indicaciones && camposEditar.fechaRegreso) {
+      UIkit.modal("#modal-examplecontroleditar").hide();
+      editControl();
+      modalEditControl.reset();
+      document.querySelectorAll(`#modalAgregarControl .input-modal-remove`).forEach((ele) => {
+        if (ele.parentElement.classList.contains("grpFormCorrectControl")) {
+          ele.parentElement.classList.remove("grpFormCorrectControl");
+        } else {
+          ele.setAttribute("style", "");
+        }
+      });
+    } else {
+      alert("Por favor verifique el formulario antes de enviarlo");
+    }
   });
 });
