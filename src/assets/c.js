@@ -194,7 +194,7 @@ addEventListener("DOMContentLoaded", function () {
           const edadFecha = new Date(edadDif);
           edad.innerText = `Edad: ${Math.abs(edadFecha.getUTCFullYear() - 1970)}`;
           dataPatient.innerText = `Patient: ${res.nombre} ${res.apellido}`;
-          idPatient.value = res.id_Patient;
+          idPatient.value = res.id_paciente;
         });
         showPatient.classList.remove("d-none");
         btnAC.classList.remove("d-none");
@@ -224,6 +224,8 @@ addEventListener("DOMContentLoaded", function () {
       textAlert = `Se registro correctamente el control medico del Paciente con la cedula ${result.data.cedula}`;
       classAlert = "uk-alert-primary";
       readControl(result.data.cedula);
+      console.log("Resultado");
+      console.log(result);
     } catch (error) {
       textAlert = `Lamenteblemente algo salio mal por favor intente mas tarde`;
       classAlert = "uk-alert-danger";
