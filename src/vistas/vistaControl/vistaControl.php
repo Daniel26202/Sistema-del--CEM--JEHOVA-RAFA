@@ -1,9 +1,9 @@
 <?php require_once './src/vistas/head/head.php';  ?>
 
+<input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
+
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo">
-
-
+<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
     <h5 style="width: 95%; " class="m-auto mb-3">Control Médico<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
             class="bi bi-person-gear ms-2 mb-2" viewBox="0 0 16 16">
             <path
@@ -11,103 +11,72 @@
         </svg></h5>
     <!-- alertas -->
 
-    <?php require_once "./src/vistas/alerts.php" ?>
+    <div class="comentario  comentarioRed me-4 fw-bolder  text-center d-none" id="alert-control" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p class="pe-2"></p>
+    </div>
 
-    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
-        <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
+
+    <div class="container">
+        <!-- Tabla de Pacientes -->
+        <div class="tabla-control-medico pacientes">
+            <button class="btn btn-primary btn-sintomas btn-agregar-doctores " uk-toggle="target: #modal-examplecontrol"
+                id="btnControl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                    class="bi bi-person-lines-fill me-1" viewBox="0 0 16 16">
+                    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />
+                </svg>Registrar Control Médico
+            </button>
+            <h5>Pacientes</h5>
+            <div class="scrollable">
+                <table class="table table-striped example  hover-control-m">
+                    <thead>
+                        <tr>
+                            <th>Cedula</th>
+                            <th>Nombre</th>
+                            <th>Fecha de Nacimiento</th>
+                            <th>Sexo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-pacientes">
+                        <!-- js -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="mover-input-agregarcita mt-4 d-flex justify-content-end ">
+        <!-- Tabla de Registros con scroll -->
+        <div class="tabla-control-medico  registros">
             <button class="btn btn-primary btn-agregar-doctores btn-sintomas " uk-toggle="target: #modal-sintomas">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-person-lines-fill me-1" viewBox="0 0 16 16">
                     <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />
                 </svg>Registrar Sintomas
             </button>
-        </div>
+            <h5>Registros</h5>
+            <div class="scrollable">
+                <table class="table table-striped d-none">
+                    <thead>
+                        <tr>
+                            <th>Fecha de Control</th>
+                            <th>Fecha de Regreso</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-control">
 
+                        <!-- js -->
 
-        <!-- Aqui se guarda el id del usuario que inicio session -->
-        <input type="hidden" id="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
+                    </tbody>
 
-        <div class="div-tabla contenedor table table-responsive m-auto mt-3 p-auto">
-
-            <div class="text-center comentarioControl fw-bolder" style="display: none;" uk-alert>
-                <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2"></p>
-            </div>
-
-
-            <!-- comentario comentarioRed me-4 fw-bolder h-25 mb-2 -->
-            <div class="caja-boton-buscador-control d-flex justify-content-between align-items-center">
-                <!-- Boton Agregar control -->
-                <div class="mover-input-agregarcita mt-4 ">
-                    <button class="btn btn-primary btn-sintomas btn-agregar-doctores col-11" uk-toggle="target: #modal-examplecontrol"
-                        id="btnControl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                            class="bi bi-person-lines-fill me-1" viewBox="0 0 16 16">
-                            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />
-                        </svg>Registrar Control Médico
-                    </button>
-                </div>
-                <!-- Buscador de pacientes -->
-                <div class="mover-input-buscar mt-4">
-                    <form id="form-buscador" class="d-flex justify-content-end" autocomplete="off">
-                        <input id="input-buscador" class="form-control input-buscar tamaño-input-buscar" type="text"
-                            name="cedula" placeholder="Ingrese Cedula">
-
-                        <button class="btn btn-buscar " title="Buscar Paciente">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-search" viewBox="0 0 16 16">
-                                <path
-                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <!-- Tabla -->
-
-
-            <div class="container  ms-auto mt-4 ">
-
-                <div>
-                    <div class="d-flex justify-content-between">
-                        <h5 class="">Pacientes</h5>
-                        <h5 class="">Descripción</h5>
-                    </div>
-                </div>
-
-                <!-- contenido -->
-
-                <div class=" d-flex justify-content-between flex-wrap">
-                    <!-- lista de pacientes -->
-                    <div class=" lista-pacientes" id="ul-pacientes"></div>
-                    <!-- js -->
-
-                    <!-- lista de controles -->
-                    <div class=" lista-pacientes2">
-                        <input type="hidden" name="" id="id_control">
-                        <div class="justificar  mt-5 " id="div-controles">
-                            <ul>
-                                <div id="div"></div>
-                                <!-- js -->
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-
+                </table>
+                <h5 class="text-center " id="text-start">Seleciona un paciente en la otra tarjeta para visualizar su control médico</h5>
+                <h5 class="text-center d-none" id="loader-control-medico">Cargando...</h5>
             </div>
         </div>
     </div>
 </div>
-
-
-
-
-
 
 
 <!-- agregar Control-->
@@ -448,8 +417,187 @@
     </div>
 </div>
 
+<!-- editar -->
+<div id="modal-examplecontroleditar" class="divModalE" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+        <!-- Boton que cierra el modal -->
+        <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                <path
+                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+            </svg>
+        </a>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/control.js"></script>
+        <div class="d-flex align-items-center">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                    class="bi bi-person-lines-fill azul me-3 mb-3" viewBox="0 0 16 16">
+                    <path
+                        d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />
+                </svg>
+            </div>
+            <div>
+                <p class="uk-modal-title fs-5">
+                    Editar Control
+                </p>
+            </div>
 
-<?php require_once './src/vistas/vistaControl/modalesSintomas.php'; ?>
-<?php require_once './src/vistas/head/footer.php'; ?>
+        </div>
+
+        <form class="form-modal modalesEditar" id="modalEditar">
+
+            <input class="showDataPatientEdit" type="hidden" name="id_usuario_bitacora" value="${id_usuario_bitacora}">
+
+            <input class="showDataPatientEdit" type="hidden" name="id_control" value="${res.id_control}">
+
+            <input class="showDataPatientEdit" type="hidden" name="cedula" value="${res.cedula}">
+
+            <input class="showDataPatientEdit" type="hidden" name="id_paciente" id="idPac" value="${res.id_paciente}">
+
+            <!-- accordion -->
+            <div class="input-modal">
+                <ul uk-accordion="multiple: true">
+                    <li class="uk-open">
+                        <a class="uk-accordion-title text-decoration-none" href="#">
+
+                            <h6 class="acordion-paciente"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                    height="20" fill="currentColor" class="bi bi-person-fill azul me-2 mb-2"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                </svg>Síntomas</h6>
+                        </a>
+
+
+                        <div class="uk-accordion-content ">
+
+                            <div class="uk-accordion-content divSintomas" id="uk-accordion-29-content-0" role="region" aria-labelledby="uk-accordion-29-title-0">
+                                <!-- js -->
+                            </div>
+                        </div>
+
+
+                    </li>
+                </ul>
+            </div>
+
+            <div class="input-modal mt-3">
+                <ul uk-accordion="multiple: true">
+                    <li class="uk-open">
+                        <a class="uk-accordion-title text-decoration-none" href="#">
+
+                            <h6 class="acordion-paciente fw-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                                    class="bi bi-calendar2-week-fill azul mb-2" viewBox="0 0 16 16">
+                                    <path
+                                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zM8.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM3 10.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z" />
+                                </svg>
+                                Añadir Patología
+                            </h6>
+                        </a>
+
+
+                        <div class="uk-accordion-content ">
+
+                            <div class="uk-accordion-content divPatologias" id="uk-accordion-29-content-0" role="region" aria-labelledby="uk-accordion-29-title-0">
+                                <!-- js -->
+                            </div>
+
+                        </div>
+
+
+                    </li>
+                </ul>
+
+
+            </div>
+            <!-- nota -->
+            <div class="form-floating input-modal mt-2">
+                <textarea rows="5" class="showDataPatientEdit form-control border-0 input-modal input-modal-remove"
+                    placeholder="Leave a comment here" id="floatingTextarea2" style="height: 50px;"
+                    name="nota_e"></textarea>
+                <label for="floatingTextarea2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                        fill="currentColor" class="bi bi-heart-pulse-fill azul me-2"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9z" />
+                        <path
+                            d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8z" />
+                    </svg>Nota</label>
+            </div>
+
+
+
+
+            <div class="form-floating input-modal caja-editar-input grpFormCorrectControlEditar">
+                <textarea class="showDataPatientEdit form-control border-0 input-modal input-edit grp_control_editar_indicaciones"
+                    placeholder="Leave a comment here" id="floatingTextarea2" style="height: 50px;"
+                    name="indicaciones"></textarea>
+                <label for="floatingTextarea2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                        class="bi bi-receipt-cutoff azul me-1" viewBox="0 0 16 16">
+                        <path
+                            d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z" />
+                        <path
+                            d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z" />
+                    </svg>
+                    </svg>Prescripciones e indicaciones</label>
+            </div>
+
+            <div class="mt-4">
+                <p class=" p-0 m-0 fw-bolder text-center">Fecha de regreso</p>
+
+                <div class="input-group flex-nowrap caja-editar-input ">
+                    <span class="input-modal mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-calendar-date-fill azul" viewBox="0 0 16 16">
+                            <path
+                                d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zm5.402 9.746c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2" />
+                            <path
+                                d="M16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-6.664-1.21c-1.11 0-1.656-.767-1.703-1.407h.683c.043.37.387.82 1.051.82.844 0 1.301-.848 1.305-2.164h-.027c-.153.414-.637.79-1.383.79-.852 0-1.676-.61-1.676-1.77 0-1.137.871-1.809 1.797-1.809 1.172 0 1.953.734 1.953 2.668 0 1.805-.742 2.871-2 2.871zm-2.89-5.435v5.332H5.77V8.079h-.012c-.29.156-.883.52-1.258.777V8.16a13 13 0 0 1 1.313-.805h.632z" />
+                        </svg>
+                    </span>
+                    <input class="showDataPatientEdit input-edit form-control input-modal grp_control_editar_fechaRegreso grpFormCorrectControlEditar"
+                        type="date" name="fechaRegreso" placeholder="Fecha" value=""
+                        uk-tooltip="title: Fecha de regreso; pos: right">
+                </div>
+
+
+                <div class="d-flex align-items-center justify-content-center pe-3 ps-1 d-none leyendaFecE" id="">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-info-circle azul me-1" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z">
+                        </path>
+                        <path
+                            d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z">
+                        </path>
+                    </svg>
+                    <i>El formato de la fecha es incorrecto. Debe ser mayor que la fecha actual y no debe exceder los 50 años futuros.
+                    </i>
+                </div>
+
+                <div class="mt-4 pt-2">
+                    <h4 class="text-center fw-bold">Historia clínica</h4>
+
+                    <div class="uk-margin">
+                        <textarea name="historialE" class="showDataPatientEdit uk-textarea" rows="5" placeholder="Historial médico"
+                            aria-label="Textarea" id="historia_clinicaA" required></textarea>
+                    </div>
+                </div>
+
+
+                <div class="mt-3 uk-text-right">
+                    <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
+                        type="button">Cancelar</button>
+                    <button class="btn col-3 btn-agregarcita-modal" type="submit">Editar</button>
+                </div>
+        </form>
+    </div>
+
+
+    <script type="text/javascript" src="<?= $urlBase ?>../src/assets/control.js"></script>
+    <?php require_once './src/vistas/vistaControl/modalesSintomas.php'; ?>
+    <?php require_once './src/vistas/head/footer.php';  ?>

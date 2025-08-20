@@ -40,7 +40,7 @@ class ControladorControl
 		$idPersonal = $_SESSION['id_personal'];
 		$validacionCargo = $this->inicio->comprobarCargo($idPersonal);
 
-		require_once './src/vistas/vistaControl/c.php';
+		require_once './src/vistas/vistaControl/vistaControl.php';
 	}
 
 	public function listPacientesJS()
