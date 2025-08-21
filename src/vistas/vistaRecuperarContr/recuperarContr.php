@@ -59,7 +59,7 @@ if (!empty($parametro)) {
 
         <div class=" d-flex w-auto col">
             <!-- carrusel -->
-            <div class="col-6">
+            <div class="col-0 col-sm-6">
                 <div class="col-6 carrusel-responsive posicionCarrusel">
 
                     <!-- carrusel -->
@@ -94,7 +94,7 @@ if (!empty($parametro)) {
 
                 </div>
             </div>
-            <div id="formRecPassword">
+            <div id="formRecPassword" class="col-12 col-sm-6 pe-5">
 
                 <!-- btn de ayuda Interactiva -->
                 <div class="d-flex justify-content-end">
@@ -335,9 +335,9 @@ if (!empty($parametro)) {
 
                         </div>
 
-                        <div class="d-flex justify-content-end mt-2  pe-5 me-5">
+                        <div class="mt-2 margenL ">
                             <a href="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion"
-                                class="fw-bold pointer-event text-decoration-none text-theme margen-resposive-iniciar-sesion me-5 pe-5"
+                                class="fw-bold pointer-event text-decoration-none text-theme margen-resposive-iniciar-sesion"
                                 id="iniciarsesionEnlace">Iniciar
                                 sesión</a>
                         </div>
