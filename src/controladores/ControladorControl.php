@@ -68,8 +68,6 @@ class ControladorControl
 
 		$cedula = $datos[0];
 
-		//síntomas
-		$registradosS = $this->modelo->mostrarSintomasPa($cedula);
 		$sintomas = $this->modeloSintomas->selects();
 		// patologías
 		$registradosP = $this->modeloPatologia->buscarPatologiaPaciente($cedula);
@@ -81,7 +79,7 @@ class ControladorControl
 			$respuestaP = $this->modelo->mostrarControlPacienteA($cedula);
 
 			// este array tiene tres valores de tres funciones en el modelo
-			$arrayPSS = [$respuestaP, $registradosS, $sintomas, $registradosP, $patologias];
+			$arrayPSS = [$respuestaP, $sintomas, $registradosP, $patologias];
 			echo json_encode($arrayPSS);
 			// uno es doctor
 		} else if ($validacionCargo == 1) {
@@ -89,7 +87,7 @@ class ControladorControl
 			$respuesta = $this->modelo->mostrarControlPacienteU($cedula, $idUsuario);
 
 			// este array tiene tres valores de tres funciones en el modelo
-			$arrayPSS = [$respuesta, $registradosS, $sintomas, $registradosP, $patologias];
+			$arrayPSS = [$respuesta, $sintomas, $registradosP, $patologias];
 			echo json_encode($arrayPSS);
 		}
 	}

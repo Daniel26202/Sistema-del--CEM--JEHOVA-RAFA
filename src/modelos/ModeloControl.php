@@ -54,13 +54,13 @@ class ModeloControl extends Db
 		$sql->bindParam(":cedula", $cedula);
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
-	// mostrar patología de paciente
-	public function mostrarPatologiaPac($cedula)
-	{
-		$sql = $this->conexion->prepare("SELECT pdp.*, pat.nombre_patologia AS nombre_patologia,pac.* FROM paciente pac INNER JOIN patologiadepaciente pdp ON pac.id_paciente = pdp.id_paciente INNER JOIN patologia pat ON pat.id_patologia = pdp.id_patologia WHERE pac.estado = 'ACT' AND pac.cedula = :cedula");
-		$sql->bindParam(":cedula", $cedula);
-		return ($sql->execute()) ? $sql->fetchAll() : false;
-	}
+	// // mostrar patología de paciente
+	// public function mostrarPatologiaPac($cedula)
+	// {
+	// 	$sql = $this->conexion->prepare("SELECT pdp.*, pat.nombre_patologia AS nombre_patologia,pac.* FROM paciente pac INNER JOIN patologiadepaciente pdp ON pac.id_paciente = pdp.id_paciente INNER JOIN patologia pat ON pat.id_patologia = pdp.id_patologia WHERE pac.estado = 'ACT' AND pac.cedula = :cedula");
+	// 	$sql->bindParam(":cedula", $cedula);
+	// 	return ($sql->execute()) ? $sql->fetchAll() : false;
+	// }
 
 	//insertar control
 	public function insertControl($historial, $idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota)
@@ -156,14 +156,14 @@ class ModeloControl extends Db
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
 
-	// mostrar síntomas del control del paciente
-	public function mostrarSintomasPa($cedulaP)
-	{
-		$sql = $this->conexion->prepare('SELECT s.id_sintomas, s.nombre AS nombreS, c.id_control FROM sintomas s INNER JOIN sintomas_control sc ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON sc.id_control = c.id_control INNER JOIN paciente p ON c.id_paciente = p.id_paciente WHERE p.cedula = :cedulaP');
-		$sql->bindParam(":cedulaP", $cedulaP);
+	// // mostrar síntomas del control del paciente
+	// public function mostrarSintomasPa($cedulaP)
+	// {
+	// 	$sql = $this->conexion->prepare('SELECT s.id_sintomas, s.nombre AS nombreS, c.id_control FROM sintomas s INNER JOIN sintomas_control sc ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON sc.id_control = c.id_control INNER JOIN paciente p ON c.id_paciente = p.id_paciente WHERE p.cedula = :cedulaP');
+	// 	$sql->bindParam(":cedulaP", $cedulaP);
 
-		return ($sql->execute()) ? $sql->fetchAll() : false;
-	}
+	// 	return ($sql->execute()) ? $sql->fetchAll() : false;
+	// }
 
 
 	// mostrar patologia del paciente
