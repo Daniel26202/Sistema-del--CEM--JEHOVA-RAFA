@@ -23,6 +23,7 @@ addEventListener("DOMContentLoaded", function () {
     const divPatologias = document.querySelector(".divPatologias");
     const inputsExpresiones = document.querySelectorAll("#modalAgregarControl .inputExpresiones");
     const inputsEdit = document.querySelectorAll("#modalEditar .input-edit");
+    let semaforo = 0;
 
     let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
 
@@ -357,6 +358,8 @@ addEventListener("DOMContentLoaded", function () {
 
     //function for add control medico in table
     const readControl = async (cedulaPatient) => {
+        if (semaforo === 1) return;
+        semaforo = 1;
         try {
             loaderControlMedico.classList.remove("d-none");
             let result = await executePetition(url + "/mostrarControlPacientesJS/" + cedulaPatient, "GET");
@@ -370,8 +373,6 @@ addEventListener("DOMContentLoaded", function () {
                 let disabled = "disabled";
                 if (index == result[0].length - 1) {
                     disabled = "";
-                    console.log("sirve el LLL");
-                    
                 }
                 html += await returnFragmentControl(result[0], element, index, disabled);
                 tbodyControl.parentElement.classList.remove("d-none");
@@ -386,8 +387,10 @@ addEventListener("DOMContentLoaded", function () {
                     inputsKeyupEditar(inputsEdit);
                 });
             });
+            semaforo = 0;
         } catch (error) {
             console.error("hola el error es :" + error);
+            semaforo = 0;
         } finally {
             loaderControlMedico.classList.add("d-none");
         }
