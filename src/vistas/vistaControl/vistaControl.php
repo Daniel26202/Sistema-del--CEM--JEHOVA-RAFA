@@ -293,7 +293,7 @@
 
                                             <div class="form-check form-switch d-flex align-items-center">
                                                 <div>
-                                                    <input class="form-check-input inputExpresiones inputPP" type="checkbox"
+                                                    <input class="form-check-input inputExpresiones inputPP checkInputs" type="checkbox"
                                                         role="switch" id="flexSwitchCheckDefault" name="patologias[]"
                                                         value="<?php echo $patologia['id_patologia'] ?>">
                                                 </div>

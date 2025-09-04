@@ -566,3 +566,8 @@ addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+let btnNin = document.querySelector(".btnNin");
+
+btnNin.addEventListener("click", function () {
+    document.querySelectorAll(".checkInputs").forEach((checkbox) => (checkbox.checked = false));
+});
