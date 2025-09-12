@@ -57,7 +57,7 @@ class ModeloFactura extends Db
 	public function unirInsumosHospitalizacion($id_hospitalizacion)
 	{
 		try {
-			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, inv.cantidad_disponible AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_inventario = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo  WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.estado = "Pendiente" AND h.id_hospitalizacion =:id_hospitalizacion ');
+			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, inv.cantidad_disponible AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo  WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.estado = "Pendiente" AND h.id_hospitalizacion =:id_hospitalizacion ');
 			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 			$consulta->execute();
 			$insumos = $consulta->fetchAll();
@@ -210,7 +210,7 @@ class ModeloFactura extends Db
 		}
 	}
 
-	
+
 
 	public  function selectId_entrada($id_insumo)
 	{
@@ -233,81 +233,81 @@ class ModeloFactura extends Db
 		try {
 
 
-		//insertar factura
-		$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_paciente)");
+			//insertar factura
+			$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_paciente)");
 
-		$consulta->bindParam(":fecha", $fecha);
-		$consulta->bindParam(":total", $total);
-		$consulta->bindParam(":id_paciente", $id_paciente);
-		$consulta->execute();
-		$id_factura = $this->conexion->lastInsertId();
-
-		//Si el id_cita no es null se cambia el estado e la cita
-		if ($id_cita != null) {
-			$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
-			$consulta->bindParam(":id_cita", $id_cita);
+			$consulta->bindParam(":fecha", $fecha);
+			$consulta->bindParam(":total", $total);
+			$consulta->bindParam(":id_paciente", $id_paciente);
 			$consulta->execute();
-		}
+			$id_factura = $this->conexion->lastInsertId();
 
-		//Si el id_hospitalizacion no es null se cambia el estado e la cita
-		if ($id_hospitalizacion != null) {
-			$consulta = $this->conexion->prepare("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id_hospitalizacion");
-			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
-			$consulta->execute();
-		}
-
-		$arrayDePago = $formasDePago;
-		//insertar tipos de pago
-		$contador = 0;
-		foreach ($arrayDePago as $aP) {
-			echo "insertado en id: " . $aP . "<br><br>";
-			$consulta = $this->conexion->prepare("INSERT INTO pagodefactura VALUES (null, :aP, :id_factura, :referencia, :montosDePago)");
-			$consulta->bindParam(":aP", $aP);
-			$consulta->bindParam(":id_factura", $id_factura);
-			$consulta->bindParam(":referencia", $referencia);
-			$consulta->bindParam(":montosDePago", $montosDePago[$contador]);
-			if ($consulta->execute()) {
-			} else {
-				echo "NO";
+			//Si el id_cita no es null se cambia el estado e la cita
+			if ($id_cita != null) {
+				$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id_cita");
+				$consulta->bindParam(":id_cita", $id_cita);
+				$consulta->execute();
 			}
-			$contador++;
-		}
-		//insertar servicios extras
-		if ($serviciosExtras) {
+
+			//Si el id_hospitalizacion no es null se cambia el estado e la cita
+			if ($id_hospitalizacion != null) {
+				$consulta = $this->conexion->prepare("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id_hospitalizacion");
+				$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
+				$consulta->execute();
+			}
+
+			$arrayDePago = $formasDePago;
+			//insertar tipos de pago
 			$contador = 0;
-			
-			foreach ($serviciosExtras as $s) {
-				$consulta = $this->conexion->prepare("INSERT INTO serviciomedico_has_factura  VALUES (:s, :id_factura, :doctor)");
+			foreach ($arrayDePago as $aP) {
+				echo "insertado en id: " . $aP . "<br><br>";
+				$consulta = $this->conexion->prepare("INSERT INTO pagodefactura VALUES (null, :aP, :id_factura, :referencia, :montosDePago)");
+				$consulta->bindParam(":aP", $aP);
 				$consulta->bindParam(":id_factura", $id_factura);
-				$consulta->bindParam(":s", $s);
-				$consulta->bindParam(":doctor", $doctor[$contador]);
+				$consulta->bindParam(":referencia", $referencia);
+				$consulta->bindParam(":montosDePago", $montosDePago[$contador]);
 				if ($consulta->execute()) {
 				} else {
 					echo "NO";
 				}
 				$contador++;
 			}
-		}
-		if ($insumos) {
-			$contador = 0;
-			foreach ($insumos as $i) {
-				//actualizar la cantidad de insumos
-				$id_entrada = $this->selectId_entrada($i);
-				$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :i, :cantidad, 'ACT')");
-				$consulta->bindParam(":id_factura", $id_factura);
-				$consulta->bindParam(":i", $id_entrada);
-				$consulta->bindParam(":cantidad", $cantidad[$contador]);
-				if ($consulta->execute()) {
-					$consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
-					$consulta2->bindParam(":i", $i);
-					$consulta2->bindParam(":cantidad", $cantidad[$contador]);
-					$consulta2->execute();
-				} else {
-					echo "NO";
+			//insertar servicios extras
+			if ($serviciosExtras) {
+				$contador = 0;
+
+				foreach ($serviciosExtras as $s) {
+					$consulta = $this->conexion->prepare("INSERT INTO serviciomedico_has_factura  VALUES (:s, :id_factura, :doctor)");
+					$consulta->bindParam(":id_factura", $id_factura);
+					$consulta->bindParam(":s", $s);
+					$consulta->bindParam(":doctor", $doctor[$contador]);
+					if ($consulta->execute()) {
+					} else {
+						echo "NO";
+					}
+					$contador++;
 				}
-				$contador++;
 			}
-		}
+			if ($insumos) {
+				$contador = 0;
+				foreach ($insumos as $i) {
+					//actualizar la cantidad de insumos
+					$id_entrada = $this->selectId_entrada($i);
+					$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :i, :cantidad, 'ACT')");
+					$consulta->bindParam(":id_factura", $id_factura);
+					$consulta->bindParam(":i", $id_entrada);
+					$consulta->bindParam(":cantidad", $cantidad[$contador]);
+					if ($consulta->execute()) {
+						$consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
+						$consulta2->bindParam(":i", $i);
+						$consulta2->bindParam(":cantidad", $cantidad[$contador]);
+						$consulta2->execute();
+					} else {
+						echo "NO";
+					}
+					$contador++;
+				}
+			}
 
 			return $id_factura;
 		} catch (\Exception $e) {
