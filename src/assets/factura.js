@@ -781,19 +781,10 @@ addEventListener("DOMContentLoaded", () => {
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.remove("d-none");
       labelForma2.innerText = "Divisas en BS";
+
     } else if (forma1 == "Efectivo" && forma2 == "PagoMovil") {
       inputsDePago[0].value = tiposDePago[0].value;
       inputsDePago[1].value = tiposDePago[1].value;
-      referencia.classList.remove("d-none");
-      labelForma2.innerText = "Transferencia";
-      pagosDeConfirmacion2.innerText = "Transferencia";
-      inputsDeValidacion[0].classList.remove("d-none");
-      inputsDeValidacion[1].classList.remove("d-none");
-      btnValidacion.classList.add("d-none");
-      document.getElementById("equivalenteDivisas").classList.add("d-none");
-    } else if (forma1 == "Efectivo" && forma2 == "Transferencia") {
-      inputsDePago[0].value = tiposDePago[0].value;
-      inputsDePago[1].value = tiposDePago[2].value;
       referencia.classList.remove("d-none");
       labelForma2.innerText = "Pago Movil";
       pagosDeConfirmacion2.innerText = "Pago Movil";
@@ -801,24 +792,39 @@ addEventListener("DOMContentLoaded", () => {
       inputsDeValidacion[1].classList.remove("d-none");
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.add("d-none");
+
+    } else if (forma1 == "Efectivo" && forma2 == "Transferencia") {
+      inputsDePago[0].value = tiposDePago[0].value;
+      inputsDePago[1].value = tiposDePago[2].value;
+      referencia.classList.remove("d-none");
+      labelForma2.innerText = "Transferencia";
+      pagosDeConfirmacion2.innerText = "Transferencia";
+      console.log("deberia decir Transferencia")
+      console.log(pagosDeConfirmacion2.innerText);
+      inputsDeValidacion[0].classList.remove("d-none");
+      inputsDeValidacion[1].classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+      document.getElementById("equivalenteDivisas").classList.add("d-none");
+
     } else if (forma1 == "Divisas" && forma2 == "PagoMovil") {
       inputsDePago[0].value = tiposDePago[3].value;
       inputsDePago[1].value = tiposDePago[1].value;
       referencia.classList.remove("d-none");
-      labelForma2.innerText = "Transferencia";
-      pagosDeConfirmacion2.innerText = "Transferencia";
+      labelForma2.innerText = "Pago Movil";
+      pagosDeConfirmacion2.innerText = "Pago Movil";
       inputsDeValidacion[0].classList.remove("d-none");
       inputsDeValidacion[1].classList.remove("d-none");
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.remove("d-none");
       labelForma1.innerText = "Divisas en BS";
+
     } else if (forma1 == "Divisas" && forma2 == "Transferencia") {
       inputsDePago[0].value = tiposDePago[3].value;
       inputsDePago[1].value = tiposDePago[2].value;
       referencia.classList.remove("d-none");
       console.log(labelForma1.innerText);
-      labelForma2.innerText = "Pago Movil";
-      pagosDeConfirmacion2.innerText = "Pago Movil";
+      labelForma2.innerText = "Transferencia";
+      pagosDeConfirmacion2.innerText = "Transferencial";
       inputsDeValidacion[0].classList.remove("d-none");
       inputsDeValidacion[1].classList.remove("d-none");
       btnValidacion.classList.add("d-none");
@@ -846,8 +852,8 @@ addEventListener("DOMContentLoaded", () => {
       inputsDePago[0].value = tiposDePago[0].value;
       inputsDePago[1].value = tiposDePago[3].value;
       inputsDePago[2].value = tiposDePago[2].value;
-      labelForma3.innerText = "Pago Movil";
-      pagosDeConfirmacion3.innerText = "Pago Movil";
+      labelForma3.innerText = "Transferencia";
+      pagosDeConfirmacion3.innerText = "Transferencia";
       referencia.classList.remove("d-none");
       inputsDeValidacion[2].classList.remove("d-none");
       btnValidacion.classList.add("d-none");
@@ -857,8 +863,8 @@ addEventListener("DOMContentLoaded", () => {
       inputsDePago[0].value = tiposDePago[0].value;
       inputsDePago[1].value = tiposDePago[3].value;
       inputsDePago[2].value = tiposDePago[1].value;
-      labelForma3.innerText = "Transferencia";
-      pagosDeConfirmacion3.innerText = "Transferencia";
+      labelForma3.innerText = "Pago Movil";
+      pagosDeConfirmacion3.innerText = "Pago Movil";
       referencia.classList.remove("d-none");
       inputsDeValidacion[2].classList.remove("d-none");
       btnValidacion.classList.add("d-none");
@@ -927,7 +933,7 @@ addEventListener("DOMContentLoaded", () => {
       inputsDeValidacion[1].classList.add("d-none");
       referencia.classList.remove("d-none");
       btnValidacion.classList.remove("d-none");
-      pagosDeConfirmacion.innerText = "Transferencia";
+      pagosDeConfirmacion.innerText = "Pago Movil";
       inputsDePago[0].value = pagoMovil.value;
       pagosDeConfirmacion.innerText =
         pagosDeConfirmacion.innerText +
@@ -967,7 +973,7 @@ addEventListener("DOMContentLoaded", () => {
       inputsDeValidacion[1].classList.add("d-none");
       referencia.classList.remove("d-none");
       btnValidacion.classList.remove("d-none");
-      pagosDeConfirmacion.innerText = "Pago Movil";
+      pagosDeConfirmacion.innerText = "Transferencia";
       inputsDePago[0].value = transferencia.value;
       pagosDeConfirmacion.innerText =
         pagosDeConfirmacion.innerText +
@@ -1071,7 +1077,7 @@ addEventListener("DOMContentLoaded", () => {
           pagosDeConfirmacion.innerText =
             "Efectivo: " + inputsDeValidacion[0].value + " BS";
           pagosDeConfirmacion2.innerText =
-            "Transferencia: " + inputsDeValidacion[1].value + " BS";
+            "Pago Movil: " + inputsDeValidacion[1].value + " BS";
           document.getElementById("p_divisas").innerText = "";
 
           inputsDeMontos[0].value = inputsDeValidacion[0].value;
@@ -1105,7 +1111,7 @@ addEventListener("DOMContentLoaded", () => {
           pagosDeConfirmacion.innerText =
             "Efectivo: " + inputsDeValidacion[0].value + " BS";
           pagosDeConfirmacion2.innerText =
-            "Pago Movil: " + inputsDeValidacion[1].value + " BS";
+            "Transferencia: " + inputsDeValidacion[1].value + " BS";
           document.getElementById("p_divisas").innerText = "";
 
           inputsDeMontos[0].value = inputsDeValidacion[0].value;
@@ -1139,7 +1145,7 @@ addEventListener("DOMContentLoaded", () => {
           pagosDeConfirmacion.innerText =
             "Divisas En Bs: " + inputsDeValidacion[1].value;
           pagosDeConfirmacion2.innerText =
-            "Transferencia: " + inputsDeValidacion[0].value + " BS";
+            "Pago Movil: " + inputsDeValidacion[0].value + " BS";
           document.getElementById("p_divisas").innerText =
             "Equivalente en Divisas: " +
             document.getElementById("equivalenteDivisas").value +
@@ -1177,7 +1183,7 @@ addEventListener("DOMContentLoaded", () => {
           pagosDeConfirmacion.innerText =
             "Divisas En Bs: " + inputsDeValidacion[1].value;
           pagosDeConfirmacion2.innerText =
-            "Pago Movil: " + inputsDeValidacion[0].value + " BS";
+            "Transferencia: " + inputsDeValidacion[0].value + " BS";
           document.getElementById("p_divisas").innerText =
             "Equivalente en Divisas: " +
             document.getElementById("equivalenteDivisas").value +
@@ -1220,7 +1226,7 @@ addEventListener("DOMContentLoaded", () => {
           pagosDeConfirmacion2.innerText =
             "Efectivo: " + inputsDeValidacion[0].value + " BS";
           pagosDeConfirmacion3.innerText =
-            "Pago Movil: " + inputsDeValidacion[2].value + " BS";
+            "Transferencia: " + inputsDeValidacion[2].value + " BS";
           console.log(inputsDeValidacion[2].value);
           document.getElementById("p_divisas").innerText =
             "Equivalente en Divisas: " +
@@ -1264,7 +1270,7 @@ addEventListener("DOMContentLoaded", () => {
           pagosDeConfirmacion2.innerText =
             "Efectivo: " + inputsDeValidacion[0].value + " BS";
           pagosDeConfirmacion3.innerText =
-            "Tranferencia: " + inputsDeValidacion[2].value + " BS";
+            "Pago Movil: " + inputsDeValidacion[2].value + " BS";
           console.log(inputsDeValidacion[2].value);
           document.getElementById("p_divisas").innerText =
             "Equivalente en Divisas: " +
