@@ -660,123 +660,133 @@ addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    //boton del modal de tio de pago
-    const tiposDePago = document.querySelectorAll(".tiposDePago");
-    const btnTipoDePago = document.querySelector("#btnTipoDePago");
-    //inputs de la validacion
-    const inputsDeValidacion = document.querySelectorAll(".inputsDeValidacion");
-    //label de los inputs de validacion
-    const labelForma1 = document.getElementById("forma1");
-    const labelForma2 = document.getElementById("forma2");
-    const labelForma3 = document.getElementById("forma3");
-    //input de la referencia
-    const referencia = document.getElementById("referencia");
-    //funcion por si es 2 formas
-    function dosFormas(forma1, forma2) {
-        labelForma1.innerText = forma1;
-        labelForma2.innerText = forma2;
-        btnTipoDePago.classList.remove("d-none");
-        inputsDeValidacion[2].classList.add("d-none");
-        labelForma3.innerText = "";
-        pagosDeConfirmacion.innerText = forma1;
-        pagosDeConfirmacion2.innerText = forma2;
-        pagosDeConfirmacion3.innerText = "";
-        inputsDePago[1].setAttribute("name", "formasDePago[]");
-        inputsDeMontos[1].setAttribute("name", "montosDePago[]");
-        if (forma1 == "Efectivo" && forma2 == "Divisas") {
-            referencia.classList.add("d-none");
-            inputsDePago[0].value = tiposDePago[0].value;
-            inputsDePago[1].value = tiposDePago[3].value;
-            btnValidacion.classList.add("d-none");
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-            labelForma2.innerText = "Divisas en BS";
-        } else if (forma1 == "Efectivo" && forma2 == "PagoMovil") {
-            inputsDePago[0].value = tiposDePago[0].value;
-            inputsDePago[1].value = tiposDePago[1].value;
-            referencia.classList.remove("d-none");
-            labelForma2.innerText = "Transferencia";
-            pagosDeConfirmacion2.innerText = "Transferencia";
-            inputsDeValidacion[0].classList.remove("d-none");
-            inputsDeValidacion[1].classList.remove("d-none");
-            btnValidacion.classList.add("d-none");
-            document.getElementById("equivalenteDivisas").classList.add("d-none");
-        } else if (forma1 == "Efectivo" && forma2 == "Transferencia") {
-            inputsDePago[0].value = tiposDePago[0].value;
-            inputsDePago[1].value = tiposDePago[2].value;
-            referencia.classList.remove("d-none");
-            labelForma2.innerText = "Pago Movil";
-            pagosDeConfirmacion2.innerText = "Pago Movil";
-            inputsDeValidacion[0].classList.remove("d-none");
-            inputsDeValidacion[1].classList.remove("d-none");
-            btnValidacion.classList.add("d-none");
-            document.getElementById("equivalenteDivisas").classList.add("d-none");
-        } else if (forma1 == "Divisas" && forma2 == "PagoMovil") {
-            inputsDePago[0].value = tiposDePago[3].value;
-            inputsDePago[1].value = tiposDePago[1].value;
-            referencia.classList.remove("d-none");
-            labelForma2.innerText = "Transferencia";
-            pagosDeConfirmacion2.innerText = "Transferencia";
-            inputsDeValidacion[0].classList.remove("d-none");
-            inputsDeValidacion[1].classList.remove("d-none");
-            btnValidacion.classList.add("d-none");
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-            labelForma1.innerText = "Divisas en BS";
-        } else if (forma1 == "Divisas" && forma2 == "Transferencia") {
-            inputsDePago[0].value = tiposDePago[3].value;
-            inputsDePago[1].value = tiposDePago[2].value;
-            referencia.classList.remove("d-none");
-            console.log(labelForma1.innerText);
-            labelForma2.innerText = "Pago Movil";
-            pagosDeConfirmacion2.innerText = "Pago Movil";
-            inputsDeValidacion[0].classList.remove("d-none");
-            inputsDeValidacion[1].classList.remove("d-none");
-            btnValidacion.classList.add("d-none");
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-            labelForma1.innerText = "Divisas en BS";
-        }
-    }
+  //boton del modal de tio de pago
+  const tiposDePago = document.querySelectorAll(".tiposDePago");
+  const btnTipoDePago = document.querySelector("#btnTipoDePago");
+  //inputs de la validacion
+  const inputsDeValidacion = document.querySelectorAll(".inputsDeValidacion");
+  //label de los inputs de validacion
+  const labelForma1 = document.getElementById("forma1");
+  const labelForma2 = document.getElementById("forma2");
+  const labelForma3 = document.getElementById("forma3");
+  //input de la referencia
+  const referencia = document.getElementById("referencia");
+  //funcion por si es 2 formas
+  function dosFormas(forma1, forma2) {
+    labelForma1.innerText = forma1;
+    labelForma2.innerText = forma2;
+    btnTipoDePago.classList.remove("d-none");
+    inputsDeValidacion[2].classList.add("d-none");
+    labelForma3.innerText = "";
+    pagosDeConfirmacion.innerText = forma1;
+    pagosDeConfirmacion2.innerText = forma2;
+    pagosDeConfirmacion3.innerText = "";
+    inputsDePago[1].setAttribute("name", "formasDePago[]");
+    inputsDeMontos[1].setAttribute("name", "montosDePago[]");
+    if (forma1 == "Efectivo" && forma2 == "Divisas") {
+      referencia.classList.add("d-none");
+      inputsDePago[0].value = tiposDePago[0].value;
+      inputsDePago[1].value = tiposDePago[3].value;
+      btnValidacion.classList.add("d-none");
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+      labelForma2.innerText = "Divisas en BS";
 
-    //funcion por si son tres formas de pago
-    function tresFormas(forma1, forma2, forma3) {
-        labelForma1.innerText = forma1;
-        labelForma2.innerText = forma2;
-        labelForma3.innerText = forma3;
-        btnTipoDePago.classList.remove("d-none");
-        pagosDeConfirmacion.innerText = forma1;
-        pagosDeConfirmacion2.innerText = forma2;
-        pagosDeConfirmacion3.innerText = forma3;
-        inputsDePago[2].setAttribute("name", "formasDePago[]");
-        inputsDeMontos[2].setAttribute("name", "montosDePago[]");
-        if (forma1 == "Efectivo" && forma2 == "Divisas" && forma3 == "Transferencia") {
-            inputsDePago[0].value = tiposDePago[0].value;
-            inputsDePago[1].value = tiposDePago[3].value;
-            inputsDePago[2].value = tiposDePago[2].value;
-            labelForma3.innerText = "Pago Movil";
-            pagosDeConfirmacion3.innerText = "Pago Movil";
-            referencia.classList.remove("d-none");
-            inputsDeValidacion[2].classList.remove("d-none");
-            btnValidacion.classList.add("d-none");
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-            labelForma2.innerText = "Divisas en BS";
-        } else {
-            inputsDePago[0].value = tiposDePago[0].value;
-            inputsDePago[1].value = tiposDePago[3].value;
-            inputsDePago[2].value = tiposDePago[1].value;
-            labelForma3.innerText = "Transferencia";
-            pagosDeConfirmacion3.innerText = "Transferencia";
-            referencia.classList.remove("d-none");
-            inputsDeValidacion[2].classList.remove("d-none");
-            btnValidacion.classList.add("d-none");
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-            labelForma2.innerText = "Divisas en BS";
-        }
+    } else if (forma1 == "Efectivo" && forma2 == "PagoMovil") {
+      inputsDePago[0].value = tiposDePago[0].value;
+      inputsDePago[1].value = tiposDePago[1].value;
+      referencia.classList.remove("d-none");
+      labelForma2.innerText = "Pago Movil";
+      pagosDeConfirmacion2.innerText = "Pago Movil";
+      inputsDeValidacion[0].classList.remove("d-none");
+      inputsDeValidacion[1].classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+      document.getElementById("equivalenteDivisas").classList.add("d-none");
+
+    } else if (forma1 == "Efectivo" && forma2 == "Transferencia") {
+      inputsDePago[0].value = tiposDePago[0].value;
+      inputsDePago[1].value = tiposDePago[2].value;
+      referencia.classList.remove("d-none");
+      labelForma2.innerText = "Transferencia";
+      pagosDeConfirmacion2.innerText = "Transferencia";
+      console.log("deberia decir Transferencia")
+      console.log(pagosDeConfirmacion2.innerText);
+      inputsDeValidacion[0].classList.remove("d-none");
+      inputsDeValidacion[1].classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+      document.getElementById("equivalenteDivisas").classList.add("d-none");
+
+    } else if (forma1 == "Divisas" && forma2 == "PagoMovil") {
+      inputsDePago[0].value = tiposDePago[3].value;
+      inputsDePago[1].value = tiposDePago[1].value;
+      referencia.classList.remove("d-none");
+      labelForma2.innerText = "Pago Movil";
+      pagosDeConfirmacion2.innerText = "Pago Movil";
+      inputsDeValidacion[0].classList.remove("d-none");
+      inputsDeValidacion[1].classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+      labelForma1.innerText = "Divisas en BS";
+
+    } else if (forma1 == "Divisas" && forma2 == "Transferencia") {
+      inputsDePago[0].value = tiposDePago[3].value;
+      inputsDePago[1].value = tiposDePago[2].value;
+      referencia.classList.remove("d-none");
+      console.log(labelForma1.innerText);
+      labelForma2.innerText = "Transferencia";
+      pagosDeConfirmacion2.innerText = "Transferencial";
+      inputsDeValidacion[0].classList.remove("d-none");
+      inputsDeValidacion[1].classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+      labelForma1.innerText = "Divisas en BS";
     }
-    //Aqui iran los nombres de tipos de pagos
-    const pagosDeConfirmacion = document.getElementById("pagosDeConfirmacion");
-    const pagosDeConfirmacion2 = document.getElementById("pagosDeConfirmacion2");
-    const pagosDeConfirmacion3 = document.getElementById("pagosDeConfirmacion3");
-    //inputs De Formas De pago
-    const inputsDePago = document.querySelectorAll("#divInputPago input");
+  }
+
+  //funcion por si son tres formas de pago
+  function tresFormas(forma1, forma2, forma3) {
+    labelForma1.innerText = forma1;
+    labelForma2.innerText = forma2;
+    labelForma3.innerText = forma3;
+    btnTipoDePago.classList.remove("d-none");
+    pagosDeConfirmacion.innerText = forma1;
+    pagosDeConfirmacion2.innerText = forma2;
+    pagosDeConfirmacion3.innerText = forma3;
+    inputsDePago[2].setAttribute("name", "formasDePago[]");
+    inputsDeMontos[2].setAttribute("name", "montosDePago[]");
+    if (
+      forma1 == "Efectivo" &&
+      forma2 == "Divisas" &&
+      forma3 == "Transferencia"
+    ) {
+      inputsDePago[0].value = tiposDePago[0].value;
+      inputsDePago[1].value = tiposDePago[3].value;
+      inputsDePago[2].value = tiposDePago[2].value;
+      labelForma3.innerText = "Transferencia";
+      pagosDeConfirmacion3.innerText = "Transferencia";
+      referencia.classList.remove("d-none");
+      inputsDeValidacion[2].classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+      labelForma2.innerText = "Divisas en BS";
+    } else {
+      inputsDePago[0].value = tiposDePago[0].value;
+      inputsDePago[1].value = tiposDePago[3].value;
+      inputsDePago[2].value = tiposDePago[1].value;
+      labelForma3.innerText = "Pago Movil";
+      pagosDeConfirmacion3.innerText = "Pago Movil";
+      referencia.classList.remove("d-none");
+      inputsDeValidacion[2].classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+      labelForma2.innerText = "Divisas en BS";
+    }
+  }
+  //Aqui iran los nombres de tipos de pagos
+  const pagosDeConfirmacion = document.getElementById("pagosDeConfirmacion");
+  const pagosDeConfirmacion2 = document.getElementById("pagosDeConfirmacion2");
+  const pagosDeConfirmacion3 = document.getElementById("pagosDeConfirmacion3");
+  //inputs De Formas De pago
+  const inputsDePago = document.querySelectorAll("#divInputPago input");
 
     //inputs de montos de los pagos
     const inputsDeMontos = document.querySelectorAll("#divMontosPago input");
@@ -806,55 +816,87 @@ addEventListener("DOMContentLoaded", () => {
             pagosDeConfirmacion2.innerText = "";
             pagosDeConfirmacion3.innerText = "";
 
-            //referencia
-            document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            //cuando elige solo pago movil
-        } else if (pagoMovil.checked && efectivo.checked == false && transferencia.checked == false && divisa.checked == false) {
-            btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-            btnTipoDePago.classList.remove("d-none");
-            inputsDeValidacion[0].classList.add("d-none");
-            inputsDeValidacion[1].classList.add("d-none");
-            referencia.classList.remove("d-none");
-            btnValidacion.classList.remove("d-none");
-            pagosDeConfirmacion.innerText = "Transferencia";
-            inputsDePago[0].value = pagoMovil.value;
-            pagosDeConfirmacion.innerText =
-                pagosDeConfirmacion.innerText + " " + document.getElementById("totalDeConfirmacion").innerText;
-            inputsDeMontos[0].value = document.getElementById("totalDeConfirmacion").innerText.replace("BS", "");
-            //cuando elige solo transferencia
-            document.querySelector(".suguiente").addEventListener("click", function () {
-                document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-                //referencia
-                document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            });
-            console.log(document.getElementById("p_referencia").innerText);
-            document.getElementById("equivalenteDivisas").classList.add("d-none");
-            pagosDeConfirmacion2.innerText = "";
-            pagosDeConfirmacion3.innerText = "";
+      //referencia
+      document
+        .getElementById("referencia_confirmar")
+        .setAttribute("name", "referencia");
+      //cuando elige solo pago movil
+    } else if (
+      pagoMovil.checked &&
+      efectivo.checked == false &&
+      transferencia.checked == false &&
+      divisa.checked == false
+    ) {
+      btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
+      btnTipoDePago.classList.remove("d-none");
+      inputsDeValidacion[0].classList.add("d-none");
+      inputsDeValidacion[1].classList.add("d-none");
+      referencia.classList.remove("d-none");
+      btnValidacion.classList.remove("d-none");
+      pagosDeConfirmacion.innerText = "Pago Movil";
+      inputsDePago[0].value = pagoMovil.value;
+      pagosDeConfirmacion.innerText =
+        pagosDeConfirmacion.innerText +
+        " " +
+        document.getElementById("totalDeConfirmacion").innerText;
+      inputsDeMontos[0].value = document
+        .getElementById("totalDeConfirmacion")
+        .innerText.replace("BS", "");
+      //cuando elige solo transferencia
+      document
+        .querySelector(".suguiente")
+        .addEventListener("click", function () {
+          document.getElementById("p_referencia").innerText =
+            "Ref " + referencia.value;
+          //referencia
+          document.getElementById("referencia_confirmar").value =
+            document.getElementById("referencia").value;
+          document
+            .getElementById("referencia_confirmar")
+            .setAttribute("name", "referencia");
+        });
+      console.log(document.getElementById("p_referencia").innerText);
+      document.getElementById("equivalenteDivisas").classList.add("d-none");
+      pagosDeConfirmacion2.innerText = "";
+      pagosDeConfirmacion3.innerText = "";
 
-            //referencia
-        } else if (transferencia.checked && efectivo.checked == false && pagoMovil.checked == false && divisa.checked == false) {
-            btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-            btnTipoDePago.classList.remove("d-none");
-            inputsDeValidacion[0].classList.add("d-none");
-            inputsDeValidacion[1].classList.add("d-none");
-            referencia.classList.remove("d-none");
-            btnValidacion.classList.remove("d-none");
-            pagosDeConfirmacion.innerText = "Pago Movil";
-            inputsDePago[0].value = transferencia.value;
-            pagosDeConfirmacion.innerText =
-                pagosDeConfirmacion.innerText + " " + document.getElementById("totalDeConfirmacion").innerText;
-            inputsDeMontos[0].value = document.getElementById("totalDeConfirmacion").innerText.replace("BS", "");
-            document.querySelector(".suguiente").addEventListener("click", function () {
-                document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-                //referencia
-                document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            });
-            document.getElementById("equivalenteDivisas").classList.add("d-none");
-            pagosDeConfirmacion2.innerText = "";
-            pagosDeConfirmacion3.innerText = "";
+      //referencia
+    } else if (
+      transferencia.checked &&
+      efectivo.checked == false &&
+      pagoMovil.checked == false &&
+      divisa.checked == false
+    ) {
+      btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
+      btnTipoDePago.classList.remove("d-none");
+      inputsDeValidacion[0].classList.add("d-none");
+      inputsDeValidacion[1].classList.add("d-none");
+      referencia.classList.remove("d-none");
+      btnValidacion.classList.remove("d-none");
+      pagosDeConfirmacion.innerText = "Transferencia";
+      inputsDePago[0].value = transferencia.value;
+      pagosDeConfirmacion.innerText =
+        pagosDeConfirmacion.innerText +
+        " " +
+        document.getElementById("totalDeConfirmacion").innerText;
+      inputsDeMontos[0].value = document
+        .getElementById("totalDeConfirmacion")
+        .innerText.replace("BS", "");
+      document
+        .querySelector(".suguiente")
+        .addEventListener("click", function () {
+          document.getElementById("p_referencia").innerText =
+            "Ref " + referencia.value;
+          //referencia
+          document.getElementById("referencia_confirmar").value =
+            document.getElementById("referencia").value;
+          document
+            .getElementById("referencia_confirmar")
+            .setAttribute("name", "referencia");
+        });
+      document.getElementById("equivalenteDivisas").classList.add("d-none");
+      pagosDeConfirmacion2.innerText = "";
+      pagosDeConfirmacion3.innerText = "";
 
             //cuando elige solo divisas
         } else if (divisa.checked && efectivo.checked == false && pagoMovil.checked == false && transferencia.checked == false) {
@@ -902,12 +944,14 @@ addEventListener("DOMContentLoaded", () => {
             } else if (efectivo.checked && pagoMovil.checked && divisa.checked == false && transferencia.checked == false) {
                 dosFormas("Efectivo", "PagoMovil");
 
-                btnValidacion.addEventListener("click", function () {
-                    pagosDeConfirmacion.innerText = "";
-                    pagosDeConfirmacion2.innerText = "";
-                    pagosDeConfirmacion.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                    pagosDeConfirmacion2.innerText = "Transferencia: " + inputsDeValidacion[1].value + " BS";
-                    document.getElementById("p_divisas").innerText = "";
+        btnValidacion.addEventListener("click", function () {
+          pagosDeConfirmacion.innerText = "";
+          pagosDeConfirmacion2.innerText = "";
+          pagosDeConfirmacion.innerText =
+            "Efectivo: " + inputsDeValidacion[0].value + " BS";
+          pagosDeConfirmacion2.innerText =
+            "Pago Movil: " + inputsDeValidacion[1].value + " BS";
+          document.getElementById("p_divisas").innerText = "";
 
                     inputsDeMontos[0].value = inputsDeValidacion[0].value;
                     inputsDeMontos[1].value = inputsDeValidacion[1].value;
@@ -920,15 +964,22 @@ addEventListener("DOMContentLoaded", () => {
                 });
                 document.getElementById("equivalenteDivisas").classList.add("d-none");
 
-                pagosDeConfirmacion3.innerText = "";
-            } else if (efectivo.checked && transferencia.checked && divisa.checked == false && pagoMovil.checked == false) {
-                dosFormas("Efectivo", "Transferencia");
-                btnValidacion.addEventListener("click", function () {
-                    pagosDeConfirmacion.innerText = "";
-                    pagosDeConfirmacion2.innerText = "";
-                    pagosDeConfirmacion.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                    pagosDeConfirmacion2.innerText = "Pago Movil: " + inputsDeValidacion[1].value + " BS";
-                    document.getElementById("p_divisas").innerText = "";
+        pagosDeConfirmacion3.innerText = "";
+      } else if (
+        efectivo.checked &&
+        transferencia.checked &&
+        divisa.checked == false &&
+        pagoMovil.checked == false
+      ) {
+        dosFormas("Efectivo", "Transferencia");
+        btnValidacion.addEventListener("click", function () {
+          pagosDeConfirmacion.innerText = "";
+          pagosDeConfirmacion2.innerText = "";
+          pagosDeConfirmacion.innerText =
+            "Efectivo: " + inputsDeValidacion[0].value + " BS";
+          pagosDeConfirmacion2.innerText =
+            "Transferencia: " + inputsDeValidacion[1].value + " BS";
+          document.getElementById("p_divisas").innerText = "";
 
                     inputsDeMontos[0].value = inputsDeValidacion[0].value;
                     inputsDeMontos[1].value = inputsDeValidacion[1].value;
@@ -941,89 +992,148 @@ addEventListener("DOMContentLoaded", () => {
                 });
                 document.getElementById("equivalenteDivisas").classList.add("d-none");
 
-                pagosDeConfirmacion3.innerText = "";
-            } else if (divisa.checked && pagoMovil.checked && efectivo.checked == false && transferencia.checked == false) {
-                dosFormas("Divisas", "PagoMovil");
-                btnValidacion.addEventListener("click", function () {
-                    pagosDeConfirmacion.innerText = "";
-                    pagosDeConfirmacion2.innerText = "";
-                    pagosDeConfirmacion.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                    pagosDeConfirmacion2.innerText = "Transferencia: " + inputsDeValidacion[0].value + " BS";
-                    document.getElementById("p_divisas").innerText =
-                        "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
+        pagosDeConfirmacion3.innerText = "";
+      } else if (
+        divisa.checked &&
+        pagoMovil.checked &&
+        efectivo.checked == false &&
+        transferencia.checked == false
+      ) {
+        dosFormas("Divisas", "PagoMovil");
+        btnValidacion.addEventListener("click", function () {
+          pagosDeConfirmacion.innerText = "";
+          pagosDeConfirmacion2.innerText = "";
+          pagosDeConfirmacion.innerText =
+            "Divisas En Bs: " + inputsDeValidacion[1].value;
+          pagosDeConfirmacion2.innerText =
+            "Pago Movil: " + inputsDeValidacion[0].value + " BS";
+          document.getElementById("p_divisas").innerText =
+            "Equivalente en Divisas: " +
+            document.getElementById("equivalenteDivisas").value +
+            " $";
+
+          inputsDeMontos[0].value = inputsDeValidacion[0].value;
+          inputsDeMontos[1].value = inputsDeValidacion[1].value;
+        });
+        document
+          .querySelector(".suguiente")
+          .addEventListener("click", function () {
+            document.getElementById("p_referencia").innerText =
+              "Ref " + referencia.value;
+            //referencia
+            document.getElementById("referencia_confirmar").value =
+              document.getElementById("referencia").value;
+            document
+              .getElementById("referencia_confirmar")
+              .setAttribute("name", "referencia");
+          });
+        document
+          .getElementById("equivalenteDivisas")
+          .classList.remove("d-none");
+        pagosDeConfirmacion3.innerText = "";
+      } else if (
+        divisa.checked &&
+        transferencia.checked &&
+        efectivo.checked == false &&
+        pagoMovil.checked == false
+      ) {
+        dosFormas("Divisas", "Transferencia");
+        btnValidacion.addEventListener("click", function () {
+          pagosDeConfirmacion.innerText = "";
+          pagosDeConfirmacion2.innerText = "";
+          pagosDeConfirmacion.innerText =
+            "Divisas En Bs: " + inputsDeValidacion[1].value;
+          pagosDeConfirmacion2.innerText =
+            "Transferencia: " + inputsDeValidacion[0].value + " BS";
+          document.getElementById("p_divisas").innerText =
+            "Equivalente en Divisas: " +
+            document.getElementById("equivalenteDivisas").value +
+            " $";
 
                     inputsDeMontos[0].value = inputsDeValidacion[0].value;
                     inputsDeMontos[1].value = inputsDeValidacion[1].value;
                 });
                 document.querySelector(".suguiente").addEventListener("click", function () {
                     document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-                    //referencia
-                    document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                    document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-                });
-                document.getElementById("equivalenteDivisas").classList.remove("d-none");
-                pagosDeConfirmacion3.innerText = "";
-            } else if (divisa.checked && transferencia.checked && efectivo.checked == false && pagoMovil.checked == false) {
-                dosFormas("Divisas", "Transferencia");
-                btnValidacion.addEventListener("click", function () {
-                    pagosDeConfirmacion.innerText = "";
-                    pagosDeConfirmacion2.innerText = "";
-                    pagosDeConfirmacion.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                    pagosDeConfirmacion2.innerText = "Pago Movil: " + inputsDeValidacion[0].value + " BS";
-                    document.getElementById("p_divisas").innerText =
-                        "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
 
-                    inputsDeMontos[0].value = inputsDeValidacion[0].value;
-                    inputsDeMontos[1].value = inputsDeValidacion[1].value;
-                });
-                document.querySelector(".suguiente").addEventListener("click", function () {
-                    document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-
-                    //referencia
-                    document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                    document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-                });
-                document.getElementById("equivalenteDivisas").classList.remove("d-none");
-                //apartir de aqui empiezan los casos que son 3 formas
-                pagosDeConfirmacion3.innerText = "";
-            } else if (divisa.checked && transferencia.checked && efectivo.checked && pagoMovil.checked == false) {
-                tresFormas("Efectivo", "Divisas", "Transferencia");
-                btnValidacion.addEventListener("click", function () {
-                    pagosDeConfirmacion.innerText = "";
-                    pagosDeConfirmacion2.innerText = "";
-                    pagosDeConfirmacion3.innerText = "";
-                    pagosDeConfirmacion.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                    pagosDeConfirmacion2.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                    pagosDeConfirmacion3.innerText = "Pago Movil: " + inputsDeValidacion[2].value + " BS";
-                    console.log(inputsDeValidacion[2].value);
-                    document.getElementById("p_divisas").innerText =
-                        "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
+            //referencia
+            document.getElementById("referencia_confirmar").value =
+              document.getElementById("referencia").value;
+            document
+              .getElementById("referencia_confirmar")
+              .setAttribute("name", "referencia");
+          });
+        document
+          .getElementById("equivalenteDivisas")
+          .classList.remove("d-none");
+        //apartir de aqui empiezan los casos que son 3 formas
+        pagosDeConfirmacion3.innerText = "";
+      } else if (
+        divisa.checked &&
+        transferencia.checked &&
+        efectivo.checked &&
+        pagoMovil.checked == false
+      ) {
+        tresFormas("Efectivo", "Divisas", "Transferencia");
+        btnValidacion.addEventListener("click", function () {
+          pagosDeConfirmacion.innerText = "";
+          pagosDeConfirmacion2.innerText = "";
+          pagosDeConfirmacion3.innerText = "";
+          pagosDeConfirmacion.innerText =
+            "Divisas En Bs: " + inputsDeValidacion[1].value;
+          pagosDeConfirmacion2.innerText =
+            "Efectivo: " + inputsDeValidacion[0].value + " BS";
+          pagosDeConfirmacion3.innerText =
+            "Transferencia: " + inputsDeValidacion[2].value + " BS";
+          console.log(inputsDeValidacion[2].value);
+          document.getElementById("p_divisas").innerText =
+            "Equivalente en Divisas: " +
+            document.getElementById("equivalenteDivisas").value +
+            " $";
 
                     inputsDeMontos[0].value = inputsDeValidacion[0].value;
                     inputsDeMontos[1].value = inputsDeValidacion[1].value;
                     inputsDeMontos[2].value = inputsDeValidacion[2].value;
 
-                    //referencia
-                    document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                    document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-                });
-                document.querySelector(".suguiente").addEventListener("click", function () {
-                    document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-                });
-                document.getElementById("equivalenteDivisas").classList.remove("d-none");
-                pagosDeConfirmacion3.innerText = "";
-            } else if (divisa.checked && pagoMovil.checked && efectivo.checked && transferencia.checked == false) {
-                tresFormas("Efectivo", "Divisas", "Pago Movil");
-                btnValidacion.addEventListener("click", function () {
-                    pagosDeConfirmacion.innerText = "";
-                    pagosDeConfirmacion2.innerText = "";
-                    pagosDeConfirmacion3.innerText = "";
-                    pagosDeConfirmacion.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                    pagosDeConfirmacion2.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                    pagosDeConfirmacion3.innerText = "Tranferencia: " + inputsDeValidacion[2].value + " BS";
-                    console.log(inputsDeValidacion[2].value);
-                    document.getElementById("p_divisas").innerText =
-                        "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
+          //referencia
+          document.getElementById("referencia_confirmar").value =
+            document.getElementById("referencia").value;
+          document
+            .getElementById("referencia_confirmar")
+            .setAttribute("name", "referencia");
+        });
+        document
+          .querySelector(".suguiente")
+          .addEventListener("click", function () {
+            document.getElementById("p_referencia").innerText =
+              "Ref " + referencia.value;
+          });
+        document
+          .getElementById("equivalenteDivisas")
+          .classList.remove("d-none");
+        pagosDeConfirmacion3.innerText = "";
+      } else if (
+        divisa.checked &&
+        pagoMovil.checked &&
+        efectivo.checked &&
+        transferencia.checked == false
+      ) {
+        tresFormas("Efectivo", "Divisas", "Pago Movil");
+        btnValidacion.addEventListener("click", function () {
+          pagosDeConfirmacion.innerText = "";
+          pagosDeConfirmacion2.innerText = "";
+          pagosDeConfirmacion3.innerText = "";
+          pagosDeConfirmacion.innerText =
+            "Divisas En Bs: " + inputsDeValidacion[1].value;
+          pagosDeConfirmacion2.innerText =
+            "Efectivo: " + inputsDeValidacion[0].value + " BS";
+          pagosDeConfirmacion3.innerText =
+            "Pago Movil: " + inputsDeValidacion[2].value + " BS";
+          console.log(inputsDeValidacion[2].value);
+          document.getElementById("p_divisas").innerText =
+            "Equivalente en Divisas: " +
+            document.getElementById("equivalenteDivisas").value +
+            " $";
 
                     inputsDeMontos[0].value = inputsDeValidacion[0].value;
                     inputsDeMontos[1].value = inputsDeValidacion[1].value;
