@@ -96,7 +96,7 @@ class ModeloHospitalizacion extends Db
     public function buscarUnInsumo($id)
     {
 
-        $consulta = $this->conexion->prepare('SELECT ins.id_insumo, ins.nombre, ins.precio, sum(inv.cantidad_disponible) AS limite_insumo FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada = inv.id_entrada  WHERE ins.estado = "ACT" AND ins.id_insumo =:id ORDER BY e.fechaDeIngreso');
+        $consulta = $this->conexion->prepare('SELECT ins.id_insumo, inv.id_entradaDeInsumo, ins.nombre, ins.precio, sum(inv.cantidad_disponible) AS limite_insumo FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada = inv.id_entrada  WHERE ins.estado = "ACT" AND ins.id_insumo =:id ORDER BY e.fechaDeIngreso');
 
         //PDO::PARAM_INT: esto es para que el envió sea de tipo entero. 
         //bindValue: funciona igual que el bindParam la diferencia es, que después del bindValue no se puede modificar nada de la consulta no lo leerá.
@@ -132,49 +132,49 @@ class ModeloHospitalizacion extends Db
         try {
             $this->conexion->beginTransaction();
 
-        // insertar hospitalización
-        $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion(fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_control, fecha_hora_final, estado) VALUES ( :fecha_hora_inicio, "null", "null", "null", "null", :id_control,  "null", "Pendiente")');
-        $consulta->bindParam(":fecha_hora_inicio", $fechaHora);
-        $consulta->bindParam(":id_control", $idControl);
-        $consulta->execute();
-        //devuelve el id de la hospitalización.
-        //obtenemos los datos de la hospitalización que se a agregado. si no se inserta devuelve 0
-        $idH = ($this->conexion->lastInsertId() === 0) ? false : $this->conexion->lastInsertId();
+            // insertar hospitalización
+            $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion(fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_control, fecha_hora_final, estado) VALUES ( :fecha_hora_inicio, "null", "null", "null", "null", :id_control,  "null", "Pendiente")');
+            $consulta->bindParam(":fecha_hora_inicio", $fechaHora);
+            $consulta->bindParam(":id_control", $idControl);
+            $consulta->execute();
+            //devuelve el id de la hospitalización.
+            //obtenemos los datos de la hospitalización que se a agregado. si no se inserta devuelve 0
+            $idH = ($this->conexion->lastInsertId() === 0) ? false : $this->conexion->lastInsertId();
 
-        // editar control
-        $this->updateHistorial($idControl, $historial);
-
-
-        // si hay un id del insumo devuelve verdadero si no, devuelve falso
-        if ($idInsumos) {
-
-            $contadorC = 0;
-
-            foreach ($idInsumos as $idI) {
-
-                // selecciono id de entrada_insumo
-                $consulta = $this->conexion->prepare('SELECT inv.id_entradaDeInsumo FROM entrada_insumo inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada= inv.id_entrada WHERE inv.id_insumo =:id_insumo AND inv.cantidad_disponible >= :cantidad ORDER BY e.fechaDeIngreso LIMIT 1;');
-                $consulta->bindParam(":id_insumo", $idI);
-                $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
-                $idEntradaDeInsumo = ($consulta->execute()) ? $consulta->fetch() : false;
+            // editar control
+            $this->updateHistorial($idControl, $historial);
 
 
-                // insertar insumos de la hospitalización
-                $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)');
-                $consulta->bindParam(":id_hospitalizacion", $idH);
-                $consulta->bindParam(":id_entradaDeInsumo", $idEntradaDeInsumo["id_entradaDeInsumo"]);
-                $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
+            // si hay un id del insumo devuelve verdadero si no, devuelve falso
+            if ($idInsumos) {
 
-                if ($consulta->execute()) {
-                    $consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
-                    $consulta2->bindParam(":i", $idI);
-                    $consulta2->bindParam(":cantidad", $cantidad[$contadorC]);
-                    $consulta2->execute();
+                $contadorC = 0;
+
+                foreach ($idInsumos as $idI) {
+
+                    // selecciono id de entrada_insumo
+                    $consulta = $this->conexion->prepare('SELECT inv.id_entradaDeInsumo FROM entrada_insumo inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada= inv.id_entrada WHERE inv.id_insumo =:id_insumo AND inv.cantidad_disponible >= :cantidad ORDER BY e.fechaDeIngreso LIMIT 1;');
+                    $consulta->bindParam(":id_insumo", $idI);
+                    $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
+                    $idEntradaDeInsumo = ($consulta->execute()) ? $consulta->fetch() : false;
+
+
+                    // insertar insumos de la hospitalización
+                    $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)');
+                    $consulta->bindParam(":id_hospitalizacion", $idH);
+                    $consulta->bindParam(":id_entradaDeInsumo", $idEntradaDeInsumo["id_entradaDeInsumo"]);
+                    $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
+
+                    if ($consulta->execute()) {
+                        $consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
+                        $consulta2->bindParam(":i", $idI);
+                        $consulta2->bindParam(":cantidad", $cantidad[$contadorC]);
+                        $consulta2->execute();
+                    }
+
+                    $contadorC++;
                 }
-
-                $contadorC++;
             }
-        }
 
             $this->conexion->commit();
             return 1;
@@ -220,35 +220,40 @@ class ModeloHospitalizacion extends Db
                     // selecciono la cantidad del insumo existente de la hospitalización
                     $consulta = $this->conexion->prepare('SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE id_insumoDeHospitalizacion = :id');
                     $consulta->bindParam(":id", $idInDHos);
-                    $cantidadIHBD = ($consulta->execute()) ? $consulta->fetch() : false;
-
+                    $cantidadIHBD = ($consulta->execute()) ? $consulta->fetch(PDO::FETCH_ASSOC) : false;
 
                     // se edita los insumos de la hospitalización
                     $consulta = $this->conexion->prepare('UPDATE insumodehospitalizacion SET cantidad= :cantidad WHERE id_insumoDeHospitalizacion = :id_hdi');
                     $consulta->bindParam(":cantidad", $cantidadE[$contador]);
                     $consulta->bindParam(":id_hdi", $idInDHos);
-                    $consulta->execute();
 
-                    // seleccionamos la cantidad de la tabla de insumos
-                    $cantidadITI = $this->buscarUnInsumo($cantidadIHBD["id_insumo"]);
+                    if ($consulta->execute()) {
 
-                    // se resta si es mayor al mismo
-                    if ($cantidadE[$contador] > $cantidadIHBD["cantidad"]) {
+                        // se resta al inventario (suma a los insumos de hospitalización)
+                        if ($cantidadE[$contador] > $cantidadIHBD["cantidad"]) {
 
-                        $cS = $cantidadE[$contador] - $cantidadIHBD["cantidad"];
-                        // suma
-                        $resultadoC = $cantidadITI["limite_insumo"] - $cS;
-                        // editar la cantidad de insumos(tabla insumos)
+                            $cS = $cantidadE[$contador] - $cantidadIHBD["cantidad"];
+
+                            $consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
+                            $consulta2->bindParam(":i", $cantidadIHBD["id_insumo"]);
+                            $consulta2->bindParam(":cantidad", $cS);
+                            $consulta2->execute();
+                            $consulta2->closeCursor();
 
 
-                        // se suma si es menor al mismo
-                    } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
+                            // se suma al inventario (resta a los insumos de hospitalización)
+                        } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
 
-                        $cR = $cantidadIHBD["cantidad"] - $cantidadE[$contador];
-                        // suma
-                        $resultadoC = $cR + $cantidadITI["limite_insumo"];
-
+                            $cR = $cantidadIHBD["cantidad"] - $cantidadE[$contador];
+                            $consulta2 =  $this->conexion->prepare("CALL devolver_insumo_hospitalizacion(:i, :cantidad);");
+                            $consulta2->bindParam(":i", $cantidadIHBD["id_insumo"]);
+                            $consulta2->bindParam(":cantidad", $cR);
+                            $consulta2->execute();
+                            $consulta2->closeCursor();
+                        }
                     }
+
+
 
 
                     $contador++;
@@ -275,15 +280,15 @@ class ModeloHospitalizacion extends Db
                     $consulta->bindParam(":id_hospitalizacion", $idHos);
                     $consulta->bindParam(":id_entradaDeInsumo", $idEntradaDeInsumo["id_entradaDeInsumo"]);
                     $consulta->bindParam(":cantidad", $cantidadA[$contadorC]);
-                    $consulta->execute();
 
-                    // seleccionamos la cantidad de la tabla de insumos
-                    $cantidadITI = $this->buscarUnInsumo($idIA);
+                    if ($consulta->execute()) {
+                        $consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
+                        $consulta2->bindParam(":i", $idIA);
+                        $consulta2->bindParam(":cantidad", $cantidadA[$contadorC]);
+                        $consulta2->execute();
+                        $consulta2->closeCursor();
+                    }
 
-                    // resta
-                    $resultadoC = $cantidadITI["limite_insumo"] - $cantidadA[$contadorC];
-
-                    // editar la cantidad de insumos(tabla insumos)
                     $contadorC++;
                 }
             }
@@ -301,17 +306,18 @@ class ModeloHospitalizacion extends Db
                     $consulta->bindParam(":id", $idIAEl);
                     $cantidadIH = ($consulta->execute()) ? $consulta->fetch() : false;
 
-                    // seleccionamos la cantidad de la tabla de insumos
-                    $cantidadITI = $this->buscarUnInsumo($cantidadIH["id_insumo"]);
-                    // suma
-                    $resultadoC = $cantidadIH["cantidad"] + $cantidadITI["limite_insumo"];
-
-
-
                     // elimina insumos de la hospitalización
                     $consulta = $this->conexion->prepare('DELETE FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id_insumo_eliminado');
                     $consulta->bindParam(":id_insumo_eliminado", $idIAEl);
-                    $consulta->execute();
+                    // devolver insumos 
+                    if ($consulta->execute()) {
+                        $consulta2 =  $this->conexion->prepare("CALL devolver_insumo_hospitalizacion(:i, :cantidad);");
+                        $consulta2->bindParam(":i", $cantidadIH["id_insumo"]);
+                        $consulta2->bindParam(":cantidad", $cantidadIH["cantidad"]);
+                        $consulta2->execute();
+                        $consulta2->closeCursor();
+                    }
+
 
                     $contador++;
                 }
@@ -335,11 +341,11 @@ class ModeloHospitalizacion extends Db
 
                 foreach ($datosIDH as $indice => $value) {
 
-                    // seleccionamos la cantidad de la tabla de insumos
-                    $cantidadITI = $this->buscarUnInsumo($value["id_insumo"]);
-                    // suma
-                    $resultadoC = $value["cantidad"] + $cantidadITI["limite_insumo"];
-
+                    $consulta2 =  $this->conexion->prepare("CALL devolver_insumo_hospitalizacion(:i, :cantidad);");
+                    $consulta2->bindParam(":i", $value["id_insumo"]);
+                    $consulta2->bindParam(":cantidad", $value["cantidad"]);
+                    $consulta2->execute();
+                    $consulta2->closeCursor();
                 }
             }
 
@@ -387,13 +393,12 @@ class ModeloHospitalizacion extends Db
     {
         try {
 
-        // verifica cuantas hospitalizaciones hay pendiente
-        $consulta = $this->conexion->prepare("SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'Pendiente';");
+            // verifica cuantas hospitalizaciones hay pendiente
+            $consulta = $this->conexion->prepare("SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'Pendiente';");
 
-        return ($consulta->execute()) ? $consulta->fetch() : false;
-
+            return ($consulta->execute()) ? $consulta->fetch() : false;
         } catch (\Exception $e) {
-        print_r("ocurrio un error en hospitalización, intente mas tarde");
+            print_r("ocurrio un error en hospitalización, intente mas tarde");
         }
     }
 }
