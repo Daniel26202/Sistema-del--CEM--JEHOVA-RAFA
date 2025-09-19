@@ -240,7 +240,7 @@ class ModeloHospitalizacion extends Db
                             $consulta2->execute();
                             $consulta2->closeCursor();
 
-
+ 
                             // se suma al inventario (resta a los insumos de hospitalización)
                         } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
 
