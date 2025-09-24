@@ -349,6 +349,13 @@ class ModeloHospitalizacion extends Db
             $consulta->bindParam(":id_h", $idH);
             $consulta->execute();
 
+            //llamar a un procedimiento de almacenado para devolver los insumos que haiga en la hospitalizacion eliminada
+
+            $consulta2 = $this->conexion->prepare('call devolever_insumos_hospitalizacion(:id_h)');
+
+            $consulta2->bindParam(":id_h", $idH);
+            $consulta2->execute();
+            
             $this->conexion->commit();
         } catch (\Exception $e) {
             $this->conexion->rollBack();
