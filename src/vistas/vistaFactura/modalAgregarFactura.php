@@ -31,6 +31,9 @@
         </a>
       </div>
 
+      <div id="ConteNotificacionServicio">
+
+      </div>
 
 
       <div class="m-4">
@@ -141,6 +144,11 @@
           </svg>
         </a>
       </div>
+
+      <div id="ConteNotificacionServicioEli">
+
+      </div>
+
 
       <form class="formularios">
 
@@ -319,6 +327,7 @@
 
 
 
+
       <div class="form-modal  mt-2">
 
 
@@ -398,6 +407,11 @@
         </a>
       </div>
 
+      <div id="ConteNotificacionInsumo">
+
+      </div>
+
+
 
 
       <div class="form-modal  m-2 " style="width: 97%;">
@@ -405,7 +419,7 @@
 
         <div class="table-responsive">
           <table class="table table-striped example" id="tablaInsumos">
-            
+
             <thead>
               <th class=" text-center">#</th>
               <th class=" text-center border-start">Nombre</th>
@@ -526,6 +540,10 @@
               d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
           </svg>
         </a>
+      </div>
+
+      <div id="ConteNotificacionInsumoCon">
+
       </div>
 
 
