@@ -28,6 +28,7 @@ addEventListener("DOMContentLoaded", () => {
   const ConteNotificacionInsumo = document.getElementById("ConteNotificacionInsumo");
   const ConteNotificacionInsumoCon = document.getElementById("ConteNotificacionInsumoCon");
 
+
   if (window.location.href.includes("facturaCita")) {
     console.log("id_cita");
   } else {
@@ -91,7 +92,7 @@ addEventListener("DOMContentLoaded", () => {
 
   //insertar funcion para Paciente cuando no existe
   const insertarPaciente = async (form) => {
-    // try {
+    try {
     const datosFormulario = new FormData(form);
     const contenido = {
       method: "POST",
@@ -128,12 +129,14 @@ addEventListener("DOMContentLoaded", () => {
       form.reset();
 
       toast.hide();
+
+  
+
+    }
+  }catch (error) {
+      console.log("algo salio mal" + error);
     }
   };
-  //  catch (error) {
-  //     console.log("algo salio mal" + error);
-  //   }
-  // };
 
   //llamar a la funcion para insertar al paciente
   document.getElementById("modalAgregar").addEventListener("submit", function (e) {

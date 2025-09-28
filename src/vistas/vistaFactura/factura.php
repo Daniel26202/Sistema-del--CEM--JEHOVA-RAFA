@@ -18,10 +18,14 @@
     <?php require_once "./src/vistas/alerts.php" ?>
 
 
+    <div id="alertRegistroPac">
+        <!-- js -->
+    </div>
+
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto " style="width: 98%; ">
 
 
-        <div   id="cajaBotones" class="d-flex justify-content-end " >
+        <div id="cajaBotones" class="d-flex justify-content-end ">
 
             <!-- <div class="bg-info"> -->
             <button id="botonAgregar"
@@ -55,11 +59,11 @@
                         <div class="toast contenido" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
                             id="myToastfactura">
                             <div class="toast-body">
-                                <h5 class="fw-bold text-dark text-center">Haz Click en Registrar para Guardar un
-                                    Nuevo Paciente</h5>
+                                <h5 class="fw-bold  text-center">Haz click en registrar para guardar un
+                                    nuevo paciente</h5>
                                 <div class="mt-2 pt-2 border-top">
                                     <a href="#">
-                                        <button type="button" class="btn btn-agregarcita-modal" uk-toggle="target: #modal-examplePaciente"> Registrar </button>
+                                        <button type="button" class="btn btn-agregarcita-modal" uk-toggle="target: #modal-examplePaciente" data-bs-dismiss="toast"> Registrar </button>
                                     </a>
 
                                     <button type="button" class="uk-button me-3 uk-button-default btn-cerrar-modal"

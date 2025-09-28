@@ -1167,10 +1167,8 @@
       </div>
 
     </div>
-    <div class="alert alert-danger d-none alertaFormulario" role="alert">
-      <div class="">
-        <p style="font-size: 13px;" class="text-center">Por favor, corrige los errores en el formulario.</p>
-      </div>
+    <div class=" d-none alertaFormulario" role="alert">
+     
     </div>
 
     <div class="alert alert-danger d-none alertaErrorCedula" role="alert">
