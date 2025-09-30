@@ -463,7 +463,10 @@ const especialidades_chart = async (url) => {
             
             totalDeEspecialidades(data);
             document.querySelectorAll("#texto p").forEach((ele) => ele.classList.remove("d-none"));
+
+            document.querySelector(".alert-no-encontrado").classList.add("d-none");
         } else {
+            document.querySelector(".alert-no-encontrado").classList.remove("d-none")
             //Vaciando todos los elementos si no hay datos para relizar la grafica
             document.getElementById("especialidades_solicitadas").classList.add("d-none");
             document.getElementById("especialidades_solicitadas_pdf").classList.add("d-none");
@@ -573,7 +576,11 @@ const sintomas_chart = async (url) => {
         //Aparecer el escrito
         
         document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.remove("d-none"));
+        document.querySelector(".alert-no-encontrado-s").classList.add("d-none");
+
     } else {
+        document.querySelector(".alert-no-encontrado-s").classList.remove("d-none");
+
         //Vaciando todos los elementos si no hay datos para relizar la grafica
         document.getElementById("sintomas_comunes").classList.add("d-none");
         document.getElementById("sintomas_solicitadas_pdf").classList.add("d-none");

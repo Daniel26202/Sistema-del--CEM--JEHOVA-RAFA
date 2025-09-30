@@ -89,6 +89,9 @@
             <div class="alertEspecialidades">
 
             </div>
+
+            <div class="alert alert-primary text-center d-none alert-no-encontrado">No se encontraron datos en dicho periodo de tiempo</div>
+
             <h5 class="mt-4 text-center">Filtrar la Grafica Segun un Periodo de Tiempo</h5>
             <div class="mt-4 w-100 mb-4">
                 <div class="alert alert-danger text-center d-none alertaFechaInicio">Por favor la fecha de Inicio tiene que ser Menor a la fech final</div>
@@ -164,6 +167,9 @@
 
                 </div>
             </div>
+
+            <div class="alert alert-primary text-center d-none alert-no-encontrado-s">No se encontraron datos en dicho periodo de tiempo</div>
+
             <h5 class="mt-4 text-center">Filtrar la Grafica Segun un Periodo de Tiempo</h5>
             <div class="mt-4 w-100 mb-4">
                 <div class="alert alert-danger text-center d-none alertaFechaInicioSintomas">Por favor la fecha de Inicio tiene que ser Menor a la fech final</div>
@@ -271,7 +277,7 @@
 </div>
 
 
-<!-- modal reporte pacientes-->
+<!-- modal reporte pacientes morbilidad-->
 <div class="modal fade" id="reporteTasaMorbilidad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content contenido">
@@ -305,6 +311,9 @@
 
                 </div>
             </div>
+
+            <div class="alert alert-primary text-center d-none alert-no-encontrado-m">No se encontraron datos en dicho periodo de tiempo</div>
+
             <h5 class="mt-4 text-center">Filtrar la Grafica Segun un Periodo de Tiempo</h5>
             <div class="mt-4 w-100 mb-4">
                 <div class="alert alert-danger text-center d-none alertaFechaInicioSintomas">Por favor la fecha de Inicio tiene que ser Menor a la fech final</div>
