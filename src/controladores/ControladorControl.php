@@ -33,6 +33,7 @@ class ControladorControl
 		$datosS = $this->modeloSintomas->selects();
 		$datosD = $this->modelo->mostrarDoctor();
 		$datosPatologias = $this->modeloPatologia->mostrarPatologias();
+		$ayuda = "btnayudaControl";
 
 		if (session_status() !== PHP_SESSION_ACTIVE) {
 			session_start();

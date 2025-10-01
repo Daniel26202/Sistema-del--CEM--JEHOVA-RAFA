@@ -21,7 +21,7 @@
 
     <div class="container">
         <!-- Tabla de Pacientes -->
-        <div class="tabla-control-medico pacientes">
+        <div class="tabla-control-medico pacientes" id="pacientes">
             <button class="btn btn-primary btn-sintomas btn-agregar-doctores " uk-toggle="target: #modal-examplecontrol"
                 id="btnControl">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
@@ -48,7 +48,7 @@
         </div>
 
         <!-- Tabla de Registros con scroll -->
-        <div class="tabla-control-medico  registros">
+        <div class="tabla-control-medico  registros" id="controles">
             <button class="btn btn-primary btn-agregar-doctores btn-sintomas " uk-toggle="target: #modal-sintomas">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-person-lines-fill me-1" viewBox="0 0 16 16">
@@ -600,5 +600,7 @@
 
 
     <script type="text/javascript" src="<?= $urlBase ?>../src/assets/control.js"></script>
+    <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaControl.js"></script>
+
     <?php require_once './src/vistas/vistaControl/modalesSintomas.php'; ?>
     <?php require_once './src/vistas/head/footer.php';  ?>
