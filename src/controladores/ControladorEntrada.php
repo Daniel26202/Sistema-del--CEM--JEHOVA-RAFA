@@ -74,9 +74,8 @@ class ControladorEntrada
 	public function eliminar($datos)
 	{
 		$id_entrada = $datos[0];
-		$id_insumo = $datos[1];
 		$id_usuario_bitacora = $datos[2];
-		$elimincion = $this->modelo->eliminar($id_entrada, $id_insumo);
+		$elimincion = $this->modelo->eliminar($id_entrada);
 		if ($elimincion) {
 			// Guardar la bitacora
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "entrada", "Ha eliminado una entrada");

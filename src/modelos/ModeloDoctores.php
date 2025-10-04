@@ -95,13 +95,13 @@ class ModeloDoctores extends Db
     }
 
     //esto es para agregar un doctor.
-    public function insertarDoctor($cedula, $nombre, $apellido, $telefono, $usuario, $password, $especialidad, $email, $nacionalidad, $nombreImagen, $imagenTemporal, $idEspecialidad)
+    public function insertarDoctor($cedula, $nombre, $apellido, $telefono, $usuario, $password, $email, $nacionalidad, $nombreImagen, $imagenTemporal, $idEspecialidad, $dias, $horaSalida,$horaEntrada)
     {
 
         try {
             $this->conexion->beginTransaction();
             //agregamos al doctor como usuario.
-            $consultaDeUsuario = $this->conexion->prepare('INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES ("8",:imagen, :usuario, :correo, :password,"ACT");');
+            $consultaDeUsuario = $this->conexion->prepare('INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES (8,:imagen, :usuario, :correo, :password,"ACT");');
             $consultaDeUsuario->bindParam(":imagen", $nombreImagen);
             $consultaDeUsuario->bindParam(":usuario", $usuario);
             $consultaDeUsuario->bindParam(":correo", $email);
@@ -134,10 +134,6 @@ class ModeloDoctores extends Db
             }
 
             //esto es para insertar el horario
-
-            $dias = $_POST['dias'];
-            $horaSalida = $_POST["horaSalida"];
-            $horaEntrada = $_POST["horaEntrada"];
             if ($dias != "NO") {
                 $contadorDias = 0;
                 foreach ($dias as $d) {
@@ -152,7 +148,7 @@ class ModeloDoctores extends Db
             }
 
             $this->conexion->commit();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             return 0;
@@ -160,7 +156,7 @@ class ModeloDoctores extends Db
     }
 
     //esto es para editar un doctor.
-    public function updateDoctor($cedula, $nombre, $apellido, $telefono, $idUsuario, $idEspecialidad, $email, $nacionalidad, $selectEsp, $idDoctorEspec, $diasE, $diasN, $diasEditar, $checkeds, $horaEntrada, $horaSalida)
+    public function updateDoctor($cedula, $nombre, $apellido, $telefono, $idUsuario, $idEspecialidad, $email, $nacionalidad, $diasE, $diasN, $diasEditar, $checkeds, $horaEntrada, $horaSalida)
     {
         try {
             $this->conexion->beginTransaction();
@@ -237,7 +233,7 @@ class ModeloDoctores extends Db
             }
 
             $this->conexion->commit();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             return 0;
@@ -245,7 +241,7 @@ class ModeloDoctores extends Db
     }
 
     //esto es para editar el estado (en activo a desactivo) del doctor.
-    public function eliminacionLogica($cedula, $usuario, $idUsuario, $id_personal)
+    public function eliminacionLogica($idUsuario)
     {
         try {
             $this->conexion->beginTransaction();
@@ -258,7 +254,7 @@ class ModeloDoctores extends Db
             $consultaDeUsuario->execute();
 
             $this->conexion->commit();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             return 0;

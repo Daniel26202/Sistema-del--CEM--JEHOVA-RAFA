@@ -431,21 +431,22 @@ addEventListener("DOMContentLoaded", function () {
   const saveControl = async () => {
     let textAlert = "",
       classAlert = "";
-    try {
+    // try {
       const data = new FormData(modalAddControl);
       let result = await executePetition(url + "/insertarControl", "POST", data);
-      alertControl.classList.remove("d-none");
-      textAlert = `Se registro correctamente el control medico del Paciente con la cédula ${result.data.cedula}`;
-      classAlert = "uk-alert-primary";
-      readControl(result.data.cedula);
-      console.log("Resultado");
-      console.log(result);
-    } catch (error) {
-      textAlert = `Lamentablemente algo salio mal por favor intente mas tarde`;
-      classAlert = "uk-alert-danger";
-    } finally {
-      showAlert(alertControl, textAlert, classAlert);
-    }
+      console.log(result)
+    //   alertControl.classList.remove("d-none");
+    //   textAlert = `Se registro correctamente el control medico del Paciente con la cédula ${result.data.cedula}`;
+    //   classAlert = "uk-alert-primary";
+    //   readControl(result.data.cedula);
+    //   console.log("Resultado");
+    //   console.log(result);
+    // } catch (error) {
+    //   textAlert = `Lamentablemente algo salio mal por favor intente mas tarde`;
+    //   classAlert = "uk-alert-danger";
+    // } finally {
+    //   showAlert(alertControl, textAlert, classAlert);
+    // }
   };
 
   //function for edit the control
