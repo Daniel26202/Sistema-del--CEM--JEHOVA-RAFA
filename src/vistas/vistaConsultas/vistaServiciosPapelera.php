@@ -77,9 +77,9 @@
                                     <?php if (!$this->permisos($_SESSION["id_rol"], "eliminar", "Consultas")): ?>
                                         <!-- no hay -->
                                     <?php else: ?>
-                                        <a href="#" class="btns-accion me-2"
+                                        <a href="#" class="btns-accion me-2 btn-dt-tabla"
                                             uk-toggle="target: #modal-exampleRestablecer<?= $servicio["id_servicioMedico"] ?>"
-                                            uk-tooltip="Restablecer Servicio" id="btnEliminarServicioMedico">
+                                            uk-tooltip="Restablecer Servicio" data-id-tabla="modal-exampleRestablecer<?= $servicio["id_servicioMedico"] ?>" id="btnEliminarServicioMedico">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                                                 class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd"

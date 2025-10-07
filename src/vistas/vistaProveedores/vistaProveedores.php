@@ -67,9 +67,9 @@
                     <tr>
                         <th class="text-dark text-center">Nombre</th>
                         <th class="text-dark text-center">Rif</th>
-                        <th class="text-dark text-center">Telefono</th>
+                        <th class="text-dark text-center">Teléfono</th>
                         <th class="text-dark text-center">Correo</th>
-                        <th class="text-dark text-center">Direccion</th>
+                        <th class="text-dark text-center">Dirección</th>
                         <th class="text-dark text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -99,7 +99,7 @@
 
                                 <!-- Editar Proveedor -->
                                 <div class="me-2">
-                                    <a href="#" class="btn btn-tabla mb-1 btnEditarDoctor" uk-toggle="target: #modal-exampleEditarProveedores<?= $proveedor["id_proveedor"];  ?>" uk-tooltip="Modificar Proveedores">
+                                    <a href="#" class="btn btn-tabla mb-1 btnEditarDoctor btn-dt-tabla" uk-toggle="target: #modal-exampleEditarProveedores<?= $proveedor["id_proveedor"];  ?>" uk-tooltip="Modificar Proveedores" data-id-tabla="modal-exampleEditarProveedores<?= $proveedor["id_proveedor"];  ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                                             class="bi bi-pencil-square" viewBox="0 0 16 16">
                                             <path
@@ -114,7 +114,7 @@
                                 <!-- Eliminar Proveedores-->
 
                                 <div class="me-2">
-                                    <a href="#" class="btn btn-tabla mb-1 btnEliminarDoctor" uk-toggle="target: #modal-exampleEliminarProveedores<?= $proveedor["id_proveedor"]; ?>" uk-tooltip="Eliminar Proveedores">
+                                    <a href="#" class="btn btn-tabla mb-1 btnEliminarDoctor btn-dt-tabla" uk-toggle="target: #modal-exampleEliminarProveedores<?= $proveedor["id_proveedor"]; ?>" uk-tooltip="Eliminar Proveedores" data-id-tabla="modal-exampleEliminarProveedores<?= $proveedor["id_proveedor"]; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                                             class="bi bi-trash3" viewBox="0 0 16 16">
                                             <path

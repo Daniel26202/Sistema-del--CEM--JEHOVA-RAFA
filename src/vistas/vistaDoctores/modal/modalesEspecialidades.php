@@ -94,7 +94,7 @@
 
 
                 <td class="border-start text-center">
-                  <button class="btn btn-tabla mb-1" uk-toggle="target: #eliminarEspecialidad<?= $especialidad["0"]; ?>"
+                  <button class="btn btn-tabla mb-1 btn-dt-tabla" uk-toggle="target: #eliminarEspecialidad<?= $especialidad["0"]; ?>" data-id-tabla="eliminarEspecialidad<?= $especialidad["0"]; ?>"
                     id="btnEliminarEspecialidad">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                       class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -155,11 +155,6 @@
                 </td>
               </tr>
             <?php endforeach ?>
-
-
-
-
-
 
           <?php else: ?>
 

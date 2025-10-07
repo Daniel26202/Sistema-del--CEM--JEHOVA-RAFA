@@ -123,8 +123,8 @@
                                         <!-- no hay -->
                                     <?php else: ?>
                                         <div class="me-2 botonesEdi <?= $vistaActiva == "realizadas" ? "d-none" : ""; ?>">
-                                            <a href="#" class="btns-accion botonesEditar botonesEdi"
-                                                uk-toggle="target: #modal-examplecitaeditar<?= $datoCita["id_cita"]; ?>"
+                                            <a href="#" class="btns-accion botonesEditar botonesEdi btn-dt-tabla"
+                                                data-id-tabla="modal-examplecitaeditar<?= $datoCita["id_cita"]; ?>" uk-toggle="target: #modal-examplecitaeditar<?= $datoCita["id_cita"]; ?>"
                                                 data-index="<?= $datoCita["id_cita"]; ?>" uk-tooltip="Modificar Cita"
                                                 id="btnEditarCitaPendiente">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
@@ -144,7 +144,7 @@
                                         <!-- no hay -->
                                     <?php else: ?>
                                         <div class="me-2">
-                                            <a href="#" class="btns-accion"
+                                            <a href="#" class="btns-accion btn-dt-tabla" data-id-tabla="modal-exampleEliminarcita<?= $datoCita["id_cita"]; ?>"
                                                 uk-toggle="target: #modal-exampleEliminarcita<?= $datoCita["id_cita"]; ?>"
                                                 uk-tooltip="Eliminar Cita" id="eliminarCitaP">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"

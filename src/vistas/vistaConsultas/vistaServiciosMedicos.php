@@ -95,8 +95,8 @@
                                         <!-- no hay -->
                                     <?php else: ?>
 
-                                        <a href="#" class="btns-accion me-2 btnEditarCita botonesEditarSM btnPreciosEditar"
-                                            uk-toggle="target: #modal-exampleEditar<?= $servicio['id_servicioMedico'] ?>" uk-tooltip="Modificar Servicio  "
+                                        <a href="#" class="btns-accion me-2 btnEditarCita botonesEditarSM btnPreciosEditar btn-dt-tabla"
+                                            uk-toggle="target: #modal-exampleEditar<?= $servicio['id_servicioMedico'] ?>" data-id-tabla="modal-exampleEditar<?= $servicio['id_servicioMedico'] ?>" uk-tooltip="Modificar Servicio  "
                                             id="btnEditarServicioMedico" data-index=<?= $servicio['id_servicioMedico'] ?>>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                                                 class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -116,9 +116,9 @@
                                     <?php if (!$this->permisos($_SESSION["id_rol"], "eliminar", "Consultas")): ?>
                                         <!-- no hay -->
                                     <?php else: ?>
-                                        <a href="#" class="btns-accion me-2"
+                                        <a href="#" class="btns-accion me-2 btn-dt-tabla"
                                             uk-toggle="target: #modal-exampleEliminar<?= $servicio['id_servicioMedico'] ?>"
-                                            uk-tooltip="Eliminar Servicio" id="btnEliminarServicioMedico">
+                                            uk-tooltip="Eliminar Servicio" data-id-tabla="modal-exampleEliminar<?= $servicio['id_servicioMedico'] ?>" id="btnEliminarServicioMedico">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                                                 class="bi bi-trash3-fill text-black" viewBox="0 0 16 16">
                                                 <path

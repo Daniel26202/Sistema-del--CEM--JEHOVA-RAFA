@@ -4,7 +4,7 @@
 <!-- Contenido  -->
 
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
-    <h5 style="width: 95%; " class="m-auto mb-3">Patologias<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bandaid-fill ms-2" viewBox="0 0 16 16">
+    <h5 style="width: 95%; " class="m-auto mb-3">Patologías<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bandaid-fill ms-2" viewBox="0 0 16 16">
             <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z"></path>
         </svg></h5>
 
@@ -58,9 +58,9 @@
                                 <?php if (!$this->permisos($_SESSION["id_rol"], "eliminar", "Patologias")): ?>
                                     <!-- no hay -->
                                 <?php else: ?>
-                                    <button class="btn btn-tabla mb-1 btnModalEliminarPatologia"
-                                        uk-toggle="target: #eliminarEspecialidad<?= $patologia["0"]; ?>"
-                                        id="btnEliminarDoctor">
+                                    <button class="btn btn-tabla mb-1 btnModalEliminarPatologia btn-dt-tabla"
+                                        uk-toggle="target: #eliminarPatologia<?= $patologia["0"]; ?>"
+                                        id="btnEliminarDoctor" data-id-tabla="eliminarPatologia<?= $patologia["0"]; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                             <path
@@ -71,66 +71,8 @@
                                 <?php endif; ?>
 
 
-                                <div id="eliminarEspecialidad<?= $patologia["0"]; ?>" uk-modal>
-                                    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-                                        <!-- Boton que cierra el modal -->
-                                        <div class="d-flex justify-content-between mb-5">
-
-
-
-
-                                            <div class="d-flex align-items-center ajustar" id="eliminarEspecialidad">
-                                                <div class="svgPapeleraPatologia">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                                        class="bi bi-trash-fill azul me-2 mb-1" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                                                    </svg>
-                                                </div>
-                                                <div>
-                                                    <h5>
-                                                        ¿Desea eliminar la Patología?
-                                                    </h5>
-                                                </div>
-                                            </div>
-                                            <!-- Ayuda Interactiva -->
-                                            <a href="#">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                                    class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                                    <path
-                                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                                                </svg>
-                                            </a>
-                                        </div>
-
-
-                                        <div class="mt-5 uk-text-right btn_modal_patologias">
-                                            <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
-                                                id="cancelarEliminacion">Cancelar</button>
-
-                                            <a
-                                                href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/eliminarPatologia/<?= $patologia["0"]; ?>/<?php echo $_SESSION['id_usuario'] ?>">
-                                                <button class="btn col-4 btn-agregarcita-modal btnrestablecer"
-                                                    id="btnEliminarEspecialidad">Eliminar</button>
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
                             </td>
-
-
-
-
-
-
-
-
-                            </td>
+                            
                         </tr>
 
                         <?php $numeroDePatologias++; ?>
@@ -141,8 +83,8 @@
         </div>
     </div>
 </div>
+<?php require_once 'modalesPatologia.php'; ?>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<?php require_once 'modalesPatologia.php'; ?>
 <script src="<?= $urlBase; ?>../src/assets/js/ayudaPatologia.js"></script>

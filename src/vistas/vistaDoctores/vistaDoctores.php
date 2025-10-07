@@ -112,8 +112,8 @@
                                 <?php if (!$this->permisos($_SESSION["id_rol"], "editar", "Doctores")): ?>
                                     <!-- no hay -->
                                 <?php else: ?>
-                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi"
-                                        uk-toggle="target: #modal-editar-doctores<?php echo $dato["id_personal"]; ?>"
+                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla"
+                                        uk-toggle="target: #modal-editar-doctores<?php echo $dato["id_personal"]; ?>" data-id-tabla="modal-editar-doctores<?php echo $dato["id_personal"]; ?>"
                                         id="btneditarDoctor" data-index="<?php echo $dato["id_personal"]; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -129,8 +129,8 @@
                                 <?php if (!$this->permisos($_SESSION["id_rol"], "eliminar", "Doctores")): ?>
                                     <!-- no hay -->
                                 <?php else: ?>
-                                    <button class="btn btn-tabla mb-1"
-                                        uk-toggle="target: #modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>"
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla"
+                                        uk-toggle="target: #modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>" data-id-tabla="modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>"
                                         id="btnEliminarDoctor">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -140,8 +140,8 @@
                                     </button>
 
                                 <?php endif; ?>
-                                <button class="btn btn-tabla mb-1 botonesInfo" title="Horarios Del Doctor"
-                                    uk-toggle="target: #modal-info-doctores"
+                                <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla" title="Horarios Del Doctor"
+                                    uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores<?php echo $dato["id_personal"]; ?>"
                                     data-index="<?php echo $dato["id_personal"]; ?>">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-info-circle-fill" viewBox="0 0 16 16">

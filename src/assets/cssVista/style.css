@@ -88,6 +88,10 @@ h6 {
     color: var(--color-text-card);
 }
 
+#DataTables_Table_0_info{
+    color: var(--color-text-card);
+    
+}
 label {
     color: var(--color-text-card) !important;
 }
