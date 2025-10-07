@@ -78,7 +78,7 @@ class ControladorDoctores extends ModeloDoctores
 
 
             if ($imagen) {
-                $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"]);
+                $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip,  $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"], $_POST['dias'], $_POST["horaSalida"], $_POST["horaEntrada"]);
                 if ($insercion) {
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
@@ -87,7 +87,7 @@ class ControladorDoctores extends ModeloDoctores
                     header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
                 }
             } else {
-                $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST["especialidad"], $_POST['email'], $_POST['nacionalidad'], $imagenPorDefecto, "", $_POST["selectEspecialidad"]);
+                $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST['email'], $_POST['nacionalidad'], $imagenPorDefecto, "", $_POST["selectEspecialidad"], $_POST['dias'], $_POST["horaSalida"], $_POST["horaEntrada"]);
                 if ($insercion) {
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
@@ -122,7 +122,7 @@ class ControladorDoctores extends ModeloDoctores
         //se verifica si la cédula del input es igual a la cédula ya existente 
         if ($cedula == $_POST["cedula"]) {
 
-            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
+            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
             if ($edicion) {
                 // Guardar la bitacora
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
@@ -138,7 +138,7 @@ class ControladorDoctores extends ModeloDoctores
             if ($resultadoDeCedula === "existeC") {
                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorD");
             } else {
-                $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
+                $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
                 if ($edicion) {
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
@@ -149,7 +149,7 @@ class ControladorDoctores extends ModeloDoctores
             }
         } else {
 
-            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $_POST['selectEspecialidad'], $_POST['id_personalyespecialidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
+            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
             if ($edicion) {
                 // Guardar la bitacora
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
@@ -162,7 +162,7 @@ class ControladorDoctores extends ModeloDoctores
     // eliminación lógica doctor
     public function borrarDoctor()
     {
-        $eliminacion = $this->modelo->eliminacionLogica($_POST["cedula"], $_POST["usuario"], $_POST["id_usuario"], $_POST["id_personal"]);
+        $eliminacion = $this->modelo->eliminacionLogica($_POST["id_usuario"]);
         if ($eliminacion) {
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha eliminado un doctor");

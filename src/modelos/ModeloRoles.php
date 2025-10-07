@@ -76,7 +76,7 @@ class ModeloRoles extends Db
                 $consultaPermiso->execute();
             }
             $this->conexion->commit();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             return 0;
@@ -114,7 +114,7 @@ class ModeloRoles extends Db
                 $consultaPermiso->execute();
             }
             $this->conexion->commit();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             return 0;
@@ -131,7 +131,7 @@ class ModeloRoles extends Db
             $consulta = $this->conexion->prepare("UPDATE rol SET  estado ='DES' WHERE id_rol = :id_rol");
             $consulta->bindParam(":id_rol", $id_rol);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }

@@ -68,7 +68,7 @@ class ModeloConsultas extends Db
             $consulta->bindParam(":precio", $precio);
             $consulta->bindParam(":tipo", $tipo);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }
@@ -94,7 +94,7 @@ class ModeloConsultas extends Db
             $consulta = $this->conexion->prepare("UPDATE servicioMedico SET estado = 'DES' WHERE id_servicioMedico =:id_servicioMedico ");
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }
@@ -105,7 +105,7 @@ class ModeloConsultas extends Db
             $consulta = $this->conexion->prepare("UPDATE servicioMedico SET estado = 'ACT' WHERE id_servicioMedico =:id_servicioMedico ");
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }
@@ -120,7 +120,7 @@ class ModeloConsultas extends Db
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->bindParam(":tipo", $tipo);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }

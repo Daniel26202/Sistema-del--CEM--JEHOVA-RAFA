@@ -177,7 +177,7 @@ class ModeloHospitalizacion extends Db
             }
 
             $this->conexion->commit();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             print_r($e);
@@ -324,6 +324,7 @@ class ModeloHospitalizacion extends Db
             }
 
             $this->conexion->commit();
+            return "exito";
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             print_r($e);
@@ -363,6 +364,7 @@ class ModeloHospitalizacion extends Db
             $consulta2->execute();
             
             $this->conexion->commit();
+            return "exito";
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             print_r($e);

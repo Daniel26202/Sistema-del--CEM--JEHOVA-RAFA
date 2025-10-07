@@ -36,7 +36,7 @@ class ModeloPerfil extends Db{
 			$consulta2->bindParam(":correo", $correo);
 			$consulta2->execute();
 
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}

@@ -41,7 +41,7 @@ class ModeloCategoria extends Db
             $consulta = $this->conexion->prepare("INSERT INTO categoria_servicio VALUES (null, :nombre, 'ACT')");
             $consulta->bindParam(":nombre", $nombre);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }
@@ -53,7 +53,7 @@ class ModeloCategoria extends Db
             $consulta = $this->conexion->prepare("UPDATE categoria_servicio SET estado = 'DES' WHERE id_categoria = :id_categoria");
             $consulta->bindParam(":id_categoria", $id_categoria);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }

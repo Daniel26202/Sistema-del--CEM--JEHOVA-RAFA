@@ -103,7 +103,7 @@ class ModeloControl extends Db
 			}
 
 			$this->conexion->commit();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			print_r($e);
@@ -136,7 +136,7 @@ class ModeloControl extends Db
 
 			$sql->bindParam(":fechaRegreso", $fechaRegreso);
 			$sql->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}

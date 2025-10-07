@@ -142,7 +142,7 @@ class ControladorUsuarios
 
     public function eliminarAdministrador()
     {
-        $eliminacion = $this->modelo->eliminacionLogica($_POST["usuario"], $_POST["id_usuario"]);
+        $eliminacion = $this->modelo->eliminacionLogica($_POST["id_usuario"]);
         if ($eliminacion) {
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un administador ");

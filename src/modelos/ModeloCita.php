@@ -105,7 +105,7 @@ class ModeloCita extends Db
 			$consulta->execute();
 
 			$this->conexion->commit();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			return false;
@@ -119,7 +119,7 @@ class ModeloCita extends Db
 			$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'DES' WHERE id_cita =:id_cita ");
 			$consulta->bindParam(":id_cita", $id_cita);
 			$consulta->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}

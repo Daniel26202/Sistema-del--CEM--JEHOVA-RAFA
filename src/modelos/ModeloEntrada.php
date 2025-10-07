@@ -66,14 +66,14 @@ class ModeloEntrada extends Db
 			$consulta->execute();
 
 			$this->conexion->commit();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			return 0;
 		}
 	}
 
-	public function eliminar($id_entrada, $id_insumo)
+	public function eliminar($id_entrada)
 	{
 		try {
 			$this->conexion->beginTransaction();
@@ -81,7 +81,7 @@ class ModeloEntrada extends Db
 			$consulta->bindParam(":id_entrada", $id_entrada);
 			$consulta->execute();
 			$this->conexion->commit();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			return 0;
@@ -104,7 +104,7 @@ class ModeloEntrada extends Db
 			$consulta->execute();
 
 			$this->conexion->commit();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			return 0;
@@ -141,7 +141,7 @@ class ModeloEntrada extends Db
 			$consulta = $this->conexion->prepare("UPDATE entrada SET estado='ACT' WHERE id_entrada =:id_entrada");
 			$consulta->bindParam(":id_entrada", $id_entrada);
 			$consulta->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}

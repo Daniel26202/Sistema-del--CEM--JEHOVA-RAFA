@@ -72,7 +72,7 @@ class ModeloPacientes extends Db
 			$consulta->bindParam(":fn", $fn);
 			$consulta->bindParam(":genero", $genero);
 			$consulta->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -94,7 +94,7 @@ class ModeloPacientes extends Db
 			$consulta->bindParam(":fn", $fn);
 			$consulta->bindParam(":genero", $genero);
 			$consulta->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -106,7 +106,7 @@ class ModeloPacientes extends Db
 			$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'DES' WHERE cedula = :cedula");
 			$consulta->bindParam(":cedula", $cedula);
 			$consulta->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -117,7 +117,7 @@ class ModeloPacientes extends Db
 			$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'ACT' WHERE id_paciente = :id_paciente");
 			$consulta->bindParam(":id_paciente", $id_paciente);
 			$consulta->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}

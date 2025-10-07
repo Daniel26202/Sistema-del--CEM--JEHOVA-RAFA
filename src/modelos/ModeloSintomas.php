@@ -34,7 +34,7 @@ class ModeloSintomas extends Db
             $consulta->bindParam(":nombre", $nombre);
 
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }
@@ -48,7 +48,7 @@ class ModeloSintomas extends Db
             $consulta->bindParam(":id", $id);
 
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }

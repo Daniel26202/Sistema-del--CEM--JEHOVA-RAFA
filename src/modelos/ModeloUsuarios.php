@@ -97,23 +97,22 @@ class ModeloUsuarios extends Db
                     move_uploaded_file($imagenUsuarioTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $imagenUsuario);
                 }
             }
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }
     }
 
     //esto es para editar el estado (en activo a desactivo) del usuario.
-    public function eliminacionLogica($usuario, $idUsuario)
+    public function eliminacionLogica($idUsuario)
     {
         try {
             //editar al doctor.
-            $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario  AND usuario = :usuario;';
+            $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario';
             $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-            $consultaDeUsuario->bindParam(":usuario", $usuario);
             $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
             $consultaDeUsuario->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }

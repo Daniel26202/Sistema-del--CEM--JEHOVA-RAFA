@@ -47,7 +47,7 @@ class ModeloProveedores extends Db
 			$sql->bindParam(":email", $email);
 			$sql->bindParam(":direccion", $direccion);
 			$sql->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -60,7 +60,7 @@ class ModeloProveedores extends Db
 			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='DES' WHERE id_proveedor = :id_proveedor;");
 			$sql->bindParam(":id_proveedor", $id_proveedor);
 			$sql->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -72,7 +72,7 @@ class ModeloProveedores extends Db
 			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='ACT' WHERE id_proveedor = :id_proveedor;");
 			$sql->bindParam(":id_proveedor", $id_proveedor);
 			$sql->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -90,7 +90,7 @@ class ModeloProveedores extends Db
 			$sql->bindParam(":direccion", $direccion);
 			$sql->bindParam(":id_proveedor", $id_proveedor);
 			$sql->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}

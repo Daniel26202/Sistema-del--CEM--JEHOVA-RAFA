@@ -309,7 +309,7 @@ class ModeloFactura extends Db
 				}
 			}
 
-			return $id_factura;
+			return [$id_factura, "exito"];
 		} catch (\Exception $e) {
 			return $e;
 		}

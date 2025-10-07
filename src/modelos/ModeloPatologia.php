@@ -83,7 +83,7 @@ class ModeloPatologia extends Db
             $consulta = $this->conexion->prepare("INSERT INTO patologia VALUES (null, :nombrePatologia, 'ACT')");
             $consulta->bindParam(":nombrePatologia", $nombrePatologia);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }
@@ -95,7 +95,7 @@ class ModeloPatologia extends Db
             $consulta = $this->conexion->prepare("UPDATE patologia SET estado= 'DES' WHERE id_patologia=:id_patologia ");
             $consulta->bindParam(":id_patologia", $id_patologia);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }
@@ -106,7 +106,7 @@ class ModeloPatologia extends Db
             $consulta = $this->conexion->prepare("UPDATE patologia SET estado= 'ACT' WHERE id_patologia=:id_patologia ");
             $consulta->bindParam(":id_patologia", $id_patologia);
             $consulta->execute();
-            return 1;
+            return "exito";
         } catch (\Exception $e) {
             return 0;
         }

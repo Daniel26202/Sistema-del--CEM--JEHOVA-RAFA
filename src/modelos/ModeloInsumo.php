@@ -137,7 +137,7 @@ class ModeloInsumo extends Db
 			$consulta->execute();
 
 			$this->conexion->commit();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			// Puedes registrar el error si lo deseas: error_log($e->getMessage());
@@ -153,7 +153,7 @@ class ModeloInsumo extends Db
 			$consulta = $this->conexion->prepare("UPDATE insumo SET estado = 'DES' WHERE id_insumo =:id_insumo");
 			$consulta->bindParam(":id_insumo", $id_insumo);
 			$consulta->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -204,7 +204,7 @@ class ModeloInsumo extends Db
 				$consulta3->bindParam(":id_insumo", $id_insumo);
 				$consulta3->execute();
 			}
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -281,7 +281,7 @@ class ModeloInsumo extends Db
 			$consulta = $this->conexion->prepare("UPDATE insumo SET estado = 'ACT' WHERE id_insumo =:id_insumo");
 			$consulta->bindParam(":id_insumo", $id_insumo);
 			$consulta->execute();
-			return 1;
+			return "exito";
 		} catch (\Exception $e) {
 			return 0;
 		}
