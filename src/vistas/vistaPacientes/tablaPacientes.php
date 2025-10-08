@@ -30,9 +30,9 @@
                         <?php if (!$this->permisos($_SESSION["id_rol"], "editar", "Pacientes")): ?>
                             <!-- no hay -->
                         <?php else: ?>
-                            <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente"
+                            <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
                                 uk-toggle="target: #modal-examplePacienteEditar<?= $paciente['id_paciente'] ?>"
-                                \ data-index="<?= $paciente['id_paciente'] ?>">
+                                data-id-tabla="modal-examplePacienteEditar<?= $paciente['id_paciente'] ?>" data-index="<?= $paciente['id_paciente'] ?>">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -47,8 +47,8 @@
                             <!-- no hay -->
                         <?php else: ?>
 
-                            <button class="btn btn-tabla mb-1 btnModalEliminarPaciente"
-                                uk-toggle="target: #modal-eliminar-pacientes<?php echo $paciente["id_paciente"]; ?>"
+                            <button class="btn btn-tabla mb-1 btnModalEliminarPaciente btn-dt-tabla"
+                                uk-toggle="target: #modal-eliminar-pacientes<?php echo $paciente["id_paciente"]; ?>" data-id-tabla="modal-eliminar-pacientes<?php echo $paciente["id_paciente"]; ?>"
                                 id="btnEliminarDoctor">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-trash3-fill" viewBox="0 0 16 16">
