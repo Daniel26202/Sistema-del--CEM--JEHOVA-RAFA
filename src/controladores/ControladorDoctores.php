@@ -25,8 +25,21 @@ class ControladorDoctores extends ModeloDoctores
     //muestro los datos de las cuatro tablas
     public function doctores($parametro)
     {
+        $vistaActiva = 'doctores';
         $ayuda = "btnayudaDoctores";
         $datos = $this->modelo->select();
+        $datosEspecialidades = $this->modelo->selectEspecialidad();
+        $datosDias = $this->modelo->selectDias();
+        $doctores = $this->modeloConsultas->mostrarDoctores();
+        $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
+        require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
+    }
+
+    public function papelera($parametro)
+    {
+        $vistaActiva = 'papelera';
+        $ayuda = "btnayudaDoctores";
+        $datos = $this->modelo->desactivos();
         $datosEspecialidades = $this->modelo->selectEspecialidad();
         $datosDias = $this->modelo->selectDias();
         $doctores = $this->modeloConsultas->mostrarDoctores();
@@ -82,7 +95,7 @@ class ControladorDoctores extends ModeloDoctores
                 if ($insercion) {
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registro");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registroD");
                 } else {
                     header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
                 }
@@ -91,7 +104,7 @@ class ControladorDoctores extends ModeloDoctores
                 if ($insercion) {
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registro");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registroD");
                 } else {
                     header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
                 }
@@ -167,6 +180,19 @@ class ControladorDoctores extends ModeloDoctores
             // Guardar la bitacora
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha eliminado un doctor");
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/eliminar");
+        } else {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+        }
+    }
+
+    // restablecer lógica doctor
+    public function restablecer()
+    {
+        $restablecer = $this->modelo->restablecerDoctor($_POST["id_usuario"]);
+        if ($restablecer) {
+            // Guardar la bitacora
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha restablecido un doctor");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/papelera/restablecido");
         } else {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
         }

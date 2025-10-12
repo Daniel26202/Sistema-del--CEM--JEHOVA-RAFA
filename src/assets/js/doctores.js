@@ -354,9 +354,13 @@ addEventListener("DOMContentLoaded", function () {
 
       let resultado = await peticion.json();
       let servicios = "";
-      resultado.forEach((res) => {
-        servicios += res.nombre_categoria + ",";
-      });
+      if (resultado.length > 0) {
+        resultado.forEach((res) => {
+          servicios += res.nombre_categoria + ",";
+        });
+      } else {
+        servicios += 'No tiene servicios registrados';
+      }
 
       document.getElementById("servicios").innerText = servicios;
     } catch (error) {

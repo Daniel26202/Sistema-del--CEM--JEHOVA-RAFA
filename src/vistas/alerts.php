@@ -12,6 +12,12 @@
                 <a class="uk-alert-close" uk-close></a>
                 <p class="pe-2">Se registro correctamente.</p>
             </div>
+
+        <?php elseif ($parametro[0] == "registroD"): ?>
+            <div class="uk-alert-primary comentario  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <p class="pe-2">Se registro el Doctor correctamente ahora debe asignarle sus respectivos servicios medicos desde el boton 'Registrar Servicio'.</p>
+            </div>
         <?php elseif ($parametro[0] == "editar"): ?>
             <div class="uk-alert-primary comentario  me-4 fw-bolder  alertaGenerica text-center" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
@@ -81,7 +87,7 @@
 
             <div class="uk-alert-danger comentario  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">La cédula o el usuario ya existen, intente de nuevo.</p>
+                <p class="pe-2">La cédula o el usuario del doctor estan registrados.</p>
             </div>
 
         <?php elseif ($parametro[0] == "Usuario"): ?>

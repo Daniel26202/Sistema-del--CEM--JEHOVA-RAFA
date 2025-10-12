@@ -1,7 +1,14 @@
 <?php foreach ($datos as $dato): ?>
     <div id="modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>" uk-modal>
         <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-            <form class="" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/borrarDoctor">
+            <form class="" method="POST" action="
+
+            <?= $vistaActiva != "papelera" ? '
+            /Sistema-del--CEM--JEHOVA-RAFA/Doctores/borrarDoctor
+            ' : '
+            /Sistema-del--CEM--JEHOVA-RAFA/Doctores/restablecer
+            ' ?>
+            ">
 
                 <!-- Boton que cierra el modal -->
                 <a href="#">
@@ -23,7 +30,11 @@
                     </div>
                     <div>
                         <h5>
+                            <?= $vistaActiva != "papelera" ? '
                             ¿Desea eliminar el Doctor?
+                            ' : '
+                            ¿Desea restablecer el Doctor?
+                            ' ?>
                         </h5>
                     </div>
                 </div>
@@ -33,7 +44,7 @@
                     <input type="" name="cedula" value="<?php echo $dato["cedula"]; ?>" hidden>
                     <input type="" name="id_usuario" value="<?php echo $dato["id_usuario"]; ?>" hidden>
                     <input type="" name="id_personal" value="<?php echo $dato["id_personal"]; ?>" hidden>
-                    <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
+                    <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
                 </div>
 
                 <div class="mt-3 uk-text-right">
@@ -41,7 +52,7 @@
                     <button class="uk-button fw-bold uk-button-default uk-modal-close btn-cerrar-modal" type="button"
                         data-bs-dismiss="modal">Cancelar</button>
                     <input class="uk-button uk-button-primary btn-agregarcita-modal ms-2 fw-bold" type="submit"
-                        name="enviar" data-bs-dismiss="modal" value="Eliminar">
+                        name="enviar" data-bs-dismiss="modal" value="<?= $vistaActiva != "papelera" ? 'Eliminar' : 'Restablecer' ?>">
 
                 </div>
             </form>

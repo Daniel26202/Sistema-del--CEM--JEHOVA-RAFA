@@ -86,7 +86,7 @@ class ModeloDoctores extends Db
     public function select()
     {
         try {
-            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad  inner join segurity.rol r on r.id_rol = u.id_rol WHERE u.estado = "ACT" AND  r.nombre = "Doctor" ';
+            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad  inner join segurity.rol r on r.id_rol = u.id_rol WHERE u.estado = "ACT" AND  es.id_especialidad is not null';
             $consulta = $this->conexion->prepare($sql);
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {
@@ -94,6 +94,17 @@ class ModeloDoctores extends Db
         }
     }
 
+    //papelera
+    public function desactivos()
+    {
+        try {
+            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad  inner join segurity.rol r on r.id_rol = u.id_rol WHERE u.estado = "DES" AND  es.id_especialidad is not null ';
+            $consulta = $this->conexion->prepare($sql);
+            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
     //esto es para agregar un doctor.
     public function insertarDoctor($cedula, $nombre, $apellido, $telefono, $usuario, $password, $email, $nacionalidad, $nombreImagen, $imagenTemporal, $idEspecialidad, $dias, $horaSalida,$horaEntrada)
     {
@@ -248,6 +259,26 @@ class ModeloDoctores extends Db
 
             //editar al doctor.
             $sqlUsuario = 'UPDATE segurity.usuario SET estado = "DES" WHERE id_usuario = :id_usuario ';
+            $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
+            $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
+
+            $consultaDeUsuario->execute();
+
+            $this->conexion->commit();
+            return "exito";
+        } catch (\Exception $e) {
+            $this->conexion->rollBack();
+            return 0;
+        }
+    }
+
+    public function restablecerDoctor($idUsuario)
+    {
+        try {
+            $this->conexion->beginTransaction();
+
+            //editar al doctor.
+            $sqlUsuario = 'UPDATE segurity.usuario SET estado = "ACT" WHERE id_usuario = :id_usuario ';
             $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
             $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
 

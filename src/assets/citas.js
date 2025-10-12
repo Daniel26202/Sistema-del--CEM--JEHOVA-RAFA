@@ -223,6 +223,7 @@ addEventListener("DOMContentLoaded", () => {
     diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
     let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
     console.log(resultado);
+    div.innerHTML = '';
     if (resultado.length > 0) {
       resultado.forEach((res) => {
         function entradaHora() {

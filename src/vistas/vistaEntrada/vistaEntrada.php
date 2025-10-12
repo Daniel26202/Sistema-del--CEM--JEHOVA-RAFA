@@ -100,7 +100,7 @@
 
                                     <!-- eliminar -->
                                     <div>
-                                        <button class="btn btnEditarDoctor btn-tabla btn-dt-tabla mb-1 btn-js editar botonesEdi" data-id-tabla="modal-exampleEntradaEditar<?= $entrada["id_entradaDeInsumo"] ?>" uk-toggle="target: #modal-exampleEntradaEditar<?= $entrada["id_entradaDeInsumo"] ?>">
+                                        <button class="btn btnEditarDoctor btn-tabla btn-dt-tabla mb-1 btn-js editar botonesEdi" data-id-tabla="modal-exampleEntradaEditar<?= $entrada["id_entradaDeInsumo"] ?>" uk-toggle="target: #modal-exampleEntradaEditar<?= $entrada["id_entradaDeInsumo"] ?>" data-index='<?= $entrada["id_entradaDeInsumo"] ?>'>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                                 <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
                                             </svg>
@@ -138,7 +138,7 @@
 
                                         </div>
 
-                                        <form class="form-modal" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/guardar" autocomplete="off" id="modalAgregarEntrada">
+                                        <form class="form-modal form-validable<?= $entrada["id_entradaDeInsumo"] ?>" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/editar" autocomplete="off" id="modalAgregarEntrada">
                                             <div id="alerta-guardar-entrada" class="alert alert-danger d-none">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO
                                             </div>
 
@@ -187,12 +187,15 @@
                                                     <div class=" text-center m-auto" style="font-size: 14px;">Numero de Lote</div>
                                                 </span>
                                                 <!-- <input class="form-control input-modal input-disabled input" type="text" placeholder="Ingrese el Insumo" id="nombre_insumo" disabled> -->
-                                                <input type="number" class="form-control input-modal" name="lote" value="<?= $entrada["numero_de_lote"] ?>">
+                                                <input type="number" class="form-control input-modal input-validar" name="lote" value="<?= $entrada["numero_de_lote"] ?>">
 
 
 
                                                 <!-- <input type="hidden" name="id_insumo" id="id_insumo"> -->
                                             </div>
+
+
+                                            <p class="p-error-lote<?= $entrada["id_entradaDeInsumo"] ?> d-none">El numero de lote solo debe incluir numeros minimos 4</p>
 
                                             <div class="input-group flex-nowrap d-none">
                                                 <span class="input-modal mt-1 d-flex col-6" style="border-right: 2px solid #387ADF;">
@@ -211,9 +214,10 @@
                                                     </svg>
                                                     <div class=" text-center m-auto" style="font-size: 14px;">Fecha de Vencimiento</div>
                                                 </span>
-                                                <input class="form-control input-modal input" type="date" name="fechaDeVencimiento" placeholder="Fecha De Vencimiento" id="fechaDeVencimiento" value="<?= $entrada["fechaDeVencimiento"] ?>">
+                                                <input class="input-validar form-control input-modal input" type="date" name="fechaDeVencimiento" placeholder="Fecha De Vencimiento" id="fechaDeVencimiento" value="<?= $entrada["fechaDeVencimiento"] ?>">
                                             </div>
 
+                                            <p class="p-error-fechaDeVencimiento d-none"></p>
 
 
 
@@ -227,8 +231,12 @@
                                                     </svg>
                                                     <div class=" text-center m-auto" style="font-size: 14px;">Cantidad</div>
                                                 </span>
-                                                <input class="form-control input-modal input" type="text" name="cantidad" placeholder="Cantidad" required value="<?= $entrada["cantidad_entrada"] ?>">
+                                                <input class="input-validar form-control input-modal input" type="text" name="cantidad" placeholder="Cantidad" required value="<?= $entrada["cantidad_entrada"] ?>">
                                             </div>
+
+                                            <p class="p-error-cantidad<?= $entrada["id_entradaDeInsumo"] ?> d-none">La cantidad debe ser solo datos numericos</p>
+
+
 
 
                                             <div class="input-group flex-nowrap">
@@ -241,11 +249,10 @@
                                                     </svg>
                                                     <div class=" text-center m-auto" style="font-size: 14px;">Precio</div>
                                                 </span>
-                                                <input class="form-control input-modal input" type="text" name="precio" placeholder="Precio" required value="<?= $entrada["precio_entrada"] ?>">
+                                                <input class="form-control input-validar input-modal input" type="text" name="precio" placeholder="Precio" required value="<?= $entrada["precio_entrada"] ?>">
 
                                             </div>
-                                            <i id="formatoPrecio" class="d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00 </i>
-
+                                            <p class="p-error-precio<?= $entrada["id_entradaDeInsumo"] ?> d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00</p>
 
 
 

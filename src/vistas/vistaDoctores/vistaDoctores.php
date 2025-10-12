@@ -28,7 +28,7 @@
             <?php else: ?>
 
 
-                <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8 " uk-toggle="target: #modal-agregar-doctores" id="btnagregarDoctor">
+                <button class="btn-guardar-responsive  btn btn-primary btn-agregar-doctores col-8  <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>" uk-toggle="target: #modal-agregar-doctores" id="btnagregarDoctor">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                         class="bi bi-plus-circle-fill me-1" viewBox="0 0 16 16">
                         <path
@@ -38,7 +38,7 @@
                 </button>
             <?php endif; ?>
 
-            <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
+            <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8 <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
                 uk-toggle="target: #modal-especialidad" id="btnEspecialidades">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-lungs-fill azul" viewBox="0 0 16 16">
@@ -52,7 +52,7 @@
                 <!-- no hay -->
             <?php else: ?>
 
-                <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
+                <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8 <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
                     uk-toggle="target: #modal-example-servicio" id="DMservicioMedico">
                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                         class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
@@ -61,6 +61,22 @@
                         </path>
                     </svg>Registrar Servicio
                 </button>
+
+
+                <a href="
+                <?= $vistaActiva == "papelera" ?
+                    '/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores' : '/Sistema-del--CEM--JEHOVA-RAFA/Doctores/papelera' ?>
+                "
+                    class="btn-guardar-responsive btn btn-primary btn-agregar-doctores text-decoration-none col-8" id="btnAgregarServicioMedicoPapelera">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                        class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
+                        <path
+                            d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z">
+                        </path>
+                    </svg>
+
+                    <?= $vistaActiva == "papelera" ? 'Doctores' : 'Papelera' ?>
+                </a>
             <?php endif; ?>
 
         </div>
@@ -112,7 +128,7 @@
                                 <?php if (!$this->permisos($_SESSION["id_rol"], "editar", "Doctores")): ?>
                                     <!-- no hay -->
                                 <?php else: ?>
-                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla"
+                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
                                         uk-toggle="target: #modal-editar-doctores<?php echo $dato["id_personal"]; ?>" data-id-tabla="modal-editar-doctores<?php echo $dato["id_personal"]; ?>"
                                         id="btneditarDoctor" data-index="<?php echo $dato["id_personal"]; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -132,11 +148,19 @@
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla"
                                         uk-toggle="target: #modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>" data-id-tabla="modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>"
                                         id="btnEliminarDoctor">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        <?= $vistaActiva == "papelera" ?
+
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
+                    <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
+                  </svg>' :
+
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                             <path
                                                 d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                        </svg>
+                                        </svg>' ?>
+
                                     </button>
 
                                 <?php endif; ?>
@@ -274,20 +298,30 @@
         </form>
     </div>
 
-    <?php require_once './src/vistas/vistaDoctores/modal/modalAgregarDoctores.php'; ?>
-    <?php require_once './src/vistas/vistaDoctores/modal/modalEditarDoctores.php'; ?>
+    
+    <?php
+        if ($vistaActiva != "papelera") {
+        require_once './src/vistas/vistaDoctores/modal/modalAgregarDoctores.php';
+        require_once './src/vistas/vistaDoctores/modal/modalEditarDoctores.php';
+        require_once './src/vistas/vistaDoctores/modal/modalesEspecialidades.php';
+        }
+    ?>
+
     <?php require_once './src/vistas/vistaDoctores/modal/modalEliminarDoctores.php'; ?>
-    <?php require_once './src/vistas/vistaDoctores/modal/modalesEspecialidades.php'; ?>
     <?php require_once './src/vistas/vistaDoctores/modal/infoModalDoctores.php'; ?>
 
 
-
+    <?= $vistaActiva == "papelera" ? '
+    ' : '
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/especialidades.js"></script>
-    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaDoctores.js"></script>
-    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/buscadorDoctores.js"></script>
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/validacionesDoctoresRegistrar.js"></script>
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/validacionesDoctorEditar.js"></script>
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/imgDoctores.js"></script>
+
+    ' ?>
+    
+    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaDoctores.js"></script>
+    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/buscadorDoctores.js"></script>
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/doctores.js"></script>
 
     <?php require_once './src/vistas/head/footer.php'; ?>
