@@ -99,7 +99,7 @@
 
                                 <!-- Editar Proveedor -->
                                 <div class="me-2">
-                                    <a href="#" class="btn btn-tabla mb-1 btnEditarDoctor btn-dt-tabla" uk-toggle="target: #modal-exampleEditarProveedores<?= $proveedor["id_proveedor"];  ?>" uk-tooltip="Modificar Proveedores" data-id-tabla="modal-exampleEditarProveedores<?= $proveedor["id_proveedor"];  ?>">
+                                    <a href="#" class="btn-editar btn btn-tabla mb-1 btnEditarDoctor btn-dt-tabla" uk-toggle="target: #modal-exampleEditarProveedores<?= $proveedor["id_proveedor"];  ?>" uk-tooltip="Modificar Proveedores" data-id-tabla="modal-exampleEditarProveedores<?= $proveedor["id_proveedor"];  ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                                             class="bi bi-pencil-square" viewBox="0 0 16 16">
                                             <path
@@ -188,7 +188,7 @@
 
                                         <div class="d-flex align-items-center">
                                             <div>
-                                                <img src="./src/assets/img/proveedor(2).png" width="25" height="25" uk-svg class="me-2 mb-3">
+                                                <img src="<?= $urlBase?>../src/assets/img/proveedor(2).png" width="25" height="25" uk-svg class="me-2 mb-3">
                                             </div>
                                             <div class="">
                                                 <p class="uk-modal-title fs-5">
@@ -229,8 +229,11 @@
                                                     </svg>
                                                 </span>
                                                 <input class="form-control input-modal input-disabled" type="text" name="nombre"
-                                                    value="<?php echo $proveedor['nombre'] ?>" placeholder="Nombre">
+                                                    value="<?php echo $proveedor['nombre'] ?>" data-index='<?= $proveedor["id_proveedor"]; ?>' placeholder="Nombre">
                                             </div>
+
+                                            <p class="p-error-nombre<?= $proveedor["id_proveedor"]; ?> p-error-validaciones  d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+
 
                                             <div class="input-group flex-nowrap grpFormCorrect">
                                                 <span class="input-modal mt-1">
@@ -242,8 +245,11 @@
                                                     </svg>
                                                 </span>
                                                 <input class="form-control input-modal input-disabled" type="text" name="rif"
-                                                    value="<?php echo $proveedor['rif'] ?>" placeholder="Rif">
+                                                    value="<?php echo $proveedor['rif'] ?>" data-index='<?= $proveedor["id_proveedor"]; ?>' placeholder="Rif">
                                             </div>
+
+                                            <p class="p-error-rif<?= $proveedor["id_proveedor"]; ?> p-error-validaciones  d-none">El rif no es correcto</p>
+
 
                                             <div class="input-group flex-nowrap grpFormCorrect">
                                                 <span class="input-modal mt-1">
@@ -254,8 +260,11 @@
                                                     </svg>
                                                 </span>
                                                 <input class="form-control input-modal input-disabled" type="text" name="telefono"
-                                                    value="<?php echo $proveedor['telefono'] ?>" placeholder="Telefono">
+                                                    value="<?php echo $proveedor['telefono'] ?>" data-index='<?= $proveedor["id_proveedor"]; ?>' placeholder="Telefono">
                                             </div>
+
+                                            <p class="p-error-telefono<?= $proveedor["id_proveedor"]; ?> p-error-validaciones  d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
+
 
 
 
@@ -267,8 +276,10 @@
                                                             d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2.5 1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-2zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
                                                     </svg>
                                                 </span>
-                                                <input class="form-control input-modal input-disabled" type="text" name="email" placeholder="Email" value="<?php echo $proveedor['email'] ?>" required>
+                                                <input class="form-control input-modal input-disabled" type="text" name="email" placeholder="Email" data-index='<?= $proveedor["id_proveedor"]; ?>' value="<?php echo $proveedor['email'] ?>" required>
                                             </div>
+                                            <p class="p-error-email<?= $proveedor["id_proveedor"]; ?> p-error-validaciones d-none">El correo debe contener letras , numeros y/o caracteres especiales y que contenga el @</p>
+
 
 
                                             <div class="input-group flex-nowrap grpFormCorrect">
@@ -279,8 +290,11 @@
                                                             d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2.5 1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-2zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
                                                     </svg>
                                                 </span>
-                                                <input class="form-control input-modal input-disabled" type="text" name="direccion" placeholder="Direccion" value="<?php echo $proveedor['direccion'] ?>" required>
+                                                <input class="form-control input-modal input-disabled" type="text" name="direccion" placeholder="Direccion" data-index='<?= $proveedor["id_proveedor"]; ?>' value="<?php echo $proveedor['direccion'] ?>" required>
                                             </div>
+
+                                            <p class="p-error-direccion<?= $proveedor["id_proveedor"]; ?> p-error-validaciones  d-none">Debe estar completa y detallada</p>
+
 
 
 

@@ -28,16 +28,20 @@ addEventListener("DOMContentLoaded",function() {
         direccion: true
     }
 
-    const validarCamposProveedor = (expresiones, input, campo,camposProveedor) => {
+    const validarCamposProveedor = (expresiones, input, campo,camposProveedor,  id='') => {
+        const pError = document.querySelector(`.p-error-${campo}${id}`);
+        console.log(pError)
         if(expresiones.test(input.value)){
             input.parentElement.classList.remove('grpFormInCorrect');
             input.parentElement.classList.add('grpFormCorrect');
+            pError.classList.add("d-none");
             camposProveedor[campo] = true;
 
             
         }else {
             input.parentElement.classList.remove('grpFormCorrect');
             input.parentElement.classList.add('grpFormInCorrect');
+            pError.classList.remove("d-none");
             camposProveedor[campo] = false;
 
         } 
@@ -77,28 +81,28 @@ addEventListener("DOMContentLoaded",function() {
 
 
 
-    function validarFormularioProveedorEdi(e){
+    function validarFormularioProveedorEdi(e, id){
 
         switch (e.target.name) {
 
             case "nombre":
-            validarCamposProveedor(expresionesProveedor.nombre, e.target, 'nombre', camposProveedorEdi);
+            validarCamposProveedor(expresionesProveedor.nombre, e.target, 'nombre', camposProveedorEdi, id);
 
             break;
             case "telefono":
-            validarCamposProveedor(expresionesProveedor.telefono, e.target, 'telefono', camposProveedorEdi);
+            validarCamposProveedor(expresionesProveedor.telefono, e.target, 'telefono', camposProveedorEdi, id);
 
             break;
             case "rif":
-            validarCamposProveedor(expresionesProveedor.rif, e.target, 'rif', camposProveedorEdi);
+            validarCamposProveedor(expresionesProveedor.rif, e.target, 'rif', camposProveedorEdi, id);
             break;
 
             case "email":
-            validarCamposProveedor(expresionesProveedor.email, e.target, 'email', camposProveedorEdi);
+            validarCamposProveedor(expresionesProveedor.email, e.target, 'email', camposProveedorEdi, id);
             break;
 
             case "direccion":
-            validarCamposProveedor(expresionesProveedor.direccion, e.target, 'direccion', camposProveedorEdi);
+            validarCamposProveedor(expresionesProveedor.direccion, e.target, 'direccion', camposProveedorEdi, id);
             break;
 
         }
@@ -112,7 +116,7 @@ addEventListener("DOMContentLoaded",function() {
 
     modalAgregarProveedor.addEventListener("submit",function(f){
         f.preventDefault();
-        if (camposProveedor.nombre && camposProveedor.rif && camposProveedor.telefono, camposProveedor.email && camposProveedor.direccion){
+        if (camposProveedor.nombre && camposProveedor.rif && camposProveedor.telefono && camposProveedor.email && camposProveedor.direccion){
             this.submit();
         } else {
             alerta.classList.remove('d-none');
@@ -129,96 +133,36 @@ addEventListener("DOMContentLoaded",function() {
             let modalEdi = document.querySelector(`#${idModalEditar} .uk-modal-dialog .form-modal`)
             alertEdi =  document.querySelector(`#${idModalEditar} .uk-modal-dialog .alerta-editar-proveedor`)
             
+            console.log(inputsEdi)
 
             inputsEdi.forEach(inp=>{
-                inp.addEventListener("input",validarFormularioProveedorEdi)
+                inp.addEventListener("input",function (e) {
+                    let id = this.children[1].getAttribute('data-index')
+                    validarFormularioProveedorEdi(e, id);
+                })
             })
 
             modalEdi.addEventListener("submit",function(e){
                 e.preventDefault();
 
-                if (camposProveedorEdi.nombre && camposProveedorEdi.rif && camposProveedorEdi.telefono) {
-                    this.submit();
+                if (
+                  camposProveedorEdi.nombre &&
+                  camposProveedorEdi.rif &&
+                  camposProveedorEdi.telefono &&
+                  camposProveedorEdi.email &&
+                  camposProveedorEdi.direccion
+                ) {
+                  this.submit();
                 } else {
-                    alertEdi.classList.remove('d-none');
-                    setTimeout(function() {
-                        alertEdi.classList.add('d-none');
-                    }, 10000);
+                  alertEdi.classList.remove("d-none");
+                  setTimeout(function () {
+                    alertEdi.classList.add("d-none");
+                  }, 10000);
                 }
             })
 
         })
     })
-
-
-
-
-
-// para el buscador de Proveedores 
-let inputBusProveedor = document.querySelector("#inputBuscarProveedor");
-// const notifi = document.querySelector(".notifi");
-
-// buscador de sintomas
-function buscarProveedor() {
-    let contador = 0;
-    let contadorNo = 0;
-
-    // selecciono todos los tr de la tabla
-    const filas = document.querySelectorAll(".tbody tr");
-    // recolecto el nombre del input
-    let  valorInputprovvedor= inputBusProveedor.value;
-    // se convierte en minúscula
- 
-
-    // recorro las filas de la tabla
-    filas.forEach(fila => {
-        // cuenta los síntomas que existen.
-        contador = contador + 1;
-
-        console.log(fila.children[2]);
-        let rif = fila.children[2].innerText;
-
-        // se convierte en minúscula
-        
-        // verifico si el nombre existe 
-        if (rif.includes(valorInputprovvedor)) {
-            fila.classList.remove("d-none");
-           
-        } else {
-            fila.classList.add("d-none");
-            // cuenta las veces que no encuentra un síntoma
-            contadorNo = contadorNo + 1;
-        }
-
-        inputBusProveedor.addEventListener("keyup", ()=>{
-            if(inputBusProveedor.value === ""){
-                fila.classList.remove("d-none");
-            }
-           }) 
-
-    });
-
-    // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes 
-    // if (contador === contadorNo) {
-    //     // muestra el texto.
-    //     notifi.classList.remove("d-none");
-    // }
-}
-
-
-formBuscadorProveedor.addEventListener("submit", function (f){
-    f.preventDefault();
-    
-})
- 
-
-document.getElementById("buscarProveedor").addEventListener("click", function(){
-    buscarProveedor();
-   }) 
-
-
-
-
 
 
 

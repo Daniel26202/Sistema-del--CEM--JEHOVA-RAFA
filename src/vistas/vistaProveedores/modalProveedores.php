@@ -14,7 +14,7 @@
 
         <div class="d-flex align-items-center">
             <div>
-                <img src="<?$urlBase?>../src/assets/img/proveedor(2).png" width="25" height="25" uk-svg class="me-2 mb-3">
+                <img src="<?= $urlBase ?>../src/assets/img/proveedor(2).png" width="25" height="25" uk-svg class="me-2 mb-3">
             </div>
             <div class="">
                 <p class="uk-modal-title fs-5">
@@ -40,6 +40,8 @@
                 <input class="form-control input-modal input-disabled" type="text" name="nombre" placeholder="Nombre/Razon Social" required>
             </div>
 
+            <p class="p-error-nombre p-error-validaciones  d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+
             <div class="input-group flex-nowrap">
                 <span class="input-modal mt-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
@@ -50,6 +52,9 @@
                 </span>
                 <input class="form-control input-modal input-disabled" type="text" name="rif" placeholder="Rif" required>
             </div>
+
+            <p class="p-error-rif p-error-validaciones  d-none">El rif no es correcto</p>
+
 
             <div class="input-group flex-nowrap">
                 <span class="input-modal mt-1">
@@ -63,6 +68,8 @@
                     placeholder="Telefono" required>
             </div>
 
+            <p class="p-error-telefono p-error-validaciones  d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
+
 
             <div class="input-group flex-nowrap">
                 <span class="input-modal mt-1">
@@ -74,6 +81,8 @@
                 </span>
                 <input class="form-control input-modal input-disabled" type="text" name="email" placeholder="Email" required>
             </div>
+
+            <p class="p-error-email p-error-validaciones  d-none">El correo debe contener letras , numeros y/o caracteres especiales y que contenga el @</p>
 
 
             <div class="input-group flex-nowrap">
@@ -87,8 +96,7 @@
                 <input class="form-control input-modal input-disabled" type="text" name="direccion" placeholder="Direccion" required>
             </div>
 
-
-
+            <p class="p-error-direccion p-error-validaciones  d-none">Debe estar completa y detallada</p>
 
 
 
