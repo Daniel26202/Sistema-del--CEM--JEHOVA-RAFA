@@ -17,9 +17,9 @@
 
     <?php require_once "./src/vistas/alerts.php" ?>
 
-
-    <div id="alertRegistroPac">
-        <!-- js -->
+    <div id="alert-servicio" class="d-none uk-alert-danger comentario  comentarioRed me-4 fw-bolder  text-center" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p class="pe-2">El Servicio Medico no se puede registrar ya que se encuentra en la factura por favor</p>
     </div>
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto " style="width: 98%; ">

@@ -246,7 +246,7 @@
                                                 </div>
                                                 <div>
                                                     <label class="form-check-label mt-1 for=" flexSwitchCheckDefault">
-                                                        <?= $doctor['nombredoc']; ?>
+                                                        <?= $doctor['nombredoc'] .' '. $doctor['apellidodoc']; ?>
                                                     </label>
                                                 </div>
 

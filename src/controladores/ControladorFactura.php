@@ -108,7 +108,7 @@ class ControladorFactura
 			//Guardar la bitacora
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha facturado servicios y/o insumos");
 
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $factura[1]);
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $factura[0]);
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
 		}

@@ -28,7 +28,6 @@ addEventListener("DOMContentLoaded", () => {
   const ConteNotificacionInsumo = document.getElementById("ConteNotificacionInsumo");
   const ConteNotificacionInsumoCon = document.getElementById("ConteNotificacionInsumoCon");
 
-
   if (window.location.href.includes("facturaCita")) {
     console.log("id_cita");
   } else {
@@ -93,47 +92,44 @@ addEventListener("DOMContentLoaded", () => {
   //insertar funcion para Paciente cuando no existe
   const insertarPaciente = async (form) => {
     try {
-    const datosFormulario = new FormData(form);
-    const contenido = {
-      method: "POST",
-      body: datosFormulario,
-    };
-    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente", contenido);
-    let resultado = await peticion.json();
-    console.log(resultado);
+      const datosFormulario = new FormData(form);
+      const contenido = {
+        method: "POST",
+        body: datosFormulario,
+      };
+      let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente", contenido);
+      let resultado = await peticion.json();
+      console.log(resultado);
 
-    // si el resultado es un mensaje es que algo salio mal y la cedula ya eiste si no se inserta normalmente
-    if (resultado.cedula == "error") {
-      console.log(resultado.cedula + " error");
+      // si el resultado es un mensaje es que algo salio mal y la cedula ya eiste si no se inserta normalmente
+      if (resultado.cedula == "error") {
+        console.log(resultado.cedula + " error");
 
-      document.querySelector(".alertaErrorCedula").classList.remove("d-none");
-      setTimeout(function () {
-        document.querySelector(".alertaErrorCedula").classList.add("d-none");
-      }, 7000);
-    } else {
-      //ocultar modal de paciente
-      UIkit.modal("#modal-examplePaciente").hide();
+        document.querySelector(".alertaErrorCedula").classList.remove("d-none");
+        setTimeout(function () {
+          document.querySelector(".alertaErrorCedula").classList.add("d-none");
+        }, 7000);
+      } else {
+        //ocultar modal de paciente
+        UIkit.modal("#modal-examplePaciente").hide();
 
-      document.getElementById("inputBusPaCi").value = resultado.cedula;
+        document.getElementById("inputBusPaCi").value = resultado.cedula;
 
-      //ocultar el minimodal
-      const toastElement = document.getElementById("myToast");
-      const toast = new bootstrap.Toast(toastElement, {
-        autohide: false,
-      });
+        //ocultar el minimodal
+        const toastElement = document.getElementById("myToast");
+        const toast = new bootstrap.Toast(toastElement, {
+          autohide: false,
+        });
 
-      buscarPaciente(document.getElementById("form-buscador-factura"));
+        buscarPaciente(document.getElementById("form-buscador-factura"));
 
-      //limpiar formulario de oaciente
+        //limpiar formulario de oaciente
 
-      form.reset();
+        form.reset();
 
-      toast.hide();
-
-  
-
-    }
-  }catch (error) {
+        toast.hide();
+      }
+    } catch (error) {
       console.log("algo salio mal" + error);
     }
   };
@@ -235,14 +231,11 @@ addEventListener("DOMContentLoaded", () => {
           document.getElementById("insertarServicio").classList.add("d-none");
         }
 
-        let text = "El servicio fue eliminado de la confirmacion si desea agregarlo nuevamente debe darle click al boton de volver";
+        let text =
+          "El servicio fue eliminado de la confirmacion si desea agregarlo nuevamente debe darle click al boton de volver";
 
-      notificationModals(ConteNotificacionServicioEli, text, "alertaGenericaSEli");
-
+        notificationModals(ConteNotificacionServicioEli, text, "alertaGenericaSEli");
       });
-
-      
-
     });
   };
 
@@ -317,7 +310,19 @@ addEventListener("DOMContentLoaded", () => {
 
     listaModalServicio.forEach((lista) => {
       console.log(lista);
-      data.push(lista);
+      const encontrado = data.find((item) => item.servicio == lista.servicio);
+
+      if (encontrado) {
+        const servicioRegistrado = document.getElementById("alert-servicio");
+        if (servicioRegistrado.classList.contains("d-none")) {
+          servicioRegistrado.classList.remove("d-none");
+          setTimeout(function () {
+            servicioRegistrado.classList.add("d-none");
+          }, 7000);
+        }
+      } else {
+        data.push(lista);
+      }
     });
 
     console.log(data);
@@ -432,7 +437,16 @@ addEventListener("DOMContentLoaded", () => {
     listaModalInsumo.forEach((lista, index) => {
       console.log("e");
       console.log(lista);
-      dataInsumo.push(lista);
+      const encontrado = dataInsumo.find((item) => item.nombreInsumo == lista.nombreInsumo);
+      console.log(encontrado);
+      if (encontrado) {
+        encontrado.cantidad += parseInt(lista.cantidad);
+      } else {
+        dataInsumo.push(lista);
+      }
+
+      console.log(lista);
+      console.log(encontrado);
     });
 
     // actualizamos la tabla
@@ -447,7 +461,6 @@ addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".tr-desparecer-insumo").forEach((ele) => {
       ele.classList.remove("d-none");
-      console.log(ele);
     });
 
     document.querySelectorAll(".inputs-cantidad-insumos").forEach((ele) => (ele.value = ""));
@@ -516,10 +529,9 @@ addEventListener("DOMContentLoaded", () => {
           document.getElementById("insertarInsumo").classList.add("d-none");
         }
 
-         let text =
-           "El insumo fue eliminado de la confirmacion si desea agregarlo nuevamente debe darle click al boton de volver";
+        let text = "El insumo fue eliminado de la confirmacion si desea agregarlo nuevamente debe darle click al boton de volver";
 
-         notificationModals(ConteNotificacionInsumoCon, text, "alertGenericoInsCon");
+        notificationModals(ConteNotificacionInsumoCon, text, "alertGenericoInsCon");
       });
     });
   };
@@ -530,7 +542,7 @@ addEventListener("DOMContentLoaded", () => {
     const nuevoObjInsumo = {
       id_insumo: id_insumo,
       nombreInsumo: nombreInsumo,
-      cantidad: cantidad,
+      cantidad: parseInt(cantidad),
       precio: parseFloat(precio),
       subTotal: subTotalRedondeado,
       medidaInsumo: medidaInsumo,
@@ -585,10 +597,9 @@ addEventListener("DOMContentLoaded", () => {
       insertarVariosInsumos(id_insumo, nombreInsumo, iva, cantidad, precio, medidaInsumo);
       fila.classList.add("d-none");
 
-      let text =
-        'Se añadio el insumo correctamente por favor pulse el boton "Siguiente" para continuar o siga añadiendo insumos';
+      let text = 'Se añadio el insumo correctamente por favor pulse el boton "Siguiente" para continuar o siga añadiendo insumos';
 
-      notificationModals(ConteNotificacionInsumo, text, "alertGenericoIns")
+      notificationModals(ConteNotificacionInsumo, text, "alertGenericoIns");
     });
   });
 

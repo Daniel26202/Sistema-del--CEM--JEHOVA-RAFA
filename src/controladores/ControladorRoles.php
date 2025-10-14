@@ -39,21 +39,21 @@ class ControladorRoles
     public function guardarRol()
     {
         print_r($_POST);
-        // //instacion el metodo de la validacion de el rol
-        // $validar = $this->modelo->validarRol($_POST["nombre"]);
-        // if ($validar) {
-        //     header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/error");
-        // } else {
-        //     $insercion = $this->modelo->insertar($_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
+        //instacion el metodo de la validacion de el rol
+        $validar = $this->modelo->validarRol($_POST["nombre"]);
+        if ($validar) {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/error");
+        } else {
+            $insercion = $this->modelo->insertar($_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
 
-        //     if ($insercion) {
-        //         // guardar la bitacora
-        //         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Insertado un nuevo rol");
-        //         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/registro");
-        //     } else {
-        //         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
-        //     }
-        // }
+            if ($insercion) {
+                // guardar la bitacora
+                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Insertado un nuevo rol");
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/registro");
+            } else {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
+            }
+        }
     }
 
 
