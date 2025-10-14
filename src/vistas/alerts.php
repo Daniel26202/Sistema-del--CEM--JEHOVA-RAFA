@@ -16,7 +16,7 @@
         <?php elseif ($parametro[0] == "registroD"): ?>
             <div class="uk-alert-primary comentario  comentarioRed me-4 fw-bolder alertaGenerica text-center" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">Se registro el Doctor correctamente ahora debe asignarle sus respectivos servicios medicos desde el boton 'Registrar Servicio'.</p>
+                <p class="pe-2">Se registro el Doctor correctamente ahora debe asignarle sus respectivos servicios medicos desde el botón 'Registrar Servicio'.</p>
             </div>
         <?php elseif ($parametro[0] == "editar"): ?>
             <div class="uk-alert-primary comentario  me-4 fw-bolder  alertaGenerica text-center" uk-alert>
@@ -45,7 +45,7 @@
         <?php elseif ($parametro[0] == "errorSistem"): ?>
             <div class="uk-alert-danger comentario  comentarioRed me-4 fw-bolder alertaGenerica  text-center" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
-                <p class="pe-2">lamentablemente ocurrio un error por favor intente mas tarde.</p>
+                <p class="pe-2">lamentablemente ocurrió un error por favor intente mas tarde.</p>
             </div>
 
         <?php elseif ($parametro[0] == "error"): ?>
