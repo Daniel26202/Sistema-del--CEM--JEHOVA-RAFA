@@ -414,7 +414,7 @@
 
 
 
-      <div class="form-modal  m-2 " style="width: 97%;">
+      <div class="form-modal  m-2 " style="width: 97%; overflow-y: auto;">
 
 
         <div class="table-responsive">
@@ -547,7 +547,7 @@
       </div>
 
 
-      <form class="formularios-insumos">
+      <form class="formularios-insumos" style="overflow-y: auto;">
         <div class="form-modal  mt-2">
 
 
@@ -963,7 +963,7 @@
       </div>
 
       <?php if (isset($_GET["idH"])): ?>
-        <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFacturaHospit" method="POST" class="">
+        <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFacturaHospit" method="POST" class="" style="overflow-y: auto;">
           <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
           <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
         <?php else: ?>
@@ -1168,7 +1168,7 @@
 
     </div>
     <div class=" d-none alertaFormulario" role="alert">
-     
+
     </div>
 
     <div class="alert alert-danger d-none alertaErrorCedula" role="alert">
