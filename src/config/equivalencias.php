@@ -11,6 +11,16 @@ return [
     "restablecer" => "eliminar",
     "getHistorialSalud" => "consultar",
 
+
+    //Clientes
+    "getPacientes" => "consultar",
+    "papeleraPaciente" => "consultar",
+    "guardar" => "guardar",
+    "setPaciente"  => "editar",
+    "eliminar" => "eliminar",
+    "restablecer" => "eliminar",
+    "getHistorialSalud" => "consultar",
+
     //Patlogias
     "patologias" => "consultar",
     "papeleraPatologias" => "consultar",
