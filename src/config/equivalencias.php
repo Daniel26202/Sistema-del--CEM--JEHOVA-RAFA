@@ -13,13 +13,12 @@ return [
 
 
     //Clientes
-    "getPacientes" => "consultar",
+    "Clientes" => "consultar",
     "papeleraPaciente" => "consultar",
     "guardar" => "guardar",
-    "setPaciente"  => "editar",
+    "setCliente"  => "editar",
     "eliminar" => "eliminar",
     "restablecer" => "eliminar",
-    "getHistorialSalud" => "consultar",
 
     //Patlogias
     "patologias" => "consultar",
