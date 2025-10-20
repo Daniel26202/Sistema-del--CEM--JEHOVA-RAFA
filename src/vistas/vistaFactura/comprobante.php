@@ -64,14 +64,14 @@
 
                                 </div>
                                 <div class="d-flex justify-content-between  ">
-                                    <h5 class="h5-comprobante ">Cedula Paciente:</h5>
+                                    <h5 class="h5-comprobante ">Cedula Cliente:</h5>
                                     <h5 class="h5-comprobante ">
                                         <?php echo $datoFactura['nacionalidad'] . "-" . $datoFactura['cedula_p'] ?>
                                     </h5>
 
                                 </div>
                                 <div class="d-flex justify-content-between  ">
-                                    <h5 class="h5-comprobante ">Paciente:</h5>
+                                    <h5 class="h5-comprobante ">Cliente:</h5>
                                     <h5 class="h5-comprobante ">
                                         <?php echo $datoFactura['nombre_p'] . " " . $datoFactura['apellido_p'] ?>
                                     </h5>

@@ -73,6 +73,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="mt-4 validar caja-buscador-paciente-factura" id="form-buscador">
                     <form id="form-buscador-factura" class="d-flex justify-content-end" autocomplete="off">
                         <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
@@ -138,7 +140,7 @@
                         <button class="btn btn-agregarConsulta ms-3 me-4 btn-escondidos"
                             id="vaciarTabla">VACIAR</button>
                         <button id="btnSiguiente" class="btn btn-agregarConsulta btn-escondidos"
-                            data-bs-toggle="modal" data-bs-target="#modal-pago">SIGUIENTE</button>
+                            data-bs-toggle="modal" data-bs-target="#modal-cliente">SIGUIENTE</button>
                     </div>
                 </div>
                 <div id="totalFac">

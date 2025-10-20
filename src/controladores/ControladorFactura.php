@@ -73,6 +73,14 @@ class ControladorFactura
 		echo json_encode($arrayName);
 	}
 
+	public function mostrarCliente()
+	{
+		$respuesta = $this->modelo->buscarCliente($_POST['cedula']);
+		$arrayName = array();
+		array_push($arrayName, $respuesta);
+		echo json_encode($arrayName);
+	}
+
 	//aqui mostramos al paciente si tiene cita
 	public function mostrarPacienteConCita()
 	{
@@ -96,13 +104,30 @@ class ControladorFactura
 		$doctor = isset($_POST["doctores"]) ? $_POST["doctores"] : false;
 		$insumos = isset($_POST["insumos"]) ? $_POST["insumos"] : false;
 		$cantidad = isset($_POST["cantidad"]) ? $_POST["cantidad"] : false;
+		$precioInsumo = isset($_POST["precioInsumo"]) ? $_POST["precioInsumo"] : false;
+		$precioServicio = isset($_POST["precioServicio"]) ? $_POST["precioServicio"] : false;
+		$id_cliente = isset($_POST["id_cliente"]) ? $_POST["id_cliente"] : false;
 		$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : false;
 		$id_cita = isset($_POST["id_cita"]) ? $_POST["id_cita"] : null;
 		$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
 		$id_hospitalizacion = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null;
+
 		print_r($_POST);
 
-		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_paciente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita, $id_hospitalizacion, $doctor);
+		if (!$id_cliente) {
+			$coincidencia = $this->modelo->coincidenciaPacienteCliente($id_paciente);
+			 if ($coincidencia != 'no encontrado') {
+				$id_cliente = $coincidencia;
+			 } else {
+				$guardado = $this->modelo->guardarCliente($id_paciente);
+				$id_cliente = $guardado[1];
+			 }
+			 
+		}
+
+
+		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_cliente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita, $id_hospitalizacion, $doctor, $precioInsumo, $precioServicio);
+		print_r($factura);
 
 		if ($factura) {
 			//Guardar la bitacora

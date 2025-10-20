@@ -4,17 +4,20 @@ namespace App\modelos;
 
 use App\modelos\Db;
 use App\modelos\ModeloInsumo;
+use App\modelos\ModeloCliente;
 
 class ModeloFactura extends Db
 {
 
 	private $conexion;
 	private $modelo_insumo;
+	private $modelo_cliente;
 
 	public function __construct()
 	{
 		$this->conexion = $this->connectionSistema();
 		$this->modelo_insumo = new ModeloInsumo;
+		$this->modelo_cliente = new ModeloCliente;
 	}
 	//buscar Paciente tambien por la cita
 	public function buscarPacientePorCita($cedula)
@@ -80,6 +83,18 @@ class ModeloFactura extends Db
 	{
 		try {
 			$consulta = $this->conexion->prepare("SELECT * FROM paciente WHERE cedula =:cedula AND estado = 'ACT' ");
+			$consulta->bindParam(":cedula", $cedula);
+			$consulta->execute();
+			return ($consulta->execute()) ? $consulta->fetch() : false;
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+	public function buscarCliente($cedula)
+	{
+		try {
+			$consulta = $this->conexion->prepare("SELECT * FROM cliente WHERE cedula =:cedula AND estado = 'ACT' ");
 			$consulta->bindParam(":cedula", $cedula);
 			$consulta->execute();
 			return ($consulta->execute()) ? $consulta->fetch() : false;
@@ -227,18 +242,18 @@ class ModeloFactura extends Db
 	}
 
 
-	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_paciente, $insumos, $cantidad, $montosDePago, $referencia, $id_cita, $id_hospitalizacion, $doctor)
+	public function insertaFactura($fecha, $total, $formasDePago, $serviciosExtras, $id_cliente, $insumos, $cantidad, $montosDePago, $referencia, $id_cita, $id_hospitalizacion, $doctor, $precioInsumo, $precioServicio)
 	{
 
 		try {
 
 
 			//insertar factura
-			$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_paciente)");
+			$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_cliente)");
 
 			$consulta->bindParam(":fecha", $fecha);
 			$consulta->bindParam(":total", $total);
-			$consulta->bindParam(":id_paciente", $id_paciente);
+			$consulta->bindParam(":id_cliente", $id_cliente);
 			$consulta->execute();
 			$id_factura = $this->conexion->lastInsertId();
 
@@ -277,10 +292,10 @@ class ModeloFactura extends Db
 				$contador = 0;
 
 				foreach ($serviciosExtras as $s) {
-					$consulta = $this->conexion->prepare("INSERT INTO serviciomedico_has_factura  VALUES (:s, :id_factura, :doctor)");
+					$consulta = $this->conexion->prepare("INSERT INTO detalle_factura  VALUES (null,:id_factura, 'Servicio', 1,:precioServicio, :precioServicio,null,:s,null)");
 					$consulta->bindParam(":id_factura", $id_factura);
+					$consulta->bindParam(":precioServicio", $precioServicio[$contador]);
 					$consulta->bindParam(":s", $s);
-					$consulta->bindParam(":doctor", $doctor[$contador]);
 					if ($consulta->execute()) {
 					} else {
 						echo "NO";
@@ -291,12 +306,15 @@ class ModeloFactura extends Db
 			if ($insumos) {
 				$contador = 0;
 				foreach ($insumos as $i) {
+					$subtotal = $precioInsumo[$contador] * $cantidad[$contador];
 					//actualizar la cantidad de insumos
 					$id_entrada = $this->selectId_entrada($i);
-					$consulta = $this->conexion->prepare("INSERT INTO factura_has_inventario VALUES (:id_factura, :i, :cantidad, 'ACT')");
+					$consulta = $this->conexion->prepare("INSERT INTO detalle_factura  VALUES (null, :id_factura, 'Insumo', :cantidad,:precioInsumo, :subtotal,null,null,:i)");
 					$consulta->bindParam(":id_factura", $id_factura);
 					$consulta->bindParam(":i", $id_entrada);
 					$consulta->bindParam(":cantidad", $cantidad[$contador]);
+					$consulta->bindParam(":precioInsumo", $precioInsumo[$contador]);
+					$consulta->bindParam(":subtotal", $subtotal);
 					if ($consulta->execute()) {
 						$consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
 						$consulta2->bindParam(":i", $i);
@@ -398,7 +416,7 @@ class ModeloFactura extends Db
 	public function consultarFactura($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente   WHERE id_factura =:id_factura ");
+			$consulta = $this->conexion->prepare("SELECT f.*, c.nombre as nombre_p , c.apellido AS apellido_p, nacionalidad, c.cedula AS cedula_p FROM factura f INNER JOIN cliente c ON c.id_cliente = f.id_cliente  WHERE id_factura =:id_factura ");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -422,7 +440,7 @@ class ModeloFactura extends Db
 	public function consultarServiciosExtras($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, sf.*,s.*,p.nombre AS nombre_d, p.apellido AS apellido_d FROM serviciomedico_has_factura sf INNER JOIN personal p  ON sf.doctor = p.id_personal INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria  WHERE factura_id_factura =:id_factura ");
+			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, sf.*,s.*,p.nombre AS nombre_d, p.apellido AS apellido_d FROM detalle_factura sf  INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria INNER JOIN personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = s.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal  WHERE id_factura =:id_factura ");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -434,7 +452,7 @@ class ModeloFactura extends Db
 	public function consultarFacturaSinCita($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente WHERE f.id_factura =:id_factura");
+			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente WHERE f.id_factura =:id_factura");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -446,7 +464,7 @@ class ModeloFactura extends Db
 	public function consultarFacturaInsumo($id_factura)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio, ins.iva  FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.id_entradaDeInsumo INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
+			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio, ins.iva  FROM entrada_insumo i INNER JOIN detalle_factura fi ON i.id_entradaDeInsumo = fi.entrada_insumo_id_entradaDeInsumo INNER JOIN factura f  ON f.id_factura = fi.id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
 			$consulta->bindParam(":id_factura", $id_factura);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -502,4 +520,39 @@ class ModeloFactura extends Db
 			return 0;
 		}
 	}
+
+	public function coincidenciaPacienteCliente($id_paciente){
+		try {
+			$consulta = $this->conexion->prepare('SELECT * FROM paciente where id_paciente = :id_paciente');
+			$consulta->bindParam(":id_paciente", $id_paciente);
+			$consulta->execute();
+			$dataPaciente = $consulta->fetch();
+
+			$consulta2 = $this->conexion->prepare('SELECT * FROM paciente p INNER JOIN cliente c ON c.cedula = p.cedula WHERE  p.cedula = :cedula');
+			$consulta2->bindParam(":cedula", $dataPaciente['cedula']);
+			$consulta2->execute();
+			$data = $consulta2->fetch();
+			while ($data) {
+				return $data['id_cliente'];
+			}
+				return 'no encontrado';
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+	public function guardarCliente($id_paciente){
+		try {
+			$consulta = $this->conexion->prepare('SELECT * FROM paciente where id_paciente = :id_paciente');
+			$consulta->bindParam(":id_paciente", $id_paciente);
+			$consulta->execute();
+			$dataPaciente = $consulta->fetch();
+
+			return $this->modelo_cliente->insertar($dataPaciente['nacionalidad'], $dataPaciente['cedula'], $dataPaciente['nombre'], $dataPaciente['apellido'], $dataPaciente['telefono'], $dataPaciente['direccion'], $dataPaciente['fn'], $dataPaciente['genero']);
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+
 }

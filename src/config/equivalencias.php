@@ -32,6 +32,7 @@ return [
     "facturaCita" => "consultar",
     "comprobante" => "consultar",
     "mostrarPaciente" => "consultar",
+    "mostrarCliente" => "consultar",
     "mostrarPacienteConCita" => "consultar",
     "mostrarTodosLosServicios" => "consultar",
     "mostrarTodosLosDoctores" => "consultar",
@@ -46,6 +47,8 @@ return [
     "guardarFactura" => "guardar",
     "guardarFacturaHospit" => "guardar",
     "facturarHospitalizacion" => "consultar",
+    "coincidenciaPacienteCliente" => "consultar",
+    "guardarCliente" => "consultar",
 
     //Citas
     "mostrarPacienteCita" => "consultar",
