@@ -1087,6 +1087,7 @@
                   <?php foreach ($citaFacturar as $datoCita): ?>
                     <tr>
                       <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
+                      <input type="hidden" name="precioServicio[]" value="<?= $datoCita['precio'] ?>">
                       <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
                         value="<?= $datoCita['id_paciente'] ?>">
                       <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
