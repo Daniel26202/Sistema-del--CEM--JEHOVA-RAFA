@@ -49,6 +49,7 @@ class ControladorFactura
 		$insumosHospitalizacion = $this->modelo->unirInsumosHospitalizacion($idHospitalizacion);
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$hostalizacionFacturar =  $this->modelo->mostrarHospitalizacion($idHospitalizacion);
+		$serviciosDeHospitalizacion =$this->modelo->serviciosIncluidosHospit($idHospitalizacion);
 		require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
 	}
 
@@ -60,7 +61,18 @@ class ControladorFactura
 		$datosFactura = $this->modelo->consultarFactura($parametro[0]);
 		$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
 		$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
-		$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
+		$x = $this->modelo->comprobarSiFueHospit($parametro[0]);
+		$serviciosDeHospitalizacion = $this->modelo->serviciosIncluidosHospit($x);
+
+		$vistaActiva = $x != 'no encontrado' ? 1 : 0;
+
+		if ($vistaActiva) {
+			echo 'si';
+			$datosInsumos = $this->modelo->unirInsumosHospitalizacion($x);
+		} else {
+			echo 'no';
+			$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
+		}
 		require_once './src/vistas/vistaFactura/comprobante.php';
 	}
 

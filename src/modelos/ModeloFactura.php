@@ -49,7 +49,20 @@ class ModeloFactura extends Db
 	{
 
 		try {
-			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND h.estado = "Pendiente"  AND  h.id_hospitalizacion =:id_hospitalizacion GROUP BY h.id_hospitalizacion');
+			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido,  pe.nombre AS nombredoc, pe.apellido AS apellidodoc 
+			FROM  hospitalizacion h INNER JOIN paciente pac ON pac.id_paciente = h.id_paciente INNER JOIN personal pe ON pe.id_personal = h.personal_id_personal  WHERE  h.id_hospitalizacion =:id_hospitalizacion GROUP BY h.id_hospitalizacion');
+			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
+			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+	public function serviciosIncluidosHospit($id_hospitalizacion)
+	{
+
+		try {
+			$consulta = $this->conexion->prepare('SELECT * FROM hospitalizacion h INNER JOIN servicios_hospitalizacion sh ON sh.id_hospitalizacion = h.id_hospitalizacion INNER JOIN serviciomedico s ON s.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria WHERE  h.id_hospitalizacion =:id_hospitalizacion GROUP BY h.id_hospitalizacion');
 			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
@@ -60,20 +73,11 @@ class ModeloFactura extends Db
 	public function unirInsumosHospitalizacion($id_hospitalizacion)
 	{
 		try {
-			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, inv.cantidad_disponible AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo  WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND ins.estado = "ACT" AND h.estado = "Pendiente" AND h.id_hospitalizacion =:id_hospitalizacion ');
+			$consulta = $this->conexion->prepare('SELECT  * FROM hospitalizacion h INNER JOIN insumodehospitalizacion ih ON h.id_hospitalizacion = ih.id_hospitalizacion INNER JOIN entrada_insumo ei ON ei.id_entradaDeInsumo = ih.id_entradaDeInsumo INNER JOIN insumo i ON i.id_insumo = ei.id_insumo   WHERE   i.estado = "ACT" AND h.estado = "Pendiente" AND h.id_hospitalizacion =:id_hospitalizacion ');
 			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 			$consulta->execute();
-			$insumos = $consulta->fetchAll();
-			if (!is_array($insumos)) {
-				return "";
-			}
-			$cadena = "";
-			foreach ($insumos as $insumo) {
-				$cadena .= $insumo['nombre'] . " Cantidad (" . $insumo['cantidad'] . "), ";
-			}
-			// Quitar la última coma y espacio
-			$cadena = rtrim($cadena, ', ');
-			return $cadena;
+			return $consulta->fetchAll();
+	
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -269,6 +273,16 @@ class ModeloFactura extends Db
 				$consulta = $this->conexion->prepare("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id_hospitalizacion");
 				$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 				$consulta->execute();
+
+				//insertar en el dealle de actura  la hospitalizacion
+				$consulta = $this->conexion->prepare("INSERT INTO detalle_factura  VALUES (null,:id_factura, 'Hospitalizacion', 1,:precioServicio, :precioServicio,:id_hospitalizacion,null,null)");
+				$consulta->bindParam(":id_factura", $id_factura);
+				$consulta->bindParam(":total", $precioServicio);
+				$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
+				if ($consulta->execute()) {
+				} else {
+					echo "NO";
+				}
 			}
 
 			$arrayDePago = $formasDePago;
@@ -549,6 +563,22 @@ class ModeloFactura extends Db
 			$dataPaciente = $consulta->fetch();
 
 			return $this->modelo_cliente->insertar($dataPaciente['nacionalidad'], $dataPaciente['cedula'], $dataPaciente['nombre'], $dataPaciente['apellido'], $dataPaciente['telefono'], $dataPaciente['direccion'], $dataPaciente['fn'], $dataPaciente['genero']);
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+	public function comprobarSiFueHospit($id_factura)
+	{
+		try {
+			$consulta = $this->conexion->prepare('SELECT  * FROM factura f INNER JOIN detalle_factura df ON df.id_factura = f.id_factura WHERE f.id_factura =:id_factura AND df.tipo= "Hospitalizacion"');
+			$consulta->bindParam(":id_factura", $id_factura);
+			$consulta->execute();
+			$data  = $consulta->fetch();
+			while($data){
+				return $data['hospitalizacion_id_hospitalizacion'];
+			}
+			return 'no encontrado';
 		} catch (\Exception $e) {
 			return 0;
 		}

@@ -1167,20 +1167,30 @@
               <tbody style="font-size: 14px;" id="tbodyInsumos">
                 <?php if (isset($parametro[0]) && stripos($parametro[0], 'h') !== false): ?>
 
-                  <tr class="border-top tr">
-
-                    <td class="border-top nombre">
-                      <div class="fw-bolder">INSUMO:</div>
-                      <?= $insumosHospitalizacion ?>
-                    </td>
-
-
-                    <td class="border-top"></td>
+                  <?php foreach ($insumosHospitalizacion as $datoH): ?>
+                    <tr>
+                      <td class="border-top">
+                        <div class="fw-bolder">NOMBRE:</div>
+                        <?= $datoH["nombre"]; ?>
+                      </td>
 
 
-                  <tr>
+                      <td class="border-top">
+                        <div class="fw-bolder">MEDIDA:</div>
+                        <?= $datoH["medida"]; ?>
+                      </td>
 
-                  <?php endif; ?>
+                      <td class="border-top">
+                        <div class="fw-bolder">PRECIO:</div>
+                        <?= $datoH["precio"] . '   BS'; ?>
+                      </td>
+
+
+
+                    </tr>
+                  <?php endforeach; ?>
+
+                <?php endif; ?>
               </tbody>
             </table>
 
