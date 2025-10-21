@@ -21,7 +21,7 @@ class ModeloReporte extends Db
 	public function consultarFactura()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente  WHERE f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC ;");
+			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC ;");
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
 			return 0;
@@ -53,7 +53,7 @@ class ModeloReporte extends Db
 	public function consultarReporteFacturaAnuladas($fechaInicioAnulada, $fechaFinalAnulada)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente  WHERE f.fecha BETWEEN :fechaInicioAnulada AND :fechaFinalAnulada AND f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC
+			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.fecha BETWEEN :fechaInicioAnulada AND :fechaFinalAnulada AND f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC
 ");
 			$consulta->bindParam(":fechaInicioAnulada", $fechaInicioAnulada);
 			$consulta->bindParam(":fechaFinalAnulada", $fechaFinalAnulada);
@@ -65,7 +65,7 @@ class ModeloReporte extends Db
 	public function consultarFacturaAnuladas()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente WHERE f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC");
+			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC");
 
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
