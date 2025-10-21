@@ -67,10 +67,8 @@ class ControladorFactura
 		$vistaActiva = $x != 'no encontrado' ? 1 : 0;
 
 		if ($vistaActiva) {
-			echo 'si';
 			$datosInsumos = $this->modelo->unirInsumosHospitalizacion($x);
 		} else {
-			echo 'no';
 			$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
 		}
 		require_once './src/vistas/vistaFactura/comprobante.php';
