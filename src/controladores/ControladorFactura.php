@@ -36,7 +36,7 @@ class ControladorFactura
 		$idCita = preg_replace('/\D/', '', $parametro[0]);
 		$insumos = $this->modelo->selectTodosLosInsumos();
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
-		$todosLosInsumos = $this->modelo->selectTodosLosInsumos();
+		$todosLosInsumos = $insumos;
 		$extras = $this->modelo->mostrarServicios();
 		$citaFacturar = $this->modelo->mostrarCitaFactura($idCita);
 		require_once './src/vistas/vistaFactura/facturaCita.php';

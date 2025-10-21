@@ -112,7 +112,7 @@ class ControladorCitas
 		$id_usuario = $datos[1];
 		$eliminacion = $this->modelo->eliminarCita($id_cita);
 		if ($eliminacion) {
-			$this->bitacora->insertarBitacora($id_usuario, "cita", "Ha eliminado una  cita");
+			$this->bitacora->insertarBitacora($id_usuario, "cita", "Ha eliminado una cita");
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/eliminar");
 		} else {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
@@ -154,40 +154,15 @@ class ControladorCitas
 	{
 		date_default_timezone_set('America/Mexico_City');
 		$fecha = date("Y-m-d");
-		$cedula = $datos[0];
+		$idCita = $datos[0];
 
 		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
 
-		//se verifica si la cédula del input es igual a la cédula ya existente 
-		if ($cedula == $_POST["serviciomedico_id_servicioMedico"]) {
-			$edicion = $this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
-			if ($edicion) {
-				// Guardar la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
-			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-			}
-
-			// NOTA: Esto "&&" es "Y"
-			//se verifica si la cédula del input no es igual a la cédula ya existente.  
-		} elseif ($cedula != $_POST["serviciomedico_id_servicioMedico"]) {
-
-			//verifica si la cédula es igual a la información de la base de datos.
-			if ($resultadoDeCita === "existeC") {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/error");
-			} else {
-
-				$edicion = $this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
-				if ($edicion) {
-					// Guardar la bitacora
-					$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
-				} else {
-					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-				}
-			}
+		//verifica si la idCita es igual a la información de la base de datos.
+		if ($resultadoDeCita === "existeC") {
+			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorCita");
 		} else {
+
 			$edicion = $this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
 			if ($edicion) {
 				// Guardar la bitacora
@@ -197,6 +172,7 @@ class ControladorCitas
 				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
 			}
 		}
+
 		if ($_POST["fechaDeCita"] < $fecha) {
 			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
 		}
@@ -207,7 +183,8 @@ class ControladorCitas
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
 
-	public function validarHorariosDisponlibles($datos){
-		echo  json_encode($this->modelo->validarHorariosDisponlibles($datos[0],$datos[1]));
+	public function validarHorariosDisponlibles($datos)
+	{
+		echo  json_encode($this->modelo->validarHorariosDisponlibles($datos[0], $datos[1]));
 	}
 }

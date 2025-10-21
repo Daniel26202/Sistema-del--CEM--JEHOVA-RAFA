@@ -133,35 +133,13 @@ class ControladorDoctores extends ModeloDoctores
         $resultadoDeCedula = $this->modelo->validarCedula($_POST['cedula']);
 
         //se verifica si la cédula del input es igual a la cédula ya existente 
-        if ($cedula == $_POST["cedula"]) {
+        // (verificamos si se edito la cédula del  formulario o si es igual)
+        if ($cedula == $_POST["cedula"]){ $resultadoDeCedula = false; }
 
-            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
-            if ($edicion) {
-                // Guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editar");
-            } else {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
-            }
-            // NOTA: Esto "&&" es "Y"
-            //se verifica si la cédula del input no es igual a la cédula ya existente.  
-        } elseif ($cedula != $_POST["cedula"]) {
-
-            //verifica si la cédula es igual a la información de la base de datos.
-            if ($resultadoDeCedula === "existeC") {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorD");
-            } else {
-                $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
-                if ($edicion) {
-                    // Guardar la bitacora
-                    $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editar");
-                } else {
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
-                }
-            }
+        //verifica si la cédula es igual a la información de la base de datos.
+        if ($resultadoDeCedula === "existeC") {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorCedula");
         } else {
-
             $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
             if ($edicion) {
                 // Guardar la bitacora
@@ -214,7 +192,6 @@ class ControladorDoctores extends ModeloDoctores
         } else {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
         }
-        
     }
     public function eliminarEspecialidad($datos)
     {

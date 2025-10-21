@@ -54,7 +54,7 @@ class ModeloDoctores extends Db
     public function validarUsuario($usuario)
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT u.*, p.* FROM usuario u INNER JOIN personal p ON p.id_usuario = u.id_usuario WHERE u.usuario =:usuario");
+            $consulta = $this->conexion->prepare("SELECT u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.usuario =:usuario");
             $consulta->bindParam(":usuario", $usuario);
             $consulta->execute();
             while ($consulta->fetch()) {
@@ -70,7 +70,7 @@ class ModeloDoctores extends Db
     public function validarCedula($cedula)
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT u.*, p.* FROM usuario u INNER JOIN personal p ON p.id_usuario = u.id_usuario WHERE p.cedula = :cedula");
+            $consulta = $this->conexion->prepare("SELECT u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE p.cedula = :cedula");
             $consulta->bindParam(":cedula", $cedula);
             $consulta->execute();
             while ($consulta->fetch()) {
