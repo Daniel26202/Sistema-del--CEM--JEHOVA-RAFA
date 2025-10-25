@@ -69,6 +69,7 @@ class ControladorHospitalizacion
         $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
         // datos de los insumos
         $datosI = $this->modelo->selectsInsumos();
+        $doctores = $this->modelo->selectDoctores();
 
         require_once "./src/vistas/vistaHospitalizacion/hospitalizacion.php";
     }
@@ -77,18 +78,16 @@ class ControladorHospitalizacion
         require_once "./src/vistas/vistaHospitalizacion/hospitalizacionesRealizadas.php";
     }
 
+    public function selectServiciosD()
+    {
+        $servicios = $this->modelo->selectServiciosD();
+        echo json_encode($servicios);
+    }
 
     //validar paciente 
     public function validarPaciente()
     {
         $vC = $this->modelo->validarPacienteH($_POST["cedula"]);
-        echo json_encode($vC);
-    }
-
-    //validar control 
-    public function validarControl()
-    {
-        $vC = $this->modelo->validarControlPaciente($_POST["cedula"]);
         echo json_encode($vC);
     }
 
@@ -118,6 +117,11 @@ class ControladorHospitalizacion
     //para agregar hospitalización
     public function agregarH()
     {
+
+        if (empty($_POST['doctor']) || empty($_POST['diagnostico']) || empty($_POST['historial'])) {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
+            return;
+        }
         // verifica si la sesión esta activa.
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
@@ -127,10 +131,9 @@ class ControladorHospitalizacion
             // echo "Las camillas disponibles estan ocupadas";
         } else {
 
-            $verificaH = $this->modelo->verificaHA($_POST["id_control"]);
+            $verificaH = $this->modelo->verificaHA($_POST["id_paciente"], $_POST["doctor"]);
 
-            print_r($verificaH);
-            if (isset($_POST["id_control"])) {
+            if (isset($_POST["id_paciente"])) {
 
                 // es para validar si existe la hospitalización
                 if ($verificaH) {
@@ -138,16 +141,19 @@ class ControladorHospitalizacion
                 } else {
                     // no existe
                     $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
-                    $cantidad = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
+                    $cantidadI = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
+
+                    $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : false;
+                    $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
 
 
-                    // print_r($_POST);
-                    $this->modelo->insertarH($_POST["id_control"], $_POST["fecha"], $idInsumo, $cantidad, $_POST["historial"]);
+                    print_r($_POST);
+                    $this->modelo->insertarH($_POST["fecha"], $idInsumo, $cantidadI, $_POST["historial"], $_POST["doctor"], $_POST["id_paciente"], $_POST["severidad"], $cantidadS, $idServicio, $_POST["diagnostico"]);
 
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
 
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
+                    // header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
                 }
             }
         }
@@ -218,7 +224,7 @@ class ControladorHospitalizacion
         }
 
         // esto se puede usar $_POST["id_controlE"]. 
-        $this->modelo->editarH($idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim);
+        $this->modelo->editarH($idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, "");
         // Guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha modificado una hospitalizacion");
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion");
@@ -229,7 +235,7 @@ class ControladorHospitalizacion
     {
         if (isset($_POST["idH"])) {
             $datosIDH = $this->modelo->EInsumosM($_POST["idH"]);
-
+            print_r($_POST);
             $this->modelo->eliminaLogico($_POST["idH"], $datosIDH);
 
             // Guardar la bitacora

@@ -50,7 +50,7 @@
                                     <div class="col-4 ms-4">
 
                                         <input type="number" name="horasSe" id="inpHorasS" class="input-agregar w-75 input-modal"
-                                            placeholder="Hora" value="" min="1" required><span class=" mt-1 color-letras" ">h</span>
+                                            placeholder="Hora" value="0" min="1" required><span class=" mt-1 color-letras" ">h</span>
 
                                     </div>
                                     <div class=" col-2">
@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="col-6 d-flex">
                                         <input type="number" step="any" name="precioHorasSe" id="inpCostoHS"
-                                            class="input-agregar w-50 input-modal" placeholder="Precio" value="" min="0.10" required>
+                                            class="input-agregar w-50 input-modal" placeholder="Precio" value="0" min="0.10" required>
                                         <p class="mt-3 ps-1 color-letras">bs</p>
 
                                     </div>

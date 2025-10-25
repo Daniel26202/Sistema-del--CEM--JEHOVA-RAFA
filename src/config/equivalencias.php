@@ -99,6 +99,8 @@ return [
     "verificarPassw" => "consultar",
 
     //Hospitalizacion
+    "selectDoctores" => "consultar",
+    "selectServiciosD" => "consultar",
     "traerSesion" => "consultar",
     "traerSesionR" => "consultar",
     "hospitalizacion" => "consultar",

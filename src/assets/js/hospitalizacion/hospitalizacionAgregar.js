@@ -29,6 +29,27 @@ addEventListener("DOMContentLoaded", function () {
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
     // Ajax //////
+    //function genérica para ejecutar la petición ajax
+    const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
+    const executePetition = async (url, method, data = null) => {
+        try {
+            const options = { method: method };
+
+            if (data instanceof FormData) {
+                options.body = data;
+            } else if (data && typeof data === "object") {
+                options.headers = {
+                    "Content-Type": "application/json",
+                };
+                options.body = JSON.stringify(data);
+            }
+
+            let response = await fetch(url, options);
+            return response.json();
+        } catch (error) {
+            return error;
+        }
+    };
 
     // aquí selecciono los elementos que utilizare en la búsqueda de los insumos para seleccionarlo
     let inputI = document.querySelector("#btbt");
@@ -138,8 +159,11 @@ addEventListener("DOMContentLoaded", function () {
     let btnAInsumoNoExiste = document.getElementById("btnAInsumoNoExiste");
     let btnAInsumoExiste = document.getElementById("btnAInsumoExiste");
     let divInsumosA = document.getElementById("div-insumosA");
-
+    const noHayServicio = document.querySelector("#noHayServicio");
+    let objServiciosBD = {};
     let nIA = 0;
+    const serviciosA = document.querySelector("#div-serviciosA");
+    const noPAservicio = document.querySelector("#NoPAservicio");
 
     // sumar el precio de insumos
     let totalPI = 0;
@@ -187,6 +211,138 @@ addEventListener("DOMContentLoaded", function () {
             totalPC = parseFloat(totalPC.toFixed(2));
             pPrecioI.innerHTML = totalPC + "bs";
         });
+    };
+
+    const traerSerevicio = async () => {
+        let resultado = await executePetition(url + "/selectServiciosD", "GET");
+        console.log(resultado);
+
+        // si no se trae nada
+        if (resultado.length < 1) {
+            console.log("hay un problema, el servicio seleccionado no existe");
+            noHayServicio.classList.remove("d-none");
+
+            //si se trae algo
+        } else {
+            noHayServicio.classList.add("d-none");
+            let html = ``;
+
+            for (const datoS of resultado) {
+                objServiciosBD[datoS["id_servicioMedico"]] = datoS;
+                html += `<div class="col-12 col-sm-6 col-md-4 col-lg-4 divServicio"
+                                data-index="${datoS["id_servicioMedico"]}">
+                                <a href="#" class="card text-center text-decoration-none h-100"
+                                    data-bs-toggle="modal" data-bs-target="#modal-agregar-hospitalizacion">
+                                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                        <i class="bi bi-plus-circle mb-2 fs-3"></i>
+                                        <p class="fw-bolder mb-1">${datoS["categoria"]}</p>
+                                        <p class="mb-0 small">${datoS["nombre"] + " " + datoS["apellido"]}</p>
+                                    </div>
+                                </a>
+                            </div>`;
+            }
+
+            console.log(objServiciosBD);
+
+            document.querySelector("#sevicios").innerHTML = html;
+            let htmlL = ``;
+            let divServicios = document.querySelectorAll(".divServicio");
+            if (divServicios) {
+                for (const div of divServicios) {
+                    div.addEventListener("click", function () {
+                        let idS = parseInt(this.getAttribute("data-index"));
+                        console.log("idS");
+                        console.log(idS);
+
+                        htmlL = `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" data-index="${idS}">
+                                    <!-- Botón eliminar -->
+                                    <button type="button"
+                                        class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarServ"
+                                        data-index="${idS}"
+                                        style="background:none; border:none; font-size:2rem; font-weight:bold; color:#0d6efd; cursor:pointer; z-index:10;">
+                                        ×
+                                    </button>
+
+                                    <!-- Tarjeta -->
+                                    <a href="#"
+                                        class="card text-decoration-none h-100 shadow-sm border-0 rounded-4"
+                                        style="background: #f4f9ff61; transition: all 0.2s ease;">
+
+                                        <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
+                                            <div class="fw-semibold text-dark mb-2 m-auto d-flex ">
+                                                <p class="me-1 text-center cantidadServicio" style="font-size:1rem;">
+                                                    1
+                                                </p>
+                                                <p class="" style="font-size:1rem;">
+                                                    ${objServiciosBD[idS]["categoria"]}
+                                                </p>
+                                            </div>
+                                            <p class="text-muted mb-1" style="font-size:0.9rem;">
+                                                ${objServiciosBD[idS]["nombre"]} ${objServiciosBD[idS]["apellido"]}
+                                            </p>
+                                            <p class="fw-bold text-primary mb-0 precioS" style="font-size:0.95rem;">
+                                                ${objServiciosBD[idS]["precio"]} Bs
+                                            </p>
+                                            <div>
+                                                <input type="hidden" name="id_servicio[]" class="" value="${idS}">
+                                                <input type="hidden" name="cantidadS[]" class="cantidadServicioInput" value="1">
+                                            </div>                         
+                                        </div>
+                                    </a>
+                                </div>`;
+
+                        if (objServiciosBD[idS]["tipo"] == "Examenes") {
+                            // buscar si el servicio ya está agregado en el contenedor
+                            const servicioExistente = serviciosA.querySelector(`.servicioA[data-index="${idS}"]`);
+
+                            if (servicioExistente) {
+                                // aumentar la cantidad Serv
+                                const pCantidad = servicioExistente.querySelector(".cantidadServicio");
+                                const inputCantidad = servicioExistente.querySelector(".cantidadServicioInput");
+                                if (pCantidad) {
+                                    let newCantidad = parseInt(pCantidad.textContent.trim()) || 1;
+                                    newCantidad = newCantidad + 1;
+                                    pCantidad.textContent = newCantidad;
+                                    inputCantidad = newCantidad;
+                                    // Actualizar el precio
+                                    let precioS = newCantidad * objServiciosBD[idS]["precio"];
+                                    let pMoneyS = servicioExistente.querySelector(".precioS");
+                                    if (pMoneyS) {
+                                        pMoneyS.textContent = precioS + " Bs";
+                                    }
+                                }
+                            } else {
+                                // si no existe, agrega el servicio tipo examen
+                                serviciosA.innerHTML += htmlL;
+                                document.querySelector("#btnAS").classList.add("d-none");
+                                document.querySelector("#btnAServiciosExiste").classList.remove("d-none");
+                            }
+                        } else {
+                            const servicioExistente = serviciosA.querySelector(`.servicioA[data-index="${idS}"]`);
+
+                            if (servicioExistente) {
+                                noPAservicio.classList.remove("d-none");
+                                setTimeout(() => {
+                                    noPAservicio.classList.add("d-none");
+                                }, 8000);
+                            } else {
+                                serviciosA.innerHTML += htmlL;
+                                document.querySelector("#btnAS").classList.add("d-none");
+                                document.querySelector("#btnAServiciosExiste").classList.remove("d-none");
+                            }
+                        }
+                    });
+                }
+            }
+            if (serviciosA) {
+                serviciosA.addEventListener("click", function (e) {
+                    console.log(e);
+
+                    const servicioElem = e.target.closest(".servicioA");
+                    servicioElem.remove();
+                });
+            }
+        }
     };
 
     // función async
@@ -264,66 +420,62 @@ addEventListener("DOMContentLoaded", function () {
                 //nIA es el contador sirve para eliminar según el numero
                 nIA++;
 
-                html = `
-                    <p class="text-danger text-center m-0 p-0 d-none">Límite de cantidad alcanzado</p>
-                    <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregadosA" data-index=${nIA}>
-    
-                        <div class="col-2 ps-4 pb-1">
-                            <a href="#" class="ms-2 eliminarIns" data-index=${nIA}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    fill="currentColor" class="bi bi-x-circle color-icono"
-                                    viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                    <path
-                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                                </svg>
-                            </a>
-                        </div>
-    
-                        <div class="d-flex justify-content-center align-items-center col-8">
-    
-                            <div class="borde-input-agregar m-auto col-12">
-    
-                                <div class=" d-flex justify-content-center align-items-center pb-2">
-    
-                                    <div class="col-6 ms-2">
-                                        <p class="color-letras fw-bold margen-dos-puntos">${resultadoUnInsu.nombre}</p>
+                html = `<p class="text-danger text-center m-0 p-0 d-none">
+                                    Límite de cantidad alcanzado
+                                </p>
+
+                                <div class="col-12 divInsumosAgregadosA border-top border-bottom pt-2 pb-2 mb-3 position-relative" data-index=${nIA}>
+
+                                    <!-- Fila superior con la X -->
+                                    <div class="d-flex justify-content-end me-4">
+                                        <a href="#" class="eliminarIns" data-index=${nIA}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="currentColor" class="bi bi-x-circle color-icono"
+                                                viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                            </svg>
+                                        </a>
                                     </div>
-    
-                                    <div class="col-2 text-center ">
-                                        <p class=" fw-bold margen-dos-puntos">:</p>
+
+                                    <!-- Nombre y precio en el centro -->
+                                    <div class="text-center mb-3">
+                                        <div class="borde-input-agregar d-inline-block px-3 pb-2">
+                                            <div class="row align-items-center">
+                                                <div class="col-6">
+                                                    <p class="color-letras fw-bold margen-dos-puntos mb-0">
+                                                        ${resultadoUnInsu.nombre}
+                                                    </p>
+                                                </div>
+                                                <div class="col-2">
+                                                    <p class="fw-bold margen-dos-puntos mb-0">:</p>
+                                                </div>
+                                                <div class="col-4">
+                                                    <p class="precio-medicina-agregar mb-0">
+                                                        ${resultadoUnInsu.precio}bs
+                                                    </p>
+                                                    <input type="hidden" class="precioInsum" value="${resultadoUnInsu.precio}">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-    
-                                    <div class="col-4">
-                                        <p class="precio-medicina-agregar ">${resultadoUnInsu.precio}bs</p>
-                                        <input type="hidden" class="precioInsum" value="${resultadoUnInsu.precio}">
+
+                                    <input class="inputIdInsu" type="hidden" name="id_insumo[]"
+                                        data-limite-cantidad="${resultadoUnInsu.limite_insumo}"
+                                        value="${resultadoUnInsu.id_insumo}">
+
+                                    <!-- Cantidad abajo centrada -->
+                                    <div class="cantidadIns mt-3 text-center">
+                                        <div class="posicion-input-number d-inline-block ms-5">
+                                            <div class="contenedorNumber d-flex justify-content-center align-items-center">
+                                                <div class="btn-max-min btn-min-lugar tamano-btn-min fw-bold disminuir masMenos" data-index="disminuir"> - </div>
+                                                <input class="input-number fw-bold text-center mx-2" name="cantidad[]" type="number" min="1" max="100" step="1" value="1" readonly>
+                                                <div class="btn-max-min btn-max-lugar fw-bold aumentar masMenos" data-index="aumentar"> + </div>
+                                            </div>
+                                        </div>
                                     </div>
-    
-                                </div>
-    
-                            </div>
-    
-                        </div>
-    
-                        <input class="inputIdInsu" type="hidden" name="id_insumo[]" data-limite-cantidad="${resultadoUnInsu.limite_insumo}" value="${resultadoUnInsu.id_insumo}">
-    
-                        <div class="col-2 ms-2 cantidadIns">
-                            <div class="posicion-input-number m-auto">
-                                <div class="contenedorNumber d-flex justify-content-center align-items-center ">
-    
-                                    <div class="btn-max-min btn-min-lugar tamano-btn-min fw-bold disminuir masMenos" id="" data-index="disminuir"> - </div>
-    
-                                    <!-- readonly : es para que no puedan modificar el numero-->
-                                    <input class="input-number fw-bold" name="cantidad[]" type="number" min="1" max="100" step="1" value="1" id="inputNumber" readonly>
-    
-                                    <div class="btn-max-min btn-max-lugar fw-bold aumentar masMenos" id="" data-index="aumentar"> + </div>
-    
-                                </div>
-                            </div>
-                        </div>
-    
-                    </div>`;
+
+                                </div>`;
 
                 divInsumosA.innerHTML += html;
 
@@ -416,93 +568,67 @@ addEventListener("DOMContentLoaded", function () {
 
     const traerControlDePaciente = async () => {
         // try {
-            const datosFormulario = new FormData(formularioAgregar);
+        const datosFormulario = new FormData(formularioAgregar);
 
-            const contenidoForm = {
-                method: "POST",
-                body: datosFormulario,
-            };
+        const contenidoForm = {
+            method: "POST",
+            body: datosFormulario,
+        };
 
-            // llamo la función validar paciente
-            let peticionValidarP = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/validarPaciente", contenidoForm);
-            let resultadoVP = await peticionValidarP.json();
+        // llamo la función validar paciente
+        let peticionValidarP = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/validarPaciente", contenidoForm);
+        let resultadoVP = await peticionValidarP.json();
 
-            // llamo la función validar control
-            let peticionValidarC = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/validarControl", contenidoForm);
-            let resultadoVC = await peticionValidarC.json();
+        // llamo la función mostrar
+        let peticionMostrar = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInformacionPCD", contenidoForm);
+        let resultadoM = await peticionMostrar.json();
+        console.log(resultadoM);
 
-            // llamo la función mostrar
-            let peticionMostrar = await fetch(
-                "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInformacionPCD",
-                contenidoForm
-            );
-            let resultadoM = await peticionMostrar.json();
-            console.log(resultadoM);
+        if (resultadoVP == false) {
+            console.log("El paciente no esta registrado.");
+            parrafoNoP.innerText = "";
+            parrafoNoP.innerText = "El paciente no esta registrado.";
+            document.getElementById("input-id-paciente").value = "";
 
-            if (resultadoVP == false) {
-                console.log("El paciente no esta registrado.");
-                parrafoNoP.innerText = "";
-                parrafoNoP.innerText = "El paciente no esta registrado.";
-                document.getElementById("input-id-controlP").value = "";
+            document.querySelector("#aPaciente").classList.remove("d-none");
 
-                document.querySelector("#aControl").classList.add("d-none");
-                document.querySelector("#aPaciente").classList.remove("d-none");
+            document.querySelector("#aPaciente").addEventListener("click", function () {
+                document.querySelector("#cedula").value = document.querySelector("#bt").value;
+            });
 
-                document.querySelector("#aPaciente").addEventListener("click", function () {
-                    document.querySelector("#cedula").value = document.querySelector("#bt").value;
-                });
+            parrafoNoP.classList.toggle("d-none", false);
+            btnInformacionPaciente.classList.toggle("d-none", true);
+            contenedorForm.classList.toggle("d-none", true);
+            btnEnviar.classList.toggle("d-none", true);
+        } else {
+            document.querySelector("#aPaciente").classList.add("d-none");
+            let nombreApellido = `${resultadoVP.nombre} ${resultadoVP.apellido}`;
+            parrafoExP.innerText = "";
+            parrafoExP.innerText = nombreApellido;
+            nombreApellidoInfor.innerText = "";
+            nombreApellidoInfor.innerText = nombreApellido;
+            diagnosticoInfor.innerText = "";
+            // recolecto el id del paciente
+            document.getElementById("input-id-paciente").value = resultadoVP.id_paciente;
+            parrafoNoP.classList.toggle("d-none", true);
+            btnInformacionPaciente.classList.toggle("d-none", false);
+            contenedorForm.classList.toggle("d-none", false);
+            btnEnviar.classList.toggle("d-none", false);
 
-                parrafoNoP.classList.toggle("d-none", false);
-                btnInformacionPaciente.classList.toggle("d-none", true);
-                contenedorForm.classList.toggle("d-none", true);
-                btnEnviar.classList.toggle("d-none", true);
+            if (resultadoM == false) {
+                console.log("no hay datos del paciente.");
+                diagnosticoInfor.innerText = `Aun, no esta diagnosticado`;
+                historiaclinica.value = "";
             } else {
-                if (resultadoVC == false) {
-                    console.log("El control del paciente no esta registrado.");
-                    parrafoNoP.innerText = "";
-                    parrafoNoP.innerText = "El control del paciente no esta registrado.";
-                    document.getElementById("input-id-controlP").value = "";
+                diagnosticoInfor.innerText = `${resultadoM.diagnostico}`;
 
-                    document.querySelector("#aPaciente").classList.add("d-none");
-                    document.querySelector("#aControl").classList.remove("d-none");
-
-                    parrafoNoP.classList.toggle("d-none", false);
-                    btnInformacionPaciente.classList.toggle("d-none", true);
-                    contenedorForm.classList.toggle("d-none", true);
-                    btnEnviar.classList.toggle("d-none", true);
-                } else {
-                    if (resultadoM == false) {
-                        console.log("no hay datos del paciente.");
-                    } else {
-                        document.querySelector("#aPaciente").classList.add("d-none");
-                        document.querySelector("#aControl").classList.add("d-none");
-
-                        let nombreApellido = `${resultadoM.nombre} ${resultadoM.apellido}`;
-                        parrafoExP.innerText = "";
-                        parrafoExP.innerText = nombreApellido;
-
-                        nombreApellidoInfor.innerText = "";
-                        nombreApellidoInfor.innerText = nombreApellido;
-
-                        diagnosticoInfor.innerText = "";
-                        diagnosticoInfor.innerText = `${resultadoM.diagnostico}`;
-
-                        // recolecto el id del control del paciente
-                        document.getElementById("input-id-controlP").value = resultadoM.id_control;
-
-                        let historia = resultadoM.historiaclinica;
-                        // trim() quita los espacios en el principio y al final
-                        historiaclinica.value = historia.trim();
-
-                        parrafoNoP.classList.toggle("d-none", true);
-                        btnInformacionPaciente.classList.toggle("d-none", false);
-                        contenedorForm.classList.toggle("d-none", false);
-                        btnEnviar.classList.toggle("d-none", false);
-                    }
-                }
+                let historia = resultadoM.historiaclinica;
+                // trim() quita los espacios en el principio y al final
+                historiaclinica.value = historia.trim();
             }
+        }
         // } catch (error) {
-            // console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...  " + error);
+        // console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...  " + error);
         // }
     };
 
@@ -629,9 +755,22 @@ addEventListener("DOMContentLoaded", function () {
     }
 
     document.querySelector("#btnAgregarH").addEventListener("click", () => {
+        traerSerevicio();
         // tomo la fecha de hoy
         let fechaHoy = obtenerFechaHoraLocal();
 
         document.querySelector("#fechaHoy").value = fechaHoy;
     });
+    formularioAgregar.addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+    // ...existing code...
+    document.querySelector("#btnAgregarH").addEventListener("click", () => {
+        traerSerevicio();
+        // tomo la fecha de hoy
+        let fechaHoy = obtenerFechaHoraLocal();
+
+        document.querySelector("#fechaHoy").value = fechaHoy;
+    });
+
 });

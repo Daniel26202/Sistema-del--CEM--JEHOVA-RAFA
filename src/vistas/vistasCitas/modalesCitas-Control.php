@@ -27,7 +27,7 @@
         </div>
         <div class="alert alert-danger d-none alerta-cedula-paciente d-none" role="alert">
             <div class="">
-                <p style="font-size: 13px;" class="text-center">Por favor, añada la cantidad de numeros correspodientes...</p>
+                <p style="font-size: 13px;" class="text-center">Por favor, añada la cantidad de números correspondientes...</p>
             </div>
         </div>
         <div class="toast-container position-fixed bottom-0 start-0 p-3">
@@ -83,7 +83,7 @@
             </div>
 
 
-            <p class="p-error-cedulaCita d-none">La cedula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
+            <p class="p-error-cedulaCita d-none">La cédula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
 
 
             <input type="hidden" id="id_paciente" name="id_paciente">
@@ -362,7 +362,7 @@
 
         <div class="alert alert-danger d-none alertaErrorCedula" role="alert">
             <div class="">
-                <p style="font-size: 13px;" class="text-center">La cedula que intenta insertar ya esta registrada por favor inserte otra</p>
+                <p style="font-size: 13px;" class="text-center">La cédula que intenta insertar ya esta registrada por favor inserte otra</p>
             </div>
         </div>
 
@@ -385,7 +385,7 @@
                 <input class="form-control input-modal input-disabled input-paciente input-validar cedula-paciente" style="width: 7vh !important;" type="number" id="cedula" name="cedula" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
             </div>
 
-            <p class="p-error-cedula d-none">La cedula debe contener únicamente números y estar entre 7 a 8 caracteres</p>
+            <p class="p-error-cedula d-none">La cédula debe contener únicamente números y estar entre 7 a 8 caracteres</p>
 
             <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">
                 <span class="input-modal mt-1">
@@ -421,7 +421,7 @@
                 </span>
                 <input class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" required maxlength="18">
             </div>
-            <p class="p-error-telefono d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
+            <p class="p-error-telefono d-none">El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
 
             <div class="input-group flex-nowrap margin-inputs" id="grp_direccion">
                 <span class="input-modal mt-1">
