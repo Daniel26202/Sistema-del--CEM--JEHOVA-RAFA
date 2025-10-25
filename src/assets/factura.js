@@ -28,6 +28,11 @@ addEventListener("DOMContentLoaded", () => {
   const ConteNotificacionInsumo = document.getElementById("ConteNotificacionInsumo");
   const ConteNotificacionInsumoCon = document.getElementById("ConteNotificacionInsumoCon");
 
+  const pacienteClienteCheck = document.querySelector(".paciente-cliente-check");
+  const cajaBuscadorCliente = document.getElementById("caja-buscar-cliente");
+  const buscadorCliente = document.getElementById("form-buscador-cliente");
+  const dataCliente = document.getElementById("data-cliente");
+
   if (window.location.href.includes("facturaCita")) {
     console.log("id_cita");
   } else {
@@ -57,6 +62,7 @@ addEventListener("DOMContentLoaded", () => {
             noCita[0].innerHTML = `<div class="fw-bolder ">CI: ${res.cedula}</div>`;
             noCita[1].innerHTML = `<div class="fw-bolder">PACIENTE: ${res.nombre} ${res.apellido}</div>`;
             document.getElementById("inputPaciente").value = res.id_paciente;
+            
           }
         });
         document.getElementById("cajaBotones").classList.remove("justify-content-end");
@@ -718,6 +724,79 @@ addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  //funcion para comprobar si el paciente es el mismo cliente
+
+  const buscarCliente = async (formulario) => {
+    try {
+      const datos = new FormData(formulario);
+      const contenido = { method: "POST", body: datos };
+      let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente", contenido);
+      console.log(peticion);
+      let resultado = await peticion.json();
+      console.log(resultado);
+      if (resultado[0] != false) {
+        resultado.forEach((res) => {
+          dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido}`;
+
+          document.getElementById("myToastfactura").classList.add("d-none");
+
+          // dataCliente[0].innerHTML = `<div class="fw-bolder ">CI: ${res.cedula}</div>`;
+          // dataCliente[1].innerHTML = `<div class="fw-bolder">CLIENTE: ${res.nombre} ${res.apellido}</div>`;
+
+          document.getElementById("inputCliente").value = res.id_cliente;
+        });
+        document.getElementById("botonPC").classList.remove("d-none");
+      } else {
+        document.getElementById("myToastfacturaCliente").classList.remove("d-none");
+        const toastElement = document.getElementById("myToastfacturaCliente");
+        const toast = new bootstrap.Toast(toastElement, {
+          autohide: false,
+        });
+        toast.show();
+          dataCliente.innerText = ``;
+
+
+        // document.querySelectorAll("data-cliente")[0].innerHTML = ``;
+        // document.querySelectorAll("data-cliente")[1].innerHTML = ``;
+        document.getElementById("inputCliente").value = "";
+
+        document.getElementById("botonPC").classList.add("d-none");
+
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //llamar la uncion de buscar el paciente
+  pacienteClienteCheck.addEventListener("change", function () {
+    if (this.checked) {
+      cajaBuscadorCliente.classList.remove("d-none");
+      document.getElementById("botonPC").classList.add("d-none");
+      console.log(document.getElementById("botonPC"));
+    } else {
+      cajaBuscadorCliente.classList.add("d-none");
+      // dataCliente[0].innerHTML = ``;
+      // dataCliente[1].innerHTML = ``;
+
+      document.getElementById("inputCliente").value = "";
+      document.getElementById("botonPC").classList.remove("d-none");
+      console.log(document.getElementById("botonPC"));
+    }
+  });
+
+  document.getElementById("btnRegistrarCliente").addEventListener('click', function () {
+    // document.getElementById("myToastfacturaCliente").classList.add('d-none');
+            UIkit.modal("#modal-cliente").hide();
+
+
+  });
+
+  buscadorCliente.addEventListener("submit", function (e) {
+    e.preventDefault();
+    buscarCliente(buscadorCliente);
+  });
+
   //boton del modal de tio de pago
   const tiposDePago = document.querySelectorAll(".tiposDePago");
   const btnTipoDePago = document.querySelector("#btnTipoDePago");
@@ -1215,7 +1294,7 @@ addEventListener("DOMContentLoaded", () => {
         <td><input type="hidden" name="servicios[]" value="${element["id_servicioMedico"]}">
         <div class="fw-bolder">S/E:</div>${element["servicio"]}</td>
         <td><input type="hidden" name="doctores[]" value="${element["id_personal"]}"><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
-        <td><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
+        <td><input type="hidden" name="precioServicio[]" value="${element["precio"]}"><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
         <td>
         <tr>`;
     });
@@ -1229,7 +1308,7 @@ addEventListener("DOMContentLoaded", () => {
         <td><div class="fw-bolder">MEDIDA:</div>${element["medidaInsumo"]}</td>
 
         <td><input type="hidden" name="cantidad[]" value="${element["cantidad"]}"><div class="fw-bolder">CANTIDAD</div> ${element["cantidad"]}</td>
-        <td><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
+        <td><input type="hidden" name="precioInsumo[]" value="${element["precio"]}"><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
         <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${element["subTotal"]} BS</td>
         <td>
         <tr>`;

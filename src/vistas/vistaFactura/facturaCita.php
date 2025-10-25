@@ -154,7 +154,7 @@
                     <div class="d-flex" id="cajaVaciarTotalSiguiente">
                         <button class="btn btn-agregarConsulta ms-3 me-4 " id="vaciarTabla">VACIAR</button>
                         <button id="siguienteFact" class="btn btn-agregarConsulta " data-bs-toggle="modal"
-                            data-bs-target="#modal-pago">SIGUIENTE</button>
+                            data-bs-target="#modal-cliente">SIGUIENTE</button>
                     </div>
 
                     <div class=" " id="totalFac">

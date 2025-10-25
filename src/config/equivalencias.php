@@ -11,6 +11,15 @@ return [
     "restablecer" => "eliminar",
     "getHistorialSalud" => "consultar",
 
+
+    //Clientes
+    "Clientes" => "consultar",
+    "papeleraPaciente" => "consultar",
+    "guardar" => "guardar",
+    "setCliente"  => "editar",
+    "eliminar" => "eliminar",
+    "restablecer" => "eliminar",
+
     //Patlogias
     "patologias" => "consultar",
     "papeleraPatologias" => "consultar",
@@ -23,6 +32,7 @@ return [
     "facturaCita" => "consultar",
     "comprobante" => "consultar",
     "mostrarPaciente" => "consultar",
+    "mostrarCliente" => "consultar",
     "mostrarPacienteConCita" => "consultar",
     "mostrarTodosLosServicios" => "consultar",
     "mostrarTodosLosDoctores" => "consultar",
@@ -37,6 +47,8 @@ return [
     "guardarFactura" => "guardar",
     "guardarFacturaHospit" => "guardar",
     "facturarHospitalizacion" => "consultar",
+    "coincidenciaPacienteCliente" => "consultar",
+    "guardarCliente" => "consultar",
 
     //Citas
     "mostrarPacienteCita" => "consultar",

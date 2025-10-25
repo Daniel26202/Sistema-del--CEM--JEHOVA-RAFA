@@ -41,10 +41,10 @@
                     </div>
 
 
-                    <div class="uk-card-body ">
+                    <div class="uk-card-body">
                         <div class="">
                             <?php foreach ($datosFactura as $datoFactura): ?>
-                                <div class="div-total p-2 mb-2 ">
+                                <div class="div-total p-2 mb-2">
                                     <h5 class="text-center"> <?php echo $datoFactura['total'] . " BS" ?></h5>
                                 </div>
 
@@ -84,35 +84,18 @@
 
                         <h5 class="text-center">Servicios</h5>
 
-                        <?php if (!$vistaActiva): ?>
-                            <?php foreach ($datosServiciosExtras as $d): ?>
-                                <div class="d-flex justify-content-between  ">
-                                    <h5 class="h5-comprobante "><?php echo $d["categoria_servicio"] ?></h5>
-                                    <h5 class="h5-comprobante ">
-                                        DR: <?php echo $d["nombre_d"] ?>
-                                        <?php echo $d["apellido_d"] ?>
-                                        <?php echo $d["precio"] . " BS" ?>
-                                    </h5>
 
-                                </div>
-                            <?php endforeach ?>
-                        <?php endif; ?>
+                        <?php foreach ($datosServiciosExtras as $d): ?>
+                            <div class="d-flex justify-content-between  ">
+                                <h5 class="h5-comprobante "><?php echo $d["categoria_servicio"] ?></h5>
+                                <h5 class="h5-comprobante ">
+                                    DR: <?php echo $d["nombre_d"] ?>
+                                    <?php echo $d["apellido_d"] ?>
+                                    <?php echo $d["precio"] . " BS" ?>
+                                </h5>
 
-                        <?php if ($vistaActiva): ?>
-                            <?php foreach ($serviciosDeHospitalizacion as $d): ?>
-                                <div class="d-flex justify-content-between  ">
-                                    <h5 class="h5-comprobante ">
-                                        <?= $d["nombre"]; ?>
-                                    </h5>
-                                    <h5 class="h5-comprobante ">
-                                        <?= $d["precio"] . " BS" ?>
-                                    </h5>
-
-                                </div>
-                            <?php endforeach ?>
-                        <?php endif; ?>
-
-
+                            </div>
+                        <?php endforeach ?>
 
 
                         <hr>

@@ -19,50 +19,12 @@
 
         <div style="height: 70px;" id="cajaBotones" class="d-flex justify-content-end">
 
-            <!-- <button id="botonAgregar"
-                class=" btn btn-primary btn-agregar-doctores ms-4 mt-4 btn-agregar-ins-ser btn-factura"
-                data-bs-toggle="modal" data-bs-target="#modal-agregar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                    class="bi bi-plus-circle" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path
-                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                </svg>
-                Agregar Servicio
-            </button> -->
-
-            <!-- <button class=" btn ms-4 mt-4  btn-agregar-ins-ser btn-primary btn-agregar-doctores btn-factura"
-                data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos" id="btnInsumos">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                    class="bi bi-capsule" viewBox="0 0 16 16">
-                    <path
-                        d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                </svg>
-                Agregar Insumos
-            </button> -->
+           
+            </button> 
 
 
             <div class="d-flex">
-                <!-- <div class="mt-4">
-                    <h5 id="datosPaciente" class="mt-3 text-uppercase" style="margin-left: 15px;"></h5>
-                    <div class="toast-container position-fixed top-0 end-5 p-3">
-                        <div class="toast contenido" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
-                            id="myToastfactura">
-                            <div class="toast-body">
-                                <h5 class="fw-bold text-dark text-center">Haz Click en Registrar para Guardar un
-                                    Nuevo Paciente</h5>
-                                <div class="mt-2 pt-2 border-top">
-                                    <a href="#">
-                                        <button type="button" class="btn btn-agregarcita-modal" uk-toggle="target: #modal-examplePaciente"> Registrar </button>
-                                    </a>
-
-                                    <button type="button" class="uk-button me-3 uk-button-default btn-cerrar-modal"
-                                        data-bs-dismiss="toast">Cancelar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+               
                 <div class="mt-4 w-25 d-flex justify-content-center">
                     <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" class="text-decoration-none"
                         uk-tooltip="Retroceder">
@@ -87,6 +49,7 @@
 						
 					</div> -->
             <?php foreach ($hostalizacionFacturar as $datoH): ?>
+                <!-- hospitalizacion -->
                 <table class="table table-striped" id="tablaDB">
                     <thead>
                         <tr>
@@ -115,10 +78,6 @@
                             </td>
 
 
-                            <td class="border-top">
-                                <div class="fw-bolder">INSUMOS:</div>
-                                <?= $insumosHospitalizacion == "" ? "0" :  $insumosHospitalizacion;  ?>
-                            </td>
 
 
 
@@ -128,21 +87,79 @@
                     </tbody>
 
                 </table>
-                <table class="table table-striped" id="tablaSE">
 
-                    <tbody id="tbody">
+                <!-- servicios -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="fw-bolder mb-0 mt-2">SERVICIOS INCLUIDOS
+                            </th>
+                        </tr>
+                    </thead>
+                    <?php foreach ($serviciosDeHospitalizacion as $datoH): ?>
 
-                    </tbody>
+                        <tbody id="tablaBODYDB">
+
+
+                            <tr>
+                                <td class="border-top">
+                                    <div class="fw-bolder">SERVICIO:</div>
+                                    <?= $datoH["nombre"]; ?>
+                                </td>
+
+
+                                <td class="border-top">
+                                    <div class="fw-bolder">PRECIO:</div>
+                                    <?= $datoH["precio"] . '   BS'; ?>
+                                </td>
+
+
+
+                            </tr>
+
+
+                        </tbody>
+
+
+                    <?php endforeach ?>
                 </table>
+
+
+
+
+                <!-- insumos -->
                 <table class="table table-striped" id="tablaIM">
                     <thead>
                         <tr>
                             <th class="fw-bolder mb-0 mt-3 border-bottom">INSUMOS</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody-insumos">
+                    <?php foreach ($insumosHospitalizacion as $datoH): ?>
 
-                    </tbody>
+                        <tbody id="tbody-insumos">
+                            <tr>
+                                <td class="border-top">
+                                    <div class="fw-bolder">NOMBRE:</div>
+                                    <?= $datoH["nombre"]; ?>
+                                </td>
+
+
+                                <td class="border-top">
+                                    <div class="fw-bolder">MEDIDA:</div>
+                                    <?= $datoH["medida"]; ?>
+                                </td>
+
+                                <td class="border-top">
+                                    <div class="fw-bolder">PRECIO:</div>
+                                    <?= $datoH["precio"] . '   BS'; ?>
+                                </td>
+
+
+
+                            </tr>
+                        </tbody>
+
+                    <?php endforeach; ?>
                 </table>
                 <!-- caja de los botones de vaciar , siguiente, total -->
                 <!-- recordatorio acomodar esto del color -->
@@ -151,7 +168,7 @@
                     <div class="d-flex" id="cajaVaciarTotalSiguiente">
                         <button class="ico btn btn-agregarConsulta ms-3 me-4 " id="vaciarTabla">VACIAR</button>
                         <button id="siguienteFact" class="ico btn btn-agregarConsulta " data-bs-toggle="modal"
-                            data-bs-target="#modal-pago">SIGUIENTE</button>
+                            data-bs-target="#modal-cliente">SIGUIENTE</button>
                     </div>
 
                     <div class="ico " id="totalFac">
