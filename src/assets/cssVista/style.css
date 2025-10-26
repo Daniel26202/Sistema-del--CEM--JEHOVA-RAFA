@@ -1293,7 +1293,7 @@ con la clase hover-grande cambia de tamaño*/
 .input {
     padding-left: 28.6px;
     padding-bottom: 5.8px;
-    width: 81.5vh;
+    width: 74.5vh;
     border: none;
     outline: none;
     border-bottom: solid 0.4vh #387adf;
@@ -1889,6 +1889,9 @@ td {
     .botones-mostrar {
         width: 100% !important;
     }
+    .input {
+    width: 100%;
+}
 }
 
 /* Lo comento porque no estaba incluida en el head */
