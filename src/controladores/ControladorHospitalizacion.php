@@ -83,6 +83,11 @@ class ControladorHospitalizacion
         $servicios = $this->modelo->selectServiciosD();
         echo json_encode($servicios);
     }
+    public function serviciosDH()
+    {
+        $servicios = $this->modelo->selectServiciosDH();
+        echo json_encode($servicios);
+    }
 
     //validar paciente 
     public function validarPaciente()
@@ -153,7 +158,7 @@ class ControladorHospitalizacion
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
 
-                    // header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
+                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
                 }
             }
         }

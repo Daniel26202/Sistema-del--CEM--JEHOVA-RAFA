@@ -23,7 +23,7 @@ class ModeloHospitalizacion extends Db
     public function selectsH()
     {
 
-        $consulta = $this->conexion->prepare("SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE con.estado = 'ACT' AND sm.estado = 'ACT' AND u.estado = 'ACT' AND h.estado = 'Pendiente' GROUP BY h.id_hospitalizacion;");
+        $consulta = $this->conexion->prepare("SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_control = (SELECT con2.id_control FROM control con2 WHERE con2.id_paciente = pac.id_paciente AND con2.estado = 'DES' ORDER BY con2.id_control DESC LIMIT 1) INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE sm.estado = 'ACT' AND u.estado = 'ACT' AND h.estado = 'Pendiente' GROUP BY h.id_hospitalizacion;");
 
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
@@ -46,6 +46,12 @@ class ModeloHospitalizacion extends Db
                                     )
         );");
 
+        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+    }
+
+    public function selectServiciosDH()
+    {
+        $consulta = $this->conexion->prepare("SELECT * FROM servicios_hospitalizacion;");
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
@@ -201,11 +207,7 @@ class ModeloHospitalizacion extends Db
             if ($idServicio) {
 
                 $contador = 0;
-                print_r(".        .      .     .");
-                print_r($idServicio);
                 foreach ($idServicio as $idS) {
-                    print_r($idS);
-                    print_r($idH);
 
                     // insertar servicio de la hospitalización
                     $consulta = $this->conexion->prepare("INSERT INTO servicios_hospitalizacion(id_hospitalizacion, id_servicioMedico, cantidad) VALUES (:id_hospitalizacion, :id_servicioMedico, :cantidad)");

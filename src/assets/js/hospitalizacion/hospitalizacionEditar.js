@@ -7,7 +7,8 @@ addEventListener("DOMContentLoaded", function () {
     const costoHoras = document.querySelector("#costoHS");
     const costoHorasMoEx = document.querySelector("#costoHSMoEx");
     const btnGuardarCH = document.querySelector("#btnCH");
-
+    const btnAgregar = document.querySelector("#btnAgregarH");
+    const alertaNoHayPrecioH = document.getElementById("alertaPrecioHora");
     // inputs del costo y las horas del servicio
     let iHS = document.querySelector("#inpHorasS");
     let iCS = document.querySelector("#inpCostoHS");
@@ -32,6 +33,22 @@ addEventListener("DOMContentLoaded", function () {
         let montoBS = iCME.value * storedDolar;
         iCS.value = montoBS.toFixed(2);
     });
+
+    function validarPrecioHora() {
+        const precioHora = localStorage.getItem("costo");
+        const Hora = localStorage.getItem("hora");
+
+        if (!precioHora || precioHora.trim() === "" || precioHora == 0 || !Hora || Hora.trim() === "" || Hora == 0) {
+            // No hay precio guardado
+            alertaNoHayPrecioH.style.display = "block";
+            btnAgregar.style.display = "none";
+        } else {
+            // Sí hay precio guardado
+            alertaNoHayPrecioH.style.display = "none";
+            btnAgregar.style.display = "inline-block";
+        }
+    }
+    validarPrecioHora();
 
     // para traerme la hora y su costo
     const traerHoraCosto = async () => {
@@ -87,7 +104,7 @@ addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("hora", hora);
         localStorage.setItem("costo", costo);
         localStorage.setItem("costoMoEx", costoMoEx);
-
+        validarPrecioHora();
         traerHoraCosto();
 
         vistaTabla();
@@ -156,6 +173,7 @@ addEventListener("DOMContentLoaded", function () {
     const nombreApE = document.querySelector("#NombreAp");
     const precioHE = document.querySelector("#precioH");
     const historiaE = document.querySelector("#historiaE");
+    const diagnosticoE = document.querySelector("#diagnostico");
 
     async function editar(indice) {
         // obtenemos los datos del elemento seleccionado
@@ -164,6 +182,7 @@ addEventListener("DOMContentLoaded", function () {
 
         // let precHoras = document.querySelectorAll(".precioHo")[indice];
         let hME = document.querySelectorAll(".hME")[indice];
+        let diagnostico = document.querySelectorAll(".diagnosticoClass")[indice];
 
         // colocamos el nombre y apellido.
         nombreApE.innerHTML = "";
@@ -171,6 +190,7 @@ addEventListener("DOMContentLoaded", function () {
 
         // trim() quita los espacios en el principio y al final
         historiaE.value = hME.value;
+        diagnosticoE.value = diagnostico.value;
 
         let idControl = document.querySelectorAll(".idC")[indice];
         document.querySelector("#idCE").value = parseInt(idControl.value);
@@ -231,8 +251,6 @@ addEventListener("DOMContentLoaded", function () {
 
             // traigo la cantidad
             let cantidad = parseInt(divH[1].value);
-
-            // suma el total del precio de cada insumo que se multiplico con la cantidad
             totalPI += PrecioI * cantidad;
 
             // aquí se recolecta el precio multiplicado con la cantidad (en las dos lineas siguientes, se coloca el precio ya multiplicado en el <p>)
@@ -378,6 +396,7 @@ addEventListener("DOMContentLoaded", function () {
                                             <input class="idC" type="hidden" name="" value="${res.id_control}">
                                             <input class="idHpt" type="hidden" name="" value="${res.id_hospitalizacion}">
                                             <input class="hME" type="hidden" name="" value="${res.historiaclinica}">
+                                            <input class="diagnosticoClass" type="hidden" name="" value="${res.diagnostico}">
                                         </div>
 
 
@@ -460,16 +479,19 @@ addEventListener("DOMContentLoaded", function () {
                             window.location.href = `/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/enviarAFacturar/${idHospit}/${monto}/${montoME}/${total}/${totalME}`;
                         });
                     }
-
+                    const btnEditar = document.querySelectorAll(".editarH");
                     // recorremos los btn editar
-                    document.querySelectorAll(".editarH").forEach((editH) => {
-                        editH.addEventListener("click", function () {
+                    for (const editH of btnEditar) {
+                        editH.addEventListener("click", async function () {
+                            await traerSerevicio("editar");
+                            let extra = editH.getAttribute("data-extra");
+                            // id de la hospitalización
+                            await traerSerevicioH(parseInt(extra));
                             // para traer el valor del data index
                             let index = editH.getAttribute("data-index");
                             editar(parseInt(index));
 
                             // para traer el valor del data extra
-                            let extra = editH.getAttribute("data-extra");
                             // es el id de la hospitalizacion
                             mostrarIE(parseInt(extra));
                             // este evento es para buscar el insumo
@@ -477,7 +499,8 @@ addEventListener("DOMContentLoaded", function () {
                                 traerInsumosE();
                             });
                         });
-                    });
+                    }
+
                     // recorremos los btn informacion
                     document.querySelectorAll(".informacionH").forEach((inforH) => {
                         inforH.addEventListener("click", function () {
@@ -508,12 +531,12 @@ addEventListener("DOMContentLoaded", function () {
 
                     if (filas.length === 2) {
                         // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
-                        document.querySelector("#btnAgregarH").classList.add("d-none");
+                        btnAgregar.classList.add("d-none");
                         document.querySelector("#divModal").classList.add("d-none");
                         document.querySelector("#pModalOculto").classList.remove("d-none");
                     } else {
                         // se muestra el modal y el btn de agregar
-                        document.querySelector("#btnAgregarH").classList.remove("d-none");
+                        btnAgregar.classList.remove("d-none");
                         document.querySelector("#divModal").classList.remove("d-none");
                         document.querySelector("#pModalOculto").classList.add("d-none");
                     }
@@ -525,15 +548,15 @@ addEventListener("DOMContentLoaded", function () {
     };
 
     vistaTabla();
-    document.querySelector("#btnAgregarH").addEventListener("click", async function () {
+    btnAgregar.addEventListener("click", async function () {
         await vistaTabla();
         let semaforo = document.querySelector("#semaforo").value;
         if (parseInt(semaforo) >= 2) {
-            document.querySelector("#btnAgregarH").classList.add("d-none");
+            btnAgregar.classList.add("d-none");
             document.querySelector("#divModal").classList.add("d-none");
             document.querySelector("#pModalOculto").classList.remove("d-none");
         } else {
-            document.querySelector("#btnAgregarH").classList.remove("d-none");
+            btnAgregar.classList.remove("d-none");
             document.querySelector("#divModal").classList.remove("d-none");
             document.querySelector("#pModalOculto").classList.add("d-none");
         }
@@ -566,6 +589,73 @@ addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+        }
+    };
+    let objServiciosHosp = {};
+    const traerSerevicioH = async (idH) => {
+        // llamo la función que trae los servicios de h
+        let resultado = await executePetition(url + "/serviciosDH", "GET");
+
+        let serviciosConten = document.querySelector("#div-serviciosE");
+
+        console.log(resultado);
+
+        if (resultado.length > 0) {
+            let htmlL = ``;
+            for (const res of resultado) {
+                objServiciosHosp[res.id_detalle] = res;
+                if (res.id_hospitalizacion == idH) {
+                    htmlL += `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" data-index="${
+                        res.id_servicioMedico
+                    }">
+                                        <!-- Botón eliminar -->
+                                        <button type="button"
+                                            class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarServ"
+                                            data-index="${res.id_servicioMedico}"
+                                            style="background:none; border:none; font-size:2rem; font-weight:bold; color:#0d6efd; cursor:pointer; z-index:10;">
+                                            ×
+                                        </button>
+    
+                                        <!-- Tarjeta -->
+                                        <a href="#"
+                                            class="card text-decoration-none h-100 shadow-sm border-0 rounded-4"
+                                            style="background: #f4f9ff61; transition: all 0.2s ease;">
+    
+                                            <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
+                                                <div class="fw-semibold text-dark mb-2 m-auto d-flex ">
+                                                    <p class="me-1 text-center cantidadServicio" style="font-size:1rem;">
+                                                        ${res.cantidad}
+                                                    </p>
+                                                    <p class="" style="font-size:1rem;">
+                                                        ${objServiciosBD[res.id_servicioMedico]["categoria"]}
+                                                    </p>
+                                                </div>
+                                                <p class="text-muted mb-1" style="font-size:0.9rem;">
+                                                    ${objServiciosBD[res.id_servicioMedico]["nombre"]} ${
+                        objServiciosBD[res.id_servicioMedico]["apellido"]
+                    }
+                                                </p>
+                                                <p class="fw-bold text-primary mb-0 precioS" style="font-size:0.95rem;">
+                                                    ${objServiciosBD[res.id_servicioMedico]["precio"]} Bs
+                                                </p>
+                                                <div>
+                                                    <input type="hidden" name="id_servicio[]" class="" value="${
+                                                        res.id_servicioMedico
+                                                    }">
+                                                    <input type="hidden" name="cantidadS[]" class="cantidadServicioInput" value="${
+                                                        res.cantidad
+                                                    }">
+                                                </div>                         
+                                            </div>
+                                        </a>
+                                    </div>`;
+                }
+            }
+            serviciosConten.innerHTML = htmlL;
+            document.querySelector("#btnASE").classList.add("d-none");
+            document.querySelector("#btnAServiciosExisteE").classList.remove("d-none");
+        } else {
+            console.log("no se encontró el servicio de la hospitalización");
         }
     };
 

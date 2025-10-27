@@ -131,7 +131,7 @@
 
                                     <div class="col-3 ps-5 pt-1 ">
 
-                                        <div class="d-none" id="btnAServiciosExiste">
+                                        <div class="d-none" id="btnAServiciosExisteA">
                                             <a href="#"
                                                 class="d-flex justify-content-center align-items-center text-decoration-none"
                                                 id="" data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
@@ -156,7 +156,7 @@
                                 </div>
 
                                 <div class="" id="btnAServicioNoExiste">
-                                    <a href="#" class="col-12 text-center text-decoration-none m-0" id="btnAS"
+                                    <a href="#" class="col-12 text-center text-decoration-none m-0" id="btnASA"
                                         data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
                                         <div class="color-icono d-flex align-items-center justify-content-center p-0">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
@@ -170,7 +170,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <p class="mb-4 mt-3 d-none text-danger text-center fw-bolder" id="NoPAservicio">No se puede agregar, ya existe el servicio.</p>
+                                <p class="mb-4 mt-3 d-none text-danger text-center fw-bolder" id="NoPAservicioA">No se puede agregar, ya existe el servicio.</p>
 
                                 <div class="row g-3" id="div-serviciosA">
 
@@ -255,7 +255,7 @@
 
                             <div class="form-floating input-modal mt-3">
                                 <textarea class="form-control border-0 input-modal inputExpresiones input-modal-remove" rows="5"
-                                    placeholder="Leave a comment here" id="floatingTextarea2"
+                                    placeholder="Diagnóstico" id="floatingTextarea2"
                                     name="diagnostico"></textarea>
                                 <label for="floatingTextarea2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
@@ -362,14 +362,14 @@
 
                 <h5 class="fw-bold text-center mb-3">Servicios</h5>
 
-                <div class="row g-3" id="sevicios">
+                <div class="row g-3" id="servicios">
 
                     <p class="m-auto d-none" id="noHayServicio">En estos momentos, no hay servicios disponibles</p>
                 </div>
             </div>
 
             <p class="uk-text-right mt-4 text-center">
-                <button class="uk-button rounded-5 fw-bold " type="button" data-bs-toggle="modal"
+                <button class="uk-button rounded-5 fw-bold " id="btnCancelar" type="button" data-bs-toggle="modal"
                     data-bs-target="#modal-agregar-hospitalizacion">Cancelar</button>
             </p>
 

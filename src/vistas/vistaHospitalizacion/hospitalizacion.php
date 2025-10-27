@@ -85,6 +85,9 @@
                     <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Hospitalizacion")): ?>
                         <!-- no hay -->
                     <?php else: ?>
+                        <div id="alertaPrecioHora" style="display:none; color:red;">
+                            Debe agregar el precio por hora antes de registrar hospitalizaciones.
+                        </div>
                         <button class="btn btn-primary btn-agregar-pacientes mb-2" data-bs-toggle="modal"
                             data-bs-target="#modal-agregar-hospitalizacion" id="btnAgregarH">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
@@ -261,6 +264,7 @@
     <!-- los modales se agregan en js -->
 </div>
 
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/reutilizableHospitalizacion.js"></script>
 <script type="text/javascript"
     src="<?= $urlBase ?>../src/assets/js/hospitalizacion/validacioneshospitalizacion.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
