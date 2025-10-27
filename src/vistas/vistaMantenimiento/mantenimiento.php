@@ -266,7 +266,7 @@
                                     <?php endif; ?>
                                 </div>
 
-                                <div class=" mb-3 animacionInput" id="ingresar-usuario">
+                                <div class="col-12 mb-3 animacionInput" id="ingresar-usuario">
 
                                     <svg xmlns="http://www.w3.org/2000/svg" id="icono-uno" width="20" height="20"
                                         fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
@@ -279,7 +279,7 @@
 
                                 <p class="p-error-usuario d-none p-error-validaciones">El Usuario debe contener Letras, números, guiones y guion bajo, de 8 a 16 caracteres</p>
 
-                                <div id="input-password">
+                                <div class="col-12" id="input-password">
 
                                     <img src="<?= $urlBase ?>../src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
                                     <input type="password" name="password" id="inputDos" class="input input-modal col input-validar"

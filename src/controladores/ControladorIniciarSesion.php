@@ -74,10 +74,10 @@ class ControladorIniciarSesion
         //         if ($result['success']) {
 
 
-        //             if ($_POST['usuario'] === '' or $_POST['password'] === '') {
+                    if ($_POST['usuario'] === '' or $_POST['password'] === '') {
 
-        //                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
-        //             } else {
+                        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
+                    } else {
 
                         $validar = $this->modelo->validarIniciarSesion($_POST['usuario'], $_POST['password']);
 
@@ -105,7 +105,7 @@ class ControladorIniciarSesion
 
                             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/mensaje");
                         }
-        //             }
+                    }
         //         } else {
         //             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
         //         }

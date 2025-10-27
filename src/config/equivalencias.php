@@ -111,6 +111,9 @@ return [
     "verificarPassw" => "consultar",
 
     //Hospitalizacion
+    "serviciosDH" => "consultar",
+    "selectDoctores" => "consultar",
+    "selectServiciosD" => "consultar",
     "traerSesion" => "consultar",
     "traerSesionR" => "consultar",
     "hospitalizacion" => "consultar",

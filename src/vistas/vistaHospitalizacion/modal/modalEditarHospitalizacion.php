@@ -32,7 +32,7 @@
 
             <form method="post" class="me-3 ms-3 mt-2" id="formularioEditarH">
 
-                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'];?>">
+                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
 
                 <div class="mb-5 pb-2">
 
@@ -43,6 +43,63 @@
                             <p class="fw-bolder ms-2" id="NombreAp"><!-- ESTA EN JS --></p>
 
                         </div>
+
+                        <div>
+                            <div class="col-12 d-flex align-items-center justify-content-center  mt-4 pt-3 mb-2">
+
+                                <div class="col-3 ps-5 pt-1 ">
+
+                                    <div class="d-none" id="btnAServiciosExisteE">
+                                        <a href="#"
+                                            class="d-flex justify-content-center align-items-center text-decoration-none"
+                                            id="" data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
+                                            <p class="mt-3 me-1 fw-bolder ">Agregar</p>
+                                            <div class="color-icono">
+
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+                                                    fill="currentColor" class="bi bi-plus-circle me-5"
+                                                    viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                    <path
+                                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                                </svg>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                </div>
+
+                                <h6 class="fw-bold mt-2 ms-5 col-9 ">Servicio médico</h6>
+                            </div>
+
+                            <div class="" id="btnAServicioNoExiste">
+                                <a href="#" class="col-12 text-center text-decoration-none m-0" id="btnASE"
+                                    data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
+                                    <div class="color-icono d-flex align-items-center justify-content-center p-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+                                            fill="currentColor" class="bi bi-plus-circle me-2 " viewBox="0 0 16 16">
+                                            <path
+                                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                            <path
+                                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                        </svg>
+                                        <p class="mt-3 ">Agregar servicio</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <p class="mb-4 mt-3 d-none text-danger text-center fw-bolder" id="NoPAservicioE">No se puede agregar, ya existe el servicio.</p>
+
+                            <div class="row g-3" id="div-serviciosE">
+
+
+
+                                <!-- Más tarjetas se agregan aquí dinámicamente desde JS -->
+
+                            </div>
+                        </div>
+
+
 
                         <div class="" id="">
                             <div>
@@ -106,8 +163,23 @@
 
                             <div class="uk-margin">
                                 <textarea name="historialE" class="uk-textarea" rows="5" placeholder="Textarea"
-                                    aria-label="Textarea" id="historiaE" ></textarea>
+                                    aria-label="Textarea" id="historiaE"></textarea>
                             </div>
+                        </div>
+
+
+                        <div class="form-floating input-modal mt-3">
+                            <textarea class="form-control border-0 input-modal inputExpresiones input-modal-remove" rows="5"
+                                placeholder="Diagnóstico" id="diagnostico"
+                                name="diagnostico"></textarea>
+                            <label for="diagnostico">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                                    class="bi bi-heart-pulse-fill azul me-2" viewBox="0 0 16 16">
+                                    <path
+                                        d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9z" />
+                                    <path
+                                        d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8z" />
+                                </svg>Diagnóstico</label>
                         </div>
 
                     </div>
