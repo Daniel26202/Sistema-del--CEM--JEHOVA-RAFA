@@ -33,6 +33,14 @@ addEventListener("DOMContentLoaded", () => {
   const buscadorCliente = document.getElementById("form-buscador-cliente");
   const dataCliente = document.getElementById("data-cliente");
 
+  const btnCancelarInsertServ = document.getElementById("btnCancelarInsertServ");
+  const btnCancelarInsumo = document.getElementById("btnCancelarInsumo");
+  const btnSiguienteSer = document.getElementById("siguiente");
+  const btnSiguienteInsumo = document.getElementById("siguienteInsumo");
+
+  const divClienteNoEncontrado = document.getElementById("div-cliente-no-encontrado");
+  const btnOpenModalPaciente = document.getElementById("btnOpenModalPaciente");
+
   if (window.location.href.includes("facturaCita")) {
     console.log("id_cita");
   } else {
@@ -62,7 +70,6 @@ addEventListener("DOMContentLoaded", () => {
             noCita[0].innerHTML = `<div class="fw-bolder ">CI: ${res.cedula}</div>`;
             noCita[1].innerHTML = `<div class="fw-bolder">PACIENTE: ${res.nombre} ${res.apellido}</div>`;
             document.getElementById("inputPaciente").value = res.id_paciente;
-            
           }
         });
         document.getElementById("cajaBotones").classList.remove("justify-content-end");
@@ -291,6 +298,24 @@ addEventListener("DOMContentLoaded", () => {
 
       notificationModals(ConteNotificacionServicio, text, "alertaGenericaS");
     });
+  });
+
+  //funcion para cancelar la insercion de servicios
+  btnCancelarInsertServ.addEventListener("click", function () {
+    tablaSevicios.querySelectorAll("tr").forEach((ele) => {
+      ele.classList.remove("d-none");
+    });
+    btnSiguienteSer.classList.add("d-none");
+    listaModalServicio = [];
+  });
+
+  //funcion para cancelar la insercion de insumo
+  btnCancelarInsumo.addEventListener("click", function () {
+    tbodyinsertarInsumo.querySelectorAll("tr").forEach((ele) => {
+      ele.classList.remove("d-none");
+    });
+    btnSiguienteInsumo.classList.add("d-none");
+    listaModalInsumo= [];
   });
 
   //Funcion para agregar alertas intuiitivas en los modales
@@ -746,22 +771,19 @@ addEventListener("DOMContentLoaded", () => {
           document.getElementById("inputCliente").value = res.id_cliente;
         });
         document.getElementById("botonPC").classList.remove("d-none");
-      } else {
-        document.getElementById("myToastfacturaCliente").classList.remove("d-none");
-        const toastElement = document.getElementById("myToastfacturaCliente");
-        const toast = new bootstrap.Toast(toastElement, {
-          autohide: false,
-        });
-        toast.show();
-          dataCliente.innerText = ``;
 
+        divClienteNoEncontrado.classList.add('d-none');
+
+      } else {
+        dataCliente.innerText = ``;
+
+        divClienteNoEncontrado.classList.remove('d-none');
 
         // document.querySelectorAll("data-cliente")[0].innerHTML = ``;
         // document.querySelectorAll("data-cliente")[1].innerHTML = ``;
         document.getElementById("inputCliente").value = "";
 
         document.getElementById("botonPC").classList.add("d-none");
-
       }
     } catch (error) {
       console.log(error);
@@ -785,11 +807,12 @@ addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  document.getElementById("btnRegistrarCliente").addEventListener('click', function () {
-    // document.getElementById("myToastfacturaCliente").classList.add('d-none');
-            UIkit.modal("#modal-cliente").hide();
-
-
+  btnOpenModalPaciente.addEventListener("click", function () {
+    UIkit.modal("#modal-cliente").hide();
+    document.body.classList.remove('uk-modal-page')
+    setTimeout(() => {
+       UIkit.modal("#modal-examplePaciente").show();
+    }, 200);
   });
 
   buscadorCliente.addEventListener("submit", function (e) {

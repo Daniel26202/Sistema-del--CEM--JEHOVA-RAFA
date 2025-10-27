@@ -105,7 +105,7 @@
 
         <div class="modal-footer">
           <button type="button" class="ico uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
-            data-bs-dismiss="modal">Cancelar</button>
+            data-bs-dismiss="modal" id="btnCancelarInsertServ">Cancelar</button>
           <button type="button" class=" btn col-3 btn-agregarcita-modal x d-none" id="siguiente" data-bs-toggle="modal"
             data-bs-target="#modal-agregar-servicio">Siguente</button>
         </div>
@@ -133,7 +133,7 @@
             <path
               d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0Z" />
           </svg>
-          <h5>INSERTAR SERVICIOS</h5>
+          <h5>AGREGAR SERVICIOS</h5>
         </div>
         <a type="button" aria-label="Close" data-bs-toggle="modal" data-bs-target="#modal-agregar">
           <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
@@ -201,7 +201,7 @@
             <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
               data-bs-toggle="modal" data-bs-target="#modal-agregar">Volver</button>
             <button type="submit" class="btn col-3 btn-agregarcita-modal x" data-bs-dismiss="modal"
-              id="insertarServicio">Insertar</button>
+              id="insertarServicio">Agregar</button>
           </div>
 
         </div>
@@ -506,7 +506,7 @@
 
         <div class="modal-footer">
           <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
-            data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">Anterior</button>
+            data-bs-toggle="modal" id="btnCancelarInsumo">Cancelar</button>
           <button type="button" class="btn col-3 btn-agregarcita-modal x d-none" data-bs-toggle="modal"
             data-bs-target="#modal-agregar-insumos-confirmar" id="siguienteInsumo">Siguiente</button>
         </div>
@@ -596,9 +596,9 @@
 
           <div class="modal-footer">
             <button type="button" class="uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
-              data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos-2">Anterior</button>
+              data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">Anterior</button>
             <button type="submit" class="btn col-3 btn-agregarcita-modal x" id="insertarInsumo"
-              data-bs-dismiss="modal">Insertar</button>
+              data-bs-dismiss="modal">Agregar</button>
           </div>
         </div>
 
@@ -851,7 +851,7 @@
         <div class=" d-none" id="caja-buscar-cliente">
 
 
-          <h5 style="margin-bottom: 20px;margin-top: 20px;" class="text-center">Buscar el cliente por cedula</h5>
+          <h5 style="margin-bottom: 20px;margin-top: 20px;" class="text-center">Buscar el cliente por la cedula</h5>
 
           <form style="margin-bottom: 20px;margin-top: 20px;" id="form-buscador-cliente" class="d-flex justify-content-end" autocomplete="off">
             <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
@@ -870,8 +870,14 @@
 
           <h5 style="margin-bottom: 20px;margin-top: 20px;" class="text-center" id="data-cliente"></h5>
 
+          <div id="div-cliente-no-encontrado" class=" d-none">
+            <h5 class="text-center">El cliente no fue encontrado por favor añadalo</h5>
+            <button type="button" id="btnOpenModalPaciente" class="btn btn-agregarcita-modal w-100" uk-toggle="target: #modal-examplePaciente" data-bs-dismiss="toast"> Registrar </button>
+          </div>
 
         </div>
+
+
 
       </div>
 
