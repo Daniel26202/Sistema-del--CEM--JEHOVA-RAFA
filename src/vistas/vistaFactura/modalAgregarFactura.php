@@ -843,7 +843,7 @@
               value="">
           </div>
           <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
-              Desea que la factura sea a nombre de otra persona que no sea el paciente
+              Desea que la factura sea a nombre de otra persona que no sea el paciente?
             </label></div>
 
         </div>
