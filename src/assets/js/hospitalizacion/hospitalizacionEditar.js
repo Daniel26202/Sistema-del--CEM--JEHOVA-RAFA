@@ -656,6 +656,8 @@ addEventListener("DOMContentLoaded", function () {
             document.querySelector("#btnAServiciosExisteE").classList.remove("d-none");
         } else {
             serviciosConten.innerHTML = "";
+            document.querySelector("#btnASE").classList.remove("d-none");
+            document.querySelector("#btnAServiciosExisteE").classList.add("d-none");
 
             console.log("no se encontró el servicio de la hospitalización");
         }
