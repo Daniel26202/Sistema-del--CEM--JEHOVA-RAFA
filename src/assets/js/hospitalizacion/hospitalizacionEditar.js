@@ -594,7 +594,7 @@ addEventListener("DOMContentLoaded", function () {
     let objServiciosHosp = {};
     const traerSerevicioH = async (idH) => {
         // llamo la función que trae los servicios de h
-        let resultado = await executePetition(url + "/serviciosDH", "GET");
+        let resultado = await executePetition(url + "/serviciosDH/" + idH, "GET");
 
         let serviciosConten = document.querySelector("#div-serviciosE");
 
@@ -604,10 +604,14 @@ addEventListener("DOMContentLoaded", function () {
             let htmlL = ``;
             for (const res of resultado) {
                 objServiciosHosp[res.id_detalle] = res;
-                if (res.id_hospitalizacion == idH) {
-                    htmlL += `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" data-index="${
-                        res.id_servicioMedico
-                    }">
+
+                // aumentar la cantidad Serv
+                let newCantidad = parseInt(res.cantidad);
+                // Actualizar el precio
+                let precioS = newCantidad * objServiciosBD[res.id_servicioMedico]["precio"];
+
+                htmlL += `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" 
+                            data-index="${res.id_servicioMedico}">
                                         <!-- Botón eliminar -->
                                         <button type="button"
                                             class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarServ"
@@ -624,37 +628,35 @@ addEventListener("DOMContentLoaded", function () {
                                             <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
                                                 <div class="fw-semibold text-dark mb-2 m-auto d-flex ">
                                                     <p class="me-1 text-center cantidadServicio" style="font-size:1rem;">
-                                                        ${res.cantidad}
+                                                        ${newCantidad}
                                                     </p>
                                                     <p class="" style="font-size:1rem;">
                                                         ${objServiciosBD[res.id_servicioMedico]["categoria"]}
                                                     </p>
                                                 </div>
                                                 <p class="text-muted mb-1" style="font-size:0.9rem;">
-                                                    ${objServiciosBD[res.id_servicioMedico]["nombre"]} ${
-                        objServiciosBD[res.id_servicioMedico]["apellido"]
-                    }
+                                                    ${objServiciosBD[res.id_servicioMedico]["nombre"]} 
+                                                    ${objServiciosBD[res.id_servicioMedico]["apellido"]}
                                                 </p>
                                                 <p class="fw-bold text-primary mb-0 precioS" style="font-size:0.95rem;">
-                                                    ${objServiciosBD[res.id_servicioMedico]["precio"]} Bs
+                                                    ${precioS} Bs
                                                 </p>
                                                 <div>
-                                                    <input type="hidden" name="id_servicio[]" class="" value="${
-                                                        res.id_servicioMedico
-                                                    }">
-                                                    <input type="hidden" name="cantidadS[]" class="cantidadServicioInput" value="${
-                                                        res.cantidad
-                                                    }">
+                                                    <input type="hidden" name="id_servicio[]" class="" 
+                                                    value="${res.id_servicioMedico}">
+                                                    <input type="hidden" name="cantidadS[]" class="cantidadServicioInput" 
+                                                    value="${newCantidad}">
                                                 </div>                         
                                             </div>
                                         </a>
                                     </div>`;
-                }
             }
             serviciosConten.innerHTML = htmlL;
             document.querySelector("#btnASE").classList.add("d-none");
             document.querySelector("#btnAServiciosExisteE").classList.remove("d-none");
         } else {
+            serviciosConten.innerHTML = "";
+
             console.log("no se encontró el servicio de la hospitalización");
         }
     };

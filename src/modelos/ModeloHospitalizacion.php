@@ -3,7 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\Db;
-use App\modelos\ModeloFactura;
 use Exception;
 use PDO;
 
@@ -11,12 +10,10 @@ class ModeloHospitalizacion extends Db
 {
 
     private $conexion;
-    private $modeloFactura;
 
     public function __construct()
     {
         $this->conexion = $this->connectionSistema();
-        $this->modeloFactura = new ModeloFactura();
     }
 
     // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito, para mostrarlo en la tabla de la vista (de las hospitalizaciones pendientes)
@@ -49,9 +46,10 @@ class ModeloHospitalizacion extends Db
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
-    public function selectServiciosDH()
+    public function selectServiciosDH($idH)
     {
-        $consulta = $this->conexion->prepare("SELECT * FROM servicios_hospitalizacion;");
+        $consulta = $this->conexion->prepare("SELECT * FROM servicios_hospitalizacion WHERE id_hospitalizacion = :id_hospitalizacion;");
+        $consulta->bindParam(":id_hospitalizacion", $idH);
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
@@ -199,7 +197,7 @@ class ModeloHospitalizacion extends Db
                         $consulta2->bindParam(":cantidad", $cantidad[$contadorC]);
                         $consulta2->execute();
                     }
-                    
+
                     $contadorC++;
                 }
             }
@@ -255,13 +253,13 @@ class ModeloHospitalizacion extends Db
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
-    public function editarH($idInsumosA, $cantidadE, $cantidadA, $historial, $idHos, $idIDH, $idInsElim, $diagnostico)
+    public function editarH($idInsumosA, $cantidadE, $cantidadA, $historial, $idHos, $idIDH, $idInsElim, $diagnostico, $idServicio, $cantidadS)
     {
         try {
             $this->conexion->beginTransaction();
 
             // consulta el id del control
-            $consulta = $this->conexion->prepare("SELECT con.id_control FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp;");
+            $consulta = $this->conexion->prepare("SELECT con.id_control FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1;");
             $consulta->bindParam(":idHosp", $idHos);
             $idControl = ($consulta->execute()) ? $consulta->fetch() : false;
 
@@ -283,7 +281,7 @@ class ModeloHospitalizacion extends Db
                     // selecciono la cantidad del insumo existente de la hospitalización
                     $consulta = $this->conexion->prepare('SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE id_insumoDeHospitalizacion = :id');
                     $consulta->bindParam(":id", $idInDHos);
-                    $cantidadIHBD = ($consulta->execute()) ? $consulta->fetch(PDO::FETCH_ASSOC) : false;
+                    $cantidadIHBD = ($consulta->execute()) ? $consulta->fetch() : false;
 
                     // se edita los insumos de la hospitalización
                     $consulta = $this->conexion->prepare('UPDATE insumodehospitalizacion SET cantidad= :cantidad WHERE id_insumoDeHospitalizacion = :id_hdi');
@@ -356,7 +354,6 @@ class ModeloHospitalizacion extends Db
                 }
             }
 
-
             // es para eliminar insumos
             // si hay un id del insumo eliminado devuelve verdadero si no, devuelve falso
             if ($idInsElim) {
@@ -385,6 +382,70 @@ class ModeloHospitalizacion extends Db
                     $contador++;
                 }
             }
+
+            // servicios
+            $datosSHBD = $this->selectServiciosDH($idHos);
+
+            $servAnterioresIdC = [];
+            $idsServAnteriores = [];
+            foreach ($datosSHBD as $i => $datos) {
+                $id = (int)$datos['id_servicioMedico'];
+                // sirve como los ... en php en un array , array vacio
+                $idsServAnteriores[$i] = $id;
+                $servAnterioresIdC[$id] = (int)$datos['cantidad'];
+            }
+
+            // devuelve el valor de el array en int y si no tiene nada devuelve un array vacío
+            $idsServNuevos = array_map('intval', $idServicio ?? []);
+            $cantServNuevas = $cantidadS ?? [];
+
+            $servIdCNuevas = [];
+            // se hace un mapeo, es como un obj con propiedades
+            foreach ($idsServNuevos as $contador => $id) {
+                // valida si alguno no tiene cantidad
+                $servIdCNuevas[$id] = isset($cantServNuevas[$contador]) ? (int)$cantServNuevas[$contador] : 1;
+            }
+            // trae los elementos que estan en el (primer) array pero no en el (segundo)
+            $servEliminados = array_diff($idsServAnteriores, $idsServNuevos);
+            $servAgregados  = array_diff($idsServNuevos, $idsServAnteriores);
+            // trae los elementos que estan en ambos 
+            $servIguales    = array_intersect($idsServNuevos, $idsServAnteriores);
+
+            // Eliminar servicios
+            if ($servEliminados != null || $servEliminados != []) {
+                foreach ($servEliminados as $idSE) {
+                    $consulta = $this->conexion->prepare('DELETE FROM servicios_hospitalizacion WHERE id_hospitalizacion = :id_hospitalizacion AND id_servicioMedico = :id_servicioMedico');
+                    $consulta->bindParam(":id_hospitalizacion", $idHos);
+                    $consulta->bindParam(":id_servicioMedico", $idSE);
+                    $consulta->execute();
+                }
+            }
+            // Insertar servicios
+            if ($servAgregados != null || $servAgregados != []) {
+                foreach ($servAgregados as $idSA) {
+                    $consulta = $this->conexion->prepare('INSERT INTO servicios_hospitalizacion (id_hospitalizacion, id_servicioMedico, cantidad) VALUES (:id_hospitalizacion, :id_servicioMedico, :cantidad)');
+                    $consulta->bindValue(":id_hospitalizacion", $idHos);
+                    $consulta->bindValue(":id_servicioMedico", $idSA);
+                    $consulta->bindValue(":cantidad", $servIdCNuevas[$idSA]);
+                    $consulta->execute();
+                }
+            }
+
+
+            // Actualizar cantidades de servicios
+            if ($servIguales != null || $servIguales != []) {
+                foreach ($servIguales as $idS) {
+                    $consulta = $this->conexion->prepare('UPDATE servicios_hospitalizacion SET cantidad = :cantidad WHERE id_hospitalizacion = :id_hospitalizacion AND id_servicioMedico = :id_servicioMedico');
+                    $consulta->bindValue(":id_hospitalizacion", $idHos);
+                    $consulta->bindValue(":id_servicioMedico", $idS);
+                    $consulta->bindValue(":cantidad", $servIdCNuevas[$idS]);
+                    $consulta->execute();
+                }
+            }
+
+
+            // $consulta->bindValue(":cantidad", (int)$servIdCNuevas[$idSA], PDO::PARAM_INT);
+
 
             $this->conexion->commit();
             return "exito";

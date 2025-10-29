@@ -83,9 +83,10 @@ class ControladorHospitalizacion
         $servicios = $this->modelo->selectServiciosD();
         echo json_encode($servicios);
     }
-    public function serviciosDH()
+    public function serviciosDH($datos)
     {
-        $servicios = $this->modelo->selectServiciosDH();
+        $idH = $datos[0];
+        $servicios = $this->modelo->selectServiciosDH($idH);
         echo json_encode($servicios);
     }
 
@@ -175,6 +176,12 @@ class ControladorHospitalizacion
     // traer datos de los insumos correspondiendo a la hospitalización que se edita.
     public function modificarH()
     {
+
+        $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : [];
+        $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
+
+
+
         // para verificar y agregar
         $idInsumo = (isset($_POST["id_insumoA"])) ? $_POST["id_insumoA"] : false;
         $cantidadA = (isset($_POST["cantidadA"])) ? $_POST["cantidadA"] : false;
@@ -228,10 +235,13 @@ class ControladorHospitalizacion
             }
         }
 
+
+
+
         // esto se puede usar $_POST["id_controlE"]. 
-        $this->modelo->editarH($idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, "");
+        $this->modelo->editarH($idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, $_POST["diagnostico"], $idServicio, $cantidadS);
         // Guardar la bitacora
-        $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha modificado una hospitalizacion");
+        $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha modificado una hospitalización");
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion");
     }
 
