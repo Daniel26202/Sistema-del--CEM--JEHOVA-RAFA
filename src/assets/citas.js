@@ -111,7 +111,7 @@ addEventListener("DOMContentLoaded", () => {
       document.getElementById("fecha").value = "";
       //document.getElementById("divAcordion").remove();
     } else {
-      document.getElementById("listaDoctores").innerHTML = "NO HAY DOCTORES DISPONIBLES PARA ESTA SERVICIO MEDICO";
+      document.getElementById("listaDoctores").innerHTML = "NO HAY DOCTORES DISPONIBLES PARA ESTE SERVICIO MEDICO";
       document.getElementById("divAcordion").remove();
       document.getElementById("btnAgregarCita").classList.add("d-none");
     }
@@ -202,6 +202,7 @@ addEventListener("DOMContentLoaded", () => {
     });
     console.log(inputsBuenos);
     console.log(document.querySelector(".p-error-fechaDeCita").classList.contains("d-none"));
+    
     if (
       (inputsBuenos.length == 5 && document.querySelector(".p-error-fechaDeCita").classList.contains("d-none")) ||
       (inputsBuenos.length == 5 && document.querySelector(".p-error-fn").classList.contains("d-none"))
