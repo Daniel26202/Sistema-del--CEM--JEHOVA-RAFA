@@ -197,7 +197,7 @@
                                                     value="<?= $sintomas["id_sintomas"]; ?>">
                                             </div>
                                             <div>
-                                                <label class="form-check-label mt-1 for=" flexSwitchCheckDefault">
+                                                <label class="form-check-label mt-1 for=" flexSwitchCheckDefault>
                                                     <?= $sintomas['nombre']; ?>
                                                 </label>
                                             </div>
@@ -245,7 +245,7 @@
                                                         value="<?= $doctor["id_usuario"]; ?>">
                                                 </div>
                                                 <div>
-                                                    <label class="form-check-label mt-1 for=" flexSwitchCheckDefault">
+                                                    <label class="form-check-label mt-1 for=" flexSwitchCheckDefault>
                                                         <?= $doctor['nombredoc'] .' '. $doctor['apellidodoc']; ?>
                                                     </label>
                                                 </div>

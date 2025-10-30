@@ -173,7 +173,9 @@ addEventListener("DOMContentLoaded", function () {
     const nombreApE = document.querySelector("#NombreAp");
     const precioHE = document.querySelector("#precioH");
     const historiaE = document.querySelector("#historiaE");
+    const historiaEnF = document.querySelector("#historiaEnF");
     const diagnosticoE = document.querySelector("#diagnostico");
+    const diagnosticoEnF = document.querySelector("#diagnosticoEnF");
 
     async function editar(indice) {
         // obtenemos los datos del elemento seleccionado
@@ -190,7 +192,9 @@ addEventListener("DOMContentLoaded", function () {
 
         // trim() quita los espacios en el principio y al final
         historiaE.value = hME.value;
+        historiaEnF.value = hME.value;
         diagnosticoE.value = diagnostico.value;
+        diagnosticoEnF.value = diagnostico.value;
 
         let idControl = document.querySelectorAll(".idC")[indice];
         document.querySelector("#idCE").value = parseInt(idControl.value);
@@ -285,7 +289,7 @@ addEventListener("DOMContentLoaded", function () {
                     document.querySelector("#tbody").innerHTML = html;
                 } else {
                     let html = ``;
-                    let htmlModalElim = ``;
+                    let htmlModales = ``;
 
                     // console.log(resultad[1]);
                     // recorro los datos de hospitalización
@@ -373,7 +377,7 @@ addEventListener("DOMContentLoaded", function () {
                         if (resultad[0][1] == 0) {
                             html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <a href="#" class="btn btn-tabla mb-1 me-1 btnFH text-white" uk-tooltip="Facturar hospitalización" id="" title=""
+                                                <a href="#" class="btn btn-tabla mb-1 me-1 text-white btnFH" data-bs-toggle="modal" data-bs-target="#modalEnvioFacturaHospitalizacion" uk-tooltip="Facturar hospitalización" id="" title=""
                                                     aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
                                                     <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
@@ -389,7 +393,7 @@ addEventListener("DOMContentLoaded", function () {
                                 </tr>`;
 
                         // contenido del modal de eliminar
-                        htmlModalElim += `
+                        htmlModales += `
                                         <div>
                                             <input type="hidden" name="" class="fechaInicio" value="${res["fecha_hora_inicio"]}">
                                             <input class="precioHo" type="hidden" name="" value="${res.precio_horas}">
@@ -459,7 +463,7 @@ addEventListener("DOMContentLoaded", function () {
                     document.querySelector("#semaforo").value = resultad[0][2];
 
                     document.querySelector("#tbody").innerHTML = html;
-                    document.querySelector("#modalEli").innerHTML = htmlModalElim;
+                    document.querySelector("#modalEli").innerHTML = htmlModales;
 
                     let aFacH = document.querySelectorAll(".btnFH");
                     // aFacH
@@ -467,16 +471,17 @@ addEventListener("DOMContentLoaded", function () {
                         factH.addEventListener("click", async function () {
                             // para traer el valor del data index
                             let index = this.getAttribute("data-index");
+                            editar(parseInt(index));
                             let idHospit = this.getAttribute("data-id-hospitalizacion");
                             console.log(idHospit + " id hospitalizacion");
 
                             let datos = await mostrarInf(parseInt(index), parseInt(idHospit));
-                            let monto = datos[0];
-                            let montoME = datos[1];
-                            let total = datos[2];
-                            let totalME = datos[3];
-
-                            window.location.href = `/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/enviarAFacturar/${idHospit}/${monto}/${montoME}/${total}/${totalME}`;
+                            document.querySelector("#idH").value = idHospit;
+                            document.querySelector("#monto").value = datos[0];
+                            document.querySelector("#montoME").value = datos[1];
+                            document.querySelector("#total").value = datos[2];
+                            document.querySelector("#totalME").value = datos[3];
+                            
                         });
                     }
                     const btnEditar = document.querySelectorAll(".editarH");
@@ -484,8 +489,8 @@ addEventListener("DOMContentLoaded", function () {
                     for (const editH of btnEditar) {
                         editH.addEventListener("click", async function () {
                             await traerSerevicio("editar");
-                            let extra = editH.getAttribute("data-extra");
                             // id de la hospitalización
+                            let extra = editH.getAttribute("data-extra");
                             await traerSerevicioH(parseInt(extra));
                             // para traer el valor del data index
                             let index = editH.getAttribute("data-index");
@@ -1336,4 +1341,50 @@ addEventListener("DOMContentLoaded", function () {
             console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
         }
     };
+
+    let alertHEnvF = document.querySelector("#alertHEnvF");
+
+    let formEnviarFactura = document.querySelector("#modalEnvioFacturaHospitalizacion");
+    const saveControl = async () => {
+        let textAlert = "",
+            classAlert = "";
+        try {
+            const data = new FormData(formEnviarFactura);
+            let result = await executePetition(url + "/enviarAFacturar", "POST", data);
+            alertHEnvF.classList.remove("d-none");
+            textAlert = `Se registro correctamente el control medico del Paciente con la cédula ${result.data.cedula}`;
+            classAlert = "uk-alert-primary";
+            readControl(result.data.cedula);
+            console.log("Resultado");
+            console.log(result);
+        } catch (error) {
+            textAlert = `Lamentablemente algo salio mal por favor intente mas tarde`;
+            classAlert = "uk-alert-danger";
+        } finally {
+            showAlert(alertHEnvF, textAlert, classAlert);
+        }
+    };
+
+    let inputsExpresiones = document.querySelectorAll("#modalEnvioFacturaHospitalizacion .inputExpresiones");
+
+    inputsExpresiones.forEach((input) => {
+        input.addEventListener("input", validarFormularioControl);
+    });
+
+    formEnviarFactura.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (campos.sintomas && campos.diagnostico && campos.indicaciones && campos.fechaRegreso) {
+            saveControl();
+            formEnviarFactura.reset();
+            document.querySelectorAll(`#modalEnvioFacturaHospitalizacion .input-modal-remove`).forEach((ele) => {
+                if (ele.parentElement.classList.contains("grpFormCorrectControl")) {
+                    ele.parentElement.classList.remove("grpFormCorrectControl");
+                } else {
+                    ele.setAttribute("style", "");
+                }
+            });
+        } else {
+            alert("Por favor verifique el formulario antes de enviarlo");
+        }
+    });
 });

@@ -4,6 +4,8 @@ use App\modelos\ModeloHospitalizacion;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
+use App\modelos\ModeloPatologia;
+use App\modelos\ModeloSintomas;
 
 class ControladorHospitalizacion
 {
@@ -12,6 +14,8 @@ class ControladorHospitalizacion
     private $bitacora;
     private $permisos;
     private $inicio;
+    private $modeloSintomas;
+    private $modeloPatologia;
 
     function __construct()
     {
@@ -19,6 +23,9 @@ class ControladorHospitalizacion
         $this->bitacora = new ModeloBitacora();
         $this->permisos = new ModeloPermisos();
         $this->inicio = new ModeloInicio();
+        $this->modeloSintomas = new ModeloSintomas();
+        $this->modeloPatologia = new ModeloPatologia();
+
         $this->semaforo();
     }
 
@@ -70,6 +77,9 @@ class ControladorHospitalizacion
         // datos de los insumos
         $datosI = $this->modelo->selectsInsumos();
         $doctores = $this->modelo->selectDoctores();
+
+        $datosS = $this->modeloSintomas->selects();
+        $datosPatologias = $this->modeloPatologia->mostrarPatologias();
 
         require_once "./src/vistas/vistaHospitalizacion/hospitalizacion.php";
     }
@@ -267,16 +277,16 @@ class ControladorHospitalizacion
     }
 
     // enviar los datos de la hospitalización a factura 
-    public function enviarAFacturar($datos)
+    public function enviarAFacturar()
     {
-        $idH = $datos[0];
+        $idH = $_POST["idH"];
         date_default_timezone_set('America/Caracas');
         $fechaHF = date("Y-m-d H:i:s");
-        $monto = round($datos[1], 2);
-        $montoME = round($datos[2], 2);
-        $total = round($datos[3], 2);
-        $totalME = round($datos[4], 2);
-        $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME);
+        $monto = round($_POST["monto"], 2);
+        $montoME = round($_POST["montoME"], 2);
+        $total = round($_POST["total"], 2);
+        $totalME = round($_POST["totalME"], 2);
+        $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME, $_POST["historialEnF"], $_POST["sintomas"], $_POST["patologias"], $_POST["nota"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["severidad"], $_POST["severidad"]);
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H$idH");
     }
 

@@ -253,15 +253,21 @@ class ModeloHospitalizacion extends Db
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
+    public function datosControl($idH)
+    {
+        // consulta el id del control
+        $consulta = $this->conexion->prepare("SELECT con.id_control, con.id_paciente FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1;");
+        $consulta->bindParam(":idHosp", $idH);
+        return ($consulta->execute()) ? $consulta->fetch() : false;
+    }
+
     public function editarH($idInsumosA, $cantidadE, $cantidadA, $historial, $idHos, $idIDH, $idInsElim, $diagnostico, $idServicio, $cantidadS)
     {
         try {
             $this->conexion->beginTransaction();
 
             // consulta el id del control
-            $consulta = $this->conexion->prepare("SELECT con.id_control FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1;");
-            $consulta->bindParam(":idHosp", $idHos);
-            $idControl = ($consulta->execute()) ? $consulta->fetch() : false;
+            $idControl = $this->datosControl($idHos);
 
             // editar control
             $consulta = $this->conexion->prepare('UPDATE control SET historiaclinica = :historial, diagnostico = :diagnostico WHERE id_control = :id_control;');
@@ -497,23 +503,57 @@ class ModeloHospitalizacion extends Db
         return ($consulta->execute()) ? $consulta->fetchAll() : false;
     }
 
-    public function facturarH($idH, $fechaHoraFinal, $monto, $montoME,  $total, $totalME)
+    public function facturarH($idH, $fechaHoraFinal, $monto, $montoME,  $total, $totalME, $historialEnF, $sintomas, $patologias, $nota, $indicaciones, $fechaRegreso, $diagnostico, $severidad)
     {
-        // try {
+        try {
+            $this->conexion->beginTransaction();
 
-        // editar hospitalización
-        $consulta = $this->conexion->prepare("UPDATE hospitalizacion SET precio_horas = :precio_horas ,precio_horas_MoEx = :precio_horas_me ,total= :total ,total_MoEx = :total_me ,fecha_hora_final = :fecha_hora_final WHERE id_hospitalizacion = :id_hospitalizacion");
-        $consulta->bindParam(":precio_horas", $monto);
-        $consulta->bindParam(":precio_horas_me", $montoME);
-        $consulta->bindParam(":total", $total);
-        $consulta->bindParam(":total_me", $totalME);
-        $consulta->bindParam(":fecha_hora_final", $fechaHoraFinal);
-        $consulta->bindParam(":id_hospitalizacion", $idH);
-        return ($consulta->execute()) ? true : false;
+            // editar hospitalización
+            $consulta = $this->conexion->prepare("UPDATE hospitalizacion SET precio_horas = :precio_horas ,precio_horas_MoEx = :precio_horas_me ,total= :total ,total_MoEx = :total_me ,fecha_hora_final = :fecha_hora_final WHERE id_hospitalizacion = :id_hospitalizacion");
+            $consulta->bindParam(":precio_horas", $monto);
+            $consulta->bindParam(":precio_horas_me", $montoME);
+            $consulta->bindParam(":total", $total);
+            $consulta->bindParam(":total_me", $totalME);
+            $consulta->bindParam(":fecha_hora_final", $fechaHoraFinal);
+            $consulta->bindParam(":id_hospitalizacion", $idH);
+            $consulta->execute();
 
-        // } catch (\Exception $e) {
-        // print_r("ocurrio un error en hospitalización, intente mas tarde");
-        // }
+            $datosControl = $this->datosControl($idH);
+            $consulta = $this->conexion->prepare('UPDATE control SET medicamentosRecetados = :indicaciones, historiaclinica = :historial, diagnostico = :diagnostico, fechaRegreso = :fechaRegreso, nota = :nota, estado = "ACT", severidad = :severidad WHERE id_control = :id_control;');
+            $consulta->bindParam(":indicaciones", $indicaciones);
+            $consulta->bindParam(":historial", $historialEnF);
+            $consulta->bindParam(":diagnostico", $diagnostico);
+            $consulta->bindParam(":fechaRegreso", $fechaRegreso);
+            $consulta->bindParam(":nota", $nota);
+            $consulta->bindParam(":severidad", $severidad);
+            $consulta->bindParam(":id_control", $datosControl["id_control"]);
+            $consulta->execute();
+
+
+            if ($patologias) {
+
+                // primero se registra la patologia del paciente
+                foreach ($patologias as $patologia) {
+                    $consulta2 = $this->conexion->prepare("INSERT INTO patologiadepaciente(id_paciente, id_patologia, fecha_registro) VALUES (:id_paciente, :id_patologia, NOW())");
+                    $consulta2->bindParam(":id_paciente", $datosControl["id_paciente"]);
+                    $consulta2->bindParam(":id_patologia", $patologia);
+                    $consulta2->execute();
+                }
+            }
+            // agrega el síntoma 
+            foreach ($sintomas as $sintoma) {
+                $sql = $this->conexion->prepare("INSERT INTO sintomas_control(id_sintomas, id_control) VALUES (:sintoma,:idControl);");
+                $sql->bindParam(":sintoma", $sintoma);
+                $sql->bindParam(":idControl", $datosControl["id_control"]);
+                $sql->execute();
+            }
+
+            $this->conexion->commit();
+            return "exito";
+        } catch (\Exception $e) {
+            $this->conexion->rollBack();
+            print_r($e);
+        }
     }
     public function semaforo()
     {
