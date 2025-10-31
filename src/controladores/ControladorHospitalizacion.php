@@ -46,8 +46,7 @@ class ControladorHospitalizacion
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-        $idUsuario = $_SESSION['id_usuario'];
-        $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
+        $validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
         $sesion = [$_SESSION['rol'], $validacionCargo, $_SESSION['semaforo']];
         // datos de las h. pendientes
         $datosH = $this->modelo->selectsH();
@@ -57,11 +56,14 @@ class ControladorHospitalizacion
     // mostrar los datos de la tabla (hospitalizaciones realizadas) 
     public function traerSesionR()
     {
-        session_start();
-        $sesion = $_SESSION['rol'];
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
         // datos de las h. realizadas
         $datosH = $this->modelo->selectsHR();
-        $array = [$sesion, $datosH];
+        $array = [$validacionCargo, $datosH];
         echo json_encode($array);
     }
 
@@ -73,7 +75,7 @@ class ControladorHospitalizacion
         }
 
         $idUsuario = $_SESSION['id_usuario'];
-        $validacionCargo = $this->inicio->comprobarCargo($idUsuario);
+        $validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
         // datos de los insumos
         $datosI = $this->modelo->selectsInsumos();
         $doctores = $this->modelo->selectDoctores();
@@ -85,6 +87,13 @@ class ControladorHospitalizacion
     }
     public function hospitalizacionesRealizadas($parametro)
     {
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        $idUsuario = $_SESSION['id_usuario'];
+        $validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
         require_once "./src/vistas/vistaHospitalizacion/hospitalizacionesRealizadas.php";
     }
 
@@ -286,7 +295,7 @@ class ControladorHospitalizacion
         $montoME = round($_POST["montoME"], 2);
         $total = round($_POST["total"], 2);
         $totalME = round($_POST["totalME"], 2);
-        $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME, $_POST["historialEnF"], $_POST["sintomas"], $_POST["patologias"], $_POST["nota"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["severidad"], $_POST["severidad"]);
+        $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME, $_POST["historialEnF"], $_POST["sintomas"], $_POST["patologias"], $_POST["nota"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["diagnostico"], $_POST["severidad"]);
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H$idH");
     }
 

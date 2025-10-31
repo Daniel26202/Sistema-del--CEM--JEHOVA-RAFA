@@ -5,30 +5,24 @@ addEventListener("DOMContentLoaded", function () {
 
     // mostrar datos en la tabla de hospitalizaciones realizadas
     const vistaTablaR = async () => {
-        try {
+        // llamo la función
+        let resultad = await executePetition(url + "/traerSesionR", "GET");
 
-            // llamo la función 
-            peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesionR");
-            let resultad = await peticion.json();
-
-            if (resultad.length == 0) {
-                console.log("algo salio mal");
-            } else {
-                if (resultad[1] == false) {
-                    html = `<tr>
+        if (resultad.length == 0) {
+            console.log("algo salio mal");
+        } else {
+            if (resultad[1] == false) {
+                html = `<tr>
                                 <td colspan="8" class="text-center">NO HAY REGISTROS
                                 </td>
                             </tr>`;
-                    document.querySelector("#tbodyR").innerHTML = html;
-
-                } else {
-
-                    let html = ``;
-                    // recorro los datos de hospitalización
-                    resultad[1].forEach((res) => {
-
-                        // contenido de la tabla.
-                        html += `<tr>
+                document.querySelector("#tbodyR").innerHTML = html;
+            } else {
+                let html = ``;
+                // recorro los datos de hospitalización
+                resultad[1].forEach((res) => {
+                    // contenido de la tabla.
+                    html += `<tr>
                                     <td>
                                         ${res["cedula"]}
                                     </td>
@@ -43,40 +37,33 @@ addEventListener("DOMContentLoaded", function () {
                                     </td>
                                     <td>
                                         ${res["nombredoc"]} ${res["apellidodoc"]}
-                                    </td>
-                                    <td>
-                                        ${res["duracion"]} h.
-                                    </td>`
+                                    </td>`;
 
-                        // verifico si es administrador o usuario
-                        if (resultad[0] == "usuario") {
-                            html += `<!--no hay-->`;
-                        }
-                        // verifico si es administrador o usuario
-                        if (resultad[0] == "administrador") {
-                            html += `<td>
+                    // verifico si es administrador o usuario
+                    // uno es doctor
+                    if (resultad[0] == 1) {
+                        html += `<!--no hay-->`;
+                    }
+                    // verifico si es administrador o usuario
+                    // cero es administrador mas no doctor
+                    if (resultad[0] == 0) {
+                        html += `<td>
                                         ${res["total"]} bs
                                     </td>`;
-                        }
+                    }
+                });
 
-                    })
-
-                    document.querySelector("#tbodyR").innerHTML = html;
-                }
-
+                document.querySelector("#tbodyR").innerHTML = html;
             }
-
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
         }
-    }
+
+    };
     vistaTablaR();
 
     let inputBuscHR = document.querySelector("#inputBuscHR");
     const notifi = document.querySelector("#notificacionR");
 
-
-    // buscador de hospitalización 
+    // buscador de hospitalización
     function buscarH() {
         let contadorH = 0;
         let contadorHNo = 0;
@@ -86,11 +73,11 @@ addEventListener("DOMContentLoaded", function () {
         // recolecto la cédula del input
         let cdH = inputBuscHR.value;
         // recorro las filas de la tabla
-        filas.forEach(fila => {
+        filas.forEach((fila) => {
             // cuenta las hospitalizaciones que existen.
             contadorH = contadorH + 1;
-            
-            // verifico si la cédula existe 
+
+            // verifico si la cédula existe
             if (fila.children[0].innerText.includes(cdH)) {
                 console.log("si existe");
                 fila.classList.remove("d-none");
@@ -103,7 +90,7 @@ addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes 
+        // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes
         if (contadorH === contadorHNo) {
             // muestra el texto.
             notifi.classList.remove("d-none");
@@ -111,7 +98,7 @@ addEventListener("DOMContentLoaded", function () {
     }
 
     // al presionar click realiza la función
-    document.querySelector("#btnBuscHR").addEventListener("click", function () { buscarH(); })
-
-
-})
+    document.querySelector("#btnBuscHR").addEventListener("click", function () {
+        buscarH();
+    });
+});

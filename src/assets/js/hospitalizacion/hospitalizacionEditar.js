@@ -1344,7 +1344,7 @@ addEventListener("DOMContentLoaded", function () {
 
     let alertHEnvF = document.querySelector("#alertHEnvF");
 
-    let formEnviarFactura = document.querySelector("#modalEnvioFacturaHospitalizacion");
+    let formEnviarFactura = document.querySelector("#formEnvioFacturaHospitalizacion");
     const saveControl = async () => {
         let textAlert = "",
             classAlert = "";

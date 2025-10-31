@@ -81,12 +81,15 @@
                             <th>Apellido</th>
                             <th>Diagnostico</th>
                             <th>Doctor asignado</th>
-                            <th>Horas</th>
+                            <!-- <th>Horas</th> -->
 
-                            <?php if ($_SESSION['rol'] == "usuario"): ?>
-                                <!-- no hay -->
-                            <?php elseif ($_SESSION['rol'] == "administrador"): ?>
+                            <?php if ($validacionCargo == 1) : ?>
+                                <!--no hay-->
+                            <?php endif ?>
 
+                            <!-- verifico si es administrador o usuario -->
+                            <!-- cero es administrador más no doctor -->
+                            <?php if ($validacionCargo == 0) : ?>
                                 <th>Precio total</th>
 
                             <?php endif ?>
@@ -104,6 +107,7 @@
 
     </div>
 </div>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/reutilizableHospitalizacion.js"></script>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionesRealizadas.js"></script>
 
