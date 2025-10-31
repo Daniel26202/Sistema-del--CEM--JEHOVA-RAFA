@@ -19,7 +19,7 @@ class ModeloInicio extends Db
 		try {
 			$consulta = $this->conexion->prepare("SELECT COUNT(id_hospitalizacion) AS total_hospitalizados
 FROM hospitalizacion
-WHERE estado = 'ACT';");
+WHERE estado = 'pendiente';");
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
 			return 0;
