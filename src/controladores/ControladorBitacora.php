@@ -23,7 +23,7 @@ class ControladorBitacora
 	{
 		$ayuda = "btnayudaBitacora";
 		$vistaActiva = 'Usuario';
-		$cargo = $this->modeloInicio->comprobarCargo($_SESSION["id_usuario"]);
+		$cargo = $this->modeloInicio->comprobarCargo($_SESSION['id_personal']);
 		require_once "./src/vistas/vistaBitacora/bitacora.php";
 	}
 
@@ -31,7 +31,7 @@ class ControladorBitacora
 	{
 		$ayuda = "btnayudaBitacora";
 		$vistaActiva = 'Admin';
-		$cargo = $this->modeloInicio->comprobarCargo($_SESSION["id_usuario"]);
+		$cargo = $this->modeloInicio->comprobarCargo($_SESSION['id_personal']);
 		require_once "./src/vistas/vistaBitacora/bitacora.php";
 	}
 

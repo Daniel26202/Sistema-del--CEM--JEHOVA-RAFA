@@ -180,7 +180,7 @@ COUNT(c.id_cita) AS total_solicitudes
 	{
 		try {
 
-			$consulta = $this->conexion->prepare(" SELECT * FROM personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.id_personal =:id_personal AND p.id_especialidad IS NOT null");
+			$consulta = $this->conexion->prepare("SELECT * FROM personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.id_personal =:id_personal AND p.id_especialidad IS NOT null");
 			$consulta->bindParam(":id_personal", $id_personal);
 			$consulta->execute();
 			while ($consulta->fetch()) {

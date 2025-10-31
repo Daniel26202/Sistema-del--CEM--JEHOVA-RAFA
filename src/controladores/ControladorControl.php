@@ -65,7 +65,7 @@ class ControladorControl
 			session_start();
 		}
 		$idUsuario = $_SESSION['id_usuario'];
-		$validacionCargo = $this->inicio->comprobarCargo($idUsuario);
+		$validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
 
 		$cedula = $datos[0];
 
