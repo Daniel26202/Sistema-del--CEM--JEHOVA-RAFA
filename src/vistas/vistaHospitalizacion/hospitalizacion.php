@@ -333,7 +333,7 @@
                                                             value="<?= $sintomas["id_sintomas"]; ?>">
                                                     </div>
                                                     <div>
-                                                        <label class="form-check-label mt-1 for=" flexSwitchCheckDefault>
+                                                        <label class="form-check-label mt-1" for="flexSwitchCheckDefault">
                                                             <?= $sintomas['nombre']; ?>
                                                         </label>
                                                     </div>
