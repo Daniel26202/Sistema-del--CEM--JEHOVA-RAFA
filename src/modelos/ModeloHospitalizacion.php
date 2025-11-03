@@ -233,8 +233,14 @@ class ModeloHospitalizacion extends Db
             $consulta->bindParam(":severidad", $severidad);
             $consulta->execute();
 
+            $consulta = $this->conexion->prepare("SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion");
+            $consulta->bindParam(":id_hospitalizacion", $idH);
+            $consulta->execute();
+            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+
             $this->conexion->commit();
-            return "exito";
+
+            return ["exito", $data];
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             print_r($e);

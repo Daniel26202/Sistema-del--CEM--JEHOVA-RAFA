@@ -75,8 +75,16 @@ class ModeloRoles extends Db
                 $consultaPermiso->bindParam(":modulo", $modulo);
                 $consultaPermiso->execute();
             }
+
+            $consulta = $this->conexion->prepare("SELECT * from rol where id_rol=:id_rol");
+            $consulta->bindParam(":id_rol", $this->conexion->lastInsertId());
+            $consulta->execute();
+            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+
             $this->conexion->commit();
-            return "exito";
+            return ["exito", $data];
+
+
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             return 0;

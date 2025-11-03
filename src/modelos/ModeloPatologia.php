@@ -83,7 +83,13 @@ class ModeloPatologia extends Db
             $consulta = $this->conexion->prepare("INSERT INTO patologia VALUES (null, :nombrePatologia, 'ACT')");
             $consulta->bindParam(":nombrePatologia", $nombrePatologia);
             $consulta->execute();
-            return "exito";
+
+            $consulta = $this->conexion->prepare("SELECT * from patologia where id_patologia=:id_patologia");
+            $consulta->bindParam(":id_patologia", $this->conexion->lastInsertId());
+            $consulta->execute();
+            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+
+            return ["exito", $data];
         } catch (\Exception $e) {
             return 0;
         }

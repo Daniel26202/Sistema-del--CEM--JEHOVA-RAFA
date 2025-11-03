@@ -68,7 +68,15 @@ class ModeloConsultas extends Db
             $consulta->bindParam(":precio", $precio);
             $consulta->bindParam(":tipo", $tipo);
             $consulta->execute();
-            return "exito";
+
+
+            $consulta = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
+            $consulta->bindParam(":id_servicioMedico", $this->conexion->lastInsertId());
+            $consulta->execute();
+            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+
+            $this->conexion->commit();
+            return ["exito", $data];
         } catch (\Exception $e) {
             return 0;
         }

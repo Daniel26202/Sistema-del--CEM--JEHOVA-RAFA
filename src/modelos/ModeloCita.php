@@ -95,8 +95,15 @@ class ModeloCita extends Db
 			$consulta->bindParam(":doctor", $doctor);
 			$consulta->execute();
 
+
+			$consulta = $this->conexion->prepare("SELECT * from cita where id_cita=:id_cita");
+			$consulta->bindParam(":id_cita", $this->conexion->lastInsertId());
+			$consulta->execute();
+			$data = ($consulta->execute()) ? $consulta->fetch() : false;
 			$this->conexion->commit();
-			return "exito";
+
+
+			return ["exito", $data];
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			return false;

@@ -47,7 +47,13 @@ class ModeloProveedores extends Db
 			$sql->bindParam(":email", $email);
 			$sql->bindParam(":direccion", $direccion);
 			$sql->execute();
-			return "exito";
+
+			$consulta = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
+			$consulta->bindParam(":id_proveedor", $this->conexion->lastInsertId());
+			$consulta->execute();
+			$data = ($consulta->execute()) ? $consulta->fetch() : false;
+
+			return ["exito", $data];
 		} catch (\Exception $e) {
 			return 0;
 		}
