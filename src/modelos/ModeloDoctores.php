@@ -158,8 +158,13 @@ class ModeloDoctores extends Db
                 }
             }
 
+            $consulta = $this->conexion->prepare("SELECT * from bd.personal where id_personal=:id_personal");
+            $consulta->bindParam(":id_personal", $this->conexion->lastInsertId());
+            $consulta->execute();
+            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+
             $this->conexion->commit();
-            return "exito";
+            return ["exito", $data];
         } catch (\Exception $e) {
             $this->conexion->rollBack();
             return 0;
@@ -298,7 +303,14 @@ class ModeloDoctores extends Db
             $consulta = $this->conexion->prepare("INSERT INTO especialidad (nombre, estado) VALUES (:nombre, 'ACT')");
             $consulta->bindParam(":nombre", $nombre);
             $consulta->execute();
-            return 1;
+
+            $consulta = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
+            $consulta->bindParam(":id_entrada", $this->conexion->lastInsertId());
+            $consulta->execute();
+            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+
+
+            return ["exito", $data];
         } catch (\Exception $e) {
             return 0;
         }

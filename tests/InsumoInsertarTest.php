@@ -22,22 +22,22 @@ class InsumoInsertarTest extends TestCase
     public function testInsertarInsumos()
     {
         $resultado = $this->modelo->insertarInsumos(
-            "Insumophpinit",  // nombre
-            6,                      // id_proveedor (debe existir el numero 1 seguro)
+            "Insumophpinit",  
+            6,                      
             "descripcion prueba",
-            "2025-01-01",           // fecha ingreso
-            "2025-12-31",           // fecha vencimiento
-            100,                    // precio
-            50,                     // cantidad
-            10,                     // stock mínimo
-            "ACT",                  // siempre ACT
-            "123456789",          // este e numerico
+            "2025-01-01",          
+            "2025-12-31",           
+            100,                    
+            50,                     
+            10,                     
+            "ACT",                  
+            "123456789",         
             "MarcaX",
             "100 g",
-            1                      // iva
+            1                     
         );
 
-        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
-        $this->assertEquals("exito", $resultado);
+
+        $this->assertEquals("exito", $resultado[0]);
     }
 }

@@ -65,8 +65,14 @@ class ModeloEntrada extends Db
 			$consulta->bindParam(":cantidad_disponible", $cantidad);
 			$consulta->execute();
 
+			$consulta = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
+			$consulta->bindParam(":id_entrada", $this->conexion->lastInsertId());
+			$consulta->execute();
+			$data = ($consulta->execute()) ? $consulta->fetch() : false;
+
 			$this->conexion->commit();
-			return "exito";
+
+			return ["exito", $data];
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			return 0;

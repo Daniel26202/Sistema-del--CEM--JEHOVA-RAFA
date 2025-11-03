@@ -136,8 +136,14 @@ class ModeloInsumo extends Db
 			$consulta->bindParam(":iva", $iva);
 			$consulta->execute();
 
+			$consulta = $this->conexion->prepare("SELECT * from insumo where id_insumo=:id_insumo");
+			$consulta->bindParam(":id_insumo", $this->conexion->lastInsertId());
+			$consulta->execute();
+			$data = ($consulta->execute()) ? $consulta->fetch() : false;
+
 			$this->conexion->commit();
-			return "exito";
+
+			return ["exito", $data];
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			// Puedes registrar el error si lo deseas: error_log($e->getMessage());

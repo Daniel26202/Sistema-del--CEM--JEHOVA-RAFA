@@ -41,7 +41,13 @@ class ModeloCategoria extends Db
             $consulta = $this->conexion->prepare("INSERT INTO categoria_servicio VALUES (null, :nombre, 'ACT')");
             $consulta->bindParam(":nombre", $nombre);
             $consulta->execute();
-            return "exito";
+
+            $consulta = $this->conexion->prepare("SELECT * from categoria_servicio where id_categoria=:id_categoria");
+            $consulta->bindParam(":id_categoria", $this->conexion->lastInsertId());
+            $consulta->execute();
+            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+            
+            return ["exito", $data];
         } catch (\Exception $e) {
             return 0;
         }

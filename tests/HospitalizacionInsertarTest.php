@@ -22,6 +22,6 @@ class HospitalizacionInsertarTest extends TestCase
             "historial"
         );
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
-        $this->assertEquals("exito", $resultado);
+        $this->assertEquals("exito", $resultado[0]);
     }
 }
