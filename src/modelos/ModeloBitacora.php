@@ -40,8 +40,9 @@ class ModeloBitacora extends Db
             $consulta->bindParam(":fecha_hora", $fecha_hora);
             $consulta->execute();
 
+            $id = $this->conexion->lastInsertId();
             $consulta = $this->conexion->prepare("SELECT * from segurity.bitacora where id_bitacora=:id_bitacora");
-            $consulta->bindParam(":id_bitacora", $this->conexion->lastInsertId());
+            $consulta->bindParam(":id_bitacora", $id);
             $consulta->execute();
             $data = ($consulta->execute()) ? $consulta->fetch() : false;
 

@@ -63,7 +63,7 @@ class ModeloControl extends Db
 	// }
 
 	//insertar control
-	public function insertControl($historial, $idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota)
+	public function insertControl($historial, $idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $severidad)
 	{
 		try {
 			$this->conexion->beginTransaction();
@@ -79,8 +79,7 @@ class ModeloControl extends Db
 				}
 			}
 
-			$sqlC = $this->conexion->prepare("INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, NOW(), :fechaRegreso, :nota, :historial, 'ACT')");
-
+			$sqlC = $this->conexion->prepare("INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado, severidad) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, NOW(), :fechaRegreso, :nota, :historial, 'ACT', :severidad)");
 			$sqlC->bindParam(":idPaciente", $idPaciente);
 			$sqlC->bindParam(":idUsuario", $idUsuario);
 			$sqlC->bindParam(":diagnostico", $diagnostico);
@@ -88,6 +87,7 @@ class ModeloControl extends Db
 			$sqlC->bindParam(":fechaRegreso", $fechaRegreso);
 			$sqlC->bindParam(":nota", $nota);
 			$sqlC->bindParam(":historial", $historial);
+			$sqlC->bindParam(":severidad", $severidad);
 
 
 			$sqlC->execute();

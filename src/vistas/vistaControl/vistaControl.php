@@ -448,14 +448,13 @@
         </div>
 
         <form class="form-modal modalesEditar" id="modalEditar">
+            <input class="showDataPatientEdit" type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
 
-            <input class="showDataPatientEdit" type="hidden" name="id_usuario_bitacora" value="${id_usuario_bitacora}">
+            <input class="showDataPatientEdit" type="hidden" name="id_control" id="idCE" value="">
 
-            <input class="showDataPatientEdit" type="hidden" name="id_control" value="${res.id_control}">
+            <input class="showDataPatientEdit" type="hidden" id="cedulaPE" name="cedula" value="">
 
-            <input class="showDataPatientEdit" type="hidden" name="cedula" value="${res.cedula}">
-
-            <input class="showDataPatientEdit" type="hidden" name="id_paciente" id="idPac" value="${res.id_paciente}">
+            <input class="showDataPatientEdit" type="hidden" name="id_paciente" id="idPac" value="">
 
             <!-- accordion -->
             <div class="input-modal">
