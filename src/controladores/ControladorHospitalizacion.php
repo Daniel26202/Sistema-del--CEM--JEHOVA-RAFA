@@ -295,8 +295,8 @@ class ControladorHospitalizacion
         $montoME = round($_POST["montoME"], 2);
         $total = round($_POST["total"], 2);
         $totalME = round($_POST["totalME"], 2);
-        $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME, $_POST["historialEnF"], $_POST["sintomas"], $_POST["patologias"], $_POST["nota"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["diagnostico"], $_POST["severidad"]);
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H$idH");
+        $irF = $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME, $_POST["historialEnF"], $_POST["sintomas"], $_POST["patologias"], $_POST["nota"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["diagnostico"], $_POST["severidad"]);
+        echo json_encode(["success" => $irF, "data" => $_POST]);
     }
 
     private function permisos($id_rol, $permiso, $modulo)

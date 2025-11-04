@@ -481,7 +481,6 @@ addEventListener("DOMContentLoaded", function () {
                             document.querySelector("#montoME").value = datos[1];
                             document.querySelector("#total").value = datos[2];
                             document.querySelector("#totalME").value = datos[3];
-                            
                         });
                     }
                     const btnEditar = document.querySelectorAll(".editarH");
@@ -1345,18 +1344,19 @@ addEventListener("DOMContentLoaded", function () {
     let alertHEnvF = document.querySelector("#alertHEnvF");
 
     let formEnviarFactura = document.querySelector("#formEnvioFacturaHospitalizacion");
-    const saveControl = async () => {
+    const envioFSaveControl = async () => {
         let textAlert = "",
             classAlert = "";
         try {
             const data = new FormData(formEnviarFactura);
             let result = await executePetition(url + "/enviarAFacturar", "POST", data);
             alertHEnvF.classList.remove("d-none");
-            textAlert = `Se registro correctamente el control medico del Paciente con la cédula ${result.data.cedula}`;
+            textAlert = `Se registro correctamente`;
             classAlert = "uk-alert-primary";
-            readControl(result.data.cedula);
+
             console.log("Resultado");
             console.log(result);
+            return result.data.idH;
         } catch (error) {
             textAlert = `Lamentablemente algo salio mal por favor intente mas tarde`;
             classAlert = "uk-alert-danger";
@@ -1371,11 +1371,15 @@ addEventListener("DOMContentLoaded", function () {
         input.addEventListener("input", validarFormularioControl);
     });
 
-    formEnviarFactura.addEventListener("submit", function (e) {
+    formEnviarFactura.addEventListener("submit", async function (e) {
         e.preventDefault();
+
+        validarCamposControl(expresiones.diagnostico, historiaEnF, "diagnostico");
+        validarCamposControl(expresiones.diagnostico, diagnosticoEnF, "diagnostico");
         if (campos.sintomas && campos.diagnostico && campos.indicaciones && campos.fechaRegreso) {
-            saveControl();
+            let idH = await envioFSaveControl();
             formEnviarFactura.reset();
+            window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H" + idH;
             document.querySelectorAll(`#modalEnvioFacturaHospitalizacion .input-modal-remove`).forEach((ele) => {
                 if (ele.parentElement.classList.contains("grpFormCorrectControl")) {
                     ele.parentElement.classList.remove("grpFormCorrectControl");

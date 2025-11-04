@@ -180,6 +180,7 @@ window.traerSerevicio = async function (direccionM) {
 
 //objeto de las expresiones:
 const expresiones = {
+    historial: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
     diagnostico: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
     indicaciones: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
     fechaRegreso: /^\d{4}\-\d{2}\-\d{2}$/,
@@ -187,12 +188,13 @@ const expresiones = {
 
 window.campos = {
     sintomas: false,
+    historial: false,
     diagnostico: false,
     indicaciones: false,
     fechaRegreso: false,
 };
 
-const validarCamposControl = (expresiones, input, campo) => {
+window.validarCamposControl = (expresiones, input, campo) => {
     if (expresiones.test(input.value)) {
         input.parentElement.classList.remove("grpFormInCorrectControl");
         input.parentElement.classList.add("grpFormCorrectControl");
@@ -222,6 +224,8 @@ window.validarFormularioControl = function (e) {
             break;
 
         case "diagnostico":
+            console.log(e.target);
+            
             validarCamposControl(expresiones.diagnostico, e.target, "diagnostico");
 
             break;
