@@ -48,8 +48,10 @@ class ModeloProveedores extends Db
 			$sql->bindParam(":direccion", $direccion);
 			$sql->execute();
 
+            $id = $this->conexion->lastInsertId();
+
 			$consulta = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
-			$consulta->bindParam(":id_proveedor", $this->conexion->lastInsertId());
+			$consulta->bindParam(":id_proveedor", $id);
 			$consulta->execute();
 			$data = ($consulta->execute()) ? $consulta->fetch() : false;
 

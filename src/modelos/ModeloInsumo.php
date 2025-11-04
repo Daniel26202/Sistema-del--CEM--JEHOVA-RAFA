@@ -136,8 +136,10 @@ class ModeloInsumo extends Db
 			$consulta->bindParam(":iva", $iva);
 			$consulta->execute();
 
+            $id = $this->conexion->lastInsertId();
+
 			$consulta = $this->conexion->prepare("SELECT * from insumo where id_insumo=:id_insumo");
-			$consulta->bindParam(":id_insumo", $this->conexion->lastInsertId());
+			$consulta->bindParam(":id_insumo", $id);
 			$consulta->execute();
 			$data = ($consulta->execute()) ? $consulta->fetch() : false;
 

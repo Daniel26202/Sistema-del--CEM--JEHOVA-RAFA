@@ -83,7 +83,7 @@ class ModeloCita extends Db
 			$fecha_hora = new DateTime($hora);
 			$fecha_hora->modify('+1 hour');
 			$hora_salida = $fecha_hora->format("H:m:s");
-			
+
 			// Si no existe, inserta la cita
 			$consulta = $this->conexion->prepare("INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente, hora_salida, doctor) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente,:hora_salida, :doctor)");
 			$consulta->bindParam(":id_paciente", $id_paciente);
@@ -95,9 +95,9 @@ class ModeloCita extends Db
 			$consulta->bindParam(":doctor", $doctor);
 			$consulta->execute();
 
-
+			$id_cita = $this->conexion->lastInsertId();
 			$consulta = $this->conexion->prepare("SELECT * from cita where id_cita=:id_cita");
-			$consulta->bindParam(":id_cita", $this->conexion->lastInsertId());
+			$consulta->bindParam(":id_cita", $id_cita);
 			$consulta->execute();
 			$data = ($consulta->execute()) ? $consulta->fetch() : false;
 			$this->conexion->commit();
@@ -186,7 +186,8 @@ class ModeloCita extends Db
 
 	/* metodo para validar que tiempos libres tiene el doctor */
 
-	public function validarHorariosDisponlibles($fecha, $id_personal){
+	public function validarHorariosDisponlibles($fecha, $id_personal)
+	{
 		try {
 			$consulta = $this->conexion->prepare('SELECT c.fecha , c.hora, c.hora_salida FROM cita c INNER JOIN serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = psm.personal_id_personal WHERE fecha =:fecha AND p.id_personal = :id_personal');
 			$consulta->bindParam(":fecha", $fecha);
@@ -196,5 +197,4 @@ class ModeloCita extends Db
 			return 0;
 		}
 	}
-
 }

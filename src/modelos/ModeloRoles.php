@@ -77,7 +77,7 @@ class ModeloRoles extends Db
             }
 
             $consulta = $this->conexion->prepare("SELECT * from rol where id_rol=:id_rol");
-            $consulta->bindParam(":id_rol", $this->conexion->lastInsertId());
+            $consulta->bindParam(":id_rol", $id_rol);
             $consulta->execute();
             $data = ($consulta->execute()) ? $consulta->fetch() : false;
 

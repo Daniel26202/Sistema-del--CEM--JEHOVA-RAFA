@@ -50,7 +50,8 @@ class ModeloCliente extends Db
             $consulta->bindParam(":fn", $fn);
             $consulta->bindParam(":genero", $genero);
             $consulta->execute();
-            return ["exito",$this->conexion->lastInsertId()];
+            $id_cliente = $this->conexion->lastInsertId();
+            return ["exito", $id_cliente];
         } catch (\Exception $e) {
             return 0;
         }

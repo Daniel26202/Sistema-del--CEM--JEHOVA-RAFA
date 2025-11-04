@@ -73,8 +73,10 @@ class ModeloPacientes extends Db
 			$consulta->bindParam(":genero", $genero);
 			$consulta->execute();
 
+            $id = $this->conexion->lastInsertId();
+
 			$consulta = $this->conexion->prepare("SELECT * from paciente where id_paciente=:id_paciente");
-			$consulta->bindParam(":id_paciente", $this->conexion->lastInsertId());
+			$consulta->bindParam(":id_paciente", $id);
 			$consulta->execute();
 			$data = ($consulta->execute()) ? $consulta->fetch() : false;
 

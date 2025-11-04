@@ -42,8 +42,9 @@ class ModeloCategoria extends Db
             $consulta->bindParam(":nombre", $nombre);
             $consulta->execute();
 
+            $id_categoria = $this->conexion->lastInsertId();
             $consulta = $this->conexion->prepare("SELECT * from categoria_servicio where id_categoria=:id_categoria");
-            $consulta->bindParam(":id_categoria", $this->conexion->lastInsertId());
+            $consulta->bindParam(":id_categoria", $id_categoria);
             $consulta->execute();
             $data = ($consulta->execute()) ? $consulta->fetch() : false;
             

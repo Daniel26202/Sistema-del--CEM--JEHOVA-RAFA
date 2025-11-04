@@ -106,7 +106,7 @@ class ModeloDoctores extends Db
         }
     }
     //esto es para agregar un doctor.
-    public function insertarDoctor($cedula, $nombre, $apellido, $telefono, $usuario, $password, $email, $nacionalidad, $nombreImagen, $imagenTemporal, $idEspecialidad, $dias, $horaSalida,$horaEntrada)
+    public function insertarDoctor($cedula, $nombre, $apellido, $telefono, $usuario, $password, $email, $nacionalidad, $nombreImagen, $imagenTemporal, $idEspecialidad, $dias, $horaSalida, $horaEntrada)
     {
 
         try {
@@ -157,9 +157,10 @@ class ModeloDoctores extends Db
                     $contadorDias++;
                 }
             }
+            $id = $this->conexion->lastInsertId();
 
             $consulta = $this->conexion->prepare("SELECT * from bd.personal where id_personal=:id_personal");
-            $consulta->bindParam(":id_personal", $this->conexion->lastInsertId());
+            $consulta->bindParam(":id_personal", $id);
             $consulta->execute();
             $data = ($consulta->execute()) ? $consulta->fetch() : false;
 
@@ -304,8 +305,9 @@ class ModeloDoctores extends Db
             $consulta->bindParam(":nombre", $nombre);
             $consulta->execute();
 
+            $id = $this->conexion->lastInsertId();
             $consulta = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
-            $consulta->bindParam(":id_entrada", $this->conexion->lastInsertId());
+            $consulta->bindParam(":id_entrada", $id);
             $consulta->execute();
             $data = ($consulta->execute()) ? $consulta->fetch() : false;
 
