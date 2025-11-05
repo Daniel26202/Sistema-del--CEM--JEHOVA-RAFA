@@ -64,7 +64,7 @@ class ModeloUsuarios extends Db
     {
         try {
             $validar = $this->conexion->prepare("SELECT * from usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->bindParam(":id_usuario", $idUsuario);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
                 throw new \Exception("Fallo");
