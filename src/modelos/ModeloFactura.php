@@ -249,8 +249,6 @@ class ModeloFactura extends Db
 	{
 
 		try {
-
-
 			//insertar factura
 			$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_cliente)");
 
@@ -276,7 +274,7 @@ class ModeloFactura extends Db
 				//insertar en el dealle de factura  la hospitalizacion
 				$consulta = $this->conexion->prepare("INSERT INTO detalle_factura  VALUES (null,:id_factura, 'Hospitalizacion', 1,:precioServicio, :precioServicio,:id_hospitalizacion,null,null)");
 				$consulta->bindParam(":id_factura", $id_factura);
-				$consulta->bindParam(":total", $precioServicio);
+				$consulta->bindParam(":precioServicio", $precioServicio);
 				$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 				if ($consulta->execute()) {
 				} else {
