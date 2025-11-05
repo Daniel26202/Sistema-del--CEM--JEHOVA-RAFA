@@ -77,7 +77,6 @@ class ModeloFactura extends Db
 			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 			$consulta->execute();
 			return $consulta->fetchAll();
-	
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -274,7 +273,7 @@ class ModeloFactura extends Db
 				$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 				$consulta->execute();
 
-				//insertar en el dealle de actura  la hospitalizacion
+				//insertar en el dealle de factura  la hospitalizacion
 				$consulta = $this->conexion->prepare("INSERT INTO detalle_factura  VALUES (null,:id_factura, 'Hospitalizacion', 1,:precioServicio, :precioServicio,:id_hospitalizacion,null,null)");
 				$consulta->bindParam(":id_factura", $id_factura);
 				$consulta->bindParam(":total", $precioServicio);
@@ -283,6 +282,40 @@ class ModeloFactura extends Db
 				} else {
 					echo "NO";
 				}
+
+				// consulta datos del ultimo contro del paciente hospitalizado
+				$consulta = $this->conexion->prepare("SELECT con.id_control, con.id_paciente, con.historiaclinica FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1;");
+				$consulta->bindParam(":idHosp", $id_hospitalizacion);
+				$datosControl = ($consulta->execute()) ? $consulta->fetch() : false;
+
+				$historialEnF = $datosControl["historiaclinica"];
+
+				$consulta = $this->conexion->prepare("SELECT cs.nombre AS servicio, sh.cantidad, sm.tipo FROM servicios_hospitalizacion sh INNER JOIN serviciomedico sm ON sm.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE sh.id_hospitalizacion = :id_hospitalizacion;");
+				$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
+				$consulta->execute();
+				$servicios = ($consulta->execute()) ? $consulta->fetchAll() : false;
+
+				if ($servicios) {
+					$textoServicios = "Servicios utilizados: ";
+					$lista = [];
+					foreach ($servicios as $serv) {
+						// para convertir el text en minuscula
+						if (strtolower($serv["tipo"]) === "examenes") {
+							$lista[] = "{$serv["servicio"]} ({$serv["cantidad"]} unidades)";
+						} else {
+							$lista[] = $serv["servicio"];
+						}
+					}
+
+					$textoServicios .= implode(", ", $lista) . ".";
+
+					$historialEnF = $textoServicios . "   El paciente: " . $historialEnF;
+				}
+
+				$consulta = $this->conexion->prepare('UPDATE control SET historiaclinica = :historial, estado = "ACT" WHERE id_control = :id_control;');
+				$consulta->bindParam(":historial", $historialEnF);
+				$consulta->bindParam(":id_control", $datosControl["id_control"]);
+				$consulta->execute();
 			}
 
 			$arrayDePago = $formasDePago;
@@ -535,7 +568,8 @@ class ModeloFactura extends Db
 		}
 	}
 
-	public function coincidenciaPacienteCliente($id_paciente){
+	public function coincidenciaPacienteCliente($id_paciente)
+	{
 		try {
 			$consulta = $this->conexion->prepare('SELECT * FROM paciente where id_paciente = :id_paciente');
 			$consulta->bindParam(":id_paciente", $id_paciente);
@@ -549,13 +583,14 @@ class ModeloFactura extends Db
 			while ($data) {
 				return $data['id_cliente'];
 			}
-				return 'no encontrado';
+			return 'no encontrado';
 		} catch (\Exception $e) {
 			return 0;
 		}
 	}
 
-	public function guardarCliente($id_paciente){
+	public function guardarCliente($id_paciente)
+	{
 		try {
 			$consulta = $this->conexion->prepare('SELECT * FROM paciente where id_paciente = :id_paciente');
 			$consulta->bindParam(":id_paciente", $id_paciente);
@@ -575,7 +610,7 @@ class ModeloFactura extends Db
 			$consulta->bindParam(":id_factura", $id_factura);
 			$consulta->execute();
 			$data  = $consulta->fetch();
-			while($data){
+			while ($data) {
 				return $data['hospitalizacion_id_hospitalizacion'];
 			}
 			return 'no encontrado';
@@ -583,6 +618,4 @@ class ModeloFactura extends Db
 			return 0;
 		}
 	}
-
-
 }

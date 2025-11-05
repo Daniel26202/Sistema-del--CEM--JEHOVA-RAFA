@@ -49,7 +49,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between  ">
-                                    <h5 class="h5-comprobante ">Codigo:</h5>
+                                    <h5 class="h5-comprobante ">Código:</h5>
                                     <h5 class="h5-comprobante ">
                                         <?php echo $datoFactura['id_factura'] ?>
                                     </h5>
@@ -64,7 +64,7 @@
 
                                 </div>
                                 <div class="d-flex justify-content-between  ">
-                                    <h5 class="h5-comprobante ">Cedula Cliente:</h5>
+                                    <h5 class="h5-comprobante ">Cédula Cliente:</h5>
                                     <h5 class="h5-comprobante ">
                                         <?php echo $datoFactura['nacionalidad'] . "-" . $datoFactura['cedula_p'] ?>
                                     </h5>

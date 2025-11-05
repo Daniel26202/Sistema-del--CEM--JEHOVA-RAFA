@@ -1346,7 +1346,7 @@ addEventListener("DOMContentLoaded", function () {
     let formEnviarFactura = document.querySelector("#formEnvioFacturaHospitalizacion");
     const envioFSaveControl = async () => {
         let textAlert = "",
-            classAlert = "";
+            classAlert = "uk-alert-primary";
         try {
             const data = new FormData(formEnviarFactura);
             let result = await executePetition(url + "/enviarAFacturar", "POST", data);
@@ -1356,7 +1356,6 @@ addEventListener("DOMContentLoaded", function () {
 
             console.log("Resultado");
             console.log(result);
-            return result.data.idH;
         } catch (error) {
             textAlert = `Lamentablemente algo salio mal por favor intente mas tarde`;
             classAlert = "uk-alert-danger";
@@ -1377,7 +1376,8 @@ addEventListener("DOMContentLoaded", function () {
         validarCamposControl(expresiones.diagnostico, historiaEnF, "diagnostico");
         validarCamposControl(expresiones.diagnostico, diagnosticoEnF, "diagnostico");
         if (campos.sintomas && campos.diagnostico && campos.indicaciones && campos.fechaRegreso) {
-            let idH = await envioFSaveControl();
+            let idH = document.querySelector("#idH").value;
+            await envioFSaveControl();
             formEnviarFactura.reset();
             window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H" + idH;
             document.querySelectorAll(`#modalEnvioFacturaHospitalizacion .input-modal-remove`).forEach((ele) => {

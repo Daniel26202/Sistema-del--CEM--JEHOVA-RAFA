@@ -143,7 +143,7 @@ class ControladorHospitalizacion
     public function agregarH()
     {
 
-        if (empty($_POST['doctor']) || empty($_POST['diagnostico']) || empty($_POST['historial'])) {
+        if (empty($_POST['id_personal']) || empty($_POST['diagnostico']) || empty($_POST['historial'])) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
             return;
         }
@@ -156,7 +156,7 @@ class ControladorHospitalizacion
             // echo "Las camillas disponibles estan ocupadas";
         } else {
 
-            $verificaH = $this->modelo->verificaHA($_POST["id_paciente"], $_POST["doctor"]);
+            $verificaH = $this->modelo->verificaHA($_POST["id_paciente"], $_POST["id_personal"]);
 
             if (isset($_POST["id_paciente"])) {
 
@@ -173,7 +173,7 @@ class ControladorHospitalizacion
 
 
                     print_r($_POST);
-                    $this->modelo->insertarH($_POST["fecha"], $idInsumo, $cantidadI, $_POST["historial"], $_POST["doctor"], $_POST["id_paciente"], $_POST["severidad"], $cantidadS, $idServicio, $_POST["diagnostico"]);
+                    $this->modelo->insertarH($_POST["fecha"], $idInsumo, $cantidadI, $_POST["historial"], $_POST["id_personal"], $_POST["id_paciente"], $_POST["severidad"], $cantidadS, $idServicio, $_POST["diagnostico"]);
 
                     // Guardar la bitacora
                     $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
