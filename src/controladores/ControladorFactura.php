@@ -49,7 +49,7 @@ class ControladorFactura
 		$insumosHospitalizacion = $this->modelo->unirInsumosHospitalizacion($idHospitalizacion);
 		$tiposDePagos = $this->modelo->mostrarTiposDePagos();
 		$hostalizacionFacturar =  $this->modelo->mostrarHospitalizacion($idHospitalizacion);
-		$serviciosDeHospitalizacion =$this->modelo->serviciosIncluidosHospit($idHospitalizacion);
+		$serviciosDeHospitalizacion = $this->modelo->serviciosIncluidosHospit($idHospitalizacion);
 		require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
 	}
 
@@ -126,13 +126,12 @@ class ControladorFactura
 
 		if (!$id_cliente) {
 			$coincidencia = $this->modelo->coincidenciaPacienteCliente($id_paciente);
-			 if ($coincidencia != 'no encontrado') {
+			if ($coincidencia != 'no encontrado') {
 				$id_cliente = $coincidencia;
-			 } else {
+			} else {
 				$guardado = $this->modelo->guardarCliente($id_paciente);
 				$id_cliente = $guardado[1];
-			 }
-			 
+			}
 		}
 		echo $id_cliente;
 

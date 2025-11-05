@@ -525,6 +525,7 @@ class ModeloHospitalizacion extends Db
             $consulta->execute();
 
             $datosControl = $this->datosControl($idH);
+
             $consulta = $this->conexion->prepare('UPDATE control SET medicamentosRecetados = :indicaciones, historiaclinica = :historial, diagnostico = :diagnostico, fechaRegreso = :fechaRegreso, nota = :nota, severidad = :severidad WHERE id_control = :id_control;');
             $consulta->bindParam(":indicaciones", $indicaciones);
             $consulta->bindParam(":historial", $historialEnF);

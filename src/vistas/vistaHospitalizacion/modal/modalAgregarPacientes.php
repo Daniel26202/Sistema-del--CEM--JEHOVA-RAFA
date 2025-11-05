@@ -114,7 +114,7 @@
                                             <option selected disabled>No hay doctores disponibles</option>
                                         </select>
                                     <?php else: ?>
-                                        <select class="form-control input-modal" name="doctor" id="doctorS" required>
+                                        <select class="form-control input-modal" name="id_personal" id="doctorS" required>
                                             <option value="" selected disabled>Seleccionar doctor</option>
                                             <?php foreach ($doctores as $doc): ?>
                                                 <option value="<?php echo $doc["id_personal"] ?>">
