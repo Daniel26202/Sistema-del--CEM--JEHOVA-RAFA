@@ -61,6 +61,12 @@ class ModeloCliente extends Db
     public function update($id_cliente, $nacionalidad,  $cedula, $nombre, $apellido, $telefono, $direccion, $fn, $genero)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from cliente where id_cliente=:id_cliente");
+            $validar->bindParam(":id_cliente", $id_cliente);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
             // UPDATE paciente SET id_nacionalidad=,cedula=],nombre=,apellido=,telefono=,direccion=,fn= WHERE 1
             $consulta = $this->conexion->prepare("UPDATE cliente SET nacionalidad=:nacionalidad,cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono,direccion=:direccion,fn=:fn, genero=:genero WHERE id_cliente = :id_cliente");
             $consulta->bindParam(":id_cliente", $id_cliente);
@@ -82,6 +88,13 @@ class ModeloCliente extends Db
     public function delete($cedula)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from cliente where id_cliente=:id_cliente");
+            $validar->bindParam(":id_cliente", $id_cliente);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
             $consulta = $this->conexion->prepare("UPDATE cliente SET estado = 'DES' WHERE cedula = :cedula");
             $consulta->bindParam(":cedula", $cedula);
             $consulta->execute();
@@ -93,6 +106,13 @@ class ModeloCliente extends Db
     public function restablecer($cedula)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from cliente where id_cliente=:id_cliente");
+            $validar->bindParam(":id_cliente", $id_cliente);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+            
             $consulta = $this->conexion->prepare("UPDATE cliente SET estado = 'ACT' WHERE cedula = :cedula");
             $consulta->bindParam(":cedula", $cedula);
             $consulta->execute();

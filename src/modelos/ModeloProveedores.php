@@ -65,6 +65,12 @@ class ModeloProveedores extends Db
 	public function update($id_proveedor)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
+			$validar->bindParam(":id_proveedor", $id_proveedor);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='DES' WHERE id_proveedor = :id_proveedor;");
 			$sql->bindParam(":id_proveedor", $id_proveedor);
 			$sql->execute();
@@ -77,6 +83,12 @@ class ModeloProveedores extends Db
 	public function restablecerProveedor($id_proveedor)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
+			$validar->bindParam(":id_proveedor", $id_proveedor);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='ACT' WHERE id_proveedor = :id_proveedor;");
 			$sql->bindParam(":id_proveedor", $id_proveedor);
 			$sql->execute();
@@ -90,6 +102,12 @@ class ModeloProveedores extends Db
 	public function editar($id_proveedor, $nombre, $rif, $telefono, $email, $direccion)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
+			$validar->bindParam(":id_proveedor", $id_proveedor);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 			$sql = $this->conexion->prepare("UPDATE proveedor SET nombre =:nombre, rif =:rif, telefono =:telefono, email=:email, direccion=:direccion WHERE id_proveedor = :id_proveedor");
 			$sql->bindParam(":nombre", $nombre);
 			$sql->bindParam(":rif", $rif);

@@ -90,6 +90,12 @@ class ModeloPacientes extends Db
 	public function update($id_paciente, $nacionalidad,  $cedula, $nombre, $apellido, $telefono, $direccion, $fn, $genero)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from paciente where id_paciente=:id_paciente");
+			$validar->bindParam(":id_paciente", $id_paciente);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 			// UPDATE paciente SET id_nacionalidad=,cedula=],nombre=,apellido=,telefono=,direccion=,fn= WHERE 1
 			$consulta = $this->conexion->prepare("UPDATE paciente SET nacionalidad=:nacionalidad,cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono,direccion=:direccion,fn=:fn, genero=:genero WHERE id_paciente = :id_paciente");
 			$consulta->bindParam(":id_paciente", $id_paciente);
@@ -111,6 +117,13 @@ class ModeloPacientes extends Db
 	public function delete($cedula)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from paciente where id_paciente=:id_paciente");
+			$validar->bindParam(":id_paciente", $id_paciente);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+
 			$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'DES' WHERE cedula = :cedula");
 			$consulta->bindParam(":cedula", $cedula);
 			$consulta->execute();
@@ -122,6 +135,13 @@ class ModeloPacientes extends Db
 	public function restablecer($id_paciente)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from paciente where id_paciente=:id_paciente");
+			$validar->bindParam(":id_paciente", $id_paciente);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+			
 			$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'ACT' WHERE id_paciente = :id_paciente");
 			$consulta->bindParam(":id_paciente", $id_paciente);
 			$consulta->execute();

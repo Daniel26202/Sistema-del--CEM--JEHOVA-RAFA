@@ -249,6 +249,13 @@ class ModeloFactura extends Db
 	{
 
 		try {
+			$validar = $this->conexion->prepare("SELECT * from cliente where id_cliente=:id_cliente");
+			$validar->bindParam(":id_cliente", $id_cliente);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+
 			//insertar factura
 			$consulta = $this->conexion->prepare("INSERT INTO factura VALUES (null, :fecha, :total, 'ACT', :id_cliente)");
 
@@ -374,7 +381,7 @@ class ModeloFactura extends Db
 
 			return [$id_factura, "exito"];
 		} catch (\Exception $e) {
-			return $e;
+			return 0;
 		}
 	}
 

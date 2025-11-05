@@ -100,6 +100,13 @@ class ModeloPatologia extends Db
     public function eliminarPatologia($id_patologia)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from patologia where id_patologia=:id_patologia");
+            $validar->bindParam(":id_patologia", $id_patologia);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
             $consulta = $this->conexion->prepare("UPDATE patologia SET estado= 'DES' WHERE id_patologia=:id_patologia ");
             $consulta->bindParam(":id_patologia", $id_patologia);
             $consulta->execute();
@@ -111,6 +118,13 @@ class ModeloPatologia extends Db
     public function restablecer($id_patologia)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from patologia where id_patologia=:id_patologia");
+            $validar->bindParam(":id_patologia", $id_patologia);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
             $consulta = $this->conexion->prepare("UPDATE patologia SET estado= 'ACT' WHERE id_patologia=:id_patologia ");
             $consulta->bindParam(":id_patologia", $id_patologia);
             $consulta->execute();

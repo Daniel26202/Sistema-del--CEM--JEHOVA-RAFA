@@ -68,6 +68,13 @@ class ModeloControl extends Db
 		try {
 			$this->conexion->beginTransaction();
 
+			$validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
+			$validar->bindParam(":id_usuario", $idUsuario);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+
 			if ($patologias) {
 
 				// primero se registra la patologia del paciente
@@ -115,6 +122,13 @@ class ModeloControl extends Db
 	public function eliminarControl($id_control)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from control where id_control=:id_control");
+			$validar->bindParam(":id_control", $id_control);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+
 			$sql = $this->conexion->prepare("UPDATE control SET estado ='DES' WHERE id_control=:id_control ");
 			$sql->bindParam(":id_control", $id_control);
 			$sql->execute();
@@ -128,6 +142,13 @@ class ModeloControl extends Db
 	public function editarControl($historial, $id_control, $indicaciones, $fechaRegreso, $nota)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from control where id_control=:id_control");
+			$validar->bindParam(":id_control", $id_control);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+
 			$sql = $this->conexion->prepare("UPDATE control SET medicamentosRecetados=:indicaciones, fechaRegreso=:fechaRegreso, nota=:nota, historiaclinica=:historial WHERE id_control=:id_control ");
 			$sql->bindParam(":id_control", $id_control);
 			$sql->bindParam(":indicaciones", $indicaciones);

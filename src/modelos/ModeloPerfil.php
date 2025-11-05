@@ -20,7 +20,14 @@ class ModeloPerfil extends Db{
 	public function update($id_usuario,  $cedula, $nombre, $apellido, $telefono, $usuario,$correo)
 	{
 		try {
-			// UPDATE paciente SET id_cedula=,cedula=],nombre=,apellido=,telefono=,direccion=,fn= WHERE 1
+			$validar = $this->conexion->prepare("SELECT * FROM segurity.usuario WHERE id_usuario = :id_usuario AND usuario = :usuario");
+			$validar->bindParam(":usuario", $usuario);
+			$validar->bindParam(":id_usuario", $id_usuario);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+
 			$consulta = $this->conexion->prepare("UPDATE bd.personal SET cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono WHERE usuario = :id_usuario");
 			$consulta->bindParam(":id_usuario", $id_usuario);
 			$consulta->bindParam(":cedula", $cedula);

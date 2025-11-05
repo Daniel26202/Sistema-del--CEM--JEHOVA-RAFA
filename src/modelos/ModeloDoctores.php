@@ -178,6 +178,13 @@ class ModeloDoctores extends Db
         try {
             $this->conexion->beginTransaction();
 
+            $validar = $this->conexion->prepare("SELECT * from personal where usuario=:idUsuario");
+            $validar->bindParam(":idUsuario", $idUsuario);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
             $consultaU = $this->conexion->prepare('SELECT id_personal FROM personal  WHERE usuario = :id_usuario');
             $consultaU->bindParam(":id_usuario", $idUsuario);
             $consultaU->execute();
@@ -263,6 +270,13 @@ class ModeloDoctores extends Db
         try {
             $this->conexion->beginTransaction();
 
+            $validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
+            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
             //editar al doctor.
             $sqlUsuario = 'UPDATE segurity.usuario SET estado = "DES" WHERE id_usuario = :id_usuario ';
             $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
@@ -282,6 +296,13 @@ class ModeloDoctores extends Db
     {
         try {
             $this->conexion->beginTransaction();
+
+            $validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
+            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
 
             //editar al doctor.
             $sqlUsuario = 'UPDATE segurity.usuario SET estado = "ACT" WHERE id_usuario = :id_usuario ';
@@ -320,6 +341,12 @@ class ModeloDoctores extends Db
     public function Especialidadeliminar($id_especialidad)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from especialidad where id_especialidad=:id_especialidad");
+            $validar->bindParam(":id_especialidad", $id_especialidad);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
             $consulta = $this->conexion->prepare("UPDATE especialidad set estado = 'DES' WHERE id_especialidad = :id_especialidad");
             $consulta->bindParam(":id_especialidad", $id_especialidad);
             $consulta->execute();
@@ -371,6 +398,12 @@ class ModeloDoctores extends Db
     public function RegistrarAdmin($nacionalidad, $cedula, $nombre, $apellido, $telefono, $email, $id_usuario)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
+            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
             $sql = 'INSERT INTO personal VALUES (Null, :nacionalidad, :cedula, :nombre, :apellido, :telefono, "Administrador", Null, :id_usuario)';
             $consulta = $this->conexion->prepare($sql);
             $consulta->bindParam(":nacionalidad", $nacionalidad);
@@ -382,7 +415,7 @@ class ModeloDoctores extends Db
             $consulta->execute();
             return 1;
         } catch (\Exception $e) {
-            return $e;
+            return 0;
         }
     }
 }

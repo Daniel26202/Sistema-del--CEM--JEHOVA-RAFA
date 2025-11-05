@@ -272,6 +272,14 @@ class ModeloHospitalizacion extends Db
         try {
             $this->conexion->beginTransaction();
 
+            $validar = $this->conexion->prepare("SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion");
+            $validar->bindParam(":id_hospitalizacion", $idHos);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
+
             // consulta el id del control
             $idControl = $this->datosControl($idHos);
 
@@ -472,6 +480,13 @@ class ModeloHospitalizacion extends Db
     {
         try {
             $this->conexion->beginTransaction();
+
+            $validar = $this->conexion->prepare("SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion");
+            $validar->bindParam(":id_hospitalizacion", $idHos);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
 
             // si hay un id del insumo devuelve verdadero si no, devuelve falso
             if ($datosIDH) {

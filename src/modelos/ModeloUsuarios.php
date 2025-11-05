@@ -63,6 +63,12 @@ class ModeloUsuarios extends Db
     public function updateUsuario($usuario, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from usuario where id_usuario=:id_usuario");
+            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
 
             if ($imagenUsuario == "") {
 
@@ -107,6 +113,12 @@ class ModeloUsuarios extends Db
     public function eliminacionLogica($idUsuario)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from usuario where id_usuario=:id_usuario");
+            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
             //editar al doctor.
             $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario';
             $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);

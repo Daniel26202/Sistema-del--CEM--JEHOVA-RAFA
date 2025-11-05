@@ -84,6 +84,13 @@ class ModeloEntrada extends Db
 	public function eliminar($id_entrada)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
+			$validar->bindParam(":id_entrada", $id_entrada);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+
 			$this->conexion->beginTransaction();
 			$consulta = $this->conexion->prepare("UPDATE entrada SET estado='DES' WHERE id_entrada =:id_entrada");
 			$consulta->bindParam(":id_entrada", $id_entrada);
@@ -101,6 +108,13 @@ class ModeloEntrada extends Db
 	{
 		try {
 			$this->conexion->beginTransaction();
+
+			$validar = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
+			$validar->bindParam(":id_entrada", $id_entrada);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 
 			$consulta = $this->conexion->prepare("UPDATE entrada_insumo SET fechaDeVencimiento=:fechaDeVencimiento,  precio=:precio,cantidad_entrante=:cantidad_entrante WHERE id_entrada=:id_entrada");
 
@@ -146,6 +160,12 @@ class ModeloEntrada extends Db
 	public function restablecerEntrada($id_entrada)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
+			$validar->bindParam(":id_entrada", $id_entrada);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 			$consulta = $this->conexion->prepare("UPDATE entrada SET estado='ACT' WHERE id_entrada =:id_entrada");
 			$consulta->bindParam(":id_entrada", $id_entrada);
 			$consulta->execute();

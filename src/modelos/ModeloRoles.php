@@ -98,6 +98,14 @@ class ModeloRoles extends Db
         try {
             $this->conexion->beginTransaction();
 
+
+            $validar = $this->conexion->prepare("SELECT * from rol where id_rol=:id_rol");
+            $validar->bindParam(":id_rol", $id_rol);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
             //Editar Rol
             $consulta = $this->conexion->prepare("UPDATE rol SET  nombre =:nombre, descripción =:descripcion WHERE id_rol = :id_rol");
             $consulta->bindParam(":nombre", $nombre);
@@ -135,6 +143,13 @@ class ModeloRoles extends Db
     public function eliminar($id_rol)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from rol where id_rol=:id_rol");
+            $validar->bindParam(":id_rol", $id_rol);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
             //Eliminar Rol
             $consulta = $this->conexion->prepare("UPDATE rol SET  estado ='DES' WHERE id_rol = :id_rol");
             $consulta->bindParam(":id_rol", $id_rol);

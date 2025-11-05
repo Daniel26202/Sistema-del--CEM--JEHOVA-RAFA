@@ -63,6 +63,7 @@ class ModeloConsultas extends Db
     public function insertarSevicio($id_categoria, $precio, $tipo)
     {
         try {
+
             $consulta = $this->conexion->prepare("INSERT INTO serviciomedico (id_categoria, precio, estado, tipo) VALUES (:id_categoria, :precio, 'ACT', :tipo)");
             $consulta->bindParam(":id_categoria", $id_categoria);
             $consulta->bindParam(":precio", $precio);
@@ -87,6 +88,18 @@ class ModeloConsultas extends Db
     public function insertarDoctorServicio($id_doctor, $id_servicioMedico)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
+            $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+            $validar = $this->conexion->prepare("SELECT * from personal where id_personal=:id_personal");
+            $validar->bindParam(":id_personal", $id_doctor);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
             $consulta = $this->conexion->prepare("INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)");
             $consulta->bindParam(":id_doctor", $id_doctor);
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
@@ -100,6 +113,12 @@ class ModeloConsultas extends Db
     public function eliminar($id_servicioMedico)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
+            $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
             $consulta = $this->conexion->prepare("UPDATE servicioMedico SET estado = 'DES' WHERE id_servicioMedico =:id_servicioMedico ");
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->execute();
@@ -111,6 +130,12 @@ class ModeloConsultas extends Db
     public function restablecerServ($id_servicioMedico)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
+            $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
             $consulta = $this->conexion->prepare("UPDATE servicioMedico SET estado = 'ACT' WHERE id_servicioMedico =:id_servicioMedico ");
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->execute();
@@ -124,6 +149,12 @@ class ModeloConsultas extends Db
     public function editar($id_servicioMedico, $precio, $tipo)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
+            $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
             $consulta = $this->conexion->prepare("UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id_servicioMedico");
             $consulta->bindParam(":precio", $precio);
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);

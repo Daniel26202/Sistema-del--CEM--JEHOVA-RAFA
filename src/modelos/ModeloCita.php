@@ -114,6 +114,12 @@ class ModeloCita extends Db
 	public function eliminarCita($id_cita)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from cita where id_cita=:id_cita");
+			$validar->bindParam(":id_cita", $id_cita);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 			$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'DES' WHERE id_cita =:id_cita ");
 			$consulta->bindParam(":id_cita", $id_cita);
 			$consulta->execute();
@@ -152,6 +158,13 @@ class ModeloCita extends Db
 	public function update($id_servicioMedico, $fecha, $hora, $id_cita)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from cita where id_cita=:id_cita");
+			$validar->bindParam(":id_cita", $id_cita);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+			
 			$consulta = $this->conexion->prepare("UPDATE cita SET serviciomedico_id_servicioMedico=:id_servicioMedico,fecha=:fecha,hora=:hora WHERE id_cita =:id_cita");
 			$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
 			$consulta->bindParam(":fecha", $fecha);

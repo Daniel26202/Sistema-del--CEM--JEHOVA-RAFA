@@ -158,6 +158,13 @@ class ModeloInsumo extends Db
 	public function eliminar($id_insumo)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from insumo where id_insumo=:id_insumo");
+			$validar->bindParam(":id_insumo", $id_insumo);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
+
 			$consulta = $this->conexion->prepare("UPDATE insumo SET estado = 'DES' WHERE id_insumo =:id_insumo");
 			$consulta->bindParam(":id_insumo", $id_insumo);
 			$consulta->execute();
@@ -171,6 +178,13 @@ class ModeloInsumo extends Db
 	public function editar($id_insumo, $nombre, $descripcion, $stockMinimo, $imagen, $marca, $medida)
 	{
 		try {
+
+			$validar = $this->conexion->prepare("SELECT * from insumo where id_insumo=:id_insumo");
+			$validar->bindParam(":id_insumo", $id_insumo);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 
 			$consulta1 = $this->conexion->prepare("SELECT * FROM insumo WHERE id_insumo =:id_insumo");
 			$consulta1->bindParam(":id_insumo", $id_insumo);
@@ -286,6 +300,12 @@ class ModeloInsumo extends Db
 	public function restablecerInsumo($id_insumo)
 	{
 		try {
+			$validar = $this->conexion->prepare("SELECT * from insumo where id_insumo=:id_insumo");
+			$validar->bindParam(":id_insumo", $id_insumo);
+			$validar->execute();
+			if ($validar->rowCount() <= 0) {
+				throw new \Exception("Fallo");
+			}
 			$consulta = $this->conexion->prepare("UPDATE insumo SET estado = 'ACT' WHERE id_insumo =:id_insumo");
 			$consulta->bindParam(":id_insumo", $id_insumo);
 			$consulta->execute();
