@@ -98,7 +98,7 @@ class ModeloFactura extends Db
 	public function buscarCliente($cedula)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM cliente WHERE cedula =:cedula AND estado = 'ACT' ");
+			$consulta = $this->conexion->prepare("SELECT * FROM cliente where cedula =:cedula");
 			$consulta->bindParam(":cedula", $cedula);
 			$consulta->execute();
 			return ($consulta->execute()) ? $consulta->fetch() : false;

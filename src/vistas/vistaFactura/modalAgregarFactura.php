@@ -837,6 +837,13 @@
 
       <div class="form-modal mt-2" id="inputCom">
 
+        <div id="alert-edad" class="d-none uk-alert-danger comentario  comentarioRed me-4 fw-bolder  text-center" uk-alert>
+          
+          <p id="text-alert-edad" class="pe-2 ">
+            <!-- js -->
+          </p>
+        </div>
+
         <div class="form-check form-switch d-flex align-items-center">
           <div>
             <input class="form-check-input paciente-cliente-check" type="checkbox" role="switch" id="flexSwitchCheckDefault"

@@ -134,9 +134,10 @@ class ControladorFactura
 			 }
 			 
 		}
+		echo $id_cliente;
+
 
 		$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_cliente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita, $id_hospitalizacion, $doctor, $precioInsumo, $precioServicio);
-		print_r($factura);
 
 		if ($factura) {
 			//Guardar la bitacora

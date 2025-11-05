@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 21-10-2025 a las 01:41:41
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Host: 127.0.0.1
+-- Generation Time: Nov 05, 2025 at 02:52 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,14 +18,17 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `bd`
+-- Database: `bd`
 --
 
 DELIMITER $$
 --
--- Procedimientos
+-- Procedures
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT, IN `cantidad_requerida` INT)   BEGIN
+
+
+
 
 
 
@@ -35,7 +38,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
     DECLARE lote_id INT;
+
+
+
 
 
 
@@ -50,7 +59,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
+
+
+
     DECLARE done INT DEFAULT FALSE;
+
+
+
 
 
 
@@ -60,7 +78,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
         SELECT ei.id_entradaDeInsumo, ei.cantidad_disponible
+
+
+
 
 
 
@@ -70,12 +94,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
         ON e.id_entrada = ei.id_entrada
 
 
 
 
+
+
+
         WHERE ei.id_insumo = insumo_id AND ei.cantidad_disponible > 0
+
+
+
 
 
 
@@ -89,7 +122,19 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
+
+
+
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+
+
+
+
+
 
 
 
@@ -109,7 +154,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
+
+
+
     lectura_lote: LOOP
+
+
+
 
 
 
@@ -119,7 +173,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
         IF done THEN
+
+
+
 
 
 
@@ -129,7 +189,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
         END IF;
+
+
+
+
+
+
 
 
 
@@ -144,7 +213,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
             UPDATE entrada_insumo
+
+
+
 
 
 
@@ -154,7 +229,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
             WHERE id_entradaDeInsumo = lote_id;
+
+
+
 
 
 
@@ -164,7 +245,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
             LEAVE lectura_lote;
+
+
+
 
 
 
@@ -174,7 +261,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
             UPDATE entrada_insumo
+
+
+
 
 
 
@@ -184,7 +277,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
             WHERE id_entradaDeInsumo = lote_id;
+
+
+
 
 
 
@@ -194,12 +293,24 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
+
+
+
         END IF;
 
 
 
 
+
+
+
     END LOOP;
+
+
+
+
+
+
 
 
 
@@ -214,40 +325,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `devolever_insumos_hospitalizacion` (IN `id_hospitalizacion` INT)   BEGIN
-	 DECLARE done INT DEFAULT FALSE;
-    DECLARE entrada_id INT;
-    DECLARE cantidad_en_hospitalizacion INT;
 
-    -- Cursor para recorrer las entradas de insumos
-    DECLARE insumo_cursor CURSOR FOR 
-        SELECT id_inventario, cantidad FROM bd.insumodehospitalizacion WHERE id_hospitalizacion = id_hospitalizacion;
 
-    -- Manejo de excepciones para el cursor
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-
-    -- Abrir el cursor
-    OPEN insumo_cursor;
-
-    -- Bucle para recorrer las entradas de insumos
-    read_loop: LOOP
-        FETCH insumo_cursor INTO entrada_id, cantidad_en_hospitalizacion;
-
-        IF done THEN
-            LEAVE read_loop; -- Salir del bucle si no hay más filas
-        END IF;
-
-        -- Actualizar la cantidad disponible en la tabla de entrada de insumos
-        UPDATE bd.entrada_insumo SET cantidad_disponible = cantidad_disponible + cantidad_en_hospitalizacion WHERE id_entradaDeInsumo = entrada_id;
-    END LOOP;
-
-    -- Cerrar el cursor
-    CLOSE insumo_cursor;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_factura` INT)   BEGIN
+
+
+
 
 
 
@@ -257,7 +343,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
     DECLARE entrada_id INT; 
+
+
+
 
 
 
@@ -271,11 +363,23 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
+
+
+
     
 
 
 
+
+
+
     DECLARE insumo_cursor CURSOR FOR 
+
+
+
 
 
 
@@ -290,7 +394,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
+
+
+
     
+
+
+
 
 
 
@@ -304,7 +417,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
+
+
+
     
+
+
+
 
 
 
@@ -318,11 +440,23 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
+
+
+
     
 
 
 
+
+
+
     read_loop: LOOP
+
+
+
 
 
 
@@ -337,7 +471,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
+
+
+
         IF done THEN
+
+
+
 
 
 
@@ -346,7 +489,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
         END IF;
+
+
+
 
 
 
@@ -356,7 +505,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
         update bd.entrada_insumo set cantidad_disponible = cantidad_disponible + cantidad_en_factura where id_entradaDeInsumo = entrada_id;
+
+
+
 
 
 
@@ -371,7 +526,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
+
+
+
     
+
+
+
 
 
 
@@ -380,9 +544,53 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
+
+
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_insumos_hospitalizacion` (IN `p_id_insumo` INT, IN `p_cantidad` INT)   BEGIN
+
+    DECLARE v_idEntrada INT;
+
+
+
+    -- Obtener el id de la entrada 
+
+    SELECT ei.id_entradaDeInsumo
+
+    INTO v_idEntrada
+
+    FROM entrada_insumo ei
+
+    WHERE ei.id_insumo = p_id_insumo
+
+    ORDER BY ei.fechaDeVencimiento DESC
+
+    LIMIT 1;
+
+
+
+    --  Actualizar la cantidad de esa entrada
+
+    UPDATE entrada_insumo
+
+    SET cantidad_disponible = p_cantidad
+
+    WHERE id_entradaDeInsumo = v_idEntrada;
+
+
+
+    -- (Opcional) devolver el id actualizado
+
+    SELECT v_idEntrada AS idEntrada_actualizada;
+
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT, IN `id_proveedor` INT, IN `fechaDeIngreso` DATE, IN `fechaDeVecimiento` DATE, IN `precio` FLOAT, IN `cantidad` INT, IN `lote` TEXT)   BEGIN
+
+
+
 
 
 
@@ -392,7 +600,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT
 
 
 
+
+
+
     
+
+
+
 
 
 
@@ -402,7 +616,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT
 
 
 
+
+
+
     set id_entrada =  last_insert_id();
+
+
+
 
 
 
@@ -412,7 +632,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT
 
 
 
+
+
+
     INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
+
+
+
 
 
 
@@ -424,7 +650,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
+
+
+
 	declare id_insumo int;
+
+
+
 
 
 
@@ -434,7 +666,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
+
+
+
     
+
+
+
 
 
 
@@ -444,12 +682,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
+
+
+
     set id_insumo = last_insert_id();
 
 
 
 
+
+
+
     
+
+
+
 
 
 
@@ -459,7 +706,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
+
+
+
     set id_entrada =  last_insert_id();
+
+
+
 
 
 
@@ -469,7 +722,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
+
+
+
     INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
+
+
+
 
 
 
@@ -481,7 +740,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `categoria_servicio`
+-- Table structure for table `categoria_servicio`
 --
 
 CREATE TABLE `categoria_servicio` (
@@ -491,7 +750,7 @@ CREATE TABLE `categoria_servicio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `categoria_servicio`
+-- Dumping data for table `categoria_servicio`
 --
 
 INSERT INTO `categoria_servicio` (`id_categoria`, `nombre`, `estado`) VALUES
@@ -509,7 +768,7 @@ INSERT INTO `categoria_servicio` (`id_categoria`, `nombre`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `cita`
+-- Table structure for table `cita`
 --
 
 CREATE TABLE `cita` (
@@ -524,7 +783,7 @@ CREATE TABLE `cita` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `cita`
+-- Dumping data for table `cita`
 --
 
 INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_servicioMedico`, `paciente_id_paciente`, `hora_salida`, `doctor`) VALUES
@@ -561,7 +820,7 @@ INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_ser
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `cliente`
+-- Table structure for table `cliente`
 --
 
 CREATE TABLE `cliente` (
@@ -578,19 +837,20 @@ CREATE TABLE `cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `cliente`
+-- Dumping data for table `cliente`
 --
 
 INSERT INTO `cliente` (`id_cliente`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `direccion`, `fn`, `genero`, `estado`) VALUES
-(1, 'V', '12098234', 'Jose', 'Lara', '04123213212', 'esuna direccion', '2005-10-02', 'Masculino', 'ACT'),
+(1, 'V', '12098234', 'Jose', 'Lara', '04123213212', 'esuna direccion', '2006-10-02', 'Femenino', 'ACT'),
 (2, 'V', '2000002', 'Editado', 'Modificado', '04123454320', 'en su casa', '2002-02-20', 'Masculino', 'ACT'),
 (3, 'V', '3722999', 'Pedro', 'Perez', '04123454327', 'en su casa', '2002-02-20', 'Masculino', 'ACT'),
-(4, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'masculino', 'ACT');
+(4, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'masculino', 'ACT'),
+(5, 'V', '28150004', 'Juan', 'Silva', '04121338031', 'Calle 10 entre 3 y 7', '2001-09-22', 'Masculino', 'ACT');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `control`
+-- Table structure for table `control`
 --
 
 CREATE TABLE `control` (
@@ -608,7 +868,7 @@ CREATE TABLE `control` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `control`
+-- Dumping data for table `control`
 --
 
 INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`, `medicamentosRecetados`, `fecha_control`, `fechaRegreso`, `nota`, `historiaclinica`, `estado`, `severidad`) VALUES
@@ -620,13 +880,21 @@ INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`,
 (31, 89, 42, 'este enfermedad crónica', 'es una indicacion', '2025-06-27 19:24:28', '2025-06-29', 'es una nota', 'este en un historial', 'ACT', 'LEVE'),
 (32, 25, 43, 'dgdgdgff', 'gdfgd', '2025-09-25 20:24:37', '2025-10-12', 'fghfh', 'sddsds', 'ACT', 'LEVE'),
 (33, 25, 1, 'diagnostico', 'indicaciones', '2025-10-03 11:23:02', '2025-11-01', 'nota', 'historial', 'ACT', 'LEVE'),
-(34, 25, 1, 'diagnostico', 'indicaciones', '2025-10-03 11:23:41', '2025-11-01', 'nota editada', 'historial', 'ACT', 'LEVE');
+(34, 25, 1, 'diagnostico', 'indicaciones', '2025-10-03 11:23:41', '2025-11-01', 'nota editada', 'historial', 'ACT', 'LEVE'),
+(40, 25, 43, 'diagnostico', 'sqssss', '2025-10-30 20:12:15', '2025-10-31', 'sqs', 'historial', 'ACT', 'LEVE'),
+(41, 25, 46, 'sidasd', '', '2025-11-01 11:30:10', '0000-00-00', '', 'historial', 'DES', 'LEVE'),
+(42, 23, 43, 'dsdsfdsfsd', 'ddsfdssdf', '2025-11-04 12:28:30', '2025-12-06', 'sdfsd', 'dfsfds', 'ACT', 'LEVE');
 
 --
--- Disparadores `control`
+-- Triggers `control`
 --
 DELIMITER $$
 CREATE TRIGGER `SALUDABLE` AFTER INSERT ON `control` FOR EACH ROW IF NEW.diagnostico LIKE '%alta médica%' THEN
+
+
+
+
+
 
 
 
@@ -636,7 +904,17 @@ CREATE TRIGGER `SALUDABLE` AFTER INSERT ON `control` FOR EACH ROW IF NEW.diagnos
 
 
 
+
+
+
+
+
     WHERE id_paciente = NEW.id_paciente;
+
+
+
+
+
 
 
 
@@ -644,140 +922,11 @@ CREATE TRIGGER `SALUDABLE` AFTER INSERT ON `control` FOR EACH ROW IF NEW.diagnos
 END IF
 $$
 DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `after_control_insert` AFTER INSERT ON `control` FOR EACH ROW BEGIN
-
-
-
-
-    DECLARE enfermedad_cronica BOOLEAN;
-
-
-
-
-    
-
-
-
-
-    
-
-
-
-
-    SET enfermedad_cronica = (NEW.diagnostico LIKE '%crónic%' OR NEW.diagnostico LIKE '%permanente%');
-
-
-
-
-    
-
-
-
-
-    
-
-
-
-
-    IF NEW.severidad = 'GRAVE' OR enfermedad_cronica THEN
-
-
-
-
-        UPDATE paciente 
-
-
-
-
-        SET estado_salud = IF(enfermedad_cronica, 'CRONICO', 'ENFERMO')
-
-
-
-
-        WHERE id_paciente = NEW.id_paciente;
-
-
-
-
-    ELSEIF NEW.severidad IN ('LEVE', 'MODERADA') THEN
-
-
-
-
-        UPDATE paciente 
-
-
-
-
-        SET estado_salud = 'ENFERMO'
-
-
-
-
-        WHERE id_paciente = NEW.id_paciente;
-
-
-
-
-    END IF;
-
-
-
-
-    
-
-
-
-
-    
-
-
-
-
-    INSERT INTO historial_estados (id_paciente, estado_anterior, estado_nuevo, fecha_cambio)
-
-
-
-
-    VALUES (NEW.id_paciente, 
-
-
-
-
-            (SELECT estado_salud FROM paciente WHERE id_paciente = NEW.id_paciente),
-
-
-
-
-            IF(NEW.severidad = 'GRAVE' OR enfermedad_cronica, 
-
-
-
-
-               IF(enfermedad_cronica, 'CRONICO', 'ENFERMO'),
-
-
-
-
-               'ENFERMO'),
-
-
-
-
-            NOW());
-
-
-
-
-END
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `detalle_factura`
+-- Table structure for table `detalle_factura`
 --
 
 CREATE TABLE `detalle_factura` (
@@ -793,7 +942,7 @@ CREATE TABLE `detalle_factura` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `detalle_factura`
+-- Dumping data for table `detalle_factura`
 --
 
 INSERT INTO `detalle_factura` (`id_datelle_factura`, `id_factura`, `tipo`, `cantidad`, `precio_unitario`, `subtotal`, `hospitalizacion_id_hospitalizacion`, `serviciomedico_id_servicioMedico`, `entrada_insumo_id_entradaDeInsumo`) VALUES
@@ -802,13 +951,24 @@ INSERT INTO `detalle_factura` (`id_datelle_factura`, `id_factura`, `tipo`, `cant
 (3, 199, 'Servicio', 1, 1000.00, 1000.00, NULL, 25, NULL),
 (4, 200, 'Servicio', 1, 1000.00, 1000.00, NULL, 25, NULL),
 (5, 204, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53),
-(6, 207, 'Servicio', 1, 3000.00, 3000.00, NULL, 24, NULL);
+(6, 207, 'Servicio', 1, 3000.00, 3000.00, NULL, 24, NULL),
+(7, 208, 'Hospitalizacion', 1, 474844.00, 474844.00, 27, NULL, NULL),
+(8, 209, 'Insumo', 3, 80.00, 240.00, NULL, NULL, 53),
+(9, 210, 'Insumo', 1, 9.00, 9.00, NULL, NULL, 52),
+(10, 210, 'Insumo', 2, 9.00, 18.00, NULL, NULL, 54),
+(11, 211, 'Servicio', 1, 1000.00, 1000.00, NULL, 25, NULL),
+(12, 211, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53),
+(13, 211, 'Insumo', 1, 9.00, 9.00, NULL, NULL, 54),
+(14, 211, 'Insumo', 1, 5.60, 5.60, NULL, NULL, 64),
+(15, 214, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53),
+(16, 219, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53),
+(17, 220, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53);
 
 -- --------------------------------------------------------
 
 --
--- Estructura Stand-in para la vista `distribucion_edad_genero`
--- (Véase abajo para la vista actual)
+-- Stand-in structure for view `distribucion_edad_genero`
+-- (See below for the actual view)
 --
 CREATE TABLE `distribucion_edad_genero` (
 `rango_edad` varchar(5)
@@ -822,7 +982,7 @@ CREATE TABLE `distribucion_edad_genero` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `entrada`
+-- Table structure for table `entrada`
 --
 
 CREATE TABLE `entrada` (
@@ -834,7 +994,7 @@ CREATE TABLE `entrada` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `entrada`
+-- Dumping data for table `entrada`
 --
 
 INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeIngreso`, `estado`) VALUES
@@ -881,7 +1041,7 @@ INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeI
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `entrada_insumo`
+-- Table structure for table `entrada_insumo`
 --
 
 CREATE TABLE `entrada_insumo` (
@@ -895,13 +1055,13 @@ CREATE TABLE `entrada_insumo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `entrada_insumo`
+-- Dumping data for table `entrada_insumo`
 --
 
 INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `fechaDeVencimiento`, `precio`, `cantidad_entrante`, `cantidad_disponible`) VALUES
-(52, 37, 58, '2025-05-25', 9.00, 89, 68),
-(53, 36, 59, '2026-02-11', 750000.00, 34, 7),
-(54, 41, 62, '2026-06-29', 9.00, 20, 16),
+(52, 37, 58, '2025-05-25', 9.00, 89, 67),
+(53, 36, 59, '2026-02-11', 750000.00, 34, 0),
+(54, 41, 62, '2026-06-29', 9.00, 20, 13),
 (55, 42, 63, '2025-06-27', 8.00, 12, 12),
 (56, 36, 64, '2026-06-21', 12.00, 1, 1),
 (57, 36, 65, '2026-06-21', 12.00, 1, 1),
@@ -911,8 +1071,8 @@ INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `
 (61, 41, 69, '2025-06-29', 12.00, 5, 5),
 (62, 36, 70, '2025-06-29', 12.00, 2, 2),
 (63, 36, 71, '2025-06-29', 190.00, 1, 1),
-(64, 43, 72, '2026-07-06', 8.00, 12, 10),
-(65, 44, 73, '2027-06-30', 2.80, 12, 12),
+(64, 43, 72, '2026-07-06', 8.00, 12, 9),
+(65, 44, 73, '2027-06-30', 2.80, 12, 10),
 (66, 45, 74, '2025-12-31', 100.00, 50, 50),
 (67, 44, 75, '2025-12-29', 100.00, 1, 1),
 (68, 44, 76, '2025-12-31', 100.00, 1, 1),
@@ -921,7 +1081,7 @@ INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `especialidad`
+-- Table structure for table `especialidad`
 --
 
 CREATE TABLE `especialidad` (
@@ -931,7 +1091,7 @@ CREATE TABLE `especialidad` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `especialidad`
+-- Dumping data for table `especialidad`
 --
 
 INSERT INTO `especialidad` (`id_especialidad`, `nombre`, `estado`) VALUES
@@ -945,8 +1105,8 @@ INSERT INTO `especialidad` (`id_especialidad`, `nombre`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura Stand-in para la vista `especialidades_solicitadas`
--- (Véase abajo para la vista actual)
+-- Stand-in structure for view `especialidades_solicitadas`
+-- (See below for the actual view)
 --
 CREATE TABLE `especialidades_solicitadas` (
 `especialidad` varchar(25)
@@ -957,7 +1117,7 @@ CREATE TABLE `especialidades_solicitadas` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `factura`
+-- Table structure for table `factura`
 --
 
 CREATE TABLE `factura` (
@@ -969,7 +1129,7 @@ CREATE TABLE `factura` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `factura`
+-- Dumping data for table `factura`
 --
 
 INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `id_cliente`) VALUES
@@ -1070,12 +1230,19 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `id_cliente`) V
 (204, '2025-10-20', 80.00, 'ACT', 4),
 (205, '2025-10-24', 3000.00, 'ACT', 4),
 (206, '2025-10-24', 3000.00, 'ACT', 4),
-(207, '2025-10-27', 3000.00, 'ACT', 4);
+(207, '2025-10-27', 3000.00, 'ACT', 4),
+(208, '2025-10-20', 474874.00, 'ACT', 4),
+(209, '2025-10-21', 240.00, 'ACT', 4),
+(210, '2025-10-21', 27.00, 'ACT', 4),
+(211, '2025-10-22', 1094.60, 'ACT', 4),
+(214, '2025-11-05', 80.00, 'ACT', 4),
+(219, '2025-11-05', 80.00, 'ACT', 5),
+(220, '2025-11-05', 80.00, 'ACT', 5);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `horario`
+-- Table structure for table `horario`
 --
 
 CREATE TABLE `horario` (
@@ -1084,7 +1251,7 @@ CREATE TABLE `horario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `horario`
+-- Dumping data for table `horario`
 --
 
 INSERT INTO `horario` (`id_horario`, `diaslaborables`) VALUES
@@ -1099,7 +1266,7 @@ INSERT INTO `horario` (`id_horario`, `diaslaborables`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `horarioydoctor`
+-- Table structure for table `horarioydoctor`
 --
 
 CREATE TABLE `horarioydoctor` (
@@ -1111,7 +1278,7 @@ CREATE TABLE `horarioydoctor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `horarioydoctor`
+-- Dumping data for table `horarioydoctor`
 --
 
 INSERT INTO `horarioydoctor` (`id_horarioydoctor`, `id_personal`, `id_horario`, `horaDeEntrada`, `horaDeSalida`) VALUES
@@ -1122,12 +1289,14 @@ INSERT INTO `horarioydoctor` (`id_horarioydoctor`, `id_personal`, `id_horario`, 
 (34, 22, 9, '10:00:00', '13:00:00'),
 (35, 22, 10, '14:00:00', '16:00:00'),
 (36, 23, 13, '09:00:00', '10:01:00'),
-(41, 29, 10, '00:00:02', '10:00:00');
+(41, 29, 10, '00:00:02', '10:00:00'),
+(42, 20, 12, '02:00:00', '23:00:00'),
+(43, 22, 12, '01:00:00', '23:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `hospitalizacion`
+-- Table structure for table `hospitalizacion`
 --
 
 CREATE TABLE `hospitalizacion` (
@@ -1144,7 +1313,7 @@ CREATE TABLE `hospitalizacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `hospitalizacion`
+-- Dumping data for table `hospitalizacion`
 --
 
 INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `precio_horas`, `precio_horas_MoEx`, `total`, `total_MoEx`, `id_paciente`, `fecha_hora_final`, `estado`, `personal_id_personal`) VALUES
@@ -1164,12 +1333,14 @@ INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `preci
 (24, '2025-09-12 11:22:59', 540.77, 3.56, 570.33, 3.75, 25, '2025-09-14 14:36:51', 'Realizada', 19),
 (25, '2025-09-14 14:37:52', 0, 0, 0, 0, 25, '0000-00-00 00:00:00', 'DES', 19),
 (26, '2025-09-15 20:17:53', 0, 0, 0, 0, 25, '0000-00-00 00:00:00', 'DES', 19),
-(27, '2025-09-24 19:58:31', 474844, 2407.37, 474874, 2407.52, 25, '2025-10-14 21:26:57', 'Pendiente', 19);
+(27, '2025-09-24 19:58:31', 474844, 2407.37, 474874, 2407.52, 25, '2025-10-14 21:26:57', 'Realizada', 19),
+(34, '2025-10-30 20:12:15', 217.91, 1.01, 220.71, 1.02, 25, '2025-10-30 22:55:44', 'Pendiente', 20),
+(35, '2025-11-01 11:30:10', 0, 0, 0, 0, 25, '0000-00-00 00:00:00', 'Pendiente', 22);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `insumo`
+-- Table structure for table `insumo`
 --
 
 CREATE TABLE `insumo` (
@@ -1186,7 +1357,7 @@ CREATE TABLE `insumo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `insumo`
+-- Dumping data for table `insumo`
 --
 
 INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `medida`, `precio`, `estado`, `stockMinimo`, `iva`) VALUES
@@ -1212,7 +1383,7 @@ INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `insumodehospitalizacion`
+-- Table structure for table `insumodehospitalizacion`
 --
 
 CREATE TABLE `insumodehospitalizacion` (
@@ -1223,7 +1394,7 @@ CREATE TABLE `insumodehospitalizacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `insumodehospitalizacion`
+-- Dumping data for table `insumodehospitalizacion`
 --
 
 INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospitalizacion`, `id_entradaDeInsumo`, `cantidad`) VALUES
@@ -1239,12 +1410,25 @@ INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospita
 (26, 24, 60, 1),
 (27, 25, 60, 2),
 (28, 26, 53, 1),
-(29, 27, 60, 1);
+(29, 27, 60, 1),
+(35, 34, 65, 1),
+(36, 35, 65, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `paciente`
+-- Stand-in structure for view `insumos_estadisticas`
+-- (See below for the actual view)
+--
+CREATE TABLE `insumos_estadisticas` (
+`nombre_insumo` varchar(25)
+,`total_usado` decimal(32,0)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `paciente`
 --
 
 CREATE TABLE `paciente` (
@@ -1262,7 +1446,7 @@ CREATE TABLE `paciente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `paciente`
+-- Dumping data for table `paciente`
 --
 
 INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `direccion`, `fn`, `genero`, `estado`, `estado_salud`) VALUES
@@ -1344,7 +1528,7 @@ INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apel
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `pago`
+-- Table structure for table `pago`
 --
 
 CREATE TABLE `pago` (
@@ -1353,7 +1537,7 @@ CREATE TABLE `pago` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `pago`
+-- Dumping data for table `pago`
 --
 
 INSERT INTO `pago` (`id_pago`, `nombre`) VALUES
@@ -1365,7 +1549,7 @@ INSERT INTO `pago` (`id_pago`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `pagodefactura`
+-- Table structure for table `pagodefactura`
 --
 
 CREATE TABLE `pagodefactura` (
@@ -1377,7 +1561,7 @@ CREATE TABLE `pagodefactura` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `pagodefactura`
+-- Dumping data for table `pagodefactura`
 --
 
 INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `referencia`, `monto`) VALUES
@@ -1517,12 +1701,19 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (238, 5, 204, '', 80.00),
 (239, 5, 205, '', 3000.00),
 (240, 5, 206, '', 3000.00),
-(241, 5, 207, '', 3000.00);
+(241, 5, 207, '', 3000.00),
+(242, 5, 208, '', 474874.00),
+(243, 5, 209, '', 240.00),
+(244, 5, 210, '', 27.00),
+(245, 5, 211, '', 1094.60),
+(246, 5, 214, '', 80.00),
+(247, 5, 219, '', 80.00),
+(248, 5, 220, '', 80.00);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `patologia`
+-- Table structure for table `patologia`
 --
 
 CREATE TABLE `patologia` (
@@ -1532,7 +1723,7 @@ CREATE TABLE `patologia` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `patologia`
+-- Dumping data for table `patologia`
 --
 
 INSERT INTO `patologia` (`id_patologia`, `nombre_patologia`, `estado`) VALUES
@@ -1572,7 +1763,7 @@ INSERT INTO `patologia` (`id_patologia`, `nombre_patologia`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `patologiadepaciente`
+-- Table structure for table `patologiadepaciente`
 --
 
 CREATE TABLE `patologiadepaciente` (
@@ -1583,7 +1774,7 @@ CREATE TABLE `patologiadepaciente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `patologiadepaciente`
+-- Dumping data for table `patologiadepaciente`
 --
 
 INSERT INTO `patologiadepaciente` (`id_patologiaDePaciente`, `id_paciente`, `id_patologia`, `fecha_registro`) VALUES
@@ -1641,7 +1832,7 @@ INSERT INTO `patologiadepaciente` (`id_patologiaDePaciente`, `id_paciente`, `id_
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `personal`
+-- Table structure for table `personal`
 --
 
 CREATE TABLE `personal` (
@@ -1657,7 +1848,7 @@ CREATE TABLE `personal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Volcado de datos para la tabla `personal`
+-- Dumping data for table `personal`
 --
 
 INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `tipodecategoria`, `id_especialidad`, `usuario`) VALUES
@@ -1674,7 +1865,7 @@ INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apel
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `personal_has_serviciomedico`
+-- Table structure for table `personal_has_serviciomedico`
 --
 
 CREATE TABLE `personal_has_serviciomedico` (
@@ -1683,7 +1874,7 @@ CREATE TABLE `personal_has_serviciomedico` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Volcado de datos para la tabla `personal_has_serviciomedico`
+-- Dumping data for table `personal_has_serviciomedico`
 --
 
 INSERT INTO `personal_has_serviciomedico` (`personal_id_personal`, `serviciomedico_id_servicioMedico`) VALUES
@@ -1698,12 +1889,13 @@ INSERT INTO `personal_has_serviciomedico` (`personal_id_personal`, `serviciomedi
 (20, 24),
 (20, 27),
 (20, 28),
-(20, 31);
+(20, 31),
+(22, 25);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `proveedor`
+-- Table structure for table `proveedor`
 --
 
 CREATE TABLE `proveedor` (
@@ -1717,7 +1909,7 @@ CREATE TABLE `proveedor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `proveedor`
+-- Dumping data for table `proveedor`
 --
 
 INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `rif`, `telefono`, `email`, `direccion`, `estado`) VALUES
@@ -1729,7 +1921,7 @@ INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `rif`, `telefono`, `email`, `
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `serviciomedico`
+-- Table structure for table `serviciomedico`
 --
 
 CREATE TABLE `serviciomedico` (
@@ -1741,7 +1933,7 @@ CREATE TABLE `serviciomedico` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `serviciomedico`
+-- Dumping data for table `serviciomedico`
 --
 
 INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `estado`, `tipo`) VALUES
@@ -1766,19 +1958,28 @@ INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `es
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `servicios_hospitalizacion`
+-- Table structure for table `servicios_hospitalizacion`
 --
 
 CREATE TABLE `servicios_hospitalizacion` (
   `id_detalle` int(11) NOT NULL,
   `id_hospitalizacion` int(11) NOT NULL,
-  `id_servicioMedico` int(11) NOT NULL
+  `id_servicioMedico` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `servicios_hospitalizacion`
+--
+
+INSERT INTO `servicios_hospitalizacion` (`id_detalle`, `id_hospitalizacion`, `id_servicioMedico`, `cantidad`) VALUES
+(9, 34, 25, 1),
+(10, 35, 25, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `sintomas`
+-- Table structure for table `sintomas`
 --
 
 CREATE TABLE `sintomas` (
@@ -1788,7 +1989,7 @@ CREATE TABLE `sintomas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `sintomas`
+-- Dumping data for table `sintomas`
 --
 
 INSERT INTO `sintomas` (`id_sintomas`, `nombre`, `estado`) VALUES
@@ -1809,7 +2010,7 @@ INSERT INTO `sintomas` (`id_sintomas`, `nombre`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `sintomas_control`
+-- Table structure for table `sintomas_control`
 --
 
 CREATE TABLE `sintomas_control` (
@@ -1819,7 +2020,7 @@ CREATE TABLE `sintomas_control` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `sintomas_control`
+-- Dumping data for table `sintomas_control`
 --
 
 INSERT INTO `sintomas_control` (`id_sintomas_control`, `id_sintomas`, `id_control`) VALUES
@@ -1844,13 +2045,15 @@ INSERT INTO `sintomas_control` (`id_sintomas_control`, `id_sintomas`, `id_contro
 (55, 6, 33),
 (56, 8, 33),
 (57, 6, 34),
-(58, 8, 34);
+(58, 8, 34),
+(59, 6, 40),
+(60, 6, 42);
 
 -- --------------------------------------------------------
 
 --
--- Estructura Stand-in para la vista `tasa_morbilidad`
--- (Véase abajo para la vista actual)
+-- Stand-in structure for view `tasa_morbilidad`
+-- (See below for the actual view)
 --
 CREATE TABLE `tasa_morbilidad` (
 `nombre_patologia` varchar(25)
@@ -1861,7 +2064,7 @@ CREATE TABLE `tasa_morbilidad` (
 -- --------------------------------------------------------
 
 --
--- Estructura para la vista `distribucion_edad_genero`
+-- Structure for view `distribucion_edad_genero`
 --
 DROP TABLE IF EXISTS `distribucion_edad_genero`;
 
@@ -1870,7 +2073,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Estructura para la vista `especialidades_solicitadas`
+-- Structure for view `especialidades_solicitadas`
 --
 DROP TABLE IF EXISTS `especialidades_solicitadas`;
 
@@ -1879,25 +2082,34 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Estructura para la vista `tasa_morbilidad`
+-- Structure for view `insumos_estadisticas`
+--
+DROP TABLE IF EXISTS `insumos_estadisticas`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `insumos_estadisticas`  AS SELECT `i`.`nombre` AS `nombre_insumo`, sum(`df`.`cantidad`) AS `total_usado` FROM ((`detalle_factura` `df` join `entrada_insumo` `ei` on(`ei`.`id_entradaDeInsumo` = `df`.`entrada_insumo_id_entradaDeInsumo`)) join `insumo` `i` on(`i`.`id_insumo` = `ei`.`id_insumo`)) WHERE `df`.`entrada_insumo_id_entradaDeInsumo` is not null GROUP BY `ei`.`id_insumo` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `tasa_morbilidad`
 --
 DROP TABLE IF EXISTS `tasa_morbilidad`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `tasa_morbilidad`  AS SELECT `p`.`nombre_patologia` AS `nombre_patologia`, count(distinct `pp`.`id_paciente`) AS `casos`, round(count(distinct `pp`.`id_paciente`) / (select count(0) from `paciente`) * 1000,2) AS `tasa_por_1000` FROM (`patologiadepaciente` `pp` join `patologia` `p` on(`pp`.`id_patologia` = `p`.`id_patologia`)) GROUP BY `pp`.`id_patologia` ORDER BY count(distinct `pp`.`id_paciente`) DESC ;
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `categoria_servicio`
+-- Indexes for table `categoria_servicio`
 --
 ALTER TABLE `categoria_servicio`
   ADD PRIMARY KEY (`id_categoria`),
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
--- Indices de la tabla `cita`
+-- Indexes for table `cita`
 --
 ALTER TABLE `cita`
   ADD PRIMARY KEY (`id_cita`,`paciente_id_paciente`),
@@ -1905,13 +2117,13 @@ ALTER TABLE `cita`
   ADD KEY `fk_cita_paciente1_idx` (`paciente_id_paciente`);
 
 --
--- Indices de la tabla `cliente`
+-- Indexes for table `cliente`
 --
 ALTER TABLE `cliente`
   ADD PRIMARY KEY (`id_cliente`);
 
 --
--- Indices de la tabla `control`
+-- Indexes for table `control`
 --
 ALTER TABLE `control`
   ADD PRIMARY KEY (`id_control`),
@@ -1919,7 +2131,7 @@ ALTER TABLE `control`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
--- Indices de la tabla `detalle_factura`
+-- Indexes for table `detalle_factura`
 --
 ALTER TABLE `detalle_factura`
   ADD PRIMARY KEY (`id_datelle_factura`),
@@ -1929,14 +2141,14 @@ ALTER TABLE `detalle_factura`
   ADD KEY `serviciomedico_id_servicioMedico` (`serviciomedico_id_servicioMedico`);
 
 --
--- Indices de la tabla `entrada`
+-- Indexes for table `entrada`
 --
 ALTER TABLE `entrada`
   ADD PRIMARY KEY (`id_entrada`),
   ADD KEY `id_proveedor` (`id_proveedor`);
 
 --
--- Indices de la tabla `entrada_insumo`
+-- Indexes for table `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
   ADD PRIMARY KEY (`id_entradaDeInsumo`),
@@ -1944,27 +2156,27 @@ ALTER TABLE `entrada_insumo`
   ADD KEY `id_entrada` (`id_entrada`);
 
 --
--- Indices de la tabla `especialidad`
+-- Indexes for table `especialidad`
 --
 ALTER TABLE `especialidad`
   ADD PRIMARY KEY (`id_especialidad`) USING BTREE,
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
--- Indices de la tabla `factura`
+-- Indexes for table `factura`
 --
 ALTER TABLE `factura`
   ADD PRIMARY KEY (`id_factura`,`id_cliente`),
   ADD KEY `id_cliente` (`id_cliente`);
 
 --
--- Indices de la tabla `horario`
+-- Indexes for table `horario`
 --
 ALTER TABLE `horario`
   ADD PRIMARY KEY (`id_horario`);
 
 --
--- Indices de la tabla `horarioydoctor`
+-- Indexes for table `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
   ADD PRIMARY KEY (`id_horarioydoctor`),
@@ -1972,7 +2184,7 @@ ALTER TABLE `horarioydoctor`
   ADD KEY `id_horario` (`id_horario`);
 
 --
--- Indices de la tabla `hospitalizacion`
+-- Indexes for table `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
   ADD PRIMARY KEY (`id_hospitalizacion`),
@@ -1981,13 +2193,13 @@ ALTER TABLE `hospitalizacion`
   ADD KEY `personal_id_personal` (`personal_id_personal`);
 
 --
--- Indices de la tabla `insumo`
+-- Indexes for table `insumo`
 --
 ALTER TABLE `insumo`
   ADD PRIMARY KEY (`id_insumo`);
 
 --
--- Indices de la tabla `insumodehospitalizacion`
+-- Indexes for table `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
   ADD PRIMARY KEY (`id_insumoDeHospitalizacion`),
@@ -1995,20 +2207,20 @@ ALTER TABLE `insumodehospitalizacion`
   ADD KEY `id_insumo` (`id_entradaDeInsumo`);
 
 --
--- Indices de la tabla `paciente`
+-- Indexes for table `paciente`
 --
 ALTER TABLE `paciente`
   ADD PRIMARY KEY (`id_paciente`),
   ADD UNIQUE KEY `cedula` (`cedula`);
 
 --
--- Indices de la tabla `pago`
+-- Indexes for table `pago`
 --
 ALTER TABLE `pago`
   ADD PRIMARY KEY (`id_pago`);
 
 --
--- Indices de la tabla `pagodefactura`
+-- Indexes for table `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
   ADD PRIMARY KEY (`id_pagoDeFactura`),
@@ -2016,14 +2228,14 @@ ALTER TABLE `pagodefactura`
   ADD KEY `id_factura` (`id_factura`);
 
 --
--- Indices de la tabla `patologia`
+-- Indexes for table `patologia`
 --
 ALTER TABLE `patologia`
   ADD PRIMARY KEY (`id_patologia`),
   ADD UNIQUE KEY `nombre_patologia` (`nombre_patologia`);
 
 --
--- Indices de la tabla `patologiadepaciente`
+-- Indexes for table `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
   ADD PRIMARY KEY (`id_patologiaDePaciente`),
@@ -2031,7 +2243,7 @@ ALTER TABLE `patologiadepaciente`
   ADD KEY `id_patologia` (`id_patologia`);
 
 --
--- Indices de la tabla `personal`
+-- Indexes for table `personal`
 --
 ALTER TABLE `personal`
   ADD PRIMARY KEY (`id_personal`),
@@ -2039,7 +2251,7 @@ ALTER TABLE `personal`
   ADD KEY `id_especialidad` (`id_especialidad`);
 
 --
--- Indices de la tabla `personal_has_serviciomedico`
+-- Indexes for table `personal_has_serviciomedico`
 --
 ALTER TABLE `personal_has_serviciomedico`
   ADD PRIMARY KEY (`personal_id_personal`,`serviciomedico_id_servicioMedico`),
@@ -2047,21 +2259,21 @@ ALTER TABLE `personal_has_serviciomedico`
   ADD KEY `fk_personal_has_serviciomedico_personal1_idx` (`personal_id_personal`);
 
 --
--- Indices de la tabla `proveedor`
+-- Indexes for table `proveedor`
 --
 ALTER TABLE `proveedor`
   ADD PRIMARY KEY (`id_proveedor`),
   ADD UNIQUE KEY `rif` (`rif`);
 
 --
--- Indices de la tabla `serviciomedico`
+-- Indexes for table `serviciomedico`
 --
 ALTER TABLE `serviciomedico`
   ADD PRIMARY KEY (`id_servicioMedico`),
   ADD KEY `id_categoria` (`id_categoria`);
 
 --
--- Indices de la tabla `servicios_hospitalizacion`
+-- Indexes for table `servicios_hospitalizacion`
 --
 ALTER TABLE `servicios_hospitalizacion`
   ADD PRIMARY KEY (`id_detalle`),
@@ -2069,14 +2281,14 @@ ALTER TABLE `servicios_hospitalizacion`
   ADD KEY `id_servicioMedico` (`id_servicioMedico`);
 
 --
--- Indices de la tabla `sintomas`
+-- Indexes for table `sintomas`
 --
 ALTER TABLE `sintomas`
   ADD PRIMARY KEY (`id_sintomas`),
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
--- Indices de la tabla `sintomas_control`
+-- Indexes for table `sintomas_control`
 --
 ALTER TABLE `sintomas_control`
   ADD PRIMARY KEY (`id_sintomas_control`),
@@ -2084,178 +2296,178 @@ ALTER TABLE `sintomas_control`
   ADD KEY `id_control` (`id_control`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `categoria_servicio`
+-- AUTO_INCREMENT for table `categoria_servicio`
 --
 ALTER TABLE `categoria_servicio`
   MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
--- AUTO_INCREMENT de la tabla `cita`
+-- AUTO_INCREMENT for table `cita`
 --
 ALTER TABLE `cita`
   MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
--- AUTO_INCREMENT de la tabla `cliente`
+-- AUTO_INCREMENT for table `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `control`
+-- AUTO_INCREMENT for table `control`
 --
 ALTER TABLE `control`
-  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
--- AUTO_INCREMENT de la tabla `detalle_factura`
+-- AUTO_INCREMENT for table `detalle_factura`
 --
 ALTER TABLE `detalle_factura`
-  MODIFY `id_datelle_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_datelle_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT de la tabla `entrada`
+-- AUTO_INCREMENT for table `entrada`
 --
 ALTER TABLE `entrada`
   MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
--- AUTO_INCREMENT de la tabla `entrada_insumo`
+-- AUTO_INCREMENT for table `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
   MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
--- AUTO_INCREMENT de la tabla `especialidad`
+-- AUTO_INCREMENT for table `especialidad`
 --
 ALTER TABLE `especialidad`
   MODIFY `id_especialidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT de la tabla `factura`
+-- AUTO_INCREMENT for table `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=208;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
 
 --
--- AUTO_INCREMENT de la tabla `horario`
+-- AUTO_INCREMENT for table `horario`
 --
 ALTER TABLE `horario`
   MODIFY `id_horario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT de la tabla `horarioydoctor`
+-- AUTO_INCREMENT for table `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
-  MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
--- AUTO_INCREMENT de la tabla `hospitalizacion`
+-- AUTO_INCREMENT for table `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
--- AUTO_INCREMENT de la tabla `insumo`
+-- AUTO_INCREMENT for table `insumo`
 --
 ALTER TABLE `insumo`
   MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
--- AUTO_INCREMENT de la tabla `insumodehospitalizacion`
+-- AUTO_INCREMENT for table `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
-  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
--- AUTO_INCREMENT de la tabla `paciente`
+-- AUTO_INCREMENT for table `paciente`
 --
 ALTER TABLE `paciente`
   MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
--- AUTO_INCREMENT de la tabla `pago`
+-- AUTO_INCREMENT for table `pago`
 --
 ALTER TABLE `pago`
   MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT de la tabla `pagodefactura`
+-- AUTO_INCREMENT for table `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=242;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
 
 --
--- AUTO_INCREMENT de la tabla `patologia`
+-- AUTO_INCREMENT for table `patologia`
 --
 ALTER TABLE `patologia`
-  MODIFY `id_patologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=209;
+  MODIFY `id_patologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=210;
 
 --
--- AUTO_INCREMENT de la tabla `patologiadepaciente`
+-- AUTO_INCREMENT for table `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
   MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=245;
 
 --
--- AUTO_INCREMENT de la tabla `personal`
+-- AUTO_INCREMENT for table `personal`
 --
 ALTER TABLE `personal`
   MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
--- AUTO_INCREMENT de la tabla `proveedor`
+-- AUTO_INCREMENT for table `proveedor`
 --
 ALTER TABLE `proveedor`
   MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla `serviciomedico`
+-- AUTO_INCREMENT for table `serviciomedico`
 --
 ALTER TABLE `serviciomedico`
   MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
--- AUTO_INCREMENT de la tabla `servicios_hospitalizacion`
+-- AUTO_INCREMENT for table `servicios_hospitalizacion`
 --
 ALTER TABLE `servicios_hospitalizacion`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT de la tabla `sintomas`
+-- AUTO_INCREMENT for table `sintomas`
 --
 ALTER TABLE `sintomas`
   MODIFY `id_sintomas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT de la tabla `sintomas_control`
+-- AUTO_INCREMENT for table `sintomas_control`
 --
 ALTER TABLE `sintomas_control`
-  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
--- Restricciones para tablas volcadas
+-- Constraints for dumped tables
 --
 
 --
--- Filtros para la tabla `cita`
+-- Constraints for table `cita`
 --
 ALTER TABLE `cita`
   ADD CONSTRAINT `fk_cita_paciente1` FOREIGN KEY (`paciente_id_paciente`) REFERENCES `paciente` (`id_paciente`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_cita_serviciomedico1` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Filtros para la tabla `control`
+-- Constraints for table `control`
 --
 ALTER TABLE `control`
   ADD CONSTRAINT `control_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`);
 
 --
--- Filtros para la tabla `detalle_factura`
+-- Constraints for table `detalle_factura`
 --
 ALTER TABLE `detalle_factura`
   ADD CONSTRAINT `detalle_factura_ibfk_1` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id_factura`),
@@ -2264,91 +2476,51 @@ ALTER TABLE `detalle_factura`
   ADD CONSTRAINT `detalle_factura_ibfk_4` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`);
 
 --
--- Filtros para la tabla `entrada`
+-- Constraints for table `entrada`
 --
 ALTER TABLE `entrada`
   ADD CONSTRAINT `entrada_ibfk_1` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`);
 
 --
--- Filtros para la tabla `entrada_insumo`
+-- Constraints for table `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
   ADD CONSTRAINT `entrada_insumo_ibfk_1` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`id_insumo`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `entrada_insumo_ibfk_2` FOREIGN KEY (`id_entrada`) REFERENCES `entrada` (`id_entrada`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `factura`
+-- Constraints for table `factura`
 --
 ALTER TABLE `factura`
   ADD CONSTRAINT `factura_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`);
 
 --
--- Filtros para la tabla `horarioydoctor`
+-- Constraints for table `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
   ADD CONSTRAINT `horarioydoctor_ibfk_1` FOREIGN KEY (`id_personal`) REFERENCES `personal` (`id_personal`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `horarioydoctor_ibfk_2` FOREIGN KEY (`id_horario`) REFERENCES `horario` (`id_horario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `hospitalizacion`
+-- Constraints for table `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
   ADD CONSTRAINT `hospitalizacion_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`),
   ADD CONSTRAINT `hospitalizacion_ibfk_2` FOREIGN KEY (`personal_id_personal`) REFERENCES `personal` (`id_personal`);
 
 --
--- Filtros para la tabla `insumodehospitalizacion`
+-- Constraints for table `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
   ADD CONSTRAINT `insumodehospitalizacion_ibfk_1` FOREIGN KEY (`id_hospitalizacion`) REFERENCES `hospitalizacion` (`id_hospitalizacion`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `insumodehospitalizacion_ibfk_2` FOREIGN KEY (`id_entradaDeInsumo`) REFERENCES `entrada_insumo` (`id_entradaDeInsumo`);
 
 --
--- Filtros para la tabla `pagodefactura`
---
-ALTER TABLE `pagodefactura`
-  ADD CONSTRAINT `pagodefactura_ibfk_1` FOREIGN KEY (`id_pago`) REFERENCES `pago` (`id_pago`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `pagodefactura_ibfk_2` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id_factura`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `patologiadepaciente`
+-- Constraints for table `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
   ADD CONSTRAINT `id_paciente ` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `id_patologia` FOREIGN KEY (`id_patologia`) REFERENCES `patologia` (`id_patologia`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `personal`
---
-ALTER TABLE `personal`
-  ADD CONSTRAINT `personal_ibfk_1` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidad` (`id_especialidad`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `personal_has_serviciomedico`
---
-ALTER TABLE `personal_has_serviciomedico`
-  ADD CONSTRAINT `personal_has_serviciomedico_ibfk_1` FOREIGN KEY (`personal_id_personal`) REFERENCES `personal` (`id_personal`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `personal_has_serviciomedico_ibfk_2` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `serviciomedico`
---
-ALTER TABLE `serviciomedico`
-  ADD CONSTRAINT `serviciomedico_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria_servicio` (`id_categoria`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `servicios_hospitalizacion`
---
-ALTER TABLE `servicios_hospitalizacion`
-  ADD CONSTRAINT `servicios_hospitalizacion_ibfk_1` FOREIGN KEY (`id_hospitalizacion`) REFERENCES `hospitalizacion` (`id_hospitalizacion`),
-  ADD CONSTRAINT `servicios_hospitalizacion_ibfk_2` FOREIGN KEY (`id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`);
-
---
--- Filtros para la tabla `sintomas_control`
---
-ALTER TABLE `sintomas_control`
-  ADD CONSTRAINT `sintomas_control_ibfk_1` FOREIGN KEY (`id_sintomas`) REFERENCES `sintomas` (`id_sintomas`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `sintomas_control_ibfk_2` FOREIGN KEY (`id_control`) REFERENCES `control` (`id_control`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

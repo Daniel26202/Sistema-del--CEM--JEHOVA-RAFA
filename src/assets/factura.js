@@ -58,7 +58,27 @@ addEventListener("DOMContentLoaded", () => {
       console.log(resultado);
       if (resultado[0] != false) {
         resultado.forEach((res) => {
-          document.getElementById("datosPaciente").innerText = `PACIENTE: ${res.nombre} ${res.apellido}`;
+          // calcula la edad
+          const fechaNac = new Date(res.fn);
+          const edadDif = Date.now() - fechaNac.getTime();
+          const edadFecha = new Date(edadDif);
+          const edad = Math.abs(
+            edadFecha.getUTCFullYear() - 1970
+          )
+          document.getElementById("datosPaciente").innerText = `PACIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+
+          document.getElementById(
+            "text-alert-edad"
+          ).innerText = `La factura no se puede hacer a nombre de ese paciente o cliente ${res.nombre} ${res.apellido}   ya que es menor  de edad con (${edad}) por favor intente con otro. `;
+
+
+          if (edad >= 18) {
+            document.getElementById('botonPC').classList.remove('d-none');
+            document.getElementById("alert-edad").classList.add("d-none");
+          } else {
+            document.getElementById("botonPC").classList.add("d-none");
+            document.getElementById("alert-edad").classList.remove("d-none");
+          }
 
           document.getElementById("myToastfactura").classList.add("d-none");
           //formCitas.classList.remove('d-none');
@@ -761,7 +781,20 @@ addEventListener("DOMContentLoaded", () => {
       console.log(resultado);
       if (resultado[0] != false) {
         resultado.forEach((res) => {
-          dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido}`;
+          // calcula la edad
+          const fechaNac = new Date(res.fn);
+          const edadDif = Date.now() - fechaNac.getTime();
+          const edadFecha = new Date(edadDif);
+          const edad =Math.abs(edadFecha.getUTCFullYear() - 1970);
+          dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+
+          if (edad >= 18) {
+            document.getElementById("botonPC").classList.remove("d-none");
+            document.getElementById("alert-edad").classList.add("d-none");
+          } else {
+            document.getElementById("botonPC").classList.add("d-none");
+            document.getElementById("alert-edad").classList.remove("d-none");
+          }
 
           document.getElementById("myToastfactura").classList.add("d-none");
 
@@ -770,7 +803,7 @@ addEventListener("DOMContentLoaded", () => {
 
           document.getElementById("inputCliente").value = res.id_cliente;
         });
-        document.getElementById("botonPC").classList.remove("d-none");
+        
 
         divClienteNoEncontrado.classList.add('d-none');
 
