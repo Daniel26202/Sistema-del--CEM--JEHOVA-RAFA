@@ -26,6 +26,7 @@
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/chart.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/precios.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/expresionesModulares.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/sweetalert2@11.js"></script>
 <script>
 	new DataTable('.example', {
 		language: {
