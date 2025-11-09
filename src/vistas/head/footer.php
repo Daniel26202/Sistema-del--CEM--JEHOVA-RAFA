@@ -27,20 +27,7 @@
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/precios.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/expresionesModulares.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/sweetalert2@11.js"></script>
-<script>
-	new DataTable('.example', {
-		language: {
-			decimal: ",",
-			thousands: ".",
-			lengthMenu: "Mostrar por página _MENU_ ",
-			zeroRecords: "No se encontraron resultados",
-			info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-			infoEmpty: "No hay registros disponibles",
-			infoFiltered: "(filtrado de _MAX_ registros en total)",
-			search: "Buscar:"
-		}
-	});
-</script>
+
 
 <script>
 	function openNav() {

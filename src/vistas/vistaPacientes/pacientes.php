@@ -63,3 +63,4 @@
 
 
 <?php require_once './src/vistas/head/footer.php'; ?>
+<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/pacientes.js"></script>

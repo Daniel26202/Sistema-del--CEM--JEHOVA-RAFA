@@ -4,6 +4,7 @@
 return [
     //Pacientes
     "getPacientes" => "consultar",
+    "getPacientesAjax" => "consultar",
     "papeleraPaciente" => "consultar",
     "guardar" => "guardar",
     "setPaciente"  => "editar",

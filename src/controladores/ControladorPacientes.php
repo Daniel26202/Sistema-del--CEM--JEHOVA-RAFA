@@ -37,6 +37,11 @@ class ControladorPacientes
 		require_once './src/vistas/vistaPacientes/pacientes.php';
 	}
 
+	public function getPacientesAjax($parametro)
+	{
+		echo json_encode($this->modelo->index());
+	}
+
 	/* hay q hacerlo con ajax, pero lo hice sencillo, no se si se vaya a pasar a ajax to esto, pa despues del sabado ;) */
 	public function getHistorialSalud($parametro)
 	{
@@ -56,26 +61,31 @@ class ControladorPacientes
 	public function guardar()
 	{
 		$resultadoDeCedula = $this->modelo->validarCedula($_POST['cedula']);
-		// date_default_timezone_set('America/Mexico_City');
 		$fecha = date("Y-m-d");
 
-		if ($resultadoDeCedula === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorCedula");
-		} elseif ($fecha <= $_POST['fn']) {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorfecha");
-		} else {
+			$insercion = $this->modelo->insertar(
+				$_POST['nacionalidad'],
+				$_POST['cedula'],
+				$_POST['nombre'],
+				$_POST['apellido'],
+				$_POST['telefono'],
+				$_POST['direccion'],
+				$_POST['fn'],
+				$_POST['genero']
+			);
 
-			$insercion = $this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-			if ($insercion) {
-				// guardar la bitacora
+			// Verifica si es un array con clave "exito"
+			if (is_array($insercion) && $insercion[0] === "exito") {
 				$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/registro");
+				echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+				exit;
 			}
-		}
+		
 	}
+
 
 	public function setPaciente($cedula)
 	{
