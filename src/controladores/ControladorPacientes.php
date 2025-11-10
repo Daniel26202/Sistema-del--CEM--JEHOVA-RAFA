@@ -60,9 +60,6 @@ class ControladorPacientes
 
 	public function guardar()
 	{
-		$resultadoDeCedula = $this->modelo->validarCedula($_POST['cedula']);
-		$fecha = date("Y-m-d");
-
 			$insercion = $this->modelo->insertar(
 				$_POST['nacionalidad'],
 				$_POST['cedula'],
@@ -87,59 +84,26 @@ class ControladorPacientes
 	}
 
 
-	public function setPaciente($cedula)
+	public function setPaciente()
 	{
-		$cedula = $cedula[0];
-		$resultadoDeCedula = $this->modelo->validarCedula($cedula);
-		// date_default_timezone_set('America/Mexico_City');
-		$fechaEditar = date("Y-m-d");
+		// $edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero'], $_POST['cedulaRegistrada']);
+		$edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero'], $_POST['cedulaRegistrada']);
 
-		//se verifica si la cédula del input es igual a la cédula ya existente 
+		// $edicion = $this->modelo->validarCedula($_POST['cedula']);
 
-		if ($fechaEditar <= $_POST['fn']) {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorfecha");
-			exit();
-		} elseif ($cedula == $_POST["cedula"]) {
 
-			$edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
+		// echo json_encode(['ok' => true, 'error' => $edicion]);
 
-			if ($edicion) {
-				//guardar la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
-			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
-			}
-			// NOTA: Esto "&&" es "Y"
-			//se verifica si la cédula del input no es igual a la cédula ya existente.  
-		} elseif ($cedula != $_POST["cedula"]) {
 
-			//verifica si la cédula es igual a la información de la base de datos.
-			if ($resultadoDeCedula === "existeC") {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/error");
-			} else {
 
-				$edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-				if ($edicion) {
-					//guardar la bitacora
-					$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
-					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
-				} else {
-					header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
-				}
-			}
+		// // Verifica si es un array con clave "exito"
+		if (is_array($edicion) && $edicion[0] === "exito") {
+			$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-
-			$edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-			if ($edicion) {
-				//guardar la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/editar");
-			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
-			}
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $edicion]);
+			exit;
 		}
 	}
 
@@ -150,12 +114,16 @@ class ControladorPacientes
 		// guardar la bitacora
 		$eliminacion = $this->modelo->delete($cedula);
 
-		if ($eliminacion) {
+		//Verifica si es un array con clave "exito"
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario, "paciente", "Ha eliminado un  paciente");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/eliminar");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
 		}
+
 	}
 	public function restablecer($datos)
 	{

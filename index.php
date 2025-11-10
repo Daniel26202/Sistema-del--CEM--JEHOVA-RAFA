@@ -12,3 +12,5 @@ header("Expires: 0");
 
 $rutas = new Rutas($url);
 $rutas->gestionarRutas();
+
+require './src/config/expresionesRegulares.php';

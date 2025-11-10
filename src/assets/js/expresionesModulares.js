@@ -178,25 +178,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Verificamos si todos los campos han sido validados correctamente
       const formularioValido = Object.values(campos).every((valor) => valor === true);
+      
 
       if (formularioValido) {
-        // Si el formulario es válido, ocultamos cualquier mensaje de error y procedemos
-        const mensajeError = formulario.querySelector(".msjE");
-        if (mensajeError) {
-          mensajeError.classList.add("d-none");
-        }
-        formulario.submit(); // Enviamos el formulario
-      } else {
-        // Si hay campos inválidos, mostramos el mensaje de error correspondiente
-        const mensajeError = formulario.querySelector(".msjE");
-        if (mensajeError) {
-          mensajeError.classList.remove("d-none");
+        //validamos si el formulario contiene la clase form-ajax
+        if (formulario.classList.contains("form-ajax")) {
+          console.log("no se envio por que se va a enviar con ajax"); //si la tiene no se envia al formulario
         } else {
-          document.querySelector(".alertaFormulario").classList.remove("d-none");
-          setTimeout(function () {
-            document.querySelector(".alertaFormulario").classList.add("d-none");
-          }, 10000);
+          formulario.submit(); // Enviamos el formulario
         }
+      } else {
+       console.log('malo')
       }
     });
   }
@@ -301,7 +293,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   //Hay que seleccionar el id por medio del boton para poder comparar y saber que ormulario de edicion le voy a cambiar imagenes
-  document.querySelectorAll(".botonesEdi").forEach((btn) => {
+  
+  setTimeout(() => {
+    document.querySelectorAll(".botonesEdi").forEach((btn) => {
     btn.addEventListener("click", () => {
       let id = btn.getAttribute("data-index");
 
@@ -310,4 +304,5 @@ document.addEventListener("DOMContentLoaded", function () {
       inicializarValidacionFormularioEditar(formularioEditar, id);
     });
   });
+  }, 800);
 });
