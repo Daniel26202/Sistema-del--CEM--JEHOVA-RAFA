@@ -26,6 +26,8 @@ return [
 
     //Patlogias
     "patologias" => "consultar",
+    "patologiasAjax" => "consultar",
+    "papeleraAjax" => "consultar",
     "papeleraPatologias" => "consultar",
     "registrarPatologia" => "guardar",
     "eliminarPatologia" => "eliminar",

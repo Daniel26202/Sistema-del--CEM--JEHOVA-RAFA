@@ -251,7 +251,7 @@ const readCustomer = async () => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
         Swal.fire({
-          icon: "info",
+          icon: "question",
           title: "Confirmacion",
           text: "Esta seguro de eliminar el cliente?",
           confirmButtonText: "Aceptar",
@@ -298,7 +298,7 @@ const readCustomer = async () => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
         Swal.fire({
-          icon: "info",
+          icon: "question",
           title: "Confirmacion",
           text: "Esta seguro de restablecer el paciente?",
           confirmButtonText: "Aceptar",

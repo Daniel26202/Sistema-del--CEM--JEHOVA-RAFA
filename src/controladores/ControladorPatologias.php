@@ -21,33 +21,36 @@ class ControladorPatologias
 	public function patologias($parametro)
 	{
 		$ayuda = "btnayudaPatologia";
-		$datosPatologias = $this->patologia->mostrarPatologias();
 		require_once './src/vistas/vistaPatologia/patologia.php';
+	}
+
+	public function patologiasAjax()
+	{
+		echo json_encode($this->patologia->mostrarPatologias());
 	}
 	public function papeleraPatologias($parametro)
 	{
 		$ayuda = "btnayudaPatologia";
-		$datosPatologias = $this->patologia->mostrarPatologiasEliminadas();
 		require_once './src/vistas/vistaPatologia/patologiapapelera.php';
+	}
+	public function papeleraAjax()
+	{
+		echo json_encode($this->patologia->mostrarPatologiasEliminadas());
 	}
 
 	//insertar patologia 
 	public function registrarPatologia()
 	{
-		$resultaPatologia = $this->patologia->nombrePatologia($_POST['nombre']);
 
+		$insercion = $this->patologia->insertarPatologia($_POST["nombre"]);
 
-		if ($resultaPatologia === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/error");
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$this->bitacora->insertarBitacora($_POST['id_usuario'], "patologia", "Ha Insertado una nueva patologia");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			$insercion = $this->patologia->insertarPatologia($_POST["nombre"]);
-			if ($insercion) {
-				// // Guardo la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "patologia", "Ha Insertado una patologia");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/registro");
-			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/errorSistem");
-			}
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
 		}
 	}
 
@@ -59,12 +62,14 @@ class ControladorPatologias
 		$id_usuario = $datos[1];
 
 		$eliminar = $this->patologia->eliminarPatologia($id_patologia);
-		if ($eliminar) {
-			// Guardo la bitacora
+
+		if (is_array($eliminar) && $eliminar[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario, "patologia", "Ha eliminado una patologia");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/eliminar");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/errorSintem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminar]);
+			exit;
 		}
 	}
 
@@ -75,12 +80,14 @@ class ControladorPatologias
 		$id_usuario = $datos[1];
 
 		$restablecer = $this->patologia->restablecer($id_patologia);
-		if ($restablecer) {
-			// Guardo la bitacora
+
+		if (is_array($restablecer) && $restablecer[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario, "patologia", "Ha restablecido una patologia");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/restablecido");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $restablecer]);
+			exit;
 		}
 	}
 

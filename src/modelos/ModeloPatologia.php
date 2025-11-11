@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\Db;
+use App\config\Validations;
 
 class ModeloPatologia extends Db
 {
@@ -80,6 +81,18 @@ class ModeloPatologia extends Db
     public function insertarPatologia($nombrePatologia)
     {
         try {
+            $validaciones = Validations::pathologyRules($nombrePatologia);
+
+            foreach ($validaciones as $v) {
+                if (!preg_match($v['regex'], $v['valor'])) {
+                    throw new \Exception($v['mensaje']);
+                }
+            }
+
+            if ($this->nombrePatologia($nombrePatologia) === "existeC") {
+                throw new \Exception("La patologia ya existe en el sistema.");
+            }
+
             $consulta = $this->conexion->prepare("INSERT INTO patologia VALUES (null, :nombrePatologia, 'ACT')");
             $consulta->bindParam(":nombrePatologia", $nombrePatologia);
             $consulta->execute();
@@ -93,7 +106,7 @@ class ModeloPatologia extends Db
 
             return ["exito", $data];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -110,9 +123,9 @@ class ModeloPatologia extends Db
             $consulta = $this->conexion->prepare("UPDATE patologia SET estado= 'DES' WHERE id_patologia=:id_patologia ");
             $consulta->bindParam(":id_patologia", $id_patologia);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
     public function restablecer($id_patologia)
@@ -128,9 +141,9 @@ class ModeloPatologia extends Db
             $consulta = $this->conexion->prepare("UPDATE patologia SET estado= 'ACT' WHERE id_patologia=:id_patologia ");
             $consulta->bindParam(":id_patologia", $id_patologia);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
