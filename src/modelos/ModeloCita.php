@@ -80,6 +80,21 @@ class ModeloCita extends Db
 
 			$this->conexion->beginTransaction();
 
+			$fechaHoy = date("Y-m-d");
+			$dt = \DateTime::createFromFormat('Y-m-d', $fecha);
+
+			// Validación de fecha
+			if (!$dt || $dt->format('Y-m-d') !== $fecha) {
+				throw new \Exception("La fecha debe tener el formato YYYY-MM-DD.");
+			}
+			if ($fechaHoy > $fecha) {
+				throw new \Exception("La fecha no puede ser del pasado.");
+			}
+
+			if ($this->validarCita($id_paciente, $fecha, $hora) === "existeC") {
+				throw new \Exception("La cita ya está registrada.");
+			}
+
 			$fecha_hora = new DateTime($hora);
 			$fecha_hora->modify('+1 hour');
 			$hora_salida = $fecha_hora->format("H:m:s");
@@ -164,7 +179,7 @@ class ModeloCita extends Db
 			if ($validar->rowCount() <= 0) {
 				throw new \Exception("Fallo");
 			}
-			
+
 			$consulta = $this->conexion->prepare("UPDATE cita SET serviciomedico_id_servicioMedico=:id_servicioMedico,fecha=:fecha,hora=:hora WHERE id_cita =:id_cita");
 			$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
 			$consulta->bindParam(":fecha", $fecha);

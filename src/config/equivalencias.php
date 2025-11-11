@@ -60,6 +60,7 @@ return [
     "mostrarPacienteCita" => "consultar",
     "mostrarPacienteCitaGet" => "consultar",
     "citas" => "consultar",
+    "citasAjax" => "consultar",
     "citasHoy" => "consultar",
     "citasP" => "consultar",
     "guardarCita" => "guardar",

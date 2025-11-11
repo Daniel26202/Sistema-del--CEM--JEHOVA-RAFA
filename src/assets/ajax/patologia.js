@@ -75,6 +75,11 @@ const readPathology = async () => {
           showCancelButton: true,
           confirmButtonText: "Aceptar",
           cancelButtonText: "Cancelar",
+          customClass: {
+            popup: "switAlert",
+            confirmButton: "btn-agregarcita-modal",
+            cancelButton: "btn-agregarcita-modal-cancelar",
+          },
         }).then((result) => {
           if (result.isConfirmed) {
             deletePathology(data);
@@ -95,6 +100,11 @@ const readPathology = async () => {
           showCancelButton: true,
           confirmButtonText: "Aceptar",
           cancelButtonText: "Cancelar",
+          customClass: {
+            popup: "switAlert",
+            confirmButton: "btn-agregarcita-modal",
+            cancelButton: "btn-agregarcita-modal-cancelar",
+          },
         }).then((result) => {
           if (result.isConfirmed) {
             console.log(data);
@@ -138,6 +148,11 @@ const createPathology = async (form, inputs) => {
         icon: "success",
         title: "Exito",
         text: `${result.message}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
       UIkit.modal("#modal-exampleAgregarPatologias").hide();
       form.reset();
@@ -150,6 +165,11 @@ const createPathology = async (form, inputs) => {
       icon: "error",
       title: "Error",
       text: `${error}`,
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
     });
   }
 };
@@ -163,6 +183,11 @@ const deletePathology = async (data) => {
         icon: "success",
         title: "Exito",
         text: `${result.message}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
       readPathology();
     } else throw new Error(`${result.error}`);
@@ -171,6 +196,11 @@ const deletePathology = async (data) => {
       icon: "error",
       title: "Error",
       text: `${error}`,
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
     });
   }
 };
@@ -184,6 +214,11 @@ const restablecerPathology = async (data) => {
         icon: "success",
         title: "Exito",
         text: `${result.message}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
       readPathology();
     } else throw new Error(`${result.error}`);
@@ -192,6 +227,11 @@ const restablecerPathology = async (data) => {
       icon: "error",
       title: "Error",
       text: `${error}`,
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
     });
   }
 };
@@ -213,6 +253,11 @@ if (modalAgregar) {
         icon: "error",
         title: "Error al enviar el formulario",
         text: "Por favor verifique que todos los datos esten correctos.",
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
     }
   });

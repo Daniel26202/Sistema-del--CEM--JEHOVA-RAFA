@@ -258,6 +258,11 @@ const readPatients = async () => {
           showCancelButton: true,
           confirmButtonText: "Aceptar",
           cancelButtonText: "Cancelar",
+          customClass: {
+            popup: "switAlert",
+            confirmButton: "btn-agregarcita-modal",
+            cancelButton: "btn-agregarcita-modal-cancelar",
+          },
         }).then((result) => {
           if (result.isConfirmed) {
             deletePattients(data);
@@ -287,6 +292,11 @@ const readPatients = async () => {
             icon: "error",
             title: "Error al enviar el formulario",
             text: "Por favor verifique que todos los datos esten correctos.",
+            customClass: {
+              popup: "switAlert",
+              confirmButton: "btn-agregarcita-modal",
+              cancelButton: "btn-agregarcita-modal-cancelar",
+            },
           });
         }
       });
@@ -305,6 +315,11 @@ const readPatients = async () => {
           showCancelButton: true,
           confirmButtonText: "Aceptar",
           cancelButtonText: "Cancelar",
+          customClass: {
+            popup: "switAlert",
+            confirmButton: "btn-agregarcita-modal",
+            cancelButton: "btn-agregarcita-modal-cancelar",
+          },
         }).then((result) => {
           if (result.isConfirmed) {
             restablecerPattients(data);
@@ -334,6 +349,11 @@ const readPatients = async () => {
       icon: "error",
       title: "Error",
       text: `${error}`,
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
     });
   }
 };
@@ -348,6 +368,11 @@ const createPatients = async (form, inputs) => {
         icon: "success",
         title: "Exito",
         text: `${result.message}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
       UIkit.modal("#modal-examplePaciente").hide();
       form.reset();
@@ -360,6 +385,11 @@ const createPatients = async (form, inputs) => {
       icon: "error",
       title: "Error",
       text: `${error}`,
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
     });
   }
 };
@@ -378,6 +408,11 @@ const updatePatients = async (form, inputs) => {
         icon: "success",
         title: "Exito",
         text: `${result.message}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
       UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
       inputs = [];
@@ -390,6 +425,11 @@ const updatePatients = async (form, inputs) => {
       icon: "error",
       title: "Error",
       text: `${error}`,
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
     });
   }
 };
@@ -403,6 +443,11 @@ const deletePattients = async (data) => {
         icon: "success",
         title: "Exito",
         text: `${result.message}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
       readPatients();
     } else throw new Error(`${result.error}`);
@@ -411,6 +456,11 @@ const deletePattients = async (data) => {
       icon: "error",
       title: "Error",
       text: `${error}`,
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
     });
   }
 };
@@ -424,6 +474,11 @@ const restablecerPattients = async (data) => {
         icon: "success",
         title: "Exito",
         text: `${result.message}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
       readPatients();
     } else throw new Error(`${result.error}`);
@@ -432,6 +487,11 @@ const restablecerPattients = async (data) => {
       icon: "error",
       title: "Error",
       text: `${error}`,
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
     });
   }
 };
@@ -457,6 +517,11 @@ if (modalAgregar) {
         icon: "error",
         title: "Error al enviar el formulario",
         text: "Por favor verifique que todos los datos esten correctos.",
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
       });
     }
   });

@@ -45,16 +45,12 @@
                 </div>
             </div>
         </div>
-        <form class="form-modal form-validable" action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/guardarCita" id="modalAgregarCita" method="POST"
+        <form class="form-modal form-validable form-ajax" action="" id="modalAgregarCita" method="POST"
             autocomplete="off">
 
             <input type="hidden" value="<?php echo $_SESSION['id_usuario'] ?>" name="id_usuario">
 
             <div class="input-group flex-nowrap" id="grp_cedula">
-
-
-                <img src="<?php echo $urlBase ?>../src/assets/img/seguro-de-salud.png" width="60" height="60" uk-svg class="iconoB me-2 d-none"
-                    id="imgCita">
 
                 <span class="input-modal mt-1 d-none" id="iconoCedulaCita">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"

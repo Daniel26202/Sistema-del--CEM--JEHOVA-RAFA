@@ -63,9 +63,14 @@ class ControladorCitas
 		$ayuda = "btnayudaCitaP";
 		$vistaActiva = 'pendientes';
 		$servicios = $this->modelo->mostrarServicioDoctor();
-		$datosCitas = $this->modelo->mostrarCita();
 		require_once './src/vistas/vistasCitas/vistaCitas.php';
 	}
+	public function citasAjax()
+	{
+		$datosCitas = $this->modelo->mostrarCita();
+		echo json_encode($datosCitas);
+	}
+
 	public function citasHoy($parametro)
 	{
 		$ayuda = "btnayudaCitaP";
@@ -84,25 +89,16 @@ class ControladorCitas
 
 	public function guardarCita()
 	{
-		print_r($_POST);
-		date_default_timezone_set('America/Mexico_City');
-		$fecha = date("Y-m-d");
-		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
 
-		if ($resultadoDeCita === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorCita");
-		} elseif ($_POST["fechaDeCita"] < $fecha) {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
+		$insercion = $this->modelo->insertarCita($_POST["id_paciente"], $_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["estado"], $_POST["id_doctor"]);
+
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha Insertado una  cita");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			$insercion = $this->modelo->insertarCita($_POST["id_paciente"], $_POST["id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["estado"], $_POST["id_doctor"]);
-
-			if ($insercion) {
-				// // Guardar la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha Insertado una  cita");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/registro");
-			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-			}
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
 		}
 	}
 
