@@ -221,9 +221,9 @@ class ModeloPacientes extends Db
 			$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'ACT' WHERE id_paciente = :id_paciente");
 			$consulta->bindParam(":id_paciente", $id_paciente);
 			$consulta->execute();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 

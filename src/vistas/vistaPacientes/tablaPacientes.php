@@ -16,10 +16,6 @@
         <tbody id="tbodyPatients">
 
 
-            <?php foreach ($pacientes as $paciente): ?>
-
-            <?php endforeach; ?>
-
         </tbody>
     </table>
 

@@ -8,7 +8,13 @@ const selectGenero = document.getElementById("selectGenero");
 
 const readPatients = async () => {
   try {
-    const result = await executePetition(url + "/getPacientesAjax", "GET");
+    let metodo = "";
+    let urlActual = window.location.href;
+
+    if (urlActual.includes("getPacientes")) metodo = "getPacientesAjax";
+    else metodo = "papeleraPacienteAjax";
+
+    const result = await executePetition(url + "/" + metodo, "GET");
 
     // construir html de filas
     let html = "";
@@ -24,9 +30,13 @@ const readPatients = async () => {
                     <td class="text-center">${element.genero}</td>
                     <td class="text-center">${element.estado_salud}</td>
                     <td class="text-center">
-                            <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
+                            <button class="${
+                              !urlActual.includes("getPacientes") ? "d-none" : ""
+                            } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
                                 uk-toggle="target: #modal-examplePacienteEditar${element.id_paciente}"
-                                data-id-tabla="modal-examplePacienteEditar${element.id_paciente}" data-index="${element.id_paciente}">
+                                data-id-tabla="modal-examplePacienteEditar${element.id_paciente}" data-index="${
+        element.id_paciente
+      }">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -35,13 +45,28 @@ const readPatients = async () => {
 
                             </button>
 
-                            <button class="btn btn-tabla mb-1 btnModalEliminarPaciente btn-dt-tabla btn-eliminar" data-index=${element.cedula}>
+                            <button class="${
+                              !urlActual.includes("getPacientes") ? "d-none" : ""
+                            } btn btn-tabla mb-1 btnModalEliminarPaciente btn-dt-tabla btn-eliminar" data-index=${element.cedula}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                     <path
                                         d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                 </svg>
                             </button>
+
+                            <div class="me-2">
+                    <a href="#" class="${
+                      urlActual.includes("getPacientes") ? "d-none" : ""
+                    } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
+        element.id_paciente
+      }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
+                        <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
+                      </svg>
+                    </a>
+                  </div>
 
 
 
@@ -77,7 +102,9 @@ const readPatients = async () => {
                                     </div>
                                 </div>
 
-                                <form class="form-modal form-validable${element.id_paciente} form-ajax forms-editar"   data-index=${element.id_paciente} autocomplete="off">
+                                <form class="form-modal form-validable${
+                                  element.id_paciente
+                                } form-ajax forms-editar"   data-index=${element.id_paciente} autocomplete="off">
                                     <input type="hidden" class='id_usuario_bitacora' name="id_usuario" ">
                                     <input type="hidden" name="id_paciente" value="${element.id_paciente}">
                                     <input type="hidden" name="cedulaRegistrada" value="${element.cedula}">
@@ -96,10 +123,14 @@ const readPatients = async () => {
                                             </select>
                                         </span>
 
-                                        <input class="form-control input-modal input-disabled input-paciente input-validar" style="width: 7vh !important;" type="number" id="cedula" name="cedula" value="${element.cedula}" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                                        <input class="form-control input-modal input-disabled input-paciente input-validar" style="width: 7vh !important;" type="number" id="cedula" name="cedula" value="${
+                                          element.cedula
+                                        }" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                                     </div>
 
-                                    <p class="p-error-cedula${element.id_paciente} d-none">La cedula debe contener únicamente números y estar entre 7 a 8 caracteres</p>
+                                    <p class="p-error-cedula${
+                                      element.id_paciente
+                                    } d-none">La cedula debe contener únicamente números y estar entre 7 a 8 caracteres</p>
 
                                     <div class="input-group flex-nowrap margin-inputs grpFormCorrect" id="grp_nombre">
                                         <span class="input-modal mt-1">
@@ -108,10 +139,14 @@ const readPatients = async () => {
                                             </svg>
                                         </span>
 
-                                        <input class="form-control mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="nombre" name="nombre" value="${element.nombre}" placeholder="Nombre" required maxlength="11">
+                                        <input class="form-control mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="nombre" name="nombre" value="${
+                                          element.nombre
+                                        }" placeholder="Nombre" required maxlength="11">
                                     </div>
 
-                                    <p class="p-error-nombre${element.id_paciente} d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+                                    <p class="p-error-nombre${
+                                      element.id_paciente
+                                    } d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
                                     <div class="input-group flex-nowrap margin-inputs grpFormCorrect" id="grp_apellido">
                                         <span class="input-modal mt-1">
@@ -119,11 +154,15 @@ const readPatients = async () => {
                                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                                             </svg>
                                         </span>
-                                        <input class="form-control input-modal mayuscula input-disabled input-paciente input-validar" type="text" id="apellido" name="apellido" value="${element.apellido}" placeholder="Apellido" required maxlength="11">
+                                        <input class="form-control input-modal mayuscula input-disabled input-paciente input-validar" type="text" id="apellido" name="apellido" value="${
+                                          element.apellido
+                                        }" placeholder="Apellido" required maxlength="11">
 
                                     </div>
 
-                                    <p class="p-error-apellido${element.id_paciente} d-none">El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+                                    <p class="p-error-apellido${
+                                      element.id_paciente
+                                    } d-none">El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
 
                                     <div class="input-group flex-nowrap margin-inputs grpFormCorrect" id="grp_telefono">
                                         <span class="input-modal mt-1">
@@ -131,9 +170,13 @@ const readPatients = async () => {
                                                 <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
                                             </svg>
                                         </span>
-                                        <input class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" value="${element.telefono}" required maxlength="18">
+                                        <input class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" value="${
+                                          element.telefono
+                                        }" required maxlength="18">
                                     </div>
-                                    <p class="p-error-telefono${element.id_paciente} d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
+                                    <p class="p-error-telefono${
+                                      element.id_paciente
+                                    } d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
 
                                     <div class="input-group flex-nowrap margin-inputs grpFormCorrect" id="grp_direccion">
                                         <span class="input-modal mt-1">
@@ -142,7 +185,9 @@ const readPatients = async () => {
                                                 <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1z" />
                                             </svg>
                                         </span>
-                                        <input class="form-control  mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="direccion" name="direccion" value="${element.direccion}" placeholder="Direccion" required maxlength="20">
+                                        <input class="form-control  mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="direccion" name="direccion" value="${
+                                          element.direccion
+                                        }" placeholder="Direccion" required maxlength="20">
                                     </div>
                                     <p class="p-error-direccion${element.id_paciente} d-none">Debe estar completa y detallada</p>
 
@@ -154,7 +199,9 @@ const readPatients = async () => {
                                                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-4.118 9.79c1.258 0 2-1.067 2-2.872 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684c.047.64.594 1.406 1.703 1.406zm-2.89-5.435h-.633A12.6 12.6 0 0 0 4.5 8.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675V7.354z" />
                                             </svg>
                                         </span>
-                                        <input class="form-control input-modal input-disabled input-paciente input-validar" type="date" id="fn" name="fn" placeholder="Fn" required pattern="\d{4}-\d{2}-\d{2}" value="${element.fn}">
+                                        <input class="form-control input-modal input-disabled input-paciente input-validar" type="date" id="fn" name="fn" placeholder="Fn" required pattern="\d{4}-\d{2}-\d{2}" value="${
+                                          element.fn
+                                        }">
                                     </div>
                                     <p class="p-error-fn${element.id_paciente} d-none">No puede ser mayor que la fecha actual</p>
 
@@ -246,6 +293,28 @@ const readPatients = async () => {
       });
     });
 
+    //llamar a la uncion de restablecer
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+        Swal.fire({
+          icon: "info",
+          title: "Confirmacion",
+          text: "Esta seguro de restablecer el paciente?",
+          confirmButtonText: "Aceptar",
+          showCancelButton: true,
+          confirmButtonText: "Aceptar",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            restablecerPattients(data);
+            console.log(data);
+          }
+        });
+      });
+    });
+
     // re-inicializa
     $(selector).DataTable({
       language: {
@@ -311,8 +380,7 @@ const updatePatients = async (form, inputs) => {
         title: "Exito",
         text: `${result.message}`,
       });
-      UIkit.modal("#modal-examplePaciente").hide();
-      form.reset();
+      UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
       inputs = [];
       inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
       readPatients();
@@ -348,26 +416,49 @@ const deletePattients = async (data) => {
   }
 };
 
-readPatients();
-
-modalAgregar.addEventListener("submit", function (e) {
-  e.preventDefault();
-  let inputsBuenos = [];
-  this.querySelectorAll(".input-validar").forEach((input) => {
-    if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-  });
-
-  if (
-    inputsBuenos.length == 5 &&
-    document.querySelector(".p-error-fn").classList.contains("d-none") &&
-    selectGenero.value != ""
-  ) {
-    createPatients(this, inputsBuenos);
-  } else {
+//restablecer
+const restablecerPattients = async (data) => {
+  try {
+    const result = await executePetition(url + `/restablecer/${data}`, "GET");
+    if (result.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Exito",
+        text: `${result.message}`,
+      });
+      readPatients();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
     Swal.fire({
       icon: "error",
-      title: "Error al enviar el formulario",
-      text: "Por favor verifique que todos los datos esten correctos.",
+      title: "Error",
+      text: `${error}`,
     });
   }
-});
+};
+
+readPatients();
+
+if (modalAgregar) {
+  modalAgregar.addEventListener("submit", function (e) {
+    e.preventDefault();
+    let inputsBuenos = [];
+    this.querySelectorAll(".input-validar").forEach((input) => {
+      if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
+    });
+
+    if (
+      inputsBuenos.length == 5 &&
+      document.querySelector(".p-error-fn").classList.contains("d-none") &&
+      selectGenero.value != ""
+    ) {
+      createPatients(this, inputsBuenos);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error al enviar el formulario",
+        text: "Por favor verifique que todos los datos esten correctos.",
+      });
+    }
+  });
+}
