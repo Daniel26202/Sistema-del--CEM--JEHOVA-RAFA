@@ -16,7 +16,9 @@ return [
 
     //Clientes
     "Clientes" => "consultar",
+    "clientesAjax"=>'consultar',
     "papeleraPaciente" => "consultar",
+    "papeleraAjax" => "consultar",
     "guardar" => "guardar",
     "setCliente"  => "editar",
     "eliminar" => "eliminar",

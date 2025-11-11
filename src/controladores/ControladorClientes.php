@@ -33,97 +33,55 @@ class ControladorClientes
     {
         $ayuda = "btnayudaPaciente";
         $vistaActiva = 'clientes';
-        $clientes = $this->modelo->index();
         require_once './src/vistas/vistaCliente/vistaCliente.php';
+    }
+    public function clientesAjax()
+    {
+        echo json_encode($this->modelo->index());
     }
 
 
     public function papelera($parametro)
     {
         $vistaActiva = 'papelera';
-        $clientes = $this->modelo->indexPapelera();
         require_once './src/vistas/vistaCliente/vistaCliente.php';
+    }
+
+    public function papeleraAjax()
+    {
+        echo json_encode($this->modelo->indexPapelera());
     }
 
 
 
     public function guardar()
     {
-        $resultadoDeCedula = $this->modelo->validarCedula($_POST['cedula']);
-        // date_default_timezone_set('America/Mexico_City');
-        $fecha = date("Y-m-d");
+        $insercion = $this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
 
-        if ($resultadoDeCedula === "existeC") {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/errorCedula");
-        } elseif ($fecha <= $_POST['fn']) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/errorfecha");
+        // Verifica si es un array con clave "exito"
+        if (is_array($insercion) && $insercion[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario'], "cliente", "Ha Insertado un nuevo cliente");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
-
-            $insercion = $this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-            if ($insercion) {
-                // guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario'], "cliente", "Ha Insertado un nuevo cliente");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/registro");
-            } else {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/errorSistem");
-            }
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $insercion]);
+            exit;
         }
     }
 
-    public function setCliente($cedula)
+    public function setCliente()
     {
-        $cedula = $cedula[0];
-        $resultadoDeCedula = $this->modelo->validarCedula($cedula);
-        // date_default_timezone_set('America/Mexico_City');
-        $fechaEditar = date("Y-m-d");
 
-        //se verifica si la cédula del input es igual a la cédula ya existente 
+        $edicion = $this->modelo->update($_POST['id_cliente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero'], $_POST['cedulaRegistrada']);
 
-        if ($fechaEditar <= $_POST['fn']) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Pacientes/Clientes/errorfecha");
-            exit();
-        } elseif ($cedula == $_POST["cedula"]) {
-
-            $edicion = $this->modelo->update($_POST['id_cliente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-            if ($edicion) {
-                //guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario'], "cliente", "Ha modificado un cliente");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/editar");
-            } else {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/errorSistem");
-            }
-            // NOTA: Esto "&&" es "Y"
-            //se verifica si la cédula del input no es igual a la cédula ya existente.  
-        } elseif ($cedula != $_POST["cedula"]) {
-
-            //verifica si la cédula es igual a la información de la base de datos.
-            if ($resultadoDeCedula === "existeC") {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/error");
-            } else {
-
-                $edicion = $this->modelo->update($_POST['id_cliente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-                if ($edicion) {
-                    //guardar la bitacora
-                    $this->bitacora->insertarBitacora($_POST['id_usuario'], "cliente", "Ha modificado un cliente");
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/editar");
-                } else {
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/errorSistem");
-                }
-            }
+        // // Verifica si es un array con clave "exito"
+        if (is_array($edicion) && $edicion[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario'], "cliente", "Ha modificado un cliente");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-
-            $edicion = $this->modelo->update($_POST['id_cliente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
-
-            if ($edicion) {
-                //guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/editar");
-            } else {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/errorSistem");
-            }
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $edicion]);
+            exit;
         }
     }
 
@@ -131,30 +89,33 @@ class ControladorClientes
     {
         $cedula = $datos[0];
         $id_usuario = $datos[1];
-        // guardar la bitacora
+
         $eliminacion = $this->modelo->delete($cedula);
 
-        if ($eliminacion) {
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $this->bitacora->insertarBitacora($id_usuario, "cliente", "Ha eliminado un  cliente");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/eliminar");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
         }
     }
     public function restablecer($datos)
     {
-        print_r($datos);
-        $cedula = $datos[0];
+
+        $id_cliente = $datos[0];
         $id_usuario = $datos[1];
-        // guardar la bitacora
-        $restablecimiento = $this->modelo->restablecer($cedula);
-        if ($restablecimiento) {
-            $this->bitacora->insertarBitacora($id_usuario, "cliente", "Ha restablecido un cliente");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/restablecido");
+
+        $restablecimiento = $this->modelo->restablecer($id_cliente);
+
+        if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+            $this->bitacora->insertarBitacora($id_usuario, "cliente", "Ha restablecido un  cliente");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+            exit;
         }
     }
-
-
 }

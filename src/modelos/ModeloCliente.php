@@ -40,6 +40,37 @@ class ModeloCliente extends Db
     {
 
         try {
+            $fecha = date("Y-m-d");
+            $dt = \DateTime::createFromFormat('Y-m-d', $fn);
+
+            $validaciones = [
+                ['valor' => $nombre, 'regex' => '/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/', 'mensaje' => "El Nombre debe contener solo letras, iniciar con mayúscula y tener al menos 3 caracteres."],
+                ['valor' => $apellido, 'regex' => '/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/', 'mensaje' => "El Apellido debe contener solo letras, iniciar con mayúscula y tener al menos 3 caracteres."],
+                ['valor' => $cedula, 'regex' => '/^([1-9]{1})([0-9]{5,7})$/', 'mensaje' => "La cédula debe contener solo números y tener entre 6 y 7 caracteres."],
+                ['valor' => $telefono, 'regex' => '/^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/', 'mensaje' => 'El teléfono debe comenzar con un código válido y contener solo números.'],
+                ['valor' => $direccion, 'regex' => '/^([A-Za-z0-9\s\.,#-]{8,})$/', 'mensaje' => "La dirección debe estar completa y detallada."],
+                ['valor' => $fn, 'regex' => '/^\d{4}-\d{2}-\d{2}$/', 'mensaje' => "Fecha de nacimiento inválida: debe estar en formato YYYY-MM-DD."],
+                ['valor' => $genero, 'regex' => '/^(Masculino|Femenino)$/i', 'mensaje' => "Género inválido: debe ser 'Masculino' o 'Femenino'."]
+            ];
+
+            foreach ($validaciones as $v) {
+                if (!preg_match($v['regex'], $v['valor'])) {
+                    throw new \Exception($v['mensaje']);
+                }
+            }
+
+            // Validación de fecha
+            if (!$dt || $dt->format('Y-m-d') !== $fn) {
+                throw new \Exception("La fecha debe tener el formato YYYY-MM-DD.");
+            }
+            if ($fecha <= $fn) {
+                throw new \Exception("La fecha no puede ser del futuro.");
+            }
+            // Validación de cédula duplicada
+            if ($this->validarCedula($cedula) === "existeC") {
+                throw new \Exception("La cédula ya está registrada.");
+            }
+
             $consulta = $this->conexion->prepare("INSERT INTO cliente (nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero,estado) VALUES (:nacionalidad, :cedula, :nombre, :apellido, :telefono, :direccion, :fn, :genero, 'ACT')");
             $consulta->bindParam(":nacionalidad", $nacionalidad);
             $consulta->bindParam(":cedula", $cedula);
@@ -53,21 +84,49 @@ class ModeloCliente extends Db
             $id_cliente = $this->conexion->lastInsertId();
             return ["exito", $id_cliente];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
 
-    public function update($id_cliente, $nacionalidad,  $cedula, $nombre, $apellido, $telefono, $direccion, $fn, $genero)
+    public function update($id_cliente, $nacionalidad,  $cedula, $nombre, $apellido, $telefono, $direccion, $fn, $genero,$cedulaRegistrada)
     {
         try {
+            $fecha = date("Y-m-d");
+            $dt = \DateTime::createFromFormat('Y-m-d', $fn);
+
+            $validaciones = [
+                ['valor' => $nombre, 'regex' => '/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/', 'mensaje' => "El Nombre debe contener solo letras, iniciar con mayúscula y tener al menos 3 caracteres."],
+                ['valor' => $apellido, 'regex' => '/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/', 'mensaje' => "El Apellido debe contener solo letras, iniciar con mayúscula y tener al menos 3 caracteres."],
+                ['valor' => $cedula, 'regex' => '/^([1-9]{1})([0-9]{5,7})$/', 'mensaje' => "La cédula debe contener solo números y tener entre 6 y 7 caracteres."],
+                ['valor' => $telefono, 'regex' => '/^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/', 'mensaje' => 'El teléfono debe comenzar con un código válido y contener solo números.'],
+                ['valor' => $direccion, 'regex' => '/^([A-Za-z0-9\s\.,#-]{8,})$/', 'mensaje' => "La dirección debe estar completa y detallada."],
+                ['valor' => $fn, 'regex' => '/^\d{4}-\d{2}-\d{2}$/', 'mensaje' => "Fecha de nacimiento inválida: debe estar en formato YYYY-MM-DD."],
+                ['valor' => $genero, 'regex' => '/^(Masculino|Femenino)$/i', 'mensaje' => "Género inválido: debe ser 'Masculino' o 'Femenino'."]
+            ];
+
+            foreach ($validaciones as $v) {
+                if (!preg_match($v['regex'], $v['valor'])) {
+                    throw new \Exception($v['mensaje']);
+                }
+            }
+
+            // Validación de fecha
+            if (!$dt || $dt->format('Y-m-d') !== $fn) {
+                throw new \Exception("La fecha debe tener el formato YYYY-MM-DD.");
+            }
+            if ($fecha <= $fn) {
+                throw new \Exception("La fecha no puede ser del futuro.");
+            }
+
             $validar = $this->conexion->prepare("SELECT * from cliente where id_cliente=:id_cliente");
             $validar->bindParam(":id_cliente", $id_cliente);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
                 throw new \Exception("Fallo");
             }
-            // UPDATE paciente SET id_nacionalidad=,cedula=],nombre=,apellido=,telefono=,direccion=,fn= WHERE 1
+
+            if ($cedulaRegistrada == $cedula) {
             $consulta = $this->conexion->prepare("UPDATE cliente SET nacionalidad=:nacionalidad,cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono,direccion=:direccion,fn=:fn, genero=:genero WHERE id_cliente = :id_cliente");
             $consulta->bindParam(":id_cliente", $id_cliente);
             $consulta->bindParam(":nacionalidad", $nacionalidad);
@@ -79,7 +138,15 @@ class ModeloCliente extends Db
             $consulta->bindParam(":fn", $fn);
             $consulta->bindParam(":genero", $genero);
             $consulta->execute();
-            return "exito";
+            } else {
+                // Validación de cédula duplicada
+                if ($this->validarCedula($cedula) === "existeC") {
+                    throw new \Exception("La cédula ya está registrada.");
+                } else {
+
+                }
+            }
+            return ["exito"];
         } catch (\Exception $e) {
             return 0;
         }
@@ -88,8 +155,8 @@ class ModeloCliente extends Db
     public function delete($cedula)
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from cliente where id_cliente=:id_cliente");
-            $validar->bindParam(":id_cliente", $id_cliente);
+            $validar = $this->conexion->prepare("SELECT * from cliente where cedula=:cedula");
+            $validar->bindParam(":cedula", $cedula);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
                 throw new \Exception("Fallo");
@@ -98,12 +165,12 @@ class ModeloCliente extends Db
             $consulta = $this->conexion->prepare("UPDATE cliente SET estado = 'DES' WHERE cedula = :cedula");
             $consulta->bindParam(":cedula", $cedula);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
-    public function restablecer($cedula)
+    public function restablecer($id_cliente)
     {
         try {
             $validar = $this->conexion->prepare("SELECT * from cliente where id_cliente=:id_cliente");
@@ -113,12 +180,12 @@ class ModeloCliente extends Db
                 throw new \Exception("Fallo");
             }
             
-            $consulta = $this->conexion->prepare("UPDATE cliente SET estado = 'ACT' WHERE cedula = :cedula");
-            $consulta->bindParam(":cedula", $cedula);
+            $consulta = $this->conexion->prepare("UPDATE cliente SET estado = 'ACT' WHERE id_cliente = :id_cliente");
+            $consulta->bindParam(":id_cliente", $id_cliente);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 

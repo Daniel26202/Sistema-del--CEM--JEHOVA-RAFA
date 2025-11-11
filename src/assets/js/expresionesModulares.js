@@ -304,5 +304,5 @@ document.addEventListener("DOMContentLoaded", function () {
       inicializarValidacionFormularioEditar(formularioEditar, id);
     });
   });
-  }, 800);
+  }, 500);
 });
