@@ -29,8 +29,9 @@ addEventListener("DOMContentLoaded", () => {
       let metodo = "";
       let urlActual = window.location.href;
 
-      if (urlActual.includes("citas")) metodo = "citasAjax";
-      else metodo = "papeleraPacienteAjax";
+      if (urlActual.includes("Hoy")) metodo = "citasHoyAjax";
+      else if(urlActual.includes("Realizadas")) metodo = "citasRealizadasAjax";
+      else metodo = "citasAjax";
 
       const result = await executePetition(url + "/" + metodo, "GET");
 
@@ -52,9 +53,11 @@ addEventListener("DOMContentLoaded", () => {
                                 <div class="d-flex justify-content-center align-items-center">
                                     <!-- editar -->
                                     
-                                        <div class="me-2 botonesEdi">
+                                        <div class="me-2 botonesEdi ${urlActual.includes("Realizadas") ? "d-none" : ""}">
                                             <a href="#" class="btns-accion botonesEditar botonesEdi btn-dt-tabla"
-                                                data-id-tabla="modal-examplecitaeditar${element.id_cita}" uk-toggle="target: #modal-examplecitaeditar${element.id_cita}"
+                                                data-id-tabla="modal-examplecitaeditar${
+                                                  element.id_cita
+                                                }" uk-toggle="target: #modal-examplecitaeditar${element.id_cita}"
                                                 data-index="${element.id_cita}" uk-tooltip="Modificar Cita"
                                                 id="btnEditarCitaPendiente">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
@@ -68,7 +71,9 @@ addEventListener("DOMContentLoaded", () => {
                                         </div>
                                    
                                         <div class="me-2">
-                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${element.id_cita} 
+                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${
+                                              element.id_cita
+                                            } 
                                                 uk-tooltip="Eliminar Cita" id="eliminarCitaP">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                                     fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -113,24 +118,21 @@ addEventListener("DOMContentLoaded", () => {
 
                 </div>
 
-                <form class="form-modal form-validable${element.id_cita}"
-                    action="/Sistema-del--CEM--JEHOVA-RAFA/Citas/editarCita/${element.id_cita}"
-                    method="POST">
+                <form class="form-modal form-validable${element.id_cita} form-ajax forms-editar" data-index='${element.id_cita}'>
                     <input type="hidden" value="<?php echo $_SESSION['id_usuario']; ?>" name="id_usuario">
 
                     <form class="form-modal"
                         action="/Sistema-del--CEM--JEHOVA-RAFA/editarCitaHoy/${element.id_cita}"
                         method="POST">
 
-                        <input type="hidden" value="<?php echo $datoCita['id_paciente']; ?>"
+                        <input type="hidden" value="${element.id_paciente}"
                             name="id_paciente">
 
                         <input type="hidden" name="id_cita" value="${element.id_cita}">
 
-                        <input type="hidden" value="<?php echo $_SESSION['id_usuario']; ?>"
-                            name="id_usuario">
+                        <input type="hidden" name="id_usuario" class="id_usuario_bitacora">
 
-                        <input type="hidden" value="<?php echo $datoCita['serviciomedico_id_servicioMedico']; ?>"
+                        <input type="hidden" value="${element.serviciomedico_id_servicioMedico}"
                             name="serviciomedico_id_servicioMedico">
 
 
@@ -152,8 +154,8 @@ addEventListener("DOMContentLoaded", () => {
                                 </svg>
                             </span>
                             <select class="form-control input-modal especialidad" name="consulta">
-                                <option selected disabled value="<?= $datoCita["serviciomedico_id_servicioMedico"] ?>">
-                                    <?= $datoCita["categoria"] ?>
+                                <option selected disabled value="${element.serviciomedico_id_servicioMedico}">
+                                    ${element.categoria}
                                 </option>
 
                             </select>
@@ -172,34 +174,14 @@ addEventListener("DOMContentLoaded", () => {
 
                         </div>
 
-                        <div class="mt-2 mb-2 listaDoctores"></div>
+
+                        <div class="mt-2 mb-2 listaDoctores">
+                        ${element.nombre_d} ${element.apellido_d}
+                        </div>
 
                         <input type="hidden" class="id_servicioMedico" name="id_servicioMedico">
 
-                        <div class="input-modal mt-3">
-                            <ul uk-accordion="multiple: true">
-                                <li>
-                                    <a class="uk-accordion-title text-decoration-none" href="#">
-
-                                        <h6 class="acordion-datoCita fw-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                fill="currentColor"
-                                                class="bi bi-calendar2-week-fill azul mb-2"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zM8.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM3 10.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z" />
-                                            </svg>
-                                            Horario del Doctor
-                                        </h6>
-                                    </a>
-
-                                    <div class="uk-accordion-content">
-
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
+                        
 
                         <div class="alert alert-danger d-flex align-items-center justify-content-center alertaClassEditar d-none"
                             role="alert" id="alertahorarioCitaEdi">
@@ -224,11 +206,11 @@ addEventListener("DOMContentLoaded", () => {
                             </span>
                             <input class="form-control input-modal fecha input-validar" id="fechaEditar" type="date"
                                 name="fechaDeCita" required pattern="\d{2}\/\d{2}\/\d{4}" placeholder="Fecha"
-                                value="<?= $datoCita["fecha"] ?>">
+                                value="${element.fecha}">
 
                         </div>
 
-                        <p class="p-error-fechaDeCita<?= $datoCita["id_cita"] ?>"></p>
+                        <p class="p-error-fechaDeCita${element.id_cita}"></p>
 
                         <div class="input-group flex-nowrap">
                             <span class="input-modal mt-1">
@@ -239,12 +221,8 @@ addEventListener("DOMContentLoaded", () => {
                                 </svg>
                             </span>
                             <input class="form-control input-modal" type="time" name="hora"
-                                placeholder="Hora" required value="<?= $datoCita["hora"] ?>">
+                                placeholder="Hora" required value="${element.hora}">
                         </div>
-
-
-
-
 
                         <div class="mt-3 uk-text-right">
                             <button
@@ -292,7 +270,7 @@ addEventListener("DOMContentLoaded", () => {
             },
           }).then((result) => {
             if (result.isConfirmed) {
-              deletePattients(data);
+              deleteCita(data);
               console.log(data);
             }
           });
@@ -303,17 +281,15 @@ addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".forms-editar").forEach((formEditar) => {
         formEditar.addEventListener("submit", function (e) {
           e.preventDefault();
-          let inputsBuenos = [];
 
-          this.querySelectorAll(".input-validar").forEach((input) => {
-            if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-          });
+          console.log(
+            document.querySelector(".p-error-fechaDeCita" + formEditar.getAttribute("data-index")).classList.contains("d-none")
+          );
 
           if (
-            inputsBuenos.length == 5 &&
-            document.querySelector(".p-error-fn" + formEditar.getAttribute("data-index")).classList.contains("d-none")
+            !document.querySelector(".p-error-fechaDeCita" + formEditar.getAttribute("data-index")).classList.contains("d-none")
           ) {
-            updatePatients(this, inputsBuenos);
+            updateCitas(this);
           } else {
             Swal.fire({
               icon: "error",
@@ -422,6 +398,75 @@ addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  
+  //delete
+  const deleteCita = async (data) => {
+    try {
+      const result = await executePetition(url + `/eliminarCita/${data}`, "GET");
+      if (result.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Exito",
+          text: `${result.message}`,
+          customClass: {
+            popup: "switAlert",
+            confirmButton: "btn-agregarcita-modal",
+            cancelButton: "btn-agregarcita-modal-cancelar",
+          },
+        });
+        readCita();
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
+      });
+    }
+  };
+  
+  //update
+  const updateCitas = async (form) => {
+    try {
+      const data = new FormData(form);
+  
+      let result = await executePetition(url + "/editarCita", "POST", data);
+      console.log(result);
+      if (result.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Exito",
+          text: `${result.message}`,
+          customClass: {
+            popup: "switAlert",
+            confirmButton: "btn-agregarcita-modal",
+            cancelButton: "btn-agregarcita-modal-cancelar",
+          },
+        });
+        UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
+        readCita();
+        console.log(result.error)
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error}`,
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
+      });
+    }
+  };
+
   if (modalAgregarCita) {
     modalAgregarCita.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -430,13 +475,11 @@ addEventListener("DOMContentLoaded", () => {
         if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
       });
 
-      // if (
-      //   inputsBuenos.length == 5 &&
-      //   document.querySelector(".p-error-fn").classList.contains("d-none") &&
-      //   selectGenero.value != ""
-      // ) {
+      if (
+        !document.querySelector(".p-error-fn").classList.contains("d-none")
+      ) {
         createCita(this, inputsBuenos);
-      // } else {
+      } else {
         Swal.fire({
           icon: "error",
           title: "Error al enviar el formulario",
@@ -447,7 +490,7 @@ addEventListener("DOMContentLoaded", () => {
             cancelButton: "btn-agregarcita-modal-cancelar",
           },
         });
-      // }
+      }
     });
   }
 

@@ -138,9 +138,9 @@ class ModeloCita extends Db
 			$consulta = $this->conexion->prepare("UPDATE cita SET estado = 'DES' WHERE id_cita =:id_cita ");
 			$consulta->bindParam(":id_cita", $id_cita);
 			$consulta->execute();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -173,22 +173,33 @@ class ModeloCita extends Db
 	public function update($id_servicioMedico, $fecha, $hora, $id_cita)
 	{
 		try {
+			$this->conexion->beginTransaction();
+
+			$fechaHoy = date("Y-m-d");
+			$dt = \DateTime::createFromFormat('Y-m-d', $fecha);
+
+			// Validación de fecha
+			if (!$dt || $dt->format('Y-m-d') !== $fecha) {
+				throw new \Exception("La fecha debe tener el formato YYYY-MM-DD.");
+			}
+			if ($fechaHoy > $fecha) {
+				throw new \Exception("La fecha no puede ser del pasado.");
+			}
 			$validar = $this->conexion->prepare("SELECT * from cita where id_cita=:id_cita");
 			$validar->bindParam(":id_cita", $id_cita);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
 				throw new \Exception("Fallo");
 			}
-
 			$consulta = $this->conexion->prepare("UPDATE cita SET serviciomedico_id_servicioMedico=:id_servicioMedico,fecha=:fecha,hora=:hora WHERE id_cita =:id_cita");
 			$consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
 			$consulta->bindParam(":fecha", $fecha);
 			$consulta->bindParam(":hora", $hora);
 			$consulta->bindParam(":id_cita", $id_cita);
 			$consulta->execute();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 

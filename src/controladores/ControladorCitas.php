@@ -75,11 +75,14 @@ class ControladorCitas
 	{
 		$ayuda = "btnayudaCitaP";
 		$vistaActiva = 'hoy';
+		$servicios = $this->modelo->mostrarServicioDoctor();
+		require_once './src/vistas/vistasCitas/vistaCitas.php';
+	}
+
+	public  function citasHoyAjax() {
 		date_default_timezone_set('America/Mexico_City');
 		$fecha = date('Y-m-d');
-		$servicios = $this->modelo->mostrarServicioDoctor();
-		$datosCitas = $this->modelo->mostrarCitaHoy($fecha);
-		require_once './src/vistas/vistasCitas/vistaCitas.php';
+		echo json_encode($this->modelo->mostrarCitaHoy($fecha));
 	}
 	public function citasP($parametro)
 	{
@@ -107,14 +110,16 @@ class ControladorCitas
 		$id_cita = $datos[0];
 		$id_usuario = $datos[1];
 		$eliminacion = $this->modelo->eliminarCita($id_cita);
-		if ($eliminacion) {
+
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario, "cita", "Ha eliminado una cita");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/eliminar");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
 		}
 	}
-
 	public function citasHoyP()
 	{
 		date_default_timezone_set('America/Mexico_City');
@@ -127,8 +132,12 @@ class ControladorCitas
 	{
 		$ayuda = "btnayudaCitaP";
 		$vistaActiva = 'realizadas';
-		$datosCitas = $this->modelo->mostrarCitaR();
 		require_once './src/vistas/vistasCitas/vistaCitas.php';
+	}
+
+	public  function citasRealizadasAjax()
+	{
+		echo json_encode($this->modelo->mostrarCitaR());
 	}
 
 	public function mostrarDoctoresCita($datos)
@@ -144,34 +153,19 @@ class ControladorCitas
 		$respuesta = $this->modelo->mostrarHorarioDoctores($idD);
 		echo json_encode($respuesta);
 	}
-
-
-	public function editarCita($datos)
+	public function editarCita()
 	{
-		date_default_timezone_set('America/Mexico_City');
-		$fecha = date("Y-m-d");
-		$idCita = $datos[0];
+		$edicion = $this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
 
-		$resultadoDeCita = $this->modelo->validarCita($_POST['id_paciente'], $_POST["fechaDeCita"], $_POST["hora"]);
-
-		//verifica si la idCita es igual a la información de la base de datos.
-		if ($resultadoDeCita === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorCita");
+		if (is_array($edicion) && $edicion[0] === "exito") {
+			$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una cita");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-
-			$edicion = $this->modelo->update($_POST["serviciomedico_id_servicioMedico"], $_POST["fechaDeCita"], $_POST["hora"], $_POST["id_cita"]);
-			if ($edicion) {
-				// Guardar la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "cita", "Ha modificado una  cita");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/editar");
-			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/errorSistem");
-			}
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $edicion]);
+			exit;
 		}
-
-		if ($_POST["fechaDeCita"] < $fecha) {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Citas/citas/fechainvalida");
-		}
+		
 	}
 
 	private function permisos($id_rol, $permiso, $modulo)
