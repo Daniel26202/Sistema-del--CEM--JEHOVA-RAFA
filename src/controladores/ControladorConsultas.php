@@ -36,9 +36,13 @@ class ControladorConsultas
 	public function papeleraServicio($parametro)
 	{
 		$doctores = $this->modelo->mostrarDoctores();
-		$servicios = $this->modelo->mostrarConsultasDes();
 		$categorias = $this->categoria->seleccionarCategoria();
 		require_once './src/vistas/vistaConsultas/vistaServiciosPapelera.php';
+	}
+
+	public function papeleraAjax()
+	{
+		echo json_encode($this->modelo->mostrarConsultasDes());
 	}
 
 	public function guardar()
@@ -78,12 +82,14 @@ class ControladorConsultas
 		$id_servicioMedico = $datos[0];
 		$id_usuario = $datos[1];
 		$restablecimiento = $this->modelo->restablecerServ($id_servicioMedico);
-		if ($restablecimiento) {
-			// Guardar la bitacora
+
+		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario, "servicioMedico", "Ha restablecido un servicio medico");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/restablecido");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+			exit;
 		}
 	}
 
@@ -92,12 +98,14 @@ class ControladorConsultas
 		$precio_decimal = floatval($_POST['precioD']);
 
 		$edicion = $this->modelo->editar($_POST["id_servicioMedico"], $precio_decimal, $_POST['tipo']);
-		if ($edicion) {
-			// Guardar la bitacora
+
+		if (is_array($edicion) && $edicion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha modificadp un servicio medico");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/editar");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $edicion]);
+			exit;
 		}
 	}
 

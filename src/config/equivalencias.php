@@ -80,6 +80,7 @@ return [
     "consultas" => "consultar",
     "consultasAjax" => "consultar",
     "papeleraServicio" => "consultar",
+    "papeleraAjax"  => "consultar",
     "guardar" => "guardar",
     "eliminar" => "eliminar",
     "restablecer" => "restablecer",

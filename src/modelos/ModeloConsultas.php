@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\Db;
+use App\config\Validations;
 
 class ModeloConsultas extends Db
 {
@@ -63,6 +64,14 @@ class ModeloConsultas extends Db
     public function insertarSevicio($id_categoria, $precio, $tipo)
     {
         try {
+            $validaciones = Validations::priceRules($precio);
+
+            foreach ($validaciones as $v) {
+                if (!preg_match($v['regex'], $v['valor'])) {
+                    throw new \Exception($v['mensaje']);
+                }
+            }
+
             $validarCategoria = $this->conexion->prepare("SELECT * FROM  categoria_servicio where id_categoria=:id_categoria");
             $validarCategoria->bindParam(":id_categoria", $id_categoria);
             $validarCategoria->execute();
@@ -149,9 +158,9 @@ class ModeloConsultas extends Db
             $consulta = $this->conexion->prepare("UPDATE servicioMedico SET estado = 'ACT' WHERE id_servicioMedico =:id_servicioMedico ");
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -159,6 +168,14 @@ class ModeloConsultas extends Db
     public function editar($id_servicioMedico, $precio, $tipo)
     {
         try {
+            $validaciones = Validations::priceRules($precio);
+
+            foreach ($validaciones as $v) {
+                if (!preg_match($v['regex'], $v['valor'])) {
+                    throw new \Exception($v['mensaje']);
+                }
+            }
+            
             $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
             $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
             $validar->execute();
