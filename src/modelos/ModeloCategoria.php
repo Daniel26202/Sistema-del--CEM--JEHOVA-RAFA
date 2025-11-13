@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\Db;
+use App\config\Validations;
 
 class ModeloCategoria extends Db
 {
@@ -38,6 +39,14 @@ class ModeloCategoria extends Db
     public function registrarCategoria($nombre)
     {
         try {
+            $validaciones = Validations::pathologyRules($nombre);
+
+            foreach ($validaciones as $v) {
+                if (!preg_match($v['regex'], $v['valor'])) {
+                    throw new \Exception($v['mensaje']);
+                }
+            }
+
             $consulta = $this->conexion->prepare("INSERT INTO categoria_servicio VALUES (null, :nombre, 'ACT')");
             $consulta->bindParam(":nombre", $nombre);
             $consulta->execute();
@@ -50,19 +59,26 @@ class ModeloCategoria extends Db
             
             return ["exito", $data];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
     public function eliminarCategoria($id_categoria)
     {
         try {
+            $validar = $this->conexion->prepare("SELECT * from categoria_servicio where id_categoria=:id_categoria");
+            $validar->bindParam(":id_categoria", $id_categoria);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
+
             $consulta = $this->conexion->prepare("UPDATE categoria_servicio SET estado = 'DES' WHERE id_categoria = :id_categoria");
             $consulta->bindParam(":id_categoria", $id_categoria);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 }

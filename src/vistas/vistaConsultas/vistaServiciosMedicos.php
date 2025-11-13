@@ -217,12 +217,11 @@
 </div>
 </div>
 
+<?php require_once './src/vistas/vistaConsultas/modalesCategoria.php'; ?>
 
-
-<script src="<?= $urlBase; ?>../src/assets/js/servicioMedico.js"></script>
 <script type="module" src="<?= $urlBase; ?>../src/assets/ajax/servicios.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/categoria.js"></script>
 <script src="<?= $urlBase; ?>../src/assets/js/ayudaServicioMedico.js"></script>
 
 
-<?php require_once './src/vistas/vistaConsultas/modalesCategoria.php'; ?>
 <?php require_once './src/vistas/head/footer.php';  ?>

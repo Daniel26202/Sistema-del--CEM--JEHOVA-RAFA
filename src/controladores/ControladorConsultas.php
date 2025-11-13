@@ -23,9 +23,13 @@ class ControladorConsultas
 	{
 		$ayuda = "btnayudaServicioMedico";
 		$doctores = $this->modelo->mostrarDoctores();
-		$categorias = $this->categoria->seleccionarCategoria();
 		$todasLasCategorias = $this->categoria->seleccionarTodasLasCategoria();
 		require_once './src/vistas/vistaConsultas/vistaServiciosMedicos.php';
+	}
+
+	public function categoriasAjax()
+	{
+		echo json_encode($this->categoria->seleccionarCategoria());
 	}
 
 	public function consultasAjax()
@@ -120,12 +124,14 @@ class ControladorConsultas
 	public function registrarCategoria()
 	{
 		$insercion = $this->categoria->registrarCategoria($_POST["nombre"]);
-		if ($insercion) {
-			// Guardar la bitacora
+
+		if (is_array($insercion) && $insercion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "categoria_servicio", "Ha Insertado una nueva  categoria");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/registro");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
 		}
 	}
 	public function eliminarCategoria($datos)
@@ -133,12 +139,15 @@ class ControladorConsultas
 		$id_categoria = $datos[0];
 		$id_usuario = $datos[1];
 		$eliminacion  = $this->categoria->eliminarCategoria($id_categoria);
-		if ($eliminacion) {
-			// Guardar la bitacora
+
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario, "categoria_servicio", "Ha eliminado una  categoria");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminar");
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
 		}
 	}
 
