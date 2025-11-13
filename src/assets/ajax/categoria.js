@@ -1,14 +1,12 @@
-import { executePetition } from "./funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Consultas";
 
 const modalAgregar = document.getElementById("modalAgregarCategoria");
-
 
 //read
 
 const readCategory = async () => {
   try {
-
     const result = await executePetition(url + "/categoriasAjax", "GET");
 
     // construir html de filas
@@ -55,29 +53,10 @@ const readCategory = async () => {
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de eliminar la categoria?",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            console.log(data);
-            deleteCategory(data);
-          }
-        });
+
+        alertConfirm("Esta seguro de eliminar la categoria?", deleteCategory, data);
       });
     });
-
-
-
 
     // re-inicializa
     $(selector).DataTable({
@@ -95,16 +74,7 @@ const readCategory = async () => {
       },
     });
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error);
   }
 };
 //create
@@ -114,16 +84,8 @@ const createcategory = async (form, inputs) => {
     let result = await executePetition(url + "/registrarCategoria", "POST", data);
     console.log(result);
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message);
+
       UIkit.modal("#modal-exampleAgregarPatologias").hide();
       form.reset();
       inputs = [];
@@ -132,77 +94,35 @@ const createcategory = async (form, inputs) => {
       UIkit.modal("#modal-categoria").show();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error);
   }
 };
-
 
 //delete
 const deleteCategory = async (data) => {
   try {
     const result = await executePetition(url + `/eliminarCategoria/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message);
       readCategory();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error);
   }
 };
 
-
 readCategory();
 
-
-  modalAgregar.addEventListener("submit", function (e) {
-    e.preventDefault();
-    let inputsBuenos = [];
-    this.querySelectorAll(".input-validar").forEach((input) => {
-      if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-    });
-
-    if (
-      inputsBuenos.length == 1
-    ) {
-      createcategory(this, inputsBuenos);
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error al enviar el formulario",
-        text: "Por favor verifique que todos los datos esten correctos.",
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
-    }
+modalAgregar.addEventListener("submit", function (e) {
+  e.preventDefault();
+  let inputsBuenos = [];
+  this.querySelectorAll(".input-validar").forEach((input) => {
+    if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
   });
 
+  if (inputsBuenos.length == 1) {
+    createcategory(this, inputsBuenos);
+  } else {
+    alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
+  }
+});

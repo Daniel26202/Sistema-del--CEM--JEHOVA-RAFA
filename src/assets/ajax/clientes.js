@@ -1,4 +1,4 @@
-import { executePetition } from "./funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Clientes";
 
 const modalAgregar = document.getElementById("modalAgregar");
@@ -250,20 +250,7 @@ const readCustomer = async () => {
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de eliminar el cliente?",
-          confirmButtonText: "Aceptar",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            deleteCustomer(data);
-            console.log(data);
-          }
-        });
+        alertConfirm("Esta seguro de eliminar el cliente?", deleteCustomer, data);
       });
     });
 
@@ -283,11 +270,7 @@ const readCustomer = async () => {
         ) {
           updateCustomers(this, inputsBuenos);
         } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error al enviar el formulario",
-            text: "Por favor verifique que todos los datos esten correctos.",
-          });
+          alertError("Error", "Error al enviar el formulario");
         }
       });
     });
@@ -297,20 +280,8 @@ const readCustomer = async () => {
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de restablecer el paciente?",
-          confirmButtonText: "Aceptar",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            console.log(data);
-            restablecerCustomers(data);
-          }
-        });
+
+        alertConfirm("Esta seguro de restablecer el cliente?", restablecerCustomers, data);
       });
     });
 
@@ -330,11 +301,7 @@ const readCustomer = async () => {
       },
     });
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-    });
+    alertError("Error", error);
   }
 };
 //create
@@ -344,11 +311,7 @@ const createCustomer = async (form, inputs) => {
     let result = await executePetition(url + "/guardar", "POST", data);
     console.log(result);
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-      });
+      alertSuccess(result.message);
       UIkit.modal("#modal-examplePaciente").hide();
       form.reset();
       inputs = [];
@@ -356,11 +319,7 @@ const createCustomer = async (form, inputs) => {
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-    });
+    alertError("Error", error);
   }
 };
 
@@ -374,11 +333,8 @@ const updateCustomers = async (form, inputs) => {
     let result = await executePetition(url + "/setCliente", "POST", data);
     console.log(result);
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-      });
+      alertSuccess(result.message);
+
       UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
       inputs = [];
       inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
@@ -386,11 +342,8 @@ const updateCustomers = async (form, inputs) => {
     } else throw new Error(`${result.error}`);
   } catch (error) {
     console.log(error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-    });
+
+    alertError("Error", error);
   }
 };
 
@@ -399,19 +352,12 @@ const deleteCustomer = async (data) => {
   try {
     const result = await executePetition(url + `/eliminar/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-      });
+      alertSuccess(result.message);
+
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-    });
+    alertError("Error", error);
   }
 };
 
@@ -420,19 +366,11 @@ const restablecerCustomers = async (data) => {
   try {
     const result = await executePetition(url + `/restablecer/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-      });
+      alertSuccess(result.message);
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-    });
+    alertError("Error", error);
   }
 };
 
@@ -453,11 +391,7 @@ if (modalAgregar) {
     ) {
       createCustomer(this, inputsBuenos);
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error al enviar el formulario",
-        text: "Por favor verifique que todos los datos esten correctos.",
-      });
+      alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
     }
   });
 }

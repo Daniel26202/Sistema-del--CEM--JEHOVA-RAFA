@@ -1,4 +1,4 @@
-import { executePetition } from "./funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
 const modalAgregar = document.getElementById("modalAgregar");
@@ -251,24 +251,7 @@ const readPatients = async () => {
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de eliminar el paciente?",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            deletePattients(data);
-            console.log(data);
-          }
-        });
+        alertConfirm("Esta seguro de eliminar el paciente?", deletePattients, data);
       });
     });
 
@@ -288,16 +271,7 @@ const readPatients = async () => {
         ) {
           updatePatients(this, inputsBuenos);
         } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error al enviar el formulario",
-            text: "Por favor verifique que todos los datos esten correctos.",
-            customClass: {
-              popup: "switAlert",
-              confirmButton: "btn-agregarcita-modal",
-              cancelButton: "btn-agregarcita-modal-cancelar",
-            },
-          });
+          alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.")
         }
       });
     });
@@ -307,25 +281,7 @@ const readPatients = async () => {
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de restablecer el paciente?",
-          confirmButtonText: "Aceptar",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            restablecerPattients(data);
-            console.log(data);
-          }
-        });
+        alertConfirm("Esta seguro de restablecer el paciente?",restablecerPattients, data)
       });
     });
 
@@ -345,16 +301,7 @@ const readPatients = async () => {
       },
     });
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error)
   }
 };
 //create
@@ -364,16 +311,8 @@ const createPatients = async (form, inputs) => {
     let result = await executePetition(url + "/guardar", "POST", data);
     console.log(result);
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message);
+
       UIkit.modal("#modal-examplePaciente").hide();
       form.reset();
       inputs = [];
@@ -381,16 +320,7 @@ const createPatients = async (form, inputs) => {
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError('Error', error)
   }
 };
 
@@ -404,16 +334,8 @@ const updatePatients = async (form, inputs) => {
     let result = await executePetition(url + "/setPaciente", "POST", data);
     console.log(result);
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message)
+
       UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
       inputs = [];
       inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
@@ -421,16 +343,7 @@ const updatePatients = async (form, inputs) => {
     } else throw new Error(`${result.error}`);
   } catch (error) {
     console.log(error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError('Error', error)
   }
 };
 
@@ -439,29 +352,12 @@ const deletePattients = async (data) => {
   try {
     const result = await executePetition(url + `/eliminar/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message)
+
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error)
   }
 };
 
@@ -470,29 +366,12 @@ const restablecerPattients = async (data) => {
   try {
     const result = await executePetition(url + `/restablecer/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message)
+
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error",error)
   }
 };
 
@@ -513,16 +392,8 @@ if (modalAgregar) {
     ) {
       createPatients(this, inputsBuenos);
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error al enviar el formulario",
-        text: "Por favor verifique que todos los datos esten correctos.",
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertError("Error", "Por favor verifique que todos los datos esten correctos.");
     }
+    
   });
 }

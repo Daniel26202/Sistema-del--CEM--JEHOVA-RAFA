@@ -18,3 +18,50 @@ export const executePetition = async (url, method, data = null) => {
     return error;
   }
 };
+
+export const alertConfirm =(text, action, param ='')=>{
+  Swal.fire({
+    icon: "question",
+    title: "Confirmacion",
+    text: text,
+    showCancelButton: true,
+    confirmButtonText: "Aceptar",
+    cancelButtonText: "Cancelar",
+    customClass: {
+      popup: "switAlert",
+      confirmButton: "btn-agregarcita-modal",
+      cancelButton: "btn-agregarcita-modal-cancelar",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      action(param);
+      console.log(data);
+    }
+  });
+}
+
+export const alertError = (title,text)=>{
+  Swal.fire({
+    icon: "error",
+    title: title,
+    text: text,
+    customClass: {
+      popup: "switAlert",
+      confirmButton: "btn-agregarcita-modal",
+      cancelButton: "btn-agregarcita-modal-cancelar",
+    },
+  });
+}
+
+export const alertSuccess = (text) => {
+  Swal.fire({
+    icon: "success",
+    title: "Exito",
+    text: text,
+    customClass: {
+      popup: "switAlert",
+      confirmButton: "btn-agregarcita-modal",
+      cancelButton: "btn-agregarcita-modal-cancelar",
+    },
+  });
+};

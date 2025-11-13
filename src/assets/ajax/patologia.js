@@ -1,8 +1,7 @@
-import { executePetition } from "./funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Patologias";
 
 const modalAgregar = document.getElementById("modalAgregar");
-const selectGenero = document.getElementById("selectGenero");
 
 //read
 
@@ -67,25 +66,8 @@ const readPathology = async () => {
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de eliminar la patologia?",
-          confirmButtonText: "Aceptar",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            deletePathology(data);
-            console.log(data);
-          }
-        });
+
+        alertConfirm("Esta seguro de eliminar la patologia?", deletePathology, data);
       });
     });
 
@@ -93,24 +75,7 @@ const readPathology = async () => {
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de restablecer la patologia?",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            console.log(data);
-            restablecerPathology(data);
-          }
-        });
+        alertConfirm("Esta seguro de restablecer la patologia?", restablecerPathology, data);
       });
     });
 
@@ -130,11 +95,7 @@ const readPathology = async () => {
       },
     });
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-    });
+    alertError("Error", error);
   }
 };
 //create
@@ -144,16 +105,8 @@ const createPathology = async (form, inputs) => {
     let result = await executePetition(url + "/registrarPatologia", "POST", data);
     console.log(result);
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message);
+
       UIkit.modal("#modal-exampleAgregarPatologias").hide();
       form.reset();
       inputs = [];
@@ -161,16 +114,7 @@ const createPathology = async (form, inputs) => {
       readPathology();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error);
   }
 };
 
@@ -179,29 +123,12 @@ const deletePathology = async (data) => {
   try {
     const result = await executePetition(url + `/eliminarPatologia/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message);
+
       readPathology();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error);
   }
 };
 
@@ -210,29 +137,11 @@ const restablecerPathology = async (data) => {
   try {
     const result = await executePetition(url + `/restablecerPatologia/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message);
       readPathology();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error);
   }
 };
 
@@ -249,16 +158,7 @@ if (modalAgregar) {
     if (inputsBuenos.length == 1) {
       createPathology(this, inputsBuenos);
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error al enviar el formulario",
-        text: "Por favor verifique que todos los datos esten correctos.",
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
     }
   });
 }

@@ -1,4 +1,4 @@
-import { executePetition } from "./funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Consultas";
 
 const dolar = parseFloat(document.getElementById("dolar").value);
@@ -56,16 +56,8 @@ if (form) {
       console.log("se envio");
       createService(form, inputs);
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error al enviar el formulario",
-        text: "Por favor verifique que todos los datos esten correctos.",
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+
+      alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
     }
   });
 }
@@ -323,24 +315,7 @@ const readServices = async () => {
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de eliminar el servicio medico?",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            deleteService(data);
-            console.log(data);
-          }
-        });
+        alertConfirm("Esta seguro de eliminar el servicio medico?", deleteService,data)
       });
     });
 
@@ -361,16 +336,8 @@ const readServices = async () => {
         ) {
           updateService(this, inputsBuenos);
         } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error al enviar el formulari o",
-            text: "Por favor verifique que todos los datos esten correctos.",
-            customClass: {
-              popup: "switAlert",
-              confirmButton: "btn-agregarcita-modal",
-              cancelButton: "btn-agregarcita-modal-cancelar",
-            },
-          });
+
+          alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.")
         }
       });
     });
@@ -380,25 +347,8 @@ const readServices = async () => {
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        Swal.fire({
-          icon: "question",
-          title: "Confirmacion",
-          text: "Esta seguro de restablecer el servicio medico?",
-          confirmButtonText: "Aceptar",
-          showCancelButton: true,
-          confirmButtonText: "Aceptar",
-          cancelButtonText: "Cancelar",
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            restablecerService(data);
-            console.log(data);
-          }
-        });
+
+        alertConfirm("Esta seguro de restablecer el servicio medico?", restablecerService, data)
       });
     });
 
@@ -418,16 +368,7 @@ const readServices = async () => {
       },
     });
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+    alertError("Error", error)
   }
 };
 //create
@@ -438,16 +379,8 @@ const createService = async (form, inputs) => {
     let result = await executePetition(url + "/guardar", "POST", data);
     console.log(result);
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message)
+      
       UIkit.modal("#modal-example").hide();
       form.reset();
       inputs = [];
@@ -455,16 +388,8 @@ const createService = async (form, inputs) => {
       readServices();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+       alertError("Error", error);
+
   }
 };
 
@@ -478,16 +403,7 @@ const updateService = async (form, inputs) => {
     let result = await executePetition(url + "/editar", "POST", data);
     console.log(result);
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message)
       UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
       inputs = [];
       inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
@@ -495,16 +411,8 @@ const updateService = async (form, inputs) => {
     } else throw new Error(`${result.error}`);
   } catch (error) {
     console.log(error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+        alertError("Error", error);
+
   }
 };
 
@@ -513,29 +421,13 @@ const deleteService = async (data) => {
   try {
     const result = await executePetition(url + `/eliminar/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message)
+
       readServices();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+        alertError("Error", error);
+
   }
 };
 
@@ -544,29 +436,12 @@ const restablecerService = async (data) => {
   try {
     const result = await executePetition(url + `/restablecer/${data}`, "GET");
     if (result.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Exito",
-        text: `${result.message}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertSuccess(result.message)
       readServices();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `${error}`,
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
+        alertError("Error", error);
+
   }
 };
 
