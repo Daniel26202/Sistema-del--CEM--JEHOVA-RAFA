@@ -63,6 +63,17 @@ class ModeloConsultas extends Db
     public function insertarSevicio($id_categoria, $precio, $tipo)
     {
         try {
+            $validarCategoria = $this->conexion->prepare("SELECT * FROM  categoria_servicio where id_categoria=:id_categoria");
+            $validarCategoria->bindParam(":id_categoria", $id_categoria);
+            $validarCategoria->execute();
+
+            if ($validarCategoria->rowCount() <= 0) {
+                throw new \Exception("El id de la categoria no existe");
+            }
+            $resultaServicio = $this->nombreConsulta($_POST['id_categoria']);
+            if ($resultaServicio === "existeC") {
+                throw new \Exception("El Servicio Medico  ya  existe");
+            }
 
             $consulta = $this->conexion->prepare("INSERT INTO serviciomedico (id_categoria, precio, estado, tipo) VALUES (:id_categoria, :precio, 'ACT', :tipo)");
             $consulta->bindParam(":id_categoria", $id_categoria);
@@ -76,13 +87,12 @@ class ModeloConsultas extends Db
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->execute();
             $data = ($consulta->execute()) ? $consulta->fetch() : false;
-
-            $this->conexion->commit();
             return ["exito", $data];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
+
 
 
     public function insertarDoctorServicio($id_doctor, $id_servicioMedico)
@@ -122,9 +132,9 @@ class ModeloConsultas extends Db
             $consulta = $this->conexion->prepare("UPDATE servicioMedico SET estado = 'DES' WHERE id_servicioMedico =:id_servicioMedico ");
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
     public function restablecerServ($id_servicioMedico)
@@ -153,16 +163,17 @@ class ModeloConsultas extends Db
             $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+                throw new \Exception("El id del servicio no existe");
             }
+
             $consulta = $this->conexion->prepare("UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id_servicioMedico");
             $consulta->bindParam(":precio", $precio);
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->bindParam(":tipo", $tipo);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 

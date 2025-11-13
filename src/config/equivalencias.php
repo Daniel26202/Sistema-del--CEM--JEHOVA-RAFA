@@ -78,6 +78,7 @@ return [
 
     //Servicios Medicos
     "consultas" => "consultar",
+    "consultasAjax" => "consultar",
     "papeleraServicio" => "consultar",
     "guardar" => "guardar",
     "eliminar" => "eliminar",

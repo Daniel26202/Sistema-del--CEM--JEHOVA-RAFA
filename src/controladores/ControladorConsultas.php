@@ -23,11 +23,16 @@ class ControladorConsultas
 	{
 		$ayuda = "btnayudaServicioMedico";
 		$doctores = $this->modelo->mostrarDoctores();
-		$servicios = $this->modelo->mostrarConsultas();
 		$categorias = $this->categoria->seleccionarCategoria();
 		$todasLasCategorias = $this->categoria->seleccionarTodasLasCategoria();
 		require_once './src/vistas/vistaConsultas/vistaServiciosMedicos.php';
 	}
+
+	public function consultasAjax()
+	{
+		echo json_encode($this->modelo->mostrarConsultas());
+	}
+
 	public function papeleraServicio($parametro)
 	{
 		$doctores = $this->modelo->mostrarDoctores();
@@ -38,19 +43,17 @@ class ControladorConsultas
 
 	public function guardar()
 	{
-		$resultaServicio = $this->modelo->nombreConsulta($_POST['id_categoria'], $_POST['id_doctor']);
-		if ($resultaServicio === "existeC") {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorServicio");
+
+		$precio_decimal = floatval($_POST['precioD']);
+		$insercion = $this->modelo->insertarSevicio($_POST['id_categoria'],  $precio_decimal, $_POST['tipo']);
+
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicio Medico", "Ha Insertado un nuevo servicio medico");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			$precio_decimal = floatval($_POST['precioD']);
-			$insercion = $this->modelo->insertarSevicio($_POST['id_categoria'],  $precio_decimal, $_POST['tipo']);
-			if ($insercion) {
-				// Guardar la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha Insertado un nuevo  servicio medico");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/registro");
-			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
-			}
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
 		}
 	}
 
@@ -59,14 +62,15 @@ class ControladorConsultas
 		$id_servicioMedico = $datos[0];
 		$id_usuario = $datos[1];
 		$eliminacion = $this->modelo->eliminar($id_servicioMedico);
-		if ($eliminacion) {
-			// Guardar la bitacora
-			$this->bitacora->insertarBitacora($id_usuario, "servicioMedico", "Ha eliminado un   servicio medico");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/eliminar");
+
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$this->bitacora->insertarBitacora($id_usuario, "servicio Medico", "Ha eliminado un  servicio medico");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
 		}
-		
 	}
 
 	public function restablecer($datos)
@@ -86,7 +90,7 @@ class ControladorConsultas
 	public function editar()
 	{
 		$precio_decimal = floatval($_POST['precioD']);
-	
+
 		$edicion = $this->modelo->editar($_POST["id_servicioMedico"], $precio_decimal, $_POST['tipo']);
 		if ($edicion) {
 			// Guardar la bitacora
@@ -134,5 +138,4 @@ class ControladorConsultas
 	{
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	}
-
 }
