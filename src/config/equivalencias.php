@@ -95,6 +95,7 @@ return [
 
     //Doctores
     "doctores" => "consultar",
+    "DoctoresAjax"=> "consultar",
     "agregarDoctor" => "guardar",
     "editarDoctor" => "editar",
     "borrarDoctor" => "eliminar",

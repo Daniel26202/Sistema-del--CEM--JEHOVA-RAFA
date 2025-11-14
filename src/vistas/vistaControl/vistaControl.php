@@ -598,7 +598,7 @@
     </div>
 
 
-    <script type="text/javascript" src="<?= $urlBase ?>../src/assets/control.js"></script>
+    <script type="module" src="<?= $urlBase ?>../src/assets/control.js"></script>
     <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaControl.js"></script>
 
     <?php require_once './src/vistas/vistaControl/modalesSintomas.php'; ?>

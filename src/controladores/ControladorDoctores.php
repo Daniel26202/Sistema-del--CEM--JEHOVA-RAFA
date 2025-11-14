@@ -27,12 +27,16 @@ class ControladorDoctores extends ModeloDoctores
     {
         $vistaActiva = 'doctores';
         $ayuda = "btnayudaDoctores";
-        $datos = $this->modelo->select();
         $datosEspecialidades = $this->modelo->selectEspecialidad();
         $datosDias = $this->modelo->selectDias();
         $doctores = $this->modeloConsultas->mostrarDoctores();
         $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
         require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
+    }
+
+    public function DoctoresAjax()
+    {
+        echo json_encode([$this->modelo->select(), $this->modelo->selectDias()]);
     }
 
     public function papelera($parametro)
@@ -75,43 +79,23 @@ class ControladorDoctores extends ModeloDoctores
     // agregar doctor
     public function agregarDoctor()
     {
-        $resultadoDeCedula = $this->modelo->validarCedula($_POST['cedula']);
-        $resultadoDeUsuario = $this->modelo->validarUsuario($_POST['usuario']);
-        // NOTA: Esto "||" es "o"
-        if ($resultadoDeCedula === "existeC" || $resultadoDeUsuario === "existeU") {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorD");
+
+        // Generamos la contraseña encriptada de la contraseña ingresada
+        $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
+
+        // si encuentra la imagen la guardo en la variable si no le doy el valor false
+        $imagen = isset($_FILES['imagenDoctores']['name']) ? $_FILES['imagenDoctores']['name'] : false;
+
+        $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip,  $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"], $_POST['dias'], $_POST["horaSalida"], $_POST["horaEntrada"], $imagen);
+
+
+        if (is_array($insercion) && $insercion[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
-            // Generamos la contraseña encriptada de la contraseña ingresada
-            $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
-
-            // si encuentra la imagen la guardo en la variable si no le doy el valor false
-            $imagen = isset($_FILES['imagenDoctores']['name']) ? $_FILES['imagenDoctores']['name'] : false;
-
-            $imagenPorDefecto = "doctor.png";
-
-
-            if ($imagen) {
-                $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip,  $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"], $_POST['dias'], $_POST["horaSalida"], $_POST["horaEntrada"]);
-                if ($insercion) {
-                    // Guardar la bitacora
-                    $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registroD");
-                } else {
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
-                }
-            } else {
-                $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip, $_POST['email'], $_POST['nacionalidad'], $imagenPorDefecto, "", $_POST["selectEspecialidad"], $_POST['dias'], $_POST["horaSalida"], $_POST["horaEntrada"]);
-                if ($insercion) {
-                    // Guardar la bitacora
-                    $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registroD");
-                } else {
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
-                }
-            }
-        }
-        if ($resultadoDeUsuario === "existeU") {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/Usuario");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $insercion]);
+            exit;
         }
     }
 
@@ -134,7 +118,9 @@ class ControladorDoctores extends ModeloDoctores
 
         //se verifica si la cédula del input es igual a la cédula ya existente 
         // (verificamos si se edito la cédula del  formulario o si es igual)
-        if ($cedula == $_POST["cedula"]){ $resultadoDeCedula = false; }
+        if ($cedula == $_POST["cedula"]) {
+            $resultadoDeCedula = false;
+        }
 
         //verifica si la cédula es igual a la información de la base de datos.
         if ($resultadoDeCedula === "existeC") {
@@ -151,15 +137,19 @@ class ControladorDoctores extends ModeloDoctores
         }
     }
     // eliminación lógica doctor
-    public function borrarDoctor()
+    public function borrarDoctor($datos)
     {
-        $eliminacion = $this->modelo->eliminacionLogica($_POST["id_usuario"]);
-        if ($eliminacion) {
-            // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha eliminado un doctor");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/eliminar");
+        $id_usuario = $datos[0];
+        $id_usuario_bitacora = $datos[1];
+        $eliminacion = $this->modelo->eliminacionLogica($id_usuario);
+
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+            $this->bitacora->insertarBitacora($id_usuario_bitacora, "doctor", "Ha eliminado un doctor");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
         }
     }
 

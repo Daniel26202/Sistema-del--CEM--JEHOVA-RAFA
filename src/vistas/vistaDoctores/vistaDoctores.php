@@ -15,9 +15,8 @@
                 d="M9.979 5.356a.5.5 0 0 0-.968.04L7.92 10.49l-.94-3.135a.5.5 0 0 0-.926-.08L4.69 10H4.5a.5.5 0 0 0 0 1H5a.5.5 0 0 0 .447-.276l.936-1.873 1.138 3.793a.5.5 0 0 0 .968-.04L9.58 7.51l.94 3.135A.5.5 0 0 0 11 11h.5a.5.5 0 0 0 0-1h-.128L9.979 5.356Z" />
         </svg></h5>
 
-    <!-- alertas -->
+    <input type="hidden" name="id_usuario_bitacora" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
-    <?php require_once "./src/vistas/alerts.php" ?>
 
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
@@ -84,100 +83,22 @@
 
 
         <div class="table table-responsive">
-            <table class="example table table-striped ">
+            <table class="exampleTable table table-striped ">
                 <thead>
                     <tr>
                         <th class="border-start-0 text-center">Cédula</th>
                         <th class="border-start text-center">Nombre</th>
                         <th class="border-start text-center">Apellido</th>
                         <th class="border-start text-center">Teléfono</th>
-                        <th class="border-start text-center">E_mail</th>
+                        <th class="border-start text-center" colspan="2">E_mail</th>
                         <th class="border-start text-center">Especialidad</th>
 
                         <th class="border-start text-center">Acciones</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
-
-
-                    <?php foreach ($datos as $dato): ?>
-                        <tr>
-                            <td class=" text-center">
-                                <?php echo $dato["nacionalidad"] . '-' . $dato["cedula"]; ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo $dato["nombre_d"]; ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo $dato["apellido"]; ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo $dato["telefono"]; ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo $dato["correo"]; ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo $dato["nombre"]; ?>
-                            </td>
-
-
-                            <td class="text-center">
-                                <!-- editar -->
-
-                                <?php if (!$this->permisos($_SESSION["id_rol"], "editar", "Doctores")): ?>
-                                    <!-- no hay -->
-                                <?php else: ?>
-                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
-                                        uk-toggle="target: #modal-editar-doctores<?php echo $dato["id_personal"]; ?>" data-id-tabla="modal-editar-doctores<?php echo $dato["id_personal"]; ?>"
-                                        id="btneditarDoctor" data-index="<?php echo $dato["id_personal"]; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                            class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                            <path
-                                                d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
-                                        </svg>
-
-                                    </button>
-
-
-                                <?php endif; ?>
-
-                                <?php if (!$this->permisos($_SESSION["id_rol"], "eliminar", "Doctores")): ?>
-                                    <!-- no hay -->
-                                <?php else: ?>
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla"
-                                        uk-toggle="target: #modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>" data-id-tabla="modal-eliminar-doctores<?php echo $dato["id_personal"]; ?>"
-                                        id="btnEliminarDoctor">
-                                        <?= $vistaActiva == "papelera" ?
-
-                                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
-                    <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
-                  </svg>' :
-
-                                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                            class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                            <path
-                                                d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                        </svg>' ?>
-
-                                    </button>
-
-                                <?php endif; ?>
-                                <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla" title="Horarios Del Doctor"
-                                    uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores<?php echo $dato["id_personal"]; ?>"
-                                    data-index="<?php echo $dato["id_personal"]; ?>">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-info-circle-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-
-                    <?php endforeach ?>
-
+                    <!-- js -->
                 </tbody>
             </table>
         </div>
@@ -298,30 +219,28 @@
         </form>
     </div>
 
-    
-    <?php
-        if ($vistaActiva != "papelera") {
-        require_once './src/vistas/vistaDoctores/modal/modalAgregarDoctores.php';
-        require_once './src/vistas/vistaDoctores/modal/modalEditarDoctores.php';
-        require_once './src/vistas/vistaDoctores/modal/modalesEspecialidades.php';
-        }
-    ?>
 
-    <?php require_once './src/vistas/vistaDoctores/modal/modalEliminarDoctores.php'; ?>
+    <?php
+    if ($vistaActiva != "papelera") {
+        require_once './src/vistas/vistaDoctores/modal/modalAgregarDoctores.php';
+        require_once './src/vistas/vistaDoctores/modal/modalesEspecialidades.php';
+    }
+    ?>
     <?php require_once './src/vistas/vistaDoctores/modal/infoModalDoctores.php'; ?>
 
 
     <?= $vistaActiva == "papelera" ? '
     ' : '
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/especialidades.js"></script>
-    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/validacionesDoctoresRegistrar.js"></script>
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/validacionesDoctorEditar.js"></script>
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/imgDoctores.js"></script>
 
     ' ?>
-    
+
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaDoctores.js"></script>
-    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/buscadorDoctores.js"></script>
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/doctores.js"></script>
+    
+    <script type="module" src="<?= $urlBase; ?>../src/assets/ajax/doctor.js"></script>
+
 
     <?php require_once './src/vistas/head/footer.php'; ?>

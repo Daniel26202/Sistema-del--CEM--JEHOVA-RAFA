@@ -108,11 +108,15 @@ class ControladorControl
 
 		$registro = $this->modelo->insertControl($_POST["historial"], $_POST["doctor"], $_POST["id_paciente"], $_POST["diagnostico"], $_POST["sintomas"], $_POST["indicaciones"], $_POST["fechaRegreso"], $patologia, $_POST["nota"], $_POST["severidad"]);
 
-		if ($registro) {
-			// Guardar la bitacora
+		if (is_array($registro) && $registro[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha Insertado un nuevo  control medico");
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $registro]);
+			exit;
 		}
-		echo json_encode(["success" => $registro, "data" => $_POST]);
 	}
 
 	public function eliminarControl($datos)
@@ -128,12 +132,15 @@ class ControladorControl
 
 			$editar = $this->modelo->editarControl($_POST["historialE"], $_POST["id_control"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["nota_e"]);
 
-			if ($editar) {
-				// Guardar la bitacora
+			if (is_array($editar) && $editar[0] === "exito") {
 				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "control", "Ha modificado un  control medico");
-			}
 
-			echo json_encode(["success" => $editar, "data" => $_POST]);
+				echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+			} else {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $editar]);
+				exit;
+			}
 		}
 	}
 	// mostrar síntomas de pacientes

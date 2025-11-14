@@ -106,11 +106,25 @@ class ModeloDoctores extends Db
         }
     }
     //esto es para agregar un doctor.
-    public function insertarDoctor($cedula, $nombre, $apellido, $telefono, $usuario, $password, $email, $nacionalidad, $nombreImagen, $imagenTemporal, $idEspecialidad, $dias, $horaSalida, $horaEntrada)
+    public function insertarDoctor($cedula, $nombre, $apellido, $telefono, $usuario, $password, $email, $nacionalidad, $nombreImagen, $imagenTemporal, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen)
     {
 
         try {
             $this->conexion->beginTransaction();
+
+            if ($this->validarCedula($cedula) === "existeC") {
+				throw new \Exception("La cédula ya está registrada.");
+            }
+
+            if ($this->validarUsuario($usuario) === "existeU") {
+                throw new \Exception("El usuario ya está registrada.");
+            }
+
+            if (!$imagen) {
+                $nombreImagen= 'doctor.png';
+                $imagenTemporal = "";
+            } 
+
             //agregamos al doctor como usuario.
             $consultaDeUsuario = $this->conexion->prepare('INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES (8,:imagen, :usuario, :correo, :password,"ACT");');
             $consultaDeUsuario->bindParam(":imagen", $nombreImagen);
@@ -138,7 +152,6 @@ class ModeloDoctores extends Db
 
             if ($idUsuario != 0) {
                 if ($imagenTemporal != "") {
-                    echo "No Vacio";
                     $imagen = $idUsuario . "_" . $nombreImagen;
                     move_uploaded_file($imagenTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
                 }
@@ -168,7 +181,7 @@ class ModeloDoctores extends Db
             return ["exito", $data];
         } catch (\Exception $e) {
             $this->conexion->rollBack();
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -271,7 +284,7 @@ class ModeloDoctores extends Db
             $this->conexion->beginTransaction();
 
             $validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->bindParam(":id_usuario", $idUsuario);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
                 throw new \Exception("Fallo");
@@ -285,10 +298,10 @@ class ModeloDoctores extends Db
             $consultaDeUsuario->execute();
 
             $this->conexion->commit();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
             $this->conexion->rollBack();
-            return 0;
+            return $e->getMessage();
         }
     }
 

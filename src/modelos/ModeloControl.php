@@ -54,13 +54,7 @@ class ModeloControl extends Db
 		$sql->bindParam(":cedula", $cedula);
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
-	// // mostrar patología de paciente
-	// public function mostrarPatologiaPac($cedula)
-	// {
-	// 	$sql = $this->conexion->prepare("SELECT pdp.*, pat.nombre_patologia AS nombre_patologia,pac.* FROM paciente pac INNER JOIN patologiadepaciente pdp ON pac.id_paciente = pdp.id_paciente INNER JOIN patologia pat ON pat.id_patologia = pdp.id_patologia WHERE pac.estado = 'ACT' AND pac.cedula = :cedula");
-	// 	$sql->bindParam(":cedula", $cedula);
-	// 	return ($sql->execute()) ? $sql->fetchAll() : false;
-	// }
+
 
 	//insertar control
 	public function insertControl($historial, $idUsuario, $idPaciente, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $severidad)
@@ -72,7 +66,7 @@ class ModeloControl extends Db
 			$validar->bindParam(":id_usuario", $idUsuario);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo");
+				throw new \Exception("Fallo el id no existe");
 			}
 
 			if ($patologias) {
@@ -110,11 +104,10 @@ class ModeloControl extends Db
 			}
 
 			$this->conexion->commit();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
-			print_r($e);
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -146,7 +139,7 @@ class ModeloControl extends Db
 			$validar->bindParam(":id_control", $id_control);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo");
+				throw new \Exception("Fallo el id no existe");
 			}
 
 			$sql = $this->conexion->prepare("UPDATE control SET medicamentosRecetados=:indicaciones, fechaRegreso=:fechaRegreso, nota=:nota, historiaclinica=:historial WHERE id_control=:id_control ");
@@ -157,9 +150,9 @@ class ModeloControl extends Db
 
 			$sql->bindParam(":fechaRegreso", $fechaRegreso);
 			$sql->execute();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 	public function mostrarDoctor()
@@ -176,15 +169,6 @@ class ModeloControl extends Db
 
 		return ($sql->execute()) ? $sql->fetchAll() : false;
 	}
-
-	// // mostrar síntomas del control del paciente
-	// public function mostrarSintomasPa($cedulaP)
-	// {
-	// 	$sql = $this->conexion->prepare('SELECT s.id_sintomas, s.nombre AS nombreS, c.id_control FROM sintomas s INNER JOIN sintomas_control sc ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON sc.id_control = c.id_control INNER JOIN paciente p ON c.id_paciente = p.id_paciente WHERE p.cedula = :cedulaP');
-	// 	$sql->bindParam(":cedulaP", $cedulaP);
-
-	// 	return ($sql->execute()) ? $sql->fetchAll() : false;
-	// }
 
 
 	// mostrar patologia del paciente
