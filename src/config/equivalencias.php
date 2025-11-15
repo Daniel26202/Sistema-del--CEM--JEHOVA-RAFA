@@ -161,11 +161,13 @@ return [
 
     //Insumos
     "insumos" => "consultar",
+    "insumosAjax" => "consultar",
     "retornarLasEntradas" => "consultar",
     "InsumosVencidos" => "consultar",
     "info" => "consultar",
     "mostrarBusquedaInsumo" => "consultar",
     "papelera" => "consultar",
+    "papeleraInsumosAjax" => "consultar",
     "guardarInsumo" => "guardar",
     "editar" => "editar",
     "eliminar" => "eliminar",

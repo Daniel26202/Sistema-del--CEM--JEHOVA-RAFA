@@ -31,11 +31,11 @@ class ControladorInsumos
 		require_once './src/vistas/vistaInsumos/vistaInsumos.php';
 	}
 
-	public function retornarLasEntradas()
+	public function insumosAjax()
 	{
-		$respuesta = $this->modelo->todasLasEntradas();
-		echo json_encode($respuesta);
+		echo json_encode($this->modelo->insumos());
 	}
+
 
 	public function InsumosVencidos($parametro)
 	{
@@ -67,14 +67,23 @@ class ControladorInsumos
 	{
 		if (isset($_POST)) {
 			$precio_decimal = floatval($_POST['precioD']);
-			$precio_decimal = ($_POST["iva"]== 1) ?  $precio_decimal + ($precio_decimal * 0.30) : $precio_decimal;
-			$insercion = $this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $precio_decimal, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"], $_POST["marca"], $_POST["medida"],$_POST["iva"]);
-			if ($insercion) {
-				// Guardar la bitacora
+
+			$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
+
+			if ($iva === 1) {
+				$precio_decimal += $precio_decimal * 0.30;
+			}
+
+			$insercion = $this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $precio_decimal, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"], $_POST["marca"], $_POST["medida"],$iva);
+
+			if (is_array($insercion) && $insercion[0] === "exito") {
 				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "insumo", "Ha Insertado un insumo");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/registro");
+
+				echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/errorSistem");
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+				exit;
 			}
 		}
 	}
@@ -84,31 +93,43 @@ class ControladorInsumos
 		$id_insumo = $datos[0];
 		$id_usuario_bitacora = $datos[1];
 		$eliminacion = $this->modelo->eliminar($id_insumo);
-		if ($eliminacion) {
+
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "insumo", "Ha eliminado un insumo");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/eliminar");
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
 		}
 	}
 
 	public function editar()
 	{
 		$edicion = $this->modelo->editar($_POST["Codigo"], $_POST["nombre"], $_POST['descripcion'], $_POST["stockMinimo"], $_FILES["imagen"], $_POST["marca"], $_POST["medida"]);
-		if ($edicion) {
-			// Guardar la bitacora
+
+
+		if (is_array($edicion) && $edicion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "insumo", "Ha modificado un insumo");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/editar");
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $edicion]);
+			exit;
 		}
 	}
 
 
 	public function papelera($parametro)
 	{
-		$desactivos = $this->modelo->papelera();
 		require_once './src/vistas/vistaInsumos/insumosPapelera.php';
+	}
+
+	public function papeleraInsumosAjax()
+	{
+		echo json_encode($this->modelo->papelera());
 	}
 
 	public function restablecerInsumo($datos)
@@ -117,12 +138,15 @@ class ControladorInsumos
 		$id_usuario_bitacora = $datos[1];
 		$restablecimiento = $this->modelo->restablecerInsumo($id_insumo);
 
-		if ($restablecimiento) {
-			// Guardar la bitacora
+
+		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "insumo", "Ha restablecido un insumo");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/papelera/restablecido");
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Insumos/papelera/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+			exit;
 		}
 	}
 

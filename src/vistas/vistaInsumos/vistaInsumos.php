@@ -11,12 +11,10 @@
                 d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
         </svg></h5>
 
-    <!-- alertas -->
-
-    <?php require_once "./src/vistas/alerts.php" ?>
-
+        <input type="hidden" name="urlBase" id="urlBase" value="<?= $urlBase ?>">
     <!-- input para obteber el id para la bitacora -->
     <input type="hidden" id="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
+    
 
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto table-responsive" style="width: 95%; ">
@@ -102,38 +100,7 @@
 
                 <div id="tarjetas" class="">
                     <hr>
-                    <div class="tar caja-tarjets-responsive-insumos ">
-                        <?php foreach ($insumos as $i): ?>
-                            <div class="contenido card   ms-3 tarjet mt-2 tarjetas_iniciales " style="width: 15rem;">
-                                <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/insumos/<?= $i["imagen"] ?>" class="card-img-top" style="height: 35%;">
-                                <div class="card-body mt-4 tarjeta-ajax">
-                                    <!-- <div class="alert  text-center alertas-vencidos d-none p-0">  -->
-                                    <!-- aqui es la alerta de los vencidos -->
-                                    <!-- </div> -->
-
-                                    <div class="w-100 ">
-                                        <div class="fw-bolder alertas-vencidos d-none" uk-alert>
-                                            <a class="uk-alert-close" uk-close></a>
-                                            <p class="pe-2"></p>
-                                        </div>
-                                    </div>
-
-
-                                    <h5 class="card-title titulo"><?= $i["nombre"] ?></h5>
-                                    <p class="mt-3">Medida: <?= $i["medida"] ?></p>
-                                    <p class="mt-3">Stock-Min: <?= $i["stockMinimo"] ?></p>
-                                    <?php if ($i["cantidad_inventario"] <= 0): ?>
-                                        <p class="text-danger">Cantidad: <?= $i["cantidad_inventario"] ?></p>
-                                    <?php else: ?>
-                                        <p>Cantidad: <?= $i["cantidad_inventario"] ?></p>
-                                    <?php endif ?>
-
-                                    <a href="#" class="btn btn-agregarcita-modal text-decoration-none botones-mostrar" data-index="<?= $i["id_insumo"] ?>"
-                                        uk-toggle="target: #modal-exampleMostrar">Mostrar</a>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-
+                    <div id="div-tarjets" class="tar caja-tarjets-responsive-insumos ">
 
                     </div>
                 </div>
@@ -168,7 +135,7 @@
 
                         </div>
 
-                        <form class="form-modal form-convercion" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/guardarInsumo" enctype="multipart/form-data" id="modalAgregarInsumos">
+                        <form class="form-modal form-convercion form-ajax"  enctype="multipart/form-data" id="modalAgregarInsumos">
 
                             <div class="alert alert-danger d-none" id="alerta-guardar">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
                             <div id="contenedor-img" class="mb-2">
@@ -415,7 +382,7 @@
 
                         </div>
 
-                        <form class="form-modal" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/editar" enctype="multipart/form-data" id="modalEditarInsumos">
+                        <form class="form-modal forms-editar form-ajax" method="POST" id="modalEditarInsumos">
 
                             <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
@@ -547,6 +514,6 @@
 <?php require_once 'modalInsumos.php'; ?>
 
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/insumo.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/insumo.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInsumos.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>

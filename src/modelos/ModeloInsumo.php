@@ -4,6 +4,7 @@ namespace App\modelos;
 
 use App\modelos\Db;
 use DateTime;
+use  App\config\Validations;
 
 class ModeloInsumo extends Db
 {
@@ -118,6 +119,16 @@ class ModeloInsumo extends Db
 
 			$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
 			$imagen_temporal = $_FILES['imagen']['tmp_name'];
+
+			$errores = [];
+			$validaciones  = Validations::supplyRules($imagen, $nombre, $descripcion, $cantidad, $precio, $fechaDeVecimiento, $stockMinimo, $lote, $marca, $medida);
+
+			foreach ($validaciones as $regla) {
+				if (!preg_match($regla['regex'], $regla['valor'])) {
+					$errores[] = $regla['mensaje'];
+				}
+			}
+
 			move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
 			$consulta = $this->conexion->prepare("call insert_insumo(:imagen, :nombre, :id_proveedor, :descripcion, :fechaDeIngreso, :fechaDeVecimiento, :precio, :cantidad, :stockMinimo, :lote, :marca, :medida, :iva)");
@@ -149,7 +160,7 @@ class ModeloInsumo extends Db
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			// Puedes registrar el error si lo deseas: error_log($e->getMessage());
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -168,9 +179,9 @@ class ModeloInsumo extends Db
 			$consulta = $this->conexion->prepare("UPDATE insumo SET estado = 'DES' WHERE id_insumo =:id_insumo");
 			$consulta->bindParam(":id_insumo", $id_insumo);
 			$consulta->execute();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -178,12 +189,31 @@ class ModeloInsumo extends Db
 	public function editar($id_insumo, $nombre, $descripcion, $stockMinimo, $imagen, $marca, $medida)
 	{
 		try {
+			$errores = [];
+
+			$validaciones  = Validations::supplyRules(null,$nombre,$descripcion,null,null,null,$stockMinimo,null, $marca,$medida);
+
+
+			foreach ($validaciones as $regla) {
+				if (!preg_match($regla['regex'], $regla['valor'])) {
+					$errores[] = $regla['mensaje'];
+				}
+			}
+
+			if (count($errores) > 0) {
+				$mensaje = "";
+				foreach ($errores as $error) {
+					$mensaje .= $error . "\n";
+				}
+				throw new \Exception($mensaje);
+			}
+
 
 			$validar = $this->conexion->prepare("SELECT * from insumo where id_insumo=:id_insumo");
 			$validar->bindParam(":id_insumo", $id_insumo);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo");
+				throw new \Exception("Fallo el id no existe");
 			}
 
 			$consulta1 = $this->conexion->prepare("SELECT * FROM insumo WHERE id_insumo =:id_insumo");
@@ -194,10 +224,9 @@ class ModeloInsumo extends Db
 			$rutaImagenAntigua = "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_antigua;
 			// echo "<img src=".$imagen_antigua.">";
 			$imagen_editar = isset($imagen) ? $imagen : "";
-			print_r($imagen_editar);
+
 			if ($imagen_editar["name"] != "") {
 
-				echo "nO Vacio";
 				if (file_exists($rutaImagenAntigua)) {
 					unlink($rutaImagenAntigua);
 				}
@@ -226,9 +255,9 @@ class ModeloInsumo extends Db
 				$consulta3->bindParam(":id_insumo", $id_insumo);
 				$consulta3->execute();
 			}
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -304,14 +333,14 @@ class ModeloInsumo extends Db
 			$validar->bindParam(":id_insumo", $id_insumo);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo");
+				throw new \Exception("Fallo el id no existe");
 			}
 			$consulta = $this->conexion->prepare("UPDATE insumo SET estado = 'ACT' WHERE id_insumo =:id_insumo");
 			$consulta->bindParam(":id_insumo", $id_insumo);
 			$consulta->execute();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 }

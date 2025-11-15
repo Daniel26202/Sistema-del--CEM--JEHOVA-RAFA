@@ -94,7 +94,7 @@
                         <th class="border-start text-center">Especialidad</th>
 
                         <th class="border-start text-center">Acciones</th>
-                        
+
                     </tr>
                 </thead>
                 <tbody>
@@ -238,9 +238,10 @@
     ' ?>
 
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaDoctores.js"></script>
-    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/doctores.js"></script>
-    
+
     <script type="module" src="<?= $urlBase; ?>../src/assets/ajax/doctor.js"></script>
+    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/doctores.js"></script>
+
 
 
     <?php require_once './src/vistas/head/footer.php'; ?>
