@@ -121,7 +121,7 @@ class ModeloCita extends Db
 			return ["exito", $data];
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
-			return false;
+			return $e->getMessage();
 		}
 	}
 

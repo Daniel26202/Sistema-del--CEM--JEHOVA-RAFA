@@ -1,9 +1,8 @@
-import { executePetition } from "./../assets/ajax/funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "./../assets/ajax/funtionExecutePetition.js";
 
 addEventListener("DOMContentLoaded", () => {
   console.log("Citas");
   const url = "/Sistema-del--CEM--JEHOVA-RAFA/Citas";
-  
 
   const cedulaCita = document.getElementById("cedulaCita");
   const modalAgregarCita = document.getElementById("modalAgregarCita");
@@ -30,7 +29,7 @@ addEventListener("DOMContentLoaded", () => {
       let urlActual = window.location.href;
 
       if (urlActual.includes("Hoy")) metodo = "citasHoyAjax";
-      else if(urlActual.includes("Realizadas")) metodo = "citasRealizadasAjax";
+      else if (urlActual.includes("Realizadas")) metodo = "citasRealizadasAjax";
       else metodo = "citasAjax";
 
       const result = await executePetition(url + "/" + metodo, "GET");
@@ -256,24 +255,8 @@ addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".btn-eliminar").forEach((btn) => {
         btn.addEventListener("click", function () {
           const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-          Swal.fire({
-            icon: "question",
-            title: "Confirmacion",
-            text: "Esta seguro de eliminar el paciente?",
-            showCancelButton: true,
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar",
-            customClass: {
-              popup: "switAlert",
-              confirmButton: "btn-agregarcita-modal",
-              cancelButton: "btn-agregarcita-modal-cancelar",
-            },
-          }).then((result) => {
-            if (result.isConfirmed) {
-              deleteCita(data);
-              console.log(data);
-            }
-          });
+
+          alertConfirm("Esta seguro de eliminar la cita?", deleteCita, data);
         });
       });
 
@@ -291,44 +274,8 @@ addEventListener("DOMContentLoaded", () => {
           ) {
             updateCitas(this);
           } else {
-            Swal.fire({
-              icon: "error",
-              title: "Error al enviar el formulario",
-              text: "Por favor verifique que todos los datos esten correctos.",
-              customClass: {
-                popup: "switAlert",
-                confirmButton: "btn-agregarcita-modal",
-                cancelButton: "btn-agregarcita-modal-cancelar",
-              },
-            });
+            alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
           }
-        });
-      });
-
-      //llamar a la uncion de restablecer
-      //llamar las funcion de eliminar
-      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-          Swal.fire({
-            icon: "question",
-            title: "Confirmacion",
-            text: "Esta seguro de restablecer el paciente?",
-            confirmButtonText: "Aceptar",
-            showCancelButton: true,
-            confirmButtonText: "Aceptar",
-            cancelButtonText: "Cancelar",
-            customClass: {
-              popup: "switAlert",
-              confirmButton: "btn-agregarcita-modal",
-              cancelButton: "btn-agregarcita-modal-cancelar",
-            },
-          }).then((result) => {
-            if (result.isConfirmed) {
-              restablecerPattients(data);
-              console.log(data);
-            }
-          });
         });
       });
 
@@ -348,16 +295,7 @@ addEventListener("DOMContentLoaded", () => {
         },
       });
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: `${error}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertError("Error", error);
     }
   };
 
@@ -368,16 +306,7 @@ addEventListener("DOMContentLoaded", () => {
       let result = await executePetition(url + "/guardarCita", "POST", data);
       console.log(result);
       if (result.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "Exito",
-          text: `${result.message}`,
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        });
+        alertSuccess(result.message);
         UIkit.modal("#modal-examplecita").hide();
         form.reset();
         inputs = [];
@@ -385,85 +314,40 @@ addEventListener("DOMContentLoaded", () => {
         readCita();
       } else throw new Error(`${result.error}`);
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: `${error}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertError("Error", error);
     }
   };
 
-  
   //delete
   const deleteCita = async (data) => {
     try {
       const result = await executePetition(url + `/eliminarCita/${data}`, "GET");
       if (result.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "Exito",
-          text: `${result.message}`,
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        });
+        alertSuccess(result.message);
+
         readCita();
       } else throw new Error(`${result.error}`);
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: `${error}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertError("Error", error);
     }
   };
-  
+
   //update
   const updateCitas = async (form) => {
     try {
       const data = new FormData(form);
-  
+
       let result = await executePetition(url + "/editarCita", "POST", data);
       console.log(result);
       if (result.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "Exito",
-          text: `${result.message}`,
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        });
+        alertSuccess(result.message);
         UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
         readCita();
-        console.log(result.error)
+        console.log(result.error);
       } else throw new Error(`${result.error}`);
     } catch (error) {
       console.log(error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: `${error}`,
-        customClass: {
-          popup: "switAlert",
-          confirmButton: "btn-agregarcita-modal",
-          cancelButton: "btn-agregarcita-modal-cancelar",
-        },
-      });
+      alertError("Error", error);
     }
   };
 
@@ -475,26 +359,15 @@ addEventListener("DOMContentLoaded", () => {
         if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
       });
 
-      if (
-        !document.querySelector(".p-error-fn").classList.contains("d-none")
-      ) {
+      if (document.querySelector(".p-error-fn").classList.contains("d-none")) {
         createCita(this, inputsBuenos);
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al enviar el formulario",
-          text: "Por favor verifique que todos los datos esten correctos.",
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
-        });
+        alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
       }
     });
   }
 
-  readCita()
+  readCita();
 
   const traerPacienteCita = async (event) => {
     // try {
