@@ -56,6 +56,31 @@ class ModeloEntrada extends Db
 		try {
 			$this->conexion->beginTransaction();
 
+			$fecha = date("Y-m-d");
+
+			$errores = [];
+
+			$validaciones  = Validations::validationEntrada($fechaDeVencimiento, $cantidad, $precio, $lote);
+
+
+			foreach ($validaciones as $regla) {
+				if (!preg_match($regla['regex'], $regla['valor'])) {
+					$errores[] = $regla['mensaje'];
+				}
+			}
+
+			if (count($errores) > 0) {
+				$mensaje = "";
+				foreach ($errores as $error) {
+					$mensaje .= $error . "\n";
+				}
+				throw new \Exception($mensaje);
+			}
+
+			if ($fecha > $fechaDeVencimiento) {
+				throw new \Exception("La fecha no puede ser del pasado.");
+			}
+
 			$consulta = $this->conexion->prepare("call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)");
 			$consulta->bindParam(":lote", $lote);
 			$consulta->bindParam(":id_proveedor", $id_proveedor);
@@ -108,10 +133,36 @@ class ModeloEntrada extends Db
 	}
 
 
-	public function actualizarEntrada($id_entrada, $id_proveedor, $fechaDeVencimiento, $cantidad, $precio, $id_insumo)
+	public function actualizarEntrada($id_entrada, $id_proveedor, $fechaDeVencimiento, $cantidad, $precio, $id_insumo, $lote)
 	{
 		try {
 			$this->conexion->beginTransaction();
+
+			$fecha = date("Y-m-d");
+
+			$errores = [];
+
+			$validaciones  = Validations::validationEntrada($fechaDeVencimiento, $cantidad, $precio, $lote);
+
+
+			foreach ($validaciones as $regla) {
+				if (!preg_match($regla['regex'], $regla['valor'])) {
+					$errores[] = $regla['mensaje'];
+				}
+			}
+
+			if (count($errores) > 0) {
+				$mensaje = "";
+				foreach ($errores as $error) {
+					$mensaje .= $error . "\n";
+				}
+				throw new \Exception($mensaje);
+			}
+
+			if ($fecha > $fechaDeVencimiento) {
+				throw new \Exception("La fecha no puede ser del pasado.");
+			}
+
 
 			$validar = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
 			$validar->bindParam(":id_entrada", $id_entrada);
@@ -126,6 +177,11 @@ class ModeloEntrada extends Db
 			$consulta->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
 			$consulta->bindParam(":cantidad_entrante", $cantidad);
 			$consulta->bindParam(":precio", $precio);
+			$consulta->bindParam(":id_entrada", $id_entrada);
+			$consulta->execute();
+
+			$consulta = $this->conexion->prepare("UPDATE entrada SET numero_de_lote=:lote WHERE id_entrada=:id_entrada");
+			$consulta->bindParam(":lote", $lote);
 			$consulta->bindParam(":id_entrada", $id_entrada);
 			$consulta->execute();
 

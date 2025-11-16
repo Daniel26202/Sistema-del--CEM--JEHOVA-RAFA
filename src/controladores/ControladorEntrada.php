@@ -51,7 +51,7 @@ class ControladorEntrada
 
 		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "entrada", "Ha restablecido una entrada");
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $restablecimiento[1]]);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
@@ -103,11 +103,12 @@ class ControladorEntrada
 	public function editar()
 	{
 		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
-		$edicion = $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
+
+		$edicion = $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"], $_POST["lote"]);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha modificado una entrada");
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion[1]]);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $edicion]);

@@ -117,6 +117,36 @@ class Validations
 
 
 
+    public static function validationEntrada($fechaDeVencimiento, $cantidad, $precio, $lote)
+    {
+        return [
+            [
+                'valor' => $fechaDeVencimiento,
+                'regex' => '/^\d{4}\-\d{2}\-\d{2}$/', // RIF válido
+                'mensaje' => "La fecha debe tener el formato YYYY-MM-DD."
+            ],
+
+            [
+                'valor' => $cantidad,
+                'regex' => '/^([1-9]{1})([0-9]{1,4})?$/',
+                'mensaje' => 'La cantidad debe ser un número entre 1 y 99999.'
+            ],
+
+            [
+                'valor' => $precio,
+                'regex' => '/^(\d{1,3}\.\d{3}.\d{2}|\d{1,3}.\d{2})$/',
+                'mensaje' => "El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00."
+            ],
+
+            [
+                'valor' => $lote,
+                'regex' => '/^[0-9-_]{4,10}$/',
+                'mensaje' => 'El lote debe tener entre 4 y 10 caracteres, solo números, guiones o guiones bajos.'
+            ]
+            
+        ];
+    }
+
 
 public static function validationRules($nombre, $telefono, $rif, $email, $direccion)
 {

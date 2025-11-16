@@ -36,7 +36,11 @@
                                 <div class="d-flex justify-content-center align-items-center">
                                     <!-- eliminar -->
                                     <div class="me-2">
-                                        <button class="btn btn-tabla btn-eliminar btnEliminarDoctor btn-dt-tabla mb-1" data-index="${element.id_entrada}">
+                                        <button class="${
+                                          !urlActual.includes("papelera") ? "" : "d-none"
+                                        } btn btn-tabla btn-eliminar btnEliminarDoctor btn-dt-tabla mb-1" data-index="${
+            element.id_entrada
+          }">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                 <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
                                             </svg>
@@ -45,13 +49,26 @@
 
                                     <!-- eliminar -->
                                     <div>
-                                        <button class="btn btnEditarDoctor btn-tabla btn-dt-tabla mb-1 btn-js editar botonesEdi" data-id-tabla="modal-exampleEntradaEditar${element.id_entrada}" uk-toggle="target: #modal-exampleEntradaEditar${element.id_entrada}" data-index='${element.id_entrada}'>
+                                        <button class="${
+                                          !urlActual.includes("papelera") ? "" : "d-none"
+                                        } btn btnEditarDoctor btn-tabla btn-dt-tabla mb-1 btn-js editar botonesEdi" data-id-tabla="modal-exampleEntradaEditar${
+            element.id_entrada
+          }" uk-toggle="target: #modal-exampleEntradaEditar${element.id_entrada}" data-index='${element.id_entrada}'>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                                 <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
                                             </svg>
                                         </button>
                                     </div>
 
+
+                                    <div class="me-2">
+                    <a href="#" class=" btn btn-tabla btn-dt-tabla btnRestablecer" data-index="${element.id_entrada}" title="Restablecer Entrada" uk-tooltip=""  aria-describedby="uk-tooltip-27">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
+                        <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
+                      </svg>
+                    </a>
+                  </div>
 
 
 
@@ -83,7 +100,9 @@
 
                                         </div>
 
-                                        <form class="form-modal form-validable${element.id_entrada}" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/editar" autocomplete="off" id="modalAgregarEntrada">
+                                        <form class="form-modal form-validable${
+                                          element.id_entrada
+                                        } form-ajax forms-editar"  autocomplete="off" >
                                             <div id="alerta-guardar-entrada" class="alert alert-danger d-none">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO
                                             </div>
 
@@ -101,12 +120,10 @@
                                                 </span>
                                                 <!-- <input class="form-control input-modal input-disabled input" type="text" placeholder="Ingrese el Insumo" id="nombre_insumo" disabled> -->
                                                 <select class="form-control input-modal" name="id_insumo" id="id_insumoModal">
-                                                    <option disabled selected value="<?= $entrada["id_insumo"] ?>"><?= $entrada["nombre"] ?></option>
-                                                    <?php foreach ($insumos as $in): ?>
-                                                        <option value="<?= $in["id_insumo"] ?>">
-                                                            <?= $in["nombre"] ?>
-                                                        </option>
-                                                    <?php endforeach ?>
+                                                    <option disabled selected value="${element.id_insumo}">${
+            element.nombre
+          }</option>
+                                                    
                                                 </select>
 
 
@@ -114,17 +131,17 @@
                                             </div>
 
 
-                                            <input type="hidden" name="id_entrada" value="<?= $entrada["id_entrada"] ?>">
+                                            <input type="hidden" name="id_entrada" value="${element.id_entrada}">
 
-                                            <input type="hidden" name="id_proveedor" value="<?= $entrada["id_proveedor"] ?>">
-
-
-                                            <input type="hidden" name="id_insumo" value="<?= $entrada["id_insumo"] ?>">
+                                            <input type="hidden" name="id_proveedor" value="${element.id_proveedor}">
 
 
+                                            <input type="hidden" name="id_insumo" value="${element.id_insumo}">
 
 
-                                            <div class="input-group flex-nowrap">
+
+
+                                            <div class="input-group flex-nowrap grpFormCorrect">
                                                 <span class="input-modal mt-1 d-flex col-6" style="border-right: 3px solid #387ADF;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-capsule azul" viewBox="0 0 16 16">
                                                         <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
@@ -132,7 +149,9 @@
                                                     <div class=" text-center m-auto" style="font-size: 14px;">Numero de Lote</div>
                                                 </span>
                                                 <!-- <input class="form-control input-modal input-disabled input" type="text" placeholder="Ingrese el Insumo" id="nombre_insumo" disabled> -->
-                                                <input type="number" class="form-control input-modal input-validar" name="lote" value="<?= $entrada["numero_de_lote"] ?>">
+                                                <input type="number" class="form-control input-modal input-validar" name="lote" value="${
+                                                  element.numero_de_lote
+                                                }">
 
 
 
@@ -140,7 +159,9 @@
                                             </div>
 
 
-                                            <p class="p-error-lote${element.id_entrada} d-none">El numero de lote solo debe incluir numeros minimos 4</p>
+                                            <p class="p-error-lote${
+                                              element.id_entrada
+                                            } d-none">El numero de lote solo debe incluir numeros minimos 4</p>
 
                                             <div class="input-group flex-nowrap d-none">
                                                 <span class="input-modal mt-1 d-flex col-6" style="border-right: 2px solid #387ADF;">
@@ -152,23 +173,25 @@
                                                 <input class="form-control input-modal input" type="date" name="fechaDeIngreso" placeholder="Fecha De Ingreso" id="fechaDeIngreso" value=<?= date('Y-m-d'); ?>>
                                             </div>
 
-                                            <div class="input-group flex-nowrap">
+                                            <div class="input-group flex-nowrap grpFormCorrect">
                                                 <span class="input-modal mt-1 d-flex col-6" style="border-right: 2px solid #387ADF;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calendar2-check-fill azul" viewBox="0 0 16 16">
                                                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-2.6 5.854a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
                                                     </svg>
                                                     <div class=" text-center m-auto" style="font-size: 14px;">Fecha de Vencimiento</div>
                                                 </span>
-                                                <input class="input-validar form-control input-modal input" type="date" name="fechaDeVencimiento" placeholder="Fecha De Vencimiento" id="fechaDeVencimiento" value="<?= $entrada["fechaDeVencimiento"] ?>">
+                                                <input class="input-validar form-control input-modal input" type="date" name="fechaDeVencimiento" placeholder="Fecha De Vencimiento" id="fechaDeVencimiento" value="${
+                                                  element.fechaDeVencimiento
+                                                }">
                                             </div>
 
-                                            <p class="p-error-fechaDeVencimiento d-none"></p>
+                                            <p class="p-error-fechaDeVencimiento${element.id_entrada} d-none"></p>
 
 
 
 
 
-                                            <div class="input-group flex-nowrap">
+                                            <div class="input-group flex-nowrap  grpFormCorrect">
                                                 <span class="input-modal mt-1 d-flex col-6" style="border-right: 2px solid #387ADF;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stack azul" viewBox="0 0 16 16">
                                                         <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z" />
@@ -176,15 +199,19 @@
                                                     </svg>
                                                     <div class=" text-center m-auto" style="font-size: 14px;">Cantidad</div>
                                                 </span>
-                                                <input class="input-validar form-control input-modal input" type="text" name="cantidad" placeholder="Cantidad" required value="<?= $entrada["cantidad_entrada"] ?>">
+                                                <input class="input-validar form-control input-modal input" type="text" name="cantidad" placeholder="Cantidad" required value="${
+                                                  element.cantidad_entrada
+                                                }">
                                             </div>
 
-                                            <p class="p-error-cantidad${element.id_entrada} d-none">La cantidad debe ser solo datos numericos</p>
+                                            <p class="p-error-cantidad${
+                                              element.id_entrada
+                                            } d-none">La cantidad debe ser solo datos numericos</p>
 
 
 
 
-                                            <div class="input-group flex-nowrap">
+                                            <div class="input-group flex-nowrap grpFormCorrect">
                                                 <span class="input-modal mt-1 d-flex col-6" style="border-right: 2px solid #387ADF;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cash-coin azul" viewBox="0 0 16 16">
                                                         <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0z" />
@@ -194,10 +221,14 @@
                                                     </svg>
                                                     <div class=" text-center m-auto" style="font-size: 14px;">Precio</div>
                                                 </span>
-                                                <input class="form-control input-validar input-modal input" type="text" name="precio" placeholder="Precio" required value="<?= $entrada["precio_entrada"] ?>">
+                                                <input class="form-control input-validar input-modal input" type="text" name="precio" placeholder="Precio" required value="${
+                                                  element.precio_entrada
+                                                }">
 
                                             </div>
-                                            <p class="p-error-precio${element.id_entrada} d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00</p>
+                                            <p class="p-error-precio${
+                                              element.id_entrada
+                                            } d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00</p>
 
 
 
@@ -248,10 +279,9 @@
             });
     
             if (
-              inputsBuenos.length == 5 &&
-              document.querySelector(".p-error-fn" + formEditar.getAttribute("data-index")).classList.contains("d-none")
+              inputsBuenos.length == 4
             ) {
-              updatePatients(this, inputsBuenos);
+              updateEntrada(this, inputsBuenos);
             } else {
               alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.")
             }
@@ -263,7 +293,7 @@
         document.querySelectorAll(".btnRestablecer").forEach((btn) => {
           btn.addEventListener("click", function () {
             const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-            alertConfirm("Esta seguro de restablecer el paciente?",restablecerPattients, data)
+            alertConfirm("Esta seguro de restablecer la entrada ?",restablecerEntrada, data)
           });
         });
     
@@ -311,7 +341,7 @@
         if (result.ok) {
           alertSuccess(result.message);
     
-          UIkit.modal("#modal-examplePaciente").hide();
+          UIkit.modal("#modal-exampleEntrada").hide();
           form.reset();
           inputs = [];
           inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
@@ -319,6 +349,41 @@
         } else throw new Error(`${result.error}`);
       } catch (error) {
         alertError('Error', error)
+      }
+    };
+
+    //update
+    const updateEntrada = async (form, inputs) => {
+      console.log(url + "/editar");
+      try {
+        const data = new FormData(form);
+        let result = await executePetition(url + "/editar", "POST", data);
+        console.log(result);
+        if (result.ok) {
+          alertSuccess(result.message)
+    
+          UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
+          inputs = [];
+          inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+          readEntrada();
+        } else throw new Error(`${result.error}`);
+      } catch (error) {
+        console.log(error);
+        alertError('Error', error)
+      }
+    };
+
+    //restablecer
+    const restablecerEntrada = async (data) => {
+      try {
+        const result = await executePetition(url + `/restablecerEntrada/${data}`, "GET");
+        if (result.ok) {
+          alertSuccess(result.message)
+    
+          readEntrada();
+        } else throw new Error(`${result.error}`);
+      } catch (error) {
+        alertError("Error",error)
       }
     };
 
