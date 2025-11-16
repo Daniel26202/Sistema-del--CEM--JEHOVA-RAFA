@@ -177,6 +177,8 @@ return [
 
     //Entrada
     "entrada" => "consultar",
+    "entradasAjax" => "consultar",
+    "entradasPapeleraAjax" => "consultar",
     "papelera" => "consultar",
     "guardar" => "guardar",
     "eliminar" => "eliminar",

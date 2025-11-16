@@ -24,30 +24,40 @@ class ControladorEntrada
 		$vistaActiva = "entradas";
 		$insumos = $this->modelo->insumos();
 		$proveedores = $this->modelo->selectProveedores();
-		$entradas = $this->modelo->todasLasEntradas();
 		require_once './src/vistas/vistaEntrada/vistaEntrada.php';
+	}
+
+	public function entradasAjax() {
+		echo json_encode($this->modelo->todasLasEntradas());
 	}
 
 	public function papelera($parametro)
 	{
-		$desactivos = $this->modelo->seleccionarDesactivos();
 		$insumos = $this->modelo->insumos();
 		require_once './src/vistas/vistaEntrada/vistaEntradaDesactiva.php';
 	}
 
+	public function entradasPapeleraAjax()
+	{
+		echo json_encode($this->modelo->seleccionarDesactivos());
+	}
 
 	public function restablecerEntrada($datos)
 	{
 		$id_entrada = $datos[0];
 		$id_usuario_bitacora = $datos[1];
 		$restablecimiento = $this->modelo->restablecerEntrada($id_entrada);
-		if ($restablecimiento) {
-			// Guardar la bitacora
+
+
+		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "entrada", "Ha restablecido una entrada");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/papelera/restablecido");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $restablecimiento[1]]);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/papelera/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+			exit;
 		}
+
 	}
 
 	public function proveedoresEditar()
@@ -62,27 +72,32 @@ class ControladorEntrada
 	{
 		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
 		$insercion = $this->modelo->insertarEntrada($_POST["id_proveedor"], $_POST["id_insumo"], $_POST["fechaDeIngreso"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["lote"]);
-		if ($insercion) {
-			// Guardar la bitacora
+
+		if (is_array($insercion) && $insercion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha insertado una entrada");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/registro");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
 		}
 	}
 
 	public function eliminar($datos)
 	{
 		$id_entrada = $datos[0];
-		$id_usuario_bitacora = $datos[2];
+		$id_usuario_bitacora = $datos[1];
 		$elimincion = $this->modelo->eliminar($id_entrada);
-		if ($elimincion) {
-			// Guardar la bitacora
+
+		if (is_array($elimincion) && $elimincion[0] === "exito") {
 			$this->bitacora->insertarBitacora($id_usuario_bitacora, "entrada", "Ha eliminado una entrada");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/eliminar");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $elimincion]);
+			exit;
 		}
+
 	}
 
 	public function editar()
@@ -90,12 +105,13 @@ class ControladorEntrada
 		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
 		$edicion = $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"]);
 
-		if ($edicion) {
-			// Guardar la bitacora
+		if (is_array($edicion) && $edicion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha modificado una entrada");
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/editar");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion[1]]);
 		} else {
-			header("location: /Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada/errorSistem");
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $edicion]);
+			exit;
 		}
 	}
 

@@ -136,17 +136,6 @@ document.addEventListener("DOMContentLoaded", function () {
           formulario.submit(); // Enviamos el formulario
         }
       } else {
-        // Si hay campos inválidos, mostramos el mensaje de error correspondiente
-        const mensajeError = formulario.querySelector(".msjE");
-        if (mensajeError) {
-          mensajeError.classList.remove("d-none");
-        } else {
-          document.querySelector(".alertaFormulario").classList.remove("d-none");
-          setTimeout(function () {
-            document.querySelector(".alertaFormulario").classList.add("d-none");
-          }, 10000);
-        }
-
         // Evitamos el envío del formulario si hay campos inválidos
         return false;
       }

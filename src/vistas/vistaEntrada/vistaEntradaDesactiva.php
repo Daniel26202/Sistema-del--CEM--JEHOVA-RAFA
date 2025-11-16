@@ -132,6 +132,3 @@
 <!-- agregar Entrada -->
 
 <?php require_once './src/vistas/head/footer.php';  ?>
-
-<?php require_once './src/vistas/head/footer.php';  ?><?php require_once './src/vistas/head/head.php';  ?>
-
