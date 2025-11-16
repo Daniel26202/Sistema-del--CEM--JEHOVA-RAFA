@@ -120,12 +120,12 @@ class ModeloInsumo extends Db
 			$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
 			$imagen_temporal = $_FILES['imagen']['tmp_name'];
 
-			$errores = [];
 			$validaciones  = Validations::supplyRules($imagen, $nombre, $descripcion, $cantidad, $precio, $fechaDeVecimiento, $stockMinimo, $lote, $marca, $medida);
 
-			foreach ($validaciones as $regla) {
-				if (!preg_match($regla['regex'], $regla['valor'])) {
-					$errores[] = $regla['mensaje'];
+			
+			foreach ($validaciones as $v) {
+				if (!preg_match($v['regex'], $v['valor'])) {
+					throw new \Exception($v['mensaje']);
 				}
 			}
 
@@ -189,23 +189,14 @@ class ModeloInsumo extends Db
 	public function editar($id_insumo, $nombre, $descripcion, $stockMinimo, $imagen, $marca, $medida)
 	{
 		try {
-			$errores = [];
 
 			$validaciones  = Validations::supplyRules(null,$nombre,$descripcion,null,null,null,$stockMinimo,null, $marca,$medida);
 
 
-			foreach ($validaciones as $regla) {
-				if (!preg_match($regla['regex'], $regla['valor'])) {
-					$errores[] = $regla['mensaje'];
+			foreach ($validaciones as $v) {
+				if (!preg_match($v['regex'], $v['valor'])) {
+					throw new \Exception($v['mensaje']);
 				}
-			}
-
-			if (count($errores) > 0) {
-				$mensaje = "";
-				foreach ($errores as $error) {
-					$mensaje .= $error . "\n";
-				}
-				throw new \Exception($mensaje);
 			}
 
 

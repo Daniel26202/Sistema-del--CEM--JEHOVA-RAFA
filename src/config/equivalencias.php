@@ -161,6 +161,7 @@ return [
 
     //Insumos
     "insumos" => "consultar",
+    "vencidos" => "consultar",
     "insumosAjax" => "consultar",
     "retornarLasEntradas" => "consultar",
     "InsumosVencidos" => "consultar",
@@ -193,7 +194,9 @@ return [
 
     //Proveedores
     "proveedores" => "consultar",
+    "proveedoresAjax" => "consultar",
     "papelera" => "consultar",
+    "proveedoresPapeleraAjax" => "consultar",
     "insertar" => "guardar",
     "update" => "eliminar",
     "restablecerProveedor" => "eliminar",

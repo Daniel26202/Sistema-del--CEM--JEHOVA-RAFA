@@ -58,23 +58,13 @@ class ModeloEntrada extends Db
 
 			$fecha = date("Y-m-d");
 
-			$errores = [];
-
 			$validaciones  = Validations::validationEntrada($fechaDeVencimiento, $cantidad, $precio, $lote);
 
 
-			foreach ($validaciones as $regla) {
-				if (!preg_match($regla['regex'], $regla['valor'])) {
-					$errores[] = $regla['mensaje'];
+			foreach ($validaciones as $v) {
+				if (!preg_match($v['regex'], $v['valor'])) {
+					throw new \Exception($v['mensaje']);
 				}
-			}
-
-			if (count($errores) > 0) {
-				$mensaje = "";
-				foreach ($errores as $error) {
-					$mensaje .= $error . "\n";
-				}
-				throw new \Exception($mensaje);
 			}
 
 			if ($fecha > $fechaDeVencimiento) {
@@ -140,23 +130,13 @@ class ModeloEntrada extends Db
 
 			$fecha = date("Y-m-d");
 
-			$errores = [];
-
 			$validaciones  = Validations::validationEntrada($fechaDeVencimiento, $cantidad, $precio, $lote);
 
 
-			foreach ($validaciones as $regla) {
-				if (!preg_match($regla['regex'], $regla['valor'])) {
-					$errores[] = $regla['mensaje'];
+			foreach ($validaciones as $v) {
+				if (!preg_match($v['regex'], $v['valor'])) {
+					throw new \Exception($v['mensaje']);
 				}
-			}
-
-			if (count($errores) > 0) {
-				$mensaje = "";
-				foreach ($errores as $error) {
-					$mensaje .= $error . "\n";
-				}
-				throw new \Exception($mensaje);
 			}
 
 			if ($fecha > $fechaDeVencimiento) {

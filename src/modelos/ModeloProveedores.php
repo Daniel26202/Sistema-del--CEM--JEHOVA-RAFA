@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\Db;
+use App\config\Validations;
 
 class ModeloProveedores extends Db
 {
@@ -26,7 +27,7 @@ class ModeloProveedores extends Db
 	}
 
 
-	public function papelera()
+	public function papeleraConsultar()
 	{
 		try {
 			$sql = $this->conexion->prepare("SELECT * FROM proveedor WHERE estado='DES' ");
@@ -40,6 +41,21 @@ class ModeloProveedores extends Db
 	public function agregar($nombre, $rif, $telefono, $email, $direccion)
 	{
 		try {
+
+
+			$validaciones  = Validations::validationRules($nombre, $telefono, $rif, $email, $direccion);
+
+
+			foreach ($validaciones as $v) {
+				if (!preg_match($v['regex'], $v['valor'])) {
+					throw new \Exception($v['mensaje']);
+				}
+			}
+
+			if ($this->validarRif($rif) === "existeC") {
+				throw new \Exception("El rif ya existe en el sistema.");
+			}
+
 			$sql = $this->conexion->prepare("INSERT INTO proveedor(nombre, rif, telefono, email, direccion, estado) VALUES (:nombre, :rif, :telefono, :email, :direccion, 'ACT');");
 			$sql->bindParam(":nombre", $nombre);
 			$sql->bindParam(":rif", $rif);
@@ -57,7 +73,7 @@ class ModeloProveedores extends Db
 
 			return ["exito", $data];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -69,14 +85,14 @@ class ModeloProveedores extends Db
 			$validar->bindParam(":id_proveedor", $id_proveedor);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo");
+				throw new \Exception("Fallo el id no existe");
 			}
 			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='DES' WHERE id_proveedor = :id_proveedor;");
 			$sql->bindParam(":id_proveedor", $id_proveedor);
 			$sql->execute();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -87,26 +103,44 @@ class ModeloProveedores extends Db
 			$validar->bindParam(":id_proveedor", $id_proveedor);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo");
+				throw new \Exception("Fallo el id no existe");
 			}
-			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='ACT' WHERE id_proveedor = :id_proveedor;");
+			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='ACT' WHERE id_proveedor = :id_proveedor");
 			$sql->bindParam(":id_proveedor", $id_proveedor);
 			$sql->execute();
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
 
-	public function editar($id_proveedor, $nombre, $rif, $telefono, $email, $direccion)
+	public function editar($id_proveedor, $nombre, $rif, $telefono, $email, $direccion, $rifRegistrado)
 	{
 		try {
+			$validaciones  = Validations::validationRules($nombre, $telefono, $rif, $email, $direccion);
+
+
+			foreach ($validaciones as $v) {
+				if (!preg_match($v['regex'], $v['valor'])) {
+					throw new \Exception($v['mensaje']);
+				}
+			}
+
+
+			if($rifRegistrado == $rif){
+
+			}else{
+				if ($this->validarRif($rif) === "existeC") {
+					throw new \Exception("El rif ya existe en el sistema.");
+				}
+			}
+
 			$validar = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
 			$validar->bindParam(":id_proveedor", $id_proveedor);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo");
+				throw new \Exception("Fallo el id no existe");
 			}
 			$sql = $this->conexion->prepare("UPDATE proveedor SET nombre =:nombre, rif =:rif, telefono =:telefono, email=:email, direccion=:direccion WHERE id_proveedor = :id_proveedor");
 			$sql->bindParam(":nombre", $nombre);
@@ -116,9 +150,10 @@ class ModeloProveedores extends Db
 			$sql->bindParam(":direccion", $direccion);
 			$sql->bindParam(":id_proveedor", $id_proveedor);
 			$sql->execute();
-			return "exito";
+			
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 

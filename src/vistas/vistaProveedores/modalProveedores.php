@@ -53,7 +53,7 @@
                 <input class="form-control input-modal input-disabled" type="text" name="rif" placeholder="Rif" required>
             </div>
 
-            <p class="p-error-rif p-error-validaciones  d-none">El rif no es correcto</p>
+            <p class="p-error-rif p-error-validaciones  d-none">El RIF debe comenzar con V, J, E, G o P, seguido de un guion y 8 o 9 dígitos.</p>
 
 
             <div class="input-group flex-nowrap">

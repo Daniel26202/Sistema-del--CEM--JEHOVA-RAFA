@@ -41,9 +41,12 @@ class ControladorInsumos
 	{
 		$ayuda = "btnayudaVencido";
 		$vistaActiva = "vencidos";
-		$vencidos = $this->modelo->InsumosVencidos();
 		$insumos = $this->modelo->insumos();
 		require_once './src/vistas/vistaInsumos/vistaInsumosVencidos.php';
+	}
+
+	public function vencidos() {
+		echo json_encode($this->modelo->InsumosVencidos());
 	}
 
 	public function info($datos)

@@ -151,29 +151,29 @@ class Validations
 public static function validationRules($nombre, $telefono, $rif, $email, $direccion)
 {
     return [
-        'nombre' => [
+        [
             'valor' => $nombre,
-            'regex' => '/^[A-Z][a-zA-Zs]{2,}$/', // Comienza con mayúscula y al menos 3 caracteres
+            'regex' => '/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/', // Comienza con mayúscula y al menos 3 caracteres
             'mensaje' => "El nombre debe comenzar con una letra mayúscula y tener al menos tres caracteres."
         ],
-        'telefono' => [
+         [
             'valor' => $telefono,
-            'regex' => '/^(412|414|416|424|426|212|24[0-9]|25[0-9])d{7}$/', // Teléfono válido de 11 dígitos
+            'regex' => '/^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/', // Teléfono válido de 11 dígitos
             'mensaje' => "El teléfono debe ser un número válido de 11 dígitos, comenzando con 412, 414, 416, 424, 426, 212 o 24x, 25x."
         ],
-        'rif' => [
+        [
             'valor' => $rif,
-            'regex' => '/^(V|J|E|G|P)-d{8,9}$/', // RIF válido
+            'regex' => '/^[VJEGP]\-[0-9]{8,9}$/', // RIF válido
             'mensaje' => "El RIF debe comenzar con V, J, E, G o P, seguido de un guion y 8 o 9 dígitos."
         ],
-        'email' => [
+        [
             'valor' => $email,
-            'regex' => '/^[w-.]+@([w-]+.)+[w-]{2,4}$/', // Formato de email válido
+            'regex' => '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', // Formato de email válido
             'mensaje' => "El email debe tener un formato válido."
         ],
-        'direccion' => [
+        [
             'valor' => $direccion,
-            'regex' => '/^.{5,}$/', // Al menos 5 caracteres
+            'regex' => "/^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/", // Al menos 5 caracteres
             'mensaje' => "La dirección debe tener al menos 5 caracteres y no puede estar vacía."
         ],
     ];
