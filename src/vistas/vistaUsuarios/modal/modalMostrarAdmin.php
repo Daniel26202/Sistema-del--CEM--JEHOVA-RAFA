@@ -39,11 +39,10 @@
 
                 </div>
                 <div class="uk-card-footer d-flex justify-content-start">
-                    <a href="#" class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close">Cancelar</a>
-                    <a href="#" class="uk-button uk-button-text btnMostrar mt-2 ms-4 editarUsuario"
-                        uk-toggle="target: #modal-exampleEditar<?php echo $dato["id_usuario"]; ?>">Modificar</a>
-                    <a href="#" class="uk-button uk-button-text btnMostrar mt-2 ms-4"
-                        uk-toggle="target: #modal-exampleEliminar<?php echo $dato["id_usuario"]; ?>">Eliminar</a>
+                    <button class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close">Cancelar</button>
+                    <button class="uk-button uk-button-text btnMostrar mt-2 ms-4 editarUsuario"
+                        uk-toggle="target: #modal-exampleEditar<?php echo $dato["id_usuario"]; ?>">Modificar</button>
+                    <button class="uk-button uk-button-text btnMostrar mt-2 ms-4 btn-eliminar" data-index="<?php echo $dato["id_usuario"]; ?>">Eliminar</button>
                 </div>
             </div>
 
@@ -53,4 +52,3 @@
 <?php endforeach ?>
 
 <?php require_once("./src/vistas/vistaUsuarios/modal/modalEditarAdmin.php") ?>
-<?php require_once("./src/vistas/vistaUsuarios/modal/modalEliminarAdmin.php") ?>

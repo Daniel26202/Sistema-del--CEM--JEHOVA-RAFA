@@ -4,7 +4,7 @@
 <div id="modal-exampleAgregar" uk-modal>
     <div class="uk-modal-dialog uk-modal-body tamaño-modal uk-card  uk-width-1-2@m">
 
-        <form method="POST" class="formAgregarAdmin form-validable" action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/registrarAdmin"
+        <form method="POST" id="formAgregarAdmin" class="formAgregarAdmin form-validable form-ajax"
             enctype="multipart/form-data">
 
             <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
@@ -39,7 +39,7 @@
                                         d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" />
                                 </svg>
                             </span>
-                            <input class="form-control input-modal input-disabled imagenesUsuarios " type="file"
+                            <input class="form-control input-modal input-disabled input-validar imagenesUsuarios " type="file"
                                 name="imagenUsuario" placeholder="Imagen" id="imagen">
                         </div>
 
@@ -144,8 +144,8 @@
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <select name="id_rol" class="input-modal input-u col-12" required>
-                                <option selected disabled>Seleccionar Rol</option>
+                            <select name="id_rol" id="rol" class="input-modal input-u col-12" required>
+                                <option selected="" value="" disabled>Seleccionar Rol</option>
                                 <?php foreach ($datosRoles as $dato): ?>
                                     <option value="<?= $dato["id_rol"] ?>"><?= $dato["nombre"] ?></option>
                                 <?php endforeach; ?>

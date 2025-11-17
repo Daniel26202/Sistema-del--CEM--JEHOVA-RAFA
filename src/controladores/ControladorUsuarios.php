@@ -34,79 +34,61 @@ class ControladorUsuarios
     public function usuarios($parametro)
     {
         $ayuda = "btnayudaUsuario";
+        $datosU  = $this->modelo->select();
         $vistaActiva = "usuarios";
-        $datosU = $this->modelo->select();
         require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
+    }
+
+    public function usuariosAjax()
+    {
+        echo json_encode($this->modelo->select());
     }
 
     public function administradores($parametro)
     {
         $ayuda = "btnayudaAdministrador";
+        $datosU  = $this->modelo->selectAdmin();
         $vistaActiva = "administradores";
-        $datosU = $this->modelo->selectAdmin();
         $datosRoles = $this->roles->roles();
         require_once './src/vistas/vistaUsuarios/vistaUsuariosAdmin.php';
     }
 
+    public function administradoresAjax()
+    {
+        echo json_encode($this->modelo->selectAdmin());
+    }
+
     // editar usuario
-    public function editarUsuario($datos)
+    public function editarUsuario()
     {
 
-        $usuarioDb = $datos[0];
+        $edicion = $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name'], $_POST['usuarioRegistrado']);
 
-        $resultadoDeUsuario = $this->modelo->validarUsuario($_POST['usuario']);
 
-        // NOTA: Esto "&&" es "Y"
-        //se verifica si el usuario del input no es igual al usuario ya existente.  
-        if ($_POST["usuario"] != $usuarioDb) {
-
-            //verifica si el usuario es igual a la información de la base de datos.
-            if ($resultadoDeUsuario === "existeU") {
-                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/Usuario");
-            } else {
-
-                $edicion = $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
-
-                if ($edicion) {
-                    $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
-                    header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editar");
-                } else {
-                    header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/errorSistem");
-                }
-            }
-
-            //se verifica si el usuario del input es igual al usuario ya existente.  
-        } elseif ($usuarioDb == $_POST["usuario"]) {
-
-            $edicion = $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
-
-            if ($edicion) {
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
-                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editar");
-            } else {
-                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/errorSistem");
-            }
+        if (is_array($edicion) && $edicion[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            $edicion = $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name']);
-            if ($edicion) {
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
-                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/editar");
-            } else {
-                header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/errorSistem");
-            }
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $edicion]);
+            exit;
         }
     }
 
     // eliminación lógica de usuario
-    public function borrarUsuario()
+    public function borrarUsuario($datos)
     {
-        $eliminacion = $this->modelo->eliminacionLogica($_POST["usuario"], $_POST["id_usuario"]);
-        if ($eliminacion) {
-            // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un  usuario");
-            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/eliminar");
+        $id_usuario = $datos[0];
+        $id_usuario_bitacora = $datos[1];
+        $eliminacion = $this->modelo->eliminacionLogica($id_usuario);
+
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+            $this->bitacora->insertarBitacora($id_usuario_bitacora, "usuario", "Ha eliminado un  usuario");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
         }
     }
     public function registrarAdmin()
@@ -117,13 +99,14 @@ class ControladorUsuarios
         $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["correo"], $_POST["id_rol"]);
 
         $insercion = $this->doctor->RegistrarAdmin($_POST["nacionalidad"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["correo"], $id_usuario);
-        if ($insercion) {
-            // Guardar la bitacorasaa
+
+        if (is_array($insercion) && $insercion[0] === "exito") {
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha insertado un administrador ");
-            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/registro");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
-            print_r($insercion);
-            header("location:/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $insercion]);
+            exit;
         }
     }
 
@@ -136,19 +119,29 @@ class ControladorUsuarios
         // Guardar la bitacora
         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un administrador ");
 
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/editar");
+
+        if (is_array($$id_usuario) && $$id_usuario[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un administrador ");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $id_usuario]);
+            exit;
+        }
     }
 
 
     public function eliminarAdministrador()
     {
         $eliminacion = $this->modelo->eliminacionLogica($_POST["id_usuario"]);
-        if ($eliminacion) {
-            // Guardar la bitacora
+
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un administador ");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/eliminar");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
         }
     }
 

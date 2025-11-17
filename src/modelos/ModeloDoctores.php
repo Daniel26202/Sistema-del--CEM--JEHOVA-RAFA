@@ -311,10 +311,10 @@ class ModeloDoctores extends Db
             $this->conexion->beginTransaction();
 
             $validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->bindParam(":id_usuario", $idUsuario);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+                throw new \Exception("Fallo el id no existe");
             }
 
             //editar al doctor.
@@ -426,9 +426,9 @@ class ModeloDoctores extends Db
             $consulta->bindParam(":telefono", $telefono);
             $consulta->bindParam(":id_usuario", $id_usuario);
             $consulta->execute();
-            return 1;
+            return ['exito'];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 }

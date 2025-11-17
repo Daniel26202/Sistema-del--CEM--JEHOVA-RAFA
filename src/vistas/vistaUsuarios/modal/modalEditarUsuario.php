@@ -6,10 +6,11 @@
         <div class="uk-modal-dialog uk-modal-body tamaño-modal uk-card  uk-width-1-2@m">
 
             <form method="POST" class="formEditarUsuario"
-                action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/editarUsuario/<?php echo $dato["user"]; ?>"
                 enctype="multipart/form-data">
 
-                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']?>">
+                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
+                <input type="hidden" name="usuarioRegistrado" value="<?php echo $dato["user"]; ?>">
+
 
                 <div id="padre<?php echo $dato["id_usuario"]; ?>">
                     <div class="alert alert-danger text-center d-none" id="alertaUsuario">VERIFIQUE EL FORMULARIO ANTES DE
@@ -70,7 +71,7 @@
 
                         <div class="uk-card-footer d-flex justify-content-start">
                             <a href="#" class="color_lineaText uk-button btnMostrar mt-2 me-4 pe-0 ps-0">Editar usuario</a>
-                            <a href="#" class="uk-button uk-button-text btnMostrar mt-2 btn_editarPassword" uk-toggle="target: #modal-exampleEditarPassword" data-usuario="<?php echo $dato["usuario"]; ?>" data-id-u="<?php echo $dato["id_usuario"]; ?>" >Editar contraseña</a>
+                            <a href="#" class="uk-button uk-button-text btnMostrar mt-2 btn_editarPassword" uk-toggle="target: #modal-exampleEditarPassword" data-usuario="<?php echo $dato["usuario"]; ?>" data-id-u="<?php echo $dato["id_usuario"]; ?>">Editar contraseña</a>
                         </div>
 
                         <div class="uk-card-footer d-flex justify-content-start">

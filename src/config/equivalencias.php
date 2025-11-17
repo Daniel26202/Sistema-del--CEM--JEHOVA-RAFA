@@ -109,7 +109,9 @@ return [
 
     //Usuarios
     "usuarios" => "consultar",
+    "usuariosAjax" => "consultar",
     "administradores" => "consultar",
+    "administradoresAjax" => "consultar",
     "papeleraUsuario" => "consultar",
     "registrarAdmin" => "guardar",
     "editarAdministrador" => "editar",

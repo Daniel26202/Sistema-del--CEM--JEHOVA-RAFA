@@ -11,6 +11,8 @@
 
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
+                <input type="hidden" name="usuarioRegistrado" value="<?php echo $dato["user"]; ?>">
+
                 <div id="padre<?php echo $dato["id_usuario"]; ?>">
                     <div class="alert alert-danger text-center d-none" id="alertaUsuario">VERIFIQUE EL FORMULARIO ANTES DE
                         ENVIARLO</div>

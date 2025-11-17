@@ -25,7 +25,7 @@ class ModeloUsuarios extends Db
 
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -38,7 +38,7 @@ class ModeloUsuarios extends Db
             $consulta = $this->conexion->prepare($sql);
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -60,7 +60,7 @@ class ModeloUsuarios extends Db
 
 
     //esto es para editar un usuario.
-    public function updateUsuario($usuario, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal)
+    public function updateUsuario($usuario, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal, $usuarioRegistrado)
     {
         try {
             $validar = $this->conexion->prepare("SELECT * from usuario where id_usuario=:id_usuario");
@@ -68,6 +68,14 @@ class ModeloUsuarios extends Db
             $validar->execute();
             if ($validar->rowCount() <= 0) {
                 throw new \Exception("Fallo");
+            }
+
+            if ($usuario == $usuarioRegistrado) {
+                
+            }else {
+                if ($this->validarUsuario($_POST['usuario']) === "existeU") {
+                    throw new \Exception("El usuario ya está registrada.");
+                }
             }
 
             if ($imagenUsuario == "") {
@@ -103,9 +111,9 @@ class ModeloUsuarios extends Db
                     move_uploaded_file($imagenUsuarioTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $imagenUsuario);
                 }
             }
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -114,19 +122,19 @@ class ModeloUsuarios extends Db
     {
         try {
             $validar = $this->conexion->prepare("SELECT * from usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $id_usuario);
+            $validar->bindParam(":id_usuario", $idUsuario);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+                throw new \Exception("Fallo el id no existe");
             }
             //editar al doctor.
             $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario';
             $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
             $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
             $consultaDeUsuario->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
     public function AgregarUsuarios($usuario, $password, $correo,$id_rol)
@@ -177,7 +185,7 @@ class ModeloUsuarios extends Db
                 }
             }
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 }

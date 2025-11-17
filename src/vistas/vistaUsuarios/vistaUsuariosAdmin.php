@@ -5,7 +5,7 @@
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
 
-    <h5 style="width: 95%; " class="m-auto mb-3">Administradores <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+    <h5 style="width: 95%; " class="m-auto mb-3">Usuarios <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
             class="bi bi-person-square ms-2 " viewBox="0 0 16 16">
             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
             <path
@@ -14,9 +14,10 @@
 
 
 
-    <!-- alertas -->
+    <input type="hidden" name="urlBase" id="urlBase" value="<?= $urlBase ?>">
+    <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
-    <?php require_once "./src/vistas/alerts.php" ?>
+
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto table-responsive" style="width: 95%; ">
 
@@ -37,7 +38,7 @@
             </div>
             <div class="me-4">
                 <div class="mt-3 mb-5">
-                    <ul class="sin-circulos d-flex justify-content-end  paginacion">
+                    <ul class="sin-circulos d-flex justify-content-end paginacion">
                         <li class="borde-menu activo <?= $vistaActiva == 'usuarios'  ? ' activo-borde ' : '' ?>">
                             <a href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" class="ico text-decoration-none me-3 color-letras">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -70,7 +71,6 @@
                 </div>
             </div>
 
-
             <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Usuarios")): ?>
                 <!-- no hay -->
             <?php else: ?>
@@ -86,7 +86,6 @@
                     </button>
                 </div>
             <?php endif; ?>
-
         </div>
 
         <div class="table table-responsive">
@@ -97,60 +96,21 @@
             <!-- linea -->
             <hr class="mb-4 pb-2">
 
-            <div class="d-flex flex-wrap justify-content-center caja-tarjets-responsive ">
-                <?php if ($datosU): ?>
-
-                    <?php foreach ($datosU as $dato): ?>
-
-                        <div class="card contenido col-9 col-sm-6 col-lg-3 tarjeta ms-2 me-4 d-flex align-items-center justify-content-center tarjeta">
-                            <?php if ($dato["imagen"] != "doctor.png"): ?>
-
-                                <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>" class="mt-2" alt="...">
-                            <?php else: ?>
-
-                                <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>" class="mt-2" alt="...">
-                            <?php endif; ?>
-                            <div class="mt-3">
-                                <div class="ps-3 pe-3 text-center buscar">
-
-                                    <h5 class="card-title mb-1 ">Admin: 
-                                        <?php echo $dato["nombre"] . " " . $dato["apellido"]; ?>
-                                    </h5>
-                                    <p class="mb-4">
-                                        <?php echo $dato["user"]; ?>
-                                    </p>
-
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-center flex-column">
-                                    <div class=" mb-3 mostrar">
-                                        <a href="#" class="btn btn-User text-decoration-none"
-                                            uk-toggle="target: #modal-exampleMostrar<?php echo $dato["id_usuario"]; ?>">Mostrar</a>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    <?php endforeach ?>
-                <?php else: ?>
-
-                    <div colspan="9" class="text-center">NO HAY REGISTROS
-
-                    </div>
-                <?php endif ?>
+            <div class="d-flex flex-wrap justify-content-center  caja-tarjets-responsive" id="div-tarjet-user">
+                <!-- js -->
 
             </div>
         </div>
 
     </div>
 </div>
+<?php require_once './src/vistas/vistaUsuarios/modal/modalAgregarAdmin.php'; ?>
 
 <?php require_once './src/vistas/vistaUsuarios/modal/modalMostrarAdmin.php'; ?>
-<?php require_once './src/vistas/vistaUsuarios/modal/modalAgregarAdmin.php'; ?>
+
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/imgAdmin.js"></script>
+
+<script type="module" src="<?= $urlBase ?>../src/assets/ajax/usuarios.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/admin.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/usuarios.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaAdministrador.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaUsuarioAdministrador.js"></script>
