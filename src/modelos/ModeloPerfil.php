@@ -25,7 +25,7 @@ class ModeloPerfil extends Db{
 			$validar->bindParam(":id_usuario", $id_usuario);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo");
+				throw new \Exception("Fallo el id no existe");
 			}
 
 			$consulta = $this->conexion->prepare("UPDATE bd.personal SET cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono WHERE usuario = :id_usuario");
@@ -43,9 +43,9 @@ class ModeloPerfil extends Db{
 			$consulta2->bindParam(":correo", $correo);
 			$consulta2->execute();
 
-			return "exito";
+			return ["exito"];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 

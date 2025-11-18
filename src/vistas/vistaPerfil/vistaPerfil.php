@@ -1,5 +1,5 @@
 <?php require_once './src/vistas/head/head.php'; ?>
-<?php $datos = $this->modelo->seleccionarUsuario($_SESSION["usuario"]); ?>
+
 <!-- Contenido  -->
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
 
@@ -11,15 +11,6 @@
     </svg></h1>
 
 
-  <!-- alertas -->
-
-  <?php require_once "./src/vistas/alerts.php" ?>
-
-
-
-  <!-- alertas -->
-
-  <?php require_once "./src/vistas/alerts.php" ?>
 
   <div class="caja-contenedor-tabla  p-3 mb-3 m-auto" style="width: 95%; ">
     <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
@@ -35,7 +26,7 @@
           </svg>
         </div>
         <div class="input-group flex-nowrap">
-          <?php foreach ($datos as $d): ?>
+
 
 
             <span class="input-modal">
@@ -46,7 +37,7 @@
               </svg>
             </span>
             <input class="form-control input-modal input-perfil" type="text" name="cedula" placeholder="Cedula"
-              value="<?= $d["cedula"] ?>" disabled uk-tooltip="Cedula">
+              value="" disabled uk-tooltip="Cedula">
         </div>
 
         <div class="input-group flex-nowrap">
@@ -57,7 +48,7 @@
             </svg>
           </span>
           <input class="form-control input-modal input-perfil" type="text" name="nombreyapellido"
-            placeholder="Nombre y Apellido" disabled uk-tooltip="Nombre" value="<?= $d["nombre"] ?>">
+            placeholder="Nombre y Apellido" disabled uk-tooltip="Nombre" value="">
 
         </div>
 
@@ -69,7 +60,7 @@
             </svg>
           </span>
           <input class="form-control input-modal input-perfil" type="text" name="nombreyapellido"
-            placeholder="Nombre y Apellido" disabled uk-tooltip="Apellido" value="<?= $d["apellido"] ?>">
+            placeholder="Nombre y Apellido" disabled uk-tooltip="Apellido" value="">
 
         </div>
 
@@ -83,7 +74,7 @@
             </svg>
           </span>
           <input class="form-control input-modal input-perfil" type="text" name="telefono" placeholder="Teléfono"
-            disabled uk-tooltip="Telefono" value="<?= $d["telefono"] ?>">
+            disabled uk-tooltip="Telefono" value="">
         </div>
 
         <div class="input-group flex-nowrap">
@@ -94,7 +85,7 @@
             </svg>
           </span>
           <input class="form-control input-modal input-perfil" type="text" name="usuario" placeholder="Usuario"
-            disabled uk-tooltip="Usuario" value="<?= $d["user"] ?>">
+            disabled uk-tooltip="Usuario" value="">
         </div>
 
         <div class="input-group flex-nowrap">
@@ -105,7 +96,7 @@
             </svg>
           </span>
           <input class="form-control input-modal input-perfil" type="email" name="correo" placeholder="Correo"
-            disabled uk-tooltip="Correo" value="<?= $d["correo"] ?>">
+            disabled uk-tooltip="Correo" value="">
         </div>
 
         <div class="d-flex justify-content-end mb-5">
@@ -129,7 +120,7 @@
   </div>
 
 
-<?php endforeach ?>
+
 
 
 
@@ -145,7 +136,7 @@
       <div class="modal-body">
 
 
-        <form class="form-modal form-validable1" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/guardar" method="POST" autocomplete="off">
+        <form class="form-modal form-validable1 forms-editar form-ajax" id="modalAgregar"  method="POST" autocomplete="off">
           <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
           <input type="hidden" name="verificar" value="">
           <div id="divAPacienteMP">
@@ -158,7 +149,7 @@
               </svg>
             </span>
 
-            <input class="form-control input-modal input-disabled input-paciente input-validar" style="width: 7vh !important;" type="number" id="cedula" value="<?= $d["cedula"] ?>" name="cedula" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+            <input class="form-control input-modal input-disabled input-paciente input-validar" style="width: 7vh !important;" type="number" id="cedula" value="" name="cedula" placeholder="Cedula" required maxlength="8" minlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
           </div>
 
           <p class="p-error-cedula1 d-none">La cedula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
@@ -170,7 +161,7 @@
               </svg>
             </span>
 
-            <input class="form-control mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="nombre" name="nombre" placeholder="Nombre" required maxlength="11" value="<?= $d["nombre"] ?>">
+            <input class="form-control mayuscula input-modal input-disabled input-paciente input-validar" type="text" id="nombre" name="nombre" placeholder="Nombre" required maxlength="11" value="">
           </div>
 
           <p class="p-error-nombre1 d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
@@ -181,7 +172,7 @@
                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
               </svg>
             </span>
-            <input class="form-control input-modal mayuscula input-disabled input-paciente input-validar" type="text" id="apellido" name="apellido" placeholder="Apellido" required maxlength="11" value="<?= $d["apellido"] ?>">
+            <input class="form-control input-modal mayuscula input-disabled input-paciente input-validar" type="text" id="apellido" name="apellido" placeholder="Apellido" required maxlength="11" value="">
 
           </div>
 
@@ -193,7 +184,7 @@
                 <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
               </svg>
             </span>
-            <input class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" value="<?= $d["telefono"] ?>" required maxlength="18">
+            <input class="form-control input-modal input-disabled input-paciente input-validar" type="number" id="telefono" name="telefono" placeholder="Telefono" value="" required maxlength="18">
           </div>
           <p class="p-error-telefono1 d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
 
@@ -207,7 +198,7 @@
                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-4.118 9.79c1.258 0 2-1.067 2-2.872 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684c.047.64.594 1.406 1.703 1.406zm-2.89-5.435h-.633A12.6 12.6 0 0 0 4.5 8.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675V7.354z" />
               </svg>
             </span>
-            <input class="form-control input-modal input-disabled input-paciente input-validar" type="text" id="Usuario" name="usuario" placeholder="Usuario" value="<?= $d["user"] ?>" required>
+            <input class="form-control input-modal input-disabled input-paciente input-validar" type="text" id="Usuario" name="usuario" placeholder="Usuario" value="" required>
           </div>
           <p class="p-error-usuario1 d-none">El usuario esta mal</p>
 
@@ -219,7 +210,7 @@
                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-4.118 9.79c1.258 0 2-1.067 2-2.872 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684c.047.64.594 1.406 1.703 1.406zm-2.89-5.435h-.633A12.6 12.6 0 0 0 4.5 8.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675V7.354z" />
               </svg>
             </span>
-            <input class="form-control input-modal input-disabled input-paciente input-validar" type="text" id="" name="correo" placeholder="Correo" value="<?= $d["correo"] ?>" required>
+            <input class="form-control input-modal input-disabled input-paciente input-validar" type="text" id="" name="correo" placeholder="Correo" value="" required>
           </div>
           <p class="p-error-correo1 d-none">El correo esta mal</p>
 
@@ -244,4 +235,5 @@
 
 
 <?php require_once './src/vistas/head/footer.php'; ?>
+<script type="module" src="<?= $urlBase ?>../src/assets/ajax/perfil.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaPerfil.js"></script>

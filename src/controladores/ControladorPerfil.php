@@ -25,6 +25,10 @@ class ControladorPerfil
 		require_once './src/vistas/vistaPerfil/vistaPerfil.php';
 	}
 
+	public function perfilAjax() {
+		echo json_encode($this->modelo->seleccionarUsuario($_SESSION["usuario"]));
+	}
+
 	private function permisos($id_rol, $permiso, $modulo)
 	{
 		return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
@@ -36,15 +40,17 @@ class ControladorPerfil
 		if (isset($_POST)) {
 			$edicion = $this->modelo->update($_POST["id_usuario"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $_POST["correo"]);
 
-			if ($edicion) {
+			if (is_array($edicion) && $edicion[0] === "exito") {
 				$_SESSION['usuario'] = $_POST['usuario'];
 				$_SESSION['nombre'] = $_POST['nombre'];
 				$_SESSION['apellido'] = $_POST['apellido'];
-				// Guardar la bitacora
 				$this->bitacora->insertarBitacora($_POST["id_usuario"], "Perfil", "Ha modificado un perfil");
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil/editar");
+
+				echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 			} else {
-				header("location: /Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil/errorSistem");
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $edicion]);
+				exit;
 			}
 		}
 	}
