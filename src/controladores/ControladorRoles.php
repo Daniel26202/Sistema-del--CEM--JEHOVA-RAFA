@@ -28,6 +28,11 @@ class ControladorRoles
         require_once './src/vistas/vistaRoles/vistaRoles.php';
     }
 
+    public function mostrarAjax()
+    {
+        echo json_encode($this->modelo->roles());
+    }
+
     public function mostrarPermisos($id_rol, $modulo)
     {
         $this->modelo->mostrarPermisos($id_rol, $modulo);
@@ -38,70 +43,55 @@ class ControladorRoles
 
     public function guardarRol()
     {
-        print_r($_POST);
-        //instacion el metodo de la validacion de el rol
-        $validar = $this->modelo->validarRol($_POST["nombre"]);
-        if ($validar) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/error");
-        } else {
-            $insercion = $this->modelo->insertar($_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
 
-            if ($insercion) {
-                // guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Insertado un nuevo rol");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/registro");
-            } else {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
-            }
+        $insercion = $this->modelo->insertar($_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
+
+        if (is_array($insercion) && $insercion[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Insertado un nuevo rol");
+
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $insercion]);
+            exit;
         }
     }
 
 
     //modiicar rol
-    public function modificarRol($datos)
+    public function modificarRol()
     {
-        $nombre = $datos[0];
-        //instacion el metodo de la validacion de el rol
-        $validar = $this->modelo->validarRol($_POST["nombre"]);
-        if ($nombre == $_POST["nombre"]) {
 
-            $edicion =  $this->modelo->editar($_POST["id_rol"], $_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
+        $edicion =  $this->modelo->editar($_POST["id_rol"], $_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"], $_POST['nombreRegistrado']);
 
-            if ($edicion) {
-                // guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Modiicado un rol");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/editar");
-            } else {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
-            }
-        } else if ($nombre != $_POST["nombre"]) {
-            if ($validar) {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/error");
-            } else {
-                $edicion =  $this->modelo->editar($_POST["id_rol"], $_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
 
-                if ($edicion) {
-                    // guardar la bitacora
-                    $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Modiicado un rol");
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/editar");
-                } else {
-                    header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
-                }
-            }
+        if (is_array($edicion) && $edicion[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Modiicado un rol");
+
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $edicion]);
+            exit;
         }
     }
 
     //eliminar Rol
-    public function eliminarRol()
+    public function eliminarRol($datos)
     {
-        $eliminacion = $this->modelo->eliminar($_POST["id_rol"]);
+        $id_rol = $datos[0];
+        $id_usuario = $datos[1];
+        $eliminacion = $this->modelo->eliminar($id_rol);
 
-        if ($eliminacion) {
-            // guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Eliminado un rol");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/eliminar");
+
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+            $this->bitacora->insertarBitacora($id_usuario, "Roles", "Ha Eliminado un rol");
+
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
         }
     }
 

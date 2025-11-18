@@ -14,9 +14,8 @@
 
 
 
-    <!-- alertas -->
-
-    <?php require_once "./src/vistas/alerts.php" ?>
+    <input type="hidden" name="urlBase" id="urlBase" value="<?= $urlBase ?>">
+    <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto table-responsive" style="width: 95%; ">
 
@@ -97,46 +96,8 @@
             <!-- linea -->
             <hr class="mb-4 pb-2">
 
-            <div class="d-flex flex-wrap justify-content-center caja-tarjets-responsive  ">
-                <?php if ($roles): ?>
-
-                    <?php foreach ($roles as $dato): ?>
-
-                        <div class="card contenido col-9 col-sm-6 col-lg-3 tarjeta ms-2 me-4 d-flex align-items-center justify-content-center tarjeta">
-
-
-                            <img src="<?= $urlBase ?>../src/assets/img/logoRol.jpeg" class="mt-2" alt="...">
-
-                            <div class="mt-3">
-                                <div class="ps-3 pe-3 text-center buscar">
-
-                                    <h5 class="card-title mb-1 ">
-                                        <?php echo $dato["nombre"] ?>
-                                    </h5>
-                                    <p class="mb-4">
-                                        <?php echo $dato["descripción"]; ?>
-                                    </p>
-
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-center flex-column">
-                                    <div class="mostrar mb-3">
-                                        <a href="#" class="btn btn-User  text-decoration-none"
-                                            uk-toggle="target: #modal-exampleMostrar<?php echo $dato["id_rol"]; ?>">Mostrar</a>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    <?php endforeach ?>
-                <?php else: ?>
-
-                    <div colspan="9" class="text-center">NO HAY REGISTROS
-
-                    </div>
-                <?php endif ?>
-
+            <div class="d-flex flex-wrap justify-content-center caja-tarjets-responsive" id="div-rol">
+                <!-- js -->
             </div>
         </div>
     </div>
@@ -145,7 +106,8 @@
 </div>
 
 <?php require_once './src/vistas/vistaRoles/modal/modalMostrarPermisos.php'; ?>
+
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/roles.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/ajax/roles.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaRoles.js"></script>

@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\Db;
+use App\config\Validations;
 
 class ModeloRoles extends Db
 {
@@ -23,7 +24,7 @@ class ModeloRoles extends Db
             $consulta = $this->conexion->prepare("SELECT * FROM rol WHERE estado ='ACT' ");
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -38,7 +39,7 @@ class ModeloRoles extends Db
             $permisos = ($consulta->execute()) ? $consulta->fetch() : false;
             return $permisos;
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -51,6 +52,19 @@ class ModeloRoles extends Db
     {
         try {
             $this->conexion->beginTransaction();
+
+            $validaciones = Validations::rolRules($nombre, $descripcion);
+
+            foreach ($validaciones as $v) {
+                if (!preg_match($v['regex'], $v['valor'])) {
+                    throw new \Exception($v['mensaje']);
+                }
+            }
+
+            if ($this->validarRol($nombre)) {
+                throw new \Exception("El nombre del rol ya se encuentra registrado");
+            }
+
             //Insertar Rol
             $consulta = $this->conexion->prepare("INSERT INTO rol (id_rol, nombre, estado, descripción) VALUES (NULL, :nombre, 'ACT', :descripcion)");
             $consulta->bindParam(":nombre", $nombre);
@@ -87,23 +101,37 @@ class ModeloRoles extends Db
 
         } catch (\Exception $e) {
             $this->conexion->rollBack();
-            return 0;
+            return $e->getMessage();
         }
     }
 
 
     //modificar Rol
-    public function editar($id_rol, $nombre, $descripcion, $modulo, $permisos)
+    public function editar($id_rol, $nombre, $descripcion, $modulo, $permisos, $nombreRegistrado)
     {
         try {
             $this->conexion->beginTransaction();
+
+            $validaciones = Validations::rolRules($nombre, $descripcion);
+
+            foreach ($validaciones as $v) {
+                if (!preg_match($v['regex'], $v['valor'])) {
+                    throw new \Exception($v['mensaje']);
+                }
+            }
+
+            if(!$nombre == $nombreRegistrado){
+                if ($this->validarRol($nombre)) {
+                    throw new \Exception("El rol ya existe en el sistema.");
+                } 
+            }
 
 
             $validar = $this->conexion->prepare("SELECT * from rol where id_rol=:id_rol");
             $validar->bindParam(":id_rol", $id_rol);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+                throw new \Exception("Fallo el id no existe");
             }
 
             //Editar Rol
@@ -130,10 +158,10 @@ class ModeloRoles extends Db
                 $consultaPermiso->execute();
             }
             $this->conexion->commit();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
             $this->conexion->rollBack();
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -154,9 +182,9 @@ class ModeloRoles extends Db
             $consulta = $this->conexion->prepare("UPDATE rol SET  estado ='DES' WHERE id_rol = :id_rol");
             $consulta->bindParam(":id_rol", $id_rol);
             $consulta->execute();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -173,7 +201,7 @@ class ModeloRoles extends Db
             }
             return false;
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 }

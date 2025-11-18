@@ -10,9 +10,12 @@
 
                 <h1 class="text-center">Modificar Rol</h1>
 
-                <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/modificarRol/<?= $rol["nombre"]; ?>" method="post" class="form-ajax form-validable<?= $rol["id_rol"]; ?> form">
+                <form method="post" data-index="<?= $rol["id_rol"]; ?>" class="form-ajax forms-editar form-validable<?= $rol["id_rol"]; ?> form">
                     <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
                     <input type="hidden" name="id_rol" value="<?= $rol["id_rol"]; ?>">
+
+                    <input type="hidden" name="nombreRegistrado" value="<?= $rol["nombre"]; ?>">
+
 
                     <!-- nombre del rol -->
                     <label class="mb-3 mt-1">Nombre del Rol</label>
@@ -90,8 +93,8 @@
 
                     <!-- botones -->
                     <div class="uk-card-footer d-flex justify-content-start">
-                        <a href="#" class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close" uk-toggle="target: #modal-exampleEliminar<?php echo $rol["id_rol"]; ?>">Eliminar</a>
-                        <button type=" submit" class="ico uk-button uk-button-text btnMostrar ms-4 mt-2">Modificar</button>
+                        <button class="uk-button uk-button-text btnMostrar btn-eliminar  mt-2 uk-modal-close" data-index="<?= $rol['id_rol'] ?>">Eliminar</button>
+                        <button class="ico uk-button uk-button-text btnMostrar ms-4 mt-2">Modificar</button>
                     </div>
                 </form>
             </div>
@@ -255,9 +258,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-<?php require_once "./src/vistas/vistaRoles/modal/modalEliminarRol.php"; ?>

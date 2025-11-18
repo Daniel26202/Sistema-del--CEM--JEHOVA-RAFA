@@ -177,9 +177,27 @@ public static function validationRules($nombre, $telefono, $rif, $email, $direcc
             'mensaje' => "La dirección debe tener al menos 5 caracteres y no puede estar vacía."
         ],
     ];
+
+
 }
 
 
+
+    public static function rolRules($nombre, $descripcion)
+    {
+        return [
+            [
+                'valor' => $nombre,
+                'regex' => '/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/',
+                'mensaje' => "El nombre debe comenzar con una letra mayúscula y tener al menos tres caracteres."
+            ],
+            [
+                'valor' => $descripcion,
+                'regex' => "/^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/", // Al menos 5 caracteres
+                'mensaje' => "La dirección debe tener al menos 5 caracteres y no puede estar vacía."
+            ]
+        ];
+    }
 
     
 

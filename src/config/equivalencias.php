@@ -210,6 +210,7 @@ return [
 
     //Roles
     "mostrar" => "consultar",
+    "mostrarAjax" => "consultar",
     "mostrarPermisos" => "consultar",
     "guardarRol" => "guardar",
     "modificarRol" => "editar",
