@@ -482,7 +482,7 @@ class ModeloHospitalizacion extends Db
             $this->conexion->beginTransaction();
 
             $validar = $this->conexion->prepare("SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion");
-            $validar->bindParam(":id_hospitalizacion", $idHos);
+            $validar->bindParam(":id_hospitalizacion", $idH);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
                 throw new \Exception("Fallo");

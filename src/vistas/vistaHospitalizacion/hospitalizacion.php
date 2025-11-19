@@ -117,7 +117,7 @@
             </div>
             <div class=" table-responsive">
 
-                <table class="table table-striped ">
+                <table class="table exampleTable table-striped ">
                     <thead>
                         <tr>
                             <th>Cédula</th>
@@ -523,7 +523,7 @@
 <script type="text/javascript"
     src="<?= $urlBase ?>../src/assets/js/hospitalizacion/validacioneshospitalizacion.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 <?php require_once './src/vistas/vistaPacientes/modalAgregarPaciente.php'; ?>

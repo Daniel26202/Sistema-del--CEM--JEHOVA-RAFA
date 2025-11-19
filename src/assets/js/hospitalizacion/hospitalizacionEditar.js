@@ -1,5 +1,7 @@
-addEventListener("DOMContentLoaded", function () {
+
     /////////////////////////////////////////////////////////////////////////////////////
+import { executePetition, alertConfirm, alertError, alertSuccess } from "../../ajax/funtionExecutePetition.js";
+
     // Ajax //////
 
     // horas y costo de servicio
@@ -271,35 +273,38 @@ addEventListener("DOMContentLoaded", function () {
     let horaInicioHosp = 0;
     // envío de datos de la edición
     const vistaTabla = async () => {
-        try {
-            // llamo la función
-            peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
-            let resultad = await peticion.json();
+      try {
+        // llamo la función
+        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
+        let resultad = await peticion.json();
+        console.log(resultad);
 
-            if (resultad.length == 0) {
-                console.log("algo salio mal");
-            } else {
-                await traerHoraCosto();
-                mostrarMsj();
-                if (resultad[1] == false) {
-                    html = `<tr>
+        let html = "";
+
+        if (resultad.length == 0) {
+          console.log("algo salio mal");
+        } else {
+          await traerHoraCosto();
+          mostrarMsj();
+          if (resultad[1] == false) {
+            html = `<tr>
                                 <td colspan="8" class="text-center">NO HAY REGISTROS
                                 </td>
                             </tr>`;
-                    document.querySelector("#tbody").innerHTML = html;
-                } else {
-                    let html = ``;
-                    let htmlModales = ``;
+            document.querySelector("#tbody").innerHTML = html;
+          } else {
+            let html = ``;
+            let htmlModales = ``;
 
-                    // console.log(resultad[1]);
-                    // recorro los datos de hospitalización
-                    console.log(resultad[1]);
+            // console.log(resultad[1]);
+            // recorro los datos de hospitalización
+            console.log(resultad[1]);
 
-                    resultad[1].forEach((res, index) => {
-                        horaInicioHosp = res.fecha_hora_inicio;
+            resultad[1].forEach((res, index) => {
+              horaInicioHosp = res.fecha_hora_inicio;
 
-                        // contenido de la tabla.
-                        html += `<tr>
+              // contenido de la tabla.
+              html += `<tr>
                                     <td>
                                         ${res["cedula"]}
                                     </td>
@@ -318,13 +323,13 @@ addEventListener("DOMContentLoaded", function () {
                                         ${res["nombredoc"]} ${res["apellidodoc"]}
                                     </td>`;
 
-                        // verifico si es administrador o doctor
-                        // uno es doctor
-                        if (resultad[0][1] == 1) {
-                            html += `<!--no hay-->`;
-                        }
+              // verifico si es administrador o doctor
+              // uno es doctor
+              if (resultad[0][1] == 1) {
+                html += `<!--no hay-->`;
+              }
 
-                        html += `   <td>
+              html += `   <td>
                                         <div class="d-flex flex-wrap col-12 tdTBtn">
                                             <div class="col-12 col-md-6 col-lg-3">
 
@@ -353,15 +358,15 @@ addEventListener("DOMContentLoaded", function () {
                                                 </button>
                                             </div>`;
 
-                        // verifico si es administrador o usuario
-                        // uno es doctor
-                        if (resultad[0][1] == 1) {
-                            html += `<!--no hay-->`;
-                        }
-                        // verifico si es administrador o usuario
-                        // cero es administrador mas no doctor
-                        if (resultad[0][1] == 0) {
-                            html += `       
+              // verifico si es administrador o usuario
+              // uno es doctor
+              if (resultad[0][1] == 1) {
+                html += `<!--no hay-->`;
+              }
+              // verifico si es administrador o usuario
+              // cero es administrador mas no doctor
+              if (resultad[0][1] == 0) {
+                html += `       
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <button class="btn btn-tabla mb-1 me-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar-hospitalizacion${res["id_hospitalizacion"]}" uk-tooltip="Eliminar hospitalización">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
@@ -371,11 +376,11 @@ addEventListener("DOMContentLoaded", function () {
                                                     </svg>
                                                 </button>
                                             </div>`;
-                        }
-                        // verifico si es administrador o usuario
-                        // cero es administrador mas no doctor
-                        if (resultad[0][1] == 0) {
-                            html += `    
+              }
+              // verifico si es administrador o usuario
+              // cero es administrador mas no doctor
+              if (resultad[0][1] == 0) {
+                html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <a href="#" class="btn btn-tabla mb-1 me-1 text-white btnFH" data-bs-toggle="modal" data-bs-target="#modalEnvioFacturaHospitalizacion" uk-tooltip="Facturar hospitalización" id="" title=""
                                                     aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
@@ -385,15 +390,15 @@ addEventListener("DOMContentLoaded", function () {
                                                     </svg>
                                                 </a>
                                             </div>`;
-                        }
+              }
 
-                        html += `  
+              html += `  
                                         </div>
                                     </td>
                                 </tr>`;
 
-                        // contenido del modal de eliminar
-                        htmlModales += `
+              // contenido del modal de eliminar
+              htmlModales += `
                                         <div>
                                             <input type="hidden" name="" class="fechaInicio" value="${res["fecha_hora_inicio"]}">
                                             <input class="precioHo" type="hidden" name="" value="${res.precio_horas}">
@@ -439,12 +444,12 @@ addEventListener("DOMContentLoaded", function () {
                                                     <form class="" action="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/eliminaL" method="post">
 
                                                         <input type="hidden" name="idH" class="idHosp" value="${
-                                                            res.id_hospitalizacion
+                                                          res.id_hospitalizacion
                                                         }">
 
                                                         <input type="hidden" name="id_usuario_bitacora" value="${document
-                                                            .querySelector("#modalEli")
-                                                            .getAttribute("data-index")}">
+                                                          .querySelector("#modalEli")
+                                                          .getAttribute("data-index")}">
 
                                                         <p class="uk-text-center mt-4 ">
                                                             <button class="uk-button rounded-5 btn-cancelar fw-bold" type="button"
@@ -458,100 +463,106 @@ addEventListener("DOMContentLoaded", function () {
                                                 </div>
                                             </div>
                                         </div>`;
-                    });
+            });
 
-                    document.querySelector("#semaforo").value = resultad[0][2];
 
-                    document.querySelector("#tbody").innerHTML = html;
-                    document.querySelector("#modalEli").innerHTML = htmlModales;
+            document.querySelector("#semaforo").value = resultad[0][2];
 
-                    let aFacH = document.querySelectorAll(".btnFH");
-                    // aFacH
-                    for (const factH of aFacH) {
-                        factH.addEventListener("click", async function () {
-                            // para traer el valor del data index
-                            let index = this.getAttribute("data-index");
-                            editar(parseInt(index));
-                            let idHospit = this.getAttribute("data-id-hospitalizacion");
-                            console.log(idHospit + " id hospitalizacion");
+            document.querySelector("#tbody").innerHTML = html;
+            document.querySelector("#modalEli").innerHTML = htmlModales;
 
-                            let datos = await mostrarInf(parseInt(index), parseInt(idHospit));
-                            document.querySelector("#idH").value = idHospit;
-                            document.querySelector("#monto").value = datos[0];
-                            document.querySelector("#montoME").value = datos[1];
-                            document.querySelector("#total").value = datos[2];
-                            document.querySelector("#totalME").value = datos[3];
-                        });
-                    }
-                    const btnEditar = document.querySelectorAll(".editarH");
-                    // recorremos los btn editar
-                    for (const editH of btnEditar) {
-                        editH.addEventListener("click", async function () {
-                            await traerSerevicio("editar");
-                            // id de la hospitalización
-                            let extra = editH.getAttribute("data-extra");
-                            await traerSerevicioH(parseInt(extra));
-                            // para traer el valor del data index
-                            let index = editH.getAttribute("data-index");
-                            editar(parseInt(index));
+           
 
-                            // para traer el valor del data extra
-                            // es el id de la hospitalizacion
-                            mostrarIE(parseInt(extra));
-                            // este evento es para buscar el insumo
-                            document.querySelector("#btn-buscarInsumoE").addEventListener("click", function () {
-                                traerInsumosE();
-                            });
-                        });
-                    }
+            let aFacH = document.querySelectorAll(".btnFH");
+            // aFacH
+            for (const factH of aFacH) {
+              factH.addEventListener("click", async function () {
+                // para traer el valor del data index
+                let index = this.getAttribute("data-index");
+                editar(parseInt(index));
+                let idHospit = this.getAttribute("data-id-hospitalizacion");
+                console.log(idHospit + " id hospitalizacion");
 
-                    // recorremos los btn informacion
-                    document.querySelectorAll(".informacionH").forEach((inforH) => {
-                        inforH.addEventListener("click", function () {
-                            let tr = inforH.closest("tr");
-                            let columnas = tr.children;
-
-                            let nombreAp = document.getElementById("nombreApellidoM");
-                            let cedula = document.getElementById("cedulaM");
-                            let diagnostico = document.getElementById("diagnosticoM");
-                            let doctor = document.getElementById("doctorM");
-                            let historia = document.getElementById("historiaM");
-
-                            nombreAp.innerHTML = `${columnas[1].innerText} ${columnas[2].innerText}`;
-                            cedula.innerHTML = columnas[0].innerText;
-                            diagnostico.innerHTML = columnas[3].innerText;
-                            doctor.innerHTML = columnas[4].innerText;
-
-                            // para traer el valor del data index (la posición)
-                            let index = inforH.getAttribute("data-index");
-                            let idHospit = inforH.getAttribute("data-id-hospitalizacion");
-                            mostrarInf(parseInt(index), parseInt(idHospit));
-                        });
-                    });
-
-                    // para validar las cantidades de hospitalizaciones agregadas
-                    // obtenemos la cantidad de filas que existen
-                    const filas = document.querySelectorAll("#tbody tr");
-
-                    if (filas.length === 2) {
-                        // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
-                        btnAgregar.classList.add("d-none");
-                        document.querySelector("#divModal").classList.add("d-none");
-                        document.querySelector("#pModalOculto").classList.remove("d-none");
-                    } else {
-                        // se muestra el modal y el btn de agregar
-                        btnAgregar.classList.remove("d-none");
-                        document.querySelector("#divModal").classList.remove("d-none");
-                        document.querySelector("#pModalOculto").classList.add("d-none");
-                    }
-                }
+                let datos = await mostrarInf(parseInt(index), parseInt(idHospit));
+                document.querySelector("#idH").value = idHospit;
+                document.querySelector("#monto").value = datos[0];
+                document.querySelector("#montoME").value = datos[1];
+                document.querySelector("#total").value = datos[2];
+                document.querySelector("#totalME").value = datos[3];
+              });
             }
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+            const btnEditar = document.querySelectorAll(".editarH");
+            // recorremos los btn editar
+            for (const editH of btnEditar) {
+              editH.addEventListener("click", async function () {
+                await traerSerevicio("editar");
+                // id de la hospitalización
+                let extra = editH.getAttribute("data-extra");
+                await traerSerevicioH(parseInt(extra));
+                // para traer el valor del data index
+                let index = editH.getAttribute("data-index");
+                editar(parseInt(index));
+
+                // para traer el valor del data extra
+                // es el id de la hospitalizacion
+                mostrarIE(parseInt(extra));
+                // este evento es para buscar el insumo
+                document.querySelector("#btn-buscarInsumoE").addEventListener("click", function () {
+                  traerInsumosE();
+                });
+              });
+            }
+
+            // recorremos los btn informacion
+            document.querySelectorAll(".informacionH").forEach((inforH) => {
+              inforH.addEventListener("click", function () {
+                let tr = inforH.closest("tr");
+                let columnas = tr.children;
+
+                let nombreAp = document.getElementById("nombreApellidoM");
+                let cedula = document.getElementById("cedulaM");
+                let diagnostico = document.getElementById("diagnosticoM");
+                let doctor = document.getElementById("doctorM");
+                let historia = document.getElementById("historiaM");
+
+                nombreAp.innerHTML = `${columnas[1].innerText} ${columnas[2].innerText}`;
+                cedula.innerHTML = columnas[0].innerText;
+                diagnostico.innerHTML = columnas[3].innerText;
+                doctor.innerHTML = columnas[4].innerText;
+
+                // para traer el valor del data index (la posición)
+                let index = inforH.getAttribute("data-index");
+                let idHospit = inforH.getAttribute("data-id-hospitalizacion");
+                mostrarInf(parseInt(index), parseInt(idHospit));
+              });
+            });
+
+            // para validar las cantidades de hospitalizaciones agregadas
+            // obtenemos la cantidad de filas que existen
+            const filas = document.querySelectorAll("#tbody tr");
+
+            if (filas.length === 2) {
+              // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
+              btnAgregar.classList.add("d-none");
+              document.querySelector("#divModal").classList.add("d-none");
+              document.querySelector("#pModalOculto").classList.remove("d-none");
+            } else {
+              // se muestra el modal y el btn de agregar
+              btnAgregar.classList.remove("d-none");
+              document.querySelector("#divModal").classList.remove("d-none");
+              document.querySelector("#pModalOculto").classList.add("d-none");
+            }
+          }
         }
+      } catch (error) {
+        console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+        alertError("Error", error);
+      }
     };
 
+
     vistaTabla();
+
     btnAgregar.addEventListener("click", async function () {
         await vistaTabla();
         let semaforo = document.querySelector("#semaforo").value;
@@ -1391,4 +1402,3 @@ addEventListener("DOMContentLoaded", function () {
             alert("Por favor verifique el formulario antes de enviarlo");
         }
     });
-});
