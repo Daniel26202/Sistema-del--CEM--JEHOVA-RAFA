@@ -3,7 +3,6 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
 
-
 // Ajax //////
 
 // horas y costo de servicio
@@ -116,7 +115,7 @@ const enviarHoraCosto = async () => {
 
 // calculo del dolar en la infomación de la H
 async function mostrarInf(indice, idH) {
-    console.log(document.querySelectorAll(".fechaInicio"));
+  console.log(document.querySelectorAll(".fechaInicio"));
 
   let fechaInicioM = document.querySelectorAll(".fechaInicio")[indice].value;
 
@@ -396,14 +395,23 @@ const vistaTabla = async () => {
                                             </div>`;
           }
 
-          // contenido del modal de eliminar
+          htmlModales += `
+                                        <div>
+                                            <input type="hidden" name="" class="fechaInicio" value="${res["fecha_hora_inicio"]}">
+                                            <input class="precioHo" type="hidden" name="" value="${res.precio_horas}">
+                                            <input class="idC" type="hidden" name="" value="${res.id_control}">
+                                            <input class="idHpt" type="hidden" name="" value="${res.id_hospitalizacion}">
+                                            <input class="hME" type="hidden" name="" value="${res.historiaclinica}">
+                                            <input class="diagnosticoClass" type="hidden" name="" value="${res.diagnostico}">
+                                        </div>`;
 
-                                    
+          // contenido del modal de eliminar
         });
 
         document.querySelector("#semaforo").value = resultad[0][2];
 
         document.querySelector("#tbody").innerHTML = html;
+        document.querySelector("#div-oculto").innerHTML = htmlModales;
 
 
         let aFacH = document.querySelectorAll(".btnFH");
@@ -502,19 +510,18 @@ const vistaTabla = async () => {
 
 vistaTabla();
 
-
 //delete
 const deleteHospitalizacion = async (data) => {
   try {
     const result = await executePetition(url + `/eliminaL/${data}`, "GET");
-    console.log(result)
+    console.log(result);
     if (result.ok) {
-      alertSuccess(result.message)
+      alertSuccess(result.message);
 
       vistaTabla();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    alertError("Error", error)
+    alertError("Error", error);
   }
 };
 
@@ -1162,9 +1169,7 @@ const envioDatE = async () => {
     // vista de la tabla
     vistaTabla();
 
-    alertSuccess(result.message)
-
-    
+    alertSuccess(result.message);
   } catch (error) {
     console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
   }

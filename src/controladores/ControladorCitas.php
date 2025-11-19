@@ -23,22 +23,17 @@ class ControladorCitas
 
 	public function insertaPaciente()
 	{
-		//si la cedula eiste le mando un mensaje al usuario y si else pues lo inserto normal
-		$resultadoDeCedula = $this->modeloPacientes->validarCedula($_POST['cedula']);
-		//mensaje de erro
-		$mensajeDeError = array("cedula" => "error");
-		if ($resultadoDeCedula === "existeC") {
-			echo json_encode($mensajeDeError);
-		} else {
-			$insercion = $this->modeloPacientes->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST["genero"]);
 
-			if ($insercion) {
-				// guardar la bitacora
-				$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
-				echo json_encode($_POST);
-			} else {
-				echo json_encode($mensajeDeError);
-			}
+		$insercion = $this->modeloPacientes->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST["genero"]);
+
+		// Verifica si es un array con clave "exito"
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha Insertado un nuevo paciente");
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
 		}
 	}
 
@@ -79,7 +74,8 @@ class ControladorCitas
 		require_once './src/vistas/vistasCitas/vistaCitas.php';
 	}
 
-	public  function citasHoyAjax() {
+	public  function citasHoyAjax()
+	{
 		date_default_timezone_set('America/Mexico_City');
 		$fecha = date('Y-m-d');
 		echo json_encode($this->modelo->mostrarCitaHoy($fecha));
@@ -165,7 +161,6 @@ class ControladorCitas
 			echo json_encode(['ok' => false, 'error' => $edicion]);
 			exit;
 		}
-		
 	}
 
 	private function permisos($id_rol, $permiso, $modulo)

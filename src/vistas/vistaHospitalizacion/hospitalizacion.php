@@ -521,6 +521,10 @@
     </div>
 </div>
 
+<div id="div-oculto">
+    <!-- js -->
+</div>
+
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/reutilizableHospitalizacion.js"></script>
 <script type="text/javascript"
