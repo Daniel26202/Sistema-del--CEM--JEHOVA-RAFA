@@ -1,5 +1,8 @@
 <?php require_once './src/vistas/head/head.php'; ?>
 
+<input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
+
+
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
     <div class="col mt-2">
         <div id="divComentarios" class="ms-3 col-12 d-flex justify-content-center"></div>

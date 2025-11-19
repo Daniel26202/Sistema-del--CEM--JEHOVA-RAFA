@@ -1,310 +1,314 @@
-
-    /////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 import { executePetition, alertConfirm, alertError, alertSuccess } from "../../ajax/funtionExecutePetition.js";
 
-    // Ajax //////
+const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
 
-    // horas y costo de servicio
-    const horas = document.querySelector("#horasS");
-    const costoHoras = document.querySelector("#costoHS");
-    const costoHorasMoEx = document.querySelector("#costoHSMoEx");
-    const btnGuardarCH = document.querySelector("#btnCH");
-    const btnAgregar = document.querySelector("#btnAgregarH");
-    const alertaNoHayPrecioH = document.getElementById("alertaPrecioHora");
-    // inputs del costo y las horas del servicio
-    let iHS = document.querySelector("#inpHorasS");
-    let iCS = document.querySelector("#inpCostoHS");
 
-    let iHME = document.querySelector("#inpHorasMoEx");
-    let iCME = document.querySelector("#inpCostoHMoEx");
-    iHS.addEventListener("keyup", function () {
-        iHME.value = iHS.value;
-    });
-    iHME.addEventListener("keyup", function () {
-        iHS.value = iHME.value;
-    });
+// Ajax //////
 
-    iCS.addEventListener("keyup", function () {
-        let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoDolar = iCS.value / storedDolar;
-        iCME.value = montoDolar.toFixed(2);
-    });
+// horas y costo de servicio
+const horas = document.querySelector("#horasS");
+const costoHoras = document.querySelector("#costoHS");
+const costoHorasMoEx = document.querySelector("#costoHSMoEx");
+const btnGuardarCH = document.querySelector("#btnCH");
+const btnAgregar = document.querySelector("#btnAgregarH");
+const alertaNoHayPrecioH = document.getElementById("alertaPrecioHora");
+// inputs del costo y las horas del servicio
+let iHS = document.querySelector("#inpHorasS");
+let iCS = document.querySelector("#inpCostoHS");
 
-    iCME.addEventListener("keyup", function () {
-        let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBS = iCME.value * storedDolar;
-        iCS.value = montoBS.toFixed(2);
-    });
+let iHME = document.querySelector("#inpHorasMoEx");
+let iCME = document.querySelector("#inpCostoHMoEx");
+iHS.addEventListener("keyup", function () {
+  iHME.value = iHS.value;
+});
+iHME.addEventListener("keyup", function () {
+  iHS.value = iHME.value;
+});
 
-    function validarPrecioHora() {
-        const precioHora = localStorage.getItem("costo");
-        const Hora = localStorage.getItem("hora");
+iCS.addEventListener("keyup", function () {
+  let storedDolar = localStorage.getItem("valorDelDolar");
+  let montoDolar = iCS.value / storedDolar;
+  iCME.value = montoDolar.toFixed(2);
+});
 
-        if (!precioHora || precioHora.trim() === "" || precioHora == 0 || !Hora || Hora.trim() === "" || Hora == 0) {
-            // No hay precio guardado
-            alertaNoHayPrecioH.style.display = "block";
-            btnAgregar.style.display = "none";
-        } else {
-            // Sí hay precio guardado
-            alertaNoHayPrecioH.style.display = "none";
-            btnAgregar.style.display = "inline-block";
-        }
-    }
-    validarPrecioHora();
+iCME.addEventListener("keyup", function () {
+  let storedDolar = localStorage.getItem("valorDelDolar");
+  let montoBS = iCME.value * storedDolar;
+  iCS.value = montoBS.toFixed(2);
+});
 
-    // para traerme la hora y su costo
-    const traerHoraCosto = async () => {
-        let storedHora = localStorage.getItem("hora");
-        let storedCosto = localStorage.getItem("costo");
-        let storedCostoME = localStorage.getItem("costoMoEx");
+function validarPrecioHora() {
+  const precioHora = localStorage.getItem("costo");
+  const Hora = localStorage.getItem("hora");
 
-        btnGuardarCH.classList.remove("d-none");
+  if (!precioHora || precioHora.trim() === "" || precioHora == 0 || !Hora || Hora.trim() === "" || Hora == 0) {
+    // No hay precio guardado
+    alertaNoHayPrecioH.style.display = "block";
+    btnAgregar.style.display = "none";
+  } else {
+    // Sí hay precio guardado
+    alertaNoHayPrecioH.style.display = "none";
+    btnAgregar.style.display = "inline-block";
+  }
+}
+validarPrecioHora();
 
-        horas.innerText = storedHora;
-        costoHoras.innerText = storedCosto;
+// para traerme la hora y su costo
+const traerHoraCosto = async () => {
+  let storedHora = localStorage.getItem("hora");
+  let storedCosto = localStorage.getItem("costo");
+  let storedCostoME = localStorage.getItem("costoMoEx");
 
-        costoHorasMoEx.innerText = storedCostoME;
-        if (storedHora != null) {
-            // agrego el texto del p (en este caso las horas) al valor del input
-            iHS.value = storedHora;
-            iHME.value = storedHora;
-        } else if (storedHora === null) {
-            localStorage.setItem("hora", 0);
-            horas.innerText = 0;
-            iHS.value = 0;
-        }
+  btnGuardarCH.classList.remove("d-none");
 
-        if (storedCosto != null) {
-            // agrego el texto del p (en este caso el costo de las horas) al valor del input
-            iCS.value = storedCosto;
-        } else if (storedCosto === null) {
-            localStorage.setItem("costo", 0);
-            costoHoras.innerText = 0;
-            iCS.value = 0;
-        }
+  horas.innerText = storedHora;
+  costoHoras.innerText = storedCosto;
 
-        if (storedCostoME != null) {
-            // agrego el texto del p (en este caso el costo de las horas) al valor del input
-            iCME.value = storedCostoME;
-        } else if (storedCostoME === null) {
-            localStorage.setItem("costoMoEx", 0);
-            costoHorasMoEx.innerText = 0;
-            iCME.value = 0;
-        }
-    };
+  costoHorasMoEx.innerText = storedCostoME;
+  if (storedHora != null) {
+    // agrego el texto del p (en este caso las horas) al valor del input
+    iHS.value = storedHora;
+    iHME.value = storedHora;
+  } else if (storedHora === null) {
+    localStorage.setItem("hora", 0);
+    horas.innerText = 0;
+    iHS.value = 0;
+  }
 
-    // para traerme la hora y su costo
-    const enviarHoraCosto = async () => {
-        let hora = parseInt(iHS.value.trim());
-        let costo = parseFloat(iCS.value.trim());
-        let costoMoEx = parseFloat(iCME.value.trim());
+  if (storedCosto != null) {
+    // agrego el texto del p (en este caso el costo de las horas) al valor del input
+    iCS.value = storedCosto;
+  } else if (storedCosto === null) {
+    localStorage.setItem("costo", 0);
+    costoHoras.innerText = 0;
+    iCS.value = 0;
+  }
 
-        hora = hora === "" ? "00" : hora;
-        costo = costo === "" ? "00" : costo;
-        costoMoEx = costoMoEx === "" ? "00" : costoMoEx;
+  if (storedCostoME != null) {
+    // agrego el texto del p (en este caso el costo de las horas) al valor del input
+    iCME.value = storedCostoME;
+  } else if (storedCostoME === null) {
+    localStorage.setItem("costoMoEx", 0);
+    costoHorasMoEx.innerText = 0;
+    iCME.value = 0;
+  }
+};
 
-        localStorage.setItem("hora", hora);
-        localStorage.setItem("costo", costo);
-        localStorage.setItem("costoMoEx", costoMoEx);
-        validarPrecioHora();
-        traerHoraCosto();
+// para traerme la hora y su costo
+const enviarHoraCosto = async () => {
+  let hora = parseInt(iHS.value.trim());
+  let costo = parseFloat(iCS.value.trim());
+  let costoMoEx = parseFloat(iCME.value.trim());
 
-        vistaTabla();
-    };
+  hora = hora === "" ? "00" : hora;
+  costo = costo === "" ? "00" : costo;
+  costoMoEx = costoMoEx === "" ? "00" : costoMoEx;
 
-    // calculo del dolar en la infomación de la H
-    async function mostrarInf(indice, idH) {
-        let fechaInicioM = document.querySelectorAll(".fechaInicio")[indice].value;
+  localStorage.setItem("hora", hora);
+  localStorage.setItem("costo", costo);
+  localStorage.setItem("costoMoEx", costoMoEx);
+  validarPrecioHora();
+  traerHoraCosto();
 
-        let fechaInicio = new Date(fechaInicioM);
-        let fechaActual = new Date();
-        let diferencia = fechaActual - fechaInicio;
+  vistaTabla();
+};
 
-        // el total de horas (con decimales)
-        let horasTotales = diferencia / (1000 * 60 * 60);
+// calculo del dolar en la infomación de la H
+async function mostrarInf(indice, idH) {
+    console.log(document.querySelectorAll(".fechaInicio"));
 
-        let storedHora = localStorage.getItem("hora");
-        let storedCosto = localStorage.getItem("costo");
-        let storedCostoMoEx = localStorage.getItem("costoMoEx");
-        let costoH = parseFloat(storedCosto) / parseInt(storedHora);
-        let costoHMoEx = parseFloat(storedCostoMoEx) / parseInt(storedHora);
+  let fechaInicioM = document.querySelectorAll(".fechaInicio")[indice].value;
 
-        // monto de horas y minutos
-        let monto = horasTotales * costoH;
-        let montoMoEx = horasTotales * costoHMoEx;
+  let fechaInicio = new Date(fechaInicioM);
+  let fechaActual = new Date();
+  let diferencia = fechaActual - fechaInicio;
 
-        console.log(horasTotales);
-        console.log("   ");
-        console.log(monto);
+  // el total de horas (con decimales)
+  let horasTotales = diferencia / (1000 * 60 * 60);
 
-        let horas = Math.floor(horasTotales);
-        let minutos = Math.floor((horasTotales - horas) * 60);
+  let storedHora = localStorage.getItem("hora");
+  let storedCosto = localStorage.getItem("costo");
+  let storedCostoMoEx = localStorage.getItem("costoMoEx");
+  let costoH = parseFloat(storedCosto) / parseInt(storedHora);
+  let costoHMoEx = parseFloat(storedCostoMoEx) / parseInt(storedHora);
 
-        let totalMontoI = await sumaPrecioIH(idH);
+  // monto de horas y minutos
+  let monto = horasTotales * costoH;
+  let montoMoEx = horasTotales * costoHMoEx;
 
-        if (totalMontoI === undefined) {
-            totalMontoI = 0;
-        }
+  console.log(horasTotales);
+  console.log("   ");
+  console.log(monto);
 
-        let total = totalMontoI + monto;
-        let storedDolar = localStorage.getItem("valorDelDolar");
+  let horas = Math.floor(horasTotales);
+  let minutos = Math.floor((horasTotales - horas) * 60);
 
-        let totalMontoIMoEx = totalMontoI / storedDolar;
-        let totalME = totalMontoIMoEx + montoMoEx;
+  let totalMontoI = await sumaPrecioIH(idH);
 
-        monto = parseFloat(monto);
-        montoMoEx = parseFloat(montoMoEx);
-        total = parseFloat(total);
-        totalME = parseFloat(totalME);
+  if (totalMontoI === undefined) {
+    totalMontoI = 0;
+  }
 
-        document.querySelector("#hHosM").innerText = `${horas}h ${minutos}min`;
-        document.querySelector("#cMontoHoraM").innerText = monto.toFixed(2);
-        document.querySelector("#cMoHoraMoExM").innerText = montoMoEx.toFixed(2);
-        document.querySelector("#calculoTotal").innerText = total.toFixed(2);
-        document.querySelector("#calculoTotalME").innerText = totalME.toFixed(2);
+  let total = totalMontoI + monto;
+  let storedDolar = localStorage.getItem("valorDelDolar");
 
-        let hMM = document.querySelectorAll(".hME")[indice];
-        let historiaM = document.querySelector("#historiaM");
+  let totalMontoIMoEx = totalMontoI / storedDolar;
+  let totalME = totalMontoIMoEx + montoMoEx;
 
-        // trim() quita los espacios en el principio y al final
-        historiaM.innerText = hMM.value;
-        return [monto, montoMoEx, total, totalME];
-    }
+  monto = parseFloat(monto);
+  montoMoEx = parseFloat(montoMoEx);
+  total = parseFloat(total);
+  totalME = parseFloat(totalME);
 
-    // inputs y nombres de editar H
-    const nombreApE = document.querySelector("#NombreAp");
-    const precioHE = document.querySelector("#precioH");
-    const historiaE = document.querySelector("#historiaE");
-    const historiaEnF = document.querySelector("#historiaEnF");
-    const diagnosticoE = document.querySelector("#diagnostico");
-    const diagnosticoEnF = document.querySelector("#diagnosticoEnF");
+  document.querySelector("#hHosM").innerText = `${horas}h ${minutos}min`;
+  document.querySelector("#cMontoHoraM").innerText = monto.toFixed(2);
+  document.querySelector("#cMoHoraMoExM").innerText = montoMoEx.toFixed(2);
+  document.querySelector("#calculoTotal").innerText = total.toFixed(2);
+  document.querySelector("#calculoTotalME").innerText = totalME.toFixed(2);
 
-    async function editar(indice) {
-        // obtenemos los datos del elemento seleccionado
-        const fila = document.querySelectorAll("#tbody tr")[indice];
-        let datos = fila.getElementsByTagName("td");
+  let hMM = document.querySelectorAll(".hME")[indice];
+  let historiaM = document.querySelector("#historiaM");
 
-        // let precHoras = document.querySelectorAll(".precioHo")[indice];
-        let hME = document.querySelectorAll(".hME")[indice];
-        let diagnostico = document.querySelectorAll(".diagnosticoClass")[indice];
+  // trim() quita los espacios en el principio y al final
+  historiaM.innerText = hMM.value;
+  return [monto, montoMoEx, total, totalME];
+}
 
-        // colocamos el nombre y apellido.
-        nombreApE.innerHTML = "";
-        nombreApE.innerHTML = datos[1].innerText + " " + datos[2].innerText;
+// inputs y nombres de editar H
+const nombreApE = document.querySelector("#NombreAp");
+const precioHE = document.querySelector("#precioH");
+const historiaE = document.querySelector("#historiaE");
+const historiaEnF = document.querySelector("#historiaEnF");
+const diagnosticoE = document.querySelector("#diagnostico");
+const diagnosticoEnF = document.querySelector("#diagnosticoEnF");
 
-        // trim() quita los espacios en el principio y al final
-        historiaE.value = hME.value;
-        historiaEnF.value = hME.value;
-        diagnosticoE.value = diagnostico.value;
-        diagnosticoEnF.value = diagnostico.value;
+async function editar(indice) {
+  // obtenemos los datos del elemento seleccionado
+  const fila = document.querySelectorAll("#tbody tr")[indice];
+  let datos = fila.getElementsByTagName("td");
 
-        let idControl = document.querySelectorAll(".idC")[indice];
-        document.querySelector("#idCE").value = parseInt(idControl.value);
+  // let precHoras = document.querySelectorAll(".precioHo")[indice];
+  let hME = document.querySelectorAll(".hME")[indice];
+  let diagnostico = document.querySelectorAll(".diagnosticoClass")[indice];
 
-        let idHospitalizacion = document.querySelectorAll(".idHpt")[indice];
-        document.querySelector("#idHptE").value = parseInt(idHospitalizacion.value);
+  // colocamos el nombre y apellido.
+  nombreApE.innerHTML = "";
+  nombreApE.innerHTML = datos[1].innerText + " " + datos[2].innerText;
 
-        console.log(document.querySelectorAll(".fechaInicio")[indice].value);
-    }
+  // trim() quita los espacios en el principio y al final
+  historiaE.value = hME.value;
+  historiaEnF.value = hME.value;
+  diagnosticoE.value = diagnostico.value;
+  diagnosticoEnF.value = diagnostico.value;
 
-    function botonInputNumber(btn, inputN) {
-        let dataI = btn.getAttribute("data-index");
-        let min = inputN.getAttribute("min");
-        let max = inputN.getAttribute("max");
-        let step = inputN.getAttribute("step");
-        let val = inputN.getAttribute("value");
-        let calcStep = dataI == "aumentar" ? step * 1 : dataI == "disminuir" ? step * -1 : false;
-        let nuevoValor = parseInt(val) + calcStep;
+  let idControl = document.querySelectorAll(".idC")[indice];
+  document.querySelector("#idCE").value = parseInt(idControl.value);
 
-        if (nuevoValor >= min && nuevoValor <= max) {
-            inputN.setAttribute("value", nuevoValor);
-        }
-    }
+  let idHospitalizacion = document.querySelectorAll(".idHpt")[indice];
+  document.querySelector("#idHptE").value = parseInt(idHospitalizacion.value);
 
-    // sumar el precio de insumos
-    let totalPI = 0;
+  console.log(document.querySelectorAll(".fechaInicio")[indice].value);
+}
 
-    const sumarTotalE = () => {
-        // contador del precio de cada insumo
-        let PrecioI = 0;
+function botonInputNumber(btn, inputN) {
+  let dataI = btn.getAttribute("data-index");
+  let min = inputN.getAttribute("min");
+  let max = inputN.getAttribute("max");
+  let step = inputN.getAttribute("step");
+  let val = inputN.getAttribute("value");
+  let calcStep = dataI == "aumentar" ? step * 1 : dataI == "disminuir" ? step * -1 : false;
+  let nuevoValor = parseInt(val) + calcStep;
 
-        totalPI = 0;
-        document.querySelectorAll(".precioInsumE").forEach((pI) => {
-            // selecciono al p del precio (hermano anterior del input)
-            let pPrecioI = pI.previousElementSibling;
+  if (nuevoValor >= min && nuevoValor <= max) {
+    inputN.setAttribute("value", nuevoValor);
+  }
+}
 
-            // selecciono el div del input
-            let divPadre = pI.parentElement;
-            // selecciono el padre del div del input
-            let divPadr = divPadre.parentElement;
-            // selecciono el padre del padre del div del input
-            let divPad = divPadr.parentElement;
-            // selecciono el padre del padre del padre del div del input
-            let divPa = divPad.parentElement;
-            // selecciono el input hermano del div padre
-            let divHermano = divPa.nextElementSibling;
-            // selecciono al hermano del input
-            let divHer = divHermano.nextElementSibling;
-            // selecciono al hijo del div
-            let divHijo = divHer.firstElementChild;
-            // selecciono al hijo del hijo del div
-            let divHi = divHijo.firstElementChild;
-            // selecciono a los hijos del div
-            let divH = divHi.children;
+// sumar el precio de insumos
+let totalPI = 0;
 
-            // se recolecta el valor del input
-            PrecioI = parseFloat(pI.value);
+const sumarTotalE = () => {
+  // contador del precio de cada insumo
+  let PrecioI = 0;
 
-            // traigo la cantidad
-            let cantidad = parseInt(divH[1].value);
-            totalPI += PrecioI * cantidad;
+  totalPI = 0;
+  document.querySelectorAll(".precioInsumE").forEach((pI) => {
+    // selecciono al p del precio (hermano anterior del input)
+    let pPrecioI = pI.previousElementSibling;
 
-            // aquí se recolecta el precio multiplicado con la cantidad (en las dos lineas siguientes, se coloca el precio ya multiplicado en el <p>)
-            totalPC = PrecioI * cantidad;
-            // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-            totalPC = parseFloat(totalPC.toFixed(2));
+    // selecciono el div del input
+    let divPadre = pI.parentElement;
+    // selecciono el padre del div del input
+    let divPadr = divPadre.parentElement;
+    // selecciono el padre del padre del div del input
+    let divPad = divPadr.parentElement;
+    // selecciono el padre del padre del padre del div del input
+    let divPa = divPad.parentElement;
+    // selecciono el input hermano del div padre
+    let divHermano = divPa.nextElementSibling;
+    // selecciono al hermano del input
+    let divHer = divHermano.nextElementSibling;
+    // selecciono al hijo del div
+    let divHijo = divHer.firstElementChild;
+    // selecciono al hijo del hijo del div
+    let divHi = divHijo.firstElementChild;
+    // selecciono a los hijos del div
+    let divH = divHi.children;
 
-            pPrecioI.innerHTML = totalPC + "bs";
-        });
-    };
+    // se recolecta el valor del input
+    PrecioI = parseFloat(pI.value);
 
-    ////////////////////////////////////////////////////////////////////
-    //Ajax//
-    let horaInicioHosp = 0;
-    // envío de datos de la edición
-    const vistaTabla = async () => {
-      try {
-        // llamo la función
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
-        let resultad = await peticion.json();
-        console.log(resultad);
+    // traigo la cantidad
+    let cantidad = parseInt(divH[1].value);
+    totalPI += PrecioI * cantidad;
 
-        let html = "";
+    // aquí se recolecta el precio multiplicado con la cantidad (en las dos lineas siguientes, se coloca el precio ya multiplicado en el <p>)
+    let totalPC = PrecioI * cantidad;
+    // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+    totalPC = parseFloat(totalPC.toFixed(2));
 
-        if (resultad.length == 0) {
-          console.log("algo salio mal");
-        } else {
-          await traerHoraCosto();
-          mostrarMsj();
-          if (resultad[1] == false) {
-            html = `<tr>
+    pPrecioI.innerHTML = totalPC + "bs";
+  });
+};
+
+////////////////////////////////////////////////////////////////////
+//Ajax//
+let horaInicioHosp = 0;
+// envío de datos de la edición
+const vistaTabla = async () => {
+  try {
+    // llamo la función
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
+    let resultad = await peticion.json();
+    console.log(resultad);
+
+    let html = "";
+
+    if (resultad.length == 0) {
+      console.log("algo salio mal");
+    } else {
+      await traerHoraCosto();
+      mostrarMsj();
+      if (resultad[1] == false) {
+        html = `<tr>
                                 <td colspan="8" class="text-center">NO HAY REGISTROS
                                 </td>
                             </tr>`;
-            document.querySelector("#tbody").innerHTML = html;
-          } else {
-            let html = ``;
-            let htmlModales = ``;
+        document.querySelector("#tbody").innerHTML = html;
+      } else {
+        let html = ``;
+        let htmlModales = ``;
 
-            // console.log(resultad[1]);
-            // recorro los datos de hospitalización
-            console.log(resultad[1]);
+        // console.log(resultad[1]);
+        // recorro los datos de hospitalización
+        console.log(resultad[1]);
 
-            resultad[1].forEach((res, index) => {
-              horaInicioHosp = res.fecha_hora_inicio;
+        resultad[1].forEach((res, index) => {
+          horaInicioHosp = res.fecha_hora_inicio;
 
-              // contenido de la tabla.
-              html += `<tr>
+          // contenido de la tabla.
+          html += `<tr>
                                     <td>
                                         ${res["cedula"]}
                                     </td>
@@ -323,13 +327,13 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
                                         ${res["nombredoc"]} ${res["apellidodoc"]}
                                     </td>`;
 
-              // verifico si es administrador o doctor
-              // uno es doctor
-              if (resultad[0][1] == 1) {
-                html += `<!--no hay-->`;
-              }
+          // verifico si es administrador o doctor
+          // uno es doctor
+          if (resultad[0][1] == 1) {
+            html += `<!--no hay-->`;
+          }
 
-              html += `   <td>
+          html += `   <td>
                                         <div class="d-flex flex-wrap col-12 tdTBtn">
                                             <div class="col-12 col-md-6 col-lg-3">
 
@@ -358,17 +362,17 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
                                                 </button>
                                             </div>`;
 
-              // verifico si es administrador o usuario
-              // uno es doctor
-              if (resultad[0][1] == 1) {
-                html += `<!--no hay-->`;
-              }
-              // verifico si es administrador o usuario
-              // cero es administrador mas no doctor
-              if (resultad[0][1] == 0) {
-                html += `       
+          // verifico si es administrador o usuario
+          // uno es doctor
+          if (resultad[0][1] == 1) {
+            html += `<!--no hay-->`;
+          }
+          // verifico si es administrador o usuario
+          // cero es administrador mas no doctor
+          if (resultad[0][1] == 0) {
+            html += `       
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <button class="btn btn-tabla mb-1 me-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar-hospitalizacion${res["id_hospitalizacion"]}" uk-tooltip="Eliminar hospitalización">
+                                                <button class="btn btn-tabla mb-1 me-1 btn-eliminar" data-index="${res.id_hospitalizacion}" uk-tooltip="Eliminar hospitalización">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                                         class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                         <path
@@ -376,11 +380,11 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
                                                     </svg>
                                                 </button>
                                             </div>`;
-              }
-              // verifico si es administrador o usuario
-              // cero es administrador mas no doctor
-              if (resultad[0][1] == 0) {
-                html += `    
+          }
+          // verifico si es administrador o usuario
+          // cero es administrador mas no doctor
+          if (resultad[0][1] == 0) {
+            html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
                                                 <a href="#" class="btn btn-tabla mb-1 me-1 text-white btnFH" data-bs-toggle="modal" data-bs-target="#modalEnvioFacturaHospitalizacion" uk-tooltip="Facturar hospitalización" id="" title=""
                                                     aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
@@ -390,242 +394,193 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
                                                     </svg>
                                                 </a>
                                             </div>`;
-              }
-
-              html += `  
-                                        </div>
-                                    </td>
-                                </tr>`;
-
-              // contenido del modal de eliminar
-              htmlModales += `
-                                        <div>
-                                            <input type="hidden" name="" class="fechaInicio" value="${res["fecha_hora_inicio"]}">
-                                            <input class="precioHo" type="hidden" name="" value="${res.precio_horas}">
-                                            <input class="idC" type="hidden" name="" value="${res.id_control}">
-                                            <input class="idHpt" type="hidden" name="" value="${res.id_hospitalizacion}">
-                                            <input class="hME" type="hidden" name="" value="${res.historiaclinica}">
-                                            <input class="diagnosticoClass" type="hidden" name="" value="${res.diagnostico}">
-                                        </div>
-
-
-                                        <div class="modal fade" id="modal-eliminar-hospitalizacion${res.id_hospitalizacion}"
-                                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-fullscreen-md-down  uk-offcanvas-container">
-                                                <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4">
-
-
-                                                    <div class=" d-flex justify-content-between align-items-center mt-2 pt-0">
-
-                                                        <div class=" d-flex justify-content-center align-items-center ">
-
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                                                class="bi bi-trash3-fill color-icono me-1 mb-2" viewBox="0 0 16 16">
-                                                                <path
-                                                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                                            </svg>
-                                                            <h4 class=" fw-bold ">Desea eliminar la hospitalización</h4>
-                                                        </div>
-
-                                                        <!-- btn close -->
-                                                        <div>
-                                                            <a href="#" class="" data-bs-dismiss="modal">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
-                                                                    class="bi bi-x-circle color-icono" viewBox="0 0 16 16">
-                                                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                                                    <path
-                                                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                                                                </svg>
-                                                            </a>
-                                                        </div>
-
-                                                    </div>
-
-                                                    <form class="" action="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/eliminaL" method="post">
-
-                                                        <input type="hidden" name="idH" class="idHosp" value="${
-                                                          res.id_hospitalizacion
-                                                        }">
-
-                                                        <input type="hidden" name="id_usuario_bitacora" value="${document
-                                                          .querySelector("#modalEli")
-                                                          .getAttribute("data-index")}">
-
-                                                        <p class="uk-text-center mt-4 ">
-                                                            <button class="uk-button rounded-5 btn-cancelar fw-bold" type="button"
-                                                                data-bs-dismiss="modal">Cancelar</button>
-                                                            <button class="uk-button uk-button-primary rounded-5 ms-2 fw-bold" type="submit"
-                                                                data-bs-dismiss="modal">Eliminar</button>
-                                                        </p>
-
-                                                    </form>
-
-                                                </div>
-                                            </div>
-                                        </div>`;
-            });
-
-
-            document.querySelector("#semaforo").value = resultad[0][2];
-
-            document.querySelector("#tbody").innerHTML = html;
-            document.querySelector("#modalEli").innerHTML = htmlModales;
-
-           
-
-            let aFacH = document.querySelectorAll(".btnFH");
-            // aFacH
-            for (const factH of aFacH) {
-              factH.addEventListener("click", async function () {
-                // para traer el valor del data index
-                let index = this.getAttribute("data-index");
-                editar(parseInt(index));
-                let idHospit = this.getAttribute("data-id-hospitalizacion");
-                console.log(idHospit + " id hospitalizacion");
-
-                let datos = await mostrarInf(parseInt(index), parseInt(idHospit));
-                document.querySelector("#idH").value = idHospit;
-                document.querySelector("#monto").value = datos[0];
-                document.querySelector("#montoME").value = datos[1];
-                document.querySelector("#total").value = datos[2];
-                document.querySelector("#totalME").value = datos[3];
-              });
-            }
-            const btnEditar = document.querySelectorAll(".editarH");
-            // recorremos los btn editar
-            for (const editH of btnEditar) {
-              editH.addEventListener("click", async function () {
-                await traerSerevicio("editar");
-                // id de la hospitalización
-                let extra = editH.getAttribute("data-extra");
-                await traerSerevicioH(parseInt(extra));
-                // para traer el valor del data index
-                let index = editH.getAttribute("data-index");
-                editar(parseInt(index));
-
-                // para traer el valor del data extra
-                // es el id de la hospitalizacion
-                mostrarIE(parseInt(extra));
-                // este evento es para buscar el insumo
-                document.querySelector("#btn-buscarInsumoE").addEventListener("click", function () {
-                  traerInsumosE();
-                });
-              });
-            }
-
-            // recorremos los btn informacion
-            document.querySelectorAll(".informacionH").forEach((inforH) => {
-              inforH.addEventListener("click", function () {
-                let tr = inforH.closest("tr");
-                let columnas = tr.children;
-
-                let nombreAp = document.getElementById("nombreApellidoM");
-                let cedula = document.getElementById("cedulaM");
-                let diagnostico = document.getElementById("diagnosticoM");
-                let doctor = document.getElementById("doctorM");
-                let historia = document.getElementById("historiaM");
-
-                nombreAp.innerHTML = `${columnas[1].innerText} ${columnas[2].innerText}`;
-                cedula.innerHTML = columnas[0].innerText;
-                diagnostico.innerHTML = columnas[3].innerText;
-                doctor.innerHTML = columnas[4].innerText;
-
-                // para traer el valor del data index (la posición)
-                let index = inforH.getAttribute("data-index");
-                let idHospit = inforH.getAttribute("data-id-hospitalizacion");
-                mostrarInf(parseInt(index), parseInt(idHospit));
-              });
-            });
-
-            // para validar las cantidades de hospitalizaciones agregadas
-            // obtenemos la cantidad de filas que existen
-            const filas = document.querySelectorAll("#tbody tr");
-
-            if (filas.length === 2) {
-              // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
-              btnAgregar.classList.add("d-none");
-              document.querySelector("#divModal").classList.add("d-none");
-              document.querySelector("#pModalOculto").classList.remove("d-none");
-            } else {
-              // se muestra el modal y el btn de agregar
-              btnAgregar.classList.remove("d-none");
-              document.querySelector("#divModal").classList.remove("d-none");
-              document.querySelector("#pModalOculto").classList.add("d-none");
-            }
           }
+
+          // contenido del modal de eliminar
+
+                                    
+        });
+
+        document.querySelector("#semaforo").value = resultad[0][2];
+
+        document.querySelector("#tbody").innerHTML = html;
+
+
+        let aFacH = document.querySelectorAll(".btnFH");
+        // aFacH
+        for (const factH of aFacH) {
+          factH.addEventListener("click", async function () {
+            // para traer el valor del data index
+            let index = this.getAttribute("data-index");
+            editar(parseInt(index));
+            let idHospit = this.getAttribute("data-id-hospitalizacion");
+            console.log(idHospit + " id hospitalizacion");
+
+            let datos = await mostrarInf(parseInt(index), parseInt(idHospit));
+            document.querySelector("#idH").value = idHospit;
+            document.querySelector("#monto").value = datos[0];
+            document.querySelector("#montoME").value = datos[1];
+            document.querySelector("#total").value = datos[2];
+            document.querySelector("#totalME").value = datos[3];
+          });
         }
-      } catch (error) {
-        console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
-        alertError("Error", error);
-      }
-    };
+        const btnEditar = document.querySelectorAll(".editarH");
+        // recorremos los btn editar
+        for (const editH of btnEditar) {
+          editH.addEventListener("click", async function () {
+            await traerSerevicio("editar");
+            // id de la hospitalización
+            let extra = editH.getAttribute("data-extra");
+            await traerSerevicioH(parseInt(extra));
+            // para traer el valor del data index
+            let index = editH.getAttribute("data-index");
+            editar(parseInt(index));
 
+            // para traer el valor del data extra
+            // es el id de la hospitalizacion
+            mostrarIE(parseInt(extra));
+            // este evento es para buscar el insumo
+            document.querySelector("#btn-buscarInsumoE").addEventListener("click", function () {
+              traerInsumosE();
+            });
+          });
+        }
 
-    vistaTabla();
+        // recorremos los btn informacion
+        document.querySelectorAll(".informacionH").forEach((inforH) => {
+          inforH.addEventListener("click", function () {
+            let tr = inforH.closest("tr");
+            let columnas = tr.children;
 
-    btnAgregar.addEventListener("click", async function () {
-        await vistaTabla();
-        let semaforo = document.querySelector("#semaforo").value;
-        if (parseInt(semaforo) >= 2) {
-            btnAgregar.classList.add("d-none");
-            document.querySelector("#divModal").classList.add("d-none");
-            document.querySelector("#pModalOculto").classList.remove("d-none");
+            let nombreAp = document.getElementById("nombreApellidoM");
+            let cedula = document.getElementById("cedulaM");
+            let diagnostico = document.getElementById("diagnosticoM");
+            let doctor = document.getElementById("doctorM");
+            let historia = document.getElementById("historiaM");
+
+            nombreAp.innerHTML = `${columnas[1].innerText} ${columnas[2].innerText}`;
+            cedula.innerHTML = columnas[0].innerText;
+            diagnostico.innerHTML = columnas[3].innerText;
+            doctor.innerHTML = columnas[4].innerText;
+
+            // para traer el valor del data index (la posición)
+            let index = inforH.getAttribute("data-index");
+            let idHospit = inforH.getAttribute("data-id-hospitalizacion");
+            mostrarInf(parseInt(index), parseInt(idHospit));
+          });
+        });
+
+        // para validar las cantidades de hospitalizaciones agregadas
+        // obtenemos la cantidad de filas que existen
+        const filas = document.querySelectorAll("#tbody tr");
+
+        if (filas.length === 2) {
+          // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
+          btnAgregar.classList.add("d-none");
+          document.querySelector("#divModal").classList.add("d-none");
+          document.querySelector("#pModalOculto").classList.remove("d-none");
         } else {
-            btnAgregar.classList.remove("d-none");
-            document.querySelector("#divModal").classList.remove("d-none");
-            document.querySelector("#pModalOculto").classList.add("d-none");
+          // se muestra el modal y el btn de agregar
+          btnAgregar.classList.remove("d-none");
+          document.querySelector("#divModal").classList.remove("d-none");
+          document.querySelector("#pModalOculto").classList.add("d-none");
         }
+      }
+    }
+
+    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+        alertConfirm("Esta seguro de eliminar la hospitalizacion?", deleteHospitalizacion, data);
+      });
     });
+  } catch (error) {
+    console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+    alertError("Error", error);
+  }
+};
 
-    let btnAInsumoNoExisteE = document.querySelector("#btnAInsumoNoExisteE");
-    let btnAInsumoExisteE = document.querySelector("#btnAInsumoExisteE");
-    let divDI = document.querySelector("#divDI");
+vistaTabla();
 
-    //es para hacer una suma con el precio de los insumo que la hospitalización tiene registrado
-    const sumaPrecioIH = async (id) => {
-        try {
-            // llamo la función traer insumos de h
-            let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
-            let resultadoI = await peticionI.json();
 
-            if (resultadoI.length > 0) {
-                let precioIns = 0;
-                resultadoI.forEach((res) => {
-                    precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
-                });
+//delete
+const deleteHospitalizacion = async (data) => {
+  try {
+    const result = await executePetition(url + `/eliminaL/${data}`, "GET");
+    console.log(result)
+    if (result.ok) {
+      alertSuccess(result.message)
 
-                // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
-                precioIns = parseFloat(precioIns.toFixed(2));
-                return precioIns;
-            } else {
-                // if (resultadoDH === false) {
-                console.log("no se encontró la hospitalización");
-                // }
-            }
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
-        }
-    };
-    let objServiciosHosp = {};
-    const traerSerevicioH = async (idH) => {
-        // llamo la función que trae los servicios de h
-        let resultado = await executePetition(url + "/serviciosDH/" + idH, "GET");
+      vistaTabla();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error)
+  }
+};
 
-        let serviciosConten = document.querySelector("#div-serviciosE");
+btnAgregar.addEventListener("click", async function () {
+  await vistaTabla();
+  let semaforo = document.querySelector("#semaforo").value;
+  if (parseInt(semaforo) >= 2) {
+    btnAgregar.classList.add("d-none");
+    document.querySelector("#divModal").classList.add("d-none");
+    document.querySelector("#pModalOculto").classList.remove("d-none");
+  } else {
+    btnAgregar.classList.remove("d-none");
+    document.querySelector("#divModal").classList.remove("d-none");
+    document.querySelector("#pModalOculto").classList.add("d-none");
+  }
+});
 
-        console.log(resultado);
+let btnAInsumoNoExisteE = document.querySelector("#btnAInsumoNoExisteE");
+let btnAInsumoExisteE = document.querySelector("#btnAInsumoExisteE");
+let divDI = document.querySelector("#divDI");
 
-        if (resultado.length > 0) {
-            let htmlL = ``;
-            for (const res of resultado) {
-                objServiciosHosp[res.id_detalle] = res;
+//es para hacer una suma con el precio de los insumo que la hospitalización tiene registrado
+const sumaPrecioIH = async (id) => {
+  try {
+    // llamo la función traer insumos de h
+    let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
+    let resultadoI = await peticionI.json();
 
-                // aumentar la cantidad Serv
-                let newCantidad = parseInt(res.cantidad);
-                // Actualizar el precio
-                let precioS = newCantidad * objServiciosBD[res.id_servicioMedico]["precio"];
+    if (resultadoI.length > 0) {
+      let precioIns = 0;
+      resultadoI.forEach((res) => {
+        precioIns += parseFloat(res.precio) * parseInt(res.cantidad);
+      });
 
-                htmlL += `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" 
+      // para que muestre solo dos decimales (esto "toFixed" lo convierte en text)
+      precioIns = parseFloat(precioIns.toFixed(2));
+      return precioIns;
+    } else {
+      // if (resultadoDH === false) {
+      console.log("no se encontró la hospitalización");
+      // }
+    }
+  } catch (error) {
+    console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+  }
+};
+let objServiciosHosp = {};
+const traerSerevicioH = async (idH) => {
+  // llamo la función que trae los servicios de h
+  let resultado = await executePetition(url + "/serviciosDH/" + idH, "GET");
+
+  let serviciosConten = document.querySelector("#div-serviciosE");
+
+  console.log(resultado);
+
+  if (resultado.length > 0) {
+    let htmlL = ``;
+    for (const res of resultado) {
+      objServiciosHosp[res.id_detalle] = res;
+
+      // aumentar la cantidad Serv
+      let newCantidad = parseInt(res.cantidad);
+      // Actualizar el precio
+      let precioS = newCantidad * objServiciosBD[res.id_servicioMedico]["precio"];
+
+      htmlL += `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" 
                             data-index="${res.id_servicioMedico}">
                                         <!-- Botón eliminar -->
                                         <button type="button"
@@ -665,37 +620,37 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
                                             </div>
                                         </a>
                                     </div>`;
-            }
-            serviciosConten.innerHTML = htmlL;
-            document.querySelector("#btnASE").classList.add("d-none");
-            document.querySelector("#btnAServiciosExisteE").classList.remove("d-none");
-        } else {
-            serviciosConten.innerHTML = "";
-            document.querySelector("#btnASE").classList.remove("d-none");
-            document.querySelector("#btnAServiciosExisteE").classList.add("d-none");
+    }
+    serviciosConten.innerHTML = htmlL;
+    document.querySelector("#btnASE").classList.add("d-none");
+    document.querySelector("#btnAServiciosExisteE").classList.remove("d-none");
+  } else {
+    serviciosConten.innerHTML = "";
+    document.querySelector("#btnASE").classList.remove("d-none");
+    document.querySelector("#btnAServiciosExisteE").classList.add("d-none");
 
-            console.log("no se encontró el servicio de la hospitalización");
-        }
-    };
+    console.log("no se encontró el servicio de la hospitalización");
+  }
+};
 
-    //es para mostrar los insumos de la hospitalización seleccionada
-    const mostrarIE = async (id) => {
-        try {
-            // llamo la función buscar Insumos de la hospitalización
-            let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
-            let resultadoI = await peticionI.json();
-            let precioIMC = 0;
+//es para mostrar los insumos de la hospitalización seleccionada
+const mostrarIE = async (id) => {
+  try {
+    // llamo la función buscar Insumos de la hospitalización
+    let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
+    let resultadoI = await peticionI.json();
+    let precioIMC = 0;
 
-            if (resultadoI.length > 0) {
-                btnAInsumoNoExisteE.classList.toggle("d-none", true);
-                btnAInsumoExisteE.classList.toggle("d-none", false);
+    if (resultadoI.length > 0) {
+      btnAInsumoNoExisteE.classList.toggle("d-none", true);
+      btnAInsumoExisteE.classList.toggle("d-none", false);
 
-                let html = ``;
-                resultadoI.forEach((res) => {
-                    // se multiplica el precio con la cantidad.
-                    precioIMC = parseInt(res.precio) * parseInt(res.cantidad);
+      let html = ``;
+      resultadoI.forEach((res) => {
+        // se multiplica el precio con la cantidad.
+        precioIMC = parseInt(res.precio) * parseInt(res.cantidad);
 
-                    html += `
+        html += `
                     <p class="text-danger text-center m-0 p-0 d-none">Límite de cantidad alcanzado</p>
                     <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregados" data-index=>
 
@@ -756,83 +711,83 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
                         </div>
 
                     </div>`;
-                });
+      });
 
-                divDI.innerHTML = html;
+      divDI.innerHTML = html;
 
-                eliminar();
-                cantidadAD();
+      eliminar();
+      cantidadAD();
 
-                // para que sume al traer insumos (al presionar en el btn de editar).
-                sumarTotalE();
+      // para que sume al traer insumos (al presionar en el btn de editar).
+      sumarTotalE();
 
-                // para que el input inicie vacío
-                document.getElementById("idInEli").value = "";
-                // para que el input inicie vacío
-                document.getElementById("idInEliDos").value = "";
+      // para que el input inicie vacío
+      document.getElementById("idInEli").value = "";
+      // para que el input inicie vacío
+      document.getElementById("idInEliDos").value = "";
 
-                let agregandoI = true;
-                // para traerme el id del insumo eliminado, y el [] es para que el array inicie vacío.
-                eleEliminado([], agregandoI);
-            } else {
-                btnAInsumoNoExisteE.classList.toggle("d-none", false);
-                btnAInsumoExisteE.classList.toggle("d-none", true);
+      let agregandoI = true;
+      // para traerme el id del insumo eliminado, y el [] es para que el array inicie vacío.
+      eleEliminado([], agregandoI);
+    } else {
+      btnAInsumoNoExisteE.classList.toggle("d-none", false);
+      btnAInsumoExisteE.classList.toggle("d-none", true);
 
-                divDI.innerHTML = "";
-                // para que sume al no traer insumos (al presionar en el btn de editar).
-                sumarTotalE();
-            }
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
-        }
-    };
-
-    let inputIE = document.querySelector("#btbtE");
-    let parrafoNoIE = document.querySelector("#p-no-insumosE");
-    let insumoExisteE = document.querySelector("#insumoExisteE");
-    let insumosE = document.querySelector("#insumosE");
-
-    function traerIdIE() {
-        // id del insumos para poder agregarlo
-        let idI = -1;
-        document.querySelectorAll(".divInsumosE").forEach((insumo) => {
-            //es para traer el id
-            if (insumo) {
-                insumo.addEventListener("click", function () {
-                    idI = parseInt(this.dataset["index"]);
-
-                    traerUnInsumoE(idI);
-                });
-            }
-        });
+      divDI.innerHTML = "";
+      // para que sume al no traer insumos (al presionar en el btn de editar).
+      sumarTotalE();
     }
+  } catch (error) {
+    console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...:)");
+  }
+};
 
-    // es para traer el id del insumo sin necesidad de una búsqueda
-    let divInsumosE = document.querySelectorAll(".divInsumosE");
-    if (divInsumosE) {
-        traerIdIE();
+let inputIE = document.querySelector("#btbtE");
+let parrafoNoIE = document.querySelector("#p-no-insumosE");
+let insumoExisteE = document.querySelector("#insumoExisteE");
+let insumosE = document.querySelector("#insumosE");
+
+function traerIdIE() {
+  // id del insumos para poder agregarlo
+  let idI = -1;
+  document.querySelectorAll(".divInsumosE").forEach((insumo) => {
+    //es para traer el id
+    if (insumo) {
+      insumo.addEventListener("click", function () {
+        idI = parseInt(this.dataset["index"]);
+
+        traerUnInsumoE(idI);
+      });
     }
+  });
+}
 
-    const traerInsumosE = async () => {
-        try {
-            valorIE = inputIE.value;
+// es para traer el id del insumo sin necesidad de una búsqueda
+let divInsumosE = document.querySelectorAll(".divInsumosE");
+if (divInsumosE) {
+  traerIdIE();
+}
 
-            // llamo la función buscar Insumos
-            let peticionInsumos = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInsumos/" + valorIE);
+const traerInsumosE = async () => {
+  try {
+    valorIE = inputIE.value;
 
-            let resultadoInsu = await peticionInsumos.json();
+    // llamo la función buscar Insumos
+    let peticionInsumos = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInsumos/" + valorIE);
 
-            //si se trae algo
-            if (resultadoInsu.length > 0) {
-                parrafoNoIE.innerText = "";
+    let resultadoInsu = await peticionInsumos.json();
 
-                insumoExisteE.classList.toggle("d-none", false);
-                insumosE.classList.toggle("d-none", true);
+    //si se trae algo
+    if (resultadoInsu.length > 0) {
+      parrafoNoIE.innerText = "";
 
-                let html = ``;
+      insumoExisteE.classList.toggle("d-none", false);
+      insumosE.classList.toggle("d-none", true);
 
-                resultadoInsu.forEach((res) => {
-                    html += `<div class="col-6 divInsumosE" data-index=${res.id_insumo}>
+      let html = ``;
+
+      resultadoInsu.forEach((res) => {
+        html += `<div class="col-6 divInsumosE" data-index=${res.id_insumo}>
                     <a href="#" class="text-center text-decoration-none m-0" data-bs-toggle="modal"
                         data-bs-target="#modal-editar-hospitalizacion">
                         <div class="color-icono d-flex align-items-center justify-content-center p-0">
@@ -850,185 +805,185 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
                     </a>
                     <input type="hidden" name="" class="inputInsumo" value="">
                 </div>`;
-                });
+      });
 
-                insumoExisteE.innerHTML = html;
+      insumoExisteE.innerHTML = html;
 
-                // para traer el id del insumo de la base de datos, ademas para que la recolecte la otra función async
-                traerIdIE();
+      // para traer el id del insumo de la base de datos, ademas para que la recolecte la otra función async
+      traerIdIE();
 
-                // si no se trae nada
-            } else {
-                parrafoNoIE.innerText = "";
-                parrafoNoIE.innerText = "El insumo no esta registrado";
+      // si no se trae nada
+    } else {
+      parrafoNoIE.innerText = "";
+      parrafoNoIE.innerText = "El insumo no esta registrado";
 
-                insumoExisteE.classList.toggle("d-none", true);
-                insumosE.classList.toggle("d-none", true);
-            }
-        } catch (error) {
-            console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+      insumoExisteE.classList.toggle("d-none", true);
+      insumosE.classList.toggle("d-none", true);
+    }
+  } catch (error) {
+    console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+  }
+};
+
+function cantidadAD() {
+  // esto recorre todos los input number de cantidad
+  let div = document.querySelectorAll(".divInsumosAgregados");
+
+  for (const divI of div) {
+    // id del insumo
+    let idI = parseInt(divI.querySelector(".inputIdInsuE").value);
+    let inputN = divI.querySelector(".input-numberE");
+
+    // esto selecciona al p que muestra un mensaje
+    let p = divI.previousElementSibling;
+    // esto selecciona al div que muestra un -
+    let menos = inputN.previousElementSibling;
+    // esto selecciona al div que muestra un +
+    let mas = inputN.nextElementSibling;
+
+    menos.addEventListener("click", async function () {
+      // llamo a la función que hace el calculo (aumentar y disminuir) en este caso disminuye y luego hace el calculo matemático
+      botonInputNumber(menos, inputN);
+      sumarTotalE();
+
+      let objIL = await limiteI(idI);
+      // si no encuentro el id
+      if (!objIL[idI]) {
+        p.classList.add("d-none");
+      } else {
+      }
+    });
+
+    mas.addEventListener("click", async function () {
+      let objIL = await limiteI(idI);
+      // si encuentro el id
+      if (objIL[idI]) {
+        p.classList.remove("d-none");
+      } else {
+        p.classList.add("d-none");
+        // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
+        botonInputNumber(mas, inputN);
+      }
+
+      sumarTotalE();
+    });
+  }
+}
+// para traerme el id del insumo de la hospitalización
+function eleEliminado(arrayIdIH, agregandoI) {
+  document.querySelectorAll(".eleEli").forEach((elim) => {
+    elim.addEventListener("click", function () {
+      let idIDHR = 0;
+      if (agregandoI) {
+        // traemos el id
+        idIDHR = this.dataset["index"];
+        // es un array que no tiene nada y luego se va llenando al ir eliminando
+        arrayIdIH.push(idIDHR);
+        // convertimos el valor (array) en un JSON
+        document.getElementById("idInEli").value = JSON.stringify(arrayIdIH);
+      } else if (agregandoI == false) {
+        // traemos el id
+        idIDHR = this.dataset["index"];
+        // es un array que no tiene nada y luego se va llenando al ir eliminando
+        arrayIdIH.push(idIDHR);
+        // convertimos el valor (array) en un JSON
+        document.getElementById("idInEliDos").value += idIDHR + ",";
+        agregandoI = false;
+      }
+    });
+  });
+}
+
+function eliminar() {
+  document.querySelectorAll(".eliminarInsE").forEach((elim) => {
+    elim.addEventListener("click", function () {
+      // selecciono el padre btn
+      let divP = elim.parentElement;
+      // selecciono el padre del div del btn
+      let eliminarI = divP.parentElement;
+      let p = eliminarI.previousElementSibling;
+
+      eliminarI.remove();
+      p.remove();
+
+      //para que reste el insumo que se a eliminado del total
+      sumarTotalE();
+    });
+  });
+}
+
+// función async, es para mostrar un (1) insumo seleccionado
+const traerUnInsumoE = async (id) => {
+  try {
+    // llamo la función buscar un Insumo
+    let peticionUnInsumo = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + id);
+    let resultadoUnInsu = await peticionUnInsumo.json();
+
+    // si no se trae nada
+    if (resultadoUnInsu == false) {
+      console.log("hay un problema, el insumo seleccionado no existe");
+
+      btnAInsumoNoExisteE.classList.toggle("d-none", false);
+      btnAInsumoExisteE.classList.toggle("d-none", true);
+
+      //si se trae algo
+    } else {
+      btnAInsumoNoExisteE.classList.toggle("d-none", true);
+      btnAInsumoExisteE.classList.toggle("d-none", false);
+
+      let existeIn = true;
+
+      // esto recorre todos los input number de cantidad
+      let div = document.querySelectorAll(".divInsumosAgregados");
+      if (div) {
+        let objIL = await limiteI(id);
+        // el insumo no existe
+        if (objIL[id]) {
+          existeIn = false;
+          alert("El insumo alcanzo el limite de su cantidad");
         }
-    };
+      }
+      for (const divI of div) {
+        // id del insumo
+        let idInputI = divI.querySelector(".inputIdInsuE");
+        // esto selecciona al p que muestra un mensaje
+        let p = divI.previousElementSibling;
 
-    function cantidadAD() {
-        // esto recorre todos los input number de cantidad
-        let div = document.querySelectorAll(".divInsumosAgregados");
+        // para la cantidad
+        // si el insumo existe hace lo siguiente
+        if (id == idInputI.value) {
+          existeIn = false;
 
-        for (const divI of div) {
-            // id del insumo
-            let idI = parseInt(divI.querySelector(".inputIdInsuE").value);
-            let inputN = divI.querySelector(".input-numberE");
+          // selecciono el hermano
+          let divHermano = idInputI.nextElementSibling;
+          // selecciono el primer hijo
+          let divHijo = divHermano.firstElementChild;
+          // selecciono el primer hijo del div hijo
+          let divHDH = divHijo.firstElementChild;
+          // selecciono los hijos del div que es padre del input number.
+          let divPadreIN = divHDH.children;
 
-            // esto selecciona al p que muestra un mensaje
-            let p = divI.previousElementSibling;
-            // esto selecciona al div que muestra un -
-            let menos = inputN.previousElementSibling;
-            // esto selecciona al div que muestra un +
-            let mas = inputN.nextElementSibling;
+          let objIL = await limiteI(id);
+          // si encuentro el id no lo agrega su cantidad esta agotada
+          if (objIL[id]) {
+            p.classList.remove("d-none");
+          } else {
+            p.classList.add("d-none");
+            // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
+            // aquí selecciono el div que tiene un ( + ) y el input
+            botonInputNumber(divPadreIN[2], divPadreIN[1]);
+          }
 
-            menos.addEventListener("click", async function () {
-                // llamo a la función que hace el calculo (aumentar y disminuir) en este caso disminuye y luego hace el calculo matemático
-                botonInputNumber(menos, inputN);
-                sumarTotalE();
-
-                let objIL = await limiteI(idI);
-                // si no encuentro el id
-                if (!objIL[idI]) {
-                    p.classList.add("d-none");
-                } else {
-                }
-            });
-
-            mas.addEventListener("click", async function () {
-                let objIL = await limiteI(idI);
-                // si encuentro el id
-                if (objIL[idI]) {
-                    p.classList.remove("d-none");
-                } else {
-                    p.classList.add("d-none");
-                    // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
-                    botonInputNumber(mas, inputN);
-                }
-
-                sumarTotalE();
-            });
+          // para sumar precio, al presionar un insumo ya existente.
+          sumarTotalE();
+        } else {
         }
-    }
-    // para traerme el id del insumo de la hospitalización
-    function eleEliminado(arrayIdIH, agregandoI) {
-        document.querySelectorAll(".eleEli").forEach((elim) => {
-            elim.addEventListener("click", function () {
-                let idIDHR = 0;
-                if (agregandoI) {
-                    // traemos el id
-                    idIDHR = this.dataset["index"];
-                    // es un array que no tiene nada y luego se va llenando al ir eliminando
-                    arrayIdIH.push(idIDHR);
-                    // convertimos el valor (array) en un JSON
-                    document.getElementById("idInEli").value = JSON.stringify(arrayIdIH);
-                } else if (agregandoI == false) {
-                    // traemos el id
-                    idIDHR = this.dataset["index"];
-                    // es un array que no tiene nada y luego se va llenando al ir eliminando
-                    arrayIdIH.push(idIDHR);
-                    // convertimos el valor (array) en un JSON
-                    document.getElementById("idInEliDos").value += idIDHR + ",";
-                    agregandoI = false;
-                }
-            });
-        });
-    }
+      }
 
-    function eliminar() {
-        document.querySelectorAll(".eliminarInsE").forEach((elim) => {
-            elim.addEventListener("click", function () {
-                // selecciono el padre btn
-                let divP = elim.parentElement;
-                // selecciono el padre del div del btn
-                let eliminarI = divP.parentElement;
-                let p = eliminarI.previousElementSibling;
+      let html = ``;
 
-                eliminarI.remove();
-                p.remove();
-
-                //para que reste el insumo que se a eliminado del total
-                sumarTotalE();
-            });
-        });
-    }
-
-    // función async, es para mostrar un (1) insumo seleccionado
-    const traerUnInsumoE = async (id) => {
-        try {
-            // llamo la función buscar un Insumo
-            let peticionUnInsumo = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + id);
-            let resultadoUnInsu = await peticionUnInsumo.json();
-
-            // si no se trae nada
-            if (resultadoUnInsu == false) {
-                console.log("hay un problema, el insumo seleccionado no existe");
-
-                btnAInsumoNoExisteE.classList.toggle("d-none", false);
-                btnAInsumoExisteE.classList.toggle("d-none", true);
-
-                //si se trae algo
-            } else {
-                btnAInsumoNoExisteE.classList.toggle("d-none", true);
-                btnAInsumoExisteE.classList.toggle("d-none", false);
-
-                let existeIn = true;
-
-                // esto recorre todos los input number de cantidad
-                let div = document.querySelectorAll(".divInsumosAgregados");
-                if (div) {
-                    let objIL = await limiteI(id);
-                    // el insumo no existe
-                    if (objIL[id]) {
-                        existeIn = false;
-                        alert("El insumo alcanzo el limite de su cantidad");
-                    }
-                }
-                for (const divI of div) {
-                    // id del insumo
-                    let idInputI = divI.querySelector(".inputIdInsuE");
-                    // esto selecciona al p que muestra un mensaje
-                    let p = divI.previousElementSibling;
-
-                    // para la cantidad
-                    // si el insumo existe hace lo siguiente
-                    if (id == idInputI.value) {
-                        existeIn = false;
-
-                        // selecciono el hermano
-                        let divHermano = idInputI.nextElementSibling;
-                        // selecciono el primer hijo
-                        let divHijo = divHermano.firstElementChild;
-                        // selecciono el primer hijo del div hijo
-                        let divHDH = divHijo.firstElementChild;
-                        // selecciono los hijos del div que es padre del input number.
-                        let divPadreIN = divHDH.children;
-
-                        let objIL = await limiteI(id);
-                        // si encuentro el id no lo agrega su cantidad esta agotada
-                        if (objIL[id]) {
-                            p.classList.remove("d-none");
-                        } else {
-                            p.classList.add("d-none");
-                            // llamo a la función que hace el calculo (aumentar y disminuir) en este caso aumenta y luego hace el calculo matemático
-                            // aquí selecciono el div que tiene un ( + ) y el input
-                            botonInputNumber(divPadreIN[2], divPadreIN[1]);
-                        }
-
-                        // para sumar precio, al presionar un insumo ya existente.
-                        sumarTotalE();
-                    } else {
-                    }
-                }
-
-                let html = ``;
-
-                if (existeIn) {
-                    html = `
+      if (existeIn) {
+        html = `
                     <p class="text-danger text-center m-0 p-0 d-none">Límite de cantidad alcanzado</p>
                     <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregados">
     
@@ -1093,312 +1048,296 @@ import { executePetition, alertConfirm, alertError, alertSuccess } from "../../a
     
                     </div>`;
 
-                    divDI.innerHTML += html;
+        divDI.innerHTML += html;
 
-                    cantidadAD();
+        cantidadAD();
 
-                    let agregando = false;
-                    eleEliminado([], agregando);
-                }
+        let agregando = false;
+        eleEliminado([], agregando);
+      }
 
-                eliminar();
-                //para la suma total
-                sumarTotalE();
-            }
-        } catch (error) {
-            console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
-        }
-    };
+      eliminar();
+      //para la suma total
+      sumarTotalE();
+    }
+  } catch (error) {
+    console.log("insumos lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+  }
+};
 
-    function mostrarMsj() {
-        let urlActual = window.location.href;
+function mostrarMsj() {
+  let urlActual = window.location.href;
 
-        if (urlActual.includes("agregado")) {
-            // quitar esto (&agregado) de la url
-            let nuevaUrl = urlActual.replace("/agregado", "");
-            // se agrega la nueva url
-            window.history.replaceState(null, null, nuevaUrl);
+  if (urlActual.includes("agregado")) {
+    // quitar esto (&agregado) de la url
+    let nuevaUrl = urlActual.replace("/agregado", "");
+    // se agrega la nueva url
+    window.history.replaceState(null, null, nuevaUrl);
 
-            // agregamos el comentario
-            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+    // agregamos el comentario
+    let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
                             <a class="uk-alert-close" uk-close></a>
                             <p class="pe-2 pb-1">Se ha agregado correctamente.</p>
                         </div>`;
-            document.querySelector("#divComentarios").innerHTML = html;
-        } else if (urlActual.includes("eliminado")) {
-            // quitar esto (&agregado) de la url
-            let nuevaUrl = urlActual.replace("/eliminado", "");
-            // se agrega la nueva url
-            window.history.replaceState(null, null, nuevaUrl);
+    document.querySelector("#divComentarios").innerHTML = html;
+  } else if (urlActual.includes("eliminado")) {
+    // quitar esto (&agregado) de la url
+    let nuevaUrl = urlActual.replace("/eliminado", "");
+    // se agrega la nueva url
+    window.history.replaceState(null, null, nuevaUrl);
 
-            // agregamos el comentario
-            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+    // agregamos el comentario
+    let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
                             <a class="uk-alert-close" uk-close></a>
                             <p class="pe-2 pb-1">Se elimino correctamente.</p>
                         </div>`;
-            document.querySelector("#divComentarios").innerHTML = html;
-        } else if (urlActual.includes("error")) {
-            // quitar esto (&agregado) de la url
-            let nuevaUrl = urlActual.replace("/error", "");
-            // se agrega la nueva url
-            window.history.replaceState(null, null, nuevaUrl);
+    document.querySelector("#divComentarios").innerHTML = html;
+  } else if (urlActual.includes("error")) {
+    // quitar esto (&agregado) de la url
+    let nuevaUrl = urlActual.replace("/error", "");
+    // se agrega la nueva url
+    window.history.replaceState(null, null, nuevaUrl);
 
-            // agregamos el comentario
-            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+    // agregamos el comentario
+    let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
                             <a class="uk-alert-close" uk-close></a>
                             <p class="pe-2 pb-1">La hospitalización ya existe.</p>
                         </div>`;
-            document.querySelector("#divComentarios").innerHTML = html;
-        } else if (urlActual.includes("registroPaciente")) {
-            // quitar esto (&agregado) de la url
-            let nuevaUrl = urlActual.replace("/registroPaciente", "");
-            // se agrega la nueva url
-            window.history.replaceState(null, null, nuevaUrl);
+    document.querySelector("#divComentarios").innerHTML = html;
+  } else if (urlActual.includes("registroPaciente")) {
+    // quitar esto (&agregado) de la url
+    let nuevaUrl = urlActual.replace("/registroPaciente", "");
+    // se agrega la nueva url
+    window.history.replaceState(null, null, nuevaUrl);
 
-            // agregamos el comentario
-            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+    // agregamos el comentario
+    let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
                             <a class="uk-alert-close" uk-close></a>
                             <p class="pe-2 pb-1">El paciente fue registrado exitosamente.</p>
                         </div>`;
-            document.querySelector("#divComentarios").innerHTML = html;
-        } else if (urlActual.includes("errSemaforo")) {
-            // quitar esto (&agregado) de la url
-            let nuevaUrl = urlActual.replace("/errSemaforo", "");
-            // se agrega la nueva url
-            window.history.replaceState(null, null, nuevaUrl);
+    document.querySelector("#divComentarios").innerHTML = html;
+  } else if (urlActual.includes("errSemaforo")) {
+    // quitar esto (&agregado) de la url
+    let nuevaUrl = urlActual.replace("/errSemaforo", "");
+    // se agrega la nueva url
+    window.history.replaceState(null, null, nuevaUrl);
 
-            // agregamos el comentario
-            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
+    // agregamos el comentario
+    let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
                             <a class="uk-alert-close" uk-close></a>
                             <p class="pe-2 pb-1">En estos momentos, no hay camillas disponibles.</p>
                         </div>`;
-            document.querySelector("#divComentarios").innerHTML = html;
-        }
+    document.querySelector("#divComentarios").innerHTML = html;
+  }
 
-        //este es el comentario
-        const comentario = document.querySelector(".comentario");
-        //si existe el comentario lo muestra y después de 8sg lo oculta
-        if (comentario) {
-            comentario.style.display = "block";
+  //este es el comentario
+  const comentario = document.querySelector(".comentario");
+  //si existe el comentario lo muestra y después de 8sg lo oculta
+  if (comentario) {
+    comentario.style.display = "block";
 
-            setTimeout(function () {
-                comentario.style.display = "none";
-            }, 8000);
-        }
+    setTimeout(function () {
+      comentario.style.display = "none";
+    }, 8000);
+  }
+}
+
+const formE = document.querySelector("#formularioEditarH");
+const divME = document.querySelector(".divModalE");
+
+// envío de datos de la edición
+const envioDatE = async () => {
+  try {
+    const datosFormulario = new FormData(formE);
+
+    const contenidoForm = {
+      method: "POST",
+      body: datosFormulario,
+    };
+
+    // llamo la función
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/modificarH", contenidoForm);
+    let result = await peticion.json();
+
+    // vista de la tabla
+    vistaTabla();
+
+    alertSuccess(result.message)
+
+    
+  } catch (error) {
+    console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+  }
+};
+
+// para enviar los datos de la edición
+formE.addEventListener("submit", (e) => {
+  envioDatE();
+  e.preventDefault();
+});
+
+// para el buscador de hospitalización
+let inputBuscH = document.querySelector("#inputBuscH");
+const btnBuscH = document.querySelector("#btnBuscH");
+const notifi = document.querySelector("#notificacion");
+
+// buscador de hospitalización
+function buscarH() {
+  let contadorH = 0;
+  let contadorHNo = 0;
+
+  // selecciono todos los tr de la tabla
+  const filas = document.querySelectorAll("#tbody tr");
+  // recolecto la cédula del input
+  let cdH = inputBuscH.value;
+
+  // recorro las filas de la tabla
+  filas.forEach((fila) => {
+    // cuenta las hospitalizaciones que existen.
+    contadorH = contadorH + 1;
+
+    // verifico si la cédula existe
+    if (fila.children[0].innerText.includes(cdH)) {
+      fila.classList.remove("d-none");
+      notifi.classList.add("d-none");
+    } else {
+      fila.classList.add("d-none");
+      // cuenta las veces que no encuentra una hospitalización
+      contadorHNo = contadorHNo + 1;
+    }
+  });
+
+  // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes
+  if (contadorH === contadorHNo) {
+    // muestra el texto.
+    notifi.classList.remove("d-none");
+  }
+}
+
+// al presionar click realiza la función
+btnBuscH.addEventListener("click", function () {
+  buscarH();
+});
+
+document.querySelector("#formCostoHora").addEventListener("submit", function (e) {
+  e.preventDefault();
+  enviarHoraCosto();
+});
+
+///////////////////////////////////////////////////
+// conteo de insumos
+
+// operación matemática para saber cual insumo llego a su limite en cantidad
+const limiteI = async (idIn) => {
+  try {
+    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
+    let resultado = await peticion.json();
+
+    console.log(resultado);
+
+    let insumosLim = {};
+
+    // creamos esa posición con ese numero de id, y dentro su contenido
+    insumosLim[parseInt(resultado.id_insumo)] = {
+      id: parseInt(resultado.id_insumo),
+      cantidadT: 0,
+      limite: parseInt(resultado.limite_insumo),
+    };
+
+    let insumosExL = {};
+    document.querySelectorAll(".divInsumosAgregados").forEach((divI) => {
+      // id del insumo
+      let idI = divI.querySelector(".inputIdInsuE");
+      let limiteI = idI.getAttribute("data-limite-cantidad");
+      let cantidad = parseInt(divI.querySelector(".input-numberE").value);
+      idI = parseInt(idI.value);
+
+      // creamos esa posición con ese numero de id, y dentro su contenido
+      insumosExL[idI] = {
+        id: parseInt(idI),
+        cantidadT: cantidad,
+        limite: parseInt(limiteI),
+      };
+    });
+
+    console.log(insumosExL);
+    // recorro el objeto de los insumos totales de la db
+    for (const iL in insumosExL) {
+      // si existe la posición del objeto (el id del insumo) se suma la cantidad del insumo
+      if (insumosLim[iL]) {
+        insumosLim[iL].cantidadT = parseInt(insumosLim[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
+
+        // si no existe se agrega los datos del insumo
+      } else {
+        insumosLim[iL] = {
+          id: parseInt(iL),
+          cantidadT: insumosExL[iL].cantidadT,
+          limite: insumosExL[iL].limite,
+        };
+      }
     }
 
-    const formE = document.querySelector("#formularioEditarH");
-    const divME = document.querySelector(".divModalE");
-
-    // envío de datos de la edición
-    const envioDatE = async () => {
-        try {
-            const datosFormulario = new FormData(formE);
-
-            const contenidoForm = {
-                method: "POST",
-                body: datosFormulario,
-            };
-
-            // llamo la función
-            await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/modificarH", contenidoForm);
-            divME.classList.remove("show");
-            divModal.setAttribute("style", "touch-action: pan-y pinch-zoom; transition: all 0.3s ease-out ;");
-
-            // vista de la tabla
-            vistaTabla();
-
-            // agregamos el comentario
-            let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
-                            <a class="uk-alert-close" uk-close></a>
-                            <p class="pe-2 pb-1">Se actualizo correctamente.</p>
-                        </div>`;
-            let div = document.querySelector("#divComentarios");
-            div.innerHTML = html;
-
-            //este es el comentario
-            const comentario = document.querySelector(".comentario");
-            //si existe el comentario lo muestra y después de 8sg lo oculta
-            if (comentario) {
-                comentario.style.display = "block";
-
-                setTimeout(function () {
-                    comentario.style.display = "none";
-                }, 8000);
-            }
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
-        }
-    };
-
-    // para enviar los datos de la edición
-    formE.addEventListener("submit", (e) => {
-        envioDatE();
-        e.preventDefault();
-    });
-
-    // para el buscador de hospitalización
-    let inputBuscH = document.querySelector("#inputBuscH");
-    const btnBuscH = document.querySelector("#btnBuscH");
-    const notifi = document.querySelector("#notificacion");
-
-    // buscador de hospitalización
-    function buscarH() {
-        let contadorH = 0;
-        let contadorHNo = 0;
-
-        // selecciono todos los tr de la tabla
-        const filas = document.querySelectorAll("#tbody tr");
-        // recolecto la cédula del input
-        let cdH = inputBuscH.value;
-
-        // recorro las filas de la tabla
-        filas.forEach((fila) => {
-            // cuenta las hospitalizaciones que existen.
-            contadorH = contadorH + 1;
-
-            // verifico si la cédula existe
-            if (fila.children[0].innerText.includes(cdH)) {
-                fila.classList.remove("d-none");
-                notifi.classList.add("d-none");
-            } else {
-                fila.classList.add("d-none");
-                // cuenta las veces que no encuentra una hospitalización
-                contadorHNo = contadorHNo + 1;
-            }
-        });
-
-        // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes
-        if (contadorH === contadorHNo) {
-            // muestra el texto.
-            notifi.classList.remove("d-none");
-        }
+    let objIL = {};
+    // recorro el objeto de los insumos y solo almaceno los limitados
+    for (const iLi in insumosLim) {
+      if (insumosLim[iLi].cantidadT >= insumosLim[iLi].limite) {
+        objIL[iLi] = insumosLim[iLi];
+      }
     }
 
-    // al presionar click realiza la función
-    btnBuscH.addEventListener("click", function () {
-        buscarH();
+    return objIL;
+  } catch (error) {
+    console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
+  }
+};
+
+let alertHEnvF = document.querySelector("#alertHEnvF");
+
+let formEnviarFactura = document.querySelector("#formEnvioFacturaHospitalizacion");
+const envioFSaveControl = async () => {
+  let textAlert = "",
+    classAlert = "uk-alert-primary";
+  try {
+    const data = new FormData(formEnviarFactura);
+    let result = await executePetition(url + "/enviarAFacturar", "POST", data);
+    alertHEnvF.classList.remove("d-none");
+    textAlert = `Se registro correctamente`;
+    classAlert = "uk-alert-primary";
+
+    console.log("Resultado");
+    console.log(result);
+  } catch (error) {
+    textAlert = `Lamentablemente algo salio mal por favor intente mas tarde`;
+    classAlert = "uk-alert-danger";
+  } finally {
+    showAlert(alertHEnvF, textAlert, classAlert);
+  }
+};
+
+let inputsExpresiones = document.querySelectorAll("#modalEnvioFacturaHospitalizacion .inputExpresiones");
+
+inputsExpresiones.forEach((input) => {
+  input.addEventListener("input", validarFormularioControl);
+});
+
+formEnviarFactura.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  validarCamposControl(expresiones.diagnostico, historiaEnF, "diagnostico");
+  validarCamposControl(expresiones.diagnostico, diagnosticoEnF, "diagnostico");
+  if (campos.sintomas && campos.diagnostico && campos.indicaciones && campos.fechaRegreso) {
+    let idH = document.querySelector("#idH").value;
+    await envioFSaveControl();
+    formEnviarFactura.reset();
+    window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H" + idH;
+    document.querySelectorAll(`#modalEnvioFacturaHospitalizacion .input-modal-remove`).forEach((ele) => {
+      if (ele.parentElement.classList.contains("grpFormCorrectControl")) {
+        ele.parentElement.classList.remove("grpFormCorrectControl");
+      } else {
+        ele.setAttribute("style", "");
+      }
     });
-
-    document.querySelector("#formCostoHora").addEventListener("submit", function (e) {
-        e.preventDefault();
-        enviarHoraCosto();
-    });
-
-    ///////////////////////////////////////////////////
-    // conteo de insumos
-
-    // operación matemática para saber cual insumo llego a su limite en cantidad
-    const limiteI = async (idIn) => {
-        try {
-            let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
-            let resultado = await peticion.json();
-
-            console.log(resultado);
-
-            let insumosLim = {};
-
-            // creamos esa posición con ese numero de id, y dentro su contenido
-            insumosLim[parseInt(resultado.id_insumo)] = {
-                id: parseInt(resultado.id_insumo),
-                cantidadT: 0,
-                limite: parseInt(resultado.limite_insumo),
-            };
-
-            let insumosExL = {};
-            document.querySelectorAll(".divInsumosAgregados").forEach((divI) => {
-                // id del insumo
-                let idI = divI.querySelector(".inputIdInsuE");
-                let limiteI = idI.getAttribute("data-limite-cantidad");
-                let cantidad = parseInt(divI.querySelector(".input-numberE").value);
-                idI = parseInt(idI.value);
-
-                // creamos esa posición con ese numero de id, y dentro su contenido
-                insumosExL[idI] = {
-                    id: parseInt(idI),
-                    cantidadT: cantidad,
-                    limite: parseInt(limiteI),
-                };
-            });
-
-            console.log(insumosExL);
-            // recorro el objeto de los insumos totales de la db
-            for (const iL in insumosExL) {
-                // si existe la posición del objeto (el id del insumo) se suma la cantidad del insumo
-                if (insumosLim[iL]) {
-                    insumosLim[iL].cantidadT = parseInt(insumosLim[iL].cantidadT) + parseInt(insumosExL[iL].cantidadT);
-
-                    // si no existe se agrega los datos del insumo
-                } else {
-                    insumosLim[iL] = {
-                        id: parseInt(iL),
-                        cantidadT: insumosExL[iL].cantidadT,
-                        limite: insumosExL[iL].limite,
-                    };
-                }
-            }
-
-            let objIL = {};
-            // recorro el objeto de los insumos y solo almaceno los limitados
-            for (const iLi in insumosLim) {
-                if (insumosLim[iLi].cantidadT >= insumosLim[iLi].limite) {
-                    objIL[iLi] = insumosLim[iLi];
-                }
-            }
-
-            return objIL;
-        } catch (error) {
-            console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
-        }
-    };
-
-    let alertHEnvF = document.querySelector("#alertHEnvF");
-
-    let formEnviarFactura = document.querySelector("#formEnvioFacturaHospitalizacion");
-    const envioFSaveControl = async () => {
-        let textAlert = "",
-            classAlert = "uk-alert-primary";
-        try {
-            const data = new FormData(formEnviarFactura);
-            let result = await executePetition(url + "/enviarAFacturar", "POST", data);
-            alertHEnvF.classList.remove("d-none");
-            textAlert = `Se registro correctamente`;
-            classAlert = "uk-alert-primary";
-
-            console.log("Resultado");
-            console.log(result);
-        } catch (error) {
-            textAlert = `Lamentablemente algo salio mal por favor intente mas tarde`;
-            classAlert = "uk-alert-danger";
-        } finally {
-            showAlert(alertHEnvF, textAlert, classAlert);
-        }
-    };
-
-    let inputsExpresiones = document.querySelectorAll("#modalEnvioFacturaHospitalizacion .inputExpresiones");
-
-    inputsExpresiones.forEach((input) => {
-        input.addEventListener("input", validarFormularioControl);
-    });
-
-    formEnviarFactura.addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        validarCamposControl(expresiones.diagnostico, historiaEnF, "diagnostico");
-        validarCamposControl(expresiones.diagnostico, diagnosticoEnF, "diagnostico");
-        if (campos.sintomas && campos.diagnostico && campos.indicaciones && campos.fechaRegreso) {
-            let idH = document.querySelector("#idH").value;
-            await envioFSaveControl();
-            formEnviarFactura.reset();
-            window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H" + idH;
-            document.querySelectorAll(`#modalEnvioFacturaHospitalizacion .input-modal-remove`).forEach((ele) => {
-                if (ele.parentElement.classList.contains("grpFormCorrectControl")) {
-                    ele.parentElement.classList.remove("grpFormCorrectControl");
-                } else {
-                    ele.setAttribute("style", "");
-                }
-            });
-        } else {
-            alert("Por favor verifique el formulario antes de enviarlo");
-        }
-    });
+  } else {
+    alert("Por favor verifique el formulario antes de enviarlo");
+  }
+});

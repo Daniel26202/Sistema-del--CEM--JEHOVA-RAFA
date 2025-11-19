@@ -258,23 +258,38 @@ class ControladorHospitalizacion
 
 
         // esto se puede usar $_POST["id_controlE"]. 
-        $this->modelo->editarH($idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, $_POST["diagnostico"], $idServicio, $cantidadS);
+        $edicion =  $this->modelo->editarH($idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, $_POST["diagnostico"], $idServicio, $cantidadS);
+        
         // Guardar la bitacora
-        $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha modificado una hospitalización");
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion");
+        if (is_array($edicion) && $edicion[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha modificado una hospitalización");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $edicion]);
+            exit;
+        }
     }
 
     // elimina la hospitalización lógicamente (lo desactiva).
-    public function eliminaL()
+    public function eliminaL($datos)
     {
-        if (isset($_POST["idH"])) {
-            $datosIDH = $this->modelo->EInsumosM($_POST["idH"]);
-            print_r($_POST);
-            $this->modelo->eliminaLogico($_POST["idH"], $datosIDH);
+        if (isset($datos)) {
+            $idH= $datos[0];
+            $id_usuario = $datos[1];
 
-            // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha eliminado una hospitalizacion");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/eliminado");
+            $datosIDH = $this->modelo->EInsumosM($idH);
+
+            $eliminacion = $this->modelo->eliminaLogico($idH, $datosIDH);
+
+            if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+                $this->bitacora->insertarBitacora($id_usuario, "hospitalizacion", "Ha eliminado una hospitalizacion");
+                echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+            } else {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+                exit;
+            }
         }
     }
 

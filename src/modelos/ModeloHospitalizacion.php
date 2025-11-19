@@ -276,7 +276,7 @@ class ModeloHospitalizacion extends Db
             $validar->bindParam(":id_hospitalizacion", $idHos);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+                throw new \Exception("Fallo el id no existe");
             }
 
 
@@ -468,10 +468,10 @@ class ModeloHospitalizacion extends Db
 
 
             $this->conexion->commit();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
             $this->conexion->rollBack();
-            print_r($e);
+            $e->getMessage();
         }
     }
 
@@ -488,7 +488,7 @@ class ModeloHospitalizacion extends Db
                 throw new \Exception("Fallo");
             }
 
-            // si hay un id del insumo devuelve verdadero si no, devuelve falso
+            // // si hay un id del insumo devuelve verdadero si no, devuelve falso
             if ($datosIDH) {
 
                 foreach ($datosIDH as $indice => $value) {
@@ -508,10 +508,10 @@ class ModeloHospitalizacion extends Db
 
 
             $this->conexion->commit();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
             $this->conexion->rollBack();
-            print_r($e);
+            $e->getMessage();
         }
     }
 
