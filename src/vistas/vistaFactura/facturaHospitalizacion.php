@@ -198,4 +198,4 @@
 <?php require_once 'modalAgregarFactura.php'; ?>
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/factura.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/factura.js"></script>

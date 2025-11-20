@@ -47,12 +47,15 @@ class ControladorDoctores extends ModeloDoctores
     {
         $vistaActiva = 'papelera';
         $ayuda = "btnayudaDoctores";
-        $datos = $this->modelo->desactivos();
         $datosEspecialidades = $this->modelo->selectEspecialidad();
         $datosDias = $this->modelo->selectDias();
         $doctores = $this->modeloConsultas->mostrarDoctores();
         $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
         require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
+    }
+
+    public function papeleraDoctoresAjax() {
+        echo json_encode($this->modelo->desactivos());
     }
 
     //metodo para mostrar los servicios de los doctores
@@ -158,15 +161,19 @@ class ControladorDoctores extends ModeloDoctores
     }
 
     // restablecer lógica doctor
-    public function restablecer()
+    public function restablecer($datos)
     {
-        $restablecer = $this->modelo->restablecerDoctor($_POST["id_usuario"]);
-        if ($restablecer) {
-            // Guardar la bitacora
-            $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha restablecido un doctor");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/papelera/restablecido");
+
+        $restablecer = $this->modelo->restablecerDoctor($datos[0]);
+
+        if (is_array($restablecer) && $restablecer[0] === "exito") {
+            $this->bitacora->insertarBitacora($datos[1], "doctor", "Ha restablecido un doctor");
+
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $restablecer]);
+            exit;
         }
     }
 

@@ -325,10 +325,10 @@ class ModeloDoctores extends Db
             $consultaDeUsuario->execute();
 
             $this->conexion->commit();
-            return "exito";
+            return ["exito"];
         } catch (\Exception $e) {
             $this->conexion->rollBack();
-            return 0;
+            return $e->getMessage();
         }
     }
 

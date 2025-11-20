@@ -109,6 +109,8 @@ return [
     "guardarDoctores" => "guardar",
     "selectEspcAjax"=>"guardar",
     "eliminarEspecialidad" => "consultar",
+    "papeleraDoctoresAjax" => "consultar",
+    "restablecer" => "eliminar",
 
     //Usuarios
     "usuarios" => "consultar",
