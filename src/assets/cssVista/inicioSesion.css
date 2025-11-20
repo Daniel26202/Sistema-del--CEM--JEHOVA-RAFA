@@ -151,7 +151,7 @@ se nota muy mínimo*/
 .linea-titulo {
   margin-left: 30px;
   margin-top: 6px;
-  width: 33.4vh;
+  width: 25.7vh;
   border-bottom: solid 4px #387adf;
 }
 
@@ -181,6 +181,14 @@ se nota muy mínimo*/
   position: absolute;
   transform: translateY(1px);
   transform: translateX(-2px);
+  width: 25px;
+  transition: 0.1s;
+}
+.iconoD {
+  color: #387adf;
+  position: absolute;
+  transform: translateY(-1px);
+  transform: translateX(-27px);
   width: 25px;
   transition: 0.1s;
 }
@@ -267,7 +275,7 @@ se nota muy mínimo*/
   }
 
   .linea-titulo {
-    width: 16.5vh;
+    width: 23.5vh;
   }
 
   .input {
