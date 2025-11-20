@@ -56,41 +56,41 @@ class ModeloEntrada extends Db
 		try {
 			$this->conexion->beginTransaction();
 
-			$fecha = date("Y-m-d");
+			// $fecha = date("Y-m-d");
 
-			$validaciones  = Validations::validationEntrada($fechaDeVencimiento, $cantidad, $precio, $lote);
+			// $validaciones  = Validations::validationEntrada($fechaDeVencimiento, $cantidad, $lote);
 
 
-			foreach ($validaciones as $v) {
-				if (!preg_match($v['regex'], $v['valor'])) {
-					throw new \Exception($v['mensaje']);
-				}
-			}
+			// foreach ($validaciones as $v) {
+			// 	if (!preg_match($v['regex'], $v['valor'])) {
+			// 		throw new \Exception($v['mensaje']);
+			// 	}
+			// }
 
-			if ($fecha > $fechaDeVencimiento) {
-				throw new \Exception("La fecha no puede ser del pasado.");
-			}
+			// if ($fecha > $fechaDeVencimiento) {
+			// 	throw new \Exception("La fecha no puede ser del pasado.");
+			// }
 
-			$consulta = $this->conexion->prepare("call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)");
-			$consulta->bindParam(":lote", $lote);
-			$consulta->bindParam(":id_proveedor", $id_proveedor);
-			$consulta->bindParam(":fechaDeIngreso", $fechaDeIngreso);
-			$consulta->bindParam(":id_insumo", $id_insumo);
-			$consulta->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
-			$consulta->bindParam(":precio", $precio);
-			$consulta->bindParam(":cantidad_disponible", $cantidad);
-			$consulta->execute();
+			// $consulta = $this->conexion->prepare("call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)");
+			// $consulta->bindParam(":lote", $lote);
+			// $consulta->bindParam(":id_proveedor", $id_proveedor);
+			// $consulta->bindParam(":fechaDeIngreso", $fechaDeIngreso);
+			// $consulta->bindParam(":id_insumo", $id_insumo);
+			// $consulta->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
+			// $consulta->bindParam(":precio", $precio);
+			// $consulta->bindParam(":cantidad_disponible", $cantidad);
+			// $consulta->execute();
 
-			$id = $this->conexion->lastInsertId();
+			// $id = $this->conexion->lastInsertId();
 
-			$consulta = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
-			$consulta->bindParam(":id_entrada", $id);
-			$consulta->execute();
-			$data = ($consulta->execute()) ? $consulta->fetch() : false;
+			// $consulta = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
+			// $consulta->bindParam(":id_entrada", $id);
+			// $consulta->execute();
+			// $data = ($consulta->execute()) ? $consulta->fetch() : false;
 
 			$this->conexion->commit();
 
-			return ["exito", $data];
+			return ["exito"];
 		} catch (\Exception $e) {
 			$this->conexion->rollBack();
 			return $e->getMessage();

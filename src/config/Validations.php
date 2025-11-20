@@ -88,14 +88,6 @@ class Validations
             ];
         }
 
-        if (!empty($precio)) {
-            $rules[] = [
-                'valor' => $precio,
-                'regex' => '/^\d{1,3}(\.\d{3})*(,\d{2})?$/',
-                'mensaje' => 'El precio debe tener formato válido, como 123.456.78 o 123.45.'
-            ];
-        }
-
         if (!empty($fechaDeVencimiento)) {
             $rules[] = [
                 'valor' => $fechaDeVencimiento,
@@ -117,7 +109,7 @@ class Validations
 
 
 
-    public static function validationEntrada($fechaDeVencimiento, $cantidad, $precio, $lote)
+    public static function validationEntrada($fechaDeVencimiento, $cantidad,  $lote)
     {
         return [
             [
@@ -132,11 +124,6 @@ class Validations
                 'mensaje' => 'La cantidad debe ser un número entre 1 y 99999.'
             ],
 
-            [
-                'valor' => $precio,
-                'regex' => '/^\d{1,3}(\.\d{3})*(,\d{2})?$/',
-                'mensaje' => "El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00."
-            ],
 
             [
                 'valor' => $lote,
