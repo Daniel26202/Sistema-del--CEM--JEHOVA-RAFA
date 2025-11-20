@@ -159,7 +159,7 @@ if (!empty($parametro)) {
                                     </input>
 
 
-                                    <a href="#" class="text-decoration-none btnMostrarContrase">
+                                    <a href="#" class="iconoD text-decoration-none btnMostrarContrase">
                                         <svg id="ocultarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
                                             fill="currentColor" class="bi bi-eye-slash-fill azul ocultarPassword d-none"
                                             viewBox="0 0 16 16">
@@ -186,7 +186,7 @@ if (!empty($parametro)) {
 
                         <div class="">
                             <!-- recaptcha -->
-                            <div class="d-flex justify-content-end mt-4 pt-3 col">
+                            <div class="d-flex justify-content-center mb-3 mt-4 pt-3 col">
                                 <div class="g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1"></div>
                             </div>
 
