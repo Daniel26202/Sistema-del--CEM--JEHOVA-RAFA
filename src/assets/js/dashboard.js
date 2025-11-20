@@ -460,19 +460,25 @@ const especialidades_chart = async (url) => {
             //Aparecer el boton de impirmir
             document.getElementById("especialidades").classList.remove("d-none");
             //Aparecer el escrito
-            
+
             totalDeEspecialidades(data);
             document.querySelectorAll("#texto p").forEach((ele) => ele.classList.remove("d-none"));
 
             document.querySelector(".alert-no-encontrado").classList.add("d-none");
+            document.getElementById("esp").innerText = "";
+            document.getElementById("esp").style.marginTop = "";
+            document.getElementById("esp").style.marginBottom = "";
         } else {
-            document.querySelector(".alert-no-encontrado").classList.remove("d-none")
+            document.querySelector(".alert-no-encontrado").classList.remove("d-none");
             //Vaciando todos los elementos si no hay datos para relizar la grafica
             document.getElementById("especialidades_solicitadas").classList.add("d-none");
             document.getElementById("especialidades_solicitadas_pdf").classList.add("d-none");
             document.querySelector(".leyenda-container").innerHTML = "";
             document.querySelectorAll("#texto p").forEach((ele) => ele.classList.add("d-none"));
             document.getElementById("especialidades").classList.add("d-none");
+            document.getElementById("esp").innerText = "No hay datos disponibles";
+            document.getElementById("esp").style.marginTop = "50px";
+            document.getElementById("esp").style.marginBottom = "50px";
         }
     } catch (error) {
         console.log("Error al generar el gráfico de especialidades:", error);
@@ -483,7 +489,7 @@ async function totalDeEspecialidades(data) {
     let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades");
     let resultado = await peticion.json();
     document.getElementById("texto").innerHTML = ``;
-    
+
     let especialidades = data.map((item) => item.especialidad).join(",  ");
 
     // Agrega esto al texto
@@ -574,10 +580,13 @@ const sintomas_chart = async (url) => {
         //Aparecer el boton de impirmir
         document.getElementById("textoSintomas").classList.remove("d-none");
         //Aparecer el escrito
-        
+
         document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.remove("d-none"));
         document.querySelector(".alert-no-encontrado-s").classList.add("d-none");
 
+        document.getElementById("sin").innerText = "";
+        document.getElementById("sin").style.marginTop = "";
+        document.getElementById("sin").style.marginBottom = "";
     } else {
         document.querySelector(".alert-no-encontrado-s").classList.remove("d-none");
 
@@ -587,6 +596,10 @@ const sintomas_chart = async (url) => {
         document.querySelector(".leyenda-container").innerHTML = "";
         document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.add("d-none"));
         document.getElementById("sintomas").classList.add("d-none");
+
+        document.getElementById("sin").innerText = "No hay datos disponibles";
+        document.getElementById("sin").style.marginTop = "50px";
+        document.getElementById("sin").style.marginBottom = "50px";
     }
 };
 

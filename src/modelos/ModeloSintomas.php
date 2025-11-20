@@ -37,8 +37,8 @@ class ModeloSintomas extends Db
 
             $id = $this->conexion->lastInsertId();
 
-            $consulta = $this->conexion->prepare("SELECT * from sintomas where id_sintoma=:id_sintoma");
-            $consulta->bindParam(":id_sintoma", $id);
+            $consulta = $this->conexion->prepare("SELECT * from sintomas where nombre=:nombre");
+            $consulta->bindParam(":nombre", $nombre);
             $consulta->execute();
             $data = ($consulta->execute()) ? $consulta->fetch() : false;
 

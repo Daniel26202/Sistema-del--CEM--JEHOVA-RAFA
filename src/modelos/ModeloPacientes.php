@@ -117,8 +117,8 @@ class ModeloPacientes extends Db
 	public function delete($cedula)
 	{
 		try {
-			$validar = $this->conexion->prepare("SELECT * from paciente where id_paciente=:id_paciente");
-			$validar->bindParam(":id_paciente", $id_paciente);
+			$validar = $this->conexion->prepare("SELECT * from paciente where cedula=:cedula");
+			$validar->bindParam(":cedula", $cedula);
 			$validar->execute();
 			if ($validar->rowCount() <= 0) {
 				throw new \Exception("Fallo");

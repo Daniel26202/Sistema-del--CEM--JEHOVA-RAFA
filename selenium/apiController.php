@@ -4,7 +4,6 @@ use PhpXmlRpc\Request;
 use PhpXmlRpc\Response;
 use PhpXmlRpc\Value;
 
-
 // api de testlink
 /*
  php scriptTest.php

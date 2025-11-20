@@ -50,9 +50,10 @@ require_once './src/vistas/head/head.php';
 
                 <div class="col-md-6 col-12 mb-2">
                     <div class="chart-card p-4 rounded shadow-sm" id="grafica1">
-                        <h5>Especialidades solicitadas</h5>
+                        <h5 class="text-center">Especialidades solicitadas</h5>
                         <canvas id="especialidades_solicitadas" width="600" height="600"></canvas>
                         <div class="text-center mt-4">
+                            <p class="text-center" id="esp"></p>
                             <button id="btnGrafica1" type="button" class="btn btn-primary 75 m-auto" data-bs-toggle="modal" data-bs-target="#reporte">
                                 Generar Reporte
                             </button>
@@ -63,8 +64,9 @@ require_once './src/vistas/head/head.php';
                 </div>
                 <div class="col-md-6 col-12 mb-2">
                     <div class="chart-card p-4 rounded shadow-sm" id="grafica2">
-                        <h5>Síntomas comunes</h5>
+                        <h5  class="text-center">Síntomas comunes</h5>
                         <canvas id="sintomas_comunes"></canvas>
+                        <p class="text-center" id="sin"></p>
                         <div class="text-center mt-4">
                             <button id="btnGrafica2" type="button" class="btn btn-primary 75 m-auto  reporte-sintomas" data-bs-toggle="modal" data-bs-target="#reporteSintomas">
                                 Generar Reporte
