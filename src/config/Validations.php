@@ -91,7 +91,7 @@ class Validations
         if (!empty($precio)) {
             $rules[] = [
                 'valor' => $precio,
-                'regex' => '/^(\d{1,3}\.\d{3}\.\d{2}|\d{1,3}\.\d{2})$/',
+                'regex' => '/^(\d{1,3}\.\d{3},\d{2}|\d{1,3},\d{2})$/',
                 'mensaje' => 'El precio debe tener formato válido, como 123.456.78 o 123.45.'
             ];
         }

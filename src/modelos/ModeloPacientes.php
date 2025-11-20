@@ -15,7 +15,6 @@ class ModeloPacientes extends Db
 	public function __construct()
 	{
 		$this->conexion = $this->connectionSistema();
-		// $this->validaciones = require '../config/expresionesRegulares.php';
 	}
 
 	public function index()

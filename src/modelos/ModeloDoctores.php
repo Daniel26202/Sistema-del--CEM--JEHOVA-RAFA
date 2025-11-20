@@ -415,9 +415,9 @@ class ModeloDoctores extends Db
             $validar->bindParam(":id_usuario", $id_usuario);
             $validar->execute();
             if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+                throw new \Exception("Fallo el id no existe.");
             }
-            $sql = 'INSERT INTO personal VALUES (Null, :nacionalidad, :cedula, :nombre, :apellido, :telefono, "Administrador", Null, :id_usuario)';
+            $sql = 'INSERT INTO bd.personal VALUES (Null, :nacionalidad, :cedula, :nombre, :apellido, :telefono, "Administrador", Null, :id_usuario)';
             $consulta = $this->conexion->prepare($sql);
             $consulta->bindParam(":nacionalidad", $nacionalidad);
             $consulta->bindParam(":cedula", $cedula);

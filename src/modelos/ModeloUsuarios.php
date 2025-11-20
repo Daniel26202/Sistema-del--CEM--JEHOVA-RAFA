@@ -145,7 +145,7 @@ class ModeloUsuarios extends Db
 
             if ($resultadoDeUsuario === "existeU") {
 
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores/Usuario");
+                throw new \Exception("Fallo el usuario ya existe...");
             } else {
                 $imagenComprobacion = isset($_FILES['imagenUsuario']['name']) ? $_FILES['imagenUsuario']['name'] : false;
                 if ($imagenComprobacion) {

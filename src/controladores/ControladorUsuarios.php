@@ -102,7 +102,7 @@ class ControladorUsuarios
 
         if (is_array($insercion) && $insercion[0] === "exito") {
             $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha insertado un administrador ");
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
             echo json_encode(['ok' => false, 'error' => $insercion]);

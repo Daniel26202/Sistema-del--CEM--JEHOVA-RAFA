@@ -240,9 +240,10 @@ const createUser = async (form, inputs) => {
       form.reset();
       inputs = [];
       inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
-      readPatients();
+      readUser();
     } else throw new Error(`${result.error}`);
   } catch (error) {
+    console.log("lamentablemente "+ error)
     alertError("Error", error);
   }
 };
