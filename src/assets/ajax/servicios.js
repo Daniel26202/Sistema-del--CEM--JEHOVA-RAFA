@@ -7,7 +7,7 @@ const form = document.getElementById("modalAgregar");
 const inputs = document.querySelectorAll("#modalAgregar input");
 
 const expresiones = {
-  precio: /^(\d{1,3}\.\d{3}.\d{2}|\d{1,3}.\d{2})$/,
+  precio: /^\d{1,3}(\.\d{3})*(,\d{2})?$/,
 };
 
 const campos = {
@@ -78,15 +78,18 @@ const readServices = async () => {
     // construir html de filas
     let html = "";
     result.forEach((element) => {
+      let precioD = element.precio.toFixed(2);
+      let precioB = (element.precio * dolar).toFixed(2);
+
       html += `<tr>
                             <td class="text-center">
                                 ${element.categoria}
                             </td>
                             <td class="text-center">
-                               ${element.precio * dolar}  BS
+                               ${precioB}  BS
                             </td>
                             <td class="text-center">
-                                ${element.precio} $
+                                ${precioD} $
                             </td>
                             <td class="border-start">
 

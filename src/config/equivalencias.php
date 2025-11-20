@@ -33,6 +33,7 @@ return [
     "eliminarPatologia" => "eliminar",
     "restablecerPatologia" => "eliminar",
 
+
     //Factura
     "factura" => "consultar",
     "facturaCita" => "consultar",
@@ -106,6 +107,7 @@ return [
     "buscarDoctor" => "consultar",
     "buscarHorario" => "consultar",
     "guardarDoctores" => "guardar",
+    "selectEspcAjac"=>"guardar",
 
     //Usuarios
     "usuarios" => "consultar",

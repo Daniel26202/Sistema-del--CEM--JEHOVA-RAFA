@@ -27,11 +27,14 @@ class ControladorDoctores extends ModeloDoctores
     {
         $vistaActiva = 'doctores';
         $ayuda = "btnayudaDoctores";
-        $datosEspecialidades = $this->modelo->selectEspecialidad();
         $datosDias = $this->modelo->selectDias();
         $doctores = $this->modeloConsultas->mostrarDoctores();
         $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
         require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
+    }
+
+    public function selectEspcAjac() {
+        echo json_encode($this->modelo->selectEspecialidad());
     }
 
     public function DoctoresAjax()
@@ -175,12 +178,15 @@ class ControladorDoctores extends ModeloDoctores
     public function registrarEspecialidad()
     {
         $insercion = $this->modelo->Especialidadregistrar($_POST['nombre']);
-        if ($insercion) {
-            // Guardar la bitacora
+
+        if (is_array($insercion) && $insercion[0] === "exito") {
             $this->bitacora->insertarBitacora($_POST['id_usuario'], "especialidad", "Ha insertado una nueva especialidad");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registro");
+
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $insercion]);
+            exit;
         }
     }
     public function eliminarEspecialidad($datos)
@@ -188,12 +194,15 @@ class ControladorDoctores extends ModeloDoctores
         $id_especialidad = $datos[0];
         $id_usuario =  $datos[1];
         $eliminacion = $this->modelo->Especialidadeliminar($id_especialidad);
-        //Guardar la bitacora
-        if ($eliminacion) {
+
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $this->bitacora->insertarBitacora($id_usuario, "especialidad", "Ha eliminado una especialidad");
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/eliminar");
+
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
         }
     }
 

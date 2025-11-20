@@ -51,9 +51,16 @@ class ControladorConsultas
 
 	public function guardar()
 	{
+		// 1. Quitar separadores de miles
+		$valor = str_replace('.', '', $_POST['precioD']);
 
-		$precio_decimal = floatval($_POST['precioD']);
-		$insercion = $this->modelo->insertarSevicio($_POST['id_categoria'],  $precio_decimal, $_POST['tipo']);
+		// 2. Cambiar coma decimal por punto
+		$valor = str_replace(',', '.', $valor);
+
+		// 3. Convertir a float
+		$numero = (float)$valor;
+
+		$insercion = $this->modelo->insertarSevicio($_POST['id_categoria'],  $numero, $_POST['tipo']);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicio Medico", "Ha Insertado un nuevo servicio medico");

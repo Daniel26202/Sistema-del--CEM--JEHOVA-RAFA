@@ -78,10 +78,8 @@
         </thead>
         <tbody id="cuerpoTablaEspecialidad">
 
-          <?php if ($datosEspecialidades): ?>
-            <?php $contadorEspecialidad = 1; ?>
 
-            <?php foreach ($datosEspecialidades as $especialidad): ?>
+
 
               <tr>
                 <td class="text-center fw-bold">
@@ -154,18 +152,7 @@
 
                 </td>
               </tr>
-            <?php endforeach ?>
-
-          <?php else: ?>
-
-
-            <tr>
-              <td colspan="9" class="text-center">NO HAY REGISTROS
-
-              </td>
-            </tr>
-          <?php endif ?>
-
+      
 
 
         </tbody>

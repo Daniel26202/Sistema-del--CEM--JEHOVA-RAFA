@@ -348,7 +348,7 @@ class ModeloDoctores extends Db
 
             return ["exito", $data];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
     public function Especialidadeliminar($id_especialidad)
