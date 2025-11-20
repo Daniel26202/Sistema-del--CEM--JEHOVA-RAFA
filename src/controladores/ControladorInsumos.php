@@ -69,15 +69,22 @@ class ControladorInsumos
 	public function guardarInsumo()
 	{
 		if (isset($_POST)) {
-			$precio_decimal = floatval($_POST['precioD']);
+			// 1. Quitar separadores de miles
+			$valor = str_replace('.', '', $_POST['precioD']);
+
+			// 2. Cambiar coma decimal por punto
+			$valor = str_replace(',', '.', $valor);
+
+			// 3. Convertir a float
+			$numero = (float)$valor;
 
 			$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
 
 			if ($iva === 1) {
-				$precio_decimal += $precio_decimal * 0.30;
+				$numero += $numero * 0.30;
 			}
 
-			$insercion = $this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $precio_decimal, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"], $_POST["marca"], $_POST["medida"],$iva);
+			$insercion = $this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $numero, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"], $_POST["marca"], $_POST["medida"],$iva);
 
 			if (is_array($insercion) && $insercion[0] === "exito") {
 				$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "insumo", "Ha Insertado un insumo");

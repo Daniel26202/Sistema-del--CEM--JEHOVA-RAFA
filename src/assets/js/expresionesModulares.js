@@ -167,7 +167,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Verificamos si todos los campos han sido validados correctamente
       const formularioValido = Object.values(campos).every((valor) => valor === true);
-      
 
       if (formularioValido) {
         //validamos si el formulario contiene la clase form-ajax
@@ -177,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
           formulario.submit(); // Enviamos el formulario
         }
       } else {
-       console.log('malo')
+        console.log("malo");
       }
     });
   }
@@ -282,16 +281,16 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   //Hay que seleccionar el id por medio del boton para poder comparar y saber que ormulario de edicion le voy a cambiar imagenes
-  
+
   setTimeout(() => {
     document.querySelectorAll(".botonesEdi").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      let id = btn.getAttribute("data-index");
+      btn.addEventListener("click", () => {
+        let id = btn.getAttribute("data-index");
 
-      let formularioEditar = document.querySelector(".form-validable" + id);
+        let formularioEditar = document.querySelector(".form-validable" + id);
 
-      inicializarValidacionFormularioEditar(formularioEditar, id);
+        inicializarValidacionFormularioEditar(formularioEditar, id);
+      });
     });
-  });
   }, 500);
 });

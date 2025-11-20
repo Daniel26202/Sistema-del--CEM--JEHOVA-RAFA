@@ -33,7 +33,7 @@ const expresionesInsumos = {
   nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
   descripcion: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
   cantidad: /^([1-9]{1})([0-9]{1,4})?$/,
-  precio: /^(\d{1,3}\.\d{3}.\d{2}|\d{1,3}.\d{2})$/,
+  precio: /^\d{1,3}(\.\d{3})*(,\d{2})?$/,
   fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
   stockMinimo: /^([1-9]{1})([0-9]{1})?$/,
   lote: /^[0-9-_]{4,10}$/,

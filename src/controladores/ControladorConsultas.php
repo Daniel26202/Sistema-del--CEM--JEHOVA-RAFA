@@ -106,9 +106,16 @@ class ControladorConsultas
 
 	public function editar()
 	{
-		$precio_decimal = floatval($_POST['precioD']);
+		// 1. Quitar separadores de miles
+		$valor = str_replace('.', '', $_POST['precioD']);
 
-		$edicion = $this->modelo->editar($_POST["id_servicioMedico"], $precio_decimal, $_POST['tipo']);
+		// 2. Cambiar coma decimal por punto
+		$valor = str_replace(',', '.', $valor);
+
+		// 3. Convertir a float
+		$numero = (float)$valor;
+
+		$edicion = $this->modelo->editar($_POST["id_servicioMedico"], $numero, $_POST['tipo']);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha modificadp un servicio medico");

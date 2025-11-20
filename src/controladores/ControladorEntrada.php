@@ -70,8 +70,17 @@ class ControladorEntrada
 
 	public function guardar()
 	{
-		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
-		$insercion = $this->modelo->insertarEntrada($_POST["id_proveedor"], $_POST["id_insumo"], $_POST["fechaDeIngreso"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["lote"]);
+
+		// 1. Quitar separadores de miles
+		$valor = str_replace('.', '', $_POST['precioD']);
+
+		// 2. Cambiar coma decimal por punto
+		$valor = str_replace(',', '.', $valor);
+
+		// 3. Convertir a float
+		$numero = (float)$valor;
+
+		$insercion = $this->modelo->insertarEntrada($_POST["id_proveedor"], $_POST["id_insumo"], $_POST["fechaDeIngreso"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $numero, $_POST["lote"]);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha insertado una entrada");
@@ -102,9 +111,16 @@ class ControladorEntrada
 
 	public function editar()
 	{
-		$precio_sin_puntos = str_replace('.', '', $_POST['precio']);
+		// 1. Quitar separadores de miles
+		$valor = str_replace('.', '', $_POST['precioD']);
 
-		$edicion = $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $precio_sin_puntos, $_POST["id_insumo"], $_POST["lote"]);
+		// 2. Cambiar coma decimal por punto
+		$valor = str_replace(',', '.', $valor);
+
+		// 3. Convertir a float
+		$numero = (float)$valor;
+
+		$edicion = $this->modelo->actualizarEntrada($_POST["id_entrada"], $_POST["id_proveedor"], $_POST["fechaDeVencimiento"], $_POST["cantidad"], $numero, $_POST["id_insumo"], $_POST["lote"]);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "entrada", "Ha modificado una entrada");
