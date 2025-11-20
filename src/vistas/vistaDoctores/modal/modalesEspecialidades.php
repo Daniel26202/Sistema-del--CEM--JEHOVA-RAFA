@@ -64,12 +64,9 @@
       </div>
     </div>
     <div class="">
-      <table class="table table-striped " id="tablaEspecialidad">
+      <table class="table table-striped exampleTable2" id="tablaEspecialidad">
         <thead>
           <tr>
-            <th class="d-none">
-              Id
-            </th>
             <th class=" text-center">#</th>
             <th class=" text-center border-start">Nombre</th>
             <th class=" text-center border-start">Acción</th>
@@ -81,78 +78,7 @@
 
 
 
-              <tr>
-                <td class="text-center fw-bold">
-                  <?php echo $contadorEspecialidad++; ?>
-                </td>
 
-                <td class="text-center border-start">
-                  <?php echo $especialidad['1']; ?>
-                </td>
-
-
-                <td class="border-start text-center">
-                  <button class="btn btn-tabla mb-1 btn-dt-tabla" uk-toggle="target: #eliminarEspecialidad<?= $especialidad["0"]; ?>" data-id-tabla="eliminarEspecialidad<?= $especialidad["0"]; ?>"
-                    id="btnEliminarEspecialidad">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                    </svg>
-                  </button>
-
-                  <div id="eliminarEspecialidad<?= $especialidad["0"]; ?>" uk-modal>
-                    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-                      <!-- Boton que cierra el modal -->
-                      <div class="d-flex justify-content-between mb-5">
-
-
-
-
-                        <div class="d-flex align-items-center" id="eliminarEspecialidad">
-                          <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                              class="bi bi-trash-fill azul me-2 mb-1" viewBox="0 0 16 16">
-                              <path
-                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                            </svg>
-                          </div>
-                          <div>
-                            <h5>
-                              ¿Desea eliminar la Especialidad?
-                            </h5>
-                          </div>
-                        </div>
-                        <!-- Ayuda Interactiva -->
-                        <div>
-                          <a href="#" uk-tooltip="Ayuda">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                              class="bi bi-question-octagon-fill azul ms-4" viewBox="0 0 16 16"
-                              id="btnayudaEspecialidades3">
-                              <path
-                                d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
-                            </svg>
-                          </a>
-                        </div>
-                      </div>
-
-
-                      <div class="mt-5 uk-text-right">
-                        <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
-                          id="cancelarEliminacion">Cancelar</button>
-
-                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/EliminarEspecialidad/<?= $especialidad["0"]; ?>/<?= $_SESSION['id_usuario'];?>">
-                          <button class="btn col-4 btn-agregarcita-modal" id="btnEliminarEspecialidad">Eliminar</button>
-                        </a>
-
-                      </div>
-
-                    </div>
-
-
-                </td>
-              </tr>
-      
 
 
         </tbody>
@@ -239,7 +165,7 @@
 
     <form class="form-modal" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/registrarEspecialidad" method="POST">
 
-      <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']?>">
+      <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
       <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">
         <span class="input-modal mt-1">

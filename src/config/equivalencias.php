@@ -107,7 +107,8 @@ return [
     "buscarDoctor" => "consultar",
     "buscarHorario" => "consultar",
     "guardarDoctores" => "guardar",
-    "selectEspcAjac"=>"guardar",
+    "selectEspcAjax"=>"guardar",
+    "eliminarEspecialidad" => "consultar",
 
     //Usuarios
     "usuarios" => "consultar",

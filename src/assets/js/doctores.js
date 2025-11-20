@@ -276,7 +276,7 @@ addEventListener("DOMContentLoaded", function () {
     }
 
     async function consultarHorario(id_personal) {
-      let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarHorario/" + id_personal);
+      let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarHorario/" + id_personal);
       let resultado = await peticion.json();
       console.log(resultado);
       let html = "";
@@ -339,11 +339,14 @@ addEventListener("DOMContentLoaded", function () {
     }
 
     //consultar el horario del doctor
-    document.querySelectorAll(".botonesInfo").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        consultarHorario(this.getAttribute("data-index"));
-      });
-    });
+   setTimeout(() => {
+     document.querySelectorAll(".botonesInfo").forEach((btn) => {
+       btn.addEventListener("click", function () {
+        console.log(this.getAttribute("data-index"));
+         consultarHorario(this.getAttribute("data-index"));
+       });
+     });
+   }, 2000);
 
     async function traerEspecialidadDoctor(id_doctor) {
       try {

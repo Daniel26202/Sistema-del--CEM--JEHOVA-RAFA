@@ -17,6 +17,9 @@
 
     <input type="hidden" name="id_usuario_bitacora" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
+    <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
+
+
 
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
@@ -241,6 +244,9 @@
 
     <script type="module" src="<?= $urlBase; ?>../src/assets/ajax/doctor.js"></script>
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/doctores.js"></script>
+
+
+
 
 
 

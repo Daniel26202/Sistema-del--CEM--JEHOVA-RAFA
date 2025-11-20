@@ -363,9 +363,9 @@ class ModeloDoctores extends Db
             $consulta = $this->conexion->prepare("UPDATE especialidad set estado = 'DES' WHERE id_especialidad = :id_especialidad");
             $consulta->bindParam(":id_especialidad", $id_especialidad);
             $consulta->execute();
-            return 1;
+            return ['exito'];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
     public function especialidaDbuscar($nombre)

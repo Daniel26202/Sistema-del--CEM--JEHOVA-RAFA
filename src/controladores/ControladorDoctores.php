@@ -28,12 +28,13 @@ class ControladorDoctores extends ModeloDoctores
         $vistaActiva = 'doctores';
         $ayuda = "btnayudaDoctores";
         $datosDias = $this->modelo->selectDias();
+        $datosEspecialidades = $this->modelo->selectEspecialidad();
         $doctores = $this->modeloConsultas->mostrarDoctores();
         $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
         require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
     }
 
-    public function selectEspcAjac() {
+    public function selectEspcAjax() {
         echo json_encode($this->modelo->selectEspecialidad());
     }
 

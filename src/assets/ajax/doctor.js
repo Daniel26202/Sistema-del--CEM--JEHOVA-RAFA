@@ -383,7 +383,7 @@ const readDoctor = async () => {
 
                             <select name="selectEspecialidad" class="form-control input-modal input-disabled input inputA selectEspecialidad " placeholder="Especialidad">
                                 <option selected value="${element.id_especialidad}">
-                                    <?php echo $dato["nombre"]; ?>
+                                     ${element.nombre}
                                 </option>
 
                                 <?php foreach ($datosEspecialidades as $e): ?>
@@ -468,8 +468,8 @@ const readDoctor = async () => {
 
                 <!-- inputs ocultos -->
                 <div>
-                    <input type="" name="id_usuario" value="<?php echo $dato["id_usuario"]; ?>" hidden>
-                    <input type="" name="id_especialidad" value="<?php echo $dato["id_especialidad"]; ?>" hidden>
+                    <input type="" name="id_usuario" value=" ${element.id_usuario}" hidden>
+                    <input type="" name="id_especialidad" value=" ${element.id_especialidad}" hidden>
 
                     <input type="" name="id_personalyespecialidad" value=""
                         hidden>
@@ -567,6 +567,95 @@ const readDoctor = async () => {
   }
 };
 
+
+
+
+//read
+const readEspecialidad = async () => {
+  try {
+
+    const result = await executePetition("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectEspcAjax", "GET");
+
+    // construir html de filas
+    let html = "";
+
+    result.forEach((element, index) => {
+      html += ` 
+       <tr>
+                <td class="text-center fw-bold">
+                 ${index + 1}
+                </td>
+
+                <td class="text-center border-start">
+                  ${element.nombre}
+                </td>
+
+
+                <td class="border-start text-center">
+                  <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar-epe" data-index="${element.id_especialidad}" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                      <path
+                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                    </svg>
+                  </button>
+
+                  
+  
+
+                </td>
+              </tr>
+      
+        
+                        `;
+    });
+
+    const selector = ".exampleTable2";
+
+    // si ya existe DataTable, destrúyela
+    if ($.fn.DataTable.isDataTable(selector)) {
+      $(selector).DataTable().clear().destroy();
+    }
+
+    // vuelca el html en el tbody
+    document.querySelector(selector + " tbody").innerHTML = html;
+
+    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+      ele.value = document.getElementById("id_usuario_session").value;
+    });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".btn-eliminar-epe").forEach((btn) => {
+      console.log(btn);
+      btn.addEventListener("click", function () {
+        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+        alertConfirm("Esta seguro de eliminar la especialidad?", deleteEspecialidad, data);
+      });
+    });
+
+
+
+    // re-inicializa
+    $(selector).DataTable({
+      language: {
+        language: {
+          decimal: ",",
+          thousands: ".",
+          lengthMenu: "Mostrar por página _MENU_ ",
+          zeroRecords: "No se encontraron resultados",
+          info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+          infoEmpty: "No hay registros disponibles",
+          infoFiltered: "(filtrado de _MAX_ registros en total)",
+          search: "Buscar:",
+        },
+      },
+    });
+    console.log('cargada...')
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
 //create
 const createDoctor = async (form, inputs) => {
   try {
@@ -601,7 +690,23 @@ const deleteDoctor = async (data) => {
 };
 
 
+//delete
+const deleteEspecialidad = async (data) => {
+  try {
+    const result = await executePetition(`/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`, "GET");
+    if (result.ok) {
+      alertSuccess(result.message);
+      readDoctor();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
+
 readDoctor();
+
+readEspecialidad();
 
 
 
