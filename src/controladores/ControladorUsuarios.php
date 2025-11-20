@@ -148,15 +148,22 @@ class ControladorUsuarios
     public function verificarPassw()
     {
         if (isset($_POST["passwordActual"])) {
-            $datosU = $this->inicioSesion->validarIniciarSesion($_GET["usuario"], $_POST["passwordActual"]);
+            $datosU = $this->inicioSesion->validarIniciarSesion("WDaniel123", $_POST["passwordActual"]);
             $verificar = ($datosU) ? "existe" : false;
             if ($verificar == "existe") {
                 // Generamos la contraseña encriptada de la contraseña ingresada
                 $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
                 $this->recuperarContr->updatePassword($datosU["id_usuario"], $passwordEncrip);
+
+                echo json_encode(['ok' => true, 'data' => $datosU]);
+            }else{
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $_POST]);
+                exit;
             }
-            echo json_encode($datosU);
+
+            
         }
     }
 

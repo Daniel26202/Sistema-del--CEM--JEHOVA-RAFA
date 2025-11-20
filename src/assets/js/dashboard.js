@@ -62,6 +62,34 @@ document.getElementById("buscarFechaSintomas").addEventListener("click", functio
     }
 });
 
+
+const convertirHora = (horaMilitar) => {
+  // Separamos hora y minutos
+  let [horaStr, minutoStr] = horaMilitar.split(":");
+
+  let hora = parseInt(horaStr, 10);
+  let minutos = parseInt(minutoStr, 10);
+
+  // Validamos rango
+  if (isNaN(hora) || isNaN(minutos) || hora < 0 || hora > 23 || minutos < 0 || minutos > 59) {
+    return "Hora inválida";
+  }
+
+  // Determinamos AM o PM
+  let sufijo = hora >= 12 ? "PM" : "AM";
+
+  // Convertimos a formato 12 horas
+  let hora12 = hora % 12;
+  if (hora12 === 0) {
+    hora12 = 12;
+  }
+
+  // Aseguramos que los minutos siempre tengan dos dígitos
+  let minutosFormateados = minutos.toString().padStart(2, "0");
+
+  return `${hora12}:${minutosFormateados} ${sufijo}`;
+};
+
 //validar que el elemento exista
 
 if (document.getElementById("selectDoctor")) {
@@ -247,10 +275,16 @@ traerHorarioEspecificoDelDr = async (id) => {
         resultado.forEach((res) => {
             div.innerHTML += `
                 <div class="mb-2" id="divAcordion">
-                <div class="d-flex text-horario">Días Laborables: <h6 class="fw-bold text-horario"> ${res.diaslaborables}</h6> </div>
+                <div class="d-flex text-horario">Días Laborables: <h6 class="fw-bold text-horario"> ${
+                  res.diaslaborables
+                }</h6> </div>
               
-                <div class="d-flex text-horario">Hora de Entrada: <h6 class="fw-bold text-horario"> ${res.horaDeEntrada}</h6></div>
-                <div class="d-flex text-horario">Hora de Salida: <h6 class="fw-bold text-horario"> ${res.horaDeSalida}</h6></div></div>  `;
+                <div class="d-flex text-horario">Hora de Entrada: <h6 class="fw-bold text-horario"> ${convertirHora(
+                  res.horaDeEntrada
+                )}</h6></div>
+                <div class="d-flex text-horario">Hora de Salida: <h6 class="fw-bold text-horario"> ${convertirHora(
+                  res.horaDeSalida
+                )}</h6></div></div>  `;
         });
 
         document.getElementById("titulo").innerText = `Horario del Doctor`;

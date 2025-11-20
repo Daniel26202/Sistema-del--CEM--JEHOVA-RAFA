@@ -1,5 +1,7 @@
 import { executePetition, alertConfirm, alertError, alertSuccess } from "./../assets/ajax/funtionExecutePetition.js";
 
+import {convertirHora} from "./js/funtionHorailitar.js";
+
 addEventListener("DOMContentLoaded", () => {
   console.log("Citas");
   const url = "/Sistema-del--CEM--JEHOVA-RAFA/Citas";
@@ -674,8 +676,8 @@ addEventListener("DOMContentLoaded", () => {
           alertaCita.classList.add("d-none");
 
           let horario = diasLaborablesMap[diaSemanaNombre];
-          document.getElementById("horaCita").setAttribute("min", horario.entrada);
-          document.getElementById("horaCita").setAttribute("max", horario.salida);
+          document.getElementById("horaCita").setAttribute("min", convertirHora(horario.entrada));
+          document.getElementById("horaCita").setAttribute("max", convertirHora(horario.salida));
         } else {
           document.getElementById("btnAgregarCita").classList.add("d-none");
           alertaCita.classList.remove("d-none");

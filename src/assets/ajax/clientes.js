@@ -15,6 +15,7 @@ const readCustomer = async () => {
     else metodo = "papeleraAjax";
 
     const result = await executePetition(url + "/" + metodo, "GET");
+    console.log(result)
 
     // construir html de filas
     let html = "";
@@ -31,9 +32,9 @@ const readCustomer = async () => {
               <button class="${
                 urlActual.includes("papelera") ? "d-none" : ""
               } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
-                                uk-toggle="target: #modal-examplePacienteEditar${element.id_paciente}"
-                                data-id-tabla="modal-examplePacienteEditar${element.id_paciente}" data-index="${
-        element.id_paciente
+                                uk-toggle="target: #modal-exampleclienteEditar${element.id_cliente}"
+                                data-id-tabla="modal-exampleclienteEditar${element.id_cliente}" data-index="${
+        element.id_cliente
       }">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">

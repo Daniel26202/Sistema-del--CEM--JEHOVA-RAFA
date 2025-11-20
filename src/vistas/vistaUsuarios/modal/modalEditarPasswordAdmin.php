@@ -7,6 +7,9 @@
 
             <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
+            <input type="hidden" name="usuario" value="<?= $dato['usuario'] ?>">
+
+
             <div id="padre<?php echo $dato["id_usuario"]; ?>">
                 <div class="alert alert-danger text-center d-none" id="alertaUsuario">VERIFIQUE EL FORMULARIO ANTES DE
                     ENVIARLO</div>
@@ -129,8 +132,8 @@
                     </div>
                     <div class="uk-card-footer d-flex justify-content-start">
                         <a href="#" class="uk-button uk-button-text btnMostrar mt-2 uk-modal-close">Cancelar</a>
-                        <a href="#" class="uk-button uk-button-text btnMostrar ms-4 mt-2" name="actualizarPassw"
-                            id="btnAPassw">Actualizar</a>
+                        <button class="uk-button uk-button-text btnMostrar ms-4 mt-2" name="actualizarPassw"
+                            id="btnAPassw">Actualizar</button>
                     </div>
                 </div>
         </form>

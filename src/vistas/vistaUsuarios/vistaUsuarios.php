@@ -96,5 +96,5 @@
 
 
 <script type="module" src="<?= $urlBase ?>../src/assets/ajax/usuarios.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/admin.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/admin.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaUsuario.js"></script>
