@@ -113,7 +113,7 @@ class ModeloDoctores extends Db
             $this->conexion->beginTransaction();
 
             if ($this->validarCedula($cedula) === "existeC") {
-				throw new \Exception("La cédula ya está registrada.");
+                throw new \Exception("La cédula ya está registrada.");
             }
 
             if ($this->validarUsuario($usuario) === "existeU") {
@@ -121,9 +121,9 @@ class ModeloDoctores extends Db
             }
 
             if (!$imagen) {
-                $nombreImagen= 'doctor.png';
+                $nombreImagen = 'doctor.png';
                 $imagenTemporal = "";
-            } 
+            }
 
             //agregamos al doctor como usuario.
             $consultaDeUsuario = $this->conexion->prepare('INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES (8,:imagen, :usuario, :correo, :password,"ACT");');
@@ -189,92 +189,90 @@ class ModeloDoctores extends Db
     public function updateDoctor($cedula, $nombre, $apellido, $telefono, $idUsuario, $idEspecialidad, $email, $nacionalidad, $diasE, $diasN, $diasEditar, $checkeds, $horaEntrada, $horaSalida, $ceduladRegistrada)
     {
         try {
-            // $this->conexion->beginTransaction();
+            $this->conexion->beginTransaction();
 
-            // $validar = $this->conexion->prepare("SELECT * from personal where usuario=:idUsuario");
-            // $validar->bindParam(":idUsuario", $idUsuario);
-            // $validar->execute();
-            // if ($validar->rowCount() <= 0) {
-            //     throw new \Exception("Fallo");
-            // }
+            $validar = $this->conexion->prepare("SELECT * from personal where usuario=:idUsuario");
+            $validar->bindParam(":idUsuario", $idUsuario);
+            $validar->execute();
+            if ($validar->rowCount() <= 0) {
+                throw new \Exception("Fallo");
+            }
 
-            // if ($cedula != $ceduladRegistrada && $this->validarCedula($cedula) === "existeC") {
-            //     throw new \Exception("La cédula ya está registrada.");
-            // }
-            
-
-            // $consultaU = $this->conexion->prepare('SELECT id_personal FROM personal  WHERE usuario = :id_usuario');
-            // $consultaU->bindParam(":id_usuario", $idUsuario);
-            // $consultaU->execute();
-            // $idPersonal = ($consultaU->execute()) ? $consultaU->fetch() : false;
-
-            // //Editar el usuario (el usuario del doctor).
-            // $consultaDeUsuario = $this->conexion->prepare('UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_especialidad WHERE id_personal=:id_personal');
-
-            // $consultaDeUsuario->bindParam(":cedula", $cedula);
-            // $consultaDeUsuario->bindParam(":nombre", $nombre);
-            // $consultaDeUsuario->bindParam(":apellido", $apellido);
-            // $consultaDeUsuario->bindParam(":telefono", $telefono);
-            // $consultaDeUsuario->bindParam(":nacionalidad", $nacionalidad);
-            // $consultaDeUsuario->bindParam(":id_personal", $idPersonal["id_personal"]);
-            // $consultaDeUsuario->bindParam(":id_especialidad", $_POST["selectEspecialidad"]);
-
-            // $consultaDeUsuario->execute();
+            if ($cedula != $ceduladRegistrada && $this->validarCedula($cedula) === "existeC") {
+                throw new \Exception("La cédula ya está registrada.");
+            }
 
 
+            $consultaU = $this->conexion->prepare('SELECT id_personal FROM personal  WHERE usuario = :id_usuario');
+            $consultaU->bindParam(":id_usuario", $idUsuario);
+            $consultaU->execute();
+            $idPersonal = ($consultaU->execute()) ? $consultaU->fetch() : false;
+
+            //Editar el usuario (el usuario del doctor).
+            $consultaDeUsuario = $this->conexion->prepare('UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_especialidad WHERE id_personal=:id_personal');
+
+            $consultaDeUsuario->bindParam(":cedula", $cedula);
+            $consultaDeUsuario->bindParam(":nombre", $nombre);
+            $consultaDeUsuario->bindParam(":apellido", $apellido);
+            $consultaDeUsuario->bindParam(":telefono", $telefono);
+            $consultaDeUsuario->bindParam(":nacionalidad", $nacionalidad);
+            $consultaDeUsuario->bindParam(":id_personal", $idPersonal["id_personal"]);
+            $consultaDeUsuario->bindParam(":id_especialidad", $_POST["selectEspecialidad"]);
+
+            $consultaDeUsuario->execute();
 
 
-            //Editar el usuario (el correo del doctor).
-            // $consultaDeUsuario = $this->conexion->prepare('UPDATE segurity.usuario SET correo =:correo WHERE id_usuario=:id_usuario');
-
-            // $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
-            // $consultaDeUsuario->bindParam(":correo", $email);
-            // $consultaDeUsuario->execute();
-
-            // $this->modeloUsuario->updateUsuario($usuario, $idUsuario,);
-
-            // $contadorDias = 0;
-            // foreach ($checkeds as $idD) {
-            //     if ($diasN) {
-            //         //si el id existe en el array se inserta
-            //         if (in_array($idD, $diasN)) {
-            //             $sqlHorario = $this->conexion->prepare("INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);");
-            //             $sqlHorario->bindParam(":id_personal", $idPersonal["id_personal"]);
-            //             $sqlHorario->bindParam(":id_horario", $idD);
-            //             $sqlHorario->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
-            //             $sqlHorario->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
-            //             $sqlHorario->execute();
-            //         }
-            //     }
-            //     if ($diasEditar) {
-            //         //si el id existe en el array se inserta
-            //         if (in_array($idD, $diasEditar)) {
-
-            //             $sqlHorarioEdi = $this->conexion->prepare("UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada,horaDeSalida=:horaDeSalida WHERE id_personal = :id_personal AND id_horario = :id_horario");
-            //             $sqlHorarioEdi->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
-            //             $sqlHorarioEdi->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
-            //             $sqlHorarioEdi->bindParam(":id_personal", $idPersonal["id_personal"]);
-            //             $sqlHorarioEdi->bindParam(":id_horario", $idD);
-            //             $sqlHorarioEdi->execute();
-            //         }
-            //     }
-
-            //     $contadorDias++;
-            // }
 
 
-            // // si el id existe es porque se deselecciono y se elimina
-            // if ($diasE) {
-            //     foreach ($diasE as $idE) {
+            // Editar el usuario (el correo del doctor).
+            $consultaDeUsuario = $this->conexion->prepare('UPDATE segurity.usuario SET correo =:correo WHERE id_usuario=:id_usuario');
 
-            //         $sqlHorarioE = $this->conexion->prepare("DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario");
-            //         $sqlHorarioE->bindParam(":id_personal", $idPersonal["id_personal"]);
-            //         $sqlHorarioE->bindParam(":id_horario", $idE);
-            //         $sqlHorarioE->execute();
-            //     }
-            // }
+            $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
+            $consultaDeUsuario->bindParam(":correo", $email);
+            $consultaDeUsuario->execute();
 
-            // $this->conexion->commit();
+            $contadorDias = 0;
+            foreach ($checkeds as $idD) {
+                if ($diasN) {
+                    //si el id existe en el array se inserta
+                    if (in_array($idD, $diasN)) {
+                        $sqlHorario = $this->conexion->prepare("INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);");
+                        $sqlHorario->bindParam(":id_personal", $idPersonal["id_personal"]);
+                        $sqlHorario->bindParam(":id_horario", $idD);
+                        $sqlHorario->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
+                        $sqlHorario->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
+                        $sqlHorario->execute();
+                    }
+                }
+                if ($diasEditar) {
+                    //si el id existe en el array se inserta
+                    if (in_array($idD, $diasEditar)) {
+
+                        $sqlHorarioEdi = $this->conexion->prepare("UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada,horaDeSalida=:horaDeSalida WHERE id_personal = :id_personal AND id_horario = :id_horario");
+                        $sqlHorarioEdi->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
+                        $sqlHorarioEdi->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
+                        $sqlHorarioEdi->bindParam(":id_personal", $idPersonal["id_personal"]);
+                        $sqlHorarioEdi->bindParam(":id_horario", $idD);
+                        $sqlHorarioEdi->execute();
+                    }
+                }
+
+                $contadorDias++;
+            }
+
+
+            // si el id existe es porque se deselecciono y se elimina
+            if ($diasE) {
+                foreach ($diasE as $idE) {
+
+                    $sqlHorarioE = $this->conexion->prepare("DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario");
+                    $sqlHorarioE->bindParam(":id_personal", $idPersonal["id_personal"]);
+                    $sqlHorarioE->bindParam(":id_horario", $idE);
+                    $sqlHorarioE->execute();
+                }
+            }
+
+            $this->conexion->commit();
             return ["exito"];
         } catch (\Exception $e) {
             // $this->conexion->rollBack();

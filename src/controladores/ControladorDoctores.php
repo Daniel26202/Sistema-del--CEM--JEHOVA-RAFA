@@ -119,10 +119,10 @@ class ControladorDoctores extends ModeloDoctores
         $igualesDb = !empty($igualesDb) ? $igualesDb : false;
 
         
-            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"],$_POST['ceduladRegistrada']);
+            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"],$_POST['cedulaRegistrada']);
         
             if (is_array($edicion) && $edicion[0] === "exito") {
-                $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
+                // $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
                 echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
             } else {
                 http_response_code(409);

@@ -153,7 +153,7 @@ addEventListener("DOMContentLoaded", function () {
     async function traerDiasCheckeados(idDoctor, dia, inputHoraEntradaEditar, inputHoraSalidaEditar) {
       alert("entra a la funcion");
       try {
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectDiasDoctorEditar&id_personal=" + idDoctor);
+        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectDiasDoctorEditar/" + idDoctor);
         let resultado = await peticion.json();
         console.log(resultado);
         resultado.forEach((res) => {
@@ -219,7 +219,7 @@ addEventListener("DOMContentLoaded", function () {
     console.log("horario");
     async function checkearDiasLaborablesDelDoctor(id_personal, checkeboxs) {
       try {
-        let peticion = await fetch("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarHorario/" + id_personal);
+        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/buscarHorario/" + id_personal);
         let resultado = await peticion.json();
         console.log(resultado);
 

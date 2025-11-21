@@ -800,7 +800,7 @@ const deleteDoctor = async (data) => {
 
 //update
 const updateDoctor = async (form, inputs) => {
-  try {
+  // try {
     const data = new FormData(form);
     console.log(form);
     console.log(url + "/editarDoctor");
@@ -815,10 +815,10 @@ const updateDoctor = async (form, inputs) => {
       inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
       readDoctor();
     } else throw new Error(`${result.error}`);
-  } catch (error) {
-    console.log(error.error);
-    alertError('Error', error)
-  }
+  // } catch (error) {
+  //   console.log(error);
+  //   alertError('Error', error)
+  // }
 };
 
 //delete
