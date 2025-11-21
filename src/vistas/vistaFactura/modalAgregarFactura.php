@@ -432,7 +432,7 @@
             </thead>
             <tbody id="cuerpoTablaInsumos" class="tbodyI">
 
-              <?php if ($insumos): ?>
+
                 <?php $contador = 1; ?>
 
                 <?php foreach ($insumos as $i): ?>
@@ -484,15 +484,6 @@
 
 
 
-              <?php else: ?>
-
-
-                <tr>
-                  <td colspan="9" class="text-center">NO HAY REGISTROS
-
-                  </td>
-                </tr>
-              <?php endif ?>
 
 
 
@@ -838,7 +829,7 @@
       <div class="form-modal mt-2" id="inputCom">
 
         <div id="alert-edad" class="d-none uk-alert-danger comentario  comentarioRed me-4 fw-bolder  text-center" uk-alert>
-          
+
           <p id="text-alert-edad" class="pe-2 ">
             <!-- js -->
           </p>
