@@ -163,7 +163,7 @@
       </div>
     </div>
 
-    <form class="form-modal" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/registrarEspecialidad" method="POST">
+    <form class="form-modal" id="modalAgregarEspecialidad" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/registrarEspecialidad" method="POST">
 
       <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 

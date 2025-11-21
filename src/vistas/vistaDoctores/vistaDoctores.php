@@ -148,7 +148,7 @@
             </div>
         </div>
 
-        <form class="form-modal form-convercion" id="modalAgregar" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/guardarDoctores" method="POST"
+        <form class="form-modal form-convercion" id="modalAgregarSer" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/guardarDoctores" method="POST"
             autocomplete="off">
             <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
 
@@ -159,9 +159,9 @@
                         <path
                             d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5z" />
                     </svg> </span>
-                <select class="form-control input-modal" aria-label="" id="id_categoria" placeholder="id_categoria"
+                <select class="form-control input-modal " aria-label="" id="id_categoria" placeholder="id_categoria"
                     name="id_servicioMedico" required>
-                    <option value="" selected disabled>Seleccione la Categoría del Servicio</option>
+                    <option selected="" disabled>Seleccione la Categoría del Servicio</option>
 
                     <?php foreach ($todasLasServicios as $categoria): ?>
                         <option value="<?php echo $categoria['id_servicioMedico']; ?>">
@@ -186,6 +186,7 @@
 
                 <select class="form-control input-modal input-disabled" aria-label=""
                     placeholder="Id_doctor" name="id_doctor" id="id_doctor">
+
                     <?php foreach ($doctores as $servicio): ?>
                         <option value="<?php echo $servicio['id_personal']; ?>" selected>
                             <?php echo $servicio['nombre']; ?>

@@ -4,6 +4,10 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Doctores";
 const form = document.getElementById("modalAgregarDoctores");
 const inputs = document.querySelectorAll("#modalAgregarDoctores .inputA");
 
+const selectService = document.querySelector("#id_categoria");
+const modalAgregarSer = document.getElementById("modalAgregarSer");
+const modalAgregarEspecialidad = document.getElementById("modalAgregarEspecialidad");
+
 const urlActual = window.location.href;
 
 const expresiones = {
@@ -148,11 +152,9 @@ const listDateFragment = (data) => {
 
 
                                                         <div>
-                                                            <input type="time"
-                                                                class="input-dias hora-entrada inputHorario d-none form-control input-modal input-disabled input inputA"
+                                                            <input type="time" class="input-dias hora-entrada inputHorario d-none form-control input-modal input-disabled input inputA"
                                                                 title="Hora De Entrada ${element.diaslaborables}" name="horaEntradaNoChecked[]">
-                                                            <input type="time"
-                                                                class="input-dias hora-salida inputHorario mt-2 d-none form-control input-modal input-disabled input inputA"
+                                                            <input type="time" class="input-dias hora-salida inputHorario mt-2 d-none form-control input-modal input-disabled input inputA"
                                                                 title="Hora De Salida ${element.diaslaborables}>" name="horaSalidaNoChecked[]">
                                                         </div>
 
@@ -182,6 +184,7 @@ const readDoctor = async () => {
     console.log(result);
 
     if (!urlActual.includes("papelera")) {
+      console.log(result[1]);
       result[0].forEach((element) => {
         html += ` <tr>
                             <td class=" text-center">
@@ -251,7 +254,7 @@ const readDoctor = async () => {
                                     uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${
                                       element.id_usuario
                                     }"
-                                    data-index="${element.id_usuario}">
+                                    data-index="${element.id_personal}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-info-circle-fill" viewBox="0 0 16 16">
                                         <path
@@ -294,7 +297,7 @@ const readDoctor = async () => {
             </div>
 
 
-            <form class="me-2 ms-2 formulario_editar">
+            <form class="me-2 ms-2 formulario_editar forms-editar" data-index="${element.id_personal}" >
 
                 <div class="col w-auto mt-2 mb-4 pb-1">
                     <div class="d-flex flex-column w-auto ">
@@ -312,11 +315,19 @@ const readDoctor = async () => {
                                     <option value="E">E</option>
                                 </select>
                             </span>
-                            <input type="number" name="cedula" id="inputUno" class="form-control input-modal input-disabled inputA" placeholder="Cédula" value="${
+                            <input type="number" name="cedula" id="inputUno" class="form-control input-validar input-modal input-disabled inputA" placeholder="Cédula" value="${
                               element.cedula
                             }">
 
                         </div>
+                        <div class="contenedroInputsOcultos${element.id_personal}">
+                        </div>
+
+                        <input type="number" name="cedulaRegistrada" class="form-control input-modal input-disabled d-none" value="${
+                          element.cedula
+                        }">
+
+
                         <div class="input-group flex-nowrap margin-inputs grpFormCorrect">
 
                             <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20"
@@ -324,7 +335,7 @@ const readDoctor = async () => {
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="nombre" id="inputDos" class="form-control input-modal input-disabled input inputA mayuscula" placeholder="Nombre" value="${
+                            <input type="text" name="nombre" id="inputDos" class="input-validar form-control input-modal input-disabled input inputA mayuscula" placeholder="Nombre" value="${
                               element.nombre_d
                             }">
 
@@ -336,7 +347,7 @@ const readDoctor = async () => {
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                             </svg>
 
-                            <input type="text" name="apellido" id="inputTres" class="form-control input-modal input-disabled input inputA mayuscula" placeholder="Apellido"
+                            <input type="text" name="apellido" id="inputTres" class="form-control input-validar input-modal input-disabled input inputA mayuscula" placeholder="Apellido"
                                 value="${element.apellido}">
 
                         </div>
@@ -348,7 +359,7 @@ const readDoctor = async () => {
                                     d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
                             </svg>
 
-                            <input type="text" name="telefono" id="inputCuatro" class="form-control input-modal input-disabled input inputA mayuscula" placeholder="Teléfono"
+                            <input type="text" name="telefono" id="inputCuatro" class="input-validar  form-control input-modal input-disabled input inputA mayuscula" placeholder="Teléfono"
                                 value="${element.telefono}">
 
                         </div>
@@ -362,7 +373,7 @@ const readDoctor = async () => {
                                     d="M15.834 12.244c0 1.168-.577 2.025-1.587 2.025-.503 0-1.002-.228-1.12-.648h-.043c-.118.416-.543.643-1.015.643-.77 0-1.259-.542-1.259-1.434v-.529c0-.844.481-1.4 1.26-1.4.585 0 .87.333.953.63h.03v-.568h.905v2.19c0 .272.18.42.411.42.315 0 .639-.415.639-1.39v-.118c0-1.277-.95-2.326-2.484-2.326h-.04c-1.582 0-2.64 1.067-2.64 2.724v.157c0 1.867 1.237 2.654 2.57 2.654h.045c.507 0 .935-.07 1.18-.18v.731c-.219.1-.643.175-1.237.175h-.044C10.438 16 9 14.82 9 12.646v-.214C9 10.36 10.421 9 12.485 9h.035c2.12 0 3.314 1.43 3.314 3.034v.21Zm-4.04.21v.227c0 .586.227.8.581.8.31 0 .564-.17.564-.743v-.367c0-.516-.275-.708-.572-.708-.346 0-.573.245-.573.791Z" />
                             </svg>
 
-                            <input type="email" name="email" class="form-control input-modal input-disabled input inputA mayuscula" placeholder="E_mail"
+                            <input type="email" name="email" class="input-validar form-control input-modal input-disabled input inputA mayuscula" placeholder="E_mail"
                                 value="${element.correo}">
 
                         </div>
@@ -380,7 +391,7 @@ const readDoctor = async () => {
                             </svg>
 
 
-                            <select name="selectEspecialidad" class="form-control input-modal input-disabled input inputA selectEspecialidad " placeholder="Especialidad">
+                            <select name="selectEspecialidad" class="form-control  input-modal input-disabled input inputA selectEspecialidad " placeholder="Especialidad">
                                 <option selected value="${element.id_especialidad}">
                                      ${element.nombre}
                                 </option>
@@ -419,10 +430,7 @@ const readDoctor = async () => {
                                     <div class="uk-accordion-content">
                                     
                                         <div class="d-flex justify-content-between flex-wrap" >
-                                            <?php foreach ($datosDias as $dia): ?>
 
-                                                
-                                            <?php endforeach ?>
 
                                             ${listDateFragment(result[1])}
 
@@ -610,7 +618,7 @@ const readDoctor = async () => {
     if (document.querySelectorAll(".btnRestablecer")) {
       document.querySelectorAll(".btnRestablecer").forEach((btn) => {
         btn.addEventListener("click", function () {
-        console.log(btn);
+          console.log(btn);
 
           const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
           alertConfirm("Esta seguro de restablecer el doctor?", restablecerDoctor, data);
@@ -628,11 +636,13 @@ const readDoctor = async () => {
           if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
         });
 
+        console.log(inputsBuenos);
+
+
         if (
-          inputsBuenos.length == 5 &&
-          document.querySelector(".p-error-fn" + formEditar.getAttribute("data-index")).classList.contains("d-none")
+          inputsBuenos.length == 5
         ) {
-          updatePatients(this, inputsBuenos);
+          updateDoctor(this, inputsBuenos);
         } else {
           alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
         }
@@ -788,31 +798,53 @@ const deleteDoctor = async (data) => {
   }
 };
 
+//update
+const updateDoctor = async (form, inputs) => {
+  try {
+    const data = new FormData(form);
+    console.log(form);
+    console.log(url + "/editarDoctor");
+
+    let result = await executePetition(url + "/editarDoctor", "POST", data);
+    console.log(result);
+    if (result.ok) {
+      alertSuccess(result.message)
+
+      UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
+      inputs = [];
+      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+      readDoctor();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    console.log(error.error);
+    alertError('Error', error)
+  }
+};
+
 //delete
 const deleteEspecialidad = async (data) => {
   try {
     const result = await executePetition(`/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`, "GET");
     if (result.ok) {
       alertSuccess(result.message);
-      readDoctor();
+      readEspecialidad();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
   }
 };
 
-
 //restablecer
 const restablecerDoctor = async (data) => {
   try {
     const result = await executePetition(url + `/restablecer/${data}`, "GET");
     if (result.ok) {
-      alertSuccess(result.message)
+      alertSuccess(result.message);
 
       readDoctor();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    alertError("Error",error)
+    alertError("Error", error);
   }
 };
 readDoctor();
@@ -841,4 +873,46 @@ form.addEventListener("submit", (e) => {
   } else {
     alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
   }
+});
+
+modalAgregarSer.addEventListener("submit", function (e) {
+  e.preventDefault();
+  if (document.getElementById("id_doctor").value != "" && selectService.value != "") {
+
+    let result = executePetition(url + "/guardarDoctores", "POST", new FormData(modalAgregarSer));
+    result.then((res) => {
+      if (res.ok) {
+        alertSuccess(res.message);
+        modalAgregarSer.reset();
+        UIkit.modal("#modal-example-servicio").hide();
+      } else {
+        alertError("Error", res.error);
+      }
+    });
+  } else {
+
+    alertError("Error", "Debe seleccionar un doctor y un servicio para poder asignarlo.");
+  }
+});
+
+
+modalAgregarEspecialidad.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const input = modalAgregarEspecialidad.querySelector('input[name="nombre"]');
+  if (input.value.trim() === "") {
+    alertError("Error", "El campo de especialidad no puede estar vacío.");
+    return;
+  }
+    let result = executePetition(url + "/registrarEspecialidad", "POST", new FormData(modalAgregarEspecialidad));
+    result.then((res) => {
+      if (res.ok) {
+        alertSuccess(res.message);
+        modalAgregarEspecialidad.reset();
+        UIkit.modal("#modal-exampleAgregarEspecialidades").hide();
+        readEspecialidad();
+      } else {
+        alertError("Error", res.error);
+      }
+    });
+  
 });

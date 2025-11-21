@@ -18,7 +18,7 @@ class ModeloConsultas extends Db
     public function mostrarDoctores()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT doctor.nombre, doctor.apellido, doctor.id_personal FROM segurity.usuario u INNER JOIN bd.personal doctor on u.id_usuario = doctor.usuario INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = 'ACT' AND r.nombre = 'Doctor' ");
+            $consulta = $this->conexion->prepare("SELECT doctor.nombre, doctor.apellido, doctor.id_personal FROM segurity.usuario u INNER JOIN bd.personal doctor on u.id_usuario = doctor.usuario INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = 'ACT' AND doctor.id_especialidad IS NOT null  ");
             $consulta->execute();
 
             return ($consulta->execute()) ? $consulta->fetchAll() : false;
@@ -119,13 +119,20 @@ class ModeloConsultas extends Db
             if ($validar->rowCount() <= 0) {
                 throw new \Exception("Fallo");
             }
+
+
+            if ($this->validarServicioDoctor($id_doctor, $id_servicioMedico) === "existeC") {
+                
+                throw new \Exception("EL Servicio ya esta asignado a este doctor");
+            }
+
             $consulta = $this->conexion->prepare("INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)");
             $consulta->bindParam(":id_doctor", $id_doctor);
             $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
             $consulta->execute();
-            return 1;
+            return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -235,7 +242,7 @@ class ModeloConsultas extends Db
             }
             return "noExiste";
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 }

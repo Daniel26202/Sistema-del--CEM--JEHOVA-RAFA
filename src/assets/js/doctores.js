@@ -151,8 +151,9 @@ addEventListener("DOMContentLoaded", function () {
 
     //ajax para checkear los dias que el doctor registro en guardar
     async function traerDiasCheckeados(idDoctor, dia, inputHoraEntradaEditar, inputHoraSalidaEditar) {
+      alert("entra a la funcion");
       try {
-        let peticion = await fetch("?c=controladorDoctores/selectDiasDoctorEditar&id_personal=" + idDoctor);
+        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectDiasDoctorEditar&id_personal=" + idDoctor);
         let resultado = await peticion.json();
         console.log(resultado);
         resultado.forEach((res) => {
@@ -174,9 +175,13 @@ addEventListener("DOMContentLoaded", function () {
       }
     }
 
+
+
     //botones de editar
     document.querySelectorAll(".btn-js").forEach((ele) => {
+      console.warn("entro al for each de los botones editar");
       ele.addEventListener("click", function () {
+        console.warn("entro al evento del boton editar");
         //traer el valor de el atributo del  boton  "uk-toggle"
         let atributoBotonEditar = this.getAttribute("uk-toggle").split(" ");
 
@@ -187,16 +192,24 @@ addEventListener("DOMContentLoaded", function () {
         let diasEditar = document.querySelectorAll(
           `#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .form-check .div-js .diaslaborables`
         );
+        console.warn(diasEditar);
 
         let inputHoraEntradaEditar = document.querySelectorAll(
           `#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .caja-js .caja-tiempo .hora-entrada`
         );
 
+        console.warn(inputHoraEntradaEditar);
+
         let inputHoraSalidaEditar = document.querySelectorAll(
           `#${idModal} .uk-modal-dialog .formulario_editar .input-modal .uk-accordion .li .uk-accordion-content .d-flex .mb-3 .caja-js .caja-tiempo .hora-salida`
         );
 
+        console.warn(inputHoraSalidaEditar);
+
+
+        
         diasEditar.forEach((ele, index) => {
+          console.log(diasEditar)
           traerDiasCheckeados(idDoctor, ele, inputHoraEntradaEditar[index], inputHoraSalidaEditar[index]);
         });
       });

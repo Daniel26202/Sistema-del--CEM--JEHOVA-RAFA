@@ -34,7 +34,8 @@ class ControladorDoctores extends ModeloDoctores
         require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
     }
 
-    public function selectEspcAjax() {
+    public function selectEspcAjax()
+    {
         echo json_encode($this->modelo->selectEspecialidad());
     }
 
@@ -54,7 +55,8 @@ class ControladorDoctores extends ModeloDoctores
         require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
     }
 
-    public function papeleraDoctoresAjax() {
+    public function papeleraDoctoresAjax()
+    {
         echo json_encode($this->modelo->desactivos());
     }
 
@@ -67,20 +69,16 @@ class ControladorDoctores extends ModeloDoctores
 
     public function guardarDoctores()
     {
-        //Validar si el doctor ya tiene ese servicio
-        $servicio = $this->modeloConsultas->validarServicioDoctor($_POST["id_servicioMedico"], $_POST["id_doctor"]);
 
-        if ($servicio === "existeC") {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorS");
+        $insercion = $this->modeloConsultas->insertarDoctorServicio($_POST["id_doctor"], $_POST["id_servicioMedico"]);
+
+        if (is_array($insercion) && $insercion[0] === "exito") {
+            $this->bitacora->insertarBitacora($_POST['id_usuario'], "Consultas", "Ha añadido un servicio medico a un doctor");
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            $insercion = $this->modeloConsultas->insertarDoctorServicio($_POST["id_doctor"], $_POST["id_servicioMedico"]);
-            if ($insercion) {
-                // Guardar la bitacora
-                $this->bitacora->insertarBitacora($_POST['id_usuario'], "Consultas", "Ha añadido un servicio medico a un doctor");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/registro");
-            } else {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/errorSistem");
-            }
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $insercion]);
+            exit;
         }
     }
     // agregar doctor
@@ -107,9 +105,8 @@ class ControladorDoctores extends ModeloDoctores
     }
 
     // editar doctor
-    public function editarDoctor($datos)
+    public function editarDoctor()
     {
-        $cedula = $datos[0];
 
         $idDiaDbE = array_diff($_POST["diaAnterio"], $_POST["dias"]);
         $idDiaNuevo = array_diff($_POST["dias"], $_POST["diaAnterio"]);
@@ -121,27 +118,17 @@ class ControladorDoctores extends ModeloDoctores
         $idDiaNuevo = !empty($idDiaNuevo) ? $idDiaNuevo : false;
         $igualesDb = !empty($igualesDb) ? $igualesDb : false;
 
-        $resultadoDeCedula = $this->modelo->validarCedula($_POST['cedula']);
-
-        //se verifica si la cédula del input es igual a la cédula ya existente 
-        // (verificamos si se edito la cédula del  formulario o si es igual)
-        if ($cedula == $_POST["cedula"]) {
-            $resultadoDeCedula = false;
-        }
-
-        //verifica si la cédula es igual a la información de la base de datos.
-        if ($resultadoDeCedula === "existeC") {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorCedula");
-        } else {
-            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"]);
-            if ($edicion) {
-                // Guardar la bitacora
+        
+            $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"],$_POST['ceduladRegistrada']);
+        
+            if (is_array($edicion) && $edicion[0] === "exito") {
                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/editar");
+                echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
             } else {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores/errorSistem");
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $edicion]);
+                exit;
             }
-        }
     }
     // eliminación lógica doctor
     public function borrarDoctor($datos)
