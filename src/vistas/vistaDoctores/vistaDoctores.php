@@ -17,7 +17,6 @@
 
     <input type="hidden" name="id_usuario_bitacora" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
-    <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
 
 

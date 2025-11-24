@@ -327,7 +327,8 @@ const readDoctor = async () => {
                           element.cedula
                         }">
 
-
+                        <input type="hidden" name="id_usuario_bitacora" class="form-control input-modal input-disabled id_usuario_bitacora">
+ 
                         <div class="input-group flex-nowrap margin-inputs grpFormCorrect">
 
                             <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20"
@@ -602,6 +603,7 @@ const readDoctor = async () => {
 
     document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
       ele.value = document.getElementById("id_usuario_session").value;
+      console.log(ele.value);
     });
 
     //llamar las funcion de eliminar
@@ -638,10 +640,7 @@ const readDoctor = async () => {
 
         console.log(inputsBuenos);
 
-
-        if (
-          inputsBuenos.length == 5
-        ) {
+        if (inputsBuenos.length == 5) {
           updateDoctor(this, inputsBuenos);
         } else {
           alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
@@ -731,10 +730,6 @@ const readEspecialidad = async () => {
       document.querySelector(selector + " tbody").innerHTML = html;
     }
 
-    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-      ele.value = document.getElementById("id_usuario_session").value;
-    });
-
     //llamar las funcion de eliminar
     document.querySelectorAll(".btn-eliminar-epe").forEach((btn) => {
       console.log(btn);
@@ -800,7 +795,7 @@ const deleteDoctor = async (data) => {
 
 //update
 const updateDoctor = async (form, inputs) => {
-  // try {
+  try {
     const data = new FormData(form);
     console.log(form);
     console.log(url + "/editarDoctor");
@@ -808,17 +803,17 @@ const updateDoctor = async (form, inputs) => {
     let result = await executePetition(url + "/editarDoctor", "POST", data);
     console.log(result);
     if (result.ok) {
-      alertSuccess(result.message)
+      alertSuccess(result.message);
 
       UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
       inputs = [];
       inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
       readDoctor();
     } else throw new Error(`${result.error}`);
-  // } catch (error) {
-  //   console.log(error);
-  //   alertError('Error', error)
-  // }
+  } catch (error) {
+    console.log(error);
+    alertError("Error", error);
+  }
 };
 
 //delete
@@ -878,7 +873,6 @@ form.addEventListener("submit", (e) => {
 modalAgregarSer.addEventListener("submit", function (e) {
   e.preventDefault();
   if (document.getElementById("id_doctor").value != "" && selectService.value != "") {
-
     let result = executePetition(url + "/guardarDoctores", "POST", new FormData(modalAgregarSer));
     result.then((res) => {
       if (res.ok) {
@@ -890,11 +884,9 @@ modalAgregarSer.addEventListener("submit", function (e) {
       }
     });
   } else {
-
     alertError("Error", "Debe seleccionar un doctor y un servicio para poder asignarlo.");
   }
 });
-
 
 modalAgregarEspecialidad.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -903,16 +895,15 @@ modalAgregarEspecialidad.addEventListener("submit", function (e) {
     alertError("Error", "El campo de especialidad no puede estar vacío.");
     return;
   }
-    let result = executePetition(url + "/registrarEspecialidad", "POST", new FormData(modalAgregarEspecialidad));
-    result.then((res) => {
-      if (res.ok) {
-        alertSuccess(res.message);
-        modalAgregarEspecialidad.reset();
-        UIkit.modal("#modal-exampleAgregarEspecialidades").hide();
-        readEspecialidad();
-      } else {
-        alertError("Error", res.error);
-      }
-    });
-  
+  let result = executePetition(url + "/registrarEspecialidad", "POST", new FormData(modalAgregarEspecialidad));
+  result.then((res) => {
+    if (res.ok) {
+      alertSuccess(res.message);
+      modalAgregarEspecialidad.reset();
+      UIkit.modal("#modal-exampleAgregarEspecialidades").hide();
+      readEspecialidad();
+    } else {
+      alertError("Error", res.error);
+    }
+  });
 });
