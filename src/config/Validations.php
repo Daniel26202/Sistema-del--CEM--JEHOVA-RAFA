@@ -32,7 +32,7 @@ class Validations
         return [
             [
                 'valor' => $precio,
-                'regex' => '/^\d{1,3}(\.\d{3})*(,\d{2})?$/',
+                'regex' => '/^(?!0$)(?!1$)\d+([.,]\d+)?$/',
                 'mensaje' => "El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00."
             ]
         ];

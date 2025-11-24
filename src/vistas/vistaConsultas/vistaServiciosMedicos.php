@@ -154,7 +154,7 @@
                     </svg>
                 </span>
 
-                <input class="form-control input-modal precioBolivares" type="text" name="precio" placeholder="Precio" required>
+                <input class="input-disabled precioBolivares   form-control input-modal" type="text" name="precio" placeholder="Precio" required>
                 <span class="input-modal mt-1">BS</span>
 
             </div>

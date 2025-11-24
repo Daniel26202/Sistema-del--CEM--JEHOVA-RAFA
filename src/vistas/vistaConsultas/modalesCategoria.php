@@ -144,8 +144,8 @@
             <p class="p-error-nombre fw-bold p-error-validaciones d-none">La categoria debe minimo 3 letras</p>
 
             <div class="mt-3 uk-text-right">
-                <button class="uk-button col-6 me-2 uk-button-default btn-cerrar-modal" type="button"
-                    uk-toggle="target: #modal-patologia" id="cancelarRegistroespecialidades">Cancelar</button>
+                <button class="uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
+                    uk-toggle="target: #modal-categoria" id="cancelarRegistroespecialidades">Cancelar</button>
                 <button class="btn col-5 btn-agregarcita-modal" name="crear"
                     id="botonEnviarEspecialidad">
                     <span id="agregar">Agregar</span>

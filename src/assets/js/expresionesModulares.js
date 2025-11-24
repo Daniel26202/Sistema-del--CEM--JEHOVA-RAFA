@@ -16,9 +16,8 @@ document.addEventListener("DOMContentLoaded", function () {
     descripcion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
     fn: /^\d{4}\-\d{2}\-\d{2}$/,
     fechaDeCita: /^\d{4}\-\d{2}\-\d{2}$/,
-
     cantidad: /^([1-9]{1})([0-9]{1,4})?$/,
-    precio: /^\d{1,3}(\.\d{3})*(,\d{2})?$/,
+    precio: /^(?!0$)(?!1$)\d+([.,]\d+)?$/,
     fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
     lote: /^[0-9-_]{4,10}$/,
     marca: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/,

@@ -769,11 +769,11 @@ const createDoctor = async (form, inputs) => {
     if (result.ok) {
       alertSuccess(result.message);
 
+      readDoctor();
       UIkit.modal("#modal-agregar-doctores").hide();
       form.reset();
       inputs = [];
       inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
-      readDoctor();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
