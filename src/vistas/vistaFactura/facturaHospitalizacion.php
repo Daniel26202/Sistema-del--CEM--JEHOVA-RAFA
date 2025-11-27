@@ -19,12 +19,12 @@
 
         <div style="height: 70px;" id="cajaBotones" class="d-flex justify-content-end">
 
-           
-            </button> 
+
+            </button>
 
 
             <div class="d-flex">
-               
+
                 <div class="mt-4 w-25 d-flex justify-content-center">
                     <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" class="text-decoration-none"
                         uk-tooltip="Retroceder">
@@ -96,7 +96,12 @@
                             </th>
                         </tr>
                     </thead>
-                    <?php foreach ($serviciosDeHospitalizacion as $datoH): ?>
+                    <?php
+                    $totalDoller = 0;
+
+                    foreach ($serviciosDeHospitalizacion as $datoH):
+                        $totalDoller = $totalDoller + $datoH["precio"];
+                    ?>
 
                         <tbody id="tablaBODYDB">
 
@@ -110,7 +115,7 @@
 
                                 <td class="border-top">
                                     <div class="fw-bolder">PRECIO:</div>
-                                    <?= $datoH["precio"] . '   BS'; ?>
+                                    <?= $datoH["precio"] . '   $'; ?>
                                 </td>
 
 
@@ -134,7 +139,8 @@
                             <th class="fw-bolder mb-0 mt-3 border-bottom">INSUMOS</th>
                         </tr>
                     </thead>
-                    <?php foreach ($insumosHospitalizacion as $datoH): ?>
+                    <?php foreach ($insumosHospitalizacion as $datoH):
+                        $totalDoller = $totalDoller + $datoH["precio"]; ?>
 
                         <tbody id="tbody-insumos">
                             <tr>
@@ -151,7 +157,7 @@
 
                                 <td class="border-top">
                                     <div class="fw-bolder">PRECIO:</div>
-                                    <?= $datoH["precio"] . '   BS'; ?>
+                                    <?= $datoH["precio"] . '   $'; ?>
                                 </td>
 
 
@@ -173,11 +179,14 @@
 
                     <div class="ico " id="totalFac">
                         <label class="fw-bolder">TOTAL: </label>
-                        <label>BS</label>
                         <?php foreach ($hostalizacionFacturar as $datoH): ?>
                             <input type="text" style="margin-left: -1px; padding-left: 6px;"
-                                class="ico w-25 input-buscar text-center" id="totalFactura" disabled value=<?= $datoH['total'] ?>>
-                            <input type="hidden" id="inputTotalCita" value="<?= $datoH['total'] ?>">
+                                class="ico w-25 input-buscar text-center" id="totalFactura" disabled value=<?= $datoH['total_MoEx'] ?>>
+                            <label>BS</label>
+                            <input type="text" style="margin-left: -1px; padding-left: 6px;"
+                                class="ico w-25 input-buscar text-center" id="" disabled value=<?= $totalDoller + $datoH['total_MoEx'] ?>>
+                            <label>$</label>
+                            <input type="hidden" id="inputTotalCita" value="<?= $totalDoller + $datoH['total_MoEx'] ?>">
                         <?php endforeach; ?>
 
 

@@ -72,7 +72,7 @@
                     <?php echo $e['nombre_d'] . " " . $e["apellido_d"]; ?>
                   </td>
                   <td class="text-center border-start">
-                    <?php echo $e['precio'] . " " . "BS"; ?>
+                    <?php echo $e['precio'] . " " . "$"; ?>
                   </td>
 
 
@@ -452,7 +452,7 @@
                       <?php echo $i['cantidad_inventario']; ?>
                     </td>
                     <td class="text-center border-start">
-                      <?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> BS
+                      <?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> $
                     </td>
                     <td class="text-center border-start">
                       <?php echo ($i['iva']) ? $i['precio'] * 0.30 : "No contiene";
@@ -703,7 +703,7 @@
                       <?php echo $i['cantidad_inventario']; ?>
                     </td>
                     <td class="text-center border-start">
-                      <?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> BS
+                      <?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> $
                     </td>
                     <td class="text-center border-start">
                       <?php echo ($i['iva']) ? $i['precio'] * 0.30 : "No contiene";
@@ -1195,7 +1195,7 @@
 
                       <td class="border-top">
                         <div class="fw-bolder">PRECIO:</div>
-                        <?= $datoH["precio"] . '   BS'; ?>
+                        <?= $datoH["precio"] . '   $'; ?>
                       </td>
 
 

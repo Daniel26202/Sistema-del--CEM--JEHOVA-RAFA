@@ -63,7 +63,7 @@ $pdf->SetTextColor(14, 169, 181);
 
 $pdf->Cell(55, 10, strtoupper('SERVICIO: '.$d['categoria_servicio']), 0, 0, 'L',0);
 $pdf->Cell(80, 10, strtoupper('DOCTOR: '.$d['nombre_d'].' '.$d['apellido_d']), 0, 0, 'L',0);
-$pdf->Cell(70, 10, strtoupper('PRECIO: '.$d['precio'].' Bs'), 0, 0, 'L',0);
+$pdf->Cell(70, 10, strtoupper('PRECIO: '.$d['precio'].' $'), 0, 0, 'L',0);
 
 
 }
@@ -88,7 +88,7 @@ $pdf->SetFillColor(228, 235, 240);
 $pdf->SetTextColor(14, 169, 181);
 $pdf->Cell(73, 10, strtoupper('NOMBRE: '.$insumo['nombre']), 0, 0, 'L',0);
 $pdf->Cell(55, 10, strtoupper('CANTIDAD: '.$insumo['cantidad']), 0, 0, 'L',0);
-$pdf->Cell(85, 10, strtoupper('PRECIO: '.$insumo['precio'].' Bs'), 0, 0, 'L',0);
+$pdf->Cell(85, 10, strtoupper('PRECIO: '.$insumo['precio'].' $'), 0, 0, 'L',0);
 
 }
 

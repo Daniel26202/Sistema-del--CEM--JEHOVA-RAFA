@@ -49,7 +49,7 @@ class ModeloFactura extends Db
 	{
 
 		try {
-			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido,  pe.nombre AS nombredoc, pe.apellido AS apellidodoc 
+			$consulta = $this->conexion->prepare('SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total_MoEx, h.total, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido,  pe.nombre AS nombredoc, pe.apellido AS apellidodoc 
 			FROM  hospitalizacion h INNER JOIN paciente pac ON pac.id_paciente = h.id_paciente INNER JOIN personal pe ON pe.id_personal = h.personal_id_personal  WHERE  h.id_hospitalizacion =:id_hospitalizacion GROUP BY h.id_hospitalizacion');
 			$consulta->bindParam(":id_hospitalizacion", $id_hospitalizacion);
 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
