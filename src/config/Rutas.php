@@ -45,17 +45,19 @@ class Rutas
             $parametro = explode(",", $parametro);
         }
 
-        $this->controlador = "Controlador" . $this->controlador;
+        $this->controlador = "Controller" . $this->controlador;
 
-        $directorio = "src/controladores/" . $this->controlador . ".php";
+        $directorio = "src/controllers/" . $this->controlador . ".php";
 
         if (file_exists($directorio)) {
             require_once __DIR__ . "/../../" . $directorio;
-            $instancia = new $this->controlador();
+            // $instancia = new $this->controlador();
 
-            if (method_exists($instancia, $metodo)) {
-                if (in_array($this->controlador, ["ControladorIniciarSesion", "ControladorRecuperarContr"])) {
-                    $instancia->$metodo($parametro ?? []);
+            if (function_exists($metodo)) {
+                if (in_array($this->controlador, ["ControllerIniciarSesion", "ControllerRecuperarContr"])) {
+                    // $instancia->$metodo($parametro ?? []);
+
+                    call_user_func($metodo, $parametro ?? []);
                 } else {
 
                     /*  si el estatus de la session es activio validamos los permisos */

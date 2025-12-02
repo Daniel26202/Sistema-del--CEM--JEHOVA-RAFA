@@ -1,6 +1,5 @@
 <?php
 
-
 // Obtiene la ruta local eliminando barras inclinadas iniciales y finales.
 // $_SERVER["REQUEST_URI"] contiene la URL solicitada al servidor.
 // parse_url() extrae la parte de la URL que corresponde al camino (path).
