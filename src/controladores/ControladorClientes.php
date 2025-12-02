@@ -33,7 +33,7 @@ class ControladorClientes
     {
         $ayuda = "btnayudaPaciente";
         $vistaActiva = 'clientes';
-        require_once './src/vistas/vistaCliente/vistaCliente.php';
+        require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
     }
     public function clientesAjax()
     {
@@ -44,7 +44,7 @@ class ControladorClientes
     public function papelera($parametro)
     {
         $vistaActiva = 'papelera';
-        require_once './src/vistas/vistaCliente/vistaCliente.php';
+        require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
     }
 
     public function papeleraAjax()

@@ -1,5 +1,7 @@
 <?php
-require_once "./vendor/autoload.php";
+require __DIR__ . '/vendor/autoload.php';
+
+
 use App\config\Rutas;
 
 $url = isset($_GET['url']) ? $_GET['url'] :  "IniciarSesion/mostrarIniciarSesion";

@@ -24,7 +24,7 @@ class ControladorBitacora
 		$ayuda = "btnayudaBitacora";
 		$vistaActiva = 'Usuario';
 		$cargo = $this->modeloInicio->comprobarCargo($_SESSION['id_personal']);
-		require_once "./src/vistas/vistaBitacora/bitacora.php";
+		require_once __DIR__ . "/../../src/vistas/vistaBitacora/bitacora.php";
 	}
 
 	public function bitacora($parametro)
@@ -32,7 +32,7 @@ class ControladorBitacora
 		$ayuda = "btnayudaBitacora";
 		$vistaActiva = 'Admin';
 		$cargo = $this->modeloInicio->comprobarCargo($_SESSION['id_personal']);
-		require_once "./src/vistas/vistaBitacora/bitacora.php";
+		require_once __DIR__ . "/../../src/vistas/vistaBitacora/bitacora.php";
 	}
 
 	private function permisos($id_rol, $permiso, $modulo)

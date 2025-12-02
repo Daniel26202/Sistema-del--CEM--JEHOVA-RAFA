@@ -38,7 +38,7 @@ class ControladorRecuperarContr
 
     public function mostrarRecuperarContr($parametro)
     {
-        require_once "./src/vistas/vistaRecuperarContr/recuperarContr.php";
+        require_once __DIR__ . "/../../src/vistas/vistaRecuperarContr/recuperarContr.php";
     }
 
     public function generarCodigo($correoM)

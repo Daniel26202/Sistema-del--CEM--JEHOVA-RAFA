@@ -1,5 +1,7 @@
 <?php
+
 namespace App\config;
+
 use App\modelos\ModeloPermisos;
 
 class Rutas
@@ -14,7 +16,8 @@ class Rutas
 
         $this->url = $url;
         $this->modelo = new ModeloPermisos();
-        $this->equivalentes = require_once "./src/config/equivalencias.php";
+
+        $this->equivalentes = require_once __DIR__ . "/../../src/config/equivalencias.php";
     }
 
     /* metodo utilizado para gestionar las rutas de todo nuestro sistema */
@@ -47,7 +50,7 @@ class Rutas
         $directorio = "src/controladores/" . $this->controlador . ".php";
 
         if (file_exists($directorio)) {
-            require_once $directorio;
+            require_once __DIR__ . "/../../" . $directorio;
             $instancia = new $this->controlador();
 
             if (method_exists($instancia, $metodo)) {
@@ -55,7 +58,7 @@ class Rutas
                     $instancia->$metodo($parametro ?? []);
                 } else {
 
-                   /*  si el estatus de la session es activio validamos los permisos */
+                    /*  si el estatus de la session es activio validamos los permisos */
                     if (session_status() === PHP_SESSION_ACTIVE) {
                         if ($this->controlador == "ControladorInicio" || $this->controlador == "ControladorPerfil" || $this->controlador == "ControladorBitacora") {
                             $instancia->$metodo($parametro ?? []);
@@ -70,7 +73,7 @@ class Rutas
                                 header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
                                 exit;
                             } else {
-                                 /* si lo tiene */
+                                /* si lo tiene */
                                 $instancia->$metodo($parametro ?? []);
                             }
                         }
@@ -79,8 +82,8 @@ class Rutas
                         echo "Sesión no iniciada";
                     }
                 }
-            } else {  
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error"); 
+            } else {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
             }
         } else {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");

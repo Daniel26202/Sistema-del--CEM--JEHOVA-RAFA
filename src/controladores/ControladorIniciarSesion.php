@@ -17,7 +17,7 @@ class ControladorIniciarSesion
 
     public function mostrarIniciarSesion($parametro)
     {
-        require_once "./src/vistas/vistaIniciarSesion/iniciarSesion.php";
+        require_once __DIR__ . "/../../src/vistas/vistaIniciarSesion/iniciarSesion.php";
     }
 
     public function iniciarSesion()
@@ -116,6 +116,6 @@ class ControladorIniciarSesion
     //Metodo para mostrar la vista de la pagina de error ç
     public function error()
     {
-        require_once "./src/vistas/vistaIniciarSesion/vistaError.php";
+        require_once __DIR__ . "/../../src/vistas/vistaIniciarSesion/vistaError.php";
     }
 }

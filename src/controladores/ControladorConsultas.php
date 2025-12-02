@@ -24,7 +24,7 @@ class ControladorConsultas
 		$ayuda = "btnayudaServicioMedico";
 		$doctores = $this->modelo->mostrarDoctores();
 		$todasLasCategorias = $this->categoria->seleccionarTodasLasCategoria();
-		require_once './src/vistas/vistaConsultas/vistaServiciosMedicos.php';
+		require_once __DIR__ . "/../../src/vistas/vistaConsultas/vistaServiciosMedicos.php";
 	}
 
 	public function categoriasAjax()
@@ -41,7 +41,7 @@ class ControladorConsultas
 	{
 		$doctores = $this->modelo->mostrarDoctores();
 		$categorias = $this->categoria->seleccionarCategoria();
-		require_once './src/vistas/vistaConsultas/vistaServiciosPapelera.php';
+		require_once __DIR__ . "/../../src/vistas/vistaConsultas/vistaServiciosPapelera.php";
 	}
 
 	public function papeleraAjax()

@@ -128,7 +128,7 @@ class ControladorCitas
 	{
 		$ayuda = "btnayudaCitaP";
 		$vistaActiva = 'realizadas';
-		require_once './src/vistas/vistasCitas/vistaCitas.php';
+		require_once __DIR__ . '/../../src/vistas/vistasCitas/vistaCitas.php';
 	}
 
 	public  function citasRealizadasAjax()
