@@ -91,7 +91,7 @@
                                     <h5 class="h5-comprobante ">
                                         DR: <?php echo $d["nombre_d"] ?>
                                         <?php echo $d["apellido_d"] ?>
-                                        <?php echo $d["precio"] . " BS" ?>
+                                        <?php echo $d["precio"] * $_SESSION['dolar'] . " BS" ?>
                                     </h5>
 
                                 </div>
@@ -105,7 +105,7 @@
                                         <?= $d["nombre"]; ?>
                                     </h5>
                                     <h5 class="h5-comprobante ">
-                                        <?= $d["precio"] . " BS" ?>
+                                        <?= $d["precio"] * $_SESSION['dolar'] . " BS" ?>
                                     </h5>
 
                                 </div>
@@ -133,13 +133,13 @@
                             <div class="d-flex justify-content-between  ">
                                 <h5 class="h5-comprobante ">Precio</h5>
                                 <h5 class="h5-comprobante ">
-                                    <?php echo ($d["iva"]) ? $d["precio"] - ($d["precio"] * 0.30) . " BS"  : $d["precio"] . " BS" ?>
+                                    <?php echo ($d["iva"]) ? $d["precio"] * $_SESSION['dolar'] - ($d["precio"] * $_SESSION['dolar'] * 0.30) . " BS"  : $d["precio"] * $_SESSION['dolar'] . " BS" ?>
                                 </h5>
                             </div>
                             <div class="d-flex justify-content-between  ">
                                 <h5 class="h5-comprobante ">IVA</h5>
                                 <h5 class="h5-comprobante ">
-                                    <?php echo ($d["iva"]) ? $d["precio"] * 0.30 . " BS"  : "0" . " BS" ?>
+                                    <?php echo ($d["iva"]) ? $d["precio"] * $_SESSION['dolar'] * 0.30 . " BS"  : "No contiene" ?>
                                 </h5>
                             </div>
                             <hr>

@@ -508,21 +508,39 @@ document.querySelector(".formularios-insumos").addEventListener("submit", functi
 
     listaModalInsumo.forEach((lista, index) => {
         console.log("e");
-        console.log(lista);
         const encontrado = dataInsumo.find((item) => item.nombreInsumo == lista.nombreInsumo);
+
         console.log(encontrado);
+
         if (encontrado) {
+            // Actualizamos cantidad
             encontrado.cantidad += parseInt(lista.cantidad);
+
+            // Recalculamos subtotal en dólares
+            encontrado.subTotal =  parseFloat(encontrado.subTotal) * encontrado.cantidad;
+            encontrado.precio = parseFloat(encontrado.precio) * encontrado.cantidad;
+            encontrado.iva = parseFloat(encontrado.iva) * encontrado.cantidad;
         } else {
             dataInsumo.push(lista);
+            
         }
+        // actualizamos la tabla
+        mostrarInsumo();
 
-        console.log(lista);
         console.log(encontrado);
-    });
 
-    // actualizamos la tabla
-    mostrarInsumo();
+        const fila = document.querySelector(`tr[data-nombre="${lista.nombreInsumo}"]`);
+        if (fila) {
+            let tds = fila.querySelectorAll("td");
+            console.log(tds[2].innerText); // aquí tienes el <tr> cantidad txt
+            console.log(tds[3].children[1].innerText); // aquí tienes el <tr> precio BS txt
+            console.log(tds[3].children[3].innerText); // aquí tienes el <tr> precio $ txt
+            console.log(tds[4].children[1].innerText); // aquí tienes el <tr> iva BS txt
+            console.log(tds[4].children[3].innerText); // aquí tienes el <tr> iva $ txt
+            console.log(tds[5].children[1].innerText); // aquí tienes el <tr> total bs txt
+            console.log(tds[5].children[3].innerText); // aquí tienes el <tr> total $ txt
+        }
+    });
 
     console.log(dataInsumo);
     listaModalInsumo = [];
@@ -570,7 +588,8 @@ const mostrarVariosInusmos = () => {
         html += `
         <tr class="border-top ">
         <td class="border-top"> ${index + 1}</td>
-        <td class="border-top border-start text-center"> ${element["nombreInsumo"]}</td>
+        <td class="border-top border-start text-center" 
+> ${element["nombreInsumo"]}</td>
         <td class="border-top border-start text-center"> ${element["medidaInsumo"]}</td>
         <td class="border-top border-start text-center"> ${element["cantidad"]}</td>
         <td class="border-top border-start text-center">
@@ -581,7 +600,11 @@ const mostrarVariosInusmos = () => {
             ${element["precio"].toFixed(2)} $
           </p>
         </td>
-        <td class="border-top border-start text-center">${(parseFloat(element["iva"]) * storedDolar).toFixed(2)} BS</td>
+        <td class="border-top border-start text-center">
+            <p class="mb-1">${(parseFloat(element["iva"]) * storedDolar).toFixed(2)} BS</p>
+            <p class="m-0 p-0">o</p>
+            <p class="mt-1">${parseFloat(element["iva"]).toFixed(2)} $</p>
+        </td>
 
         <td class="border-top border-start text-center">
           <p class="mb-1">${montoBSSubTotal} BS</p>
@@ -677,10 +700,10 @@ document.querySelectorAll(".insertar_insumo").forEach((ele) => {
         const id_insumo = this.getAttribute("id");
         const nombreInsumo = fila.children[1].innerText; // Columna Insumo
         const medidaInsumo = fila.children[2].innerText; //Columna Medida
-        const precio = fila.children[4].innerText; // Columna precio
-        const iva = fila.children[5].innerText; // Columna numero_de_lote
+        const precio = fila.children[4].children[2].innerText; // Columna precio
+        const iva = fila.children[5].children[2].innerText; // Columna numero_de_lote
         const cantidad = fila.children[6].children[0].value; // Columna cantidad
-        console.log(cantidad);
+        console.log(precio);
 
         insertarVariosInsumos(id_insumo, nombreInsumo, iva, cantidad, precio, medidaInsumo);
         fila.classList.add("d-none");
@@ -695,20 +718,29 @@ document.querySelectorAll(".insertar_insumo").forEach((ele) => {
 function mostrarInsumo() {
     calcularTotal();
     let html = ``;
+
     dataInsumo.forEach((element, index) => {
         let storedDolar = localStorage.getItem("valorDelDolar");
         let montoBSSubTotal = (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) * storedDolar;
         montoBSSubTotal = montoBSSubTotal.toFixed(2);
 
         html += `
-        <tr class="border-top tr">
+        <tr class="border-top tr" data-nombre="${element["nombreInsumo"]}">
         <th class="id_insumo_escondido d-none">${element["id_insumo"]}</th>
         <td class="border-top nombre"><div class="fw-bolder">INSUMO:</div> ${element["nombreInsumo"]}</td>
         <td class="border-top nombre"><div class="fw-bolder">Medida:</div> ${element["medidaInsumo"]}</td>
         <td class="border-top"><div class="fw-bolder">CANTIDAD:</div> ${element["cantidad"]}</td>
-        <td class="border-top"><div class="fw-bolder">PRECIO:</div>
-        ${(element["precio"] * storedDolar).toFixed(2)} BS</td>
-        <td class="border-top"><div class="fw-bolder">IVA:</div>${(parseFloat(element["iva"]) * storedDolar).toFixed(2)} BS</td>
+        <td class="border-top">
+            <div class="fw-bolder">PRECIO:</div>
+            <p class="mb-1">${(element["precio"] * storedDolar).toFixed(2)} BS</p>
+            <p class="m-0 p-0">o</p>
+            <p class="mt-1">${element["precio"].toFixed(2)} $</p>
+        </td>
+        <td class="border-top"><div class="fw-bolder">IVA:</div>
+            <p class="mb-1">${(parseFloat(element["iva"]) * storedDolar).toFixed(2)} BS</p>
+            <p class="m-0 p-0">o</p>
+            <p class="mt-1">${parseFloat(element["iva"]).toFixed(2)} $</p>
+        </td>
         <td class="border-top">
           <div class="fw-bolder">SUB-TOTAL:</div>
           <p class="mb-1">${montoBSSubTotal} BS</p>
@@ -793,11 +825,13 @@ function calcularTotal() {
         subTotal += data[i]["precio"];
     }
     for (let i = 0; i < dataInsumo.length; i++) {
-        insumos +=
-            (dataInsumo[i]["iva"] != "No contiene"
-                ? (parseFloat(dataInsumo[i]["precio"]) + parseFloat(dataInsumo[i]["iva"])) * dataInsumo[i]["cantidad"]
-                : parseFloat(dataInsumo[i]["precio"])) * dataInsumo[i]["cantidad"];
+        if (dataInsumo[i]["iva"] != "No contiene") {
+            insumos += (parseFloat(dataInsumo[i]["precio"]) + parseFloat(dataInsumo[i]["iva"])) * dataInsumo[i]["cantidad"];
+        } else {
+            insumos += parseFloat(dataInsumo[i]["precio"]) * dataInsumo[i]["cantidad"];
+        }
     }
+
     let total = totalFactura + subTotal + insumos;
     total = parseFloat(total.toFixed(2));
 
@@ -1399,6 +1433,7 @@ function mostrarConfirmacion() {
     // Aqui pondremos el codigo HTML que tendra el body de la tabla
     let html = ``;
     let htmlInsumos = "";
+    console.log(dataInsumo);
     data.forEach((element, index) => {
         let storedDolar = localStorage.getItem("valorDelDolar");
         let montoBS = element["precio"] * storedDolar;
@@ -1417,6 +1452,8 @@ function mostrarConfirmacion() {
     dataInsumo.forEach((element, index) => {
         let storedDolar = localStorage.getItem("valorDelDolar");
         let montoBS = element["precio"] * storedDolar;
+        let ivaValor = parseFloat(element["iva"].replace("$", "").trim()) * storedDolar;
+
         montoBS = montoBS.toFixed(2);
 
         htmlInsumos += `
@@ -1429,8 +1466,11 @@ function mostrarConfirmacion() {
         <td><input type="hidden" name="cantidad[]" value="${element["cantidad"]}"><div class="fw-bolder">CANTIDAD</div> ${
             element["cantidad"]
         }</td>
+        
         <td><input type="hidden" name="precioInsumo[]" value="${montoBS}"><div class="fw-bolder">PRECIO:</div> ${montoBS} BS</td>
-        <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${(element["subTotal"] * storedDolar).toFixed(2)} BS</td>
+        <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${(ivaValor + element["subTotal"] * storedDolar).toFixed(
+            2
+        )} BS</td>
         <td>
         <tr>`;
     });

@@ -452,11 +452,20 @@
                       <?php echo $i['cantidad_inventario']; ?>
                     </td>
                     <td class="text-center border-start">
-                      <?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> $
+
+                      <p class="mb-1"> <?php echo ($i['iva']) ? ($i['precio'] * $_SESSION['dolar']) - ($i['precio'] * $_SESSION['dolar'] * 0.30) : $i['precio'] * $_SESSION['dolar'] ?> BS</p>
+
+                      <p class="m-0 p-0">o</p>
+
+                      <p class="mt-1"><?php echo ($i['iva']) ? $i['precio'] - ($i['precio'] * 0.30) : $i['precio'] ?> $</p>
                     </td>
                     <td class="text-center border-start">
-                      <?php echo ($i['iva']) ? $i['precio'] * 0.30 : "No contiene";
-                      ?>
+
+                      <p class="mb-1"> <?php echo ($i['iva']) ? ($i['precio'] * $_SESSION['dolar'] * 0.30) : "No contiene"; ?> BS</p>
+                      <p class="m-0 p-0">o</p>
+                      <p class="mt-1">
+                        <?php echo ($i['iva']) ? ($i['precio'] * 0.30) : "No contiene"; ?> $</p>
+
                     </td>
                     <td class="text-center border-start">
                       <input type="number" class="form-control input-buscar m-auto inputs-cantidad-insumos">

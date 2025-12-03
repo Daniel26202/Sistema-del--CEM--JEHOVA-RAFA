@@ -31,7 +31,7 @@
             </button>
             <h5>Pacientes</h5>
             <div class="scrollable">
-                <table class="table table-striped example  hover-control-m">
+                <table class="table table-striped exampleTable  hover-control-m">
                     <thead>
                         <tr>
                             <th>Cédula</th>
