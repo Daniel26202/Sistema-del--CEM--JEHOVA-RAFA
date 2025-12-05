@@ -11,126 +11,126 @@ const modalAgregarEspecialidad = document.getElementById("modalAgregarEspecialid
 const urlActual = window.location.href;
 
 const expresiones = {
-  cedula: /^([1-9]{1})([0-9]{5,7})$/,
-  nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-  apellido: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-  telefono: /^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/,
-  email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-  usuario: /^[a-zA-Z0-9._-]{3,16}$/,
-  password: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/,
+    cedula: /^([1-9]{1})([0-9]{5,7})$/,
+    nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+    apellido: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+    telefono: /^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/,
+    email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+    usuario: /^[a-zA-Z0-9._-]{3,16}$/,
+    password: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/,
 };
 const campos = {
-  cedula: false,
-  nombre: false,
-  apellido: false,
-  telefono: false,
-  usuario: false,
-  password: false,
-  dia: false,
-  horas: false,
+    cedula: false,
+    nombre: false,
+    apellido: false,
+    telefono: false,
+    usuario: false,
+    password: false,
+    dia: false,
+    horas: false,
 };
 let mens = document.querySelector("#leyendaHoraA");
 let horaEntrada;
 let horaSalida;
 function validarFormulario(e) {
-  console.log(e.target.name);
+    console.log(e.target.name);
 
-  switch (e.target.name) {
-    case "cedula":
-      validarCampos(expresiones.cedula, e.target, "cedula");
-      break;
+    switch (e.target.name) {
+        case "cedula":
+            validarCampos(expresiones.cedula, e.target, "cedula");
+            break;
 
-    case "nombre":
-      validarCampos(expresiones.nombre, e.target, "nombre");
+        case "nombre":
+            validarCampos(expresiones.nombre, e.target, "nombre");
 
-      break;
-    case "apellido":
-      validarCampos(expresiones.apellido, e.target, "apellido");
+            break;
+        case "apellido":
+            validarCampos(expresiones.apellido, e.target, "apellido");
 
-      break;
+            break;
 
-    case "telefono":
-      validarCampos(expresiones.telefono, e.target, "telefono");
+        case "telefono":
+            validarCampos(expresiones.telefono, e.target, "telefono");
 
-      break;
-    case "email":
-      validarCampos(expresiones.email, e.target, "email");
+            break;
+        case "email":
+            validarCampos(expresiones.email, e.target, "email");
 
-      break;
-    case "usuario":
-      validarCampos(expresiones.usuario, e.target, "usuario");
-      break;
-    case "password":
-      validarCampos(expresiones.password, e.target, "password");
-      break;
+            break;
+        case "usuario":
+            validarCampos(expresiones.usuario, e.target, "usuario");
+            break;
+        case "password":
+            validarCampos(expresiones.password, e.target, "password");
+            break;
 
-    case "dias[]":
-      // recolecto los inputs
-      let inputCheD = document.querySelectorAll(`.diasInA`);
+        case "dias[]":
+            // recolecto los inputs
+            let inputCheD = document.querySelectorAll(`.diasInA`);
 
-      // Array.from es para convertir el html en array y el .some es para verificar(en una array) si cumple con la condición especifica; devolviendo true si es verdadero y false si es falso
-      let seleccionadoD = Array.from(inputCheD).some((checkbox) => checkbox.checked);
-      if (seleccionadoD) {
-        campos["dia"] = true;
-      } else {
-        campos["dia"] = false;
-      }
+            // Array.from es para convertir el html en array y el .some es para verificar(en una array) si cumple con la condición especifica; devolviendo true si es verdadero y false si es falso
+            let seleccionadoD = Array.from(inputCheD).some((checkbox) => checkbox.checked);
+            if (seleccionadoD) {
+                campos["dia"] = true;
+            } else {
+                campos["dia"] = false;
+            }
 
-      break;
-    case "horaEntrada[]":
-      horaEntrada = e.target.value;
-      console.log(e.target.value);
+            break;
+        case "horaEntrada[]":
+            horaEntrada = e.target.value;
+            console.log(e.target.value);
 
-      break;
-    case "horaSalida[]":
-      horaSalida = e.target.value;
-      // console.log(horaSalida);
+            break;
+        case "horaSalida[]":
+            horaSalida = e.target.value;
+            // console.log(horaSalida);
 
-      break;
-  }
-
-  // si deselecciona un dia
-  if (horaEntrada === undefined && horaSalida === undefined) {
-    mens.classList.add("d-none");
-    campos.horas = true;
-  } else {
-    if (e.target.name === "horaEntrada[]") {
-      // map(Number) es para transformar el string en numero, cuando le pertenece a un array
-      let [hora, minutos] = horaEntrada.split(":").map(Number);
-      hora = hora + 1;
-      if (hora >= 24) hora = 0;
-      // padStart : se asegura que la cadena tenga al menos 2 caracteres, si no los tiene agrega un 0 ejemplo : 9 a 09
-      horaEntrada = `${hora.toString().padStart(2, "0")}:${minutos.toString().padStart(2, "0")}`;
+            break;
     }
 
-    if (horaEntrada < horaSalida) {
-      mens.classList.add("d-none");
-      campos.horas = true;
+    // si deselecciona un dia
+    if (horaEntrada === undefined && horaSalida === undefined) {
+        mens.classList.add("d-none");
+        campos.horas = true;
     } else {
-      campos.horas = false;
-      mens.classList.remove("d-none");
+        if (e.target.name === "horaEntrada[]") {
+            // map(Number) es para transformar el string en numero, cuando le pertenece a un array
+            let [hora, minutos] = horaEntrada.split(":").map(Number);
+            hora = hora + 1;
+            if (hora >= 24) hora = 0;
+            // padStart : se asegura que la cadena tenga al menos 2 caracteres, si no los tiene agrega un 0 ejemplo : 9 a 09
+            horaEntrada = `${hora.toString().padStart(2, "0")}:${minutos.toString().padStart(2, "0")}`;
+        }
+
+        if (horaEntrada < horaSalida) {
+            mens.classList.add("d-none");
+            campos.horas = true;
+        } else {
+            campos.horas = false;
+            mens.classList.remove("d-none");
+        }
     }
-  }
 }
 
 const validarCampos = (expresiones, input, campo) => {
-  if (expresiones.test(input.value)) {
-    input.parentElement.classList.remove("grpFormInCorrect");
-    input.parentElement.classList.add("grpFormCorrect");
-    campos[campo] = true;
-  } else {
-    input.parentElement.classList.remove("grpFormCorrect");
-    input.parentElement.classList.add("grpFormInCorrect");
-    campos[campo] = false;
-  }
+    if (expresiones.test(input.value)) {
+        input.parentElement.classList.remove("grpFormInCorrect");
+        input.parentElement.classList.add("grpFormCorrect");
+        campos[campo] = true;
+    } else {
+        input.parentElement.classList.remove("grpFormCorrect");
+        input.parentElement.classList.add("grpFormInCorrect");
+        campos[campo] = false;
+    }
 };
 
 // function ajax
 const listDateFragment = (data) => {
-  let html = "";
+    let html = "";
 
-  data.forEach((element) => {
-    html += `<div class="d-flex w-50 justify-content-between mb-3">
+    data.forEach((element) => {
+        html += `<div class="d-flex w-50 justify-content-between mb-3">
 
 
 
@@ -161,32 +161,32 @@ const listDateFragment = (data) => {
                                                     </div>
 
                                                 </div>`;
-  });
+    });
 
-  return html;
+    return html;
 };
 
 //read
 const readDoctor = async () => {
-  try {
-    let metodo = "";
+    try {
+        let metodo = "";
 
-    if (!urlActual.includes("papelera")) metodo = "DoctoresAjax";
-    else metodo = "papeleraDoctoresAjax";
+        if (!urlActual.includes("papelera")) metodo = "DoctoresAjax";
+        else metodo = "papeleraDoctoresAjax";
 
-    const result = await executePetition(url + "/" + metodo, "GET");
+        const result = await executePetition(url + "/" + metodo, "GET");
 
-    // construir html de filas
-    let html = "";
-    let html2 = "";
+        // construir html de filas
+        let html = "";
+        let html2 = "";
 
-    let id_usuario = 0;
-    console.log(result);
+        let id_usuario = 0;
+        console.log(result);
 
-    if (!urlActual.includes("papelera")) {
-      console.log(result[1]);
-      result[0].forEach((element) => {
-        html += ` <tr>
+        if (!urlActual.includes("papelera")) {
+            console.log(result[1]);
+            result[0].forEach((element) => {
+                html += ` <tr>
                             <td class=" text-center">
                                 ${element.nacionalidad}-${element.cedula}
                             </td>
@@ -212,7 +212,7 @@ const readDoctor = async () => {
 
                                     <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla"
                                         uk-toggle="target: #modal-editar-doctores${
-                                          element.id_usuario
+                                            element.id_usuario
                                         }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
                                         id="btneditarDoctor" data-index="${element.id_personal}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -225,7 +225,7 @@ const readDoctor = async () => {
 
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                      !urlActual.includes("paplera") ? "d-none" : ""
+                                        !urlActual.includes("paplera") ? "d-none" : ""
                                     }" data-index=${element.id_usuario}>
 
 
@@ -238,7 +238,7 @@ const readDoctor = async () => {
                                     </button>
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                      urlActual.includes("papelera") ? "d-none" : ""
+                                        urlActual.includes("papelera") ? "d-none" : ""
                                     }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -252,7 +252,7 @@ const readDoctor = async () => {
                              
                                 <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla" title="Horarios Del Doctor"
                                     uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${
-                                      element.id_usuario
+                                        element.id_usuario
                                     }"
                                     data-index="${element.id_personal}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -316,7 +316,7 @@ const readDoctor = async () => {
                                 </select>
                             </span>
                             <input type="number" name="cedula" id="inputUno" class="form-control input-validar input-modal input-disabled inputA" placeholder="Cédula" value="${
-                              element.cedula
+                                element.cedula
                             }">
 
                         </div>
@@ -324,7 +324,7 @@ const readDoctor = async () => {
                         </div>
 
                         <input type="number" name="cedulaRegistrada" class="form-control input-modal input-disabled d-none" value="${
-                          element.cedula
+                            element.cedula
                         }">
 
                         <input type="hidden" name="id_usuario_bitacora" class="form-control input-modal input-disabled id_usuario_bitacora">
@@ -337,7 +337,7 @@ const readDoctor = async () => {
                             </svg>
 
                             <input type="text" name="nombre" id="inputDos" class="input-validar form-control input-modal input-disabled input inputA mayuscula" placeholder="Nombre" value="${
-                              element.nombre_d
+                                element.nombre_d
                             }">
 
                         </div>
@@ -499,10 +499,10 @@ const readDoctor = async () => {
 
         
                         `;
-      });
-    } else {
-      result.forEach((element) => {
-        html += ` <tr>
+            });
+        } else {
+            result.forEach((element) => {
+                html += ` <tr>
                             <td class=" text-center">
                                 ${element.nacionalidad}-${element.cedula}
                             </td>
@@ -527,10 +527,10 @@ const readDoctor = async () => {
                                 <!-- editar -->
 
                                     <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla ${
-                                      !urlActual.includes("paplera") ? "d-none" : ""
+                                        !urlActual.includes("paplera") ? "d-none" : ""
                                     }"
                                         uk-toggle="target: #modal-editar-doctores${
-                                          element.id_usuario
+                                            element.id_usuario
                                         }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
                                         id="btneditarDoctor" data-index="${element.id_personal}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -543,7 +543,7 @@ const readDoctor = async () => {
 
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                      urlActual.includes("paplera") ? "d-none" : ""
+                                        urlActual.includes("paplera") ? "d-none" : ""
                                     }" data-index=${element.id_usuario}>
 
 
@@ -556,7 +556,7 @@ const readDoctor = async () => {
                                     </button>
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                      urlActual.includes("papelera") ? "d-none" : ""
+                                        urlActual.includes("papelera") ? "d-none" : ""
                                     }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -569,10 +569,10 @@ const readDoctor = async () => {
 
                              
                                 <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla ${
-                                  !urlActual.includes("paplera") ? "d-none" : ""
+                                    !urlActual.includes("paplera") ? "d-none" : ""
                                 }" title="Horarios Del Doctor"
                                     uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${
-                                      element.id_usuario
+                                        element.id_usuario
                                     }"
                                     data-index="${element.id_usuario}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -588,107 +588,107 @@ const readDoctor = async () => {
 
         
                         `;
-      });
-    }
-
-    const selector = ".exampleTable";
-
-    // si ya existe DataTable, destrúyela
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().clear().destroy();
-    }
-
-    // vuelca el html en el tbody
-    document.querySelector(selector + " tbody").innerHTML = html;
-
-    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-      ele.value = document.getElementById("id_usuario_session").value;
-      console.log(ele.value);
-    });
-
-    //llamar las funcion de eliminar
-    if (document.querySelectorAll(".btn-eliminar")) {
-      document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-        console.log(btn);
-        btn.addEventListener("click", function () {
-          const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-          alertConfirm("Esta seguro de eliminar el doctor?", deleteDoctor, data);
-        });
-      });
-    }
-
-    if (document.querySelectorAll(".btnRestablecer")) {
-      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          console.log(btn);
-
-          const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-          alertConfirm("Esta seguro de restablecer el doctor?", restablecerDoctor, data);
-        });
-      });
-    }
-
-    //llamar las funciones de editar
-    document.querySelectorAll(".forms-editar").forEach((formEditar) => {
-      formEditar.addEventListener("submit", function (e) {
-        e.preventDefault();
-        let inputsBuenos = [];
-
-        this.querySelectorAll(".input-validar").forEach((input) => {
-          if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-        });
-
-        console.log(inputsBuenos);
-
-        if (inputsBuenos.length == 5) {
-          updateDoctor(this, inputsBuenos);
-        } else {
-          alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
+            });
         }
-      });
-    });
 
-    //llamar a la uncion de restablecer
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        alertConfirm("Esta seguro de restablecer el paciente?", restablecerPattients, data);
-      });
-    });
+        const selector = ".exampleTable";
 
-    // re-inicializa
-    $(selector).DataTable({
-      language: {
-        language: {
-          decimal: ",",
-          thousands: ".",
-          lengthMenu: "Mostrar por página _MENU_ ",
-          zeroRecords: "No se encontraron resultados",
-          info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-          infoEmpty: "No hay registros disponibles",
-          infoFiltered: "(filtrado de _MAX_ registros en total)",
-          search: "Buscar:",
-        },
-      },
-    });
-    console.log("cargada...");
-  } catch (error) {
-    alertError("Error", error);
-    console.log(error);
-  }
+        // si ya existe DataTable, destrúyela
+        if ($.fn.DataTable.isDataTable(selector)) {
+            $(selector).DataTable().clear().destroy();
+        }
+
+        // vuelca el html en el tbody
+        document.querySelector(selector + " tbody").innerHTML = html;
+
+        document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+            ele.value = document.getElementById("id_usuario_session").value;
+            console.log(ele.value);
+        });
+
+        //llamar las funcion de eliminar
+        if (document.querySelectorAll(".btn-eliminar")) {
+            document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+                console.log(btn);
+                btn.addEventListener("click", function () {
+                    const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+                    alertConfirm("Esta seguro de eliminar el doctor?", deleteDoctor, data);
+                });
+            });
+        }
+
+        if (document.querySelectorAll(".btnRestablecer")) {
+            document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+                btn.addEventListener("click", function () {
+                    console.log(btn);
+
+                    const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+                    alertConfirm("Esta seguro de restablecer el doctor?", restablecerDoctor, data);
+                });
+            });
+        }
+
+        //llamar las funciones de editar
+        document.querySelectorAll(".forms-editar").forEach((formEditar) => {
+            formEditar.addEventListener("submit", function (e) {
+                e.preventDefault();
+                let inputsBuenos = [];
+
+                this.querySelectorAll(".input-validar").forEach((input) => {
+                    if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
+                });
+
+                console.log(inputsBuenos);
+
+                if (inputsBuenos.length == 5) {
+                    updateDoctor(this, inputsBuenos);
+                } else {
+                    alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
+                }
+            });
+        });
+
+        //llamar a la uncion de restablecer
+        //llamar las funcion de eliminar
+        document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+                alertConfirm("Esta seguro de restablecer el paciente?", restablecerPattients, data);
+            });
+        });
+
+        // re-inicializa
+        $(selector).DataTable({
+            language: {
+                language: {
+                    decimal: ",",
+                    thousands: ".",
+                    lengthMenu: "Mostrar por página _MENU_ ",
+                    zeroRecords: "No se encontraron resultados",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "No hay registros disponibles",
+                    infoFiltered: "(filtrado de _MAX_ registros en total)",
+                    search: "Buscar:",
+                },
+            },
+        });
+        console.log("cargada...");
+    } catch (error) {
+        alertError("Error", error);
+        console.log(error);
+    }
 };
 
 //read
 const readEspecialidad = async () => {
-  try {
-    const result = await executePetition("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectEspcAjax", "GET");
+    try {
+        const result = await executePetition("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectEspcAjax", "GET");
 
-    // construir html de filas
-    let html = "";
+        // construir html de filas
+        let html = "";
 
-    result.forEach((element, index) => {
-      html += ` 
+        result.forEach((element, index) => {
+            html += ` 
        <tr>
                 <td class="text-center fw-bold">
                  ${index + 1}
@@ -716,194 +716,194 @@ const readEspecialidad = async () => {
       
         
                         `;
-    });
+        });
 
-    const selector = ".exampleTable2";
+        const selector = ".exampleTable2";
 
-    // si ya existe DataTable, destrúyela
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().clear().destroy();
+        // si ya existe DataTable, destrúyela
+        if ($.fn.DataTable.isDataTable(selector)) {
+            $(selector).DataTable().clear().destroy();
+        }
+
+        // vuelca el html en el tbody
+        if (!urlActual.includes("papelera")) {
+            document.querySelector(selector + " tbody").innerHTML = html;
+        }
+
+        //llamar las funcion de eliminar
+        document.querySelectorAll(".btn-eliminar-epe").forEach((btn) => {
+            console.log(btn);
+            btn.addEventListener("click", function () {
+                const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+                alertConfirm("Esta seguro de eliminar la especialidad?", deleteEspecialidad, data);
+            });
+        });
+
+        // re-inicializa
+        $(selector).DataTable({
+            language: {
+                language: {
+                    decimal: ",",
+                    thousands: ".",
+                    lengthMenu: "Mostrar por página _MENU_ ",
+                    zeroRecords: "No se encontraron resultados",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "No hay registros disponibles",
+                    infoFiltered: "(filtrado de _MAX_ registros en total)",
+                    search: "Buscar:",
+                },
+            },
+        });
+        console.log("cargada...");
+    } catch (error) {
+        alertError("Error", error);
     }
-
-    // vuelca el html en el tbody
-    if (!urlActual.includes("papelera")) {
-      document.querySelector(selector + " tbody").innerHTML = html;
-    }
-
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar-epe").forEach((btn) => {
-      console.log(btn);
-      btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        alertConfirm("Esta seguro de eliminar la especialidad?", deleteEspecialidad, data);
-      });
-    });
-
-    // re-inicializa
-    $(selector).DataTable({
-      language: {
-        language: {
-          decimal: ",",
-          thousands: ".",
-          lengthMenu: "Mostrar por página _MENU_ ",
-          zeroRecords: "No se encontraron resultados",
-          info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-          infoEmpty: "No hay registros disponibles",
-          infoFiltered: "(filtrado de _MAX_ registros en total)",
-          search: "Buscar:",
-        },
-      },
-    });
-    console.log("cargada...");
-  } catch (error) {
-    alertError("Error", error);
-  }
 };
 
 //create
 const createDoctor = async (form, inputs) => {
-  try {
-    const data = new FormData(form);
-    let result = await executePetition(url + "/agregarDoctor", "POST", data);
-    console.log(result);
-    if (result.ok) {
-      alertSuccess(result.message);
+    try {
+        const data = new FormData(form);
+        let result = await executePetition(url + "/agregarDoctor", "POST", data);
+        console.log(result);
+        if (result.ok) {
+            alertSuccess(result.message);
 
-      readDoctor();
-      UIkit.modal("#modal-agregar-doctores").hide();
-      form.reset();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+            readDoctor();
+            UIkit.modal("#modal-agregar-doctores").hide();
+            form.reset();
+            inputs = [];
+            inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //delete
 const deleteDoctor = async (data) => {
-  try {
-    const result = await executePetition(url + `/borrarDoctor/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+    try {
+        const result = await executePetition(url + `/borrarDoctor/${data}`, "GET");
+        if (result.ok) {
+            alertSuccess(result.message);
+            readDoctor();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //update
 const updateDoctor = async (form, inputs) => {
-  try {
-    const data = new FormData(form);
-    console.log(form);
-    console.log(url + "/editarDoctor");
+    try {
+        const data = new FormData(form);
+        console.log(form);
+        console.log(url + "/editarDoctor");
 
-    let result = await executePetition(url + "/editarDoctor", "POST", data);
-    console.log(result);
-    if (result.ok) {
-      alertSuccess(result.message);
+        let result = await executePetition(url + "/editarDoctor", "POST", data);
+        console.log(result);
+        if (result.ok) {
+            alertSuccess(result.message);
 
-      UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    console.log(error);
-    alertError("Error", error);
-  }
+            UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
+            inputs = [];
+            inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+            readDoctor();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        console.log(error);
+        alertError("Error", error);
+    }
 };
 
 //delete
 const deleteEspecialidad = async (data) => {
-  try {
-    const result = await executePetition(`/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
-      readEspecialidad();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+    try {
+        const result = await executePetition(`/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`, "GET");
+        if (result.ok) {
+            alertSuccess(result.message);
+            readEspecialidad();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //restablecer
 const restablecerDoctor = async (data) => {
-  try {
-    const result = await executePetition(url + `/restablecer/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
+    try {
+        const result = await executePetition(url + `/restablecer/${data}`, "GET");
+        if (result.ok) {
+            alertSuccess(result.message);
 
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+            readDoctor();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 readDoctor();
 
 readEspecialidad();
 
 inputs.forEach((input) => {
-  input.addEventListener("input", validarFormulario);
+    input.addEventListener("input", validarFormulario);
 });
 
 form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (
-    campos.cedula &&
-    campos.nombre &&
-    campos.horas &&
-    campos.dia &&
-    campos.apellido &&
-    campos.telefono &&
-    campos.usuario &&
-    campos.password &&
-    campos.email
-  ) {
-    console.log("Se envio");
-    createDoctor(form, inputs);
-  } else {
-    alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
-  }
+    e.preventDefault();
+    if (
+        campos.cedula &&
+        campos.nombre &&
+        campos.horas &&
+        campos.dia &&
+        campos.apellido &&
+        campos.telefono &&
+        campos.usuario &&
+        campos.password &&
+        campos.email
+    ) {
+        console.log("Se envio");
+        createDoctor(form, inputs);
+    } else {
+        alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
+    }
 });
 
 modalAgregarSer.addEventListener("submit", function (e) {
-  e.preventDefault();
-  if (document.getElementById("id_doctor").value != "" && selectService.value != "") {
-    let result = executePetition(url + "/guardarDoctores", "POST", new FormData(modalAgregarSer));
-    result.then((res) => {
-      if (res.ok) {
-        alertSuccess(res.message);
-        modalAgregarSer.reset();
-        UIkit.modal("#modal-example-servicio").hide();
-      } else {
-        alertError("Error", res.error);
-      }
-    });
-  } else {
-    alertError("Error", "Debe seleccionar un doctor y un servicio para poder asignarlo.");
-  }
+    e.preventDefault();
+    if (document.getElementById("id_doctor").value != "" && selectService.value != "") {
+        let result = executePetition(url + "/guardarDoctores", "POST", new FormData(modalAgregarSer));
+        result.then((res) => {
+            if (res.ok) {
+                alertSuccess(res.message);
+                modalAgregarSer.reset();
+                UIkit.modal("#modal-example-servicio").hide();
+            } else {
+                alertError("Error", res.error);
+            }
+        });
+    } else {
+        alertError("Error", "Debe seleccionar un doctor y un servicio para poder asignarlo.");
+    }
 });
 
 modalAgregarEspecialidad.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const input = modalAgregarEspecialidad.querySelector('input[name="nombre"]');
-  if (input.value.trim() === "") {
-    alertError("Error", "El campo de especialidad no puede estar vacío.");
-    return;
-  }
-  let result = executePetition(url + "/registrarEspecialidad", "POST", new FormData(modalAgregarEspecialidad));
-  result.then((res) => {
-    if (res.ok) {
-      alertSuccess(res.message);
-      modalAgregarEspecialidad.reset();
-      UIkit.modal("#modal-exampleAgregarEspecialidades").hide();
-      readEspecialidad();
-    } else {
-      alertError("Error", res.error);
+    e.preventDefault();
+    const input = modalAgregarEspecialidad.querySelector('input[name="nombre"]');
+    if (input.value.trim() === "") {
+        alertError("Error", "El campo de especialidad no puede estar vacío.");
+        return;
     }
-  });
+    let result = executePetition(url + "/registrarEspecialidad", "POST", new FormData(modalAgregarEspecialidad));
+    result.then((res) => {
+        if (res.ok) {
+            alertSuccess(res.message);
+            modalAgregarEspecialidad.reset();
+            UIkit.modal("#modal-exampleAgregarEspecialidades").hide();
+            readEspecialidad();
+        } else {
+            alertError("Error", res.error);
+        }
+    });
 });
