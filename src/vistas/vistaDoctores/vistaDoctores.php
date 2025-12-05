@@ -243,7 +243,6 @@
     <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaDoctores.js"></script>
 
     <script type="module" src="<?= $urlBase; ?>../src/assets/ajax/doctor.js"></script>
-    <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/doctores.js"></script>
 
 
 

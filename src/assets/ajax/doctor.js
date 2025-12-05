@@ -1,4 +1,5 @@
 import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
+import { actualizar } from "../js/doctores.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Doctores";
 
 const form = document.getElementById("modalAgregarDoctores");
@@ -672,6 +673,8 @@ const readDoctor = async () => {
                 },
             },
         });
+        
+        actualizar();
         console.log("cargada...");
     } catch (error) {
         alertError("Error", error);
