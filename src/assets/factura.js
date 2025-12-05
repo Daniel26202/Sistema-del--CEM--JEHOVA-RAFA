@@ -519,7 +519,7 @@ document.querySelector(".formularios-insumos").addEventListener("submit", functi
             // Recalculamos subtotal en dólares
             encontrado.subTotal =  parseFloat(encontrado.subTotal) * encontrado.cantidad;
             encontrado.precio = parseFloat(encontrado.precio) * encontrado.cantidad;
-            encontrado.iva = parseFloat(encontrado.iva) * encontrado.cantidad;
+            encontrado.iva = element["iva"] != "No contiene $" ? parseFloat(encontrado.iva) * encontrado.cantidad : element["iva"];
         } else {
             dataInsumo.push(lista);
             
@@ -529,17 +529,17 @@ document.querySelector(".formularios-insumos").addEventListener("submit", functi
 
         console.log(encontrado);
 
-        const fila = document.querySelector(`tr[data-nombre="${lista.nombreInsumo}"]`);
-        if (fila) {
-            let tds = fila.querySelectorAll("td");
-            console.log(tds[2].innerText); // aquí tienes el <tr> cantidad txt
-            console.log(tds[3].children[1].innerText); // aquí tienes el <tr> precio BS txt
-            console.log(tds[3].children[3].innerText); // aquí tienes el <tr> precio $ txt
-            console.log(tds[4].children[1].innerText); // aquí tienes el <tr> iva BS txt
-            console.log(tds[4].children[3].innerText); // aquí tienes el <tr> iva $ txt
-            console.log(tds[5].children[1].innerText); // aquí tienes el <tr> total bs txt
-            console.log(tds[5].children[3].innerText); // aquí tienes el <tr> total $ txt
-        }
+        // const fila = document.querySelector(`tr[data-nombre="${lista.nombreInsumo}"]`);
+        // if (fila) {
+        //     let tds = fila.querySelectorAll("td");
+        //     console.log(tds[2].innerText); // aquí tienes el <tr> cantidad txt
+        //     console.log(tds[3].children[1].innerText); // aquí tienes el <tr> precio BS txt
+        //     console.log(tds[3].children[3].innerText); // aquí tienes el <tr> precio $ txt
+        //     console.log(tds[4].children[1].innerText); // aquí tienes el <tr> iva BS txt
+        //     console.log(tds[4].children[3].innerText); // aquí tienes el <tr> iva $ txt
+        //     console.log(tds[5].children[1].innerText); // aquí tienes el <tr> total bs txt
+        //     console.log(tds[5].children[3].innerText); // aquí tienes el <tr> total $ txt
+        // }
     });
 
     console.log(dataInsumo);
@@ -582,9 +582,14 @@ const mostrarVariosInusmos = () => {
     // Recorremos la lista de arriba y añadimos los datos a la variable html
     listaModalInsumo.forEach((element, index) => {
         let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBSSubTotal = (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) * storedDolar;
+        let montoBSSubTotal = element["iva"] != "No contiene $" ? (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) * storedDolar : parseFloat(element["subTotal"]) * storedDolar;
         montoBSSubTotal = montoBSSubTotal.toFixed(2);
-
+        console.log(element["iva"]);
+        console.log(element["iva"]);
+        console.log(parseFloat(element["subTotal"]));
+        console.log("subTotal");
+        console.log(element["subTotal"]);
+        
         html += `
         <tr class="border-top ">
         <td class="border-top"> ${index + 1}</td>
@@ -601,15 +606,15 @@ const mostrarVariosInusmos = () => {
           </p>
         </td>
         <td class="border-top border-start text-center">
-            <p class="mb-1">${(parseFloat(element["iva"]) * storedDolar).toFixed(2)} BS</p>
+            <p class="mb-1">${element["iva"] != "No contiene $" ? (parseFloat(element["iva"]) * storedDolar).toFixed(2) : "No contiene"} BS</p>
             <p class="m-0 p-0">o</p>
-            <p class="mt-1">${parseFloat(element["iva"]).toFixed(2)} $</p>
+            <p class="mt-1">${element["iva"] != "No contiene $" ? parseFloat(element["iva"]).toFixed(2) : "No contiene"} $</p>
         </td>
 
         <td class="border-top border-start text-center">
           <p class="mb-1">${montoBSSubTotal} BS</p>
           <p class="m-0 p-0">o</p>
-          <p class="mt-1">${(parseFloat(element["subTotal"]) + parseFloat(element["iva"])).toFixed(2)} $</p>
+          <p class="mt-1">${element["iva"] != "No contiene $" ? (parseFloat(element["subTotal"]) + parseFloat(element["iva"])).toFixed(2) : parseFloat(element["subTotal"]).toFixed(2)} $</p>
         </td>
 
         <td class="border-top border-start">
@@ -721,7 +726,7 @@ function mostrarInsumo() {
 
     dataInsumo.forEach((element, index) => {
         let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBSSubTotal = (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) * storedDolar;
+        let montoBSSubTotal = element["iva"] != "No contiene $" ? (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) * storedDolar : parseFloat(element["subTotal"]) * storedDolar;
         montoBSSubTotal = montoBSSubTotal.toFixed(2);
 
         html += `
@@ -737,15 +742,17 @@ function mostrarInsumo() {
             <p class="mt-1">${element["precio"].toFixed(2)} $</p>
         </td>
         <td class="border-top"><div class="fw-bolder">IVA:</div>
-            <p class="mb-1">${(parseFloat(element["iva"]) * storedDolar).toFixed(2)} BS</p>
+            <p class="mb-1">${element["iva"] != "No contiene $" ? (parseFloat(element["iva"]) * storedDolar).toFixed(2) : "No contiene"} BS</p>
             <p class="m-0 p-0">o</p>
-            <p class="mt-1">${parseFloat(element["iva"]).toFixed(2)} $</p>
+            <p class="mt-1">${element["iva"] != "No contiene $" ? parseFloat(element["iva"]).toFixed(2) : "No contiene"} $</p>
         </td>
         <td class="border-top">
           <div class="fw-bolder">SUB-TOTAL:</div>
           <p class="mb-1">${montoBSSubTotal} BS</p>
           <p class="m-0 p-0">o</p>
-          <p class="mt-1">${(parseFloat(element["subTotal"]) + parseFloat(element["iva"])).toFixed(2)} $</p>
+          <p class="mt-1">${
+            element["iva"] != "No contiene $" ? (parseFloat(element["subTotal"]) + parseFloat(element["iva"])).toFixed(2) : "No contiene" 
+        } $</p>
         </td>
         <td class="border-top"></td>
 
@@ -825,10 +832,10 @@ function calcularTotal() {
         subTotal += data[i]["precio"];
     }
     for (let i = 0; i < dataInsumo.length; i++) {
-        if (dataInsumo[i]["iva"] != "No contiene") {
-            insumos += (parseFloat(dataInsumo[i]["precio"]) + parseFloat(dataInsumo[i]["iva"])) * dataInsumo[i]["cantidad"];
+        if (dataInsumo[i]["iva"] != "No contiene $") {
+            insumos += (parseFloat(dataInsumo[i]["precio"]) + parseFloat(dataInsumo[i]["iva"])) * parseInt(dataInsumo[i]["cantidad"]);
         } else {
-            insumos += parseFloat(dataInsumo[i]["precio"]) * dataInsumo[i]["cantidad"];
+            insumos += parseFloat(dataInsumo[i]["precio"]) * parseInt(dataInsumo[i]["cantidad"]);
         }
     }
 
@@ -1452,7 +1459,7 @@ function mostrarConfirmacion() {
     dataInsumo.forEach((element, index) => {
         let storedDolar = localStorage.getItem("valorDelDolar");
         let montoBS = element["precio"] * storedDolar;
-        let ivaValor = parseFloat(element["iva"].replace("$", "").trim()) * storedDolar;
+        let ivaValor = element["iva"] != "No contiene $" ? parseFloat(element["iva"].replace("$", "").trim()) * storedDolar : 0;
 
         montoBS = montoBS.toFixed(2);
 
