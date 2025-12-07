@@ -1,0 +1,160 @@
+<?php
+
+use App\modelos\ModeloCategoria;
+use App\modelos\ModeloConsultas;
+use App\modelos\ModeloBitacora;
+use App\modelos\ModeloPermisos;
+
+
+	 function consultas($parametro)
+	{
+		$ayuda = "btnayudaServicioMedico";
+		// $doctores = $this->modelo->mostrarDoctores();
+		// $todasLasCategorias = $this->categoria->seleccionarTodasLasCategoria();
+		// require_once __DIR__ . "/../../src/vistas/vistaConsultas/vistaServiciosMedicos.php";
+		echo 'servicios medicos';
+	}
+
+	//  function categoriasAjax()
+	// {
+	// 	echo json_encode($this->categoria->seleccionarCategoria());
+	// }
+
+	//  function consultasAjax()
+	// {
+	// 	echo json_encode($this->modelo->mostrarConsultas());
+	// }
+
+	//  function papeleraServicio($parametro)
+	// {
+	// 	$doctores = $this->modelo->mostrarDoctores();
+	// 	$categorias = $this->categoria->seleccionarCategoria();
+	// 	require_once __DIR__ . "/../../src/vistas/vistaConsultas/vistaServiciosPapelera.php";
+	// }
+
+	//  function papeleraAjax()
+	// {
+	// 	echo json_encode($this->modelo->mostrarConsultasDes());
+	// }
+
+	//  function guardar()
+	// {
+	// 	// 1. Quitar separadores de miles
+	// 	$valor = str_replace('.', '', $_POST['precioD']);
+
+	// 	// 2. Cambiar coma decimal por punto
+	// 	$valor = str_replace(',', '.', $valor);
+
+	// 	// 3. Convertir a float
+	// 	$numero = (float)$valor;
+
+	// 	$insercion = $this->modelo->insertarSevicio($_POST['id_categoria'],  $numero, $_POST['tipo']);
+
+	// 	if (is_array($insercion) && $insercion[0] === "exito") {
+	// 		$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicio Medico", "Ha Insertado un nuevo servicio medico");
+	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+	// 	} else {
+	// 		http_response_code(409);
+	// 		echo json_encode(['ok' => false, 'error' => $insercion]);
+	// 		exit;
+	// 	}
+	// }
+
+	//  function eliminar($datos)
+	// {
+	// 	$id_servicioMedico = $datos[0];
+	// 	$id_usuario = $datos[1];
+	// 	$eliminacion = $this->modelo->eliminar($id_servicioMedico);
+
+	// 	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+	// 		$this->bitacora->insertarBitacora($id_usuario, "servicio Medico", "Ha eliminado un  servicio medico");
+	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	// 	} else {
+	// 		http_response_code(409);
+	// 		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+	// 		exit;
+	// 	}
+	// }
+
+	//  function restablecer($datos)
+	// {
+	// 	$id_servicioMedico = $datos[0];
+	// 	$id_usuario = $datos[1];
+	// 	$restablecimiento = $this->modelo->restablecerServ($id_servicioMedico);
+
+	// 	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+	// 		$this->bitacora->insertarBitacora($id_usuario, "servicioMedico", "Ha restablecido un servicio medico");
+	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	// 	} else {
+	// 		http_response_code(409);
+	// 		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+	// 		exit;
+	// 	}
+	// }
+
+	//  function editar()
+	// {
+	// 	// 1. Quitar separadores de miles
+	// 	$valor = str_replace('.', '', $_POST['precioD']);
+
+	// 	// 2. Cambiar coma decimal por punto
+	// 	$valor = str_replace(',', '.', $valor);
+
+	// 	// 3. Convertir a float
+	// 	$numero = (float)$valor;
+
+	// 	$edicion = $this->modelo->editar($_POST["id_servicioMedico"], $numero, $_POST['tipo']);
+
+	// 	if (is_array($edicion) && $edicion[0] === "exito") {
+	// 		$this->bitacora->insertarBitacora($_POST['id_usuario'], "servicioMedico", "Ha modificadp un servicio medico");
+	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	// 	} else {
+	// 		http_response_code(409);
+	// 		echo json_encode(['ok' => false, 'error' => $edicion]);
+	// 		exit;
+	// 	}
+	// }
+
+	//  function mostrarEspecialidad($datos)
+	// {
+	// 	$id_doctor = $datos[0];
+	// 	$respuesta = $this->modelo->especialidadDoctor($id_doctor);
+	// 	echo json_encode($respuesta);
+	// }
+
+
+	//  function registrarCategoria()
+	// {
+	// 	$insercion = $this->categoria->registrarCategoria($_POST["nombre"]);
+
+	// 	if (is_array($insercion) && $insercion[0] === "exito") {
+	// 		$this->bitacora->insertarBitacora($_POST['id_usuario'], "categoria_servicio", "Ha Insertado una nueva  categoria");
+	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+	// 	} else {
+	// 		http_response_code(409);
+	// 		echo json_encode(['ok' => false, 'error' => $insercion]);
+	// 		exit;
+	// 	}
+	// }
+	//  function eliminarCategoria($datos)
+	// {
+	// 	$id_categoria = $datos[0];
+	// 	$id_usuario = $datos[1];
+	// 	$eliminacion  = $this->categoria->eliminarCategoria($id_categoria);
+
+	// 	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+	// 		$this->bitacora->insertarBitacora($id_usuario, "categoria_servicio", "Ha eliminado una  categoria");
+
+	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	// 	} else {
+	// 		http_response_code(409);
+	// 		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+	// 		exit;
+	// 	}
+	// }
+
+	//  function permisos($id_rol, $permiso, $modulo)
+	// {
+	// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+	// }
+

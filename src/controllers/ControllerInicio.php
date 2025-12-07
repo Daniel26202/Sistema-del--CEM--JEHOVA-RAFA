@@ -7,16 +7,6 @@ use App\modelos\ModeloPermisos;
 use App\modelos\ModeloDoctores;
 
 
-
-
-
-  $modeloInicio = new ModeloInicio();
-    $modeloCitas = new ModeloCita();
-    $bitacora = new ModeloBitacora();
-    $permisos = new ModeloPermisos();
-    $modeloDoctores = new ModeloDoctores();
-
-
 function inicio($parametro)
 {
     $bitacora = new ModeloBitacora();
@@ -35,8 +25,8 @@ function inicio($parametro)
 
         // Redireccionar al inicio
 
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
-        exit();
+        // header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+        // exit();
     }
 
 
@@ -45,7 +35,8 @@ function inicio($parametro)
 
     $ayuda = "btnayudaInicio";
 
-    require_once './src/vistas/dashboard.php';
+    // require_once './src/vistas/dashboard.php';
+    echo "Inicio";
 }
 
 //Retorna el precio  del dolar y guardarlo en la session

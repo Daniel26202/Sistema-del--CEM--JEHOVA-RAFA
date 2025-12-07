@@ -20,7 +20,7 @@ class Rutas
         $this->equivalentes = require_once __DIR__ . "/../../src/config/equivalencias.php";
     }
 
-    /* metodo utilizado para gestionar las rutas de todo nuestro sistema */
+    /* metodo que utilizamos para gestionar las rutas de todo nuestro sistema */
     public function gestionarRutas()
     {
         $this->partes = explode("/", $this->url);
@@ -51,36 +51,34 @@ class Rutas
 
         if (file_exists($directorio)) {
             require_once __DIR__ . "/../../" . $directorio;
-            // $instancia = new $this->controlador();
 
             if (function_exists($metodo)) {
                 if (in_array($this->controlador, ["ControllerIniciarSesion", "ControllerRecuperarContr"])) {
-                    // $instancia->$metodo($parametro ?? []);
 
                     call_user_func($metodo, $parametro ?? []);
                 } else {
 
                     /*  si el estatus de la session es activio validamos los permisos */
                     if (session_status() === PHP_SESSION_ACTIVE) {
-                        if ($this->controlador == "ControladorInicio" || $this->controlador == "ControladorPerfil" || $this->controlador == "ControladorBitacora") {
-                            $instancia->$metodo($parametro ?? []);
+                        if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerBitacora") {
+                            call_user_func($metodo, $parametro ?? []);
                         } else {
-                            // obtenemos el permiso equivalente del método si no encuentra la equivalencia le pasa el noombre del metodo "Cabe destacar que la equivalencias la sacamos de un array grande de otro achivo llamado equivalencias.php"
                             $permiso = $this->equivalentes[$metodo] ?? $metodo;
 
-                            /* verifica con el metodo gestionarPermisos si tiene permiso de ir a ese modulo */
+                            
                             $permitido = $this->modelo->gestionarPermisos($_SESSION["id_rol"] ?? null, $permiso, $modulo);
+
+                    
                             if (!$permitido) {
                                 echo "Error 404 ";
                                 header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
                                 exit;
                             } else {
-                                /* si lo tiene */
-                                $instancia->$metodo($parametro ?? []);
+                                call_user_func($metodo, $parametro ?? []);                   
                             }
                         }
                     } else {
-                        /* Si la sesión no está iniciada, muestra un mensaje */
+                        
                         echo "Sesión no iniciada";
                     }
                 }
