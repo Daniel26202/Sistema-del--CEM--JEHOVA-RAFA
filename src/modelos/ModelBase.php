@@ -18,10 +18,8 @@ class ModelBase extends Db
     }
 
 
-    protected function create(array $data)
+    protected function create($data)
     {
-        $columns = implode(", ", array_keys($data));
-        $placeholders = ":" . implode(", :", array_keys($data));
 
         $sql = $this->getSQL();
         $stmt = $this->pdo->prepare($sql);
@@ -40,7 +38,7 @@ class ModelBase extends Db
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    protected function update(array $data, $id)
+    protected function update($data, $id)
     {
         $set = '';
         foreach ($data as $key => $value) {
