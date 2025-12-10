@@ -31,11 +31,12 @@ class ModelBase extends Db
         return $stmt->execute();
     }
 
-    protected function read()
+    protected function read($all = true)
     {
         $stmt = $this->pdo->prepare($this->getSQL());
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : $stmt->fetch(PDO::FETCH_ASSOC);
+    
     }
 
     protected function update($data, $id)
@@ -46,7 +47,8 @@ class ModelBase extends Db
         }
         $set = rtrim($set, ', ');
 
-        $sql = $this->getSQL();
+        // ✅ Uso el SQL base y le agrego el SET dinámico
+        $sql = $this->getSQL() . " SET $set WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
 
         foreach ($data as $key => $value) {
@@ -65,7 +67,7 @@ class ModelBase extends Db
         return $stmt->execute();
     }
 
-    protected function search($params)
+    protected function search($params, $all = true)
     {
 
         $sql = $this->getSQL();
@@ -76,9 +78,11 @@ class ModelBase extends Db
         }
 
         $stmt->execute();
-        
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    
 
 
     public function getSQL()
