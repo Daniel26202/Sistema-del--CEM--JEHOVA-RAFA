@@ -55,6 +55,10 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 <body>
     <!-- Contenedor principal de Bootstrap -->
     <div class="container mb-5 mt-5 ">
+        <div class="">
+            <img src="<?= $urlBase ?>./src/assets/icons/logo2.png" alt="Logo" class="logo w-25" style="">
+        </div>
+
         <!-- Fecha Actual -->
         <div class="text-center mb-4">
             <small class="text-bg-light-custom text-uppercase fw-medium" style="font-size: 0.7rem; letter-spacing: 0.5px;">
@@ -77,7 +81,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                 <i class="bi bi-heart-pulse-fill text-white fs-4"></i>
                             </div>
                             <div class=" ms-3 ">
-                                <h1 class="clinic-name h4 fw-bold mb-1">CEM JEHOVÁ-RAFA</h1>
+                                <h1 class="clinic-name h4 fw-bold mb-1">CEM JEHOVA-RAFA</h1>
                                 <p class="text-primary-custom small fw-medium mb-3">Sistema de Gestión Clínica</p>
                             </div>
                             <div class="ms-5 ps-2"></div>
@@ -85,7 +89,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
 
                         <!-- Formulario de Login -->
-                        <form id="loginForm" method="POST" action="" >
+                        <form id="loginForm" method="POST" action="">
                             <div class="me-md-5 pe-md-4 mt-1">
 
                                 <!-- Campo de Usuario con icono flotante -->
@@ -146,21 +150,21 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                             <div class="d-flex justify-content-center ">
 
                                 <div class="mt-2 mb-1 g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1" style="transform: scale(0.95); transform-origin: center; transform: scale(0.88);"></div>
-                                
+
                             </div>
 
                             <!-- Botón de Ingresar con Bootstrap -->
-                             <div class="col-12 d-flex justify-content-center">
-                                 <div class="d-grid gap-2 mt-4 col-8 ">
-                                     <button
-                                         type="submit"
-                                         class="btn btn-primary btn-lg"
-                                         data-intro="Haga clic aquí para iniciar sesión"
-                                         data-step="3">
-                                         INGRESAR
-                                     </button>
-                                 </div>
-                             </div>
+                            <div class="col-12 d-flex justify-content-center">
+                                <div class="d-grid gap-2 mt-4 col-8 ">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary btn-lg"
+                                        data-intro="Haga clic aquí para iniciar sesión"
+                                        data-step="3">
+                                        INGRESAR
+                                    </button>
+                                </div>
+                            </div>
 
                             <!-- Mensaje de Seguridad -->
                             <div class="text-center mt-4 pt-3">
