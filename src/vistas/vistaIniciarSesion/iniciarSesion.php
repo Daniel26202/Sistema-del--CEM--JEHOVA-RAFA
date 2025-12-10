@@ -55,8 +55,8 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 <body>
     <!-- Contenedor principal de Bootstrap -->
     <div class="container mb-5 mt-5 ">
-        <div class="">
-            <img src="<?= $urlBase ?>./src/assets/icons/logo2.png" alt="Logo" class="logo w-25" style="">
+        <div class="d-flex justify-content-center">
+            <!-- <img src="<?= $urlBase ?>./src/assets/icons/logo3.png" alt="Logo" class="logo" style=""> -->
         </div>
 
         <!-- Fecha Actual -->
