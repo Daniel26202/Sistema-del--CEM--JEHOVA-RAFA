@@ -1,353 +1,319 @@
-/* ////////////////////////////////////////////////////// */
-:root {
-  /* Colores claros por defaultt */
-  --color-bg-main: #f2f9ff;
-  --color-bg-sidebar: #e8f2ff;
-  --color-bg-card: #fdfdff;
-  --color-bg-card-estadisticas: #fdfdff;
-  --color-text: #1b1a1a;
-  --color-text-card: #1b1a1a;
-  --color-primary: #387adf;
-  --color-primary-contrast: #ffffff;
-  --color-surface: #f8fcff;
-  --color-border: #f2f9ff;
-  --filter-image: "";
-  --color-error: #917977;
+/* ============================================
+           1. FONDO CON IMAGEN
+           ============================================ */
+body {
+    background-image: url("fondoLogin.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    /* si no carga la imagen */
+    background-color: #a4cce7;
+
+    /* Layout con flexbox (Bootstrap lo hace con clases también) */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-[data-theme="dark"] {
-  /* Colores oscuros */
-  --color-bg-main: hsl(211, 53%, 11%);
-  --color-bg-sidebar: hsl(211, 43%, 11%);
-  --color-bg-card: #415a77;
-  --color-bg-card-estadisticas: #1e3c5e;
-  --color-text: #e0e1dd;
-  --color-text-card: #e0e1dd;
-  --color-primary: #387adf;
-  --color-primary-contrast: #e0e1dd;
-  --color-surface: #415a77;
-  --color-border: #e4ebf0;
-  --filter-image: brightness(50%) contrast(120%);
-  --color-error: #b0cad7;
-  input::placeholder {
-    color: #e8f2ff;
-  }
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-html {
-  /* background-color: var(--color-bg-main); */
-  background-color: var(--color-bg-main);
-}
-
-body{
-  background-color: var(--color-bg-main);
-  height: 100vh;
-  width: 100vw;
-}
-.contenedor {
-  /* --color-bg-main */
-  background-color: var(--color-bg-main);
-}
-
-.logo {
-  width: 80%;
-  height: 100px;
-  margin-top: 20px;
-  margin-left: 50px;
-}
-
-.centro {
-  background-color: var(--color-bg-card);
-  max-width: 400px;
-  width: 100%;
-  max-height: 800px;
-  height: 100%;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-}
-
-.text-theme {
-  color: var(--color-text) !important;
-}
-
-.p-error-validaciones{
-  color: var(--color-error) !important;
-}
-
-/* 
-caja del formulario */
-
-.fondo_rsp {
-  border: #e4ebf0 solid 1px;
-  border-radius: 7vh;
-  box-shadow: #e4ebf0 0 0 5px;
-  background-color: #f8fcff;
-  padding-left: 0%;
-  padding-right: 19%;
-  padding-top: 9%;
-  padding-bottom: 8.8%;
-  /* margin-left: 10%; */
-  /* width: 80vh; */
-  width: 95%;
-}
-
-/* flechas del carrusel; la oculto */
-.carousel .carousel-control-prev,
-.carousel .carousel-control-next {
-  visibility: hidden;
-  opacity: 3;
-}
-
-/* flechas del carrusel; la hago visible */
-.carousel:hover .carousel-control-prev,
-.carousel:hover .carousel-control-next {
-  visibility: visible;
-  animation-duration: 2s;
-  transition-timing-function: linear;
-}
-
-/* (con bootstrap) animación de desvanecimiento de las flechas del carrusel;
-se nota muy mínimo */
-@keyframes FadeInPrev {
-  0% {
-    opacity: 0;
-    padding-left: 40px;
-  }
-
-  100% {
-    opacity: 1;
-    padding-left: 0px;
-  }
-}
-
-/* (con bootstrap) animación de desvanecimiento de las flechas del carrusel;
-se nota muy mínimo*/
-@keyframes FadeInNext {
-  0% {
-    opacity: 0;
-    padding-right: 40px;
-  }
-
-  100% {
-    opacity: 1;
-    padding-right: 0px;
-  }
-}
-
-#formiIniciarSesion {
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.linea-titulo {
-  margin-left: 30px;
-  margin-top: 6px;
-  width: 25.7vh;
-  border-bottom: solid 4px #387adf;
-}
-
-.titulo {
-  margin-left: 30px;
-}
-
-.formulario {
-  margin-left: 85px;
-}
-
-.input {
-  color: var(--color-text-card) !important;
-  border-radius: 4px;
-  /* background-color: #ffffff; */
-  padding-left: 28.6px;
-  padding-bottom: 6px;
-  width: 100%;
-  border: none;
-  outline: none;
-  border-bottom: solid 0.55vh #387adf;
-  background-color: var(--color-bg-card);
-}
-
-.icono {
-  color: #387adf;
-  position: absolute;
-  transform: translateY(1px);
-  transform: translateX(-2px);
-  width: 25px;
-  transition: 0.1s;
-}
-.iconoD {
-  color: #387adf;
-  position: absolute;
-  transform: translateY(-1px);
-  transform: translateX(-27px);
-  width: 25px;
-  transition: 0.1s;
-}
-
-.icono-animacion {
-  color: #387adf;
-  position: absolute;
-  transform: translateY(1px);
-  transform: translateX(-0.5px);
-  width: 20px;
-  transition: 0.1s;
-}
-
-.tamano {
-  height: 100vh;
-  background-color: #387adf;
-}
-
-#boton_inicio_sesion {
-  margin-top: 5px;
-  background-color: #007bff;
-  color: #fff;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1.2rem;
-}
-
-#boton_inicio_sesion:hover {
-  background-color: #0056b3;
-}
-
-.boton {
-  margin-left: 30%;
-  margin-bottom: 10px;
-  padding: 0% 30px;
-  padding-bottom: 4px;
-  font-size: 1.6rem;
-  letter-spacing: 1.5px;
-}
-
-#recuperar_contraseña {
-  margin-left: 26%;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  color: #387adf;
-}
-
-.comentarioAzul {
-  border: 0.1px solid rgb(236, 236, 253);
-  box-shadow: #ddebfa 0 0 2px;
-}
-
-.comentario {
-  margin: 0;
-  border-radius: 8px;
-}
-
-.posicionCarrusel {
-  position: fixed;
-}
-
-.azul {
-  color: #387adf;
-}
-
-.btn_ayuda {
-  position: absolute;
-  margin-left: 95%;
-}
-
-
-
-
-@media screen and (max-width: 945px) {
-  .fondo_rsp {
-    width: 70vh;
-  }
-
-  .carrusel-responsive {
-    display: none;
-  }
-
-  .linea-titulo {
-    width: 23.5vh;
-  }
-
-  .input {
-    width: 45vh;
-    padding-bottom: 5.9px;
-    margin-bottom: 3px;
+/* Overlay semi-transparente opcional */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-  }
-
-  .boton {
-    margin-left: 30.5%;
-    padding: 5px 40px;
-    padding-bottom: 9px;
-    font-size: 1.7rem;
-    letter-spacing: 1.5px;
-  }
+    height: 100%;
+    background: rgba(168, 218, 220, 0.25);
+    z-index: 1;
+    pointer-events: none;
 }
 
-@media screen and (max-width: 500px) {
-  .fondo_rsp {
-    width: 50vh;
-  }
+/* ============================================
+           2. EFECTOS DE LA TARJETA (Card de Bootstrap)
+           ============================================ */
+.card {
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.555) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 3.9vh !important;
 
-  .boton {
-    margin-left: 10.5%;
-    padding: 10px 27px;
-    padding-bottom: 12px;
-  }
-
-  input {
-    padding-bottom: 5.9px;
-    font-size: larger;
-    margin-bottom: 16px;
-  }
+    /* EFECTO: Transición suave para hover */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-@media screen and (max-width: 400px) {
-  .fondo_rsp {
-    width: 40vh;
-  }
+/* EFECTO: Hover de la tarjeta */
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+}
 
-  .input {
-    /* width: 39vh; */
-    padding-bottom: 7px;
-  }
+/* EFECTO: Animación de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-  .boton {
-    margin-left: 4%;
-    padding: 13px 14px;
-    letter-spacing: 0px;
-    width: 90%;
-  }
+.card {
+    animation: fadeInUp 0.2s ease-out;
+}
 
-  .formulario {
-    margin-left: 62px;
-  }
+/* ============================================
+           3. EFECTOS DEL LOGO
+           ============================================ */
+.logo-icon {
+    width: 41px;
+    height: 41px;
+    background: linear-gradient(135deg, #086eb2 0%, #1582ca 100%);
+    box-shadow: 140px -10px 55px rgba(8, 145, 178, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  .logo {
-    width: 220px;
+/* EFECTO: Hover del logo */
+.logo-icon:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 5px 30px rgba(8, 145, 178, 0.5);
+}
 
-    margin-left: 30px;
-  }
+/* EFECTO: Animación de pulso continuo */
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    50% {
+        background: linear-gradient(135deg, #086eb2 0%, #1388d6 100%);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transform: scale(1.05);
+    }
+}
 
-  .centro {
-    /* background-color: #fff; */
-    max-width: 290px;
-    /* width: 100%;
-      max-height: 800px;
-      height: 100%;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      margin-bottom: 30px;
-      padding-bottom: 20px; */
-  }
+.logo-icon {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Texto del nombre con gradiente */
+.clinic-name {
+    background: linear-gradient(135deg, #086eb2 0%, #014a7a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ============================================
+           4. EFECTOS DEL ICONO DE SEGURIDAD
+           ============================================ */
+@keyframes iconScale {
+    0% {
+        transform: scale(0) rotate(-180deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.secure-icon {
+    animation: iconScale 0.5s ease-out 0.3s both;
+}
+
+/* ============================================
+           5. EFECTOS DE LOS INPUTS (Form-control de Bootstrap)
+           ============================================ */
+
+
+
+/* Contenedor del input con posición relativa */
+.input-icon-wrapper {
+    position: relative;
+}
+
+/* Icono flotante dentro del input */
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    z-index: 5;
+    transition: color 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+/* Input con padding para el icono */
+.form-control {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+    border-width: 1.9px;
+    border-radius: 16.7px !important;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    border-color: #1a8fdd !important;
+    background-color: #ffffff98;
+    box-shadow: 0 8px 10px rgba(8, 145, 178, 0.15) !important;
+}
+
+/* EFECTO: Focus en inputs */
+.form-control:focus {
+    background-color: #ffffffe5;
+    border-width: 2px;
+    box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.15) !important;
+    transform: scale(1.01);
+}
+
+/* EFECTO: Icono cambia de color cuando hay focus */
+.input-icon-wrapper:focus-within .input-icon {
+    color: #086eb2 !important;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Label cambia de color con focus */
+.form-label {
+    transition: color 0.3s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.input-icon-wrapper:focus-within ~ .form-label,
+.form-control:focus ~ .form-label {
+    color: #086eb2 !important;
+}
+
+/* ============================================
+           6. BOTÓN TOGGLE DE CONTRASEÑA
+           ============================================ */
+.password-toggle {
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: #086eb2 !important;
+    filter: drop-shadow(0 0 5px rgba(8, 145, 178, 0.3));
+    transform: translateY(-50%) scale(1.1);
+}
+
+.password-toggle:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* ============================================
+           7. EFECTOS DEL BOTÓN (btn de Bootstrap)
+           ============================================ */
+.btn-primary {
+    background: linear-gradient(135deg, #49b2f8 0%, #086eb2 100%) !important;
+    border: none !important;
+    box-shadow: 0 3px 12px rgba(8, 145, 178, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* EFECTO: Hover del botón */
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.5) !important;
+}
+
+/* EFECTO: Click del botón */
+.btn-primary:active {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3) !important;
+}
+
+/* EFECTO: Onda al hacer click */
+.btn-primary::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-primary:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* ============================================
+           8. ICONO DE SEGURIDAD CON PARPADEO
+           ============================================ */
+@keyframes blink {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.security-icon {
+    animation: blink 2s ease-in-out infinite;
+}
+
+/* ============================================
+           9. ENLACES DEL FOOTER
+           ============================================ */
+.footer-links a {
+    color: #086eb2;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #3589c2;
+}
+
+/* ============================================
+           10. AJUSTES RESPONSIVE ADICIONALES
+           ============================================ */
+@media (max-width: 576px) {
+    .logo-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .logo-icon i {
+        font-size: 24px;
+    }
+
+    .card {
+        margin: 10px !important;
+    }
+}
+
+/* ============================================
+           11. COLORES PERSONALIZADOS DE BOOTSTRAP
+           ============================================ */
+.text-primary-custom {
+    color: #2c7db3 !important;
+}
+
+.text-secondary-custom {
+    color: #64748b !important;
+}
+
+.border-primary-custom {
+    border-color: #2c7db3 !important;
 }
