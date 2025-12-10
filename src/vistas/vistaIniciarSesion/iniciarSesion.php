@@ -85,76 +85,80 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
 
                         <!-- Formulario de Login -->
-                        <form id="loginForm" method="POST" action="">
+                        <form id="loginForm" method="POST" action="" >
+                            <div class="me-md-5 pe-md-4 mt-1">
 
-                            <!-- Campo de Usuario con icono flotante -->
-                            <div class="mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
-                                <!-- Label -->
-                                <div class="text-center text-sm-end col-12 col-sm-4 col-md-3">
-                                    <label for="username" class="form-label text-dark me-sm-3">Usuario</label>
+                                <!-- Campo de Usuario con icono flotante -->
+                                <div class="mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
+                                    <!-- Label -->
+                                    <div class="text-center text-sm-end col-12 col-sm-4 col-md-4">
+                                        <label for="username" class="form-label text-dark me-sm-3">Usuario</label>
+                                    </div>
+
+                                    <!-- Input con icono -->
+                                    <div class="input-icon-wrapper col-9 col-sm-7 col-md-7">
+                                        <i class="bi bi-person-fill input-icon"></i>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="username"
+                                            name="username"
+                                            placeholder="Tu correo o usuario"
+                                            required
+                                            data-intro="Ingrese su nombre de usuario o correo electrónico"
+                                            data-step="1">
+                                    </div>
                                 </div>
 
-                                <!-- Input con icono -->
-                                <div class="input-icon-wrapper col-9 col-sm-8 col-md-7">
-                                    <i class="bi bi-person-fill input-icon"></i>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="username"
-                                        name="username"
-                                        placeholder="Tu correo o usuario"
-                                        required
-                                        data-intro="Ingrese su nombre de usuario o correo electrónico"
-                                        data-step="1">
-                                </div>
-                            </div>
+                                <!-- Campo de Contraseña con icono flotante -->
+                                <div class="mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
+                                    <!-- Label -->
+                                    <div class="text-center text-sm-end col-12 col-sm-4 col-md-4">
+                                        <label for="password" class="form-label text-dark me-sm-3">Contraseña</label>
+                                    </div>
 
-
-                            <!-- Campo de Contraseña con icono flotante -->
-                            <div class="mb-3 d-flex flex-wrap justify-content-center align-items-center col-12 ">
-                                <!-- Label -->
-                                <div class="text-center text-sm-end col-12 col-sm-4 col-md-3">
-                                    <label for="password" class="form-label text-dark me-sm-3">Contraseña</label>
+                                    <!-- Input con icono -->
+                                    <div class="input-icon-wrapper position-relative col-9 col-sm-7 col-md-7 ">
+                                        <i class="bi bi-lock-fill input-icon"></i>
+                                        <input
+                                            type="password"
+                                            class="form-control"
+                                            id="password"
+                                            name="password"
+                                            placeholder="Contraseña"
+                                            required
+                                            data-intro="Ingrese su contraseña segura"
+                                            data-step="2">
+                                        <button
+                                            type="button"
+                                            class="btn btn-link password-toggle text-muted p-2"
+                                            onclick="togglePassword()"
+                                            title="Mostrar/Ocultar contraseña">
+                                            <i class="bi bi-eye-fill" id="toggleIcon"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <!-- Input con icono -->
-                                <div class="input-icon-wrapper position-relative col-9 col-sm-8 col-md-7 ">
-                                    <i class="bi bi-lock-fill input-icon"></i>
-                                    <input
-                                        type="password"
-                                        class="form-control"
-                                        id="password"
-                                        name="password"
-                                        placeholder="Contraseña"
-                                        required
-                                        data-intro="Ingrese su contraseña segura"
-                                        data-step="2">
-                                    <button
-                                        type="button"
-                                        class="btn btn-link password-toggle text-muted p-2"
-                                        onclick="togglePassword()"
-                                        title="Mostrar/Ocultar contraseña">
-                                        <i class="bi bi-eye-fill" id="toggleIcon"></i>
-                                    </button>
-                                </div>
                             </div>
 
 
                             <!-- Google reCAPTCHA -->
-                            <div class="d-flex justify-content-center my-3">
+                            <div class="d-flex justify-content-center ">
                                 <div class="g-recaptcha" data-sitekey="TU_SITE_KEY_AQUI" style="transform: scale(0.95); transform-origin: center;"></div>
                             </div>
 
                             <!-- Botón de Ingresar con Bootstrap -->
-                            <div class="d-grid gap-2 mt-4">
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary btn-lg"
-                                    data-intro="Haga clic aquí para iniciar sesión"
-                                    data-step="3">
-                                    INGRESAR
-                                </button>
-                            </div>
+                             <div class="col-12 d-flex justify-content-center">
+                                 <div class="d-grid gap-2 mt-4 col-8 ">
+                                     <button
+                                         type="submit"
+                                         class="btn btn-primary btn-lg"
+                                         data-intro="Haga clic aquí para iniciar sesión"
+                                         data-step="3">
+                                         INGRESAR
+                                     </button>
+                                 </div>
+                             </div>
 
                             <!-- Mensaje de Seguridad -->
                             <div class="text-center mt-4 pt-3 border-top">
