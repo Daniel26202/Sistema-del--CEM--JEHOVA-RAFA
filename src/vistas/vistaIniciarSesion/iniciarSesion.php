@@ -57,7 +57,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <div class="container mb-5 mt-5 ">
         <!-- Fecha Actual -->
         <div class="text-center mb-4">
-            <small class="text-secondary-custom text-uppercase fw-medium" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+            <small class="text-bg-light-custom text-uppercase fw-medium" style="font-size: 0.7rem; letter-spacing: 0.5px;">
                 <?php
                 setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'Spanish_Spain');
                 echo strftime("%A, %d DE %B, %Y");
@@ -144,7 +144,9 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
                             <!-- Google reCAPTCHA -->
                             <div class="d-flex justify-content-center ">
-                                <div class="g-recaptcha" data-sitekey="TU_SITE_KEY_AQUI" style="transform: scale(0.95); transform-origin: center;"></div>
+
+                                <div class="mt-2 mb-1 g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1" style="transform: scale(0.95); transform-origin: center; transform: scale(0.88);"></div>
+                                
                             </div>
 
                             <!-- Botón de Ingresar con Bootstrap -->
@@ -161,7 +163,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                              </div>
 
                             <!-- Mensaje de Seguridad -->
-                            <div class="text-center mt-4 pt-3 border-top">
+                            <div class="text-center mt-4 pt-3">
                                 <small class="text-secondary-custom">
                                     <i class="bi bi-shield-check text-success security-icon me-1"></i>
                                     Acceso seguro y encriptado
@@ -170,7 +172,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                         </form>
 
                         <!-- Enlaces del Footer -->
-                        <div class="text-center mt-4 pt-3 border-top footer-links">
+                        <div class="text-center mt-4 pt-3 footer-links">
                             <small class="text-muted">
                                 Tu salud, nuestra misión © <?= date('Y') ?> CEM •
                                 <a href="#" class="text-decoration-none">Privacidad</a> •
