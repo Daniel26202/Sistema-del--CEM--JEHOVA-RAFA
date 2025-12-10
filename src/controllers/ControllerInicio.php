@@ -9,25 +9,25 @@ use App\modelos\ModeloDoctores;
 
 function inicio($parametro)
 {
-    $bitacora = new ModeloBitacora();
+    // $bitacora = new ModeloBitacora();
 
-    if ($parametro != "" && $parametro[0] == "cerrar") {
-        echo $_SESSION["id_usuario"];
-        // verifica si la sesión esta activa.
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        // Guardar la bitácora
-        $bitacora->insertarBitacora($_SESSION['id_usuario'], "cerrar session", "Ha cerrado la session ");
-        // Destruyen las variables de las sesión 
-        session_unset();
-        session_destroy();
+    // if ($parametro != "" && $parametro[0] == "cerrar") {
+    //     echo $_SESSION["id_usuario"];
+    //     // verifica si la sesión esta activa.
+    //     if (session_status() !== PHP_SESSION_ACTIVE) {
+    //         session_start();
+    //     }
+    //     // Guardar la bitácora
+    //     $bitacora->insertarBitacora($_SESSION['id_usuario'], "cerrar session", "Ha cerrado la session ");
+    //     // Destruyen las variables de las sesión 
+    //     session_unset();
+    //     session_destroy();
 
-        // Redireccionar al inicio
+    //     // Redireccionar al inicio
 
-        // header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
-        // exit();
-    }
+    //     // header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+    //     // exit();
+    // }
 
 
     //$validarCargo = $modeloInicio->comprobarCargo($_SESSION["id_personal"]);
@@ -36,7 +36,11 @@ function inicio($parametro)
     $ayuda = "btnayudaInicio";
 
     // require_once './src/vistas/dashboard.php';
+    $model = new ModeloInicio(true);
+
+    print_r($model->comprobarCargo(['id_personal'=>42]));
     echo "Inicio";
+
 }
 
 //Retorna el precio  del dolar y guardarlo en la session

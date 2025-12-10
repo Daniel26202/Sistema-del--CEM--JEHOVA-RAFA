@@ -2,27 +2,26 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
 
-
-class ModeloInicio extends Db
+class ModeloInicio extends ModelBase
 {
 
-	private $conexion;
-	public function __construct()
+	private $modelBase;
+
+	public function __construct($dbSystem)
 	{
-		$this->conexion = $this->connectionSistema();
+		$this->modelBase = parent::__construct($dbSystem);
 	}
 
 	public function pacientes_hospitalizados()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT COUNT(id_hospitalizacion) AS total_hospitalizados
-FROM hospitalizacion
-WHERE estado = 'pendiente';");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT COUNT(id_hospitalizacion) AS total_hospitalizados FROM hospitalizacion WHERE estado = 'pendiente'";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -30,177 +29,184 @@ WHERE estado = 'pendiente';");
 	public function servicios()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT c.nombre AS categoria, s.precio FROM serviciomedico s INNER JOIN categoria_servicio c ON s.id_categoria = c.id_categoria  WHERE s.estado = 'ACT' ");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT c.nombre AS categoria, s.precio FROM serviciomedico s INNER JOIN categoria_servicio c ON s.id_categoria = c.id_categoria  WHERE s.estado = 'ACT' ";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
-	public function especialidades_solicitadas($fechaInicio = "", $fechaFinal = "")
-	{
-		try {
-			if ($fechaInicio == "" && $fechaFinal == "") {
-				$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
-COUNT(c.id_cita) AS total_solicitudes
-												FROM cita c
-												INNER JOIN serviciomedico sm 
-												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-												INNER JOIN categoria_servicio cs 
-												ON sm.id_categoria = cs.id_categoria
-												GROUP BY cs.nombre
-												ORDER BY total_solicitudes DESC limit 5;
-												");
-			} else {
-				$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
-COUNT(c.id_cita) AS total_solicitudes
-												FROM cita c
-												INNER JOIN serviciomedico sm 
-												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-												INNER JOIN categoria_servicio cs 
-												ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
-												GROUP BY cs.nombre 
-												ORDER BY total_solicitudes DESC limit 5;
-												");
-				$consulta->bindParam(":fechaInicio", $fechaInicio);
-				$consulta->bindParam(":fechaFinal", $fechaFinal);
-			}
+	// 	public function especialidades_solicitadas($fechaInicio = "", $fechaFinal = "")
+	// 	{
+	// 		try {
+	// 			if ($fechaInicio == "" && $fechaFinal == "") {
+	// 				$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
+	// COUNT(c.id_cita) AS total_solicitudes
+	// 												FROM cita c
+	// 												INNER JOIN serviciomedico sm 
+	// 												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+	// 												INNER JOIN categoria_servicio cs 
+	// 												ON sm.id_categoria = cs.id_categoria
+	// 												GROUP BY cs.nombre
+	// 												ORDER BY total_solicitudes DESC limit 5;
+	// 												");
+	// 			} else {
+	// 				$consulta = $this->conexion->prepare("SELECT   cs.nombre AS especialidad,
+	// COUNT(c.id_cita) AS total_solicitudes
+	// 												FROM cita c
+	// 												INNER JOIN serviciomedico sm 
+	// 												ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+	// 												INNER JOIN categoria_servicio cs 
+	// 												ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
+	// 												GROUP BY cs.nombre 
+	// 												ORDER BY total_solicitudes DESC limit 5;
+	// 												");
+	// 				$consulta->bindParam(":fechaInicio", $fechaInicio);
+	// 				$consulta->bindParam(":fechaFinal", $fechaFinal);
+	// 			}
 
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+	// 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+	// 		} catch (\Exception $e) {
+	// 			return 0;
+	// 		}
+	// 	}
 
 	public function todas_las_especialidades()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT COUNT(c.serviciomedico_id_servicioMedico) AS total_servicios_por_cita FROM cita c INNER JOIN serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico");
-			return ($consulta->execute()) ? $consulta->fetch() : false;
+			$sql = "SELECT COUNT(c.serviciomedico_id_servicioMedico) AS total_servicios_por_cita FROM cita c INNER JOIN serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
-	public function sintomas_comunes($fechaInicio = "", $fechaFinal = "")
-	{
-		try {
-			if ($fechaInicio == "" && $fechaFinal == "") {
-				$consulta = $this->conexion->prepare("SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
-											FROM sintomas_control sc
-											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
-											GROUP BY s.nombre
-											ORDER BY total DESC lIMIT 5;
-												");
-			} else {
-				$consulta = $this->conexion->prepare("SELECT c.fecha_control, s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
-											FROM sintomas_control sc
-											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control WHERE c.fecha_control BETWEEN :fechaInicio AND :fechaFinal
-											GROUP BY s.nombre
-											ORDER BY total DESC lIMIT 5;
-												");
-				$consulta->bindParam(":fechaInicio", $fechaInicio);
-				$consulta->bindParam(":fechaFinal", $fechaFinal);
-			}
+	// 	public function sintomas_comunes($fechaInicio = "", $fechaFinal = "")
+	// 	{
+	// 		try {
+	// 			if ($fechaInicio == "" && $fechaFinal == "") {
+	// 				$consulta = $this->conexion->prepare("SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
+	// 											FROM sintomas_control sc
+	// 											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
+	// 											GROUP BY s.nombre
+	// 											ORDER BY total DESC lIMIT 5;
+	// 												");
+	// 			} else {
+	// 				$consulta = $this->conexion->prepare("SELECT c.fecha_control, s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
+	// 											FROM sintomas_control sc
+	// 											INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control WHERE c.fecha_control BETWEEN :fechaInicio AND :fechaFinal
+	// 											GROUP BY s.nombre
+	// 											ORDER BY total DESC lIMIT 5;
+	// 												");
+	// 				$consulta->bindParam(":fechaInicio", $fechaInicio);
+	// 				$consulta->bindParam(":fechaFinal", $fechaFinal);
+	// 			}
 
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+	// 			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+	// 		} catch (\Exception $e) {
+	// 			return 0;
+	// 		}
+	// 	}
 
 	public function todos_los_sintomas()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT COUNT(sc.id_sintomas_control) AS total FROM sintomas s INNER JOIN sintomas_control sc ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control");
-			return ($consulta->execute()) ? $consulta->fetch() : false;
+			$sql = "SELECT COUNT(sc.id_sintomas_control) AS total FROM sintomas s INNER JOIN sintomas_control sc ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
 
-	public function obtenerDiasConMasCitas($id_personal = "")
+	// 	public function obtenerDiasConMasCitas($id_personal = "")
+	// 	{
+	// 		try {
+	// 			$sql = "";
+	// 			if ($id_personal == "") {
+	// 				$sql = "SELECT 
+	//             c.fecha, 
+	//             COUNT(c.id_cita) AS total_citas,
+	//             GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) SEPARATOR ', ') AS personal
+	//         ,fecha as date FROM 
+	//             cita c
+	//         INNER JOIN 
+	//             serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico
+	//         INNER JOIN 
+	//             personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+	//         INNER JOIN 
+	//             personal p ON p.id_personal = psm.personal_id_personal
+	//         GROUP BY 
+	//             c.fecha
+	//         ORDER BY 
+	//             total_citas DESC
+	//         LIMIT 10 ";
+	// 				$consulta = $this->conexion->prepare($sql);
+	// 			} else {
+	// 				$sql = "SELECT 
+	//             c.fecha, e.nombre as especialidad,
+	//             COUNT(c.id_cita) AS total_citas,
+	//             GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) SEPARATOR ', ') AS personal
+	//         ,fecha as date FROM 
+	//             cita c
+	//         INNER JOIN 
+	//             serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico
+	//         INNER JOIN 
+	//             personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+	//         INNER JOIN 
+	//             personal p ON p.id_personal = psm.personal_id_personal
+	//         INNER JOIN 
+	//         	especialidad e ON e.id_especialidad = p.id_especialidad
+	//             WHERE p.id_personal = :id_personal
+	//         GROUP BY 
+	//             c.fecha
+	//         ORDER BY 
+	//             total_citas DESC";
+	// 				$consulta = $this->conexion->prepare($sql);
+	// 				$consulta->bindParam(":id_personal", $id_personal);
+	// 			}
+	// 			$consulta->execute();
+	// 			return $consulta->fetchAll();
+	// 		} catch (\Exception $e) {
+	// 			return 0;
+	// 		}
+	// 	}
+
+
+	// 	//Metodo para validar si un usuario es doctor o no
+
+	public function comprobarCargo($data)
 	{
 		try {
-			$sql = "";
-			if ($id_personal == "") {
-				$sql = "SELECT 
-            c.fecha, 
-            COUNT(c.id_cita) AS total_citas,
-            GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) SEPARATOR ', ') AS personal
-        ,fecha as date FROM 
-            cita c
-        INNER JOIN 
-            serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico
-        INNER JOIN 
-            personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-        INNER JOIN 
-            personal p ON p.id_personal = psm.personal_id_personal
-        GROUP BY 
-            c.fecha
-        ORDER BY 
-            total_citas DESC
-        LIMIT 10 ";
-				$consulta = $this->conexion->prepare($sql);
-			} else {
-				$sql = "SELECT 
-            c.fecha, e.nombre as especialidad,
-            COUNT(c.id_cita) AS total_citas,
-            GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) SEPARATOR ', ') AS personal
-        ,fecha as date FROM 
-            cita c
-        INNER JOIN 
-            serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico
-        INNER JOIN 
-            personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-        INNER JOIN 
-            personal p ON p.id_personal = psm.personal_id_personal
-        INNER JOIN 
-        	especialidad e ON e.id_especialidad = p.id_especialidad
-            WHERE p.id_personal = :id_personal
-        GROUP BY 
-            c.fecha
-        ORDER BY 
-            total_citas DESC";
-				$consulta = $this->conexion->prepare($sql);
-				$consulta->bindParam(":id_personal", $id_personal);
-			}
-			$consulta->execute();
-			return $consulta->fetchAll();
-		} catch (\Exception $e) {
-			return 0;
-		}
-	}
+			$sql = "SELECT * FROM personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.id_personal =:id_personal AND p.id_especialidad IS NOT null";
 
-
-	//Metodo para validar si un usuario es doctor o no
-
-	public function comprobarCargo($id_personal)
-	{
-		try {
-
-			$consulta = $this->conexion->prepare("SELECT * FROM personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.id_personal =:id_personal AND p.id_especialidad IS NOT null");
-			$consulta->bindParam(":id_personal", $id_personal);
-			$consulta->execute();
-			while ($consulta->fetch()) {
+			$this->setSQL($sql);
+			$listData = $this->search($data);
+			
+			foreach ($listData as $data) {
 				return 1;
 			}
+
 			return 0;
+
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
-	//Treae los datos del doctor como los personlaes y los profesionales
-	public function datos_doctor($id_usuario)
+	// 	//Treae los datos del doctor como los personlaes y los profesionales
+	public function datos_doctor($data)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM personal p INNER JOIN usuario u ON u.id_usuario = p.id_usuario WHERE p.id_usuario =:id_usuario AND p.id_especialidad IS NOT null");
-			$consulta->bindParam(":id_usuario", $id_usuario);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT * FROM bd.personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.usuario =:id_usuario AND p.id_especialidad IS NOT null";
+
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 }
