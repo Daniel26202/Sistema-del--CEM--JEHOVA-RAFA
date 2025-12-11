@@ -66,6 +66,9 @@ body::before {
     animation: fadeInUp 0.2s ease-out;
 }
 
+.logo {
+  width: 60%;
+}
 /* ============================================
            3. EFECTOS DEL LOGO
            ============================================ */
