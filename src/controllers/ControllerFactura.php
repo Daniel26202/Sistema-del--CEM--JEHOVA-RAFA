@@ -6,16 +6,15 @@ use App\modelos\ModeloPermisos;
 
 
 
-	 function factura($parametro)
-	{
-		$ayuda = "btnayudaFactura";
-		// $insumos = $this->modelo->selectTodosLosInsumos();
-		// $tiposDePagos = $this->modelo->mostrarTiposDePagos();
-		// $todosLosInsumos = $this->modelo->selectTodosLosInsumos();
-		// $extras = $this->modelo->mostrarServicios();
-		// require_once './src/vistas/vistaFactura/factura.php';
-		echo  'factura';
-	}
+function factura($parametro)
+{
+	$ayuda = "btnayudaFactura";
+	// $insumos = $this->modelo->selectTodosLosInsumos();
+	// $tiposDePagos = $this->modelo->mostrarTiposDePagos();
+	// $todosLosInsumos = $this->modelo->selectTodosLosInsumos();
+	// $extras = $this->modelo->mostrarServicios();
+	require_once './src/vistas/vistaFactura/factura.php';
+}
 
 	//  function facturaCita($parametro)
 	// {
@@ -159,4 +158,3 @@ use App\modelos\ModeloPermisos;
 	// {
 	// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 	// }
-

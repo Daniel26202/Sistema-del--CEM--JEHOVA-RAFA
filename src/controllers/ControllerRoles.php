@@ -12,8 +12,7 @@ function mostrar($parametro)
     $vistaActiva = "roles";
     // $roles = $this->modelo->roles();
     // $modulos = require_once './src/vistas/vistaRoles/modal/listaModulos.php';
-    // require_once './src/vistas/vistaRoles/vistaRoles.php';
-    echo 'roles';
+    require_once './src/vistas/vistaRoles/vistaRoles.php';
 }
 
     //  function mostrarAjax()

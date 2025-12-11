@@ -14,8 +14,7 @@ function doctores($parametro)
     // $datosEspecialidades = $this->modelo->selectEspecialidad();
     // $doctores = $this->modeloConsultas->mostrarDoctores();
     // $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
-    // require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
-    echo 'doctores';
+    require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
 
 // function selectEspcAjax()

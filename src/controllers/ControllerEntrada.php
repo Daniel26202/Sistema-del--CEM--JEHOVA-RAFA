@@ -13,8 +13,8 @@ function entrada($parametro)
 	$vistaActiva = "entradas";
 	// $insumos = $this->modelo->insumos();
 	// $proveedores = $this->modelo->selectProveedores();
-	// require_once './src/vistas/vistaEntrada/vistaEntrada.php';
-	echo  "entradas";
+	require_once './src/vistas/vistaEntrada/vistaEntrada.php';
+
 }
 
 // function entradasAjax()

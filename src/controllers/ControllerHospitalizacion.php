@@ -63,8 +63,8 @@ function hospitalizacion($parametro)
     // $datosS = $this->modeloSintomas->selects();
     // $datosPatologias = $this->modeloPatologia->mostrarPatologias();
 
-    // require_once "./src/vistas/vistaHospitalizacion/hospitalizacion.php";
-    echo "hospitalizacion";
+    require_once "./src/vistas/vistaHospitalizacion/hospitalizacion.php";
+   
 }
 // function hospitalizacionesRealizadas($parametro)
 // {

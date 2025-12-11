@@ -23,8 +23,8 @@ function control($parametro)
 	// $idPersonal = $_SESSION['id_personal'];
 	// $validacionCargo = $this->inicio->comprobarCargo($idPersonal);
 
-	// require_once __DIR__ . "/../../src/vistas/vistaControl/vistaControl.php";
-	echo 'control';
+	require_once __DIR__ . "/../../src/vistas/vistaControl/vistaControl.php";
+
 }
 
 // function listPacientesJS()

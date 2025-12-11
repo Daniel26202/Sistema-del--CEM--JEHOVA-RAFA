@@ -17,8 +17,7 @@ function getPacientes($parametro)
 {
 	$ayuda = "btnayudaPaciente";
 	$vistaActiva = 'pacientes';
-	// require_once './src/vistas/vistaPacientes/pacientes.php';
-	echo 'pacientes';
+	require_once './src/vistas/vistaPacientes/pacientes.php';
 }
 
 	//  function getPacientesAjax($parametro)

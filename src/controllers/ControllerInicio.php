@@ -35,7 +35,7 @@ function inicio($parametro)
 
     $ayuda = "btnayudaInicio";
 
-    // require_once './src/vistas/dashboard.php';
+    require_once './src/vistas/dashboard.php';
     $model = new ModeloInicio(true);
 
     print_r($model->comprobarCargo(['id_personal'=>42]));

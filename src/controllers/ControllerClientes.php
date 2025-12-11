@@ -19,8 +19,7 @@ function Clientes($parametro)
 {
     $ayuda = "btnayudaPaciente";
     $vistaActiva = 'clientes';
-    echo 'clientes';
-    // require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
+    require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
 }
 //      function clientesAjax()
 //     {

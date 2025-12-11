@@ -66,7 +66,7 @@ class Rutas
                             $permiso = $this->equivalentes[$metodo] ?? $metodo;
 
                             
-                            $permitido = $this->modelo->gestionarPermisos($_SESSION["id_rol"] ?? null, $permiso, $modulo);
+                            $permitido = $this->modelo->gestionarPermisos(10?? null, $permiso, $modulo);
 
                     
                             if (!$permitido) {

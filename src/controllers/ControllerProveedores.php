@@ -9,8 +9,8 @@ function proveedores($parametro)
 {
 	$ayuda = "btnayudaProveedor";
 	$vistaActiva = "proveedores";
-	// require_once './src/vistas/vistaProveedores/vistaProveedores.php';
-	echo "proveedores";
+	require_once './src/vistas/vistaProveedores/vistaProveedores.php';
+	
 }
 
 // function proveedoresAjax()

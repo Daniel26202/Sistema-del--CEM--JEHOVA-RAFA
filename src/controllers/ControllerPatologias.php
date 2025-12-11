@@ -10,8 +10,7 @@ use App\modelos\ModeloPermisos;
 function patologias($parametro)
 {
 	$ayuda = "btnayudaPatologia";
-	// require_once './src/vistas/vistaPatologia/patologia.php';
-	echo 'patologias';
+	require_once './src/vistas/vistaPatologia/patologia.php';
 }
 
 	//  function patologiasAjax()

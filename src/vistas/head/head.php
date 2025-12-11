@@ -29,9 +29,8 @@ if (!empty($parametro)) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="<?= $urlBase ?>../src/assets/img/logotipo.jpg">
+	<link rel="shortcut icon" href="<?=__DIR__?>../src/assets/img/logotipo.jpg">
 	<title>J-R</title>
-	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/uikit/css/uikit.min.css">
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/DataTable/datatables.css">
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/style.css">
@@ -42,14 +41,14 @@ if (!empty($parametro)) {
 
 <body>
 
-	<div class="loader-wrapper">
+	<!-- <div class="loader-wrapper">
 		<div id="content">
 			<img class="mb-3" src="<?= $urlBase ?>../src/assets/icons/logo-loader.svg" style="width: 180px; height: 55px;">
 			<div class="loading-bar">
 				<div class="blue-bar"></div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 
 
 
@@ -119,9 +118,7 @@ if (!empty($parametro)) {
 			Inicio
 		</a>
 
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Pacientes")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" uk-tooltip="Pacientes" id="menuPacientes">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-people-fill" viewBox="0 0 16 16">
@@ -130,11 +127,7 @@ if (!empty($parametro)) {
 					</svg></div>
 				Pacientes
 			</a>
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Clientes")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes" uk-tooltip="Pacientes" id="menuPacientes">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-people-fill" viewBox="0 0 16 16">
@@ -143,23 +136,14 @@ if (!empty($parametro)) {
 					</svg></div>
 				Clientes
 			</a>
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Patologias")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias" uk-tooltip="Patologias" id="menuPatologias">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bandaid-fill" viewBox="0 0 16 16">
 						<path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z" />
 					</svg></div>
 				Patologías
 			</a>
-		<?php endif; ?>
-
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Factura")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura" uk-tooltip="Facturacion" id="menuFacturacion">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
@@ -168,11 +152,7 @@ if (!empty($parametro)) {
 					</svg></div>
 				Facturación
 			</a>
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Citas")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link collapsed d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" uk-tooltip="Citas" id="menuCitas" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCitas" aria-expanded="false" aria-controls="collapseCitas">
 				<div class="sb-nav-link-icon mx-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-heart-fill" viewBox="0 0 16 16">
@@ -194,11 +174,7 @@ if (!empty($parametro)) {
 				</nav>
 			</div>
 
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Consultas")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas" uk-tooltip="Servicios" id="menuServicios">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-heart-fill" viewBox="0 0 16 16">
 						<path fill-rule="evenodd" d="M10.058.501a.501.501 0 0 0-.5-.501h-2.98c-.276 0-.5.225-.5.501A.499.499 0 0 1 5.582 1a.497.497 0 0 0-.497.497V2a.5.5 0 0 0 .5.5h4.968a.5.5 0 0 0 .5-.5v-.503A.497.497 0 0 0 10.555 1a.499.499 0 0 1-.497-.499Z" />
@@ -206,11 +182,7 @@ if (!empty($parametro)) {
 					</svg></div>
 				Servicio
 			</a>
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Doctores")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+	
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores" uk-tooltip="Directorio Médico" id="menuDirectorioMedico">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-clipboard2-pulse-fill" viewBox="0 0 16 16">
@@ -221,11 +193,7 @@ if (!empty($parametro)) {
 					</svg></div>
 				Directorio Médico
 			</a>
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Control")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-person-fill-gear" viewBox="0 0 16 16">
@@ -234,11 +202,6 @@ if (!empty($parametro)) {
 					</svg></div>
 				Control Médico
 			</a>
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Hospitalizacion")): ?>
-			<!-- no hay -->
-		<?php else: ?>
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
 				id="menuHospitalizacion">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -250,11 +213,7 @@ if (!empty($parametro)) {
 					</svg></div>
 				Hospitalización
 			</a>
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Insumos")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link collapsed d-flex" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInsumos" aria-expanded="false" aria-controls="collapseInsumos">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-capsule" viewBox="0 0 16 16">
@@ -268,33 +227,19 @@ if (!empty($parametro)) {
 					</svg>
 				</div>
 			</a>
-		<?php endif; ?>
+		
 		<div class="collapse" id="collapseInsumos" aria-labelledby="headingCitas" data-bs-parent="#sidenavAccordion d-flex">
 			<nav class="sb-sidenav-menu-nested nav">
 
-				<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Insumos")): ?>
-					<!-- no hay -->
-				<?php else: ?>
+				
 					<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos" uk-tooltip="Insumos" id="menuInsumos">Insumos</a>
-				<?php endif; ?>
-
-				<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Entrada")): ?>
-					<!-- no hay -->
-				<?php else: ?>
+				
 					<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada" uk-tooltip="Entradas">Entradas</a>
-				<?php endif; ?>
-
-				<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Proveedores")): ?>
-					<!-- no hay -->
-				<?php else: ?>
+				
 					<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores" uk-tooltip="Poveedores">Proveedores</a>
-				<?php endif; ?>
-
-				<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Insumos")): ?>
-					<!-- no hay -->
-				<?php else: ?>
+				
 					<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/InsumosVencidos" uk-tooltip="Vencidos">Vencidos</a>
-				<?php endif; ?>
+				
 			</nav>
 		</div>
 
@@ -314,28 +259,16 @@ if (!empty($parametro)) {
 		</a>
 		<div class="collapse" id="collapseUsuarios" aria-labelledby="headingCitas" data-bs-parent="#sidenavAccordion d-flex">
 			<nav class="sb-sidenav-menu-nested nav">
-				<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Usuarios")): ?>
-					<!-- no hay -->
-				<?php else: ?>
+				
 					<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" uk-tooltip="Usuarios">Usuarios</a>
-				<?php endif; ?>
-
-				<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Usuarios")): ?>
-					<!-- no hay -->
-				<?php else: ?>
+				
 					<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores" uk-tooltip="Administradores">Administradores</a>
-				<?php endif; ?>
-
-				<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Roles")): ?>
-					<!-- no hay -->
-				<?php else: ?>
+				
 					<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" uk-tooltip="Roles">Roles</a>
-				<?php endif; ?>
+				
 			</nav>
 		</div>
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Reportes")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes" uk-tooltip="Reportes" id="menuReportes">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 						class="bi bi-clipboard-data-fill" viewBox="0 0 16 16">
@@ -346,11 +279,7 @@ if (!empty($parametro)) {
 					</svg></div>
 				Reportes
 			</a>
-		<?php endif; ?>
-
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Estadisticas")): ?>
-			<!-- no hay -->
-		<?php else: ?>
+		
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/estadisticas" uk-tooltip="Reportes Estadisticos" id="menuReportesEstadisticos">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
 						<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
@@ -358,11 +287,7 @@ if (!empty($parametro)) {
 				Estadísticas
 			</a>
 
-		<?php endif; ?>
 
-		<?php if (!$this->permisos($_SESSION["id_rol"], "consultar", "Mantenimiento")): ?>
-			<!-- no hay -->
-		<?php else: ?>
 			<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento" uk-tooltip="Mantenimiento" id="menuReportesEstadisticos">
 				<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench-adjustable" viewBox="0 0 16 16">
 						<path d="M16 4.5a4.5 4.5 0 0 1-1.703 3.526L13 5l2.959-1.11q.04.3.041.61" />
@@ -371,7 +296,6 @@ if (!empty($parametro)) {
 				Mantenimiento
 			</a>
 
-		<?php endif; ?>
 	</div>
 
 
