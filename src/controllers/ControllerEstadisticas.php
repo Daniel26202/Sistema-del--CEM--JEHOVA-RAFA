@@ -11,8 +11,8 @@ use App\modelos\ModeloPermisos;
 function estadisticas()
 {
 	$ayuda = "btnayudaEstadistica";
-	// require_once './src/vistas/vistaEstadisticas/vistaEstadisticas.php';
-	echo "estadisticas";
+	require_once './src/vistas/vistaEstadisticas/vistaEstadisticas.php';
+	
 }
 
 	//  function edadGenero()

@@ -11,8 +11,7 @@ use App\modelos\ModeloPermisos;
 		$ayuda = "btnayudaServicioMedico";
 		// $doctores = $this->modelo->mostrarDoctores();
 		// $todasLasCategorias = $this->categoria->seleccionarTodasLasCategoria();
-		// require_once __DIR__ . "/../../src/vistas/vistaConsultas/vistaServiciosMedicos.php";
-		echo 'servicios medicos';
+		require_once "./src/vistas/vistaConsultas/vistaServiciosMedicos.php";
 	}
 
 	//  function categoriasAjax()

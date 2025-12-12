@@ -23,8 +23,8 @@ use App\modelos\ModeloPermisos;
 function mantenimiento($parametro)
 {
 	$ayuda = "btnayudaMantenimiento";
-	// require_once './src/vistas/vistaMantenimiento/mantenimiento.php';
-	echo "Mantenimiento";
+	require_once './src/vistas/vistaMantenimiento/mantenimiento.php';
+	
 }
 
 // function bajarBdsNube($parametro)

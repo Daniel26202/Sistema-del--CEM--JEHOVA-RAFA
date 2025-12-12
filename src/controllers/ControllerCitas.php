@@ -47,8 +47,8 @@ function citas($parametro)
 	$ayuda = "btnayudaCitaP";
 	$vistaActiva = 'pendientes';
 	// $servicios = $this->modelo->mostrarServicioDoctor();
-	// require_once './src/vistas/vistasCitas/vistaCitas.php';
-	echo "citas";
+	require_once './src/vistas/vistasCitas/vistaCitas.php';
+
 }
 // function citasAjax()
 // {
@@ -56,13 +56,13 @@ function citas($parametro)
 // 	echo json_encode($datosCitas);
 // }
 
-// function citasHoy($parametro)
-// {
-// 	$ayuda = "btnayudaCitaP";
-// 	$vistaActiva = 'hoy';
-// 	$servicios = $this->modelo->mostrarServicioDoctor();
-// 	require_once './src/vistas/vistasCitas/vistaCitas.php';
-// }
+function citasHoy($parametro)
+{
+	$ayuda = "btnayudaCitaP";
+	$vistaActiva = 'hoy';
+	// $servicios = $this->modelo->mostrarServicioDoctor();
+	require_once './src/vistas/vistasCitas/vistaCitas.php';
+}
 
 // function citasHoyAjax()
 // {
@@ -114,12 +114,12 @@ function citas($parametro)
 // 	echo json_encode($datosCitasHoy);
 // }
 
-// function citasRealizadas($parametro)
-// {
-// 	$ayuda = "btnayudaCitaP";
-// 	$vistaActiva = 'realizadas';
-// 	require_once __DIR__ . '/../../src/vistas/vistasCitas/vistaCitas.php';
-// }
+function citasRealizadas($parametro)
+{
+	$ayuda = "btnayudaCitaP";
+	// $vistaActiva = 'realizadas';
+	require_once './src/vistas/vistasCitas/vistaCitas.php';
+}
 
 // function citasRealizadasAjax()
 // {

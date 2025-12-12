@@ -600,21 +600,21 @@ html {
 
 }*/
 
-.btn-agregarcita-modal {
+.btn-modals {
     border-radius: 20px;
     background-color: #387adf;
     font-weight: bold;
     color: white;
 }
 
-.btn-agregarcita-modal-cancelar {
+.btn-modals-cancelar {
     border-radius: 20px;
     background-color: #88898b;
     font-weight: bold;
     color: white;
 }
 
-.btn-agregarcita-modal:hover {
+.btn-modals:hover {
     background-color: #ffffff;
     border: 2px solid #387adf;
     color: #387adf;
@@ -622,7 +622,7 @@ html {
     transition-duration: 0.4s;
 }
 
-.btn-agregarcita-modal-cancelar:hover {
+.btn-modals-cancelar:hover {
     background-color: #ffffff;
     border: 2px solid #88898b;
     color: #88898b;

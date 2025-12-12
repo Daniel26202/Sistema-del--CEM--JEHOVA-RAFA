@@ -16,8 +16,7 @@ function usuarios($parametro)
     $ayuda = "btnayudaUsuario";
     // $datosU  = $this->modelo->select();
     // $vistaActiva = "usuarios";
-    // require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
-    echo 'usuarios';
+    require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
 }
 
 // function usuariosAjax()
