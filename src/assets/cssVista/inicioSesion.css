@@ -67,7 +67,7 @@ body::before {
 }
 
 .logo {
-  width: 60%;
+  width: 13%;
 }
 /* ============================================
            3. EFECTOS DEL LOGO
@@ -223,9 +223,10 @@ body::before {
     transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
     position: relative;
     overflow: hidden;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-weight: 620;
+    letter-spacing: 2px;
     text-transform: uppercase;
+    width: 108.5%;
 }
 
 /* EFECTO: Hover del botón */
