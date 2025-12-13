@@ -67,7 +67,7 @@ body::before {
 }
 
 .logo {
-  width: 60%;
+  width: 13%;
 }
 /* ============================================
            3. EFECTOS DEL LOGO
@@ -75,15 +75,15 @@ body::before {
 .logo-icon {
     width: 41px;
     height: 41px;
-    background: linear-gradient(135deg, #086eb2 0%, #1582ca 100%);
-    box-shadow: 140px -10px 55px rgba(8, 145, 178, 0.3);
+    background: linear-gradient(135deg, #387adf 0%, #1e60c3 100%);
+    box-shadow: 140px -10px 55px rgba(8, 101, 178, 0.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* EFECTO: Hover del logo */
 .logo-icon:hover {
     transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 5px 30px rgba(8, 145, 178, 0.5);
+    box-shadow: 0 5px 30px rgba(8, 82, 178, 0.5);
 }
 
 /* EFECTO: Animación de pulso continuo */
@@ -94,7 +94,7 @@ body::before {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     50% {
-        background: linear-gradient(135deg, #086eb2 0%, #1388d6 100%);
+        background: linear-gradient(135deg, #387adf 0%, #1c5bb9 100%);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         transform: scale(1.05);
     }
@@ -106,7 +106,7 @@ body::before {
 
 /* Texto del nombre con gradiente */
 .clinic-name {
-    background: linear-gradient(135deg, #086eb2 0%, #014a7a 100%);
+    background: linear-gradient(135deg, #387adf 0%, #1e60c3 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -158,22 +158,22 @@ body::before {
     border-width: 1.9px;
     border-radius: 16.7px !important;
     transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-    border-color: #1a8fdd !important;
+    border-color: #387adf  !important;
     background-color: #ffffff98;
-    box-shadow: 0 8px 10px rgba(8, 145, 178, 0.15) !important;
+    box-shadow: 0 8px 10px rgba(8, 101, 178, 0.15) !important;
 }
 
 /* EFECTO: Focus en inputs */
 .form-control:focus {
     background-color: #ffffffe5;
     border-width: 2px;
-    box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.15) !important;
+    box-shadow: 0 0 0 0.2rem rgba(8, 101, 178, 0.15) !important;
     transform: scale(1.01);
 }
 
 /* EFECTO: Icono cambia de color cuando hay focus */
 .input-icon-wrapper:focus-within .input-icon {
-    color: #086eb2 !important;
+    color: #387adf !important;
     transform: translateY(-50%) scale(1.1);
 }
 
@@ -188,7 +188,7 @@ body::before {
 
 .input-icon-wrapper:focus-within ~ .form-label,
 .form-control:focus ~ .form-label {
-    color: #086eb2 !important;
+    color: #387adf !important;
 }
 
 /* ============================================
@@ -204,8 +204,8 @@ body::before {
 }
 
 .password-toggle:hover {
-    color: #086eb2 !important;
-    filter: drop-shadow(0 0 5px rgba(8, 145, 178, 0.3));
+    color: #387adf !important;
+    filter: drop-shadow(0 0 5px rgba(8, 101, 178, 0.3));
     transform: translateY(-50%) scale(1.1);
 }
 
@@ -217,27 +217,28 @@ body::before {
            7. EFECTOS DEL BOTÓN (btn de Bootstrap)
            ============================================ */
 .btn-primary {
-    background: linear-gradient(135deg, #49b2f8 0%, #086eb2 100%) !important;
+    background: linear-gradient(135deg, #387adf 0%, #1c74f7 100%) !important;
     border: none !important;
-    box-shadow: 0 3px 12px rgba(8, 145, 178, 0.3);
+    box-shadow: 0 3px 12px rgba(8, 60, 178, 0.3);
     transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
     position: relative;
     overflow: hidden;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-weight: 620;
+    letter-spacing: 2px;
     text-transform: uppercase;
+    width: 108.5%;
 }
 
 /* EFECTO: Hover del botón */
 .btn-primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.5) !important;
+    box-shadow: 0 6px 20px rgba(8, 60, 178, 0.5) !important;
 }
 
 /* EFECTO: Click del botón */
 .btn-primary:active {
     transform: translateY(-1px) !important;
-    box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(8, 60, 178, 0.3) !important;
 }
 
 /* EFECTO: Onda al hacer click */
@@ -280,12 +281,12 @@ body::before {
            9. ENLACES DEL FOOTER
            ============================================ */
 .footer-links a {
-    color: #086eb2;
+    color: #2f75df;
     transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
-    color: #3589c2;
+    color: #0066ff;
 }
 
 /* ============================================
@@ -310,13 +311,9 @@ body::before {
            11. COLORES PERSONALIZADOS DE BOOTSTRAP
            ============================================ */
 .text-primary-custom {
-    color: #2c7db3 !important;
+    color: #387adf !important;
 }
 
 .text-secondary-custom {
     color: #64748b !important;
-}
-
-.border-primary-custom {
-    border-color: #2c7db3 !important;
 }

@@ -54,11 +54,8 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
 <body>
     <!-- Contenedor principal de Bootstrap -->
-    <div class="container mb-5 mt-5 ">
-        <div class="d-flex justify-content-center">
-            <!-- <img src="<?= $urlBase ?>./src/assets/icons/logo3.png" alt="Logo" class="logo" style=""> -->
-        </div>
-
+    <div class="container mb-5 mt-3 ">
+        
         <!-- Fecha Actual -->
         <div class="text-center mb-4">
             <small class="text-bg-light-custom text-uppercase fw-medium" style="font-size: 0.7rem; letter-spacing: 0.5px;">
@@ -68,13 +65,16 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                 ?>
             </small>
         </div>
-        <div class="row justify-content-center ">
-            <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-7 ">
-
+        <div class="row justify-content-center  ">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-7">
+                
                 <!-- Card de Bootstrap -->
-                <div class="card rounded-4 shadow-lg">
-                    <div class="card-body pe-4 ps-4 p-sm-5">
-
+                <div class="card rounded-4 shadow-lg ">
+                    <div class="card-body p-4">
+                        
+                        <div class="d-flex justify-content-center mb-3 mt-1 ">
+                            <img src="<?= $urlBase ?>./src/assets/icons/logo3.png" alt="Logo" class="logo" style="">
+                        </div>
                         <!-- Logo y Nombre -->
                         <div class="text-center mb-3 d-flex flex-wrap justify-content-center align-items-center">
                             <div class="mb-3 logo-icon rounded-4 d-inline-flex align-items-center justify-content-center">
@@ -142,32 +142,33 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
-
 
                             <!-- Google reCAPTCHA -->
                             <div class="d-flex justify-content-center ">
 
-                                <div class="mt-2 mb-1 g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1" style="transform: scale(0.95); transform-origin: center; transform: scale(0.88);"></div>
+                                <div class="mt-2 mb-1 g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1" style="margin-left: 15%; transform: scale(0.95); transform-origin: center; transform: scale(0.88);"></div>
 
                             </div>
 
                             <!-- Botón de Ingresar con Bootstrap -->
                             <div class="col-12 d-flex justify-content-center">
-                                <div class="d-grid gap-2 mt-4 col-8 ">
+                                <div class="d-grid gap-2 mt-4 col-7">
                                     <button
                                         type="submit"
-                                        class="btn btn-primary btn-lg"
+                                        class="btn btn-primary btn-lg rounded-5"
                                         data-intro="Haga clic aquí para iniciar sesión"
                                         data-step="3">
                                         INGRESAR
                                     </button>
                                 </div>
                             </div>
+                            <div class="text-center m-3">
+                                <a href="#" class="text-decoration-none text-primary-custom small fw-medium ">Has olvidado tu contraseña?</a>
+                            </div>
 
                             <!-- Mensaje de Seguridad -->
-                            <div class="text-center mt-4 pt-3">
+                            <div class="text-center mt-4 pt-2">
                                 <small class="text-secondary-custom">
                                     <i class="bi bi-shield-check text-success security-icon me-1"></i>
                                     Acceso seguro y encriptado
@@ -176,7 +177,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                         </form>
 
                         <!-- Enlaces del Footer -->
-                        <div class="text-center mt-4 pt-3 footer-links">
+                        <div class="text-center mt-4  footer-links">
                             <small class="text-muted">
                                 Tu salud, nuestra misión © <?= date('Y') ?> CEM •
                                 <a href="#" class="text-decoration-none">Privacidad</a> •
