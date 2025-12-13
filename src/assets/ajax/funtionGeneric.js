@@ -19,7 +19,7 @@ export const executePetition = async (url, method, data = null) => {
   }
 };
 
-export const alertConfirm =(text, action, param ='')=>{
+export const alertConfirm = (text, action, param = "") => {
   Swal.fire({
     icon: "question",
     title: "Confirmacion",
@@ -38,9 +38,9 @@ export const alertConfirm =(text, action, param ='')=>{
       console.log(data);
     }
   });
-}
+};
 
-export const alertError = (title,text)=>{
+export const alertError = (title, text) => {
   Swal.fire({
     icon: "error",
     title: title,
@@ -51,7 +51,7 @@ export const alertError = (title,text)=>{
       cancelButton: "btn-agregarcita-modal-cancelar",
     },
   });
-}
+};
 
 export const alertSuccess = (text) => {
   Swal.fire({
@@ -62,6 +62,23 @@ export const alertSuccess = (text) => {
       popup: "switAlert",
       confirmButton: "btn-agregarcita-modal",
       cancelButton: "btn-agregarcita-modal-cancelar",
+    },
+  });
+};
+
+export const initDataTable = (selector) => {
+  $(selector).DataTable({
+    language: {
+      language: {
+        decimal: ",",
+        thousands: ".",
+        lengthMenu: "Mostrar por página _MENU_ ",
+        zeroRecords: "No se encontraron resultados",
+        info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty: "No hay registros disponibles",
+        infoFiltered: "(filtrado de _MAX_ registros en total)",
+        search: "Buscar:",
+      },
     },
   });
 };

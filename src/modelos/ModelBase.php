@@ -28,7 +28,9 @@ class ModelBase extends Db
             $stmt->bindValue(":$key", $value);
         }
 
-        return $stmt->execute();
+        $stmt->execute();
+
+        return $this->pdo->lastInsertId();
     }
 
     protected function read($all = true)
@@ -47,7 +49,6 @@ class ModelBase extends Db
         }
         $set = rtrim($set, ', ');
 
-        // ✅ Uso el SQL base y le agrego el SET dinámico
         $sql = $this->getSQL() . " SET $set WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
 

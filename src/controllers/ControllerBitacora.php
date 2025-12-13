@@ -9,22 +9,22 @@ function bitacoraUsuario($parametro)
 {
 	$ayuda = "btnayudaBitacora";
 	$vistaActiva = 'Usuario';
-	$modeloInicio = new ModeloInicio();
+	$modeloInicio = new ModeloInicio(true);
+	$modeloBitacora = new ModeloBitacora(false);
 
 	$cargo = $modeloInicio->comprobarCargo($_SESSION['id_personal']);
-	// require_once __DIR__ . "/../../src/vistas/vistaBitacora/bitacora.php";
-	echo 'bitacora usuario';
+	require_once __DIR__ . "/../../src/vistas/vistaBitacora/bitacora.php";
 }
 
 function bitacora($parametro)
 {
 	$ayuda = "btnayudaBitacora";
 	$vistaActiva = 'Admin';
-	$modeloInicio = new ModeloInicio();
+	$modeloInicio = new ModeloInicio(true);
+	$modeloBitacora = new ModeloBitacora(false);
 
-	echo 'bitacora administrador';
 	$cargo = $modeloInicio->comprobarCargo($_SESSION['id_personal']);
-	// require_once __DIR__ . "/../../src/vistas/vistaBitacora/bitacora.php";
+	require_once __DIR__ . "/../../src/vistas/vistaBitacora/bitacora.php";
 }
 
 function permisos($id_rol, $permiso, $modulo)

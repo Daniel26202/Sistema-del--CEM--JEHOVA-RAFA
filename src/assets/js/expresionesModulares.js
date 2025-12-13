@@ -122,18 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const formularioValido = Object.values(campos).every((valor) => valor === true);
 
       if (formularioValido) {
-        // Si el formulario es válido, ocultamos cualquier mensaje de error y procedemos
-        const mensajeError = formulario.querySelector(".msjE");
-        if (mensajeError) {
-          mensajeError.classList.add("d-none");
-        }
-
-        //validamos si el formulario contiene la clase form-ajax
-        if (formulario.classList.contains("form-ajax")) {
-          console.log("no se envio por que se va a enviar con ajax"); //si la tiene no se envia al formulario
-        } else {
-          formulario.submit(); // Enviamos el formulario
-        }
+        console.log("no se envio por que se va a enviar con ajax"); //si la tiene no se envia al formulario
       } else {
         // Evitamos el envío del formulario si hay campos inválidos
         return false;

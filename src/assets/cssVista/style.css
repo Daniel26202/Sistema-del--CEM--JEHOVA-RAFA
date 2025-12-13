@@ -1153,6 +1153,10 @@ hr {
     border-bottom: 2px solid rgb(13, 240, 13);
 }
 
+.icon-correct{
+    color: rgb(13, 240, 13);;
+}
+
 .grpFormInCorrect input {
     border-bottom: 2px solid rgb(224, 3, 3);
 }
@@ -1160,6 +1164,12 @@ hr {
 .grpFormInCorrect input:focus {
     border-bottom: 2px solid rgb(224, 3, 3);
 }
+
+.icon-incorrect{
+    color: rgb(224, 3, 3);
+}
+
+
 
 /* Editar */
 
