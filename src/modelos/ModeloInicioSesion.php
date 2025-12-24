@@ -1,17 +1,16 @@
 <?php
 
 namespace App\modelos;
-
-use App\modelos\Db;
-
-class ModeloInicioSesion extends Db
+use App\modelos\ModelBase;
+use App\config\Validations;
+class ModeloInicioSesion extends ModelBase
 {
 
-	private $conexion;
+	private $conexion, $password, $usuario;
 
-	public function __construct()
+		public function __construct($dbSystem)
 	{
-		$this->conexion = $this->connectionSegurity();
+		parent::__construct($dbSystem);
 	}
 
 	public function validarIniciarSesion($usuario, $password)

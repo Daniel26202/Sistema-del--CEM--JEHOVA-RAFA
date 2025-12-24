@@ -55,7 +55,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 <body>
     <!-- Contenedor principal de Bootstrap -->
     <div class="container mb-5 mt-3 ">
-        
+
         <!-- Fecha Actual -->
         <div class="text-center mb-4">
             <small class="text-bg-light-custom text-uppercase fw-medium" style="font-size: 0.7rem; letter-spacing: 0.5px;">
@@ -67,11 +67,11 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
         </div>
         <div class="row justify-content-center  ">
             <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-7">
-                
+
                 <!-- Card de Bootstrap -->
                 <div class="card rounded-4 shadow-lg ">
                     <div class="card-body p-4">
-                        
+
                         <div class="d-flex justify-content-center mb-3 mt-1 ">
                             <img src="<?= $urlBase ?>./src/assets/icons/logo3.png" alt="Logo" class="logo" style="">
                         </div>
@@ -89,7 +89,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
 
                         <!-- Formulario de Login -->
-                        <form id="loginForm" method="POST" action="">
+                        <form id="loginForm">
                             <div class="me-md-5 pe-md-4 mt-1">
 
                                 <!-- Campo de Usuario con icono flotante -->
@@ -152,7 +152,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                             </div>
 
                             <!-- Botón de Ingresar con Bootstrap -->
-                            <div class="col-12 d-flex justify-content-center">
+                            <div class="col-12 d-flex justify-content-center" id="">
                                 <div class="d-grid gap-2 mt-4 col-7">
                                     <button
                                         type="submit"
@@ -194,11 +194,14 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
     <!-- Scripts -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- SweetAlert2 -->
+    <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2@11.js"></script>
     <script src="<?= $urlBase ?>./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?= $urlBase ?>./src/assets/intro/intro.min.js"></script>
     <script src="<?= $urlBase ?>./src/assets/js/expresionesModulares.js"></script>
     <script src="<?= $urlBase ?>./src/assets/js/ayudaInteractiva.js"></script>
     <script src="<?= $urlBase ?>./src/assets/app.js"></script>
+    <script type="module" src="<?= $urlBase ?>./src/assets/js/inicioSesion.js"></script>
 
     <script>
         // Función para mostrar/ocultar contraseña

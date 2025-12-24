@@ -217,7 +217,7 @@ if (modalAgregar) {
     ) {
       createPatients(this, inputsBuenos);
     } else {
-      alertError("Error", "Por favor verifique que todos los datos esten correctos.");
+      alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }
   });
 }

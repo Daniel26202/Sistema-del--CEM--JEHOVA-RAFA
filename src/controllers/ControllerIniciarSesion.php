@@ -3,21 +3,23 @@
 use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloBitacora;
 
-
-
-
-
-
 function mostrarIniciarSesion($parametro)
 {
-    
+    $ayuda = "btnayudaIniciarSesion";
     require_once __DIR__ . "/../../src/vistas/vistaIniciarSesion/iniciarSesion.php";
+}
+// iniciar sesión 
+function logIn($parametro){
+
+    $modelo = new ModeloInicioSesion(true);
+    $bitacora = new ModeloBitacora(true);
+
 }
 
 function iniciarSesion()
 {
-    $modelo = new ModeloInicioSesion();
-    $bitacora = new ModeloBitacora();
+    $modelo = new ModeloInicioSesion(true);
+    $bitacora = new ModeloBitacora(true);
 
 
 
