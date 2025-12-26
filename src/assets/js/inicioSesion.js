@@ -14,12 +14,7 @@ const sendData = async (form) => {
 
 const formLog = document.getElementById("loginForm");
 
-
-addEventListener("DOMContentLoaded", function () {
-    formLog.addEventListener("submit", function (e) {
-        e.preventDefault();
-        console.log("hola");
-        alert("hola");
-        sendData(formLog);
-    });
+formLog.addEventListener("submit", function (e) {
+    e.preventDefault();
+    sendData(formLog);
 });

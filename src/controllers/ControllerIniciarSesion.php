@@ -9,11 +9,11 @@ function mostrarIniciarSesion($parametro)
     require_once __DIR__ . "/../../src/vistas/vistaIniciarSesion/iniciarSesion.php";
 }
 // iniciar sesión 
-function logIn($parametro){
+function logIn($parametro)
+{
 
     $modelo = new ModeloInicioSesion(true);
     $bitacora = new ModeloBitacora(true);
-
 }
 
 function iniciarSesion()
@@ -72,45 +72,46 @@ function iniciarSesion()
     //         // Verifica si la respuesta de la API indica éxito ('success' == true).
     //         if ($result['success']) {
 
+    $modelo->setUsuario($_POST['usuario']);
+    $modelo->setPassword($_POST['password']);
 
-    if ($_POST['usuario'] === '' or $_POST['password'] === '') {
+    $validar = $modelo->validarIniciarSesion();
+    // Verifica si es un array con clave "exito"
+    if (is_array($validar) && $validar[0] === "exito") {
+        $session_inciada_por_usuario = isset($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
 
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/campos");
-    } else {
-
-        $validar = $modelo->validarIniciarSesion($_POST['usuario'], $_POST['password']);
-
-        if ($validar) {
-            $session_inciada_por_usuario = isset($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
-
-            //Si hay una session actia le decimos al usuario
-            if ($session_inciada_por_usuario) {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/errorSession");
-            } else {
-                session_start();
-                $_SESSION['usuario'] = $_POST['usuario'];
-                $_SESSION['rol'] = $validar['rol'];
-                $_SESSION['id_rol'] = $validar['id_rol'];
-                $_SESSION['id_usuario'] = $validar['id_usuario'];
-                $_SESSION['id_personal'] = $validar['id_personal'];
-                $_SESSION['nombre'] = $validar['nombre_personal'];
-                $_SESSION['apellido'] = $validar['apellido_personal'];
-
-                $bitacora->insertarBitacora($_SESSION['id_usuario'], "inicio sesion", "Ha iniciado una session");
-
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
-            }
+        //Si hay una session actia le decimos al usuario
+        if ($session_inciada_por_usuario) {
+        echo json_encode(['ok' => false, 'error, existe una sesión activa' => $validar]);
         } else {
+            session_start();
+            $_SESSION['usuario'] = $_POST['usuario'];
+            $_SESSION['rol'] = $validar['rol'];
+            $_SESSION['id_rol'] = $validar['id_rol'];
+            $_SESSION['id_usuario'] = $validar['id_usuario'];
+            $_SESSION['id_personal'] = $validar['id_personal'];
+            $_SESSION['nombre'] = $validar['nombre_personal'];
+            $_SESSION['apellido'] = $validar['apellido_personal'];
 
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/mensaje");
+            $bitacora->insertarBitacora($_SESSION['id_usuario'], "inicio sesión", "Ha iniciado una sesión");
+
+            // header("location: /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $validar[1]]);
+
         }
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $validar]);
+        exit;
     }
-    //         } else {
-    //             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
-    //         }
-    //     }
-    // }
+
 }
+//         } else {
+//             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
+//         }
+//     }
+// }
+
 
 //Metodo para mostrar la vista de la pagina de error ç
 function error()
