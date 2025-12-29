@@ -35,7 +35,6 @@ export const alertConfirm = (text, action, param = "") => {
   }).then((result) => {
     if (result.isConfirmed) {
       action(param);
-      console.log(data);
     }
   });
 };
