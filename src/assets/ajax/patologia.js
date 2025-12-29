@@ -1,4 +1,4 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionGeneric.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Patologias";
 
 const modalAgregar = document.getElementById("modalAgregar");

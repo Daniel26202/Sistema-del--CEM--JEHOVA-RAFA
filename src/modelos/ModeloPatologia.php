@@ -2,28 +2,28 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
 use App\config\Validations;
 
-class ModeloPatologia extends Db
+class ModeloPatologia extends ModelBase
 {
 
-    private $conexion;
+    private $nombrePatologia;
 
-    public function __construct()
+    public function __construct($dbSystem)
     {
-        $this->conexion = $this->connectionSistema();
+        parent::__construct($dbSystem);
     }
 
 
     public function mostrarPatologias()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT * FROM patologia WHERE estado = 'ACT' ");
-            $consulta->execute();
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql = "SELECT * FROM patologia WHERE estado = 'ACT' ";
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -96,7 +96,7 @@ class ModeloPatologia extends Db
             $consulta = $this->conexion->prepare("INSERT INTO patologia VALUES (null, :nombrePatologia, 'ACT')");
             $consulta->bindParam(":nombrePatologia", $nombrePatologia);
             $consulta->execute();
-            
+
             $id = $this->conexion->lastInsertId();
 
             $consulta = $this->conexion->prepare("SELECT * from patologia where id_patologia=:id_patologia");

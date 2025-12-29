@@ -13,10 +13,11 @@ function patologias($parametro)
 	require_once './src/vistas/vistaPatologia/patologia.php';
 }
 
-	//  function patologiasAjax()
-	// {
-	// 	echo json_encode($this->patologia->mostrarPatologias());
-	// }
+	 function patologiasAjax()
+	{
+		$patologia = new ModeloPatologia(true);
+		echo json_encode($patologia->mostrarPatologias());
+	}
 	//  function papeleraPatologias($parametro)
 	// {
 	// 	$ayuda = "btnayudaPatologia";

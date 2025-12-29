@@ -205,6 +205,8 @@ readPatients();
 if (modalAgregar) {
   modalAgregar.addEventListener("submit", function (e) {
     e.preventDefault();
+  alertSuccess();
+
     let inputsBuenos = [];
     this.querySelectorAll(".input-validar").forEach((input) => {
       if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
@@ -217,7 +219,7 @@ if (modalAgregar) {
     ) {
       createPatients(this, inputsBuenos);
     } else {
-      alertError("Error", "Por favor verifique que todos los datos esten correctos.");
+      alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }
   });
 }
