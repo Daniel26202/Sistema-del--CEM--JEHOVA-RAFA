@@ -201,15 +201,13 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!-- SweetAlert2 -->
     <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2@11.js"></script>
-    <!-- SweetAlert2 -->
-    <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2@11.js"></script>
+
     <script src="<?= $urlBase ?>./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?= $urlBase ?>./src/assets/intro/intro.min.js"></script>
     <script src="<?= $urlBase ?>./src/assets/js/expresionesModulares.js"></script>
     <script src="<?= $urlBase ?>./src/assets/js/ayudaInteractiva.js"></script>
     <script src="<?= $urlBase ?>./src/assets/app.js"></script>
     <script type="module" src="<?= $urlBase ?>./src/assets/js/inicioSesion.js"></script>
-    <script type="module" src="<?= $urlBase ?>./src/assets/ajax/inicioSesion.js"></script>
 
     <script>
         // Función para mostrar/ocultar contraseña

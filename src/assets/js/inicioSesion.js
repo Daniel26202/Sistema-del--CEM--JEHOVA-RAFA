@@ -1,5 +1,5 @@
 import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable } from "../ajax/funtionGeneric.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion";
+const url = "/Sistema-del--CEM--JEHOVA-RAFA/iniciarSesion";
 
 // envio de datos
 const sendData = async (form) => {
