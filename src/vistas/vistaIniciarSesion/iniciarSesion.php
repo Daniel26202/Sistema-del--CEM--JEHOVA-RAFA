@@ -93,7 +93,6 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
                         <!-- Formulario de Login -->
                         <form id="loginForm">
-                        <form id="loginForm">
                             <div class="me-md-5 pe-md-4 mt-1">
 
                                 <!-- Campo de Usuario con icono flotante -->
@@ -156,7 +155,6 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                             </div>
 
                             <!-- Botón de Ingresar con Bootstrap -->
-                            <div class="col-12 d-flex justify-content-center" id="">
                             <div class="col-12 d-flex justify-content-center" id="">
                                 <div class="d-grid gap-2 mt-4 col-7">
                                     <button
