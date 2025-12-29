@@ -6,7 +6,15 @@ use App\modelos\ModeloBitacora;
 function mostrarIniciarSesion($parametro)
 {
     $ayuda = "btnayudaIniciarSesion";
+    $ayuda = "btnayudaIniciarSesion";
     require_once __DIR__ . "/../../src/vistas/vistaIniciarSesion/iniciarSesion.php";
+}
+// iniciar sesión 
+function logIn($parametro)
+{
+
+    $modelo = new ModeloInicioSesion(true);
+    $bitacora = new ModeloBitacora(true);
 }
 // iniciar sesión 
 function logIn($parametro)

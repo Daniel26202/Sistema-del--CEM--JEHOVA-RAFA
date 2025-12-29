@@ -4,14 +4,19 @@ namespace App\modelos;
 
 use App\modelos\ModelBase;
 use App\config\Validations;
+use App\modelos\ModelBase;
+use App\config\Validations;
 
+class ModeloInicioSesion extends ModelBase
 class ModeloInicioSesion extends ModelBase
 {
 
 	private $password, $usuario;
 
 	public function __construct($dbSystem)
+	public function __construct($dbSystem)
 	{
+		parent::__construct($dbSystem);
 		parent::__construct($dbSystem);
 	}
 
@@ -65,3 +70,4 @@ class ModeloInicioSesion extends ModelBase
 		$this->usuario = $usuario;
 	}
 }
+
