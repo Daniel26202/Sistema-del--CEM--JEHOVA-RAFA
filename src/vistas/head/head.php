@@ -1,8 +1,8 @@
 <?php
-// if (isset($_SESSION['usuario'])) {
-// } else {
-// 	header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
-// }
+if (isset($_SESSION['usuario'])) {
+} else {
+	header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+}
 
 $urlBase = "";
 if (!empty($parametro)) {
