@@ -49,14 +49,14 @@ function getPacientesAjax($parametro)
 
 function guardar()
 {
-	if(empty($_POST)) {
+	if (empty($_POST)) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
 
 	$modelo = new ModeloPacientes(true);
-	$bitacora = new ModeloBitacora(true);
+	$bitacora = new ModeloBitacora(false);
 
 	$modelo->setNacionalidad($_POST['nacionalidad']);
 	$modelo->setCedula($_POST['cedula']);
@@ -73,10 +73,10 @@ function guardar()
 
 	$insercion = $modelo->insertar();
 
-	// Verifica si es un array con clave "exito"
+	// // Verifica si es un array con clave "exito"
 	if (is_array($insercion) && $insercion[0] === "exito") {
 		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data'=> $insercion[1]]);
 	} else {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $insercion]);

@@ -108,11 +108,11 @@ class ModeloPacientes extends ModelBase
 				throw new \Exception("La fecha no puede ser del futuro.");
 			}
 			// Validación de cédula duplicada
-			if ($this->validarCedula($this->getCedula())) {
+			if ($this->validarCedula(['cedula' => $this->getCedula()])) {
 				throw new \Exception("La cédula ya está registrada.");
 			}
 
-			$sql = "INSERT INTO paciente (nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero,estado) VALUES (:nacionalidad, :cedula, :nombre, :apellido, :telefono, :direccion, :fn, :genero, 'ACT')";
+			$sql = "INSERT INTO paciente (nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero,estado) VALUES (:nacionalidad, :cedula, :nombre, :apellido, :telefono, :direccion, :fn, :genero, :estado)";
 			$this->setSQL($sql);
 
 			$this->create($data);
@@ -292,7 +292,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setApellido($apellido)
 	{
-		$this->$apellido = $apellido;
+		$this->apellido = $apellido;
 	}
 
 	public function getTelefono()
@@ -302,7 +302,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setTelefono($telefono)
 	{
-		$this->$telefono = $telefono;
+		$this->telefono = $telefono;
 	}
 
 	public function getDireccion()
@@ -312,7 +312,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setDireccion($direccion)
 	{
-		$this->$direccion = $direccion;
+		$this->direccion = $direccion;
 	}
 
 	public function getFn()

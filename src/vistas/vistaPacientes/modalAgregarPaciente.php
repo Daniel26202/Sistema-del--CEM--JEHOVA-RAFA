@@ -8,6 +8,7 @@
           </div>
           <form class=" form-validable" id="modalAgregar">
 
+          <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']?>">
             <div class="modal-body">
               <div class="input-group flex-nowrap margin-inputs" id="grp_cedula">
                 <span class="input-modal mt-1">
