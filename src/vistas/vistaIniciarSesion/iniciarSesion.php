@@ -205,7 +205,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <script src="<?= $urlBase ?>./src/assets/js/expresionesModulares.js"></script>
     <script src="<?= $urlBase ?>./src/assets/js/ayudaInteractiva.js"></script>
     <script src="<?= $urlBase ?>./src/assets/app.js"></script>
-    <script type="module" src="<?= $urlBase ?>./src/assets/js/inicioSesion.js"></script>
+    <script type="module" src="<?= $urlBase ?>./src/assets/ajax/inicioSesion.js"></script>
 
     <script>
         // Función para mostrar/ocultar contraseña
