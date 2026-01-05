@@ -1,4 +1,176 @@
-/* ////////////////////////////////////////////////////// */
+/* SISTEMA DE MODALES REUTILIZABLE */
+
+/* el header de color azul  */
+/* .modal-custom .modal-header {
+    background: linear-gradient(135deg, #387adf 0%, #2563c7 100%);
+    color: white;
+    padding: 1.15rem 1.5rem;
+    border: none;
+}
+
+.modal-custom .modal-header .modal-title {
+
+    color: white !important;
+}
+
+.modal-custom .modal-header .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+} */
+
+.campo-custom {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.input-custom {
+    background: white;
+    border: 1.9px solid #387adf;
+    border-radius: 10px;
+    padding: 0.275rem 0.75rem;
+    transition: all 0.1s ease;
+    align-items: center;
+    display: flex;
+}
+
+.input-custom:focus-within {
+    border-width: 2px;
+    box-shadow: 0 0 0 0.15rem rgba(56, 122, 223, 0.15);
+    transform: translateY(-1px);
+}
+
+.input-custom.valido {
+    border-color: #28a745 !important;
+    background-color: #f0fff4;
+}
+
+.input-custom.invalido {
+    border-color: #dc3545 !important;
+    background-color: #fff5f5;
+}
+
+.icono-izq {
+    margin: 0 !important;
+    padding: 0 0.4rem 0 0;
+    display: flex;
+    align-items: center;
+}
+
+.icono-izq svg {
+    color: #387adf;
+    transition: all 0.3s ease;
+}
+
+.input-custom:focus-within .icono-izq svg {
+    transform: scale(1.08);
+}
+
+.icono-der {
+    margin-left: 0.4rem;
+    display: flex;
+    align-items: center;
+}
+
+.icono-der .check {
+    color: #28a745;
+    animation: pulso 0.4s ease;
+}
+
+.icono-der .error {
+    color: #dc3545;
+    animation: sacudir 0.4s ease;
+}
+
+@keyframes pulso {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+@keyframes sacudir {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-4px);
+    }
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+.txt-custom {
+    border: none !important;
+    background: transparent !important;
+    padding: 0.35rem 0;
+    font-size: 0.9rem;
+    color: var(--color-text-card) !important;
+    flex: 1;
+}
+
+.txt-custom:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.error-msg {
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+    margin-left: 0.4rem;
+}
+
+.label-custom {
+    color: var(--color-text-card) !important;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    margin-top: 0.2rem;
+    margin-left: 5px;
+    display: block;
+}
+
+.mayusculas {
+    text-transform: uppercase;
+}
+
+.tamaño-select-mini {
+    width: 4.5vh;
+    margin-right: 6px;
+}
+
+/* quitar flechitas del input number */
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ////////////////////////||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||////////////////////////////// */
 /* de la x de lo modales */
 .uk-icon:not(.uk-preserve) [stroke*="#"]:not(.uk-preserve) {
     stroke: rgb(27 27 27) !important;
@@ -42,12 +214,12 @@
     }
 }
 
-.switAlert{
+.switAlert {
     background-color: var(--color-bg-card);
     color: var(--color-text-card);
 }
 
-.switAlertBtnAceptar{
+.switAlertBtnAceptar {
     background-color: var(--color-primary);
 }
 
@@ -97,9 +269,8 @@ h6 {
     color: var(--color-text-card);
 }
 
-#DataTables_Table_0_info{
+#DataTables_Table_0_info {
     color: var(--color-text-card);
-    
 }
 label {
     color: var(--color-text-card) !important;
@@ -564,7 +735,7 @@ html {
     color: var(--color-text-card) !important;
 }
 
-.input-modal {
+/* .input-modal {
     color: var(--color-text-card) !important;
     background-color: var(--color-bg-card) !important;
     border-radius: 0;
@@ -572,12 +743,12 @@ html {
     border-bottom: 2px solid #387adf;
     background-color: transparent;
     margin-bottom: 15px;
-}
-
+} */
+/* 
 .input-modal:focus {
     outline: 0 !important;
     box-shadow: none;
-}
+} */
 
 .placeholder::placeholder {
     font-size: 24px;
@@ -972,71 +1143,68 @@ nuevos estilos de control medico */
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-  }
-  
-  .tabla-control-medico {
+}
+
+.tabla-control-medico {
     flex: 1 1 400px;
     min-width: 290px;
     max-width: 630px;
     background-color: var(--color-bg-card);
     padding: 10px;
     border-radius: 8px;
-    border: 1px solid #ADD8E6;
-  }
-  
-  .hover-control-m tr:hover{
+    border: 1px solid #add8e6;
+}
+
+.hover-control-m tr:hover {
     cursor: pointer;
     background-color: var(--color-primary);
-  }
+}
 
-  .div-descripcion-oculto{
+.div-descripcion-oculto {
     min-width: 290px;
     max-width: 630px;
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
-  }
-  
+}
 
-
-  
-  table {
+table {
     width: 100%;
     border-collapse: collapse;
-  }
-  
-  .scrollable {
+}
+
+.scrollable {
     max-height: 500px;
     overflow-y: auto;
-    border: 1px solid #ADD8E6;
+    border: 1px solid #add8e6;
     border-radius: 6px;
-  }
+}
 
-  .fila-oculta{
+.fila-oculta {
     background-color: var(--color-bg-main);
-     
-  }
+}
 
-  .fila-oculta p{
+.fila-oculta p {
     color: var(--color-text-card);
-  }
-  
-  /* 📱 Estilos para pantallas pequeñas */
-  @media (max-width: 840px) {
-  .container {
-      flex-direction: column;
-      align-items: stretch;
-  }
-  
-  .tabla {
-      width: 100%;
-  }
-  
-    table, th, td {
-      font-size: 14px;
-  }
-  }
+}
 
+/* 📱 Estilos para pantallas pequeñas */
+@media (max-width: 840px) {
+    .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tabla {
+        width: 100%;
+    }
+
+    table,
+    th,
+    td {
+        font-size: 14px;
+    }
+}
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* ....................................FACTURA..................................... */
@@ -1153,8 +1321,8 @@ hr {
     border-bottom: 2px solid rgb(13, 240, 13);
 }
 
-.icon-correct{
-    color: rgb(13, 240, 13);;
+.icon-correct {
+    color: rgb(13, 240, 13);
 }
 
 .grpFormInCorrect input {
@@ -1165,11 +1333,9 @@ hr {
     border-bottom: 2px solid rgb(224, 3, 3);
 }
 
-.icon-incorrect{
+.icon-incorrect {
     color: rgb(224, 3, 3);
 }
-
-
 
 /* Editar */
 
@@ -1217,8 +1383,8 @@ hr {
     border-radius: 10px;
 }
 
-.margin-modal-factura{
-   padding: 0.5rem 2rem 2rem;
+.margin-modal-factura {
+    padding: 0.5rem 2rem 2rem;
 }
 
 /* ///////////////////////////////////////////////////////////////////////////////// */
@@ -1924,8 +2090,8 @@ td {
         width: 100% !important;
     }
     .input {
-    width: 100%;
-}
+        width: 100%;
+    }
 }
 
 /* Lo comento porque no estaba incluida en el head */

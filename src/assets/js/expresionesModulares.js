@@ -179,6 +179,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Asumiendo que el 'name' es igual al tipo de campo (por ejemplo, 'nombre', 'correo', etc.)
     const tipoCampo = campo;
 
+    console.log(input)
+
     //validar select
     if (input.tagName === "SELECT") {
       // Si el elemento es un <select>, valida con la función validarSelect
