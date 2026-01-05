@@ -34,16 +34,19 @@ function getPacientesAjax($parametro)
 // 	require './src/vistas/vistaPacientes/pacientes.php';
 // }
 
-//  function papeleraPaciente($parametro)
-// {
-// 	$pacientes = $this->modelo->indexPapelera();
-// 	require_once './src/vistas/vistaPacientes/pacientesPapelera.php';
-// }
+function papeleraPaciente($parametro)
+{
+	$modelo = new ModeloPacientes(true);
+	$vistaActiva = 'papelera';
+	$pacientes = $modelo->indexPapelera();
+	require_once './src/vistas/vistaPacientes/pacientes.php';
+}
 
-//  function papeleraPacienteAjax()
-// {
-// 	echo json_encode($this->modelo->indexPapelera());
-// }
+function papeleraPacienteAjax()
+{
+	$modelo = new ModeloPacientes(true);
+	echo json_encode($modelo->indexPapelera());
+}
 
 
 
@@ -76,7 +79,7 @@ function guardar()
 	// // Verifica si es un array con clave "exito"
 	if (is_array($insercion) && $insercion[0] === "exito") {
 		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data'=> $insercion[1]]);
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 	} else {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $insercion]);
@@ -85,57 +88,88 @@ function guardar()
 }
 
 
-	//  function setPaciente()
-	// {
+function setPaciente()
+{
 
-	// 	$edicion = $this->modelo->update($_POST['id_paciente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero'], $_POST['cedulaRegistrada']);
+	$modelo = new ModeloPacientes(true);
+	$bitacora = new ModeloBitacora(false);
+
+	$modelo->setIdPaciente($_POST['id_paciente']);
+	$modelo->setNacionalidad($_POST['nacionalidad']);
+	$modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
+	$modelo->setCedula($_POST['cedula']);
+	$modelo->setNombre($_POST['nombre']);
+	$modelo->setApellido($_POST['apellido']);
+	$modelo->setTelefono($_POST['telefono']);
+	$modelo->setDireccion($_POST['direccion']);
+	$modelo->setFn($_POST['fn']);
+	$modelo->setGenero($_POST['genero']);
+
+	$bitacora->setId_usuario($_POST['id_usuario']);
+	$bitacora->setActividad("Ha modificado un paciente");
+	$bitacora->setTabla("paciente");
+
+	$edicion = $modelo->update_paciente();
 
 
-	// 	// // Verifica si es un array con clave "exito"
-	// 	if (is_array($edicion) && $edicion[0] === "exito") {
-	// 		$this->bitacora->insertarBitacora($_POST['id_usuario'], "paciente", "Ha modificado un paciente");
-	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	// 	} else {
-	// 		http_response_code(409);
-	// 		echo json_encode(['ok' => false, 'error' => $edicion]);
-	// 		exit;
-	// 	}
-	// }
+	// Verifica si es un array con clave "exito"
+	if (is_array($edicion) && $edicion[0] === "exito") {
+		$bitacora->insertarBitacora();
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $edicion]);
+		exit;
+	}
+}
 
-	//  function eliminar($datos)
-	// {
-	// 	$cedula = $datos[0];
-	// 	$id_usuario = $datos[1];
-	// 	// guardar la bitacora
-	// 	$eliminacion = $this->modelo->delete($cedula);
+function eliminar($datos)
+{
+	$modelo = new ModeloPacientes(true);
+	$bitacora = new ModeloBitacora(false);
 
-	// 	//Verifica si es un array con clave "exito"
-	// 	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-	// 		$this->bitacora->insertarBitacora($id_usuario, "paciente", "Ha eliminado un  paciente");
-	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	// 	} else {
-	// 		http_response_code(409);
-	// 		echo json_encode(['ok' => false, 'error' => $eliminacion]);
-	// 		exit;
-	// 	}
-	// }
-	//  function restablecer($datos)
-	// {
-	// 	$id_paciente = $datos[0];
-	// 	$id_usuario = $datos[1];
-	// 	// guardar la bitacora
-	// 	$restablecimiento = $this->modelo->restablecer($id_paciente);
+	$modelo->setIdPaciente($datos[0]);
 
-	// 	//Verifica si es un array con clave "exito"
-	// 	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-	// 		$this->bitacora->insertarBitacora($id_usuario, "paciente", "Ha restablecido un  paciente");
-	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	// 	} else {
-	// 		http_response_code(409);
-	// 		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
-	// 		exit;
-	// 	}
-	// }
+	$bitacora->setId_usuario($datos[1]);
+	$bitacora->setActividad("Ha eliminado un  paciente");
+	$bitacora->setTabla("paciente");
+
+	$eliminacion = $modelo->delete();
+
+	//Verifica si es un array con clave "exito"
+	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+		$bitacora->insertarBitacora();
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+		exit;
+	}
+}
+
+function restablecer($datos)
+{
+	$modelo = new ModeloPacientes(true);
+	$bitacora = new ModeloBitacora(false);
+
+	$modelo->setIdPaciente($datos[0]);
+
+	$bitacora->setId_usuario($datos[1]);
+	$bitacora->setActividad("Ha restablecido un paciente");
+	$bitacora->setTabla("paciente");
+
+	$restablecer = $modelo->restablecer();
+
+	//Verifica si es un array con clave "exito"
+	if (is_array($restablecer) && $restablecer[0] === "exito") {
+		$bitacora->insertarBitacora();
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $restablecer]);
+		exit;
+	}
+}
 
 
 	//  function mostrarPaciente()

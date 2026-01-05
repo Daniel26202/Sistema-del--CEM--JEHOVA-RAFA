@@ -43,13 +43,7 @@ class ModelBase extends Db
 
     protected function update($data, $id)
     {
-        $set = '';
-        foreach ($data as $key => $value) {
-            $set .= "$key = :$key, ";
-        }
-        $set = rtrim($set, ', ');
-
-        $sql = $this->getSQL() . " SET $set WHERE id = :id";
+        $sql = $this->getSQL();
         $stmt = $this->pdo->prepare($sql);
 
         foreach ($data as $key => $value) {
@@ -60,7 +54,7 @@ class ModelBase extends Db
         return $stmt->execute();
     }
 
-    protected function delete($id)
+    protected function update_logic($id)
     {
         $sql = $this->getSQL();
         $stmt = $this->pdo->prepare($sql);
