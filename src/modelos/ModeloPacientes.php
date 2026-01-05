@@ -7,7 +7,7 @@ use App\config\Validations;
 
 class ModeloPacientes extends ModelBase
 {
-	private $nacionalidad, $cedula, $nombre, $apellido, $telefono, $direccion, $fn, $genero;
+	private $id_paciente, $nacionalidad, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $direccion, $fn, $genero;
 
 
 	// Validaciones con expresiones regulares
@@ -53,15 +53,16 @@ class ModeloPacientes extends ModelBase
 	// 	}
 	// }
 
-	// public function indexPapelera()
-	// {
-	// 	try {
-	// 		$consulta = $this->conexion->prepare("SELECT * FROM paciente WHERE estado = 'DES' ");
-	// 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
-	// 	} catch (\Exception $e) {
-	// 		return 0;
-	// 	}
-	// }
+	public function indexPapelera()
+	{
+		try {
+			$sql = "SELECT * FROM paciente WHERE estado = 'DES'";
+			$this->setSQL($sql);
+			return $this->read();
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
 
 
 	public function insertar()
@@ -108,11 +109,11 @@ class ModeloPacientes extends ModelBase
 				throw new \Exception("La fecha no puede ser del futuro.");
 			}
 			// Validación de cédula duplicada
-			if ($this->validarCedula($this->getCedula())) {
+			if ($this->validarCedula(['cedula' => $this->getCedula()])) {
 				throw new \Exception("La cédula ya está registrada.");
 			}
 
-			$sql = "INSERT INTO paciente (nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero,estado) VALUES (:nacionalidad, :cedula, :nombre, :apellido, :telefono, :direccion, :fn, :genero, 'ACT')";
+			$sql = "INSERT INTO paciente (nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero,estado) VALUES (:nacionalidad, :cedula, :nombre, :apellido, :telefono, :direccion, :fn, :genero, :estado)";
 			$this->setSQL($sql);
 
 			$this->create($data);
@@ -124,135 +125,170 @@ class ModeloPacientes extends ModelBase
 	}
 
 
-	// public function update($id_paciente, $nacionalidad, $cedula, $nombre, $apellido, $telefono, $direccion, $fn, $genero, $cedulaRegistrada)
-	// {
-	// 	try {
-	// 		$fecha = date("Y-m-d");
-	// 		$dt = \DateTime::createFromFormat('Y-m-d', $fn);
+	public function update_paciente()
+	{
+		try {
 
-	// 		$validaciones = Validations::patientRules($nombre, $apellido, $cedula, $telefono, $direccion, $fn, $genero);
+			$data = [
+				'nacionalidad' => $this->getNacionalidad(),
+				'cedula' => $this->getCedula(),
+				'nombre' => $this->getNombre(),
+				'apellido' => $this->getApellido(),
+				'telefono' => $this->getTelefono(),
+				'direccion' => $this->getDireccion(),
+				'fn' => $this->getFn(),
+				'genero' => $this->getGenero()
+			];
 
-	// 		foreach ($validaciones as $v) {
-	// 			if (!preg_match($v['regex'], $v['valor'])) {
-	// 				throw new \Exception($v['mensaje']);
-	// 			}
-	// 		}
+			$fecha = date("Y-m-d");
+			$dt = \DateTime::createFromFormat('Y-m-d', $this->getFn());
 
-	// 		// Validación de fecha
-	// 		if (!$dt || $dt->format('Y-m-d') !== $fn) {
-	// 			throw new \Exception("La fecha debe tener el formato YYYY-MM-DD.");
-	// 		}
-	// 		if ($fecha <= $fn) {
-	// 			throw new \Exception("La fecha no puede ser del futuro.");
-	// 		}
+			// obtener validaciones desde la clase
+			$validaciones = Validations::patientRules(
+				$this->getNombre(),
+				$this->getApellido(),
+				$this->getCedula(),
+				$this->getTelefono(),
+				$this->getDireccion(),
+				$this->getFn(),
+				$this->getGenero()
+			);
 
-	// 		$validar = $this->conexion->prepare("SELECT * from paciente where id_paciente=:id_paciente");
-	// 		$validar->bindParam(":id_paciente", $id_paciente);
-	// 		$validar->execute();
-	// 		if ($validar->rowCount() <= 0) {
-	// 			throw new \Exception("Fallo");
-	// 		}
+			foreach ($validaciones as $v) {
+				if (!preg_match($v['regex'], $v['valor'])) {
+					throw new \Exception($v['mensaje']);
+				}
+			}
 
-	// 		if ($cedulaRegistrada == $cedula) {
-	// 			// 	// UPDATE paciente SET id_nacionalidad=,cedula=],nombre=,apellido=,telefono=,direccion=,fn= WHERE 1
-	// 			$consulta = $this->conexion->prepare("UPDATE paciente SET nacionalidad=:nacionalidad, cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono, direccion=:direccion, fn=:fn, genero=:genero WHERE id_paciente = :id_paciente");
-	// 			$consulta->bindParam(":id_paciente", $id_paciente);
-	// 			$consulta->bindParam(":nacionalidad", $nacionalidad);
-	// 			$consulta->bindParam(":cedula", $cedula);
-	// 			$consulta->bindParam(":nombre", $nombre);
-	// 			$consulta->bindParam(":apellido", $apellido);
-	// 			$consulta->bindParam(":telefono", $telefono);
-	// 			$consulta->bindParam(":direccion", $direccion);
-	// 			$consulta->bindParam(":fn", $fn);
-	// 			$consulta->bindParam(":genero", $genero);
-	// 			$consulta->execute();
-	// 		} else {
-	// 			// Validación de cédula duplicada
-	// 			if ($this->validarCedula($cedula) === "existeC") {
-	// 				throw new \Exception("La cédula ya está registrada.");
-	// 			} else {
-	// 				// UPDATE paciente SET id_nacionalidad=,cedula=],nombre=,apellido=,telefono=,direccion=,fn= WHERE 1
-	// 				$consulta = $this->conexion->prepare("UPDATE paciente SET nacionalidad=:nacionalidad,cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono,direccion=:direccion,fn=:fn, genero=:genero WHERE id_paciente = :id_paciente");
-	// 				$consulta->bindParam(":id_paciente", $id_paciente);
-	// 				$consulta->bindParam(":nacionalidad", $nacionalidad);
-	// 				$consulta->bindParam(":cedula", $cedula);
-	// 				$consulta->bindParam(":nombre", $nombre);
-	// 				$consulta->bindParam(":apellido", $apellido);
-	// 				$consulta->bindParam(":telefono", $telefono);
-	// 				$consulta->bindParam(":direccion", $direccion);
-	// 				$consulta->bindParam(":fn", $fn);
-	// 				$consulta->bindParam(":genero", $genero);
-	// 				$consulta->execute();
-	// 			}
-	// 		}
+			// Validación de fecha
+			if (!$dt || $dt->format('Y-m-d') !== $this->getFn()) {
+				throw new \Exception("La fecha debe tener el formato YYYY-MM-DD.");
+			}
+			if ($fecha <= $this->getFn()) {
+				throw new \Exception("La fecha no puede ser del futuro.");
+			}
 
-	// 		return ["exito"];
-	// 	} catch (\Exception $e) {
-	// 		return $e->getMessage();
-	// 	}
-	// }
+			$data2 = [
+				'id_paciente' => $this->getIdPaciente()
+			];
 
-	// public function delete($cedula)
-	// {
-	// 	try {
-	// 		$validar = $this->conexion->prepare("SELECT * from paciente where cedula=:cedula");
-	// 		$validar->bindParam(":cedula", $cedula);
-	// 		$validar->execute();
-	// 		if ($validar->rowCount() <= 0) {
-	// 			throw new \Exception("El id del paciente no existe");
-	// 		}
+			$sql = "SELECT * from paciente where id_paciente=:id_paciente";
+			$this->setSQL($sql);
 
-	// 		$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'DES' WHERE cedula = :cedula");
-	// 		$consulta->bindParam(":cedula", $cedula);
-	// 		$consulta->execute();
-	// 		return ["exito"];
-	// 	} catch (\Exception $e) {
-	// 		return $e->getMessage();
-	// 	}
-	// }
-	// public function restablecer($id_paciente)
-	// {
-	// 	try {
-	// 		$validar = $this->conexion->prepare("SELECT * from paciente where id_paciente=:id_paciente");
-	// 		$validar->bindParam(":id_paciente", $id_paciente);
-	// 		$validar->execute();
-	// 		if ($validar->rowCount() <= 0) {
-	// 			throw new \Exception("Fallo");
-	// 		}
+			$validar  = $this->search($data2, false);
 
-	// 		$consulta = $this->conexion->prepare("UPDATE paciente SET estado = 'ACT' WHERE id_paciente = :id_paciente");
-	// 		$consulta->bindParam(":id_paciente", $id_paciente);
-	// 		$consulta->execute();
-	// 		return ["exito"];
-	// 	} catch (\Exception $e) {
-	// 		return $e->getMessage();
-	// 	}
-	// }
+			if ($validar == []) {
+				throw new \Exception("El id del paciente no existe");
+			}
 
-	// public function buscar($cedula)
-	// {
-	// 	try {
-	// 		$consulta = $this->conexion->prepare("SELECT paciente.id_paciente, paciente.nacionalidad, paciente.cedula, paciente.nombre, paciente.apellido, paciente.telefono, paciente.direccion, paciente.fn, patologia.id_patologia, patologia.nombre_patologia FROM paciente JOIN patologiadepaciente ON paciente.id_paciente = patologiadepaciente.id_paciente JOIN patologia ON patologiadepaciente.id_patologia = patologia.id_patologia WHERE paciente.cedula = :cedula AND paciente.estado = 'ACT' ");
-	// 		$consulta->bindParam(":cedula", $cedula);
-	// 		$consulta->execute();
-	// 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
-	// 	} catch (\Exception $e) {
-	// 		return 0;
-	// 	}
-	// }
+			$cedula = $this->validarCedula(['cedula' => $this->getCedula()], true);
 
 
-	public function validarCedula($data)
+			if ($this->getCedulaRegistrada() == $cedula) {
+
+				$sql = "UPDATE paciente SET nacionalidad=:nacionalidad, cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono, direccion=:direccion, fn=:fn, genero=:genero WHERE id_paciente = :id";
+
+				$this->setSQL($sql);
+				$this->update($data, $this->getIdPaciente());
+			} else {
+				// Validación de cédula duplicada
+				if ($this->validarCedula(['cedula' => $this->getCedula()])) {
+					throw new \Exception("La cédula ya está registrada.");
+				} else {
+					$sql = "UPDATE paciente SET nacionalidad=:nacionalidad, cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono, direccion=:direccion, fn=:fn, genero=:genero WHERE id_paciente = :id";
+
+					$this->setSQL($sql);
+					$this->update($data, $this->getIdPaciente());
+				}
+
+			}
+
+			return ["exito"];
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+	public function delete()
+	{
+		try {
+
+			$data = [
+				'id_paciente' => $this->getIdPaciente()
+			];
+
+			$sql = "SELECT * from paciente where id_paciente=:id_paciente";
+			$this->setSQL($sql);
+
+			$validar  = $this->search($data, false);
+
+			if ($validar == []) {
+				throw new \Exception("El id del paciente no existe");
+			}
+
+			$sql = "UPDATE paciente SET estado = 'DES' WHERE id_paciente =:id";
+			$this->setSQL($sql);
+
+			$this->update_logic($data['id_paciente']);
+			return ["exito"];
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+	public function restablecer()
+	{
+		try {
+
+			$data = [
+				'id_paciente' => $this->getIdPaciente()
+			];
+
+			$sql = "SELECT * from paciente where id_paciente=:id_paciente";
+			$this->setSQL($sql);
+
+			$validar  = $this->search($data, false);
+
+			if ($validar == []) {
+				throw new \Exception("El id del paciente no existe");
+			}
+
+			$sql = "UPDATE paciente SET estado = 'ACT' WHERE id_paciente =:id";
+			$this->setSQL($sql);
+
+			$this->update_logic($data['id_paciente']);
+
+			return ["exito"];
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+
+	public function validarCedula($data, $returnCedula = false)
 	{
 		try {
 			$sql = "SELECT * FROM paciente WHERE cedula =:cedula";
 			$this->setSQL($sql);
 			$listData = $this->search($data, false);
 
-			return !empty($listData) ? 1 : 0;
+			if ($returnCedula) {
+				return !empty($listData) ? $listData['cedula'] : 0;
+			} else {
+				return !empty($listData) ? 1 : 0;
+			}
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+	public function getIdPaciente()
+	{
+		return $this->id_paciente;
+	}
+
+	public function setIdPaciente($id_paciente)
+	{
+		$this->id_paciente = $id_paciente;
 	}
 
 	public function getNacionalidad()
@@ -275,6 +311,16 @@ class ModeloPacientes extends ModelBase
 		$this->cedula = $cedula;
 	}
 
+	public function getCedulaRegistrada()
+	{
+		return $this->cedulaRegistrada;
+	}
+
+	public function setCedulaRegistrada($cedula)
+	{
+		$this->cedulaRegistrada = $cedula;
+	}
+
 	public function getNombre()
 	{
 		return $this->nombre;
@@ -292,7 +338,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setApellido($apellido)
 	{
-		$this->$apellido = $apellido;
+		$this->apellido = $apellido;
 	}
 
 	public function getTelefono()
@@ -302,7 +348,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setTelefono($telefono)
 	{
-		$this->$telefono = $telefono;
+		$this->telefono = $telefono;
 	}
 
 	public function getDireccion()
@@ -312,7 +358,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setDireccion($direccion)
 	{
-		$this->$direccion = $direccion;
+		$this->direccion = $direccion;
 	}
 
 	public function getFn()

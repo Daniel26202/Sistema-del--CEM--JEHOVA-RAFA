@@ -13,7 +13,6 @@ class ModeloInicioSesion extends ModelBase
 	public function __construct($dbSystem)
 	{
 		parent::__construct($dbSystem);
-		parent::__construct($dbSystem);
 	}
 
 	public function validarIniciarSesion($data)

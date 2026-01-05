@@ -1,9 +1,20 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable } from "./funtionGeneric.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+  initDataTable,
+} from "./funtionGeneric.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
 const modalAgregar = document.getElementById("modalAgregar");
-console.log(modalAgregar)
+const exampleModalLabel = document.getElementById("exampleModalLabelPaciente");
 const selectGenero = document.getElementById("selectGenero");
+const inputs = document.querySelectorAll(".input-validar");
+const botonModal = document.getElementById("botonModal");
+const cedulaRegistrada = document.getElementById('cedulaRegistrada');
+const btnOpenModal = document.getElementById('btnOpenModal');
+const id_paciente = document.getElementById('id_paciente');
 const selector = ".exampleTable";
 
 //read
@@ -13,16 +24,21 @@ const readPatients = async () => {
     let urlActual = window.location.href;
 
     if (urlActual.includes("getPacientes")) metodo = "getPacientesAjax";
+
     else metodo = "papeleraPacienteAjax";
 
+
     const result = await executePetition(url + "/" + metodo, "GET");
+
+    console.log(result)
 
     // construir html de filas
     let html = "";
     result.forEach((element) => {
       html += `
                       <tr>
-                    <td class="text-center">${element.nacionalidad}-${element.cedula}</td>
+                    <td class="text-center">${element.nacionalidad}-${element.cedula
+        }</td>
                     <td class="text-center">${element.nombre}</td>
                     <td class="text-center">${element.apellido}</td>
                     <td class="text-center">${element.telefono}</td>
@@ -31,13 +47,12 @@ const readPatients = async () => {
                     <td class="text-center">${element.genero}</td>
                     <td class="text-center">${element.estado_salud}</td>
                     <td class="text-center">
-                            <button class="${
-                              !urlActual.includes("getPacientes") ? "d-none" : ""
-                            } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
-                                uk-toggle="target: #modal-examplePacienteEditar${element.id_paciente}"
-                                data-id-tabla="modal-examplePacienteEditar${element.id_paciente}" data-index="${
-        element.id_paciente
-      }">
+                            <button class="${!urlActual.includes("getPacientes")
+          ? "d-none"
+          : ""
+        } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
+                              data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" data-index="${element.id_paciente
+        }">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -46,9 +61,11 @@ const readPatients = async () => {
 
                             </button>
 
-                            <button class="${
-                              !urlActual.includes("getPacientes") ? "d-none" : ""
-                            } btn btn-tabla mb-1 btnModalEliminarPaciente btn-dt-tabla btn-eliminar" data-index=${element.cedula}>
+                            <button class="${!urlActual.includes("getPacientes")
+          ? "d-none"
+          : ""
+        } btn btn-tabla mb-1 btnModalEliminarPaciente btn-dt-tabla btn-eliminar" data-index=${element.id_paciente
+        }>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                     <path
@@ -57,11 +74,9 @@ const readPatients = async () => {
                             </button>
 
                             <div class="me-2">
-                    <a href="#" class="${
-                      urlActual.includes("getPacientes") ? "d-none" : ""
-                    } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
-        element.id_paciente
-      }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
+                    <a href="#" class="${urlActual.includes("getPacientes") ? "d-none" : ""
+        } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${element.id_paciente
+        }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
                       <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                         <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
@@ -90,8 +105,15 @@ const readPatients = async () => {
     //llamar las funcion de eliminar
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        alertConfirm("Esta seguro de eliminar el paciente?", deletePattients, data);
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de eliminar el paciente?",
+          deletePattients,
+          data
+        );
       });
     });
 
@@ -102,16 +124,24 @@ const readPatients = async () => {
         let inputsBuenos = [];
 
         this.querySelectorAll(".input-validar").forEach((input) => {
-          if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
+          if (input.parentElement.classList.contains("grpFormCorrect"))
+            inputsBuenos.push(true);
         });
 
         if (
           inputsBuenos.length == 5 &&
-          document.querySelector(".p-error-fn" + formEditar.getAttribute("data-index")).classList.contains("d-none")
+          document
+            .querySelector(
+              ".p-error-fn" + formEditar.getAttribute("data-index")
+            )
+            .classList.contains("d-none")
         ) {
           updatePatients(this, inputsBuenos);
         } else {
-          alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
+          alertError(
+            "Error al enviar el formulario",
+            "Por favor verifique que todos los datos esten correctos."
+          );
         }
       });
     });
@@ -120,8 +150,22 @@ const readPatients = async () => {
     //llamar las funcion de eliminar
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        alertConfirm("Esta seguro de restablecer el paciente?", restablecerPattients, data);
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de restablecer el paciente?",
+          restablecerPattients,
+          data
+        );
+      });
+    });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".botonesEdi").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        showDataEdit(this,  btn.getAttribute('data-index'));
       });
     });
 
@@ -141,7 +185,9 @@ const createPatients = async (form, inputs) => {
       alertSuccess(result.message);
       form.reset();
       inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+      inputs.forEach((input) =>
+        input.parentElement.classList.remove("grpFormCorrect")
+      );
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -161,9 +207,11 @@ const updatePatients = async (form, inputs) => {
     if (result.ok) {
       alertSuccess(result.message);
 
-      UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
       inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+      inputs.forEach((input) =>
+        input.parentElement.classList.remove("grpFormCorrect")
+      );
+      
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -176,9 +224,10 @@ const updatePatients = async (form, inputs) => {
 const deletePattients = async (data) => {
   try {
     const result = await executePetition(url + `/eliminar/${data}`, "GET");
+    console.log(result);
+
     if (result.ok) {
       alertSuccess(result.message);
-
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -200,26 +249,85 @@ const restablecerPattients = async (data) => {
   }
 };
 
+//mostrar datos a editat
+const showDataEdit = (ele, id) => {
+  exampleModalLabel.textContent = "Modificar Paciente";
+  botonModal.textContent = "Modificar";
+  modalAgregar.classList.add('editar');
+
+  let rows = ele.closest("tr");
+  let cells = rows.children;
+
+
+  for (const key in cells) {
+
+    const element = cells[key];
+
+    if (key == 7) break;
+
+    inputs[key].value = element.innerText;
+
+    inputs[key].parentElement.classList.add("grpFormCorrect");
+  }
+
+  let cedula = inputs[0].value.slice(2,)
+
+  inputs[0].value = cedula;
+  cedulaRegistrada.value = cedula
+
+  id_paciente.value = id;
+
+};
+
+const clearModalEnviar = ()=>{
+  exampleModalLabel.textContent = 'Registrar Paciente';
+  botonModal.textContent = 'Registrar';
+  modalAgregar.classList.remove('editar');
+
+
+  inputs.forEach(input => {
+    input.value = '';
+    input.parentElement.classList.remove("grpFormCorrect");
+  });
+}
+
 readPatients();
+
+btnOpenModal.addEventListener('click', function () {
+  clearModalEnviar();
+})
 
 if (modalAgregar) {
   modalAgregar.addEventListener("submit", function (e) {
     e.preventDefault();
-  alertSuccess();
 
     let inputsBuenos = [];
     this.querySelectorAll(".input-validar").forEach((input) => {
-      if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
+      if (input.parentElement.classList.contains("grpFormCorrect"))
+        inputsBuenos.push(true);
     });
 
+    console.log(inputsBuenos)
+
     if (
-      inputsBuenos.length == 5 &&
+      inputsBuenos.length == 5 || inputsBuenos.length == 7 &&
       document.querySelector(".p-error-fn").classList.contains("d-none") &&
       selectGenero.value != ""
     ) {
-      createPatients(this, inputsBuenos);
+
+      if (modalAgregar.classList.contains("editar")) {
+        updatePatients(this, inputsBuenos);
+      } else {
+        createPatients(this, inputsBuenos);
+      }
+
     } else {
-      alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos."
+      );
     }
+
+    inputsBuenos = [];
   });
 }

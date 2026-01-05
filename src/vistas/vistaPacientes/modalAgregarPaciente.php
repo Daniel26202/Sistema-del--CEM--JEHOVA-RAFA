@@ -3,10 +3,17 @@
       <div class="modal-dialog ">
         <div class="modal-content tamaño-modal">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Registrar Paciente</h5>
+            <h5 class="modal-title" id="exampleModalLabelPaciente">Registrar Paciente</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form class=" form-validable" id="modalAgregar">
+
+          <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']?>">
+
+          <input type="hidden" name="cedulaRegistrada" id="cedulaRegistrada" >
+
+          <input type="hidden" name="id_paciente" id="id_paciente" >
+
 
             <div class="modal-body">
 
@@ -158,7 +165,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-modals-cancelar  me-2" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-modals" data-bs-dismiss="modal">Registrar</button>
+              <button type="submit" class="btn btn-modals" id="botonModal" data-bs-dismiss="modal">Registrar</button>
             </div>
           </form>
         </div>
