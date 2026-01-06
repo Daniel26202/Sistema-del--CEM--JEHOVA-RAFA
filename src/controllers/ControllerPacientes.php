@@ -61,30 +61,43 @@ function guardar()
 	$modelo = new ModeloPacientes(true);
 	$bitacora = new ModeloBitacora(false);
 
-	$modelo->setNacionalidad($_POST['nacionalidad']);
-	$modelo->setCedula($_POST['cedula']);
-	$modelo->setNombre($_POST['nombre']);
-	$modelo->setApellido($_POST['apellido']);
-	$modelo->setTelefono($_POST['telefono']);
-	$modelo->setDireccion($_POST['direccion']);
-	$modelo->setFn($_POST['fn']);
-	$modelo->setGenero($_POST['genero']);
+	// $modelo->setNacionalidad($_POST['nacionalidad']);
+	// $modelo->setCedula($_POST['cedula']);
+	// $modelo->setNombre($_POST['nombre']);
+	// $modelo->setApellido($_POST['apellido']);
+	// $modelo->setTelefono($_POST['telefono']);
+	// $modelo->setDireccion($_POST['direccion']);
+	// $modelo->setFn($_POST['fn']);
+	// $modelo->setGenero($_POST['genero']);
 
-	$bitacora->setId_usuario($_POST['id_usuario']);
-	$bitacora->setActividad("Ha Insertado un nuevo paciente");
-	$bitacora->setTabla("paciente");
+	// $bitacora->setId_usuario($_POST['id_usuario']);
+	// $bitacora->setActividad("Ha Insertado un nuevo paciente");
+	// $bitacora->setTabla("paciente");
 
-	$insercion = $modelo->insertar();
+	// $insercion = $modelo->insertar();
 
 	// // Verifica si es un array con clave "exito"
-	if (is_array($insercion) && $insercion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-	} else {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $insercion]);
-		exit;
-	}
+	// if (is_array($insercion) && $insercion[0] === "exito") {
+	// 	$bitacora->insertarBitacora();
+	// 	echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+	// } else {
+	// 	http_response_code(409);
+	// 	echo json_encode(['ok' => false, 'error' => $insercion]);
+	// 	exit;
+	// }
+	$data = [
+		'nacionalidad' => $modelo->getNacionalidad(),
+		'cedula' => $modelo->getCedula(),
+		'nombre' => $modelo->getNombre(),
+		'apellido' => $modelo->getApellido(),
+		'telefono' => $modelo->getTelefono(),
+		'direccion' => $modelo->getDireccion(),
+		'fn' => $modelo->getFn(),
+		'genero' => $modelo->getGenero(),
+		'estado' => 'ACT'
+	];
+
+	echo json_encode($_POST);
 }
 
 

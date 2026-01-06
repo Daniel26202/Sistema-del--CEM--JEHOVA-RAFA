@@ -1,27 +1,38 @@
-// Espera a que todo el contenido del DOM haya sido cargado antes de ejecutar el script
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("validados");
   // Objeto con las expresiones regulares para validar cada tipo de campo
   const expresiones = {
-    nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/, // Letras y espacios, pueden llevar acentos, de 1 a 40 caracteres
-    apellido: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/, // Igual que 'nombre'
-    usuario: /^[a-zA-Z0-9._-]{8,16}$/, // Letras, números, guiones y guion bajo, de 3 a 16 caracteres
-    correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, // Formato de correo electrónico
-    password: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, // Al menos 8 caracteres, una mayúscula, un número y un símbolo
-    // Agrega más expresiones según tus necesidades
-    cedula: /^([1-9]{1})([0-9]{7,8})$/,
-    cedulaCita: /^([1-9]{1})([0-9]{7,8})$/,
-    telefono: /^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/,
-    direccion: /^([A-Za-z0-9\s\.,#-]{8,})$/,
-    descripcion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
-    fn: /^\d{4}\-\d{2}\-\d{2}$/,
-    fechaDeCita: /^\d{4}\-\d{2}\-\d{2}$/,
-    cantidad: /^([1-9]{1})([0-9]{1,4})?$/,
-    precio: /^(?!0$)(?!1$)\d+([.,]\d+)?$/,
-    fechaDeVencimiento: /^\d{4}\-\d{2}\-\d{2}$/,
-    lote: /^[0-9-_]{4,10}$/,
-    marca: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/,
-    medida: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/,
+    nombre: {
+      expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+      mensajeError: "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+    },
+
+    apellido: {
+      expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+      mensajeError: "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+    },
+
+    usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
+    correo: { expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, mensajeError: "" },
+    password: { expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, mensajeError: "" },
+    cedula: {
+      expresion: /^([1-9]{1})([0-9]{7,8})$/,
+      mensajeError: "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
+    },
+    telefono: {
+      expresion: /^(0?)(412|414|416|424|426|422|212|24[1-9]|25[1-9])\d{7}$/,
+      mensajeError: 'El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0422',
+    },
+    direccion: { expresion: /^([A-Za-z0-9\s\.,#-]{8,})$/, mensajeError: "Debe estar completa y detallada" },
+    descripcion: { expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/, mensajeError: "" },
+    fn: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+    fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+    cantidad: { expresion: /^([1-9]{1})([0-9]{1,4})?$/, mensajeError: "" },
+    precio: { expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/, mensajeError: "" },
+    fechaDeVencimiento: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+    lote: { expresion: /^[0-9-_]{4,10}$/, mensajeError: "" },
+    marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
+    medida: { expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/, mensajeError: "" },
+    genero: { expresion: /^"Masculino"|"Femenino"$/, mensajeError: "El Genero debe ser Masculino o Femenino" },
   };
 
   // Nueva función para validar fechas no futuras ni pasadas
@@ -32,39 +43,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
     pError.classList.add("fw-bold");
     pError.classList.add("p-error-validaciones");
+    console.log(pError);
 
     if (campo == "fn") {
-      if (!expresiones.fn.test(input.value)) {
-        // Validamos con la expresión regular
+      actualizarEstadoInput(input, "incorrecto", formulario);
+      if (!expresiones.fn.expresion.test(input.value)) {
         pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
         pError.classList.remove("d-none");
         return false;
       } else if (valorFecha > fechaHoy) {
-        // Validamos que no sea una fecha del pasado
         pError.textContent = "La fecha no puede ser del futuro.";
         pError.classList.remove("d-none");
         return false;
       }
     } else if (campo == "fechaDeCita") {
-      if (!expresiones.fn.test(input.value)) {
-        // Validamos con la expresión regular
+      actualizarEstadoInput(input, "incorrecto", formulario);
+      if (!expresiones.fn.expresion.test(input.value)) {
         pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
         pError.classList.remove("d-none");
         return false;
       } else if (valorFecha < fechaHoy) {
-        // Validamos que no sea una fecha del pasado
         pError.textContent = "La fecha no puede ser del pasado.";
         pError.classList.remove("d-none");
         return false;
       }
     } else if (campo === "fechaDeVencimiento") {
-      if (!expresiones.fechaDeVencimiento.test(input.value)) {
-        // Validamos con la expresión regular
+      actualizarEstadoInput(input, "incorrecto", formulario);
+      if (!expresiones.fechaDeVencimiento.expresion.test(input.value)) {
         pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
         pError.classList.remove("d-none");
         return false;
       } else if (valorFecha <= fechaHoy) {
-        // Validamos que no sea una fecha del pasado
         pError.textContent = "La fecha de vencimiento no puede ser del pasado o de hoy.";
         pError.classList.remove("d-none");
         return false;
@@ -72,215 +81,105 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     // Si pasa todas las validaciones
     pError.classList.add("d-none");
-    // actualizarEstadoInput(input, "incorrecto", formulario);
+    actualizarEstadoInput(input, "correcto", formulario);
     return true;
   }
 
   // Función para validar los campos de tipo <select>
-  function validarSelect(select, pError, campos) {
+  function validarSelect(select, pError, campos, formulario) {
     pError.classList.add("fw-bold");
     pError.classList.add("p-error-validaciones");
-
-    if (select.value === "selection" || select.value === "") {
-      // Si el valor del select es "selection" o está vacío, no es válido
+    console.log(expresiones.genero.expresion);
+    if (select.value === "selection" || select.value === "" || expresiones.genero.expresion.test(select.value)) {
       pError.textContent = "Por favor, selecciona una opción válida.";
       pError.classList.remove("d-none");
       campos[select.name] = false;
+      actualizarEstadoInput(select, "incorrecto", formulario);
       return false;
     } else {
-      // Si el valor es válido
       pError.classList.add("d-none");
       campos[select.name] = true;
+      actualizarEstadoInput(select, "correcto", formulario);
       return true;
     }
   }
 
   // Función que inicializa la validación para un formulario específico
-  function inicializarValidacionFormularioGuardar(formulario) {
-    // Objeto para almacenar el estado de cada campo en este formulario
+  function inicializarValidacionFormulario(formulario) {
     const campos = {};
 
-    // Seleccionamos todos los inputs que requieren validación dentro de este formulario
+    const campoCustom = formulario.querySelectorAll(".campo-custom");
     const inputs = formulario.querySelectorAll(".input-validar");
 
-    // Iteramos sobre los inputs para agregar los event listeners y inicializar el estado
     inputs.forEach((input) => {
-      // Inicializamos el estado del campo como 'false' (no validado)
       campos[input.name] = false;
 
-      // Agregamos los event listeners para la validación en tiempo real
       input.addEventListener("keyup", (e) => validarFormulario(e, formulario, campos));
       input.addEventListener("input", (e) => validarFormulario(e, formulario, campos));
       input.addEventListener("blur", (e) => validarFormulario(e, formulario, campos));
     });
 
-    // Manejador del evento 'submit' del formulario
     formulario.addEventListener("submit", (e) => {
-      e.preventDefault(); // Prevenimos el envío por defecto para validar primero
+      e.preventDefault();
 
-      // Verificamos si todos los campos han sido validados correctamente
       const formularioValido = Object.values(campos).every((valor) => valor === true);
 
       if (formularioValido) {
-        console.log("no se envio por que se va a enviar con ajax"); //si la tiene no se envia al formulario
+        console.log("no se envio por que se va a enviar con ajax");
       } else {
-        // Evitamos el envío del formulario si hay campos inválidos
         return false;
-      }
-    });
-  }
-
-  // Función que inicializa la validación para un formulario específico
-  function inicializarValidacionFormularioEditar(formulario, id) {
-    // Objeto para almacenar el estado de cada campo en este formulario
-    const campos = {};
-
-    // Seleccionamos todos los inputs que requieren validación dentro de este formulario
-    const inputs = formulario.querySelectorAll(".input-validar");
-
-    // Iteramos sobre los inputs para agregar los event listeners y inicializar el estado
-    inputs.forEach((input) => {
-      // Inicializamos el estado del campo como 'false' (no gvalidado)
-      campos[input.name] = true;
-
-      // Agregamos los event listeners para la validación en tiempo real
-      input.addEventListener("keyup", (e) => validarFormularioEditar(e, formulario, campos, id));
-      input.addEventListener("input", (e) => validarFormularioEditar(e, formulario, campos, id));
-      input.addEventListener("blur", (e) => validarFormularioEditar(e, formulario, campos, id));
-    });
-
-    // Manejador del evento 'submit' del formulario
-    formulario.addEventListener("submit", (e) => {
-      e.preventDefault(); // Prevenimos el envío por defecto para validar primero
-
-      // Verificamos si todos los campos han sido validados correctamente
-      const formularioValido = Object.values(campos).every((valor) => valor === true);
-
-      if (formularioValido) {
-        //validamos si el formulario contiene la clase form-ajax
-        if (formulario.classList.contains("form-ajax")) {
-          console.log("no se envio por que se va a enviar con ajax"); //si la tiene no se envia al formulario
-        } else {
-          formulario.submit(); // Enviamos el formulario
-        }
-      } else {
-        console.log("malo");
       }
     });
   }
 
   // Función que valida los campos cada vez que ocurre un evento en un input
   function validarFormulario(e, formulario, campos) {
-    const input = e.target; // Obtenemos el input que generó el evento
-    const campo = input.name; // Nombre del campo (atributo 'name' del input)
-    let pErrorGuardar = document.querySelector(`.p-error-${input.name}`); // Nombre del parrafo que le dira al usuario como cumplir la expresion
+    const input = e.target;
+    const campo = input.name;
+    let mensajeError = expresiones[input.name].mensajeError;
+    let campoCustom = input.closest(".campo-custom");
+    let pError = campoCustom.querySelector("p");
 
-    // Extraemos el tipo de campo para obtener la expresión regular adecuada
-    // Asumiendo que el 'name' es igual al tipo de campo (por ejemplo, 'nombre', 'correo', etc.)
-    const tipoCampo = campo;
-
-    console.log(input)
-
-    //validar select
+    // validar select
     if (input.tagName === "SELECT") {
-      // Si el elemento es un <select>, valida con la función validarSelect
-      validarSelect(input, pErrorGuardar, campos);
+      validarSelect(input, pError, campos, formulario);
     } else if (campo === "fn" || campo === "fechaDeCita" || campo === "fechaDeVencimiento") {
-      // Validamos específicamente el campo de fecha
-      campos[campo] = validarFecha(input, pErrorGuardar, campo, formulario);
+      campos[campo] = validarFecha(input, pError, campo, formulario);
     } else {
-      // Para otros campos, usamos la validación ya existente
-      const expresion = expresiones[campo];
+      const expresion = expresiones[campo].expresion;
       if (expresion) {
-        validarCampo(expresion, input, campo, campos, formulario, pErrorGuardar);
-      }
-    }
-  }
-
-  // Función que valida los campos cada vez que ocurre un evento en un input
-  function validarFormularioEditar(e, formulario, campos, id) {
-    const input = e.target; // Obtenemos el input que generó el evento
-    const campo = input.name; // Nombre del campo (atributo 'name' del input)
-    let pErrorEditar = document.querySelector(`.p-error-${input.name}${id}`); // Nombre del parrafo que le dira al usuario como cumplir la expresion
-
-    // Extraemos el tipo de campo para obtener la expresión regular adecuada
-    // Asumiendo que el 'name' es igual al tipo de campo (por ejemplo, 'nombre', 'correo', etc.)
-    const tipoCampo = campo;
-
-    // Obtenemos la expresión regular correspondiente
-    //const expresion = expresiones[tipoCampo];
-
-    // Validamos específicamente el campo de fecha
-    if (campo === "fn" || campo === "fechaDeCita") {
-      campos[campo] = validarFecha(input, pErrorEditar, campo, formulario);
-    } else {
-      // Para otros campos, usamos la validación ya existente
-      const expresion = expresiones[campo];
-      if (expresion) {
-        validarCampo(expresion, input, campo, campos, formulario, pErrorEditar);
+        validarCampo(expresion, input, campo, campos, formulario, pError, mensajeError);
       }
     }
   }
 
   // Función que valida un campo individual
-  function validarCampo(expresion, input, campo, campos, formulario, pError) {
+  function validarCampo(expresion, input, campo, campos, formulario, pError, mensajeError) {
+    pError.innerText = mensajeError;
     pError.classList.add("fw-bold");
     pError.classList.add("p-error-validaciones");
 
     if (expresion.test(input.value)) {
-      // Si el input cumple con la expresión regular, marcamos como válido
-      actualizarEstadoInput(input, "correcto", formulario);
+      actualizarEstadoInput(input, "correcto");
       pError.classList.add("d-none");
       campos[campo] = true;
     } else {
-      // Si no cumple, marcamos como inválido
-      actualizarEstadoInput(input, "incorrecto", formulario);
+      actualizarEstadoInput(input, "incorrecto");
       pError.classList.remove("d-none");
       campos[campo] = false;
     }
   }
 
   // Función que actualiza el aspecto visual del input según su estado de validación
-  function actualizarEstadoInput(input, estado, formulario, pError) {
-    // Cambiamos las clases del input para aplicar estilos CSS
-    input.parentElement.classList.toggle("grpFormCorrect", estado === "correcto");
-    input.parentElement.classList.toggle("grpFormInCorrect", estado === "incorrecto");
-
-    // Buscamos el elemento donde mostraremos el mensaje de error para este campo
-    const grupoInput = input.parentElement; // Suponiendo que el input está dentro de un 'div' contenedor
-    const mensajeError = grupoInput.querySelector(".mensaje-error");
-
-    if (estado === "incorrecto") {
-      // Si es incorrecto, mostramos el mensaje de error
-      if (mensajeError) {
-        mensajeError.classList.remove("d-none");
-      }
-    } else {
-      // Si es correcto, ocultamos el mensaje de error
-      if (mensajeError) {
-        mensajeError.classList.add("d-none");
-      }
-    }
+  function actualizarEstadoInput(input, estado) {
+    input.parentElement.classList.toggle("valido", estado === "correcto");
+    input.parentElement.classList.toggle("invalido", estado === "incorrecto");
   }
 
   // Inicializamos la validación para todos los formularios con la clase 'form-validable'
   const formularios = document.querySelectorAll(".form-validable");
 
   formularios.forEach((formulario) => {
-    inicializarValidacionFormularioGuardar(formulario);
+    inicializarValidacionFormulario(formulario);
   });
-
-  //Hay que seleccionar el id por medio del boton para poder comparar y saber que ormulario de edicion le voy a cambiar imagenes
-
-  setTimeout(() => {
-    document.querySelectorAll(".botonesEdi").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        let id = btn.getAttribute("data-index");
-
-        let formularioEditar = document.querySelector(".form-validable" + id);
-
-        inicializarValidacionFormularioEditar(formularioEditar, id);
-      });
-    });
-  }, 500);
 });

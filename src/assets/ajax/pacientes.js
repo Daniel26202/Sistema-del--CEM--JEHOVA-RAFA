@@ -302,31 +302,33 @@ if (modalAgregar) {
     e.preventDefault();
 
     let inputsBuenos = [];
-    this.querySelectorAll(".input-validar").forEach((input) => {
-      if (input.parentElement.classList.contains("grpFormCorrect"))
-        inputsBuenos.push(true);
-    });
+    // this.querySelectorAll(".input-validar").forEach((input) => {
+    //   if (input.parentElement.classList.contains("grpFormCorrect"))
+    //     inputsBuenos.push(true);
+    // });
 
     console.log(inputsBuenos)
 
-    if (
-      inputsBuenos.length == 5 || inputsBuenos.length == 7 &&
-      document.querySelector(".p-error-fn").classList.contains("d-none") &&
-      selectGenero.value != ""
-    ) {
+    // if (
+    //   inputsBuenos.length == 5 || inputsBuenos.length == 7 &&
+    //   document.querySelector(".p-error-fn").classList.contains("d-none") &&
+    //   selectGenero.value != ""
+    // ) {
 
       if (modalAgregar.classList.contains("editar")) {
-        updatePatients(this, inputsBuenos);
+        // updatePatients(this, inputsBuenos);
+        console.log('editar');
       } else {
         createPatients(this, inputsBuenos);
+        console.log('crear');
       }
 
-    } else {
-      alertError(
-        "Error",
-        "Por favor verifique que todos los datos estén correctos."
-      );
-    }
+    // } else {
+    //   alertError(
+    //     "Error",
+    //     "Por favor verifique que todos los datos estén correctos."
+    //   );
+    // }
 
     inputsBuenos = [];
   });

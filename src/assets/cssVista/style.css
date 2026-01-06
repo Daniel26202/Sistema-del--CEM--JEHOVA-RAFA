@@ -1079,23 +1079,7 @@ html {
     flex-wrap: wrap;
 }
 
-/*expresiones control*/
 
-.grpFormCorrectControl {
-    border-bottom: 2px solid rgb(13, 240, 13) !important;
-}
-
-.grpFormInCorrectControl {
-    border-bottom: 2px solid rgb(224, 3, 3) !important;
-}
-
-.grpFormCorrectControlEditar {
-    border-bottom: 2px solid rgb(13, 240, 13) !important;
-}
-
-.grpFormInCorrectControlEditar {
-    border-bottom: 2px solid rgb(224, 3, 3) !important;
-}
 
 /* estilos madal de reportes de facturacion  */
 
@@ -1312,14 +1296,7 @@ hr {
     color: #387adf;
 }
 
-/* Estilos Validaciones */
-.grpFormCorrect input {
-    border-bottom: 2px solid rgb(13, 240, 13);
-}
 
-.grpFormCorrect input:focus {
-    border-bottom: 2px solid rgb(13, 240, 13);
-}
 
 .icon-correct {
     color: rgb(13, 240, 13);
@@ -1337,11 +1314,7 @@ hr {
     color: rgb(224, 3, 3);
 }
 
-/* Editar */
 
-.grpFormCorrectEditar:focus {
-    border-bottom: 2px solid rgb(13, 240, 13);
-}
 
 .grpFormInCorrectEditar:focus {
     border-bottom: 2px solid rgb(224, 3, 3);

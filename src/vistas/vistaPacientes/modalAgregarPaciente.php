@@ -8,11 +8,11 @@
           </div>
           <form class=" form-validable" id="modalAgregar">
 
-          <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']?>">
+            <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
-          <input type="hidden" name="cedulaRegistrada" id="cedulaRegistrada" >
+            <input type="hidden" name="cedulaRegistrada" id="cedulaRegistrada">
 
-          <input type="hidden" name="id_paciente" id="id_paciente" >
+            <input type="hidden" name="id_paciente" id="id_paciente">
 
 
             <div class="modal-body">
@@ -43,7 +43,7 @@
                   </span>
                 </div>
 
-                <p class="error-msg d-none">La cédula debe contener únicamente números y estar entre 7 a 8 caracteres</p>
+                <p class="error-msg d-none"></p>
               </div>
 
               <label class="label-custom">Nombre</label>
@@ -64,7 +64,7 @@
                     </svg>
                   </span>
                 </div>
-                <p class="error-msg d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+                <p class="error-msg d-none"></p>
               </div>
 
               <label class="label-custom">Apellido</label>
@@ -85,7 +85,7 @@
                     </svg>
                   </span>
                 </div>
-                <p class="error-msg d-none">El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
+                <p class="error-msg d-none"></p>
               </div>
 
               <label class="label-custom">Teléfono</label>
@@ -106,7 +106,7 @@
                     </svg>
                   </span>
                 </div>
-                <p class="error-msg d-none">El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426</p>
+                <p class="error-msg d-none"></p>
               </div>
 
 
@@ -128,7 +128,7 @@
                     </svg>
                   </span>
                 </div>
-                <p class="error-msg d-none">Debe estar completa y detallada</p>
+                <p class="error-msg d-none"></p>
               </div>
 
               <label class="label-custom">Fecha de nacimiento</label>
@@ -140,9 +140,9 @@
                       <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-4.118 9.79c1.258 0 2-1.067 2-2.872 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684c.047.64.594 1.406 1.703 1.406zm-2.89-5.435h-.633A12.6 12.6 0 0 0 4.5 8.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675V7.354z" />
                     </svg>
                   </span>
-                  <input class="form-control txt-custom" type="date">
+                  <input class="form-control txt-custom input-validar" type="date" name="fn">
                 </div>
-                <p class="error-msg d-none">No puede ser mayor que la fecha actual</p>
+                <p class="error-msg d-none"></p>
 
               </div>
 
@@ -154,12 +154,14 @@
                       <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                     </svg>
                   </span>
-                  <select class="form-control txt-custom select-custom">
+                  <select class="form-control txt-custom select-custom input-validar" name="genero">
                     <option value="">Seleccionar Genero</option>
                     <option value="admin">Masculino</option>
                     <option value="user">Femenino</option>
                   </select>
                 </div>
+                <p class="error-msg d-none"></p>
+
               </div>
 
             </div>
