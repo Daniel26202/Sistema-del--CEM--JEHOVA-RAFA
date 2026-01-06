@@ -1,185 +1,164 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Objeto con las expresiones regulares para validar cada tipo de campo
-  const expresiones = {
-    nombre: {
-      expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-      mensajeError: "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
-    },
+// Objeto con las expresiones regulares para validar cada tipo de campo
+const expresiones = {
+  nombre: {
+    expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+    mensajeError: "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+  },
 
-    apellido: {
-      expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-      mensajeError: "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
-    },
+  apellido: {
+    expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+    mensajeError: "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+  },
 
-    usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
-    correo: { expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, mensajeError: "" },
-    password: { expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, mensajeError: "" },
-    cedula: {
-      expresion: /^([1-9]{1})([0-9]{7,8})$/,
-      mensajeError: "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
-    },
-    telefono: {
-      expresion: /^(0?)(412|414|416|424|426|422|212|24[1-9]|25[1-9])\d{7}$/,
-      mensajeError: 'El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0422',
-    },
-    direccion: { expresion: /^([A-Za-z0-9\s\.,#-]{8,})$/, mensajeError: "Debe estar completa y detallada" },
-    descripcion: { expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/, mensajeError: "" },
-    fn: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    cantidad: { expresion: /^([1-9]{1})([0-9]{1,4})?$/, mensajeError: "" },
-    precio: { expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/, mensajeError: "" },
-    fechaDeVencimiento: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    lote: { expresion: /^[0-9-_]{4,10}$/, mensajeError: "" },
-    marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
-    medida: { expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/, mensajeError: "" },
-    genero: { expresion: /^"Masculino"|"Femenino"$/, mensajeError: "El Genero debe ser Masculino o Femenino" },
-  };
+  usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
+  correo: { expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, mensajeError: "" },
+  password: { expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, mensajeError: "" },
+  cedula: {
+    expresion: /^([1-9]{1})([0-9]{7,8})$/,
+    mensajeError: "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
+  },
+  telefono: {
+    expresion: /^(0?)(412|414|416|424|426|422|212|24[1-9]|25[1-9])\d{7}$/,
+    mensajeError: 'El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0422',
+  },
+  direccion: { expresion: /^([A-Za-z0-9\s\.,#-]{8,})$/, mensajeError: "Debe estar completa y detallada" },
+  descripcion: { expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/, mensajeError: "" },
+  fn: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  cantidad: { expresion: /^([1-9]{1})([0-9]{1,4})?$/, mensajeError: "" },
+  precio: { expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/, mensajeError: "" },
+  fechaDeVencimiento: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  lote: { expresion: /^[0-9-_]{4,10}$/, mensajeError: "" },
+  marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
+  medida: { expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/, mensajeError: "" },
+  genero: { expresion: /^"Masculino"|"Femenino"$/, mensajeError: "El Genero debe ser Masculino o Femenino" },
+};
 
-  // Nueva función para validar fechas no futuras ni pasadas
-  function validarFecha(input, pError, campo, formulario) {
-    const valorFecha = new Date(input.value);
-    const fechaHoy = new Date();
-    fechaHoy.setHours(0, 0, 0, 0); // Establece el tiempo a la medianoche para comparación
+// Nueva función para validar fechas no futuras ni pasadas
+function validarFecha(input, pError, campo, formulario) {
+  const valorFecha = new Date(input.value);
+  const fechaHoy = new Date();
+  fechaHoy.setHours(0, 0, 0, 0); // Establece el tiempo a la medianoche para comparación
 
-    pError.classList.add("fw-bold");
-    pError.classList.add("p-error-validaciones");
-    console.log(pError);
+  pError.classList.add("fw-bold");
+  pError.classList.add("p-error-validaciones");
 
-    if (campo == "fn") {
-      actualizarEstadoInput(input, "incorrecto", formulario);
-      if (!expresiones.fn.expresion.test(input.value)) {
-        pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
-        pError.classList.remove("d-none");
-        return false;
-      } else if (valorFecha > fechaHoy) {
-        pError.textContent = "La fecha no puede ser del futuro.";
-        pError.classList.remove("d-none");
-        return false;
-      }
-    } else if (campo == "fechaDeCita") {
-      actualizarEstadoInput(input, "incorrecto", formulario);
-      if (!expresiones.fn.expresion.test(input.value)) {
-        pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
-        pError.classList.remove("d-none");
-        return false;
-      } else if (valorFecha < fechaHoy) {
-        pError.textContent = "La fecha no puede ser del pasado.";
-        pError.classList.remove("d-none");
-        return false;
-      }
-    } else if (campo === "fechaDeVencimiento") {
-      actualizarEstadoInput(input, "incorrecto", formulario);
-      if (!expresiones.fechaDeVencimiento.expresion.test(input.value)) {
-        pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
-        pError.classList.remove("d-none");
-        return false;
-      } else if (valorFecha <= fechaHoy) {
-        pError.textContent = "La fecha de vencimiento no puede ser del pasado o de hoy.";
-        pError.classList.remove("d-none");
-        return false;
-      }
+  if (campo == "fn") {
+    actualizarEstadoInput(input, "incorrecto", formulario);
+    if (!expresiones.fn.expresion.test(input.value)) {
+      pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
+      pError.classList.remove("d-none");
+      return false;
+    } else if (valorFecha > fechaHoy) {
+      pError.textContent = "La fecha no puede ser del futuro.";
+      pError.classList.remove("d-none");
+      return false;
     }
-    // Si pasa todas las validaciones
+  } else if (campo == "fechaDeCita") {
+    actualizarEstadoInput(input, "incorrecto", formulario);
+    if (!expresiones.fn.expresion.test(input.value)) {
+      pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
+      pError.classList.remove("d-none");
+      return false;
+    } else if (valorFecha < fechaHoy) {
+      pError.textContent = "La fecha no puede ser del pasado.";
+      pError.classList.remove("d-none");
+      return false;
+    }
+  } else if (campo === "fechaDeVencimiento") {
+    actualizarEstadoInput(input, "incorrecto", formulario);
+    if (!expresiones.fechaDeVencimiento.expresion.test(input.value)) {
+      pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
+      pError.classList.remove("d-none");
+      return false;
+    } else if (valorFecha <= fechaHoy) {
+      pError.textContent = "La fecha de vencimiento no puede ser del pasado o de hoy.";
+      pError.classList.remove("d-none");
+      return false;
+    }
+  }
+  // Si pasa todas las validaciones
+  pError.classList.add("d-none");
+  actualizarEstadoInput(input, "correcto", formulario);
+  return true;
+}
+
+// Función para validar los campos de tipo <select>
+function validarSelect(select, pError, campos, formulario) {
+  pError.classList.add("fw-bold");
+  pError.classList.add("p-error-validaciones");
+  if (select.value === "selection" || select.value === "" || expresiones.genero.expresion.test(select.value)) {
+    pError.textContent = "Por favor, selecciona una opción válida.";
+    pError.classList.remove("d-none");
+    campos[select.name] = false;
+    actualizarEstadoInput(select, "incorrecto", formulario);
+    return false;
+  } else {
     pError.classList.add("d-none");
-    actualizarEstadoInput(input, "correcto", formulario);
+    campos[select.name] = true;
+    actualizarEstadoInput(select, "correcto", formulario);
     return true;
   }
+}
 
-  // Función para validar los campos de tipo <select>
-  function validarSelect(select, pError, campos, formulario) {
-    pError.classList.add("fw-bold");
-    pError.classList.add("p-error-validaciones");
-    console.log(expresiones.genero.expresion);
-    if (select.value === "selection" || select.value === "" || expresiones.genero.expresion.test(select.value)) {
-      pError.textContent = "Por favor, selecciona una opción válida.";
-      pError.classList.remove("d-none");
-      campos[select.name] = false;
-      actualizarEstadoInput(select, "incorrecto", formulario);
-      return false;
-    } else {
-      pError.classList.add("d-none");
-      campos[select.name] = true;
-      actualizarEstadoInput(select, "correcto", formulario);
-      return true;
-    }
-  }
+// Función que inicializa la validación para un formulario específico
+export function inicializarValidacionFormulario(formulario) {
+  const campos = {};
+  const inputs = formulario.querySelectorAll(".input-validar");
 
-  // Función que inicializa la validación para un formulario específico
-  function inicializarValidacionFormulario(formulario) {
-    const campos = {};
+  inputs.forEach((input) => {
+    campos[input.name] = false;
 
-    const campoCustom = formulario.querySelectorAll(".campo-custom");
-    const inputs = formulario.querySelectorAll(".input-validar");
-
-    inputs.forEach((input) => {
-      campos[input.name] = false;
-
-      input.addEventListener("keyup", (e) => validarFormulario(e, formulario, campos));
-      input.addEventListener("input", (e) => validarFormulario(e, formulario, campos));
-      input.addEventListener("blur", (e) => validarFormulario(e, formulario, campos));
-    });
-
-    formulario.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const formularioValido = Object.values(campos).every((valor) => valor === true);
-
-      if (formularioValido) {
-        console.log("no se envio por que se va a enviar con ajax");
-      } else {
-        return false;
-      }
-    });
-  }
-
-  // Función que valida los campos cada vez que ocurre un evento en un input
-  function validarFormulario(e, formulario, campos) {
-    const input = e.target;
-    const campo = input.name;
-    let mensajeError = expresiones[input.name].mensajeError;
-    let campoCustom = input.closest(".campo-custom");
-    let pError = campoCustom.querySelector("p");
-
-    // validar select
-    if (input.tagName === "SELECT") {
-      validarSelect(input, pError, campos, formulario);
-    } else if (campo === "fn" || campo === "fechaDeCita" || campo === "fechaDeVencimiento") {
-      campos[campo] = validarFecha(input, pError, campo, formulario);
-    } else {
-      const expresion = expresiones[campo].expresion;
-      if (expresion) {
-        validarCampo(expresion, input, campo, campos, formulario, pError, mensajeError);
-      }
-    }
-  }
-
-  // Función que valida un campo individual
-  function validarCampo(expresion, input, campo, campos, formulario, pError, mensajeError) {
-    pError.innerText = mensajeError;
-    pError.classList.add("fw-bold");
-    pError.classList.add("p-error-validaciones");
-
-    if (expresion.test(input.value)) {
-      actualizarEstadoInput(input, "correcto");
-      pError.classList.add("d-none");
-      campos[campo] = true;
-    } else {
-      actualizarEstadoInput(input, "incorrecto");
-      pError.classList.remove("d-none");
-      campos[campo] = false;
-    }
-  }
-
-  // Función que actualiza el aspecto visual del input según su estado de validación
-  function actualizarEstadoInput(input, estado) {
-    input.parentElement.classList.toggle("valido", estado === "correcto");
-    input.parentElement.classList.toggle("invalido", estado === "incorrecto");
-  }
-
-  // Inicializamos la validación para todos los formularios con la clase 'form-validable'
-  const formularios = document.querySelectorAll(".form-validable");
-
-  formularios.forEach((formulario) => {
-    inicializarValidacionFormulario(formulario);
+    input.addEventListener("keyup", (e) => validarFormulario(e, formulario, campos));
+    input.addEventListener("input", (e) => validarFormulario(e, formulario, campos));
+    input.addEventListener("blur", (e) => validarFormulario(e, formulario, campos));
   });
-});
+
+  return function verificarFormulario () {
+    return Object.values(campos).every((valor) => valor === true);
+  };
+}
+
+// Función que valida los campos cada vez que ocurre un evento en un input
+function validarFormulario(e, formulario, campos) {
+  const input = e.target;
+  const campo = input.name;
+  let mensajeError = expresiones[input.name].mensajeError;
+  let campoCustom = input.closest(".campo-custom");
+  let pError = campoCustom.querySelector("p");
+
+  // validar select
+  if (input.tagName === "SELECT") {
+    validarSelect(input, pError, campos, formulario);
+  } else if (campo === "fn" || campo === "fechaDeCita" || campo === "fechaDeVencimiento") {
+    campos[campo] = validarFecha(input, pError, campo, formulario);
+  } else {
+    const expresion = expresiones[campo].expresion;
+    if (expresion) {
+      validarCampo(expresion, input, campo, campos, formulario, pError, mensajeError);
+    }
+  }
+}
+
+// Función que valida un campo individual
+function validarCampo(expresion, input, campo, campos, formulario, pError, mensajeError) {
+  pError.innerText = mensajeError;
+  pError.classList.add("fw-bold");
+  pError.classList.add("p-error-validaciones");
+
+  if (expresion.test(input.value)) {
+    actualizarEstadoInput(input, "correcto");
+    pError.classList.add("d-none");
+    campos[campo] = true;
+  } else {
+    actualizarEstadoInput(input, "incorrecto");
+    pError.classList.remove("d-none");
+    campos[campo] = false;
+  }
+}
+
+// Función que actualiza el aspecto visual del input según su estado de validación
+function actualizarEstadoInput(input, estado) {
+  input.parentElement.classList.toggle("valido", estado === "correcto");
+  input.parentElement.classList.toggle("invalido", estado === "incorrecto");
+}

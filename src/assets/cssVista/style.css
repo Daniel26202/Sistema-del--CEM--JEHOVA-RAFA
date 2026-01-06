@@ -24,7 +24,8 @@
 }
 
 .input-custom {
-    background: white;
+    /* background: white; */
+    background-color: var(--color-bg-card) !important;
     border: 1.9px solid #387adf;
     border-radius: 10px;
     padding: 0.275rem 0.75rem;
