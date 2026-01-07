@@ -3,7 +3,7 @@
       <div class="modal-dialog ">
         <div class="modal-content tamaño-modal">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabelPaciente">Registrar Paciente</h5>
+            <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Registrar Paciente</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form class=" form-validable" id="modalAgregar">
