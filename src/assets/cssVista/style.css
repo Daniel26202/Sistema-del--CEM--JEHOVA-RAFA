@@ -144,6 +144,10 @@
     margin-right: 6px;
 }
 
+.option-select-background{
+    background-color: var(--color-bg-card) !important;
+}
+
 /* quitar flechitas del input number */
 /* Chrome, Safari, Edge, Opera */
 input[type="number"]::-webkit-inner-spin-button,

@@ -105,29 +105,8 @@ const readPatients = async () => {
       });
     });
 
-    //llamar las funciones de editar
-    document.querySelectorAll(".forms-editar").forEach((formEditar) => {
-      formEditar.addEventListener("submit", function (e) {
-        e.preventDefault();
-        let inputsBuenos = [];
-
-        this.querySelectorAll(".input-validar").forEach((input) => {
-          if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-        });
-
-        if (
-          inputsBuenos.length == 5 &&
-          document.querySelector(".p-error-fn" + formEditar.getAttribute("data-index")).classList.contains("d-none")
-        ) {
-          updatePatients(this, inputsBuenos);
-        } else {
-          alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
-        }
-      });
-    });
 
     //llamar a la uncion de restablecer
-    //llamar las funcion de eliminar
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
       btn.addEventListener("click", function () {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
@@ -158,7 +137,7 @@ const createPatients = async (form, inputs) => {
       alertSuccess(result.message);
       form.reset();
       inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+      inputs.forEach((input) => input.parentElement.classList.remove("valido"));
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -170,8 +149,6 @@ const createPatients = async (form, inputs) => {
 const updatePatients = async (form, inputs) => {
   try {
     const data = new FormData(form);
-    console.log(form);
-    console.log(inputs);
 
     let result = await executePetition(url + "/setPaciente", "POST", data);
     console.log(result);
@@ -234,7 +211,9 @@ const showDataEdit = (ele, id) => {
 
     inputs[key].value = element.innerText;
 
-    inputs[key].parentElement.classList.add("grpFormCorrect");
+    inputs[key].parentElement.classList.add("valido");
+
+    console.log(element)
   }
 
   let cedula = inputs[0].value.slice(2);
@@ -252,7 +231,7 @@ const clearModalEnviar = () => {
 
   inputs.forEach((input) => {
     input.value = "";
-    input.parentElement.classList.remove("grpFormCorrect");
+    input.parentElement.classList.remove("valido");
   });
 };
 
@@ -269,15 +248,18 @@ let verificarFormulario = inicializarValidacionFormulario(modalAgregar);
 modalAgregar.addEventListener("submit", function (e) {
   e.preventDefault();
 
+  let inputsBuenos = [];
+  this.querySelectorAll(".input-validar").forEach((input) => {
+    if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
+  });
+
   let esValido = verificarFormulario();
 
   if (esValido) {
           if (modalAgregar.classList.contains("editar")) {
-            // updatePatients(this, inputsBuenos);
-            console.log("editar");
+            updatePatients(this, inputsBuenos);
           } else {
-            // createPatients(this, inputsBuenos);
-            console.log("crear");
+            createPatients(this, inputsBuenos);
           }
   } else {
     alertError("Error", "Por favor verifique que todos los datos estén correctos.");

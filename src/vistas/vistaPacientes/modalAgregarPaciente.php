@@ -31,7 +31,7 @@
                     <option value="E">E</option>
                   </select>
 
-                  <input class="form-control txt-custom input-validar" name="cedula" type="number" placeholder="Cédula del paciente">
+                  <input class="form-control txt-custom input-validar" name="cedula" type="text" placeholder="Cédula del paciente">
 
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -155,9 +155,9 @@
                     </svg>
                   </span>
                   <select class="form-control txt-custom select-custom input-validar" name="genero">
-                    <option value="">Seleccionar Genero</option>
-                    <option value="admin">Masculino</option>
-                    <option value="user">Femenino</option>
+                    <option class='option-select-background' selected value="">Seleccionar Genero</option>
+                    <option class='option-select-background' value="Masculino">Masculino</option>
+                    <option class='option-select-background' value="Femenino">Femenino</option>
                   </select>
                 </div>
                 <p class="error-msg d-none"></p>
