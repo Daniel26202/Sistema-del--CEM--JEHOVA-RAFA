@@ -8,7 +8,7 @@ use App\config\Validations;
 class ModeloPatologia extends ModelBase
 {
 
-    private $nombrePatologia;
+    private $idPatologia, $nombrePatologia;
 
     public function __construct($dbSystem)
     {
@@ -30,58 +30,39 @@ class ModeloPatologia extends ModelBase
     public function mostrarPatologiasEliminadas()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT * FROM patologia WHERE estado = 'DES' ");
-            $consulta->execute();
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql = "SELECT * FROM patologia WHERE estado = 'DES' ";
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
-    public function nombrePatologia($nombrePatologia)
+    public function nombrePatologia($data)
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT * FROM patologia WHERE estado = 'ACT' AND nombre_patologia = :nombrePatologia ");
-            $consulta->bindParam(":nombrePatologia", $nombrePatologia);
-            $consulta->execute();
-            while ($consulta->fetch()) {
-                return "existeC";
-            }
+            $sql = "SELECT * FROM patologia WHERE estado = 'ACT' AND nombre_patologia = :nombrePatologia";
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
 
-            return 0;
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
-
-    public function buscarPatologia($nombre)
-    {
-        try {
-            $consulta = $this->conexion->prepare("SELECT * FROM patologia WHERE nombre_patologia LIKE :nombre");
-            $busqueda = "%$nombre%";
-            $consulta->bindParam(":nombre", $busqueda);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
-
-    public function buscarPatologiaPaciente($cedula)
-    {
-        try {
-            $consulta = $this->conexion->prepare("SELECT * FROM patologia pat INNER JOIN patologiadepaciente pdp ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pac.id_paciente = pdp.id_paciente WHERE pac.cedula =:cedula");
-            $consulta->bindParam(":cedula", $cedula);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			return !empty($listData) ? 1 : 0;
         } catch (\Exception $e) {
             return 0;
         }
     }
 
 
-    public function insertarPatologia($nombrePatologia)
+    public function insertarPatologia()
     {
         try {
-            $validaciones = Validations::pathologyRules($nombrePatologia);
+
+            $data=[
+                'nombrePatologia'=>$this->getNombrePatologia(),
+                'estado'=>'ACT'
+            ];
+               
+
+            $validaciones = Validations::pathologyRules($this->getNombrePatologia());
 
             foreach ($validaciones as $v) {
                 if (!preg_match($v['regex'], $v['valor'])) {
@@ -89,20 +70,14 @@ class ModeloPatologia extends ModelBase
                 }
             }
 
-            if ($this->nombrePatologia($nombrePatologia) === "existeC") {
+            if ($this->nombrePatologia(['nombre_patologia' => $this->getNombrePatologia()])) {
                 throw new \Exception("La patologia ya existe en el sistema.");
             }
 
-            $consulta = $this->conexion->prepare("INSERT INTO patologia VALUES (null, :nombrePatologia, 'ACT')");
-            $consulta->bindParam(":nombrePatologia", $nombrePatologia);
-            $consulta->execute();
+            $sql = "INSERT INTO patologia (nombre_patologia, estado) VALUES (:nombrePatologia, :estado)";
+            $this->setSQL($sql);
 
-            $id = $this->conexion->lastInsertId();
-
-            $consulta = $this->conexion->prepare("SELECT * from patologia where id_patologia=:id_patologia");
-            $consulta->bindParam(":id_patologia", $id);
-            $consulta->execute();
-            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+            $this->create($data);
 
             return ["exito", $data];
         } catch (\Exception $e) {
@@ -110,37 +85,54 @@ class ModeloPatologia extends ModelBase
         }
     }
 
-    public function eliminarPatologia($id_patologia)
+    public function eliminarPatologia()
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from patologia where id_patologia=:id_patologia");
-            $validar->bindParam(":id_patologia", $id_patologia);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data = [
+                'id_patologia' => $this->getIdPatologia()
+            ];
+
+            $sql = "SELECT * from patologia where id_patologia=:id_patologia";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id de la patologia no existe");
             }
 
-            $consulta = $this->conexion->prepare("UPDATE patologia SET estado= 'DES' WHERE id_patologia=:id_patologia ");
-            $consulta->bindParam(":id_patologia", $id_patologia);
-            $consulta->execute();
+            $sql = "UPDATE patologia SET estado= 'DES' WHERE id_patologia=:id";
+            $this->setSQL($sql);
+
+            $this->update_logic($data['id_patologia']);
+
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-    public function restablecer($id_patologia)
+
+    public function restablecer()
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from patologia where id_patologia=:id_patologia");
-            $validar->bindParam(":id_patologia", $id_patologia);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data = [
+                'id_patologia' => $this->getIdPatologia()
+            ];
+
+            $sql = "SELECT * from patologia where id_patologia=:id_patologia";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id de la patologia no existe");
             }
 
-            $consulta = $this->conexion->prepare("UPDATE patologia SET estado= 'ACT' WHERE id_patologia=:id_patologia ");
-            $consulta->bindParam(":id_patologia", $id_patologia);
-            $consulta->execute();
+            $sql = "UPDATE patologia SET estado= 'ACT' WHERE id_patologia=:id";
+            $this->setSQL($sql);
+
+            $this->update_logic($data['id_patologia']);
+
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -149,16 +141,39 @@ class ModeloPatologia extends ModelBase
 
 
     // mostrar patologia del paciente
-    public function mostrarPatologiaP($id_paciente)
+    public function mostrarPatologiaP()
     {
         try {
 
-            $sql = $this->conexion->prepare('SELECT pat.id_patologia, pat.nombre_patologia FROM patologiadepaciente pdp INNER JOIN patologia pat ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pdp.id_paciente = pac.id_paciente WHERE pac.id_paciente = :id_paciente');
-            $sql->bindParam(":id_paciente", $id_paciente);
+            $data = [
+				'id_patologia' => $this->getIdPatologia()
+			];
 
-            return ($sql->execute()) ? $sql->fetchAll() : false;
+			$sql = "SELECT pat.id_patologia, pat.nombre_patologia FROM patologiadepaciente pdp INNER JOIN patologia pat ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pdp.id_paciente = pac.id_paciente WHERE pac.id_paciente = :id_paciente";
+			$this->setSQL($sql);
+
+			return $this->search($data);
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
+    }
+
+    public function getNombrePatologia() {
+        return $this->nombrePatologia;
+    }
+
+    public function setNombrePatologia($nombrePatologia)
+    {
+         $this->nombrePatologia  = $nombrePatologia;
+    }
+
+    public function getIdPatologia()
+    {
+        return $this->idPatologia;
+    }
+
+    public function setIdPatologia($idPatologia)
+    {
+        $this->idPatologia  = $idPatologia;
     }
 }

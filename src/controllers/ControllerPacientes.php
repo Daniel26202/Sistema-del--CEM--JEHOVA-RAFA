@@ -28,6 +28,12 @@ function getPacientes($parametro)
 
 function getPacientesAjax($parametro)
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
 	[$modelo] = returnObjectClass();
 	echo json_encode($modelo->index());
 }
@@ -50,6 +56,12 @@ function papeleraPaciente($parametro)
 
 function papeleraPacienteAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
 	$modelo = new ModeloPacientes(true);
 	echo json_encode($modelo->indexPapelera());
 }
@@ -96,6 +108,12 @@ function guardar()
 function setPaciente()
 {
 
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
 	[$modelo, $bitacora] = returnObjectClass();
 
 
@@ -130,6 +148,12 @@ function setPaciente()
 
 function eliminar($datos)
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
 	[$modelo, $bitacora] = returnObjectClass();
 
 	$modelo->setIdPaciente($datos[0]);
@@ -153,6 +177,13 @@ function eliminar($datos)
 
 function restablecer($datos)
 {
+
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
 	[$modelo, $bitacora] = returnObjectClass();
 
 	$modelo->setIdPaciente($datos[0]);

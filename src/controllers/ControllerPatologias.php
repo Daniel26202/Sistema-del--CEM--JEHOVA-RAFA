@@ -7,79 +7,135 @@ use App\modelos\ModeloPermisos;
 
 
 
+function returnObjectClass()
+{
+	$modelo = new ModeloPatologia(true);
+	$bitacora = new ModeloBitacora(false);
+	return [$modelo, $bitacora];
+}
+
 function patologias($parametro)
 {
 	$ayuda = "btnayudaPatologia";
 	require_once './src/vistas/vistaPatologia/patologia.php';
 }
 
-	 function patologiasAjax()
-	{
-		$patologia = new ModeloPatologia(true);
-		echo json_encode($patologia->mostrarPatologias());
+function patologiasAjax()
+{
+	[$modelo] = returnObjectClass();
+
+	echo json_encode($modelo->mostrarPatologias());
+}
+
+function papeleraPatologias($parametro)
+{
+	$ayuda = "btnayudaPatologia";
+	require_once './src/vistas/vistaPatologia/patologia.php';
+}
+
+function papeleraAjax()
+{
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
 	}
-	//  function papeleraPatologias($parametro)
-	// {
-	// 	$ayuda = "btnayudaPatologia";
-	// 	require_once './src/vistas/vistaPatologia/patologiapapelera.php';
-	// }
-	//  function papeleraAjax()
-	// {
-	// 	echo json_encode($this->patologia->mostrarPatologiasEliminadas());
-	// }
 
-	// //insertar patologia 
-	//  function registrarPatologia()
-	// {
+	[$modelo] = returnObjectClass();
 
-	// 	$insercion = $this->patologia->insertarPatologia($_POST["nombre"]);
+	echo json_encode($modelo->mostrarPatologiasEliminadas());
+}
 
-	// 	if (is_array($insercion) && $insercion[0] === "exito") {
-	// 		$this->bitacora->insertarBitacora($_POST['id_usuario'], "patologia", "Ha Insertado una nueva patologia");
-	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-	// 	} else {
-	// 		http_response_code(409);
-	// 		echo json_encode(['ok' => false, 'error' => $insercion]);
-	// 		exit;
-	// 	}
-	// }
+//insertar patologia 
+function registrarPatologia()
+{
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
 
-	// //eliminar patologia
-	//  function eliminarPatologia($datos)
-	// {
+	[$modelo, $bitacora] = returnObjectClass();
 
-	// 	$id_patologia = $datos[0];
-	// 	$id_usuario = $datos[1];
+	$modelo->setNombrePatologia($_POST["nombre"]);
 
-	// 	$eliminar = $this->patologia->eliminarPatologia($id_patologia);
+	$bitacora->setId_usuario($_POST['id_usuario']);
+	$bitacora->setActividad("Ha Insertado un nuevo patologia");
+	$bitacora->setTabla("patologia");
 
-	// 	if (is_array($eliminar) && $eliminar[0] === "exito") {
-	// 		$this->bitacora->insertarBitacora($id_usuario, "patologia", "Ha eliminado una patologia");
-	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	// 	} else {
-	// 		http_response_code(409);
-	// 		echo json_encode(['ok' => false, 'error' => $eliminar]);
-	// 		exit;
-	// 	}
-	// }
+	$insercion = $modelo->insertarPatologia();
 
 
-	//  function restablecerPatologia($datos)
-	// {
-	// 	$id_patologia = $datos[0];
-	// 	$id_usuario = $datos[1];
+	if (is_array($insercion) && $insercion[0] === "exito") {
+		$bitacora->insertarBitacora();
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $insercion]);
+		exit;
+	}
+}
 
-	// 	$restablecer = $this->patologia->restablecer($id_patologia);
+//eliminar patologia
+function eliminarPatologia($datos)
+{
 
-	// 	if (is_array($restablecer) && $restablecer[0] === "exito") {
-	// 		$this->bitacora->insertarBitacora($id_usuario, "patologia", "Ha restablecido una patologia");
-	// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	// 	} else {
-	// 		http_response_code(409);
-	// 		echo json_encode(['ok' => false, 'error' => $restablecer]);
-	// 		exit;
-	// 	}
-	// }
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	[$modelo, $bitacora] = returnObjectClass();
+
+	$modelo->setIdPatologia($datos[0]);
+
+	$bitacora->setId_usuario($datos[1]);
+	$bitacora->setActividad("Ha eliminado una  patologia");
+	$bitacora->setTabla("patologia");
+
+	$eliminar = $modelo->eliminarPatologia();
+
+	if (is_array($eliminar) && $eliminar[0] === "exito") {
+		$bitacora->insertarBitacora();
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $eliminar]);
+		exit;
+	}
+}
+
+
+function restablecerPatologia($datos)
+{
+
+
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	[$modelo, $bitacora] = returnObjectClass();
+
+	$modelo->setIdPatologia($datos[0]);
+
+	$bitacora->setId_usuario($datos[1]);
+	$bitacora->setActividad("Ha restablecido una  patologia");
+	$bitacora->setTabla("patologia");
+
+	$eliminar = $modelo->restablecer();
+
+	if (is_array($eliminar) && $eliminar[0] === "exito") {
+		$bitacora->insertarBitacora();
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $eliminar]);
+		exit;
+	}
+}
 
 
 
