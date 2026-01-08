@@ -12,6 +12,12 @@ use App\modelos\ModeloPermisos;
 // 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 // }
 
+function returnObjectClass() {
+	$modelo = new ModeloPacientes(true);
+	$bitacora = new ModeloBitacora(false);
+	return [$modelo,$bitacora];
+}
+
 
 function getPacientes($parametro)
 {
@@ -22,7 +28,7 @@ function getPacientes($parametro)
 
 function getPacientesAjax($parametro)
 {
-	$modelo = new ModeloPacientes(true);
+	[$modelo] = returnObjectClass();
 	echo json_encode($modelo->index());
 }
 
@@ -58,8 +64,7 @@ function guardar()
 		exit;
 	}
 
-	$modelo = new ModeloPacientes(true);
-	$bitacora = new ModeloBitacora(false);
+	[$modelo, $bitacora] = returnObjectClass();
 
 	$modelo->setNacionalidad($_POST['nacionalidad']);
 	$modelo->setCedula($_POST['cedula']);
@@ -91,8 +96,8 @@ function guardar()
 function setPaciente()
 {
 
-	$modelo = new ModeloPacientes(true);
-	$bitacora = new ModeloBitacora(false);
+	[$modelo, $bitacora] = returnObjectClass();
+
 
 	$modelo->setIdPaciente($_POST['id_paciente']);
 	$modelo->setNacionalidad($_POST['nacionalidad']);
@@ -125,8 +130,7 @@ function setPaciente()
 
 function eliminar($datos)
 {
-	$modelo = new ModeloPacientes(true);
-	$bitacora = new ModeloBitacora(false);
+	[$modelo, $bitacora] = returnObjectClass();
 
 	$modelo->setIdPaciente($datos[0]);
 
@@ -149,8 +153,7 @@ function eliminar($datos)
 
 function restablecer($datos)
 {
-	$modelo = new ModeloPacientes(true);
-	$bitacora = new ModeloBitacora(false);
+	[$modelo, $bitacora] = returnObjectClass();
 
 	$modelo->setIdPaciente($datos[0]);
 
