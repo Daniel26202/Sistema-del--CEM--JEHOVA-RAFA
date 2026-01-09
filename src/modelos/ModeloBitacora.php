@@ -46,7 +46,7 @@ class ModeloBitacora extends ModelBase
 
             return ["exito", $data];
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 

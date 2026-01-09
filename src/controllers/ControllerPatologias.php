@@ -49,29 +49,35 @@ function papeleraAjax()
 //insertar patologia 
 function registrarPatologia()
 {
-	if (empty($_POST)) {
+	try {
+		if (empty($_POST)) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+			exit;
+		}
+
+		[$modelo, $bitacora] = returnObjectClass();
+
+		$modelo->setNombrePatologia($_POST["nombre"]);
+
+		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setActividad("Ha Insertado un nuevo patologia");
+		$bitacora->setTabla("patologia");
+
+		$insercion = $modelo->insertarPatologia();
+
+
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
-	[$modelo, $bitacora] = returnObjectClass();
-
-	$modelo->setNombrePatologia($_POST["nombre"]);
-
-	$bitacora->setId_usuario($_POST['id_usuario']);
-	$bitacora->setActividad("Ha Insertado un nuevo patologia");
-	$bitacora->setTabla("patologia");
-
-	$insercion = $modelo->insertarPatologia();
-
-
-	if (is_array($insercion) && $insercion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-	} else {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $insercion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -86,6 +92,7 @@ function eliminarPatologia($datos)
 		exit;
 	}
 
+	try{
 	[$modelo, $bitacora] = returnObjectClass();
 
 	$modelo->setIdPatologia($datos[0]);
@@ -104,6 +111,11 @@ function eliminarPatologia($datos)
 		echo json_encode(['ok' => false, 'error' => $eliminar]);
 		exit;
 	}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
 
@@ -116,6 +128,8 @@ function restablecerPatologia($datos)
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
+
+	try{
 
 	[$modelo, $bitacora] = returnObjectClass();
 
@@ -133,6 +147,11 @@ function restablecerPatologia($datos)
 	} else {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $eliminar]);
+		exit;
+	}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
