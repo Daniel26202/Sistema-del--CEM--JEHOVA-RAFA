@@ -46,13 +46,6 @@ class ModeloCategoria extends ModelBase
                 'estado' => 'ACT'
             ];
 
-            $validaciones = Validations::pathologyRules($this->getNombre());
-
-            foreach ($validaciones as $v) {
-                if (!preg_match($v['regex'], $v['valor'])) {
-                    throw new \Exception($v['mensaje']);
-                }
-            }
 
             $sql= "INSERT INTO categoria_servicio (nombre, estado) VALUES (null, :nombre, :estado)";
             $this->setSQL($sql);
@@ -93,18 +86,24 @@ class ModeloCategoria extends ModelBase
     {
         return $this->idCategoria;
     }
-    public function setIdCategoria($idCategoria)
-    {
-        $this->idCategoria = $idCategoria;
-    }
-
+    
     public function getNombre()
     {
         return $this->nombre;
     }
 
+    public function setIdCategoria($idCategoria)
+    {
+        $this->idCategoria = $idCategoria;
+    }
+
+
     public function setNombre($nombre)
     {
+        if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombre)) {
+            throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+        }
+
         $this->nombre = $nombre;
     }
 }

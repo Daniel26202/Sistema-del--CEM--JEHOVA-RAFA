@@ -45,7 +45,7 @@ class ModeloPatologia extends ModelBase
             $this->setSQL($sql);
             $listData = $this->search($data, false);
 
-			return !empty($listData) ? 1 : 0;
+            return !empty($listData) ? 1 : 0;
         } catch (\Exception $e) {
             return 0;
         }
@@ -56,19 +56,11 @@ class ModeloPatologia extends ModelBase
     {
         try {
 
-            $data=[
-                'nombrePatologia'=>$this->getNombrePatologia(),
-                'estado'=>'ACT'
+            $data = [
+                'nombrePatologia' => $this->getNombrePatologia(),
+                'estado' => 'ACT'
             ];
-               
 
-            $validaciones = Validations::pathologyRules($this->getNombrePatologia());
-
-            foreach ($validaciones as $v) {
-                if (!preg_match($v['regex'], $v['valor'])) {
-                    throw new \Exception($v['mensaje']);
-                }
-            }
 
             if ($this->nombrePatologia(['nombre_patologia' => $this->getNombrePatologia()])) {
                 throw new \Exception("La patologia ya existe en el sistema.");
@@ -146,25 +138,21 @@ class ModeloPatologia extends ModelBase
         try {
 
             $data = [
-				'id_patologia' => $this->getIdPatologia()
-			];
+                'id_patologia' => $this->getIdPatologia()
+            ];
 
-			$sql = "SELECT pat.id_patologia, pat.nombre_patologia FROM patologiadepaciente pdp INNER JOIN patologia pat ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pdp.id_paciente = pac.id_paciente WHERE pac.id_paciente = :id_paciente";
-			$this->setSQL($sql);
+            $sql = "SELECT pat.id_patologia, pat.nombre_patologia FROM patologiadepaciente pdp INNER JOIN patologia pat ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pdp.id_paciente = pac.id_paciente WHERE pac.id_paciente = :id_paciente";
+            $this->setSQL($sql);
 
-			return $this->search($data);
+            return $this->search($data);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function getNombrePatologia() {
-        return $this->nombrePatologia;
-    }
-
-    public function setNombrePatologia($nombrePatologia)
+    public function getNombrePatologia()
     {
-         $this->nombrePatologia  = $nombrePatologia;
+        return $this->nombrePatologia;
     }
 
     public function getIdPatologia()
@@ -172,6 +160,16 @@ class ModeloPatologia extends ModelBase
         return $this->idPatologia;
     }
 
+    public function setNombrePatologia($nombrePatologia)
+    {
+        if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombrePatologia)) {
+            throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+        }
+
+        $this->nombrePatologia  = $nombrePatologia;
+    }
+
+    
     public function setIdPatologia($idPatologia)
     {
         $this->idPatologia  = $idPatologia;

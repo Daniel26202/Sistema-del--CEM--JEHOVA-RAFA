@@ -122,34 +122,41 @@ function setPaciente()
 		exit;
 	}
 
-	[$modelo, $bitacora] = returnObjectClass();
+
+	try {
+		[$modelo, $bitacora] = returnObjectClass();
 
 
-	$modelo->setIdPaciente($_POST['id_paciente']);
-	$modelo->setNacionalidad($_POST['nacionalidad']);
-	$modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
-	$modelo->setCedula($_POST['cedula']);
-	$modelo->setNombre($_POST['nombre']);
-	$modelo->setApellido($_POST['apellido']);
-	$modelo->setTelefono($_POST['telefono']);
-	$modelo->setDireccion($_POST['direccion']);
-	$modelo->setFn($_POST['fn']);
-	$modelo->setGenero($_POST['genero']);
+		$modelo->setIdPaciente($_POST['id_paciente']);
+		$modelo->setNacionalidad($_POST['nacionalidad']);
+		$modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
+		$modelo->setCedula($_POST['cedula']);
+		$modelo->setNombre($_POST['nombre']);
+		$modelo->setApellido($_POST['apellido']);
+		$modelo->setTelefono($_POST['telefono']);
+		$modelo->setDireccion($_POST['direccion']);
+		$modelo->setFn($_POST['fn']);
+		$modelo->setGenero($_POST['genero']);
 
-	// $bitacora->setId_usuario($_POST['id_usuario']);
-	// $bitacora->setActividad("Ha modificado un paciente");
-	// $bitacora->setTabla("paciente");
+		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setActividad("Ha modificado un paciente");
+		$bitacora->setTabla("paciente");
 
-	$edicion = $modelo->update_paciente();
+		$edicion = $modelo->update_paciente();
 
 
-	// Verifica si es un array con clave "exito"
-	if (is_array($edicion) && $edicion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+		// Verifica si es un array con clave "exito"
+		if (is_array($edicion) && $edicion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $edicion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $edicion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -162,23 +169,29 @@ function eliminar($datos)
 		exit;
 	}
 
-	[$modelo, $bitacora] = returnObjectClass();
+	try {
+		[$modelo, $bitacora] = returnObjectClass();
 
-	$modelo->setIdPaciente($datos[0]);
+		$modelo->setIdPaciente($datos[0]);
 
-	$bitacora->setId_usuario($datos[1]);
-	$bitacora->setActividad("Ha eliminado un  paciente");
-	$bitacora->setTabla("paciente");
+		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setActividad("Ha eliminado un  paciente");
+		$bitacora->setTabla("paciente");
 
-	$eliminacion = $modelo->delete();
+		$eliminacion = $modelo->delete();
 
-	//Verifica si es un array con clave "exito"
-	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+		//Verifica si es un array con clave "exito"
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -191,6 +204,8 @@ function restablecer($datos)
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
+
+	try{
 
 	[$modelo, $bitacora] = returnObjectClass();
 
@@ -209,6 +224,11 @@ function restablecer($datos)
 	} else {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $restablecer]);
+		exit;
+	}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }

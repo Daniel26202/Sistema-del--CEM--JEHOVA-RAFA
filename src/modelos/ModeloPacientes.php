@@ -340,7 +340,7 @@ class ModeloPacientes extends ModelBase
 	public function setNombre($nombre)
 	{
 		if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombre)) {
-			throw new \InvalidArgumentException("El nombre solo puede contener letras y espacios (2-50 caracteres).");
+			throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
 		}
 		$this->nombre = $nombre;
 	}
