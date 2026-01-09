@@ -1,6 +1,6 @@
 import { executePetition, alertConfirm, alertError, alertSuccess } from "./../assets/ajax/funtionExecutePetition.js";
 
-import {convertirHora} from "./js/funtionHorailitar.js";
+import {convertirHora} from "./funtionHorailitar.js";
 
 addEventListener("DOMContentLoaded", () => {
   console.log("Citas");
