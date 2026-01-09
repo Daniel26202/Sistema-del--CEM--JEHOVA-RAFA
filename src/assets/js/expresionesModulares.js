@@ -87,8 +87,8 @@ function validarFecha(input, arrayElementos, campo, formulario) {
         }
     }
     // Si pasa todas las validaciones
-    pError.classList.add("d-none");
     chulitoYX(check, error, "valido");
+    pError.classList.add("d-none");
     actualizarEstadoInput(input, "correcto", formulario);
     return true;
 }
@@ -138,7 +138,7 @@ export function inicializarValidacionFormulario(formulario) {
 // Función que valida los campos cada vez que ocurre un evento en un input
 function validarFormulario(e, formulario, campos) {
     const input = e.target;
-    const campo = input.name;
+    const nameInput = input.name;
     let mensajeError = expresiones[input.name].mensajeError;
 
     let campoCustom = input.closest(".campo-custom");
@@ -155,12 +155,12 @@ function validarFormulario(e, formulario, campos) {
     // validar select
     if (input.tagName === "SELECT") {
         validarSelect(input, arrayElementos, campos, formulario);
-    } else if (campo === "fn" || campo === "fechaDeCita" || campo === "fechaDeVencimiento") {
-        campos[campo] = validarFecha(input, arrayElementos, campo, formulario);
+    } else if (nameInput === "fn" || nameInput === "fechaDeCita" || nameInput === "fechaDeVencimiento") {
+        campos[nameInput] = validarFecha(input, arrayElementos, nameInput, formulario);
     } else {
-        const expresion = expresiones[campo].expresion;
+        const expresion = expresiones[nameInput].expresion;
         if (expresion) {
-            validarCampo(expresion, input, campo, campos, formulario, arrayElementos, mensajeError);
+            validarCampo(expresion, input, nameInput, campos, formulario, arrayElementos, mensajeError);
         }
     }
 }
