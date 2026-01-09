@@ -2,25 +2,26 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
 use App\config\Validations;
 
-class ModeloCategoria extends Db
+class ModeloCategoria extends ModelBase
 {
 
-    private $conexion;
+    private $idCategoria ,$nombre;
 
-    public function __construct()
+    public function __construct($dbSystem = true)
     {
-        $this->conexion = $this->connectionSistema();
+        parent::__construct($dbSystem);
     }
 
 
     public function seleccionarCategoria()
     {
         try {
-            $consulta = $this->conexion->prepare(" SELECT * FROM categoria_servicio WHERE estado = 'ACT'  ");
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql = "SELECT * FROM categoria_servicio WHERE estado = 'ACT'";
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
             return 0;
         }
@@ -29,17 +30,23 @@ class ModeloCategoria extends Db
     public function seleccionarTodasLasCategoria()
     {
         try {
-            $consulta = $this->conexion->prepare(" SELECT * FROM categoria_servicio WHERE estado = 'ACT'  ");
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql = "SELECT * FROM categoria_servicio WHERE estado = 'ACT'";
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
-    public function registrarCategoria($nombre)
+    public function registrarCategoria()
     {
         try {
-            $validaciones = Validations::pathologyRules($nombre);
+            $data =[
+                'nombre' => $this->getNombre(),
+                'estado' => 'ACT'
+            ];
+
+            $validaciones = Validations::pathologyRules($this->getNombre());
 
             foreach ($validaciones as $v) {
                 if (!preg_match($v['regex'], $v['valor'])) {
@@ -47,15 +54,9 @@ class ModeloCategoria extends Db
                 }
             }
 
-            $consulta = $this->conexion->prepare("INSERT INTO categoria_servicio VALUES (null, :nombre, 'ACT')");
-            $consulta->bindParam(":nombre", $nombre);
-            $consulta->execute();
-
-            $id_categoria = $this->conexion->lastInsertId();
-            $consulta = $this->conexion->prepare("SELECT * from categoria_servicio where id_categoria=:id_categoria");
-            $consulta->bindParam(":id_categoria", $id_categoria);
-            $consulta->execute();
-            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+            $sql= "INSERT INTO categoria_servicio (nombre, estado) VALUES (null, :nombre, :estado)";
+            $this->setSQL($sql);
+            $this->create($data);
             
             return ["exito", $data];
         } catch (\Exception $e) {
@@ -63,22 +64,47 @@ class ModeloCategoria extends Db
         }
     }
 
-    public function eliminarCategoria($id_categoria)
+    public function eliminarCategoria()
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from categoria_servicio where id_categoria=:id_categoria");
-            $validar->bindParam(":id_categoria", $id_categoria);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data = [
+                'id_categoria' => $this->getIdCategoria()
+            ];
+
+            $sql = 'SELECT * from categoria_servicio where id_categoria=:id_categoria and estado="DES"';
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
+
+            if ($listData != []) {
+                throw new \Exception("El id de la categoria no existe o ya se encuentra eliminado.");
             }
 
-            $consulta = $this->conexion->prepare("UPDATE categoria_servicio SET estado = 'DES' WHERE id_categoria = :id_categoria");
-            $consulta->bindParam(":id_categoria", $id_categoria);
-            $consulta->execute();
+            $sql = "UPDATE categoria_servicio SET estado = 'DES' WHERE id_categoria =:id";
+            $this->setSQL($sql);
+            $this->update_logic($data['id_categoria']);
+            
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function getIdCategoria()
+    {
+        return $this->idCategoria;
+    }
+    public function setIdCategoria($idCategoria)
+    {
+        $this->idCategoria = $idCategoria;
+    }
+
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
     }
 }

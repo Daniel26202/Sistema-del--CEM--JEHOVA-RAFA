@@ -12,10 +12,11 @@ use App\modelos\ModeloPermisos;
 // 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 // }
 
-function returnObjectClass() {
+function returnObjectClass()
+{
 	$modelo = new ModeloPacientes(true);
 	$bitacora = new ModeloBitacora(false);
-	return [$modelo,$bitacora];
+	return [$modelo, $bitacora];
 }
 
 
@@ -76,30 +77,37 @@ function guardar()
 		exit;
 	}
 
-	[$modelo, $bitacora] = returnObjectClass();
+	try {
 
-	$modelo->setNacionalidad($_POST['nacionalidad']);
-	$modelo->setCedula($_POST['cedula']);
-	$modelo->setNombre($_POST['nombre']);
-	$modelo->setApellido($_POST['apellido']);
-	$modelo->setTelefono($_POST['telefono']);
-	$modelo->setDireccion($_POST['direccion']);
-	$modelo->setFn($_POST['fn']);
-	$modelo->setGenero($_POST['genero']);
+		[$modelo, $bitacora] = returnObjectClass();
 
-	$bitacora->setId_usuario($_POST['id_usuario']);
-	$bitacora->setActividad("Ha Insertado un nuevo paciente");
-	$bitacora->setTabla("paciente");
+		$modelo->setNacionalidad($_POST['nacionalidad']);
+		$modelo->setCedula($_POST['cedula']);
+		$modelo->setNombre($_POST['nombre']);
+		$modelo->setApellido($_POST['apellido']);
+		$modelo->setTelefono($_POST['telefono']);
+		$modelo->setDireccion($_POST['direccion']);
+		$modelo->setFn($_POST['fn']);
+		$modelo->setGenero($_POST['genero']);
 
-	$insercion = $modelo->insertar();
+		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setActividad("Ha Insertado un nuevo paciente");
+		$bitacora->setTabla("paciente");
 
-	// Verifica si es un array con clave "exito"
-	if (is_array($insercion) && $insercion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-	} else {
+		$insercion = $modelo->insertar();
+
+		// Verifica si es un array con clave "exito"
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $insercion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -204,4 +212,3 @@ function restablecer($datos)
 		exit;
 	}
 }
-

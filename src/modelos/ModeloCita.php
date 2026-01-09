@@ -2,27 +2,34 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
 use DateTime;
 
-class ModeloCita extends Db
+class ModeloCita extends ModelBase
 {
 
-	private $conexion;
+	private $id_paciente, $id_servicioMedico, $fecha, $hora, $estado, $doctor;
+	
 
-	public function __construct()
+	public function __construct($dbSystem)
 	{
-		$this->conexion = $this->connectionSistema();
+		parent::__construct($dbSystem);
 	}
 
-	public function selectPaciente($nacionalidad, $cedula)
+
+	public function selectPaciente()
 	{
 		try {
+			
 			$consulta = $this->conexion->prepare("SELECT * FROM paciente WHERE nacionalidad = :nacionalidad AND cedula =:cedula AND estado = 'ACT'");
 			$consulta->bindParam(":nacionalidad", $nacionalidad);
 			$consulta->bindParam(":cedula", $cedula);
 			$consulta->execute();
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			// return ($consulta->execute()) ? $consulta->fetchAll() : false;
+
+			$sql = "SELECT * FROM paciente WHERE nacionalidad = :nacionalidad AND cedula =:cedula AND estado = 'ACT'";
+			$this->setSQL($sql);
+			return $this->search(['nacionalidad' => $nacionalidad, 'cedula' => $cedula]);
 		} catch (\Exception $e) {
 			return 0;
 		}
@@ -235,5 +242,60 @@ class ModeloCita extends Db
 		} catch (\Exception $e) {
 			return 0;
 		}
+	}
+
+
+	public function setIdPaciente($id_paciente)
+	{
+		$this->id_paciente = $id_paciente;
+	}
+	public function getIdPaciente()
+	{
+		return $this->id_paciente;
+	}
+
+	public function setIdServicioMedico($id_servicioMedico)
+	{
+		$this->id_servicioMedico = $id_servicioMedico;
+	}
+	public function getIdServicioMedico()
+	{
+		return $this->id_servicioMedico;
+	}
+
+	public function setFecha($fecha)
+	{
+		$this->fecha = $fecha;
+	}
+	public function getFecha()
+	{
+		return $this->fecha;
+	}
+
+	public function setHora($hora)
+	{
+		$this->hora = $hora;
+	}
+	public function getHora()
+	{
+		return $this->hora;
+	}
+
+	public function setEstado($estado)
+	{
+		$this->estado = $estado;
+	}
+	public function getEstado()
+	{
+		return $this->estado;
+	}
+
+	public function setDoctor($doctor)
+	{
+		$this->doctor = $doctor;
+	}
+	public function getDoctor()
+	{
+		return $this->doctor;
 	}
 }
