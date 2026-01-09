@@ -60,5 +60,5 @@
 </div>
 </div>
 
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/pacientes.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/pacientes.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>

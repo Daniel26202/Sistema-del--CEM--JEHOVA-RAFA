@@ -1,6 +1,6 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable } from "./funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable } from "../generic/funtionGeneric.js";
 
-import { inicializarValidacionFormulario } from "../js/expresionesModulares.js";
+import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
 const modalAgregar = document.getElementById("modalAgregar");
@@ -156,7 +156,7 @@ const updatePatients = async (form, inputs) => {
       alertSuccess(result.message);
 
       inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+      inputs.forEach((input) => input.parentElement.classList.remove("valido"));
 
       readPatients();
     } else throw new Error(`${result.error}`);

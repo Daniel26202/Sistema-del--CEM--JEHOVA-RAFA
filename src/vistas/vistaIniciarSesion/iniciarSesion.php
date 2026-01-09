@@ -41,14 +41,14 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <title>CEM - Sistema Clínico</title>
 
     <!-- Bootstrap 5 CSS -->
-    <link href="<?= $urlBase ?>./src/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= $urlBase ?>./src/assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <!-- Intro.js para ayuda interactiva -->
-    <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/intro/introjs.min.css">
-    <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/intro/introjs-modern.css">
+    <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs.min.css">
+    <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs-modern.css">
     <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/cssVista/inicioSesion.css">
 </head>
 
@@ -200,12 +200,12 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <!-- SweetAlert2 -->
     <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2@11.js"></script>
 
-    <script src="<?= $urlBase ?>./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="<?= $urlBase ?>./src/assets/intro/intro.min.js"></script>
-    <script src="<?= $urlBase ?>./src/assets/js/expresionesModulares.js"></script>
-    <script src="<?= $urlBase ?>./src/assets/js/ayudaInteractiva.js"></script>
+    <script src="<?= $urlBase ?>./src/assets/library/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= $urlBase ?>./src/assets/library/intro/intro.min.js"></script>
+    <script src="<?= $urlBase ?>./src/assets/js/generic/expresionesModulares.js"></script>
+    <script src="<?= $urlBase ?>./src/assets/js/ayudaInteractiva/ayudaInteractiva.js"></script>
     <script src="<?= $urlBase ?>./src/assets/app.js"></script>
-    <script type="module" src="<?= $urlBase ?>./src/assets/ajax/inicioSesion.js"></script>
+    <script type="module" src="<?= $urlBase ?>./src/assets/js/ajax/inicioSesion.js"></script>
 
     <script>
         // Función para mostrar/ocultar contraseña

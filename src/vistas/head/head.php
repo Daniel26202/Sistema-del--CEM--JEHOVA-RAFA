@@ -29,21 +29,20 @@ if (!empty($parametro)) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="<?=__DIR__?>../src/assets/img/logotipo.jpg">
+	<link rel="shortcut icon" href="<?=__DIR__?>../src/assets/images/img/logotipo.jpg">
 	<title>J-R</title>
-	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/DataTable/datatables.css">
+	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/DataTable/datatables.css">
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/style.css">
-	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/intro/introjs.min.css">
-	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/intro/introjs-modern.css">
-
+	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/library/intro/introjs.min.css">
+	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/library/intro/introjs-modern.css">
 </head>
 
 <body>
 
 	<!-- <div class="loader-wrapper">
 		<div id="content">
-			<img class="mb-3" src="<?= $urlBase ?>../src/assets/icons/logo-loader.svg" style="width: 180px; height: 55px;">
+			<img class="mb-3" src="<?= $urlBase ?>../src/assets/images/icons/logo-loader.svg" style="width: 180px; height: 55px;">
 			<div class="loading-bar">
 				<div class="blue-bar"></div>
 			</div>
@@ -104,7 +103,7 @@ if (!empty($parametro)) {
 
 
 				<a href="#" class="mx-5" data-bs-toggle="modal" data-bs-target="#cerrar">
-					<img src="<?= $urlBase ?>../src/assets/img/icono-cerrar-sesion.svg" width="16" height="16" uk-svg
+					<img src="<?= $urlBase ?>../src/assets/images/img/icono-cerrar-sesion.svg" width="16" height="16" uk-svg
 						class="">
 					</svg>SALIR</a>
 			</nav>
@@ -310,6 +309,6 @@ if (!empty($parametro)) {
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<!-- < class="navbar-brand" href="#">Mi Sitio Web</> -->
-			<img class="" src="<?= $urlBase ?>../src/assets/icons/logo.png" style="width: 180px; height: 55px;">
+			<img class="" src="<?= $urlBase ?>../src/assets/images/icons/logo.png" style="width: 180px; height: 55px;">
 
 		</nav>
