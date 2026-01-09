@@ -211,6 +211,7 @@ const showDataEdit = (ele, id) => {
 
     inputs[key].value = element.innerText;
 
+    inputs[key].parentElement.classList.remove("invalidado");
     inputs[key].parentElement.classList.add("valido");
 
     console.log(element)
