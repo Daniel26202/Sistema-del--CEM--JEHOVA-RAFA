@@ -2,31 +2,29 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
 use App\modelos\ModeloUsuarios;
 
-class ModeloDoctores extends Db
+class ModeloDoctores extends ModelBase
 {
-
-    private $conexion;
-    private $modeloUsuario;
 
     private $id_doctor;
 
-    public function __construct()
+    public function __construct($dbSystem = true)
     {
-        $this->conexion = $this->connectionSistema();
-        $this->modeloUsuario = new ModeloUsuarios();
+        parent::__construct($dbSystem);
     }
 
     //seleccionar especialidad
     public function selectEspecialidad()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT * FROM especialidad WHERE estado = 'ACT'");
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql="SELECT * FROM especialidad WHERE estado = 'ACT'";
+
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -444,6 +442,13 @@ class ModeloDoctores extends Db
 
     public function setIdDoctor($id_doctor)
     {
+        if (!preg_match("/^[0-9]+$/", $id_doctor)) {
+            throw new \InvalidArgumentException("El ID del doctor debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_doctor <= 0) {
+            throw new \InvalidArgumentException("El ID del doctor debe ser mayor que cero.");
+        }
         $this->id_doctor = $id_doctor;
     }
 }

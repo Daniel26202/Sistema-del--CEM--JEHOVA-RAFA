@@ -1,4 +1,4 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable } from "../ajax/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "../generic/funtionGeneric.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/iniciarSesion";
 
 // envió de datos
