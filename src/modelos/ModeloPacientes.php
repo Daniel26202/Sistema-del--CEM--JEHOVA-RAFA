@@ -3,17 +3,14 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\Validations;
+
 
 class ModeloPacientes extends ModelBase
 {
 	private $id_paciente, $nacionalidad, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $direccion, $fn, $genero;
 
 
-	// Validaciones con expresiones regulares
-	public $validaciones;
-
-	public function __construct($dbSystem)
+	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
 	}
@@ -81,10 +78,6 @@ class ModeloPacientes extends ModelBase
 				'estado' => 'ACT'
 			];
 
-			$fecha = date("Y-m-d");
-			$dt = \DateTime::createFromFormat('Y-m-d', $this->getFn());
-
-
 			// Validación de cédula duplicada
 			if ($this->validarCedula(['cedula' => $this->getCedula()])) {
 				throw new \Exception("La cédula ya está registrada.");
@@ -116,10 +109,6 @@ class ModeloPacientes extends ModelBase
 				'fn' => $this->getFn(),
 				'genero' => $this->getGenero()
 			];
-
-			$fecha = date("Y-m-d");
-			$dt = \DateTime::createFromFormat('Y-m-d', $this->getFn());
-
 
 			$data2 = [
 				'id_paciente' => $this->getIdPaciente()

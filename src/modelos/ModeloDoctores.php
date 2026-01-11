@@ -11,6 +11,8 @@ class ModeloDoctores extends Db
     private $conexion;
     private $modeloUsuario;
 
+    private $id_doctor;
+
     public function __construct()
     {
         $this->conexion = $this->connectionSistema();
@@ -433,5 +435,15 @@ class ModeloDoctores extends Db
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+
+    public function getIdDoctor(){
+        return $this->id_doctor;
+    }
+
+    public function setIdDoctor($id_doctor)
+    {
+        $this->id_doctor = $id_doctor;
     }
 }

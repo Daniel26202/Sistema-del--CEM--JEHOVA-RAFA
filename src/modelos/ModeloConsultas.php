@@ -2,50 +2,60 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
-use App\config\Validations;
+use App\modelos\ModelBase;
+use App\modelos\ModeloDoctores;
+use App\modelos\ModeloCategoria;
 
-class ModeloConsultas extends Db
+class ModeloConsultas extends ModelBase
 {
 
-    private $conexion;
+    private $id_servicioMedico, $precio, $tipo;
 
-    public function __construct()
+    public function __construct($dbSystem)
     {
-        $this->conexion = $this->connectionSistema();
+        parent::__construct($dbSystem);
+    }
+
+    private function retrunObjectModel()
+    {
+        return [new ModeloDoctores, new ModeloCategoria()];
     }
 
     public function mostrarDoctores()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT doctor.nombre, doctor.apellido, doctor.id_personal FROM segurity.usuario u INNER JOIN bd.personal doctor on u.id_usuario = doctor.usuario INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = 'ACT' AND doctor.id_especialidad IS NOT null  ");
-            $consulta->execute();
+            $sql =  "SELECT doctor.nombre, doctor.apellido, doctor.id_personal FROM segurity.usuario u INNER JOIN bd.personal doctor on u.id_usuario = doctor.usuario INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = 'ACT' AND doctor.id_especialidad IS NOT null";
 
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
     public function mostrarConsultas()
     {
         try {
-            $consulta = $this->conexion->prepare('SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "ACT" AND sm.estado = "ACT" ');
-            $consulta->execute();
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql =  "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = 'ACT' AND sm.estado = 'ACT'";
+
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
-    public function mostrarConsultasDoctor($id_doctor)
+    public function mostrarConsultasDoctor()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT categoria_nombre.nombre as categoria, serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM bd.personal p INNER JOIN bd.personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
-        bd.serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN bd.especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN bd.categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria  WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' AND serviciomedico.estado = 'ACT' AND ps.personal_id_personal  = :id_doctor");
-            $consulta->bindParam(":id_doctor", $id_doctor);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+
+            $data = ['id_doctor' => $this->retrunObjectModel()[0]->getIdDoctor()];
+
+            $sql = "SELECT categoria_nombre.nombre as categoria, serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM bd.personal p INNER JOIN bd.personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
+            bd.serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN bd.especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN bd.categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria  WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' AND serviciomedico.estado = 'ACT' AND ps.personal_id_personal  = :id_doctor";
+            $this->setSQL($sql);
+            return $this->search($data);
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -53,49 +63,43 @@ class ModeloConsultas extends Db
     public function mostrarConsultasDes()
     {
         try {
-            $consulta = $this->conexion->prepare('SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "DES" OR sm.estado = "DES" ');
-            $consulta->execute();
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql = 'SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "DES" OR sm.estado = "DES"';
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
-    public function insertarSevicio($id_categoria, $precio, $tipo)
+    public function insertarSevicio()
     {
         try {
-            $validaciones = Validations::priceRules($precio);
+            $data = [
+                'id_categoria' => $this->retrunObjectModel()[1]->getIdCategoria(),
+                'precio' => $this->getPrecio(),
+                'estado' => 'ACT',
+                'tipo' => $this->getTipo()
+            ];
 
-            foreach ($validaciones as $v) {
-                if (!preg_match($v['regex'], $v['valor'])) {
-                    throw new \Exception($v['mensaje']);
-                }
+            $sql = "SELECT * FROM  categoria_servicio where id_categoria=:id_categoria";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id de la  categoria no existe");
             }
 
-            $validarCategoria = $this->conexion->prepare("SELECT * FROM  categoria_servicio where id_categoria=:id_categoria");
-            $validarCategoria->bindParam(":id_categoria", $id_categoria);
-            $validarCategoria->execute();
-
-            if ($validarCategoria->rowCount() <= 0) {
-                throw new \Exception("El id de la categoria no existe");
-            }
-            $resultaServicio = $this->nombreConsulta($_POST['id_categoria']);
-            if ($resultaServicio === "existeC") {
+            if ($this->nombreConsulta($data['id_categoria'])) {
                 throw new \Exception("El Servicio Medico  ya  existe");
             }
 
-            $consulta = $this->conexion->prepare("INSERT INTO serviciomedico (id_categoria, precio, estado, tipo) VALUES (:id_categoria, :precio, 'ACT', :tipo)");
-            $consulta->bindParam(":id_categoria", $id_categoria);
-            $consulta->bindParam(":precio", $precio);
-            $consulta->bindParam(":tipo", $tipo);
-            $consulta->execute();
 
-            $id_servicioMedico = $this->conexion->lastInsertId();
+            $sql = "INSERT INTO serviciomedico (id_categoria, precio, estado, tipo) VALUES (:id_categoria, :precio, :estado, :tipo)";
 
-            $consulta = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
-            $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $consulta->execute();
-            $data = ($consulta->execute()) ? $consulta->fetch() : false;
+            $this->setSQL($sql);
+            $this->create($data);
+
             return ["exito", $data];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -104,50 +108,69 @@ class ModeloConsultas extends Db
 
 
 
-    public function insertarDoctorServicio($id_doctor, $id_servicioMedico)
+    public function insertarDoctorServicio()
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
-            $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
-            }
-            $validar = $this->conexion->prepare("SELECT * from personal where id_personal=:id_personal");
-            $validar->bindParam(":id_personal", $id_doctor);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data1 = ['id_servicioMedico' => $this->getIdServicioMedico()];
+            $data2 = ['id_personal' => $this->retrunObjectModel()[0]->getIdDoctor()];
+
+            $data3 =[
+                'id_doctor'=>$this->retrunObjectModel()[0]->getIdDoctor(),
+                'id_servicioMedico' => $this->getIdServicioMedico()
+            ];
+
+            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data1, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del servicio no existe");
             }
 
+            $sql = "SELECT * from personal where id_personal=:id_personal";
+            $this->setSQL($sql);
 
-            if ($this->validarServicioDoctor($id_doctor, $id_servicioMedico) === "existeC") {
-                
+            $validar  = $this->search($data2, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del doctor no existe");
+            }
+            if ($this->validarServicioDoctor()) {
                 throw new \Exception("EL Servicio ya esta asignado a este doctor");
             }
 
-            $consulta = $this->conexion->prepare("INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)");
-            $consulta->bindParam(":id_doctor", $id_doctor);
-            $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $consulta->execute();
+            $sql= "INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)";
+            
+            $this->setSQL($sql);
+            $this->create($data3);
+
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function eliminar($id_servicioMedico)
+    public function eliminar()
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
-            $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data = [
+                'id_servicioMedico' => $this->getIdServicioMedico()
+            ];
+
+            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del paciente no existe");
             }
-            $consulta = $this->conexion->prepare("UPDATE servicioMedico SET estado = 'DES' WHERE id_servicioMedico =:id_servicioMedico ");
-            $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $consulta->execute();
+
+            $sql = "UPDATE servicioMedico SET estado = 'DES' WHERE id_servicioMedico =:id";
+            $this->setSQL($sql);
+
+            $this->update_logic($data['id_servicioMedico']);
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -156,15 +179,23 @@ class ModeloConsultas extends Db
     public function restablecerServ($id_servicioMedico)
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
-            $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data = [
+                'id_servicioMedico' => $this->getIdServicioMedico()
+            ];
+
+            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del paciente no existe");
             }
-            $consulta = $this->conexion->prepare("UPDATE servicioMedico SET estado = 'ACT' WHERE id_servicioMedico =:id_servicioMedico ");
-            $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $consulta->execute();
+
+            $sql = "UPDATE servicioMedico SET estado = 'ACT' WHERE id_servicioMedico =:id";
+            $this->setSQL($sql);
+
+            $this->update_logic($data['id_servicioMedico']);
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -175,26 +206,28 @@ class ModeloConsultas extends Db
     public function editar($id_servicioMedico, $precio, $tipo)
     {
         try {
-            $validaciones = Validations::priceRules($precio);
+            $data1 = [
+                'precio' => $this->getPrecio(),
+                'tipo' => $this->getTipo(),
+            ];
 
-            foreach ($validaciones as $v) {
-                if (!preg_match($v['regex'], $v['valor'])) {
-                    throw new \Exception($v['mensaje']);
-                }
-            }
-            
-            $validar = $this->conexion->prepare("SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico");
-            $validar->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
+            $data2 = [
+                'id_servicioMedico' => $this->getIdServicioMedico()
+            ];
+
+            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data2, false);
+
+            if ($validar == []) {
                 throw new \Exception("El id del servicio no existe");
             }
 
-            $consulta = $this->conexion->prepare("UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id_servicioMedico");
-            $consulta->bindParam(":precio", $precio);
-            $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $consulta->bindParam(":tipo", $tipo);
-            $consulta->execute();
+            $sql= "UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id";
+            $this->setSQL($sql);
+
+            $this->update($data1, $this->getIdServicioMedico());
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -203,46 +236,101 @@ class ModeloConsultas extends Db
 
 
     //traer datos del doctor
-    public function especialidadDoctor($id_doctor)
+    public function especialidadDoctor()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT e.nombre FROM personal d INNER JOIN especialidad e ON e.id_especialidad = d.id_especialidad WHERE d.id_personal = :id_doctor ");
-            $consulta->bindParam(":id_doctor", $id_doctor);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $data=[
+                'id_doctor'=> $this->retrunObjectModel()[1]->getIdDoctor()
+            ];
+
+            $sql = "SELECT e.nombre FROM personal d INNER JOIN especialidad e ON e.id_especialidad = d.id_especialidad WHERE d.id_personal = :id_doctor ";
+            $this->setSQL($sql);
+
+            $this->read();
         } catch (\Exception $e) {
             return 0;
         }
     }
 
-    public function nombreConsulta($id_categoria)
+    public function nombreConsulta()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.id_categoria = :id_categoria AND sm.estado = 'ACT'");
-            $consulta->bindParam(":id_categoria", $id_categoria);
-            $consulta->execute();
-            while ($consulta->fetch()) {
-                return "existeC";
-            }
-            return "noExiste";
+
+            $data = [
+                'id_categoria' => $this->retrunObjectModel()[1]->getIdCategoria(),
+                'estado' => 'ACT'
+            ];
+
+            $sql = "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.id_categoria = :id_categoria AND sm.estado =:estado";
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
+            return !empty($listData) ? 1 : 0;
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
     //Validdar que un doctor no tenga el mismo servicio
-    public function validarServicioDoctor($id_servicioMedico, $id_doctor)
+    public function validarServicioDoctor()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN  personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal WHERE sm.id_servicioMedico =:id_servicioMedico AND p.id_personal = :id_doctor");
-            $consulta->bindParam(":id_servicioMedico", $id_servicioMedico);
-            $consulta->bindParam(":id_doctor", $id_doctor);
-            $consulta->execute();
-            while ($consulta->fetch()) {
-                return "existeC";
-            }
-            return "noExiste";
+            $data = [
+                'id_servicioMedico' => $this->getIdServicioMedico(),
+                'id_personal' => $this->retrunObjectModel()[0]->getIdDoctor()
+            ];
+
+            $sql = "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN  personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal WHERE sm.id_servicioMedico =:id_servicioMedico AND p.id_personal = :id_doctor";
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
+
+            return !empty($listData) ? 1 : 0;
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function getIdServicioMedico()
+    {
+
+        return $this->id_servicioMedico;
+    }
+    public function getPrecio()
+    {
+        return $this->precio;
+    }
+    public function getTipo()
+    {
+        return $this->id_servicioMedico;
+    }
+
+
+
+    public function setIdServicioMedico($id_servicioMedico)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_servicioMedico)) {
+            throw new \InvalidArgumentException("El ID del servicio debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_servicioMedico <= 0) {
+            throw new \InvalidArgumentException("El ID del servicio debe ser mayor que cero.");
+        }
+
+        $this->id_servicioMedico = $id_servicioMedico;
+    }
+    public function setPrecio($precio)
+    {
+        if (!preg_match("/^(?!0$)(?!1$)\d+([.,]\d+)?$/", $precio)) {
+            throw new \InvalidArgumentException("El precio esta mal.");
+        }
+
+        $this->precio  = $precio;
+    }
+    public function setTipo($tipo)
+    {
+        if (!preg_match('/^"Examenes"|"Citas"$/', $tipo)) {
+            throw new \InvalidArgumentException("El tipo esta mal.");
+        }
+
+        $this->tipo = $tipo;
     }
 }

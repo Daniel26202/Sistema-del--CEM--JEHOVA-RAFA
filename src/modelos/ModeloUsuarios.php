@@ -10,6 +10,7 @@ class ModeloUsuarios extends Db
 
 
     private $conexion;
+    private $id_usuario;
 
     public function __construct()
     {
@@ -187,5 +188,9 @@ class ModeloUsuarios extends Db
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function getIdUsuario() {
+        return $this->id_usuario;
     }
 }

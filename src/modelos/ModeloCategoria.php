@@ -3,8 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\Validations;
-
 class ModeloCategoria extends ModelBase
 {
 
