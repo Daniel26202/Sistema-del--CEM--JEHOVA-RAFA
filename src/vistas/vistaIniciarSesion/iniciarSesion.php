@@ -76,7 +76,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
 
                         <div class="d-flex justify-content-center mb-3 mt-1 ">
-                            <img src="<?= $urlBase ?>./src/assets/icons/logo3.png" alt="Logo" class="logo" style="">
+                            <img src="<?= $urlBase ?>./src/assets/images/icons/logo3.png" alt="Logo" class="logo" style="">
                         </div>
                         <!-- Logo y Nombre -->
                         <div class="text-center mb-3 d-flex flex-wrap justify-content-center align-items-center">
@@ -96,7 +96,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                             <div class="me-md-5 pe-md-4 mt-1">
 
                                 <!-- Campo de Usuario con icono flotante -->
-                                <div class="mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
+                                <div class="campo-custom mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
                                     <!-- Label -->
                                     <div class="text-center text-sm-end col-12 col-sm-4 col-md-4">
                                         <label for="username" class="form-label text-dark me-sm-3">Usuario</label>
@@ -118,7 +118,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                 </div>
 
                                 <!-- Campo de Contraseña con icono flotante -->
-                                <div class="mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
+                                <div class="campo-custom mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
                                     <!-- Label -->
                                     <div class="text-center text-sm-end col-12 col-sm-4 col-md-4">
                                         <label for="password" class="form-label text-dark me-sm-3">Contraseña</label>
@@ -198,7 +198,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <!-- Scripts -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!-- SweetAlert2 -->
-    <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2@11.js"></script>
+    <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2/sweetalert2@11.js"></script>
 
     <script src="<?= $urlBase ?>./src/assets/library/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?= $urlBase ?>./src/assets/library/intro/intro.min.js"></script>
