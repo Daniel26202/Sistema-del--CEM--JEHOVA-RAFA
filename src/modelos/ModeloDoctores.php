@@ -4,22 +4,29 @@ namespace App\modelos;
 
 use App\modelos\ModelBase;
 use App\modelos\ModeloUsuarios;
+use App\modelos\ModeloRoles;
+
 
 class ModeloDoctores extends ModelBase
 {
 
-    private $id_doctor;
+    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad;
 
     public function __construct($dbSystem = true)
     {
         parent::__construct($dbSystem);
     }
 
+    private function retrunObjectModel()
+    {
+        return [new ModeloUsuarios, new ModeloRoles];
+    }
+
     //seleccionar especialidad
     public function selectEspecialidad()
     {
         try {
-            $sql="SELECT * FROM especialidad WHERE estado = 'ACT'";
+            $sql = "SELECT * FROM especialidad WHERE estado = 'ACT'";
 
             $this->setSQL($sql);
             return $this->read();
@@ -32,53 +39,59 @@ class ModeloDoctores extends ModelBase
     public function selectDias()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT * FROM horario");
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql = "SELECT * FROM horario";
+
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
-    public function selectDiasDoctor($id_personal)
+    public function selectDiasDoctor()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT h.*,hyd.* FROM horario h INNER JOIN horarioydoctor hyd ON  h.id_horario = hyd.id_horario INNER JOIN personal p ON p.id_personal = hyd.id_personal WHERE p.id_personal = :id_personal AND p.tipodecategoria = 'Doctor'");
-            $consulta->bindParam(":id_personal", $id_personal);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $data = [
+                'id_personal' => $this->getIdDoctor(),
+                'tipocategoria' => 'Doctor'
+            ];
+
+            $sql = "SELECT h.*,hyd.* FROM horario h INNER JOIN horarioydoctor hyd ON  h.id_horario = hyd.id_horario INNER JOIN personal p ON p.id_personal = hyd.id_personal WHERE p.id_personal = :id_personal AND p.tipodecategoria =:tipocategoria";
+            $this->setSQL($sql);
+            return $this->search($data);
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
     //validar usuario
-    public function validarUsuario($usuario)
+    public function validarUsuario()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.usuario =:usuario");
-            $consulta->bindParam(":usuario", $usuario);
-            $consulta->execute();
-            while ($consulta->fetch()) {
-                return "existeU";
-            }
-            return 0;
+
+            $data = ['usuario' => $this->retrunObjectModel()[0]->getUsuario()];
+            $sql = "SELECT u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.usuario =:usuario";
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
+
+            return !empty($listData) ? 1 : 0;
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
     //validar cédula
-    public function validarCedula($cedula)
+    private function validarCedula($data)
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE p.cedula = :cedula");
-            $consulta->bindParam(":cedula", $cedula);
-            $consulta->execute();
-            while ($consulta->fetch()) {
-                return "existeC";
-            }
-            return 0;
+            $sql = "SELECT u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE p.cedula = :cedula";
+
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
+
+            return !empty($listData) ? 1 : 0;
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -87,10 +100,11 @@ class ModeloDoctores extends ModelBase
     {
         try {
             $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad  inner join segurity.rol r on r.id_rol = u.id_rol WHERE u.estado = "ACT" AND  es.id_especialidad is not null';
-            $consulta = $this->conexion->prepare($sql);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $this->setSQL($sql);
+
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 
@@ -99,180 +113,171 @@ class ModeloDoctores extends ModelBase
     {
         try {
             $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad  inner join segurity.rol r on r.id_rol = u.id_rol WHERE u.estado = "DES" AND  es.id_especialidad is not null ';
-            $consulta = $this->conexion->prepare($sql);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+
+            $this->setSQL($sql);
+
+            return $this->read();
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
     //esto es para agregar un doctor.
-    public function insertarDoctor($cedula, $nombre, $apellido, $telefono, $usuario, $password, $email, $nacionalidad, $nombreImagen, $imagenTemporal, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen)
+    public function insertarDoctor()
     {
 
         try {
-            $this->conexion->beginTransaction();
 
-            if ($this->validarCedula($cedula) === "existeC") {
+            $data1 = [
+                'id_rol' => $this->retrunObjectModel()[1]->getIdRol(),
+                'imagen' => $this->getImagen(),
+                'usuario' => $this->retrunObjectModel()[0]->getUsuario(),
+                'correo' => $this->getEmail(),
+                'password' => $this->retrunObjectModel()[0]->getPassword(),
+                'estado' => 'ACT'
+            ];
+
+            $data2 = [
+                'nacionalidad' => $this->getNacionalidad(),
+                'cedula' => $this->getCedula(),
+                'nombre' => $this->getNombre(),
+                'apellido' => $this->getApellido(),
+                'telefono' => $this->getTelefono(),
+                'id_espacialidad' => $this->getIdEspecialidad(),
+                'id_usuario' => $this->retrunObjectModel()[0]->getIdUsuario()
+            ];
+            if ($this->validarCedula(['cedula' => $this->getCedula()])) {
                 throw new \Exception("La cédula ya está registrada.");
             }
 
-            if ($this->validarUsuario($usuario) === "existeU") {
+            if ($this->validarUsuario(['usuario' => $this->retrunObjectModel()[0]->getUsuario()])) {
                 throw new \Exception("El usuario ya está registrada.");
             }
 
-            if (!$imagen) {
-                $nombreImagen = 'doctor.png';
-                $imagenTemporal = "";
-            }
+            $sql = "INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES (8,:imagen, :usuario, :correo, :password,:estado);";
 
-            //agregamos al doctor como usuario.
-            $consultaDeUsuario = $this->conexion->prepare('INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES (8,:imagen, :usuario, :correo, :password,"ACT");');
-            $consultaDeUsuario->bindParam(":imagen", $nombreImagen);
-            $consultaDeUsuario->bindParam(":usuario", $usuario);
-            $consultaDeUsuario->bindParam(":correo", $email);
-            $consultaDeUsuario->bindParam(":password", $password);
-            $consultaDeUsuario->execute();
-            //devuelve el id del usuario.
-            //obtenemos los datos del usuario que se a agregado. si no se inserta devuelve 0
-            $idUsuario = ($this->conexion->lastInsertId() == 0) ? false : $this->conexion->lastInsertId();
+            $this->setSQL($sql);
+            $idUsuario = $this->create($data1);
 
-            //agregamos al doctor como usuario.
-            $consultaDePersonal = $this->conexion->prepare('INSERT INTO bd.personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)');
-            $consultaDePersonal->bindParam(":cedula", $cedula);
-            $consultaDePersonal->bindParam(":nombre", $nombre);
-            $consultaDePersonal->bindParam(":apellido", $apellido);
-            $consultaDePersonal->bindParam(":telefono", $telefono);
-            $consultaDePersonal->bindParam(':nacionalidad', $nacionalidad);
-            $consultaDePersonal->bindParam(':id_usuario', $idUsuario);
-            $consultaDePersonal->bindParam(':id_especialidad', $idEspecialidad);
-            $consultaDePersonal->execute();
-            //devuelve el id del personal.
-            //obtenemos los datos del pesonal que se a agregado. si no se inserta devuelve 0
-            $idPersonal = ($this->conexion->lastInsertId() == 0) ? false : $this->conexion->lastInsertId();
+            $sql = 'INSERT INTO bd.personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)';
 
-            if ($idUsuario != 0) {
-                if ($imagenTemporal != "") {
-                    $imagen = $idUsuario . "_" . $nombreImagen;
-                    move_uploaded_file($imagenTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
-                }
-            }
+            $this->setSQL($sql);
+
+            $idPersonal = $this->create($data2);
 
             //esto es para insertar el horario
-            if ($dias != "NO") {
+            if ($this->getDias() != []) {
                 $contadorDias = 0;
-                foreach ($dias as $d) {
-                    $sqlHorario = $this->conexion->prepare("INSERT INTO bd.horarioydoctor (id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal,:id_horario,:horarioDeEntrada,:horaDeSalida)");
-                    $sqlHorario->bindParam(":id_personal", $idPersonal);
-                    $sqlHorario->bindParam(":id_horario", $d);
-                    $sqlHorario->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
-                    $sqlHorario->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
-                    $sqlHorario->execute();
+                foreach ($this->getDias() as $d) {
+                    $data = [
+                        'id_personal' => $this->getIdDoctor(),
+                        'id_horario' => $d,
+                        'horarioDeEntrada' => $this->getHoraEntrada()[$contadorDias],
+                        'horaDeSalida' => $this->getHoraSalida()[$contadorDias]
+                    ];
+
+                    $sql = "INSERT INTO bd.horarioydoctor (id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal,:id_horario,:horarioDeEntrada,:horaDeSalida)";
+
+                    $this->setSQL($sql);
+
+                    $this->create($data);
                     $contadorDias++;
                 }
             }
-            $id = $this->conexion->lastInsertId();
-
-            $consulta = $this->conexion->prepare("SELECT * from bd.personal where id_personal=:id_personal");
-            $consulta->bindParam(":id_personal", $id);
-            $consulta->execute();
-            $data = ($consulta->execute()) ? $consulta->fetch() : false;
-
-            $this->conexion->commit();
-            return ["exito", $data];
+            return ["exito", $data1, $data2];
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
             return $e->getMessage();
         }
     }
 
     //esto es para editar un doctor.
-    public function updateDoctor($cedula, $nombre, $apellido, $telefono, $idUsuario, $idEspecialidad, $email, $nacionalidad, $diasE, $diasN, $diasEditar, $checkeds, $horaEntrada, $horaSalida, $ceduladRegistrada)
+    public function updateDoctor()
     {
         try {
-            $this->conexion->beginTransaction();
 
-            $validar = $this->conexion->prepare("SELECT * from personal where usuario=:idUsuario");
-            $validar->bindParam(":idUsuario", $idUsuario);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data1 = [
+                'idUsuario' => $this->retrunObjectModel()[0]->getIdUsuario()
+            ];
+
+            $data2 = [
+                'nacionalidad' => $this->getNacionalidad(),
+                'cedula' => $this->getCedula(),
+                'nombre' => $this->getNombre(),
+                'apellido' => $this->getApellido(),
+                'telefono' => $this->getTelefono(),
+                'id_espacialidad' => $this->getIdEspecialidad()
+            ];
+
+            $sql = "SELECT * from personal where usuario=:idUsuario";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data1, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del usuario no existe");
             }
 
-            if ($cedula != $ceduladRegistrada && $this->validarCedula($cedula) === "existeC") {
+            if ($this->getCedula() != $this->getCedulaRegistrada() && $this->validarCedula($this->getCedula())) {
                 throw new \Exception("La cédula ya está registrada.");
             }
 
-
-            $consultaU = $this->conexion->prepare('SELECT id_personal FROM personal  WHERE usuario = :id_usuario');
-            $consultaU->bindParam(":id_usuario", $idUsuario);
-            $consultaU->execute();
-            $idPersonal = ($consultaU->execute()) ? $consultaU->fetch() : false;
+            $sql = 'SELECT id_personal FROM personal  WHERE usuario = :idUsuario';
+            $this->setSQL($sql);
+            $idPersonal = $this->search($data1, false);
 
             //Editar el usuario (el usuario del doctor).
-            $consultaDeUsuario = $this->conexion->prepare('UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_especialidad WHERE id_personal=:id_personal');
+            $sql = 'UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_especialidad WHERE id_personal=:id';
 
-            $consultaDeUsuario->bindParam(":cedula", $cedula);
-            $consultaDeUsuario->bindParam(":nombre", $nombre);
-            $consultaDeUsuario->bindParam(":apellido", $apellido);
-            $consultaDeUsuario->bindParam(":telefono", $telefono);
-            $consultaDeUsuario->bindParam(":nacionalidad", $nacionalidad);
-            $consultaDeUsuario->bindParam(":id_personal", $idPersonal["id_personal"]);
-            $consultaDeUsuario->bindParam(":id_especialidad", $_POST["selectEspecialidad"]);
-
-            $consultaDeUsuario->execute();
-
-
-
+            $this->setSQL($sql);
+            $this->update($data2, $idPersonal);
 
             // Editar el usuario (el correo del doctor).
-            $consultaDeUsuario = $this->conexion->prepare('UPDATE segurity.usuario SET correo =:correo WHERE id_usuario=:id_usuario');
-
-            $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
-            $consultaDeUsuario->bindParam(":correo", $email);
-            $consultaDeUsuario->execute();
-
-            $contadorDias = 0;
-            foreach ($checkeds as $idD) {
-                if ($diasN) {
-                    //si el id existe en el array se inserta
-                    if (in_array($idD, $diasN)) {
-                        $sqlHorario = $this->conexion->prepare("INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);");
-                        $sqlHorario->bindParam(":id_personal", $idPersonal["id_personal"]);
-                        $sqlHorario->bindParam(":id_horario", $idD);
-                        $sqlHorario->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
-                        $sqlHorario->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
-                        $sqlHorario->execute();
-                    }
-                }
-                if ($diasEditar) {
-                    //si el id existe en el array se inserta
-                    if (in_array($idD, $diasEditar)) {
-
-                        $sqlHorarioEdi = $this->conexion->prepare("UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada,horaDeSalida=:horaDeSalida WHERE id_personal = :id_personal AND id_horario = :id_horario");
-                        $sqlHorarioEdi->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
-                        $sqlHorarioEdi->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
-                        $sqlHorarioEdi->bindParam(":id_personal", $idPersonal["id_personal"]);
-                        $sqlHorarioEdi->bindParam(":id_horario", $idD);
-                        $sqlHorarioEdi->execute();
-                    }
-                }
-
-                $contadorDias++;
-            }
+            $sql = 'UPDATE segurity.usuario SET correo =:correo WHERE id_usuario=:id_usuario';
+            $this->setSQL($sql);
+            $this->update(['correo' => $this->getEmail()], $this->retrunObjectModel()[0]->getIdUsuario());
 
 
-            // si el id existe es porque se deselecciono y se elimina
-            if ($diasE) {
-                foreach ($diasE as $idE) {
+            // $contadorDias = 0;
+            // foreach ($checkeds as $idD) {
+            //     if ($diasN) {
+            //         //si el id existe en el array se inserta
+            //         if (in_array($idD, $diasN)) {
+            //             $sqlHorario = $this->conexion->prepare("INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);");
+            //             $sqlHorario->bindParam(":id_personal", $idPersonal["id_personal"]);
+            //             $sqlHorario->bindParam(":id_horario", $idD);
+            //             $sqlHorario->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
+            //             $sqlHorario->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
+            //             $sqlHorario->execute();
+            //         }
+            //     }
+            //     if ($diasEditar) {
+            //         //si el id existe en el array se inserta
+            //         if (in_array($idD, $diasEditar)) {
 
-                    $sqlHorarioE = $this->conexion->prepare("DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario");
-                    $sqlHorarioE->bindParam(":id_personal", $idPersonal["id_personal"]);
-                    $sqlHorarioE->bindParam(":id_horario", $idE);
-                    $sqlHorarioE->execute();
-                }
-            }
+            //             $sqlHorarioEdi = $this->conexion->prepare("UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada,horaDeSalida=:horaDeSalida WHERE id_personal = :id_personal AND id_horario = :id_horario");
+            //             $sqlHorarioEdi->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
+            //             $sqlHorarioEdi->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
+            //             $sqlHorarioEdi->bindParam(":id_personal", $idPersonal["id_personal"]);
+            //             $sqlHorarioEdi->bindParam(":id_horario", $idD);
+            //             $sqlHorarioEdi->execute();
+            //         }
+            //     }
 
-            $this->conexion->commit();
+            //     $contadorDias++;
+            // }
+
+
+            // // si el id existe es porque se deselecciono y se elimina
+            // if ($diasE) {
+            //     foreach ($diasE as $idE) {
+
+            //         $sqlHorarioE = $this->conexion->prepare("DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario");
+            //         $sqlHorarioE->bindParam(":id_personal", $idPersonal["id_personal"]);
+            //         $sqlHorarioE->bindParam(":id_horario", $idE);
+            //         $sqlHorarioE->execute();
+            //     }
+            // }
+
+
             return ["exito"];
         } catch (\Exception $e) {
             // $this->conexion->rollBack();
@@ -281,164 +286,194 @@ class ModeloDoctores extends ModelBase
     }
 
     //esto es para editar el estado (en activo a desactivo) del doctor.
-    public function eliminacionLogica($idUsuario)
+    public function eliminacionLogica()
     {
         try {
-            $this->conexion->beginTransaction();
+            $data = [
+                'id_usuario' => $this->retrunObjectModel()[0]->getIdUsuario()
+            ];
 
-            $validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $idUsuario);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del usuario no existe");
             }
 
-            //editar al doctor.
-            $sqlUsuario = 'UPDATE segurity.usuario SET estado = "DES" WHERE id_usuario = :id_usuario ';
-            $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-            $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
+            $sql = 'UPDATE segurity.usuario SET estado = "DES" WHERE id_usuario = :id';
+            $this->setSQL($sql);
 
-            $consultaDeUsuario->execute();
+            $this->update_logic($data['id_usuario']);
 
-            $this->conexion->commit();
             return ["exito"];
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
             return $e->getMessage();
         }
     }
 
-    public function restablecerDoctor($idUsuario)
+    public function restablecerDoctor()
     {
         try {
-            $this->conexion->beginTransaction();
+            $data = [
+                'id_usuario' => $this->retrunObjectModel()[0]->getIdUsuario()
+            ];
 
-            $validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $idUsuario);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo el id no existe");
+            $sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del usuario no existe");
             }
 
-            //editar al doctor.
-            $sqlUsuario = 'UPDATE segurity.usuario SET estado = "ACT" WHERE id_usuario = :id_usuario ';
-            $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-            $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
+            $sql = 'UPDATE segurity.usuario SET estado = "ACT" WHERE id_usuario = :id';
+            $this->setSQL($sql);
 
-            $consultaDeUsuario->execute();
+            $this->update_logic($data['id_usuario']);
 
-            $this->conexion->commit();
             return ["exito"];
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
             return $e->getMessage();
         }
     }
 
-    public function Especialidadregistrar($nombre)
+    public function Especialidadregistrar()
     {
         try {
-            $consulta = $this->conexion->prepare("INSERT INTO especialidad (nombre, estado) VALUES (:nombre, 'ACT')");
-            $consulta->bindParam(":nombre", $nombre);
-            $consulta->execute();
+            $data = [
+                'nombre' => $this->getNombreEspecialidad(),
+                'estado' => 'ACT'
+            ];
+            $sql = "INSERT INTO especialidad (nombre, estado) VALUES (:nombre, :estado)";
+            $this->setSQL($sql);
 
-            $id = $this->conexion->lastInsertId();
-            $consulta = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
-            $consulta->bindParam(":id_entrada", $id);
-            $consulta->execute();
-            $data = ($consulta->execute()) ? $consulta->fetch() : false;
-
-
+            $this->create($data);
             return ["exito", $data];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-    public function Especialidadeliminar($id_especialidad)
+    public function Especialidadeliminar()
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from especialidad where id_especialidad=:id_especialidad");
-            $validar->bindParam(":id_especialidad", $id_especialidad);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data = [
+                'id_especialidad' => $this->getNombreEspecialidad()
+            ];
+
+            $sql = "SELECT * from especialidad where id_especialidad=:id_especialidad";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id de la especialidad no existe");
             }
-            $consulta = $this->conexion->prepare("UPDATE especialidad set estado = 'DES' WHERE id_especialidad = :id_especialidad");
-            $consulta->bindParam(":id_especialidad", $id_especialidad);
-            $consulta->execute();
-            return ['exito'];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-    public function especialidaDbuscar($nombre)
-    {
-        try {
-            $consulta = $this->conexion->prepare("SELECT * FROM especialidad WHERE estado = 'ACT' AND nombre LIKE :nombre");
-            $busqueda = "%$nombre%";
-            $consulta->bindParam(":nombre", $busqueda);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
 
+            $sql = 'UPDATE especialidad SET estado = "ACT" WHERE id_especialidad = :id';
+            $this->setSQL($sql);
 
-    public function doctorBuscar($busqueda)
-    {
-        try {
-            $sql = 'SELECT * FROM usuario u INNER JOIN personal pe ON u.id_usuario = pe.id_usuario INNER JOIN especialidad e ON e.id_especialidad = pe.id_especialidad WHERE pe.cedula = :busqueda AND u.estado = "ACT";';
-            $consulta = $this->conexion->prepare($sql);
-            $consulta->bindParam(":busqueda", $busqueda);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
+            $this->update_logic($data['id_especialidad']);
 
-
-
-
-
-    public function horarioDelDoctor($id_personal)
-    {
-        try {
-            $consulta = $this->conexion->prepare("SELECT pe.id_personal,pe.nombre,pe.apellido,pe.cedula,hyd.horaDeEntrada,hyd.horaDeSalida,h.diaslaborables,h.id_horario FROM bd.horarioydoctor hyd INNER JOIN bd.personal pe ON pe.id_personal = hyd.id_personal INNER JOIN segurity.usuario u ON u.id_usuario = pe.usuario INNER JOIN bd.horario h ON h.id_horario = hyd.id_horario WHERE pe.id_personal =:id_personal AND u.estado = 'ACT' ");
-            $consulta->bindParam(":id_personal", $id_personal);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
-
-    public function RegistrarAdmin($nacionalidad, $cedula, $nombre, $apellido, $telefono, $email, $id_usuario)
-    {
-        try {
-            $validar = $this->conexion->prepare("SELECT * from segurity.usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $id_usuario);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo el id no existe.");
-            }
-            $sql = 'INSERT INTO bd.personal VALUES (Null, :nacionalidad, :cedula, :nombre, :apellido, :telefono, "Administrador", Null, :id_usuario)';
-            $consulta = $this->conexion->prepare($sql);
-            $consulta->bindParam(":nacionalidad", $nacionalidad);
-            $consulta->bindParam(":cedula", $cedula);
-            $consulta->bindParam(":nombre", $nombre);
-            $consulta->bindParam(":apellido", $apellido);
-            $consulta->bindParam(":telefono", $telefono);
-            $consulta->bindParam(":id_usuario", $id_usuario);
-            $consulta->execute();
-            return ['exito'];
+            return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
 
-    public function getIdDoctor(){
+
+    public function horarioDelDoctor()
+    {
+        try {
+            $data = [
+                'id_personal' => $this->getIdDoctor(),
+                'estado' => 'ACT'
+            ];
+
+            $sql = "SELECT pe.id_personal,pe.nombre,pe.apellido,pe.cedula,hyd.horaDeEntrada,hyd.horaDeSalida,h.diaslaborables,h.id_horario FROM bd.horarioydoctor hyd INNER JOIN bd.personal pe ON pe.id_personal = hyd.id_personal INNER JOIN segurity.usuario u ON u.id_usuario = pe.usuario INNER JOIN bd.horario h ON h.id_horario = hyd.id_horario WHERE pe.id_personal =:id_personal AND u.estado =:estado";
+            $this->setSQL($sql);
+            return $this->search($data);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+
+    public function getIdDoctor()
+    {
         return $this->id_doctor;
     }
+
+    public function getCedula()
+    {
+        return $this->cedula;
+    }
+    public function getCedulaRegistrada()
+    {
+        return $this->cedulaRegistrada;
+    }
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    public function getApellido()
+    {
+        return $this->apellido;
+    }
+
+    public function getTelefono()
+    {
+        return $this->telefono;
+    }
+
+    public function getNacionalidad()
+    {
+        return $this->nacionalidad;
+    }
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getIdEspecialidad()
+    {
+        return $this->idEspecialidad;
+    }
+
+    public function getDias()
+    {
+        return $this->dias;
+    }
+
+    public function getHoraEntrada()
+    {
+        return $this->horaEntrada;
+    }
+
+    public function getHoraSalida()
+    {
+        return $this->horaSalida;
+    }
+
+    public function getImagen()
+    {
+        return $this->imagen;
+    }
+
+    public function getNombreEspecialidad()
+    {
+        return $this->especialidad;
+    }
+
+
+
+
+
+
 
     public function setIdDoctor($id_doctor)
     {
@@ -450,5 +485,110 @@ class ModeloDoctores extends ModelBase
             throw new \InvalidArgumentException("El ID del doctor debe ser mayor que cero.");
         }
         $this->id_doctor = $id_doctor;
+    }
+
+    public function setNacionalidad($nacionalidad)
+    {
+        if (!preg_match("/^[A-Z]{1,3}$/", $nacionalidad)) {
+            throw new \InvalidArgumentException("La nacionalidad debe ser V o E.");
+        }
+        $this->nacionalidad = $nacionalidad;
+    }
+
+    public function setCedula($cedula)
+    {
+        if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedula)) {
+            throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
+        }
+        $this->cedula = $cedula;
+    }
+
+    public function setCedulaRegistrada($cedula)
+    {
+        if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/", $cedula)) {
+            throw new \InvalidArgumentException("La cédula registrada debe contener entre 7 y 8 dígitos.");
+        }
+        $this->cedulaRegistrada = $cedula;
+    }
+
+    public function setNombre($nombre)
+    {
+        if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombre)) {
+            throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+        }
+        $this->nombre = $nombre;
+    }
+
+    public function setApellido($apellido)
+    {
+        if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/", $apellido)) {
+            throw new \InvalidArgumentException("El Apellido debe contener solo letras, iniciar con mayúscula y tener al menos 3 caracteres.");
+        }
+        $this->apellido = $apellido;
+    }
+
+    public function setTelefono($telefono)
+    {
+        if (!preg_match("/^(0?)(412|422|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/", $telefono)) {
+            throw new \InvalidArgumentException("El teléfono debe comenzar con un código válido y contener solo números.");
+        }
+        $this->telefono = $telefono;
+    }
+
+    public function setEmail($email)
+    {
+        if (!preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/", $email)) {
+            throw new \InvalidArgumentException("El correo debe estar bien escrito.");
+        }
+        $this->email = $email;
+    }
+
+    public function setIdEspecialidad($id_especialidad)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_especialidad)) {
+            throw new \InvalidArgumentException("El ID del especialidad debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_especialidad <= 0) {
+            throw new \InvalidArgumentException("El ID del especialidad debe ser mayor que cero.");
+        }
+        $this->$id_especialidad = $id_especialidad;
+    }
+
+    public function setDias($dias = [])
+    {
+        if ($dias == []) {
+            throw new \InvalidArgumentException("los dias no puede estar vacio.");
+        }
+        $this->$dias = $dias;
+    }
+
+    public function setHoraEntrada($horaEntrada = [])
+    {
+        if ($horaEntrada == []) {
+            throw new \InvalidArgumentException("las horas de entrada no puede estar vacio.");
+        }
+        $this->$horaEntrada = $horaEntrada;
+    }
+
+    public function setHoraSalida($horaSalida = [])
+    {
+        if ($horaSalida == []) {
+            throw new \InvalidArgumentException("las horas de salida no puede estar vacio.");
+        }
+        $this->$horaSalida = $horaSalida;
+    }
+
+    public function setImagen($imagen)
+    {
+        $this->$imagen = $imagen;
+    }
+
+    public function setNombreEspecialidad($especialidad)
+    {
+        if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $especialidad)) {
+            throw new \InvalidArgumentException("La especialidad debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+        }
+        $this->especialidad = $especialidad;
     }
 }

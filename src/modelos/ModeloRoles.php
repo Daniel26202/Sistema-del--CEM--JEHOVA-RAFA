@@ -10,6 +10,8 @@ class ModeloRoles extends Db
 
     private $conexion;
 
+    private $id_rol;
+
     public function __construct()
     {
         $this->conexion = $this->connectionSegurity();
@@ -203,5 +205,9 @@ class ModeloRoles extends Db
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function getIdRol() {
+        return $this->id_rol;
     }
 }

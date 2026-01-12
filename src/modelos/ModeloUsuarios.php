@@ -10,7 +10,7 @@ class ModeloUsuarios extends Db
 
 
     private $conexion;
-    private $id_usuario;
+    private $id_usuario, $usuario, $password;
 
     public function __construct()
     {
@@ -192,5 +192,14 @@ class ModeloUsuarios extends Db
 
     public function getIdUsuario() {
         return $this->id_usuario;
+    }
+
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+    public function getPassword()
+    {
+        return $this->password;
     }
 }

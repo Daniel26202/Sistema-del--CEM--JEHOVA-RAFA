@@ -205,7 +205,7 @@ class ModeloPacientes extends ModelBase
 	}
 
 
-	public function validarCedula($data, $returnCedula = false)
+	private function validarCedula($data, $returnCedula = false)
 	{
 		try {
 			$sql = "SELECT * FROM paciente WHERE cedula =:cedula";
