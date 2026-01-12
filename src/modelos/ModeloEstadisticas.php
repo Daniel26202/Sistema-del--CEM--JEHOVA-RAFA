@@ -2,27 +2,25 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
 
-class ModeloEstadisticas extends Db
+class ModeloEstadisticas extends ModelBase
 {
 
-  private $conexion;
+  private $fechaInicio, $fechaFinal;
 
-  public function __construct()
+  public function __construct($dbSystem = true)
   {
-    $this->conexion = $this->connectionSistema();
+    parent::__construct($dbSystem);
   }
 
   public function distribucion_edad_genero()
   {
     try {
-      $sql = "SELECT * FROM distribucion_edad_genero
-";
+      $sql = "SELECT * FROM distribucion_edad_genero";
 
-      $consulta = $this->conexion->prepare($sql);
-
-      return ($consulta->execute()) ? $consulta->fetchAll() : false;
+      $this->setSQL($sql);
+      return $this->read();
     } catch (\Exception $e) {
       return $e->getMessage();
     }
@@ -33,21 +31,24 @@ class ModeloEstadisticas extends Db
   {
     try {
       $sql = "SELECT * FROM insumos_estadisticas";
-      $consulta = $this->conexion->prepare($sql);
-
-      return ($consulta->execute()) ? $consulta->fetchAll() : false;
+      $this->setSQL($sql);
+      return $this->read();
     } catch (\Exception $e) {
       return $e->getMessage();
     }
   }
 
-  public function tasa_morbilidad($fechaInicio = "", $fechaFinal = "")
+  public function tasa_morbilidad()
   {
     try {
-      if ($fechaInicio == "" && $fechaFinal == "") {
-        $sql = "SELECT * FROM tasa_morbilidad;
-            ";
-        $consulta = $this->conexion->prepare($sql);
+      $data=[
+        'fechaInicio'=>$this->getFechaInicio(),
+        'fechaFinal'=>$this->getFechaFinal()
+      ];
+      if ($this->getFechaInicio() == "" && $this->getFechaFinal() == "") {
+        $sql = "SELECT * FROM tasa_morbilidad;";
+        $this->setSQL($sql);
+        return $this->read();
       } else {
         $sql = "SELECT
             p.nombre_patologia,
@@ -62,15 +63,60 @@ class ModeloEstadisticas extends Db
           JOIN patologia p ON pp.id_patologia = p.id_patologia WHERE pp.fecha_registro BETWEEN :fechaInicio AND :fechaFinal
           GROUP BY pp.id_patologia
           ORDER BY casos DESC;";
-        $consulta = $this->conexion->prepare($sql);
-        $consulta->bindParam(":fechaInicio", $fechaInicio);
-        $consulta->bindParam(":fechaFinal", $fechaFinal);
+        $this->setSQL($sql);
+        return $this->search($data);
       }
-
-
-      return ($consulta->execute()) ? $consulta->fetchAll() : false;
     } catch (\Exception $e) {
       return $e->getMessage();
     }
+  }
+
+  public function getFechaInicio()
+  {
+    return $this->fechaInicio;
+  }
+
+  public function getFechaFinal()
+  {
+    return $this->fechaFinal;
+  }
+
+  public function setFechaInicio($fechaInicio = '')
+  {
+
+    $dt = \DateTime::createFromFormat('Y-m-d', $fechaInicio);
+    $fechaHoy = date("Y-m-d");
+
+    if ($fechaInicio == '') {
+      $this->fechaInicio = $fechaInicio;
+      return;
+    }
+
+    if (!$dt || $dt->format('Y-m-d') !== $fechaInicio) {
+      throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+    }
+    if ($fechaInicio >= $fechaHoy) {
+      throw new \InvalidArgumentException("La fecha no puede ser del futuro.");
+    }
+    $this->fechaInicio = $fechaInicio;
+  }
+
+  public function setFechaFinal($fechaFinal = '')
+  {
+    $dt = \DateTime::createFromFormat('Y-m-d', $fechaFinal);
+    $fechaHoy = date("Y-m-d");
+
+    if ($fechaFinal == '') {
+      $this->fechaFinal = $fechaFinal;
+      return;
+    }
+
+    if (!$dt || $dt->format('Y-m-d') !== $fechaFinal) {
+      throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+    }
+    if ($fechaFinal >= $fechaHoy) {
+      throw new \InvalidArgumentException("La fecha no puede ser del futuro.");
+    }
+    $this->fechaFinal = $fechaFinal;
   }
 }
