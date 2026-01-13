@@ -65,9 +65,11 @@ class Rutas
                         } else {
                             $permiso = $this->equivalentes[$metodo] ?? $metodo;
 
+                            $this->modelo->setIdRol($_SESSION['id_rol']);
+                            $this->modelo->setPermiso('%'.$permiso.'%');
+                            $this->modelo->setModulo($modulo);
                             
-                            $permitido = $this->modelo->gestionarPermisos(10?? null, $permiso, $modulo);
-
+                            $permitido = $this->modelo->gestionarPermisos();
                     
                             if (!$permitido) {
                                 echo "Error 404 ";

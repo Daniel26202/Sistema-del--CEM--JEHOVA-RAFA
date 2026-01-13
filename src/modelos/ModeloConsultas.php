@@ -300,7 +300,7 @@ class ModeloConsultas extends ModelBase
     }
     public function getTipo()
     {
-        return $this->id_servicioMedico;
+        return $this->tipo;
     }
 
 

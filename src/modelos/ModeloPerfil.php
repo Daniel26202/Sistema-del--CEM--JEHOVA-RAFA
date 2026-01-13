@@ -1,15 +1,16 @@
 <?php  
 namespace App\modelos;
-use App\modelos\Db;
+use App\modelos\ModelBase;
 
-class ModeloPerfil extends Db{
+class ModeloPerfil extends ModelBase{
 	
 	private $conexion;
 
-	public function __construct()
+	public function __construct($dbSystem = true)
 	{
-		$this->conexion = $this->connectionSegurity();
+		parent::__construct($dbSystem);
 	}
+	
 	public function seleccionarUsuario($usuario){
 		$consulta = $this->conexion->prepare("SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario");
 		

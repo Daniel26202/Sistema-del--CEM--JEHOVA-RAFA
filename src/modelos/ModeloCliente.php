@@ -10,7 +10,7 @@ class ModeloCliente extends ModelBase
     private $id_cliente, $nacionalidad, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $direccion, $fn, $genero;
 
 
-    public function __construct($dbSystem)
+    public function __construct($dbSystem =  true)
     {
         parent::__construct($dbSystem);
     }

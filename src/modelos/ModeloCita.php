@@ -12,7 +12,7 @@ class ModeloCita extends ModelBase
 	private $id_cita, $id_servicioMedico, $fecha, $hora, $estado, $doctor;
 
 
-	public function __construct($dbSystem)
+	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
 	}
