@@ -2,86 +2,106 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
+use App\modelos\ModeloFactura;
 use App\modelos\ModeloInsumo;
 
 
-class ModeloReporte extends Db
+class ModeloReporte extends ModelBase
 {
 
-	private $conexion;
-	private $modelo_insumo;
 
-	public function __construct()
+	private $fechaInicio, $fechaFinal;
+
+	public function __construct($dbSystem = true)
 	{
-		$this->conexion = $this->connectionSistema();
-		$this->modelo_insumo = new ModeloInsumo;
+		parent::__construct($dbSystem);
+	}
+
+	private function retrunObjectModel()
+	{
+		return [new ModeloFactura(), new ModeloInsumo];
 	}
 
 	public function consultarFactura()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC ;");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC ;";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
-	public function consultarFacturaPDF($id_factura)
+	public function consultarFacturaPDF()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.nombre AS categoria_servicio, d.nombre AS nombre_d, d.apellido AS apellido_d,e.nombre AS especialidad, p.nombre AS nombre_p, p.apellido AS apellido_p, p.nacionalidad, p.cedula AS cedula_p , f.*,c.*,sm.precio AS precio_servicio FROM factura f INNER JOIN cita c ON f.id_cita =c.id_cita  INNER JOIN paciente p ON c.id_paciente = p.id_paciente INNER JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico INNER JOIN personal d ON sm.id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN usuario u ON d.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs on cs.id_categoria = sm.id_categoria WHERE id_factura =:id_factura ");
-			$consulta->bindParam(":id_factura", $id_factura);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = ['id_factura' => $this->retrunObjectModel()[0]->getIdFactura()];
+			$sql = "SELECT cs.nombre AS categoria_servicio, d.nombre AS nombre_d, d.apellido AS apellido_d,e.nombre AS especialidad, p.nombre AS nombre_p, p.apellido AS apellido_p, p.nacionalidad, p.cedula AS cedula_p , f.*,c.*,sm.precio AS precio_servicio FROM factura f INNER JOIN cita c ON f.id_cita =c.id_cita  INNER JOIN paciente p ON c.id_paciente = p.id_paciente INNER JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico INNER JOIN personal d ON sm.id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN usuario u ON d.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs on cs.id_categoria = sm.id_categoria WHERE id_factura =:id_factura";
+			$this->setSQL($sql);
+			return $this->search($data, false);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
-	public function consultarReporteFactura($fechaInicio, $fechaFinal)
+	public function consultarReporteFactura()
 	{
+
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente  WHERE f.fecha BETWEEN :fechaInicio AND :fechaFinal AND f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC
-");
-			$consulta->bindParam(":fechaInicio", $fechaInicio);
-			$consulta->bindParam(":fechaFinal", $fechaFinal);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = [
+				'fechaInicio' => $this->getFechaInicio(),
+				'fechaFinal' => $this->getFechaFinal()
+
+			];
+			$sql = "SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente  WHERE f.fecha BETWEEN :fechaInicio AND :fechaFinal AND f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
-	public function consultarReporteFacturaAnuladas($fechaInicioAnulada, $fechaFinalAnulada)
+	public function consultarReporteFacturaAnuladas()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.fecha BETWEEN :fechaInicioAnulada AND :fechaFinalAnulada AND f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC
-");
-			$consulta->bindParam(":fechaInicioAnulada", $fechaInicioAnulada);
-			$consulta->bindParam(":fechaFinalAnulada", $fechaFinalAnulada);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = [
+				'fechaInicio' => $this->getFechaInicio(),
+				'fechaFinal' => $this->getFechaFinal(),
+				'estado' => 'Anulada'
+			];
+
+			$sql = "SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.fecha BETWEEN :fechaInicio AND :fechaFinal AND f.id_factura = f.id_factura AND f.estado=:estado ORDER BY id_factura ASC";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 	public function consultarFacturaAnuladas()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC");
-
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.id_factura = f.id_factura AND f.estado='Anulada' ORDER BY id_factura ASC";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
-	public function Citaspdf($desdeFecha, $fechaHasta)
+	public function Citaspdf()
 	{
 		try {
-			$consulta = $this->conexion->prepare(" SELECT p.nacionalidad, d.nombre AS nombre_d, d.apellido AS apellido_d,s.*, p.id_paciente, p.cedula AS cedula_p, p.nombre AS nombre_p, p.apellido AS apellido_p, p.telefono AS telefono_p, c.id_cita, c.fecha, c.hora, c.estado, e.nombre AS especialidad, e.id_especialidad FROM paciente p INNER JOIN cita c ON p.id_paciente = c.paciente_id_paciente INNER JOIN serviciomedico s ON s.id_servicioMedico = c.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico ps ON s.id_servicioMedico =  ps.serviciomedico_id_servicioMedico INNER JOIN personal d ON ps.personal_id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN segurity.usuario u ON u.id_usuario = d.usuario WHERE c.fecha BETWEEN :desdeFecha AND :fechaHasta AND (c.estado = 'Pendiente' OR c.estado = 'Realizadas')");
-			$consulta->bindParam(":desdeFecha", $desdeFecha);
-			$consulta->bindParam(":fechaHasta", $fechaHasta);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = [
+				'fechaInicio' => $this->getFechaInicio(),
+				'fechaFinal' => $this->getFechaFinal(),
+				'estado' => 'Anulada'
+			];
+
+			$sql = "SELECT p.nacionalidad, d.nombre AS nombre_d, d.apellido AS apellido_d,s.*, p.id_paciente, p.cedula AS cedula_p, p.nombre AS nombre_p, p.apellido AS apellido_p, p.telefono AS telefono_p, c.id_cita, c.fecha, c.hora, c.estado, e.nombre AS especialidad, e.id_especialidad FROM paciente p INNER JOIN cita c ON p.id_paciente = c.paciente_id_paciente INNER JOIN serviciomedico s ON s.id_servicioMedico = c.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico ps ON s.id_servicioMedico =  ps.serviciomedico_id_servicioMedico INNER JOIN personal d ON ps.personal_id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN segurity.usuario u ON u.id_usuario = d.usuario WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal AND (c.estado = 'Pendiente' OR c.estado = 'Realizadas')";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -91,23 +111,27 @@ class ModeloReporte extends Db
 	{
 
 		try {
-			if ($desdeFecha != "" && $fechaHasta != "") {
-				$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND e.fechaDeIngreso BETWEEN :desdeFecha AND :fechaHasta AND ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY e.fechaDeIngreso";
+			if ($this->getFechaInicio() != "" && $this->getFechaFinal() != "") {
+				$data = [
+					'fechaInicio' => $this->getFechaInicio(),
+					'fechaFinal' => $this->getFechaFinal(),
+					'id_insumo' => $this->retrunObjectModel()[1]->getIdInsumo()
+				];
 
-				$consulta = $this->conexion->prepare($sql);
-				$consulta->bindParam(":desdeFecha", $desdeFecha);
-				$consulta->bindParam(":fechaHasta", $fechaHasta);
+				$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND e.fechaDeIngreso BETWEEN :fechaInicio AND :fechaFinal AND ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY e.fechaDeIngreso";
+
+				$this->setSQL($sql);
+				return $this->search($data);
 			} else {
+				$data = [
+					'id_insumo' => $this->retrunObjectModel()[1]->getIdInsumo()
+				];
 				$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY e.fechaDeIngreso";
-				$consulta = $this->conexion->prepare($sql);
+				$this->setSQL($sql);
+				return $this->search($data);
 			}
-
-
-			$consulta->bindParam(":id_insumo", $id_insumo);
-
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -117,97 +141,122 @@ class ModeloReporte extends Db
 	public function pdfPaciente()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM paciente WHERE estado = 'ACT'");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT * FROM paciente WHERE estado = 'ACT'";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 	public function pdfInsumos()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad >= 0  GROUP BY inv.id_insumo ");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT *,inv.cantidad as cantidad_inventario  FROM inventario inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad >= 0  GROUP BY inv.id_insumo ";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
-	public function consultarPagoFactura($id_factura)
+	public function consultarPagoFactura()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT pf.* , p.nombre
+			$data = [
+				'id_factura' => $this->retrunObjectModel()[0]->getIdFactura()
+			];
+			$sql = "SELECT pf.* , p.nombre
     		FROM pago p INNER JOIN pagodefactura pf ON p.id_pago = pf.id_pago
-    		INNER JOIN factura f ON pf.id_factura = f.id_factura WHERE f.id_factura =:id_factura");
-			$consulta->bindParam(":id_factura", $id_factura);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+    		INNER JOIN factura f ON pf.id_factura = f.id_factura WHERE f.id_factura =:id_factura";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
-	public function consultarServiciosExtras($id_factura)
+	public function consultarServiciosExtras()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.nombre As categoria_servicio, sf.*,s.*,p.nombre AS nombre_d, p.apellido AS apellido_d FROM serviciomedico_has_factura sf INNER JOIN personal p  ON sf.doctor = p.id_personal INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria  WHERE factura_id_factura =:id_factura  ");
-			$consulta->bindParam(":id_factura", $id_factura);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = [
+				'id_factura' => $this->retrunObjectModel()[0]->getIdFactura()
+			];
+			$sql = "SELECT cs.nombre As categoria_servicio, sf.*,s.*,p.nombre AS nombre_d, p.apellido AS apellido_d FROM serviciomedico_has_factura sf INNER JOIN personal p  ON sf.doctor = p.id_personal INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria  WHERE factura_id_factura =:id_factura ";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
-	public function consultarFacturaInsumo($id_factura)
+	public function consultarFacturaInsumo()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.id_entradaDeInsumo INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura");
-			$consulta->bindParam(":id_factura", $id_factura);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = [
+				'id_factura' => $this->retrunObjectModel()[0]->getIdFactura()
+			];
+			$sql = "SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.id_entradaDeInsumo INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
-	public function consultarcitafactura($id_factura)
+	public function consultarcitafactura()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT cs.nombre AS categoria_servicio, d.nombre AS nombre_d, d.apellido AS apellido_d,e.nombre AS especialidad, p.nombre AS nombre_p, p.apellido AS apellido_p, p.nacionalidad, p.cedula AS cedula_p , f.*,c.*,sm.precio AS precio_servicio FROM factura f INNER JOIN cita c ON f.id_cita =c.id_cita  INNER JOIN paciente p ON c.id_paciente = p.id_paciente INNER JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico INNER JOIN personal d ON sm.id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN usuario u ON d.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs on cs.id_categoria = sm.id_categoria   WHERE id_factura =:id_factura ");
-			$consulta->bindParam(":id_factura", $id_factura);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = [
+				'id_factura' => $this->retrunObjectModel()[0]->getIdFactura()
+			];
+			$sql = "SELECT cs.nombre AS categoria_servicio, d.nombre AS nombre_d, d.apellido AS apellido_d,e.nombre AS especialidad, p.nombre AS nombre_p, p.apellido AS apellido_p, p.nacionalidad, p.cedula AS cedula_p , f.*,c.*,sm.precio AS precio_servicio FROM factura f INNER JOIN cita c ON f.id_cita =c.id_cita  INNER JOIN paciente p ON c.id_paciente = p.id_paciente INNER JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico INNER JOIN personal d ON sm.id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN usuario u ON d.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs on cs.id_categoria = sm.id_categoria   WHERE id_factura =:id_factura  ";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
-	public function anularFac($id_factura)
+	public function anularFac()
 	{
 		try {
-			$consulta = $this->conexion->prepare("UPDATE factura SET estado = 'Anulada' WHERE id_factura = :id_factura");
-			$consulta->bindParam(":id_factura", $id_factura);
-			if ($consulta->execute()) {
-				$consulta2 =  $this->conexion->prepare("CALL devolver_cantidad_insumos(:id_factura);");
-				$consulta2->bindParam(":id_factura", $id_factura);
-				$consulta2->execute();
-			}
-			return "exito";
+			$data = [
+				'id_factura' => $this->retrunObjectModel()[0]->getIdFactura()
+			];
+			$sql = "UPDATE factura SET estado = 'Anulada' WHERE id_factura = :id";
+			$this->setSQL($sql);
+			$this->update_logic($data['id_factura']);
+			// Nota hay que revisar esto
+			// if ($consulta->execute()) {
+			// 	$consulta2 =  $this->conexion->prepare("CALL devolver_cantidad_insumos(:id_factura);");
+			// 	$consulta2->bindParam(":id_factura", $id_factura);
+			// 	$consulta2->execute();
+			// }
+			return ['exito'];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
-	public function consultarFacturaSinCita($id_factura)
+	public function consultarFacturaSinCita()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT p.nacionalidad, p.nombre AS  nombre_p,p.apellido AS apellido_p,p.cedula AS cedula_p,f.* FROM factura f INNER JOIN paciente p ON f.paciente_id_paciente = p.id_paciente WHERE f.id_factura =:id_factura");
-			$consulta->bindParam(":id_factura", $id_factura);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = [
+				'id_factura' => $this->retrunObjectModel()[0]->getIdFactura()
+			];
+			$sql = "SELECT p.nacionalidad, p.nombre AS  nombre_p,p.apellido AS apellido_p,p.cedula AS cedula_p,f.* FROM factura f INNER JOIN paciente p ON f.paciente_id_paciente = p.id_paciente WHERE f.id_factura =:id_factura ";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
-	public function insumosAnulados($id_factura)
+	public function insumosAnulados()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT i.id_insumo, i.numero_de_lote FROM inventario i INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo INNER JOIN factura_has_inventario idf ON idf.inventario_id_inventario = i.id_inventario WHERE idf.factura_id_factura=:id_factura");
-			$consulta->bindParam(":id_factura", $id_factura);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$data = [
+				'id_factura' => $this->retrunObjectModel()[0]->getIdFactura()
+			];
+			$sql = "SELECT i.id_insumo, i.numero_de_lote FROM inventario i INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo INNER JOIN factura_has_inventario idf ON idf.inventario_id_inventario = i.id_inventario WHERE idf.factura_id_factura=:id_factura";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -275,5 +324,50 @@ class ModeloReporte extends Db
 		} catch (\Exception $e) {
 			return 0;
 		}
+	}
+
+	public function getFechaInicio()
+	{
+		return $this->fechaInicio;
+	}
+
+	public function getFechaFinal()
+	{
+		return $this->fechaFinal;
+	}
+
+
+	public function setFechaInicio($fechaInicio)
+	{
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaInicio);
+		$fechaHoy = date("Y-m-d");
+
+		if (!$dt || $dt->format('Y-m-d') !== $fechaInicio) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+		}
+		if ($fechaInicio >= $fechaHoy) {
+			throw new \InvalidArgumentException("La fecha no puede ser del futuro.");
+		}
+		if ($fechaInicio >= $this->getFechaFinal()) {
+			throw new \InvalidArgumentException("La fecha de inicio no puede ser mayor o igual a la fecha final.");
+		}
+		$this->fechaInicio = $fechaInicio;
+	}
+
+	public function setFinal($fechaFinal)
+	{
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaFinal);
+		$fechaHoy = date("Y-m-d");
+
+		if (!$dt || $dt->format('Y-m-d') !== $fechaFinal) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+		}
+		if ($fechaFinal >= $fechaHoy) {
+			throw new \InvalidArgumentException("La fecha no puede ser del futuro.");
+		}
+		if ($fechaFinal <= $this->getFechaInicio()) {
+			throw new \InvalidArgumentException("La fecha final no puede ser menor o igual a la fecha de inicio.");
+		}
+		$this->fechaFinal = $fechaFinal;
 	}
 }

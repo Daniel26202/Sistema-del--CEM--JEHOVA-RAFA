@@ -1,40 +1,48 @@
 <?php
+
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
+use App\modelos\ModeloUsuarios;
 
-class ModeloRecuperarContr extends Db
+class ModeloRecuperarContr extends ModelBase
 {
 
-    private $conexion;
 
-    public function __construct()
+    public function __construct($dbSystem = false)
     {
-        $this->conexion = $this->connectionSegurity();
+        parent::__construct($dbSystem);
+    }
+
+    private function retrunObjectModel()
+    {
+        return new ModeloUsuarios;
     }
 
     // valido el usuario y el correo
-    public function validarUC($usuario, $cE)
+    public function validarUC()
     {
-        $consulta = $this->conexion->prepare("SELECT id_usuario, usuario, correo FROM usuario WHERE usuario = :usuario AND correo = :ce AND estado = 'ACT'");
-        $consulta->bindParam(":usuario", $usuario);
-        $consulta->bindParam(":ce", $cE);
-
-        return ($consulta->execute()) ? $consulta->fetch() : false;
+        $data=[
+            'usuario'=>$this->retrunObjectModel()->getUsuario(),
+            'correo'=>$this->retrunObjectModel()->getCorreo(),
+            'estado'=>'ACT'
+        ];
+        $sql = "SELECT id_usuario, usuario, correo FROM usuario WHERE usuario = :usuario AND correo = :correo AND estado =:estado";
+        $this->setSQL($sql);
+        return $this->search($data, false);
     }
 
 
-    public function updatePassword($id_usuario, $password)
+    public function updatePassword()
     {
 
-            $consulta = $this->conexion->prepare('UPDATE usuario SET  password = :password WHERE id_usuario = :id_usuario');
-            
-            $consulta->bindParam(":password", $password);
-            $consulta->bindParam(":id_usuario", $id_usuario);
-            $consulta->execute();
-
+        $data = [
+            'password' => $this->retrunObjectModel()->getPassword()
+        ];
+        $sql = "UPDATE usuario SET  password = :password WHERE id_usuario = :id";
+        $this->setSQL($sql);
+        return $this->search($data, $this->retrunObjectModel()->getIdUsuario());
     }
-    
+
+
 }
-
-?>

@@ -18,7 +18,7 @@ class ModeloFactura extends ModelBase
 
 	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos, $cantidad, $montosDePago, $referencia, $doctor;
 
-	public function __construct($dbSystem)
+	public function __construct($dbSystem =true)
 	{
 		parent::__construct($dbSystem);
 	}

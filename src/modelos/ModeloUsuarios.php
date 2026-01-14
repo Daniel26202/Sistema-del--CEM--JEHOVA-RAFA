@@ -2,29 +2,25 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModelBase;
 
 
-class ModeloUsuarios extends Db
+class ModeloUsuarios extends ModelBase
 {
 
+    private $id_usuario, $usuario, $password, $correo;
 
-    private $conexion;
-    private $id_usuario, $usuario, $password;
-
-    public function __construct()
+    public function __construct($dbSystem =false)
     {
-        $this->conexion = $this->connectionSegurity();
+        parent::__construct($dbSystem);
     }
     //buscamos a los usuarios en la base de datos
     public function select()
     {
         try {
             $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS NOT null';
-
-            $consulta = $this->conexion->prepare($sql);
-
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -35,24 +31,29 @@ class ModeloUsuarios extends Db
     public function selectAdmin()
     {
         try {
-            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS null ';
-            $consulta = $this->conexion->prepare($sql);
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS null';
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
     //validar usuario
-    public function validarUsuario($usuario)
+    private function validarUsuario($data, $returnUsuario)
     {
-        $consulta = $this->conexion->prepare("SELECT * FROM usuario WHERE usuario =:usuario");
+        try {
+            $sql = "SELECT * FROM usuario WHERE usuario =:usuario";
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
 
-        $consulta->bindParam(":usuario", $usuario);
-        $consulta->execute();
-
-        while ($consulta->fetch()) {
-            return "existeU";
+            if ($returnUsuario) {
+                return !empty($listData) ? $listData['usuario'] : 0;
+            } else {
+                return !empty($listData) ? 1 : 0;
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
     }
 
@@ -201,5 +202,44 @@ class ModeloUsuarios extends Db
     public function getPassword()
     {
         return $this->password;
+    }
+    public function getCorreo()
+    {
+        return $this->correo;
+    }
+
+
+    public function setIdUsuario($id_usuario)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_usuario)) {
+            throw new \InvalidArgumentException("El ID del usuario debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_usuario <= 0) {
+            throw new \InvalidArgumentException("El ID del usuario debe ser mayor que cero.");
+        }
+
+        $this->id_usuario = (int)$id_usuario;
+    }
+
+    public function setUsuario($usuario)
+    {
+        if (!preg_match("/^[a-zA-Z0-9._-]{8,16}$/", $usuario)) {
+            throw new \InvalidArgumentException("El usuario esta mal escrito.");
+        }
+        $this->usuario = $usuario;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function setCorreo($correo)
+    {
+        if (!preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/", $correo)) {
+            throw new \InvalidArgumentException("El correo debe estar bien escrito.");
+        }
+        $this->correo = $correo;
     }
 }

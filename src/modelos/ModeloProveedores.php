@@ -2,27 +2,26 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
-use App\config\Validations;
+use App\modelos\ModelBase;
 
-class ModeloProveedores extends Db
+class ModeloProveedores extends ModelBase
 {
 
-	private $conexion;
-	public function __construct()
+	private $id_proveedor, $nombre, $rif, $rif_registrado, $telefono, $email, $direccion;
+	public function __construct($dbSystem = true)
 	{
-		$this->conexion = $this->connectionSistema();
+		parent::__construct($dbSystem);
 	}
 
 
 	public function consultar()
 	{
 		try {
-			$sql = $this->conexion->prepare("SELECT * FROM proveedor WHERE estado='ACT' ");
-			$sql->execute();
-			return $sql->fetchAll();
+			$sql = "SELECT * FROM proveedor WHERE estado='ACT' ";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -30,47 +29,34 @@ class ModeloProveedores extends Db
 	public function papeleraConsultar()
 	{
 		try {
-			$sql = $this->conexion->prepare("SELECT * FROM proveedor WHERE estado='DES' ");
-			$sql->execute();
-			return $sql->fetchAll();
+			$sql = "SELECT * FROM proveedor WHERE estado='DES' ";
+			$this->setSQL($sql);
+			return $this->read();
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
-	public function agregar($nombre, $rif, $telefono, $email, $direccion)
+	public function agregar()
 	{
 		try {
+			$data = [
+				'nombre' => $this->getNombre(),
+				'rif' => $this->getRif(),
+				'telefono' => $this->getTelefono(),
+				'email' => $this->getEmail(),
+				'direccion' => $this->getDireccion(),
+				'estado' => 'ACT'
+			];
 
-
-			$validaciones  = Validations::validationRules($nombre, $telefono, $rif, $email, $direccion);
-
-
-			foreach ($validaciones as $v) {
-				if (!preg_match($v['regex'], $v['valor'])) {
-					throw new \Exception($v['mensaje']);
-				}
-			}
-
-			if ($this->validarRif($rif) === "existeC") {
+			if ($this->validarRif(['rif' => $this->getRif()])) {
 				throw new \Exception("El rif ya existe en el sistema.");
 			}
 
-			$sql = $this->conexion->prepare("INSERT INTO proveedor(nombre, rif, telefono, email, direccion, estado) VALUES (:nombre, :rif, :telefono, :email, :direccion, 'ACT');");
-			$sql->bindParam(":nombre", $nombre);
-			$sql->bindParam(":rif", $rif);
-			$sql->bindParam(":telefono", $telefono);
-			$sql->bindParam(":email", $email);
-			$sql->bindParam(":direccion", $direccion);
-			$sql->execute();
+			$sql = "INSERT INTO proveedor(nombre, rif, telefono, email, direccion, estado) VALUES (:nombre, :rif, :telefono, :email, :direccion, :estado);";
 
-            $id = $this->conexion->lastInsertId();
-
-			$consulta = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
-			$consulta->bindParam(":id_proveedor", $id);
-			$consulta->execute();
-			$data = ($consulta->execute()) ? $consulta->fetch() : false;
-
+			$this->setSQL($sql);
+			$this->create($data);
 			return ["exito", $data];
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -78,36 +64,52 @@ class ModeloProveedores extends Db
 	}
 
 	// eliminación logica
-	public function update($id_proveedor)
+	public function delte()
 	{
 		try {
-			$validar = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
-			$validar->bindParam(":id_proveedor", $id_proveedor);
-			$validar->execute();
-			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo el id no existe");
+			$data = [
+				'id_proveedor' => $this->getIdProveedor()
+			];
+
+			$sql = "SELECT * from proveedor where id_proveedor=:id_proveedor";
+			$this->setSQL($sql);
+
+			$validar  = $this->search($data, false);
+
+			if ($validar == []) {
+				throw new \Exception("El id del proveedor no existe");
 			}
-			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='DES' WHERE id_proveedor = :id_proveedor;");
-			$sql->bindParam(":id_proveedor", $id_proveedor);
-			$sql->execute();
+
+			$sql = "UPDATE proveedor SET estado = 'DES' WHERE id_proveedor =:id";
+			$this->setSQL($sql);
+
+			$this->update_logic($data['id_proveedor']);
 			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
 
-	public function restablecerProveedor($id_proveedor)
+	public function restablecerProveedor()
 	{
 		try {
-			$validar = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
-			$validar->bindParam(":id_proveedor", $id_proveedor);
-			$validar->execute();
-			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo el id no existe");
+			$data = [
+				'id_proveedor' => $this->getIdProveedor()
+			];
+
+			$sql = "SELECT * from proveedor where id_proveedor=:id_proveedor";
+			$this->setSQL($sql);
+
+			$validar  = $this->search($data, false);
+
+			if ($validar == []) {
+				throw new \Exception("El id del proveedor no existe");
 			}
-			$sql = $this->conexion->prepare("UPDATE proveedor SET estado='ACT' WHERE id_proveedor = :id_proveedor");
-			$sql->bindParam(":id_proveedor", $id_proveedor);
-			$sql->execute();
+
+			$sql = "UPDATE proveedor SET estado = 'ACT' WHERE id_proveedor =:id";
+			$this->setSQL($sql);
+
+			$this->update_logic($data['id_proveedor']);
 			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -115,62 +117,162 @@ class ModeloProveedores extends Db
 	}
 
 
-	public function editar($id_proveedor, $nombre, $rif, $telefono, $email, $direccion, $rifRegistrado)
+	public function editar()
 	{
 		try {
-			$validaciones  = Validations::validationRules($nombre, $telefono, $rif, $email, $direccion);
+
+			$data1 = [
+				'nombre' => $this->getNombre(),
+				'rif' => $this->getRif(),
+				'telefono' => $this->getTelefono(),
+				'email' => $this->getEmail(),
+				'direccion' => $this->getDireccion()
+			];
+
+			$data2 = [
+				'id_proveedor' => $this->getIdProveedor(),
+			];
 
 
-			foreach ($validaciones as $v) {
-				if (!preg_match($v['regex'], $v['valor'])) {
-					throw new \Exception($v['mensaje']);
+			$sql = "SELECT * from proveedor where id_proveedor=:id_proveedor";
+			$this->setSQL($sql);
+
+			$validar  = $this->search($data2, false);
+
+			if ($validar == []) {
+				throw new \Exception("El id del proveedor no existe");
+			}
+
+			$rif = $this->validarRif(['rif' => $this->getRif()], true);
+
+
+			if ($this->getRifRegistrado() == $rif) {
+				$sql = "UPDATE proveedor SET nombre =:nombre, rif =:rif, telefono =:telefono, email=:email, direccion=:direccion WHERE id_proveedor = :id";
+
+				$this->setSQL($sql);
+				$this->update($data1, $this->getIdProveedor());
+			} else {
+				// Validación de cédula duplicada
+				if ($this->validarRif(['rif' => $this->getRif()])) {
+					throw new \Exception("El Rif ya está registrado.");
+				} else {
+					$sql = "UPDATE proveedor SET nombre =:nombre, rif =:rif, telefono =:telefono, email=:email, direccion=:direccion WHERE id_proveedor = :id";
+
+					$this->setSQL($sql);
+					$this->update($data1, $this->getIdProveedor());
 				}
 			}
-
-
-			if($rifRegistrado == $rif){
-
-			}else{
-				if ($this->validarRif($rif) === "existeC") {
-					throw new \Exception("El rif ya existe en el sistema.");
-				}
-			}
-
-			$validar = $this->conexion->prepare("SELECT * from proveedor where id_proveedor=:id_proveedor");
-			$validar->bindParam(":id_proveedor", $id_proveedor);
-			$validar->execute();
-			if ($validar->rowCount() <= 0) {
-				throw new \Exception("Fallo el id no existe");
-			}
-			$sql = $this->conexion->prepare("UPDATE proveedor SET nombre =:nombre, rif =:rif, telefono =:telefono, email=:email, direccion=:direccion WHERE id_proveedor = :id_proveedor");
-			$sql->bindParam(":nombre", $nombre);
-			$sql->bindParam(":rif", $rif);
-			$sql->bindParam(":telefono", $telefono);
-			$sql->bindParam(":email", $email);
-			$sql->bindParam(":direccion", $direccion);
-			$sql->bindParam(":id_proveedor", $id_proveedor);
-			$sql->execute();
-			
-			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
 
-	public function validarRif($rif)
+	private function validarRif($data, $returnRif = false)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM proveedor WHERE rif =:rif");
+			$sql = "SELECT * FROM proveedor WHERE rif =:rif";
+			$this->setSQL($sql);
+			$listData = $this->search($data, false);
 
-			$consulta->bindParam(":rif", $rif);
-			$consulta->execute();
-
-			while ($consulta->fetch()) {
-				return "existeC";
+			if ($returnRif) {
+				return !empty($listData) ? $listData['rif'] : 0;
+			} else {
+				return !empty($listData) ? 1 : 0;
 			}
-			return "noExiste";
 		} catch (\Exception $e) {
 			return 0;
 		}
+	}
+
+
+
+	public function getIdProveedor()
+	{
+		return $this->id_proveedor;
+	}
+	public function getNombre()
+	{
+		return $this->nombre;
+	}
+	public function getRif()
+	{
+		return $this->rif;
+	}
+	public function getRifRegistrado()
+	{
+		return $this->rif_registrado;
+	}
+	public function getTelefono()
+	{
+		return $this->telefono;
+	}
+	public function getEmail()
+	{
+		return $this->email;
+	}
+
+	public function getDireccion()
+	{
+		return $this->direccion;
+	}
+
+
+
+
+	public function setIdPaciente($id_proveedor)
+	{
+		if (!preg_match("/^[0-9]+$/", $id_proveedor)) {
+			throw new \InvalidArgumentException("El ID del paciente debe ser un número entero positivo.");
+		}
+
+		if ((int)$id_proveedor <= 0) {
+			throw new \InvalidArgumentException("El ID del paciente debe ser mayor que cero.");
+		}
+
+		$this->id_proveedor = (int)$id_proveedor;
+	}
+
+	public function setNombre($nombre)
+	{
+		if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombre)) {
+			throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+		}
+		$this->nombre = $nombre;
+	}
+
+
+	public function setRif($rif)
+	{
+		$this->rif = $rif;
+	}
+
+	public function setRifRegistrado($rif)
+	{
+		$this->rif_registrado = $rif;
+	}
+
+
+	public function setTelefono($telefono)
+	{
+		if (!preg_match("/^(0?)(412|422|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/", $telefono)) {
+			throw new \InvalidArgumentException("El teléfono debe comenzar con un código válido y contener solo números.");
+		}
+		$this->telefono = $telefono;
+	}
+
+	public function setEmail($email)
+	{
+		if (!preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/", $email)) {
+			throw new \InvalidArgumentException("El correo debe estar bien escrito.");
+		}
+		$this->email = $email;
+	}
+
+	public function setDireccion($direccion)
+	{
+		if (!preg_match("/^([A-Za-z0-9\s\.,#-]{8,})$/", $direccion)) {
+			throw new \InvalidArgumentException("La dirección debe estar completa y detallada.");
+		}
+		$this->direccion = $direccion;
 	}
 }

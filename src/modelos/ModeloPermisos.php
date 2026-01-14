@@ -4,7 +4,7 @@ use App\modelos\ModelBase;
 
 class ModeloPermisos extends ModelBase{
 	
-	private $id_rol, $permiso, $modulo;
+	private $id_rol, $permiso, $modulo, $permisos, $modulos;
 
     public function __construct($dbSystem=false)
     {
@@ -38,6 +38,16 @@ class ModeloPermisos extends ModelBase{
         return $this->permiso;
     }
 
+    public function getPermisos()
+    {
+        return $this->permisos;
+    }
+
+    public function getModulos()
+    {
+        return $this->modulos;
+    }
+
     public function setIdRol($id_rol)
     {
         if (!preg_match("/^[0-9]+$/", $id_rol)) {
@@ -63,6 +73,24 @@ class ModeloPermisos extends ModelBase{
         }
 
         $this->permiso=$permiso;
+    }
+
+    public function setPermisos($permisos)
+    {
+        if (is_array($permisos)) {
+            throw new \InvalidArgumentException("El permisos no es valido.");
+        }
+
+        $this->permisos = $permisos;
+    }
+
+    public function setModulos($modulos)
+    {
+        if (is_array($modulos)) {
+            throw new \InvalidArgumentException("Los modulos no es valido.");
+        }
+
+        $this->modulos = $modulos;
     }
 
 

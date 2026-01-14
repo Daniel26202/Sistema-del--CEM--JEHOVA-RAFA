@@ -2,29 +2,31 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
-use App\config\Validations;
+use App\modelos\ModelBase;
+use App\modelos\ModeloPermisos;
 
-class ModeloRoles extends Db
+
+class ModeloRoles extends ModelBase
 {
+    private $id_rol, $nombre, $nombreRegistrado, $descripcion;
 
-    private $conexion;
-
-    private $id_rol;
-
-    public function __construct()
+    public function __construct($dbSystem = false)
     {
-        $this->conexion = $this->connectionSegurity();
+        parent::__construct($dbSystem);
     }
 
-
+    private function retrunObjectModel()
+    {
+        return new ModeloPermisos();
+    }
 
     //consultar los roles disponibles
     public function roles()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT * FROM rol WHERE estado ='ACT' ");
-            return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $sql = "SELECT * FROM rol WHERE estado ='ACT'  ";
+            $this->setSQL($sql);
+            return $this->read();
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -32,14 +34,16 @@ class ModeloRoles extends Db
 
 
     //Consultar el permiso
-    public function mostrarPermisos($id_rol, $modulo)
+    public function mostrarPermisos()
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT modulo,permisos FROM permisos WHERE id_rol =:id_rol AND modulo =:modulo ");
-            $consulta->bindParam(":id_rol", $id_rol);
-            $consulta->bindParam(":modulo", $modulo);
-            $permisos = ($consulta->execute()) ? $consulta->fetch() : false;
-            return $permisos;
+            $data=[
+                'id_rol'=>$this->getIdRol(),
+                'modulo'=>$this->retrunObjectModel()->getModulo()
+            ];
+            $sql = "SELECT modulo,permisos FROM permisos WHERE id_rol =:id_rol AND modulo =:modulo  ";
+            $this->setSQL($sql);
+            return $this->search($data, false);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -50,119 +54,100 @@ class ModeloRoles extends Db
 
     //Insertar  Rol
 
-    public function insertar($nombre, $descripcion, $modulo, $permisos)
-    {
+    public function insertar(){
         try {
-            $this->conexion->beginTransaction();
+            $data=[
+                'nombre'=>$this->getNombre(),
+                'estado' => 'ACT',
+                'nombre' => $this->getDescripcion()
+            ];
 
-            $validaciones = Validations::rolRules($nombre, $descripcion);
-
-            foreach ($validaciones as $v) {
-                if (!preg_match($v['regex'], $v['valor'])) {
-                    throw new \Exception($v['mensaje']);
-                }
-            }
-
-            if ($this->validarRol($nombre)) {
+            if ($this->validarRol($this->getNombre())) {
                 throw new \Exception("El nombre del rol ya se encuentra registrado");
             }
 
             //Insertar Rol
-            $consulta = $this->conexion->prepare("INSERT INTO rol (id_rol, nombre, estado, descripción) VALUES (NULL, :nombre, 'ACT', :descripcion)");
-            $consulta->bindParam(":nombre", $nombre);
-            $consulta->bindParam(":descripcion", $descripcion);
-            $consulta->execute();
+            $sql = "INSERT INTO rol (id_rol, nombre, estado, descripción) VALUES (NULL, :nombre, :estado, :descripcion)";
+            $this->setSQL($sql);
+            $id_rol = $this->create($data);
 
-            //Me retorna el id del rol
-            $id_rol = $this->conexion->lastInsertId();
+            //recorro los modulos enviados por el formulario
+            foreach ($this->retrunObjectModel()->getModulos() as $index => $modulo) {
+                $grupoDelPermiso = $this->retrunObjectModel()->getPermisos()[$index];
+                $permisos = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
 
-            //Recorro los modulos enviados por el formulario
-            foreach ($modulo as $index => $modulo) {
-                //La variable grupoDelPermiso guardar el nombre del grupo de permiso
-                $grupoDelPermiso = $permisos[$index];
-
-
-                //Uno el array de permisos en una cadena de texto separado por "," 
-                $permiso = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
-
-                $consultaPermiso = $this->conexion->prepare("INSERT INTO permisos (idpermisos, id_rol, permisos, modulo) VALUES (NULL, :id_rol, :permisos, :modulo)");
-                $consultaPermiso->bindParam(":id_rol", $id_rol);
-                $consultaPermiso->bindParam(":permisos", $permiso);
-                $consultaPermiso->bindParam(":modulo", $modulo);
-                $consultaPermiso->execute();
+                $data=[
+                    'id_rol'=>$this->getIdRol(),
+                    'permisos'=>$permisos,
+                    'modulo'=> $this->retrunObjectModel()->getModulo()
+                ];
+                $sql = "INSERT INTO permisos (idpermisos, id_rol, permisos, modulo) VALUES (NULL, :id_rol, :permisos, :modulo)";
+                $this->setSQL($sql);
+                $this->create($data);
             }
 
-            $consulta = $this->conexion->prepare("SELECT * from rol where id_rol=:id_rol");
-            $consulta->bindParam(":id_rol", $id_rol);
-            $consulta->execute();
-            $data = ($consulta->execute()) ? $consulta->fetch() : false;
-
-            $this->conexion->commit();
             return ["exito", $data];
-
-
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
             return $e->getMessage();
         }
     }
 
 
     //modificar Rol
-    public function editar($id_rol, $nombre, $descripcion, $modulo, $permisos, $nombreRegistrado)
+    public function editar()
     {
         try {
-            $this->conexion->beginTransaction();
+            $data1 = [
+                'nombre' => $this->getNombre(),
+                'nombre' => $this->getDescripcion()
+            ];
 
-            $validaciones = Validations::rolRules($nombre, $descripcion);
+            $data2 = [
+                'id_rol' => $this->getIdRol(),
+            ];
 
-            foreach ($validaciones as $v) {
-                if (!preg_match($v['regex'], $v['valor'])) {
-                    throw new \Exception($v['mensaje']);
+            $sql = "SELECT * from rol where id_rol=:id_rol";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data2, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del rol no existe");
+            }
+
+            $nombreRol = $this->validarRol(['nombre' => $this->getNombre()], true);
+
+            //Editar Rol
+            if ($this->getNombreRegistrado() == $nombreRol) {
+                $sql = "UPDATE rol SET  nombre =:nombre, descripción =:descripcion WHERE id_rol = :id";
+                $this->setSQL($sql);
+                $this->update($data1, $this->getIdRol());
+            }else{
+                if ($this->validarRol(['nombre' => $this->getNombre()])) {
+                    throw new \Exception("El nombre ya está registrado.");
+                } else {
+                    $sql = "UPDATE rol SET  nombre =:nombre, descripción =:descripcion WHERE id_rol = :id";
+                    $this->setSQL($sql);
+                    $this->update($data1, $this->getIdRol());
                 }
             }
 
-            if(!$nombre == $nombreRegistrado){
-                if ($this->validarRol($nombre)) {
-                    throw new \Exception("El rol ya existe en el sistema.");
-                } 
-            }
-
-
-            $validar = $this->conexion->prepare("SELECT * from rol where id_rol=:id_rol");
-            $validar->bindParam(":id_rol", $id_rol);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo el id no existe");
-            }
-
-            //Editar Rol
-            $consulta = $this->conexion->prepare("UPDATE rol SET  nombre =:nombre, descripción =:descripcion WHERE id_rol = :id_rol");
-            $consulta->bindParam(":nombre", $nombre);
-            $consulta->bindParam(":descripcion", $descripcion);
-            $consulta->bindParam(":id_rol", $id_rol);
-            $consulta->execute();
-
-
-
             //Recorro los modulos enviados por el formulario
-            foreach ($modulo as $index => $modulo) {
-                //La variable grupoDelPermiso guardar el nombre del grupo de permiso
-                $grupoDelPermiso = $permisos[$index];
+            foreach ($this->retrunObjectModel()->getModulos() as $index => $modulo) {
+                $grupoDelPermiso = $this->retrunObjectModel()->getPermisos()[$index];
+                $permisos = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
 
-                //Uno el array de permisos en una cadena de texto separado por "," 
-                $permiso = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
-
-                $consultaPermiso = $this->conexion->prepare("UPDATE  permisos SET   permisos =:permisos WHERE modulo =:modulo AND id_rol =:id_rol");
-                $consultaPermiso->bindParam(":id_rol", $id_rol);
-                $consultaPermiso->bindParam(":permisos", $permiso);
-                $consultaPermiso->bindParam(":modulo", $modulo);
-                $consultaPermiso->execute();
+                $data = [
+                    'permisos' => $permisos,
+                    'modulo' => $this->retrunObjectModel()->getModulo()
+                ];
+                $sql = "UPDATE  permisos SET  permisos =:permisos WHERE modulo =:modulo AND id_rol =:id_rol";
+                $this->setSQL($sql);
+                $this->create($data);
             }
-            $this->conexion->commit();
             return ["exito"];
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
+
             return $e->getMessage();
         }
     }
@@ -170,20 +155,26 @@ class ModeloRoles extends Db
 
     //eliminar Rol
 
-    public function eliminar($id_rol)
+    public function eliminar()
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from rol where id_rol=:id_rol");
-            $validar->bindParam(":id_rol", $id_rol);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo");
+            $data = [
+                'id_rol' => $this->getIdRol()
+            ];
+
+            $sql = "SELECT * from rol where id_rol=:id_rol";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del rol no existe");
             }
 
-            //Eliminar Rol
-            $consulta = $this->conexion->prepare("UPDATE rol SET  estado ='DES' WHERE id_rol = :id_rol");
-            $consulta->bindParam(":id_rol", $id_rol);
-            $consulta->execute();
+            $sql = "UPDATE rol SET  estado ='DES' WHERE id_rol = :id";
+            $this->setSQL($sql);
+
+            $this->update_logic($data['id_rol']);
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -192,22 +183,81 @@ class ModeloRoles extends Db
 
 
     //metodo para validar que no se registren dos roles con el mismo nombre
-    public function validarRol($nombre)
+    public function validarRol($data, $returnNombre =false)
     {
         try {
-            $consulta = $this->conexion->prepare("SELECT * FROM rol WHERE nombre =:nombre");
-            $consulta->bindParam(":nombre", $nombre);
-            $consulta->execute();
-            while ($consulta->fetch()) {
-                return true;
+            $sql = "SELECT * FROM rol WHERE nombre =:nombre";
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
+
+            if ($returnNombre) {
+                return !empty($listData) ? $listData['nombre'] : 0;
+            } else {
+                return !empty($listData) ? 1 : 0;
             }
-            return false;
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function getIdRol() {
+    public function getIdRol()
+    {
         return $this->id_rol;
     }
+
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    public function getNombreRegistrado()
+    {
+        return $this->nombreRegistrado;
+    }
+
+    public function getDescripcion()
+    {
+        return $this->descripcion;
+    }
+
+
+
+    public function setIdRol($id_rol)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_rol)) {
+            throw new \InvalidArgumentException("El ID del rol debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_rol <= 0) {
+            throw new \InvalidArgumentException("El ID del rol debe ser mayor que cero.");
+        }
+
+        $this->id_rol = (int)$id_rol;
+    }
+
+
+    public function setNombre($nombre)
+    {
+        if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombre)) {
+            throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+        }
+        $this->nombre = $nombre;
+    }
+
+    public function setNombreRegistrado($nombreRegistrado)
+    {
+        if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombreRegistrado)) {
+            throw new \InvalidArgumentException("El Nombre Registrado debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+        }
+        $this->nombreRegistrado = $nombreRegistrado;
+    }
+
+    public function setDescripcion($descripcion)
+    {
+        if (!preg_match("/^([A-Za-z0-9\s\.,#-]{8,})$/", $descripcion)) {
+            throw new \InvalidArgumentException("La descripcion debe estar completa y detallada.");
+        }
+        $this->descripcion = $descripcion;
+    }
+
 }
