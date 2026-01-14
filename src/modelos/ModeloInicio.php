@@ -3,13 +3,20 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
+use App\modelos\ModeloDoctores;
+
 
 class ModeloInicio extends ModelBase
 {
 
-	public function __construct($dbSystem)
+	public function __construct($dbSystem =true)
 	{
 		parent::__construct($dbSystem);
+	}
+
+	public function retrunObjectModel()
+	{
+		return [new ModeloDoctores];
 	}
 
 	public function pacientes_hospitalizados()
@@ -124,10 +131,10 @@ class ModeloInicio extends ModelBase
 	}
 
 
-		public function obtenerDiasConMasCitas($data = [])
+		public function obtenerDiasConMasCitas($data)
 		{
 			try {
-				if ($data == []) {
+				if ($data == '') {
 					$sql = "SELECT 
 								c.fecha,
 								COUNT(c.id_cita) AS total_citas,
@@ -143,6 +150,7 @@ class ModeloInicio extends ModelBase
 					$this->setSQL($sql);
 					return $this->read();
 				} else {
+					$data=['id_personal'=>$this->retrunObjectModel()[0]->getIdDoctor()];
 					$sql = "SELECT 
 								c.fecha,
 								e.nombre AS especialidad,

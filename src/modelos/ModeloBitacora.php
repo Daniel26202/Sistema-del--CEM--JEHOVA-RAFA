@@ -10,7 +10,7 @@ class ModeloBitacora extends ModelBase
 {
     private $id_usuario, $tabla, $actividad;
 
-    public function __construct($dbSystem)
+    public function __construct($dbSystem = false)
     {
         parent::__construct($dbSystem);
     }

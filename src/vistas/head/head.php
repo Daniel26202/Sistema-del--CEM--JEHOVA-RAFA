@@ -40,14 +40,14 @@ if (!empty($parametro)) {
 
 <body>
 
-	<!-- <div class="loader-wrapper">
+	<div class="loader-wrapper">
 		<div id="content">
 			<img class="mb-3" src="<?= $urlBase ?>../src/assets/images/icons/logo-loader.svg" style="width: 180px; height: 55px;">
 			<div class="loading-bar">
 				<div class="blue-bar"></div>
 			</div>
 		</div>
-	</div> -->
+	</div>
 
 
 

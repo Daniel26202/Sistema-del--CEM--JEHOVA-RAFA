@@ -16,7 +16,7 @@ require_once './src/vistas/head/head.php';
                         <h3 class="welcome-card-title">Bienvenido!</h3>
                         <div class="reminder d-flex justify-content-between align-items-center">
                             <h2 class="welcome-user-name"><?= $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] ?></h2>
-                            <img class="img-logo" src="<?= $urlBase ?>../src/assets/icons/logo.png" alt="user">
+                            <img class="img-logo" src="<?= $urlBase ?>../src/assets/images/icons/logo.png" alt="user">
                         </div>
                     </div>
                 </div>
@@ -300,9 +300,9 @@ require_once './src/vistas/head/head.php';
 <?php require_once 'src/vistas/vistaEstadisticas/modalsEstadisticas.php'; ?>
 
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/jspdf.umd.min.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/jspdf.umd.min.js"></script>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/html2canvas.min.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/html2canvas.min.js"></script>
 
 
 <script type=" text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>

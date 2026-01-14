@@ -6,10 +6,14 @@ use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloDoctores;
 
+function returnObjectClass(){
+    return[new ModeloBitacora(),new ModeloInicio(), new ModeloDoctores(), new ModeloCita()];
+}
+
 
 function inicio($parametro)
 {
-    $bitacora = new ModeloBitacora(false);
+    [$bitacora, $modeloInicio] = returnObjectClass();
 
     if ($parametro != "" && $parametro[0] == "cerrar") {
         echo $_SESSION["id_usuario"];
@@ -35,16 +39,12 @@ function inicio($parametro)
     }
 
 
-    //$validarCargo = $modeloInicio->comprobarCargo($_SESSION["id_personal"]);
-    //$datos_de_personal =  $modeloInicio->datos_doctor($_SESSION["id_usuario"]);
+    $validarCargo = $modeloInicio->comprobarCargo(['id_personal'=>$_SESSION["id_personal"]]);
+    $datos_de_personal =  $modeloInicio->datos_doctor(['id_usuario'=>$_SESSION["id_usuario"]]);
 
     $ayuda = "btnayudaInicio";
 
     require_once './src/vistas/dashboard.php';
-    $model = new ModeloInicio(true);
-
-    print_r($model->comprobarCargo(['id_personal' => 42]));
-    echo "Inicio";
 }
 
 //Retorna el precio  del dolar y guardarlo en la session
@@ -85,19 +85,14 @@ function manualUsuario()
 
 function servicios()
 {
-    $modeloInicio = new ModeloInicio(true);
-    $dataDeServicios = $modeloInicio->servicios();
-    echo json_encode($dataDeServicios);
+    echo json_encode(returnObjectClass()[1]->servicios());
 }
 
 
 
 function citasDeHoy()
 {
-    $modeloCitas = new ModeloCita();
-
-    $dataDeCitasHoy = $modeloCitas->mostrarCitaHoy(date("Y-m-d"));
-    echo json_encode($dataDeCitasHoy);
+    echo json_encode(returnObjectClass()[3]->mostrarCitaHoy());
 }
 
 function cerrarSession()
@@ -128,125 +123,111 @@ function cerrarSession()
 
 }
 
-// function citas()
-// {
-//     $dataDeCitas = $modeloCitas->mostrarCita();
-//     echo json_encode($dataDeCitas);
-// }
+function citas()
+{
+    echo json_encode(returnObjectClass()[3]->mostrarCita());
+}
 
-// function pacientes_hospitalizados()
-// {
-//     $pacientes_hospitalizados = $modeloInicio->pacientes_hospitalizados();
-//     echo json_encode($pacientes_hospitalizados);
-// }
+function pacientes_hospitalizados()
+{
+    echo json_encode(returnObjectClass()[1]->pacientes_hospitalizados());
+}
 
-// function especialidades_solicitadas()
-// {
-//     $especialidades_solicitadas = $modeloInicio->especialidades_solicitadas();
-//     echo json_encode($especialidades_solicitadas);
-// }
-// function especialidades_solicitadas_filtradas($datos)
-// {
-//     $especialidades_solicitadas = $modeloInicio->especialidades_solicitadas($datos[0], $datos[1]);
-//     echo json_encode($especialidades_solicitadas);
-// }
+function especialidades_solicitadas()
+{
+    echo json_encode(returnObjectClass()[1]->especialidades_solicitadas());
+}
+function especialidades_solicitadas_filtradas($datos)
+{
+    echo json_encode(returnObjectClass()[1]->especialidades_solicitadas());
+}
 
-// function todas_las_especialidades()
-// {
-//     $todas_las_especialidades = $modeloInicio->todas_las_especialidades();
-//     echo json_encode($todas_las_especialidades);
-// }
+function todas_las_especialidades()
+{
+    echo json_encode(returnObjectClass()[1]->todas_las_especialidades());
+}
 
-// function sintomas_comunes()
-// {
-//     $sintomas_comunes = $modeloInicio->sintomas_comunes();
-//     echo json_encode($sintomas_comunes);
-// }
+function sintomas_comunes()
+{
+    echo json_encode(returnObjectClass()[1]->sintomas_comunes());
+}
 
-// function sintomas_comunes_filtrados($datos)
-// {
-//     $sintomas_comunes = $modeloInicio->sintomas_comunes($datos[0], $datos[1]);
-//     echo json_encode($sintomas_comunes);
-// }
+function sintomas_comunes_filtrados($datos)
+{
+    echo json_encode(returnObjectClass()[1]->sintomas_comunes());
+}
 
-// function todos_los_sintomas()
-// {
-//     $todos_los_sintomas = $modeloInicio->todos_los_sintomas();
-//     echo json_encode($todos_los_sintomas);
-// }
+function todos_los_sintomas()
+{
+    echo json_encode(returnObjectClass()[1]->todos_los_sintomas());
+}
 
-// //Datos del horario del doctor
-// function mostrarHorario($datos)
-// {
-//     echo json_encode($modeloCitas->mostrarHorarioDoctores($datos[0]));
-// }
+//Datos del horario del doctor
+function mostrarHorario($datos)
+{
+    echo json_encode(returnObjectClass()[1]->mostrarHorarioDoctores($datos[0]));
+}
 
-// function retornarDoctores()
-// {
-//     echo json_encode($modeloDoctores->select());
-// }
+function retornarDoctores()
+{
+    echo json_encode(returnObjectClass()[2]->select());
+}
 
-// function exportar_pdf()
-// {
-//     // Leer los datos JSON enviados por AJAX
-//     $data = json_decode(file_get_contents("php://input"), true);
+function exportar_pdf()
+{
+    // Leer los datos JSON enviados por AJAX
+    $data = json_decode(file_get_contents("php://input"), true);
 
-//     if (!isset($data["imagen"])) {
-//         http_response_code(400);
-//         echo json_encode(["error" => "No se recibió la imagen"]);
-//         exit;
-//     }
+    if (!isset($data["imagen"])) {
+        http_response_code(400);
+        echo json_encode(["error" => "No se recibió la imagen"]);
+        exit;
+    }
 
-//     // Procesar la imagen en Base64
-//     $imgData = str_replace('data:image/png;base64,', '', $data["imagen"]);
-//     $imgData = str_replace(' ', '+', $imgData);
-//     $imgDecoded = base64_decode($imgData);
+    // Procesar la imagen en Base64
+    $imgData = str_replace('data:image/png;base64,', '', $data["imagen"]);
+    $imgData = str_replace(' ', '+', $imgData);
+    $imgDecoded = base64_decode($imgData);
 
-//     // Guardar la imagen temporalmente
-//     $fileName = './src/assets/fpdf/grafico_temp.png';
-//     file_put_contents($fileName, $imgDecoded);
+    // Guardar la imagen temporalmente
+    $fileName = './src/assets/fpdf/grafico_temp.png';
+    file_put_contents($fileName, $imgDecoded);
 
-//     // Datos para el reporte: descripción y leyenda estadística
-//     $descripcion = isset($data["descripcion"]) ? $data["descripcion"] : "Reporte de servicios más solicitados.";
-//     // Aquí podrías incluir cálculos estadísticos adicionales (media, moda, etc.)
-//     $leyenda = "El análisis muestra que la especialidad con mayor demanda es la que presenta la mayor frecuencia de solicitudes. Se han calculado medidas estadísticas para brindar un panorama completo.";
+    // Datos para el reporte: descripción y leyenda estadística
+    $descripcion = isset($data["descripcion"]) ? $data["descripcion"] : "Reporte de servicios más solicitados.";
+    // Aquí podrías incluir cálculos estadísticos adicionales (media, moda, etc.)
+    $leyenda = "El análisis muestra que la especialidad con mayor demanda es la que presenta la mayor frecuencia de solicitudes. Se han calculado medidas estadísticas para brindar un panorama completo.";
 
-//     // Crear el PDF usando FPDF
-//     require_once './src/assets/fpdf/fpdf.php';
-//     $pdf = new FPDF();
-//     $pdf->AddPage();
-//     $pdf->SetFont('Arial', 'B', 16);
-//     $pdf->Cell(0, 10, utf8_decode('Reporte de Servicios Más Solicitados'), 0, 1, 'C');
+    // Crear el PDF usando FPDF
+    require_once './src/assets/fpdf/fpdf.php';
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', 'B', 16);
+    $pdf->Cell(0, 10, utf8_decode('Reporte de Servicios Más Solicitados'), 0, 1, 'C');
 
-//     $pdf->Ln(10);
-//     // Insertar la imagen del gráfico
-//     $pdf->Image($fileName, 35, $pdf->GetY(), 140);
-//     $pdf->Ln(90);
+    $pdf->Ln(10);
+    // Insertar la imagen del gráfico
+    $pdf->Image($fileName, 35, $pdf->GetY(), 140);
+    $pdf->Ln(90);
 
-//     $pdf->SetFont('Arial', '', 12);
-//     $pdf->MultiCell(0, 10, utf8_decode("Leyenda:\n" . $leyenda));
-//     $pdf->Ln(5);
-//     $pdf->MultiCell(0, 10, utf8_decode("Descripción:\n" . $descripcion));
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->MultiCell(0, 10, utf8_decode("Leyenda:\n" . $leyenda));
+    $pdf->Ln(5);
+    $pdf->MultiCell(0, 10, utf8_decode("Descripción:\n" . $descripcion));
 
-//     // Enviar el PDF al navegador
-//     header("Content-Type: application/pdf");
-//     $pdf->Output("reporte_servicios.pdf", "I");
+    // Enviar el PDF al navegador
+    header("Content-Type: application/pdf");
+    $pdf->Output("reporte_servicios.pdf", "I");
 
-//     // Eliminar la imagen temporal
-//     unlink($fileName);
-// }
-
-// function permisos($id_rol, $permiso, $modulo)
-// {
-//     return $permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }
+    // Eliminar la imagen temporal
+    unlink($fileName);
+}
 
 
-// function diasConMasCitas($parametro)
-// {
-//     $id_personal = isset($parametro[0]) ? $parametro[0] : "";
-//     // Llama al modelo para obtener los datos
-//     $diasConMasCitas = $modeloInicio->obtenerDiasConMasCitas($id_personal);
-//     // Retorna los datos como JSON
-//     echo json_encode($diasConMasCitas);
-// }
+
+function diasConMasCitas($parametro)
+{
+    $id_personal = isset($parametro[0]) ? $parametro[0] : '';
+    echo json_encode(returnObjectClass()[1]->obtenerDiasConMasCitas($id_personal));
+
+}

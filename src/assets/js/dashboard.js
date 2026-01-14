@@ -250,9 +250,8 @@ const traerDoctor = async () => {
             resultado.forEach((element) => {
                 html += `<option value="${element.id_personal}">${element.nombre_d}  ${element.apellido}</option>`;
             });
-            console.log(html);
             document.getElementById("selectDoctor").innerHTML = html;
-            console.log(resultado);
+  
         }
     } catch (error) {
         console.log(error);
@@ -260,9 +259,8 @@ const traerDoctor = async () => {
 };
 
 traerHorarioEspecificoDelDr = async (id) => {
-    // try {
+    try {
     // Realiza la petición AJAX
-    console.log(id);
     let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/mostrarHorario/" + id);
     let resultado = await peticion.json();
 
@@ -270,7 +268,6 @@ traerHorarioEspecificoDelDr = async (id) => {
     let div = document.createElement("div");
     // diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
     // let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
-    console.log(resultado);
     if (resultado.length > 0) {
         resultado.forEach((res) => {
             div.innerHTML += `
@@ -291,9 +288,9 @@ traerHorarioEspecificoDelDr = async (id) => {
     }
 
     document.querySelector(".horario-insertar").appendChild(div);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    } catch (error) {
+      console.log(error);
+    }
 };
 
 const traerHorarioDoctor = async (id) => {
@@ -340,7 +337,6 @@ const traerDatosServicios = async () => {
     try {
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/servicios");
         let resultado = await peticion.json();
-        console.log(resultado);
         const tbody = document.querySelector("#precios tbody");
         tbody.innerHTML = "";
 
@@ -526,7 +522,6 @@ async function totalDeEspecialidades(data) {
     <p>Este reporte analiza la distribución y tendencias de las especialidades médicas más solicitadas según la moda en un período determinado</p>
     <p>El gráfico de pastel muestra la distribución porcentual de cada especialidad solicitada, identificando las áreas de mayor demanda.</p>
     `;
-    console.log(especialidades);
 }
 
 //Genera el grafico de sintomas comunes
@@ -535,7 +530,7 @@ let sintomasChart = null;
 const sintomas_chart = async (url) => {
     let sintomas_comunes = await fetch(url);
     let data = await sintomas_comunes.json();
-    console.log(data);
+    
     if (data.length > 0) {
         //Quitarle lo oculto a los graficos
         document.getElementById("sintomas_comunes").classList.remove("d-none");
@@ -627,12 +622,9 @@ const sintomas_chart = async (url) => {
 async function totalDeSintomas(data) {
     let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todos_los_sintomas");
     let resultado = await peticion.json();
-    console.log(resultado);
     document.getElementById("textoSintomas").innerHTML = ``;
-    console.log(data);
 
     let sintomas = data.map((item) => item.sintoma).join(",  ");
-    console.log(sintomas);
 
     // Agrega esto al texto
     document.getElementById("textoSintomas").innerHTML += `
@@ -646,7 +638,6 @@ async function totalDeSintomas(data) {
 function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
     // Selecciona el contenedor donde se mostrará la leyenda
     const contenedorLeyenda = document.querySelector(".leyenda-container");
-    console.log(contenedorLeyenda);
 
     // Limpia cualquier contenido previo en el contenedor
     contenedorLeyenda.innerHTML = "";
