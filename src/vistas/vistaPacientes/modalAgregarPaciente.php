@@ -26,12 +26,12 @@
                     </svg>
                   </span>
 
-                  <select class="form-control-plaintext tamaño-select-mini" aria-label="2" placeholder="Nacionalidad" name="nacionalidad">
+                  <select class="form-control-plaintext tamaño-select-mini inputs" aria-label="2" placeholder="Nacionalidad" name="nacionalidad">
                     <option value="V" selected>V</option>
                     <option value="E">E</option>
                   </select>
 
-                  <input class="form-control txt-custom input-validar" name="cedula" type="number" placeholder="Cédula del paciente">
+                  <input class="form-control txt-custom input-validar inputs" name="cedula" type="number" placeholder="Cédula del paciente">
 
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -54,7 +54,7 @@
                       <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                     </svg>
                   </span>
-                  <input class="form-control txt-custom input-validar" name="nombre" type="text" placeholder="Nombre del paciente">
+                  <input class="form-control txt-custom input-validar inputs" name="nombre" type="text" placeholder="Nombre del paciente">
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
@@ -75,7 +75,7 @@
                       <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                     </svg>
                   </span>
-                  <input class="form-control txt-custom input-validar" name="apellido" type="text" placeholder="Apellido del paciente">
+                  <input class="form-control txt-custom input-validar inputs" name="apellido" type="text" placeholder="Apellido del paciente">
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
@@ -96,7 +96,7 @@
                       <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
                     </svg>
                   </span>
-                  <input class="form-control txt-custom input-validar" name="telefono" type="number" placeholder="Teléfono del paciente">
+                  <input class="form-control txt-custom input-validar inputs" name="telefono" type="number" placeholder="Teléfono del paciente">
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
@@ -119,7 +119,7 @@
                       <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z" />
                     </svg>
                   </span>
-                  <input class="form-control txt-custom input-validar" name="direccion" type="text" placeholder="Dirección del paciente">
+                  <input class="form-control txt-custom input-validar inputs" name="direccion" type="text" placeholder="Dirección del paciente">
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
@@ -141,7 +141,7 @@
                       <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-4.118 9.79c1.258 0 2-1.067 2-2.872 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684c.047.64.594 1.406 1.703 1.406zm-2.89-5.435h-.633A12.6 12.6 0 0 0 4.5 8.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675V7.354z" />
                     </svg>
                   </span>
-                  <input class="form-control txt-custom input-validar" type="date" name="fn">
+                  <input class="form-control txt-custom input-validar inputs" type="date" name="fn">
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
@@ -164,7 +164,7 @@
                     </svg>
                   </span>
 
-                  <select class="form-control txt-custom select-custom input-validar" name="genero">
+                  <select class="form-control txt-custom select-custom input-validar inputs" name="genero">
                     <option class='option-select-background' selected value="">Seleccionar Genero</option>
                     <option class='option-select-background' value="Masculino">Masculino</option>
                     <option class='option-select-background' value="Femenino">Femenino</option>

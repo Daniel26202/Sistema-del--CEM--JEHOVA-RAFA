@@ -1,3 +1,63 @@
+
+.icono-der {
+    margin-left: 0.4rem;
+    display: flex;
+    align-items: center;
+}
+
+.icono-der .check {
+    color: #28a745;
+    animation: pulso 0.4s ease;
+}
+
+.icono-der .error {
+    color: #dc3545;
+    animation: sacudir 0.4s ease;
+}
+
+@keyframes pulso {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+@keyframes sacudir {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-4px);
+    }
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ============================================
            1. FONDO CON IMAGEN
            ============================================ */
