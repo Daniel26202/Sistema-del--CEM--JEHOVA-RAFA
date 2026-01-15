@@ -18,6 +18,20 @@ class ModelBase extends Db
     }
 
 
+    protected function storedProcedure($data, $all = false)
+    {
+        $sql = $this->getSQL();
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($data as $key => $value) {
+            //bindValue: funciona igual que el bindParam la diferencia es, que después del bindValue no se puede modificar nada de la consulta no lo leerá.
+            $stmt->bindValue(":$key", $value);
+        }
+
+        $stmt->execute();
+        return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : null;
+    }
+
     protected function create($data)
     {
 
