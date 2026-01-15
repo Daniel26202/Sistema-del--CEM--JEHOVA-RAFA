@@ -335,3 +335,17 @@ class ModeloInsumo extends Db
 		}
 	}
 }
+
+
+
+    public function setIdInsumo($idInsumo)
+    {
+
+        if (!preg_match('/^[0-9]+$/', $idInsumo)) {
+            throw new \InvalidArgumentException('El ID no es válido.');
+        }
+        if ((int)$idInsumo <= 0) {
+            throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+        }
+        $this->idInsumo = $idInsumo;
+    }

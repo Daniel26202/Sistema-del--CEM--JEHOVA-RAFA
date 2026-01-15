@@ -2,32 +2,59 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
+use App\modelos\ModeloPacientes;
 use Exception;
 use PDO;
 
-class ModeloHospitalizacion extends Db
+class ModeloHospitalizacion extends ModelBase
 {
 
-    private $conexion;
+    private $idH, $fechaHora, $idInsumo, $nombreInsumo;
 
-    public function __construct()
+    public function __construct($dbSystem = true)
     {
-        $this->conexion = $this->connectionSistema();
+        parent::__construct($dbSystem);
+    }
+
+    private function returnObjetModel()
+    {
+        return [
+            "modeloPacientes" => new ModeloPacientes(),
+            "modeloDoctores" => new ModeloDoctores()
+        ];
+    }
+
+
+    public function index()
+    {
+        try {
+            $sql = "SELECT * FROM paciente WHERE estado = 'ACT'";
+            $this->setSQL($sql);
+            $consulta = $this->read();
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito, para mostrarlo en la tabla de la vista (de las hospitalizaciones pendientes)
     public function selectsH()
     {
+        try {
+            $sql = "SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_control = (SELECT con2.id_control FROM control con2 WHERE con2.id_paciente = pac.id_paciente AND con2.estado = 'DES' ORDER BY con2.id_control DESC LIMIT 1) INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE sm.estado = 'ACT' AND u.estado = 'ACT' AND h.estado = 'Pendiente' GROUP BY h.id_hospitalizacion;";
 
-        $consulta = $this->conexion->prepare("SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_control = (SELECT con2.id_control FROM control con2 WHERE con2.id_paciente = pac.id_paciente AND con2.estado = 'DES' ORDER BY con2.id_control DESC LIMIT 1) INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE sm.estado = 'ACT' AND u.estado = 'ACT' AND h.estado = 'Pendiente' GROUP BY h.id_hospitalizacion;");
-
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $this->setSQL($sql);
+            $consulta = $this->read();
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function selectDoctores()
     {
-        $consulta = $this->conexion->prepare("SELECT DISTINCT p.nombre, p.apellido, p.id_personal FROM personal p JOIN personal_has_serviciomedico phs ON phs.personal_id_personal = p.id_personal JOIN horarioydoctor hd ON hd.id_personal = p.id_personal JOIN horario h ON h.id_horario = hd.id_horario JOIN serviciomedico sm ON sm.id_servicioMedico = phs.serviciomedico_id_servicioMedico WHERE sm.estado = 'ACT' 
+        try {
+            $sql = "SELECT DISTINCT p.nombre, p.apellido, p.id_personal FROM personal p JOIN personal_has_serviciomedico phs ON phs.personal_id_personal = p.id_personal JOIN horarioydoctor hd ON hd.id_personal = p.id_personal JOIN horario h ON h.id_horario = hd.id_horario JOIN serviciomedico sm ON sm.id_servicioMedico = phs.serviciomedico_id_servicioMedico WHERE sm.estado = 'ACT' 
         AND (sm.tipo = 'Examenes' OR ( h.diaslaborables = (
                                             CASE DAYOFWEEK(CURDATE())
                                                 WHEN 1 THEN 'domingo'
@@ -41,21 +68,38 @@ class ModeloHospitalizacion extends Db
                                         )
                                         AND CURTIME() BETWEEN hd.horaDeEntrada AND hd.horaDeSalida
                                     )
-        );");
+        );";
 
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $this->setSQL($sql);
+            $consulta = $this->read();
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function selectServiciosDH($idH)
     {
-        $consulta = $this->conexion->prepare("SELECT * FROM servicios_hospitalizacion WHERE id_hospitalizacion = :id_hospitalizacion;");
-        $consulta->bindParam(":id_hospitalizacion", $idH);
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+        try {
+
+            $sql = "SELECT * FROM servicios_hospitalizacion WHERE id_hospitalizacion = :id_hospitalizacion;";
+            $this->setSQL($sql);
+
+            $consulta = $this->search(['id_hospitalizacion' => $this->getIdH()], true);
+
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
+
+
+
 
     public function selectServiciosD()
     {
-        $consulta = $this->conexion->prepare("SELECT DISTINCT sm.tipo, sm.precio, cs.nombre AS categoria, p.nombre, p.apellido, sm.id_servicioMedico, sm.tipo FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN personal_has_serviciomedico phs ON phs.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = phs.personal_id_personal INNER JOIN horarioydoctor hd ON hd.id_personal = p.id_personal INNER JOIN horario h ON h.id_horario = hd.id_horario WHERE sm.estado = 'ACT'
+        try {
+            $sql = "SELECT DISTINCT sm.tipo, sm.precio, cs.nombre AS categoria, p.nombre, p.apellido, sm.id_servicioMedico, sm.tipo FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN personal_has_serviciomedico phs ON phs.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = phs.personal_id_personal INNER JOIN horarioydoctor hd ON hd.id_personal = p.id_personal INNER JOIN horario h ON h.id_horario = hd.id_horario WHERE sm.estado = 'ACT'
         AND (sm.tipo = 'Examenes' OR (
                         h.diaslaborables = (
                             CASE DAYOFWEEK(CURDATE())
@@ -70,107 +114,148 @@ class ModeloHospitalizacion extends Db
                         )
                         AND CURTIME() BETWEEN hd.horaDeEntrada AND hd.horaDeSalida
                     )
-            );");
+            );";
 
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $this->setSQL($sql);
+            $consulta = $this->read();
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito, para mostrarlo en la tabla de la vista (de las hospitalizaciones realizadas)
     public function selectsHR()
     {
+        try {
+            $sql = "SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_control = (SELECT con2.id_control FROM control con2 WHERE con2.id_paciente = pac.id_paciente AND con2.estado = 'ACT' ORDER BY con2.id_control DESC LIMIT 1) INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE h.estado = 'Realizada' GROUP BY h.id_hospitalizacion;";
 
-        $consulta = $this->conexion->prepare("SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_control = (SELECT con2.id_control FROM control con2 WHERE con2.id_paciente = pac.id_paciente AND con2.estado = 'ACT' ORDER BY con2.id_control DESC LIMIT 1) INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE h.estado = 'Realizada' GROUP BY h.id_hospitalizacion;");
-
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $this->setSQL($sql);
+            $consulta = $this->read();
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
+
+
+
 
     // validamos si el paciente existe
     public function validarPacienteH($cedula)
     {
+        try {
 
-        $consulta = $this->conexion->prepare('SELECT cedula, id_paciente, nombre, apellido FROM paciente WHERE cedula = :cedula AND estado= "ACT"');
+            $sql = "SELECT cedula, id_paciente, nombre, apellido FROM paciente WHERE cedula = :cedula AND estado= 'ACT'";
+            $this->setSQL($sql);
 
-        $consulta->bindValue(":cedula", $cedula, PDO::PARAM_INT);
+            $consulta = $this->search(['cedula' => $this->returnObjetModel()["modeloPacientes"]->getCedula()], false);
 
-        return ($consulta->execute()) ? $consulta->fetch() : false;
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito.
     // selecciono el control de un paciente.
     public function select($cedula)
     {
+        try {
 
-        $consulta = $this->conexion->prepare('SELECT con.id_control, con.historiaclinica, con.diagnostico, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM control con INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE pac.cedula = :cedula AND con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" ORDER by con.id_control DESC LIMIT 1');
+            $sql = "SELECT con.id_control, con.historiaclinica, con.diagnostico, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM control con INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE pac.cedula = :cedula AND con.estado = 'ACT' AND sm.estado = 'ACT' AND u.estado = 'ACT' ORDER by con.id_control DESC LIMIT 1";
+            $this->setSQL($sql);
 
-        $consulta->bindParam(":cedula", $cedula);
+            $consulta = $this->search(['cedula' => $this->returnObjetModel()["modeloPacientes"]->getCedula()], false);
 
-        return ($consulta->execute()) ? $consulta->fetch() : false;
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     // selecciono todos los insumos
     public function selectsInsumos()
     {
+        try {
+            $sql = "SELECT ins.*, sum(inv.cantidad_disponible) AS cantidad FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo WHERE estado = 'ACT' AND inv.cantidad_disponible > 0 GROUP BY inv.id_insumo";
 
-        $consulta = $this->conexion->prepare('SELECT ins.*, sum(inv.cantidad_disponible) AS cantidad FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo WHERE estado = "ACT" AND inv.cantidad_disponible > 0 GROUP BY inv.id_insumo');
-
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            $this->setSQL($sql);
+            $consulta = $this->read();
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
+
+
 
     // buscar insumos por nombre
     public function buscarInsumos($nombre)
     {
+        try {
 
-        $consulta = $this->conexion->prepare('SELECT ins.*, en_in.* FROM insumo ins INNER JOIN entrada_insumo en_in ON en_in.id_insumo = ins.id_insumo WHERE ins.estado = "ACT" AND en_in.cantidad_disponible > 0 AND ins.nombre LIKE :nombre;');
+            $sql = "SELECT ins.*, en_in.* FROM insumo ins INNER JOIN entrada_insumo en_in ON en_in.id_insumo = ins.id_insumo WHERE ins.estado = 'ACT' AND en_in.cantidad_disponible > 0 AND ins.nombre LIKE :nombre;";
+            $this->setSQL($sql);
 
-        //PDO::PARAM_STR: esto es para que el envió sea de tipo estrin. 
-        //bindValue: funciona igual que el bindParam la diferencia es, que después del bindValue no se puede modificar nada de la consulta no lo leerá.
-        $consulta->bindValue(":nombre", '%' . $nombre . '%', PDO::PARAM_STR);
+            $consulta = $this->search(['nombre' => "%" . $this->getNombreInsumo() . "%"], true);
 
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function buscarUnInsumo($id)
     {
+        try {
 
-        $consulta = $this->conexion->prepare('SELECT ins.id_insumo, inv.id_entradaDeInsumo, ins.nombre, ins.precio, sum(inv.cantidad_disponible) AS limite_insumo FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada = inv.id_entrada  WHERE ins.estado = "ACT" AND ins.id_insumo =:id ORDER BY e.fechaDeIngreso');
+            $sql = "SELECT ins.id_insumo, inv.id_entradaDeInsumo, ins.nombre, ins.precio, sum(inv.cantidad_disponible) AS limite_insumo FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada = inv.id_entrada  WHERE ins.estado = 'ACT' AND ins.id_insumo =:id ORDER BY e.fechaDeIngreso";
+            $this->setSQL($sql);
 
-        //PDO::PARAM_INT: esto es para que el envió sea de tipo entero. 
-        //bindValue: funciona igual que el bindParam la diferencia es, que después del bindValue no se puede modificar nada de la consulta no lo leerá.
-        $consulta->bindValue(":id", $id, PDO::PARAM_INT);
+            $consulta = $this->search(['id' => $this->getIdInsumo()], false);
 
-        return ($consulta->execute()) ? $consulta->fetch() : false;
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     // verifica si la hospitalización existe
     public function verificaHA($id_paciente, $id_personal)
     {
         try {
-            $consulta = $this->conexion->prepare('SELECT id_hospitalizacion FROM hospitalizacion WHERE id_paciente = :id_paciente AND personal_id_personal = :id_personal AND estado = "Pendiente";');
 
-            $consulta->bindParam(":id_paciente", $id_paciente);
-            $consulta->bindParam(":id_personal", $id_personal);
-            $consulta->execute();
-            return ($consulta->fetch()) ? true : false;
-        } catch (\Throwable $e) {
-            return false;
+            $sql = "SELECT id_hospitalizacion FROM hospitalizacion WHERE id_paciente = :id_paciente AND personal_id_personal = :id_personal AND estado = 'Pendiente';";
+            $this->setSQL($sql);
+            $data = [
+                'id_paciente' => $this->returnObjetModel()["modeloPacientes"]->getIdPaciente(),
+                'id_personal' => $this->returnObjetModel()["modeloDoctores"]->getIdDoctor()
+            ];
+            $consulta = $this->search($data, false);
+
+            return !empty($consulta) ? true : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
     }
+
 
     public function insertarH($fechaHora, $idInsumos, $cantidad, $historial, $idPersonal, $idPaciente, $severidad, $cantidadS, $idServicio, $diagnostico)
     {
         try {
-            $this->conexion->beginTransaction();
+            $dataH = [
+                'fecha_hora_inicio' => $this->getFechaHora(),
+                'id_paciente' => $this->returnObjetModel()["modeloPacientes"]->getIdPaciente(),
+                'id_personal' => $this->returnObjetModel()["modeloDoctores"]->getIdDoctor()
+            ];
 
-            // insertar hospitalización
-            $consulta = $this->conexion->prepare('INSERT INTO hospitalizacion (fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_paciente, fecha_hora_final, estado, personal_id_personal)  VALUES (:fecha_hora_inicio, "", "", "", "", :id_paciente, "", "Pendiente", :id_personal);');
-            $consulta->bindParam(":fecha_hora_inicio", $fechaHora);
-            $consulta->bindParam(":id_paciente", $idPaciente);
-            $consulta->bindParam(":id_personal", $idPersonal);
-            $consulta->execute();
+            $sql = "INSERT INTO hospitalizacion (fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_paciente, fecha_hora_final, estado, personal_id_personal)  VALUES (:fecha_hora_inicio, '', '', '', '', :id_paciente, '', 'Pendiente', :id_personal);";
+            $this->setSQL($sql);
             //devuelve el id de la hospitalización.
-            //obtenemos los datos de la hospitalización que se a agregado. si no se inserta devuelve 0
-            $idH = ($this->conexion->lastInsertId() === 0) ? false : $this->conexion->lastInsertId();
+            $idH = $this->create($dataH);
 
+            $idInsumos = $this->getIdInsumo();
             // si hay un id del insumo devuelve verdadero si no, devuelve falso
             if ($idInsumos) {
 
@@ -178,10 +263,20 @@ class ModeloHospitalizacion extends Db
 
                 foreach ($idInsumos as $idI) {
 
+                    $sql = "SELECT inv.id_entradaDeInsumo FROM entrada_insumo inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada= inv.id_entrada WHERE inv.id_insumo =:id_insumo AND inv.cantidad_disponible >= :cantidad ORDER BY e.fechaDeIngreso LIMIT 1;";
+                    $this->setSQL($sql);
+                    $data = [
+                        'id_insumo' => $this->returnObjetModel()["modeloPacientes"]->getIdPaciente(),
+                        'cantidad' => $this->returnObjetModel()["modeloDoctores"]->getIdDoctor()
+                    ];
+                    $consulta = $this->search($data, false);
+
+                    return !empty($consulta) ? true : false;
+
                     // selecciono id de entrada_insumo
-                    $consulta = $this->conexion->prepare('SELECT inv.id_entradaDeInsumo FROM entrada_insumo inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada= inv.id_entrada WHERE inv.id_insumo =:id_insumo AND inv.cantidad_disponible >= :cantidad ORDER BY e.fechaDeIngreso LIMIT 1;');
-                    $consulta->bindParam(":id_insumo", $idI);
-                    $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
+                    $consulta = $this->conexion->prepare('');
+                    $consulta->bindParam(":", $idI);
+                    $consulta->bindParam(":", $cantidad[$contadorC]);
                     $idEntradaDeInsumo = ($consulta->execute()) ? $consulta->fetch() : false;
 
 
@@ -201,6 +296,21 @@ class ModeloHospitalizacion extends Db
                     $contadorC++;
                 }
             }
+
+
+            return ['exito', $data];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+
+
+
+
+        try {
+
+            //obtenemos los datos de la hospitalización que se a agregado. si no se inserta devuelve 0
+
+
             // si hay un id del servicio devuelve verdadero si no, devuelve falso
             if ($idServicio) {
 
@@ -588,5 +698,88 @@ class ModeloHospitalizacion extends Db
         } catch (\Exception $e) {
             print_r("ocurrio un error en hospitalización, intente mas tarde");
         }
+    }
+
+
+    // getter y setter.............
+    // setter
+    public function setIdH($idH)
+    {
+        if (!preg_match('/^[0-9]+$/', $idH)) {
+            throw new \InvalidArgumentException('El ID no es válido.');
+        }
+        if ((int)$idH <= 0) {
+            throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+        }
+        $this->idH = (int)$idH;
+    }
+
+    public function setIdInsumo($idInsumo)
+    {
+        // no hay insumo seleccionado
+        if ($idInsumo === null || $idInsumo === []) {
+            $this->idInsumo = $idInsumo;
+            return;
+        }
+        foreach ($idInsumo as $id) {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                throw new \InvalidArgumentException('El ID del insumo no es válido.');
+            }
+            if ((int)$id <= 0) {
+                throw new \InvalidArgumentException('El ID del insumo debe ser mayor que cero.');
+            }
+        }
+        $this->idInsumo = $idInsumo;
+    }
+
+    public function setNombreInsumo($nombreInsumo)
+    {
+        if (!preg_match("/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s\-\%]{3,50}$/", $nombreInsumo)) {
+            throw new \InvalidArgumentException("El nombre del insumo no es válido.");
+        }
+
+        $this->nombreInsumo = $nombreInsumo;
+    }
+
+    public function setFechaHora($fechaHora)
+    {
+        $d = new \DateTime($fechaHora);
+        $hoy = new \DateTime();
+        if ($d > $hoy) {
+            throw new \InvalidArgumentException("La fecha no puede ser futura");
+        }
+        $this->fechaHora = $fechaHora;
+    }
+
+    public function setCantidadIns($cantidadIns)
+    {
+        if (!preg_match('/^[0-9]+$/', $cantidadIns)) {
+            throw new \InvalidArgumentException('La cantidad no es válida.');
+        }
+        if ((int)$cantidadIns <= 0) {
+            throw new \InvalidArgumentException('La cantidad debe ser mayor que cero.');
+        }
+        $this->cantidadIns = (int)$cantidadIns;
+    }
+
+    // getter
+    public function getIdInsumo()
+    {
+        return $this->idInsumo;
+    }
+
+    public function getIdH()
+    {
+        return $this->idH;
+    }
+
+    public function getNombreInsumo()
+    {
+        return $this->nombreInsumo;
+    }
+
+    public function getFechaHora()
+    {
+        return $this->fechaHora;
     }
 }

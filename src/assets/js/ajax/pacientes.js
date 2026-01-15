@@ -43,9 +43,9 @@ const readPatients = async () => {
                             <button class="${
                                 !urlActual.includes("getPacientes") ? "d-none" : ""
                             } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
-                              data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" data-index="${
-                                  element.id_paciente
-                              }">
+                            data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" data-index="${
+                            element.id_paciente
+                            }">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -66,9 +66,9 @@ const readPatients = async () => {
                             </button>
 
                             <div class="me-2">
-                              <a href="#" class="${
-                                  urlActual.includes("getPacientes") ? "d-none" : ""
-                              } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
+                            <a href="#" class="${
+                            urlActual.includes("getPacientes") ? "d-none" : ""
+                            } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
                 element.id_paciente
             }  title="Restablecer Paciente"
                               uk-tooltip id="btnModalEliminarPaciente">

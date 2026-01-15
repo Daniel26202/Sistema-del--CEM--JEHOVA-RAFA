@@ -29,7 +29,7 @@ if (!empty($parametro)) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="<?=__DIR__?>../src/assets/images/img/logotipo.jpg">
+	<link rel="shortcut icon" href="<?= $urlBase ?>../src/assets/images/img/logotipo.jpg">
 	<title>J-R</title>
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/DataTable/datatables.css">

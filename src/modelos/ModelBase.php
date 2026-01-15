@@ -25,11 +25,12 @@ class ModelBase extends Db
         $stmt = $this->pdo->prepare($sql);
 
         foreach ($data as $key => $value) {
+            //bindValue: funciona igual que el bindParam la diferencia es, que después del bindValue no se puede modificar nada de la consulta no lo leerá.
             $stmt->bindValue(":$key", $value);
         }
 
         $stmt->execute();
-
+        //obtenemos los datos de la hospitalización que se a agregado. si no se inserta devuelve 0
         return $this->pdo->lastInsertId();
     }
 
@@ -38,7 +39,6 @@ class ModelBase extends Db
         $stmt = $this->pdo->prepare($this->getSQL());
         $stmt->execute();
         return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : $stmt->fetch(PDO::FETCH_ASSOC);
-    
     }
 
     protected function update($data, $id)
@@ -77,7 +77,7 @@ class ModelBase extends Db
         return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    
+
 
 
     public function getSQL()
