@@ -11,14 +11,17 @@ class ModeloConsultas extends ModelBase
 
     private $id_servicioMedico, $precio, $tipo;
 
-    public function __construct($dbSystem)
+    public function __construct($dbSystem = true)
     {
         parent::__construct($dbSystem);
     }
 
-    private function retrunObjectModel()
+    private function returnObjectModel()
     {
-        return [new ModeloDoctores, new ModeloCategoria()];
+        return [
+            'modeloDoctores'=>new ModeloDoctores(), 
+            'modeloCategoria'=>new ModeloCategoria()
+            ];
     }
 
     public function mostrarDoctores()
@@ -48,7 +51,7 @@ class ModeloConsultas extends ModelBase
     {
         try {
 
-            $data = ['id_doctor' => $this->retrunObjectModel()[0]->getIdDoctor()];
+            $data = ['id_doctor' => $this->returnObjectModel()['modeloDoctores']->getIdDoctor()];
 
             $sql = "SELECT categoria_nombre.nombre as categoria, serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM bd.personal p INNER JOIN bd.personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
             bd.serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN bd.especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN bd.categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria  WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' AND serviciomedico.estado = 'ACT' AND ps.personal_id_personal  = :id_doctor";
@@ -75,7 +78,7 @@ class ModeloConsultas extends ModelBase
     {
         try {
             $data = [
-                'id_categoria' => $this->retrunObjectModel()[1]->getIdCategoria(),
+                'id_categoria' => $this->returnObjectModel()['modeloCategoria']->getIdCategoria(),
                 'precio' => $this->getPrecio(),
                 'estado' => 'ACT',
                 'tipo' => $this->getTipo()
@@ -112,10 +115,10 @@ class ModeloConsultas extends ModelBase
     {
         try {
             $data1 = ['id_servicioMedico' => $this->getIdServicioMedico()];
-            $data2 = ['id_personal' => $this->retrunObjectModel()[0]->getIdDoctor()];
+            $data2 = ['id_personal' => $this->returnObjectModel()['modeloDoctores']->getIdDoctor()];
 
-            $data3 =[
-                'id_doctor'=>$this->retrunObjectModel()[0]->getIdDoctor(),
+            $data3 = [
+                'id_doctor' => $this->returnObjectModel()['modeloDoctores']->getIdDoctor(),
                 'id_servicioMedico' => $this->getIdServicioMedico()
             ];
 
@@ -140,8 +143,8 @@ class ModeloConsultas extends ModelBase
                 throw new \Exception("EL Servicio ya esta asignado a este doctor");
             }
 
-            $sql= "INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)";
-            
+            $sql = "INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)";
+
             $this->setSQL($sql);
             $this->create($data3);
 
@@ -224,7 +227,7 @@ class ModeloConsultas extends ModelBase
                 throw new \Exception("El id del servicio no existe");
             }
 
-            $sql= "UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id";
+            $sql = "UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id";
             $this->setSQL($sql);
 
             $this->update($data1, $this->getIdServicioMedico());
@@ -239,8 +242,8 @@ class ModeloConsultas extends ModelBase
     public function especialidadDoctor()
     {
         try {
-            $data=[
-                'id_doctor'=> $this->retrunObjectModel()[1]->getIdDoctor()
+            $data = [
+                'id_doctor' => $this->returnObjectModel()['modeloDoctores']->getIdDoctor()
             ];
 
             $sql = "SELECT e.nombre FROM personal d INNER JOIN especialidad e ON e.id_especialidad = d.id_especialidad WHERE d.id_personal = :id_doctor ";
@@ -257,7 +260,7 @@ class ModeloConsultas extends ModelBase
         try {
 
             $data = [
-                'id_categoria' => $this->retrunObjectModel()[1]->getIdCategoria(),
+                'id_categoria' => $this->returnObjectModel()['modeloCategoria']->getIdCategoria(),
                 'estado' => 'ACT'
             ];
 
@@ -276,7 +279,7 @@ class ModeloConsultas extends ModelBase
         try {
             $data = [
                 'id_servicioMedico' => $this->getIdServicioMedico(),
-                'id_personal' => $this->retrunObjectModel()[0]->getIdDoctor()
+                'id_personal' => $this->returnObjectModel()['modeloDoctores']->getIdDoctor()
             ];
 
             $sql = "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN  personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal WHERE sm.id_servicioMedico =:id_servicioMedico AND p.id_personal = :id_doctor";

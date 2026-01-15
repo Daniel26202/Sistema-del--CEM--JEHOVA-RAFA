@@ -14,15 +14,15 @@ class ModeloPerfil extends ModelBase{
 		parent::__construct($dbSystem);
 	}
 
-	private function retrunObjectModel()
+	private function returnObjectModel()
 	{
-		return [new ModeloUsuarios(), new ModeloDoctores()];
+		return ['modeloUsuario'=>new ModeloUsuarios(), 'modeloDoctores'=>new ModeloDoctores()];
 	}
 	
 	public function seleccionarUsuario(){
 		try {
 			$data = [
-				'usuario' => $this->retrunObjectModel()[0]->getUsuario()
+				'usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario()
 			];
 			$sql = "SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario";
 			$this->setSQL($sql);
@@ -39,21 +39,21 @@ class ModeloPerfil extends ModelBase{
 		try {
 
 			$data1 = [
-				'id_usuario' => $this->retrunObjectModel()[0]->getIdUsuario(),
-				'cedula' => $this->retrunObjectModel()[1]->getCedula(),
-				'nombre' => $this->retrunObjectModel()[1]->getNombre(),
-				'apellido' => $this->retrunObjectModel()[1]->getApellido(),
-				'telefono' => $this->retrunObjectModel()[1]->getTelefono(),
+				'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario(),
+				'cedula' => $this->returnObjectModel()['modeloDoctores']->getCedula(),
+				'nombre' => $this->returnObjectModel()['modeloDoctores']->getNombre(),
+				'apellido' => $this->returnObjectModel()['modeloDoctores']->getApellido(),
+				'telefono' => $this->returnObjectModel()['modeloDoctores']->getTelefono(),
 			];
 
 			$data2 = [
-				'correo' => $this->retrunObjectModel()[0]->getIdUsuario(),
-				'usuario' => $this->retrunObjectModel()[1]->getCedula(),
+				'correo' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario(),
+				'usuario' => $this->returnObjectModel()['modeloDoctores']->getCedula(),
 			];
 
 			$data3 = [
-				'id_usuario' => $this->retrunObjectModel()[0]->getCorreo(),
-				'usuario' => $this->retrunObjectModel()[0]->getUsuario(),
+				'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getCorreo(),
+				'usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario(),
 
 			];
 
@@ -69,12 +69,12 @@ class ModeloPerfil extends ModelBase{
 			$sql= "UPDATE bd.personal SET cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono WHERE usuario = :id";
 
 			$this->setSQL($sql);
-			$this->update($data1, $this->retrunObjectModel()[0]->getIdUsuario());
+			$this->update($data1, $this->returnObjectModel()['modeloUsuario']->getIdUsuario());
 
 			$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo =:correo WHERE id_usuario = :id";
 
 			$this->setSQL($sql);
-			$this->update($data2, $this->retrunObjectModel()[0]->getIdUsuario());
+			$this->update($data2, $this->returnObjectModel()['modeloUsuario']->getIdUsuario());
 
 			return ["exito"];
 		} catch (\Exception $e) {

@@ -19,19 +19,17 @@ class ModeloCita extends ModelBase
 
 	public function returnObjectPaciente()
 	{
-		$paciente = new ModeloPacientes(true);
-		return [$paciente];
+		return ['modeloPaciente'=>new ModeloPacientes(true)];
 	}
 
 
 	public function selectPaciente()
 	{
 		try {
-
-			$paciente = $this->returnObjectPaciente();
+;
 			$data = [
-				'nacionalidad' => $paciente[0]->getNacionalidad(),
-				'cedula' => $paciente[0]->getCedula(),
+				'nacionalidad' => $this->returnObjectPaciente()[ 'modeloPaciente']->getNacionalidad(),
+				'cedula' => $this->returnObjectPaciente()['modeloPaciente']->getCedula(),
 				'estado' => 'ACT'
 			];
 
@@ -106,10 +104,10 @@ class ModeloCita extends ModelBase
 			$fecha_hora->modify('+1 hour');
 			$hora_salida = $fecha_hora->format("H:m:s");
 
-			$paciente = $this->returnObjectPaciente();
+
 
 			$data = [
-				'id_paciente' => $paciente[0]->getIdPaciente(),
+				'id_paciente' => $this->returnObjectPaciente()['modeloPaciente']->getIdPaciente(),
 				'id_servicioMedico' => $this->getIdServicioMedico(),
 				'fecha' => $this->getFecha(),
 				'hora' => $this->getHora(),
@@ -225,7 +223,7 @@ class ModeloCita extends ModelBase
 		try {
 
 			$data = [
-				'id_paciente' => $this->returnObjectPaciente()[0]->getIdPaciente(),
+				'id_paciente' => $this->returnObjectPaciente()['modeloPaciente']->getIdPaciente(),
 				'fecha' => $this->getFecha(),
 				'hora' => $this->getHora()
 			];

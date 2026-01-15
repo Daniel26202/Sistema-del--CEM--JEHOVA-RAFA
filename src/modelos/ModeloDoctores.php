@@ -17,9 +17,12 @@ class ModeloDoctores extends ModelBase
         parent::__construct($dbSystem);
     }
 
-    private function retrunObjectModel()
+    private function returnObjectModel()
     {
-        return [new ModeloUsuarios, new ModeloRoles];
+        return [
+            'modeloUsuario' => new ModeloUsuarios,
+            'modeloRoles' => new ModeloRoles
+        ];
     }
 
     //seleccionar especialidad
@@ -69,7 +72,7 @@ class ModeloDoctores extends ModelBase
     {
         try {
 
-            $data = ['usuario' => $this->retrunObjectModel()[0]->getUsuario()];
+            $data = ['usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario()];
             $sql = "SELECT u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.usuario =:usuario";
             $this->setSQL($sql);
             $listData = $this->search($data, false);
@@ -128,11 +131,11 @@ class ModeloDoctores extends ModelBase
         try {
 
             $data1 = [
-                'id_rol' => $this->retrunObjectModel()[1]->getIdRol(),
+                'id_rol' => $this->returnObjectModel()['modeloRoles']->getIdRol(),
                 'imagen' => $this->getImagen(),
-                'usuario' => $this->retrunObjectModel()[0]->getUsuario(),
+                'usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario(),
                 'correo' => $this->getEmail(),
-                'password' => $this->retrunObjectModel()[0]->getPassword(),
+                'password' => $this->returnObjectModel()['modeloUsuario']->getPassword(),
                 'estado' => 'ACT'
             ];
 
@@ -143,13 +146,13 @@ class ModeloDoctores extends ModelBase
                 'apellido' => $this->getApellido(),
                 'telefono' => $this->getTelefono(),
                 'id_espacialidad' => $this->getIdEspecialidad(),
-                'id_usuario' => $this->retrunObjectModel()[0]->getIdUsuario()
+                'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
             ];
             if ($this->validarCedula(['cedula' => $this->getCedula()])) {
                 throw new \Exception("La cédula ya está registrada.");
             }
 
-            if ($this->validarUsuario(['usuario' => $this->retrunObjectModel()[0]->getUsuario()])) {
+            if ($this->validarUsuario(['usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario()])) {
                 throw new \Exception("El usuario ya está registrada.");
             }
 
@@ -195,7 +198,7 @@ class ModeloDoctores extends ModelBase
         try {
 
             $data1 = [
-                'idUsuario' => $this->retrunObjectModel()[0]->getIdUsuario()
+                'idUsuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
             ];
 
             $data2 = [
@@ -233,7 +236,7 @@ class ModeloDoctores extends ModelBase
             // Editar el usuario (el correo del doctor).
             $sql = 'UPDATE segurity.usuario SET correo =:correo WHERE id_usuario=:id_usuario';
             $this->setSQL($sql);
-            $this->update(['correo' => $this->getEmail()], $this->retrunObjectModel()[0]->getIdUsuario());
+            $this->update(['correo' => $this->getEmail()], $this->returnObjectModel()['modeloUsuario']->getIdUsuario());
 
 
             // $contadorDias = 0;
@@ -290,7 +293,7 @@ class ModeloDoctores extends ModelBase
     {
         try {
             $data = [
-                'id_usuario' => $this->retrunObjectModel()[0]->getIdUsuario()
+                'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
             ];
 
             $sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";
@@ -317,7 +320,7 @@ class ModeloDoctores extends ModelBase
     {
         try {
             $data = [
-                'id_usuario' => $this->retrunObjectModel()[0]->getIdUsuario()
+                'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
             ];
 
             $sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";

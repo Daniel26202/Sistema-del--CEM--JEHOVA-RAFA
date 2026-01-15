@@ -12,26 +12,25 @@ use App\modelos\ModeloConsultas;
 
 
 
-
 class ModeloFactura extends ModelBase
 {
 
 	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos, $cantidad, $montosDePago, $referencia, $doctor;
 
-	public function __construct($dbSystem =true)
+	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
 	}
 
-	private function retrunObjectModel()
+	private function returnObjectModel()
 	{
 		return [
-			new ModeloPacientes(),
-			new ModeloCliente(),
-			new ModeloInsumo(),
-			new ModeloCita(),
-			new  ModeloHospitalizacion(),
-			new ModeloConsultas()
+			'modeloPacientes' => new ModeloPacientes(),
+			'modeloCliente' => new ModeloCliente(),
+			'modeloInsumo' => new ModeloInsumo(),
+			'modeloCita' => new ModeloCita(),
+			'modeloHospitalizacion' => new  ModeloHospitalizacion(),
+			'modeloConsultas' => new ModeloConsultas()
 		];
 	}
 	//buscar Paciente tambien por la cita
@@ -39,7 +38,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = [
-				'cedula' => $this->retrunObjectModel()[0]->getCedula()
+				'cedula' => $this->returnObjectModel()['modeloPacientes']->getCedula()
 			];
 			$sql = "SELECT d.nombre AS nombre_d,d.apellido AS apellido_d,sm.*,p.id_paciente, p.cedula AS cedula_p,p.nombre AS nombre_p, p.apellido AS apellido_p, p.telefono AS telefono_p ,c.id_cita,c.fecha, c.estado,e.nombre AS especialidad FROM paciente p INNER JOIN cita c ON p.id_paciente = c.paciente_id_paciente INNER JOIN serviciomedico s ON s.id_servicioMedico = c.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = s.id_servicioMedico INNER JOIN  personal d ON d.id_personal= ps.personal_id_personal INNER JOIN segurity.usuario u ON u.id_usuario = d.usuario INNER JOIN serviciomedico sm ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN especialidad e ON e.id_especialidad = d.id_especialidad   WHERE p.cedula =:cedula AND u.estado = 'ACT' AND c.fecha =CURRENT_DATE AND c.estado= 'Pendiente' limit 1 ";
 			$this->setSQL($sql);
@@ -56,7 +55,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = [
-				'id_cita' => $this->retrunObjectModel()[3]->getIdCita()
+				'id_cita' => $this->returnObjectModel()['modeloCita']->getIdCita()
 			];
 			$sql = "SELECT c.doctor,d.nombre AS nombre_d,d.apellido AS apellido_d,s.*,p.id_paciente,p.nacionalidad, p.cedula AS cedula_p,p.nombre AS nombre_p, p.apellido AS apellido_p, p.telefono AS telefono_p ,c.id_cita,c.fecha, c.estado,e.nombre AS especialidad FROM paciente p INNER JOIN cita c ON p.id_paciente = c.paciente_id_paciente INNER JOIN serviciomedico s ON s.id_servicioMedico  = c.serviciomedico_id_servicioMedico INNER JOIN personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = s.id_servicioMedico INNER JOIN personal d ON psm.personal_id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN segurity.usuario u ON u.id_usuario = d.usuario WHERE c.id_cita =:id_cita AND u.estado = 'ACT' limit 1  ";
 			$this->setSQL($sql);
@@ -71,11 +70,11 @@ class ModeloFactura extends ModelBase
 
 		try {
 			$data = [
-				'id_hospitalizacion' => $this->retrunObjectModel()[4]->getIdHospitalizacion()
+				'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdHospitalizacion()
 			];
 
 			$sql = "SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total_MoEx, h.total, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido,  pe.nombre AS nombredoc, pe.apellido AS apellidodoc 
-			FROM  hospitalizacion h INNER JOIN paciente pac ON pac.id_paciente = h.id_paciente INNER JOIN personal pe ON pe.id_personal = h.personal_id_personal  WHERE  h.id_hospitalizacion =:id_hospitalizacion GROUP BY h.id_hospitalizacion ";
+						FROM  hospitalizacion h INNER JOIN paciente pac ON pac.id_paciente = h.id_paciente INNER JOIN personal pe ON pe.id_personal = h.personal_id_personal  WHERE  h.id_hospitalizacion =:id_hospitalizacion GROUP BY h.id_hospitalizacion ";
 
 			$this->setSQL($sql);
 			return $this->search($data);
@@ -89,7 +88,7 @@ class ModeloFactura extends ModelBase
 
 		try {
 			$data = [
-				'id_hospitalizacion' => $this->retrunObjectModel()[4]->getIdHospitalizacion()
+				'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdHospitalizacion()
 			];
 
 			$sql = 'SELECT * FROM hospitalizacion h INNER JOIN servicios_hospitalizacion sh ON sh.id_hospitalizacion = h.id_hospitalizacion INNER JOIN serviciomedico s ON s.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria WHERE  h.id_hospitalizacion =:id_hospitalizacion GROUP BY h.id_hospitalizacion';
@@ -105,7 +104,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = [
-				'id_hospitalizacion' => $this->retrunObjectModel()[4]->getIdHospitalizacion()
+				'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdHospitalizacion()
 			];
 
 			$sql = 'SELECT  * FROM hospitalizacion h INNER JOIN insumodehospitalizacion ih ON h.id_hospitalizacion = ih.id_hospitalizacion INNER JOIN entrada_insumo ei ON ei.id_entradaDeInsumo = ih.id_entradaDeInsumo INNER JOIN insumo i ON i.id_insumo = ei.id_insumo   WHERE   i.estado = "ACT" AND h.estado = "Pendiente" AND h.id_hospitalizacion =:id_hospitalizacion';
@@ -121,7 +120,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = [
-				'cedula' => $this->retrunObjectModel()[0]->getCedula(),
+				'cedula' => $this->returnObjectModel()['modeloPacientes']->getCedula(),
 				'estado' => 'ACT'
 			];
 
@@ -138,7 +137,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = [
-				'cedula' => $this->retrunObjectModel()[1]->getCedula(),
+				'cedula' => $this->returnObjectModel()['modeloCliente']->getCedula(),
 				'estado' => 'ACT'
 			];
 
@@ -166,7 +165,7 @@ class ModeloFactura extends ModelBase
 
 	public function selectTodosLosInsumos()
 	{
-		return $this->retrunObjectModel()[2]->insumos(false);
+		return $this->returnObjectModel()['modeloInsumo']->insumos(false);
 	}
 
 	//metodo para mostra los tipos de pagos registrados en la base de Datos
@@ -187,7 +186,7 @@ class ModeloFactura extends ModelBase
 	public  function selectId_entrada()
 	{
 		try {
-			$data = ['id_insumo' => $this->retrunObjectModel()[2]->getIdInsumo()];
+			$data = ['id_insumo' => $this->returnObjectModel()['modeloInsumo']->getIdInsumo()];
 			$sql = "SELECT ei.id_entradaDeInsumo FROM entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.cantidad_disponible > 0 ORDER BY e.fechaDeIngreso  LIMIT 1";
 			$this->setSQL($sql);
 			$datos = $this->search($data, false);
@@ -204,14 +203,14 @@ class ModeloFactura extends ModelBase
 
 		try {
 			$data1 = [
-				'id_cliente' => $this->retrunObjectModel()[1]->getIdCliente()
+				'id_cliente' => $this->returnObjectModel()['modeloCliente']->getIdCliente()
 			];
 
 			$data2 = [
 				'fecha' => $this->getFecha(),
 				'total' => $this->getTotal(),
 				'estado' => 'ACT',
-				'id_cliente' => $this->retrunObjectModel()[1]->getIdCliente()
+				'id_cliente' => $this->returnObjectModel()['modeloCliente']->getIdCliente()
 			];
 
 
@@ -231,23 +230,23 @@ class ModeloFactura extends ModelBase
 			$id_factura = $this->create($data2);
 
 			//Si el id_cita no es null se cambia el estado e la cita
-			if ($this->retrunObjectModel()[3]->getIdCita() != null) {
+			if ($this->returnObjectModel()['modeloCita']->getIdCita() != null) {
 				$sql = "UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id";
 				$this->setSQL($sql);
 
-				$this->update_logic($this->retrunObjectModel()[3]->getIdCita());
+				$this->update_logic($this->returnObjectModel()['modeloCita']->getIdCita());
 			}
 
 			//Si el id_hospitalizacion no es null se cambia el estado e la cita
-			if ($this->retrunObjectModel()[4]->getIdHospitalizacion() != null) {
+			if ($this->returnObjectModel()['modeloHospitalizacion']->getIdHospitalizacion() != null) {
 
 				$data3 = [
 					'id_factura' => $id_factura,
 					'tipo' => 'Hospitalizacion',
 					'cantidad' => 1,
-					'precioServIndividual' => $this->retrunObjectModel()[5]->getPrecio(),
-					'precioServCompleto' => $this->retrunObjectModel()[5]->getPrecio(),
-					'id_hospitalizacion' => $this->retrunObjectModel()[4]->getHospitalizacion(),
+					'precioServIndividual' => $this->returnObjectModel()['modeloConsultas']->getPrecio(),
+					'precioServCompleto' => $this->returnObjectModel()['modeloConsultas']->getPrecio(),
+					'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getHospitalizacion(),
 					'id_servicio' => null,
 					'id_entrada' => null
 				];
@@ -256,7 +255,7 @@ class ModeloFactura extends ModelBase
 				$sql = "UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id";
 				$this->setSQL($sql);
 
-				$this->update_logic($this->retrunObjectModel()[4]->getIdHospitalizacion());
+				$this->update_logic($this->returnObjectModel()['modeloHospitalizacion']->getIdHospitalizacion());
 
 				//insertar en el dealle de factura  la hospitalizacion
 				$sql = "INSERT INTO detalle_factura  VALUES (null,:id_factura, :tipo, :cantidad,:precioServIndividual, :precioServCompleto,:id_hospitalizacion,:id_servicio,:id_entrada)";
@@ -267,7 +266,7 @@ class ModeloFactura extends ModelBase
 				$sql = "SELECT con.id_control, con.id_paciente, con.historiaclinica FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1";
 				$this->setSQL($sql);
 
-				$datosControl = $this->search(['idHosp' => $this->retrunObjectModel()[4]->getHospitalizacion()], false);
+				$datosControl = $this->search(['idHosp' => $this->returnObjectModel()['modeloHospitalizacion']->getHospitalizacion()], false);
 
 				$historialEnF = $datosControl["historiaclinica"];
 
@@ -275,7 +274,7 @@ class ModeloFactura extends ModelBase
 				$sql = "SELECT cs.nombre AS servicio, sh.cantidad, sm.tipo FROM servicios_hospitalizacion sh INNER JOIN serviciomedico sm ON sm.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE sh.id_hospitalizacion = :idHosp;";
 				$this->setSQL($sql);
 
-				$servicios = $this->search(['idHosp' => $this->retrunObjectModel()[4]->getHospitalizacion()]);
+				$servicios = $this->search(['idHosp' => $this->returnObjectModel()['modeloHospitalizacion']->getHospitalizacion()]);
 
 
 				if ($servicios) {
@@ -327,9 +326,9 @@ class ModeloFactura extends ModelBase
 					'id_factura' => $id_factura,
 					'tipo' => 'Hospitalizacion',
 					'cantidad' => 1,
-					'precioServIndividual' => $this->retrunObjectModel()[5]->getPrecio(),
-					'precioServCompleto' => $this->retrunObjectModel()[5]->getPrecio(),
-					'id_hospitalizacion' => $this->retrunObjectModel()[4]->getHospitalizacion(),
+					'precioServIndividual' => $this->returnObjectModel()['modeloConsultas']->getPrecio(),
+					'precioServCompleto' => $this->returnObjectModel()['modeloConsultas']->getPrecio(),
+					'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getHospitalizacion(),
 					'id_servicio' => null,
 					'id_entrada' => null
 				];
@@ -397,7 +396,7 @@ class ModeloFactura extends ModelBase
 		try {
 			$data = ['id_factura' => $this->getIdFactura()];
 			$sql  = "SELECT pf.* , p.nombre
-    		FROM pago p INNER JOIN pagodefactura pf ON p.id_pago = pf.id_pago INNER JOIN factura f ON pf.id_factura = f.id_factura WHERE f.id_factura =:id_factura ";
+						FROM pago p INNER JOIN pagodefactura pf ON p.id_pago = pf.id_pago INNER JOIN factura f ON pf.id_factura = f.id_factura WHERE f.id_factura =:id_factura ";
 
 			$this->setSQL($sql);
 			return $this->search($data);
@@ -453,7 +452,7 @@ class ModeloFactura extends ModelBase
 	public function selectsFacturaHosp()
 	{
 		try {
-			$data = ['idH' => $this->retrunObjectModel()[4]->getIdHospitalizacion()];
+			$data = ['idH' => $this->returnObjectModel()['modeloHospitalizacion']->getIdHospitalizacion()];
 			$sql = 'SELECT h.id_hospitalizacion, h.duracion, h.precio_horas, h.total, con.id_control, con.diagnostico, h.historiaclinica,pac.nacionalidad, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, doc.nombre AS nombredoc, doc.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN control con ON h.id_control = con.id_control INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal doc ON doc.id_usuario = u.id_usuario INNER JOIN serviciomedico sm ON sm.id_personal = doc.id_personal WHERE con.estado = "ACT" AND sm.estado = "ACT" AND u.estado = "ACT" AND h.estado = "Pendiente"  AND h.id_hospitalizacion =:idH GROUP BY h.id_hospitalizacion';
 
 			$this->setSQL($sql);
@@ -466,7 +465,7 @@ class ModeloFactura extends ModelBase
 	public function selectInsumosHosp()
 	{
 		try {
-			$data = ['idH' => $this->retrunObjectModel()[4]->getIdHospitalizacion()];
+			$data = ['idH' => $this->returnObjectModel()['modeloHospitalizacion']->getIdHospitalizacion()];
 			$sql = 'SELECT i.*,ih.cantidad AS cantidad_insumo_hospit FROM insumodehospitalizacion ih INNER JOIN insumo i ON i.id_insumo = ih.id_insumo WHERE ih.id_hospitalizacion  = :idH';
 
 			$this->setSQL($sql);
@@ -506,7 +505,7 @@ class ModeloFactura extends ModelBase
 	public function coincidenciaPacienteCliente()
 	{
 		try {
-			$data = ['id_paciente' => $this->retrunObjectModel()[0]->getIdPaciente()];
+			$data = ['id_paciente' => $this->returnObjectModel()['modeloPacientes']->getIdPaciente()];
 			$sql = 'SELECT * FROM paciente where id_paciente = :id_paciente';
 
 			$this->setSQL($sql);
@@ -535,22 +534,22 @@ class ModeloFactura extends ModelBase
 	public function guardarCliente()
 	{
 		try {
-			$data = ['id_paciente' => $this->retrunObjectModel()[0]->getIdPaciente()];
+			$data = ['id_paciente' => $this->returnObjectModel()['modeloPacientes']->getIdPaciente()];
 
 			$sql = "SELECT * FROM paciente where id_paciente = :id_paciente";
 			$this->setSQL($sql);
 
 			$dataPaciente = $this->search($data, false);
-			$this->retrunObjectModel()[1]->setNacionalidad($dataPaciente['nacionalidad']);
-			$this->retrunObjectModel()[1]->setCedula($dataPaciente['cedula']);
-			$this->retrunObjectModel()[1]->setNombre($dataPaciente['nombre']);
-			$this->retrunObjectModel()[1]->setApellido($dataPaciente['apellido']);
-			$this->retrunObjectModel()[1]->setTelefono($dataPaciente['telefono']);
-			$this->retrunObjectModel()[1]->setDireccion($dataPaciente['direccion']);
-			$this->retrunObjectModel()[1]->setFn($dataPaciente['fn']);
-			$this->retrunObjectModel()[1]->setGenero($dataPaciente['genero']);
+			$this->returnObjectModel()['modeloCliente']->setNacionalidad($dataPaciente['nacionalidad']);
+			$this->returnObjectModel()['modeloCliente']->setCedula($dataPaciente['cedula']);
+			$this->returnObjectModel()['modeloCliente']->setNombre($dataPaciente['nombre']);
+			$this->returnObjectModel()['modeloCliente']->setApellido($dataPaciente['apellido']);
+			$this->returnObjectModel()['modeloCliente']->setTelefono($dataPaciente['telefono']);
+			$this->returnObjectModel()['modeloCliente']->setDireccion($dataPaciente['direccion']);
+			$this->returnObjectModel()['modeloCliente']->setFn($dataPaciente['fn']);
+			$this->returnObjectModel()['modeloCliente']->setGenero($dataPaciente['genero']);
 
-			return $this->retrunObjectModel()[1]->insertar();
+			return $this->returnObjectModel()['modeloCliente']->insertar();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -607,6 +606,7 @@ class ModeloFactura extends ModelBase
 	{
 		return $this->servicios;
 	}
+
 
 
 

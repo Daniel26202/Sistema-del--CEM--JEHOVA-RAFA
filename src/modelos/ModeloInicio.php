@@ -16,7 +16,7 @@ class ModeloInicio extends ModelBase
 
 	public function retrunObjectModel()
 	{
-		return [new ModeloDoctores];
+		return ["modeloDoctores"=>new ModeloDoctores];
 	}
 
 	public function pacientes_hospitalizados()
@@ -150,7 +150,7 @@ class ModeloInicio extends ModelBase
 					$this->setSQL($sql);
 					return $this->read();
 				} else {
-					$data=['id_personal'=>$this->retrunObjectModel()[0]->getIdDoctor()];
+					$data=['id_personal'=>$this->retrunObjectModel()['modeloDoctores']->getIdDoctor()];
 					$sql = "SELECT 
 								c.fecha,
 								e.nombre AS especialidad,

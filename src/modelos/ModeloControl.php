@@ -15,9 +15,12 @@ class ModeloControl extends ModelBase
 		parent::__construct($dbSystem);
 	}
 
-	private function retrunObjectModel()
+	private function returnObjectModel()
 	{
-		return [new ModeloPacientes(), new ModeloUsuarios()];
+		return [
+			'modeloPacientes'=>new ModeloPacientes(),
+			'modeloUsuarios'=> new ModeloUsuarios()
+			];
 	}
 
 	public function consultarPacientes()
@@ -35,7 +38,7 @@ class ModeloControl extends ModelBase
 	public function mostrarControlPacienteA()
 	{
 		$data = [
-			'cedula' => $this->retrunObjectModel()[0]->getCedula(),
+			'cedula' => $this->returnObjectModel()['modeloPacientes']->getCedula(),
 			'estado' => 'ACT'
 		];
 		$sql = "SELECT co.*,p.* FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula = :cedula AND co.estado =:estado";
@@ -45,12 +48,12 @@ class ModeloControl extends ModelBase
 
 	// función para el usuario (en lo de las sesiones);
 	// selecciono todos los datos de control, citas, pacientes, y me traigo el id del usuario(que en este caso es el doctor)
-	public function mostrarControlPacienteU($cedula, $idU)
+	public function mostrarControlPacienteU()
 	{
 		$data = [
-			'cedula' => $this->retrunObjectModel()[0]->getCedula(),
+			'cedula' => $this->returnObjectModel()['modeloPacientes']->getCedula(),
 			'estado' => 'ACT',
-			'id' => $this->retrunObjectModel()[1]->getIdUsuario()
+			'id' => $this->returnObjectModel()['modeloUsuarios']->getIdUsuario()
 		];
 
 		$sql = "SELECT co.*,p.*,usu.id_usuario FROM control co INNER JOIN paciente p ON co.id_paciente = p.id_paciente INNER JOIN usuario usu ON co.id_usuario = usu.id_usuario WHERE p.cedula = :cedula AND co.estado =:estado AND usu.id_usuario = :id";
@@ -58,10 +61,10 @@ class ModeloControl extends ModelBase
 		return  $this->search($data);
 	}
 
-	public function mostrarPaciente($cedula)
+	public function mostrarPaciente()
 	{
 		$data = [
-			'cedula' => $this->retrunObjectModel()[0]->getCedula(),
+			'cedula' => $this->returnObjectModel()['modeloPacientes']->getCedula(),
 			'estado' => 'ACT',
 		];
 
@@ -78,7 +81,7 @@ class ModeloControl extends ModelBase
 			$fechaHoy = date("Y-m-d");
 
 			$data = [
-				'id_usuario' => $this->retrunObjectModel()[1]->getIdUsuario(),
+				'id_usuario' => $this->returnObjectModel()['modeloUsuarios']->getIdUsuario(),
 			];
 
 			$sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";
@@ -97,7 +100,7 @@ class ModeloControl extends ModelBase
 				foreach ($this->getPatologias() as $patologia) {
 
 					$data = [
-						'id_paciente' => $this->retrunObjectModel()[0]->getIdPaciente(),
+						'id_paciente' => $this->returnObjectModel()['modeloPacientes']->getIdPaciente(),
 						'id_patologia' => $patologia,
 						'fecha_registro' => $fechaHoy
 					];
@@ -110,8 +113,8 @@ class ModeloControl extends ModelBase
 			}
 
 			$data=[
-				'idPaciente'=>$this->retrunObjectModel()[0]->getIdPaciente(),
-				'idUsuario' => $this->retrunObjectModel()[1]->getIdUsuario(),
+				'idPaciente'=>$this->returnObjectModel()['modeloPacientes']->getIdPaciente(),
+				'idUsuario' => $this->returnObjectModel()['modeloUsuarios']->getIdUsuario(),
 				'diagnostico' => $this->getDiagnostico(),
 				'indicaciones' => $this->getIndicaciones(),
 				'fecha_control' => $fechaHoy,
@@ -204,7 +207,7 @@ class ModeloControl extends ModelBase
 	// mostrar patologia del ultimo control del paciente
 	public function mostrarPatologiaC()
 	{
-		$data = ['id_paciente' => $this->retrunObjectModel()[0]->getIdPaciente()];
+		$data = ['id_paciente' => $this->returnObjectModel()['modeloPacientes']->getIdPaciente()];
 		$sql = 'SELECT pat.id_patologia, pat.nombre_patologia FROM control c INNER JOIN paciente p ON c.id_paciente = p.id_paciente INNER JOIN patologiadepaciente pdp ON p.id_paciente = pdp.id_paciente INNER JOIN patologia pat ON pdp.id_patologia = pat.id_patologia WHERE c.id_control = (SELECT id_control FROM control WHERE id_paciente = :id_paciente AND estado = "ACT" ORDER BY fecha_control DESC LIMIT 1) AND pdp.fecha_registro = c.fecha_control ORDER BY c.fecha_control ASC';
 		$this->setSQL($sql);
 		return $this->search($data);
