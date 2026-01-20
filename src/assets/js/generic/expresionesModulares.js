@@ -118,23 +118,48 @@ function validarSelect(select, arrayElementos, campos, formulario) {
     }
 }
 
-// Función que inicializa la validación para un formulario específico
+
 export function inicializarValidacionFormulario(formulario) {
     const campos = {};
+
     const inputs = formulario.querySelectorAll(".input-validar");
 
+    // Inicializar campos
     inputs.forEach((input) => {
-        campos[input.name] = false;
 
-        input.addEventListener("keyup", (e) => validarFormulario(e, formulario, campos));
-        input.addEventListener("input", (e) => validarFormulario(e, formulario, campos));
-        input.addEventListener("blur", (e) => validarFormulario(e, formulario, campos));
+
+        // Marcar como modificado cuando el usuario interactúa
+        input.addEventListener("keyup", (e) => {
+            validarFormulario(e, formulario, campos);
+        });
+        input.addEventListener("input", (e) => {
+            validarFormulario(e, formulario, campos);
+        });
+        input.addEventListener("blur", (e) => {
+            validarFormulario(e, formulario, campos);
+        });
     });
 
+    // Retornar función verificadora
     return function verificarFormulario() {
-        return Object.values(campos).every((valor) => valor === true);
+
+        let longitudInputs = inputs.length;
+        let inputsTrue = []
+
+        inputs.forEach(input => {
+            if (input.parentElement.classList.contains('valido')) inputsTrue.push(true);    
+        });
+
+        if (inputsTrue.length == longitudInputs) {
+            return true
+
+        } else return false
+        
     };
 }
+
+
+
 // Función que valida los campos cada vez que ocurre un evento en un input
 function validarFormulario(e, formulario, campos) {
     const input = e.target;
@@ -164,6 +189,45 @@ function validarFormulario(e, formulario, campos) {
         }
     }
 }
+// Función que valida los campos cada vez que se abra el modal de editar
+
+function validarFormularioAlAbrir(formulario, campos) {
+    const modal = formulario.parentElement.parentElement.parentElement;
+    const inputs = modal.querySelectorAll('.input-validar')
+
+    inputs.forEach(input => {
+        let nameInput = input.name;
+        let mensajeError = expresiones[input.name].mensajeError;
+
+        let campoCustom = input.closest(".campo-custom");
+
+        let pError = campoCustom.querySelector("p");
+        let check = campoCustom.querySelector(".check");
+        let error = campoCustom.querySelector(".error");
+        let arrayElementos = {
+            pError: pError,
+            check: check,
+            error: error,
+        };
+
+        // validar select
+        if (input.tagName === "SELECT") {
+            validarSelect(input, arrayElementos, campos, formulario);
+        } else if (nameInput === "fn" || nameInput === "fechaDeCita" || nameInput === "fechaDeVencimiento") {
+            campos[nameInput] = validarFecha(input, arrayElementos, nameInput, formulario);
+        } else {
+            const expresion = expresiones[nameInput].expresion;
+            if (expresion) {
+                validarCampo(expresion, input, nameInput, campos, formulario, arrayElementos, mensajeError);
+            }
+        }
+    });
+
+    // console.log(campos)
+
+}
+
+
 
 // Función que valida un campo individual
 function validarCampo(expresion, input, campo, campos, formulario, arrayElementos, mensajeError) {
@@ -183,6 +247,7 @@ function validarCampo(expresion, input, campo, campos, formulario, arrayElemento
         chulitoYX(check, error, "inValido");
         campos[campo] = false;
     }
+
 }
 
 // Función que actualiza el aspecto visual del input según su estado de validación
@@ -191,7 +256,7 @@ function actualizarEstadoInput(input, estado) {
     input.parentElement.classList.toggle("invalido", estado === "incorrecto");
 }
 
-function chulitoYX(check, error, Validar) {
+export function chulitoYX(check, error, Validar) {
     if (Validar === "valido") {
         check.classList.remove("d-none");
         error.classList.add("d-none");

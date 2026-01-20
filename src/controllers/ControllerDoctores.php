@@ -5,87 +5,136 @@ use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloConsultas;
 
+
+function returnObjectClass()
+{
+    return [
+        "doctores" => new ModeloDoctores(),
+        "bitacora" => new ModeloBitacora(),
+        'servicio' => new ModeloConsultas()
+    ];
+}
+
 //muestro los datos de las cuatro tablas
 function doctores($parametro)
 {
     $vistaActiva = 'doctores';
     $ayuda = "btnayudaDoctores";
-    // $datosDias = $this->modelo->selectDias();
-    // $datosEspecialidades = $this->modelo->selectEspecialidad();
-    // $doctores = $this->modeloConsultas->mostrarDoctores();
-    // $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
+    $datosDias = returnObjectClass()['doctores']->selectDias();
+    $datosEspecialidades = returnObjectClass()['doctores']->selectEspecialidad();
+    $doctores = returnObjectClass()['servicio']->mostrarDoctores();
+    $todasLasServicios = returnObjectClass()['servicio']->mostrarConsultas();
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
 
-// function selectEspcAjax()
-// {
-//     echo json_encode($this->modelo->selectEspecialidad());
-// }
+function selectEspcAjax()
+{
+    echo json_encode(returnObjectClass()['doctores']->selectEspecialidad());
+}
 
-// function DoctoresAjax()
-// {
-//     echo json_encode([$this->modelo->select(), $this->modelo->selectDias()]);
-// }
+function DoctoresAjax()
+{
+    echo json_encode([returnObjectClass()['doctores']->select(), returnObjectClass()['doctores']->selectDias()]);
+}
 
-// function papelera($parametro)
-// {
-//     $vistaActiva = 'papelera';
-//     $ayuda = "btnayudaDoctores";
-//     $datosEspecialidades = $this->modelo->selectEspecialidad();
-//     $datosDias = $this->modelo->selectDias();
-//     $doctores = $this->modeloConsultas->mostrarDoctores();
-//     $todasLasServicios = $this->modeloConsultas->mostrarConsultas();
-//     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
-// }
+function papelera($parametro)
+{
+    $vistaActiva = 'papelera';
+    $ayuda = "btnayudaDoctores";
+    $datosDias = returnObjectClass()['doctores']->selectDias();
+    $datosEspecialidades = returnObjectClass()['doctores']->selectEspecialidad();
+    $doctores = returnObjectClass()['servicio']->mostrarDoctores();
+    $todasLasServicios = returnObjectClass()['servicio']->mostrarConsultas();
+    require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
+}
 
-// function papeleraDoctoresAjax()
-// {
-//     echo json_encode($this->modelo->desactivos());
-// }
+function papeleraDoctoresAjax()
+{
+    echo json_encode(returnObjectClass()['doctores']->desactivos());
+}
 
-// //metodo para mostrar los servicios de los doctores
-// function serviciosDoctor($datos)
-// {
-//     echo json_encode($this->modeloConsultas->mostrarConsultasDoctor($datos[0]));
-// }
+//metodo para mostrar los servicios de los doctores
+function serviciosDoctor($datos)
+{
+    returnObjectClass()['doctores']->setIdDoctor($datos[0]);
+    echo json_encode(returnObjectClass()['servicio']->mostrarConsultasDoctor());
+}
 
 
-// function guardarDoctores()
-// {
+function guardarDoctores()
+{
 
-//     $insercion = $this->modeloConsultas->insertarDoctorServicio($_POST["id_doctor"], $_POST["id_servicioMedico"]);
+    if (empty($_POST)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
 
-//     if (is_array($insercion) && $insercion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario'], "Consultas", "Ha añadido un servicio medico a un doctor");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $insercion]);
-//         exit;
-//     }
-// }
+    $servicio = returnObjectClass()['servicio'];
+    $doctores = returnObjectClass()['doctores'];
+    $bitacora = returnObjectClass()['bitacora'];
+
+    $doctores->setIdDoctor($_POST["id_doctor"]);
+    $servicio->setIdServicioMedico($_POST["id_servicioMedico"]);
+
+    $bitacora->setId_usuario($_POST['id_usuario']);
+    $bitacora->setActividad("Ha asignado un servicio medico a un doctor");
+    $bitacora->setTabla("Servicio Medico");
+
+    $insercion = returnObjectClass()['servicio']->insertarDoctorServicio();
+
+    if (is_array($insercion) && $insercion[0] === "exito") {
+        $bitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $insercion]);
+        exit;
+    }
+}
 // // agregar doctor
-// function agregarDoctor()
-// {
+function agregarDoctor()
+{
 
-//     // Generamos la contraseña encriptada de la contraseña ingresada
-//     $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
+    if (empty($_POST)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
 
-//     // si encuentra la imagen la guardo en la variable si no le doy el valor false
-//     $imagen = isset($_FILES['imagenDoctores']['name']) ? $_FILES['imagenDoctores']['name'] : false;
+    $servicio = returnObjectClass()['servicio'];
+    $doctores = returnObjectClass()['doctores'];
+    $bitacora = returnObjectClass()['bitacora'];
 
-//     $insercion = $this->modelo->insertarDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip,  $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"], $_POST['dias'], $_POST["horaSalida"], $_POST["horaEntrada"], $imagen);
+    $doctores->setCedula($_POST["cedula"]);
+    $doctores->setNombre($_POST["nombre"]);
+    $doctores->setApellido($_POST["apellido"]);
+    $doctores->setTelefono($_POST["telefono"]);
 
 
-//     if (is_array($insercion) && $insercion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $insercion]);
-//         exit;
-//     }
-// }
+
+
+
+
+
+
+    // Generamos la contraseña encriptada de la contraseña ingresada
+    $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
+    // si encuentra la imagen la guardo en la variable si no le doy el valor false
+    $imagen = isset($_FILES['imagenDoctores']['name']) ? $_FILES['imagenDoctores']['name'] : false;
+
+    $insercion = $doctores->insertarDoctor(, $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip,  $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"], $_POST['dias'], $_POST["horaSalida"], $_POST["horaEntrada"], $imagen);
+
+
+    if (is_array($insercion) && $insercion[0] === "exito") {
+        $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $insercion]);
+        exit;
+    }
+}
 
 // // editar doctor
 // function editarDoctor()

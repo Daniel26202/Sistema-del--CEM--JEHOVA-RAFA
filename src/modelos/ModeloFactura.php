@@ -15,7 +15,7 @@ use App\modelos\ModeloConsultas;
 class ModeloFactura extends ModelBase
 {
 
-	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos, $cantidad, $montosDePago, $referencia, $doctor;
+	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos,$precioInsumo,  $cantidad, $montosDePago, $referencia,$precioServicio, $doctor;
 
 	public function __construct($dbSystem = true)
 	{
@@ -345,10 +345,10 @@ class ModeloFactura extends ModelBase
 					$contador++;
 				}
 			}
-			if ($insumos) {
+			if ($this->getInsumos()) {
 				$contador = 0;
-				foreach ($insumos as $i) {
-					$subtotal = $precioInsumo[$contador] * $cantidad[$contador];
+				foreach ($this->getInsumos() as $i) {
+					$subtotal = $this->getPrecioInsumo()[$contador] * $this->getCantidad()[$contador];
 					//actualizar la cantidad de insumos
 					$id_entrada = $this->selectId_entrada($i);
 					$consulta = $this->conexion->prepare("INSERT INTO detalle_factura  VALUES (null, :id_factura, 'Insumo', :cantidad,:precioInsumo, :subtotal,null,null,:i)");
@@ -519,7 +519,7 @@ class ModeloFactura extends ModelBase
 			while ($data) {
 				return $data['id_cliente'];
 			}
-			return 'no encontrado';
+			return 0;
 
 			if ($data == []) {
 				return 0;
@@ -607,7 +607,25 @@ class ModeloFactura extends ModelBase
 		return $this->servicios;
 	}
 
+	public function getInsumos()
+	{
+		return $this->insumos;
+	}
 
+	public function getCantidad()
+	{
+		return $this->cantidad;
+	}
+
+	public function getPrecioInsumo()
+	{
+		return $this->precioInsumo;
+	}
+
+	public function getPrecioServicio()
+	{
+		return $this->precioServicio;
+	}
 
 
 
@@ -642,7 +660,7 @@ class ModeloFactura extends ModelBase
 		$this->$fecha = $fecha;
 	}
 
-	public function setPrecio($total)
+	public function setTotal($total)
 	{
 		if (!preg_match("/^(?!0$)(?!1$)\d+([.,]\d+)?$/", $total)) {
 			throw new \InvalidArgumentException("El total esta mal.");
@@ -678,6 +696,17 @@ class ModeloFactura extends ModelBase
 		$this->$montosDePago  = $montosDePago;
 	}
 
+	public function setInsumos($insumos)
+	{
+		if (!is_array($insumos)) {
+			throw new \InvalidArgumentException("los insumos  esta mal.");
+		}
+
+		$this->$insumos  = $insumos;
+	}
+
+
+
 	public function setServicios($servicios)
 	{
 		if (!is_array($servicios)) {
@@ -685,5 +714,36 @@ class ModeloFactura extends ModelBase
 		}
 
 		$this->$servicios  = $servicios;
+	}
+
+	public function setCatidad($cantidad)
+	{
+		if (!preg_match("/^[0-9]+$/", $cantidad)) {
+			throw new \InvalidArgumentException(" la cantidad debe ser un número entero positivo.");
+		}
+
+		if ((int)$cantidad <= 0) {
+			throw new \InvalidArgumentException("la cantidad debe ser mayor que cero.");
+		}
+
+		$this->cantidad = (int)$cantidad;
+	}
+
+	public function setPrecioInsumo($precioInsumo)
+	{
+		if (!is_array($precioInsumo)) {
+			throw new \InvalidArgumentException("El precioInsumo esta mal.");
+		}
+
+		$this->precioInsumo  = $precioInsumo;
+	}
+
+	public function setPrecioServicio($precioServicio)
+	{
+		if (!is_array($precioServicio)) {
+			throw new \InvalidArgumentException("El precio precioServicio esta mal.");
+		}
+
+		$this->precioServicio  = $precioServicio;
 	}
 }

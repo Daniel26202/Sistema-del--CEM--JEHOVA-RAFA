@@ -1,3 +1,5 @@
+import { chulitoYX, inicializarValidacionFormulario } from "./expresionesModulares.js";
+
 //function generica for execute petiticon ajax
 export const executePetition = async (url, method, data = null) => {
   try {
@@ -17,6 +19,61 @@ export const executePetition = async (url, method, data = null) => {
   } catch (error) {
     return error;
   }
+};
+
+//mostrar datos a editat
+
+export const showDataModal = (parametros) => {
+  parametros.labelModal.textContent = parametros.textLabelModal;
+  parametros.btnModal.textContent = parametros.btnTextModal;
+  parametros.form.classList.add("editar");
+
+  if (parametros.cedulaOculta) parametros.cedulaOculta.value = parametros.data.cedula;
+  if (parametros.idOculto) parametros.idOculto.value = parametros.data.id;
+
+  parametros.inputs.forEach((input) => {
+    let check = input.nextElementSibling.children[0];
+    let error = input.nextElementSibling.children[1];
+
+    input.value = parametros.data[input.getAttribute('name')];
+    input.parentElement.classList.remove("invalido");
+    input.parentElement.classList.add("valido");
+
+    let campoCustom = input.closest(".campo-custom");
+    let pError = campoCustom.querySelector("p");
+    pError.classList.add('d-none');
+
+    if (check && error) chulitoYX(check, error, 'valido');
+  });
+
+  // Inicializar con editar = true
+  parametros.verificarFormulario = inicializarValidacionFormulario(parametros.form);
+
+
+};
+
+
+export const clearModalEnviar = (parametros) => {
+  console.log(parametros.labelModal)
+  parametros.labelModal.textContent = parametros.textLabelModal;
+  botonModal.textContent = parametros.btnTextModal;
+  parametros.modal.classList.remove("editar");
+
+  parametros.inputs.forEach((input) => {
+    let check = input.nextElementSibling?.children[0];
+    let error = input.nextElementSibling?.children[1];
+
+    input.value = "";
+    input.parentElement.classList.remove("valido");
+    let campoCustom = input.closest(".campo-custom");
+    let pError = campoCustom.querySelector("p");
+    pError.classList.add('d-none');
+
+    if (check && error) {
+      check.classList.add("d-none");
+      error.classList.add("d-none");
+    };
+  });
 };
 
 export const alertConfirm = (text, action, param = "") => {

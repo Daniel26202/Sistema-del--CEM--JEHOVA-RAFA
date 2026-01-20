@@ -1,4 +1,4 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable } from "../generic/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable, showDataModal, clearModalEnviar } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
@@ -40,12 +40,10 @@ const readPatients = async () => {
                     <td class="text-center">${element.genero}</td>
                     <td class="text-center">${element.estado_salud}</td>
                     <td class="text-center">
-                            <button class="${
-                                !urlActual.includes("getPacientes") ? "d-none" : ""
-                            } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
-                            data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" data-index="${
-                            element.id_paciente
-                            }">
+                            <button class="${!urlActual.includes("getPacientes") ? "d-none" : ""
+                } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
+                            data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" data-index="${element.id_paciente
+                }">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -54,9 +52,8 @@ const readPatients = async () => {
 
                             </button>
 
-                            <button class="${
-                                !urlActual.includes("getPacientes") ? "d-none" : ""
-                            } btn btn-tabla mb-1 btnModalEliminarPaciente btn-dt-tabla btn-eliminar" 
+                            <button class="${!urlActual.includes("getPacientes") ? "d-none" : ""
+                } btn btn-tabla mb-1 btnModalEliminarPaciente btn-dt-tabla btn-eliminar" 
                             data-index=${element.id_paciente}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -66,11 +63,9 @@ const readPatients = async () => {
                             </button>
 
                             <div class="me-2">
-                            <a href="#" class="${
-                            urlActual.includes("getPacientes") ? "d-none" : ""
-                            } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
-                element.id_paciente
-            }  title="Restablecer Paciente"
+                            <a href="#" class="${urlActual.includes("getPacientes") ? "d-none" : ""
+                } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${element.id_paciente
+                }  title="Restablecer Paciente"
                               uk-tooltip id="btnModalEliminarPaciente">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                                   <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
@@ -116,7 +111,31 @@ const readPatients = async () => {
         //llamar las funcion de eliminar
         document.querySelectorAll(".botonesEdi").forEach((btn) => {
             btn.addEventListener("click", function () {
-                showDataEdit(this, btn.getAttribute("data-index"));
+
+                //objetos con todos los parametros de la funcion
+                const parametros = {
+                    labelModal: exampleModalLabel,
+                    textLabelModal: "Modificar Paciente",
+                    form: modalAgregar,
+                    modal: modalAgregar.parentElement.parentElement.parentElement,
+                    btnModal: botonModal,
+                    btnTextModal: "Modificar",
+                    data: {
+                        nacionalidad: btn.closest("tr").children[0].innerText.slice(0, 1),
+                        cedula: parseInt(btn.closest("tr").children[0].innerText.slice(2,)),
+                        nombre: btn.closest("tr").children[1].innerText,
+                        apellido: btn.closest("tr").children[2].innerText,
+                        telefono: parseInt(btn.closest("tr").children[3].innerText),
+                        direccion: btn.closest("tr").children[4].innerText,
+                        fn: btn.closest("tr").children[5].innerText,
+                        genero: btn.closest("tr").children[6].innerText,
+                        id: btn.closest("tr").children[8].children[0].getAttribute('data-index')
+                    },
+                    inputs: inputs,
+                    cedulaOculta: cedulaRegistrada,
+                    idOculto: id_paciente
+                }
+                showDataModal(parametros);
             });
         });
 
@@ -153,9 +172,6 @@ const updatePatients = async (form, inputs) => {
         console.log(result);
         if (result.ok) {
             alertSuccess(result.message);
-
-            inputs = [];
-            inputs.forEach((input) => input.parentElement.classList.remove("valido"));
 
             readPatients();
         } else throw new Error(`${result.error}`);
@@ -194,73 +210,26 @@ const restablecerPattients = async (data) => {
     }
 };
 
-//mostrar datos a editat
-const showDataEdit = (ele, id) => {
-    exampleModalLabel.textContent = "Modificar Paciente";
-    botonModal.textContent = "Modificar";
-    modalAgregar.classList.add("editar");
-    // filas
-    let rows = ele.closest("tr");
-    let cells = rows.children;
-    console.log(cells);
-    let numerador = 0;
 
-    for (const key in cells) {
-        const element = cells[key];
-        numerador++;
-        console.log(key);
-        if (key == 7) break;
 
-        if (key == 0) {
-            let partes = element.innerText.split("-");
-
-            inputs[0].value = partes[0];
-            inputs[1].value = parseInt(partes[1]);
-            
-            inputs[numerador].parentElement.classList.remove("invalidado");
-            inputs[numerador].parentElement.classList.add("valido");
-            // console.log("inputs[0]:   ....");
-            // console.log(inputs[0].value);
-            // console.log(inputs[1].value);
-            // console.log("inputs[0]:   ....");
-        } else {
-            console.log(inputs);
-
-            inputs[numerador].value = element.innerText;
-
-            inputs[numerador].parentElement.classList.remove("invalidado");
-            inputs[numerador].parentElement.classList.add("valido");
-
-            console.log(element);
-        }
-    }
-
-    let cedula = inputs[0].value.slice(2);
-
-    inputs[0].value = cedula;
-    cedulaRegistrada.value = cedula;
-
-    id_paciente.value = id;
-};
-
-const clearModalEnviar = () => {
-    exampleModalLabel.textContent = "Registrar Paciente";
-    botonModal.textContent = "Registrar";
-    modalAgregar.classList.remove("editar");
-
-    inputs.forEach((input) => {
-        input.value = "";
-        input.parentElement.classList.remove("valido");
-    });
-};
 
 readPatients();
 
 btnOpenModal.addEventListener("click", function () {
-    clearModalEnviar();
+    //objetos con todos los parametros de la funcion
+    const parametros = {
+        labelModal: exampleModalLabel,
+        textLabelModal: "Registrar Paciente",
+        form: modalAgregar,
+        modal: modalAgregar.parentElement.parentElement.parentElement,
+        btnModal: botonModal,
+        btnTextModal: "Registrar",
+        inputs: inputs,
+    }
+    clearModalEnviar(parametros);
 });
 
-let verificarFormulario = inicializarValidacionFormulario(modalAgregar);
+
 
 modalAgregar.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -270,6 +239,7 @@ modalAgregar.addEventListener("submit", function (e) {
         if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
     });
 
+    let verificarFormulario = inicializarValidacionFormulario(modalAgregar, true);
     let esValido = verificarFormulario();
 
     if (esValido) {

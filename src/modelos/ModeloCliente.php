@@ -151,7 +151,7 @@ class ModeloCliente extends ModelBase
             return $e->getMessage();
         }
     }
-    public function restablecer($id_cliente)
+    public function restablecer()
     {
         try {
             $data = [
@@ -276,7 +276,7 @@ class ModeloCliente extends ModelBase
 
 
 
-    public function setIdPaciente($id_cliente)
+    public function setIdCliente($id_cliente)
     {
         if (!preg_match("/^[0-9]+$/", $id_cliente)) {
             throw new \InvalidArgumentException("El ID del paciente debe ser un número entero positivo.");

@@ -12,7 +12,7 @@
 
             <input type="hidden" name="cedulaRegistrada" id="cedulaRegistrada">
 
-            <input type="hidden" name="id_paciente" id="id_paciente">
+            <input type="hidden" name="id" id="id_paciente">
 
 
             <div class="modal-body">

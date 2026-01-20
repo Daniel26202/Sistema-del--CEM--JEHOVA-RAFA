@@ -128,7 +128,7 @@ class ModeloCita extends ModelBase
 	}
 
 
-	public function eliminarCita($id_cita)
+	public function eliminarCita()
 	{
 		try {
 			$data = [

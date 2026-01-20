@@ -14,9 +14,10 @@ use App\modelos\ModeloPermisos;
 
 function returnObjectClass()
 {
-	$modelo = new ModeloPacientes(true);
-	$bitacora = new ModeloBitacora(false);
-	return [$modelo, $bitacora];
+	return [
+		"paciente" => new ModeloPacientes(),
+		"bitacora" => new ModeloBitacora()
+	];
 }
 
 
@@ -35,7 +36,7 @@ function getPacientesAjax($parametro)
 		exit;
 	}
 
-	[$modelo] = returnObjectClass();
+	$modelo  = returnObjectClass()['paciente'];
 	echo json_encode($modelo->index());
 }
 
@@ -49,7 +50,7 @@ function getPacientesAjax($parametro)
 
 function papeleraPaciente($parametro)
 {
-	$modelo = new ModeloPacientes(true);
+	$modelo  = returnObjectClass()['paciente'];
 	$vistaActiva = 'papelera';
 	$pacientes = $modelo->indexPapelera();
 	require_once './src/vistas/vistaPacientes/pacientes.php';
@@ -63,7 +64,7 @@ function papeleraPacienteAjax()
 		exit;
 	}
 
-	$modelo = new ModeloPacientes(true);
+	$modelo  = returnObjectClass()['paciente'];
 	echo json_encode($modelo->indexPapelera());
 }
 
@@ -79,7 +80,8 @@ function guardar()
 
 	try {
 
-		[$modelo, $bitacora] = returnObjectClass();
+		$modelo  = returnObjectClass()['paciente'];
+		$bitacora = returnObjectClass()['bitacora'];
 
 		$modelo->setNacionalidad($_POST['nacionalidad']);
 		$modelo->setCedula($_POST['cedula']);
@@ -124,10 +126,10 @@ function setPaciente()
 
 
 	try {
-		[$modelo, $bitacora] = returnObjectClass();
+		$modelo  = returnObjectClass()['paciente'];
+		$bitacora = returnObjectClass()['bitacora'];
 
-
-		$modelo->setIdPaciente($_POST['id_paciente']);
+		$modelo->setIdPaciente(intval($_POST['id']));
 		$modelo->setNacionalidad($_POST['nacionalidad']);
 		$modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
 		$modelo->setCedula($_POST['cedula']);
@@ -145,7 +147,7 @@ function setPaciente()
 		$edicion = $modelo->update_paciente();
 
 
-		// Verifica si es un array con clave "exito"
+		//Verifica si es un array con clave "exito"
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
@@ -154,6 +156,8 @@ function setPaciente()
 			echo json_encode(['ok' => false, 'error' => $edicion]);
 			exit;
 		}
+
+
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -170,7 +174,8 @@ function eliminar($datos)
 	}
 
 	try {
-		[$modelo, $bitacora] = returnObjectClass();
+		$modelo  = returnObjectClass()['paciente'];
+		$bitacora = returnObjectClass()['bitacora'];
 
 		$modelo->setIdPaciente($datos[0]);
 
@@ -205,27 +210,28 @@ function restablecer($datos)
 		exit;
 	}
 
-	try{
+	try {
 
-	[$modelo, $bitacora] = returnObjectClass();
+		$modelo  = returnObjectClass()['paciente'];
+		$bitacora = returnObjectClass()['bitacora'];
 
-	$modelo->setIdPaciente($datos[0]);
+		$modelo->setIdPaciente($datos[0]);
 
-	$bitacora->setId_usuario($datos[1]);
-	$bitacora->setActividad("Ha restablecido un paciente");
-	$bitacora->setTabla("paciente");
+		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setActividad("Ha restablecido un paciente");
+		$bitacora->setTabla("paciente");
 
-	$restablecer = $modelo->restablecer();
+		$restablecer = $modelo->restablecer();
 
-	//Verifica si es un array con clave "exito"
-	if (is_array($restablecer) && $restablecer[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $restablecer]);
-		exit;
-	}
+		//Verifica si es un array con clave "exito"
+		if (is_array($restablecer) && $restablecer[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $restablecer]);
+			exit;
+		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);

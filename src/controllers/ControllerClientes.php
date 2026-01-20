@@ -2,17 +2,15 @@
 
 use App\modelos\ModeloCliente;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
 // use App\
 
-
-
-
-
-// private function permisos($id_rol, $permiso, $modulo)
-// {
-//     return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }
+function returnObjectClass()
+{
+    return [
+        'bitacora' => new ModeloBitacora(),
+        'cliente' => new ModeloCliente()
+    ];
+}
 
 
 function Clientes($parametro)
@@ -21,87 +19,149 @@ function Clientes($parametro)
     $vistaActiva = 'clientes';
     require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
 }
-//      function clientesAjax()
-//     {
-//         echo json_encode($this->modelo->index());
-//     }
+function clientesAjax()
+{
+    echo json_encode(returnObjectClass()['cliente']->index());
+}
 
 
-//      function papelera($parametro)
-//     {
-//         $vistaActiva = 'papelera';
-//         require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
-//     }
+function papelera($parametro)
+{
+    $vistaActiva = 'papelera';
+    require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
+}
 
-//      function papeleraAjax()
-//     {
-//         echo json_encode($this->modelo->indexPapelera());
-//     }
+function papeleraAjax()
+{
+    echo json_encode(returnObjectClass()['cliente']->indexPapelera());
+}
 
 
 
-//      function guardar()
-//     {
-//         $insercion = $this->modelo->insertar($_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero']);
+function guardar()
+{
 
-//         // Verifica si es un array con clave "exito"
-//         if (is_array($insercion) && $insercion[0] === "exito") {
-//             $this->bitacora->insertarBitacora($_POST['id_usuario'], "cliente", "Ha Insertado un nuevo cliente");
-//             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-//         } else {
-//             http_response_code(409);
-//             echo json_encode(['ok' => false, 'error' => $insercion]);
-//             exit;
-//         }
-//     }
+    if (empty($_POST)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
 
-//      function setCliente()
-//     {
+    $modelo = returnObjectClass()['cliente'];
+    $bitacora = returnObjectClass()['bitacora'];
 
-//         $edicion = $this->modelo->update($_POST['id_cliente'], $_POST['nacionalidad'], $_POST['cedula'], $_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['direccion'], $_POST['fn'], $_POST['genero'], $_POST['cedulaRegistrada']);
+    $modelo->setNacionalidad($_POST['nacionalidad']);
+    $modelo->setCedula($_POST['cedula']);
+    $modelo->setNombre($_POST['nombre']);
+    $modelo->setApellido($_POST['apellido']);
+    $modelo->setTelefono($_POST['telefono']);
+    $modelo->setDireccion($_POST['direccion']);
+    $modelo->setFn($_POST['fn']);
+    $modelo->setGenero($_POST['genero']);
 
-//         // // Verifica si es un array con clave "exito"
-//         if (is_array($edicion) && $edicion[0] === "exito") {
-//             $this->bitacora->insertarBitacora($_POST['id_usuario'], "cliente", "Ha modificado un cliente");
-//             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//         } else {
-//             http_response_code(409);
-//             echo json_encode(['ok' => false, 'error' => $edicion]);
-//             exit;
-//         }
-//     }
+    $bitacora->setId_usuario($_POST['id_usuario']);
+    $bitacora->setActividad("Ha Insertado un nuevo cliente");
+    $bitacora->setTabla("cliente");
 
-//      function eliminar($datos)
-//     {
-//         $cedula = $datos[0];
-//         $id_usuario = $datos[1];
+    $insercion = $modelo->insertar();
 
-//         $eliminacion = $this->modelo->delete($cedula);
+    // Verifica si es un array con clave "exito"
+    if (is_array($insercion) && $insercion[0] === "exito") {
+        $bitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $insercion]);
+        exit;
+    }
 
-//         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-//             $this->bitacora->insertarBitacora($id_usuario, "cliente", "Ha eliminado un  cliente");
-//             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//         } else {
-//             http_response_code(409);
-//             echo json_encode(['ok' => false, 'error' => $eliminacion]);
-//             exit;
-//         }
-//     }
-//      function restablecer($datos)
-//     {
+}
 
-//         $id_cliente = $datos[0];
-//         $id_usuario = $datos[1];
+function setCliente()
+{
 
-//         $restablecimiento = $this->modelo->restablecer($id_cliente);
+    $modelo = returnObjectClass()['cliente'];
+    $bitacora = returnObjectClass()['bitacora'];
 
-//         if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-//             $this->bitacora->insertarBitacora($id_usuario, "cliente", "Ha restablecido un  cliente");
-//             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//         } else {
-//             http_response_code(409);
-//             echo json_encode(['ok' => false, 'error' => $restablecimiento]);
-//             exit;
-//         }
-//     }
-// }
+    $modelo->setIdCliente($_POST['id_cliente']);
+    $modelo->setNacionalidad($_POST['nacionalidad']);
+    $modelo->setCedula($_POST['cedula']);
+    $modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
+    $modelo->setNombre($_POST['nombre']);
+    $modelo->setApellido($_POST['apellido']);
+    $modelo->setTelefono($_POST['telefono']);
+    $modelo->setDireccion($_POST['direccion']);
+    $modelo->setFn($_POST['fn']);
+    $modelo->setGenero($_POST['genero']);
+
+    $bitacora->setId_usuario($_POST['id_usuario']);
+    $bitacora->setActividad("Ha modificado un cliente");
+    $bitacora->setTabla("cliente");
+
+    $edicion = returnObjectClass()['cliente']->update_cliente();
+
+    // // Verifica si es un array con clave "exito"
+    if (is_array($edicion) && $edicion[0] === "exito") {
+        returnObjectClass()['bitacora']->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $edicion]);
+        exit;
+    }
+}
+
+function eliminar($datos)
+{
+    $id_cliente = $datos[0];
+    $id_usuario = $datos[1];
+
+    $modelo = returnObjectClass()['cliente'];
+    $bitacora = returnObjectClass()['bitacora'];
+
+
+    $modelo->setIdCliente($id_cliente);
+
+    $bitacora->setId_usuario($id_usuario);
+    $bitacora->setActividad("Ha eliminado un cliente");
+    $bitacora->setTabla("cliente");
+
+    $eliminacion = $modelo->delete();
+
+    if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+        $bitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $eliminacion]);
+        exit;
+    }
+}
+function restablecer($datos)
+{
+
+    $id_cliente = $datos[0];
+    $id_usuario = $datos[1];
+
+
+    $modelo = returnObjectClass()['cliente'];
+    $bitacora = returnObjectClass()['bitacora'];
+
+
+    $modelo->setIdCliente($id_cliente);
+
+    $bitacora->setId_usuario($id_usuario);
+    $bitacora->setActividad("Ha restablecido un cliente");
+    $bitacora->setTabla("cliente");
+
+    $restablecer = $modelo->restablecer();
+
+    if (is_array($restablecer) && $restablecer[0] === "exito") {
+        $bitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $restablecer]);
+        exit;
+    }
+}
