@@ -62,7 +62,7 @@ class ModeloPatologia extends ModelBase
             ];
 
 
-            if ($this->nombrePatologia(['nombre_patologia' => $this->getNombrePatologia()])) {
+            if ($this->nombrePatologia(['nombrePatologia' => $this->getNombrePatologia()])) {
                 throw new \Exception("La patologia ya existe en el sistema.");
             }
 

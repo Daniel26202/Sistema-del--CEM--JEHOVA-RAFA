@@ -15,44 +15,46 @@
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
 
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
+                <div class="mb-2 mb-md-0 caja-btn-margin">
+                    <button class=" caja-btn-margin btn btn-modals " data-bs-toggle="modal" data-bs-target="#exampleModalAgregarPatologia" id="btnOpenModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
+                            <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z"></path>
+                        </svg>Registrar patología
+                    </button>
+                </div>
 
-            <button class="btn-guardar-responsive btnRegistrarPatologia btn btn-primary btn-agregar-doctores col-8" data-bs-toggle="modal" data-bs-target="#exampleModalAgregarPatologia" id="">
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
-                    <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z"></path>
-                </svg>Registrar patología
-            </button>
+                <div class="mb-2 mb-md-0 caja-btn-margin ">
+                    <a href="<?= $vistaActiva == 'papelera' ? '/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias' : '/Sistema-del--CEM--JEHOVA-RAFA/Patologias/papeleraPatologias' ?>" class="caja-btn-margin btn btn-modals">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
+                            <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z"></path>
+                        </svg><?= $vistaActiva == 'papelera' ? 'Patologias' : 'Papelera' ?>
+                    </a>
+
+                </div>
+
+            </div>
+            <div class="table table-responsive">
+                <table class="exampleTable table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-dark text-center">#</th>
+                            <th class="text-dark text-center">Nombre</th>
+                            <th class="text-dark text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
 
 
-            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/papeleraPatologias" class="btn-guardar-responsive btnRegistrarPatologia btn btn-primary btn-agregar-doctores col-8 text-decoration-none">
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
-                    <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z"></path>
-                </svg>Papelera
-            </a>
-
-        </div>
-
-        <div class="table table-responsive">
-            <table class="exampleTable table table-striped">
-                <thead>
-                    <tr>
-                        <th class="text-dark text-center">#</th>
-                        <th class="text-dark text-center">Nombre</th>
-                        <th class="text-dark text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-
-
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-<?php require_once 'modalesPatologia.php'; ?>
+    <?php require_once 'modalesPatologia.php'; ?>
 
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/patologia.js"></script>
-<?php require_once './src/vistas/head/footer.php'; ?>
+    <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/patologia.js"></script>
+    <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script src="<?= $urlBase; ?>../src/assets/js/ayudaPatologia.js"></script>
+    <script src="<?= $urlBase; ?>../src/assets/js/ayudaPatologia.js"></script>

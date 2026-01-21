@@ -17,6 +17,7 @@ function returnObjectClass()
 function patologias($parametro)
 {
 	$ayuda = "btnayudaPatologia";
+	$vistaActiva = "patologias";
 	require_once './src/vistas/vistaPatologia/patologia.php';
 }
 
@@ -29,6 +30,7 @@ function patologiasAjax()
 
 function papeleraPatologias($parametro)
 {
+	$vistaActiva = "papelera";
 	$ayuda = "btnayudaPatologia";
 	require_once './src/vistas/vistaPatologia/patologia.php';
 }
@@ -92,25 +94,25 @@ function eliminarPatologia($datos)
 		exit;
 	}
 
-	try{
-	[$modelo, $bitacora] = returnObjectClass();
+	try {
+		[$modelo, $bitacora] = returnObjectClass();
 
-	$modelo->setIdPatologia($datos[0]);
+		$modelo->setIdPatologia($datos[0]);
 
-	$bitacora->setId_usuario($datos[1]);
-	$bitacora->setActividad("Ha eliminado una  patologia");
-	$bitacora->setTabla("patologia");
+		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setActividad("Ha eliminado una  patologia");
+		$bitacora->setTabla("patologia");
 
-	$eliminar = $modelo->eliminarPatologia();
+		$eliminar = $modelo->eliminarPatologia();
 
-	if (is_array($eliminar) && $eliminar[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $eliminar]);
-		exit;
-	}
+		if (is_array($eliminar) && $eliminar[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminar]);
+			exit;
+		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -129,26 +131,26 @@ function restablecerPatologia($datos)
 		exit;
 	}
 
-	try{
+	try {
 
-	[$modelo, $bitacora] = returnObjectClass();
+		[$modelo, $bitacora] = returnObjectClass();
 
-	$modelo->setIdPatologia($datos[0]);
+		$modelo->setIdPatologia($datos[0]);
 
-	$bitacora->setId_usuario($datos[1]);
-	$bitacora->setActividad("Ha restablecido una  patologia");
-	$bitacora->setTabla("patologia");
+		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setActividad("Ha restablecido una  patologia");
+		$bitacora->setTabla("patologia");
 
-	$eliminar = $modelo->restablecer();
+		$eliminar = $modelo->restablecer();
 
-	if (is_array($eliminar) && $eliminar[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $eliminar]);
-		exit;
-	}
+		if (is_array($eliminar) && $eliminar[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminar]);
+			exit;
+		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);

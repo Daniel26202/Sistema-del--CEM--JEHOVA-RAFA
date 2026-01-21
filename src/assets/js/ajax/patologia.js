@@ -1,4 +1,6 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "../generic/funtionGeneric.js";
+import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
+
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Patologias";
 
 const modalAgregar = document.getElementById("modalAgregar");
@@ -39,8 +41,8 @@ const readPathology = async () => {
                     <a href="#" class="${
                       !urlActual.includes("papelera") ? "d-none" : ""
                     } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
-        element.id_patologia
-      }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
+                      element.id_patologia
+                    }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
                     <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                         <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
@@ -99,7 +101,7 @@ const readPathology = async () => {
   }
 };
 //create
-const createPathology = async (form, inputs) => {
+const createPathology = async (form) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(url + "/registrarPatologia", "POST", data);
@@ -107,10 +109,23 @@ const createPathology = async (form, inputs) => {
     if (result.ok) {
       alertSuccess(result.message);
 
-      UIkit.modal("#modal-exampleAgregarPatologias").hide();
       form.reset();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+      document.querySelectorAll('.input-validar').forEach((input) => {
+        let check = input.nextElementSibling.children[0];
+        let error = input.nextElementSibling.children[1];
+
+        input.parentElement.classList.remove("invalido");
+        input.parentElement.classList.remove("valido");
+
+        let campoCustom = input.closest(".campo-custom");
+        let pError = campoCustom.querySelector("p");
+        pError.classList.add("d-none");
+        if (check && error) {
+          check.classList.add("d-none");
+          error.classList.add("d-none");
+        }
+      });
+
       readPathology();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -147,18 +162,20 @@ const restablecerPathology = async (data) => {
 
 readPathology();
 
+let verificarFormulario = inicializarValidacionFormulario(modalAgregar);
+
 if (modalAgregar) {
   modalAgregar.addEventListener("submit", function (e) {
     e.preventDefault();
-    let inputsBuenos = [];
-    this.querySelectorAll(".input-validar").forEach((input) => {
-      if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-    });
 
-    if (inputsBuenos.length == 1) {
-      createPathology(this, inputsBuenos);
+
+    let esValido = verificarFormulario();
+    console.log(esValido);
+
+    if (esValido) {
+      createPathology(this);
     } else {
-      alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
+      alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }
   });
 }
