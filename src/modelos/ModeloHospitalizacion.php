@@ -2,14 +2,17 @@
 
 namespace App\modelos;
 
+use App\modelos\ModelBase;
 use App\modelos\ModeloPacientes;
+use App\modelos\ModeloDoctores;
+use App\modelos\ModeloUsuarios;
+use App\modelos\ModeloControl;
 use Exception;
-use PDO;
 
 class ModeloHospitalizacion extends ModelBase
 {
 
-    private $idH, $fechaHora, $idInsumo, $nombreInsumo;
+    private $idH, $fechaHora, $idInsumo, $nombreInsumo, $cantidadIns, $idServicio, $fechaControl, $idInsH, $idInsElim, $idInsumosA, $cantidadE, $fechaHoraFinal, $monto, $montoME, $total, $totalME, $patologiasId, $sintomasId;
 
     public function __construct($dbSystem = true)
     {
@@ -20,7 +23,9 @@ class ModeloHospitalizacion extends ModelBase
     {
         return [
             "modeloPacientes" => new ModeloPacientes(),
-            "modeloDoctores" => new ModeloDoctores()
+            "modeloDoctores" => new ModeloDoctores(),
+            "modeloUsuarios" => new ModeloUsuarios(),
+            "modeloControl" => new ModeloControl()
         ];
     }
 
@@ -243,6 +248,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function insertarH($fechaHora, $idInsumos, $cantidad, $historial, $idPersonal, $idPaciente, $severidad, $cantidadS, $idServicio, $diagnostico)
     {
+
         try {
             $dataH = [
                 'fecha_hora_inicio' => $this->getFechaHora(),
@@ -259,6 +265,7 @@ class ModeloHospitalizacion extends ModelBase
             // si hay un id del insumo devuelve verdadero si no, devuelve falso
             if ($idInsumos) {
 
+                $cantidad = $this->getCantidadIns();
                 $contadorC = 0;
 
                 foreach ($idInsumos as $idI) {
@@ -266,51 +273,40 @@ class ModeloHospitalizacion extends ModelBase
                     $sql = "SELECT inv.id_entradaDeInsumo FROM entrada_insumo inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada= inv.id_entrada WHERE inv.id_insumo =:id_insumo AND inv.cantidad_disponible >= :cantidad ORDER BY e.fechaDeIngreso LIMIT 1;";
                     $this->setSQL($sql);
                     $data = [
-                        'id_insumo' => $this->returnObjetModel()["modeloPacientes"]->getIdPaciente(),
-                        'cantidad' => $this->returnObjetModel()["modeloDoctores"]->getIdDoctor()
+                        'id_insumo' => $idI,
+                        'cantidad' => $cantidad[$contadorC]
                     ];
                     $consulta = $this->search($data, false);
-
-                    return !empty($consulta) ? true : false;
-
                     // selecciono id de entrada_insumo
-                    $consulta = $this->conexion->prepare('');
-                    $consulta->bindParam(":", $idI);
-                    $consulta->bindParam(":", $cantidad[$contadorC]);
-                    $idEntradaDeInsumo = ($consulta->execute()) ? $consulta->fetch() : false;
+                    $idEntradaDeInsumo = !empty($consulta) ? $consulta : false;
 
 
                     // insertar insumos de la hospitalización
-                    $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)');
-                    $consulta->bindParam(":id_hospitalizacion", $idH);
-                    $consulta->bindParam(":id_entradaDeInsumo", $idEntradaDeInsumo["id_entradaDeInsumo"]);
-                    $consulta->bindParam(":cantidad", $cantidad[$contadorC]);
+                    $sql = "INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)";
+                    $this->setSQL($sql);
+                    $data = [
+                        'id_hospitalizacion' => $idH,
+                        'id_entradaDeInsumo' => $idEntradaDeInsumo["id_entradaDeInsumo"],
+                        'cantidad' => $cantidad[$contadorC]
+                    ];
+                    //devuelve el id de la hospitalización.
+                    $idH = $this->create($data);
 
-                    if ($consulta->execute()) {
-                        $consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
-                        $consulta2->bindParam(":i", $idI);
-                        $consulta2->bindParam(":cantidad", $cantidad[$contadorC]);
-                        $consulta2->execute();
-                    }
+
+                    // descontar del lote
+                    $sql = "CALL DescontarLotes(:i, :cantidad);";
+                    $this->setSQL($sql);
+                    $data = [
+                        'i' => $idI,
+                        'cantidad' => $cantidad[$contadorC]
+                    ];
+                    $this->storedProcedure($data);
 
                     $contadorC++;
                 }
             }
 
-
-            return ['exito', $data];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-
-
-
-
-        try {
-
-            //obtenemos los datos de la hospitalización que se a agregado. si no se inserta devuelve 0
-
-
+            $idServicio = $this->getIdServicio();
             // si hay un id del servicio devuelve verdadero si no, devuelve falso
             if ($idServicio) {
 
@@ -318,42 +314,56 @@ class ModeloHospitalizacion extends ModelBase
                 foreach ($idServicio as $idS) {
 
                     // insertar servicio de la hospitalización
-                    $consulta = $this->conexion->prepare("INSERT INTO servicios_hospitalizacion(id_hospitalizacion, id_servicioMedico, cantidad) VALUES (:id_hospitalizacion, :id_servicioMedico, :cantidad)");
-                    $consulta->bindParam(":id_hospitalizacion", $idH);
-                    $consulta->bindParam(":id_servicioMedico", $idS);
-                    $consulta->bindParam(":cantidad", $cantidadS[$contador]);
-                    $consulta->execute();
+                    $sql = "INSERT INTO servicios_hospitalizacion(id_hospitalizacion, id_servicioMedico, cantidad) VALUES (:id_hospitalizacion, :id_servicioMedico, :cantidad)";
+                    $this->setSQL($sql);
+                    $data = [
+                        'id_hospitalizacion' => $idH,
+                        'id_servicioMedico' => $idS,
+                        'cantidad' => $cantidadS[$contador]
+                    ];
+                    //devuelve el id de la hospitalización.
+                    $this->create($data);
 
                     $contador++;
                 }
             }
 
             // seleccionamos el id del
-            $consulta = $this->conexion->prepare("SELECT u.id_usuario FROM segurity.usuario u JOIN bd.personal p ON p.usuario = u.id_usuario WHERE p.id_personal = :id_personal LIMIT 1");
-            $consulta->bindParam(":id_personal", $idPersonal);
-            $idUsuario = ($consulta->execute()) ? $consulta->fetch() : false;
+            $sql = "SELECT u.id_usuario FROM segurity.usuario u JOIN bd.personal p ON p.usuario = u.id_usuario WHERE p.id_personal = :id_personal LIMIT 1;";
+            $this->setSQL($sql);
+            $data = [
+                'id_personal' => $this->returnObjetModel()["modeloDoctores"]->getIdDoctor()
+            ];
+            $consulta = $this->search($data, false);
+
+            $idUsuario = !empty($consulta) ? $consulta : false;
 
             // insertar control
-            $consulta = $this->conexion->prepare("INSERT INTO control (id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado, severidad) VALUES (:id_paciente, :id_usuario, :diagnostico, '', :fecha_control, '', '', :historial, 'DES', :severidad);");
-            $consulta->bindParam(":id_paciente", $idPaciente);
-            $consulta->bindParam(":id_usuario", $idUsuario["id_usuario"]);
-            $consulta->bindParam(":diagnostico", $diagnostico);
-            $consulta->bindParam(":historial", $historial);
-            $consulta->bindParam(":fecha_control", $fechaHora);
-            $consulta->bindParam(":severidad", $severidad);
-            $consulta->execute();
+            $sql = "INSERT INTO control (id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado, severidad) VALUES (:id_paciente, :id_usuario, :diagnostico, '', :fecha_control, '', '', :historial, 'DES', :severidad);";
+            $this->setSQL($sql);
+            $data = [
+                'id_paciente' => $this->returnObjetModel()["modeloPacientes"]->getIdPaciente(),
+                'id_usuario' => $idUsuario["id_usuario"],
+                'diagnostico' => $this->returnObjetModel()["modeloControl"]->getDiagnostico(),
+                'fecha_control' => $this->getFechaControl(),
+                'historial' => $this->returnObjetModel()["modeloControl"]->getHistorial(),
+                'severidad' => $this->returnObjetModel()["modeloControl"]->getSeveridad(),
+            ];
+            //devuelve el id de la hospitalización.
+            $this->create($data);
 
-            $consulta = $this->conexion->prepare("SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion");
-            $consulta->bindParam(":id_hospitalizacion", $idH);
-            $consulta->execute();
-            $data = ($consulta->execute()) ? $consulta->fetch() : false;
 
-            $this->conexion->commit();
+            $sql = "SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion";
+            $this->setSQL($sql);
+            $data = [
+                'id_hospitalizacion' => $this->getIdH(),
+            ];
+            $data = $this->search($data, false);
+
 
             return ["exito", $data];
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
-            print_r($e);
+            return $e->getMessage();
         }
     }
 
@@ -362,46 +372,58 @@ class ModeloHospitalizacion extends ModelBase
     public function EInsumosM($id)
     {
 
-        $consulta = $this->conexion->prepare("SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, inv.cantidad_disponible AS limite_insumo FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = 'DES' AND u.estado = 'ACT' AND ins.estado = 'ACT' AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo;");
-
-        $consulta->bindValue(":id", $id, PDO::PARAM_INT);
-
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+        $sql = "SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, inv.cantidad_disponible AS limite_insumo FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = 'DES' AND u.estado = 'ACT' AND ins.estado = 'ACT' AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo;";
+        $this->setSQL($sql);
+        $data = [
+            'id' => $this->getIdH(),
+        ];
+        return $this->search($data, true);
     }
 
     public function datosControl($idH)
     {
         // consulta el id del control
-        $consulta = $this->conexion->prepare("SELECT con.id_control, con.id_paciente FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1;");
-        $consulta->bindParam(":idHosp", $idH);
-        return ($consulta->execute()) ? $consulta->fetch() : false;
+        $sql = "SELECT con.id_control, con.id_paciente FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1;";
+        $this->setSQL($sql);
+        $data = [
+            'idHosp' => $this->getIdH(),
+        ];
+        return $this->search($data, false);
     }
+
 
     public function editarH($idInsumosA, $cantidadE, $cantidadA, $historial, $idHos, $idIDH, $idInsElim, $diagnostico, $idServicio, $cantidadS)
     {
         try {
-            $this->conexion->beginTransaction();
-
-            $validar = $this->conexion->prepare("SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion");
-            $validar->bindParam(":id_hospitalizacion", $idHos);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
-                throw new \Exception("Fallo el id no existe");
-            }
-
-
+            // $this->conexion->beginTransaction();
             // consulta el id del control
-            $idControl = $this->datosControl($idHos);
+            $sql = "SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion";
+            $this->setSQL($sql);
+            $data = [
+                'id_hospitalizacion' => $this->getIdH(),
+            ];
+            $validar = $this->search($data, false);
+            if ($validar == []) {
+                throw new \Exception("Fallo");
+            }
+            // consulta el id del control
+            $idControl = $this->datosControl($this->getIdH());
+
 
             // editar control
-            $consulta = $this->conexion->prepare('UPDATE control SET historiaclinica = :historial, diagnostico = :diagnostico WHERE id_control = :id_control;');
-            $consulta->bindParam(":historial", $historial);
-            $consulta->bindParam(":diagnostico", $diagnostico);
-            $consulta->bindParam(":id_control", $idControl["id_control"]);
-            $consulta->execute();
+            $sql = "UPDATE control SET historiaclinica = :historial, diagnostico = :diagnostico WHERE id_control = :id;";
+            $this->setSQL($sql);
+            $data = [
+                "historial" => $this->returnObjetModel()["modeloControl"]->getHistorial(),
+                "diagnostico" => $this->returnObjetModel()["modeloControl"]->getDiagnostico(),
+            ];
+
+            $this->update($data, $idControl["id_control"]);
 
             // es para a editar insumos
             // si hay un id del insumo de hospitalización devuelve verdadero si no, devuelve falso
+            $cantidadE = $this->getCantidadE();
+            $idIDH = $this->getIdInsH();
             if ($idIDH) {
 
                 $contador = 0;
@@ -409,43 +431,32 @@ class ModeloHospitalizacion extends ModelBase
                 foreach ($idIDH as $idInDHos) {
 
                     // selecciono la cantidad del insumo existente de la hospitalización
-                    $consulta = $this->conexion->prepare('SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE id_insumoDeHospitalizacion = :id');
-                    $consulta->bindParam(":id", $idInDHos);
-                    $cantidadIHBD = ($consulta->execute()) ? $consulta->fetch() : false;
+                    $sql = 'SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE id_insumoDeHospitalizacion = :id';
+                    $this->setSQL($sql);
+                    $cantidadIHBD = $this->search(['id' => $idInDHos], false);
 
                     // se edita los insumos de la hospitalización
-                    $consulta = $this->conexion->prepare('UPDATE insumodehospitalizacion SET cantidad= :cantidad WHERE id_insumoDeHospitalizacion = :id_hdi');
-                    $consulta->bindParam(":cantidad", $cantidadE[$contador]);
-                    $consulta->bindParam(":id_hdi", $idInDHos);
+                    $sql = 'UPDATE insumodehospitalizacion SET cantidad= :cantidad WHERE id_insumoDeHospitalizacion = :id';
+                    $this->setSQL($sql);
+                    $this->update(['cantidad' => $cantidadE[$contador]], $idInDHos);
 
-                    if ($consulta->execute()) {
+                    // se resta al inventario (suma a los insumos de hospitalización)
+                    if ($cantidadE[$contador] > $cantidadIHBD["cantidad"]) {
 
-                        // se resta al inventario (suma a los insumos de hospitalización)
-                        if ($cantidadE[$contador] > $cantidadIHBD["cantidad"]) {
+                        $cS = $cantidadE[$contador] - $cantidadIHBD["cantidad"];
 
-                            $cS = $cantidadE[$contador] - $cantidadIHBD["cantidad"];
+                        $sql =  "CALL DescontarLotes(:i, :cantidad);";
+                        $this->setSQL($sql);
+                        $this->storedProcedure(['i' => $cantidadIHBD["id_insumo"], 'cantidad' => $cS]);
 
-                            $consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
-                            $consulta2->bindParam(":i", $cantidadIHBD["id_insumo"]);
-                            $consulta2->bindParam(":cantidad", $cS);
-                            $consulta2->execute();
-                            $consulta2->closeCursor();
+                        // se suma al inventario (resta a los insumos de hospitalización)
+                    } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
 
-
-                            // se suma al inventario (resta a los insumos de hospitalización)
-                        } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
-
-                            $cR = $cantidadIHBD["cantidad"] - $cantidadE[$contador];
-                            $consulta2 =  $this->conexion->prepare("CALL devolver_insumo_hospitalizacion(:i, :cantidad);");
-                            $consulta2->bindParam(":i", $cantidadIHBD["id_insumo"]);
-                            $consulta2->bindParam(":cantidad", $cR);
-                            $consulta2->execute();
-                            $consulta2->closeCursor();
-                        }
+                        $cR = $cantidadIHBD["cantidad"] - $cantidadE[$contador];
+                        $sql = "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
+                        $this->setSQL($sql);
+                        $this->storedProcedure(['i' => $cantidadIHBD["id_insumo"], 'cantidad' => $cR]);
                     }
-
-
-
 
                     $contador++;
                 }
@@ -453,6 +464,7 @@ class ModeloHospitalizacion extends ModelBase
 
             // es para agregar insumos
             // si hay un id del insumo devuelve verdadero si no, devuelve falso
+            $idInsumosA = $this->getIdInsumosA();
             if ($idInsumosA) {
 
                 $contadorC = 0;
@@ -460,24 +472,25 @@ class ModeloHospitalizacion extends ModelBase
                 foreach ($idInsumosA as $idIA) {
 
                     // selecciono id de entrada_insumo
-                    $consulta = $this->conexion->prepare('SELECT inv.id_entradaDeInsumo FROM entrada_insumo inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada= inv.id_entrada WHERE inv.id_insumo =:id_insumo AND inv.cantidad_disponible >= :cantidad ORDER BY e.fechaDeIngreso LIMIT 1;');
-                    $consulta->bindParam(":id_insumo", $idIA);
-                    $consulta->bindParam(":cantidad", $cantidadA[$contadorC]);
-                    $idEntradaDeInsumo = ($consulta->execute()) ? $consulta->fetch() : false;
+                    $sql = 'SELECT inv.id_entradaDeInsumo FROM entrada_insumo inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada= inv.id_entrada WHERE inv.id_insumo =:id_insumo AND inv.cantidad_disponible >= :cantidad ORDER BY e.fechaDeIngreso LIMIT 1;';
+                    $this->setSQL($sql);
+                    $idEntradaDeInsumo = $this->search(['id_insumo' => $idIA, 'cantidad' => $cantidadA[$contadorC]], false);
 
 
                     // insertar insumos de la hospitalización
-                    $consulta = $this->conexion->prepare('INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)');
-                    $consulta->bindParam(":id_hospitalizacion", $idHos);
-                    $consulta->bindParam(":id_entradaDeInsumo", $idEntradaDeInsumo["id_entradaDeInsumo"]);
-                    $consulta->bindParam(":cantidad", $cantidadA[$contadorC]);
+                    $sql = 'INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)';
+                    $this->setSQL($sql);
+                    $data = [
+                        'id_hospitalizacion' => $this->getIdH(),
+                        'id_entradaDeInsumo' => $idEntradaDeInsumo["id_entradaDeInsumo"],
+                        'cantidad' => $cantidadA[$contadorC]
+                    ];
+                    $insertado = $this->create($data);
 
-                    if ($consulta->execute()) {
-                        $consulta2 =  $this->conexion->prepare("CALL DescontarLotes(:i, :cantidad);");
-                        $consulta2->bindParam(":i", $idIA);
-                        $consulta2->bindParam(":cantidad", $cantidadA[$contadorC]);
-                        $consulta2->execute();
-                        $consulta2->closeCursor();
+                    if ($insertado) {
+                        $sql =  "CALL DescontarLotes(:i, :cantidad);";
+                        $this->setSQL($sql);
+                        $this->storedProcedure(['i' => $idIA, 'cantidad' => $cantidadA[$contadorC]]);
                     }
 
                     $contadorC++;
@@ -486,35 +499,37 @@ class ModeloHospitalizacion extends ModelBase
 
             // es para eliminar insumos
             // si hay un id del insumo eliminado devuelve verdadero si no, devuelve falso
+            $idInsElim = $this->getIdInsElim();
             if ($idInsElim) {
 
                 $contador = 0;
                 foreach ($idInsElim as $idIAEl) {
 
                     // selecciono la cantidad del insumo existente de la hospitalización
-                    $consulta = $this->conexion->prepare('SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE idh.id_insumoDeHospitalizacion = :id;');
-                    $consulta->bindParam(":id", $idIAEl);
-                    $cantidadIH = ($consulta->execute()) ? $consulta->fetch() : false;
+                    $consulta = 'SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE idh.id_insumoDeHospitalizacion = :id;';
+                    $this->setSQL($consulta);
+                    $cantidadIH = $this->search(['id' => $idIAEl], false);
 
                     // elimina insumos de la hospitalización
-                    $consulta = $this->conexion->prepare('DELETE FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id_insumo_eliminado');
-                    $consulta->bindParam(":id_insumo_eliminado", $idIAEl);
+                    $sql = 'DELETE FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id_insumo_eliminado';
+                    $this->setSQL($sql);
+                    $validar = $this->delete(['id_insumo_eliminado' => $idIAEl]);
                     // devolver insumos 
-                    if ($consulta->execute()) {
-                        $consulta2 =  $this->conexion->prepare("CALL devolver_insumo_hospitalizacion(:i, :cantidad);");
-                        $consulta2->bindParam(":i", $cantidadIH["id_insumo"]);
-                        $consulta2->bindParam(":cantidad", $cantidadIH["cantidad"]);
-                        $consulta2->execute();
-                        $consulta2->closeCursor();
+                    if ($validar) {
+                        $sql =  "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
+                        $this->setSQL($sql);
+                        $this->storedProcedure([
+                            'i' => $cantidadIH["id_insumo"],
+                            'cantidad' => $cantidadIH["cantidad"]
+                        ]);
                     }
-
 
                     $contador++;
                 }
             }
 
             // servicios
-            $datosSHBD = $this->selectServiciosDH($idHos);
+            $datosSHBD = $this->selectServiciosDH($this->getIdH());
 
             $servAnterioresIdC = [];
             $idsServAnteriores = [];
@@ -525,7 +540,7 @@ class ModeloHospitalizacion extends ModelBase
                 $servAnterioresIdC[$id] = (int)$datos['cantidad'];
             }
 
-            // devuelve el valor de el array en int y si no tiene nada devuelve un array vacío
+            // devuelve el valor del array en int y si no tiene nada devuelve un array vacío
             $idsServNuevos = array_map('intval', $idServicio ?? []);
             $cantServNuevas = $cantidadS ?? [];
 
@@ -544,20 +559,25 @@ class ModeloHospitalizacion extends ModelBase
             // Eliminar servicios
             if ($servEliminados != null || $servEliminados != []) {
                 foreach ($servEliminados as $idSE) {
-                    $consulta = $this->conexion->prepare('DELETE FROM servicios_hospitalizacion WHERE id_hospitalizacion = :id_hospitalizacion AND id_servicioMedico = :id_servicioMedico');
-                    $consulta->bindParam(":id_hospitalizacion", $idHos);
-                    $consulta->bindParam(":id_servicioMedico", $idSE);
-                    $consulta->execute();
+
+                    $sql = 'DELETE FROM servicios_hospitalizacion WHERE id_hospitalizacion = :id_hospitalizacion AND id_servicioMedico = :id_servicioMedico';
+                    $this->setSQL($sql);
+                    $this->delete([
+                        'id_hospitalizacion' => $this->getIdH(),
+                        'id_servicioMedico' => $idSE
+                    ]);
                 }
             }
             // Insertar servicios
             if ($servAgregados != null || $servAgregados != []) {
                 foreach ($servAgregados as $idSA) {
-                    $consulta = $this->conexion->prepare('INSERT INTO servicios_hospitalizacion (id_hospitalizacion, id_servicioMedico, cantidad) VALUES (:id_hospitalizacion, :id_servicioMedico, :cantidad)');
-                    $consulta->bindValue(":id_hospitalizacion", $idHos);
-                    $consulta->bindValue(":id_servicioMedico", $idSA);
-                    $consulta->bindValue(":cantidad", $servIdCNuevas[$idSA]);
-                    $consulta->execute();
+                    $sql = 'INSERT INTO servicios_hospitalizacion (id_hospitalizacion, id_servicioMedico, cantidad) VALUES (:id_hospitalizacion, :id_servicioMedico, :cantidad)';
+                    $this->setSQL($sql);
+                    $this->create([
+                        'id_hospitalizacion' => $this->getIdH(),
+                        'id_servicioMedico' => $idSA,
+                        'cantidad' => $servIdCNuevas[$idSA]
+                    ]);
                 }
             }
 
@@ -565,11 +585,12 @@ class ModeloHospitalizacion extends ModelBase
             // Actualizar cantidades de servicios
             if ($servIguales != null || $servIguales != []) {
                 foreach ($servIguales as $idS) {
-                    $consulta = $this->conexion->prepare('UPDATE servicios_hospitalizacion SET cantidad = :cantidad WHERE id_hospitalizacion = :id_hospitalizacion AND id_servicioMedico = :id_servicioMedico');
-                    $consulta->bindValue(":id_hospitalizacion", $idHos);
-                    $consulta->bindValue(":id_servicioMedico", $idS);
-                    $consulta->bindValue(":cantidad", $servIdCNuevas[$idS]);
-                    $consulta->execute();
+                    $sql = 'UPDATE servicios_hospitalizacion SET cantidad = :cantidad WHERE id_hospitalizacion = :id AND id_servicioMedico = :id';
+                    $this->setSQL($sql);
+                    $this->update([
+                        'id_servicioMedico' => $idS,
+                        'cantidad' => $servIdCNuevas[$idS]
+                    ], $this->getIdH());
                 }
             }
 
@@ -577,50 +598,51 @@ class ModeloHospitalizacion extends ModelBase
             // $consulta->bindValue(":cantidad", (int)$servIdCNuevas[$idSA], PDO::PARAM_INT);
 
 
-            $this->conexion->commit();
+            // $this->conexion->commit();
             return ["exito"];
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
+            // $this->conexion->rollBack();
             $e->getMessage();
         }
     }
 
     // eliminación lógica
-    public function eliminaLogico($idH, $datosIDH)
+    public function eliminaLogico($idH)
     {
         try {
-            $this->conexion->beginTransaction();
+            // $this->conexion->beginTransaction();
 
-            $validar = $this->conexion->prepare("SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion");
-            $validar->bindParam(":id_hospitalizacion", $idH);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
+            $sql = "SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion";
+            $this->setSQL($sql);
+            $validar = $this->search(['id_hospitalizacion' => $this->getIdH()], false);
+            if ($validar == []) {
                 throw new \Exception("Fallo");
             }
-
+            $datosIDH = $this->EInsumosM($this->getIdH());
             // // si hay un id del insumo devuelve verdadero si no, devuelve falso
             if ($datosIDH) {
 
                 foreach ($datosIDH as $indice => $value) {
 
-                    $consulta2 =  $this->conexion->prepare("CALL devolver_insumo_hospitalizacion(:i, :cantidad);");
-                    $consulta2->bindParam(":i", $value["id_insumo"]);
-                    $consulta2->bindParam(":cantidad", $value["cantidad"]);
-                    $consulta2->execute();
-                    $consulta2->closeCursor();
+                    $sql = "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
+                    $this->setSQL($sql);
+                    $this->storedProcedure([
+                        'i' => $value["id_insumo"],
+                        'cantidad' => $value["cantidad"]
+                    ]);
+                    // $consulta2->closeCursor();
                 }
             }
 
             // editar el estado hospitalización
-            $consulta = $this->conexion->prepare('UPDATE hospitalizacion SET estado ="DES" WHERE id_hospitalizacion =:id_h ;');
-            $consulta->bindParam(":id_h", $idH);
-            $consulta->execute();
+            $sql = 'UPDATE hospitalizacion SET estado ="DES" WHERE id_hospitalizacion =:id ;';
+            $this->setSQL($sql);
+            $this->update([], $this->getIdH());
 
-
-            $this->conexion->commit();
+            // $this->conexion->commit();
             return ["exito"];
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
+            // $this->conexion->rollBack();
             $e->getMessage();
         }
     }
@@ -629,61 +651,74 @@ class ModeloHospitalizacion extends ModelBase
     // buscar insumos de las hospitalizaciones existentes 
     public function buscarIEH()
     {
-        $consulta = $this->conexion->prepare("SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, inv.cantidad_disponible AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = 'DES' AND sm.estado = 'ACT' AND u.estado = 'ACT' AND ins.estado = 'ACT' AND h.estado = 'Pendiente';");
+        $sql = "SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, inv.cantidad_disponible AS cantidadEx, ins.precio, h.fecha_hora_inicio FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = 'DES' AND sm.estado = 'ACT' AND u.estado = 'ACT' AND ins.estado = 'ACT' AND h.estado = 'Pendiente';";
 
-        return ($consulta->execute()) ? $consulta->fetchAll() : false;
+        $this->setSQL($sql);
+        return $this->read();
     }
 
     public function facturarH($idH, $fechaHoraFinal, $monto, $montoME,  $total, $totalME, $historialEnF, $sintomas, $patologias, $nota, $indicaciones, $fechaRegreso, $diagnostico, $severidad)
     {
         try {
-            $this->conexion->beginTransaction();
+            // $this->conexion->beginTransaction();
 
             // editar hospitalización
-            $consulta = $this->conexion->prepare("UPDATE hospitalizacion SET precio_horas = :precio_horas ,precio_horas_MoEx = :precio_horas_me ,total= :total ,total_MoEx = :total_me ,fecha_hora_final = :fecha_hora_final WHERE id_hospitalizacion = :id_hospitalizacion");
-            $consulta->bindParam(":precio_horas", $monto);
-            $consulta->bindParam(":precio_horas_me", $montoME);
-            $consulta->bindParam(":total", $total);
-            $consulta->bindParam(":total_me", $totalME);
-            $consulta->bindParam(":fecha_hora_final", $fechaHoraFinal);
-            $consulta->bindParam(":id_hospitalizacion", $idH);
-            $consulta->execute();
+            $sql = "UPDATE hospitalizacion SET precio_horas = :precio_horas ,precio_horas_MoEx = :precio_horas_me ,total= :total ,total_MoEx = :total_me ,fecha_hora_final = :fecha_hora_final WHERE id_hospitalizacion = :id_hospitalizacion";
+            $this->setSQL($sql);
+            $data = [
+                'precio_horas' => $this->getMonto(),
+                'precio_horas_me' => $this->getMontoME(),
+                'total' => $this->getTotal(),
+                'total_me' => $this->getTotalME(),
+                'fecha_hora_final' => $this->getFechaHoraFinal(),
+            ];
+            $this->update($data, $this->getIdH());
 
-            $datosControl = $this->datosControl($idH);
+            $datosControl = $this->datosControl($this->getIdH());
 
-            $consulta = $this->conexion->prepare('UPDATE control SET medicamentosRecetados = :indicaciones, historiaclinica = :historial, diagnostico = :diagnostico, fechaRegreso = :fechaRegreso, nota = :nota, severidad = :severidad WHERE id_control = :id_control;');
-            $consulta->bindParam(":indicaciones", $indicaciones);
-            $consulta->bindParam(":historial", $historialEnF);
-            $consulta->bindParam(":diagnostico", $diagnostico);
-            $consulta->bindParam(":fechaRegreso", $fechaRegreso);
-            $consulta->bindParam(":nota", $nota);
-            $consulta->bindParam(":severidad", $severidad);
-            $consulta->bindParam(":id_control", $datosControl["id_control"]);
-            $consulta->execute();
+            $sql = 'UPDATE control SET medicamentosRecetados = :indicaciones, historiaclinica = :historial, diagnostico = :diagnostico, fechaRegreso = :fechaRegreso, nota = :nota, severidad = :severidad WHERE id_control = :id_control;';
+            $this->setSQL($sql);
+            $data = [
+                "indicaciones" => $this->returnObjetModel()["modeloControl"]->getIndicaciones(),
+                "historial" => $this->returnObjetModel()["modeloControl"]->getHistorial(),
+                "diagnostico" => $this->returnObjetModel()["modeloControl"]->getDiagnostico(),
+                "fechaRegreso" => $this->returnObjetModel()["modeloControl"]->getFechaDeRegreso(),
+                "nota" => $this->returnObjetModel()["modeloControl"]->getNota(),
+                "severidad" => $this->returnObjetModel()["modeloControl"]->getSeveridad(),
+            ];
+            $this->update($data, $datosControl["id_control"]);
 
-
+            $patologias = $this->getPatologiasId();
             if ($patologias) {
 
                 // primero se registra la patologia del paciente
                 foreach ($patologias as $patologia) {
-                    $consulta2 = $this->conexion->prepare("INSERT INTO patologiadepaciente(id_paciente, id_patologia, fecha_registro) VALUES (:id_paciente, :id_patologia, NOW())");
-                    $consulta2->bindParam(":id_paciente", $datosControl["id_paciente"]);
-                    $consulta2->bindParam(":id_patologia", $patologia);
-                    $consulta2->execute();
+
+                    $sql = "INSERT INTO patologiadepaciente(id_paciente, id_patologia, fecha_registro) VALUES (:id_paciente, :id_patologia, NOW())";
+                    $this->setSQL($sql);
+                    $data = [
+                        'id_paciente' => $datosControl["id_paciente"],
+                        'id_patologia' => $patologia
+                    ];
+                    $this->create($data);
                 }
             }
             // agrega el síntoma 
+            $sintomas = $this->getSintomasId();
             foreach ($sintomas as $sintoma) {
-                $sql = $this->conexion->prepare("INSERT INTO sintomas_control(id_sintomas, id_control) VALUES (:sintoma,:idControl);");
-                $sql->bindParam(":sintoma", $sintoma);
-                $sql->bindParam(":idControl", $datosControl["id_control"]);
-                $sql->execute();
+                $sql = "INSERT INTO sintomas_control(id_sintomas, id_control) VALUES (:sintoma,:idControl);";
+                $this->setSQL($sql);
+                $data = [
+                    "sintoma" => $sintoma,
+                    "idControl" => $datosControl["id_control"]
+                ];
+                $this->create($data);
             }
 
-            $this->conexion->commit();
+            // $this->conexion->commit();
             return "exito";
         } catch (\Exception $e) {
-            $this->conexion->rollBack();
+            // $this->conexion->rollBack();
             print_r($e);
         }
     }
@@ -692,9 +727,11 @@ class ModeloHospitalizacion extends ModelBase
         try {
 
             // verifica cuantas hospitalizaciones hay pendiente
-            $consulta = $this->conexion->prepare("SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'Pendiente';");
+            $sql = "SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'Pendiente';";
+            $this->setSQL($sql);
+            $consulta = $this->read();
 
-            return ($consulta->execute()) ? $consulta->fetch() : false;
+            return $consulta;
         } catch (\Exception $e) {
             print_r("ocurrio un error en hospitalización, intente mas tarde");
         }
@@ -732,6 +769,24 @@ class ModeloHospitalizacion extends ModelBase
         $this->idInsumo = $idInsumo;
     }
 
+    public function setIdServicio($idServicio)
+    {
+        // no hay servicio seleccionado
+        if ($idServicio === null || $idServicio === []) {
+            $this->idServicio = $idServicio;
+            return;
+        }
+        foreach ($idServicio as $id) {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                throw new \InvalidArgumentException('El ID del servicio no es válido.');
+            }
+            if ((int)$id <= 0) {
+                throw new \InvalidArgumentException('El ID del servicio debe ser mayor que cero.');
+            }
+        }
+        $this->idServicio = $idServicio;
+    }
+
     public function setNombreInsumo($nombreInsumo)
     {
         if (!preg_match("/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s\-\%]{3,50}$/", $nombreInsumo)) {
@@ -750,19 +805,257 @@ class ModeloHospitalizacion extends ModelBase
         }
         $this->fechaHora = $fechaHora;
     }
+    public function setFechaHoraFinal($fechaHoraFinal)
+    {
+        $d = new \DateTime($fechaHoraFinal);
+        $hoy = new \DateTime();
+        if ($d > $hoy) {
+            throw new \InvalidArgumentException("La fecha no puede ser futura");
+        }
+        $this->fechaHoraFinal = $fechaHoraFinal;
+    }
 
     public function setCantidadIns($cantidadIns)
     {
-        if (!preg_match('/^[0-9]+$/', $cantidadIns)) {
-            throw new \InvalidArgumentException('La cantidad no es válida.');
+        // no hay insumo seleccionado
+        if ($cantidadIns === null || $cantidadIns === []) {
+            $this->cantidadIns = $cantidadIns;
+            return;
         }
-        if ((int)$cantidadIns <= 0) {
-            throw new \InvalidArgumentException('La cantidad debe ser mayor que cero.');
+        foreach ($cantidadIns as $cantidad) {
+            if (!preg_match('/^[0-9]+$/', $cantidad)) {
+                throw new \InvalidArgumentException('La cantidad no es válida.');
+            }
+            if ((int)$cantidad <= 0) {
+                throw new \InvalidArgumentException('La cantidad debe ser mayor que cero.');
+            }
         }
-        $this->cantidadIns = (int)$cantidadIns;
+        $this->cantidadIns = $cantidadIns;
+    }
+
+    public function setIdInsH($idInsH)
+    {
+        // no hay insumo seleccionado
+        if ($idInsH === null || $idInsH === []) {
+            $this->idInsH = $idInsH;
+            return;
+        }
+        foreach ($idInsH as $id) {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                throw new \InvalidArgumentException('El ID no es válido.');
+            }
+            if ((int)$id <= 0) {
+                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+            }
+        }
+        $this->idInsH = $idInsH;
+    }
+
+    public function setIdInsumosA($idInsumosA)
+    {
+        // no hay insumo seleccionado
+        if ($idInsumosA === null || $idInsumosA === []) {
+            $this->idInsumosA = $idInsumosA;
+            return;
+        }
+        foreach ($idInsumosA as $id) {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                throw new \InvalidArgumentException('El ID no es válido.');
+            }
+            if ((int)$id <= 0) {
+                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+            }
+        }
+        $this->idInsumosA = $idInsumosA;
+    }
+
+    public function setIdInsElim($idInsElim)
+    {
+        // no hay insumo seleccionado
+        if ($idInsElim === null || $idInsElim === []) {
+            $this->idInsElim = $idInsElim;
+            return;
+        }
+        foreach ($idInsElim as $id) {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                throw new \InvalidArgumentException('El ID no es válido.');
+            }
+            if ((int)$id <= 0) {
+                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+            }
+        }
+        $this->idInsElim = $idInsElim;
+    }
+
+    public function setCantidadE($cantidadE)
+    {
+        // no hay insumo seleccionado
+        if ($cantidadE === null || $cantidadE === []) {
+            $this->cantidadE = $cantidadE;
+            return;
+        }
+        foreach ($cantidadE as $cantidad) {
+            if (!preg_match('/^[0-9]+$/', $cantidad)) {
+                throw new \InvalidArgumentException('La cantidad no es válida.');
+            }
+            if ((int)$cantidad <= 0) {
+                throw new \InvalidArgumentException('La cantidad debe ser mayor que cero.');
+            }
+        }
+        $this->cantidadE = $cantidadE;
+    }
+
+    public function setFechaControl($fechaControl)
+    {
+        if (!preg_match('', $fechaControl)) {
+            throw new \InvalidArgumentException('La fecha no es válida.');
+        }
+        $this->fechaControl = $fechaControl;
+    }
+
+    public function setMonto($monto)
+    {
+        if (!preg_match('/^[0-9]+$/', $monto)) {
+            throw new \InvalidArgumentException('El monto no es válido.');
+        }
+        if ((int)$monto <= 0) {
+            throw new \InvalidArgumentException('El monto debe ser mayor que cero.');
+        }
+        $this->monto = (int)$monto;
+    }
+
+    public function setMontoME($montoME)
+    {
+        if (!preg_match('/^[0-9]+$/', $montoME)) {
+            throw new \InvalidArgumentException('El monto no es válido.');
+        }
+        if ((int)$montoME <= 0) {
+            throw new \InvalidArgumentException('El monto debe ser mayor que cero.');
+        }
+        $this->montoME = (int)$montoME;
+    }
+
+    public function setTotal($total)
+    {
+        if (!preg_match('/^[0-9]+$/', $total)) {
+            throw new \InvalidArgumentException('El total no es válido.');
+        }
+        if ((int)$total <= 0) {
+            throw new \InvalidArgumentException('El total debe ser mayor que cero.');
+        }
+        $this->total = (int)$total;
+    }
+
+    public function setTotalME($totalME)
+    {
+        if (!preg_match('/^[0-9]+$/', $totalME)) {
+            throw new \InvalidArgumentException('El totalME no es válido.');
+        }
+        if ((int)$totalME <= 0) {
+            throw new \InvalidArgumentException('El totalME debe ser mayor que cero.');
+        }
+        $this->totalME = (int)$totalME;
+    }
+    public function setPatologiasId($patologias)
+    {
+        // no hay insumo seleccionado
+        if ($patologias === null || $patologias === []) {
+            $this->patologiasId = $patologias;
+            return;
+        }
+        foreach ($patologias as $patologia) {
+            if (!preg_match('/^[0-9]+$/', $patologia)) {
+                throw new \InvalidArgumentException('El ID no es válido.');
+            }
+            if ((int)$patologia <= 0) {
+                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+            }
+        }
+        $this->patologiasId = $patologias;
+    }
+    public function setSintomasId($sintomasId)
+    {
+        // no hay insumo seleccionado
+        if ($sintomasId === null || $sintomasId === []) {
+            $this->sintomasId = $sintomasId;
+            return;
+        }
+        foreach ($sintomasId as $sintoma) {
+            if (!preg_match('/^[0-9]+$/', $sintoma)) {
+                throw new \InvalidArgumentException('El ID no es válido.');
+            }
+            if ((int)$sintoma <= 0) {
+                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+            }
+        }
+        $this->sintomasId = $sintomasId;
     }
 
     // getter
+    public function getPatologiasId()
+    {
+        return $this->patologiasId;
+    }
+    public function getSintomasId()
+    {
+        return $this->sintomasId;
+    }
+
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    public function getTotalME()
+    {
+        return $this->totalME;
+    }
+
+    public function getMonto()
+    {
+        return $this->monto;
+    }
+
+    public function getMontoME()
+    {
+        return $this->montoME;
+    }
+
+    public function getFechaHoraFinal()
+    {
+        return $this->fechaHoraFinal;
+    }
+
+    public function getIdInsumosA()
+    {
+        return $this->idInsumosA;
+    }
+
+    public function getCantidadE()
+    {
+        return $this->cantidadE;
+    }
+
+    public function getIdInsElim()
+    {
+        return $this->idInsElim;
+    }
+
+    public function getIdInsH()
+    {
+        return $this->idInsH;
+    }
+
+    public function getFechaControl()
+    {
+        return $this->fechaControl;
+    }
+
+    public function getIdServicio()
+    {
+        return $this->idServicio;
+    }
+
     public function getIdInsumo()
     {
         return $this->idInsumo;
@@ -781,5 +1074,10 @@ class ModeloHospitalizacion extends ModelBase
     public function getFechaHora()
     {
         return $this->fechaHora;
+    }
+
+    public function getCantidadIns()
+    {
+        return $this->cantidadIns;
     }
 }

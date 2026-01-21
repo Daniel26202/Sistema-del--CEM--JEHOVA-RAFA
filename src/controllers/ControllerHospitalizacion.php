@@ -259,9 +259,7 @@ function hospitalizacion($parametro)
 //         $idH = $datos[0];
 //         $id_usuario = $datos[1];
 
-//         $datosIDH = $this->modelo->EInsumosM($idH);
-
-//         $eliminacion = $this->modelo->eliminaLogico($idH, $datosIDH);
+//         $eliminacion = $this->modelo->eliminaLogico($idH);
 
 //         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 //             $this->bitacora->insertarBitacora($id_usuario, "hospitalizacion", "Ha eliminado una hospitalizacion");
