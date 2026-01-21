@@ -16,16 +16,13 @@
   <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%;">
     <div class="me-2 ps-3 col-12 d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
       <div class="mb-2 mb-md-0 caja-btn-margin">
-        <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Clientes")): ?>
-          <!-- no hay -->
-        <?php else: ?>
-          <button class="<?= $vistaActiva != 'papelera' ? '' : 'd-none' ?> caja-btn-margin btn btn-primary btn-agregar-doctores btnRegistrarPaciente" style="width: 100% !important" uk-toggle="target: #modal-cliente" id="">
-            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill mx-2" viewBox="0 0 16 16">
-              <path
-                d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
-            </svg>Registrar cliente
-          </button>
-        <?php endif; ?>
+
+
+        <button class="<?= $vistaActiva != 'papelera' ? '' : 'd-none' ?> caja-btn-margin btn btn-modals" style="width: 100% !important" data-bs-toggle="modal" data-bs-target="#modal-cliente" id="btnOpenModal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill mx-2" viewBox="0 0 16 16">
+            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
+          </svg>Registrar cliente
+        </button>
       </div>
 
 
@@ -69,7 +66,7 @@
 
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaPaciente.js"></script>
 
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/clientes.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/clientes.js"></script>
 
 <?php require_once './src/vistas/vistaCliente/modalAgregarCliente.php'; ?>
 <?php require_once './src/vistas/head/footer.php'; ?>

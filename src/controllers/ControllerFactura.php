@@ -2,157 +2,183 @@
 //requiero el modelo de factura
 use App\modelos\ModeloFactura;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloCita;
+use App\modelos\ModeloCliente;
+use App\modelos\ModeloHospitalizacion;
+use App\modelos\ModeloInsumo;
+use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
 
 
+function returnObjectClass()
+{
+	return [
+		"factura" => new ModeloFactura(),
+		'insumo' => new ModeloInsumo(),
+		"bitacora" => new ModeloBitacora(),
+		'cliente' => new ModeloCliente(),
+		'paciente' => new ModeloPacientes(),
+		'cita' => new ModeloCita(),
+		'hospitalizacion' => new ModeloHospitalizacion()
+	];
+}
 
 function factura($parametro)
 {
+
 	$ayuda = "btnayudaFactura";
-	// $insumos = $this->modelo->selectTodosLosInsumos();
-	// $tiposDePagos = $this->modelo->mostrarTiposDePagos();
-	// $todosLosInsumos = $this->modelo->selectTodosLosInsumos();
-	// $extras = $this->modelo->mostrarServicios();
+	$insumos = returnObjectClass()['insumo']->selectTodosLosInsumos();
+	$tiposDePagos = returnObjectClass()['factura']->mostrarTiposDePagos();
+	$todosLosInsumos = returnObjectClass()['factura']->selectTodosLosInsumos();
+	$extras = returnObjectClass()['factura']->mostrarServicios();
 	require_once './src/vistas/vistaFactura/factura.php';
 }
 
-	//  function facturaCita($parametro)
-	// {
-	// 	$idCita = preg_replace('/\D/', '', $parametro[0]);
-	// 	$insumos = $this->modelo->selectTodosLosInsumos();
-	// 	$tiposDePagos = $this->modelo->mostrarTiposDePagos();
-	// 	$todosLosInsumos = $insumos;
-	// 	$extras = $this->modelo->mostrarServicios();
-	// 	$citaFacturar = $this->modelo->mostrarCitaFactura($idCita);
-	// 	require_once './src/vistas/vistaFactura/facturaCita.php';
-	// }
+function facturaCita($parametro)
+{
+	$idCita = preg_replace('/\D/', '', $parametro[0]);
+	$insumos = returnObjectClass()['insumo']->selectTodosLosInsumos();
+	$tiposDePagos = returnObjectClass()['factura']->mostrarTiposDePagos();
+	$todosLosInsumos = $insumos;
+	$extras = returnObjectClass()['factura']->mostrarServicios();
+	$citaFacturar = returnObjectClass()['factura']->mostrarCitaFactura($idCita);
+	require_once './src/vistas/vistaFactura/facturaCita.php';
+}
 
-	//  function facturarHospitalizacion($parametro)
-	// {
-	// 	// Extrae solo los dígitos del parámetro para obtener el ID de hospitalización
-	// 	$idHospitalizacion = preg_replace('/\D/', '', $parametro[0]);
-	// 	$insumosHospitalizacion = $this->modelo->unirInsumosHospitalizacion($idHospitalizacion);
-	// 	$tiposDePagos = $this->modelo->mostrarTiposDePagos();
-	// 	$hostalizacionFacturar =  $this->modelo->mostrarHospitalizacion($idHospitalizacion);
-	// 	$serviciosDeHospitalizacion = $this->modelo->serviciosIncluidosHospit($idHospitalizacion);
-	// 	require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
-	// }
+function facturarHospitalizacion($parametro)
+{
+	// Extrae solo los dígitos del parámetro para obtener el ID de hospitalización
+	$idHospitalizacion = preg_replace('/\D/', '', $parametro[0]);
+	$insumosHospitalizacion = returnObjectClass()['factura']->unirInsumosHospitalizacion($idHospitalizacion);
+	$tiposDePagos = returnObjectClass()['factura']->mostrarTiposDePagos();
+	$hostalizacionFacturar = returnObjectClass()['factura']->mostrarHospitalizacion($idHospitalizacion);
+	$serviciosDeHospitalizacion = returnObjectClass()['factura']->serviciosIncluidosHospit($idHospitalizacion);
+	require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
+}
 
-	//  function comprobante($parametro)
-	// {
+function comprobante($parametro)
+{
 
-	// 	if ($parametro == "") header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
+	if ($parametro == "") header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
 
-	// 	$datosFactura = $this->modelo->consultarFactura($parametro[0]);
-	// 	$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
-	// 	$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
-	// 	$x = $this->modelo->comprobarSiFueHospit($parametro[0]);
-	// 	$serviciosDeHospitalizacion = $this->modelo->serviciosIncluidosHospit($x);
+	$datosFactura = returnObjectClass()['factura']->consultarFactura($parametro[0]);
+	$datosPago = returnObjectClass()['factura']->consultarPagoFactura($parametro[0]);
+	$datosServiciosExtras = returnObjectClass()['factura']->consultarServiciosExtras($parametro[0]);
+	$x = returnObjectClass()['factura']->comprobarSiFueHospit($parametro[0]);
+	$serviciosDeHospitalizacion = returnObjectClass()['factura']->serviciosIncluidosHospit($x);
 
-	// 	$vistaActiva = $x != 'no encontrado' ? 1 : 0;
+	$vistaActiva = $x != 'no encontrado' ? 1 : 0;
 
-	// 	if ($vistaActiva) {
-	// 		$datosInsumos = $this->modelo->unirInsumosHospitalizacion($x);
-	// 	} else {
-	// 		$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
-	// 	}
-	// 	require_once './src/vistas/vistaFactura/comprobante.php';
-	// }
+	if ($vistaActiva) {
+		$datosInsumos = returnObjectClass()['factura']->unirInsumosHospitalizacion($x);
+	} else {
+		$datosInsumos = returnObjectClass()['factura']->consultarFacturaInsumo($parametro[0]);
+	}
+	require_once './src/vistas/vistaFactura/comprobante.php';
+}
 
-	// //aqui mostramos al paciente de la base de datos
-	//  function mostrarPaciente()
-	// {
-	// 	$respuesta = $this->modelo->buscar($_POST['cedula']);
-	// 	$arrayName = array();
-	// 	array_push($arrayName, $respuesta);
-	// 	echo json_encode($arrayName);
-	// }
+// //aqui mostramos al paciente de la base de datos
+function mostrarPaciente()
+{
+	$respuesta = returnObjectClass()['factura']->buscar($_POST['cedula']);
+	$arrayName = array();
+	array_push($arrayName, $respuesta);
+	echo json_encode($arrayName);
+}
 
-	//  function mostrarCliente()
-	// {
-	// 	$respuesta = $this->modelo->buscarCliente($_POST['cedula']);
-	// 	$arrayName = array();
-	// 	array_push($arrayName, $respuesta);
-	// 	echo json_encode($arrayName);
-	// }
+function mostrarCliente()
+{
+	$respuesta = returnObjectClass()['factura']->buscarCliente($_POST['cedula']);
+	$arrayName = array();
+	array_push($arrayName, $respuesta);
+	echo json_encode($arrayName);
+}
 
-	// //aqui mostramos al paciente si tiene cita
-	//  function mostrarPacienteConCita()
-	// {
-	// 	$respuesta = $this->modelo->buscarPacientePorCita($_POST["cedula"]);
-	// 	echo json_encode($respuesta);
-	// }
-
-	//  function mostrarTodosLosServicios()
-	// {
-	// 	$respuesta = $this->modelo->buscarServicio($_POST["nombre"]);
-	// 	echo json_encode($respuesta);
-	// }
+//aqui mostramos al paciente si tiene cita
+function mostrarPacienteConCita()
+{
+	$respuesta = returnObjectClass()['factura']->buscarPacientePorCita($_POST["cedula"]);
+	echo json_encode($respuesta);
+}
 
 
 
-	// //metodo para guaradar Factura
-	//  function guardarFactura()
-	// {
-	// 	$fecha = date("Y-m-d");
-	// 	$serviciosExtras = isset($_POST["servicios"]) ? $_POST["servicios"] : false;
-	// 	$doctor = isset($_POST["doctores"]) ? $_POST["doctores"] : false;
-	// 	$insumos = isset($_POST["insumos"]) ? $_POST["insumos"] : false;
-	// 	$cantidad = isset($_POST["cantidad"]) ? $_POST["cantidad"] : false;
-	// 	$precioInsumo = isset($_POST["precioInsumo"]) ? $_POST["precioInsumo"] : false;
-	// 	$precioServicio = isset($_POST["precioServicio"]) ? $_POST["precioServicio"] : false;
-	// 	$id_cliente = isset($_POST["id_cliente"]) ? $_POST["id_cliente"] : false;
-	// 	$id_paciente = isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : false;
-	// 	$id_cita = isset($_POST["id_cita"]) ? $_POST["id_cita"] : null;
-	// 	$referencia = isset($_POST["referencia"]) ? $_POST["referencia"] : null;
-	// 	$id_hospitalizacion = isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null;
-
-	// 	print_r($_POST);
-
-	// 	if (!$id_cliente) {
-	// 		$coincidencia = $this->modelo->coincidenciaPacienteCliente($id_paciente);
-	// 		if ($coincidencia != 'no encontrado') {
-	// 			$id_cliente = $coincidencia;
-	// 		} else {
-	// 			$guardado = $this->modelo->guardarCliente($id_paciente);
-	// 			$id_cliente = $guardado[1];
-	// 		}
-	// 	}
-	// 	echo $id_cliente;
+//metodo para guaradar Factura
+function guardarFactura()
+{
+	$factura = returnObjectClass()['factura'];
+	$insumo = returnObjectClass()['insumo'];
+	$bitacora = returnObjectClass()['bitacora'];
+	$cliente = returnObjectClass()['cliente'];
+	$paciente = returnObjectClass()['paciente'];
+	$cita = returnObjectClass()['cita'];
+	$hospitalizacion = returnObjectClass()['hospitalizacion'];
 
 
-	// 	$factura = $this->modelo->insertaFactura($fecha, $_POST["total"], $_POST["formasDePago"], $serviciosExtras, $id_cliente, $insumos, $cantidad, $_POST["montosDePago"], $referencia,  $id_cita, $id_hospitalizacion, $doctor, $precioInsumo, $precioServicio);
+	// $doctor = isset($_POST["doctores"]) ? $_POST["doctores"] : false;
 
-	// 	if ($factura) {
-	// 		//Guardar la bitacora
-	// 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha facturado servicios y/o insumos");
+	$factura->setFecha(date("Y-m-d"));
+	$factura->setServicios(isset($_POST["servicios"]) ? $_POST["servicios"] : []);
+	$factura->setInsumos(isset($_POST["insumos"]) ? $_POST["insumos"] : []);
+	$factura->setCatidad(isset($_POST["cantidad"]) ? $_POST["cantidad"] : false);
+	$factura->setPrecioInsumo(isset($_POST["precioInsumo"]) ? $_POST["precioInsumo"] : []);
+	$factura->setPrecioServicio(isset($_POST["precioServicio"]) ? $_POST["precioServicio"] : []);
+	$cliente->setIdCliente(isset($_POST["id_cliente"]) ? $_POST["id_cliente"] : false);
+	$paciente->setIdPaciente(isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : false);
+	$cita->setIdCita(isset($_POST["id_cita"]) ? $_POST["id_cita"] : null);
+	$factura->setReferencia(isset($_POST["referencia"]) ? $_POST["referencia"] : null);
+	$hospitalizacion->setIdH(isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null);
+	$factura->setTotal($_POST["total"]);
+	$factura->setFormasDePago($_POST["formasDePago"]);
+	$factura->setMontosPago($_POST["montosDePago"]);
 
-	// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $factura[0]);
-	// 	} else {
-	// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
-	// 	}
-	// }
+
+	if (!$cliente->getIdCliente()) {
+		$coincidencia = $factura->coincidenciaPacienteCliente();
+		if ($coincidencia) {
+			$id_cliente = $coincidencia;
+		} else {
+			$guardado = $factura->guardarCliente();
+			$id_cliente = $guardado[1];
+		}
+		$cliente->setIdCliente($id_cliente);
+	}
+
+
+	$guardar = $factura->insertaFactura();
+
+	if ($guardar) {
+		//Guardar la bitacora
+		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$bitacora->setActividad("Ha facturado servicios y/o insumos");
+		$bitacora->setTabla("factura");
+
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $factura[0]);
+	} else {
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
+	}
+}
 
 
 
 
-	//  function mostrarPDF($parametro)
-	// {
-	// 	$datosFactura = $this->modelo->consultarFacturaSinCita($parametro[0]);
-	// 	$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
-	// 	$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
-	// 	$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
+	 function mostrarPDF($parametro)
+	{
+		$datosFactura = returnObjectClass()['factura']->consultarFacturaSinCita($parametro[0]);
+		$datosPago = returnObjectClass()['factura']->consultarPagoFactura($parametro[0]);
+		$datosServiciosExtras = returnObjectClass()['factura']->consultarServiciosExtras($parametro[0]);
+		$datosInsumos = returnObjectClass()['factura']->consultarFacturaInsumo($parametro[0]);
 
-	// 	require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
-	// }
-	//  function mostrarPDF2()
-	// {
-	// 	require_once './src/vistas/vistaFactura/vistaFacturaPdf2.php';
-	// }
-	//  function mostrarPDF3()
-	// {
-	// 	require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
-	// }
+		require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
+	}
+	 function mostrarPDF2()
+	{
+		require_once './src/vistas/vistaFactura/vistaFacturaPdf2.php';
+	}
+	 function mostrarPDF3()
+	{
+		require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
+	}
 
 	//  function permisos($id_rol, $permiso, $modulo)
 	// {

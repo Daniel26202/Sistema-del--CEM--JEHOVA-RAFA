@@ -304,7 +304,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setNacionalidad($nacionalidad)
 	{
-		if (!preg_match("/^[A-Z]{1,3}$/", $nacionalidad)) {
+		if (!$nacionalidad == 'V' || $nacionalidad == 'E') {
 			throw new \InvalidArgumentException("La nacionalidad debe ser V o E.");
 		}
 		$this->nacionalidad = $nacionalidad;
@@ -320,7 +320,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setCedulaRegistrada($cedula)
 	{
-		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/", $cedula)) {
+		if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedula)) {
 			throw new \InvalidArgumentException("La cédula registrada debe contener entre 7 y 8 dígitos.");
 		}
 		$this->cedulaRegistrada = $cedula;

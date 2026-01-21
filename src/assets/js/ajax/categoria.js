@@ -1,4 +1,4 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess } from "../generic/funtionGeneric.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Consultas";
 
 const modalAgregar = document.getElementById("modalAgregarCategoria");

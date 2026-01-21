@@ -100,7 +100,7 @@
 </div>
 
 <?php require_once 'modalesCitas-Control.php'; ?>
-<script type="module" src="<?= $urlBase ?>../src/assets/citas.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/ajax/citas.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>
 
 

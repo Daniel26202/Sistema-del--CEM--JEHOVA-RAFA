@@ -96,7 +96,7 @@ class ModeloCliente extends ModelBase
             $validar  = $this->search($data2, false);
 
             if ($validar == []) {
-                throw new \Exception("El id del cliente no existe");
+                throw new \Exception($this->getIdCliente());
             }
 
             $cedula = $this->validarCedula(['cedula' => $this->getCedula()], true);
@@ -151,7 +151,7 @@ class ModeloCliente extends ModelBase
             return $e->getMessage();
         }
     }
-    public function restablecer($id_cliente)
+    public function restablecer()
     {
         try {
             $data = [
@@ -276,14 +276,14 @@ class ModeloCliente extends ModelBase
 
 
 
-    public function setIdPaciente($id_cliente)
+    public function setIdCliente($id_cliente)
     {
         if (!preg_match("/^[0-9]+$/", $id_cliente)) {
-            throw new \InvalidArgumentException("El ID del paciente debe ser un número entero positivo.");
+            throw new \InvalidArgumentException("El ID del cliente debe ser un número entero positivo.");
         }
 
         if ((int)$id_cliente <= 0) {
-            throw new \InvalidArgumentException("El ID del paciente debe ser mayor que cero.");
+            throw new \InvalidArgumentException("El ID del cliente debe ser mayor que cero.");
         }
 
         $this->id_cliente = (int)$id_cliente;
@@ -308,7 +308,7 @@ class ModeloCliente extends ModelBase
 
     public function setCedulaRegistrada($cedula)
     {
-        if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/", $cedula)) {
+        if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedula)) {
             throw new \InvalidArgumentException("La cédula registrada debe contener entre 7 y 8 dígitos.");
         }
         $this->cedulaRegistrada = $cedula;

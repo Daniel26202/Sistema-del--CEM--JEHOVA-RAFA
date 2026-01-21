@@ -40,6 +40,7 @@ if (!empty($parametro)) {
     }
 }
 
+ $urlBase =  $concatenarRuta . '' . $concatenadorEspecial; 
 
 ?>
 
@@ -50,14 +51,12 @@ if (!empty($parametro)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/css/uikit.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/cssVista/error.css">
+    <link rel="stylesheet" type="text/css" href="<?= $urlBase ?>./src/assets/library/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/cssVista/error.css">
 
 </head>
 
 
-<?php $urlBase =  $concatenarRuta . '' . $concatenadorEspecial; ?>
 
 <body>
     <div>

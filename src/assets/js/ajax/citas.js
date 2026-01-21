@@ -1,6 +1,6 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./../assets/ajax/funtionExecutePetition.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable } from "../generic/funtionGeneric.js";
 
-import {convertirHora} from "./funtionHorailitar.js";
+import { convertirHora } from "../funtionHorailitar.js";
 
 addEventListener("DOMContentLoaded", () => {
   console.log("Citas");
@@ -56,9 +56,8 @@ addEventListener("DOMContentLoaded", () => {
                                     
                                         <div class="me-2 botonesEdi ${urlActual.includes("Realizadas") ? "d-none" : ""}">
                                             <a href="#" class="btns-accion botonesEditar botonesEdi btn-dt-tabla"
-                                                data-id-tabla="modal-examplecitaeditar${
-                                                  element.id_cita
-                                                }" uk-toggle="target: #modal-examplecitaeditar${element.id_cita}"
+                                                data-id-tabla="modal-examplecitaeditar${element.id_cita
+          }" uk-toggle="target: #modal-examplecitaeditar${element.id_cita}"
                                                 data-index="${element.id_cita}" uk-tooltip="Modificar Cita"
                                                 id="btnEditarCitaPendiente">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
@@ -72,9 +71,8 @@ addEventListener("DOMContentLoaded", () => {
                                         </div>
                                    
                                         <div class="me-2">
-                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${
-                                              element.id_cita
-                                            } 
+                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${element.id_cita
+          } 
                                                 uk-tooltip="Eliminar Cita" id="eliminarCitaP">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                                     fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -90,151 +88,7 @@ addEventListener("DOMContentLoaded", () => {
 
         </div>
 
-        <!-- modal -->
-        <div id="modal-examplecitaeditar${element.id_cita}" uk-modal class="modalEditar">
-            <div class="uk-modal-dialog uk-modal-body tamaño-modal" id="modal${element.id_cita}">
-                <!-- Boton que cierra el modal -->
-                <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                        class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                        <path
-                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                    </svg>
-                </a>
-
-                <div class="d-flex align-items-center">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                            class="bi bi-calendar-day-fill azul me-2 mb-3 " viewBox="0 0 16 16">
-                            <path
-                                d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5h16v9zm-4.785-6.145a.428.428 0 1 0 0-.855.426.426 0 0 0-.43.43c0 .238.192.425.43.425zm.336.563h-.672v4.105h.672V8.418zm-6.867 4.105v-2.3h2.261v-.61H4.684V7.801h2.464v-.61H4v5.332h.684zm3.296 0h.676V9.98c0-.554.227-1.007.953-1.007.125 0 .258.004.329.015v-.613a1.806 1.806 0 0 0-.254-.02c-.582 0-.891.32-1.012.567h-.02v-.504H7.98v4.105z" />
-                        </svg>
-                    </div>
-                    <div class="">
-                        <p class="uk-modal-title fs-5">
-                            Editar Cita
-                        </p>
-                    </div>
-
-                </div>
-
-                <form class="form-modal form-validable${element.id_cita} form-ajax forms-editar" data-index='${element.id_cita}'>
-                    <input type="hidden" value="<?php echo $_SESSION['id_usuario']; ?>" name="id_usuario">
-
-                    <form class="form-modal"
-                        action="/Sistema-del--CEM--JEHOVA-RAFA/editarCitaHoy/${element.id_cita}"
-                        method="POST">
-
-                        <input type="hidden" value="${element.id_paciente}"
-                            name="id_paciente">
-
-                        <input type="hidden" name="id_cita" value="${element.id_cita}">
-
-                        <input type="hidden" name="id_usuario" class="id_usuario_bitacora">
-
-                        <input type="hidden" value="${element.serviciomedico_id_servicioMedico}"
-                            name="serviciomedico_id_servicioMedico">
-
-
-
-
-
-
-
-
-                        <div class="input-group flex-nowrap caja">
-                            <span class="input-modal mt-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                    fill="currentColor" class="bi bi-clipboard2-check-fill azul"
-                                    viewBox="0 0 16 16">
-                                    <path
-                                        d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5" />
-                                    <path
-                                        d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585q.084.236.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5q.001-.264.085-.5m6.769 6.854-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708.708" />
-                                </svg>
-                            </span>
-                            <select class="form-control input-modal especialidad" name="consulta">
-                                <option selected disabled value="${element.serviciomedico_id_servicioMedico}">
-                                    ${element.categoria}
-                                </option>
-
-                            </select>
-                        </div>
-
-                        <div class="input-group flex-nowrap">
-                            <span class=" mt-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23"
-                                    fill="currentColor" class="bi bi-person-fill azul mb-2"
-                                    viewBox="0 0 16 16">
-                                    <path
-                                        d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                </svg>
-                                Doctor</span>
-
-
-                        </div>
-
-
-                        <div class="mt-2 mb-2 listaDoctores">
-                        ${element.nombre_d} ${element.apellido_d}
-                        </div>
-
-                        <input type="hidden" class="id_servicioMedico" name="id_servicioMedico">
-
-                        
-
-                        <div class="alert alert-danger d-flex align-items-center justify-content-center alertaClassEditar d-none"
-                            role="alert" id="alertahorarioCitaEdi">
-                            <div class="text-center">
-                                <p style="font-size: 10px; height: 20px;" class="text-center mb-3">VERIFIQUE
-                                    QUE LA
-                                    FECHA DE LA CONSULTA ESTE COMPRENDIDA EN EL HORARIO DEL DOCTOR</p>
-                            </div>
-                        </div>
-
-
-                        <div class="input-group flex-nowrap validar">
-                            <span class="input-modal mt-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                    fill="currentColor" class="bi bi-calendar-date-fill azul"
-                                    viewBox="0 0 16 16">
-                                    <path
-                                        d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zm5.402 9.746c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2" />
-                                    <path
-                                        d="M16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-6.664-1.21c-1.11 0-1.656-.767-1.703-1.407h.683c.043.37.387.82 1.051.82.844 0 1.301-.848 1.305-2.164h-.027c-.153.414-.637.79-1.383.79-.852 0-1.676-.61-1.676-1.77 0-1.137.871-1.809 1.797-1.809 1.172 0 1.953.734 1.953 2.668 0 1.805-.742 2.871-2 2.871zm-2.89-5.435v5.332H5.77V8.079h-.012c-.29.156-.883.52-1.258.777V8.16a13 13 0 0 1 1.313-.805h.632z" />
-                                </svg>
-                            </span>
-                            <input class="form-control input-modal fecha input-validar" id="fechaEditar" type="date"
-                                name="fechaDeCita" required pattern="\d{2}\/\d{2}\/\d{4}" placeholder="Fecha"
-                                value="${element.fecha}">
-
-                        </div>
-
-                        <p class="p-error-fechaDeCita${element.id_cita}"></p>
-
-                        <div class="input-group flex-nowrap">
-                            <span class="input-modal mt-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                    fill="currentColor" class="bi bi-clock-fill azul" viewBox="0 0 16 16">
-                                    <path
-                                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z" />
-                                </svg>
-                            </span>
-                            <input class="form-control input-modal" type="time" name="hora"
-                                placeholder="Hora" required value="${element.hora}">
-                        </div>
-
-                        <div class="mt-3 uk-text-right">
-                            <button
-                                class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
-                                type="button">Cancelar</button>
-                            <button class="btn col-3 btn-agregarcita-modal btnEditarCita" id="btnEditarCita"
-                                type="submit">Editar</button>
-                        </div>
-                    </form>
-                </form>
-            </div>
+        
             </td>
             </tr>`;
       });
@@ -282,20 +136,7 @@ addEventListener("DOMContentLoaded", () => {
       });
 
       // re-inicializa
-      $(selector).DataTable({
-        language: {
-          language: {
-            decimal: ",",
-            thousands: ".",
-            lengthMenu: "Mostrar por página _MENU_ ",
-            zeroRecords: "No se encontraron resultados",
-            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-            infoEmpty: "No hay registros disponibles",
-            infoFiltered: "(filtrado de _MAX_ registros en total)",
-            search: "Buscar:",
-          },
-        },
-      });
+      initDataTable(selector);
     } catch (error) {
       alertError("Error", error);
     }
