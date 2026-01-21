@@ -54,10 +54,10 @@ export const showDataModal = (parametros) => {
 
 
 export const clearModalEnviar = (parametros) => {
-  console.log(parametros.labelModal)
   parametros.labelModal.textContent = parametros.textLabelModal;
   botonModal.textContent = parametros.btnTextModal;
-  parametros.modal.classList.remove("editar");
+  parametros.form.classList.remove("editar");
+
 
   parametros.inputs.forEach((input) => {
     let check = input.nextElementSibling?.children[0];

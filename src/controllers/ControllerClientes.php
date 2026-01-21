@@ -19,6 +19,8 @@ function Clientes($parametro)
     $vistaActiva = 'clientes';
     require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
 }
+
+
 function clientesAjax()
 {
     echo json_encode(returnObjectClass()['cliente']->index());
@@ -47,121 +49,145 @@ function guardar()
         exit;
     }
 
-    $modelo = returnObjectClass()['cliente'];
-    $bitacora = returnObjectClass()['bitacora'];
+    try {
+        $modelo = returnObjectClass()['cliente'];
+        $bitacora = returnObjectClass()['bitacora'];
 
-    $modelo->setNacionalidad($_POST['nacionalidad']);
-    $modelo->setCedula($_POST['cedula']);
-    $modelo->setNombre($_POST['nombre']);
-    $modelo->setApellido($_POST['apellido']);
-    $modelo->setTelefono($_POST['telefono']);
-    $modelo->setDireccion($_POST['direccion']);
-    $modelo->setFn($_POST['fn']);
-    $modelo->setGenero($_POST['genero']);
+        $modelo->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
+        $modelo->setCedula($_POST['cedula']);
+        $modelo->setNombre($_POST['nombre']);
+        $modelo->setApellido($_POST['apellido']);
+        $modelo->setTelefono($_POST['telefono']);
+        $modelo->setDireccion($_POST['direccion']);
+        $modelo->setFn($_POST['fn']);
+        $modelo->setGenero($_POST['genero']);
 
-    $bitacora->setId_usuario($_POST['id_usuario']);
-    $bitacora->setActividad("Ha Insertado un nuevo cliente");
-    $bitacora->setTabla("cliente");
+        $bitacora->setId_usuario($_POST['id_usuario']);
+        $bitacora->setActividad("Ha Insertado un nuevo cliente");
+        $bitacora->setTabla("cliente");
 
-    $insercion = $modelo->insertar();
+        $insercion = $modelo->insertar();
 
-    // Verifica si es un array con clave "exito"
-    if (is_array($insercion) && $insercion[0] === "exito") {
-        $bitacora->insertarBitacora();
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-    } else {
+        // Verifica si es un array con clave "exito"
+        if (is_array($insercion) && $insercion[0] === "exito") {
+            $bitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $insercion]);
+            exit;
+        }
+    } catch (InvalidArgumentException $e) {
         http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $insercion]);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
         exit;
     }
-
 }
 
 function setCliente()
 {
 
-    $modelo = returnObjectClass()['cliente'];
-    $bitacora = returnObjectClass()['bitacora'];
+    try {
+        $modelo = returnObjectClass()['cliente'];
+        $bitacora = returnObjectClass()['bitacora'];
 
-    $modelo->setIdCliente($_POST['id_cliente']);
-    $modelo->setNacionalidad($_POST['nacionalidad']);
-    $modelo->setCedula($_POST['cedula']);
-    $modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
-    $modelo->setNombre($_POST['nombre']);
-    $modelo->setApellido($_POST['apellido']);
-    $modelo->setTelefono($_POST['telefono']);
-    $modelo->setDireccion($_POST['direccion']);
-    $modelo->setFn($_POST['fn']);
-    $modelo->setGenero($_POST['genero']);
+        $modelo->setIdCliente($_POST['id']);
+        $modelo->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
+        $modelo->setCedula($_POST['cedula']);
+        $modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
+        $modelo->setNombre($_POST['nombre']);
+        $modelo->setApellido($_POST['apellido']);
+        $modelo->setTelefono($_POST['telefono']);
+        $modelo->setDireccion($_POST['direccion']);
+        $modelo->setFn($_POST['fn']);
+        $modelo->setGenero($_POST['genero']);
 
-    $bitacora->setId_usuario($_POST['id_usuario']);
-    $bitacora->setActividad("Ha modificado un cliente");
-    $bitacora->setTabla("cliente");
+        $bitacora->setId_usuario($_POST['id_usuario']);
+        $bitacora->setActividad("Ha modificado un cliente");
+        $bitacora->setTabla("cliente");
 
-    $edicion = returnObjectClass()['cliente']->update_cliente();
+        $edicion = $modelo->update_cliente();
 
-    // // Verifica si es un array con clave "exito"
-    if (is_array($edicion) && $edicion[0] === "exito") {
-        returnObjectClass()['bitacora']->insertarBitacora();
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-    } else {
+        // echo json_encode($modelo->getIdCliente());
+
+        // Verifica si es un array con clave "exito"
+        if (is_array($edicion) && $edicion[0] === "exito") {
+            $bitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $edicion]);
+            exit;
+        }
+    } catch (InvalidArgumentException $e) {
         http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $edicion]);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
         exit;
     }
 }
 
 function eliminar($datos)
 {
-    $id_cliente = $datos[0];
-    $id_usuario = $datos[1];
+    try {
+        $id_cliente = $datos[0];
+        $id_usuario = $datos[1];
 
-    $modelo = returnObjectClass()['cliente'];
-    $bitacora = returnObjectClass()['bitacora'];
+        $modelo = returnObjectClass()['cliente'];
+        $bitacora = returnObjectClass()['bitacora'];
 
 
-    $modelo->setIdCliente($id_cliente);
+        $modelo->setIdCliente($id_cliente);
 
-    $bitacora->setId_usuario($id_usuario);
-    $bitacora->setActividad("Ha eliminado un cliente");
-    $bitacora->setTabla("cliente");
+        $bitacora->setId_usuario($id_usuario);
+        $bitacora->setActividad("Ha eliminado un cliente");
+        $bitacora->setTabla("cliente");
 
-    $eliminacion = $modelo->delete();
+        $eliminacion = $modelo->delete();
 
-    if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-        $bitacora->insertarBitacora();
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-    } else {
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+            $bitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
+        }
+    } catch (InvalidArgumentException $e) {
         http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $eliminacion]);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
         exit;
     }
 }
 function restablecer($datos)
 {
-
-    $id_cliente = $datos[0];
-    $id_usuario = $datos[1];
-
-
-    $modelo = returnObjectClass()['cliente'];
-    $bitacora = returnObjectClass()['bitacora'];
+    try {
+        $id_cliente = $datos[0];
+        $id_usuario = $datos[1];
 
 
-    $modelo->setIdCliente($id_cliente);
+        $modelo = returnObjectClass()['cliente'];
+        $bitacora = returnObjectClass()['bitacora'];
 
-    $bitacora->setId_usuario($id_usuario);
-    $bitacora->setActividad("Ha restablecido un cliente");
-    $bitacora->setTabla("cliente");
 
-    $restablecer = $modelo->restablecer();
+        $modelo->setIdCliente($id_cliente);
 
-    if (is_array($restablecer) && $restablecer[0] === "exito") {
-        $bitacora->insertarBitacora();
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-    } else {
+        $bitacora->setId_usuario($id_usuario);
+        $bitacora->setActividad("Ha restablecido un cliente");
+        $bitacora->setTabla("cliente");
+
+        $restablecer = $modelo->restablecer();
+
+        if (is_array($restablecer) && $restablecer[0] === "exito") {
+            $bitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $restablecer]);
+            exit;
+        }
+    } catch (InvalidArgumentException $e) {
         http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $restablecer]);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
         exit;
     }
 }

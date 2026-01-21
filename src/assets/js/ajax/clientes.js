@@ -1,10 +1,24 @@
-import { executePetition, alertConfirm, alertError, alertSuccess,initDataTable } from "../generic/funtionGeneric.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+  initDataTable,
+  showDataModal,
+  clearModalEnviar,
+} from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Clientes";
 
 const modalAgregar = document.getElementById("modalAgregar");
 const selectGenero = document.getElementById("selectGenero");
+const exampleModalLabel = document.getElementById("exampleModalLabelCliente");
+const botonModal = document.getElementById("botonModal");
+const btnOpenModal = document.getElementById("btnOpenModal");
+const inputs = document.querySelectorAll(".inputs");
+const cedulaRegistrada = document.getElementById("cedulaOculta");
+const id_cliente = document.getElementById("id_oculto");
 
 //read
 
@@ -17,7 +31,7 @@ const readCustomer = async () => {
     else metodo = "papeleraAjax";
 
     const result = await executePetition(url + "/" + metodo, "GET");
-    console.log(result)
+    console.log(result);
 
     // construir html de filas
     let html = "";
@@ -34,10 +48,7 @@ const readCustomer = async () => {
               <button class="${
                 urlActual.includes("papelera") ? "d-none" : ""
               } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
-                                uk-toggle="target: #modal-exampleclienteEditar${element.id_cliente}"
-                                data-id-tabla="modal-exampleclienteEditar${element.id_cliente}" data-index="${
-        element.id_cliente
-      }">
+                                data-bs-toggle="modal" data-bs-target="#modal-cliente" data-index="${element.id_cliente}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -61,8 +72,8 @@ const readCustomer = async () => {
                     <a href="#" class="${
                       !urlActual.includes("papelera") ? "d-none" : ""
                     } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
-        element.id_cliente
-      }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
+                      element.id_cliente
+                    }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
                       <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                         <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
@@ -95,7 +106,6 @@ const readCustomer = async () => {
       });
     });
 
-   
     //llamar a la uncion de restablecer
     //llamar las funcion de eliminar
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
@@ -103,6 +113,36 @@ const readCustomer = async () => {
         const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
 
         alertConfirm("Esta seguro de restablecer el cliente?", restablecerCustomers, data);
+      });
+    });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".botonesEdi").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        //objetos con todos los parametros de la funcion
+        const parametros = {
+          labelModal: exampleModalLabel,
+          textLabelModal: "Modificar Cliente",
+          form: modalAgregar,
+          modal: modalAgregar.parentElement.parentElement.parentElement,
+          btnModal: botonModal,
+          btnTextModal: "Modificar",
+          data: {
+            nacionalidad: btn.closest("tr").children[0].innerText.slice(0, 1),
+            cedula: parseInt(btn.closest("tr").children[0].innerText.slice(2)),
+            nombre: btn.closest("tr").children[1].innerText,
+            apellido: btn.closest("tr").children[2].innerText,
+            telefono: parseInt(btn.closest("tr").children[3].innerText),
+            direccion: btn.closest("tr").children[4].innerText,
+            fn: btn.closest("tr").children[5].innerText,
+            genero: btn.closest("tr").children[6].innerText,
+            id: btn.closest("tr").children[7].children[0].getAttribute("data-index"),
+          },
+          inputs: inputs,
+          cedulaOculta: cedulaRegistrada,
+          idOculto: id_cliente,
+        };
+        showDataModal(parametros);
       });
     });
 
@@ -135,6 +175,8 @@ const updateCustomers = async (form, inputs) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(url + "/setCliente", "POST", data);
+      console.log(result);
+
     if (result.ok) {
       alertSuccess(result.message);
 
@@ -143,8 +185,6 @@ const updateCustomers = async (form, inputs) => {
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    console.log(error);
-
     alertError("Error", error);
   }
 };
@@ -178,25 +218,41 @@ const restablecerCustomers = async (data) => {
 
 readCustomer();
 
+btnOpenModal.addEventListener("click", function () {
+  //objetos con todos los parametros de la funcion
+  const parametros = {
+    labelModal: exampleModalLabel,
+    textLabelModal: "Registrar Cliente",
+    form: modalAgregar,
+    modal: modalAgregar.parentElement.parentElement.parentElement,
+    btnModal: botonModal,
+    btnTextModal: "Registrar",
+    inputs: inputs,
+  };
+  clearModalEnviar(parametros);
+});
+
 let verificarFormulario = inicializarValidacionFormulario(modalAgregar);
 
 modalAgregar.addEventListener("submit", function (e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    let inputsBuenos = [];
-    this.querySelectorAll(".input-validar").forEach((input) => {
-        if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
-    });
+  let inputsBuenos = [];
+  this.querySelectorAll(".input-validar").forEach((input) => {
+    if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
+  });
 
-    let esValido = verificarFormulario();
+  let esValido = verificarFormulario();
 
-    if (esValido) {
-        if (modalAgregar.classList.contains("editar")) {
-            updateCustomers(this, inputsBuenos);
-        } else {
-            createCustomer(this, inputsBuenos);
-        }
+  if (esValido) {
+    if (modalAgregar.classList.contains("editar")) {
+      console.log("Actualizar cliente");
+      updateCustomers(this, inputsBuenos);
     } else {
-        alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+      console.log("Crear cliente");
+      createCustomer(this, inputsBuenos);
     }
+  } else {
+    alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+  }
 });

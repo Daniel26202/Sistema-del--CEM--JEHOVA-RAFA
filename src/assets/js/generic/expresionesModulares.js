@@ -126,8 +126,7 @@ export function inicializarValidacionFormulario(formulario) {
 
     // Inicializar campos
     inputs.forEach((input) => {
-
-
+        campos[input.name] = false;
         // Marcar como modificado cuando el usuario interactúa
         input.addEventListener("keyup", (e) => {
             validarFormulario(e, formulario, campos);
@@ -190,43 +189,6 @@ function validarFormulario(e, formulario, campos) {
     }
 }
 // Función que valida los campos cada vez que se abra el modal de editar
-
-function validarFormularioAlAbrir(formulario, campos) {
-    const modal = formulario.parentElement.parentElement.parentElement;
-    const inputs = modal.querySelectorAll('.input-validar')
-
-    inputs.forEach(input => {
-        let nameInput = input.name;
-        let mensajeError = expresiones[input.name].mensajeError;
-
-        let campoCustom = input.closest(".campo-custom");
-
-        let pError = campoCustom.querySelector("p");
-        let check = campoCustom.querySelector(".check");
-        let error = campoCustom.querySelector(".error");
-        let arrayElementos = {
-            pError: pError,
-            check: check,
-            error: error,
-        };
-
-        // validar select
-        if (input.tagName === "SELECT") {
-            validarSelect(input, arrayElementos, campos, formulario);
-        } else if (nameInput === "fn" || nameInput === "fechaDeCita" || nameInput === "fechaDeVencimiento") {
-            campos[nameInput] = validarFecha(input, arrayElementos, nameInput, formulario);
-        } else {
-            const expresion = expresiones[nameInput].expresion;
-            if (expresion) {
-                validarCampo(expresion, input, nameInput, campos, formulario, arrayElementos, mensajeError);
-            }
-        }
-    });
-
-    // console.log(campos)
-
-}
-
 
 
 // Función que valida un campo individual
