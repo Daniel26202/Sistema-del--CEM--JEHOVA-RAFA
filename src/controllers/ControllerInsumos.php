@@ -17,7 +17,6 @@ function insumos($parametro)
 	// 	//$this->modelo->insumoProximos();
 	// }
 	require_once './src/vistas/vistaInsumos/vistaInsumos.php';
-
 }
 
 // function insumosAjax()
@@ -74,7 +73,17 @@ function insumos($parametro)
 // 			$numero += $numero * 0.30;
 // 		}
 
-// 		$insercion = $this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $numero, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"], $_POST["marca"], $_POST["medida"], $iva);
+$tiempo = new DateTime();
+$fecha = date("Y-m-d");
+
+$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+$imagen_temporal = $_FILES['imagen']['tmp_name'];
+
+
+move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
+
+
+// 		$insercion = $this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $numero, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"], $_POST["marca"], $_POST["medida"], $iva, $imagen);
 
 // 		if (is_array($insercion) && $insercion[0] === "exito") {
 // 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "insumo", "Ha Insertado un insumo");
@@ -107,7 +116,13 @@ function insumos($parametro)
 
 // function editar()
 // {
-// 	$edicion = $this->modelo->editar($_POST["Codigo"], $_POST["nombre"], $_POST['descripcion'], $_POST["stockMinimo"], $_FILES["imagen"], $_POST["marca"], $_POST["medida"]);
+$tiempo = new DateTime();
+$fecha = date("Y-m-d");
+$imagen_editar = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+$imagen_temporal = $_FILES['imagen']['tmp_name'];
+move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_editar);
+
+// 	$edicion = $this->modelo->editar($_POST["Codigo"], $_POST["nombre"], $_POST['descripcion'], $_POST["stockMinimo"], $_FILES["imagen"], $_POST["marca"], $_POST["medida"], $imagen_editar);
 
 
 // 	if (is_array($edicion) && $edicion[0] === "exito") {
