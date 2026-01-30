@@ -18,7 +18,7 @@ class ModeloCliente extends ModelBase
     public function index()
     {
         try {
-            $sql= "SELECT * FROM cliente WHERE estado = 'ACT' ";
+            $sql = "SELECT * FROM cliente WHERE estado = 'ACT' ";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -126,7 +126,7 @@ class ModeloCliente extends ModelBase
         }
     }
 
-    public function delete()
+    public function deleteC()
     {
         try {
             $data = [
@@ -180,19 +180,18 @@ class ModeloCliente extends ModelBase
     public function buscar()
     {
         try {
-            $data =  ['cedula'=>$this->getCedula()];
+            $data =  ['cedula' => $this->getCedula()];
             $sql = "SELECT paciente.id_paciente, paciente.nacionalidad, paciente.cedula, paciente.nombre, paciente.apellido, paciente.telefono, paciente.direccion, paciente.fn, patologia.id_patologia, patologia.nombre_patologia FROM paciente JOIN patologiadepaciente ON paciente.id_paciente = patologiadepaciente.id_paciente JOIN patologia ON patologiadepaciente.id_patologia = patologia.id_patologia WHERE paciente.cedula = :cedula AND paciente.estado = 'ACT'";
             $this->setSQL($sql);
 
             return $this->search($data);
-            
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
 
-    public function validarCedula($data, $returnCedula  =false)
+    public function validarCedula($data, $returnCedula  = false)
     {
         try {
             $sql = "SELECT * FROM cliente WHERE cedula =:cedula";

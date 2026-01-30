@@ -41,9 +41,9 @@ class ModeloEstadisticas extends ModelBase
   public function tasa_morbilidad()
   {
     try {
-      $data=[
-        'fechaInicio'=>$this->getFechaInicio(),
-        'fechaFinal'=>$this->getFechaFinal()
+      $data = [
+        'fechaInicio' => $this->getFechaInicio(),
+        'fechaFinal' => $this->getFechaFinal()
       ];
       if ($this->getFechaInicio() == "" && $this->getFechaFinal() == "") {
         $sql = "SELECT * FROM tasa_morbilidad;";

@@ -10,7 +10,7 @@ class ModeloControl extends ModelBase
 {
 	private $historial, $id_control, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $severidad;
 
-	public function __construct($dbSystem)
+	public function __construct($dbSystem= true)
 	{
 		parent::__construct($dbSystem);
 	}
@@ -91,7 +91,7 @@ class ModeloControl extends ModelBase
 
 
 			if (!$listData) {
-				throw new \Exception("El id  del usuario no existe");
+				throw new \Exception("El id del usuario no existe");
 			}
 
 			if ($this->getPatologias() != []) {

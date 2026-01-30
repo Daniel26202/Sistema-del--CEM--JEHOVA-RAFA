@@ -2,28 +2,34 @@
 
 namespace App\modelos;
 
-use App\modelos\Db;
 use App\modelos\ModeloInsumo;
+use App\modelos\ModeloBase;
 
-use App\config\Validations;
-class ModeloEntrada extends Db
+class ModeloEntrada extends ModelBase
 {
 
-	private $conexion;
-	private $modeloInsumo;
+	private $fechaDeVencimiento, $fechaDeIngreso, $precio, $cantidadDisponible, $idEntrada, $cantidadEntrante;
 
-
-
-	public function __construct()
+	public function __construct($dbSystem = true)
 	{
-		$this->conexion = $this->connectionSistema();
-		$this->modeloInsumo = new ModeloInsumo();
+		parent::__construct($dbSystem);
 	}
+
+	private function returnObjetModel()
+	{
+		return [
+			"modeloInsumos" => new ModeloInsumo(),
+			"modeloProveedores" => new ModeloProveedores(),
+		];
+	}
+
 	public function selectProveedores()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM proveedor WHERE estado ='ACT' ");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT * FROM proveedor WHERE estado ='ACT' ";
+			$this->setSQL($sql);
+			$consulta = $this->read();
+			return ($consulta) ? $consulta : false;
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -33,8 +39,9 @@ class ModeloEntrada extends Db
 	{
 		try {
 			//se cambio para que muestre las entradas act y que no estan vencidas
-			$consulta = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY ei.fechaDeVencimiento ");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$consulta = " SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY ei.fechaDeVencimiento ";
+			$this->setSQL($consulta);
+			return $this->read();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -43,9 +50,11 @@ class ModeloEntrada extends Db
 	public function insumosEntrada($id_insumo)
 	{
 		try {
-			$consulta = $this->conexion->prepare(" SELECT ei.id_entradaDeInsumo,i.*,e.*,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE i.id_insumo=:id_insumo AND e.estado = 'ACT' AND i.estado = 'ACT' ORDER BY e.fechaDeIngreso");
-			$consulta->bindParam(":id_insumo", $id_insumo);
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = " SELECT ei.id_entradaDeInsumo,i.*,e.*,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE i.id_insumo=:id_insumo AND e.estado = 'ACT' AND i.estado = 'ACT' ORDER BY e.fechaDeIngreso";
+			$this->setSQL($sql);
+			$consulta = $this->search(["id_insumo" => $this->returnObjetModel()['modeloInsumos']->getIdInsumo()]);
+
+			return ($consulta) ? $consulta : false;
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -54,45 +63,32 @@ class ModeloEntrada extends Db
 	public function insertarEntrada($id_proveedor, $id_insumo, $fechaDeIngreso, $fechaDeVencimiento, $cantidad, $precio, $lote)
 	{
 		try {
-			$this->conexion->beginTransaction();
-
-			// $fecha = date("Y-m-d");
-
-			// $validaciones  = Validations::validationEntrada($fechaDeVencimiento, $cantidad, $lote);
+			// $this->conexion->beginTransaction();
 
 
-			// foreach ($validaciones as $v) {
-			// 	if (!preg_match($v['regex'], $v['valor'])) {
-			// 		throw new \Exception($v['mensaje']);
-			// 	}
-			// }
 
-			// if ($fecha > $fechaDeVencimiento) {
-			// 	throw new \Exception("La fecha no puede ser del pasado.");
-			// }
+			$sql = "call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)";
+			$this->setSQL($sql);
+			$data = [
+				'lote' => $this->returnObjetModel()['modeloInsumos']->getLote(),
+				'id_proveedor' => $this->returnObjetModel()["modeloProveedores"]->getIdProveedor(),
+				'fechaDeIngreso' => $this->getFechaDeIngreso(),
+				'id_insumo' => $this->returnObjetModel()['modeloInsumos']->getIdInsumo(),
+				'fechaDeVencimiento' => $this->getFechaDeVencimiento(),
+				'precio' => $this->getPrecio(),
+				'cantidad_disponible' => $this->getCantidadDisponible(),
+			];
+			$id = $this->storedProcedure($data, false, true);
 
-			// $consulta = $this->conexion->prepare("call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)");
-			// $consulta->bindParam(":lote", $lote);
-			// $consulta->bindParam(":id_proveedor", $id_proveedor);
-			// $consulta->bindParam(":fechaDeIngreso", $fechaDeIngreso);
-			// $consulta->bindParam(":id_insumo", $id_insumo);
-			// $consulta->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
-			// $consulta->bindParam(":precio", $precio);
-			// $consulta->bindParam(":cantidad_disponible", $cantidad);
-			// $consulta->execute();
+			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			$this->setSQL($sql);
+			$consulta = $this->search(["id_entrada" => $id], false);
 
-			// $id = $this->conexion->lastInsertId();
-
-			// $consulta = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
-			// $consulta->bindParam(":id_entrada", $id);
-			// $consulta->execute();
-			// $data = ($consulta->execute()) ? $consulta->fetch() : false;
-
-			$this->conexion->commit();
+			// $this->conexion->commit();
 
 			return ["exito"];
 		} catch (\Exception $e) {
-			$this->conexion->rollBack();
+			// $this->conexion->rollBack();
 			return $e->getMessage();
 		}
 	}
@@ -100,24 +96,23 @@ class ModeloEntrada extends Db
 	public function eliminar($id_entrada)
 	{
 		try {
-			$this->conexion->beginTransaction();
+			// $this->conexion->beginTransaction();
 
-			$validar = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
-			$validar->bindParam(":id_entrada", $id_entrada);
-			$validar->execute();
-			if ($validar->rowCount() <= 0) {
+			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			$this->setSQL($sql);
+			$validar = $this->search(["id_entrada" => $this->getIdEntrada()], false);
+			if ($validar == []) {
 				throw new \Exception("Fallo");
 			}
 
+			$sql = "UPDATE entrada SET estado='DES' WHERE id_entrada =:id";
+			$this->setSQL($sql);
+			$consulta = $this->update([""], $this->getIdEntrada());
 
-			$consulta = $this->conexion->prepare("UPDATE entrada SET estado='DES' WHERE id_entrada =:id_entrada");
-			$consulta->bindParam(":id_entrada", $id_entrada);
-			$consulta->execute();
-
-			$this->conexion->commit();
+			// $this->conexion->commit();
 			return ["exito"];
 		} catch (\Exception $e) {
-			$this->conexion->rollBack();
+			// $this->conexion->rollBack();
 			return $e->getMessage();
 		}
 	}
@@ -126,49 +121,33 @@ class ModeloEntrada extends Db
 	public function actualizarEntrada($id_entrada, $id_proveedor, $fechaDeVencimiento, $cantidad, $precio, $id_insumo, $lote)
 	{
 		try {
-			$this->conexion->beginTransaction();
+			// $this->conexion->beginTransaction();
 
-			$fecha = date("Y-m-d");
-
-			$validaciones  = Validations::validationEntrada($fechaDeVencimiento, $cantidad, $precio, $lote);
-
-
-			foreach ($validaciones as $v) {
-				if (!preg_match($v['regex'], $v['valor'])) {
-					throw new \Exception($v['mensaje']);
-				}
-			}
-
-			if ($fecha > $fechaDeVencimiento) {
-				throw new \Exception("La fecha no puede ser del pasado.");
-			}
-
-
-			$validar = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
-			$validar->bindParam(":id_entrada", $id_entrada);
-			$validar->execute();
-			if ($validar->rowCount() <= 0) {
+			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			$this->setSQL($sql);
+			$validar = $this->search(["id_entrada" => $this->getIdEntrada()]);
+			if ($validar == []) {
 				throw new \Exception("Fallo");
 			}
 
-			$consulta = $this->conexion->prepare("UPDATE entrada_insumo SET fechaDeVencimiento=:fechaDeVencimiento,  precio=:precio,cantidad_entrante=:cantidad_entrante WHERE id_entrada=:id_entrada");
+			$sql = "UPDATE entrada_insumo SET fechaDeVencimiento=:fechaDeVencimiento,  precio=:precio,cantidad_entrante=:cantidad_entrante WHERE id_entrada=:id";
+			$this->setSQL($sql);
+			$data = [
+				'fechaDeVencimiento' => $this->getFechaDeVencimiento(),
+				'cantidad_entrante' => $this->getCantidadEntrante(),
+				'precio' => $this->getPrecio(),
+			];
+			$this->update($data, $this->getIdEntrada());
 
-			//return ($consulta->execute()) ? $consulta->fetchAll() : false;
-			$consulta->bindParam(":fechaDeVencimiento", $fechaDeVencimiento);
-			$consulta->bindParam(":cantidad_entrante", $cantidad);
-			$consulta->bindParam(":precio", $precio);
-			$consulta->bindParam(":id_entrada", $id_entrada);
-			$consulta->execute();
+			$sql = "UPDATE entrada SET numero_de_lote=:lote WHERE id_entrada=:id";
+			$this->setSQL($sql);
+			$data = ['lote' => $this->returnObjetModel()['modeloInsumos']->getLote()];
+			$this->update($data, $this->getIdEntrada());
 
-			$consulta = $this->conexion->prepare("UPDATE entrada SET numero_de_lote=:lote WHERE id_entrada=:id_entrada");
-			$consulta->bindParam(":lote", $lote);
-			$consulta->bindParam(":id_entrada", $id_entrada);
-			$consulta->execute();
-
-			$this->conexion->commit();
+			// $this->conexion->commit();
 			return ["exito"];
 		} catch (\Exception $e) {
-			$this->conexion->rollBack();
+			// $this->conexion->rollBack();
 			return $e->getMessage();
 		}
 	}
@@ -178,8 +157,10 @@ class ModeloEntrada extends Db
 	public function insumos()
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT * FROM insumo WHERE estado = 'ACT' ");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = "SELECT * FROM insumo WHERE estado = 'ACT' ";
+			$this->setSQL($sql);
+			$consulta = $this->read();
+			return ($consulta) ? $consulta : false;
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -189,8 +170,10 @@ class ModeloEntrada extends Db
 	public function seleccionarDesactivos()
 	{
 		try {
-			$consulta = $this->conexion->prepare(" SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'DES'  ORDER BY ei.fechaDeVencimiento ");
-			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+			$sql = " SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'DES'  ORDER BY ei.fechaDeVencimiento ";
+			$this->setSQL($sql);
+			$consulta = $this->read();
+			return ($consulta) ? $consulta : false;
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -200,18 +183,120 @@ class ModeloEntrada extends Db
 	public function restablecerEntrada($id_entrada)
 	{
 		try {
-			$validar = $this->conexion->prepare("SELECT * from entrada where id_entrada=:id_entrada");
-			$validar->bindParam(":id_entrada", $id_entrada);
-			$validar->execute();
-			if ($validar->rowCount() <= 0) {
+			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			$this->setSQL($sql);
+			$validar=$this->search(["id_entrada" => $this->getIdEntrada()]);
+			if ($validar == []) {
 				throw new \Exception("Fallo");
 			}
-			$consulta = $this->conexion->prepare("UPDATE entrada SET estado='ACT' WHERE id_entrada =:id_entrada");
-			$consulta->bindParam(":id_entrada", $id_entrada);
-			$consulta->execute();
+			$sql = "UPDATE entrada SET estado='ACT' WHERE id_entrada =:id";
+			$this->setSQL($sql);
+			$this->update([], $this->getIdEntrada());
 			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+	// setter
+	public function setFechaDeVencimiento($fechaDeVencimiento)
+	{
+		$fecha = date("Y-m-d");
+
+		if ($fecha > $fechaDeVencimiento) {
+			throw new \Exception("La fecha no puede ser del pasado.");
+		}
+
+		$this->fechaDeVencimiento = $fechaDeVencimiento;
+	}
+
+	public function setFechaDeIngreso($fechaDeIngreso)
+	{
+		$d = new \DateTime($fechaDeIngreso);
+		$hoy = new \DateTime();
+		if ($d > $hoy) {
+			throw new \InvalidArgumentException("La fecha no puede ser futura");
+		}
+		$this->fechaDeIngreso = $fechaDeIngreso;
+	}
+
+	public function setPrecio($precio)
+	{
+		if (!preg_match('/^\d+([.,]\d+)?$/', $precio)) {
+			throw new \InvalidArgumentException('no es válido.');
+		}
+		if ((int)$precio <= 0) {
+			throw new \InvalidArgumentException('El precio debe ser mayor que cero.');
+		}
+		$this->precio = $precio;
+	}
+
+	public function setCantidadDisponible($cantidad)
+	{
+
+		if (!preg_match('/^[0-9]+$/', $cantidad)) {
+			throw new \InvalidArgumentException('La cantidad no es válida.');
+		}
+		if ((int)$cantidad <= 0) {
+			throw new \InvalidArgumentException('La cantidad debe ser mayor que cero.');
+		}
+		$this->cantidadDisponible = $cantidad;
+	}
+
+	public function setCantidadEntrante($cantidadEntrante)
+	{
+
+		if (!preg_match('/^[0-9]+$/', $cantidadEntrante)) {
+			throw new \InvalidArgumentException('La cantidad no es válida.');
+		}
+		if ((int)$cantidadEntrante <= 0) {
+			throw new \InvalidArgumentException('La cantidad debe ser mayor que cero.');
+		}
+		$this->cantidadEntrante = $cantidadEntrante;
+	}
+
+	public function setIdEntrada($idEntrada)
+	{
+
+		if (!preg_match('/^[0-9]+$/', $idEntrada)) {
+			throw new \InvalidArgumentException('El ID no es válido.');
+		}
+		if ((int)$idEntrada <= 0) {
+			throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+		}
+		$this->idEntrada = $idEntrada;
+	}
+
+
+
+
+	// getter
+	public function getCantidadEntrante()
+	{
+		return $this->cantidadEntrante;
+	}
+	public function getIdEntrada()
+	{
+		return $this->idEntrada;
+	}
+
+	public function getCantidadDisponible()
+	{
+		return $this->cantidadDisponible;
+	}
+
+	public function getPrecio()
+	{
+		return $this->precio;
+	}
+
+	public function getFechaDeIngreso()
+	{
+		return $this->fechaDeIngreso;
+	}
+
+	public function getFechaDeVencimiento()
+	{
+		return $this->fechaDeVencimiento;
 	}
 }

@@ -142,7 +142,7 @@ function eliminar($datos)
         $bitacora->setActividad("Ha eliminado un cliente");
         $bitacora->setTabla("cliente");
 
-        $eliminacion = $modelo->delete();
+        $eliminacion = $modelo->deleteC();
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $bitacora->insertarBitacora();
