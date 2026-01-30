@@ -7,7 +7,7 @@ use App\modelos\ModelBase;
 class ModeloProveedores extends ModelBase
 {
 
-	private $id_proveedor, $nombre, $rif, $rif_registrado, $telefono, $email, $direccion;
+	private $idProveedor, $nombre, $rif, $rif_registrado, $telefono, $email, $direccion;
 	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
@@ -188,7 +188,7 @@ class ModeloProveedores extends ModelBase
 
 	public function getIdProveedor()
 	{
-		return $this->id_proveedor;
+		return $this->idProveedor;
 	}
 	public function getNombre()
 	{
@@ -219,17 +219,17 @@ class ModeloProveedores extends ModelBase
 
 
 
-	public function setIdPaciente($id_proveedor)
+	public function setIdProveedor($idProveedor)
 	{
-		if (!preg_match("/^[0-9]+$/", $id_proveedor)) {
-			throw new \InvalidArgumentException("El ID del paciente debe ser un número entero positivo.");
+		if (!preg_match("/^[0-9]+$/", $idProveedor)) {
+			throw new \InvalidArgumentException("El ID del proveedor debe ser un número entero positivo.");
 		}
 
-		if ((int)$id_proveedor <= 0) {
-			throw new \InvalidArgumentException("El ID del paciente debe ser mayor que cero.");
+		if ((int)$idProveedor <= 0) {
+			throw new \InvalidArgumentException("El ID del proveedor debe ser mayor que cero.");
 		}
 
-		$this->id_proveedor = (int)$id_proveedor;
+		$this->idProveedor = (int)$idProveedor;
 	}
 
 	public function setNombre($nombre)
@@ -250,7 +250,6 @@ class ModeloProveedores extends ModelBase
 	{
 		$this->rif_registrado = $rif;
 	}
-
 
 	public function setTelefono($telefono)
 	{
