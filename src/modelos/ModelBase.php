@@ -18,7 +18,7 @@ class ModelBase extends Db
     }
 
 
-    protected function storedProcedure($data, $all = false)
+    protected function storedProcedure($data, $all = false, $insert = false)
     {
         $sql = $this->getSQL();
         $stmt = $this->pdo->prepare($sql);
@@ -29,6 +29,14 @@ class ModelBase extends Db
         }
 
         $stmt->execute();
+        if ($insert){
+            return $this->pdo->lastInsertId();
+        }    
+        // $stmt->closeCursor();
+        
+        // if ($stmt->rowCount() <= 0) {
+        //     throw new \Exception("Fallo el id no existe");
+        // }
         return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : null;
     }
 
@@ -65,6 +73,17 @@ class ModelBase extends Db
         }
         $stmt->bindParam(':id', $id);
 
+        return $stmt->execute();
+    }
+
+    protected function delete($data)
+    {
+        $sql = $this->getSQL();
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
         return $stmt->execute();
     }
 
