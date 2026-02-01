@@ -11,7 +11,7 @@ class ModeloReporte extends ModelBase
 {
 
 
-	private $fechaInicio, $fechaFinal;
+	private $fechaInicio, $fechaFinal, $numeroDeLote;
 
 	public function __construct($dbSystem = true)
 	{
@@ -20,7 +20,10 @@ class ModeloReporte extends ModelBase
 
 	private function returnObjectModel()
 	{
-		return ['modeloFactura' => new ModeloFactura(), 'modeloInsumo' => new ModeloInsumo];
+		return [
+			'modeloFactura' => new ModeloFactura(),
+			'modeloInsumo' => new ModeloInsumo()
+		];
 	}
 
 	public function consultarFactura()
@@ -263,22 +266,27 @@ class ModeloReporte extends ModelBase
 	public function cantidadAnulada($id_insumo, $id_factura, $numero_de_lote)
 	{
 		try {
-			$consulta = $this->conexion->prepare("SELECT inv.id_insumo,inv.numero_de_lote,inv.cantidad AS cantidadInsumo FROM inventario inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE inv.id_insumo =:id_insumo AND inv.numero_de_lote =:numero_de_lote");
-			$consulta->bindParam(":id_insumo", $id_insumo);
-			$consulta->bindParam(":numero_de_lote", $numero_de_lote);
-			$consulta->execute();
-			$x = $consulta->fetch();
+			$sql = "SELECT inv.id_insumo,inv.numero_de_lote,inv.cantidad AS cantidadInsumo FROM inventario inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE inv.id_insumo =:id_insumo AND inv.numero_de_lote =:numero_de_lote";
+			$this->setSQL($sql);
+			$data = [
+				'id_insumo' => $this->returnObjectModel()['modeloInsumo']->getIdInsumo(),
+				'numero_de_lote' => $this->getNumeroDeLote()
+			];
+			$x = $this->search($data, false);
 			$cantidadInsumoPre = $x["cantidadInsumo"];
+
 			// echo $cantidadInsumoPre."<br>";
 
 
 			// echo $id_insumo;
-			$consultaInsumosFacturados = $this->conexion->prepare("SELECT idf.cantidad AS total_cantidad_facturada FROM factura_has_inventario idf INNER JOIN inventario i ON i.id_inventario = idf.inventario_id_inventario INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo WHERE ins.estado = 'ACT' AND i.id_insumo = :id_insumo AND idf.factura_id_factura =:id_factura AND i.numero_de_lote = :numero_de_lote");
-			$consultaInsumosFacturados->bindParam(":id_insumo", $id_insumo);
-			$consultaInsumosFacturados->bindParam(":id_factura", $id_factura);
-			$consultaInsumosFacturados->bindParam(":numero_de_lote", $numero_de_lote);
-			$consultaInsumosFacturados->execute();
-			$facturados = $consultaInsumosFacturados->fetch();
+			$sql = "SELECT idf.cantidad AS total_cantidad_facturada FROM factura_has_inventario idf INNER JOIN inventario i ON i.id_inventario = idf.inventario_id_inventario INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo WHERE ins.estado = 'ACT' AND i.id_insumo = :id_insumo AND idf.factura_id_factura =:id_factura AND i.numero_de_lote = :numero_de_lote";
+			$this->setSQL($sql);
+			$data = [
+				'id_insumo' => $this->returnObjectModel()['modeloInsumo']->getIdInsumo(),
+				'id_factura' => $this->returnObjectModel()['modeloFactura']->getIdFactura(),
+				'numero_de_lote' => $this->getNumeroDeLote()
+			];
+			$facturados = $this->search($data, false);
 
 			$totalFacturado = $facturados["total_cantidad_facturada"];
 
@@ -299,30 +307,33 @@ class ModeloReporte extends ModelBase
 
 
 			//actualiza Cantidades
-			$consulta = $this->conexion->prepare("UPDATE entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada SET ei.cantidad_disponible=:cantidad WHERE ei.id_insumo=:id_insumo AND e.numero_de_lote =:numero_de_lote");
-			$consulta->bindParam(":cantidad", $cantidadInsumo);
-			$consulta->bindParam(":id_insumo", $id_insumo);
-			$consulta->bindParam(":numero_de_lote", $numero_de_lote);
-			$consulta->execute();
+			$sql = "UPDATE entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada SET ei.cantidad_disponible=:cantidad WHERE ei.id_insumo=:id AND e.numero_de_lote =:numero_de_lote";
+			$this->setSQL($sql);
+			$data = [
+				'cantidad' => $cantidadInsumo,
+				'numero_de_lote' => $this->getNumeroDeLote()
+			];
+			$this->update($data, $this->returnObjectModel()['modeloInsumo']->getIdInsumo());
 
-			$cantidad_actualidad_insumo = $this->modelo_insumo->actualizar_cantidad_insumo($id_insumo);
+			$cantidad_actualidad_insumo = $this->returnObjectModel()['modeloInsumo']->actualizar_cantidad_insumo();
 			// print_r($cantidad[0]["cantidad"]);
 
 			//esto es para actualizar la cantidad de insumos
-			$consulta = $this->conexion->prepare("UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo");
-			$consulta->bindParam(":cantidad", $cantidad_actualidad_insumo[0]["cantidad"]);
-			$consulta->bindParam(":id_insumo", $id_insumo);
-			$consulta->execute();
+			$sql = "UPDATE insumo SET cantidad=:cantidad WHERE id_insumo=:id_insumo";
+			$this->setSQL($sql);
+			$this->update([$cantidad_actualidad_insumo[0]["cantidad"]], $this->returnObjectModel()['modeloInsumo']->getIdInsumo());
 
 			//actualizar tabla inventario segun el numero de lote y la cantidad comprada
 
-			$consulta = $this->conexion->prepare("UPDATE inventario SET cantidad=:cantidad WHERE id_insumo=:id_insumo AND numero_de_lote =:numero_de_lote");
-			$consulta->bindParam(":cantidad", $cantidadInsumo);
-			$consulta->bindParam(":id_insumo", $id_insumo);
-			$consulta->bindParam(":numero_de_lote", $numero_de_lote);
-			$consulta->execute();
+			$sql = "UPDATE inventario SET cantidad=:cantidad WHERE id_insumo=:id_insumo AND numero_de_lote =:numero_de_lote";
+			$this->setSQL($sql);
+			$data = [
+				'cantidad' => $cantidadInsumo,
+				'numero_de_lote' => $this->getNumeroDeLote()
+			];
+			$this->update($data, $this->returnObjectModel()['modeloInsumo']->getIdInsumo());
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -335,7 +346,23 @@ class ModeloReporte extends ModelBase
 	{
 		return $this->fechaFinal;
 	}
+	public function getNumeroDeLote()
+	{
+		return $this->numeroDeLote;
+	}
 
+	public function setNumeroDeLote($numeroDeLote)
+	{
+		if (!preg_match("/^[0-9]+$/", $numeroDeLote)) {
+			throw new \InvalidArgumentException("El número de lote debe ser un número entero positivo.");
+		}
+
+		if ((int)$numeroDeLote <= 0) {
+			throw new \InvalidArgumentException("El número de lote debe ser mayor que cero.");
+		}
+
+		$this->numeroDeLote = (int)$numeroDeLote;
+	}
 
 	public function setFechaInicio($fechaInicio)
 	{
