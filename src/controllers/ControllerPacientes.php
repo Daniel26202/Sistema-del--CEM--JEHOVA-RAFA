@@ -183,7 +183,7 @@ function eliminar($datos)
 		$bitacora->setActividad("Ha eliminado un  paciente");
 		$bitacora->setTabla("paciente");
 
-		$eliminacion = $modelo->delete();
+		$eliminacion = $modelo->delete_paciente();
 
 		//Verifica si es un array con clave "exito"
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {

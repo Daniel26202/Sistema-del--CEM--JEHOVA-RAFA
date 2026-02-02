@@ -150,7 +150,7 @@ class ModeloPacientes extends ModelBase
 		}
 	}
 
-	public function delete()
+	public function delete_paciente()
 	{
 		try {
 
