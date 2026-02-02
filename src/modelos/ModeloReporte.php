@@ -346,6 +346,7 @@ class ModeloReporte extends ModelBase
 	{
 		return $this->fechaFinal;
 	}
+
 	public function getNumeroDeLote()
 	{
 		return $this->numeroDeLote;

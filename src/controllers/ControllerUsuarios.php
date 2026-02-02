@@ -76,7 +76,7 @@ function usuarios($parametro)
 
 //     // Generamos la contraseña encriptada de la contraseña ingresada
 //     $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
-//     $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["correo"], $_POST["id_rol"]);
+//     $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["correo"], $_POST["id_rol"], $_FILES['imagenUsuario']);
 
 //     $insercion = $this->doctor->RegistrarAdmin($_POST["nacionalidad"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["correo"], $id_usuario);
 

@@ -8,9 +8,9 @@ use App\modelos\ModelBase;
 class ModeloUsuarios extends ModelBase
 {
 
-    private $id_usuario, $usuario, $password, $correo;
+    private $id_usuario, $usuario, $password, $correo, $imagen, $imagenTemporal, $id_rol;
 
-    public function __construct($dbSystem =false)
+    public function __construct($dbSystem = false)
     {
         parent::__construct($dbSystem);
     }
@@ -40,7 +40,7 @@ class ModeloUsuarios extends ModelBase
     }
 
     //validar usuario
-    private function validarUsuario($data, $returnUsuario)
+    private function validarUsuario($data, $returnUsuario = false)
     {
         try {
             $sql = "SELECT * FROM usuario WHERE usuario =:usuario";
@@ -65,53 +65,46 @@ class ModeloUsuarios extends ModelBase
     public function updateUsuario($usuario, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal, $usuarioRegistrado)
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $idUsuario);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
+            $sql = "SELECT * from usuario where id_usuario=:id_usuario";
+            $this->setSQL($sql);
+            $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
+            if ($validar == []) {
                 throw new \Exception("Fallo");
             }
 
             if ($usuario == $usuarioRegistrado) {
-                
-            }else {
-                if ($this->validarUsuario($_POST['usuario']) === "existeU") {
+            } else {
+                if ($this->validarUsuario($this->getUsuario(), true)) {
                     throw new \Exception("El usuario ya está registrada.");
                 }
             }
 
-            if ($imagenUsuario == "") {
+            if ($this->getImagen() == "") {
 
-                $sql = 'UPDATE usuario SET  usuario = :usuario WHERE id_usuario = :id_usuario';
-                $consulta = $this->conexion->prepare($sql);
-
-                $consulta->bindParam(":usuario", $usuario);
-                $consulta->bindParam(":id_usuario", $idUsuario);
-                $consulta->execute();
+                $sql = 'UPDATE usuario SET  usuario = :usuario WHERE id_usuario = :id';
+                $this->setSQL($sql);
+                $this->update(['usuario' => $this->getUsuario()], $this->getIdUsuario());
             } else {
-                $consultaImg = $this->conexion->prepare("SELECT imagen FROM usuario WHERE id_usuario=:id_usuario");
-                $consultaImg->bindParam(":id_usuario", $idUsuario);
-                $consultaImg->execute();
-                $img = $consultaImg->fetch();
+                $sql = "SELECT imagen FROM usuario WHERE id_usuario=:id_usuario";
+                $this->setSQL($sql);
+                $img = $this->search(['id_usuario' => $this->getIdUsuario()]);
                 $nombreImagenAntigua = $img["imagen"];
 
                 //Editar el usuario.
-                $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario WHERE id_usuario = :id_usuario';
+                $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario WHERE id_usuario = :id';
+                $this->setSQL($sql);
+                $data = [
+                    'imagen' => $this->getImagen()['name'],
+                    'usuario' => $this->getUsuario()
+                ];
+                $this->update($data, $this->getIdUsuario());
 
-                $consulta = $this->conexion->prepare($sql);
-
-                $consulta->bindParam(":imagen", $imagenUsuario);
-                $consulta->bindParam(":usuario", $usuario);
-                $consulta->bindParam(":id_usuario", $idUsuario);
-                if ($consulta->execute()) {
-                    $rutaImagenAntigua = "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $nombreImagenAntigua;
-                    if (file_exists($rutaImagenAntigua) && $nombreImagenAntigua != "doctor.png") {
-
-                        unlink($rutaImagenAntigua);
-                    }
-
-                    move_uploaded_file($imagenUsuarioTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $imagenUsuario);
+                $rutaImagenAntigua = "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenAntigua;
+                if (file_exists($rutaImagenAntigua) && $nombreImagenAntigua != "doctor.png") {
+                    unlink($rutaImagenAntigua);
                 }
+
+                move_uploaded_file($this->getImagenTemporal(), "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $this->getImagen()['name']);
             }
             return ["exito"];
         } catch (\Exception $e) {
@@ -123,65 +116,68 @@ class ModeloUsuarios extends ModelBase
     public function eliminacionLogica($idUsuario)
     {
         try {
-            $validar = $this->conexion->prepare("SELECT * from usuario where id_usuario=:id_usuario");
-            $validar->bindParam(":id_usuario", $idUsuario);
-            $validar->execute();
-            if ($validar->rowCount() <= 0) {
+            $sql = "SELECT * from usuario where id_usuario=:id_usuario";
+            $this->setSQL($sql);
+            $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
+            if ($validar == []) {
                 throw new \Exception("Fallo el id no existe");
             }
             //editar al doctor.
             $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario';
-            $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-            $consultaDeUsuario->bindParam(":id_usuario", $idUsuario);
-            $consultaDeUsuario->execute();
+            $this->setSQL($sqlUsuario);
+            $this->update([], $this->getIdUsuario());
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-    public function AgregarUsuarios($usuario, $password, $correo,$id_rol)
+    public function AgregarUsuarios($usuario, $password, $correo, $id_rol, $imagenUsuario)
     {
         try {
+            $imagenU = $this->getImagen();
 
-            $resultadoDeUsuario = $this->validarUsuario($_POST['usuario']);
+            $resultadoDeUsuario = $this->validarUsuario($this->getUsuario());
 
-            if ($resultadoDeUsuario === "existeU") {
+            if ($resultadoDeUsuario) {
 
                 throw new \Exception("Fallo el usuario ya existe...");
             } else {
-                $imagenComprobacion = isset($_FILES['imagenUsuario']['name']) ? $_FILES['imagenUsuario']['name'] : false;
+                $imagenComprobacion = isset($imagenU['name']) ? $imagenU['name'] : false;
                 if ($imagenComprobacion) {
-                    $nombreImagenUsuario = $_FILES['imagenUsuario']['name'];
+                    $nombreImagenUsuario = $imagenU['name'];
 
                     $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, :id_rol, :imagen, :usuario, :correo, :password, "ACT")';
-                    $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-                    $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
-                    $consultaDeUsuario->bindParam(":usuario", $usuario);
-                    $consultaDeUsuario->bindParam(":correo", $correo);
-                    $consultaDeUsuario->bindParam(":password", $password);
-                    $consultaDeUsuario->bindParam(":id_rol", $id_rol);
-                    $consultaDeUsuario->execute();
-                    $id_usuario = $this->conexion->lastInsertId();
-                    $imagen = $id_usuario . "_" . $_FILES['imagenUsuario']['name'];
+                    $this->setSQL($sqlUsuario);
+                    $data = [
+                        'imagen' => $nombreImagenUsuario,
+                        'usuario' => $this->getUsuario(),
+                        'correo' => $this->getCorreo(),
+                        'password' => $this->getPassword(),
+                        'id_rol' => $this->getIdRol()
+                    ];
+                    $id_usuario = $this->create($data);
 
-                    $imagen_temporal = $_FILES['imagenUsuario']['tmp_name'];
+                    $imagen = $id_usuario . "_" . $imagenU['name'];
+
+                    $imagen_temporal = $imagenU['tmp_name'];
                     move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
                     return ($id_usuario);
                 } else {
                     $nombreImagenUsuario = "doctor.png";
 
                     $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, :id_rol, :imagen, :usuario, :correo, :password, "ACT")';
-                    $consultaDeUsuario = $this->conexion->prepare($sqlUsuario);
-                    $consultaDeUsuario->bindParam(":imagen", $nombreImagenUsuario);
-                    $consultaDeUsuario->bindParam(":usuario", $usuario);
-                    $consultaDeUsuario->bindParam(":correo", $correo);
-                    $consultaDeUsuario->bindParam(":password", $password);
-                    $consultaDeUsuario->bindParam(":id_rol", $id_rol);
-                    $consultaDeUsuario->execute();
-                    $id_usuario = $this->conexion->lastInsertId();
+                    $this->setSQL($sqlUsuario);
+                    $data = [
+                        'imagen' => $nombreImagenUsuario,
+                        'usuario' => $this->getUsuario(),
+                        'correo' => $this->getCorreo(),
+                        'password' => $this->getPassword(),
+                        'id_rol' => $this->getIdRol()
+                    ];
+                    $id_usuario = $this->create($data);
                     $imagen = $nombreImagenUsuario;
 
-                    $imagen_temporal = $_FILES['imagenUsuario']['tmp_name'];
+                    $imagen_temporal = $imagenU['tmp_name'];
                     move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
                     return ($id_usuario);
                 }
@@ -191,8 +187,13 @@ class ModeloUsuarios extends ModelBase
         }
     }
 
-    public function getIdUsuario() {
+    public function getIdUsuario()
+    {
         return $this->id_usuario;
+    }
+    public function getIdRol()
+    {
+        return $this->id_rol;
     }
 
     public function getUsuario()
@@ -208,6 +209,64 @@ class ModeloUsuarios extends ModelBase
         return $this->correo;
     }
 
+    public function getImagenTemporal()
+    {
+        return $this->imagenTemporal;
+    }
+
+    public function getImagen()
+    {
+        return $this->imagen;
+    }
+
+
+    public function setImagenTemporal($imagenT)
+    {
+        // Validar que el archivo se haya subido sin errores
+        if ($imagenT['error'] !== UPLOAD_ERR_OK) {
+            throw new \InvalidArgumentException('Error al subir la imagen.');
+        }
+
+        // Validar extensión
+        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
+        $extension = strtolower(pathinfo($imagenT['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($extension, $extensionesPermitidas)) {
+            throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
+        }
+
+        // Validar tamaño (ejemplo: máximo 5 MB)
+        if ($imagenT['size'] > 5 * 1024 * 1024) {
+            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+        }
+
+        // Si todo está bien, guardamos el nombre temporal para moverlo después
+        $this->imagenTemporal = $imagenT;
+    }
+
+    public function setImagen($imagen)
+    {
+        // Validar que el archivo se haya subido sin errores
+        if ($imagen['error'] !== UPLOAD_ERR_OK) {
+            throw new \InvalidArgumentException('Error al subir la imagen.');
+        }
+
+        // Validar extensión
+        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
+        $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($extension, $extensionesPermitidas)) {
+            throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
+        }
+
+        // Validar tamaño (ejemplo: máximo 5 MB)
+        if ($imagen['size'] > 5 * 1024 * 1024) {
+            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+        }
+
+        // Si todo está bien, guardamos el nombre temporal para moverlo después
+        $this->imagen = $imagen;
+    }
 
     public function setIdUsuario($id_usuario)
     {
@@ -220,6 +279,19 @@ class ModeloUsuarios extends ModelBase
         }
 
         $this->id_usuario = (int)$id_usuario;
+    }
+
+    public function setIdRol($id_rol)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_rol)) {
+            throw new \InvalidArgumentException("El ID del rol debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_rol <= 0) {
+            throw new \InvalidArgumentException("El ID del rol debe ser mayor que cero.");
+        }
+
+        $this->id_rol = (int)$id_rol;
     }
 
     public function setUsuario($usuario)
