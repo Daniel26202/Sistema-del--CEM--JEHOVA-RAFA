@@ -2,6 +2,7 @@
 
 use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloConsultas;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
@@ -15,45 +16,38 @@ function returnObjectClass()
 		'paciente' => new ModeloPacientes(),
 		'bitacora' => new ModeloBitacora(),
 		'cita' => new ModeloCita(),
-		'doctor' => new ModeloDoctores()
+		'doctor' => new ModeloDoctores(),
+		'servicio' => new ModeloConsultas()
 	];
 }
 
-function mostrarPacienteCita()
+
+
+
+function mostrarDataPaciente($datos)
 {
-	if (empty($_POST)) {
+	try {
+		$paciente = returnObjectClass()['paciente'];
+		$cita = returnObjectClass()['cita'];
+
+		$paciente->setNacionalidad($datos[0]);
+		$paciente->setCedula($datos[1]);
+
+		echo json_encode($cita->selectPaciente($paciente));
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
-	returnObjectClass()['paciente']->setNacionalidad($_POST['nacionalidad']);
-	returnObjectClass()['paciente']->setCedula($_POST['cedula']);
-
-	echo json_encode(returnObjectClass()['cita']->selectPaciente());
-}
-
-
-
-function mostrarPacienteCitaGet($datos)
-{
-	if (empty($_POST)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-	returnObjectClass()['paciente']->setNacionalidad($datos[0]);
-	returnObjectClass()['paciente']->setCedula($datos[1]);
-
-	echo json_encode(returnObjectClass()['cita']->selectPaciente());
 }
 
 function citas($parametro)
 {
 	$ayuda = "btnayudaCitaP";
 	$vistaActiva = 'pendientes';
-	// $servicios = $this->modelo->mostrarServicioDoctor();
 	require_once './src/vistas/vistasCitas/vistaCitas.php';
 }
+
 function citasAjax()
 {
 	echo json_encode(returnObjectClass()['cita']->mostrarCita());
@@ -76,6 +70,34 @@ function citasP($parametro)
 	echo json_encode(returnObjectClass()['cita']->mostrarCita());
 }
 
+function mostrarServiciosMedicosAjax()
+{
+	echo json_encode(returnObjectClass()['cita']->mostrarServicioDoctor());
+}
+
+function validarHorariosDisponlibles($datos)
+{
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	try {
+		$cita = returnObjectClass()['cita'];
+		$doctor = returnObjectClass()['doctor'];
+
+		$doctor->setIdDoctor($datos[1]);
+		$cita->setFecha($datos[0]);
+
+		echo  json_encode($cita->validarHorariosDisponlibles($doctor));
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
+}
+
 function guardarCita()
 {
 	if (empty($_POST)) {
@@ -84,30 +106,50 @@ function guardarCita()
 		exit;
 	}
 
-	$paciente = returnObjectClass()['paciente'];
-	$cita = returnObjectClass()['cita'];
-	$bitacora = returnObjectClass()['bitacora'];
-	$doctor = returnObjectClass()['doctor'];
+	try {
+		$paciente = returnObjectClass()['paciente'];
+		$cita = returnObjectClass()['cita'];
+		$bitacora = returnObjectClass()['bitacora'];
+		$doctor = returnObjectClass()['doctor'];
+		$servicio = returnObjectClass()['servicio'];
 
-	$paciente->setIdPaciente($_POST["id_paciente"]);
-	$cita->setIdServicioMedico($_POST["id_servicioMedico"]);
-	$cita->setFecha($_POST["fechaDeCita"]);
-	$cita->setHora($_POST["hora"]);
-	$cita->setEstado($_POST["estado"]);
-	$doctor->setIdDoctor($_POST["id_doctor"]);
+		$horaString = $_POST['listHoras'];
+		$resultado = explode('a', $horaString);
+		$resultado = array_map('trim', $resultado);
 
-	$bitacora->setId_usuario($_POST['id_usuario']);
-	$bitacora->setActividad("Ha Insertado una  cita");
-	$bitacora->setTabla("cita");
+		$fechaHora1 = DateTime::createFromFormat('g:i A', $resultado[0]);
+		$horaCita = $fechaHora1->format('H:i:s');
+		$fechaHora2 = DateTime::createFromFormat('g:i A', $resultado[1]);
+		$horaCitaSalida = $fechaHora2->format('H:i:s');
 
-	$insercion = $cita->insertarCita();
+		// echo json_encode([$horaCita,$horaCitaSalida]);
 
-	if (is_array($insercion) && $insercion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-	} else {
+		$paciente->setIdPaciente(intval($_POST["id_paciente"]));
+		$servicio->setIdServicioMedico(intval($_POST["id_servicio"]));
+		$cita->setFecha($_POST["fechaDeCita"]);
+		$cita->setHora($horaCita);
+		$cita->setHoraSalida($horaCitaSalida);
+		$cita->setEstado("Pendiente");
+		$doctor->setIdDoctor(intval($_POST["id_personal"]));
+
+		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setActividad("Ha Insertado una  cita");
+		$bitacora->setTabla("cita");
+
+		$insercion = $cita->insertarCita($paciente, $servicio, $doctor);
+
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
+		}
+		// echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $insercion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -128,7 +170,7 @@ function eliminarCita($datos)
 	$bitacora->setId_usuario($datos[1]);
 	$bitacora->setActividad("Ha eliminado una  cita");
 	$bitacora->setTabla("cita");
-	
+
 	$eliminacion = $cita->eliminarCita();
 
 	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -159,14 +201,17 @@ function citasRealizadasAjax()
 
 function mostrarDoctoresCita($datos)
 {
-	returnObjectClass()['cita']->setIdServicioMedico($datos[0]);
-	echo json_encode(returnObjectClass()['cita']->mostrarDoctores());
+	$servicio = returnObjectClass()['servicio'];
+	$servicio->setIdServicioMedico($datos[0]);
+	echo json_encode(returnObjectClass()['cita']->mostrarDoctores($servicio));
 }
 
 function mostrarHorario($datos)
 {
-	returnObjectClass()['doctor']->setIdDoctor($datos[0]);
-	echo json_encode(returnObjectClass()['cita']->mostrarHorarioDoctores());
+	$doctor = returnObjectClass()['doctor'];
+	$doctor->setIdDoctor($datos[0]);
+	echo json_encode(returnObjectClass()['cita']->mostrarHorarioDoctores($doctor));
+	// echo json_encode(['dffdf']);
 }
 function editarCita()
 {
@@ -203,9 +248,4 @@ function editarCita()
 // function permisos($id_rol, $permiso, $modulo)
 // {
 // 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }
-
-// function validarHorariosDisponlibles($datos)
-// {
-// 	echo  json_encode($this->modelo->validarHorariosDisponlibles($datos[0], $datos[1]));
 // }
