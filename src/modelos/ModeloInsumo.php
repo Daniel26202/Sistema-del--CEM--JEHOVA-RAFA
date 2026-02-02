@@ -67,7 +67,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 
-	public function insumosInfo($id_insumo)
+	public function insumosInfo()
 	{
 		try {
 			$sql = "SELECT * FROM insumo WHERE id_insumo =:id_insumo";
@@ -80,7 +80,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 	//metodo para taerme el insumo que su fecha de vencimiento esta mas cercana para mostrarlo en el modal de info
-	public function retornarFechaDeVencimiento($id_insumo)
+	public function retornarFechaDeVencimiento()
 	{
 		try {
 			$sql = "SELECT fechaDeVencimiento FROM entrada_insumo WHERE id_insumo =:id_insumo ORDER BY fechaDeVencimiento LIMIT 1";
@@ -104,7 +104,7 @@ class ModeloInsumo extends ModelBase
 		}
 	}
 
-	public function buscarInsumos($parametro)
+	public function buscarInsumos()
 	{
 		try {
 			$sql = "SELECT * FROM insumo WHERE nombre LIKE :buscar AND estado = 'ACT' OR id_insumo LIKE :buscar AND estado = 'ACT'";
@@ -123,7 +123,7 @@ class ModeloInsumo extends ModelBase
 
 
 	//insertar insumo
-	public function insertarInsumos($nombre, $id_proveedor, $descripcion, $fechaDeIngreso, $fechaDeVecimiento, $precio, $cantidad, $stockMinimo, $estado, $lote, $marca, $medida, $iva, $imagen)
+	public function insertarInsumos()
 	{
 		try {
 			// $this->conexion->beginTransaction();
@@ -166,19 +166,19 @@ class ModeloInsumo extends ModelBase
 
 
 
-	public function eliminar($id_insumo)
+	public function eliminar()
 	{
 		try {
 			$sql = "SELECT * from insumo where id_insumo=:id_insumo";
 			$this->setSQL($sql);
-			$validar = $this->search(["id_insumo" => $id_insumo]);
+			$validar = $this->search(["id_insumo" => $this->getIdInsumo()]);
 			if ($validar == []) {
 				throw new \Exception("Fallo");
 			}
 
 			$sql = "UPDATE insumo SET estado = 'DES' WHERE id_insumo =:id";
 			$this->setSQL($sql);
-			$consulta = $this->update([], $id_insumo);
+			$consulta = $this->update([], $this->getIdInsumo());
 			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -186,7 +186,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 
-	public function editar($id_insumo, $nombre, $descripcion, $stockMinimo, $imagen, $marca, $medida, $imagen_editar)
+	public function editar()
 	{
 		try {
 
@@ -212,7 +212,7 @@ class ModeloInsumo extends ModelBase
 				if (file_exists($rutaImagenAntigua)) {
 					unlink($rutaImagenAntigua);
 				}
-				$sql = "UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id_insumo";
+				$sql = "UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo, marca =:marca, medida =:medida WHERE id_insumo =:id_insumo";
 				$this->setSQL($sql);
 				$data = [
 					"imagen" => $this->getImagen(),
@@ -222,7 +222,7 @@ class ModeloInsumo extends ModelBase
 					"marca" => $this->getMarca(),
 					"medida" => $this->getMedida()
 				];
-				$consulta2 = $this->update($data, $id_insumo);
+				$consulta2 = $this->update($data, $this->getIdInsumo());
 			} else {
 				$sql = "UPDATE insumo SET nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id_insumo";
 				$this->setSQL($sql);
@@ -233,7 +233,7 @@ class ModeloInsumo extends ModelBase
 					"marca" => $this->getMarca(),
 					"medida" => $this->getMedida()
 				];
-				$consulta3 = $this->update($data, $id_insumo);
+				$consulta3 = $this->update($data, $this->getIdInsumo());
 			}
 			return ["exito"];
 		} catch (\Exception $e) {
@@ -256,7 +256,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 
-	public function vencerInsumos($fecha)
+	public function vencerInsumos()
 	{
 		try {
 			$insumos = $this->insumos();
@@ -306,7 +306,7 @@ class ModeloInsumo extends ModelBase
 
 
 
-	public function restablecerInsumo($id_insumo)
+	public function restablecerInsumo()
 	{
 		try {
 			$sql = "SELECT * from insumo where id_insumo=:id_insumo";

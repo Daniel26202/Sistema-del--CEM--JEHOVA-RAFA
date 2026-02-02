@@ -1,6 +1,7 @@
 <?php
 
 use App\modelos\ModeloInsumo;
+use App\modelos\ModeloProveedores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 
@@ -8,164 +9,252 @@ use App\modelos\ModeloPermisos;
 
 function insumos($parametro)
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	$modeloInsumo = new ModeloInsumo();
 	$ayuda = "btnayudaInsumo";
 	$vistaActiva = "insumos";
-	// $proveedores = $this->modelo->selectProveedores();
-	// $insumos = $this->modelo->insumos();
-	// if ($insumos) {
-	// 	$this->modelo->vencerInsumos(date("Y-m-d"));
-	// 	//$this->modelo->insumoProximos();
-	// }
+
+	$proveedores = $modeloInsumo->selectProveedores();
+	$insumos = $modeloInsumo->insumos();
+	if ($insumos) {
+		$modeloInsumo->vencerInsumos();
+		//$modeloInsumo->insumoProximos();
+	}
 	require_once './src/vistas/vistaInsumos/vistaInsumos.php';
 }
 
-// function insumosAjax()
-// {
-// 	echo json_encode($this->modelo->insumos());
-// }
+function insumosAjax()
+{
+	$modeloInsumo = new ModeloInsumo();
+	echo json_encode($modeloInsumo->insumos());
+}
 
 
-// function InsumosVencidos($parametro)
-// {
-// 	$ayuda = "btnayudaVencido";
-// 	$vistaActiva = "vencidos";
-// 	$insumos = $this->modelo->insumos();
-// 	require_once './src/vistas/vistaInsumos/vistaInsumosVencidos.php';
-// }
+function InsumosVencidos($parametro)
+{
+	$modeloInsumo = new ModeloInsumo();
 
-// function vencidos()
-// {
-// 	echo json_encode($this->modelo->InsumosVencidos());
-// }
+	$ayuda = "btnayudaVencido";
+	$vistaActiva = "vencidos";
+	$insumos = $modeloInsumo->insumos();
+	require_once './src/vistas/vistaInsumos/vistaInsumosVencidos.php';
+}
 
-// function info($datos)
-// {
-// 	$id_insumo = $datos[0];
-// 	$datosDeInsumo = $this->modelo->insumosInfo($id_insumo);
-// 	$datosDeVencimiento =  $this->modelo->retornarFechaDeVencimiento($id_insumo);
-// 	$informacion = array('insumo' => $datosDeInsumo, 'vencimiento' => $datosDeVencimiento, 'dolar' => $_SESSION["dolar"]);
-// 	echo json_encode($informacion);
-// }
+function vencidos()
+{
+	$modeloInsumo = new ModeloInsumo();
 
+	echo json_encode($modeloInsumo->InsumosVencidos());
+}
 
-// function mostrarBusquedaInsumo()
-// {
-// 	$respuesta = $this->modelo->buscarInsumos($_POST['nombre']);
-// 	// $respuesta = array('nombre' => "Dixon");
-// 	echo json_encode($respuesta);
-// }
+function info($datos)
+{
+	$modeloInsumo = new ModeloInsumo();
 
-// function guardarInsumo()
-// {
-// 	if (isset($_POST)) {
-// 		// 1. Quitar separadores de miles
-// 		$valor = str_replace('.', '', $_POST['precioD']);
+	$id_insumo = $datos[0];
+	$modeloInsumo->setIdInsumo($id_insumo);
 
-// 		// 2. Cambiar coma decimal por punto
-// 		$valor = str_replace(',', '.', $valor);
-
-// 		// 3. Convertir a float
-// 		$numero = (float)$valor;
-
-// 		$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
-
-// 		if ($iva === 1) {
-// 			$numero += $numero * 0.30;
-// 		}
-
-$tiempo = new DateTime();
-$fecha = date("Y-m-d");
-
-$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
-$imagen_temporal = $_FILES['imagen']['tmp_name'];
+	$datosDeInsumo = $modeloInsumo->insumosInfo();
+	$datosDeVencimiento =  $modeloInsumo->retornarFechaDeVencimiento();
+	$informacion = array(
+		'insumo' => $datosDeInsumo,
+		'vencimiento' => $datosDeVencimiento,
+		'dolar' => $_SESSION["dolar"]
+	);
+	echo json_encode($informacion);
+}
 
 
-move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
+function mostrarBusquedaInsumo()
+{
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+	$modeloInsumo = new ModeloInsumo();
+
+	$modeloInsumo->setParametro($_POST['nombre']);
+
+	$respuesta = $modeloInsumo->buscarInsumos();
+	// $respuesta = array('nombre' => "Dixon");
+	echo json_encode($respuesta);
+}
+
+function guardarInsumo()
+{
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	$modeloInsumo = new ModeloInsumo();
+	$proveedores = new ModeloProveedores();
+	$bitacora = new ModeloBitacora();
 
 
-// 		$insercion = $this->modelo->insertarInsumos($_POST["nombre"], $_POST["id_proveedor"], $_POST["descripcion"], $_POST["fecha_de_ingreso"], $_POST["fecha_de_vencimiento"], $numero, $_POST["cantidad"], $_POST["stockMinimo"], 'ACT', $_POST["lote"], $_POST["marca"], $_POST["medida"], $iva, $imagen);
+	// 1. Quitar separadores de miles
+	$valor = str_replace('.', '', $_POST['precioD']);
+	// 2. Cambiar coma decimal por punto
+	$valor = str_replace(',', '.', $valor);
+	// 3. Convertir a float
+	$numero = (float)$valor;
+	$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
 
-// 		if (is_array($insercion) && $insercion[0] === "exito") {
-// 			$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "insumo", "Ha Insertado un insumo");
+	if ($iva === 1) {
+		$numero += $numero * 0.30;
+	}
 
-// 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-// 		} else {
-// 			http_response_code(409);
-// 			echo json_encode(['ok' => false, 'error' => $insercion]);
-// 			exit;
-// 		}
-// 	}
-// }
+	$tiempo = new DateTime();
+	$fecha = date("Y-m-d");
 
-// function eliminar($datos)
-// {
-// 	$id_insumo = $datos[0];
-// 	$id_usuario_bitacora = $datos[1];
-// 	$eliminacion = $this->modelo->eliminar($id_insumo);
+	$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+	$imagen_temporal = $_FILES['imagen']['tmp_name'];
+	move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
-// 	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-// 		$this->bitacora->insertarBitacora($id_usuario_bitacora, "insumo", "Ha eliminado un insumo");
+	$modeloInsumo->setNombre($_POST['nombre']);
+	$proveedores->setIdProveedor($_POST['id_proveedor']);
+	$modeloInsumo->setDescripcion($_POST['descripcion']);
+	$modeloInsumo->setFechaDeIngreso($_POST['fecha_de_ingreso']);
+	$modeloInsumo->setFechaDeVencimiento($_POST['fecha_de_vencimiento']);
+	$modeloInsumo->setCantidad($_POST['cantidad']);
+	$modeloInsumo->setStockMinimo($_POST['stockMinimo']);
+	$modeloInsumo->setLote($_POST['lote']);
+	$modeloInsumo->setMarca($_POST['marca']);
+	$modeloInsumo->setMedida($_POST['medida']);
+	$modeloInsumo->setIva($iva);
+	$modeloInsumo->setImagen($imagen);
 
-// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-// 	} else {
-// 		http_response_code(409);
-// 		echo json_encode(['ok' => false, 'error' => $eliminacion]);
-// 		exit;
-// 	}
-// }
+	$insercion = $modeloInsumo->insertarInsumos();
 
-// function editar()
-// {
-$tiempo = new DateTime();
-$fecha = date("Y-m-d");
-$imagen_editar = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
-$imagen_temporal = $_FILES['imagen']['tmp_name'];
-move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_editar);
+	if (is_array($insercion) && $insercion[0] === "exito") {
 
-// 	$edicion = $this->modelo->editar($_POST["Codigo"], $_POST["nombre"], $_POST['descripcion'], $_POST["stockMinimo"], $_FILES["imagen"], $_POST["marca"], $_POST["medida"], $imagen_editar);
+		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$bitacora->setTabla("insumo");
+		$bitacora->setActividad("Ha Insertado un insumo");
+		$bitacora->insertarBitacora();
+
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $insercion]);
+		exit;
+	}
+}
+
+function eliminar($datos)
+{
+	$modeloInsumo = new ModeloInsumo();
+	$bitacora = new ModeloBitacora();
+
+	$id_insumo = $datos[0];
+	$id_usuario_bitacora = $datos[1];
+
+	$modeloInsumo->setIdInsumo($id_insumo);
+	$eliminacion = $modeloInsumo->eliminar();
+
+	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+		$bitacora->setId_usuario($id_usuario_bitacora);
+		$bitacora->setTabla("insumo");
+		$bitacora->setActividad("Ha eliminado un insumo");
+		$bitacora->insertarBitacora();
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+		exit;
+	}
+}
+
+function editar()
+{
+	$modeloInsumo = new ModeloInsumo();
+	$bitacora = new ModeloBitacora();
+
+	$tiempo = new DateTime();
+	$fecha = date("Y-m-d");
+	$imagen_editar = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+	$imagen_temporal = $_FILES['imagen']['tmp_name'];
+	move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_editar);
+
+	$modeloInsumo->setIdInsumo($_POST["Codigo"]);
+	$modeloInsumo->setNombre($_POST["nombre"]);
+	$modeloInsumo->setDescripcion($_POST['descripcion']);
+	$modeloInsumo->setStockMinimo($_POST["stockMinimo"]);
+	$modeloInsumo->setMarca($_POST["marca"]);
+	$modeloInsumo->setMedida($_POST["medida"]);
+	$modeloInsumo->setImagenAntigua($_FILES["imagen"]);
+	$modeloInsumo->setImagen($imagen_editar);
+
+	$edicion = $modeloInsumo->editar();
 
 
-// 	if (is_array($edicion) && $edicion[0] === "exito") {
-// 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "insumo", "Ha modificado un insumo");
+	if (is_array($edicion) && $edicion[0] === "exito") {
 
-// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-// 	} else {
-// 		http_response_code(409);
-// 		echo json_encode(['ok' => false, 'error' => $edicion]);
-// 		exit;
-// 	}
-// }
+		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$bitacora->setTabla("insumo");
+		$bitacora->setActividad("Ha modificado un insumo");
+		$bitacora->insertarBitacora();
 
-
-// function papelera($parametro)
-// {
-// 	require_once './src/vistas/vistaInsumos/insumosPapelera.php';
-// }
-
-// function papeleraInsumosAjax()
-// {
-// 	echo json_encode($this->modelo->papelera());
-// }
-
-// function restablecerInsumo($datos)
-// {
-// 	$id_insumo = $datos[0];
-// 	$id_usuario_bitacora = $datos[1];
-// 	$restablecimiento = $this->modelo->restablecerInsumo($id_insumo);
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $edicion]);
+		exit;
+	}
+}
 
 
-// 	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-// 		$this->bitacora->insertarBitacora($id_usuario_bitacora, "insumo", "Ha restablecido un insumo");
+function papelera($parametro)
+{
+	require_once './src/vistas/vistaInsumos/insumosPapelera.php';
+}
 
-// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-// 	} else {
-// 		http_response_code(409);
-// 		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
-// 		exit;
-// 	}
-// }
+function papeleraInsumosAjax()
+{
+	$modeloInsumo = new ModeloInsumo();
 
-// function permisos($id_rol, $permiso, $modulo)
-// {
-// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }
+	echo json_encode($modeloInsumo->papelera());
+}
+
+function restablecerInsumo($datos)
+{
+	$modeloInsumo = new ModeloInsumo();
+	$bitacora = new ModeloBitacora();
+
+	$id_insumo = $datos[0];
+	$id_usuario_bitacora = $datos[1];
+	$modeloInsumo->setIdInsumo($id_insumo);
+	$restablecimiento = $modeloInsumo->restablecerInsumo();
+
+
+	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+
+		$bitacora->setId_usuario($id_usuario_bitacora);
+		$bitacora->setTabla("insumo");
+		$bitacora->setActividad("Ha restablecido un insumo");
+		$bitacora->insertarBitacora();
+
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+		exit;
+	}
+}
+
+function permisos($id_rol, $permiso, $modulo)
+{
+	$permisos = new ModeloPermisos();
+	$permisos->setIdRol($id_rol);
+	$permisos->setPermiso($permiso);
+	$permisos->setModulo($modulo);
+	
+	return $permisos->gestionarPermisos();
+}

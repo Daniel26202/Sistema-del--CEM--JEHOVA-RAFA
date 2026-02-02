@@ -50,19 +50,20 @@ class ModeloBitacora extends ModelBase
         }
     }
 
-    public function getId_usuario()
-    {
-        return $this->id_usuario;
-    }
-
     public function setId_usuario($id_usuario)
     {
+        if (!preg_match('/^[0-9]+$/', $id_usuario)) {
+            throw new \InvalidArgumentException('El ID no es válido.');
+        }
+        if ((int)$id_usuario <= 0) {
+            throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+        }
         $this->id_usuario = $id_usuario;
     }
 
-    public function getTabla()
+    public function setActividad($actividad)
     {
-        return $this->tabla;
+        $this->actividad = $actividad;
     }
 
     public function setTabla($tabla)
@@ -70,13 +71,18 @@ class ModeloBitacora extends ModelBase
         $this->tabla = $tabla;
     }
 
+    public function getId_usuario()
+    {
+        return $this->id_usuario;
+    }
+
+    public function getTabla()
+    {
+        return $this->tabla;
+    }
+
     public function getActividad()
     {
         return $this->actividad;
-    }
-
-    public function setActividad($actividad)
-    {
-        $this->actividad = $actividad;
     }
 }

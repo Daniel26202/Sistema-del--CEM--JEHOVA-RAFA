@@ -27,7 +27,7 @@ function factura($parametro)
 {
 
 	$ayuda = "btnayudaFactura";
-	$insumos = returnObjectClass()['insumo']->selectTodosLosInsumos();
+	$insumos = returnObjectClass()['insumo']->insumos();
 	$tiposDePagos = returnObjectClass()['factura']->mostrarTiposDePagos();
 	$todosLosInsumos = returnObjectClass()['factura']->selectTodosLosInsumos();
 	$extras = returnObjectClass()['factura']->mostrarServicios();
@@ -37,7 +37,7 @@ function factura($parametro)
 function facturaCita($parametro)
 {
 	$idCita = preg_replace('/\D/', '', $parametro[0]);
-	$insumos = returnObjectClass()['insumo']->selectTodosLosInsumos();
+	$insumos = returnObjectClass()['insumo']->insumos();
 	$tiposDePagos = returnObjectClass()['factura']->mostrarTiposDePagos();
 	$todosLosInsumos = $insumos;
 	$extras = returnObjectClass()['factura']->mostrarServicios();
@@ -80,6 +80,7 @@ function comprobante($parametro)
 // //aqui mostramos al paciente de la base de datos
 function mostrarPaciente()
 {
+	
 	$respuesta = returnObjectClass()['factura']->buscar($_POST['cedula']);
 	$arrayName = array();
 	array_push($arrayName, $respuesta);
@@ -162,23 +163,23 @@ function guardarFactura()
 
 
 
-	 function mostrarPDF($parametro)
-	{
-		$datosFactura = returnObjectClass()['factura']->consultarFacturaSinCita($parametro[0]);
-		$datosPago = returnObjectClass()['factura']->consultarPagoFactura($parametro[0]);
-		$datosServiciosExtras = returnObjectClass()['factura']->consultarServiciosExtras($parametro[0]);
-		$datosInsumos = returnObjectClass()['factura']->consultarFacturaInsumo($parametro[0]);
+function mostrarPDF($parametro)
+{
+	$datosFactura = returnObjectClass()['factura']->consultarFacturaSinCita($parametro[0]);
+	$datosPago = returnObjectClass()['factura']->consultarPagoFactura($parametro[0]);
+	$datosServiciosExtras = returnObjectClass()['factura']->consultarServiciosExtras($parametro[0]);
+	$datosInsumos = returnObjectClass()['factura']->consultarFacturaInsumo($parametro[0]);
 
-		require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
-	}
-	 function mostrarPDF2()
-	{
-		require_once './src/vistas/vistaFactura/vistaFacturaPdf2.php';
-	}
-	 function mostrarPDF3()
-	{
-		require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
-	}
+	require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
+}
+function mostrarPDF2()
+{
+	require_once './src/vistas/vistaFactura/vistaFacturaPdf2.php';
+}
+function mostrarPDF3()
+{
+	require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
+}
 
 	//  function permisos($id_rol, $permiso, $modulo)
 	// {
