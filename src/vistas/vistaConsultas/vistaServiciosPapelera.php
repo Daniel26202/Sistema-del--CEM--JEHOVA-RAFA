@@ -25,7 +25,7 @@
 
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
-            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/consultas"
+            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Servicios/servicios"
                 class="btn-guardar-responsive btn btn-primary btn-agregar-doctores text-decoration-none col-8" id="">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">

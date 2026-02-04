@@ -3,7 +3,7 @@
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-use App\modelos\ModeloConsultas;
+use App\modelos\ModeloServicios;
 
 
 function returnObjectClass()
@@ -11,7 +11,7 @@ function returnObjectClass()
     return [
         "doctores" => new ModeloDoctores(),
         "bitacora" => new ModeloBitacora(),
-        'servicio' => new ModeloConsultas()
+        'servicio' => new ModeloServicios()
     ];
 }
 
@@ -23,7 +23,7 @@ function doctores($parametro)
     $datosDias = returnObjectClass()['doctores']->selectDias();
     $datosEspecialidades = returnObjectClass()['doctores']->selectEspecialidad();
     $doctores = returnObjectClass()['servicio']->mostrarDoctores();
-    $todasLasServicios = returnObjectClass()['servicio']->mostrarConsultas();
+    $todasLasServicios = returnObjectClass()['servicio']->mostrarServicios();
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
 
@@ -44,7 +44,7 @@ function papelera($parametro)
     $datosDias = returnObjectClass()['doctores']->selectDias();
     $datosEspecialidades = returnObjectClass()['doctores']->selectEspecialidad();
     $doctores = returnObjectClass()['servicio']->mostrarDoctores();
-    $todasLasServicios = returnObjectClass()['servicio']->mostrarConsultas();
+    $todasLasServicios = returnObjectClass()['servicio']->mostrarServicios();
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
 
@@ -57,7 +57,7 @@ function papeleraDoctoresAjax()
 function serviciosDoctor($datos)
 {
     returnObjectClass()['doctores']->setIdDoctor($datos[0]);
-    echo json_encode(returnObjectClass()['servicio']->mostrarConsultasDoctor());
+    echo json_encode(returnObjectClass()['servicio']->mostrarServiciosDoctor());
 }
 
 

@@ -6,7 +6,7 @@ use App\modelos\ModelBase;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloCategoria;
 
-class ModeloConsultas extends ModelBase
+class ModeloServicios extends ModelBase
 {
 
     private $id_servicioMedico, $precio, $tipo;
@@ -35,7 +35,7 @@ class ModeloConsultas extends ModelBase
             return $e->getMessage();
         }
     }
-    public function mostrarConsultas()
+    public function mostrarServicios()
     {
         try {
             $sql =  "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = 'ACT' AND sm.estado = 'ACT'";
@@ -47,7 +47,7 @@ class ModeloConsultas extends ModelBase
         }
     }
 
-    public function mostrarConsultasDoctor()
+    public function mostrarServiciosDoctor()
     {
         try {
 
@@ -63,7 +63,7 @@ class ModeloConsultas extends ModelBase
     }
 
 
-    public function mostrarConsultasDes()
+    public function mostrarServiciosDes()
     {
         try {
             $sql = 'SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "DES" OR sm.estado = "DES"';
@@ -93,7 +93,7 @@ class ModeloConsultas extends ModelBase
                 throw new \Exception("El id de la  categoria no existe");
             }
 
-            if ($this->nombreConsulta($data['id_categoria'])) {
+            if ($this->nombreServicio($data['id_categoria'])) {
                 throw new \Exception("El Servicio Medico  ya  existe");
             }
 
@@ -255,7 +255,7 @@ class ModeloConsultas extends ModelBase
         }
     }
 
-    public function nombreConsulta()
+    public function nombreServicio()
     {
         try {
 

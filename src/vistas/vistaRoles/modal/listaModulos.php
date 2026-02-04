@@ -6,7 +6,7 @@ $modulos = [
     ["modulo" => "Patologias", "permisosPorModulo" => "permisosPatologias"],
     ["modulo" => "Factura", "permisosPorModulo" => "permisosFacturas"],
     ["modulo" => "Citas", "permisosPorModulo" => "permisosCitas"],
-    ["modulo" => "Consultas", "permisosPorModulo" => "permisosConsultas"],
+    ["modulo" => "Servicios", "permisosPorModulo" => "permisosServicios"],
     ["modulo" => "Doctores", "permisosPorModulo" => "permisosDoctores"],
     ["modulo" => "Control", "permisosPorModulo" => "permisosControles"],
     ["modulo" => "Hospitalizacion", "permisosPorModulo" => "permisosHospitalizaciones"],
@@ -23,7 +23,7 @@ $modulos = [
 // Categorías y clasificamos los módulos en ellas.
 $clasificacion = [
     "Administración" => ["Usuarios", "Roles", "Mantenimiento"],
-    "Gestión Médica" => ["Pacientes", "Patologias", "Citas", "Consultas", "Hospitalizacion", "Doctores", "Control"],
+    "Gestión Médica" => ["Pacientes", "Patologias", "Citas", "Servicios", "Hospitalizacion", "Doctores", "Control"],
     "Inventario" => ["Insumos", "Entrada",  "Proveedores"],
     "Reportes" => ["Factura", "Reportes", "Estadisticas"]
 ];

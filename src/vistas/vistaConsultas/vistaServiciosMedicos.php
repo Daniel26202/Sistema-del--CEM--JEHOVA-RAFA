@@ -43,7 +43,7 @@
             </button>
 
 
-            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Consultas/papeleraServicio"
+            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Servicios/papeleraServicio"
                 class="btn-guardar-responsive btn btn-primary btn-agregar-doctores text-decoration-none col-8" id="btnAgregarServicioMedicoPapelera">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
@@ -215,7 +215,7 @@
 </div>
 </div>
 
-<?php //require_once './src/vistas/vistaConsultas/modalesCategoria.php'; 
+<?php //require_once './src/vistas/vistaServicios/modalesCategoria.php'; 
 ?>
 
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/servicios.js"></script>

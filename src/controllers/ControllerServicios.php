@@ -1,27 +1,20 @@
 <?php
 
 use App\modelos\ModeloCategoria;
-use App\modelos\ModeloConsultas;
+use App\modelos\ModeloServicios;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPermisos;
 
-function returnObjectClass()
+function servicios($parametro)
 {
-	return [
-		"categoria" => new ModeloCategoria(),
-		'consulta' => new ModeloConsultas(),
-		"bitacora" => new ModeloBitacora(),
-		'doctores' => new ModeloDoctores()
-	];
-}
+	$modeloBitacora = new ModeloBitacora();
+	$modeloCategoria = new ModeloCategoria();
 
-function consultas($parametro)
-{
 	$ayuda = "btnayudaServicioMedico";
 	$doctores = returnObjectClass()['consulta']->mostrarDoctores();
 	$todasLasCategorias = returnObjectClass()['categoria']->seleccionarTodasLasCategoria();
-	require_once "./src/vistas/vistaConsultas/vistaServiciosMedicos.php";
+	require_once "./src/vistas/vistaServicios/vistaServiciosMedicos.php";
 }
 
 function categoriasAjax()
@@ -29,21 +22,21 @@ function categoriasAjax()
 	echo json_encode(returnObjectClass()['categoria']->seleccionarCategoria());
 }
 
-function consultasAjax()
+function serviciosAjax()
 {
-	echo json_encode(returnObjectClass()['consulta']->mostrarConsultas());
+	echo json_encode(returnObjectClass()['consulta']->mostrarServicios());
 }
 
 function papeleraServicio($parametro)
 {
 	$doctores = returnObjectClass()['consulta']->mostrarDoctores();
 	$categorias = returnObjectClass()['categoria']->seleccionarCategoria();
-	require_once "./src/vistas/vistaConsultas/vistaServiciosPapelera.php";
+	require_once "./src/vistas/vistaServicios/vistaServiciosPapelera.php";
 }
 
 function papeleraAjax()
 {
-	echo json_encode(returnObjectClass()['consulta']->mostrarConsultasDes());
+	echo json_encode(returnObjectClass()['consulta']->mostrarServiciosDes());
 }
 
 function guardar()

@@ -2,7 +2,7 @@
 
 use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloConsultas;
+use App\modelos\ModeloServicios;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
@@ -17,7 +17,7 @@ function returnObjectClass()
 		'bitacora' => new ModeloBitacora(),
 		'cita' => new ModeloCita(),
 		'doctor' => new ModeloDoctores(),
-		'servicio' => new ModeloConsultas()
+		'servicio' => new ModeloServicios()
 	];
 }
 

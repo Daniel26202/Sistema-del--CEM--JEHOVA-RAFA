@@ -4,7 +4,7 @@ namespace App\modelos;
 
 use App\modelos\ModelBase;
 use App\modelos\ModeloPacientes;
-use App\modelos\ModeloConsultas;
+use App\modelos\ModeloServicios;
 use DateTime;
 
 class ModeloCita extends ModelBase

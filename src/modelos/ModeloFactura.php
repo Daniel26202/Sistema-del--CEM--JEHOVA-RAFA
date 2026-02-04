@@ -8,7 +8,7 @@ use App\modelos\ModeloCliente;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloCita;
 use App\modelos\ModeloHospitalizacion;
-use App\modelos\ModeloConsultas;
+use App\modelos\ModeloServicios;
 
 
 
@@ -30,7 +30,7 @@ class ModeloFactura extends ModelBase
 			'modeloInsumo' => new ModeloInsumo(),
 			'modeloCita' => new ModeloCita(),
 			'modeloHospitalizacion' => new  ModeloHospitalizacion(),
-			'modeloConsultas' => new ModeloConsultas()
+			'modeloServicios' => new ModeloServicios()
 		];
 	}
 	//buscar Paciente tambien por la cita
@@ -248,8 +248,8 @@ class ModeloFactura extends ModelBase
 					'id_factura' => $id_factura,
 					'tipo' => 'Hospitalizacion',
 					'cantidad' => 1,
-					'precioServIndividual' => $this->returnObjectModel()['modeloConsultas']->getPrecio(),
-					'precioServCompleto' => $this->returnObjectModel()['modeloConsultas']->getPrecio(),
+					'precioServIndividual' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
+					'precioServCompleto' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
 					'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH(),
 					'id_servicio' => null,
 					'id_entrada' => null
@@ -319,8 +319,8 @@ class ModeloFactura extends ModelBase
 				// 	'id_factura' => $id_factura,
 				// 	'tipo' => 'Hospitalizacion',
 				// 	'cantidad' => 1,
-				// 	'precioServIndividual' => $this->returnObjectModel()['modeloConsultas']->getPrecio(),
-				// 	'precioServCompleto' => $this->returnObjectModel()['modeloConsultas']->getPrecio(),
+				// 	'precioServIndividual' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
+				// 	'precioServCompleto' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
 				// 	'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH(),
 				// 	'id_servicio' => null,
 				// 	'id_entrada' => null
@@ -332,7 +332,7 @@ class ModeloFactura extends ModelBase
 					$data = [
 						'id_factura' => $this->getIdFactura(),
 						'precioServicio' => $this->getPrecioServicio()[$contador],
-						's' => $this->returnObjectModel()['modeloConsultas']->getIdServicioMedico(),
+						's' => $this->returnObjectModel()['modeloServicios']->getIdServicioMedico(),
 					];
 					$this->create($data);
 					$contador++;

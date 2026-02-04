@@ -49,7 +49,7 @@
                 </svg>Registrar Especialidades
             </button>
 
-            <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Consultas")): ?>
+            <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Servicios")): ?>
                 <!-- no hay -->
             <?php else: ?>
 
