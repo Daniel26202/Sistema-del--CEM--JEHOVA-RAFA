@@ -4,17 +4,11 @@ use App\modelos\ModeloCliente;
 use App\modelos\ModeloBitacora;
 // use App\
 
-function returnObjectClass()
-{
-    return [
-        'bitacora' => new ModeloBitacora(),
-        'cliente' => new ModeloCliente()
-    ];
-}
-
-
 function Clientes($parametro)
 {
+    $modeloBitacora = new ModeloBitacora();
+    $modeloCliente = new ModeloCliente();
+
     $ayuda = "btnayudaPaciente";
     $vistaActiva = 'clientes';
     require_once __DIR__ . "/../../src/vistas/vistaCliente/vistaCliente.php";
@@ -23,7 +17,9 @@ function Clientes($parametro)
 
 function clientesAjax()
 {
-    echo json_encode(returnObjectClass()['cliente']->index());
+    $modeloCliente = new ModeloCliente();
+
+    echo json_encode($modeloCliente->index());
 }
 
 
@@ -35,10 +31,10 @@ function papelera($parametro)
 
 function papeleraAjax()
 {
-    echo json_encode(returnObjectClass()['cliente']->indexPapelera());
+    $modeloCliente = new ModeloCliente();
+
+    echo json_encode($modeloCliente->indexPapelera());
 }
-
-
 
 function guardar()
 {
@@ -50,27 +46,26 @@ function guardar()
     }
 
     try {
-        $modelo = returnObjectClass()['cliente'];
-        $bitacora = returnObjectClass()['bitacora'];
+        $modeloCliente = new ModeloCliente();
+        $modeloBitacora = new ModeloBitacora();
 
-        $modelo->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
-        $modelo->setCedula($_POST['cedula']);
-        $modelo->setNombre($_POST['nombre']);
-        $modelo->setApellido($_POST['apellido']);
-        $modelo->setTelefono($_POST['telefono']);
-        $modelo->setDireccion($_POST['direccion']);
-        $modelo->setFn($_POST['fn']);
-        $modelo->setGenero($_POST['genero']);
+        $modeloCliente->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
+        $modeloCliente->setCedula($_POST['cedula']);
+        $modeloCliente->setNombre($_POST['nombre']);
+        $modeloCliente->setApellido($_POST['apellido']);
+        $modeloCliente->setTelefono($_POST['telefono']);
+        $modeloCliente->setDireccion($_POST['direccion']);
+        $modeloCliente->setFn($_POST['fn']);
+        $modeloCliente->setGenero($_POST['genero']);
+        $modeloBitacora->setId_usuario($_POST['id_usuario']);
+        $modeloBitacora->setActividad("Ha Insertado un nuevo cliente");
+        $modeloBitacora->setTabla("cliente");
 
-        $bitacora->setId_usuario($_POST['id_usuario']);
-        $bitacora->setActividad("Ha Insertado un nuevo cliente");
-        $bitacora->setTabla("cliente");
-
-        $insercion = $modelo->insertar();
+        $insercion = $modeloCliente->insertar();
 
         // Verifica si es un array con clave "exito"
         if (is_array($insercion) && $insercion[0] === "exito") {
-            $bitacora->insertarBitacora();
+            $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
             http_response_code(409);
@@ -88,31 +83,30 @@ function setCliente()
 {
 
     try {
-        $modelo = returnObjectClass()['cliente'];
-        $bitacora = returnObjectClass()['bitacora'];
+        $modeloCliente = new ModeloCliente();
+        $modeloBitacora = new ModeloBitacora();
 
-        $modelo->setIdCliente($_POST['id']);
-        $modelo->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
-        $modelo->setCedula($_POST['cedula']);
-        $modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
-        $modelo->setNombre($_POST['nombre']);
-        $modelo->setApellido($_POST['apellido']);
-        $modelo->setTelefono($_POST['telefono']);
-        $modelo->setDireccion($_POST['direccion']);
-        $modelo->setFn($_POST['fn']);
-        $modelo->setGenero($_POST['genero']);
+        $modeloCliente->setIdCliente($_POST['id']);
+        $modeloCliente->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
+        $modeloCliente->setCedula($_POST['cedula']);
+        $modeloCliente->setCedulaRegistrada($_POST['cedulaRegistrada']);
+        $modeloCliente->setNombre($_POST['nombre']);
+        $modeloCliente->setApellido($_POST['apellido']);
+        $modeloCliente->setTelefono($_POST['telefono']);
+        $modeloCliente->setDireccion($_POST['direccion']);
+        $modeloCliente->setFn($_POST['fn']);
+        $modeloCliente->setGenero($_POST['genero']);
 
-        $bitacora->setId_usuario($_POST['id_usuario']);
-        $bitacora->setActividad("Ha modificado un cliente");
-        $bitacora->setTabla("cliente");
+        $modeloBitacora->setId_usuario($_POST['id_usuario']);
+        $modeloBitacora->setActividad("Ha modificado un cliente");
+        $modeloBitacora->setTabla("cliente");
+        $edicion = $modeloCliente->update_cliente();
 
-        $edicion = $modelo->update_cliente();
-
-        // echo json_encode($modelo->getIdCliente());
+        // echo json_encode($modeloCliente->getIdCliente());
 
         // Verifica si es un array con clave "exito"
         if (is_array($edicion) && $edicion[0] === "exito") {
-            $bitacora->insertarBitacora();
+            $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -132,20 +126,19 @@ function eliminar($datos)
         $id_cliente = $datos[0];
         $id_usuario = $datos[1];
 
-        $modelo = returnObjectClass()['cliente'];
-        $bitacora = returnObjectClass()['bitacora'];
+        $modeloCliente = new ModeloCliente();
+        $modeloBitacora = new ModeloBitacora();
 
+        $modeloCliente->setIdCliente($id_cliente);
 
-        $modelo->setIdCliente($id_cliente);
+        $modeloBitacora->setId_usuario($id_usuario);
+        $modeloBitacora->setActividad("Ha eliminado un cliente");
+        $modeloBitacora->setTabla("cliente");
 
-        $bitacora->setId_usuario($id_usuario);
-        $bitacora->setActividad("Ha eliminado un cliente");
-        $bitacora->setTabla("cliente");
-
-        $eliminacion = $modelo->deleteC();
+        $eliminacion = $modeloCliente->deleteC();
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-            $bitacora->insertarBitacora();
+            $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -164,21 +157,19 @@ function restablecer($datos)
         $id_cliente = $datos[0];
         $id_usuario = $datos[1];
 
+        $modeloCliente = new ModeloCliente();
+        $modeloBitacora = new ModeloBitacora();
 
-        $modelo = returnObjectClass()['cliente'];
-        $bitacora = returnObjectClass()['bitacora'];
+        $modeloCliente->setIdCliente($id_cliente);
 
+        $modeloBitacora->setId_usuario($id_usuario);
+        $modeloBitacora->setActividad("Ha restablecido un cliente");
+        $modeloBitacora->setTabla("cliente");
 
-        $modelo->setIdCliente($id_cliente);
-
-        $bitacora->setId_usuario($id_usuario);
-        $bitacora->setActividad("Ha restablecido un cliente");
-        $bitacora->setTabla("cliente");
-
-        $restablecer = $modelo->restablecer();
+        $restablecer = $modeloCliente->restablecer();
 
         if (is_array($restablecer) && $restablecer[0] === "exito") {
-            $bitacora->insertarBitacora();
+            $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);

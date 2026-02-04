@@ -9,70 +9,65 @@ use App\modelos\ModeloInsumo;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
 
-
-function returnObjectClass()
-{
-	return [
-		"factura" => new ModeloFactura(),
-		'insumo' => new ModeloInsumo(),
-		"bitacora" => new ModeloBitacora(),
-		'cliente' => new ModeloCliente(),
-		'paciente' => new ModeloPacientes(),
-		'cita' => new ModeloCita(),
-		'hospitalizacion' => new ModeloHospitalizacion()
-	];
-}
-
 function factura($parametro)
 {
 
+	$modeloInsumos = new ModeloInsumo();
+	$modeloFactura = new ModeloFactura();
+
 	$ayuda = "btnayudaFactura";
-	$insumos = returnObjectClass()['insumo']->insumos();
-	$tiposDePagos = returnObjectClass()['factura']->mostrarTiposDePagos();
-	$todosLosInsumos = returnObjectClass()['factura']->selectTodosLosInsumos();
-	$extras = returnObjectClass()['factura']->mostrarServicios();
+	$insumos = $modeloInsumos->insumos();
+	$tiposDePagos = $modeloFactura->mostrarTiposDePagos();
+	$todosLosInsumos = $modeloFactura->selectTodosLosInsumos();
+	$extras = $modeloFactura->mostrarServicios();
 	require_once './src/vistas/vistaFactura/factura.php';
 }
 
 function facturaCita($parametro)
 {
+	$modeloInsumos = new ModeloInsumo();
+	$modeloFactura = new ModeloFactura();
+
 	$idCita = preg_replace('/\D/', '', $parametro[0]);
-	$insumos = returnObjectClass()['insumo']->insumos();
-	$tiposDePagos = returnObjectClass()['factura']->mostrarTiposDePagos();
+	$insumos = $modeloInsumos->insumos();
+	$tiposDePagos = $modeloFactura->mostrarTiposDePagos();
 	$todosLosInsumos = $insumos;
-	$extras = returnObjectClass()['factura']->mostrarServicios();
-	$citaFacturar = returnObjectClass()['factura']->mostrarCitaFactura($idCita);
+	$extras = $modeloFactura->mostrarServicios();
+	$citaFacturar = $modeloFactura->mostrarCitaFactura($idCita);
 	require_once './src/vistas/vistaFactura/facturaCita.php';
 }
 
 function facturarHospitalizacion($parametro)
 {
+	$modeloFactura = new ModeloFactura();
+
 	// Extrae solo los dígitos del parámetro para obtener el ID de hospitalización
 	$idHospitalizacion = preg_replace('/\D/', '', $parametro[0]);
-	$insumosHospitalizacion = returnObjectClass()['factura']->unirInsumosHospitalizacion($idHospitalizacion);
-	$tiposDePagos = returnObjectClass()['factura']->mostrarTiposDePagos();
-	$hostalizacionFacturar = returnObjectClass()['factura']->mostrarHospitalizacion($idHospitalizacion);
-	$serviciosDeHospitalizacion = returnObjectClass()['factura']->serviciosIncluidosHospit($idHospitalizacion);
+	$insumosHospitalizacion = $modeloFactura->unirInsumosHospitalizacion($idHospitalizacion);
+	$tiposDePagos = $modeloFactura->mostrarTiposDePagos();
+	$hostalizacionFacturar = $modeloFactura->mostrarHospitalizacion($idHospitalizacion);
+	$serviciosDeHospitalizacion = $modeloFactura->serviciosIncluidosHospit($idHospitalizacion);
 	require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
 }
 
 function comprobante($parametro)
 {
+	$modeloFactura = new ModeloFactura();
 
 	if ($parametro == "") header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
 
-	$datosFactura = returnObjectClass()['factura']->consultarFactura($parametro[0]);
-	$datosPago = returnObjectClass()['factura']->consultarPagoFactura($parametro[0]);
-	$datosServiciosExtras = returnObjectClass()['factura']->consultarServiciosExtras($parametro[0]);
-	$x = returnObjectClass()['factura']->comprobarSiFueHospit($parametro[0]);
-	$serviciosDeHospitalizacion = returnObjectClass()['factura']->serviciosIncluidosHospit($x);
+	$datosFactura = $modeloFactura->consultarFactura($parametro[0]);
+	$datosPago = $modeloFactura->consultarPagoFactura($parametro[0]);
+	$datosServiciosExtras = $modeloFactura->consultarServiciosExtras($parametro[0]);
+	$x = $modeloFactura->comprobarSiFueHospit($parametro[0]);
+	$serviciosDeHospitalizacion = $modeloFactura->serviciosIncluidosHospit($x);
 
 	$vistaActiva = $x != 'no encontrado' ? 1 : 0;
 
 	if ($vistaActiva) {
-		$datosInsumos = returnObjectClass()['factura']->unirInsumosHospitalizacion($x);
+		$datosInsumos = $modeloFactura->unirInsumosHospitalizacion($x);
 	} else {
-		$datosInsumos = returnObjectClass()['factura']->consultarFacturaInsumo($parametro[0]);
+		$datosInsumos = $modeloFactura->consultarFacturaInsumo($parametro[0]);
 	}
 	require_once './src/vistas/vistaFactura/comprobante.php';
 }
@@ -80,8 +75,9 @@ function comprobante($parametro)
 // //aqui mostramos al paciente de la base de datos
 function mostrarPaciente()
 {
-	
-	$respuesta = returnObjectClass()['factura']->buscar($_POST['cedula']);
+	$modeloFactura = new ModeloFactura();
+
+	$respuesta = $modeloFactura->buscar($_POST['cedula']);
 	$arrayName = array();
 	array_push($arrayName, $respuesta);
 	echo json_encode($arrayName);
@@ -89,7 +85,9 @@ function mostrarPaciente()
 
 function mostrarCliente()
 {
-	$respuesta = returnObjectClass()['factura']->buscarCliente($_POST['cedula']);
+	$modeloFactura = new ModeloFactura();
+
+	$respuesta = $modeloFactura->buscarCliente($_POST['cedula']);
 	$arrayName = array();
 	array_push($arrayName, $respuesta);
 	echo json_encode($arrayName);
@@ -98,7 +96,9 @@ function mostrarCliente()
 //aqui mostramos al paciente si tiene cita
 function mostrarPacienteConCita()
 {
-	$respuesta = returnObjectClass()['factura']->buscarPacientePorCita($_POST["cedula"]);
+	$modeloFactura = new ModeloFactura();
+
+	$respuesta = $modeloFactura->buscarPacientePorCita($_POST["cedula"]);
 	echo json_encode($respuesta);
 }
 
@@ -107,54 +107,53 @@ function mostrarPacienteConCita()
 //metodo para guaradar Factura
 function guardarFactura()
 {
-	$factura = returnObjectClass()['factura'];
-	$insumo = returnObjectClass()['insumo'];
-	$bitacora = returnObjectClass()['bitacora'];
-	$cliente = returnObjectClass()['cliente'];
-	$paciente = returnObjectClass()['paciente'];
-	$cita = returnObjectClass()['cita'];
-	$hospitalizacion = returnObjectClass()['hospitalizacion'];
+	$modeloFactura = new ModeloFactura();
+	$modeloBitacora = new ModeloBitacora();
+	$modeloCliente = new ModeloCliente();
+	$modeloPaciente = new ModeloPacientes();
+	$modeloCita = new ModeloCita();
+	$modeloHospitalizacion = new ModeloHospitalizacion();
 
 
 	// $doctor = isset($_POST["doctores"]) ? $_POST["doctores"] : false;
 
-	$factura->setFecha(date("Y-m-d"));
-	$factura->setServicios(isset($_POST["servicios"]) ? $_POST["servicios"] : []);
-	$factura->setInsumos(isset($_POST["insumos"]) ? $_POST["insumos"] : []);
-	$factura->setCatidad(isset($_POST["cantidad"]) ? $_POST["cantidad"] : false);
-	$factura->setPrecioInsumo(isset($_POST["precioInsumo"]) ? $_POST["precioInsumo"] : []);
-	$factura->setPrecioServicio(isset($_POST["precioServicio"]) ? $_POST["precioServicio"] : []);
-	$cliente->setIdCliente(isset($_POST["id_cliente"]) ? $_POST["id_cliente"] : false);
-	$paciente->setIdPaciente(isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : false);
-	$cita->setIdCita(isset($_POST["id_cita"]) ? $_POST["id_cita"] : null);
-	$factura->setReferencia(isset($_POST["referencia"]) ? $_POST["referencia"] : null);
-	$hospitalizacion->setIdH(isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null);
-	$factura->setTotal($_POST["total"]);
-	$factura->setFormasDePago($_POST["formasDePago"]);
-	$factura->setMontosPago($_POST["montosDePago"]);
+	$modeloFactura->setFecha(date("Y-m-d"));
+	$modeloFactura->setServicios(isset($_POST["servicios"]) ? $_POST["servicios"] : []);
+	$modeloFactura->setInsumos(isset($_POST["insumos"]) ? $_POST["insumos"] : []);
+	$modeloFactura->setCatidad(isset($_POST["cantidad"]) ? $_POST["cantidad"] : false);
+	$modeloFactura->setPrecioInsumo(isset($_POST["precioInsumo"]) ? $_POST["precioInsumo"] : []);
+	$modeloFactura->setPrecioServicio(isset($_POST["precioServicio"]) ? $_POST["precioServicio"] : []);
+	$modeloCliente->setIdCliente(isset($_POST["id_cliente"]) ? $_POST["id_cliente"] : false);
+	$modeloPaciente->setIdPaciente(isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : false);
+	$modeloCita->setIdCita(isset($_POST["id_cita"]) ? $_POST["id_cita"] : null);
+	$modeloFactura->setReferencia(isset($_POST["referencia"]) ? $_POST["referencia"] : null);
+	$modeloHospitalizacion->setIdH(isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null);
+	$modeloFactura->setTotal($_POST["total"]);
+	$modeloFactura->setFormasDePago($_POST["formasDePago"]);
+	$modeloFactura->setMontosPago($_POST["montosDePago"]);
 
-
-	if (!$cliente->getIdCliente()) {
-		$coincidencia = $factura->coincidenciaPacienteCliente();
+	if (!$modeloCliente->getIdCliente()) {
+		$coincidencia = $modeloFactura->coincidenciaPacienteCliente();
 		if ($coincidencia) {
 			$id_cliente = $coincidencia;
 		} else {
-			$guardado = $factura->guardarCliente();
+			$guardado = $modeloFactura->guardarCliente();
 			$id_cliente = $guardado[1];
 		}
-		$cliente->setIdCliente($id_cliente);
+		$modeloCliente->setIdCliente($id_cliente);
 	}
 
 
-	$guardar = $factura->insertaFactura();
+	$guardar = $modeloFactura->insertaFactura();
 
 	if ($guardar) {
 		//Guardar la bitacora
-		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
-		$bitacora->setActividad("Ha facturado servicios y/o insumos");
-		$bitacora->setTabla("factura");
-
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $factura[0]);
+		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$modeloBitacora->setActividad("Ha facturado servicios y/o insumos");
+		$modeloBitacora->setTabla("factura");
+		$modeloBitacora->insertarBitacora();
+		
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $modeloFactura->getIdFactura());
 	} else {
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
 	}
@@ -165,11 +164,12 @@ function guardarFactura()
 
 function mostrarPDF($parametro)
 {
-	$datosFactura = returnObjectClass()['factura']->consultarFacturaSinCita($parametro[0]);
-	$datosPago = returnObjectClass()['factura']->consultarPagoFactura($parametro[0]);
-	$datosServiciosExtras = returnObjectClass()['factura']->consultarServiciosExtras($parametro[0]);
-	$datosInsumos = returnObjectClass()['factura']->consultarFacturaInsumo($parametro[0]);
+	$modeloFactura = new ModeloFactura();
 
+	$datosFactura = $modeloFactura->consultarFacturaSinCita($parametro[0]);
+	$datosPago = $modeloFactura->consultarPagoFactura($parametro[0]);
+	$datosServiciosExtras = $modeloFactura->consultarServiciosExtras($parametro[0]);
+	$datosInsumos = $modeloFactura->consultarFacturaInsumo($parametro[0]);
 	require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
 }
 function mostrarPDF2()
