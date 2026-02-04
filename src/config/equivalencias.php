@@ -75,6 +75,7 @@ return [
     "editarCita" => "editar",
     "insertaPaciente" => "guardar",
     "validarHorariosDisponlibles" => "consultar",
+    "mostrarServiciosMedicosAjax" => "consultar",   
 
 
     //Servicios Medicos

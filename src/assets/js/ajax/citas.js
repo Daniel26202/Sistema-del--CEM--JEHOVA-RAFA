@@ -202,7 +202,7 @@ addEventListener("DOMContentLoaded", function () {
 
       let horasOcupadasUnidas = horasOcupadas.flat();
 
-      if (horasOcupadas.length > 0) {
+      if (horasDeTrabajo.length > 0) {
 
         horasDeTrabajo.forEach((horaT, index) => {
           horasLibres1 = horaT.filter(item => !horasOcupadasUnidas.includes(item));
@@ -306,9 +306,8 @@ addEventListener("DOMContentLoaded", function () {
                                     
                                         <div class="me-2 botonesEdi ${urlActual.includes("Realizadas") ? "d-none" : ""}">
                                             <a href="#" class="btns-accion botonesEditar botonesEdi btn-dt-tabla"
-                                                data-id-tabla="modal-examplecitaeditar${element.id_cita
-          }" uk-toggle="target: #modal-examplecitaeditar${element.id_cita}"
-                                                data-index="${element.id_cita}" uk-tooltip="Modificar Cita"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModalCita" id="btnOpenModal" 
+                                                data-index="${element.id_cita}" data-id-categoria="${element.id_categoria}" data-id-doctor="${element.doctor}" uk-tooltip="Modificar Cita"
                                                 id="btnEditarCitaPendiente">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                                     fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -363,6 +362,35 @@ addEventListener("DOMContentLoaded", function () {
           const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
 
           alertConfirm("Esta seguro de eliminar la cita?", deleteCita, data);
+        });
+      });
+
+
+      //editar cita
+      document.querySelectorAll(".botonesEditar").forEach(btn => {
+        btn.addEventListener("click", async function () {
+
+
+          cedulaCita.value = btn.closest("tr").children[0].innerText.slice(2);
+          await traerPacienteCita();
+
+          await traerServiciosMedicos();
+          selectServicios.value = btn.getAttribute("data-id-categoria");
+
+          await traerDoctores(selectServicios.value);
+
+         const valorABuscar = btn.getAttribute("data-id-doctor");
+        // Buscamos todos los checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach(check => {
+            // Comparamos el valor (usamos == para ignorar si uno es string y el otro número)
+            if (check.value == valorABuscar) {
+                check.checked = true;
+            }
+        });
+          await traerHorarioDoctor(valorABuscar);
+
         });
       });
 
