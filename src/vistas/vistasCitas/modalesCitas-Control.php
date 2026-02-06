@@ -2,7 +2,7 @@
     <div class="modal-dialog ">
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
-                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Agendar Cita</h5>
+                <h5 class="modal-title fs-4 fw-bold" id="modalTitleCita">Agendar Cita</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form class=" form-validable" id="modalAgregarCita">
@@ -10,6 +10,8 @@
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
                 <input type="hidden" id="id_paciente" name="id_paciente">
+                <input type="hidden" id="id_cita" name="id_cita">
+
 
 
                 <div class="modal-body">
@@ -226,7 +228,7 @@
                 </div>
                 <div class="modal-footer d-none" id="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-modals" id="botonModal" data-bs-dismiss="modal">Registrar</button>
+                    <button type="submit" class="btn btn-modals" id="botonModal">Registrar</button>
                 </div>
             </form>
         </div>

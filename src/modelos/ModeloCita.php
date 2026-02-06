@@ -10,7 +10,7 @@ use DateTime;
 class ModeloCita extends ModelBase
 {
 
-	private $id_cita, $fecha, $hora, $estado, $doctor, $horaSalida;
+	private $id_cita, $fecha, $hora, $estado, $id_doctor, $horaSalida, $id_servicioMedico, $id_paciente;
 
 
 	public function __construct($dbSystem = true)
@@ -92,26 +92,24 @@ class ModeloCita extends ModelBase
 		}
 	}
 
-	public function insertarCita($paciente, $servicio, $doctor)
+	public function insertarCita()
 	{
 		try {
 
 			$sql = " SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria =:id AND estado  ='ACT' ";
 			$this->setSQL($sql);
-			$id_servicioMedico = $this->search(['id' => $servicio->getIdServicioMedico()], false);
+			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico()], false);
 			$id = $id_servicioMedico['id_servicioMedico'];
 
 			$data = [
-				'id_paciente' => $paciente->getIdPaciente(),
+				'id_paciente' => $this->getIdPaciente(),
 				'id_servicioMedico' => $id,
 				'fecha' => $this->getFecha(),
 				'hora' => $this->getHora(),
 				'estado' => $this->getEstado(),
-				'doctor' => $doctor->getIdDoctor(),
+				'doctor' => $this->getIdDoctor(),
 				'hora_salida' => $this->getHoraSalida()
 			];
-
-
 
 			$sql = "INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente, hora_salida, doctor) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente,:hora_salida, :doctor)";
 
@@ -188,28 +186,29 @@ class ModeloCita extends ModelBase
 	{
 		try {
 
+			$sql = " SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria =:id AND estado  ='ACT' ";
+			$this->setSQL($sql);
+			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico()], false);
+			$id = $id_servicioMedico['id_servicioMedico'];
+
 			$data = [
-				'id_cita' => $this->getIdCita(),
-				'id_servicioMedico' => $this->getIdServicioMedico(),
+				'id_paciente' => $this->getIdPaciente(),
+				'id_servicioMedico' => $id,
 				'fecha' => $this->getFecha(),
-				'hora' => $this->getHora()
+				'hora' => $this->getHora(),
+				'estado' => $this->getEstado(),
+				'doctor' => $this->getIdDoctor(),
+				'hora_salida' => $this->getHoraSalida(),
+				'id_cita'=>$this->getIdCita()
 			];
 
-			$sql = "SELECT * from cita where id_cita=:id_cita";
+			$sql = "UPDATE cita SET  fecha=:fecha, hora=:hora, estado=:estado, serviciomedico_id_servicioMedico=:id_servicioMedico, paciente_id_paciente=:id_paciente, hora_salida=:hora_salida, doctor=:doctor  WHERE id_cita=:id_cita";
+
 
 			$this->setSQL($sql);
-			$listData   = $this->search($data);
+			$this->create($data);
 
-			if ($listData == []) {
-				throw new \Exception("El id de la cita no existe");
-			}
-
-			$sql = "UPDATE cita SET serviciomedico_id_servicioMedico=:id_servicioMedico,fecha=:fecha,hora=:hora WHERE id_cita =:id_cita";
-
-			$this->setSQL($sql);
-			$this->update($data, $this->getIdCita());
-
-			return ["exito"];
+			return ["exito", $data];
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -265,9 +264,12 @@ class ModeloCita extends ModelBase
 				'id_personal' => $obj->getIdDoctor()
 			];
 
+			//consulta para traer todas la horas queel doctor tiene ocupada
 			$sql = 'SELECT c.hora as hora_entrada, c.hora_salida FROM  cita c INNER JOIN personal p ON p.id_personal = c.doctor  WHERE c.fecha = :fecha and p.id_personal =:id_personal  AND c.estado="Pendiente" ';
 			$this->setSQL($sql);
 			$horasOcupadas = $this->search($data1);
+
+			//consulta para traer todas la horas queel doctor tiene ocupada
 
 			$sql = 'SELECT hd.horaDeEntrada, hd.horaDeSalida FROM personal p INNER JOIN horarioydoctor hd ON hd.id_personal = p.id_personal  INNER JOIN horario  h ON h.id_horario = hd.id_horario WHERE p.id_personal =:id_personal AND h.diaslaborables = :dia';
 			$this->setSQL($sql);
@@ -280,8 +282,6 @@ class ModeloCita extends ModelBase
 			foreach ($horasOcupadas as $hora) {
 				array_push($listHoraOcupada, $this->seccionarHoras($hora['hora_entrada'], $hora['hora_salida']));
 			}
-
-
 
 			$inicio = $horasCompletas['horaDeEntrada'];
 			$final = $horasCompletas['horaDeSalida'];
@@ -337,6 +337,19 @@ class ModeloCita extends ModelBase
 		return $this->id_cita;
 	}
 
+	public function getIdServicioMedico()
+	{
+		return $this->id_servicioMedico;
+	}
+	public function getIdPaciente()
+	{
+		return $this->id_paciente;
+	}
+	public function getIdDoctor()
+	{
+		return $this->id_doctor;
+	}
+
 
 	public function getFecha()
 	{
@@ -357,6 +370,8 @@ class ModeloCita extends ModelBase
 		return $this->estado;
 	}
 
+	
+
 
 
 	public function setIdCita($id_cita)
@@ -372,6 +387,45 @@ class ModeloCita extends ModelBase
 		$this->id_cita = $id_cita;
 	}
 
+	public function setIdServicioMedico($id_servicioMedico)
+	{
+		if (!preg_match("/^[0-9]+$/", $id_servicioMedico)) {
+			throw new \InvalidArgumentException("El ID del servicio debe ser un número entero positivo.");
+		}
+
+		if ((int)$id_servicioMedico <= 0) {
+			throw new \InvalidArgumentException("El ID del servicio debe ser mayor que cero.");
+		}
+
+		$this->id_servicioMedico = $id_servicioMedico;
+	}
+
+	public function setIdPaciente($id_paciente)
+	{
+		if (!preg_match("/^[0-9]+$/", $id_paciente)) {
+			throw new \InvalidArgumentException("El ID del paciente debe ser un número entero positivo.");
+		}
+
+		if ((int)$id_paciente <= 0) {
+			throw new \InvalidArgumentException("El ID del paciente debe ser mayor que cero.");
+		}
+
+		$this->id_paciente = $id_paciente;
+	}
+
+
+	public function setIdDoctor($id_doctor)
+	{
+		if (!preg_match("/^[0-9]+$/", $id_doctor)) {
+			throw new \InvalidArgumentException("El ID del doctor debe ser un número entero positivo.");
+		}
+
+		if ((int)$id_doctor <= 0) {
+			throw new \InvalidArgumentException("El ID del doctor debe ser mayor que cero.");
+		}
+
+		$this->id_doctor = $id_doctor;
+	}
 
 	public function setFecha($fecha)
 	{
