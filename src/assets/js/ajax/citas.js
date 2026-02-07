@@ -84,6 +84,9 @@ addEventListener("DOMContentLoaded", function () {
 
           //hacer que aparesca la caja que contine el boton para abrir el modal de agregar paciente
           divBtnAddPat.classList.remove("d-none");
+
+          modalFooter.classList.add("d-none");
+
         }
       } else {
         divDataPaciente.classList.add("d-none");
@@ -146,6 +149,14 @@ addEventListener("DOMContentLoaded", function () {
           traerHorarioDoctor(this.value);
         });
       });
+
+      divFecha.classList.add('d-none');
+      divHorarios.classList.add('d-none');
+      divHorariosDisp.classList.add("d-none");
+      modalFooter.classList.add('d-none');
+
+      inputFechaCita.value = '';
+
     } catch (error) {
       alertError("Error", error);
     }
@@ -402,6 +413,8 @@ addEventListener("DOMContentLoaded", function () {
       span.children[0].classList.add("d-none");
       span.children[1].classList.add("d-none");
     });
+
+    modalFooter.classList.remove('d-none');
 
     modalCita.hide();
   };

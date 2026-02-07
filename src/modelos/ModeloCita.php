@@ -10,7 +10,7 @@ use DateTime;
 class ModeloCita extends ModelBase
 {
 
-	private $id_cita, $fecha, $hora, $estado, $id_doctor, $horaSalida, $id_servicioMedico, $id_paciente;
+	private $id_cita, $fecha, $hora, $estado, $id_doctor, $horaSalida, $id_servicioMedico, $id_paciente, $nacionalidad, $cedula;
 
 
 	public function __construct($dbSystem = true)
@@ -19,13 +19,13 @@ class ModeloCita extends ModelBase
 	}
 
 
-	public function selectPaciente($objPaciente)
+	public function selectPaciente()
 	{
 		try {
 
 			$data = [
-				'nacionalidad' => $objPaciente->getNacionalidad(),
-				'cedula' => $objPaciente->getCedula(),
+				'nacionalidad' => $this->getNacionalidad(),
+				'cedula' => $this->getCedula(),
 				'estado' => 'ACT'
 			];
 
@@ -48,11 +48,11 @@ class ModeloCita extends ModelBase
 		}
 	}
 
-	public function mostrarDoctores($obj)
+	public function mostrarDoctores()
 	{
 		try {
 
-			$data = ['id_servicio' => $obj->getIdServicioMedico()];
+			$data = ['id_servicio' => $this->getIdServicioMedico()];
 
 			$sql = "SELECT p.id_personal, p.nombre AS nombre_doctor , p.apellido AS apellido_doctor FROM serviciomedico sm INNER JOIN personal_has_serviciomedico psm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN personal p ON p.id_personal = psm.personal_id_personal WHERE sm.estado = 'ACT' AND sm.id_categoria =:id_servicio";
 
@@ -64,10 +64,10 @@ class ModeloCita extends ModelBase
 	}
 
 
-	public function mostrarHorarioDoctores($obj)
+	public function mostrarHorarioDoctores()
 	{
 		try {
-			$data = ['id_doctor' => $obj->getIdDoctor()];
+			$data = ['id_doctor' => $this->getIdDoctor()];
 
 			$sql = " SELECT sm.*, hyd.*, h.diaslaborables FROM horarioydoctor hyd INNER JOIN personal d ON d.id_personal = hyd.id_personal INNER JOIN horario h ON h.id_horario = hyd.id_horario INNER JOIN personal_has_serviciomedico psm ON d.id_personal = psm.personal_id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE d.id_personal = :id_doctor GROUP by hyd.id_horarioydoctor ";
 			$this->setSQL($sql);
@@ -215,29 +215,9 @@ class ModeloCita extends ModelBase
 	}
 
 
-	public function validarCita()
-	{
-		try {
-
-			$data = [
-				'id_paciente' => $this->returnObjectModel()['modeloPaciente']->getIdPaciente(),
-				'fecha' => $this->getFecha(),
-				'hora' => $this->getHora()
-			];
-
-			$sql = "SELECT * FROM cita WHERE paciente_id_paciente = :id_paciente AND fecha=:fecha AND hora = :hora";
-			$this->setSQL($sql);
-			$listData = $this->search($data, false);
-
-			return !empty($listData) ? 1 : 0;
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
-
 	/* metodo para validar que tiempos libres tiene el doctor */
 
-	public function validarHorariosDisponlibles($obj)
+	public function validarHorariosDisponlibles()
 	{
 		try {
 
@@ -256,12 +236,12 @@ class ModeloCita extends ModelBase
 			$nombreDia  = $diasEsp[$posicion];
 			$data1 = [
 				'fecha' => $this->getFecha(),
-				'id_personal' => $obj->getIdDoctor()
+				'id_personal' => $this->getIdDoctor()
 			];
 
 			$data2 = [
 				'dia' => $nombreDia,
-				'id_personal' => $obj->getIdDoctor()
+				'id_personal' => $this->getIdDoctor()
 			];
 
 			//consulta para traer todas la horas queel doctor tiene ocupada
@@ -370,7 +350,17 @@ class ModeloCita extends ModelBase
 		return $this->estado;
 	}
 
-	
+	public function getNacionalidad()
+	{
+		return $this->nacionalidad;
+	}
+
+
+
+	public function getCedula()
+	{
+		return $this->cedula;
+	}
 
 
 
@@ -463,17 +453,21 @@ class ModeloCita extends ModelBase
 		}
 		$this->estado = $estado;
 	}
-	public function setDoctor($doctor)
+
+
+	public function setNacionalidad($nacionalidad)
 	{
-
-		if (!preg_match("/^[0-9]+$/", $doctor)) {
-			throw new \InvalidArgumentException("El ID del doctor debe ser un número entero positivo.");
+		if (!$nacionalidad == 'V' || $nacionalidad == 'E') {
+			throw new \InvalidArgumentException("La nacionalidad debe ser V o E.");
 		}
+		$this->nacionalidad = $nacionalidad;
+	}
 
-		if ((int)$doctor <= 0) {
-			throw new \InvalidArgumentException("El ID del doctor debe ser mayor que cero.");
+	public function setCedula($cedula)
+	{
+		if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
+			throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
 		}
-
-		$this->doctor = $doctor;
+		$this->cedula = $cedula;
 	}
 }

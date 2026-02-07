@@ -10,30 +10,17 @@ use App\modelos\ModeloPermisos;
 
 
 
-function returnObjectClass()
-{
-	return [
-		'paciente' => new ModeloPacientes(),
-		'bitacora' => new ModeloBitacora(),
-		'cita' => new ModeloCita(),
-		'doctor' => new ModeloDoctores(),
-		'servicio' => new ModeloServicios()
-	];
-}
-
-
 
 
 function mostrarDataPaciente($datos)
 {
 	try {
-		$paciente = returnObjectClass()['paciente'];
-		$cita = returnObjectClass()['cita'];
+		$cita = new ModeloCita();
 
-		$paciente->setNacionalidad($datos[0]);
-		$paciente->setCedula($datos[1]);
+		$cita->setNacionalidad($datos[0]);
+		$cita->setCedula($datos[1]);
 
-		echo json_encode($cita->selectPaciente($paciente));
+		echo json_encode($cita->selectPaciente());
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -50,7 +37,8 @@ function citas($parametro)
 
 function citasAjax()
 {
-	echo json_encode(returnObjectClass()['cita']->mostrarCita());
+	$cita = new ModeloCita();
+	echo json_encode($cita->mostrarCita());
 }
 
 function citasHoy($parametro)
@@ -63,16 +51,22 @@ function citasHoy($parametro)
 
 function citasHoyAjax()
 {
-	echo json_encode(returnObjectClass()['cita']->mostrarCitaHoy());
+	$cita = new ModeloCita();
+
+	echo json_encode($cita->mostrarCitaHoy());
 }
 function citasP($parametro)
 {
-	echo json_encode(returnObjectClass()['cita']->mostrarCita());
+	$cita = new ModeloCita();
+
+	echo json_encode($cita->mostrarCita());
 }
 
 function mostrarServiciosMedicosAjax()
 {
-	echo json_encode(returnObjectClass()['cita']->mostrarServicioDoctor());
+	$cita = new ModeloCita();
+
+	echo json_encode($cita->mostrarServicioDoctor());
 }
 
 function validarHorariosDisponlibles($datos)
@@ -84,13 +78,12 @@ function validarHorariosDisponlibles($datos)
 	}
 
 	try {
-		$cita = returnObjectClass()['cita'];
-		$doctor = returnObjectClass()['doctor'];
+		$cita = new ModeloCita();
 
-		$doctor->setIdDoctor($datos[1]);
+		$cita->setIdDoctor($datos[1]);
 		$cita->setFecha($datos[0]);
 
-		echo  json_encode($cita->validarHorariosDisponlibles($doctor));
+		echo  json_encode($cita->validarHorariosDisponlibles());
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -143,7 +136,6 @@ function guardarCita()
 			echo json_encode(['ok' => false, 'error' => $insercion]);
 			exit;
 		}
-
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -159,8 +151,9 @@ function eliminarCita($datos)
 		exit;
 	}
 	try {
-		$cita = returnObjectClass()['cita'];
-		$bitacora = returnObjectClass()['bitacora'];
+		$cita = new ModeloCita();
+
+		$bitacora = new ModeloBitacora();
 
 		$cita->setIdCita($datos[0]);
 
@@ -186,7 +179,9 @@ function eliminarCita($datos)
 }
 function citasHoyP()
 {
-	echo json_encode(returnObjectClass()['cita']->mostrarCitaHoy());
+	$cita = new ModeloCita();
+
+	echo json_encode($cita->mostrarCitaHoy());
 }
 
 function citasRealizadas($parametro)
@@ -198,21 +193,23 @@ function citasRealizadas($parametro)
 
 function citasRealizadasAjax()
 {
-	echo json_encode(returnObjectClass()['cita']->mostrarCitaR());
+	$cita = new ModeloCita();
+
+	echo json_encode($cita->mostrarCitaR());
 }
 
 function mostrarDoctoresCita($datos)
 {
-	$servicio = returnObjectClass()['servicio'];
-	$servicio->setIdServicioMedico($datos[0]);
-	echo json_encode(returnObjectClass()['cita']->mostrarDoctores($servicio));
+	$cita = new ModeloCita();
+	$cita->setIdServicioMedico($datos[0]);
+	echo json_encode($cita->mostrarDoctores());
 }
 
 function mostrarHorario($datos)
 {
-	$doctor = returnObjectClass()['doctor'];
-	$doctor->setIdDoctor($datos[0]);
-	echo json_encode(returnObjectClass()['cita']->mostrarHorarioDoctores($doctor));
+	$cita = new ModeloCita();
+	$cita->setIdDoctor($datos[0]);
+	echo json_encode($cita->mostrarHorarioDoctores());
 	// echo json_encode(['dffdf']);
 }
 function editarCita()
