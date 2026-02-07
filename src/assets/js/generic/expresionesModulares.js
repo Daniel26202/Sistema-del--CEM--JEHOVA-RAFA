@@ -15,7 +15,7 @@ const expresiones = {
     correo: { expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, mensajeError: "" },
     password: { expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, mensajeError: "" },
     cedula: {
-        expresion: /^([1-9]{1})([0-9]{7,8})$/,
+        expresion: /^([1-9]{1})([0-9]{6,7})$/,
         mensajeError: "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
     },
     telefono: {
