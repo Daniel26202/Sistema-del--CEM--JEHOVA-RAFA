@@ -12,8 +12,17 @@ addEventListener("DOMContentLoaded", function () {
   console.log("Citas....");
 
   const url = "/Sistema-del--CEM--JEHOVA-RAFA/Citas";
+
+  const modalCita = new bootstrap.Modal(
+    document.getElementById("exampleModalCita"),
+  );
+  const modalPaciente = new bootstrap.Modal(
+    document.getElementById("exampleModalagregarPaciente"),
+  );
+
   const modalAgregarCita = document.getElementById("modalAgregarCita");
   const cedulaCita = document.getElementById("cedulaCita");
+  const cedulaPaciente = document.getElementById("cedulaPaciente");
   const nacionalidadCita = document.getElementById("nacionalidadCita");
   const inputPaciente = document.getElementById("inputPaciente");
   const inputTelefono = document.getElementById("inputTelefono");
@@ -36,8 +45,12 @@ addEventListener("DOMContentLoaded", function () {
   const inputFechaCita = document.getElementById("fecha");
   const modalFooter = document.getElementById("modal-footer");
   const modalTitle = document.getElementById("modalTitleCita");
-  const btnModal =  modalFooter.children[1];
+  const btnModal = modalFooter.children[1];
   const btnAgendarCita = document.getElementById("btnAgendarCita");
+
+  const modalAgregarPaciente = document.getElementById("modalAgregar");
+  const divBtnAddPat = document.getElementById("div-btn-add-pat");
+  const btnOpenModalPac = document.getElementById("btnOpenModalPac");
 
   let nombreDoctorSelect = "";
   let diasLaborablesDoctor = [];
@@ -53,22 +66,24 @@ addEventListener("DOMContentLoaded", function () {
           "GET",
         );
 
-        if (result) {
+        console.log(result, `${nacionalidadCita.value}/${cedulaCita.value}`);
+        if (result != []) {
           inputPaciente.value = result.nombre + " " + result.apellido;
           inputTelefono.value = result.telefono;
           inputIdPaciente.value = result.id_paciente;
           [addClass, removeClass] = ["valido", "invalido"];
           divDataPaciente.classList.remove("d-none");
+
+          divBtnAddPat.classList.add("d-none");
         } else {
           inputPaciente.value = "Paciente no encontrado";
           inputTelefono.value = "Telefono no encontrado";
           inputIdPaciente.value = 0;
           [addClass, removeClass] = ["invalido", "valido"];
           divDataPaciente.classList.add("d-none");
-          alertError(
-            "Dixon",
-            "recuerda colocar un boton para que abra un modal",
-          );
+
+          //hacer que aparesca la caja que contine el boton para abrir el modal de agregar paciente
+          divBtnAddPat.classList.remove("d-none");
         }
       } else {
         divDataPaciente.classList.add("d-none");
@@ -234,19 +249,21 @@ addEventListener("DOMContentLoaded", function () {
         const horasLibres = [
           ...horasLibres1,
           ...horasLibres2,
-          ...listHoraRegistrada,
         ];
+        if (listHoraRegistrada != []) {
+          horasLibres.push(...listHoraRegistrada)
+        } 
 
         console.log(horasLibres);
 
-        if (listHoraRegistrada.length == 0) {
+        if (listHoraRegistrada.length == 0 &&  listHoraRegistrada[0] != undefined) {
           horasLibres.push(listHoraRegistrada[0]);
         }
         console.log(horasLibres);
 
         horasLibres.forEach((res, index) => {
           html += `
-          <div class="contenido card cards-horario" data-index=${index} selection=false style="border: 1px solid #387adf; max-width: 160px; padding:5px; cursor:pointer">
+          <div class="contenido card cards-horario" data-index=${index} selection=false >
             <input type='hidden' class="valorHorasEntrada" >
             <h5 style="font-size: 15;" class="text-center">${res}</h5>
           </div>`;
@@ -310,7 +327,7 @@ addEventListener("DOMContentLoaded", function () {
     modalTitle.innerText = "Modificar Cita";
     btnModal.innerText = "Modificar";
 
-    inputIdCita.value = btn.getAttribute('data-index');
+    inputIdCita.value = btn.getAttribute("data-index");
     cedulaCita.value = btn.closest("tr").children[0].innerText.slice(2);
     await traerPacienteCita();
 
@@ -366,7 +383,29 @@ addEventListener("DOMContentLoaded", function () {
         }
       });
     }, 500);
-  };;
+  };
+
+  const resetForm = (form) => {
+    form.reset();
+
+    divDataPaciente.classList.add("d-none");
+    inputPaciente.value = "";
+    inputTelefono.value = "";
+
+    //quitar clase a los inputs
+    document.querySelectorAll(".input-validar").forEach((input) => {
+      input.parentElement.classList.remove("valido");
+      input.parentElement.classList.remove("invalido");
+
+      let span = input.nextElementSibling;
+
+      span.children[0].classList.add("d-none");
+      span.children[1].classList.add("d-none");
+    });
+
+    modalCita.hide();
+  };
+
   //read
   const readCita = async () => {
     try {
@@ -487,7 +526,10 @@ addEventListener("DOMContentLoaded", function () {
       console.log(result);
       if (result.ok) {
         alertSuccess(result.message);
-        // form.reset();
+
+        //funvcion para resetaer el formulario
+        resetForm(form);
+
         readCita();
       } else throw new Error(`${result.error}`);
     } catch (error) {
@@ -521,7 +563,12 @@ addEventListener("DOMContentLoaded", function () {
       console.log(result);
       if (result.ok) {
         alertSuccess(result.message);
+
+        //funvcion para resetaer el formulario
+        resetForm(form);
+
         readCita();
+
         console.log(result.error);
       } else throw new Error(`${result.error}`);
     } catch (error) {
@@ -530,11 +577,50 @@ addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  //create paciente
+  //create
+  const createPatients = async (form, inputs) => {
+    try {
+      const data = new FormData(form);
+      let result = await executePetition(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar",
+        "POST",
+        data,
+      );
+      console.log(result);
+      if (result.ok) {
+        alertSuccess(result.message);
+        cedulaCita.value = cedulaPaciente.value;
+        cedulaCita.dispatchEvent(new Event("keyup", { bubbles: true }));
+
+        form.reset();
+        inputs = [];
+        inputs.forEach((input) =>
+          input.parentElement.classList.remove("valido"),
+        );
+        readCita();
+        modalCita.show();
+        modalPaciente.hide();
+
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      alertError("Error", error);
+    }
+  };
+
+ 
+
   readCita();
 
   cedulaCita.addEventListener("keyup", function () {
     cedulaCita.length;
     traerPacienteCita();
+  });
+
+  //evento para abrir el modal  del paciente
+  btnOpenModalPac.addEventListener("click", function () {
+    cedulaPaciente.value = cedulaCita.value;
+    cedulaPaciente.dispatchEvent(new Event("keyup", { bubbles: true }));
   });
 
   selectServicios.addEventListener("change", function () {
@@ -545,11 +631,11 @@ addEventListener("DOMContentLoaded", function () {
     validarFechaCita(this);
   });
 
-  btnAgendarCita.addEventListener('click',function(){
-    modalAgregarCita.classList.remove('editar');
+  btnAgendarCita.addEventListener("click", function () {
+    modalAgregarCita.classList.remove("editar");
 
-    modalTitle.innerText = "Agendar Cita"
-    btnModal.innerText="Registrar";
+    modalTitle.innerText = "Agendar Cita";
+    btnModal.innerText = "Registrar";
 
     inputFechaCita.parentElement.classList.remove("valido");
     cedulaCita.parentElement.classList.remove("valido");
@@ -565,19 +651,45 @@ addEventListener("DOMContentLoaded", function () {
 
   let verificarFormulario = inicializarValidacionFormulario(modalAgregarCita);
 
+  //enviar formulario de cita
   modalAgregarCita.addEventListener("submit", function (e) {
     e.preventDefault();
 
     let inputs = this.querySelectorAll(".input-validar");
 
     if (inputs.length == 2) {
-      console.log(modalAgregarCita)
+      console.log(modalAgregarCita);
       if (modalAgregarCita.classList.contains("editar")) {
         console.log("editar");
         updateCitas(this);
       } else {
         createCita(this);
       }
+    } else {
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
+    }
+  });
+
+  let verificarFormularioPaciente =
+    inicializarValidacionFormulario(modalAgregarPaciente);
+
+  //enviar firmulario de paciente
+  modalAgregarPaciente.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let inputsBuenos = [];
+    this.querySelectorAll(".input-validar").forEach((input) => {
+      if (input.parentElement.classList.contains("valido"))
+        inputsBuenos.push(true);
+    });
+
+    let esValido = verificarFormularioPaciente();
+
+    if (esValido) {
+      createPatients(this, inputsBuenos);
     } else {
       alertError(
         "Error",

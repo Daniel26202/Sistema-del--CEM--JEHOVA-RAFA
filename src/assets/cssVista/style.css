@@ -592,6 +592,14 @@ html {
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
 
+.cards-horario{
+    margin-bottom: 25px !important;
+    border: 1px solid #387adf;
+    width: 160px;
+    padding: 5px;
+    cursor: pointer
+}
+
 .lista-menu-pacientes {
     background: none;
     border: none;

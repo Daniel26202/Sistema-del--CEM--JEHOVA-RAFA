@@ -53,8 +53,6 @@
 </div>
 
 
-<?php //require_once 'modalPaciente.php'; 
-?>
 <?php require_once 'modalAgregarPaciente.php';
 ?>
 

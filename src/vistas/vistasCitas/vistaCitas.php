@@ -65,7 +65,7 @@
             <div class="mb-2 mb-md-0 caja-btn-margin">
                 <!-- no hay -->
 
-                <button class="caja-btn-margin btn btn-modals" style="width: 100% !important" data-bs-toggle="modal" data-bs-target="#exampleModalCita"  btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8 <?= $vistaActiva == "realizadas" ? "d-none" : ""; ?>" uk-toggle="target: #modal-examplecita" id="btnAgendarCita">
+                <button class="caja-btn-margin btn btn-modals" style="width: 100% !important" data-bs-toggle="modal" data-bs-target="#exampleModalCita" btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8 <?= $vistaActiva == "realizadas" ? "d-none" : ""; ?>" uk-toggle="target: #modal-examplecita" id="btnAgendarCita">
                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                         class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                         <path fill-rule="evenodd"
@@ -101,6 +101,7 @@
         </div>
     </div>
 </div>
+
 
 <?php require_once 'modalesCitas-Control.php'; ?>
 <script type="module" src="<?= $urlBase ?>../src/assets/js/ajax/citas.js"></script>
