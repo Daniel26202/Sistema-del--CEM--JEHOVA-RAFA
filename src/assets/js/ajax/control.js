@@ -217,6 +217,7 @@ function inputsKeyupEditar(arrayControl) {
 //function for add Patients in table
 const readPatients = async () => {
   try {
+    alertSuccess()
     let result = await executePetition(url + "/listPacientesJS", "GET");
     let html = "";
     result.forEach((element) => {
@@ -476,7 +477,7 @@ const showDataPatient = async (idControl, data) => {
   divPatologias.innerHTML = htmlPatologias;
 };
 
-readPatients();
+ readPatients();
 
 cedulaControl.addEventListener("keyup", function () {
   dataPatientModal(this.value);
