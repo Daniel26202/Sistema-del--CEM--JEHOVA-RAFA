@@ -12,7 +12,8 @@ function bitacoraUsuario($parametro)
 	$modeloInicio = new ModeloInicio(true);
 	$modeloBitacora = new ModeloBitacora(false);
 
-	$cargo = $modeloInicio->comprobarCargo($_SESSION['id_personal']);
+	$modeloInicio->setIdPersonal($_SESSION['id_personal']);
+	$cargo = $modeloInicio->comprobarCargo();
 	require_once __DIR__ . "/../../src/vistas/vistaBitacora/bitacora.php";
 }
 
@@ -23,7 +24,8 @@ function bitacora($parametro)
 	$modeloInicio = new ModeloInicio(true);
 	$modeloBitacora = new ModeloBitacora(false);
 
-	$cargo = $modeloInicio->comprobarCargo($_SESSION['id_personal']);
+	$modeloInicio->setIdPersonal($_SESSION['id_personal']);
+	$cargo = $modeloInicio->comprobarCargo();
 	require_once __DIR__ . "/../../src/vistas/vistaBitacora/bitacora.php";
 }
 

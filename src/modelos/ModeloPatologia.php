@@ -8,9 +8,9 @@ use App\config\Validations;
 class ModeloPatologia extends ModelBase
 {
 
-    private $idPatologia, $nombrePatologia;
+    private $idPatologia, $nombrePatologia, $cedulaPac;
 
-    public function __construct($dbSystem)
+    public function __construct($dbSystem = true)
     {
         parent::__construct($dbSystem);
     }
@@ -150,6 +150,22 @@ class ModeloPatologia extends ModelBase
         }
     }
 
+    public function buscarPatologiaPaciente()
+    {
+        try {
+            $sql = "SELECT * FROM patologia pat INNER JOIN patologiadepaciente pdp ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pac.id_paciente = pdp.id_paciente WHERE pac.cedula =:cedula";
+            $this->setSQL($sql);
+            return $this->search(['cedula' => $this->getCedulaPac()]);
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
+
+    public function getCedulaPac()
+    {
+        return $this->cedulaPac;
+    }
+
     public function getNombrePatologia()
     {
         return $this->nombrePatologia;
@@ -158,6 +174,15 @@ class ModeloPatologia extends ModelBase
     public function getIdPatologia()
     {
         return $this->idPatologia;
+    }
+
+
+    public function setCedulaPac($cedulaPac)
+    {
+        if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedulaPac)) {
+            throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
+        }
+        $this->cedulaPac = $cedulaPac;
     }
 
     public function setNombrePatologia($nombrePatologia)
@@ -169,7 +194,7 @@ class ModeloPatologia extends ModelBase
         $this->nombrePatologia  = $nombrePatologia;
     }
 
-    
+
     public function setIdPatologia($idPatologia)
     {
         $this->idPatologia  = $idPatologia;

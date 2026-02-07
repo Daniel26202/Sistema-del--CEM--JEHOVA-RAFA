@@ -8,15 +8,16 @@ use App\modelos\ModeloDoctores;
 
 class ModeloInicio extends ModelBase
 {
+	private $idPersonal;
 
-	public function __construct($dbSystem =true)
+	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
 	}
 
 	public function retrunObjectModel()
 	{
-		return ["modeloDoctores"=>new ModeloDoctores];
+		return ["modeloDoctores" => new ModeloDoctores];
 	}
 
 	public function pacientes_hospitalizados()
@@ -89,11 +90,11 @@ class ModeloInicio extends ModelBase
 		}
 	}
 
-		public function sintomas_comunes($data = [])
-		{
-			try {
-				if ($data == []) {
-					$sql = "SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
+	public function sintomas_comunes($data = [])
+	{
+		try {
+			if ($data == []) {
+				$sql = "SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
 												FROM sintomas_control sc
 												INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
 												GROUP BY s.nombre
@@ -101,8 +102,8 @@ class ModeloInicio extends ModelBase
 													";
 				$this->setSQL($sql);
 				return $this->read();
-				} else {
-					$sql = "SELECT c.fecha_control, s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
+			} else {
+				$sql = "SELECT c.fecha_control, s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
 												FROM sintomas_control sc
 												INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control WHERE c.fecha_control BETWEEN :fechaInicio AND :fechaFinal
 												GROUP BY s.nombre
@@ -111,13 +112,13 @@ class ModeloInicio extends ModelBase
 
 				$this->setSQL($sql);
 				return $this->search($data);
-				}
+			}
 
-				return ($consulta->execute()) ? $consulta->fetchAll() : false;
-			} catch (\Exception $e) {
+			return ($consulta->execute()) ? $consulta->fetchAll() : false;
+		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
-		}
+	}
 
 	public function todos_los_sintomas()
 	{
@@ -131,11 +132,11 @@ class ModeloInicio extends ModelBase
 	}
 
 
-		public function obtenerDiasConMasCitas($data)
-		{
-			try {
-				if ($data == '') {
-					$sql = "SELECT 
+	public function obtenerDiasConMasCitas($data)
+	{
+		try {
+			if ($data == '') {
+				$sql = "SELECT 
 								c.fecha,
 								COUNT(c.id_cita) AS total_citas,
 								GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) SEPARATOR ', ') AS personal,
@@ -147,11 +148,11 @@ class ModeloInicio extends ModelBase
 							GROUP BY c.fecha
 							ORDER BY total_citas DESC
 							LIMIT 10";
-					$this->setSQL($sql);
-					return $this->read();
-				} else {
-					$data=['id_personal'=>$this->retrunObjectModel()['modeloDoctores']->getIdDoctor()];
-					$sql = "SELECT 
+				$this->setSQL($sql);
+				return $this->read();
+			} else {
+				$data = ['id_personal' => $this->retrunObjectModel()['modeloDoctores']->getIdDoctor()];
+				$sql = "SELECT 
 								c.fecha,
 								e.nombre AS especialidad,
 								COUNT(c.id_cita) AS total_citas,
@@ -165,24 +166,24 @@ class ModeloInicio extends ModelBase
 							WHERE p.id_personal = :id_personal
 							GROUP BY c.fecha
 							ORDER BY total_citas DESC";
-					$this->setSQL($sql);
-					return $this->search($data);
-				}
-			} catch (\Exception $e) {
-				return $e->getMessage();
+				$this->setSQL($sql);
+				return $this->search($data);
 			}
+		} catch (\Exception $e) {
+			return $e->getMessage();
 		}
+	}
 
 
 	// 	//Metodo para validar si un usuario es doctor o no
 
-	public function comprobarCargo($data)
+	public function comprobarCargo()
 	{
 		try {
 			$sql = "SELECT * FROM personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.id_personal =:id_personal AND p.id_especialidad IS NOT null";
 
 			$this->setSQL($sql);
-			$listData = $this->search($data, true); 
+			$listData = $this->search(['id_personal'=>$this->getIdPersonal()], true);
 
 			return !empty($listData) ? 1 : 0;
 		} catch (\Exception $e) {
@@ -201,5 +202,21 @@ class ModeloInicio extends ModelBase
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+	public function setIdPersonal($idPersonal)
+	{
+
+		if (!preg_match('/^[0-9]+$/', $idPersonal)) {
+			throw new \InvalidArgumentException('El ID no es válido.');
+		}
+		if ((int)$idPersonal <= 0) {
+			throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+		}
+		$this->idPersonal = $idPersonal;
+	}
+	public function getIdPersonal()
+	{
+		return $this->idPersonal;
 	}
 }

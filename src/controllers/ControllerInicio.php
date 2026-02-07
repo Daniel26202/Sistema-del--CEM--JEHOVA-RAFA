@@ -39,7 +39,8 @@ function inicio($parametro)
     }
 
 
-    $validarCargo = $modeloInicio->comprobarCargo(['id_personal'=>$_SESSION["id_personal"]]);
+    $validarCargo = $modeloInicio->setIdPersonal($_SESSION["id_personal"]);
+    $validarCargo = $modeloInicio->comprobarCargo();
     $datos_de_personal =  $modeloInicio->datos_doctor(['id_usuario'=>$_SESSION["id_usuario"]]);
 
     $ayuda = "btnayudaInicio";

@@ -19,8 +19,16 @@ class ModeloControl extends ModelBase
 	{
 		return [
 			'modeloPacientes'=>new ModeloPacientes(),
-			'modeloUsuarios'=> new ModeloUsuarios()
+			'modeloUsuarios'=> new ModeloUsuarios(),
 			];
+	}
+
+	public function buscarPacientes()
+	{
+		// me traigo todos los datos de los paciente, que tengan control medico, y los agrupo por cédula (con GROUP BY) para que no salgan varias veces 
+		$sql = "SELECT p.* FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula LIKE :cedula AND co.estado = 'ACT' GROUP BY p.cedula";
+		$this->setSQL($sql);
+		return  $this->search(['cedula' => '%'. $this->returnObjectModel()['modeloPacientes']->getCedula().'%']);
 	}
 
 	public function consultarPacientes()
@@ -30,7 +38,6 @@ class ModeloControl extends ModelBase
 		$this->setSQL($sql);
 		return  $this->read();
 	}
-
 
 
 	// función para el administrador (en lo de las sesiones);
