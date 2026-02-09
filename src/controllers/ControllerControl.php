@@ -11,14 +11,9 @@ use App\modelos\ModeloUsuarios;
 
 function control($parametro)
 {
-	$modeloSintomas = new ModeloSintomas();
-	$modeloPatologia = new ModeloPatologia();
-	$modeloControl = new ModeloControl();
 	$modeloInicio = new ModeloInicio();
 
-	$datosS = $modeloSintomas->selects();
-	$datosD = $modeloControl->mostrarDoctor();
-	$datosPatologias = $modeloPatologia->mostrarPatologias();
+
 	$ayuda = "btnayudaControl";
 
 	if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -30,6 +25,24 @@ function control($parametro)
 	$validacionCargo = $modeloInicio->comprobarCargo();
 
 	require_once __DIR__ . "/../../src/vistas/vistaControl/vistaControl.php";
+}
+
+function returnSistomasPaciente()
+{
+	$modeloSintomas = new ModeloSintomas();
+	echo json_encode($modeloSintomas->selects());
+}
+
+function returnPatologiasPaciente()
+{
+	$modeloPatologia = new ModeloPatologia();
+	echo json_encode($modeloPatologia->mostrarPatologias());
+}
+
+function returnDoctores()
+{
+	$modeloControl = new ModeloControl();
+	echo json_encode($modeloControl->mostrarDoctor());
 }
 
 function listPacientesJS()
@@ -257,7 +270,7 @@ function agregarSintoma()
 
 function permisos($id_rol, $permiso, $modulo)
 {
-	$modeloPermisos= new ModeloPermisos();
+	$modeloPermisos = new ModeloPermisos();
 	$modeloPermisos->setIdRol($id_rol);
 	$modeloPermisos->setPermiso($permiso);
 	$modeloPermisos->setModulo($modulo);
