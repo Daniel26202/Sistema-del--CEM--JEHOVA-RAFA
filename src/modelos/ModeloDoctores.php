@@ -378,7 +378,7 @@ class ModeloDoctores extends ModelBase
         }
     }
 
-    public function Especialidadregistrar()
+    public function EspecialidadRegistrar()
     {
         try {
             $data = [
@@ -394,11 +394,11 @@ class ModeloDoctores extends ModelBase
             return $e->getMessage();
         }
     }
-    public function Especialidadeliminar()
+    public function EspecialidadEliminar()
     {
         try {
             $data = [
-                'id_especialidad' => $this->getNombreEspecialidad()
+                'id_especialidad' => $this->getIdEspecialidad()
             ];
 
             $sql = "SELECT * from especialidad where id_especialidad=:id_especialidad";

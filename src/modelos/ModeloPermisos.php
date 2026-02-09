@@ -1,31 +1,35 @@
-<?php  
+<?php
+
 namespace App\modelos;
+
 use App\modelos\ModelBase;
 
-class ModeloPermisos extends ModelBase{
-	
-	private $id_rol, $permiso, $modulo, $permisos, $modulos;
+class ModeloPermisos extends ModelBase
+{
 
-    public function __construct($dbSystem=false)
+    private $id_rol, $permiso, $modulo, $permisos, $modulos;
+
+    public function __construct($dbSystem = false)
     {
-       parent::__construct($dbSystem);
+        parent::__construct($dbSystem);
     }
 
 
     public function gestionarPermisos()
     {
-        $data=[
-            'id_rol'=>$this->getIdRol(),
-            'modulo'=>$this->getModulo(),
-            'permiso'=>$this->getPermiso()
+        $data = [
+            'id_rol' => $this->getIdRol(),
+            'modulo' => $this->getModulo(),
+            'permiso' => $this->getPermiso()
         ];
-        $sql= "SELECT * FROM permisos WHERE id_rol =:id_rol AND modulo =:modulo AND permisos LIKE :permiso limit 1";
+        $sql = "SELECT * FROM permisos WHERE id_rol =:id_rol AND modulo =:modulo AND permisos LIKE :permiso limit 1";
         $this->setSQL($sql);
         $listData = $this->search($data, false);
         return !empty($listData) ? 1 : 0;
     }
 
-    public function getIdRol(){
+    public function getIdRol()
+    {
 
         return $this->id_rol;
     }
@@ -72,7 +76,7 @@ class ModeloPermisos extends ModelBase{
             throw new \InvalidArgumentException("El permiso no es valido.");
         }
 
-        $this->permiso=$permiso;
+        $this->permiso = $permiso;
     }
 
     public function setPermisos($permisos)
@@ -92,6 +96,4 @@ class ModeloPermisos extends ModelBase{
 
         $this->modulos = $modulos;
     }
-
-
 }
