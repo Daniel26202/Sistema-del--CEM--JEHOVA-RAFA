@@ -43,11 +43,10 @@ function listPacientesJS()
 function mostrarBusquedaPacientesJS($datos)
 {
 	$modeloControl = new ModeloControl();
-	$modeloPacientes = new ModeloPacientes();
+	$modeloControl->setCedula($datos[0]);
+	$modeloControl->setNacionalidad($datos[1]);
 
-	$cedula = $datos[0];
 
-	$modeloPacientes->setCedula($cedula);
 	$respuesta = $modeloControl->buscarPacientes();
 	echo json_encode($respuesta);
 }
@@ -79,7 +78,7 @@ function mostrarControlPacientesJS($datos)
 
 	// cero es administrador mas no doctor 
 	if ($validacionCargo == 0) {
-		$modeloPacientes->setCedula($cedula);
+		$modeloControl->setCedula($cedula);
 		$respuestaP = $modeloControl->mostrarControlPacienteA();
 
 		// este array tiene tres valores de tres funciones en el modelo
@@ -89,7 +88,7 @@ function mostrarControlPacientesJS($datos)
 	} else if ($validacionCargo == 1) {
 		// devuelve solo los datos del paciente atendido por el mismo doctor que inicio sesión(Usuario)
 		$modeloUsuarios->setIdUsuario($idUsuario);
-		$modeloPacientes->setCedula($cedula);
+		$modeloControl->setCedula($cedula);
 		$respuesta = $modeloControl->mostrarControlPacienteU();
 
 		// este array tiene tres valores de tres funciones en el modelo
@@ -101,10 +100,9 @@ function mostrarControlPacientesJS($datos)
 function mostrarPacienteJS($datos)
 {
 	$modeloControl = new ModeloControl();
-	$modeloPacientes = new ModeloPacientes();
 
-	$cedula = $datos[0];
-	$modeloPacientes->setCedula($cedula);
+	$modeloControl->setNacionalidad($datos[0]);
+	$modeloControl->setCedula($datos[1]);
 	// me traigo los datos de los pacientes
 	$respuesta = $modeloControl->mostrarPaciente();
 

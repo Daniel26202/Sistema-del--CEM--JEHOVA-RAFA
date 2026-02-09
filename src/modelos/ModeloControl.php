@@ -8,9 +8,9 @@ use App\modelos\ModeloPacientes;
 
 class ModeloControl extends ModelBase
 {
-	private $historial, $id_control, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $severidad;
+	private $historial, $id_control, $diagnostico, $sintomas, $indicaciones, $fechaRegreso, $patologias, $nota, $severidad, $cedula, $nacionalidad;
 
-	public function __construct($dbSystem= true)
+	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
 	}
@@ -18,9 +18,9 @@ class ModeloControl extends ModelBase
 	private function returnObjectModel()
 	{
 		return [
-			'modeloPacientes'=>new ModeloPacientes(),
-			'modeloUsuarios'=> new ModeloUsuarios(),
-			];
+			'modeloPacientes' => new ModeloPacientes(),
+			'modeloUsuarios' => new ModeloUsuarios(),
+		];
 	}
 
 	public function buscarPacientes()
@@ -28,7 +28,7 @@ class ModeloControl extends ModelBase
 		// me traigo todos los datos de los paciente, que tengan control medico, y los agrupo por cédula (con GROUP BY) para que no salgan varias veces 
 		$sql = "SELECT p.* FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula LIKE :cedula AND co.estado = 'ACT' GROUP BY p.cedula";
 		$this->setSQL($sql);
-		return  $this->search(['cedula' => '%'. $this->returnObjectModel()['modeloPacientes']->getCedula().'%']);
+		return  $this->search(['cedula' => '%' . $this->returnObjectModel()['modeloPacientes']->getCedula() . '%']);
 	}
 
 	public function consultarPacientes()
@@ -45,7 +45,7 @@ class ModeloControl extends ModelBase
 	public function mostrarControlPacienteA()
 	{
 		$data = [
-			'cedula' => $this->returnObjectModel()['modeloPacientes']->getCedula(),
+			'cedula' => $this->getCedula(),
 			'estado' => 'ACT'
 		];
 		$sql = "SELECT co.*,p.* FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula = :cedula AND co.estado =:estado";
@@ -71,13 +71,13 @@ class ModeloControl extends ModelBase
 	public function mostrarPaciente()
 	{
 		$data = [
-			'cedula' => $this->returnObjectModel()['modeloPacientes']->getCedula(),
+			'cedula' => $this->getCedula(),
 			'estado' => 'ACT',
 		];
 
 		$sql = "SELECT * FROM paciente WHERE estado =:estado AND cedula = :cedula";
 		$this->setSQL($sql);
-		return  $this->search($data);
+		return  $this->search($data,false);
 	}
 
 
@@ -119,17 +119,17 @@ class ModeloControl extends ModelBase
 				}
 			}
 
-			$data=[
-				'idPaciente'=>$this->returnObjectModel()['modeloPacientes']->getIdPaciente(),
+			$data = [
+				'idPaciente' => $this->returnObjectModel()['modeloPacientes']->getIdPaciente(),
 				'idUsuario' => $this->returnObjectModel()['modeloUsuarios']->getIdUsuario(),
 				'diagnostico' => $this->getDiagnostico(),
 				'indicaciones' => $this->getIndicaciones(),
 				'fecha_control' => $fechaHoy,
-				'fechaRegreso'=>$this->getFechaDeRegreso(),
+				'fechaRegreso' => $this->getFechaDeRegreso(),
 				'nota' => $this->getNota(),
 				'historial' => $this->getHistorial(),
 				'estado' => 'ACT',
-				'severidad'=>$this->getSeveridad()
+				'severidad' => $this->getSeveridad()
 			];
 
 			$sql = "INSERT INTO control(id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado, severidad) VALUES (:idPaciente, :idUsuario, :diagnostico, :indicaciones, :fecha_control, :fechaRegreso, :nota, :historial, :estado, :severidad)";
@@ -139,9 +139,9 @@ class ModeloControl extends ModelBase
 
 			// agrega el síntoma 
 			foreach ($this->getSintomas() as $sintoma) {
-				$data=[
-					'sintoma'=>$sintoma,
-					'idControl'=> $idControl
+				$data = [
+					'sintoma' => $sintoma,
+					'idControl' => $idControl
 				];
 				$sql = "INSERT INTO sintomas_control(id_sintomas, id_control) VALUES (:sintoma,:idControl)";
 				$this->setSQL($sql);
@@ -195,7 +195,7 @@ class ModeloControl extends ModelBase
 	// mostrar síntomas del control del paciente
 	public function mostrarSintomasPaId()
 	{
-		$data=['idControl'=>$this->getIdControl()];
+		$data = ['idControl' => $this->getIdControl()];
 		$sql = "SELECT s.id_sintomas, s.nombre AS nombreS, c.id_control FROM sintomas s INNER JOIN sintomas_control sc ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON sc.id_control = c.id_control INNER JOIN paciente p ON c.id_paciente = p.id_paciente WHERE c.id_control = :idControl";
 		$this->setSQL($sql);
 		return $this->search($data);
@@ -266,6 +266,17 @@ class ModeloControl extends ModelBase
 	{
 		return $this->severidad;
 	}
+
+	public function getCedula()
+	{
+		return $this->cedula;
+	}
+
+	public function getNacionalidad()
+	{
+		return $this->nacionalidad;
+	}
+
 
 	public function setIdControl($id_control)
 	{
@@ -351,5 +362,22 @@ class ModeloControl extends ModelBase
 	public function setSeveridad($severidad)
 	{
 		$this->severidad = $severidad;
+	}
+
+
+	public function setCedula($cedula)
+	{
+		if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
+			throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
+		}
+		$this->cedula = $cedula;
+	}
+
+	public function setNacionalidad($nacionalidad)
+	{
+		if (!$nacionalidad == 'V' || $nacionalidad == 'E') {
+			throw new \InvalidArgumentException("La nacionalidad debe ser V o E.");
+		}
+		$this->nacionalidad = $nacionalidad;
 	}
 }

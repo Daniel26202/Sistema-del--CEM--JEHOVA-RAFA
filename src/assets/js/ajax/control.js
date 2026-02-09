@@ -1,4 +1,9 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./../assets/ajax/funtionExecutePetition.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+} from "../generic/funtionGeneric.js";
 
 const tbodyControl = document.getElementById("tbody-control");
 const tbodyPatients = document.getElementById("tbody-pacientes");
