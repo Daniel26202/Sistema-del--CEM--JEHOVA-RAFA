@@ -34,8 +34,10 @@ const showDataPatientEdit = document.querySelectorAll(".showDataPatientEdit");
 const id_usuario_bitacora = document.getElementById(
   "id_usuario_bitacora",
 ).value; // constante que guarda el id que inicio session de esa manera podemos realizar la bitacora;
-const divSintomas = document.querySelector(".divSintomas");
-const divPatologias = document.querySelector(".divPatologias");
+const divSintomas = document.getElementById("divSintomas");
+const divPatologias = document.getElementById("divPatologias");
+const divDoctores = document.getElementById("divDoctores");
+
 const inputsExpresiones = document.querySelectorAll(
   "#modalAgregarControl .inputExpresiones",
 );
@@ -52,25 +54,32 @@ const traerPaciente = async () => {
         `/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacienteJS/${nacionalidadCita.value}/${cedulaControl.value}`,
         "GET",
       );
-      
+
       let edad = "";
-       if (result.fn) {
+      if (result.fn) {
         const fechaNacimiento = new Date(result.fn);
         const fechaActual = new Date();
         edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
         const mes = fechaActual.getMonth() - fechaNacimiento.getMonth();
-        if (mes < 0 || (mes === 0 && fechaActual.getDate() < fechaNacimiento.getDate())) {
+        if (
+          mes < 0 ||
+          (mes === 0 && fechaActual.getDate() < fechaNacimiento.getDate())
+        ) {
           edad--;
         }
       }
 
       if (result != []) {
         inputPaciente.value = result.nombre + " " + result.apellido;
-        inputEdad.value = edad+" años";
+        inputEdad.value = edad + " años";
         inputIdPaciente.value = result.id_paciente;
         [addClass, removeClass] = ["valido", "invalido"];
         divDataPaciente.classList.remove("d-none");
         divBtnAddPat.classList.add("d-none");
+
+        //llamar a la funcion para traer los sintomas y patologias del paciente
+        traerDoctorSintomasPatologias();
+        
       } else {
         inputPaciente.value = "Paciente no encontrado";
         inputEdad.value = "Edad no encontrado";
@@ -84,6 +93,61 @@ const traerPaciente = async () => {
     } else {
       divDataPaciente.classList.add("d-none");
     }
+  } catch (error) {
+    alertError("Error", "Lamentablemente algo salió mal. " + error);
+  }
+};
+
+const traerDoctorSintomasPatologias = async () => {
+  try {
+    const sintomas = await executePetition(
+      url + "/returnSistomasPaciente/",
+      "GET",
+    );
+    const patologias = await executePetition(
+      url + "/returnPatologiasPaciente/",
+      "GET",
+    );
+
+    const doctores = await executePetition(url + "/returnDoctores/", "GET");
+
+    let htmlSintomas = ``;
+    let htmlPatologias = ``;
+    let htmlDoctores = ``;
+
+    if (sintomas.length > 0) {
+      sintomas.forEach((res) => {
+        htmlSintomas += `<div class="form-check form-switch d-flex align-items-center">
+    <div class="form-check">
+        <input value="${res.id_sintoma}" class="form-check-input" type="checkbox" value="${res.id_sintoma}" id="checkChecked${res.id_sintoma}" checked>
+        <label class="form-check-label" for="checkChecked${res.id_sintoma}">
+            ${res.nombre}
+        </label>
+    </div>
+</div>`;
+      });
+    }
+    if (patologias.length > 0) {
+      patologias.forEach((res) => {
+        htmlPatologias += `<div class="form-check form-switch d-flex align-items-center">
+    <div class="form-check">
+        <input value="${res.id_patologia}" class="form-check-input" type="checkbox" value="${res.id_patologia}" id="checkChecked${res.id_patologia}" checked>
+        <label class="form-check-label" for="checkChecked${res.id_patologia}">
+            ${res.nombre_patologia}
+        </label>
+    </div>
+</div>`;
+      });
+    }
+
+    if (doctores.length > 0) {
+      doctores.forEach((res) => {
+        htmlDoctores += `<option value="${res.id_doctor}">${res.nombre} ${res.apellido}</option>`;
+      });
+    }
+    divSintomas.innerHTML = htmlSintomas;
+    divPatologias.innerHTML = htmlPatologias;
+    divDoctores.innerHTML = htmlDoctores;
   } catch (error) {
     alertError("Error", "Lamentablemente algo salió mal. " + error);
   }
@@ -248,6 +312,8 @@ readPatients();
 cedulaControl.addEventListener("keyup", function () {
   console.log(cedulaControl);
   traerPaciente();
+
+  
 });
 
 let verificarFormulario = inicializarValidacionFormulario(modalAddControl);

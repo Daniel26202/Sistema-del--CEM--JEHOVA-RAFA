@@ -472,7 +472,68 @@
                             <p class="error-msg fw-bold p-error-validaciones d-none">Por favor, selecciona una opción válida.</p>
                         </div>
 
+                        <!-- sintoma -->
+                        <label class="label-custom">Doctores</label>
+                        <!-- acordion de horarios -->
+                        <div class="accordion " id="accordionExampleDoctores">
+                            <div class="accordion-item bg-theme">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#horarioOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Doctores
+                                    </button>
+                                </h2>
+                                <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDoctores">
+                                    <div class="accordion-body" id="divDoctores">
 
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- patologia -->
+
+                        <div>
+                            <label class="label-custom">Patologias</label>
+                            <!-- acordion de horarios -->
+                            <div class="accordion " id="accordionExamplePatologias">
+                                <div class="accordion-item bg-theme">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#horarioOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Patologias
+                                        </button>
+                                    </h2>
+                                    <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExamplePatologias">
+                                        <div class="accordion-body" id="divPatologias">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- sintoma -->
+                        <label class="label-custom">Sintomas</label>
+                        <!-- acordion de horarios -->
+                        <div class="accordion " id="accordionExampleSintomas">
+                            <div class="accordion-item bg-theme">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#horarioOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Sintomas
+                                    </button>
+                                </h2>
+                                <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleSintomas">
+                                    <div class="accordion-body" id="divSintomas">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
 
                         <!-- nota -->
                         <label class="label-custom">Notas</label>
@@ -556,12 +617,16 @@
                             <p class="error-msg fw-bold p-error-validaciones d-none">Por favor, selecciona una opción válida.</p>
                         </div>
 
+                    </div>
 
-                    </div>
-                    <div class="modal-footer d-none" id="modal-footer">
-                        <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-modals" id="botonModal">Registrar</button>
-                    </div>
+
+
+
+                </div>
+                <div class="modal-footer d-none" id="modal-footer">
+                    <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-modals" id="botonModal">Registrar</button>
+                </div>
             </form>
 
             <div id="div-btn-add-pat" class="d-none">

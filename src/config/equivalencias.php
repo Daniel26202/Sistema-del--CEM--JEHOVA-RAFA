@@ -167,6 +167,9 @@ return [
     "eliminarSintoma" => "eliminar",
     "agregarSintoma" => "editar",
     "listPacientesJS" => "consultar",
+    "returnSistomasPaciente"=>"consultar",
+    "returnPatologiasPaciente"=>"consultar",
+    "returnDoctores"=>"consultar",
 
     //Insumos
     "insumos" => "consultar",
