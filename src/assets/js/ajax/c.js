@@ -8,7 +8,7 @@ import {
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const inputPaciente = document.getElementById("inputPaciente");
-const inputTelefono = document.getElementById("inputTelefono");
+const inputEdad = document.getElementById("inputEdad");
 const divDataPaciente = document.getElementById("div-data-paciente");
 const inputIdPaciente = document.getElementById("id_paciente");
 const divBtnAddPat = document.getElementById("div-btn-add-pat");
@@ -52,18 +52,28 @@ const traerPaciente = async () => {
         `/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacienteJS/${nacionalidadCita.value}/${cedulaControl.value}`,
         "GET",
       );
-      console.log(result);
+      
+      let edad = "";
+       if (result.fn) {
+        const fechaNacimiento = new Date(result.fn);
+        const fechaActual = new Date();
+        edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+        const mes = fechaActual.getMonth() - fechaNacimiento.getMonth();
+        if (mes < 0 || (mes === 0 && fechaActual.getDate() < fechaNacimiento.getDate())) {
+          edad--;
+        }
+      }
 
       if (result != []) {
         inputPaciente.value = result.nombre + " " + result.apellido;
-        inputTelefono.value = result.telefono;
+        inputEdad.value = edad+" años";
         inputIdPaciente.value = result.id_paciente;
         [addClass, removeClass] = ["valido", "invalido"];
         divDataPaciente.classList.remove("d-none");
         divBtnAddPat.classList.add("d-none");
       } else {
         inputPaciente.value = "Paciente no encontrado";
-        inputTelefono.value = "Telefono no encontrado";
+        inputEdad.value = "Edad no encontrado";
         inputIdPaciente.value = 0;
         [addClass, removeClass] = ["invalido", "valido"];
         divDataPaciente.classList.add("d-none");
