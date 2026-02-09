@@ -10,7 +10,7 @@ use App\modelos\ModeloRoles;
 class ModeloDoctores extends ModelBase
 {
 
-    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad, $imagenTemporal;
+    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad, $imagenTemporal, $checkeds, $diasN, $diasEditar, $diasE;
 
     public function __construct($dbSystem = true)
     {
@@ -207,6 +207,8 @@ class ModeloDoctores extends ModelBase
         }
     }
 
+
+
     //esto es para editar un doctor.
     public function updateDoctor()
     {
@@ -254,46 +256,64 @@ class ModeloDoctores extends ModelBase
             $this->update(['correo' => $this->getEmail()], $this->returnObjectModel()['modeloUsuario']->getIdUsuario());
 
 
-            // $contadorDias = 0;
-            // foreach ($checkeds as $idD) {
-            //     if ($diasN) {
-            //         //si el id existe en el array se inserta
-            //         if (in_array($idD, $diasN)) {
-            //             $sqlHorario = $this->conexion->prepare("INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);");
-            //             $sqlHorario->bindParam(":id_personal", $idPersonal["id_personal"]);
-            //             $sqlHorario->bindParam(":id_horario", $idD);
-            //             $sqlHorario->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
-            //             $sqlHorario->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
-            //             $sqlHorario->execute();
-            //         }
-            //     }
-            //     if ($diasEditar) {
-            //         //si el id existe en el array se inserta
-            //         if (in_array($idD, $diasEditar)) {
-
-            //             $sqlHorarioEdi = $this->conexion->prepare("UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada,horaDeSalida=:horaDeSalida WHERE id_personal = :id_personal AND id_horario = :id_horario");
-            //             $sqlHorarioEdi->bindParam(":horarioDeEntrada", $horaEntrada[$contadorDias]);
-            //             $sqlHorarioEdi->bindParam(":horaDeSalida", $horaSalida[$contadorDias]);
-            //             $sqlHorarioEdi->bindParam(":id_personal", $idPersonal["id_personal"]);
-            //             $sqlHorarioEdi->bindParam(":id_horario", $idD);
-            //             $sqlHorarioEdi->execute();
-            //         }
-            //     }
-
-            //     $contadorDias++;
-            // }
 
 
-            // // si el id existe es porque se deselecciono y se elimina
-            // if ($diasE) {
-            //     foreach ($diasE as $idE) {
 
-            //         $sqlHorarioE = $this->conexion->prepare("DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario");
-            //         $sqlHorarioE->bindParam(":id_personal", $idPersonal["id_personal"]);
-            //         $sqlHorarioE->bindParam(":id_horario", $idE);
-            //         $sqlHorarioE->execute();
-            //     }
-            // }
+
+
+
+            $checkeds = $this->getCheckeds();
+            $diasN = $this->getDiasN();
+            $diasEditar = $this->getDiasEditar();
+            $horaEntrada = $this->getHoraEntrada();
+            $horaSalida = $this->getHoraSalida();
+            $diasE = $this->getDiasE();
+
+            $contadorDias = 0;
+            foreach ($checkeds as $idD) {
+                if ($diasN) {
+                    //si el id existe en el array se inserta
+                    if (in_array($idD, $diasN)) {
+                        $sqlHorario = "INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);";
+                        $this->setSQL($sqlHorario);
+                        $data = [
+                            "id_personal" => $idPersonal["id_personal"],
+                            "id_horario" => $idD,
+                            "horarioDeEntrada" => $horaEntrada[$contadorDias],
+                            "horaDeSalida" => $horaSalida[$contadorDias]
+                        ];
+                        $this->create($data);
+                    }
+                }
+                if ($diasEditar) {
+                    //si el id existe en el array se inserta
+                    if (in_array($idD, $diasEditar)) {
+
+                        $sqlHorarioEdi = "UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada,horaDeSalida=:horaDeSalida WHERE id_personal = :id AND id_horario = :id_horario";
+                        $this->setSQL($sqlHorarioEdi);
+                        $data = [
+                            "id_horario" => $idD,
+                            "horarioDeEntrada" => $horaEntrada[$contadorDias],
+                            "horaDeSalida" => $horaSalida[$contadorDias]
+                        ];
+                        $this->update($data, $idPersonal["id_personal"]);
+                    }
+                }
+
+                $contadorDias++;
+            }
+
+
+            // si el id existe es porque se deselecciono y se elimina
+            if ($diasE) {
+                foreach ($diasE as $idE) {
+
+                    $sqlHorarioE = "DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario";
+                    $this->setSQL($sqlHorarioE);
+                    $this->delete(["id_personal" => $idPersonal["id_personal"], "id_horario" => $idE]);
+
+                }
+            }
 
 
             return ["exito"];
@@ -358,7 +378,7 @@ class ModeloDoctores extends ModelBase
         }
     }
 
-    public function Especialidadregistrar()
+    public function EspecialidadRegistrar()
     {
         try {
             $data = [
@@ -374,11 +394,11 @@ class ModeloDoctores extends ModelBase
             return $e->getMessage();
         }
     }
-    public function Especialidadeliminar()
+    public function EspecialidadEliminar()
     {
         try {
             $data = [
-                'id_especialidad' => $this->getNombreEspecialidad()
+                'id_especialidad' => $this->getIdEspecialidad()
             ];
 
             $sql = "SELECT * from especialidad where id_especialidad=:id_especialidad";
@@ -420,6 +440,7 @@ class ModeloDoctores extends ModelBase
     }
 
 
+    // --- Getters ---
     public function getIdDoctor()
     {
         return $this->id_doctor;
@@ -492,11 +513,53 @@ class ModeloDoctores extends ModelBase
         return $this->especialidad;
     }
 
+    public function getCheckeds()
+    {
+        return $this->checkeds;
+    }
+
+    public function getDiasN()
+    {
+        return $this->diasN;
+    }
+
+    public function getDiasEditar()
+    {
+        return $this->diasEditar;
+    }
+
+    public function getDiasE()
+    {
+        return $this->diasE;
+    }
 
 
 
 
 
+
+
+
+    // --- Setters ---
+    public function setDiasEditar(array $diasEditar)
+    {
+        $this->diasEditar = $diasEditar;
+    }
+
+    public function setDiasE(array $diasE)
+    {
+        $this->diasE = $diasE;
+    }
+
+    public function setDiasN(array $diasN)
+    {
+        $this->diasN = $diasN;
+    }
+
+    public function setCheckeds(array $checkeds)
+    {
+        $this->checkeds = $checkeds;
+    }
 
     public function setIdDoctor($id_doctor)
     {
