@@ -4,60 +4,61 @@ use App\modelos\ModeloDoctores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloServicios;
-
-
-function returnObjectClass()
-{
-    return [
-        "doctores" => new ModeloDoctores(),
-        "bitacora" => new ModeloBitacora(),
-        'servicio' => new ModeloServicios()
-    ];
-}
+use App\modelos\ModeloUsuarios;
 
 //muestro los datos de las cuatro tablas
 function doctores($parametro)
 {
+    $modeloDoctores = new ModeloDoctores();
+    $modeloServicios = new ModeloServicios();
+
     $vistaActiva = 'doctores';
     $ayuda = "btnayudaDoctores";
-    $datosDias = returnObjectClass()['doctores']->selectDias();
-    $datosEspecialidades = returnObjectClass()['doctores']->selectEspecialidad();
-    $doctores = returnObjectClass()['servicio']->mostrarDoctores();
-    $todasLasServicios = returnObjectClass()['servicio']->mostrarServicios();
+    $datosDias = $modeloDoctores->selectDias();
+    $datosEspecialidades = $modeloDoctores->selectEspecialidad();
+    $doctores = $modeloServicios->mostrarDoctores();
+    $todasLasServicios = $modeloServicios->mostrarServicios();
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
 
 function selectEspcAjax()
 {
-    echo json_encode(returnObjectClass()['doctores']->selectEspecialidad());
+    $modeloDoctores = new ModeloDoctores();
+    echo json_encode($modeloDoctores->selectEspecialidad());
 }
 
 function DoctoresAjax()
 {
-    echo json_encode([returnObjectClass()['doctores']->select(), returnObjectClass()['doctores']->selectDias()]);
+    $modeloDoctores = new ModeloDoctores();
+    echo json_encode([$modeloDoctores->select(), $modeloDoctores->selectDias()]);
 }
 
 function papelera($parametro)
 {
+    $modeloDoctores = new ModeloDoctores();
+    $modeloServicios = new ModeloServicios();
     $vistaActiva = 'papelera';
     $ayuda = "btnayudaDoctores";
-    $datosDias = returnObjectClass()['doctores']->selectDias();
-    $datosEspecialidades = returnObjectClass()['doctores']->selectEspecialidad();
-    $doctores = returnObjectClass()['servicio']->mostrarDoctores();
-    $todasLasServicios = returnObjectClass()['servicio']->mostrarServicios();
+    $datosDias = $modeloDoctores->selectDias();
+    $datosEspecialidades = $modeloDoctores->selectEspecialidad();
+    $doctores = $modeloServicios->mostrarDoctores();
+    $todasLasServicios = $modeloServicios->mostrarServicios();
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
 
 function papeleraDoctoresAjax()
 {
-    echo json_encode(returnObjectClass()['doctores']->desactivos());
+    $modeloDoctores = new ModeloDoctores();
+    echo json_encode($modeloDoctores->desactivos());
 }
 
 //metodo para mostrar los servicios de los doctores
 function serviciosDoctor($datos)
 {
-    returnObjectClass()['doctores']->setIdDoctor($datos[0]);
-    echo json_encode(returnObjectClass()['servicio']->mostrarServiciosDoctor());
+    $modeloDoctores = new ModeloDoctores();
+    $modeloServicios = new ModeloServicios();
+    $modeloDoctores->setIdDoctor($datos[0]);
+    echo json_encode($modeloServicios->mostrarServiciosDoctor());
 }
 
 
@@ -70,9 +71,9 @@ function guardarDoctores()
         exit;
     }
 
-    $servicio = returnObjectClass()['servicio'];
-    $doctores = returnObjectClass()['doctores'];
-    $bitacora = returnObjectClass()['bitacora'];
+    $servicio = new ModeloServicios();
+    $doctores = new ModeloDoctores();
+    $bitacora = new ModeloBitacora();
 
     $doctores->setIdDoctor($_POST["id_doctor"]);
     $servicio->setIdServicioMedico($_POST["id_servicioMedico"]);
@@ -81,7 +82,7 @@ function guardarDoctores()
     $bitacora->setActividad("Ha asignado un servicio medico a un doctor");
     $bitacora->setTabla("Servicio Medico");
 
-    $insercion = returnObjectClass()['servicio']->insertarDoctorServicio();
+    $insercion = $servicio->insertarDoctorServicio();
 
     if (is_array($insercion) && $insercion[0] === "exito") {
         $bitacora->insertarBitacora();
@@ -102,32 +103,41 @@ function agregarDoctor()
         exit;
     }
 
-    $servicio = returnObjectClass()['servicio'];
-    $doctores = returnObjectClass()['doctores'];
-    $bitacora = returnObjectClass()['bitacora'];
-
-    $doctores->setCedula($_POST["cedula"]);
-    $doctores->setNombre($_POST["nombre"]);
-    $doctores->setApellido($_POST["apellido"]);
-    $doctores->setTelefono($_POST["telefono"]);
-
-
-
-
-
-
-
+    // $modeloServicio = new ModeloServicios();
+    $modeloDoctores = new ModeloDoctores();
+    $modeloDoctores = new ModeloDoctores();
+    $modeloBitacora = new ModeloBitacora();
+    $modeloUsuarios = new ModeloUsuarios();
 
     // Generamos la contraseña encriptada de la contraseña ingresada
     $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
     // si encuentra la imagen la guardo en la variable si no le doy el valor false
     $imagen = isset($_FILES['imagenDoctores']['name']) ? $_FILES['imagenDoctores']['name'] : false;
 
-    $insercion = $doctores->insertarDoctor(, $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $passwordEncrip,  $_POST['email'], $_POST['nacionalidad'], $_FILES['imagenDoctores']['name'], $_FILES['imagenDoctores']['tmp_name'], $_POST["selectEspecialidad"], $_POST['dias'], $_POST["horaSalida"], $_POST["horaEntrada"], $imagen);
+    $modeloDoctores->setCedula($_POST["cedula"]);
+    $modeloDoctores->setNombre($_POST["nombre"]);
+    $modeloDoctores->setApellido($_POST["apellido"]);
+    $modeloDoctores->setTelefono($_POST["telefono"]);
+    $modeloDoctores->setEmail($_POST['email']);
+    $modeloDoctores->setNacionalidad($_POST['nacionalidad']);
+    $modeloDoctores->setImagen($imagen);
+    $modeloDoctores->setImagenTemporal($_FILES['imagenDoctores']['tmp_name']);
+    $modeloDoctores->setIdEspecialidad($_POST["selectEspecialidad"]);
+    $modeloDoctores->setDias($_POST['dias']);
+    $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
+    $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
+    $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
 
+    $modeloUsuarios->setUsuario($_POST["usuario"]);
+    $modeloUsuarios->setPassword($passwordEncrip);
+
+    $insercion = $modeloDoctores->insertarDoctor();
 
     if (is_array($insercion) && $insercion[0] === "exito") {
-        $this->bitacora->insertarBitacora($_POST['id_usuario'], "doctor", "Ha Insertado un doctor");
+        $modeloBitacora->setId_usuario($_POST['id_usuario']);
+        $modeloBitacora->setTabla("doctor");
+        $modeloBitacora->setActividad("Ha Insertado un nuevo doctor");
+        $modeloBitacora->insertarBitacora();
         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
     } else {
         http_response_code(409);
@@ -136,123 +146,141 @@ function agregarDoctor()
     }
 }
 
-// // editar doctor
-// function editarDoctor()
-// {
-
-//     $idDiaDbE = array_diff($_POST["diaAnterio"], $_POST["dias"]);
-//     $idDiaNuevo = array_diff($_POST["dias"], $_POST["diaAnterio"]);
-//     $igualesDb = array_intersect($_POST["dias"], $_POST["diaAnterio"]);
-//     $checkeds = $_POST["dias"];
-
-//     // Usar el operador ternario para verificar si $idDiaDbE está vacío
-//     $idDiaDbE = !empty($idDiaDbE) ? $idDiaDbE : false;
-//     $idDiaNuevo = !empty($idDiaNuevo) ? $idDiaNuevo : false;
-//     $igualesDb = !empty($igualesDb) ? $igualesDb : false;
+// editar doctor
+function editarDoctor()
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    $modeloDoctores = new ModeloDoctores();
+    $modeloBitacora = new ModeloBitacora();
 
 
-//     $edicion = $this->modelo->updateDoctor($_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["id_usuario"], $_POST["id_especialidad"], $_POST['email'], $_POST['nacionalidad'], $idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"], $_POST['cedulaRegistrada']);
+    $idDiaDbE = array_diff($_POST["diaAnterio"], $_POST["dias"]);
+    $idDiaNuevo = array_diff($_POST["dias"], $_POST["diaAnterio"]);
+    $igualesDb = array_intersect($_POST["dias"], $_POST["diaAnterio"]);
+    $checkeds = $_POST["dias"];
 
-//     if (is_array($edicion) && $edicion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "doctor", "Ha modificado un doctor");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $edicion]);
-//         exit;
-//     }
-// }
-// // eliminación lógica doctor
-// function borrarDoctor($datos)
-// {
-//     $id_usuario = $datos[0];
-//     $id_usuario_bitacora = $datos[1];
-//     $eliminacion = $this->modelo->eliminacionLogica($id_usuario);
+    // Usar el operador ternario para verificar si $idDiaDbE está vacío
+    $idDiaDbE = !empty($idDiaDbE) ? $idDiaDbE : false;
+    $idDiaNuevo = !empty($idDiaNuevo) ? $idDiaNuevo : false;
+    $igualesDb = !empty($igualesDb) ? $igualesDb : false;
 
-//     if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($id_usuario_bitacora, "doctor", "Ha eliminado un doctor");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $eliminacion]);
-//         exit;
-//     }
-// }
-
-// // restablecer lógica doctor
-// function restablecer($datos)
-// {
-
-//     $restablecer = $this->modelo->restablecerDoctor($datos[0]);
-
-//     if (is_array($restablecer) && $restablecer[0] === "exito") {
-//         $this->bitacora->insertarBitacora($datos[1], "doctor", "Ha restablecido un doctor");
-
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $restablecer]);
-//         exit;
-//     }
-// }
-
-// //json para editar
-// function selectDiasDoctorEditar()
-// {
-//     $respuesta = $this->modelo->selectDiasDoctor($_GET["id_personal"]);
-//     echo json_encode($respuesta);
-// }
-// function registrarEspecialidad()
-// {
-//     $insercion = $this->modelo->Especialidadregistrar($_POST['nombre']);
-
-//     if (is_array($insercion) && $insercion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario'], "especialidad", "Ha insertado una nueva especialidad");
-
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $insercion]);
-//         exit;
-//     }
-// }
-// function eliminarEspecialidad($datos)
-// {
-//     $id_especialidad = $datos[0];
-//     $id_usuario =  $datos[1];
-//     $eliminacion = $this->modelo->Especialidadeliminar($id_especialidad);
-
-//     if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($id_usuario, "especialidad", "Ha eliminado una especialidad");
-
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $eliminacion]);
-//         exit;
-//     }
-// }
-
-// function buscarEspecialidad()
-// {
-//     $respuesta = $this->modelo->especialidadBuscar($_POST["nombre"]);
-//     echo json_encode($respuesta);
-// }
-// function buscarDoctor()
-// {
-//     $respuesta = $this->modelo->doctorBuscar($_POST["busqueda"]);
-//     echo json_encode($respuesta);
-// }
+    $modeloDoctores->setCedula($_POST["cedula"]);
+    $modeloDoctores->setNombre($_POST["nombre"]);
+    $modeloDoctores->setApellido($_POST["apellido"]);
+    $modeloDoctores->setTelefono($_POST["telefono"]);
+    $modeloDoctores->setIdEspecialidad($_POST["id_especialidad"]);
+    $modeloDoctores->setEmail($_POST["email"]);
+    $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
+    $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
+    
+    $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
 
 
-// function buscarHorario($datos)
-// {
-//     $id_personal = $datos[0];
-//     $respuesta = $this->modelo->horarioDelDoctor($id_personal);
-//     echo json_encode($respuesta);
-// }
+    $edicion = $modeloDoctores->updateDoctor($idDiaDbE, $idDiaNuevo, $igualesDb, $checkeds, $_POST["horaEntrada"], $_POST["horaSalida"], $_POST['cedulaRegistrada']);
 
-// function permisos($id_rol, $permiso, $modulo)
-// {
-//     return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }
+    if (is_array($edicion) && $edicion[0] === "exito") {
+        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+        $modeloBitacora->setTabla("doctor");
+        $modeloBitacora->setActividad("Ha modificado un doctor");
+        $modeloBitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $edicion]);
+        exit;
+    }
+}
+// eliminación lógica doctor
+function borrarDoctor($datos)
+{
+    $id_usuario = $datos[0];
+    $id_usuario_bitacora = $datos[1];
+    $eliminacion = $this->modelo->eliminacionLogica($id_usuario);
+
+    if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+        $this->bitacora->insertarBitacora($id_usuario_bitacora, "doctor", "Ha eliminado un doctor");
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $eliminacion]);
+        exit;
+    }
+}
+
+// restablecer lógica doctor
+function restablecer($datos)
+{
+
+    $restablecer = $this->modelo->restablecerDoctor($datos[0]);
+
+    if (is_array($restablecer) && $restablecer[0] === "exito") {
+        $this->bitacora->insertarBitacora($datos[1], "doctor", "Ha restablecido un doctor");
+
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $restablecer]);
+        exit;
+    }
+}
+
+//json para editar
+function selectDiasDoctorEditar()
+{
+    $respuesta = $this->modelo->selectDiasDoctor($_GET["id_personal"]);
+    echo json_encode($respuesta);
+}
+function registrarEspecialidad()
+{
+    $insercion = $this->modelo->Especialidadregistrar($_POST['nombre']);
+
+    if (is_array($insercion) && $insercion[0] === "exito") {
+        $this->bitacora->insertarBitacora($_POST['id_usuario'], "especialidad", "Ha insertado una nueva especialidad");
+
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $insercion]);
+        exit;
+    }
+}
+function eliminarEspecialidad($datos)
+{
+    $id_especialidad = $datos[0];
+    $id_usuario =  $datos[1];
+    $eliminacion = $this->modelo->Especialidadeliminar($id_especialidad);
+
+    if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+        $this->bitacora->insertarBitacora($id_usuario, "especialidad", "Ha eliminado una especialidad");
+
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $eliminacion]);
+        exit;
+    }
+}
+
+function buscarEspecialidad()
+{
+    $respuesta = $this->modelo->especialidadBuscar($_POST["nombre"]);
+    echo json_encode($respuesta);
+}
+function buscarDoctor()
+{
+    $respuesta = $this->modelo->doctorBuscar($_POST["busqueda"]);
+    echo json_encode($respuesta);
+}
+
+
+function buscarHorario($datos)
+{
+    $id_personal = $datos[0];
+    $respuesta = $this->modelo->horarioDelDoctor($id_personal);
+    echo json_encode($respuesta);
+}
+
+function permisos($id_rol, $permiso, $modulo)
+{
+    return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
+}

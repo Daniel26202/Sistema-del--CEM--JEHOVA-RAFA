@@ -10,7 +10,7 @@ use App\modelos\ModeloRoles;
 class ModeloDoctores extends ModelBase
 {
 
-    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad;
+    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad, $imagenTemporal;
 
     public function __construct($dbSystem = true)
     {
@@ -130,15 +130,39 @@ class ModeloDoctores extends ModelBase
 
         try {
 
+
+            if ($this->validarCedula(['cedula' => $this->getCedula()])) {
+                throw new \Exception("La cédula ya está registrada.");
+            }
+
+            if ($this->validarUsuario(['usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario()])) {
+                throw new \Exception("El usuario ya está registrada.");
+            }
+
+            $imagen = $this->getImagen();
+            $imagenTemporal = $this->getImagenTemporal();
+
+            if (!$imagen) {
+                $imagen = 'doctor.png';
+                $imagenTemporal = "";
+            }
+
+            $sql = "INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES (8,:imagen, :usuario, :correo, :password,:estado);";
+
+            $this->setSQL($sql);
             $data1 = [
                 'id_rol' => $this->returnObjectModel()['modeloRoles']->getIdRol(),
-                'imagen' => $this->getImagen(),
+                'imagen' => $imagen,
                 'usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario(),
                 'correo' => $this->getEmail(),
                 'password' => $this->returnObjectModel()['modeloUsuario']->getPassword(),
                 'estado' => 'ACT'
             ];
+            $idUsuario = $this->create($data1);
 
+            $sql = 'INSERT INTO bd.personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)';
+
+            $this->setSQL($sql);
             $data2 = [
                 'nacionalidad' => $this->getNacionalidad(),
                 'cedula' => $this->getCedula(),
@@ -148,24 +172,15 @@ class ModeloDoctores extends ModelBase
                 'id_espacialidad' => $this->getIdEspecialidad(),
                 'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
             ];
-            if ($this->validarCedula(['cedula' => $this->getCedula()])) {
-                throw new \Exception("La cédula ya está registrada.");
-            }
-
-            if ($this->validarUsuario(['usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario()])) {
-                throw new \Exception("El usuario ya está registrada.");
-            }
-
-            $sql = "INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES (8,:imagen, :usuario, :correo, :password,:estado);";
-
-            $this->setSQL($sql);
-            $idUsuario = $this->create($data1);
-
-            $sql = 'INSERT INTO bd.personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)';
-
-            $this->setSQL($sql);
 
             $idPersonal = $this->create($data2);
+
+            if ($idUsuario != 0) {
+                if ($imagenTemporal != "") {
+                    $imagen = $idUsuario . "_" . $imagen;
+                    move_uploaded_file($imagenTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
+                }
+            }
 
             //esto es para insertar el horario
             if ($this->getDias() != []) {
@@ -467,6 +482,11 @@ class ModeloDoctores extends ModelBase
         return $this->imagen;
     }
 
+    public function getImagenTemporal()
+    {
+        return $this->imagenTemporal;
+    }
+
     public function getNombreEspecialidad()
     {
         return $this->especialidad;
@@ -582,6 +602,10 @@ class ModeloDoctores extends ModelBase
         $this->$horaSalida = $horaSalida;
     }
 
+    public function setImagenTemporal($imagenTemporal)
+    {
+        $this->$imagenTemporal = $imagenTemporal;
+    }
     public function setImagen($imagen)
     {
         $this->$imagen = $imagen;
