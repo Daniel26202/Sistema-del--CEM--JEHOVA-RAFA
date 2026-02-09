@@ -12,34 +12,46 @@ function estadisticas()
 {
 	$ayuda = "btnayudaEstadistica";
 	require_once './src/vistas/vistaEstadisticas/vistaEstadisticas.php';
-	
 }
 
-	//  function edadGenero()
-	// {
-	// 	$edadGenero = $this->modelo->distribucion_edad_genero();
-	// 	echo json_encode($edadGenero);
-	// }
+function edadGenero()
+{
+	$modeloEstadisticas = new ModeloEstadisticas();
+	$edadGenero = $modeloEstadisticas->distribucion_edad_genero();
+	echo json_encode($edadGenero);
+}
 
-	//  function tasaMorbilidad()
-	// {
-	// 	$tasa_morbilidad = $this->modelo->tasa_morbilidad();
-	// 	echo json_encode($tasa_morbilidad);
-	// }
+function tasaMorbilidad()
+{
+	$modeloEstadisticas = new ModeloEstadisticas();
 
-	//  function filtrar_tasaMorbilidad($datos)
-	// {
-	// 	$tasa_morbilidad = $this->modelo->tasa_morbilidad($datos[0], $datos[1]);
-	// 	echo json_encode($tasa_morbilidad);
-	// }
+	$tasa_morbilidad = $modeloEstadisticas->tasa_morbilidad();
+	echo json_encode($tasa_morbilidad);
+}
 
-	// private function permisos($id_rol, $permiso, $modulo)
-	// {
-	// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-	// }
+function filtrar_tasaMorbilidad($datos)
+{
+	$modeloEstadisticas = new ModeloEstadisticas();
+	$modeloEstadisticas->setFechaInicio($datos[0]);
+	$modeloEstadisticas->setFechaFinal($datos[1]);
 
-	//  function insumos()
-	// {
-	// 	$insumos = $this->modelo->insumos();
-	// 	echo json_encode($insumos);
-	// }
+	$tasa_morbilidad = $modeloEstadisticas->tasa_morbilidad();
+	echo json_encode($tasa_morbilidad);
+}
+
+function permisos($id_rol, $permiso, $modulo)
+{
+	$modeloPermisos = new ModeloPermisos();
+	$modeloPermisos->setIdRol($id_rol);
+	$modeloPermisos->setPermiso($permiso);
+	$modeloPermisos->setModulo($modulo);
+
+	return $modeloPermisos->gestionarPermisos();
+}
+
+function insumos()
+{
+	$modeloEstadisticas = new ModeloEstadisticas();
+	$insumos = $modeloEstadisticas->insumos();
+	echo json_encode($insumos);
+}

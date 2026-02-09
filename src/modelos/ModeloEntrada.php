@@ -47,7 +47,7 @@ class ModeloEntrada extends ModelBase
 		}
 	}
 
-	public function insumosEntrada($id_insumo)
+	public function insumosEntrada()
 	{
 		try {
 			$sql = " SELECT ei.id_entradaDeInsumo,i.*,e.*,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE i.id_insumo=:id_insumo AND e.estado = 'ACT' AND i.estado = 'ACT' ORDER BY e.fechaDeIngreso";
@@ -60,7 +60,7 @@ class ModeloEntrada extends ModelBase
 		}
 	}
 
-	public function insertarEntrada($id_proveedor, $id_insumo, $fechaDeIngreso, $fechaDeVencimiento, $cantidad, $precio, $lote)
+	public function insertarEntrada()
 	{
 		try {
 			// $this->conexion->beginTransaction();
@@ -93,7 +93,7 @@ class ModeloEntrada extends ModelBase
 		}
 	}
 
-	public function eliminar($id_entrada)
+	public function eliminar()
 	{
 		try {
 			// $this->conexion->beginTransaction();
@@ -118,7 +118,7 @@ class ModeloEntrada extends ModelBase
 	}
 
 
-	public function actualizarEntrada($id_entrada, $id_proveedor, $fechaDeVencimiento, $cantidad, $precio, $id_insumo, $lote)
+	public function actualizarEntrada()
 	{
 		try {
 			// $this->conexion->beginTransaction();
@@ -180,7 +180,7 @@ class ModeloEntrada extends ModelBase
 	}
 
 
-	public function restablecerEntrada($id_entrada)
+	public function restablecerEntrada()
 	{
 		try {
 			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
