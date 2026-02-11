@@ -207,7 +207,33 @@ class ModeloDoctores extends ModelBase
         }
     }
 
+    public function RegistrarAdmin()
+    {
+        try {
+            $sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";
+            $this->setSQL($sql);
+            $validar = $this->search(['id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()]);
 
+            if ($validar == []) {
+                throw new \Exception("Fallo el id no existe.");
+            }
+            $sql = 'INSERT INTO bd.personal VALUES (Null, :nacionalidad, :cedula, :nombre, :apellido, :telefono, "Administrador", Null, :id_usuario)';
+            $this->setSQL($sql);
+            $data = [
+                'nacionalidad' => $this->getNacionalidad(),
+                'cedula' => $this->getCedula(),
+                'nombre' => $this->getNombre(),
+                'apellido' => $this->getApellido(),
+                'telefono' => $this->getTelefono(),
+                'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
+            ];
+            $this->create($data);
+
+            return ['exito'];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 
     //esto es para editar un doctor.
     public function updateDoctor()
@@ -311,7 +337,6 @@ class ModeloDoctores extends ModelBase
                     $sqlHorarioE = "DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario";
                     $this->setSQL($sqlHorarioE);
                     $this->delete(["id_personal" => $idPersonal["id_personal"], "id_horario" => $idE]);
-
                 }
             }
 

@@ -3,8 +3,8 @@
 use App\modelos\ModeloPerfil;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloBitacora;
-
-
+use App\modelos\ModeloDoctores;
+use App\modelos\ModeloUsuarios;
 
 function perfil($parametro)
 {
@@ -25,20 +25,36 @@ function permisos($id_rol, $permiso, $modulo)
 	return $permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 }
 
-//guardar perffil
+//guardar perfil
 function guardar()
 {
 	if (isset($_POST)) {
 		$bitacora = new ModeloBitacora();
 		$modelo = new ModeloPerfil();
+		$modeloUsuario = new ModeloUsuarios();
+		$modeloDoctor = new ModeloDoctores();
 
-		$edicion = $modelo->update($_POST["id_usuario"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["usuario"], $_POST["correo"]);
+		$modeloUsuario->setIdUsuario($_POST["id_usuario"]);
+		$modeloUsuario->setUsuario($_POST["usuario"]);
+		$modeloUsuario->setCorreo($_POST["correo"]);
+
+		$modeloDoctor->setCedula($_POST["cedula"]);
+		$modeloDoctor->setNombre($_POST["nombre"]);
+		$modeloDoctor->setApellido($_POST["apellido"]);
+		$modeloDoctor->setTelefono($_POST["telefono"]);
+
+
+		$edicion = $modelo->update_perfil();
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$_SESSION['usuario'] = $_POST['usuario'];
 			$_SESSION['nombre'] = $_POST['nombre'];
 			$_SESSION['apellido'] = $_POST['apellido'];
-			$bitacora->insertarBitacora($_POST["id_usuario"], "Perfil", "Ha modificado un perfil");
+
+			$bitacora->setId_usuario($_POST["id_usuario"]);
+			$bitacora->setTabla("Perfil");
+			$bitacora->setActividad("Ha modificado un perfil");
+			$bitacora->insertarBitacora();
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {

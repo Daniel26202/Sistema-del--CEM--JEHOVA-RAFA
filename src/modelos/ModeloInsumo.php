@@ -276,7 +276,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 	//funcion mejorada de actualizacion de la cantidad
-	public function actualizar_cantidad_insumo($id_insumo)
+	public function actualizar_cantidad_insumo()
 	{
 		try {
 			$sql = " SELECT ei.id_insumo, ei.fechaDeVencimiento, SUM(ei.cantidad_disponible) AS cantidad, e.numero_de_lote FROM entrada_insumo ei INNER JOIN entrada e on e.id_entrada = ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE AND e.estado = 'ACT' ";

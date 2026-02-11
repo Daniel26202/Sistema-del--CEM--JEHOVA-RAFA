@@ -13,137 +13,216 @@ use App\modelos\ModeloRoles;
 
 function usuarios($parametro)
 {
+    $modeloUsuarios = new ModeloUsuarios();
     $ayuda = "btnayudaUsuario";
-    // $datosU  = $this->modelo->select();
-    // $vistaActiva = "usuarios";
+    $datosU  = $modeloUsuarios->select();
+    $vistaActiva = "usuarios";
     require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
 }
 
-// function usuariosAjax()
-// {
-//     echo json_encode($this->modelo->select());
-// }
+function usuariosAjax()
+{
+    $modeloUsuarios = new ModeloUsuarios();
 
-// function administradores($parametro)
-// {
-//     $ayuda = "btnayudaAdministrador";
-//     $datosU  = $this->modelo->selectAdmin();
-//     $vistaActiva = "administradores";
-//     $datosRoles = $this->roles->roles();
-//     require_once './src/vistas/vistaUsuarios/vistaUsuariosAdmin.php';
-// }
+    echo json_encode($modeloUsuarios->select());
+}
 
-// function administradoresAjax()
-// {
-//     echo json_encode($this->modelo->selectAdmin());
-// }
+function administradores($parametro)
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    $modeloRoles = new ModeloRoles();
 
-// // editar usuario
-// function editarUsuario()
-// {
+    $ayuda = "btnayudaAdministrador";
+    $datosU  = $modeloUsuarios->selectAdmin();
+    $vistaActiva = "administradores";
+    $datosRoles = $modeloRoles->roles();
+    require_once './src/vistas/vistaUsuarios/vistaUsuariosAdmin.php';
+}
 
-//     $edicion = $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES['imagenUsuario']["name"], $_FILES['imagenUsuario']['tmp_name'], $_POST['usuarioRegistrado']);
+function administradoresAjax()
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    echo json_encode($modeloUsuarios->selectAdmin());
+}
 
+// editar usuario
+function editarUsuario()
+{
 
-//     if (is_array($edicion) && $edicion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un  usuario");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $edicion]);
-//         exit;
-//     }
-// }
+    $modeloUsuarios = new ModeloUsuarios();
+    $modeloBitacora = new ModeloBitacora();
 
-// // eliminación lógica de usuario
-// function borrarUsuario($datos)
-// {
-//     $id_usuario = $datos[0];
-//     $id_usuario_bitacora = $datos[1];
-//     $eliminacion = $this->modelo->eliminacionLogica($id_usuario);
+    $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
+    $modeloUsuarios->setUsuario($_POST["usuario"]);
+    $modeloUsuarios->setUsuarioRegistrado($_POST['usuarioRegistrado']);
+    $modeloUsuarios->setImagen($_FILES['imagenUsuario']["name"]);
+    $modeloUsuarios->setImagenTemporal($_FILES['imagenUsuario']['tmp_name']);
 
-//     if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($id_usuario_bitacora, "usuario", "Ha eliminado un  usuario");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $eliminacion]);
-//         exit;
-//     }
-// }
-// function registrarAdmin()
-// {
-
-//     // Generamos la contraseña encriptada de la contraseña ingresada
-//     $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
-//     $id_usuario = $this->modelo->AgregarUsuarios($_POST["usuario"], $passwordEncrip, $_POST["correo"], $_POST["id_rol"], $_FILES['imagenUsuario']);
-
-//     $insercion = $this->doctor->RegistrarAdmin($_POST["nacionalidad"], $_POST["cedula"], $_POST["nombre"], $_POST["apellido"], $_POST["telefono"], $_POST["correo"], $id_usuario);
-
-//     if (is_array($insercion) && $insercion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha insertado un administrador ");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $insercion]);
-//         exit;
-//     }
-// }
+    $edicion = $modeloUsuarios->updateUsuario();
 
 
-// function editarAdministrador()
-// {
+    if (is_array($edicion) && $edicion[0] === "exito") {
+        $modeloBitacora->setTabla("usuario");
+        $modeloBitacora->setActividad("Ha modificado un  usuario");
+        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+        $modeloBitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $edicion]);
+        exit;
+    }
+}
 
-//     $id_usuario = $this->modelo->updateUsuario($_POST["usuario"], $_POST["id_usuario"], $_FILES["imagenUsuario"]["name"], $_FILES["imagenUsuario"]["tmp_name"]);
+// eliminación lógica de usuario
+function borrarUsuario($datos)
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    $modeloBitacora = new ModeloBitacora();
 
-//     // Guardar la bitacora
-//     $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un administrador ");
+    $id_usuario = $datos[0];
+    $id_usuario_bitacora = $datos[1];
+    $modeloUsuarios->setIdUsuario($id_usuario);
+    $eliminacion = $modeloUsuarios->eliminacionLogica();
+
+    if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+        $modeloBitacora->setTabla("usuario");
+        $modeloBitacora->setActividad("Ha eliminado un  usuario");
+        $modeloBitacora->setId_usuario($id_usuario_bitacora);
+        $modeloBitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $eliminacion]);
+        exit;
+    }
+}
+function registrarAdmin()
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    $modeloDoctores = new ModeloDoctores();
+    $modeloBitacora = new ModeloBitacora();
+
+    // Generamos la contraseña encriptada de la contraseña ingresada
+    $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
+
+    $modeloUsuarios->setUsuario($_POST["usuario"]);
+    $modeloUsuarios->setPassword($passwordEncrip);
+    $modeloUsuarios->setCorreo($_POST["correo"]);
+    $modeloUsuarios->setIdRol($_POST["id_rol"]);
+    $modeloUsuarios->setImagen($_FILES['imagenUsuario']);
+
+    $id_usuario = $modeloUsuarios->AgregarUsuarios();
+
+    $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
+    $modeloDoctores->setCedula($_POST["cedula"]);
+    $modeloDoctores->setNombre($_POST["nombre"]);
+    $modeloDoctores->setApellido($_POST["apellido"]);
+    $modeloDoctores->setTelefono($_POST["telefono"]);
+    $modeloUsuarios->setCorreo($_POST["correo"]);
+    $modeloUsuarios->setIdUsuario($id_usuario);
+
+    $insercion = $modeloDoctores->RegistrarAdmin();
+
+    if (is_array($insercion) && $insercion[0] === "exito") {
+        $modeloBitacora->setTabla("usuario");
+        $modeloBitacora->setActividad("Ha insertado un administrador");
+        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+        $modeloBitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $insercion]);
+        exit;
+    }
+}
 
 
-//     if (is_array($$id_usuario) && $$id_usuario[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha modificado un administrador ");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $id_usuario]);
-//         exit;
-//     }
-// }
+function editarAdministrador()
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    $modeloBitacora = new ModeloBitacora();
+
+    $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
+    $modeloUsuarios->setUsuario($_POST["usuario"]);
+    $modeloUsuarios->setImagen($_FILES['imagenUsuario']["name"]);
+    $modeloUsuarios->setImagenTemporal($_FILES['imagenUsuario']['tmp_name']);
+
+    $id_usuario = $modeloUsuarios->updateUsuario();
+
+    // Guardar la bitacora
+    $modeloBitacora->setTabla("usuario");
+    $modeloBitacora->setActividad("Ha modificado un administrador");
+    $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+    $modeloBitacora->insertarBitacora();
 
 
-// function eliminarAdministrador()
-// {
-//     $eliminacion = $this->modelo->eliminacionLogica($_POST["id_usuario"]);
+    if (is_array($id_usuario) && $id_usuario[0] === "exito") {
+        $modeloBitacora->setTabla("usuario");
+        $modeloBitacora->setActividad("Ha modificado un administrador");
+        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+        $modeloBitacora->insertarBitacora();
 
-//     if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "usuario", "Ha eliminado un administador ");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $eliminacion]);
-//         exit;
-//     }
-// }
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $id_usuario]);
+        exit;
+    }
+}
 
-// function verificarPassw()
-// {
-//     if (isset($_POST["passwordActual"])) {
-//         $datosU = $this->inicioSesion->validarIniciarSesion("WDaniel123", $_POST["passwordActual"]);
-//         $verificar = ($datosU) ? "existe" : false;
-//         if ($verificar == "existe") {
-//             // Generamos la contraseña encriptada de la contraseña ingresada
-//             $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
-//             $this->recuperarContr->updatePassword($datosU["id_usuario"], $passwordEncrip);
+function eliminarAdministrador()
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    $modeloBitacora = new ModeloBitacora();
 
-//             echo json_encode(['ok' => true, 'data' => $datosU]);
-//         } else {
-//             http_response_code(409);
-//             echo json_encode(['ok' => false, 'error' => $_POST]);
-//             exit;
-//         }
-//     }
-// }
+    $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
+
+    $eliminacion = $modeloUsuarios->eliminacionLogica();
+
+    if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+        $modeloBitacora->setTabla("usuario");
+        $modeloBitacora->setActividad("Ha eliminado un administrador");
+        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+        $modeloBitacora->insertarBitacora();
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $eliminacion]);
+        exit;
+    }
+}
+
+function verificarPassw()
+{
+    if (isset($_POST["passwordActual"])) {
+        $modeloInicioSesion = new ModeloInicioSesion();
+        $modeloRecuperarContr = new ModeloRecuperarContr();
+        $modeloUsuarios = new ModeloUsuarios();
+
+        $modeloInicioSesion->setUsuario($_POST["usuario"]);
+        $modeloInicioSesion->setPassword($_POST["passwordActual"]);
+
+        $datosU = $modeloInicioSesion->validarIniciarSesion();
+        $verificar = ($datosU) ? "existe" : false;
+        if ($verificar == "existe") {
+            // Generamos la contraseña encriptada de la contraseña ingresada
+            $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
+
+            $modeloUsuarios->setIdUsuario($datosU["id_usuario"]);
+            $modeloUsuarios->setPassword($passwordEncrip);
+
+            $modeloRecuperarContr->updatePassword();
+
+            echo json_encode(['ok' => true, 'data' => $datosU]);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $_POST]);
+            exit;
+        }
+    }
+}
 
 // function permisos($id_rol, $permiso, $modulo)
 // {

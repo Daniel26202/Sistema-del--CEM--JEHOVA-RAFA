@@ -8,80 +8,118 @@ use App\modelos\ModeloPermisos;
 
 function mostrar($parametro)
 {
+    $modeloRoles = new ModeloRoles();
+
     $ayuda = "btnayudaRoles";
     $vistaActiva = "roles";
-    // $roles = $this->modelo->roles();
-    // $modulos = require_once './src/vistas/vistaRoles/modal/listaModulos.php';
+    $roles = $modeloRoles->roles();
+    $modulos = require_once './src/vistas/vistaRoles/modal/listaModulos.php';
     require_once './src/vistas/vistaRoles/vistaRoles.php';
 }
 
-    //  function mostrarAjax()
-    // {
-    //     echo json_encode($this->modelo->roles());
-    // }
+function mostrarAjax()
+{
+    $modeloRoles = new ModeloRoles();
 
-    //  function mostrarPermisos($id_rol, $modulo)
-    // {
-    //     $this->modelo->mostrarPermisos($id_rol, $modulo);
-    // }
+    echo json_encode($modeloRoles->roles());
+}
 
+function mostrarPermisos($id_rol, $modulo)
+{
+    $modeloPermisos = new ModeloPermisos();
+    $modeloRoles = new ModeloRoles();
 
-    // //guardar el rol
-
-    //  function guardarRol()
-    // {
-
-    //     $insercion = $this->modelo->insertar($_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"]);
-
-    //     if (is_array($insercion) && $insercion[0] === "exito") {
-    //         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Insertado un nuevo rol");
-
-    //         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-    //     } else {
-    //         http_response_code(409);
-    //         echo json_encode(['ok' => false, 'error' => $insercion]);
-    //         exit;
-    //     }
-    // }
+    $modeloRoles->setIdRol($id_rol);
+    $modeloPermisos->setModulo($modulo);
+    $modeloRoles->mostrarPermisos();
+}
 
 
-    // //modiicar rol
-    //  function modificarRol()
-    // {
+//guardar el rol
 
-    //     $edicion =  $this->modelo->editar($_POST["id_rol"], $_POST["nombre"], $_POST["descripcion"], $_POST["modulos"], $_POST["permisos"], $_POST['nombreRegistrado']);
+function guardarRol()
+{
+    $modeloPermisos = new ModeloPermisos();
+    $modeloRoles = new ModeloRoles();
+    $modeloBitacora = new ModeloBitacora();
+
+    $modeloRoles->setNombre($_POST["nombre"]);
+    $modeloRoles->setDescripcion($_POST["descripcion"]);
+    $modeloPermisos->setModulo($_POST["modulos"]);
+    $modeloPermisos->setPermiso($_POST["permisos"]);
+
+    $insercion = $modeloRoles->insertar();
+
+    if (is_array($insercion) && $insercion[0] === "exito") {
+        $modeloBitacora->setTabla("Roles");
+        $modeloBitacora->setActividad("Ha Insertado un nuevo rol");
+        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+        $modeloBitacora->insertarBitacora();
+
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $insercion]);
+        exit;
+    }
+}
 
 
-    //     if (is_array($edicion) && $edicion[0] === "exito") {
-    //         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "Roles", "Ha Modiicado un rol");
+//modiicar rol
+function modificarRol()
+{
+    $modeloPermisos = new ModeloPermisos();
+    $modeloRoles = new ModeloRoles();
+    $modeloBitacora = new ModeloBitacora();
 
-    //         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-    //     } else {
-    //         http_response_code(409);
-    //         echo json_encode(['ok' => false, 'error' => $edicion]);
-    //         exit;
-    //     }
-    // }
+    $modeloRoles->setIdRol($_POST["id_rol"]);
+    $modeloRoles->setNombre($_POST["nombre"]);
+    $modeloRoles->setDescripcion($_POST["descripcion"]);
+    $modeloRoles->setNombreRegistrado($_POST['nombreRegistrado']);
+    $modeloPermisos->setModulo($_POST["modulos"]);
+    $modeloPermisos->setPermiso($_POST["permisos"]);
 
-    // //eliminar Rol
-    //  function eliminarRol($datos)
-    // {
-    //     $id_rol = $datos[0];
-    //     $id_usuario = $datos[1];
-    //     $eliminacion = $this->modelo->eliminar($id_rol);
+    $edicion =  $modeloRoles->editar();
 
 
-    //     if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-    //         $this->bitacora->insertarBitacora($id_usuario, "Roles", "Ha Eliminado un rol");
+    if (is_array($edicion) && $edicion[0] === "exito") {
+        $modeloBitacora->setTabla("Roles");
+        $modeloBitacora->setActividad("Ha Modificado un rol");
+        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+        $modeloBitacora->insertarBitacora();
 
-    //         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-    //     } else {
-    //         http_response_code(409);
-    //         echo json_encode(['ok' => false, 'error' => $eliminacion]);
-    //         exit;
-    //     }
-    // }
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $edicion]);
+        exit;
+    }
+}
 
+//eliminar Rol
+function eliminarRol($datos)
+{
+    $modeloRoles = new ModeloRoles();
+    $modeloBitacora = new ModeloBitacora();
+
+    $id_rol = $datos[0];
+    $id_usuario = $datos[1];
+    $modeloRoles->setIdRol($id_rol);
+    $eliminacion = $modeloRoles->eliminar();
+
+    if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+        $modeloBitacora->setTabla("Roles");
+        $modeloBitacora->setActividad("Ha Eliminado un rol");
+        $modeloBitacora->setId_usuario($id_usuario);
+        $modeloBitacora->insertarBitacora();
+
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $eliminacion]);
+        exit;
+    }
+}
 
     //  function permisos($id_rol, $permiso, $modulo)
     // {

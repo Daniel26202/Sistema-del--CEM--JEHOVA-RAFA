@@ -152,7 +152,7 @@ function guardarFactura()
 		$modeloBitacora->setActividad("Ha facturado servicios y/o insumos");
 		$modeloBitacora->setTabla("factura");
 		$modeloBitacora->insertarBitacora();
-		
+
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $modeloFactura->getIdFactura());
 	} else {
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
@@ -181,7 +181,11 @@ function mostrarPDF3()
 	require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
 }
 
-	//  function permisos($id_rol, $permiso, $modulo)
-	// {
-	// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-	// }
+function permisos($id_rol, $permiso, $modulo)
+{
+	$modeloPermisos = new ModeloPermisos();
+	$modeloPermisos->setIdRol($id_rol);
+	$modeloPermisos->setPermiso($permiso);
+	$modeloPermisos->setModulo($modulo);
+	return $modeloPermisos->gestionarPermisos();
+}

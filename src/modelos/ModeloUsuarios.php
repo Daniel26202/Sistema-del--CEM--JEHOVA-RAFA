@@ -8,7 +8,7 @@ use App\modelos\ModelBase;
 class ModeloUsuarios extends ModelBase
 {
 
-    private $id_usuario, $usuario, $password, $correo, $imagen, $imagenTemporal, $id_rol;
+    private $id_usuario, $usuario, $password, $correo, $imagen, $imagenTemporal, $id_rol, $usuarioRegistrado;
 
     public function __construct($dbSystem = false)
     {
@@ -62,7 +62,7 @@ class ModeloUsuarios extends ModelBase
 
 
     //esto es para editar un usuario.
-    public function updateUsuario($usuario, $idUsuario, $imagenUsuario, $imagenUsuarioTemporal, $usuarioRegistrado)
+    public function updateUsuario()
     {
         try {
             $sql = "SELECT * from usuario where id_usuario=:id_usuario";
@@ -71,6 +71,8 @@ class ModeloUsuarios extends ModelBase
             if ($validar == []) {
                 throw new \Exception("Fallo");
             }
+            $usuario = $this->getUsuario();
+            $usuarioRegistrado = $this->getUsuarioRegistrado();
 
             if ($usuario == $usuarioRegistrado) {
             } else {
@@ -104,7 +106,7 @@ class ModeloUsuarios extends ModelBase
                     unlink($rutaImagenAntigua);
                 }
 
-                move_uploaded_file($this->getImagenTemporal(), "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $idUsuario . "_" . $this->getImagen()['name']);
+                move_uploaded_file($this->getImagenTemporal(), "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $this->getImagen()['name']);
             }
             return ["exito"];
         } catch (\Exception $e) {
@@ -113,7 +115,7 @@ class ModeloUsuarios extends ModelBase
     }
 
     //esto es para editar el estado (en activo a desactivo) del usuario.
-    public function eliminacionLogica($idUsuario)
+    public function eliminacionLogica()
     {
         try {
             $sql = "SELECT * from usuario where id_usuario=:id_usuario";
@@ -131,7 +133,7 @@ class ModeloUsuarios extends ModelBase
             return $e->getMessage();
         }
     }
-    public function AgregarUsuarios($usuario, $password, $correo, $id_rol, $imagenUsuario)
+    public function AgregarUsuarios()
     {
         try {
             $imagenU = $this->getImagen();
@@ -199,6 +201,11 @@ class ModeloUsuarios extends ModelBase
     public function getUsuario()
     {
         return $this->usuario;
+    }
+
+    public function getUsuarioRegistrado()
+    {
+        return $this->usuarioRegistrado;
     }
     public function getPassword()
     {
@@ -300,6 +307,14 @@ class ModeloUsuarios extends ModelBase
             throw new \InvalidArgumentException("El usuario esta mal escrito.");
         }
         $this->usuario = $usuario;
+    }
+
+    public function setUsuarioRegistrado($usuario)
+    {
+        if (!preg_match("/^[a-zA-Z0-9._-]{8,16}$/", $usuario)) {
+            throw new \InvalidArgumentException("El usuario esta mal escrito.");
+        }
+        $this->usuarioRegistrado = $usuario;
     }
 
     public function setPassword($password)

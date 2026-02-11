@@ -2,6 +2,7 @@
 
 use App\modelos\ModeloReporte;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloFactura;
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloPermisos;
 // use FPDF\FPDF; 	
@@ -11,100 +12,139 @@ use App\modelos\ModeloPermisos;
 
 function reportes($parametro)
 {
+	$modeloReporte = new ModeloReporte();
+	$modeloInsumo = new ModeloInsumo();
 
 	$ayuda = "btnayudaReporte";
-	// $facturas = $this->modelo->consultarFactura();
-	// $anuladas = $this->modelo->consultarFacturaAnuladas();
-	// $insumos = $this->insumo->insumos();
-	// require_once './src/vistas/vistaReportes/vistaReportes.php';
+	$facturas = $modeloReporte->consultarFactura();
+	$anuladas = $modeloReporte->consultarFacturaAnuladas();
+	$insumos = $modeloInsumo->insumos();
+	require_once './src/vistas/vistaReportes/vistaReportes.php';
 
 	echo 'reportes';
-	
 }
-// function buscarPDF()
-// {
-// 	require_once './src/vistas/vistaReportes/vistaReporteCitasPdf.php';
-// }
 
-// function buscarEntradasInsumosPDF()
-// {
-// 	require_once './src/vistas/vistaReportes/vistaReporteEntradasPdf.php';
-// }
-// function factura($parametro)
-// {
-// 	$datosFactura = $this->modelo->consultarFacturaSinCita($parametro[0]);
-// 	$datosPago = $this->modelo->consultarPagoFactura($parametro[0]);
-// 	$datosServiciosExtras = $this->modelo->consultarServiciosExtras($parametro[0]);
-// 	$datosInsumos = $this->modelo->consultarFacturaInsumo($parametro[0]);
-// 	// Verificar si se ha enviado el ID de cita
-// 	if (isset($_GET["id_cita"]) && !empty($_GET["id_cita"])) {
-// 		// Si se cumple la condición, requerir el primer archivo
-// 		require_once './src/vistas/vistaReportes/vistaFacturaPdf2.php';
-// 	} else {
-// 		// Si no se cumple la condición, requerir el segundo archivo
-// 		require_once './src/vistas/vistaReportes/vistaFacturaPdf.php';
-// 	}
-// }
-// function pacientePDF($datos)
-// {
-// 	$pacientes = $this->modelo->pdfPaciente($datos[0]);
-// 	require_once './src/vistas/vistaReportes/vistaPacientePDF.php';
-// }
-// function insumosPDF()
-// {
-// 	require_once './src/vistas/vistaReportes/vistaInsumosPDF.php';
-// }
-// function reportesFactura()
-// {
-// 	require_once './src/vistas/vistaReportes/vistaReporteFacturaPDF.php';
-// }
-// function reportesFacturasAnuladas()
-// {
-// 	require_once './src/vistas/vistaReportes/vistaReporteFacturaAnuladas.php';
-// }
-// function buscarPago($datos)
-// {
-// 	$id_factura = $datos[0];
-// 	$respuesta = $this->modelo->consultarPagoFactura($id_factura);
+function buscarPDF()
+{
+	require_once './src/vistas/vistaReportes/vistaReporteCitasPdf.php';
+}
 
-// 	echo json_encode($respuesta);
-// }
-// function buscarMasServicios($datos)
-// {
-// 	$id_factura = $datos[0];
-// 	$respuesta = $this->modelo->consultarServiciosExtras($id_factura);
+function buscarEntradasInsumosPDF()
+{
+	require_once './src/vistas/vistaReportes/vistaReporteEntradasPdf.php';
+}
 
-// 	echo json_encode($respuesta);
-// }
-// function buscarInsumos($datos)
-// {
+function factura($parametro)
+{
+	$modeloReporte = new ModeloReporte();
+	$modeloFactura = new ModeloFactura();
 
-// 	$id_factura = $datos[0];
-// 	$respuesta = $this->modelo->consultarFacturaInsumo($id_factura);
+	$modeloFactura->setIdFactura($parametro[0]);
 
-// 	echo json_encode($respuesta);
-// }
-// function buscarCita()
-// {
+	$datosFactura = $modeloReporte->consultarFacturaSinCita();
+	$datosPago = $modeloReporte->consultarPagoFactura();
+	$datosServiciosExtras = $modeloReporte->consultarServiciosExtras();
+	$datosInsumos = $modeloReporte->consultarFacturaInsumo();
+	// Verificar si se ha enviado el ID de cita
+	if (isset($_GET["id_cita"]) && !empty($_GET["id_cita"])) {
+		// Si se cumple la condición, requerir el primer archivo
+		require_once './src/vistas/vistaReportes/vistaFacturaPdf2.php';
+	} else {
+		// Si no se cumple la condición, requerir el segundo archivo
+		require_once './src/vistas/vistaReportes/vistaFacturaPdf.php';
+	}
+}
+function pacientePDF($datos)
+{
+	$modeloReporte = new ModeloReporte();
 
-// 	$respuesta = $this->modelo->consultarcitafactura($_GET["id_factura"]);
+	$pacientes = $modeloReporte->pdfPaciente();
+	require_once './src/vistas/vistaReportes/vistaPacientePDF.php';
+}
+function insumosPDF()
+{
+	require_once './src/vistas/vistaReportes/vistaInsumosPDF.php';
+}
+function reportesFactura()
+{
+	require_once './src/vistas/vistaReportes/vistaReporteFacturaPDF.php';
+}
 
-// 	echo json_encode($respuesta);
-// }
-// function anularFactura()
-// {
+function reportesFacturasAnuladas()
+{
+	require_once './src/vistas/vistaReportes/vistaReporteFacturaAnuladas.php';
+}
 
-// 	$anular = $this->modelo->anularFac($_POST["id_factura"]);
+function buscarPago($datos)
+{
+	$id_factura = $datos[0];
+	$modeloReporte = new ModeloReporte();
+	$modeloFactura = new ModeloFactura();
+	$modeloFactura->setIdFactura($id_factura);
 
-// 	if ($anular) {
-// 		// Guardo la bitacora
-// 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "factura", "Ha anula una factura");
-// 		// // $respuesta =$this->modelo->cantidadAnulada($array);
-// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/anulada");
-// 	} else {
-// 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/errorSistem");
-// 	}
-// }
+	$respuesta = $modeloReporte->consultarPagoFactura();
+
+	echo json_encode($respuesta);
+}
+
+function buscarMasServicios($datos)
+{
+	$modeloReporte = new ModeloReporte();
+	$modeloFactura = new ModeloFactura();
+
+	$id_factura = $datos[0];
+
+	$modeloFactura->setIdFactura($id_factura);
+	$respuesta = $modeloReporte->consultarServiciosExtras();
+
+	echo json_encode($respuesta);
+}
+
+function buscarInsumos($datos)
+{
+	$modeloReporte = new ModeloReporte();
+	$modeloFactura = new ModeloFactura();
+
+	$id_factura = $datos[0];
+
+	$modeloFactura->setIdFactura($id_factura);
+	$respuesta = $modeloReporte->consultarFacturaInsumo();
+
+	echo json_encode($respuesta);
+}
+
+function buscarCita()
+{
+	$modeloReporte = new ModeloReporte();
+	$modeloFactura = new ModeloFactura();
+
+	$modeloFactura->setIdFactura($_GET["id_factura"]);
+	$respuesta = $modeloReporte->consultarcitafactura();
+
+	echo json_encode($respuesta);
+}
+
+function anularFactura()
+{
+	$modeloReporte = new ModeloReporte();
+	$modeloBitacora = new ModeloBitacora();
+	$modeloFactura = new ModeloFactura();
+
+	$modeloFactura->setIdFactura($_POST["id_factura"]);
+	$anular = $modeloReporte->anularFac();
+
+	if ($anular) {
+		// Guardo la bitacora
+		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$modeloBitacora->setTabla("factura");
+		$modeloBitacora->setActividad("Ha anulado una factura");
+		$modeloBitacora->insertarBitacora();
+		// // $respuesta =$this->modelo->cantidadAnulada($array);
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/anulada");
+	} else {
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/errorSistem");
+	}
+}
 
 // function permisos($id_rol, $permiso, $modulo)
 // {

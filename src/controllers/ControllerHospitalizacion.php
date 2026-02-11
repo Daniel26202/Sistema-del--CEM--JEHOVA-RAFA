@@ -2,50 +2,62 @@
 
 use App\modelos\ModeloHospitalizacion;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloControl;
+use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
+use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloSintomas;
 
 
 
-// function semaforo()
-// {
-//     // verifica si la sesión esta activa.
-//     if (session_status() !== PHP_SESSION_ACTIVE) {
-//         session_start();
-//     }
-//     $cantidadHP = $this->modelo->semaforo();
-//     $_SESSION['semaforo'] = $cantidadHP[0];
-// }
+function semaforo()
+{
+    // verifica si la sesión esta activa.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    $modeloHosp = new ModeloHospitalizacion();
+    $cantidadHP = $modeloHosp->semaforo();
+    $_SESSION['semaforo'] = $cantidadHP[0];
+}
 
 // mostrar los datos de la tabla (hospitalizaciones pendientes) 
-// function traerSesion()
-// {
-//     // verifica si la sesión esta activa.
-//     if (session_status() !== PHP_SESSION_ACTIVE) {
-//         session_start();
-//     }
-//     $validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
-//     $sesion = [$_SESSION['rol'], $validacionCargo, $_SESSION['semaforo']];
-//     // datos de las h. pendientes
-//     $datosH = $this->modelo->selectsH();
-//     $array = [$sesion, $datosH];
-//     echo json_encode($array);
-// }
-// // mostrar los datos de la tabla (hospitalizaciones realizadas) 
-// function traerSesionR()
-// {
-//     // verifica si la sesión esta activa.
-//     if (session_status() !== PHP_SESSION_ACTIVE) {
-//         session_start();
-//     }
-//     $validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
-//     // datos de las h. realizadas
-//     $datosH = $this->modelo->selectsHR();
-//     $array = [$validacionCargo, $datosH];
-//     echo json_encode($array);
-// }
+function traerSesion()
+{
+    // verifica si la sesión esta activa.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    $modeloHosp = new ModeloHospitalizacion();
+    $modeloInicio = new ModeloInicio();
+
+    $modeloInicio->setIdPersonal($_SESSION['id_personal']);
+    $validacionCargo = $modeloInicio->comprobarCargo();
+    $sesion = [$_SESSION['rol'], $validacionCargo, $_SESSION['semaforo']];
+    // datos de las h. pendientes
+    $datosH = $modeloHosp->selectsH();
+    $array = [$sesion, $datosH];
+    echo json_encode($array);
+}
+// mostrar los datos de la tabla (hospitalizaciones realizadas) 
+function traerSesionR()
+{
+    // verifica si la sesión esta activa.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    $modeloHosp = new ModeloHospitalizacion();
+    $modeloInicio = new ModeloInicio();
+
+    $modeloInicio->setIdPersonal($_SESSION['id_personal']);
+    $validacionCargo = $modeloInicio->comprobarCargo();
+    // datos de las h. realizadas
+    $datosH = $modeloHosp->selectsHR();
+    $array = [$validacionCargo, $datosH];
+    echo json_encode($array);
+}
 
 function hospitalizacion($parametro)
 {
@@ -54,246 +66,348 @@ function hospitalizacion($parametro)
         session_start();
     }
 
-    // $idUsuario = $_SESSION['id_usuario'];
-    // $validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
-    // // datos de los insumos
-    // $datosI = $this->modelo->selectsInsumos();
-    // $doctores = $this->modelo->selectDoctores();
+    $modeloHosp = new ModeloHospitalizacion();
+    $modeloInicio = new ModeloInicio();
+    $modeloSintomas = new ModeloSintomas();
+    $modeloPatologia = new ModeloPatologia();
 
-    // $datosS = $this->modeloSintomas->selects();
-    // $datosPatologias = $this->modeloPatologia->mostrarPatologias();
+    $idUsuario = $_SESSION['id_usuario'];
+    $modeloInicio->setIdPersonal($_SESSION['id_personal']);
+    $validacionCargo = $modeloInicio->comprobarCargo();
+    // datos de los insumos
+    $datosI = $modeloHosp->selectsInsumos();
+    $doctores = $modeloHosp->selectDoctores();
+
+    $datosS = $modeloSintomas->selects();
+    $datosPatologias = $modeloPatologia->mostrarPatologias();
 
     require_once "./src/vistas/vistaHospitalizacion/hospitalizacion.php";
-   
 }
-// function hospitalizacionesRealizadas($parametro)
-// {
-//     // verifica si la sesión esta activa.
-//     if (session_status() !== PHP_SESSION_ACTIVE) {
-//         session_start();
-//     }
+function hospitalizacionesRealizadas($parametro)
+{
+    // verifica si la sesión esta activa.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
 
-//     $idUsuario = $_SESSION['id_usuario'];
-//     $validacionCargo = $this->inicio->comprobarCargo($_SESSION['id_personal']);
-//     require_once "./src/vistas/vistaHospitalizacion/hospitalizacionesRealizadas.php";
-// }
+    $modeloInicio = new ModeloInicio();
 
-// function selectServiciosD()
-// {
-//     $servicios = $this->modelo->selectServiciosD();
-//     echo json_encode($servicios);
-// }
-// function serviciosDH($datos)
-// {
-//     $idH = $datos[0];
-//     $servicios = $this->modelo->selectServiciosDH($idH);
-//     echo json_encode($servicios);
-// }
+    $idUsuario = $_SESSION['id_usuario'];
+    $modeloInicio->setIdPersonal($_SESSION['id_personal']);
+    $validacionCargo = $modeloInicio->comprobarCargo();
+    require_once "./src/vistas/vistaHospitalizacion/hospitalizacionesRealizadas.php";
+}
 
-// //validar paciente 
-// function validarPaciente()
-// {
-//     $vC = $this->modelo->validarPacienteH($_POST["cedula"]);
-//     echo json_encode($vC);
-// }
+function selectServiciosD()
+{
+    $modeloHosp = new ModeloHospitalizacion();
 
-// //mostrar la información de un paciente doctor y control de la db 
-// function mostrarInformacionPCD()
-// {
-//     $info = $this->modelo->select($_POST["cedula"]);
-//     echo json_encode($info);
-// }
+    $servicios = $modeloHosp->selectServiciosD();
+    echo json_encode($servicios);
+}
+function serviciosDH($datos)
+{
+    $modeloHosp = new ModeloHospitalizacion();
 
-// //mostrar la información de todos los insumos de la db 
-// function mostrarInsumos($datos)
-// {
-//     $nombre = $datos[0];
-//     $infoInsumos = $this->modelo->buscarInsumos($nombre);
-//     echo json_encode($infoInsumos);
-// }
+    $idH = $datos[0];
+    $modeloHosp->setIdH($idH);
+    $servicios = $modeloHosp->selectServiciosDH();
+    echo json_encode($servicios);
+}
 
-// //mostrar la información de un insumo de la db 
-// function mostrarUnInsumo($datos)
-// {
-//     $id = $datos[0];
-//     $infoInsumo = $this->modelo->buscarUnInsumo($id);
-//     echo json_encode($infoInsumo);
-// }
+//validar paciente 
+function validarPaciente()
+{
+    $modeloHosp = new ModeloHospitalizacion();
+    $modeloPacientes = new ModeloPacientes();
 
-// //para agregar hospitalización
-// function agregarH()
-// {
+    $modeloPacientes->setCedula($_POST["cedula"]);
+    $vC = $modeloHosp->validarPacienteH();
+    echo json_encode($vC);
+}
 
-//     if (empty($_POST['id_personal']) || empty($_POST['diagnostico']) || empty($_POST['historial'])) {
-//         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
-//         return;
-//     }
-//     // verifica si la sesión esta activa.
-//     if (session_status() !== PHP_SESSION_ACTIVE) {
-//         session_start();
-//     }
-//     if ($_SESSION["semaforo"] >= 2) {
-//         header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errSemaforo");
-//         // echo "Las camillas disponibles estan ocupadas";
-//     } else {
+//mostrar la información de un paciente doctor y control de la db 
+function mostrarInformacionPCD()
+{
+    $modeloHosp = new ModeloHospitalizacion();
+    $modeloPacientes = new ModeloPacientes();
+    $modeloPacientes->setCedula($_POST["cedula"]);
+    $info = $modeloHosp->select();
+    echo json_encode($info);
+}
 
-//         $verificaH = $this->modelo->verificaHA($_POST["id_paciente"], $_POST["id_personal"]);
+//mostrar la información de todos los insumos de la db 
+function mostrarInsumos($datos)
+{
+    $modeloHosp = new ModeloHospitalizacion();
 
-//         if (isset($_POST["id_paciente"])) {
+    $nombre = $datos[0];
+    $modeloHosp->setNombreInsumo($nombre);
+    $infoInsumos = $modeloHosp->buscarInsumos();
+    echo json_encode($infoInsumos);
+}
 
-//             // es para validar si existe la hospitalización
-//             if ($verificaH) {
-//                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
-//             } else {
-//                 // no existe
-//                 $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
-//                 $cantidadI = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
+//mostrar la información de un insumo de la db 
+function mostrarUnInsumo($datos)
+{
+    $modeloHosp = new ModeloHospitalizacion();
 
-//                 $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : false;
-//                 $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
+    $id = $datos[0];
+    $modeloHosp->setIdInsumo($id);
+    $infoInsumo = $modeloHosp->buscarUnInsumo();
+    echo json_encode($infoInsumo);
+}
 
+//para agregar hospitalización
+function agregarH()
+{
 
-//                 print_r($_POST);
-//                 $this->modelo->insertarH($_POST["fecha"], $idInsumo, $cantidadI, $_POST["historial"], $_POST["id_personal"], $_POST["id_paciente"], $_POST["severidad"], $cantidadS, $idServicio, $_POST["diagnostico"]);
+    if (empty($_POST['id_personal']) || empty($_POST['diagnostico']) || empty($_POST['historial'])) {
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
+        return;
+    }
+    // verifica si la sesión esta activa.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    if ($_SESSION["semaforo"] >= 2) {
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errSemaforo");
+        // echo "Las camillas disponibles estan ocupadas";
+    } else {
+        $modeloHosp = new ModeloHospitalizacion();
+        $modeloPacientes = new ModeloPacientes();
+        $modeloDoctores = new ModeloDoctores();
+        $modeloBitacora = new ModeloBitacora();
+        $modeloControl = new ModeloControl();
 
-//                 // Guardar la bitacora
-//                 $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha Insertado una hospitalizacion");
+        $modeloPacientes->setIdPaciente($_POST["id_paciente"]);
+        $modeloDoctores->setIdDoctor($_POST["id_personal"]);
+        $verificaH = $modeloHosp->verificaHA();
 
-//                 header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
-//             }
-//         }
-//     }
-// }
+        if (isset($_POST["id_paciente"])) {
 
-// // traer datos de los insumos correspondiendo a la hospitalización que se edita.
-// function traerInsuDHEd($datos)
-// {
-//     $idH = $datos[0];
-//     $datosIDH = $this->modelo->EInsumosM($idH);
-//     echo json_encode($datosIDH);
-// }
+            // es para validar si existe la hospitalización
+            if ($verificaH) {
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
+            } else {
+                // no existe
+                $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
+                $cantidadI = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
 
-// // traer datos de los insumos correspondiendo a la hospitalización que se edita.
-// function modificarH()
-// {
-
-//     $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : [];
-//     $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
-
-
-
-//     // para verificar y agregar
-//     $idInsumo = (isset($_POST["id_insumoA"])) ? $_POST["id_insumoA"] : false;
-//     $cantidadA = (isset($_POST["cantidadA"])) ? $_POST["cantidadA"] : false;
-//     // para verificar y editar
-//     $idIDH = (isset($_POST["id_idh"])) ? $_POST["id_idh"] : false;
-//     $cantidadE = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
-//     // empty() : verifica si la variable esta vacía, si esta vacío devolverá true. 
-//     // para verificar si a eliminado (nota 0 es el input 1, uno es el input 2)
-//     $idInsElim = (empty($_POST["id_insumos_eliminados"][0]) && empty($_POST["id_insumos_eliminados"][1])) ? false : $_POST["id_insumos_eliminados"];
-
-//     // si un input esta vacío y el otro no
-//     $idInsElimUD = ((empty($_POST["id_insumos_eliminados"][0]) && !empty($_POST["id_insumos_eliminados"][1])) || (!empty($_POST["id_insumos_eliminados"][0]) && empty($_POST["id_insumos_eliminados"][1]))) ? false : true;
-
-//     // si no elimino insumos la variable sera false
-//     if ($idInsElim) {
-
-//         // los dos inputs llenos
-//         if ($idInsElimUD) {
-//             // trasformo el texto en array separando lo por la coma(del segundo input)
-//             $arrayIE = explode(",", $idInsElim[1]);
-//             // elimino el ultimo array
-//             array_pop($arrayIE);
-
-//             // el JSON lo convierto en array. el true es para convertirlo en array asociativo
-//             $array = json_decode($idInsElim[0], true);
-//             // une los valores de los dos array en uno
-//             $arrayIE = array_merge($arrayIE, $array);
-
-//             // aquí se elimina los valores duplicados
-//             $arrayIE = array_unique($arrayIE);
-//             $idInsElim = $arrayIE;
-
-//             // un input vacío y uno lleno.
-//         } else if ($idInsElimUD === false) {
-
-//             // si el primer input está lleno devuelve true
-//             $inputU = (!empty($idInsElim[0])) ? true : false;
-
-//             // si el primer input esta lleno devuelve el primero
-//             if ($inputU) {
-//                 // el JSON lo convierto en array. el true es para convertirlo en array asociativo
-//                 $idInsElim = json_decode($idInsElim[0], true);
-
-//                 // si el primer input no esta lleno devuelve el segundo
-//             } else if ($inputU === false) {
-//                 // trasformo el texto en array separando lo por la coma
-//                 $idInsElim = explode(",", $idInsElim[1]);
-//                 // elimino el ultimo array
-//                 array_pop($idInsElim);
-//             }
-//         }
-//     }
+                $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : false;
+                $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
 
 
+                print_r($_POST);
+                $modeloHosp->setFechaHora($_POST["fecha"]);
+                $modeloHosp->setIdInsumo($idInsumo);
+                $modeloHosp->setCantidadIns($cantidadI);
+                $modeloHosp->setCantidadSer($cantidadS);
+                $modeloHosp->setIdServicio($idServicio);
+                $modeloControl->setHistorial($_POST["historial"]);
+                $modeloControl->setSeveridad($_POST["severidad"]);
+                $modeloControl->setDiagnostico($_POST["diagnostico"]);
+                $modeloDoctores->setIdDoctor($_POST["id_personal"]);
+                $modeloPacientes->setIdPaciente($_POST["id_paciente"]);
+
+                $modeloHosp->insertarH();
+
+                // Guardar la bitacora
+                $modeloBitacora->setTabla("hospitalizacion");
+                $modeloBitacora->setActividad("Ha Insertado una hospitalizacion");
+                $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+                $modeloBitacora->insertarBitacora();
+
+                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
+            }
+        }
+    }
+}
+
+// traer datos de los insumos correspondiendo a la hospitalización que se edita.
+function traerInsuDHEd($datos)
+{
+    $modeloHosp = new ModeloHospitalizacion();
+
+    $idH = $datos[0];
+    $modeloHosp->setIdH($idH);
+    $datosIDH = $modeloHosp->EInsumosM();
+    echo json_encode($datosIDH);
+}
+
+// traer datos de los insumos correspondiendo a la hospitalización que se edita.
+function modificarH()
+{
+    $modeloHosp = new ModeloHospitalizacion();
+    $modeloBitacora = new ModeloBitacora();
+    $modeloControl = new ModeloControl();
 
 
-//     // esto se puede usar $_POST["id_controlE"]. 
-//     $edicion =  $this->modelo->editarH($idInsumo, $cantidadE, $cantidadA, $_POST["historialE"], $_POST["id_h"], $idIDH, $idInsElim, $_POST["diagnostico"], $idServicio, $cantidadS);
+    $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : [];
+    $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
 
-//     // Guardar la bitacora
-//     if (is_array($edicion) && $edicion[0] === "exito") {
-//         $this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "hospitalizacion", "Ha modificado una hospitalización");
-//         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//     } else {
-//         http_response_code(409);
-//         echo json_encode(['ok' => false, 'error' => $edicion]);
-//         exit;
-//     }
-// }
 
-// // elimina la hospitalización lógicamente (lo desactiva).
-// function eliminaL($datos)
-// {
-//     if (isset($datos)) {
-//         $idH = $datos[0];
-//         $id_usuario = $datos[1];
+    // para verificar y agregar
+    $idInsumo = (isset($_POST["id_insumoA"])) ? $_POST["id_insumoA"] : false;
+    $cantidadA = (isset($_POST["cantidadA"])) ? $_POST["cantidadA"] : false;
+    // para verificar y editar
+    $idIDH = (isset($_POST["id_idh"])) ? $_POST["id_idh"] : false;
+    $cantidadE = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
+    // empty() : verifica si la variable esta vacía, si esta vacío devolverá true. 
+    // para verificar si a eliminado (nota 0 es el input 1, uno es el input 2)
+    $idInsElim = (empty($_POST["id_insumos_eliminados"][0]) && empty($_POST["id_insumos_eliminados"][1])) ? false : $_POST["id_insumos_eliminados"];
 
-//         $eliminacion = $this->modelo->eliminaLogico($idH);
+    // si un input esta vacío y el otro no
+    $idInsElimUD = ((empty($_POST["id_insumos_eliminados"][0]) && !empty($_POST["id_insumos_eliminados"][1])) || (!empty($_POST["id_insumos_eliminados"][0]) && empty($_POST["id_insumos_eliminados"][1]))) ? false : true;
 
-//         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-//             $this->bitacora->insertarBitacora($id_usuario, "hospitalizacion", "Ha eliminado una hospitalizacion");
-//             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-//         } else {
-//             http_response_code(409);
-//             echo json_encode(['ok' => false, 'error' => $eliminacion]);
-//             exit;
-//         }
-//     }
-// }
+    // si no elimino insumos la variable sera false
+    if ($idInsElim) {
 
-// // buscar insumos de las hospitalizaciones existentes 
-// function buscarIExH()
-// {
-//     $datosIns = $this->modelo->buscarIEH();
-//     echo json_encode($datosIns);
-// }
+        // los dos inputs llenos
+        if ($idInsElimUD) {
+            // trasformo el texto en array separando lo por la coma(del segundo input)
+            $arrayIE = explode(",", $idInsElim[1]);
+            // elimino el ultimo array
+            array_pop($arrayIE);
 
-// // enviar los datos de la hospitalización a factura 
-// function enviarAFacturar()
-// {
-//     $idH = $_POST["idH"];
-//     date_default_timezone_set('America/Caracas');
-//     $fechaHF = date("Y-m-d H:i:s");
-//     $monto = round($_POST["monto"], 2);
-//     $montoME = round($_POST["montoME"], 2);
-//     $total = round($_POST["total"], 2);
-//     $totalME = round($_POST["totalME"], 2);
-//     $irF = $this->modelo->facturarH($idH, $fechaHF, $monto, $montoME, $total, $totalME, $_POST["historialEnF"], $_POST["sintomas"], $_POST["patologias"], $_POST["nota"], $_POST["indicaciones"], $_POST["fechaRegreso"], $_POST["diagnostico"], $_POST["severidad"]);
-//     echo json_encode(["success" => $irF, "data" => $_POST]);
-// }
+            // el JSON lo convierto en array. el true es para convertirlo en array asociativo
+            $array = json_decode($idInsElim[0], true);
+            // une los valores de los dos array en uno
+            $arrayIE = array_merge($arrayIE, $array);
 
-// function permisos($id_rol, $permiso, $modulo)
-// {
-//     return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }
+            // aquí se elimina los valores duplicados
+            $arrayIE = array_unique($arrayIE);
+            $idInsElim = $arrayIE;
+
+            // un input vacío y uno lleno.
+        } else if ($idInsElimUD === false) {
+
+            // si el primer input está lleno devuelve true
+            $inputU = (!empty($idInsElim[0])) ? true : false;
+
+            // si el primer input esta lleno devuelve el primero
+            if ($inputU) {
+                // el JSON lo convierto en array. el true es para convertirlo en array asociativo
+                $idInsElim = json_decode($idInsElim[0], true);
+
+                // si el primer input no esta lleno devuelve el segundo
+            } else if ($inputU === false) {
+                // trasformo el texto en array separando lo por la coma
+                $idInsElim = explode(",", $idInsElim[1]);
+                // elimino el ultimo array
+                array_pop($idInsElim);
+            }
+        }
+    }
+
+
+
+    $modeloHosp->setIdInsumosA($idInsumo);
+    $modeloHosp->setCantidadE($cantidadE);
+    $modeloHosp->setCantidadA($cantidadA);
+    $modeloHosp->setIdH($_POST["id_h"]);
+    $modeloHosp->setIdInsH($idIDH);
+    $modeloHosp->setIdInsElim($idInsElim);
+    $modeloHosp->setIdServicio($idServicio);
+    $modeloHosp->setCantidadSer($cantidadS);
+
+    $modeloControl->setHistorial($_POST["historialE"]);
+    $modeloControl->setDiagnostico($_POST["diagnostico"]);
+
+
+    // esto se puede usar $_POST["id_controlE"]. 
+    $edicion =  $modeloHosp->editarH();
+
+    // Guardar la bitacora
+    if (is_array($edicion) && $edicion[0] === "exito") {
+        $modeloBitacora->setTabla("hospitalizacion");
+        $modeloBitacora->setActividad("Ha modificado una hospitalización");
+        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+        $modeloBitacora->insertarBitacora();
+
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $edicion]);
+        exit;
+    }
+}
+
+// elimina la hospitalización lógicamente (lo desactiva).
+function eliminaL($datos)
+{
+    if (isset($datos)) {
+        $modeloHosp = new ModeloHospitalizacion();
+        $modeloBitacora = new ModeloBitacora();
+
+        $idH = $datos[0];
+        $id_usuario = $datos[1];
+
+        $modeloHosp->setIdH($idH);
+        $eliminacion = $modeloHosp->eliminaLogico();
+
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+            $modeloBitacora->setTabla("hospitalizacion");
+            $modeloBitacora->setActividad("Ha eliminado una hospitalizacion");
+            $modeloBitacora->setId_usuario($id_usuario);
+            $modeloBitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
+        }
+    }
+}
+
+// buscar insumos de las hospitalizaciones existentes 
+function buscarIExH()
+{
+    $modeloHosp = new ModeloHospitalizacion();
+
+    $datosIns = $modeloHosp->buscarIEH();
+    echo json_encode($datosIns);
+}
+
+// enviar los datos de la hospitalización a factura 
+function enviarAFacturar()
+{
+    $modeloHosp = new ModeloHospitalizacion();
+    $modeloControl = new ModeloControl();
+
+    $idH = $_POST["idH"];
+    date_default_timezone_set('America/Caracas');
+    $fechaHF = date("Y-m-d H:i:s");
+    $monto = round($_POST["monto"], 2);
+    $montoME = round($_POST["montoME"], 2);
+    $total = round($_POST["total"], 2);
+    $totalME = round($_POST["totalME"], 2);
+
+    $modeloHosp->setIdH($idH);
+    $modeloHosp->setFechaHoraFinal($fechaHF);
+    $modeloHosp->setMonto($monto);
+    $modeloHosp->setMontoME($montoME);
+    $modeloHosp->setTotal($total);
+    $modeloHosp->setTotalME($totalME);
+
+    $modeloControl->setHistorial($_POST["historialEnF"]);
+    $modeloControl->setSintomas($_POST["sintomas"]);
+    $modeloControl->setPatologias($_POST["patologias"]);
+    $modeloControl->setNota($_POST["nota"]);
+    $modeloControl->setIndicaciones($_POST["indicaciones"]);
+    $modeloControl->setFechaRegreso($_POST["fechaRegreso"]);
+    $modeloControl->setDiagnostico($_POST["diagnostico"]);
+    $modeloControl->setSeveridad($_POST["severidad"]);
+
+    $irF = $modeloHosp->facturarH();
+    echo json_encode(["success" => $irF, "data" => $_POST]);
+}
+
+function permisos($id_rol, $permiso, $modulo)
+{
+    $modeloPermisos = new ModeloPermisos();
+    $modeloPermisos->setIdRol($id_rol);
+    $modeloPermisos->setPermiso($permiso);
+    $modeloPermisos->setModulo($modulo);
+    return $modeloPermisos->gestionarPermisos();
+}

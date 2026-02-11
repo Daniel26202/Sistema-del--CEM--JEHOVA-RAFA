@@ -10,17 +10,21 @@ class ModeloInicioSesion extends ModelBase
 
 	private $password, $usuario;
 
-	public function __construct($dbSystem)
+	public function __construct($dbSystem = false)
 	{
 		parent::__construct($dbSystem);
 	}
 
-	public function validarIniciarSesion($data)
+	public function validarIniciarSesion()
 	{
 		try {
 			$sql = "SELECT p.id_personal,p.nombre AS nombre_personal, p.apellido AS apellido_personal,u.id_usuario, r.id_rol, u.usuario, u.password, r.nombre AS rol FROM segurity.usuario u INNER JOIN segurity.rol r ON u.id_rol = r.id_rol INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.usuario = :usuario AND u.estado = 'ACT'";
 
 			$this->setSQL($sql);
+
+			$data = [
+				'usuario' => $this->getUsuario()
+			];
 
 			$listData = $this->search($data, false);
 

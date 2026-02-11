@@ -7,8 +7,6 @@ use App\modelos\ModeloUsuarios;
 
 class ModeloPerfil extends ModelBase{
 	
-	private $conexion;
-
 	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);

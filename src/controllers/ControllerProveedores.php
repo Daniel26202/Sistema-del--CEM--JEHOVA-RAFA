@@ -10,94 +10,135 @@ function proveedores($parametro)
 	$ayuda = "btnayudaProveedor";
 	$vistaActiva = "proveedores";
 	require_once './src/vistas/vistaProveedores/vistaProveedores.php';
-	
 }
 
-// function proveedoresAjax()
-// {
-// 	echo json_encode($this->modelo->consultar());
-// }
+function proveedoresAjax()
+{
+	$modeloProveedores = new ModeloProveedores();
+	echo json_encode($modeloProveedores->consultar());
+}
 
-// function papelera($parametro)
-// {
-// 	require_once './src/vistas/vistaProveedores/vistaProveedoresPapelera.php';
-// }
+function papelera($parametro)
+{
+	require_once './src/vistas/vistaProveedores/vistaProveedoresPapelera.php';
+}
 
-// function proveedoresPapeleraAjax()
-// {
-// 	echo json_encode($this->modelo->papeleraConsultar());
-// }
+function proveedoresPapeleraAjax()
+{
+	$modeloProveedores = new ModeloProveedores();
+	echo json_encode($modeloProveedores->papeleraConsultar());
+}
 
-// function insertar()
-// {
+function insertar()
+{
+	$modeloProveedores = new ModeloProveedores();
+	$modeloBitacora = new ModeloBitacora();
 
-// 	$insercion = $this->modelo->agregar($_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"]);
+	$modeloProveedores->setNombre($_POST["nombre"]);
+	$modeloProveedores->setRif($_POST["rif"]);
+	$modeloProveedores->setTelefono($_POST["telefono"]);
+	$modeloProveedores->setEmail($_POST["email"]);
+	$modeloProveedores->setDireccion($_POST["direccion"]);
 
-// 	if (is_array($insercion) && $insercion[0] === "exito") {
-// 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "proveedor", "Ha insertado un proveedor");
+	$insercion = $modeloProveedores->agregar();
 
-// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-// 	} else {
-// 		http_response_code(409);
-// 		echo json_encode(['ok' => false, 'error' => $insercion]);
-// 		exit;
-// 	}
-// }
+	if (is_array($insercion) && $insercion[0] === "exito") {
+		$modeloBitacora->setActividad("Ha insertado un proveedor");
+		$modeloBitacora->setTabla("proveedor");
+		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
 
-// // eliminación logica
-// function update($datos)
-// {
-// 	$id_proveedor = $datos[0];
-// 	$id_usuario_bitacora = $datos[1];
+		$modeloBitacora->insertarBitacora();
 
-// 	$eliminacion = $this->modelo->update($id_proveedor);
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $insercion]);
+		exit;
+	}
+}
 
-// 	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-// 		$this->bitacora->insertarBitacora($id_usuario_bitacora, "proveedor", "Ha eliminado un proveedor");
+// eliminación logica
+function update($datos)
+{
+	$modeloProveedores = new ModeloProveedores();
+	$modeloBitacora = new ModeloBitacora();
 
-// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-// 	} else {
-// 		http_response_code(409);
-// 		echo json_encode(['ok' => false, 'error' => $eliminacion]);
-// 		exit;
-// 	}
-// }
+	$id_proveedor = $datos[0];
+	$id_usuario_bitacora = $datos[1];
 
+	$modeloProveedores->setIdProveedor($id_proveedor);
+	$eliminacion = $modeloProveedores->delte();
 
-// function restablecerProveedor($datos)
-// {
-// 	$id_proveedor = $datos[0];
-// 	$id_usuario_bitacora = $datos[1];
+	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+		$modeloBitacora->setId_usuario($id_usuario_bitacora);
+		$modeloBitacora->setTabla("proveedor");
+		$modeloBitacora->setActividad("Ha eliminado un proveedor");
+		$modeloBitacora->insertarBitacora();
 
-// 	$restablecimiento = $this->modelo->restablecerProveedor($id_proveedor);
-
-// 	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-// 		$this->bitacora->insertarBitacora($id_usuario_bitacora, "proveedor", "Ha restablecido un proveedor");
-
-// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-// 	} else {
-// 		http_response_code(409);
-// 		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
-// 		exit;
-// 	}
-// }
-
-
-// function editar()
-// {
-// 	$editado = $this->modelo->editar($_POST["id_proveedor"], $_POST["nombre"], $_POST["rif"], $_POST["telefono"], $_POST["email"], $_POST["direccion"], $_POST["rifRegistrado"]);
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+		exit;
+	}
+}
 
 
-// 	if (is_array($editado) && $editado[0] === "exito") {
-// 		$this->bitacora->insertarBitacora($_POST['id_usuario_bitacora'], "proveedor", "Ha modificado un proveedor");
+function restablecerProveedor($datos)
+{
+	$id_proveedor = $datos[0];
+	$id_usuario_bitacora = $datos[1];
 
-// 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-// 	} else {
-// 		http_response_code(409);
-// 		echo json_encode(['ok' => false, 'error' => $editado]);
-// 		exit;
-// 	}
-// }
+	$modeloProveedores = new ModeloProveedores();
+	$modeloBitacora = new ModeloBitacora();
+
+	$modeloProveedores->setIdProveedor($id_proveedor);
+	$restablecimiento = $modeloProveedores->restablecerProveedor();
+
+	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+		$modeloBitacora->setId_usuario($id_usuario_bitacora);
+		$modeloBitacora->setTabla("proveedor");
+		$modeloBitacora->setActividad("Ha restablecido un proveedor");
+		$modeloBitacora->insertarBitacora();
+
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+		exit;
+	}
+}
+
+
+function editar()
+{
+	$modeloProveedores = new ModeloProveedores();
+	$modeloBitacora = new ModeloBitacora();
+
+	$modeloProveedores->setIdProveedor($_POST["id_proveedor"]);
+	$modeloProveedores->setNombre($_POST["nombre"]);
+	$modeloProveedores->setRif($_POST["rif"]);
+	$modeloProveedores->setTelefono($_POST["telefono"]);
+	$modeloProveedores->setEmail($_POST["email"]);
+	$modeloProveedores->setDireccion($_POST["direccion"]);
+	$modeloProveedores->setRifRegistrado($_POST["rifRegistrado"]);
+
+	$editado = $modeloProveedores->editar();
+
+
+	if (is_array($editado) && $editado[0] === "exito") {
+		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$modeloBitacora->setTabla("proveedor");
+		$modeloBitacora->setActividad("Ha modificado un proveedor");
+		$modeloBitacora->insertarBitacora();
+
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+	} else {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $editado]);
+		exit;
+	}
+}
 
 
 // function permisos($id_rol, $permiso, $modulo)

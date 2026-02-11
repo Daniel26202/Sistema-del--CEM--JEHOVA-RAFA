@@ -3,12 +3,12 @@
 namespace App\modelos;
 
 use App\modelos\Db;
+use App\modelos\ModeloUsuarios;
 use ZipArchive;
 
-class ModeloMantenimiento extends Db
+class ModeloMantenimiento extends ModelBase
 {
 
-	private $conexion;
 
 	private $user;
 	private $password;
@@ -19,9 +19,9 @@ class ModeloMantenimiento extends Db
 	private $contrRespaldb;
 
 
-	public function __construct()
+	public function __construct($dbSystem = true)
 	{
-		$this->conexion = $this->connectionSistema();
+		parent::__construct($dbSystem);
 
 		require_once __DIR__ . "/../config/config.php";
 		$this->user = user_cos;
@@ -167,23 +167,21 @@ class ModeloMantenimiento extends Db
 		}
 	}
 
-	public function verifU($usuario, $password)
+	public function verifU()
 	{
 		try {
+			$modeloUsuarios = new ModeloUsuarios();
 
-			$consulta = $this->conexion->prepare("SELECT p.nombre AS nombre_personal, p.apellido AS apellido_personal,u.id_usuario, r.id_rol, u.usuario, u.password, r.nombre AS rol FROM segurity.usuario u INNER JOIN segurity.rol r ON u.id_rol = r.id_rol INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.usuario = :usuario AND u.estado = 'ACT' AND r.nombre = 'Superadmin' ;");
-
-			$consulta->bindParam(':usuario', $usuario);
-			$consulta->execute();
-
-			$resultado = $consulta->fetch();
+			$sql = "SELECT p.nombre AS nombre_personal, p.apellido AS apellido_personal,u.id_usuario, r.id_rol, u.usuario, u.password, r.nombre AS rol FROM segurity.usuario u INNER JOIN segurity.rol r ON u.id_rol = r.id_rol INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.usuario = :usuario AND u.estado = 'ACT' AND r.nombre = 'Superadmin' ;";
+			$this->setSQL($sql);
+			$resultado = $this->search([":usuario" => $modeloUsuarios->getUsuario()], false);
 
 			if ($resultado) {
 				// Obtenemos el hash(el resultado de una función matemática(también se puede definir cómo, una huella digital)) de la contraseña almacenada
 				$hashAlmacenado = $resultado['password'];
 
 				// Verificamos si la contraseña ingresada coincide con el hash(también llamada, huella digital)
-				if (password_verify($password, $hashAlmacenado)) {
+				if (password_verify($modeloUsuarios->getPassword(), $hashAlmacenado)) {
 					return $resultado;
 				} else {
 					// Contraseña incorrecta
