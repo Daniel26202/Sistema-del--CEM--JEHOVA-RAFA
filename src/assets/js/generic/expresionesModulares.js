@@ -1,38 +1,74 @@
 // Objeto con las expresiones regulares para validar cada tipo de campo
 const expresiones = {
-    nombre: {
-        expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-        mensajeError: "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
-    },
+  nombre: {
+    expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+    mensajeError:
+      "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+  },
 
-    apellido: {
-        expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-        mensajeError:
-            "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
-    },
+  apellido: {
+    expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+    mensajeError:
+      "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+  },
 
-    usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
-    correo: { expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, mensajeError: "" },
-    password: { expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, mensajeError: "" },
-    cedula: {
-        expresion: /^([1-9]{1})([0-9]{6,7})$/,
-        mensajeError: "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
-    },
-    telefono: {
-        expresion: /^(0?)(412|414|416|424|426|422|212|24[1-9]|25[1-9])\d{7}$/,
-        mensajeError: 'El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0422',
-    },
-    direccion: { expresion: /^([A-Za-z0-9\s\.,#-]{8,})$/, mensajeError: "Debe estar completa y detallada" },
-    descripcion: { expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/, mensajeError: "" },
-    fn: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    cantidad: { expresion: /^([1-9]{1})([0-9]{1,4})?$/, mensajeError: "" },
-    precio: { expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/, mensajeError: "" },
-    fechaDeVencimiento: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    lote: { expresion: /^[0-9-_]{4,10}$/, mensajeError: "" },
-    marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
-    medida: { expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/, mensajeError: "" },
-    genero: { expresion: /^"Masculino"|"Femenino"$/, mensajeError: "El Genero debe ser Masculino o Femenino" },
+  usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
+  correo: {
+    expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+    mensajeError: "",
+  },
+  password: {
+    expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
+    mensajeError: "",
+  },
+  cedula: {
+    expresion: /^([1-9]{1})([0-9]{6,7})$/,
+    mensajeError:
+      "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
+  },
+  telefono: {
+    expresion: /^(0?)(412|414|416|424|426|422|212|24[1-9]|25[1-9])\d{7}$/,
+    mensajeError:
+      'El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0422',
+  },
+  direccion: {
+    expresion: /^([A-Za-z0-9\s\.,#-]{8,})$/,
+    mensajeError: "Debe estar completa y detallada",
+  },
+  descripcion: {
+    expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
+    mensajeError: "",
+  },
+  fn: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  cantidad: { expresion: /^([1-9]{1})([0-9]{1,4})?$/, mensajeError: "" },
+  precio: { expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/, mensajeError: "" },
+  fechaDeVencimiento: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  lote: { expresion: /^[0-9-_]{4,10}$/, mensajeError: "" },
+  marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
+  medida: {
+    expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/,
+    mensajeError: "",
+  },
+  genero: {
+    expresion: /^"Masculino"|"Femenino"$/,
+    mensajeError: "El Genero debe ser Masculino o Femenino",
+  },
+
+  indicaciones: {
+    expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
+    mensajeError: "Debe iniciar con mayúscula y tener al menos 8 caracteres.",
+  },
+  diagnostico: {
+    expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
+    mensajeError:
+      "Formato incorrecto: use mayúscula inicial, letras o números (8 o más caracteres).",
+  },
+
+  historial: {
+    expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
+    mensajeError: "Debe iniciar con mayúscula y tener al menos 8 caracteres.",
+  },
 };
 
 // Nueva función para validar fechas no futuras ni pasadas

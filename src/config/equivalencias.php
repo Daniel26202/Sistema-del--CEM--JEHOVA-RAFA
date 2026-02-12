@@ -163,6 +163,8 @@ return [
     "editarControl" => "editar",
     "mostrarSP" => "consultar",
     "mostrarPP" => "consultar",
+    "mostrarSPAll" => "consultar",
+    "mostrarPPAll" => "consultar",
     "mostrarPIdP" => "consultar",
     "eliminarSintoma" => "eliminar",
     "agregarSintoma" => "editar",
