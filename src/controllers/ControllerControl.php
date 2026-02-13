@@ -128,7 +128,7 @@ function mostrarPacienteJS($datos)
 
 function insertarControl()
 {
-	if (empty($_GET)) {
+	if (empty($_POST)) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
@@ -176,30 +176,31 @@ function insertarControl()
 	}
 }
 
-// function eliminarControl($datos)
-// {
-
-// 	$id_control = $datos[0];
-// 	$this->modelo->eliminarControl($id_control);
-// 	echo json_encode($_GET);
-// }
-
 function editarControl()
 {
-	if ($_POST) {
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	try {
 		$modeloControl = new ModeloControl();
 		$modeloBitacora = new ModeloBitacora();
 
-		$modeloControl->setHistorial($_POST["historialE"]);
-		$modeloControl->setIdControl($_POST["id_control"]);
+		$modeloControl->setIdControl($_POST['id_control']);
+		$modeloControl->setHistorial($_POST["historial"]);
+		$modeloControl->setDiagnostico($_POST["diagnostico"]);
 		$modeloControl->setIndicaciones($_POST["indicaciones"]);
-		$modeloControl->setFechaRegreso($_POST["fechaRegreso"]);
-		$modeloControl->setNota($_POST["nota_e"]);
+		$modeloControl->setFechaRegreso($_POST["fechaDeCita"]);
+		$modeloControl->setNota($_POST["nota"]);
+		$modeloControl->setSeveridad($_POST["severidad"]);
+
 		$editar = $modeloControl->editarControl();
 
 		if (is_array($editar) && $editar[0] === "exito") {
 
-			$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+			$modeloBitacora->setId_usuario($_POST['id_usuario']);
 			$modeloBitacora->setTabla("control");
 			$modeloBitacora->setActividad("Ha modificado un  control medico");
 			$modeloBitacora->insertarBitacora();
@@ -210,6 +211,10 @@ function editarControl()
 			echo json_encode(['ok' => false, 'error' => $editar]);
 			exit;
 		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
 // mostrar síntomas de pacientes del ultimo  control

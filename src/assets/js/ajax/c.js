@@ -1,8 +1,8 @@
 import {
   executePetition,
-  alertConfirm,
   alertError,
   alertSuccess,
+  searchElements,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -10,7 +10,6 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 const modalControlBoots = new bootstrap.Modal(
   document.getElementById("exampleModalAgregarControl"),
 );
-
 
 const inputPaciente = document.getElementById("inputPaciente");
 const inputEdad = document.getElementById("inputEdad");
@@ -45,10 +44,16 @@ const divDoctores = document.getElementById("divDoctores");
 
 const modalFooter = document.getElementById("modal-footer");
 
-const inputsExpresiones = document.querySelectorAll(
-  "#modalAgregarControl .inputExpresiones",
-);
-const inputsEdit = document.querySelectorAll("#modalEditar .input-edit");
+const modalTitleControl = document.getElementById("modalTitleControl");
+const botonModal = document.getElementById("botonModal");
+const inputIdControl = document.getElementById("id_control");
+const boxDoctor = document.getElementById("div-doc");
+const btnControl = document.getElementById("btnControl");
+const inputs = modalAddControl.querySelectorAll(".input-validar");
+const buscarDoctores = document.getElementById("buscarDoctores");
+const buscarPatologias = document.getElementById("buscarPatologias");
+const buscarSintomas = document.getElementById("buscarSintomas");
+
 let semaforo = 0;
 
 let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
@@ -126,9 +131,9 @@ const traerDoctorSintomasPatologias = async () => {
     if (sintomas.length > 0) {
       sintomas.forEach((res) => {
         htmlSintomas += `<div class="form-check form-switch d-flex align-items-center">
-    <div class="form-check">
+    <div class="form-check-sintomas">
         <input value="${res.id_sintomas}" name="sintomas[]" class="form-check-input check-sintomas" type="checkbox" value="${res.id_sintomas}" id="checkChecked${res.id_sintomas}">
-        <label class="form-check-label" for="checkChecked${res.id_sintomas}">
+        <label class="form-check-label-sintomas" for="checkChecked${res.id_sintomas}">
             ${res.nombre}
         </label>
     </div>
@@ -138,9 +143,9 @@ const traerDoctorSintomasPatologias = async () => {
     if (patologias.length > 0) {
       patologias.forEach((res) => {
         htmlPatologias += `<div class="form-check form-switch d-flex align-items-center">
-    <div class="form-check">
+    <div class="form-check-patologias">
         <input value="${res.id_patologia}" name="patologias[]" class="form-check-input check-patologias" type="checkbox" value="${res.id_patologia}" id="checkChecked${res.id_patologia}">
-        <label class="form-check-label" for="checkChecked${res.id_patologia}">
+        <label class="form-check-label-patologias" for="checkChecked${res.id_patologia}">
             ${res.nombre_patologia}
         </label>
     </div>
@@ -171,7 +176,7 @@ const traerDoctores = async () => {
       doctores.forEach((res, index) => {
         htmlDoctores += `<div class="contenido card cards-horario" data-index=${index} id=${res.id_usuario} selection=false >
             <input type='hidden' class="valorDoctor" >
-            <h5 style="font-size: 15;" class="text-center">DR ${res.nombredoc} ${res.apellidodoc}</h5>
+            <h5 style="font-size: 15;" class="text-center text-doctor">DR ${res.nombredoc} ${res.apellidodoc}</h5>
           </div>`;
       });
     }
@@ -259,10 +264,10 @@ const returnFragmentControl = async (data, element, index, disabled) => {
                               <td>${element.fechaRegreso}</td>
                               <td>
                                   <button class="btn col-3 btn-agregarcita-modal editar btnEditar buttomEditControl" type="button"
-                                      uk-toggle="target: #modal-examplecontroleditar" data-id-control="${element.id_control}" 
+                                      data-bs-toggle="modal" data-bs-target="#exampleModalagregarControl" 
                                       data-id-Patient="${
                                         element.id_Patient
-                                      }" ${disabled}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                      }" data-cedula=${element.cedula} data-control=${element.id_control} ${disabled}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                           class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                           <path
                                               d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
@@ -312,6 +317,57 @@ const returnFragmentControl = async (data, element, index, disabled) => {
   return fragment;
 };
 
+const showDataModalEdit = (ele, cedula, id_control) => {
+  modalTitleControl.innerText = "Modificar Control";
+  botonModal.innerText = "Modificar";
+  modalAddControl.classList.add("editar");
+  inputIdControl.value = id_control;
+  boxDoctor.classList.add("d-none");
+
+  cedulaControl.setAttribute("disabled", true);
+
+  const tds = ele.closest("tr").children;
+  const divInfoControl = document.querySelector(
+    tds[2].children[1].getAttribute("data-bs-target"),
+  );
+  const divDataControl = divInfoControl.children[0].children;
+
+  //darvalores a los inputs del modal
+  cedulaControl.value = cedula;
+  inputs[1].value = divDataControl[1].innerText;
+  inputs[2].value = divDataControl[3].innerText;
+  inputs[3].value = divDataControl[5].innerText;
+  inputs[4].value = tds[1].innerText;
+
+  //disparar la validacion de los inputs
+  inputs.forEach((input) => {
+    input.dispatchEvent(new Event("keyup", { bubbles: true }));
+  });
+};
+
+const clickButtonOpenModal = () => {
+  cedulaControl.removeAttribute("disabled");
+  modalTitleControl.innerText = "Nuevo Control";
+  botonModal.innerText = "Registrar";
+  modalAddControl.classList.remove("editar");
+  boxDoctor.classList.remove("d-none");
+
+  inputs.forEach((input) => {
+    input.value = "";
+    input.dispatchEvent(new Event("keyup", { bubbles: true }));
+    input.parentElement.classList.remove("valido");
+    input.parentElement.classList.remove("invalido");
+
+    //icons de error y de check
+    input.nextElementSibling.children[0].classList.add("d-none");
+    input.nextElementSibling.children[1].classList.add("d-none");
+
+    //p con el texto de error
+    input.parentElement.parentElement.children[1].classList.add("d-none");
+    console.log(input.parentElement.parentElement);
+  });
+};
+
 //function for add Patients in table
 const readPatients = async () => {
   try {
@@ -359,11 +415,10 @@ const readControl = async (cedulaPatient) => {
       url + "/mostrarControlPacientesJS/" + cedulaPatient,
       "GET",
     );
-    console.log('readControl',result);
+    console.log("readControl", result);
     let html = "";
     tbodyControl.innerHTML = ``;
     let index = 0;
-
 
     for (const element of result[0]) {
       let disabled = "disabled";
@@ -378,12 +433,23 @@ const readControl = async (cedulaPatient) => {
     }
 
     tbodyControl.innerHTML = html;
-    document.querySelectorAll(".buttomEditControl").forEach((element) => {
-      element.addEventListener("click", function (e) {
-        document.getElementById("idCE").value = this.getAttribute("data-id-control");
-        document.getElementById("idPac").value = this.getAttribute("data-id-Patient");
+
+    //aqui es dondeseva a ejecutar la funcionarlidarde llenar con los datosal presionar elboton de editar
+
+    document.querySelectorAll(".buttomEditControl").forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        // document.getElementById("idCE").value =
+        //   this.getAttribute("data-id-control");
+        // document.getElementById("idPac").value =
+        //   this.getAttribute("data-id-Patient");
+        showDataModalEdit(
+          btn,
+          btn.getAttribute("data-cedula"),
+          btn.getAttribute("data-control"),
+        );
       });
     });
+
     semaforo = 0;
   } catch (error) {
     console.error("hola el error es :" + error);
@@ -394,14 +460,29 @@ const readControl = async (cedulaPatient) => {
   }
 };
 
-
 //function for save the control
 const createControl = async () => {
   try {
     const data = new FormData(modalAddControl);
     let result = await executePetition(url + "/insertarControl", "POST", data);
 
-    console.log(result)
+    console.log(result);
+    readControl(result.data.cedula);
+
+    modalControlBoots.hide();
+    alertSuccess(result.message);
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
+//function for update the control
+const updateControl = async () => {
+  try {
+    const data = new FormData(modalAddControl);
+    let result = await executePetition(url + "/editarControl", "POST", data);
+
+    console.log(result);
     readControl(result.data.cedula);
 
     modalControlBoots.hide();
@@ -418,6 +499,41 @@ cedulaControl.addEventListener("keyup", function () {
   traerPaciente();
 });
 
+btnControl.addEventListener("click", function () {
+  clickButtonOpenModal();
+});
+
+buscarDoctores.addEventListener("keyup", function () {
+  searchElements(
+    buscarDoctores.value,
+    "d-none",
+    document.querySelectorAll(".text-doctor"),
+    document.querySelector(".p-busqueda"),
+    ".cards-horario",
+  );
+});
+
+
+buscarPatologias.addEventListener("keyup", function () {
+  searchElements(
+    buscarPatologias.value,
+    "d-none",
+    document.querySelectorAll(".form-check-label-patologias"),
+    document.querySelectorAll(".p-busqueda-patologia"),
+    ".form-check-patologias",
+  );
+});
+
+buscarSintomas.addEventListener("keyup", function () {
+  searchElements(
+    buscarSintomas.value,
+    "d-none",
+    document.querySelectorAll(".form-check-label-sintomas"),
+    document.querySelector(".p-busqueda-sintoma"),
+    ".form-check-sintomas",
+  );
+});
+
 let verificarFormulario = inicializarValidacionFormulario(modalAddControl);
 
 modalAddControl.addEventListener("submit", async function (e) {
@@ -426,7 +542,13 @@ modalAddControl.addEventListener("submit", async function (e) {
 
   let esValido = verificarFormulario();
   if (esValido) {
-    createControl();
+    if (modalAddControl.classList.contains("editar")) {
+      console.log("editar");
+      updateControl();
+    } else {
+      console.log("guardar");
+      createControl();
+    }
   } else {
     alertError(
       "Error",

@@ -4,7 +4,7 @@
     <div class="modal-dialog ">
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
-                <h5 class="modal-title fs-4 fw-bold" id="modalTitleCita">Nuevo Control</h5>
+                <h5 class="modal-title fs-4 fw-bold" id="modalTitleControl">Nuevo Control</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form class=" form-validable" id="modalAgregarControl">
@@ -12,7 +12,7 @@
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
                 <input type="hidden" id="id_paciente" name="id_paciente">
-                <input type="hidden" id="id_cita" name="id_cita">
+                <input type="hidden" id="id_control" name="id_control">
 
 
 
@@ -126,25 +126,49 @@
                             <p class="error-msg fw-bold p-error-validaciones d-none">Por favor, selecciona una opción válida.</p>
                         </div>
 
-                        <!-- sintoma -->
-                        <label class="label-custom">Doctores</label>
-                        <!-- acordion de horarios -->
-                        <div class="accordion " id="accordionExampleDoctores">
-                            <div class="accordion-item bg-theme">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#horarioOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Doctores
-                                    </button>
-                                </h2>
-                                <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDoctores">
-                                    <div class="accordion-body" id="divDoctores">
+                        <div id="div-doc">
+                            <!-- sintoma -->
+                            <label class="label-custom">Doctores</label>
+
+
+                            <!-- acordion de horarios -->
+                            <div class="accordion " id="accordionExampleDoctores">
+                                <div class="accordion-item bg-theme">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#horarioOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Doctores
+                                        </button>
+                                    </h2>
+
+                                    <!-- //buscardor doctores -->
+                                    <div class="campo-custom" style="width: 90%; margin: auto;">
+                                        <div class="input-custom" style="margin-top: 10px;">
+                                            <span class="icono-izq">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                                </svg>
+                                            </span>
+
+                                            <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Doctor" id="buscarDoctores">
+                                        </div>
+                                        <p class="error-msg fw-bold p-busqueda p-1"></p>
+
 
                                     </div>
+
+
+
+
+                                    <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDoctores">
+                                        <div class="accordion-body" id="divDoctores">
+
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
 
                         </div>
-
 
                         <!-- patologia -->
 
@@ -158,6 +182,24 @@
                                             Patologias
                                         </button>
                                     </h2>
+
+
+
+
+                                    <div class="input-custom" style="margin-top: 10px;">
+                                        <span class="icono-izq">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                            </svg>
+                                        </span>
+
+                                        <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Patologias" id="buscarPatologias">
+                                    </div>
+                                    <p class="error-msg fw-bold p-busqueda-patologia p-1"></p>
+
+
+
+
                                     <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExamplePatologias">
                                         <div class="accordion-body" id="divPatologias">
 
@@ -180,6 +222,19 @@
                                         Sintomas
                                     </button>
                                 </h2>
+
+
+                                <div class="input-custom" style="margin-top: 10px;">
+                                    <span class="icono-izq">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                        </svg>
+                                    </span>
+
+                                    <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Sintomas" id="buscarSintomas">
+                                </div>
+                                <p class="error-msg fw-bold p-busqueda-sintoma p-1"></p>
+
                                 <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleSintomas">
                                     <div class="accordion-body" id="divSintomas">
 

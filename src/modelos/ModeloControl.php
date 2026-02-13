@@ -152,10 +152,12 @@ class ModeloControl extends ModelBase
 	{
 		try {
 			$data = [
+				'diagnostico'=>$this->getDiagnostico(),
 				'indicaciones' => $this->getIndicaciones(),
 				'fechaRegreso' => $this->getFechaDeRegreso(),
 				'nota' => $this->getNota(),
-				'historial' => $this->getHistorial()
+				'historial' => $this->getHistorial(),
+				'severidad' =>$this->getSeveridad()
 			];
 
 			$data2 = [
@@ -171,7 +173,7 @@ class ModeloControl extends ModelBase
 				throw new \Exception("El id del control no existe");
 			}
 
-			$sql = "UPDATE control SET medicamentosRecetados=:indicaciones, fechaRegreso=:fechaRegreso, nota=:nota, historiaclinica=:historial WHERE id_control=:id ";
+			$sql = "UPDATE control SET diagnostico=:diagnostico,medicamentosRecetados=:indicaciones, fechaRegreso=:fechaRegreso, nota=:nota, historiaclinica=:historial,severidad=:severidad WHERE id_control=:id ";
 			$this->setSQL($sql);
 			$this->update($data, $this->getIdControl());
 			return ["exito"];

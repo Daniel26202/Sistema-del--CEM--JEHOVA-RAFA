@@ -1,4 +1,7 @@
-import { chulitoYX, inicializarValidacionFormulario } from "./expresionesModulares.js";
+import {
+  chulitoYX,
+  inicializarValidacionFormulario,
+} from "./expresionesModulares.js";
 
 //function generica for execute petiticon ajax
 export const executePetition = async (url, method, data = null) => {
@@ -28,36 +31,35 @@ export const showDataModal = (parametros) => {
   parametros.btnModal.textContent = parametros.btnTextModal;
   parametros.form.classList.add("editar");
 
-  if (parametros.cedulaOculta) parametros.cedulaOculta.value = parametros.data.cedula;
+  if (parametros.cedulaOculta)
+    parametros.cedulaOculta.value = parametros.data.cedula;
   if (parametros.idOculto) parametros.idOculto.value = parametros.data.id;
 
   parametros.inputs.forEach((input) => {
     let check = input.nextElementSibling.children[0];
     let error = input.nextElementSibling.children[1];
 
-    input.value = parametros.data[input.getAttribute('name')];
+    input.value = parametros.data[input.getAttribute("name")];
     input.parentElement.classList.remove("invalido");
     input.parentElement.classList.add("valido");
 
     let campoCustom = input.closest(".campo-custom");
     let pError = campoCustom.querySelector("p");
-    pError.classList.add('d-none');
+    pError.classList.add("d-none");
 
-    if (check && error) chulitoYX(check, error, 'valido');
+    if (check && error) chulitoYX(check, error, "valido");
   });
 
   // Inicializar con editar = true
-  parametros.verificarFormulario = inicializarValidacionFormulario(parametros.form);
-
-
+  parametros.verificarFormulario = inicializarValidacionFormulario(
+    parametros.form,
+  );
 };
-
 
 export const clearModalEnviar = (parametros) => {
   parametros.labelModal.textContent = parametros.textLabelModal;
   botonModal.textContent = parametros.btnTextModal;
   parametros.form.classList.remove("editar");
-
 
   parametros.inputs.forEach((input) => {
     let check = input.nextElementSibling?.children[0];
@@ -67,12 +69,12 @@ export const clearModalEnviar = (parametros) => {
     input.parentElement.classList.remove("valido");
     let campoCustom = input.closest(".campo-custom");
     let pError = campoCustom.querySelector("p");
-    pError.classList.add('d-none');
+    pError.classList.add("d-none");
 
     if (check && error) {
       check.classList.add("d-none");
       error.classList.add("d-none");
-    };
+    }
   });
 };
 
@@ -148,7 +150,14 @@ export const convertirHora = (horaMilitar) => {
   let minutos = parseInt(minutoStr, 10);
 
   // Validamos rango
-  if (isNaN(hora) || isNaN(minutos) || hora < 0 || hora > 23 || minutos < 0 || minutos > 59) {
+  if (
+    isNaN(hora) ||
+    isNaN(minutos) ||
+    hora < 0 ||
+    hora > 23 ||
+    minutos < 0 ||
+    minutos > 59
+  ) {
     return "Hora inválida";
   }
 
@@ -166,3 +175,57 @@ export const convertirHora = (horaMilitar) => {
 
   return `${hora12}:${minutosFormateados} ${sufijo}`;
 };
+
+export const searchElements = (
+  text,
+  className,
+  elements,
+  pMensaje = null,
+  parentSelector = "",
+) => {
+
+  const searchTerm = text.trim().toLowerCase();
+  let coincidenciasTotales = 0;
+
+  elements.forEach((ele) => {
+    // Definimos el objetivo (el padre o el elemento mismo)
+    const target = parentSelector !== "" ? ele.closest(parentSelector) : ele;
+    if (!target) return;
+
+    // Caso: Buscador vacío
+    if (searchTerm === "") {
+      target.classList.remove(className);
+      return;
+    }
+
+    // Lógica de búsqueda
+    const content = (
+      ele.innerText +
+      ele.textContent +
+      (ele.value || "")
+    ).toLowerCase();
+    const matches = content.includes(searchTerm);
+
+    if (matches) {
+      target.classList.remove(className);
+      coincidenciasTotales++;
+    } else {
+      target.classList.add(className);
+    }
+  });
+
+  // --- Lógica del mensaje de "No resultados" ---
+  if (pMensaje) {
+    console.log("Total coincidencias:", coincidenciasTotales);
+    if (searchTerm !== "" && coincidenciasTotales === 0) {
+      console.log(`No se encontraron resultados para "${text}"`);
+      pMensaje.innerText = `No se encontraron resultados para "${text}"`;
+    } else {
+      console.log(`Resultados encontrados para "${text}": ${coincidenciasTotales}`);
+      pMensaje.innerText = "";
+    }
+      console.log("Mensaje actualizado en el DOM:", pMensaje.innerText);
+
+  }
+};
+
