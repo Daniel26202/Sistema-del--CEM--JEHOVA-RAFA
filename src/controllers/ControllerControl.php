@@ -278,41 +278,75 @@ function mostrarPIdP($datos)
 // síntomas 
 function eliminarSintoma($datos)
 {
-	$modeloSintomas = new ModeloSintomas();
-	$modeloBitacora = new ModeloBitacora();
 
-	$id_sintomas = $datos[0];
-	$id_usuario_bitacora = $datos[1];
-	$modeloSintomas->setIdSintomas($id_sintomas);
-	$eliminar = $modeloSintomas->eliminarL();
-	if ($eliminar) {
-		// Guardar la bitacora
-		$modeloBitacora->setId_usuario($id_usuario_bitacora);
-		$modeloBitacora->setTabla("sintomas");
-		$modeloBitacora->setActividad("Ha eliminado un  sintoma");
-		$modeloBitacora->insertarBitacora();
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/eliminar");
-	} else {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/errorSistem");
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+
+	try {
+		$modeloSintomas = new ModeloSintomas();
+		$modeloBitacora = new ModeloBitacora();
+
+
+		$id_sintomas = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		$modeloSintomas->setIdSintomas($id_sintomas);
+		$eliminar = $modeloSintomas->eliminarL();
+
+		if (is_array($eliminar) && $eliminar[0] === "exito") {
+			// Guardar la bitacora
+			$modeloBitacora->setId_usuario($id_usuario_bitacora);
+			$modeloBitacora->setTabla("sintomas");
+			$modeloBitacora->setActividad("Ha eliminado un  sintoma");
+			$modeloBitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminar]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
 
 function agregarSintoma()
 {
-	$modeloSintomas = new ModeloSintomas();
-	$modeloBitacora = new ModeloBitacora();
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
 
-	$modeloSintomas->setNombre($_POST["nombre"]);
-	$insertar = $modeloSintomas->insertar();
-	if ($insertar) {
-		// Guardar la bitacora
-		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-		$modeloBitacora->setTabla("sintomas");
-		$modeloBitacora->setActividad("Ha Insertado un  sintoma");
-		$modeloBitacora->insertarBitacora();
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/registro");
-	} else {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/errorSistem");
+	try {
+		$modeloSintomas = new ModeloSintomas();
+		$modeloBitacora = new ModeloBitacora();
+
+		$modeloSintomas->setNombre($_POST["nombre"]);
+		$insertar = $modeloSintomas->insertar();
+		if ($insertar) {
+			// Guardar la bitacora
+			$modeloBitacora->setId_usuario($_POST['id_usuario']);
+			$modeloBitacora->setTabla("sintomas");
+			$modeloBitacora->setActividad("Ha Insertado un  sintoma");
+			$modeloBitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insertar]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
 

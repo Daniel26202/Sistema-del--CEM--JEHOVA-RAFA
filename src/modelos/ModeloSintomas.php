@@ -33,7 +33,7 @@ class ModeloSintomas extends ModelBase
                 'nombre'=>$this->getNombre(),
                 'estado'=>'ACT'
             ];
-            $sql = 'INSERT INTO sintomas(nombre, estado) VALUES (:nombre,"ACT");';
+            $sql = 'INSERT INTO sintomas(id_sintomas, nombre, estado) VALUES (null,:nombre,:estado);';
             $this->setSQL($sql);
             $this->create($data);
             return ["exito", $data];
