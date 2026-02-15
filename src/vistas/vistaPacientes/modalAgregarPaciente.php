@@ -31,7 +31,7 @@
                     <option value="E">E</option>
                   </select>
 
-                  <input class="form-control txt-custom input-validar inputs" name="cedula" type="number" placeholder="Cédula del paciente">
+                  <input class="form-control txt-custom input-validar inputs" id="cedulaPaciente" name="cedula" type="number" placeholder="Cédula del paciente">
 
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -185,7 +185,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-modals" id="botonModal" data-bs-dismiss="modal">Registrar</button>
+              <button type="submit" class="btn btn-modals" id="botonModal">Registrar</button>
             </div>
           </form>
         </div>

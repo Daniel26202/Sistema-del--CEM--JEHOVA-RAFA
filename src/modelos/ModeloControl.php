@@ -27,7 +27,7 @@ class ModeloControl extends ModelBase
 	public function consultarPacientes()
 	{
 		// me traigo todos los datos de los paciente, que tengan control medico, y los agrupo por cédula (con GROUP BY) para que no salgan varias veces 
-		$sql = "SELECT p.* FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE co.estado = 'ACT' GROUP BY p.cedula";
+		$sql = "SELECT * FROM paciente  WHERE estado = 'ACT' GROUP BY cedula";
 		$this->setSQL($sql);
 		return  $this->read();
 	}
@@ -301,10 +301,6 @@ class ModeloControl extends ModelBase
 	{
 		if (!preg_match("/^[0-9]+$/", $id_control)) {
 			throw new \InvalidArgumentException("El ID del control debe ser un número entero positivo.");
-		}
-
-		if ((int)$id_control <= 0) {
-			throw new \InvalidArgumentException("El ID del control debe ser mayor que cero.");
 		}
 
 		$this->id_control = $id_control;

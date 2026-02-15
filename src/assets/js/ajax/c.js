@@ -19,7 +19,12 @@ const modalSintomaBoots = new bootstrap.Modal(
 
 const modalReadSintomaBoots = new bootstrap.Modal(
   document.getElementById("exampleModalConsultarSintoma"),
-); 
+);
+
+const modalPaciente = new bootstrap.Modal(
+  document.getElementById("exampleModalagregarPaciente"),
+);
+
 const inputPaciente = document.getElementById("inputPaciente");
 const inputEdad = document.getElementById("inputEdad");
 const divDataPaciente = document.getElementById("div-data-paciente");
@@ -31,22 +36,9 @@ const tbodyPatients = document.getElementById("tbody-pacientes");
 const textStartControl = document.getElementById("text-start");
 const loaderControlMedico = document.getElementById("loader-control-medico");
 const modalAddControl = document.getElementById("modalAgregarControl"); //modal control
-const modalEditControl = document.getElementById("modalEditar");
 const cedulaControl = document.getElementById("cedulaControl"); //input cedula
-const showPatient = document.getElementById("mostrarPaciente");
-const btnAC = document.getElementById("btnAC");
-const contentF = document.getElementById("contenedorF");
-const mandarAddPatient = document.getElementById("mandarRegistrarPaciente");
 const Not_Patient = document.getElementById("No_paciente");
 console.log(Not_Patient);
-const edad = document.getElementById("edad");
-const dataPatient = document.getElementById("datosPaciente");
-const idPatient = document.getElementById("idPaciente");
-const alertControl = document.getElementById("alert-control");
-const showDataPatientEdit = document.querySelectorAll(".showDataPatientEdit");
-const id_usuario_bitacora = document.getElementById(
-  "id_usuario_bitacora",
-).value; // constante que guarda el id que inicio session de esa manera podemos realizar la bitacora;
 const divSintomas = document.getElementById("divSintomas");
 const divPatologias = document.getElementById("divPatologias");
 const divDoctores = document.getElementById("divDoctores");
@@ -64,6 +56,11 @@ const buscarPatologias = document.getElementById("buscarPatologias");
 const buscarSintomas = document.getElementById("buscarSintomas");
 const modalAgregarSintoma = document.getElementById("modalAgregarSintoma");
 
+const modalAgregarPaciente = document.getElementById("modalAgregar");
+const cedulaPaciente = document.getElementById("cedulaPaciente");
+const btnOpenModalPac = document.getElementById("btnOpenModalPac");
+const nota = document.getElementById("nota");
+
 let semaforo = 0;
 
 let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
@@ -77,6 +74,7 @@ const traerPaciente = async () => {
         "GET",
       );
 
+      console.log(result);
       let edad = "";
       if (result.fn) {
         const fechaNacimiento = new Date(result.fn);
@@ -100,10 +98,10 @@ const traerPaciente = async () => {
         divBtnAddPat.classList.add("d-none");
         modalFooter.classList.remove("d-none");
 
-        //llamar a la funcion para traer los sintomas y patologias del paciente
+        // //llamar a la funcion para traer los sintomas y patologias del paciente
         traerDoctorSintomasPatologias();
 
-        //llamar a la funcion para traer a los doctores disponibles
+        // //llamar a la funcion para traer a los doctores disponibles
 
         traerDoctores();
       } else {
@@ -134,6 +132,7 @@ const traerDoctorSintomasPatologias = async () => {
       url + "/returnPatologiasPaciente/",
       "GET",
     );
+    console.log(sintomas, patologias);
 
     let htmlSintomas = ``;
     let htmlPatologias = ``;
@@ -233,6 +232,8 @@ const checkedCheckboxes = async (
     const result = await executePetition(`${url}/${metodo}/${cedula}`, "GET");
     const ids = Array.from(checkboxes).map((checkbox) => checkbox.value);
 
+    console.log(result);
+
     if (result.length > 0) {
       result.forEach((res) => {
         if (!ids.includes(res.id_sintoma || res.id_patologia)) {
@@ -249,7 +250,7 @@ const checkedCheckboxes = async (
       });
     }
   } catch (error) {
-    alertError("Error", "Lamentablemente algo salió mal. " + error);
+    alertError("Error", "Lamentablemente algo salió mal... " + error);
   }
 };
 
@@ -267,8 +268,7 @@ const returnFragmentControl = async (data, element, index, disabled) => {
   let patologiasText = patologias.map((e) => e.nombre_patologia).join(", ");
 
   let fragment;
-  if (data.length > 0) {
-    fragment = `
+  fragment = `
               <tr>
                               <td>${element.fecha_control.split(" ")[0]}</td>
                               <td>${element.fechaRegreso}</td>
@@ -311,19 +311,14 @@ const returnFragmentControl = async (data, element, index, disabled) => {
                                       
                                       <h5><b class="me-1">Patología:</b></h5>
                                       <p>${patologiasText}</p>
+
+                                      <h5><b class="me-1">Nota:</b></h5>
+                                      <p>${element.nota}</p>
                                       
                                   </div>
                               </td>
                           </tr>`;
-  } else {
-    fragment = `<tr class="collapse-row">
-                              <td colspan="5">
-                                  <div class="text-center">
-                                      No se encontraron resultados.
-                                  </div>
-                              </td>
-                          </tr>`;
-  }
+
   return fragment;
 };
 
@@ -342,13 +337,14 @@ const showDataModalEdit = (ele, cedula, id_control) => {
   );
   const divDataControl = divInfoControl.children[0].children;
 
+
   //darvalores a los inputs del modal
   cedulaControl.value = cedula;
   inputs[1].value = divDataControl[1].innerText;
   inputs[2].value = divDataControl[3].innerText;
   inputs[3].value = divDataControl[5].innerText;
+  nota.value = divDataControl[11].innerText;
   inputs[4].value = tds[1].innerText;
-
   //disparar la validacion de los inputs
   inputs.forEach((input) => {
     input.dispatchEvent(new Event("keyup", { bubbles: true }));
@@ -429,17 +425,31 @@ const readControl = async (cedulaPatient) => {
     let html = "";
     tbodyControl.innerHTML = ``;
     let index = 0;
+    if (result[0].length > 0)
+      for (const element of result[0]) {
+        let disabled = "disabled";
+        if (index == result[0].length - 1) {
+          disabled = "";
+        }
 
-    for (const element of result[0]) {
-      let disabled = "disabled";
-      if (index == result[0].length - 1) {
-        disabled = "";
+        html += await returnFragmentControl(
+          result[0],
+          element,
+          index,
+          disabled,
+        );
+        tbodyControl.parentElement.classList.remove("d-none");
+        textStartControl.classList.add("d-none");
+        index++;
       }
-
-      html += await returnFragmentControl(result[0], element, index, disabled);
-      tbodyControl.parentElement.classList.remove("d-none");
-      textStartControl.classList.add("d-none");
-      index++;
+    else {
+      html = `<tr class="collapse-row">
+                              <td colspan="5">
+                                  <div class="text-center">
+                                      No se encontraron resultados.
+                                  </div>
+                              </td>
+                          </tr>`;
     }
 
     tbodyControl.innerHTML = html;
@@ -448,10 +458,6 @@ const readControl = async (cedulaPatient) => {
 
     document.querySelectorAll(".buttomEditControl").forEach((btn) => {
       btn.addEventListener("click", function (e) {
-        // document.getElementById("idCE").value =
-        //   this.getAttribute("data-id-control");
-        // document.getElementById("idPac").value =
-        //   this.getAttribute("data-id-Patient");
         showDataModalEdit(
           btn,
           btn.getAttribute("data-cedula"),
@@ -478,6 +484,7 @@ const createControl = async () => {
 
     console.log(result);
     readControl(result.data.cedula);
+    readPatients();
 
     modalControlBoots.hide();
     alertSuccess(result.message);
@@ -493,7 +500,7 @@ const updateControl = async () => {
     let result = await executePetition(url + "/editarControl", "POST", data);
 
     console.log(result);
-    readControl(result.data.cedula);
+    readControl(result.data.cedulaOculta);
 
     modalControlBoots.hide();
     alertSuccess(result.message);
@@ -572,9 +579,9 @@ const readSintomas = async () => {
 
 const insertarSintoma = async (data) => {
   try {
-    const data  = new FormData(modalAgregarSintoma);
-    const result = await executePetition(url + `/agregarSintoma`, "POST",data);
-    console.log(result)
+    const data = new FormData(modalAgregarSintoma);
+    const result = await executePetition(url + `/agregarSintoma`, "POST", data);
+    console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
       readSintomas();
@@ -582,12 +589,13 @@ const insertarSintoma = async (data) => {
       modalReadSintomaBoots.show();
 
       modalAgregarSintoma.reset();
-      modalAgregarSintoma.querySelectorAll('.input-validar').forEach(input=>{
-        input.parentElement.classList.remove('valido');
-        input.nextElementSibling.children[0].classList.add('d-none');
-        input.nextElementSibling.children[1].classList.add("d-none");
-
-      })
+      modalAgregarSintoma
+        .querySelectorAll(".input-validar")
+        .forEach((input) => {
+          input.parentElement.classList.remove("valido");
+          input.nextElementSibling.children[0].classList.add("d-none");
+          input.nextElementSibling.children[1].classList.add("d-none");
+        });
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
@@ -610,17 +618,54 @@ const deleteSintoma = async (data) => {
   }
 };
 
+//create paciente
+//create
+const createPatients = async (form, inputs) => {
+  try {
+    const data = new FormData(form);
+    let result = await executePetition(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar",
+      "POST",
+      data,
+    );
+    console.log(result);
+    if (result.ok) {
+      alertSuccess(result.message);
+      cedulaControl.value = cedulaPaciente.value;
+      cedulaControl.dispatchEvent(new Event("keyup", { bubbles: true }));
+
+      form.reset();
+      inputs = [];
+      inputs.forEach((input) => input.parentElement.classList.remove("valido"));
+
+      modalControlBoots.show();
+      modalPaciente.hide();
+
+      readPatients();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
 readPatients();
 
 readSintomas();
 
 cedulaControl.addEventListener("keyup", function () {
-  console.log(cedulaControl);
+  document.getElementById("cedulaOculta").value = cedulaControl.value;
   traerPaciente();
 });
 
 btnControl.addEventListener("click", function () {
   clickButtonOpenModal();
+});
+
+//cuando se abra elmodal de agregar paciente se le da el valor de la cedula directamente
+btnOpenModalPac.addEventListener("click", function () {
+  console.log(cedulaPaciente);
+  cedulaPaciente.value = cedulaControl.value;
+  cedulaPaciente.dispatchEvent(new Event("keyup", { bubbles: true }));
 });
 
 buscarDoctores.addEventListener("keyup", function () {
@@ -654,21 +699,40 @@ buscarSintomas.addEventListener("keyup", function () {
 });
 
 let verificarFormulario = inicializarValidacionFormulario(modalAddControl);
+
 let verificarFormularioSintoma =
   inicializarValidacionFormulario(modalAgregarSintoma);
+
+let verificarFormularioPaciente =
+  inicializarValidacionFormulario(modalAgregarPaciente);
 
 modalAddControl.addEventListener("submit", async function (e) {
   e.preventDefault();
   console.log("enviando formulario");
 
+  //guardar alguna coincidencia de  las cards es decir para saber si alguna de las  cards de doctores fue selecionada prque si no no  seenviara el firnluario
+
+  let doctorSeleciondo = false;
+  document.querySelectorAll(".cards-horario").forEach((card) => {
+    if (card.style.backgroundColor == "rgb(56, 122, 223)") {
+      doctorSeleciondo = true;
+      return;
+    }
+  });
+
   let esValido = verificarFormulario();
   if (esValido) {
     if (modalAddControl.classList.contains("editar")) {
-      console.log("editar");
       updateControl();
     } else {
-      console.log("guardar");
-      createControl();
+      if (doctorSeleciondo) {
+        createControl();
+      } else {
+        alertError(
+          "Error",
+          "Por favor, debe seleccionar un doctor para realizar el control medico.",
+        );
+      }
     }
   } else {
     alertError(
@@ -677,7 +741,6 @@ modalAddControl.addEventListener("submit", async function (e) {
     );
   }
 });
-
 
 modalAgregarSintoma.addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -690,6 +753,28 @@ modalAgregarSintoma.addEventListener("submit", async function (e) {
     alertError(
       "Error",
       "Por favor, complete todos los campos correctamente antes de enviar el formulario.",
+    );
+  }
+});
+
+//enviar firmulario de paciente
+modalAgregarPaciente.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let inputsBuenos = [];
+  this.querySelectorAll(".input-validar").forEach((input) => {
+    if (input.parentElement.classList.contains("valido"))
+      inputsBuenos.push(true);
+  });
+
+  let esValido = verificarFormularioPaciente();
+
+  if (esValido) {
+    createPatients(this, inputsBuenos);
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
     );
   }
 });

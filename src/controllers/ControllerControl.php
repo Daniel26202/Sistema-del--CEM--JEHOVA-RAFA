@@ -89,7 +89,7 @@ function mostrarControlPacientesJS($datos)
 
 	$sintomas = $modeloSintomas->selects();
 	// patologías
-	$modeloPatologia->setCedulaPac($cedula);
+	$modeloControl->setCedula($cedula);
 	$registradosP = $modeloPatologia->buscarPatologiaPaciente();
 	$patologias = $modeloPatologia->mostrarPatologias();
 
@@ -236,7 +236,9 @@ function mostrarPP($datos)
 	$cedula = $datos[0];
 
 	$modeloControl->setCedula($cedula);
-	$modeloControl->setIdControl($modeloControl->mostrarUltimoIdControl());
+
+	$id_control = ($modeloControl->mostrarUltimoIdControl() != null) ? $modeloControl->mostrarUltimoIdControl() : 0;
+	$modeloControl->setIdControl($id_control);
 
 	$registradosP = $modeloControl->mostrarPatologiaP();
 	echo json_encode($registradosP);

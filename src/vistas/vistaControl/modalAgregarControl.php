@@ -13,6 +13,8 @@
 
                 <input type="hidden" id="id_paciente" name="id_paciente">
                 <input type="hidden" id="id_control" name="id_control">
+                <input type="hidden" id="cedulaOculta" name="cedulaOculta">
+
 
 
 
@@ -135,31 +137,32 @@
                             <div class="accordion " id="accordionExampleDoctores">
                                 <div class="accordion-item bg-theme">
                                     <h2 class="accordion-header" id="headingOne">
-                                        <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#horarioOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#accordionDoctor" aria-expanded="true" aria-controls="collapseOne">
                                             Doctores
                                         </button>
                                     </h2>
 
-                                    <!-- //buscardor doctores -->
-                                    <div class="campo-custom" style="width: 90%; margin: auto;">
-                                        <div class="input-custom" style="margin-top: 10px;">
-                                            <span class="icono-izq">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
-                                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
-                                                </svg>
-                                            </span>
 
-                                            <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Doctor" id="buscarDoctores">
+
+
+
+                                    <div id="accordionDoctor" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDoctores">
+                                        <!-- //buscardor doctores -->
+                                        <div class="campo-custom" style="width: 90%; margin: auto;">
+                                            <div class="input-custom" style="margin-top: 10px;">
+                                                <span class="icono-izq">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                                    </svg>
+                                                </span>
+
+                                                <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Doctor" id="buscarDoctores">
+                                            </div>
+                                            <p class="error-msg fw-bold p-busqueda p-1"></p>
+
+
                                         </div>
-                                        <p class="error-msg fw-bold p-busqueda p-1"></p>
 
-
-                                    </div>
-
-
-
-
-                                    <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDoctores">
                                         <div class="accordion-body" id="divDoctores">
 
                                         </div>
@@ -178,29 +181,22 @@
                             <div class="accordion " id="accordionExamplePatologias">
                                 <div class="accordion-item bg-theme">
                                     <h2 class="accordion-header" id="headingOne">
-                                        <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#horarioOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#accordionPatologias" aria-expanded="true" aria-controls="collapseOne">
                                             Patologias
                                         </button>
                                     </h2>
 
+                                    <div id="accordionPatologias" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExamplePatologias">
+                                        <div class="input-custom" style="width: 90%; margin: auto; margin-top: 10px;">
+                                            <span class="icono-izq">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                                </svg>
+                                            </span>
 
-
-
-                                    <div class="input-custom" style="margin-top: 10px;">
-                                        <span class="icono-izq">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
-                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
-                                            </svg>
-                                        </span>
-
-                                        <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Patologias" id="buscarPatologias">
-                                    </div>
-                                    <p class="error-msg fw-bold p-busqueda-patologia p-1"></p>
-
-
-
-
-                                    <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExamplePatologias">
+                                            <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Patologias" id="buscarPatologias">
+                                        </div>
+                                        <p class="error-msg fw-bold p-busqueda-patologia p-1"></p>
                                         <div class="accordion-body" id="divPatologias">
 
                                         </div>
@@ -218,25 +214,27 @@
                         <div class="accordion " id="accordionExampleSintomas">
                             <div class="accordion-item bg-theme">
                                 <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#horarioOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#accordionSintomas" aria-expanded="true" aria-controls="collapseOne">
                                         Sintomas
                                     </button>
                                 </h2>
 
 
-                                <div class="input-custom" style="margin-top: 10px;">
-                                    <span class="icono-izq">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
-                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
-                                        </svg>
-                                    </span>
 
-                                    <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Sintomas" id="buscarSintomas">
-                                </div>
-                                <p class="error-msg fw-bold p-busqueda-sintoma p-1"></p>
 
-                                <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleSintomas">
+                                <div id="accordionSintomas" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleSintomas">
+                                    <div class="input-custom" style="width: 90%; margin: auto; margin-top: 10px;">
+                                        <span class="icono-izq">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                                            </svg>
+                                        </span>
+
+                                        <input class="form-control txt-custom inputs" type="text" placeholder="Buscar Sintomas" id="buscarSintomas">
+                                    </div>
+                                    <p class="error-msg fw-bold p-busqueda-sintoma p-1"></p>
                                     <div class="accordion-body" id="divSintomas">
+
 
                                     </div>
                                 </div>
@@ -245,6 +243,7 @@
                         </div>
 
                         <!-- nota -->
+
                         <label class="label-custom">Notas</label>
 
                         <div class="campo-custom">
@@ -257,8 +256,8 @@
                                     </svg>
                                 </span>
 
-                                <textarea class="form-control txt-custom  inputs "
-                                    placeholder="Leave a comment here" style="height: 50px;"
+                                <textarea  id="nota" class="form-control txt-custom  inputs "
+                                    placeholder="La nota es opcional" style="height: 50px;"
                                     name="nota"></textarea>
 
                                 <span class="icono-der">
@@ -286,7 +285,7 @@
                                 </span>
 
                                 <textarea class="form-control txt-custom  inputs input-validar"
-                                    placeholder="Leave a comment here" style="height: 50px;"
+                                    placeholder="Diagnostico" style="height: 50px;"
                                     name="diagnostico"></textarea>
                                 <span class="icono-der">
                                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -313,7 +312,7 @@
                                 </span>
 
                                 <textarea class="form-control txt-custom  inputs input-validar"
-                                    placeholder="Leave a comment here" id="" style="height: 50px;"
+                                    placeholder="Indicaciones" id="" style="height: 50px;"
                                     name="indicaciones"></textarea>
                                 <span class="icono-der">
                                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -339,7 +338,7 @@
                                 </span>
 
                                 <textarea class="form-control txt-custom  inputs input-validar"
-                                    placeholder="Leave a comment here" style="height: 50px;"
+                                    placeholder="Historial" style="height: 50px;"
                                     name="historial"></textarea>
                                 <span class="icono-der">
                                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
