@@ -15,7 +15,7 @@ use App\modelos\ModeloServicios;
 class ModeloFactura extends ModelBase
 {
 
-	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos, $precioInsumo,  $cantidad, $montosDePago, $referencia, $precioServicio, $doctor;
+	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos, $precioInsumo,  $cantidad, $montosDePago, $referencia, $precioServicio, $doctor, $cedula;
 
 	public function __construct($dbSystem = true)
 	{
@@ -137,7 +137,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = [
-				'cedula' => $this->returnObjectModel()['modeloCliente']->getCedula(),
+				'cedula' => $this->getCedula(),
 				'estado' => 'ACT'
 			];
 
@@ -153,7 +153,7 @@ class ModeloFactura extends ModelBase
 	public function mostrarServicios()
 	{
 		try {
-			$sql = "SELECT cs.id_categoria,cs.nombre, d.nombre AS nombre_d, d.apellido AS apellido_d,sm.*,d.*  FROM bd.categoria_servicio cs JOIN bd.serviciomedico sm ON sm.id_categoria = cs.id_categoria JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico JOIN bd.personal d ON psm.personal_id_personal = d.id_personal JOIN segurity.usuario u ON  u.id_usuario = d.usuario WHERE sm.estado = 'ACT' AND cs.nombre != 'Consulta' AND tipo != 'Cita'";
+			$sql = "SELECT cs.id_categoria,cs.nombre as categoria, d.nombre AS nombre_d, d.apellido AS apellido_d,sm.*,d.*  FROM bd.categoria_servicio cs JOIN bd.serviciomedico sm ON sm.id_categoria = cs.id_categoria JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico JOIN bd.personal d ON psm.personal_id_personal = d.id_personal JOIN segurity.usuario u ON  u.id_usuario = d.usuario WHERE sm.estado = 'ACT' AND cs.nombre != 'Consulta' AND tipo != 'Cita'";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -625,6 +625,10 @@ class ModeloFactura extends ModelBase
 		return $this->precioServicio;
 	}
 
+	public function getCedula() {
+		return $this->cedula;
+	}
+
 
 
 
@@ -655,7 +659,7 @@ class ModeloFactura extends ModelBase
 		if (!$fecha == $fechaHoy) {
 			throw new \InvalidArgumentException("La fecha debe ser de hoy.");
 		}
-		$this->$fecha = $fecha;
+		$this->fecha = $fecha;
 	}
 
 	public function setTotal($total)
@@ -694,37 +698,33 @@ class ModeloFactura extends ModelBase
 		$this->$montosDePago  = $montosDePago;
 	}
 
-	public function setInsumos($insumos)
+	public function setInsumos($insumos =[])
 	{
 		if (!is_array($insumos)) {
 			throw new \InvalidArgumentException("los insumos  esta mal.");
 		}
 
-		$this->$insumos  = $insumos;
+		$this->insumos  = $insumos;
 	}
 
 
 
-	public function setServicios($servicios)
+	public function setServicios($servicios = [])
 	{
 		if (!is_array($servicios)) {
 			throw new \InvalidArgumentException("El servicio  esta mal.");
 		}
 
-		$this->$servicios  = $servicios;
+		$this->servicios  = $servicios;
 	}
 
-	public function setCatidad($cantidad)
+	public function setCatidad($cantidad =[])
 	{
-		if (!preg_match("/^[0-9]+$/", $cantidad)) {
-			throw new \InvalidArgumentException(" la cantidad debe ser un número entero positivo.");
+		if (!is_array($cantidad)) {
+			throw new \InvalidArgumentException("la cantidadno esta correcta.");
 		}
 
-		if ((int)$cantidad <= 0) {
-			throw new \InvalidArgumentException("la cantidad debe ser mayor que cero.");
-		}
-
-		$this->cantidad = (int)$cantidad;
+		$this->cantidad  = $cantidad;
 	}
 
 	public function setPrecioInsumo($precioInsumo)
@@ -743,5 +743,14 @@ class ModeloFactura extends ModelBase
 		}
 
 		$this->precioServicio  = $precioServicio;
+	}
+
+
+	public function setCedula($cedula)
+	{
+		if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
+			throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
+		}
+		$this->cedula = $cedula;
 	}
 }

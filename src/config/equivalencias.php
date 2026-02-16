@@ -56,6 +56,9 @@ return [
     "facturarHospitalizacion" => "consultar",
     "coincidenciaPacienteCliente" => "consultar",
     "guardarCliente" => "consultar",
+    "mostrarServicios"=>"consultar",
+    "mostrarInsumos"=>"consultar",
+    "mostrarMetodosDePago"=>"consultar",
 
     //Citas
     "mostrarPacienteCita" => "consultar",
