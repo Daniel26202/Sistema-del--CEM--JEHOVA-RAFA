@@ -635,8 +635,6 @@ const createPatients = async (form, inputs) => {
       cedulaControl.dispatchEvent(new Event("keyup", { bubbles: true }));
 
       form.reset();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("valido"));
 
       modalControlBoots.show();
       modalPaciente.hide();

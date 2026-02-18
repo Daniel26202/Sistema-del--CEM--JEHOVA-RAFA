@@ -1,12 +1,12 @@
     <!-- Modal Agregar-->
-    <div class="modal fade" id="modal-cliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog ">
             <div class="modal-content tamaño-modal">
                 <div class="modal-header">
                     <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelCliente">Registrar Cliente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form class=" form-validable" id="modalAgregar">
+                <form class=" form-validable" id="modalAgregarCliente">
 
                     <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 

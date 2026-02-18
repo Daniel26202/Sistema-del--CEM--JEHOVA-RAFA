@@ -96,7 +96,7 @@
       <div class="form-modal  m-2 " style="width: 97%; overflow-y: auto;">
 
 
-        <div id="div-modal-insumo" class="modal-body d-flex justify-content-between flex-wrap">
+        <div id="div-modal-insumo" class=" modal-body d-flex justify-content-between flex-wrap">
 
 
 
@@ -184,7 +184,7 @@
 
           <h5 style="margin-bottom: 20px;margin-top: 20px;" class="text-center">Buscar el cliente por la cedula</h5>
 
-          <form style="margin-bottom: 20px;margin-top: 20px;" id="form-buscador-cliente" class="d-flex justify-content-end" autocomplete="off">
+          <form style="margin-bottom: 20px;margin-top: 20px;" id="form-buscador-otro-cliente" class="d-flex justify-content-end" autocomplete="off">
             <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
               placeholder="Ingrese Cedula" required maxlength="8" minlength="6"
               oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
@@ -203,7 +203,11 @@
 
           <div id="div-cliente-no-encontrado" class=" d-none">
             <h5 class="text-center">El cliente no fue encontrado por favor añadalo</h5>
-            <button type="button" id="btnOpenModalPaciente" class="btn btn-agregarcita-modal w-100" uk-toggle="target: #modal-examplePaciente" data-bs-dismiss="toast"> Registrar </button>
+            <button class=" d-none caja-btn-margin btn btn-modals" style="width: 100% !important" data-bs-toggle="modal" data-bs-target="#modalCliente" id="btnAddCli">
+              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill mx-2" viewBox="0 0 16 16">
+                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
+              </svg>Registrar cliente
+            </button>
           </div>
 
         </div>
@@ -216,9 +220,9 @@
 
 
       <div class="modal-footer ">
-        <button type="button" class="ico uk-button col-4 me-4 uk-button-default uk-modal-close btn-cerrar-modal"
+        <button type="button" class="btn btn-modals-cancelar me-2"
           data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn col-3 btn-agregarcita-modal " data-bs-toggle="modal"
+        <button type="button" class="btn btn-modals" data-bs-toggle="modal"
           data-bs-target="#modal-pago" id="botonPC">Siguiente</button>
       </div>
 

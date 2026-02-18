@@ -50,6 +50,16 @@
                     </svg>
                     Agregar Insumos
                 </button>
+
+                <button class="d-none caja-btn-margin btn btn-modals"
+                    data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" id="btnAddPac">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                        class="bi bi-capsule" viewBox="0 0 16 16">
+                        <path
+                            d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+                    </svg>
+                    Agregar Paciente
+                </button>
             </div>
             <!-- </div> -->
 
@@ -57,9 +67,9 @@
             <div class="d-flex">
 
                 <div class="mt-4 validar caja-buscador-paciente-factura" id="form-buscador">
-                    <form id="form-buscador-cliente" class=" d-flex justify-content-end" autocomplete="off">
+                    <form id="form-buscador-factura" class=" d-flex justify-content-end" autocomplete="off">
                         <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
-                            placeholder="Ingrese Cedula" required maxlength="8" minlength="6"
+                            placeholder="Ingrese Cedula" id="input-cedula-paciente" required maxlength="8" minlength="6"
                             oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                             id="inputBusPaCi">
 
@@ -121,7 +131,7 @@
                         <button class="d-none btn btn-agregarConsulta ms-3 me-4 btn-escondidos"
                             id="vaciarTabla">VACIAR</button>
                         <button id="btnSiguiente" class="d-none btn btn-agregarConsulta btn-escondidos"
-                            data-bs-toggle="modal" data-bs-target="#modal-pago">SIGUIENTE</button>
+                            data-bs-toggle="modal" data-bs-target="#modal-cliente">SIGUIENTE</button>
                     </div>
                 </div>
                 <div id="totalFac">
@@ -142,6 +152,10 @@
 <?php require_once 'modalAgregarFactura.php'; ?>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
+<?php require_once './src/vistas/vistaPacientes/modalAgregarPaciente.php'; ?>
+<?php require_once './src/vistas/vistaCliente/modalAgregarCliente.php'; ?>
 
+
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/list.min.js"></script>
 <script type="module" src="<?= $urlBase ?>../src/assets/js/f.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaFactura.js"></script>

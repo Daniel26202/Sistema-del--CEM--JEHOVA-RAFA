@@ -11,7 +11,7 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Clientes";
 
-const modalAgregar = document.getElementById("modalAgregar");
+const modalAgregar = document.getElementById("modalAgregarCliente");
 const selectGenero = document.getElementById("selectGenero");
 const exampleModalLabel = document.getElementById("exampleModalLabelCliente");
 const botonModal = document.getElementById("botonModal");
@@ -48,7 +48,7 @@ const readCustomer = async () => {
               <button class="${
                 urlActual.includes("papelera") ? "d-none" : ""
               } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
-                                data-bs-toggle="modal" data-bs-target="#modal-cliente" data-index="${element.id_cliente}">
+                                data-bs-toggle="modal" data-bs-target="#modalCliente" data-index="${element.id_cliente}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path

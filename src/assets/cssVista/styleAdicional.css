@@ -130,3 +130,111 @@
        transform: none;
        box-shadow: none;
    }
+
+
+   /* //tarjetsde factura */
+
+   
+
+
+
+   
+
+   :root {
+       --color-primary: #387adf;
+       --color-light-blue: #eaf3ff;
+       --color-dark-blue: #2a5fa8;
+   }
+
+   /* ── Card ── */
+   .card-insumo {
+       border: 2px solid var(--color-primary);
+       border-radius: 16px;
+       overflow: hidden;
+       transition: box-shadow 0.3s ease, border-width 0.2s ease;
+   }
+
+   .card-insumo:hover {
+       box-shadow: 0 8px 24px rgba(56, 122, 223, 0.18);
+   }
+
+   .card-insumo.seleccionada {
+       border-width: 3px;
+       box-shadow: 0 6px 20px rgba(56, 122, 223, 0.35);
+   }
+
+   /* ── Sección superior (ícono + nombre) ── */
+   .seccion-superior-custom {
+       background-color: var(--color-light-blue);
+       border-bottom: 2px solid var(--color-primary);
+       padding-bottom: 1rem;
+   }
+
+   .icono-medicamento-grande {
+       color: var(--color-primary);
+       font-size: 2.8rem;
+   }
+
+   .titulo-medicamento {
+       color: var(--color-primary);
+       font-weight: 700;
+       font-size: 1rem;
+       word-break: break-word;
+   }
+
+   /* ── Lista detalles ── */
+   .lista-detalles {
+       list-style: none;
+       font-size: 0.82rem;
+   }
+
+   .lista-detalles li {
+       padding: 2px 0;
+   }
+
+   .lista-detalles li strong {
+       color: var(--color-primary);
+   }
+
+   /* ── Precio ── */
+   .precio-principal {
+       color: var(--color-primary);
+       font-weight: 700;
+       font-size: 1.5rem;
+   }
+
+   /* ── Input ── */
+   .input-cantidad-custom {
+       border: 2px solid #ccc;
+       border-radius: 8px;
+       font-weight: 500;
+       font-size: 0.9rem;
+       padding: 5px 10px;
+       color: #333;
+       transition: border-color 0.2s ease, box-shadow 0.2s ease;
+   }
+
+   .input-cantidad-custom:focus {
+       border-color: var(--color-primary);
+       box-shadow: 0 0 0 0.2rem rgba(56, 122, 223, 0.15);
+       outline: none;
+   }
+
+   /* ── Responsive ── */
+   @media (max-width: 576px) {
+       .icono-medicamento-grande {
+           font-size: 2rem;
+       }
+
+       .titulo-medicamento {
+           font-size: 0.9rem;
+       }
+
+       .precio-principal {
+           font-size: 1.2rem;
+       }
+
+       .lista-detalles {
+           font-size: 0.75rem;
+       }
+   }

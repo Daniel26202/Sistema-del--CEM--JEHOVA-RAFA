@@ -3,23 +3,30 @@ import {
   alertConfirm,
   alertError,
   alertSuccess,
+  initCardData,
 } from "./generic/funtionGeneric.js";
+import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
+
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
 addEventListener("DOMContentLoaded", function () {
   console.log("factura...");
   // Creamos la variable donde van a estar los datos, y de una vez le ponemos una fila para probar
   console.log(window.location.href.includes("facturaCita"));
-  var data = [];
-  var dataInsumo = [];
+  let data = [];
+  let dataInsumo = [];
   let listaModalServicio = [];
   let listaModalInsumo = [];
   // console.log(data)
 
+  const modalPaciente = new bootstrap.Modal(
+    document.getElementById("exampleModalagregarPaciente"),
+  );
+
+  const modalAgregarPaciente = document.getElementById("modalAgregar");
+
   // // Creamos las variables html que usaremos
   const tabla = document.getElementById("tbody");
-
-  const forms = document.querySelector(".formularios");
 
   const tbodyInsumos = document.getElementById("tbody-insumos");
 
@@ -48,11 +55,18 @@ addEventListener("DOMContentLoaded", function () {
     "ConteNotificacionInsumoCon",
   );
 
+  const inputCedulaPaciente = document.getElementById("input-cedula-paciente");
+  const cedulaPaciente = document.getElementById("cedulaPaciente");
+  const inputs = modalAgregarPaciente.querySelectorAll(".input-validar");
+
   const pacienteClienteCheck = document.querySelector(
     ".paciente-cliente-check",
   );
   const cajaBuscadorCliente = document.getElementById("caja-buscar-cliente");
   const buscadorCliente = document.getElementById("form-buscador-cliente");
+  const formBuscadorOtroCliente = document.getElementById(
+    "form-buscador-otro-cliente",
+  );
   const dataCliente = document.getElementById("data-cliente");
 
   const btnCancelarInsertServ = document.getElementById(
@@ -70,6 +84,8 @@ addEventListener("DOMContentLoaded", function () {
   const selectGenero = document.getElementById("selectGenero");
 
   //botones de acciones en la factura
+  const btnAddPac = document.getElementById("btnAddPac");
+  const btnAddCli = document.getElementById("btnAddCli");
   const btnServicio = document.getElementById("botonAgregar");
   const btnInsumos = document.getElementById("btnInsumos");
   const btnVaciarTabla = document.getElementById("vaciarTabla");
@@ -90,6 +106,7 @@ addEventListener("DOMContentLoaded", function () {
   const btnInsertarInsumo = document.getElementById("btnInsertarInsumo");
 
   const bodyModalPago = document.getElementById("body-modal-pago");
+  const inputPaciente = document.getElementById("inputPaciente");
 
   //seccion de pagos
   //Aqui iran los nombres de tipos de pagos
@@ -115,7 +132,7 @@ addEventListener("DOMContentLoaded", function () {
   //funcion para comprobar si el paciente es el mismo cliente
 
   const buscarCliente = async (formulario) => {
-    try {
+    // try {
       let [addClass, removeClass] = ["", ""];
 
       const datos = new FormData(formulario);
@@ -149,12 +166,76 @@ addEventListener("DOMContentLoaded", function () {
         });
 
         divClienteNoEncontrado.classList.add("d-none");
+        btnAddCli.classList.add("d-none");
       } else {
+            [addClass, removeClass] = ["d-none", "c"];
+
         dataCliente.innerText = ``;
 
         divClienteNoEncontrado.classList.remove("d-none");
         document.getElementById("inputCliente").value = "";
         document.getElementById("botonPC").classList.add("d-none");
+
+        btnAddCli.classList.remove("d-none");
+      }
+
+      btnServicio.classList.add(addClass);
+      btnInsumos.classList.add(addClass);
+      btnServicio.classList.remove(removeClass);
+      btnInsumos.classList.remove(removeClass);
+    // } catch (error) {
+    //   alertError("Error", "Lamentablemente ocurrio un error" + error);
+    //   console.log(error);
+    // }
+  };
+
+  //buscador paciente cuando no tiene cita
+  const buscarPaciente = async (formularioPaciente) => {
+    try {
+      let [addClass, removeClass] = ["", ""];
+      const datos = new FormData(formularioPaciente);
+      let resultado = await executePetition(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
+        "POST",
+        datos,
+      );
+      console.log("paciente", resultado);
+      if (resultado.length > 0) {
+        resultado.forEach((res) => {
+          console.log(res);
+          // calcula la edad
+          const fechaNac = new Date(res.fn);
+          const edadDif = Date.now() - fechaNac.getTime();
+          const edadFecha = new Date(edadDif);
+          const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+          dataCliente.innerText = `PACIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+
+          if (edad >= 18) {
+            [addClass, removeClass] = ["c", "d-none"];
+
+            document.getElementById("botonPC").classList.remove("d-none");
+          } else {
+            [addClass, removeClass] = ["d-none", "c"];
+            document.getElementById("botonPC").classList.add("d-none");
+          }
+          inputPaciente.value = res.id_paciente;
+        });
+
+        divClienteNoEncontrado.classList.add("d-none");
+        //desaparecer el btn de agregar un paciente
+        btnAddPac.classList.add("d-none");
+      } else {
+        [addClass, removeClass] = ["d-none", "c"];
+
+        dataCliente.innerText = ``;
+
+        divClienteNoEncontrado.classList.remove("d-none");
+        document.getElementById("inputCliente").value = "";
+        document.getElementById("botonPC").classList.add("d-none");
+        inputPaciente.value = 0;
+        //aparecer el btn de agregar paciente
+        dataCliente.innerText = `El paciente no fue encontrado  debe registrarlo por favor.`;
+        btnAddPac.classList.remove("d-none");
       }
 
       btnServicio.classList.add(addClass);
@@ -162,8 +243,59 @@ addEventListener("DOMContentLoaded", function () {
       btnServicio.classList.remove(removeClass);
       btnInsumos.classList.remove(removeClass);
     } catch (error) {
-      alertError("Error", "Lamentablemente ocurrio un error" + error);
       console.log(error);
+    }
+  };
+
+  const createPatients = async (form, inputs) => {
+    try {
+      const data = new FormData(form);
+      let result = await executePetition(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar",
+        "POST",
+        data,
+      );
+      console.log(result);
+      if (result.ok) {
+        alertSuccess(result.message);
+        inputCedulaPaciente.value = cedulaPaciente.value;
+        inputCedulaPaciente.dispatchEvent(
+          new Event("keyup", { bubbles: true }),
+        );
+
+        form.reset();
+        modalPaciente.hide();
+
+        // buscarPacienteConCita(formularioPaciente);
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      alertError("Error", error);
+    }
+  };
+
+  //buscar cuando el paciente una tiene cita
+  const buscarPacienteConCita = async (formularioPaciente) => {
+    const datos = new FormData(formularioPaciente);
+
+    let resultado = await executePetition(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
+      "POST",
+      datos,
+    );
+
+    console.log(resultado);
+    if (resultado.length > 0) {
+      console.log("2");
+
+      let id_cita = "";
+      resultado.forEach((res) => {
+        id_cita = `/c${res.id_cita}`;
+      });
+      console.log(id_cita);
+      window.location.href =
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita" + id_cita;
+    } else {
+      buscarPaciente(formularioPaciente);
     }
   };
 
@@ -176,7 +308,7 @@ addEventListener("DOMContentLoaded", function () {
       let html = "";
       if (result.length > 0) {
         result.forEach((res) => {
-          html += `<div class="card card-servicio p-4" style="cursor: pointer;" data-id-servicio="${res.id_servicioMedico}">
+          html += `<div class="card card-servicio p-4" style="cursor: pointer;" data-id-servicio="${res.id_servicioMedico}" data-doctor="${res.id_personal}">
         <!-- nombre del insumo (podemos cambiarlo dinámicamente) -->
         <div class="text-center nombre-card-factura">
             <span>${res.categoria}</span>
@@ -232,124 +364,99 @@ addEventListener("DOMContentLoaded", function () {
       alertError("Error", `Lamentablemente algo salio mal ${error}`);
     }
   };
-
   const renderizarInsumos = () => {
     let html = "";
     if (listaModalInsumo.length > 0) {
       listaModalInsumo.forEach((res) => {
-        html += `<div data-index=${res.id_insumo} data-medida=${res.medida} iva=${res.iva} data-precio=${res.precio} data-cantidad=${res.cantidad_disponible} class="card card-insumo p-4">
+        html += `
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div 
+          data-index="${res.id_insumo}" 
+          data-medida="${res.medida}" 
+          iva="${res.iva}" 
+          data-precio="${res.precio}" 
+          data-cantidad="${res.cantidad_disponible}" 
+          class="card card-insumo h-100">
 
-        <div class="text-center nombre-card-factura" >
-            <span class="title-insumo">${res.nombre}</span>
+          <!-- Sección superior: ícono + nombre -->
+          <div class="seccion-superior-custom text-center p-3">
+            <div class="icono-medicamento-grande mb-2">
+              <i class="bi bi-capsule-pill"></i>
+            </div>
+            <h6 class="titulo-medicamento mb-1 nombre-search title-insumo">${res.nombre}</h6>
+            <span class="text-muted" style="font-size: 0.82rem;">${res.medida}</span>
+          </div>
+
+          <!-- Sección inferior: detalles + precio + input -->
+          <div class="p-3 d-flex flex-column gap-2">
+
+            <ul class="lista-detalles ps-0 mb-0">
+              <li class="text-muted"><strong>Medida:</strong> ${res.medida}</li>
+              <li class="text-muted"><strong>IVA:</strong> ${res.iva ? "Sí" : "No"}</li>
+              <li class="text-muted"><strong>Stock:</strong> ${res.cantidad_disponible} unidades</li>
+            </ul>
+
+            <div>
+              <div class="precio-principal">${res.precio} $</div>
+            </div>
+
+            <!-- Input estilo nuevo diseño -->
+            <input 
+              type="number"
+              min="0"
+              max="${res.cantidad_disponible}"
+              value="0"
+              class="form-control text-center input-cantidad-custom cantidadDisplay"
+              data-index="${res.id_insumo}"
+              data-medida="${res.medida}"
+              data-iva="${res.iva}"
+              data-precio="${res.precio}"
+              data-stock="${res.cantidad_disponible}"
+            />
+
+          </div>
         </div>
-        <span class="text-center" >Cantidad Disponible: ${res.cantidad_disponible}</span>
-        <span class="text-center" >${res.precio} $</span>
-
-
-        <div class="d-flex justify-content-between align-items-center cantidad-wrapper mt-2">
-            <button class="btn btn-cantidad btnRestar" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-dash-circle"
-                    viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
-                </svg>
-            </button>
-
-            <span class="cantidad-numero px-3 cantidadDisplay">0</span>
-
-            <button class="btn btn-cantidad  btnSumar" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus-circle-fill"
-                    viewBox="0 0 16 16">
-                    <path
-                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
-                </svg>
-            </button>
-        </div>
-
-        <div class="card-footer-decor">
-            <span class="decor-dot"></span>
-            <span class="decor-dot"></span>
-            <span class="decor-dot"></span>
-        </div>
-    </div>`;
+      </div>`;
       });
     } else {
-      html = `<h5 class="text-center">No se encontraron servicios medicos</h5>`;
+      html = `<h5 class="text-center w-100">No se encontraron servicios medicos</h5>`;
     }
 
-    divModalInsumo.innerHTML = html;
+    divModalInsumo.innerHTML = `<div class="row g-3">${html}</div>`;
 
-    if (document.querySelectorAll(".card-insumo")) {
-      document.querySelectorAll(".card-insumo").forEach((contenedor) => {
-        console.log(contenedor);
-        // Dentro de cada contenedor, buscar sus elementos específicos
-        const cantidadSpan = contenedor.querySelector(".cantidadDisplay");
-        const btnSumar = contenedor.querySelector(".btnSumar");
-        const btnRestar = contenedor.querySelector(".btnRestar");
+    //inicializar dataCard
+    initCardData();
 
-        // Verificar que existan todos los elementos necesarios
-        if (!cantidadSpan || !btnSumar || !btnRestar) return;
+    document.querySelectorAll(".input-cantidad-custom").forEach((input) => {
+      const card = input.closest(".card-insumo");
+      const MAX = parseInt(input.getAttribute("max")) || 99;
+      const MIN = 0;
 
-        // Configuración de límites
-        const MIN = 0;
-        const MAX = 99;
+      function actualizarEstado(valor) {
+        if (valor < MIN) valor = MIN;
+        if (valor > MAX) valor = MAX;
+        input.value = valor;
+        card.classList.toggle("seleccionada", valor > 0);
+      }
 
-        // Obtener valor inicial
-        let cantidad = parseInt(cantidadSpan.innerText, 10);
-        if (isNaN(cantidad) || cantidad < MIN) {
-          cantidad = 6;
-        }
-
-        // Función para actualizar cantidad
-        function actualizarCantidad(nuevoValor) {
-          if (nuevoValor < MIN) nuevoValor = MIN;
-          if (nuevoValor > MAX) nuevoValor = MAX;
-
-          cantidad = nuevoValor;
-          cantidadSpan.innerText = cantidad;
-
-          btnRestar.disabled = cantidad <= MIN;
-          btnSumar.disabled = cantidad >= MAX;
-
-          btnRestar.setAttribute("aria-disabled", btnRestar.disabled);
-          btnSumar.setAttribute("aria-disabled", btnSumar.disabled);
-        }
-
-        // Inicializar
-        actualizarCantidad(cantidad);
-
-        // Eventos
-        btnSumar.addEventListener("click", function () {
-          if (cantidad < MAX) {
-            actualizarCantidad(cantidad + 1);
-          } else {
-            btnSumar.style.transform = "scale(0.9)";
-            setTimeout(() => (btnSumar.style.transform = ""), 150);
-          }
-        });
-
-        btnRestar.addEventListener("click", function () {
-          if (cantidad > MIN) {
-            actualizarCantidad(cantidad - 1);
-          } else {
-            btnRestar.style.transform = "scale(0.9)";
-            setTimeout(() => (btnRestar.style.transform = ""), 150);
-          }
-        });
-
-        // Prevenir selección de texto
-        btnSumar.addEventListener("mousedown", (e) => e.preventDefault());
-        btnRestar.addEventListener("mousedown", (e) => e.preventDefault());
+      input.addEventListener("input", function () {
+        actualizarEstado(parseInt(this.value) || 0);
       });
-    }
-  };
 
-  const insertarServicio = (id, servicio, doctor, precio) => {
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "-" || e.key === "e") e.preventDefault();
+      });
+
+      actualizarEstado(0);
+    });
+  };
+  const insertarServicio = (id, servicio, doctor, precio, id_doctor) => {
     const obj = {
       id_servicio: id,
       servicio: servicio,
       doctor: doctor,
       precio: precio,
+      id_doctor: id_doctor,
     };
 
     data.push(obj);
@@ -1151,13 +1258,14 @@ addEventListener("DOMContentLoaded", function () {
       let storedDolar = localStorage.getItem("valorDelDolar");
       let montoBS = element["precio"] * storedDolar;
       montoBS = montoBS.toFixed(2);
-
+      alertSuccess();
+      console.log("confirmaciopn", element["id_servicio"]);
       html += `
         <tr>
-        <td><input type="hidden" name="servicios[]" value="${element["id_servicioMedico"]}">
+        <td><input type="hidden" name="servicios[]" value="${element["id_servicio"]}">
         <div class="fw-bolder">S/E:</div>${element["servicio"]}</td>
-        <td><input type="hidden" name="doctores[]" value="${element["id_personal"]}"><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
-        <td><input type="hidden" name="precioServicio[]" value="${montoBS}"><div class="fw-bolder">PRECIO:</div> ${montoBS} BS</td>
+        <td><input type="hidden" name="doctores[]" value="${element["id_doctor"]}"><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
+        <td><input type="hidden" name="precioServicio[]" value="${element["precio"]}"><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
         <td>
         <tr>`;
     });
@@ -1170,15 +1278,15 @@ addEventListener("DOMContentLoaded", function () {
       htmlInsumos += `
         <tr>
         <td><input type="hidden" name="insumos[]" value="${element["id_insumo"]}">
-        <div class="fw-bolder">INSUMO:</div>${element["nombreInsumo"]}</td>
+        <div class="fw-bolder">INSUMO:</div>${element["nombre"]}</td>
 
-        <td><div class="fw-bolder">MEDIDA:</div>${element["medidaInsumo"]}</td>
+        <td><div class="fw-bolder">MEDIDA:</div>${element["medida"]}</td>
 
         <td><input type="hidden" name="cantidad[]" value="${element["cantidad"]}"><div class="fw-bolder">CANTIDAD</div> ${
           element["cantidad"]
         }</td>
         <td><input type="hidden" name="precioInsumo[]" value="${montoBS}"><div class="fw-bolder">PRECIO:</div> ${montoBS} BS</td>
-        <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${(element["subTotal"] * storedDolar).toFixed(2)} BS</td>
+        <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${(montoBS * storedDolar).toFixed(2)} BS</td>
         <td>
         <tr>`;
     });
@@ -1215,6 +1323,7 @@ addEventListener("DOMContentLoaded", function () {
           card.children[0].children[0].innerText,
           card.children[1].innerText,
           card.children[3].value,
+          card.getAttribute("data-doctor"),
         );
       } else {
         console.log("no fue selecionad0");
@@ -1230,7 +1339,7 @@ addEventListener("DOMContentLoaded", function () {
 
     cardsInsumos.forEach((card) => {
       const cantidadSpan = parseInt(
-        card.querySelector(".cantidadDisplay").innerText,
+        card.querySelector(".cantidadDisplay").value,
       );
       const id = card.getAttribute("data-index");
       const nombre = card.querySelector(".title-insumo").innerText;
@@ -1242,9 +1351,79 @@ addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  buscadorCliente.addEventListener("submit", function (e) {
-    e.preventDefault();
-    buscarCliente(this);
-    renderizarInsumos();
+  //llamar la uncion de buscar el paciente
+  pacienteClienteCheck.addEventListener("change", function () {
+    if (this.checked) {
+      cajaBuscadorCliente.classList.remove("d-none");
+      document.getElementById("botonPC").classList.add("d-none");
+      console.log(document.getElementById("botonPC"));
+    } else {
+      cajaBuscadorCliente.classList.add("d-none");
+      // dataCliente[0].innerHTML = ``;
+      // dataCliente[1].innerHTML = ``;
+
+      document.getElementById("inputCliente").value = "";
+      document.getElementById("botonPC").classList.remove("d-none");
+    }
   });
+
+  //buscar otro cliente
+  formBuscadorOtroCliente.addEventListener("submit", function (e) {
+    e.preventDefault();
+    buscarCliente(formBuscadorOtroCliente);
+  });
+
+  //metodo para que cuando le de click al boton de abrir el modal de agregar pacientw ase le de el valor a la cediula de manera automatica
+
+  btnAddPac.addEventListener("click", function () {
+    cedulaPaciente.value = inputCedulaPaciente.value;
+    cedulaPaciente.dispatchEvent(new Event("keyup", { bubbles: true }));
+  });
+
+  //llamar a la validacion para los fformularios tanto de guardar paciente como cliente
+  let verificarFormularioPaciente =
+    inicializarValidacionFormulario(modalAgregarPaciente);
+
+  //enviar firmulario de paciente
+  modalAgregarPaciente.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let inputsBuenos = [];
+    this.querySelectorAll(".input-validar").forEach((input) => {
+      if (input.parentElement.classList.contains("valido"))
+        inputsBuenos.push(true);
+    });
+
+    let esValido = verificarFormularioPaciente();
+
+    if (esValido) {
+      createPatients(this, inputsBuenos);
+    } else {
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
+    }
+  });
+
+  if (window.location.href.includes("facturaCita")) {
+    console.log("cita");
+  } else if (window.location.href.includes("idH")) {
+    console.log("hospitalizacion");
+  } else {
+    console.log("factura normal");
+    const formularioPaciente = document.getElementById("form-buscador-factura");
+    if (formularioPaciente) {
+      formularioPaciente.addEventListener("submit", function (e) {
+        e.preventDefault();
+        //buscarPaciente(formularioPaciente);
+        buscarPacienteConCita(formularioPaciente);
+      });
+    }
+  }
+
+  //rendirizar los insumos
+  setTimeout(() => {
+    renderizarInsumos();
+  }, 600);
 });

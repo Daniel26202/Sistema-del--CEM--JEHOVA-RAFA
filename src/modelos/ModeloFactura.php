@@ -15,7 +15,7 @@ use App\modelos\ModeloServicios;
 class ModeloFactura extends ModelBase
 {
 
-	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos, $precioInsumo,  $cantidad, $montosDePago, $referencia, $precioServicio, $doctor, $cedula;
+	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos, $precioInsumo,  $cantidad, $montosDePago, $referencia, $precioServicio, $doctor, $cedula, $id_cliente, $id_paciente, $id_cita, $idH, $idInsumo;
 
 	public function __construct($dbSystem = true)
 	{
@@ -120,7 +120,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = [
-				'cedula' => $this->returnObjectModel()['modeloPacientes']->getCedula(),
+				'cedula' => $this->getCedula(),
 				'estado' => 'ACT'
 			];
 
@@ -183,10 +183,10 @@ class ModeloFactura extends ModelBase
 
 
 
-	public  function selectId_entrada()
+	private  function selectId_entrada($id_insumo)
 	{
 		try {
-			$data = ['id_insumo' => $this->returnObjectModel()['modeloInsumo']->getIdInsumo()];
+			$data = ['id_insumo' => $id_insumo];
 			$sql = "SELECT ei.id_entradaDeInsumo FROM entrada_insumo ei INNER JOIN entrada e ON e.id_entrada= ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.cantidad_disponible > 0 ORDER BY e.fechaDeIngreso  LIMIT 1";
 			$this->setSQL($sql);
 			$datos = $this->search($data, false);
@@ -202,174 +202,183 @@ class ModeloFactura extends ModelBase
 	{
 
 		try {
-			$sql = "SELECT * from cliente where id_cliente=:id_cliente";
-			$this->setSQL($sql);
-			$data1 = [
-				'id_cliente' => $this->returnObjectModel()['modeloCliente']->getIdCliente()
+		$sql = "SELECT * from cliente where id_cliente=:id_cliente";
+		$this->setSQL($sql);
+		$data1 = [
+			'id_cliente' => $this->getIdCliente()
+		];
+		$validar  = $this->search($data1, false);
+
+		if ($validar == []) {
+			throw new \Exception("El id del cliente no existe");
+		}
+
+		//insertar factura
+		$sql = "INSERT INTO factura VALUES (null, :fecha, :total, :estado, :id_cliente)";
+		$this->setSQL($sql);
+		$data2 = [
+			'fecha' => $this->getFecha(),
+			'total' => $this->getTotal(),
+			'estado' => 'ACT',
+			'id_cliente' => $this->getIdCliente()
+		];
+
+		$id_factura = $this->create($data2);
+
+		// //Si el id_cita no es null se cambia el estado e la cita
+		// if ($this->returnObjectModel()['modeloCita']->getIdCita() != null) {
+		// 	$sql = "UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id";
+		// 	$this->setSQL($sql);
+
+		// 	$this->update_logic($this->returnObjectModel()['modeloCita']->getIdCita());
+		// }
+
+		// //Si el id_hospitalizacion no es null se cambia el estado e la cita
+		// if ($this->returnObjectModel()['modeloHospitalizacion']->getIdH() != null) {
+
+		// 	$sql = "UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id";
+		// 	$this->setSQL($sql);
+
+		// 	$this->update_logic($this->returnObjectModel()['modeloHospitalizacion']->getIdH());
+
+		// 	//insertar en el dealle de factura  la hospitalizacion
+		// 	$sql = "INSERT INTO detalle_factura  VALUES (null,:id_factura, :tipo, :cantidad,:precioServIndividual, :precioServCompleto,:id_hospitalizacion,:id_servicio,:id_entrada)";
+		// 	$this->setSQL($sql);
+		// 	$data3 = [
+		// 		'id_factura' => $id_factura,
+		// 		'tipo' => 'Hospitalizacion',
+		// 		'cantidad' => 1,
+		// 		'precioServIndividual' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
+		// 		'precioServCompleto' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
+		// 		'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH(),
+		// 		'id_servicio' => null,
+		// 		'id_entrada' => null
+		// 	];
+		// 	$this->create($data3);
+
+		// 	// consulta datos del ultimo contro del paciente hospitalizado
+		// 	$sql = "SELECT con.id_control, con.id_paciente, con.historiaclinica FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1";
+		// 	$this->setSQL($sql);
+
+		// 	$datosControl = $this->search(['idHosp' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH()], false);
+
+		// 	$historialEnF = $datosControl["historiaclinica"];
+
+
+		// 	$sql = "SELECT cs.nombre AS servicio, sh.cantidad, sm.tipo FROM servicios_hospitalizacion sh INNER JOIN serviciomedico sm ON sm.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE sh.id_hospitalizacion = :idHosp;";
+		// 	$this->setSQL($sql);
+
+		// 	$servicios = $this->search(['idHosp' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH()]);
+
+
+		// 	if ($servicios) {
+		// 		$textoServicios = "Servicios utilizados: ";
+		// 		$lista = [];
+		// 		foreach ($servicios as $serv) {
+		// 			// para convertir el text en minuscula
+		// 			if (strtolower($serv["tipo"]) === "examenes") {
+		// 				$lista[] = "{$serv["servicio"]} ({$serv["cantidad"]} unidades)";
+		// 			} else {
+		// 				$lista[] = $serv["servicio"];
+		// 			}
+		// 		}
+
+		// 		$textoServicios .= implode(", ", $lista) . ".";
+
+		// 		$historialEnF = $textoServicios . "   El paciente: " . $historialEnF;
+		// 	}
+
+		// 	$sql = 'UPDATE control SET historiaclinica = :historial, estado =:estado WHERE id_control = :id';
+
+		// 	$data4 = [
+		// 		'historial' => $historialEnF,
+		// 		'estado' => 'ACT'
+		// 	];
+		// 	$this->setSQL($sql);
+		// 	$this->update($data4, $datosControl["id_control"]);
+		// }
+
+		// //insertar tipos de pago
+		$contador = 0;
+
+		foreach ($this->getFormasDePago() as $id_pago) {
+			$sql = "INSERT INTO pagodefactura VALUES (null, :id_pago, :id_factura, :referencia, :montosDePago)";
+			$data = [
+				'id_pago' => $id_pago,
+				'id_factura' => $id_factura,
+				'referencia' => $this->getReferencia(),
+				'montosDePago' => $this->getMontosPagos()[$contador],
 			];
-			$validar  = $this->search($data1, false);
-
-			if ($validar == []) {
-				throw new \Exception("El id del cliente no existe");
-			}
-
-			//insertar factura
-			$sql = "INSERT INTO factura VALUES (null, :fecha, :total, :estado, :id_cliente)";
 			$this->setSQL($sql);
-			$data2 = [
-				'fecha' => $this->getFecha(),
-				'total' => $this->getTotal(),
-				'estado' => 'ACT',
-				'id_cliente' => $this->returnObjectModel()['modeloCliente']->getIdCliente()
-			];
-
-			$id_factura = $this->create($data2);
-
-			//Si el id_cita no es null se cambia el estado e la cita
-			if ($this->returnObjectModel()['modeloCita']->getIdCita() != null) {
-				$sql = "UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id";
-				$this->setSQL($sql);
-
-				$this->update_logic($this->returnObjectModel()['modeloCita']->getIdCita());
-			}
-
-			//Si el id_hospitalizacion no es null se cambia el estado e la cita
-			if ($this->returnObjectModel()['modeloHospitalizacion']->getIdH() != null) {
-
-				$sql = "UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion =:id";
-				$this->setSQL($sql);
-
-				$this->update_logic($this->returnObjectModel()['modeloHospitalizacion']->getIdH());
-
-				//insertar en el dealle de factura  la hospitalizacion
-				$sql = "INSERT INTO detalle_factura  VALUES (null,:id_factura, :tipo, :cantidad,:precioServIndividual, :precioServCompleto,:id_hospitalizacion,:id_servicio,:id_entrada)";
-				$this->setSQL($sql);
-				$data3 = [
-					'id_factura' => $id_factura,
-					'tipo' => 'Hospitalizacion',
-					'cantidad' => 1,
-					'precioServIndividual' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
-					'precioServCompleto' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
-					'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH(),
-					'id_servicio' => null,
-					'id_entrada' => null
-				];
-				$this->create($data3);
-
-				// consulta datos del ultimo contro del paciente hospitalizado
-				$sql = "SELECT con.id_control, con.id_paciente, con.historiaclinica FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1";
-				$this->setSQL($sql);
-
-				$datosControl = $this->search(['idHosp' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH()], false);
-
-				$historialEnF = $datosControl["historiaclinica"];
-
-
-				$sql = "SELECT cs.nombre AS servicio, sh.cantidad, sm.tipo FROM servicios_hospitalizacion sh INNER JOIN serviciomedico sm ON sm.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE sh.id_hospitalizacion = :idHosp;";
-				$this->setSQL($sql);
-
-				$servicios = $this->search(['idHosp' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH()]);
-
-
-				if ($servicios) {
-					$textoServicios = "Servicios utilizados: ";
-					$lista = [];
-					foreach ($servicios as $serv) {
-						// para convertir el text en minuscula
-						if (strtolower($serv["tipo"]) === "examenes") {
-							$lista[] = "{$serv["servicio"]} ({$serv["cantidad"]} unidades)";
-						} else {
-							$lista[] = $serv["servicio"];
-						}
-					}
-
-					$textoServicios .= implode(", ", $lista) . ".";
-
-					$historialEnF = $textoServicios . "   El paciente: " . $historialEnF;
-				}
-
-				$sql = 'UPDATE control SET historiaclinica = :historial, estado =:estado WHERE id_control = :id';
-
-				$data4 = [
-					'historial' => $historialEnF,
-					'estado' => 'ACT'
-				];
-				$this->setSQL($sql);
-				$this->update($data4, $datosControl["id_control"]);
-			}
-			//insertar tipos de pago
+			$this->create($data);
+		}
+		//insertar servicios extras
+		if ($this->getServicios()) {
 			$contador = 0;
 
-			foreach ($this->getFormasDePago() as $id_pago) {
-				$sql = "INSERT INTO pagodefactura VALUES (null, :id_pago, :id_factura, :referencia, :montosDePago)";
+			$data3 = [
+				'id_factura' => $id_factura,
+				'tipo' => 'Hospitalizacion',
+				'cantidad' => 1,
+				'precioServIndividual' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
+				'precioServCompleto' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
+				'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH(),
+				'id_servicio' => null,
+				'id_entrada' => null
+			];
+
+			foreach ($this->getServicios() as $s) {
+				$sql = "INSERT INTO detalle_factura  VALUES (null,:id_factura,:tipo, :cantidad,:precioUnitario, :precioServicio,:idH,:s,:idInsumo)";
+				$this->setSQL($sql);
 				$data = [
-					'id_pago' => $id_pago,
-					'id_factura' => $this->getIdFactura(),
-					'referencia' => $this->getReferencia(),
-					'montosDePago' => $this->getMontosPagos()[$contador],
+					'id_factura' => $id_factura,
+					'tipo' => 'Servicio',
+					'cantidad' => 1,
+					'precioUnitario' => $this->getPrecioServicio()[$contador],
+					'precioServicio' => $this->getPrecioServicio()[$contador],
+					'idH' => null,
+					's' => $s,
+					'idInsumo' => null,
 				];
+				$this->create($data);
+				$contador++;
+			}
+		}
+
+		if ($this->getInsumos()) {
+			$contador = 0;
+			foreach ($this->getInsumos() as $i) {
+				//actualizar la cantidad de insumos
+				$id_entrada = $this->selectId_entrada($i);
+				$data = [
+					'id_factura' => $id_factura,
+					'tipo' => 'Insumo',
+					'cantidad' => $this->getCantidad()[$contador],
+					'precioInsumo' => $this->getPrecioInsumo()[$contador],
+					'subtotal' => $this->getPrecioInsumo()[$contador] * $this->getCantidad()[$contador],
+					'i' => $id_entrada,
+				];
+
+				$sql = "INSERT INTO detalle_factura  VALUES (null, :id_factura, :tipo, :cantidad,:precioInsumo, :subtotal,null,null,:i)
+";
 				$this->setSQL($sql);
 				$this->create($data);
+
+				$sql =  "CALL DescontarLotes(:i, :cantidad);";
+				$this->setSQL($sql);
+				$data = [
+					'i' => $i,
+					'cantidad' => $this->getCantidad()[$contador]
+				];
+				$this->storedProcedure($data);
+
+				$contador++;
 			}
-			//insertar servicios extras
-			if ($this->getServicios()) {
-				$contador = 0;
+		}
 
-				// $data3 = [
-				// 	'id_factura' => $id_factura,
-				// 	'tipo' => 'Hospitalizacion',
-				// 	'cantidad' => 1,
-				// 	'precioServIndividual' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
-				// 	'precioServCompleto' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
-				// 	'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH(),
-				// 	'id_servicio' => null,
-				// 	'id_entrada' => null
-				// ];
-
-				foreach ($this->getServicios() as $s) {
-					$sql = "INSERT INTO detalle_factura  VALUES (null,:id_factura, 'Servicio', 1,:precioServicio, :precioServicio,null,:s,null)";
-					$this->setSQL($sql);
-					$data = [
-						'id_factura' => $this->getIdFactura(),
-						'precioServicio' => $this->getPrecioServicio()[$contador],
-						's' => $this->returnObjectModel()['modeloServicios']->getIdServicioMedico(),
-					];
-					$this->create($data);
-					$contador++;
-				}
-			}
-			if ($this->getInsumos()) {
-				$contador = 0;
-				foreach ($this->getInsumos() as $i) {
-					$subtotal = $this->getPrecioInsumo()[$contador] * $this->getCantidad()[$contador];
-					//actualizar la cantidad de insumos
-					$id_entrada = $this->selectId_entrada();
-					$sql = "INSERT INTO detalle_factura  VALUES (null, :id_factura, 'Insumo', :cantidad,:precioInsumo, :subtotal,null,null,:i)";
-					$this->setSQL($sql);
-					$data = [
-						'id_factura' => $this->getIdFactura(),
-						'i' => $id_entrada,
-						'cantidad' => $this->getCantidad()[$contador],
-						'precioInsumo' => $this->getPrecioInsumo()[$contador],
-						'subtotal' => $subtotal
-					];
-					$this->create($data);
-
-					$sql =  "CALL DescontarLotes(:i, :cantidad);";
-					$this->setSQL($sql);
-					$data = [
-						'i' => $this->returnObjectModel()['modeloInsumo']->getIdInsumo(),
-						'cantidad' => $this->getCantidad()[$contador]
-					];
-					$this->storedProcedure($data);
-
-					$contador++;
-				}
-			}
-
-			return [$id_factura, "exito"];
+		return [$id_factura, "exito", $data];
 		} catch (\Exception $e) {
-			return 0;
+			return $e->getMessage();
 		}
 	}
 
@@ -503,7 +512,7 @@ class ModeloFactura extends ModelBase
 	public function coincidenciaPacienteCliente()
 	{
 		try {
-			$data = ['id_paciente' => $this->returnObjectModel()['modeloPacientes']->getIdPaciente()];
+			$data = ['id_paciente' => $this->getIdPaciente()];
 			$sql = 'SELECT * FROM paciente where id_paciente = :id_paciente';
 
 			$this->setSQL($sql);
@@ -532,7 +541,7 @@ class ModeloFactura extends ModelBase
 	public function guardarCliente()
 	{
 		try {
-			$data = ['id_paciente' => $this->returnObjectModel()['modeloPacientes']->getIdPaciente()];
+			$data = ['id_paciente' => $this->getIdPaciente()];
 
 			$sql = "SELECT * FROM paciente where id_paciente = :id_paciente";
 			$this->setSQL($sql);
@@ -625,11 +634,33 @@ class ModeloFactura extends ModelBase
 		return $this->precioServicio;
 	}
 
-	public function getCedula() {
+	public function getCedula()
+	{
 		return $this->cedula;
 	}
 
 
+	public function getIdCliente()
+	{
+		return $this->id_cliente;
+	}
+
+
+	public function getIdPaciente()
+	{
+		return $this->id_paciente;
+	}
+
+	public function getIdCita()
+	{
+		return $this->id_cita;
+	}
+
+
+	public function getIdH()
+	{
+		return $this->idH;
+	}
 
 
 
@@ -671,13 +702,13 @@ class ModeloFactura extends ModelBase
 		$this->total  = $total;
 	}
 
-	public function setFormasDePago($formasDePago)
+	public function setFormasDePago($formasDePago = [])
 	{
 		if (!is_array($formasDePago)) {
 			throw new \InvalidArgumentException("El formas De Pago esta mal.");
 		}
 
-		$this->$formasDePago  = $formasDePago;
+		$this->formasDePago  = $formasDePago;
 	}
 
 	public function setReferencia($referencia)
@@ -689,16 +720,16 @@ class ModeloFactura extends ModelBase
 		$this->referencia  = $referencia;
 	}
 
-	public function setMontosPago($montosDePago)
+	public function setMontosPago($montosDePago = [])
 	{
 		if (!is_array($montosDePago)) {
 			throw new \InvalidArgumentException("El mostos De Pago esta mal.");
 		}
 
-		$this->$montosDePago  = $montosDePago;
+		$this->montosDePago  = $montosDePago;
 	}
 
-	public function setInsumos($insumos =[])
+	public function setInsumos($insumos = [])
 	{
 		if (!is_array($insumos)) {
 			throw new \InvalidArgumentException("los insumos  esta mal.");
@@ -718,7 +749,7 @@ class ModeloFactura extends ModelBase
 		$this->servicios  = $servicios;
 	}
 
-	public function setCatidad($cantidad =[])
+	public function setCatidad($cantidad = [])
 	{
 		if (!is_array($cantidad)) {
 			throw new \InvalidArgumentException("la cantidadno esta correcta.");
@@ -727,7 +758,7 @@ class ModeloFactura extends ModelBase
 		$this->cantidad  = $cantidad;
 	}
 
-	public function setPrecioInsumo($precioInsumo)
+	public function setPrecioInsumo($precioInsumo = [])
 	{
 		if (!is_array($precioInsumo)) {
 			throw new \InvalidArgumentException("El precioInsumo esta mal.");
@@ -736,7 +767,7 @@ class ModeloFactura extends ModelBase
 		$this->precioInsumo  = $precioInsumo;
 	}
 
-	public function setPrecioServicio($precioServicio)
+	public function setPrecioServicio($precioServicio = [])
 	{
 		if (!is_array($precioServicio)) {
 			throw new \InvalidArgumentException("El precio precioServicio esta mal.");
@@ -752,5 +783,40 @@ class ModeloFactura extends ModelBase
 			throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
 		}
 		$this->cedula = $cedula;
+	}
+
+	public function setIdCliente($id_cliente)
+	{
+		if (!preg_match("/^[0-9]+$/", $id_cliente)) {
+			throw new \InvalidArgumentException("El ID del cliente debe ser un número entero positivo.");
+		}
+		$this->id_cliente = (int)$id_cliente;
+	}
+
+	public function setIdPaciente($id_paciente)
+	{
+		if (!preg_match("/^[0-9]+$/", $id_paciente)) {
+			throw new \InvalidArgumentException("El ID del paciente debe ser un número entero positivo.");
+		}
+
+		$this->id_paciente = (int)$id_paciente;
+	}
+
+	public function setIdCita($id_cita)
+	{
+		if (!preg_match("/^[0-9]+$/", $id_cita)) {
+			throw new \InvalidArgumentException("El ID de la cita debe ser un número entero positivo.");
+		}
+
+		$this->id_cita = $id_cita;
+	}
+
+	public function setIdH($idH)
+	{
+		if (!preg_match('/^[0-9]+$/', $idH)) {
+			throw new \InvalidArgumentException('El ID no es válido.');
+		}
+
+		$this->idH = (int)$idH;
 	}
 }

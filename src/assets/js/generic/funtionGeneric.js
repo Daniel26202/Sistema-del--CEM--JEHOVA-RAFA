@@ -231,8 +231,10 @@ export const searchElements = (
 
 //funcion generica para un cardTable
 export const initCardData =()=> {
-  const tableWrappers = document.querySelectorAll('[data-render="card-table"]');
+  console.log("Inicializando card-table...");
+  const tableWrappers = document.querySelectorAll('.card-table');
 
+  console.log(tableWrappers.length + " contenedores encontrados para card-table.");
   tableWrappers.forEach((container, idx) => {
     // Evitar que se inicialice dos veces el mismo contenedor
     if (container.dataset.initialized === "true") return;
