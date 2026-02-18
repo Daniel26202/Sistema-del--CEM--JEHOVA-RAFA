@@ -1,4 +1,9 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./ajax/funtionExecutePetition.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+} from "./generic/funtionGeneric.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
 console.log("DOMContentLoaded De Factura Dios :( :)");
@@ -21,14 +26,26 @@ const tbodyInsumos = document.getElementById("tbody-insumos");
 const tablaSevicios = document.getElementById("cuerpoTablaServicios");
 
 //caja de todos los insumos
-const caja_insumos_a_seleccionar = document.querySelectorAll(".caja_insumos_a_seleccionar div");
+const caja_insumos_a_seleccionar = document.querySelectorAll(
+  ".caja_insumos_a_seleccionar div",
+);
 //input para buscar todos los insumos
-const buscadorDeTodosLosInsumos = document.getElementById("buscadorDeTodosLosInsumos");
+const buscadorDeTodosLosInsumos = document.getElementById(
+  "buscadorDeTodosLosInsumos",
+);
 
-const ConteNotificacionServicio = document.getElementById("ConteNotificacionServicio");
-const ConteNotificacionServicioEli = document.getElementById("ConteNotificacionServicioEli");
-const ConteNotificacionInsumo = document.getElementById("ConteNotificacionInsumo");
-const ConteNotificacionInsumoCon = document.getElementById("ConteNotificacionInsumoCon");
+const ConteNotificacionServicio = document.getElementById(
+  "ConteNotificacionServicio",
+);
+const ConteNotificacionServicioEli = document.getElementById(
+  "ConteNotificacionServicioEli",
+);
+const ConteNotificacionInsumo = document.getElementById(
+  "ConteNotificacionInsumo",
+);
+const ConteNotificacionInsumoCon = document.getElementById(
+  "ConteNotificacionInsumoCon",
+);
 
 const pacienteClienteCheck = document.querySelector(".paciente-cliente-check");
 const cajaBuscadorCliente = document.getElementById("caja-buscar-cliente");
@@ -40,201 +57,234 @@ const btnCancelarInsumo = document.getElementById("btnCancelarInsumo");
 const btnSiguienteSer = document.getElementById("siguiente");
 const btnSiguienteInsumo = document.getElementById("siguienteInsumo");
 
-const divClienteNoEncontrado = document.getElementById("div-cliente-no-encontrado");
+const divClienteNoEncontrado = document.getElementById(
+  "div-cliente-no-encontrado",
+);
 const btnOpenModalPaciente = document.getElementById("btnOpenModalPaciente");
 
 const selectGenero = document.getElementById("selectGenero");
 
 if (window.location.href.includes("facturaCita")) {
-    console.log("id_cita");
+  console.log("id_cita");
 } else {
-    document.querySelectorAll(".btn-escondidos").forEach((ele) => ele.classList.add("d-none"));
+  document
+    .querySelectorAll(".btn-escondidos")
+    .forEach((ele) => ele.classList.add("d-none"));
 }
 
 //buscador paciente cuando no tiene cita
 const buscarPaciente = async (formularioPaciente) => {
-    try {
-        const datos = new FormData(formularioPaciente);
-        const contenido = { method: "POST", body: datos };
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente", contenido);
-        console.log(peticion);
-        let resultado = await peticion.json();
-        console.log(resultado);
-        if (resultado[0] != false) {
-            resultado.forEach((res) => {
-                // calcula la edad
-                const fechaNac = new Date(res.fn);
-                const edadDif = Date.now() - fechaNac.getTime();
-                const edadFecha = new Date(edadDif);
-                const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
-                document.getElementById("datosPaciente").innerText = `PACIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+  try {
+    const datos = new FormData(formularioPaciente);
+    const contenido = { method: "POST", body: datos };
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
+      contenido,
+    );
+    console.log(peticion);
+    let resultado = await peticion.json();
+    console.log(resultado);
+    if (resultado[0] != false) {
+      resultado.forEach((res) => {
+        // calcula la edad
+        const fechaNac = new Date(res.fn);
+        const edadDif = Date.now() - fechaNac.getTime();
+        const edadFecha = new Date(edadDif);
+        const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+        document.getElementById("datosPaciente").innerText =
+          `PACIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
 
-                document.getElementById(
-                    "text-alert-edad"
-                ).innerText = `La factura no se puede hacer a nombre de ese paciente o cliente ${res.nombre} ${res.apellido}   ya que es menor  de edad con (${edad}) por favor intente con otro. `;
+        document.getElementById("text-alert-edad").innerText =
+          `La factura no se puede hacer a nombre de ese paciente o cliente ${res.nombre} ${res.apellido}   ya que es menor  de edad con (${edad}) por favor intente con otro. `;
 
-                if (edad >= 18) {
-                    document.getElementById("botonPC").classList.remove("d-none");
-                    document.getElementById("alert-edad").classList.add("d-none");
-                } else {
-                    document.getElementById("botonPC").classList.add("d-none");
-                    document.getElementById("alert-edad").classList.remove("d-none");
-                }
-
-                document.getElementById("myToastfactura").classList.add("d-none");
-                //formCitas.classList.remove('d-none');
-
-                if (window.location.href.includes("facturaCita")) {
-                    console.log("id_cita");
-                } else {
-                    let noCita = document.querySelectorAll(".no-cita");
-                    noCita[0].innerHTML = `<div class="fw-bolder ">CI: ${res.cedula}</div>`;
-                    noCita[1].innerHTML = `<div class="fw-bolder">PACIENTE: ${res.nombre} ${res.apellido}</div>`;
-                    document.getElementById("inputPaciente").value = res.id_paciente;
-                }
-            });
-            document.getElementById("cajaBotones").classList.remove("justify-content-end");
-            document.getElementById("cajaBotones").classList.add("justify-content-around");
-            document.querySelectorAll(".btn-factura")[0].classList.remove("d-none");
-            document.querySelectorAll(".btn-factura")[1].classList.remove("d-none");
+        if (edad >= 18) {
+          document.getElementById("botonPC").classList.remove("d-none");
+          document.getElementById("alert-edad").classList.add("d-none");
         } else {
-            document.getElementById("cajaBotones").classList.remove("justify-content-around");
-            document.getElementById("cajaBotones").classList.add("justify-content-end");
-            document.getElementById("datosPaciente").innerText = `PACIENTE NO ENCONTRADO`;
-            document.querySelectorAll(".btn-factura")[0].classList.add("d-none");
-            document.querySelectorAll(".btn-factura")[1].classList.add("d-none");
-
-            document.getElementById("myToastfactura").classList.remove("d-none");
-            const toastElement = document.getElementById("myToastfactura");
-            const toast = new bootstrap.Toast(toastElement, {
-                autohide: false,
-            });
-            toast.show();
-
-            //le pasamos el valor de la cedula al paciente
-            document.getElementById("cedula").value = document.getElementById("inputBusPaCi").value;
-
-            document.getElementById("cedula").parentElement.classList.add("grpFormCorrect");
-
-            document.querySelectorAll(".btn-escondidos").forEach((ele) => ele.classList.add("d-none"));
+          document.getElementById("botonPC").classList.add("d-none");
+          document.getElementById("alert-edad").classList.remove("d-none");
         }
-    } catch (error) {
-        console.log(error);
+
+        document.getElementById("myToastfactura").classList.add("d-none");
+        //formCitas.classList.remove('d-none');
+
+        if (window.location.href.includes("facturaCita")) {
+          console.log("id_cita");
+        } else {
+          let noCita = document.querySelectorAll(".no-cita");
+          noCita[0].innerHTML = `<div class="fw-bolder ">CI: ${res.cedula}</div>`;
+          noCita[1].innerHTML = `<div class="fw-bolder">PACIENTE: ${res.nombre} ${res.apellido}</div>`;
+          document.getElementById("inputPaciente").value = res.id_paciente;
+        }
+      });
+      document
+        .getElementById("cajaBotones")
+        .classList.remove("justify-content-end");
+      document
+        .getElementById("cajaBotones")
+        .classList.add("justify-content-around");
+      document.querySelectorAll(".btn-factura")[0].classList.remove("d-none");
+      document.querySelectorAll(".btn-factura")[1].classList.remove("d-none");
+    } else {
+      document
+        .getElementById("cajaBotones")
+        .classList.remove("justify-content-around");
+      document
+        .getElementById("cajaBotones")
+        .classList.add("justify-content-end");
+      document.getElementById("datosPaciente").innerText =
+        `PACIENTE NO ENCONTRADO`;
+      document.querySelectorAll(".btn-factura")[0].classList.add("d-none");
+      document.querySelectorAll(".btn-factura")[1].classList.add("d-none");
+
+      document.getElementById("myToastfactura").classList.remove("d-none");
+      const toastElement = document.getElementById("myToastfactura");
+      const toast = new bootstrap.Toast(toastElement, {
+        autohide: false,
+      });
+      toast.show();
+
+      //le pasamos el valor de la cedula al paciente
+      document.getElementById("cedula").value =
+        document.getElementById("inputBusPaCi").value;
+
+      document
+        .getElementById("cedula")
+        .parentElement.classList.add("grpFormCorrect");
+
+      document
+        .querySelectorAll(".btn-escondidos")
+        .forEach((ele) => ele.classList.add("d-none"));
     }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 //insertar funcion para Paciente cuando no existe
 const insertarPaciente = async (form) => {
-    try {
-        const datosFormulario = new FormData(form);
-        const contenido = {
-            method: "POST",
-            body: datosFormulario,
-        };
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente", contenido);
-        let resultado = await peticion.json();
-        console.log(resultado);
+  try {
+    const datosFormulario = new FormData(form);
+    const contenido = {
+      method: "POST",
+      body: datosFormulario,
+    };
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
+      contenido,
+    );
+    let resultado = await peticion.json();
+    console.log(resultado);
 
-        alertSuccess(resultado.message);
-        //ocultar modal de paciente
-        UIkit.modal("#modal-examplePaciente").hide();
+    alertSuccess(resultado.message);
+    //ocultar modal de paciente
+    UIkit.modal("#modal-examplePaciente").hide();
 
-        document.getElementById("inputBusPaCi").value = resultado.data.cedula;
-        console.log(resultado.data.cedula);
+    document.getElementById("inputBusPaCi").value = resultado.data.cedula;
+    console.log(resultado.data.cedula);
 
-        //ocultar el minimodal
-        // const toastElement = document.getElementById("myToast");
-        // const toast = new bootstrap.Toast(toastElement, {
-        //   autohide: false,
-        // });
+    //ocultar el minimodal
+    // const toastElement = document.getElementById("myToast");
+    // const toast = new bootstrap.Toast(toastElement, {
+    //   autohide: false,
+    // });
 
-        buscarPaciente(document.getElementById("form-buscador-factura"));
+    buscarPaciente(document.getElementById("form-buscador-factura"));
 
-        // //limpiar formulario de oaciente
+    // //limpiar formulario de oaciente
 
-        form.reset();
+    form.reset();
 
-        // toast.hide();
-    } catch (error) {
-        console.log("algo salio mal" + error);
-        alertError("Error", error);
-    }
+    // toast.hide();
+  } catch (error) {
+    console.log("algo salio mal" + error);
+    alertError("Error", error);
+  }
 };
 
 //llamar a la funcion para insertar al paciente
-document.getElementById("modalAgregar").addEventListener("submit", function (e) {
+document
+  .getElementById("modalAgregar")
+  .addEventListener("submit", function (e) {
     let inputsBuenos = [];
     //validar si todos los inputs nos estan validados no se puede enviar
     this.querySelectorAll(".input-validar").forEach((input) => {
-        if (input.parentElement.classList.contains("grpFormCorrect")) {
-            inputsBuenos.push(true);
-        }
+      if (input.parentElement.classList.contains("grpFormCorrect")) {
+        inputsBuenos.push(true);
+      }
     });
     console.log(inputsBuenos);
 
     if (
-        inputsBuenos.length == 5 &&
-        document.querySelector(".p-error-fn").classList.contains("d-none") &&
-        selectGenero.value != ""
+      inputsBuenos.length == 5 &&
+      document.querySelector(".p-error-fn").classList.contains("d-none") &&
+      selectGenero.value != ""
     ) {
-        insertarPaciente(this);
+      insertarPaciente(this);
     } else {
-        alertError("Error", "Por favor verifique que todos los datos esten correctos.");
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos esten correctos.",
+      );
     }
-});
+  });
 
 //buscar cuando el paciente una tiene cita
 const buscarPacienteConCita = async (formularioPaciente) => {
-    const datos = new FormData(formularioPaciente);
-    const contenido = { method: "POST", body: datos };
-    console.log(contenido);
+  const datos = new FormData(formularioPaciente);
+  const contenido = { method: "POST", body: datos };
+  console.log(contenido);
 
-    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita", contenido);
-    let resultado = await peticion.json();
-    console.log(resultado);
-    if (resultado.length > 0) {
-        console.log("2");
+  let peticion = await fetch(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
+    contenido,
+  );
+  let resultado = await peticion.json();
+  console.log(resultado);
+  if (resultado.length > 0) {
+    console.log("2");
 
-        let id_cita = "";
-        resultado.forEach((res) => {
-            id_cita = `/c${res.id_cita}`;
-        });
-        console.log(id_cita);
-        window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita" + id_cita;
-    } else {
-        buscarPaciente(formularioPaciente);
-    }
+    let id_cita = "";
+    resultado.forEach((res) => {
+      id_cita = `/c${res.id_cita}`;
+    });
+    console.log(id_cita);
+    window.location.href =
+      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita" + id_cita;
+  } else {
+    buscarPaciente(formularioPaciente);
+  }
 };
 
 if (window.location.href.includes("facturaCita")) {
-    console.log("si");
+  console.log("si");
 } else if (window.location.href.includes("idH")) {
-    console.log("hospitalizacion");
+  console.log("hospitalizacion");
 } else {
-    const formularioPaciente = document.getElementById("form-buscador-factura");
-    if (formularioPaciente) {
-        formularioPaciente.addEventListener("submit", function (e) {
-            e.preventDefault();
-            //buscarPaciente(formularioPaciente);
-            buscarPacienteConCita(formularioPaciente);
-        });
-    }
+  const formularioPaciente = document.getElementById("form-buscador-factura");
+  if (formularioPaciente) {
+    formularioPaciente.addEventListener("submit", function (e) {
+      e.preventDefault();
+      //buscarPaciente(formularioPaciente);
+      buscarPacienteConCita(formularioPaciente);
+    });
+  }
 }
 
 // // impedimos que los formularios recarguen la pagina y hacemos las cosas que queremos
 calcularTotal();
 
 const mostrarVariosServicios = () => {
-    let html = ``;
-    console.log(listaModalServicio);
+  let html = ``;
+  console.log(listaModalServicio);
 
-    // Recorremos la lista de arriba y añadimos los datos a la variable html
-    listaModalServicio.forEach((element, index) => {
-        let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBS = element["precio"] * storedDolar;
-        montoBS = montoBS.toFixed(2);
+  // Recorremos la lista de arriba y añadimos los datos a la variable html
+  listaModalServicio.forEach((element, index) => {
+    let storedDolar = localStorage.getItem("valorDelDolar");
+    let montoBS = element["precio"] * storedDolar;
+    montoBS = montoBS.toFixed(2);
 
-        html += `
+    html += `
         <tr class="border-top ">
         <td class="border-top text-center"> ${index + 1}</td>
         <td class="border-top border-start text-center"> ${element["servicio"]}</td>
@@ -252,167 +302,185 @@ const mostrarVariosServicios = () => {
         </svg></button>
         <td>
         <tr>`;
+  });
+  document.getElementById("tbody_servicios").innerHTML = html;
+
+  document.querySelectorAll(".eliminar").forEach((ele) => {
+    ele.addEventListener("click", function () {
+      let idBoton =
+        listaModalServicio[parseInt(this.getAttribute("data-index"))]
+          .id_servicioMedico;
+
+      const botonId = document.getElementById(`${idBoton}`);
+      botonId.parentElement.parentElement.classList.remove("d-none");
+
+      listaModalServicio.splice(parseFloat(this.dataset["index"]), 1);
+      mostrarVariosServicios();
+
+      console.log(listaModalServicio.length);
+
+      if (listaModalServicio.length > 0) {
+        document.getElementById("siguiente").classList.remove("d-none");
+      } else {
+        document.getElementById("siguiente").classList.add("d-none");
+        document.getElementById("insertarServicio").classList.add("d-none");
+      }
+
+      let text =
+        "El servicio fue eliminado de la confirmacion si desea agregarlo nuevamente debe darle click al boton de volver";
+
+      notificationModals(
+        ConteNotificacionServicioEli,
+        text,
+        "alertaGenericaSEli",
+      );
     });
-    document.getElementById("tbody_servicios").innerHTML = html;
-
-    document.querySelectorAll(".eliminar").forEach((ele) => {
-        ele.addEventListener("click", function () {
-            let idBoton = listaModalServicio[parseInt(this.getAttribute("data-index"))].id_servicioMedico;
-
-            const botonId = document.getElementById(`${idBoton}`);
-            botonId.parentElement.parentElement.classList.remove("d-none");
-
-            listaModalServicio.splice(parseFloat(this.dataset["index"]), 1);
-            mostrarVariosServicios();
-
-            console.log(listaModalServicio.length);
-
-            if (listaModalServicio.length > 0) {
-                document.getElementById("siguiente").classList.remove("d-none");
-            } else {
-                document.getElementById("siguiente").classList.add("d-none");
-                document.getElementById("insertarServicio").classList.add("d-none");
-            }
-
-            let text =
-                "El servicio fue eliminado de la confirmacion si desea agregarlo nuevamente debe darle click al boton de volver";
-
-            notificationModals(ConteNotificacionServicioEli, text, "alertaGenericaSEli");
-        });
-    });
+  });
 };
 
 //funcion para pasar de la lista de servicio para el modal de confirmacion
-const insertarVariosServicios = (id_servicioMedico, servicio, doctor, precio, id_personal) => {
-    const nuevoObj = {
-        id_servicioMedico: id_servicioMedico,
-        servicio: servicio,
-        doctor: doctor,
-        precio: parseFloat(precio),
-        id_personal: id_personal,
-    };
-    console.log("nuevoObj");
-    console.log(nuevoObj);
-    listaModalServicio.push(nuevoObj);
-    console.log(listaModalServicio);
-    mostrarVariosServicios();
+const insertarVariosServicios = (
+  id_servicioMedico,
+  servicio,
+  doctor,
+  precio,
+  id_personal,
+) => {
+  const nuevoObj = {
+    id_servicioMedico: id_servicioMedico,
+    servicio: servicio,
+    doctor: doctor,
+    precio: parseFloat(precio),
+    id_personal: id_personal,
+  };
+  console.log("nuevoObj");
+  console.log(nuevoObj);
+  listaModalServicio.push(nuevoObj);
+  console.log(listaModalServicio);
+  mostrarVariosServicios();
 };
 
 document.querySelectorAll(".insertar_servicio").forEach((ele, index) => {
-    ele.setAttribute("data-index", index);
+  ele.setAttribute("data-index", index);
 
-    ele.addEventListener("click", function () {
-        // Obtener la fila padre del checkbox
-        const fila = this.closest("tr");
-        console.log(fila);
-        const id_servicioMedico = this.getAttribute("id");
-        console.log(id_servicioMedico);
-        const id_personal = fila.children[0].getAttribute("data-index"); // Columna Servicio
-        const servicio = fila.children[1].innerText; // Columna Servicio
-        const doctor = fila.children[2].innerText; // Columna Doctor
-        const precio = fila.children[3].innerText; // Columna Precio
+  ele.addEventListener("click", function () {
+    // Obtener la fila padre del checkbox
+    const fila = this.closest("tr");
+    console.log(fila);
+    const id_servicioMedico = this.getAttribute("id");
+    console.log(id_servicioMedico);
+    const id_personal = fila.children[0].getAttribute("data-index"); // Columna Servicio
+    const servicio = fila.children[1].innerText; // Columna Servicio
+    const doctor = fila.children[2].innerText; // Columna Doctor
+    const precio = fila.children[3].innerText; // Columna Precio
 
-        insertarVariosServicios(id_servicioMedico, servicio, doctor, precio, id_personal);
+    insertarVariosServicios(
+      id_servicioMedico,
+      servicio,
+      doctor,
+      precio,
+      id_personal,
+    );
 
-        fila.classList.add("d-none");
+    fila.classList.add("d-none");
 
-        if (listaModalServicio.length > 0) {
-            document.getElementById("siguiente").classList.remove("d-none");
-            document.getElementById("insertarServicio").classList.remove("d-none");
-        } else {
-            document.getElementById("siguiente").classList.add("d-none");
-        }
+    if (listaModalServicio.length > 0) {
+      document.getElementById("siguiente").classList.remove("d-none");
+      document.getElementById("insertarServicio").classList.remove("d-none");
+    } else {
+      document.getElementById("siguiente").classList.add("d-none");
+    }
 
-        let text =
-            'Se añadio el servicio correctamente por favor pulse el boton "Siguiente" para continuar o siga añadiendo servicios medicos ';
+    let text =
+      'Se añadio el servicio correctamente por favor pulse el boton "Siguiente" para continuar o siga añadiendo servicios medicos ';
 
-        notificationModals(ConteNotificacionServicio, text, "alertaGenericaS");
-    });
+    notificationModals(ConteNotificacionServicio, text, "alertaGenericaS");
+  });
 });
 
 //funcion para cancelar la insercion de servicios
 btnCancelarInsertServ.addEventListener("click", function () {
-    tablaSevicios.querySelectorAll("tr").forEach((ele) => {
-        ele.classList.remove("d-none");
-    });
-    btnSiguienteSer.classList.add("d-none");
-    listaModalServicio = [];
+  tablaSevicios.querySelectorAll("tr").forEach((ele) => {
+    ele.classList.remove("d-none");
+  });
+  btnSiguienteSer.classList.add("d-none");
+  listaModalServicio = [];
 });
 
 //funcion para cancelar la insercion de insumo
 btnCancelarInsumo.addEventListener("click", function () {
-    tbodyinsertarInsumo.querySelectorAll("tr").forEach((ele) => {
-        ele.classList.remove("d-none");
-    });
-    btnSiguienteInsumo.classList.add("d-none");
-    listaModalInsumo = [];
+  tbodyinsertarInsumo.querySelectorAll("tr").forEach((ele) => {
+    ele.classList.remove("d-none");
+  });
+  btnSiguienteInsumo.classList.add("d-none");
+  listaModalInsumo = [];
 });
 
 //Funcion para agregar alertas intuiitivas en los modales
 function notificationModals(ConteNotification, text, alertaGenerica) {
-    let html = `<div class="uk-alert-primary m-auto comentario  comentarioRed  fw-bolder ${alertaGenerica} text-center p-2" style="width:90%">${text}</div>`;
+  let html = `<div class="uk-alert-primary m-auto comentario  comentarioRed  fw-bolder ${alertaGenerica} text-center p-2" style="width:90%">${text}</div>`;
 
-    ConteNotification.innerHTML = html;
+  ConteNotification.innerHTML = html;
 
-    document.querySelectorAll(`.${alertaGenerica}`).forEach((alerta) => {
-        if (alerta) {
-            setTimeout(function () {
-                alerta.remove();
-            }, 6000);
-        }
-    });
+  document.querySelectorAll(`.${alertaGenerica}`).forEach((alerta) => {
+    if (alerta) {
+      setTimeout(function () {
+        alerta.remove();
+      }, 6000);
+    }
+  });
 }
 
 forms.addEventListener("submit", function (f) {
-    f.preventDefault();
-    console.log("manejador de formulario");
+  f.preventDefault();
+  console.log("manejador de formulario");
 
-    console.log(listaModalServicio);
+  console.log(listaModalServicio);
 
-    listaModalServicio.forEach((lista) => {
-        console.log(lista);
-        const encontrado = data.find((item) => item.servicio == lista.servicio);
+  listaModalServicio.forEach((lista) => {
+    console.log(lista);
+    const encontrado = data.find((item) => item.servicio == lista.servicio);
 
-        if (encontrado) {
-            const servicioRegistrado = document.getElementById("alert-servicio");
-            if (servicioRegistrado.classList.contains("d-none")) {
-                servicioRegistrado.classList.remove("d-none");
-                setTimeout(function () {
-                    servicioRegistrado.classList.add("d-none");
-                }, 7000);
-            }
-        } else {
-            data.push(lista);
-        }
-    });
+    if (encontrado) {
+      const servicioRegistrado = document.getElementById("alert-servicio");
+      if (servicioRegistrado.classList.contains("d-none")) {
+        servicioRegistrado.classList.remove("d-none");
+        setTimeout(function () {
+          servicioRegistrado.classList.add("d-none");
+        }, 7000);
+      }
+    } else {
+      data.push(lista);
+    }
+  });
 
-    console.log(data);
-    listaModalServicio = [];
-    mostrarVariosServicios();
-    // actualizamos la tabla
-    mostrarCosas();
-    //actualizamos el modal de confirmacion
-    mostrarConfirmacion();
+  console.log(data);
+  listaModalServicio = [];
+  mostrarVariosServicios();
+  // actualizamos la tabla
+  mostrarCosas();
+  //actualizamos el modal de confirmacion
+  mostrarConfirmacion();
 
-    alertSuccess("Se agregaron los servicios de manera exitosa.");
+  alertSuccess("Se agregaron los servicios de manera exitosa.");
 
-    document.querySelectorAll(".tr-desparecer").forEach((ele) => {
-        ele.classList.remove("d-none");
-        console.log(ele);
-    });
+  document.querySelectorAll(".tr-desparecer").forEach((ele) => {
+    ele.classList.remove("d-none");
+    console.log(ele);
+  });
 });
 
-// // Funcion para actualizar la tabla
+// // Funcion para actualizar la tabla  servicios
 function mostrarCosas() {
-    calcularTotal();
-    // Aqui pondremos el codigo HTML que tendra el body de la tabla
-    let html = ``;
-    // Recorremos la lista de arriba y añadimos los datos a la variable html
-    data.forEach((element, index) => {
-        let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBS = element["precio"] * storedDolar;
-        montoBS = montoBS.toFixed(2);
-        html += `
+  calcularTotal();
+  // Aqui pondremos el codigo HTML que tendra el body de la tabla
+  let html = ``;
+  // Recorremos la lista de arriba y añadimos los datos a la variable html
+  data.forEach((element, index) => {
+    let storedDolar = localStorage.getItem("valorDelDolar");
+    let montoBS = element["precio"] * storedDolar;
+    montoBS = montoBS.toFixed(2);
+    html += `
         <tr class="border-top">
         <td class="border-top"><div class="fw-bolder">SERVICIO :</div> ${element["servicio"]}</td>
         <td class="border-top"><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
@@ -431,74 +499,78 @@ function mostrarCosas() {
         </svg></button>
         <td>
         <tr>`;
+  });
+  tabla.innerHTML = html;
+  // Añadimos los eventos a los botones de eliminar
+  document.querySelectorAll(".eliminar").forEach((ele) => {
+    ele.addEventListener("click", function () {
+      console.log(this);
+      data.splice(parseFloat(this.dataset["index"]), 1);
+      mostrarCosas();
+      mostrarConfirmacion();
+      alertSuccess("Se elimino el servicio de manera exitosa.");
     });
-    tabla.innerHTML = html;
-    // Añadimos los eventos a los botones de eliminar
-    document.querySelectorAll(".eliminar").forEach((ele) => {
-        ele.addEventListener("click", function () {
-            console.log(this);
-            data.splice(parseFloat(this.dataset["index"]), 1);
-            mostrarCosas();
-            mostrarConfirmacion();
-            alertSuccess("Se elimino el servicio de manera exitosa.");
-        });
-    });
+  });
 
-    //funncion para mostrar los botones de vaciar y siguiente
-    ocultarBotones();
+  //funncion para mostrar los botones de vaciar y siguiente
+  ocultarBotones();
 }
 
 const tbodyinsertarInsumo = document.getElementById("cuerpoTablaInsumos");
 //codigo para manejar las cajas de insumos en el modal
 
 caja_insumos_a_seleccionar.forEach((ele) => {
-    ele.addEventListener("click", function () {
-        if (ele.classList.contains("insumo_no_seleccionado")) {
-            ele.classList.remove("insumo_no_seleccionado");
-            ele.classList.add("insumo_seleccionado");
-        } else {
-            ele.classList.remove("insumo_seleccionado");
-            ele.classList.add("insumo_no_seleccionado");
-        }
-        //si ha uno o mas cuadros con la clase insumo_seleccionado es por que al menos un insumo fue selecciona
-        if (document.querySelectorAll(".insumo_seleccionado").length > 0) {
-            //Aparece el boton
-            document.getElementById("btnModalInsumos1").classList.remove("d-none");
-        } else {
-            //Si no desaparece el boton
-            document.getElementById("btnModalInsumos1").classList.add("d-none");
-        }
-    });
+  ele.addEventListener("click", function () {
+    if (ele.classList.contains("insumo_no_seleccionado")) {
+      ele.classList.remove("insumo_no_seleccionado");
+      ele.classList.add("insumo_seleccionado");
+    } else {
+      ele.classList.remove("insumo_seleccionado");
+      ele.classList.add("insumo_no_seleccionado");
+    }
+    //si ha uno o mas cuadros con la clase insumo_seleccionado es por que al menos un insumo fue selecciona
+    if (document.querySelectorAll(".insumo_seleccionado").length > 0) {
+      //Aparece el boton
+      document.getElementById("btnModalInsumos1").classList.remove("d-none");
+    } else {
+      //Si no desaparece el boton
+      document.getElementById("btnModalInsumos1").classList.add("d-none");
+    }
+  });
 });
 
 //funcion al darle clic al boton siguiente de le modal de insumos 1
-document.getElementById("btnModalInsumos1").addEventListener("click", function () {
+document
+  .getElementById("btnModalInsumos1")
+  .addEventListener("click", function () {
     let cajas_seleccionadas = document.querySelectorAll(".insumo_seleccionado");
     let trModalInsums = document.querySelectorAll("#cuerpoTablaInsumos tr");
 
     trModalInsums.forEach((tr) => {
-        //La variable incia en falso por que cuando incia el bucle no hay coincidencias
-        let insumoEncontrado = false;
-        //se hace otro bucle de todas las cajas de insumos
-        cajas_seleccionadas.forEach((caja) => {
-            //Si es texto de la caja coincide con alguna fila de la tabla se cambia el valor a true
-            if (caja.innerText.split(" ")[0] === tr.children[1].innerText.trim()) {
-                insumoEncontrado = true;
-            }
-        });
-
-        //Dependiendo si la variable es true o false se oculta o muestra la tabla
-        if (insumoEncontrado) {
-            //console.log(`Coincidencia encontrada para ${tr.children[1].innerText.trim()}`);
-            tr.classList.remove("d-none");
-        } else {
-            //console.log(`No se encontró coincidencia para ${tr.children[1].innerText.trim()}`);
-            tr.classList.add("d-none");
+      //La variable incia en falso por que cuando incia el bucle no hay coincidencias
+      let insumoEncontrado = false;
+      //se hace otro bucle de todas las cajas de insumos
+      cajas_seleccionadas.forEach((caja) => {
+        //Si es texto de la caja coincide con alguna fila de la tabla se cambia el valor a true
+        if (caja.innerText.split(" ")[0] === tr.children[1].innerText.trim()) {
+          insumoEncontrado = true;
         }
-    });
-});
+      });
 
-document.querySelector(".formularios-insumos").addEventListener("submit", function (e) {
+      //Dependiendo si la variable es true o false se oculta o muestra la tabla
+      if (insumoEncontrado) {
+        //console.log(`Coincidencia encontrada para ${tr.children[1].innerText.trim()}`);
+        tr.classList.remove("d-none");
+      } else {
+        //console.log(`No se encontró coincidencia para ${tr.children[1].innerText.trim()}`);
+        tr.classList.add("d-none");
+      }
+    });
+  });
+
+document
+  .querySelector(".formularios-insumos")
+  .addEventListener("submit", function (e) {
     e.preventDefault();
     console.log("manejador de formulario insumo");
 
@@ -507,18 +579,20 @@ document.querySelector(".formularios-insumos").addEventListener("submit", functi
     let nuevaCantidad = 0;
 
     listaModalInsumo.forEach((lista, index) => {
-        console.log("e");
-        console.log(lista);
-        const encontrado = dataInsumo.find((item) => item.nombreInsumo == lista.nombreInsumo);
-        console.log(encontrado);
-        if (encontrado) {
-            encontrado.cantidad += parseInt(lista.cantidad);
-        } else {
-            dataInsumo.push(lista);
-        }
+      console.log("e");
+      console.log(lista);
+      const encontrado = dataInsumo.find(
+        (item) => item.nombreInsumo == lista.nombreInsumo,
+      );
+      console.log(encontrado);
+      if (encontrado) {
+        encontrado.cantidad += parseInt(lista.cantidad);
+      } else {
+        dataInsumo.push(lista);
+      }
 
-        console.log(lista);
-        console.log(encontrado);
+      console.log(lista);
+      console.log(encontrado);
     });
 
     // actualizamos la tabla
@@ -532,42 +606,57 @@ document.querySelector(".formularios-insumos").addEventListener("submit", functi
     mostrarConfirmacion();
 
     document.querySelectorAll(".tr-desparecer-insumo").forEach((ele) => {
-        ele.classList.remove("d-none");
+      ele.classList.remove("d-none");
     });
 
-    document.querySelectorAll(".inputs-cantidad-insumos").forEach((ele) => (ele.value = ""));
-    document.querySelectorAll(".insertar_insumo").forEach((ele) => ele.classList.add("d-none"));
+    document
+      .querySelectorAll(".inputs-cantidad-insumos")
+      .forEach((ele) => (ele.value = ""));
+    document
+      .querySelectorAll(".insertar_insumo")
+      .forEach((ele) => ele.classList.add("d-none"));
 
     let valorDeIdInsumo = document.querySelectorAll(`#tbody-insumos tr th`);
-    let valorDeNombreInsumo = document.querySelectorAll(`#tbody-insumos tr .nombre`);
+    let valorDeNombreInsumo = document.querySelectorAll(
+      `#tbody-insumos tr .nombre`,
+    );
 
     alertSuccess("Se agregaron los insumos de manera exitosa.");
-});
+  });
 
 //evento para que cada vez tecle al input de la cantidad se actualiza los insumos disponibles
 document.querySelectorAll(".inputs-cantidad-insumos").forEach((ele) => {
-    ele.addEventListener("keyup", function () {
-        let cantidadDisponible = parseInt(this.parentElement.parentElement.children[3].innerText);
-        let botonDeAnadir = this.parentElement.parentElement.children[7].children[0];
+  ele.addEventListener("keyup", function () {
+    let cantidadDisponible = parseInt(
+      this.parentElement.parentElement.children[3].innerText,
+    );
+    let botonDeAnadir =
+      this.parentElement.parentElement.children[7].children[0];
 
-        if (this.value <= cantidadDisponible && this.value != "" && this.value > 0) {
-            botonDeAnadir.classList.remove("d-none");
-        } else {
-            botonDeAnadir.classList.add("d-none");
-        }
-    });
+    if (
+      this.value <= cantidadDisponible &&
+      this.value != "" &&
+      this.value > 0
+    ) {
+      botonDeAnadir.classList.remove("d-none");
+    } else {
+      botonDeAnadir.classList.add("d-none");
+    }
+  });
 });
 
 //mostrar los insumos en el modal
 const mostrarVariosInusmos = () => {
-    let html = ``;
-    // Recorremos la lista de arriba y añadimos los datos a la variable html
-    listaModalInsumo.forEach((element, index) => {
-        let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBSSubTotal = (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) * storedDolar;
-        montoBSSubTotal = montoBSSubTotal.toFixed(2);
+  let html = ``;
+  // Recorremos la lista de arriba y añadimos los datos a la variable html
+  listaModalInsumo.forEach((element, index) => {
+    let storedDolar = localStorage.getItem("valorDelDolar");
+    let montoBSSubTotal =
+      (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) *
+      storedDolar;
+    montoBSSubTotal = montoBSSubTotal.toFixed(2);
 
-        html += `
+    html += `
         <tr class="border-top ">
         <td class="border-top"> ${index + 1}</td>
         <td class="border-top border-start text-center"> ${element["nombreInsumo"]}</td>
@@ -596,111 +685,137 @@ const mostrarVariosInusmos = () => {
         </svg></button>
         <td>
         <tr>`;
+  });
+  document.getElementById("tbody_insumos").innerHTML = html;
+
+  document.querySelectorAll(".eliminar").forEach((ele) => {
+    ele.addEventListener("click", function () {
+      let idBoton =
+        listaModalInsumo[parseInt(this.getAttribute("data-index"))].id_insumo;
+
+      const botonId = document.getElementById(`${idBoton}`);
+      botonId.parentElement.parentElement.classList.remove("d-none");
+
+      listaModalInsumo.splice(parseFloat(this.dataset["index"]), 1);
+      mostrarVariosInusmos();
+
+      if (listaModalInsumo.length > 0) {
+        document.getElementById("siguienteInsumo").classList.remove("d-none");
+      } else {
+        document.getElementById("siguienteInsumo").classList.add("d-none");
+        document.getElementById("insertarInsumo").classList.add("d-none");
+      }
+
+      let text =
+        "El insumo fue eliminado de la confirmacion si desea agregarlo nuevamente debe darle click al boton de volver";
+
+      notificationModals(
+        ConteNotificacionInsumoCon,
+        text,
+        "alertGenericoInsCon",
+      );
     });
-    document.getElementById("tbody_insumos").innerHTML = html;
-
-    document.querySelectorAll(".eliminar").forEach((ele) => {
-        ele.addEventListener("click", function () {
-            let idBoton = listaModalInsumo[parseInt(this.getAttribute("data-index"))].id_insumo;
-
-            const botonId = document.getElementById(`${idBoton}`);
-            botonId.parentElement.parentElement.classList.remove("d-none");
-
-            listaModalInsumo.splice(parseFloat(this.dataset["index"]), 1);
-            mostrarVariosInusmos();
-
-            if (listaModalInsumo.length > 0) {
-                document.getElementById("siguienteInsumo").classList.remove("d-none");
-            } else {
-                document.getElementById("siguienteInsumo").classList.add("d-none");
-                document.getElementById("insertarInsumo").classList.add("d-none");
-            }
-
-            let text =
-                "El insumo fue eliminado de la confirmacion si desea agregarlo nuevamente debe darle click al boton de volver";
-
-            notificationModals(ConteNotificacionInsumoCon, text, "alertGenericoInsCon");
-        });
-    });
+  });
 };
 
 //funcion para insertar varios insumos a la vez
-const insertarVariosInsumos = (id_insumo, nombreInsumo, iva, cantidad, precio, medidaInsumo) => {
-    let subTotalRedondeado = (parseFloat(cantidad) * parseFloat(precio)).toFixed(2);
-    const nuevoObjInsumo = {
-        id_insumo: id_insumo,
-        nombreInsumo: nombreInsumo,
-        cantidad: parseInt(cantidad),
-        precio: parseFloat(precio),
-        subTotal: subTotalRedondeado,
-        medidaInsumo: medidaInsumo,
-        iva: iva,
-    };
+const insertarVariosInsumos = (
+  id_insumo,
+  nombreInsumo,
+  iva,
+  cantidad,
+  precio,
+  medidaInsumo,
+) => {
+  let subTotalRedondeado = (parseFloat(cantidad) * parseFloat(precio)).toFixed(
+    2,
+  );
+  const nuevoObjInsumo = {
+    id_insumo: id_insumo,
+    nombreInsumo: nombreInsumo,
+    cantidad: parseInt(cantidad),
+    precio: parseFloat(precio),
+    subTotal: subTotalRedondeado,
+    medidaInsumo: medidaInsumo,
+    iva: iva,
+  };
 
-    listaModalInsumo.push(nuevoObjInsumo);
-    console.log(listaModalInsumo);
-    mostrarVariosInusmos();
+  listaModalInsumo.push(nuevoObjInsumo);
+  console.log(listaModalInsumo);
+  mostrarVariosInusmos();
 
-    if (listaModalInsumo.length > 0) {
-        document.getElementById("siguienteInsumo").classList.remove("d-none");
-        document.getElementById("insertarInsumo").classList.remove("d-none");
-    } else {
-        document.getElementById("siguienteInsumo").classList.add("d-none");
-        document.getElementById("insertarInsumo").classList.add("d-none");
-    }
+  if (listaModalInsumo.length > 0) {
+    document.getElementById("siguienteInsumo").classList.remove("d-none");
+    document.getElementById("insertarInsumo").classList.remove("d-none");
+  } else {
+    document.getElementById("siguienteInsumo").classList.add("d-none");
+    document.getElementById("insertarInsumo").classList.add("d-none");
+  }
 
-    //esto lo reviso despues
+  //esto lo reviso despues
 
-    // let inputsOcultosDeNombre = document.querySelector(
-    //   ".nombreInsumo" + element["nombreInsumo"]
-    // );
-    // let inputsOcultosDeCantidad = document.querySelector(
-    //   ".cantidad_tabla" + element["nombreInsumo"]
-    // );
-    // console.log(element["nombreInsumo"]);
-    // console.log(inputsOcultosDeNombre);
-    // if (element["nombreInsumo"] == inputsOcultosDeNombre.value) {
-    //   console.log("es igual");
-    // }
+  // let inputsOcultosDeNombre = document.querySelector(
+  //   ".nombreInsumo" + element["nombreInsumo"]
+  // );
+  // let inputsOcultosDeCantidad = document.querySelector(
+  //   ".cantidad_tabla" + element["nombreInsumo"]
+  // );
+  // console.log(element["nombreInsumo"]);
+  // console.log(inputsOcultosDeNombre);
+  // if (element["nombreInsumo"] == inputsOcultosDeNombre.value) {
+  //   console.log("es igual");
+  // }
 
-    let cantidad_tabla_disponible = document.querySelector(".cantidad_tabla_disponible" + nombreInsumo);
+  let cantidad_tabla_disponible = document.querySelector(
+    ".cantidad_tabla_disponible" + nombreInsumo,
+  );
 
-    let cantidad_tabla = parseInt(cantidad_tabla_disponible.innerText) - parseInt(cantidad);
-    cantidad_tabla_disponible.innerText = cantidad_tabla;
+  let cantidad_tabla =
+    parseInt(cantidad_tabla_disponible.innerText) - parseInt(cantidad);
+  cantidad_tabla_disponible.innerText = cantidad_tabla;
 };
 
 //boton para añadir los insumos
 document.querySelectorAll(".insertar_insumo").forEach((ele) => {
-    ele.addEventListener("click", function () {
-        const fila = this.closest("tr");
-        console.log(fila);
-        const id_insumo = this.getAttribute("id");
-        const nombreInsumo = fila.children[1].innerText; // Columna Insumo
-        const medidaInsumo = fila.children[2].innerText; //Columna Medida
-        const precio = fila.children[4].innerText; // Columna precio
-        const iva = fila.children[5].innerText; // Columna numero_de_lote
-        const cantidad = fila.children[6].children[0].value; // Columna cantidad
-        console.log(cantidad);
+  ele.addEventListener("click", function () {
+    const fila = this.closest("tr");
+    console.log(fila);
+    const id_insumo = this.getAttribute("id");
+    const nombreInsumo = fila.children[1].innerText; // Columna Insumo
+    const medidaInsumo = fila.children[2].innerText; //Columna Medida
+    const precio = fila.children[4].innerText; // Columna precio
+    const iva = fila.children[5].innerText; // Columna numero_de_lote
+    const cantidad = fila.children[6].children[0].value; // Columna cantidad
+    console.log(cantidad);
 
-        insertarVariosInsumos(id_insumo, nombreInsumo, iva, cantidad, precio, medidaInsumo);
-        fila.classList.add("d-none");
+    insertarVariosInsumos(
+      id_insumo,
+      nombreInsumo,
+      iva,
+      cantidad,
+      precio,
+      medidaInsumo,
+    );
+    fila.classList.add("d-none");
 
-        let text =
-            'Se añadio el insumo correctamente por favor pulse el boton "Siguiente" para continuar o siga añadiendo insumos';
+    let text =
+      'Se añadio el insumo correctamente por favor pulse el boton "Siguiente" para continuar o siga añadiendo insumos';
 
-        notificationModals(ConteNotificacionInsumo, text, "alertGenericoIns");
-    });
+    notificationModals(ConteNotificacionInsumo, text, "alertGenericoIns");
+  });
 });
 
 function mostrarInsumo() {
-    calcularTotal();
-    let html = ``;
-    dataInsumo.forEach((element, index) => {
-        let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBSSubTotal = (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) * storedDolar;
-        montoBSSubTotal = montoBSSubTotal.toFixed(2);
+  calcularTotal();
+  let html = ``;
+  dataInsumo.forEach((element, index) => {
+    let storedDolar = localStorage.getItem("valorDelDolar");
+    let montoBSSubTotal =
+      (parseFloat(element["subTotal"]) + parseFloat(element["iva"])) *
+      storedDolar;
+    montoBSSubTotal = montoBSSubTotal.toFixed(2);
 
-        html += `
+    html += `
         <tr class="border-top tr">
         <th class="id_insumo_escondido d-none">${element["id_insumo"]}</th>
         <td class="border-top nombre"><div class="fw-bolder">INSUMO:</div> ${element["nombreInsumo"]}</td>
@@ -724,188 +839,200 @@ function mostrarInsumo() {
         </svg></button>
         <td>
         <tr>`;
+  });
+  tbodyInsumos.innerHTML = html;
+  // Añadimos los eventos a los botones de eliminar
+  document.querySelectorAll(".eliminar-insumo").forEach((ele) => {
+    ele.addEventListener("click", function () {
+      console.log(this);
+      dataInsumo.splice(parseFloat(this.dataset["index"]), 1);
+      mostrarInsumo();
+      mostrarConfirmacion();
+      alertSuccess("Se elimino el insumo de  manera exitosa.");
     });
-    tbodyInsumos.innerHTML = html;
-    // Añadimos los eventos a los botones de eliminar
-    document.querySelectorAll(".eliminar-insumo").forEach((ele) => {
-        ele.addEventListener("click", function () {
-            console.log(this);
-            dataInsumo.splice(parseFloat(this.dataset["index"]), 1);
-            mostrarInsumo();
-            mostrarConfirmacion();
-            alertSuccess("Se elimino el insumo de  manera exitosa.");
-        });
-    });
+  });
 
-    //funncion para mostrar los botones de vaciar y siguiente
-    ocultarBotones();
-    document.querySelector(".formularios-insumos").reset();
-    mostrarConfirmacion();
+  //funncion para mostrar los botones de vaciar y siguiente
+  ocultarBotones();
+  document.querySelector(".formularios-insumos").reset();
+  mostrarConfirmacion();
 }
 
 function cantidadesDeInsumos() {
-    console.log("funcion");
-    if (dataInsumo.length == 0) {
-        console.log("vacio");
-    } else {
-        let total = 0;
-        const totales = {};
-        dataInsumo.forEach((ele, index) => {
-            let boton = document.querySelector(`#cuerpoTablaInsumos tr .caja-boton .btn${ele.id_insumo}`);
+  console.log("funcion");
+  if (dataInsumo.length == 0) {
+    console.log("vacio");
+  } else {
+    let total = 0;
+    const totales = {};
+    dataInsumo.forEach((ele, index) => {
+      let boton = document.querySelector(
+        `#cuerpoTablaInsumos tr .caja-boton .btn${ele.id_insumo}`,
+      );
 
-            let cantidad = parseInt(boton.parentElement.parentElement.children[2].innerText);
-            let nombre = boton.parentElement.parentElement.children[1].innerText;
+      let cantidad = parseInt(
+        boton.parentElement.parentElement.children[2].innerText,
+      );
+      let nombre = boton.parentElement.parentElement.children[1].innerText;
 
-            if (!totales[ele.nombreInsumo]) {
-                totales[ele.nombreInsumo] = 0;
-            }
+      if (!totales[ele.nombreInsumo]) {
+        totales[ele.nombreInsumo] = 0;
+      }
 
-            totales[ele.nombreInsumo] += parseInt(ele.cantidad);
-            //console.log(boton[index])
-            //que de aqui
-            console.log(totales["Vitamina C"]);
-        });
+      totales[ele.nombreInsumo] += parseInt(ele.cantidad);
+      //console.log(boton[index])
+      //que de aqui
+      console.log(totales["Vitamina C"]);
+    });
 
-        return totales;
-    }
+    return totales;
+  }
 }
 
 //evento para vaciar la tabla
 document.getElementById("vaciarTabla").addEventListener("click", function () {
-    data = [];
-    dataInsumo = [];
-    mostrarCosas();
-    mostrarInsumo();
-    // document.getElementById('tablaBODYDB').innerHTML = ``;
-    document.getElementById("totalFactura").value = "";
+  data = [];
+  dataInsumo = [];
+  mostrarCosas();
+  mostrarInsumo();
+  // document.getElementById('tablaBODYDB').innerHTML = ``;
+  document.getElementById("totalFactura").value = "";
 
-    alertSuccess("Se vaciaron los registros de manera exitosa.");
+  alertSuccess("Se vaciaron los registros de manera exitosa.");
 });
 
 //funcion para calcular el total
 function calcularTotal() {
-    let totalFactura = parseFloat(document.getElementById("inputTotalCita").value);
-    console.log("total:");
-    console.log(data);
-    let subTotal = 0;
-    let insumos = 0;
-    for (let i = 0; i < data.length; i++) {
-        subTotal += data[i]["precio"];
-    }
-    for (let i = 0; i < dataInsumo.length; i++) {
-        insumos +=
-            (dataInsumo[i]["iva"] != "No contiene"
-                ? (parseFloat(dataInsumo[i]["precio"]) + parseFloat(dataInsumo[i]["iva"])) * dataInsumo[i]["cantidad"]
-                : parseFloat(dataInsumo[i]["precio"])) * dataInsumo[i]["cantidad"];
-    }
-    let total = totalFactura + subTotal + insumos;
-    total = parseFloat(total.toFixed(2));
+  let totalFactura = parseFloat(
+    document.getElementById("inputTotalCita").value,
+  );
+  console.log("total:");
+  console.log(data);
+  let subTotal = 0;
+  let insumos = 0;
+  for (let i = 0; i < data.length; i++) {
+    subTotal += data[i]["precio"];
+  }
+  for (let i = 0; i < dataInsumo.length; i++) {
+    insumos +=
+      (dataInsumo[i]["iva"] != "No contiene"
+        ? (parseFloat(dataInsumo[i]["precio"]) +
+            parseFloat(dataInsumo[i]["iva"])) *
+          dataInsumo[i]["cantidad"]
+        : parseFloat(dataInsumo[i]["precio"])) * dataInsumo[i]["cantidad"];
+  }
+  let total = totalFactura + subTotal + insumos;
+  total = parseFloat(total.toFixed(2));
 
-    let storedDolar = localStorage.getItem("valorDelDolar");
-    let montoBS = total * storedDolar;
-    montoBS = montoBS.toFixed(2);
+  let storedDolar = localStorage.getItem("valorDelDolar");
+  let montoBS = total * storedDolar;
+  montoBS = montoBS.toFixed(2);
 
-    document.getElementById("totalFactura").value = montoBS;
-    document.getElementById("totalDeConfirmacion").innerText = `${montoBS} BS`;
-    document.getElementById("inputTotalDeConfirmacion").value = montoBS;
+  document.getElementById("totalFactura").value = montoBS;
+  document.getElementById("totalDeConfirmacion").innerText = `${montoBS} BS`;
+  document.getElementById("inputTotalDeConfirmacion").value = montoBS;
 
-    //validacion de el modal de validacion...
-    document.getElementById("total-modal-validacion").innerText = `Total a pagar ${montoBS} BS`;
-    document.getElementById("input-validacion-pago").value = montoBS;
+  //validacion de el modal de validacion...
+  document.getElementById("total-modal-validacion").innerText =
+    `Total a pagar ${montoBS} BS`;
+  document.getElementById("input-validacion-pago").value = montoBS;
 }
 //esto es para ocultar los botones de siguiente y  vaciar
 function ocultarBotones() {
-    if (data.length > 0 || dataInsumo.length > 0) {
-        document.querySelectorAll(".btn-escondidos").forEach((ele) => {
-            ele.classList.remove("d-none");
-        });
-    } else {
-        document.querySelectorAll(".btn-escondidos").forEach((ele) => {
-            ele.classList.add("d-none");
-        });
-    }
+  if (data.length > 0 || dataInsumo.length > 0) {
+    document.querySelectorAll(".btn-escondidos").forEach((ele) => {
+      ele.classList.remove("d-none");
+    });
+  } else {
+    document.querySelectorAll(".btn-escondidos").forEach((ele) => {
+      ele.classList.add("d-none");
+    });
+  }
 }
 
 //funcion para comprobar si el paciente es el mismo cliente
 
 const buscarCliente = async (formulario) => {
-    try {
-        const datos = new FormData(formulario);
-        const contenido = { method: "POST", body: datos };
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente", contenido);
-        console.log(peticion);
-        let resultado = await peticion.json();
-        console.log(resultado);
-        if (resultado[0] != false) {
-            resultado.forEach((res) => {
-                // calcula la edad
-                const fechaNac = new Date(res.fn);
-                const edadDif = Date.now() - fechaNac.getTime();
-                const edadFecha = new Date(edadDif);
-                const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
-                dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+  try {
+    const datos = new FormData(formulario);
+    const contenido = { method: "POST", body: datos };
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente",
+      contenido,
+    );
+    console.log(peticion);
+    let resultado = await peticion.json();
+    console.log(resultado);
+    if (resultado[0] != false) {
+      resultado.forEach((res) => {
+        // calcula la edad
+        const fechaNac = new Date(res.fn);
+        const edadDif = Date.now() - fechaNac.getTime();
+        const edadFecha = new Date(edadDif);
+        const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+        dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
 
-                if (edad >= 18) {
-                    document.getElementById("botonPC").classList.remove("d-none");
-                    document.getElementById("alert-edad").classList.add("d-none");
-                } else {
-                    document.getElementById("botonPC").classList.add("d-none");
-                    document.getElementById("alert-edad").classList.remove("d-none");
-                }
-
-                document.getElementById("myToastfactura").classList.add("d-none");
-
-                // dataCliente[0].innerHTML = `<div class="fw-bolder ">CI: ${res.cedula}</div>`;
-                // dataCliente[1].innerHTML = `<div class="fw-bolder">CLIENTE: ${res.nombre} ${res.apellido}</div>`;
-
-                document.getElementById("inputCliente").value = res.id_cliente;
-            });
-
-            divClienteNoEncontrado.classList.add("d-none");
+        if (edad >= 18) {
+          document.getElementById("botonPC").classList.remove("d-none");
+          document.getElementById("alert-edad").classList.add("d-none");
         } else {
-            dataCliente.innerText = ``;
-
-            divClienteNoEncontrado.classList.remove("d-none");
-
-            // document.querySelectorAll("data-cliente")[0].innerHTML = ``;
-            // document.querySelectorAll("data-cliente")[1].innerHTML = ``;
-            document.getElementById("inputCliente").value = "";
-
-            document.getElementById("botonPC").classList.add("d-none");
+          document.getElementById("botonPC").classList.add("d-none");
+          document.getElementById("alert-edad").classList.remove("d-none");
         }
-    } catch (error) {
-        console.log(error);
+
+        document.getElementById("myToastfactura").classList.add("d-none");
+
+        // dataCliente[0].innerHTML = `<div class="fw-bolder ">CI: ${res.cedula}</div>`;
+        // dataCliente[1].innerHTML = `<div class="fw-bolder">CLIENTE: ${res.nombre} ${res.apellido}</div>`;
+
+        document.getElementById("inputCliente").value = res.id_cliente;
+      });
+
+      divClienteNoEncontrado.classList.add("d-none");
+    } else {
+      dataCliente.innerText = ``;
+
+      divClienteNoEncontrado.classList.remove("d-none");
+
+      // document.querySelectorAll("data-cliente")[0].innerHTML = ``;
+      // document.querySelectorAll("data-cliente")[1].innerHTML = ``;
+      document.getElementById("inputCliente").value = "";
+
+      document.getElementById("botonPC").classList.add("d-none");
     }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 //llamar la uncion de buscar el paciente
 pacienteClienteCheck.addEventListener("change", function () {
-    if (this.checked) {
-        cajaBuscadorCliente.classList.remove("d-none");
-        document.getElementById("botonPC").classList.add("d-none");
-        console.log(document.getElementById("botonPC"));
-    } else {
-        cajaBuscadorCliente.classList.add("d-none");
-        // dataCliente[0].innerHTML = ``;
-        // dataCliente[1].innerHTML = ``;
+  if (this.checked) {
+    cajaBuscadorCliente.classList.remove("d-none");
+    document.getElementById("botonPC").classList.add("d-none");
+    console.log(document.getElementById("botonPC"));
+  } else {
+    cajaBuscadorCliente.classList.add("d-none");
+    // dataCliente[0].innerHTML = ``;
+    // dataCliente[1].innerHTML = ``;
 
-        document.getElementById("inputCliente").value = "";
-        document.getElementById("botonPC").classList.remove("d-none");
-        console.log(document.getElementById("botonPC"));
-    }
+    document.getElementById("inputCliente").value = "";
+    document.getElementById("botonPC").classList.remove("d-none");
+    console.log(document.getElementById("botonPC"));
+  }
 });
 
 btnOpenModalPaciente.addEventListener("click", function () {
-    UIkit.modal("#modal-cliente").hide();
-    document.body.classList.remove("uk-modal-page");
-    setTimeout(() => {
-        UIkit.modal("#modal-examplePaciente").show();
-    }, 200);
+  UIkit.modal("#modal-cliente").hide();
+  document.body.classList.remove("uk-modal-page");
+  setTimeout(() => {
+    UIkit.modal("#modal-examplePaciente").show();
+  }, 200);
 });
 
 buscadorCliente.addEventListener("submit", function (e) {
-    e.preventDefault();
-    buscarCliente(buscadorCliente);
+  e.preventDefault();
+  buscarCliente(buscadorCliente);
 });
 
 //boton del modal de tio de pago
@@ -921,105 +1048,109 @@ const labelForma3 = document.getElementById("forma3");
 const referencia = document.getElementById("referencia");
 //funcion por si es 2 formas
 function dosFormas(forma1, forma2) {
-    labelForma1.innerText = forma1;
-    labelForma2.innerText = forma2;
-    btnTipoDePago.classList.remove("d-none");
-    inputsDeValidacion[2].classList.add("d-none");
-    labelForma3.innerText = "";
-    pagosDeConfirmacion.innerText = forma1;
-    pagosDeConfirmacion2.innerText = forma2;
-    pagosDeConfirmacion3.innerText = "";
-    inputsDePago[1].setAttribute("name", "formasDePago[]");
-    inputsDeMontos[1].setAttribute("name", "montosDePago[]");
-    if (forma1 == "Efectivo" && forma2 == "Divisas") {
-        referencia.classList.add("d-none");
-        inputsDePago[0].value = tiposDePago[0].value;
-        inputsDePago[1].value = tiposDePago[3].value;
-        btnValidacion.classList.add("d-none");
-        document.getElementById("equivalenteDivisas").classList.remove("d-none");
-        labelForma2.innerText = "Divisas en BS";
-    } else if (forma1 == "Efectivo" && forma2 == "PagoMovil") {
-        inputsDePago[0].value = tiposDePago[0].value;
-        inputsDePago[1].value = tiposDePago[1].value;
-        referencia.classList.remove("d-none");
-        labelForma2.innerText = "Pago Movil";
-        pagosDeConfirmacion2.innerText = "Pago Movil";
-        inputsDeValidacion[0].classList.remove("d-none");
-        inputsDeValidacion[1].classList.remove("d-none");
-        btnValidacion.classList.add("d-none");
-        document.getElementById("equivalenteDivisas").classList.add("d-none");
-    } else if (forma1 == "Efectivo" && forma2 == "Transferencia") {
-        inputsDePago[0].value = tiposDePago[0].value;
-        inputsDePago[1].value = tiposDePago[2].value;
-        referencia.classList.remove("d-none");
-        labelForma2.innerText = "Transferencia";
-        pagosDeConfirmacion2.innerText = "Transferencia";
-        console.log("deberia decir Transferencia");
-        console.log(pagosDeConfirmacion2.innerText);
-        inputsDeValidacion[0].classList.remove("d-none");
-        inputsDeValidacion[1].classList.remove("d-none");
-        btnValidacion.classList.add("d-none");
-        document.getElementById("equivalenteDivisas").classList.add("d-none");
-    } else if (forma1 == "Divisas" && forma2 == "PagoMovil") {
-        inputsDePago[0].value = tiposDePago[3].value;
-        inputsDePago[1].value = tiposDePago[1].value;
-        referencia.classList.remove("d-none");
-        labelForma2.innerText = "Pago Movil";
-        pagosDeConfirmacion2.innerText = "Pago Movil";
-        inputsDeValidacion[0].classList.remove("d-none");
-        inputsDeValidacion[1].classList.remove("d-none");
-        btnValidacion.classList.add("d-none");
-        document.getElementById("equivalenteDivisas").classList.remove("d-none");
-        labelForma1.innerText = "Divisas en BS";
-    } else if (forma1 == "Divisas" && forma2 == "Transferencia") {
-        inputsDePago[0].value = tiposDePago[3].value;
-        inputsDePago[1].value = tiposDePago[2].value;
-        referencia.classList.remove("d-none");
-        console.log(labelForma1.innerText);
-        labelForma2.innerText = "Transferencia";
-        pagosDeConfirmacion2.innerText = "Transferencial";
-        inputsDeValidacion[0].classList.remove("d-none");
-        inputsDeValidacion[1].classList.remove("d-none");
-        btnValidacion.classList.add("d-none");
-        document.getElementById("equivalenteDivisas").classList.remove("d-none");
-        labelForma1.innerText = "Divisas en BS";
-    }
+  labelForma1.innerText = forma1;
+  labelForma2.innerText = forma2;
+  btnTipoDePago.classList.remove("d-none");
+  inputsDeValidacion[2].classList.add("d-none");
+  labelForma3.innerText = "";
+  pagosDeConfirmacion.innerText = forma1;
+  pagosDeConfirmacion2.innerText = forma2;
+  pagosDeConfirmacion3.innerText = "";
+  inputsDePago[1].setAttribute("name", "formasDePago[]");
+  inputsDeMontos[1].setAttribute("name", "montosDePago[]");
+  if (forma1 == "Efectivo" && forma2 == "Divisas") {
+    referencia.classList.add("d-none");
+    inputsDePago[0].value = tiposDePago[0].value;
+    inputsDePago[1].value = tiposDePago[3].value;
+    btnValidacion.classList.add("d-none");
+    document.getElementById("equivalenteDivisas").classList.remove("d-none");
+    labelForma2.innerText = "Divisas en BS";
+  } else if (forma1 == "Efectivo" && forma2 == "PagoMovil") {
+    inputsDePago[0].value = tiposDePago[0].value;
+    inputsDePago[1].value = tiposDePago[1].value;
+    referencia.classList.remove("d-none");
+    labelForma2.innerText = "Pago Movil";
+    pagosDeConfirmacion2.innerText = "Pago Movil";
+    inputsDeValidacion[0].classList.remove("d-none");
+    inputsDeValidacion[1].classList.remove("d-none");
+    btnValidacion.classList.add("d-none");
+    document.getElementById("equivalenteDivisas").classList.add("d-none");
+  } else if (forma1 == "Efectivo" && forma2 == "Transferencia") {
+    inputsDePago[0].value = tiposDePago[0].value;
+    inputsDePago[1].value = tiposDePago[2].value;
+    referencia.classList.remove("d-none");
+    labelForma2.innerText = "Transferencia";
+    pagosDeConfirmacion2.innerText = "Transferencia";
+    console.log("deberia decir Transferencia");
+    console.log(pagosDeConfirmacion2.innerText);
+    inputsDeValidacion[0].classList.remove("d-none");
+    inputsDeValidacion[1].classList.remove("d-none");
+    btnValidacion.classList.add("d-none");
+    document.getElementById("equivalenteDivisas").classList.add("d-none");
+  } else if (forma1 == "Divisas" && forma2 == "PagoMovil") {
+    inputsDePago[0].value = tiposDePago[3].value;
+    inputsDePago[1].value = tiposDePago[1].value;
+    referencia.classList.remove("d-none");
+    labelForma2.innerText = "Pago Movil";
+    pagosDeConfirmacion2.innerText = "Pago Movil";
+    inputsDeValidacion[0].classList.remove("d-none");
+    inputsDeValidacion[1].classList.remove("d-none");
+    btnValidacion.classList.add("d-none");
+    document.getElementById("equivalenteDivisas").classList.remove("d-none");
+    labelForma1.innerText = "Divisas en BS";
+  } else if (forma1 == "Divisas" && forma2 == "Transferencia") {
+    inputsDePago[0].value = tiposDePago[3].value;
+    inputsDePago[1].value = tiposDePago[2].value;
+    referencia.classList.remove("d-none");
+    console.log(labelForma1.innerText);
+    labelForma2.innerText = "Transferencia";
+    pagosDeConfirmacion2.innerText = "Transferencial";
+    inputsDeValidacion[0].classList.remove("d-none");
+    inputsDeValidacion[1].classList.remove("d-none");
+    btnValidacion.classList.add("d-none");
+    document.getElementById("equivalenteDivisas").classList.remove("d-none");
+    labelForma1.innerText = "Divisas en BS";
+  }
 }
 
 //funcion por si son tres formas de pago
 function tresFormas(forma1, forma2, forma3) {
-    labelForma1.innerText = forma1;
-    labelForma2.innerText = forma2;
-    labelForma3.innerText = forma3;
-    btnTipoDePago.classList.remove("d-none");
-    pagosDeConfirmacion.innerText = forma1;
-    pagosDeConfirmacion2.innerText = forma2;
-    pagosDeConfirmacion3.innerText = forma3;
-    inputsDePago[2].setAttribute("name", "formasDePago[]");
-    inputsDeMontos[2].setAttribute("name", "montosDePago[]");
-    if (forma1 == "Efectivo" && forma2 == "Divisas" && forma3 == "Transferencia") {
-        inputsDePago[0].value = tiposDePago[0].value;
-        inputsDePago[1].value = tiposDePago[3].value;
-        inputsDePago[2].value = tiposDePago[2].value;
-        labelForma3.innerText = "Transferencia";
-        pagosDeConfirmacion3.innerText = "Transferencia";
-        referencia.classList.remove("d-none");
-        inputsDeValidacion[2].classList.remove("d-none");
-        btnValidacion.classList.add("d-none");
-        document.getElementById("equivalenteDivisas").classList.remove("d-none");
-        labelForma2.innerText = "Divisas en BS";
-    } else {
-        inputsDePago[0].value = tiposDePago[0].value;
-        inputsDePago[1].value = tiposDePago[3].value;
-        inputsDePago[2].value = tiposDePago[1].value;
-        labelForma3.innerText = "Pago Movil";
-        pagosDeConfirmacion3.innerText = "Pago Movil";
-        referencia.classList.remove("d-none");
-        inputsDeValidacion[2].classList.remove("d-none");
-        btnValidacion.classList.add("d-none");
-        document.getElementById("equivalenteDivisas").classList.remove("d-none");
-        labelForma2.innerText = "Divisas en BS";
-    }
+  labelForma1.innerText = forma1;
+  labelForma2.innerText = forma2;
+  labelForma3.innerText = forma3;
+  btnTipoDePago.classList.remove("d-none");
+  pagosDeConfirmacion.innerText = forma1;
+  pagosDeConfirmacion2.innerText = forma2;
+  pagosDeConfirmacion3.innerText = forma3;
+  inputsDePago[2].setAttribute("name", "formasDePago[]");
+  inputsDeMontos[2].setAttribute("name", "montosDePago[]");
+  if (
+    forma1 == "Efectivo" &&
+    forma2 == "Divisas" &&
+    forma3 == "Transferencia"
+  ) {
+    inputsDePago[0].value = tiposDePago[0].value;
+    inputsDePago[1].value = tiposDePago[3].value;
+    inputsDePago[2].value = tiposDePago[2].value;
+    labelForma3.innerText = "Transferencia";
+    pagosDeConfirmacion3.innerText = "Transferencia";
+    referencia.classList.remove("d-none");
+    inputsDeValidacion[2].classList.remove("d-none");
+    btnValidacion.classList.add("d-none");
+    document.getElementById("equivalenteDivisas").classList.remove("d-none");
+    labelForma2.innerText = "Divisas en BS";
+  } else {
+    inputsDePago[0].value = tiposDePago[0].value;
+    inputsDePago[1].value = tiposDePago[3].value;
+    inputsDePago[2].value = tiposDePago[1].value;
+    labelForma3.innerText = "Pago Movil";
+    pagosDeConfirmacion3.innerText = "Pago Movil";
+    referencia.classList.remove("d-none");
+    inputsDeValidacion[2].classList.remove("d-none");
+    btnValidacion.classList.add("d-none");
+    document.getElementById("equivalenteDivisas").classList.remove("d-none");
+    labelForma2.innerText = "Divisas en BS";
+  }
 }
 //Aqui iran los nombres de tipos de pagos
 const pagosDeConfirmacion = document.getElementById("pagosDeConfirmacion");
@@ -1032,379 +1163,547 @@ const inputsDePago = document.querySelectorAll("#divInputPago input");
 const inputsDeMontos = document.querySelectorAll("#divMontosPago input");
 //funcion para realizar las debidas validaciones de los tipos de pago
 function checkearTiposDePago(metodosPago) {
-    let efectivo = metodosPago[0];
-    let pagoMovil = metodosPago[1];
-    let transferencia = metodosPago[2];
-    let divisa = metodosPago[3];
-    btnTipoDePago.setAttribute("data-bs-toggle", "modal");
-    //cuando elige solo efectivo
-    if (efectivo.checked && pagoMovil.checked == false && transferencia.checked == false && divisa.checked == false) {
-        btnTipoDePago.setAttribute("data-bs-target", "#modal-confirmacion");
-        btnTipoDePago.classList.remove("d-none");
-        pagosDeConfirmacion.innerText = "Efectivo";
-        inputsDePago[0].value = efectivo.value;
+  let efectivo = metodosPago[0];
+  let pagoMovil = metodosPago[1];
+  let transferencia = metodosPago[2];
+  let divisa = metodosPago[3];
+  btnTipoDePago.setAttribute("data-bs-toggle", "modal");
+  //cuando elige solo efectivo
+  if (
+    efectivo.checked &&
+    pagoMovil.checked == false &&
+    transferencia.checked == false &&
+    divisa.checked == false
+  ) {
+    btnTipoDePago.setAttribute("data-bs-target", "#modal-confirmacion");
+    btnTipoDePago.classList.remove("d-none");
+    pagosDeConfirmacion.innerText = "Efectivo";
+    inputsDePago[0].value = efectivo.value;
 
-        pagosDeConfirmacion.innerText =
-            pagosDeConfirmacion.innerText + " " + document.getElementById("totalDeConfirmacion").innerText;
-        console.log(pagosDeConfirmacion);
-        //aqui se le da el valor del monto al input
+    pagosDeConfirmacion.innerText =
+      pagosDeConfirmacion.innerText +
+      " " +
+      document.getElementById("totalDeConfirmacion").innerText;
+    console.log(pagosDeConfirmacion);
+    //aqui se le da el valor del monto al input
 
-        inputsDeMontos[0].value = document.getElementById("totalDeConfirmacion").innerText.replace("BS", "");
+    inputsDeMontos[0].value = document
+      .getElementById("totalDeConfirmacion")
+      .innerText.replace("BS", "");
 
-        document.getElementById("p_referencia").innerText = "";
-        document.getElementById("equivalenteDivisas").classList.add("d-none");
+    document.getElementById("p_referencia").innerText = "";
+    document.getElementById("equivalenteDivisas").classList.add("d-none");
+    pagosDeConfirmacion2.innerText = "";
+    pagosDeConfirmacion3.innerText = "";
+
+    //referencia
+    document
+      .getElementById("referencia_confirmar")
+      .setAttribute("name", "referencia");
+    //cuando elige solo pago movil
+  } else if (
+    pagoMovil.checked &&
+    efectivo.checked == false &&
+    transferencia.checked == false &&
+    divisa.checked == false
+  ) {
+    btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
+    btnTipoDePago.classList.remove("d-none");
+    inputsDeValidacion[0].classList.add("d-none");
+    inputsDeValidacion[1].classList.add("d-none");
+    referencia.classList.remove("d-none");
+    btnValidacion.classList.remove("d-none");
+    pagosDeConfirmacion.innerText = "Pago Movil";
+    inputsDePago[0].value = pagoMovil.value;
+    pagosDeConfirmacion.innerText =
+      pagosDeConfirmacion.innerText +
+      " " +
+      document.getElementById("totalDeConfirmacion").innerText;
+    inputsDeMontos[0].value = document
+      .getElementById("totalDeConfirmacion")
+      .innerText.replace("BS", "");
+    //cuando elige solo transferencia
+    document.querySelector(".suguiente").addEventListener("click", function () {
+      document.getElementById("p_referencia").innerText =
+        "Ref " + referencia.value;
+      //referencia
+      document.getElementById("referencia_confirmar").value =
+        document.getElementById("referencia").value;
+      document
+        .getElementById("referencia_confirmar")
+        .setAttribute("name", "referencia");
+    });
+    console.log(document.getElementById("p_referencia").innerText);
+    document.getElementById("equivalenteDivisas").classList.add("d-none");
+    pagosDeConfirmacion2.innerText = "";
+    pagosDeConfirmacion3.innerText = "";
+
+    //referencia
+  } else if (
+    transferencia.checked &&
+    efectivo.checked == false &&
+    pagoMovil.checked == false &&
+    divisa.checked == false
+  ) {
+    btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
+    btnTipoDePago.classList.remove("d-none");
+    inputsDeValidacion[0].classList.add("d-none");
+    inputsDeValidacion[1].classList.add("d-none");
+    referencia.classList.remove("d-none");
+    btnValidacion.classList.remove("d-none");
+    pagosDeConfirmacion.innerText = "Transferencia";
+    inputsDePago[0].value = transferencia.value;
+    pagosDeConfirmacion.innerText =
+      pagosDeConfirmacion.innerText +
+      " " +
+      document.getElementById("totalDeConfirmacion").innerText;
+    inputsDeMontos[0].value = document
+      .getElementById("totalDeConfirmacion")
+      .innerText.replace("BS", "");
+    document.querySelector(".suguiente").addEventListener("click", function () {
+      document.getElementById("p_referencia").innerText =
+        "Ref " + referencia.value;
+      //referencia
+      document.getElementById("referencia_confirmar").value =
+        document.getElementById("referencia").value;
+      document
+        .getElementById("referencia_confirmar")
+        .setAttribute("name", "referencia");
+    });
+    document.getElementById("equivalenteDivisas").classList.add("d-none");
+    pagosDeConfirmacion2.innerText = "";
+    pagosDeConfirmacion3.innerText = "";
+
+    //cuando elige solo divisas
+  } else if (
+    divisa.checked &&
+    efectivo.checked == false &&
+    pagoMovil.checked == false &&
+    transferencia.checked == false
+  ) {
+    btnTipoDePago.setAttribute("data-bs-target", "#modal-confirmacion");
+    btnTipoDePago.classList.remove("d-none");
+    pagosDeConfirmacion.innerText = "Divisa";
+    inputsDePago[0].value = divisa.value;
+    pagosDeConfirmacion.innerText =
+      pagosDeConfirmacion.innerText +
+      " " +
+      document.getElementById("totalDeConfirmacion").innerText;
+    inputsDeMontos[0].value = document
+      .getElementById("totalDeConfirmacion")
+      .innerText.replace("BS", "");
+
+    document.getElementById("p_referencia").innerText = "";
+
+    document.getElementById("equivalenteDivisas").classList.remove("d-none");
+    pagosDeConfirmacion2.innerText = "";
+    pagosDeConfirmacion3.innerText = "";
+
+    //referencia
+    document.getElementById("referencia_confirmar").setAttribute("name", "");
+  } else {
+    btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
+    if (
+      efectivo.checked &&
+      divisa.checked &&
+      pagoMovil.checked == false &&
+      transferencia.checked == false
+    ) {
+      dosFormas("Efectivo", "Divisas");
+
+      btnValidacion.addEventListener("click", function () {
+        pagosDeConfirmacion.innerText = "";
         pagosDeConfirmacion2.innerText = "";
-        pagosDeConfirmacion3.innerText = "";
-
-        //referencia
-        document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-        //cuando elige solo pago movil
-    } else if (pagoMovil.checked && efectivo.checked == false && transferencia.checked == false && divisa.checked == false) {
-        btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-        btnTipoDePago.classList.remove("d-none");
-        inputsDeValidacion[0].classList.add("d-none");
-        inputsDeValidacion[1].classList.add("d-none");
-        referencia.classList.remove("d-none");
-        btnValidacion.classList.remove("d-none");
-        pagosDeConfirmacion.innerText = "Pago Movil";
-        inputsDePago[0].value = pagoMovil.value;
         pagosDeConfirmacion.innerText =
-            pagosDeConfirmacion.innerText + " " + document.getElementById("totalDeConfirmacion").innerText;
-        inputsDeMontos[0].value = document.getElementById("totalDeConfirmacion").innerText.replace("BS", "");
-        //cuando elige solo transferencia
-        document.querySelector(".suguiente").addEventListener("click", function () {
-            document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-            //referencia
-            document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-            document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
+          "Efectivo: " + inputsDeValidacion[0].value + " BS";
+        pagosDeConfirmacion2.innerText =
+          "Divisas En Bs: " + inputsDeValidacion[1].value;
+        document.getElementById("p_divisas").innerText =
+          "Equivalente en Divisas: " +
+          document.getElementById("equivalenteDivisas").value +
+          " $";
+
+        inputsDeMontos[0].value = inputsDeValidacion[0].value;
+        inputsDeMontos[1].value = inputsDeValidacion[1].value;
+      });
+
+      document.getElementById("p_referencia").innerText = "";
+
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+
+      pagosDeConfirmacion3.innerText = "";
+
+      //referencia
+      document.getElementById("referencia_confirmar").setAttribute("name", "");
+    } else if (
+      efectivo.checked &&
+      pagoMovil.checked &&
+      divisa.checked == false &&
+      transferencia.checked == false
+    ) {
+      dosFormas("Efectivo", "PagoMovil");
+
+      btnValidacion.addEventListener("click", function () {
+        pagosDeConfirmacion.innerText = "";
+        pagosDeConfirmacion2.innerText = "";
+        pagosDeConfirmacion.innerText =
+          "Efectivo: " + inputsDeValidacion[0].value + " BS";
+        pagosDeConfirmacion2.innerText =
+          "Pago Movil: " + inputsDeValidacion[1].value + " BS";
+        document.getElementById("p_divisas").innerText = "";
+
+        inputsDeMontos[0].value = inputsDeValidacion[0].value;
+        inputsDeMontos[1].value = inputsDeValidacion[1].value;
+      });
+      document
+        .querySelector(".suguiente")
+        .addEventListener("click", function () {
+          document.getElementById("p_referencia").innerText =
+            "Ref " + referencia.value;
+          //referencia
+          document.getElementById("referencia_confirmar").value =
+            document.getElementById("referencia").value;
+          document
+            .getElementById("referencia_confirmar")
+            .setAttribute("name", "referencia");
         });
-        console.log(document.getElementById("p_referencia").innerText);
-        document.getElementById("equivalenteDivisas").classList.add("d-none");
-        pagosDeConfirmacion2.innerText = "";
-        pagosDeConfirmacion3.innerText = "";
+      document.getElementById("equivalenteDivisas").classList.add("d-none");
 
-        //referencia
-    } else if (transferencia.checked && efectivo.checked == false && pagoMovil.checked == false && divisa.checked == false) {
-        btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-        btnTipoDePago.classList.remove("d-none");
-        inputsDeValidacion[0].classList.add("d-none");
-        inputsDeValidacion[1].classList.add("d-none");
-        referencia.classList.remove("d-none");
-        btnValidacion.classList.remove("d-none");
-        pagosDeConfirmacion.innerText = "Transferencia";
-        inputsDePago[0].value = transferencia.value;
+      pagosDeConfirmacion3.innerText = "";
+    } else if (
+      efectivo.checked &&
+      transferencia.checked &&
+      divisa.checked == false &&
+      pagoMovil.checked == false
+    ) {
+      dosFormas("Efectivo", "Transferencia");
+      btnValidacion.addEventListener("click", function () {
+        pagosDeConfirmacion.innerText = "";
+        pagosDeConfirmacion2.innerText = "";
         pagosDeConfirmacion.innerText =
-            pagosDeConfirmacion.innerText + " " + document.getElementById("totalDeConfirmacion").innerText;
-        inputsDeMontos[0].value = document.getElementById("totalDeConfirmacion").innerText.replace("BS", "");
-        document.querySelector(".suguiente").addEventListener("click", function () {
-            document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-            //referencia
-            document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-            document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
+          "Efectivo: " + inputsDeValidacion[0].value + " BS";
+        pagosDeConfirmacion2.innerText =
+          "Transferencia: " + inputsDeValidacion[1].value + " BS";
+        document.getElementById("p_divisas").innerText = "";
+
+        inputsDeMontos[0].value = inputsDeValidacion[0].value;
+        inputsDeMontos[1].value = inputsDeValidacion[1].value;
+      });
+      document
+        .querySelector(".suguiente")
+        .addEventListener("click", function () {
+          document.getElementById("p_referencia").innerText =
+            "Ref " + referencia.value;
+          //referencia
+          document.getElementById("referencia_confirmar").value =
+            document.getElementById("referencia").value;
+          document
+            .getElementById("referencia_confirmar")
+            .setAttribute("name", "referencia");
         });
-        document.getElementById("equivalenteDivisas").classList.add("d-none");
-        pagosDeConfirmacion2.innerText = "";
-        pagosDeConfirmacion3.innerText = "";
+      document.getElementById("equivalenteDivisas").classList.add("d-none");
 
-        //cuando elige solo divisas
-    } else if (divisa.checked && efectivo.checked == false && pagoMovil.checked == false && transferencia.checked == false) {
-        btnTipoDePago.setAttribute("data-bs-target", "#modal-confirmacion");
-        btnTipoDePago.classList.remove("d-none");
-        pagosDeConfirmacion.innerText = "Divisa";
-        inputsDePago[0].value = divisa.value;
+      pagosDeConfirmacion3.innerText = "";
+    } else if (
+      divisa.checked &&
+      pagoMovil.checked &&
+      efectivo.checked == false &&
+      transferencia.checked == false
+    ) {
+      dosFormas("Divisas", "PagoMovil");
+      btnValidacion.addEventListener("click", function () {
+        pagosDeConfirmacion.innerText = "";
+        pagosDeConfirmacion2.innerText = "";
         pagosDeConfirmacion.innerText =
-            pagosDeConfirmacion.innerText + " " + document.getElementById("totalDeConfirmacion").innerText;
-        inputsDeMontos[0].value = document.getElementById("totalDeConfirmacion").innerText.replace("BS", "");
+          "Divisas En Bs: " + inputsDeValidacion[1].value;
+        pagosDeConfirmacion2.innerText =
+          "Pago Movil: " + inputsDeValidacion[0].value + " BS";
+        document.getElementById("p_divisas").innerText =
+          "Equivalente en Divisas: " +
+          document.getElementById("equivalenteDivisas").value +
+          " $";
 
-        document.getElementById("p_referencia").innerText = "";
+        inputsDeMontos[0].value = inputsDeValidacion[0].value;
+        inputsDeMontos[1].value = inputsDeValidacion[1].value;
+      });
+      document
+        .querySelector(".suguiente")
+        .addEventListener("click", function () {
+          document.getElementById("p_referencia").innerText =
+            "Ref " + referencia.value;
+          //referencia
+          document.getElementById("referencia_confirmar").value =
+            document.getElementById("referencia").value;
+          document
+            .getElementById("referencia_confirmar")
+            .setAttribute("name", "referencia");
+        });
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+      pagosDeConfirmacion3.innerText = "";
+    } else if (
+      divisa.checked &&
+      transferencia.checked &&
+      efectivo.checked == false &&
+      pagoMovil.checked == false
+    ) {
+      dosFormas("Divisas", "Transferencia");
+      btnValidacion.addEventListener("click", function () {
+        pagosDeConfirmacion.innerText = "";
+        pagosDeConfirmacion2.innerText = "";
+        pagosDeConfirmacion.innerText =
+          "Divisas En Bs: " + inputsDeValidacion[1].value;
+        pagosDeConfirmacion2.innerText =
+          "Transferencia: " + inputsDeValidacion[0].value + " BS";
+        document.getElementById("p_divisas").innerText =
+          "Equivalente en Divisas: " +
+          document.getElementById("equivalenteDivisas").value +
+          " $";
 
-        document.getElementById("equivalenteDivisas").classList.remove("d-none");
+        inputsDeMontos[0].value = inputsDeValidacion[0].value;
+        inputsDeMontos[1].value = inputsDeValidacion[1].value;
+      });
+      document
+        .querySelector(".suguiente")
+        .addEventListener("click", function () {
+          document.getElementById("p_referencia").innerText =
+            "Ref " + referencia.value;
+
+          //referencia
+          document.getElementById("referencia_confirmar").value =
+            document.getElementById("referencia").value;
+          document
+            .getElementById("referencia_confirmar")
+            .setAttribute("name", "referencia");
+        });
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+      //apartir de aqui empiezan los casos que son 3 formas
+      pagosDeConfirmacion3.innerText = "";
+    } else if (
+      divisa.checked &&
+      transferencia.checked &&
+      efectivo.checked &&
+      pagoMovil.checked == false
+    ) {
+      tresFormas("Efectivo", "Divisas", "Transferencia");
+      btnValidacion.addEventListener("click", function () {
+        pagosDeConfirmacion.innerText = "";
         pagosDeConfirmacion2.innerText = "";
         pagosDeConfirmacion3.innerText = "";
+        pagosDeConfirmacion.innerText =
+          "Divisas En Bs: " + inputsDeValidacion[1].value;
+        pagosDeConfirmacion2.innerText =
+          "Efectivo: " + inputsDeValidacion[0].value + " BS";
+        pagosDeConfirmacion3.innerText =
+          "Transferencia: " + inputsDeValidacion[2].value + " BS";
+        console.log(inputsDeValidacion[2].value);
+        document.getElementById("p_divisas").innerText =
+          "Equivalente en Divisas: " +
+          document.getElementById("equivalenteDivisas").value +
+          " $";
+
+        inputsDeMontos[0].value = inputsDeValidacion[0].value;
+        inputsDeMontos[1].value = inputsDeValidacion[1].value;
+        inputsDeMontos[2].value = inputsDeValidacion[2].value;
 
         //referencia
-        document.getElementById("referencia_confirmar").setAttribute("name", "");
+        document.getElementById("referencia_confirmar").value =
+          document.getElementById("referencia").value;
+        document
+          .getElementById("referencia_confirmar")
+          .setAttribute("name", "referencia");
+      });
+      document
+        .querySelector(".suguiente")
+        .addEventListener("click", function () {
+          document.getElementById("p_referencia").innerText =
+            "Ref " + referencia.value;
+        });
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
+      pagosDeConfirmacion3.innerText = "";
+    } else if (
+      divisa.checked &&
+      pagoMovil.checked &&
+      efectivo.checked &&
+      transferencia.checked == false
+    ) {
+      tresFormas("Efectivo", "Divisas", "Pago Movil");
+      btnValidacion.addEventListener("click", function () {
+        pagosDeConfirmacion.innerText = "";
+        pagosDeConfirmacion2.innerText = "";
+        pagosDeConfirmacion3.innerText = "";
+        pagosDeConfirmacion.innerText =
+          "Divisas En Bs: " + inputsDeValidacion[1].value;
+        pagosDeConfirmacion2.innerText =
+          "Efectivo: " + inputsDeValidacion[0].value + " BS";
+        pagosDeConfirmacion3.innerText =
+          "Pago Movil: " + inputsDeValidacion[2].value + " BS";
+        console.log(inputsDeValidacion[2].value);
+        document.getElementById("p_divisas").innerText =
+          "Equivalente en Divisas: " +
+          document.getElementById("equivalenteDivisas").value +
+          " $";
+
+        inputsDeMontos[0].value = inputsDeValidacion[0].value;
+        inputsDeMontos[1].value = inputsDeValidacion[1].value;
+        inputsDeMontos[2].value = inputsDeValidacion[2].value;
+
+        //referencia
+        document.getElementById("referencia_confirmar").value =
+          document.getElementById("referencia").value;
+        document
+          .getElementById("referencia_confirmar")
+          .setAttribute("name", "referencia");
+      });
+      document
+        .querySelector(".suguiente")
+        .addEventListener("click", function () {
+          document.getElementById("p_referencia").innerText =
+            "Ref " + referencia.value;
+        });
+      document.getElementById("equivalenteDivisas").classList.remove("d-none");
     } else {
-        btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-        if (efectivo.checked && divisa.checked && pagoMovil.checked == false && transferencia.checked == false) {
-            dosFormas("Efectivo", "Divisas");
-
-            btnValidacion.addEventListener("click", function () {
-                pagosDeConfirmacion.innerText = "";
-                pagosDeConfirmacion2.innerText = "";
-                pagosDeConfirmacion.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                pagosDeConfirmacion2.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                document.getElementById("p_divisas").innerText =
-                    "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
-
-                inputsDeMontos[0].value = inputsDeValidacion[0].value;
-                inputsDeMontos[1].value = inputsDeValidacion[1].value;
-            });
-
-            document.getElementById("p_referencia").innerText = "";
-
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-
-            pagosDeConfirmacion3.innerText = "";
-
-            //referencia
-            document.getElementById("referencia_confirmar").setAttribute("name", "");
-        } else if (efectivo.checked && pagoMovil.checked && divisa.checked == false && transferencia.checked == false) {
-            dosFormas("Efectivo", "PagoMovil");
-
-            btnValidacion.addEventListener("click", function () {
-                pagosDeConfirmacion.innerText = "";
-                pagosDeConfirmacion2.innerText = "";
-                pagosDeConfirmacion.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                pagosDeConfirmacion2.innerText = "Pago Movil: " + inputsDeValidacion[1].value + " BS";
-                document.getElementById("p_divisas").innerText = "";
-
-                inputsDeMontos[0].value = inputsDeValidacion[0].value;
-                inputsDeMontos[1].value = inputsDeValidacion[1].value;
-            });
-            document.querySelector(".suguiente").addEventListener("click", function () {
-                document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-                //referencia
-                document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            });
-            document.getElementById("equivalenteDivisas").classList.add("d-none");
-
-            pagosDeConfirmacion3.innerText = "";
-        } else if (efectivo.checked && transferencia.checked && divisa.checked == false && pagoMovil.checked == false) {
-            dosFormas("Efectivo", "Transferencia");
-            btnValidacion.addEventListener("click", function () {
-                pagosDeConfirmacion.innerText = "";
-                pagosDeConfirmacion2.innerText = "";
-                pagosDeConfirmacion.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                pagosDeConfirmacion2.innerText = "Transferencia: " + inputsDeValidacion[1].value + " BS";
-                document.getElementById("p_divisas").innerText = "";
-
-                inputsDeMontos[0].value = inputsDeValidacion[0].value;
-                inputsDeMontos[1].value = inputsDeValidacion[1].value;
-            });
-            document.querySelector(".suguiente").addEventListener("click", function () {
-                document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-                //referencia
-                document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            });
-            document.getElementById("equivalenteDivisas").classList.add("d-none");
-
-            pagosDeConfirmacion3.innerText = "";
-        } else if (divisa.checked && pagoMovil.checked && efectivo.checked == false && transferencia.checked == false) {
-            dosFormas("Divisas", "PagoMovil");
-            btnValidacion.addEventListener("click", function () {
-                pagosDeConfirmacion.innerText = "";
-                pagosDeConfirmacion2.innerText = "";
-                pagosDeConfirmacion.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                pagosDeConfirmacion2.innerText = "Pago Movil: " + inputsDeValidacion[0].value + " BS";
-                document.getElementById("p_divisas").innerText =
-                    "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
-
-                inputsDeMontos[0].value = inputsDeValidacion[0].value;
-                inputsDeMontos[1].value = inputsDeValidacion[1].value;
-            });
-            document.querySelector(".suguiente").addEventListener("click", function () {
-                document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-                //referencia
-                document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            });
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-            pagosDeConfirmacion3.innerText = "";
-        } else if (divisa.checked && transferencia.checked && efectivo.checked == false && pagoMovil.checked == false) {
-            dosFormas("Divisas", "Transferencia");
-            btnValidacion.addEventListener("click", function () {
-                pagosDeConfirmacion.innerText = "";
-                pagosDeConfirmacion2.innerText = "";
-                pagosDeConfirmacion.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                pagosDeConfirmacion2.innerText = "Transferencia: " + inputsDeValidacion[0].value + " BS";
-                document.getElementById("p_divisas").innerText =
-                    "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
-
-                inputsDeMontos[0].value = inputsDeValidacion[0].value;
-                inputsDeMontos[1].value = inputsDeValidacion[1].value;
-            });
-            document.querySelector(".suguiente").addEventListener("click", function () {
-                document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-
-                //referencia
-                document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            });
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-            //apartir de aqui empiezan los casos que son 3 formas
-            pagosDeConfirmacion3.innerText = "";
-        } else if (divisa.checked && transferencia.checked && efectivo.checked && pagoMovil.checked == false) {
-            tresFormas("Efectivo", "Divisas", "Transferencia");
-            btnValidacion.addEventListener("click", function () {
-                pagosDeConfirmacion.innerText = "";
-                pagosDeConfirmacion2.innerText = "";
-                pagosDeConfirmacion3.innerText = "";
-                pagosDeConfirmacion.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                pagosDeConfirmacion2.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                pagosDeConfirmacion3.innerText = "Transferencia: " + inputsDeValidacion[2].value + " BS";
-                console.log(inputsDeValidacion[2].value);
-                document.getElementById("p_divisas").innerText =
-                    "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
-
-                inputsDeMontos[0].value = inputsDeValidacion[0].value;
-                inputsDeMontos[1].value = inputsDeValidacion[1].value;
-                inputsDeMontos[2].value = inputsDeValidacion[2].value;
-
-                //referencia
-                document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            });
-            document.querySelector(".suguiente").addEventListener("click", function () {
-                document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-            });
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-            pagosDeConfirmacion3.innerText = "";
-        } else if (divisa.checked && pagoMovil.checked && efectivo.checked && transferencia.checked == false) {
-            tresFormas("Efectivo", "Divisas", "Pago Movil");
-            btnValidacion.addEventListener("click", function () {
-                pagosDeConfirmacion.innerText = "";
-                pagosDeConfirmacion2.innerText = "";
-                pagosDeConfirmacion3.innerText = "";
-                pagosDeConfirmacion.innerText = "Divisas En Bs: " + inputsDeValidacion[1].value;
-                pagosDeConfirmacion2.innerText = "Efectivo: " + inputsDeValidacion[0].value + " BS";
-                pagosDeConfirmacion3.innerText = "Pago Movil: " + inputsDeValidacion[2].value + " BS";
-                console.log(inputsDeValidacion[2].value);
-                document.getElementById("p_divisas").innerText =
-                    "Equivalente en Divisas: " + document.getElementById("equivalenteDivisas").value + " $";
-
-                inputsDeMontos[0].value = inputsDeValidacion[0].value;
-                inputsDeMontos[1].value = inputsDeValidacion[1].value;
-                inputsDeMontos[2].value = inputsDeValidacion[2].value;
-
-                //referencia
-                document.getElementById("referencia_confirmar").value = document.getElementById("referencia").value;
-                document.getElementById("referencia_confirmar").setAttribute("name", "referencia");
-            });
-            document.querySelector(".suguiente").addEventListener("click", function () {
-                document.getElementById("p_referencia").innerText = "Ref " + referencia.value;
-            });
-            document.getElementById("equivalenteDivisas").classList.remove("d-none");
-        } else {
-            btnTipoDePago.classList.add("d-none");
-        }
+      btnTipoDePago.classList.add("d-none");
     }
+  }
 }
 //aqui se ejecuta el checkeo de los tipos de  llamando a la funcion checkearTiposDePago
 tiposDePago.forEach((tipoDePago) => {
-    tipoDePago.addEventListener("change", function () {
-        checkearTiposDePago(tiposDePago);
-    });
+  tipoDePago.addEventListener("change", function () {
+    checkearTiposDePago(tiposDePago);
+  });
 });
 //boton del modal de validacion
 const btnValidacion = document.getElementById("btnValidacion");
 const alertaVariosMetodos = document.querySelector(".alerta-varios-metodos");
 //funcion para validar el precio de las 2 formas en el modal de validacion
 function dosPrecios(precio1, precio2) {
-    let precioInt1 = parseFloat(precio1.value) || 0;
-    let precioInt2 = parseFloat(precio2.value) || 0;
-    let total = parseFloat(document.getElementById("totalFactura").value) || 0;
-    let totalInput = precioInt1 + precioInt2;
-    if (totalInput == total && precioInt1 > 0 && precioInt2 > 0) {
-        if (!referencia.classList.contains("d-none")) {
-            if (referencia.value.length == 4) {
-                alertaVariosMetodos.classList.add("d-none");
-                btnValidacion.classList.remove("d-none");
-            }
-        } else {
-            alertaVariosMetodos.classList.add("d-none");
-            btnValidacion.classList.remove("d-none");
-        }
+  let precioInt1 = parseFloat(precio1.value) || 0;
+  let precioInt2 = parseFloat(precio2.value) || 0;
+  let total = parseFloat(document.getElementById("totalFactura").value) || 0;
+  let totalInput = precioInt1 + precioInt2;
+  if (totalInput == total && precioInt1 > 0 && precioInt2 > 0) {
+    if (!referencia.classList.contains("d-none")) {
+      if (referencia.value.length == 4) {
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      }
     } else {
-        alertaVariosMetodos.classList.remove("d-none");
-        btnValidacion.classList.add("d-none");
+      alertaVariosMetodos.classList.add("d-none");
+      btnValidacion.classList.remove("d-none");
     }
+  } else {
+    alertaVariosMetodos.classList.remove("d-none");
+    btnValidacion.classList.add("d-none");
+  }
 }
 //funcion para validar el precio de las 3 formas en el modal de validacion
 function tresPrecios(precio1, precio2, precio3) {
-    let precioInt1 = parseFloat(precio1.value) || 0;
-    let precioInt2 = parseFloat(precio2.value) || 0;
-    let precioInt3 = parseFloat(precio3.value) || 0;
-    let total = parseFloat(document.getElementById("totalFactura").value) || 0;
-    let totalInput = precioInt1 + precioInt2 + precioInt3;
-    if (totalInput == total && precioInt1 > 0 && precioInt2 > 0 && precioInt3 > 0) {
-        if (!referencia.classList.contains("d-none")) {
-            if (referencia.value.length == 4) {
-                alertaVariosMetodos.classList.add("d-none");
-                btnValidacion.classList.remove("d-none");
-            }
-        } else {
-            alertaVariosMetodos.classList.add("d-none");
-            btnValidacion.classList.remove("d-none");
-        }
+  let precioInt1 = parseFloat(precio1.value) || 0;
+  let precioInt2 = parseFloat(precio2.value) || 0;
+  let precioInt3 = parseFloat(precio3.value) || 0;
+  let total = parseFloat(document.getElementById("totalFactura").value) || 0;
+  let totalInput = precioInt1 + precioInt2 + precioInt3;
+  if (
+    totalInput == total &&
+    precioInt1 > 0 &&
+    precioInt2 > 0 &&
+    precioInt3 > 0
+  ) {
+    if (!referencia.classList.contains("d-none")) {
+      if (referencia.value.length == 4) {
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      }
     } else {
-        alertaVariosMetodos.classList.remove("d-none");
-        btnValidacion.classList.add("d-none");
+      alertaVariosMetodos.classList.add("d-none");
+      btnValidacion.classList.remove("d-none");
     }
+  } else {
+    alertaVariosMetodos.classList.remove("d-none");
+    btnValidacion.classList.add("d-none");
+  }
 }
 
 //aqui se usa un evento para validar los precios de los input de el modal de validacion
 inputsDeValidacion.forEach((inputDeValidacion) => {
-    inputDeValidacion.addEventListener("keyup", function () {
-        let totalInput = parseFloat(document.getElementById("input-validacion-pago").value);
-        if (inputsDeValidacion[2].classList.contains("d-none")) {
-            dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
-            let inputUno = inputsDeValidacion[0].value == "" ? 0 : inputsDeValidacion[0].value;
-            let inputDos = inputsDeValidacion[1].value == "" ? 0 : inputsDeValidacion[1].value;
-            let total = parseFloat(totalInput) - (parseFloat(inputUno) + parseFloat(inputDos));
-            total = parseFloat(total.toFixed(2));
+  inputDeValidacion.addEventListener("keyup", function () {
+    let totalInput = parseFloat(
+      document.getElementById("input-validacion-pago").value,
+    );
+    if (inputsDeValidacion[2].classList.contains("d-none")) {
+      dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+      let inputUno =
+        inputsDeValidacion[0].value == "" ? 0 : inputsDeValidacion[0].value;
+      let inputDos =
+        inputsDeValidacion[1].value == "" ? 0 : inputsDeValidacion[1].value;
+      let total =
+        parseFloat(totalInput) - (parseFloat(inputUno) + parseFloat(inputDos));
+      total = parseFloat(total.toFixed(2));
 
-            //validacion de el modal de validacion...
+      //validacion de el modal de validacion...
 
-            document.getElementById("total-modal-validacion").innerText = `Total a pagar ${total} BS`;
-        } else {
-            tresPrecios(inputsDeValidacion[0], inputsDeValidacion[1], inputsDeValidacion[2]);
-            let inputUno = inputsDeValidacion[0].value == "" ? 0 : inputsDeValidacion[0].value;
-            let inputDos = inputsDeValidacion[1].value == "" ? 0 : inputsDeValidacion[1].value;
-            let inputTres = inputsDeValidacion[2].value == "" ? 0 : inputsDeValidacion[2].value;
-            let total = parseFloat(totalInput) - (parseFloat(inputUno) + parseFloat(inputDos) + parseFloat(inputTres));
-            total = parseFloat(total.toFixed(2));
+      document.getElementById("total-modal-validacion").innerText =
+        `Total a pagar ${total} BS`;
+    } else {
+      tresPrecios(
+        inputsDeValidacion[0],
+        inputsDeValidacion[1],
+        inputsDeValidacion[2],
+      );
+      let inputUno =
+        inputsDeValidacion[0].value == "" ? 0 : inputsDeValidacion[0].value;
+      let inputDos =
+        inputsDeValidacion[1].value == "" ? 0 : inputsDeValidacion[1].value;
+      let inputTres =
+        inputsDeValidacion[2].value == "" ? 0 : inputsDeValidacion[2].value;
+      let total =
+        parseFloat(totalInput) -
+        (parseFloat(inputUno) + parseFloat(inputDos) + parseFloat(inputTres));
+      total = parseFloat(total.toFixed(2));
 
-            //validacion de el modal de validacion...
+      //validacion de el modal de validacion...
 
-            document.getElementById("total-modal-validacion").innerText = `Total a pagar ${total} BS`;
-        }
-    });
+      document.getElementById("total-modal-validacion").innerText =
+        `Total a pagar ${total} BS`;
+    }
+  });
 });
 
 referencia.addEventListener("keyup", function () {
-    console.log(referencia);
-    if (inputsDeValidacion[1].classList.contains("d-none")) {
-        if (referencia.value.length == 4) {
-            alertaVariosMetodos.classList.add("d-none");
-            btnValidacion.classList.remove("d-none");
-        } else {
-            alertaVariosMetodos.classList.remove("d-none");
-            btnValidacion.classList.add("d-none");
-        }
+  console.log(referencia);
+  if (inputsDeValidacion[1].classList.contains("d-none")) {
+    if (referencia.value.length == 4) {
+      alertaVariosMetodos.classList.add("d-none");
+      btnValidacion.classList.remove("d-none");
     } else {
-        if (inputsDeValidacion[2].classList.contains("d-none")) {
-            dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
-        } else {
-            tresPrecios(inputsDeValidacion[0], inputsDeValidacion[1], inputsDeValidacion[2]);
-        }
+      alertaVariosMetodos.classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
     }
+  } else {
+    if (inputsDeValidacion[2].classList.contains("d-none")) {
+      dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+    } else {
+      tresPrecios(
+        inputsDeValidacion[0],
+        inputsDeValidacion[1],
+        inputsDeValidacion[2],
+      );
+    }
+  }
 });
 
 //funcion para llenar el modal de confirmacion
 function mostrarConfirmacion() {
-    const tbodyDelModal = document.getElementById("tbodyDelModal");
-    // Aqui pondremos el codigo HTML que tendra el body de la tabla
-    let html = ``;
-    let htmlInsumos = "";
-    data.forEach((element, index) => {
-        let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBS = element["precio"] * storedDolar;
-        montoBS = montoBS.toFixed(2);
+  const tbodyDelModal = document.getElementById("tbodyDelModal");
+  // Aqui pondremos el codigo HTML que tendra el body de la tabla
+  let html = ``;
+  let htmlInsumos = "";
+  data.forEach((element, index) => {
+    let storedDolar = localStorage.getItem("valorDelDolar");
+    let montoBS = element["precio"] * storedDolar;
+    montoBS = montoBS.toFixed(2);
 
-        html += `
+    html += `
         <tr>
         <td><input type="hidden" name="servicios[]" value="${element["id_servicioMedico"]}">
         <div class="fw-bolder">S/E:</div>${element["servicio"]}</td>
@@ -1412,14 +1711,14 @@ function mostrarConfirmacion() {
         <td><input type="hidden" name="precioServicio[]" value="${montoBS}"><div class="fw-bolder">PRECIO:</div> ${montoBS} BS</td>
         <td>
         <tr>`;
-    });
+  });
 
-    dataInsumo.forEach((element, index) => {
-        let storedDolar = localStorage.getItem("valorDelDolar");
-        let montoBS = element["precio"] * storedDolar;
-        montoBS = montoBS.toFixed(2);
+  dataInsumo.forEach((element, index) => {
+    let storedDolar = localStorage.getItem("valorDelDolar");
+    let montoBS = element["precio"] * storedDolar;
+    montoBS = montoBS.toFixed(2);
 
-        htmlInsumos += `
+    htmlInsumos += `
         <tr>
         <td><input type="hidden" name="insumos[]" value="${element["id_insumo"]}">
         <div class="fw-bolder">INSUMO:</div>${element["nombreInsumo"]}</td>
@@ -1427,39 +1726,43 @@ function mostrarConfirmacion() {
         <td><div class="fw-bolder">MEDIDA:</div>${element["medidaInsumo"]}</td>
 
         <td><input type="hidden" name="cantidad[]" value="${element["cantidad"]}"><div class="fw-bolder">CANTIDAD</div> ${
-            element["cantidad"]
+          element["cantidad"]
         }</td>
         <td><input type="hidden" name="precioInsumo[]" value="${montoBS}"><div class="fw-bolder">PRECIO:</div> ${montoBS} BS</td>
         <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${(element["subTotal"] * storedDolar).toFixed(2)} BS</td>
         <td>
         <tr>`;
-    });
-    // Recorremos la lista de arriba y añadimos los datos a la variable html
-    tbodyDelModal.innerHTML = html;
-    if (window.location.href.includes("idH")) {
-        console.log("si es hospitalizacion");
-    } else {
-        document.getElementById("tbodyInsumos").innerHTML = htmlInsumos;
-    }
+  });
+  // Recorremos la lista de arriba y añadimos los datos a la variable html
+  tbodyDelModal.innerHTML = html;
+  if (window.location.href.includes("idH")) {
+    console.log("si es hospitalizacion");
+  } else {
+    document.getElementById("tbodyInsumos").innerHTML = htmlInsumos;
+  }
 
-    console.log(data);
+  console.log(data);
 }
 
 let urlActual = window.location.href;
 
 if (urlActual.includes("facturaCita")) {
-    // document.getElementById("desplegarAyudafactura").classList.add("d-none");
-    // document
-    //   .getElementById("desplegarAyudafacturaIDCita")
-    //   .classList.remove("d-none");
-    // document
-    //   .getElementById("cuerpoTablaConfirmaroperacion")
-    //   .classList.remove("d-none");
+  // document.getElementById("desplegarAyudafactura").classList.add("d-none");
+  // document
+  //   .getElementById("desplegarAyudafacturaIDCita")
+  //   .classList.remove("d-none");
+  // document
+  //   .getElementById("cuerpoTablaConfirmaroperacion")
+  //   .classList.remove("d-none");
 } else if (urlActual.includes("idH")) {
 } else {
-    document.getElementById("desplegarAyudafactura").classList.remove("d-none");
-    document.getElementById("desplegarAyudafacturaIDCita").classList.add("d-none");
-    document.getElementById("cuerpoTablaConfirmaroperacion").classList.add("d-none");
+  document.getElementById("desplegarAyudafactura").classList.remove("d-none");
+  document
+    .getElementById("desplegarAyudafacturaIDCita")
+    .classList.add("d-none");
+  document
+    .getElementById("cuerpoTablaConfirmaroperacion")
+    .classList.add("d-none");
 }
 
 // .............. buscador de insumos en la vista ................
@@ -1468,46 +1771,46 @@ const notifi = document.querySelector(".notifiI");
 
 // buscador de insumos
 function buscarI() {
-    let contadorI = 0;
-    let contadorINo = 0;
+  let contadorI = 0;
+  let contadorINo = 0;
 
-    // selecciono todos los tr de la tabla
-    const filas = document.querySelectorAll(".tbodyI tr");
-    // recolecto el nombre del input
-    let nombreInpI = inputBuscI.value;
+  // selecciono todos los tr de la tabla
+  const filas = document.querySelectorAll(".tbodyI tr");
+  // recolecto el nombre del input
+  let nombreInpI = inputBuscI.value;
+  // se convierte en minúscula
+  nombreInpI = nombreInpI.toLowerCase();
+
+  // recorro las filas de la tabla
+  filas.forEach((fila) => {
+    // cuenta los síntomas que existen.
+    contadorI = contadorI + 1;
+
+    let nombre = fila.children[1].innerText;
+    let lote = fila.children[4].innerText;
     // se convierte en minúscula
-    nombreInpI = nombreInpI.toLowerCase();
-
-    // recorro las filas de la tabla
-    filas.forEach((fila) => {
-        // cuenta los síntomas que existen.
-        contadorI = contadorI + 1;
-
-        let nombre = fila.children[1].innerText;
-        let lote = fila.children[4].innerText;
-        // se convierte en minúscula
-        nombre = nombre.toLowerCase();
-        // verifico si el nombre existe
-        if (nombre.includes(nombreInpI)) {
-            fila.classList.remove("d-none");
-            notifi.classList.add("d-none");
-        } else if (lote.includes(nombreInpI)) {
-            fila.classList.remove("d-none");
-            notifi.classList.add("d-none");
-        } else {
-            fila.classList.add("d-none");
-            // cuenta las veces que no encuentra un síntoma
-            contadorINo = contadorINo + 1;
-        }
-    });
-
-    // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes
-    if (contadorI === contadorINo) {
-        // muestra el texto.
-        notifi.classList.remove("d-none");
+    nombre = nombre.toLowerCase();
+    // verifico si el nombre existe
+    if (nombre.includes(nombreInpI)) {
+      fila.classList.remove("d-none");
+      notifi.classList.add("d-none");
+    } else if (lote.includes(nombreInpI)) {
+      fila.classList.remove("d-none");
+      notifi.classList.add("d-none");
+    } else {
+      fila.classList.add("d-none");
+      // cuenta las veces que no encuentra un síntoma
+      contadorINo = contadorINo + 1;
     }
+  });
+
+  // verifica, si el contador de hospitalizaciones existentes es igual a las hospitalizaciones no existentes
+  if (contadorI === contadorINo) {
+    // muestra el texto.
+    notifi.classList.remove("d-none");
+  }
 }
 
 inputBuscI.addEventListener("keyup", () => {
-    buscarI();
+  buscarI();
 });

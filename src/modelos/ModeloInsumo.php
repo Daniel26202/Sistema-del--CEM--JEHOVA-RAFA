@@ -46,8 +46,7 @@ class ModeloInsumo extends ModelBase
 			else   $sql = "SELECT *,sum(inv.cantidad_disponible) as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible > 0  GROUP BY inv.id_insumo ";
 
 			$this->setSQL($sql);
-			$consulta = $this->read();
-			return $consulta;
+			return $this->read();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}

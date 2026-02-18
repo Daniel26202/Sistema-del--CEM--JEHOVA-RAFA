@@ -63,6 +63,11 @@ class Rutas
                         if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerBitacora") {
                             call_user_func($metodo, $parametro ?? []);
                         } else {
+                            if(empty($_SESSION['id_rol'])){
+                                session_destroy();
+                                header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
+                                return;
+                            }
                             $permiso = $this->equivalentes[$metodo] ?? $metodo;
 
                             $this->modelo->setIdRol($_SESSION['id_rol']);

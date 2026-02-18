@@ -13,14 +13,28 @@ function factura($parametro)
 {
 
 	$modeloInsumos = new ModeloInsumo();
-	$modeloFactura = new ModeloFactura();
 
 	$ayuda = "btnayudaFactura";
 	$insumos = $modeloInsumos->insumos();
-	$tiposDePagos = $modeloFactura->mostrarTiposDePagos();
-	$todosLosInsumos = $modeloFactura->selectTodosLosInsumos();
-	$extras = $modeloFactura->mostrarServicios();
 	require_once './src/vistas/vistaFactura/factura.php';
+}
+
+function mostrarServicios()
+{
+	$modeloFactura  = new ModeloFactura();
+	echo json_encode($modeloFactura->mostrarServicios());
+}
+
+function mostrarInsumos()
+{
+	$modeloFactura  = new ModeloFactura();
+	echo json_encode($modeloFactura->selectTodosLosInsumos());
+}
+
+function mostrarMetodosDePago()
+{
+	$modeloFactura = new ModeloFactura();
+	echo json_encode($modeloFactura->mostrarTiposDePagos());
 }
 
 function facturaCita($parametro)
@@ -75,22 +89,44 @@ function comprobante($parametro)
 // //aqui mostramos al paciente de la base de datos
 function mostrarPaciente()
 {
-	$modeloFactura = new ModeloFactura();
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+	try {
+		$modeloFactura = new ModeloFactura();
+		$modeloFactura->setCedula($_POST['cedula']);
 
-	$respuesta = $modeloFactura->buscar($_POST['cedula']);
-	$arrayName = array();
-	array_push($arrayName, $respuesta);
-	echo json_encode($arrayName);
+		$respuesta = $modeloFactura->buscar();
+		$arrayName = array();
+		array_push($arrayName, $respuesta);
+		echo json_encode($arrayName);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
 function mostrarCliente()
 {
-	$modeloFactura = new ModeloFactura();
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+	try {
+		$modeloFactura = new ModeloFactura();
+		$modeloFactura->setCedula($_POST['cedula']);
 
-	$respuesta = $modeloFactura->buscarCliente($_POST['cedula']);
-	$arrayName = array();
-	array_push($arrayName, $respuesta);
-	echo json_encode($arrayName);
+		$respuesta = $modeloFactura->buscarCliente();
+		echo json_encode($respuesta);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
 //aqui mostramos al paciente si tiene cita
@@ -107,6 +143,10 @@ function mostrarPacienteConCita()
 //metodo para guaradar Factura
 function guardarFactura()
 {
+	if (empty($_POST)) {
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
+	}
+
 	$modeloFactura = new ModeloFactura();
 	$modeloBitacora = new ModeloBitacora();
 	$modeloCliente = new ModeloCliente();
@@ -117,46 +157,48 @@ function guardarFactura()
 
 	// $doctor = isset($_POST["doctores"]) ? $_POST["doctores"] : false;
 
+	// echo $_POST['cantidad'];
 	$modeloFactura->setFecha(date("Y-m-d"));
 	$modeloFactura->setServicios(isset($_POST["servicios"]) ? $_POST["servicios"] : []);
 	$modeloFactura->setInsumos(isset($_POST["insumos"]) ? $_POST["insumos"] : []);
-	$modeloFactura->setCatidad(isset($_POST["cantidad"]) ? $_POST["cantidad"] : false);
+	$modeloFactura->setCatidad(isset($_POST["cantidad"]) ? $_POST["cantidad"] : []);
 	$modeloFactura->setPrecioInsumo(isset($_POST["precioInsumo"]) ? $_POST["precioInsumo"] : []);
 	$modeloFactura->setPrecioServicio(isset($_POST["precioServicio"]) ? $_POST["precioServicio"] : []);
 	$modeloCliente->setIdCliente(isset($_POST["id_cliente"]) ? $_POST["id_cliente"] : false);
-	$modeloPaciente->setIdPaciente(isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : false);
-	$modeloCita->setIdCita(isset($_POST["id_cita"]) ? $_POST["id_cita"] : null);
-	$modeloFactura->setReferencia(isset($_POST["referencia"]) ? $_POST["referencia"] : null);
-	$modeloHospitalizacion->setIdH(isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null);
-	$modeloFactura->setTotal($_POST["total"]);
-	$modeloFactura->setFormasDePago($_POST["formasDePago"]);
-	$modeloFactura->setMontosPago($_POST["montosDePago"]);
+	$modeloCita->setIdCita(isset($_POST["id_cita"]) ? $_POST["id_cita"] : 0);
+	$modeloFactura->setReferencia(isset($_POST["referencia"]) ? $_POST["referencia"] : 0);
+	// $modeloHospitalizacion->setIdH(isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : null);
+	// $modeloFactura->setTotal($_POST["total"]);
+	// $modeloFactura->setFormasDePago($_POST["formasDePago"]);
+	// $modeloFactura->setMontosPago($_POST["montosDePago"]);
 
-	if (!$modeloCliente->getIdCliente()) {
-		$coincidencia = $modeloFactura->coincidenciaPacienteCliente();
-		if ($coincidencia) {
-			$id_cliente = $coincidencia;
-		} else {
-			$guardado = $modeloFactura->guardarCliente();
-			$id_cliente = $guardado[1];
-		}
-		$modeloCliente->setIdCliente($id_cliente);
-	}
+	print_r($_POST);
+
+	// if (!$modeloCliente->getIdCliente()) {
+	// 	$coincidencia = $modeloFactura->coincidenciaPacienteCliente();
+	// 	if ($coincidencia) {
+	// 		$id_cliente = $coincidencia;
+	// 	} else {
+	// 		$guardado = $modeloFactura->guardarCliente();
+	// 		$id_cliente = $guardado[1];
+	// 	}
+	// 	$modeloCliente->setIdCliente($id_cliente);
+	// }
 
 
-	$guardar = $modeloFactura->insertaFactura();
+	// $guardar = $modeloFactura->insertaFactura();
 
-	if ($guardar) {
-		//Guardar la bitacora
-		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-		$modeloBitacora->setActividad("Ha facturado servicios y/o insumos");
-		$modeloBitacora->setTabla("factura");
-		$modeloBitacora->insertarBitacora();
+	// if ($guardar) {
+	// 	//Guardar la bitacora
+	// 	$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+	// 	$modeloBitacora->setActividad("Ha facturado servicios y/o insumos");
+	// 	$modeloBitacora->setTabla("factura");
+	// 	$modeloBitacora->insertarBitacora();
 
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $modeloFactura->getIdFactura());
-	} else {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
-	}
+	// 	header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $modeloFactura->getIdFactura());
+	// } else {
+	// 	header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
+	// }
 }
 
 

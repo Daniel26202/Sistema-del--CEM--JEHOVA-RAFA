@@ -1,4 +1,5 @@
 <?php require_once './src/vistas/head/head.php'; ?>
+<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/styleAdicional.css">
 
 
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
@@ -13,10 +14,6 @@
         </svg>
     </h5>
 
-    <!-- alertas -->
-
-    <?php require_once "./src/vistas/alerts.php" ?>
-
     <div id="alert-servicio" class="d-none uk-alert-danger comentario  comentarioRed me-4 fw-bolder  text-center" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <p class="pe-2">El Servicio Medico no se puede registrar ya que se encuentra en la factura por favor</p>
@@ -24,59 +21,43 @@
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto " style="width: 98%; ">
 
+        <h5 id="data-cliente"></h5>
 
-        <div id="cajaBotones" class="d-flex justify-content-end ">
+
+        <div id="cajaBotones" class="d-flex justify-content-between">
 
             <!-- <div class="bg-info"> -->
-            <button id="botonAgregar"
-                class="d-none btn btn-primary btn-agregar-factura ms-4 mt-4 btn-agregar-ins-ser btn-factura"
-                data-bs-toggle="modal" data-bs-target="#modal-agregar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
-                    class="bi bi-plus-circle" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path
-                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                </svg>
-                Agregar Servicio
-            </button>
 
-            <button class="d-none btn ms-4 mt-4  btn-agregar-ins-ser btn-primary btn-agregar-factura btn-factura"
-                data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos" id="btnInsumos">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
-                    class="bi bi-capsule" viewBox="0 0 16 16">
-                    <path
-                        d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                </svg>
-                Agregar Insumos
-            </button>
+            <div class=" d-flex align-items-end ">
+                <button id="botonAgregar"
+                    class="d-none caja-btn-margin btn btn-modals"
+                    data-bs-toggle="modal" data-bs-target="#modal-agregar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                        class="bi bi-plus-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path
+                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                    </svg>
+                    Agregar Servicio
+                </button>
+                <div class="p-2"></div>
+                <button class="d-none caja-btn-margin btn btn-modals"
+                    data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos" id="btnInsumos">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                        class="bi bi-capsule" viewBox="0 0 16 16">
+                        <path
+                            d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+                    </svg>
+                    Agregar Insumos
+                </button>
+            </div>
             <!-- </div> -->
 
 
             <div class="d-flex">
-                <div class="mt-4">
-                    <h5 id="datosPaciente" class="mt-3 text-uppercase" style="font-size: 15px; "></h5>
-                    <div class="toast-container position-fixed top-0 end-5 p-3">
-                        <div class="toast contenido" role="alert" aria-live="assertive" aria-atomic="true" autohide: false
-                            id="myToastfactura">
-                            <div class="toast-body">
-                                <h5 class="fw-bold  text-center">Haz click en registrar para guardar un
-                                    nuevo paciente</h5>
-                                <div class="mt-2 pt-2 border-top">
-                                    <a href="#">
-                                        <button type="button" class="btn btn-agregarcita-modal" uk-toggle="target: #modal-examplePaciente" data-bs-dismiss="toast"> Registrar </button>
-                                    </a>
-
-                                    <button type="button" class="uk-button me-3 uk-button-default btn-cerrar-modal"
-                                        data-bs-dismiss="toast">Cancelar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
 
                 <div class="mt-4 validar caja-buscador-paciente-factura" id="form-buscador">
-                    <form id="form-buscador-factura" class="d-flex justify-content-end" autocomplete="off">
+                    <form id="form-buscador-cliente" class=" d-flex justify-content-end" autocomplete="off">
                         <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
                             placeholder="Ingrese Cedula" required maxlength="8" minlength="6"
                             oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
@@ -137,10 +118,10 @@
             <div class="d-flex justify-content-between align-items-center mt-5">
                 <div id="btnVaciar-Siguiente">
                     <div class="d-flex" id="cajaVaciarTotalSiguiente">
-                        <button class="btn btn-agregarConsulta ms-3 me-4 btn-escondidos"
+                        <button class="d-none btn btn-agregarConsulta ms-3 me-4 btn-escondidos"
                             id="vaciarTabla">VACIAR</button>
-                        <button id="btnSiguiente" class="btn btn-agregarConsulta btn-escondidos"
-                            data-bs-toggle="modal" data-bs-target="#modal-cliente">SIGUIENTE</button>
+                        <button id="btnSiguiente" class="d-none btn btn-agregarConsulta btn-escondidos"
+                            data-bs-toggle="modal" data-bs-target="#modal-pago">SIGUIENTE</button>
                     </div>
                 </div>
                 <div id="totalFac">
@@ -162,5 +143,5 @@
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="module" src="<?= $urlBase ?>../src/assets/factura.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/f.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaFactura.js"></script>

@@ -39,6 +39,12 @@ function returnPatologiasPaciente()
 	echo json_encode($modeloPatologia->mostrarPatologias());
 }
 
+function returnPatologiasPacienteId()
+{
+	$modeloPatologia = new ModeloControl();
+	echo json_encode($modeloPatologia->mostrarPatologiaC());
+}
+
 function returnDoctores()
 {
 	$modeloControl = new ModeloControl();
@@ -70,8 +76,6 @@ function mostrarControlPacientesJS($datos)
 	$modeloSintomas = new ModeloSintomas();
 	$modeloPatologia = new ModeloPatologia();
 	$modeloInicio = new ModeloInicio();
-	$modeloPacientes = new ModeloPacientes();
-	$modeloUsuarios = new ModeloUsuarios();
 
 	// verifica si la sesión esta activa.
 	if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -85,7 +89,7 @@ function mostrarControlPacientesJS($datos)
 
 	$sintomas = $modeloSintomas->selects();
 	// patologías
-	$modeloPatologia->setCedulaPac($cedula);
+	$modeloControl->setCedula($cedula);
 	$registradosP = $modeloPatologia->buscarPatologiaPaciente();
 	$patologias = $modeloPatologia->mostrarPatologias();
 
@@ -100,7 +104,7 @@ function mostrarControlPacientesJS($datos)
 		// uno es doctor
 	} else if ($validacionCargo == 1) {
 		// devuelve solo los datos del paciente atendido por el mismo doctor que inicio sesión(Usuario)
-		$modeloUsuarios->setIdUsuario($idUsuario);
+		$modeloControl->setIdUsuario($idUsuario);
 		$modeloControl->setCedula($cedula);
 		$respuesta = $modeloControl->mostrarControlPacienteU();
 
@@ -124,66 +128,79 @@ function mostrarPacienteJS($datos)
 
 function insertarControl()
 {
-	$modeloControl = new ModeloControl();
-	$modeloUsuarios = new ModeloUsuarios();
-	$modeloPacientes = new ModeloPacientes();
-	$modeloBitacora = new ModeloBitacora();
-
-	$patologia = (isset($_POST["patologias"])) ? $_POST["patologias"] : false;
-
-
-	$modeloUsuarios->setIdUsuario($_POST["doctor"]);
-	$modeloPacientes->setIdPaciente($_POST["id_paciente"]);
-
-	$modeloControl->setHistorial($_POST["historial"]);
-	$modeloControl->setDiagnostico($_POST["diagnostico"]);
-	$modeloControl->setSintomas($_POST["sintomas"]);
-	$modeloControl->setIndicaciones($_POST["indicaciones"]);
-	$modeloControl->setFechaRegreso($_POST["fechaRegreso"]);
-	$modeloControl->setPatologias($patologia);
-	$modeloControl->setNota($_POST["nota"]);
-	$modeloControl->setSeveridad($_POST["severidad"]);
-
-	$registro = $modeloControl->insertControl();
-
-	if (is_array($registro) && $registro[0] === "exito") {
-		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-		$modeloBitacora->setTabla("control");
-		$modeloBitacora->setActividad("Ha Insertado un nuevo  control medico");
-		$modeloBitacora->insertarBitacora();
-
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
-	} else {
+	if (empty($_POST)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $registro]);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	try {
+		$modeloControl = new ModeloControl();
+		$modeloBitacora = new ModeloBitacora();
+
+		$patologia = (isset($_POST["patologias"])) ? $_POST["patologias"] : [null];
+		$sintoma = (isset($_POST["sintomas"])) ? $_POST["sintomas"] : [null];
+
+
+
+		$modeloControl->setIdUsuario($_POST["doctor"]);
+		$modeloControl->setIdPaciente($_POST["id_paciente"]);
+
+		$modeloControl->setHistorial($_POST["historial"]);
+		$modeloControl->setDiagnostico($_POST["diagnostico"]);
+		$modeloControl->setSintomas($sintoma);
+		$modeloControl->setIndicaciones($_POST["indicaciones"]);
+		$modeloControl->setFechaRegreso($_POST["fechaDeCita"]);
+		$modeloControl->setPatologias($patologia);
+		$modeloControl->setNota($_POST["nota"]);
+		$modeloControl->setSeveridad($_POST["severidad"]);
+
+		$registro = $modeloControl->insertControl();
+
+		if (is_array($registro) && $registro[0] === "exito") {
+			$modeloBitacora->setId_usuario($_POST['id_usuario']);
+			$modeloBitacora->setTabla("control");
+			$modeloBitacora->setActividad("Ha Insertado un nuevo  control medico");
+			$modeloBitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $registro]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
 
-// function eliminarControl($datos)
-// {
-
-// 	$id_control = $datos[0];
-// 	$this->modelo->eliminarControl($id_control);
-// 	echo json_encode($_GET);
-// }
-
 function editarControl()
 {
-	if ($_POST) {
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	try {
 		$modeloControl = new ModeloControl();
 		$modeloBitacora = new ModeloBitacora();
 
-		$modeloControl->setHistorial($_POST["historialE"]);
-		$modeloControl->setIdControl($_POST["id_control"]);
+		$modeloControl->setIdControl($_POST['id_control']);
+		$modeloControl->setHistorial($_POST["historial"]);
+		$modeloControl->setDiagnostico($_POST["diagnostico"]);
 		$modeloControl->setIndicaciones($_POST["indicaciones"]);
-		$modeloControl->setFechaRegreso($_POST["fechaRegreso"]);
-		$modeloControl->setNota($_POST["nota_e"]);
+		$modeloControl->setFechaRegreso($_POST["fechaDeCita"]);
+		$modeloControl->setNota($_POST["nota"]);
+		$modeloControl->setSeveridad($_POST["severidad"]);
+
 		$editar = $modeloControl->editarControl();
 
 		if (is_array($editar) && $editar[0] === "exito") {
 
-			$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+			$modeloBitacora->setId_usuario($_POST['id_usuario']);
 			$modeloBitacora->setTabla("control");
 			$modeloBitacora->setActividad("Ha modificado un  control medico");
 			$modeloBitacora->insertarBitacora();
@@ -194,28 +211,61 @@ function editarControl()
 			echo json_encode(['ok' => false, 'error' => $editar]);
 			exit;
 		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
-// mostrar síntomas de pacientes
+// mostrar síntomas de pacientes del ultimo  control
 function mostrarSP($datos)
 {
 	$modeloControl = new ModeloControl();
+	$cedula = $datos[0];
 
-	$idC = $datos[0];
-	$modeloControl->setIdControl($idC);
+	$modeloControl->setCedula($cedula);
+	$modeloControl->setIdControl($modeloControl->mostrarUltimoIdControl());
+
+	$respuestaS = $modeloControl->mostrarSintomasPaId();
+	echo json_encode($respuestaS);
+}
+// mostrar patología de pacientes del ultimo  control
+function mostrarPP($datos)
+{
+	$modeloControl = new ModeloControl();
+	$cedula = $datos[0];
+
+	$modeloControl->setCedula($cedula);
+
+	$id_control = ($modeloControl->mostrarUltimoIdControl() != null) ? $modeloControl->mostrarUltimoIdControl() : 0;
+	$modeloControl->setIdControl($id_control);
+
+	$registradosP = $modeloControl->mostrarPatologiaP();
+	echo json_encode($registradosP);
+}
+
+
+// mostrar síntomas de pacientes 
+function mostrarSPAll($datos)
+{
+	$modeloControl = new ModeloControl();
+	$modeloControl->setIdControl($datos[0]);
+
 	$respuestaS = $modeloControl->mostrarSintomasPaId();
 	echo json_encode($respuestaS);
 }
 // mostrar patología de pacientes
-function mostrarPP($datos)
+function mostrarPPAll($datos)
 {
 	$modeloControl = new ModeloControl();
+	$modeloControl->setIdControl($datos[0]);
 
-	$idC = $datos[0];
-	$modeloControl->setIdControl($idC);
 	$registradosP = $modeloControl->mostrarPatologiaP();
 	echo json_encode($registradosP);
 }
+
+
+
 // mostrar patología de paciente por id del paciente
 function mostrarPIdP($datos)
 {
@@ -230,41 +280,75 @@ function mostrarPIdP($datos)
 // síntomas 
 function eliminarSintoma($datos)
 {
-	$modeloSintomas = new ModeloSintomas();
-	$modeloBitacora = new ModeloBitacora();
 
-	$id_sintomas = $datos[0];
-	$id_usuario_bitacora = $datos[1];
-	$modeloSintomas->setIdSintomas($id_sintomas);
-	$eliminar = $modeloSintomas->eliminarL();
-	if ($eliminar) {
-		// Guardar la bitacora
-		$modeloBitacora->setId_usuario($id_usuario_bitacora);
-		$modeloBitacora->setTabla("sintomas");
-		$modeloBitacora->setActividad("Ha eliminado un  sintoma");
-		$modeloBitacora->insertarBitacora();
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/eliminar");
-	} else {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/errorSistem");
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+
+	try {
+		$modeloSintomas = new ModeloSintomas();
+		$modeloBitacora = new ModeloBitacora();
+
+
+		$id_sintomas = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		$modeloSintomas->setIdSintomas($id_sintomas);
+		$eliminar = $modeloSintomas->eliminarL();
+
+		if (is_array($eliminar) && $eliminar[0] === "exito") {
+			// Guardar la bitacora
+			$modeloBitacora->setId_usuario($id_usuario_bitacora);
+			$modeloBitacora->setTabla("sintomas");
+			$modeloBitacora->setActividad("Ha eliminado un  sintoma");
+			$modeloBitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminar]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
 
 function agregarSintoma()
 {
-	$modeloSintomas = new ModeloSintomas();
-	$modeloBitacora = new ModeloBitacora();
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
 
-	$modeloSintomas->setNombre($_POST["nombre"]);
-	$insertar = $modeloSintomas->insertar();
-	if ($insertar) {
-		// Guardar la bitacora
-		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-		$modeloBitacora->setTabla("sintomas");
-		$modeloBitacora->setActividad("Ha Insertado un  sintoma");
-		$modeloBitacora->insertarBitacora();
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/registro");
-	} else {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Control/control/errorSistem");
+	try {
+		$modeloSintomas = new ModeloSintomas();
+		$modeloBitacora = new ModeloBitacora();
+
+		$modeloSintomas->setNombre($_POST["nombre"]);
+		$insertar = $modeloSintomas->insertar();
+		if ($insertar) {
+			// Guardar la bitacora
+			$modeloBitacora->setId_usuario($_POST['id_usuario']);
+			$modeloBitacora->setTabla("sintomas");
+			$modeloBitacora->setActividad("Ha Insertado un  sintoma");
+			$modeloBitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insertar]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
 
