@@ -1,7 +1,4 @@
-import {
-  chulitoYX,
-  inicializarValidacionFormulario,
-} from "./expresionesModulares.js";
+import { chulitoYX, inicializarValidacionFormulario } from "./expresionesModulares.js";
 
 //function generica for execute petiticon ajax
 export const executePetition = async (url, method, data = null) => {
@@ -182,74 +179,62 @@ export const convertirHora = (horaMilitar) => {
     return `${hora12}:${minutosFormateados} ${sufijo}`;
 };
 
-export const searchElements = (
-  text,
-  className,
-  elements,
-  pMensaje = null,
-  parentSelector = "",
-) => {
-  const searchTerm = text.trim().toLowerCase();
-  let coincidenciasTotales = 0;
+export const searchElements = (text, className, elements, pMensaje = null, parentSelector = "") => {
+    const searchTerm = text.trim().toLowerCase();
+    let coincidenciasTotales = 0;
 
-  elements.forEach((ele) => {
-    // Definimos el objetivo (el padre o el elemento mismo)
-    const target = parentSelector !== "" ? ele.closest(parentSelector) : ele;
-    if (!target) return;
+    elements.forEach((ele) => {
+        // Definimos el objetivo (el padre o el elemento mismo)
+        const target = parentSelector !== "" ? ele.closest(parentSelector) : ele;
+        if (!target) return;
 
-    // Caso: Buscador vacío
-    if (searchTerm === "") {
-      target.classList.remove(className);
-      return;
+        // Caso: Buscador vacío
+        if (searchTerm === "") {
+            target.classList.remove(className);
+            return;
+        }
+
+        // Lógica de búsqueda
+        const content = (ele.innerText + ele.textContent + (ele.value || "")).toLowerCase();
+        const matches = content.includes(searchTerm);
+
+        if (matches) {
+            target.classList.remove(className);
+            coincidenciasTotales++;
+        } else {
+            target.classList.add(className);
+        }
+    });
+
+    // --- Lógica del mensaje de "No resultados" ---
+    if (pMensaje) {
+        console.log("Total coincidencias:", coincidenciasTotales);
+        if (searchTerm !== "" && coincidenciasTotales === 0) {
+            console.log(`No se encontraron resultados para "${text}"`);
+            pMensaje.innerText = `No se encontraron resultados para "${text}"`;
+        } else {
+            console.log(`Resultados encontrados para "${text}": ${coincidenciasTotales}`);
+            pMensaje.innerText = "";
+        }
+        console.log("Mensaje actualizado en el DOM:", pMensaje.innerText);
     }
-
-    // Lógica de búsqueda
-    const content = (
-      ele.innerText +
-      ele.textContent +
-      (ele.value || "")
-    ).toLowerCase();
-    const matches = content.includes(searchTerm);
-
-    if (matches) {
-      target.classList.remove(className);
-      coincidenciasTotales++;
-    } else {
-      target.classList.add(className);
-    }
-  });
-
-  // --- Lógica del mensaje de "No resultados" ---
-  if (pMensaje) {
-    console.log("Total coincidencias:", coincidenciasTotales);
-    if (searchTerm !== "" && coincidenciasTotales === 0) {
-      console.log(`No se encontraron resultados para "${text}"`);
-      pMensaje.innerText = `No se encontraron resultados para "${text}"`;
-    } else {
-      console.log(
-        `Resultados encontrados para "${text}": ${coincidenciasTotales}`,
-      );
-      pMensaje.innerText = "";
-    }
-    console.log("Mensaje actualizado en el DOM:", pMensaje.innerText);
-  }
 };
 
 //funcion generica para un cardTable
-export const initCardData =()=> {
-  const tableWrappers = document.querySelectorAll('[data-render="card-table"]');
+export const initCardData = () => {
+    const tableWrappers = document.querySelectorAll('[data-render="card-table"]');
 
-  tableWrappers.forEach((container, idx) => {
-    // Evitar que se inicialice dos veces el mismo contenedor
-    if (container.dataset.initialized === "true") return;
-    container.dataset.initialized = "true";
+    tableWrappers.forEach((container, idx) => {
+        // Evitar que se inicialice dos veces el mismo contenedor
+        if (container.dataset.initialized === "true") return;
+        container.dataset.initialized = "true";
 
-    const id = `dt-card-${idx || Math.floor(Math.random() * 1000)}`;
-    container.setAttribute("id", id);
-    container.classList.add("card-table-container");
+        const id = `dt-card-${idx || Math.floor(Math.random() * 1000)}`;
+        container.setAttribute("id", id);
+        container.classList.add("card-table-container");
 
-    // Estructura Superior (Basada en tu diseño de Datatable)
-    const topBar = `
+        // Estructura Superior (Basada en tu diseño de Datatable)
+        const topBar = `
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="d-flex align-items-center gap-2">
                     <select class="form-select dt-entries-select w-auto" id="select-${idx}">
@@ -269,58 +254,52 @@ export const initCardData =()=> {
                 </div>
             </div>`;
 
-    // Estructura Inferior
-    const bottomBar = `
+        // Estructura Inferior
+        const bottomBar = `
             <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top text-muted small">
                 <div>Showing <span class="dt-start">0</span> to <span class="dt-end">0</span> of <span class="dt-total">0</span> entries</div>
                 <nav><ul class="pagination pagination-sm mb-0"></ul></nav>
             </div>`;
 
-    container.insertAdjacentHTML("afterbegin", topBar);
-    container.insertAdjacentHTML("beforeend", bottomBar);
+        container.insertAdjacentHTML("afterbegin", topBar);
+        container.insertAdjacentHTML("beforeend", bottomBar);
 
-    const firstItem = container.querySelector(".list > div");
-    if (!firstItem) return;
+        const firstItem = container.querySelector(".list > div");
+        if (!firstItem) return;
 
-    // Detección automática de campos con clase terminada en '-search'
-    const searchFields = Array.from(
-      firstItem.querySelectorAll('[class*="-search"]'),
-    ).map((el) => el.classList[0]);
+        // Detección automática de campos con clase terminada en '-search'
+        const searchFields = Array.from(firstItem.querySelectorAll('[class*="-search"]')).map((el) => el.classList[0]);
 
-    const cardList = new List(id, {
-      valueNames: searchFields,
-      page: 12,
-      pagination: {
-        innerWindow: 1,
-        left: 1,
-        right: 1,
-        paginationClass: "pagination",
-      },
-    });
+        const cardList = new List(id, {
+            valueNames: searchFields,
+            page: 12,
+            pagination: {
+                innerWindow: 1,
+                left: 1,
+                right: 1,
+                paginationClass: "pagination",
+            },
+        });
 
-    const updateMeta = () => {
-      const total = cardList.matchingItems.length;
-      const visible = cardList.visibleItems.length;
-      const currentPos = cardList.i;
-      container.querySelector(".dt-total").innerText = total;
-      container.querySelector(".dt-start").innerText =
-        total > 0 ? currentPos : 0;
-      container.querySelector(".dt-end").innerText = Math.min(
-        currentPos + visible - 1,
-        total,
-      );
-    };
+        const updateMeta = () => {
+            const total = cardList.matchingItems.length;
+            const visible = cardList.visibleItems.length;
+            const currentPos = cardList.i;
+            container.querySelector(".dt-total").innerText = total;
+            container.querySelector(".dt-start").innerText = total > 0 ? currentPos : 0;
+            container.querySelector(".dt-end").innerText = Math.min(currentPos + visible - 1, total);
+        };
 
-    const selectEl = document.getElementById(`select-${idx}`);
-    if (selectEl) {
-      selectEl.addEventListener("change", function () {
-        cardList.page = parseInt(this.value);
-        cardList.update();
+        const selectEl = document.getElementById(`select-${idx}`);
+        if (selectEl) {
+            selectEl.addEventListener("change", function () {
+                cardList.page = parseInt(this.value);
+                cardList.update();
+                updateMeta();
+            });
+        }
+
+        cardList.on("updated", updateMeta);
         updateMeta();
-      });
-    }
-
-    cardList.on("updated", updateMeta);
-    updateMeta();
-  });
-}
+    });
+};
