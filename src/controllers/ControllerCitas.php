@@ -7,11 +7,6 @@ use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
 
-
-
-
-
-
 function mostrarDataPaciente($datos)
 {
 	try {

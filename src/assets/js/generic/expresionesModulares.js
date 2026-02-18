@@ -33,6 +33,19 @@ const expresiones = {
     marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
     medida: { expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/, mensajeError: "" },
     genero: { expresion: /^"Masculino"|"Femenino"$/, mensajeError: "El Genero debe ser Masculino o Femenino" },
+    tipo: { expresion: /^(Cita|Examenes)$/, mensajeError: "Debe seleccionar un tipo de servicio válido" },
+    id_categoria: {
+        expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
+        mensajeError: "Tiene que ser una categoría existente",
+    },
+    precioD: {
+        expresion: /^\d+(?:[.,]\d+)?$/,
+        mensajeError: "El precio debe ser un número válido, puede incluir decimales con punto o coma",
+    },
+    precioBs: {
+        expresion: /^\d+(?:[.,]\d+)?$/,
+        mensajeError: "El precio debe ser un número válido, puede incluir decimales con punto o coma",
+    },
 };
 
 // Nueva función para validar fechas no futuras ni pasadas
@@ -118,7 +131,6 @@ function validarSelect(select, arrayElementos, campos, formulario) {
     }
 }
 
-
 export function inicializarValidacionFormulario(formulario) {
     const campos = {};
 
@@ -141,30 +153,24 @@ export function inicializarValidacionFormulario(formulario) {
 
     // Retornar función verificadora
     return function verificarFormulario() {
-
         let longitudInputs = inputs.length;
-        let inputsTrue = []
+        let inputsTrue = [];
 
-        inputs.forEach(input => {
-            if (input.parentElement.classList.contains('valido')) inputsTrue.push(true);    
+        inputs.forEach((input) => {
+            if (input.parentElement.classList.contains("valido")) inputsTrue.push(true);
         });
 
         if (inputsTrue.length == longitudInputs) {
-            return true
-
-        } else return false
-        
+            return true;
+        } else return false;
     };
 }
-
-
 
 // Función que valida los campos cada vez que ocurre un evento en un input
 function validarFormulario(e, formulario, campos) {
     const input = e.target;
     const nameInput = input.name;
     let mensajeError = expresiones[input.name].mensajeError;
-
     let campoCustom = input.closest(".campo-custom");
 
     let pError = campoCustom.querySelector("p");
@@ -190,7 +196,6 @@ function validarFormulario(e, formulario, campos) {
 }
 // Función que valida los campos cada vez que se abra el modal de editar
 
-
 // Función que valida un campo individual
 function validarCampo(expresion, input, campo, campos, formulario, arrayElementos, mensajeError) {
     let { pError, check, error } = arrayElementos;
@@ -209,7 +214,6 @@ function validarCampo(expresion, input, campo, campos, formulario, arrayElemento
         chulitoYX(check, error, "inValido");
         campos[campo] = false;
     }
-
 }
 
 // Función que actualiza el aspecto visual del input según su estado de validación

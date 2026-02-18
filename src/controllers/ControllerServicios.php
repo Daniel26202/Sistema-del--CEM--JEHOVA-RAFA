@@ -8,35 +8,53 @@ use App\modelos\ModeloPermisos;
 
 function servicios($parametro)
 {
-	$modeloBitacora = new ModeloBitacora();
-	$modeloCategoria = new ModeloCategoria();
-
 	$ayuda = "btnayudaServicioMedico";
-	$doctores = returnObjectClass()['consulta']->mostrarDoctores();
-	$todasLasCategorias = returnObjectClass()['categoria']->seleccionarTodasLasCategoria();
 	require_once "./src/vistas/vistaServicios/vistaServiciosMedicos.php";
-}
-
-function categoriasAjax()
-{
-	echo json_encode(returnObjectClass()['categoria']->seleccionarCategoria());
-}
-
-function serviciosAjax()
-{
-	echo json_encode(returnObjectClass()['consulta']->mostrarServicios());
 }
 
 function papeleraServicio($parametro)
 {
-	$doctores = returnObjectClass()['consulta']->mostrarDoctores();
-	$categorias = returnObjectClass()['categoria']->seleccionarCategoria();
 	require_once "./src/vistas/vistaServicios/vistaServiciosPapelera.php";
+}
+
+function datosServiciosPapelera($parametro)
+{
+	$modeloServicios = new ModeloServicios();
+	$modeloCategoria = new ModeloCategoria();
+
+	$doctores = $modeloServicios->mostrarDoctores();
+	$categorias = $modeloCategoria->seleccionarCategoria();
+	echo json_encode(["doctores" => $doctores, "categorias" => $categorias]);
+}
+
+function datosServicios($parametro)
+{
+	$modeloServicios = new ModeloServicios();
+	$modeloCategoria = new ModeloCategoria();
+
+	$doctores = $modeloServicios->mostrarDoctores();
+	$todasLasCategorias = $modeloCategoria->seleccionarTodasLasCategoria();
+	echo json_encode(["doctores" => $doctores, "categorias" => $todasLasCategorias]);
+}
+
+function categoriasAjax()
+{
+	$modeloCategoria = new ModeloCategoria();
+
+	echo json_encode($modeloCategoria->seleccionarCategoria());
+}
+
+function serviciosAjax()
+{
+	$modeloServicios = new ModeloServicios();
+
+	echo json_encode($modeloServicios->mostrarServicios());
 }
 
 function papeleraAjax()
 {
-	echo json_encode(returnObjectClass()['consulta']->mostrarServiciosDes());
+	$modeloServicios = new ModeloServicios();
+	echo json_encode($modeloServicios->mostrarServiciosDes());
 }
 
 function guardar()
@@ -48,19 +66,18 @@ function guardar()
 		exit;
 	}
 
-	$servicio = returnObjectClass()['consulta'];
-	$categoria = returnObjectClass()['categoria'];
-	$bitacora = returnObjectClass()['bitacora'];
+	$servicio = new ModeloServicios();
+	$bitacora = new ModeloBitacora();
 	// 1. Quitar separadores de miles
-	$valor = str_replace('.', '', $_POST['precioD']);
+	$valor =  $_POST['precioD'];
 
 	// 2. Cambiar coma decimal por punto
-	$valor = str_replace(',', '.', $valor);
+	// $valor = str_replace(',', '.', $valor);
 
 	// 3. Convertir a float
 	$numero = (float)$valor;
 
-	$categoria->setIdCategoria($_POST['id_categoria']);
+	$servicio->setIdCategoria($_POST['id_categoria']);
 	$servicio->setPrecio($numero);
 	$servicio->setTipo($_POST['tipo']);
 
@@ -89,8 +106,8 @@ function eliminar($datos)
 		exit;
 	}
 
-	$servicio = returnObjectClass()['consulta'];
-	$bitacora = returnObjectClass()['bitacora'];
+	$servicio = new ModeloServicios();
+	$bitacora = new ModeloBitacora();
 
 	$servicio->setIdServicioMedico($datos[0]);
 
@@ -119,8 +136,8 @@ function restablecer($datos)
 		exit;
 	}
 
-	$servicio = returnObjectClass()['consulta'];
-	$bitacora = returnObjectClass()['bitacora'];
+	$servicio = new ModeloServicios();
+	$bitacora = new ModeloBitacora();
 
 	$servicio->setIdServicioMedico($datos[0]);
 
@@ -147,19 +164,16 @@ function editar()
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
+	$servicio = new ModeloServicios();
+	$bitacora = new ModeloBitacora();
 
-	$servicio = returnObjectClass()['consulta'];
-	$bitacora = returnObjectClass()['bitacora'];
-
-	// 1. Quitar separadores de miles
+	//Quitar separadores de miles
 	$valor = str_replace('.', '', $_POST['precioD']);
-
-	// 2. Cambiar coma decimal por punto
+	//Cambiar coma decimal por punto
 	$valor = str_replace(',', '.', $valor);
-
-	// 3. Convertir a float
 	$numero = (float)$valor;
 
+	$servicio->setIdCategoria($_POST['id_categoria']);
 	$servicio->setIdServicioMedico($_POST['id_servicioMedico']);
 	$servicio->setPrecio($numero);
 	$servicio->setTipo($_POST['tipo']);
@@ -182,8 +196,11 @@ function editar()
 
 function mostrarEspecialidad($datos)
 {
-	returnObjectClass()['doctores']->setIdDoctor($datos[0]);
-	echo json_encode(returnObjectClass()['consulta']->especialidadDoctor());
+	$modeloServicio = new ModeloServicios();
+	$modeloDoctor = new ModeloDoctores();
+
+	$modeloDoctor->setIdDoctor($datos[0]);
+	echo json_encode($modeloServicio->especialidadDoctor());
 }
 
 
@@ -194,18 +211,18 @@ function registrarCategoria()
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
-	
-	$categoria = returnObjectClass()['categoria'];
-	$bitacora = returnObjectClass()['bitacora'];
+
+	$categoria = new ModeloCategoria();
+	$bitacora = new ModeloBitacora();
 
 	$categoria->setNombre($_POST["nombre"]);
 
-	$bitacora->setId_usuario($_POST['id_usuario']);
-	$bitacora->setActividad("Ha Insertado una nueva  categoria");
-	$bitacora->setTabla("Categoria de servicio medico");
 	$insercion = $categoria->registrarCategoria();
-
+	
 	if (is_array($insercion) && $insercion[0] === "exito") {
+		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setActividad("Ha Insertado una nueva  categoria");
+		$bitacora->setTabla("Categoria de servicio medico");
 		$bitacora->insertarBitacora();
 		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 	} else {
@@ -222,8 +239,8 @@ function eliminarCategoria($datos)
 		exit;
 	}
 
-	$categoria = returnObjectClass()['categoria'];
-	$bitacora = returnObjectClass()['bitacora'];
+	$categoria = new ModeloCategoria();
+	$bitacora = new ModeloBitacora();
 
 	$categoria->setIdCategoria($datos[0]);
 
