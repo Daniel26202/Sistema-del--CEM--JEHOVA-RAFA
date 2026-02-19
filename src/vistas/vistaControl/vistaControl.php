@@ -91,6 +91,6 @@
 <?php require_once './src/vistas/vistaControl/modalesSintomas.php'; ?>
 <?php require_once './src/vistas/vistaPacientes/modalAgregarPaciente.php'; ?>
 
-<script type="module" src="<?= $urlBase ?>../src/assets/js/ajax/c.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/ajax/control.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaControl.js"></script>
 <?php require_once './src/vistas/head/footer.php';  ?>

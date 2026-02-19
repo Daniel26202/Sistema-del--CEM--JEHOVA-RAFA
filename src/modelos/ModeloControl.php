@@ -27,7 +27,7 @@ class ModeloControl extends ModelBase
 	public function consultarPacientes()
 	{
 		// me traigo todos los datos de los paciente, que tengan control medico, y los agrupo por cédula (con GROUP BY) para que no salgan varias veces 
-		$sql = "SELECT * FROM paciente  WHERE estado = 'ACT' GROUP BY cedula";
+		$sql = "SELECT * FROM paciente p inner join control c on c.id_paciente = p.id_paciente WHERE p.estado = 'ACT' GROUP BY cedula";
 		$this->setSQL($sql);
 		return  $this->read();
 	}
