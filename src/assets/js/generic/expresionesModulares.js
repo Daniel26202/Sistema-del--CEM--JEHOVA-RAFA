@@ -15,7 +15,7 @@ const expresiones = {
   usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
   correo: {
     expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-    mensajeError: "",
+    mensajeError: "El correo debe tener un formato válido (ej: ejemplo@dominio.com)",
   },
   password: {
     expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
@@ -79,6 +79,10 @@ const expresiones = {
     mensajeError: "El proveedor esta mal selecionado",
   },
 
+  id_insumo: {
+    expresion: /^\d+$/,
+    mensajeError: "El insumo esta mal selecionado",
+  },
   indicaciones: {
     expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
     mensajeError: "Debe iniciar con mayúscula y tener al menos 8 caracteres.",
@@ -97,6 +101,11 @@ const expresiones = {
   imagen: {
     expresion: /([A-Za-z0-9._-]\s?)+\.(jpg|JPG|PNG|png|jpeg|JPEG)+/,
     mensajeError: "La imagen debe ser .jpg, .png o .jpeg",
+  },
+
+  rif: {
+    expresion: /^[VJEGP]\-[0-9]{8,9}$/,
+    mensajeError: "El RIF debe tener el formato V-12345678 o J-12345678",
   },
 };
 

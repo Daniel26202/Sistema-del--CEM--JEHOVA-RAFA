@@ -8,7 +8,7 @@ use App\modelos\ModeloBase;
 class ModeloEntrada extends ModelBase
 {
 
-	private $fechaDeVencimiento, $fechaDeIngreso, $precio, $cantidadDisponible, $idEntrada, $cantidadEntrante;
+	private $fechaDeVencimiento, $fechaDeIngreso, $precio, $cantidadDisponible, $idEntrada, $cantidadEntrante, $idProveedor, $lote, $idInsumo;
 
 	public function __construct($dbSystem = true)
 	{
@@ -65,28 +65,28 @@ class ModeloEntrada extends ModelBase
 		try {
 			// $this->conexion->beginTransaction();
 
-
-
-			$sql = "call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)";
-			$this->setSQL($sql);
 			$data = [
-				'lote' => $this->returnObjetModel()['modeloInsumos']->getLote(),
-				'id_proveedor' => $this->returnObjetModel()["modeloProveedores"]->getIdProveedor(),
+				'lote' => $this->getLote(),
+				'id_proveedor' => $this->getIdProveedor(),
 				'fechaDeIngreso' => $this->getFechaDeIngreso(),
-				'id_insumo' => $this->returnObjetModel()['modeloInsumos']->getIdInsumo(),
+				'id_insumo' => $this->getIdInsumo(),
 				'fechaDeVencimiento' => $this->getFechaDeVencimiento(),
 				'precio' => $this->getPrecio(),
 				'cantidad_disponible' => $this->getCantidadDisponible(),
 			];
-			$id = $this->storedProcedure($data, false, true);
 
-			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			$sql = "call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)";
 			$this->setSQL($sql);
-			$consulta = $this->search(["id_entrada" => $id], false);
+			
+			$this->storedProcedure($data, false, true);
+
+			// $sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			// $this->setSQL($sql);
+			// $consulta = $this->search(["id_entrada" => $id], false);
 
 			// $this->conexion->commit();
 
-			return ["exito"];
+			return ["exito",$data];
 		} catch (\Exception $e) {
 			// $this->conexion->rollBack();
 			return $e->getMessage();
@@ -107,7 +107,7 @@ class ModeloEntrada extends ModelBase
 
 			$sql = "UPDATE entrada SET estado='DES' WHERE id_entrada =:id";
 			$this->setSQL($sql);
-			$consulta = $this->update([""], $this->getIdEntrada());
+			$this->update_logic($this->getIdEntrada());
 
 			// $this->conexion->commit();
 			return ["exito"];
@@ -141,7 +141,7 @@ class ModeloEntrada extends ModelBase
 
 			$sql = "UPDATE entrada SET numero_de_lote=:lote WHERE id_entrada=:id";
 			$this->setSQL($sql);
-			$data = ['lote' => $this->returnObjetModel()['modeloInsumos']->getLote()];
+			$data = ['lote' => $this->getLote()];
 			$this->update($data, $this->getIdEntrada());
 
 			// $this->conexion->commit();
@@ -268,6 +268,42 @@ class ModeloEntrada extends ModelBase
 	}
 
 
+	public function setIdProveedor($idProveedor)
+	{
+		if (!preg_match("/^[0-9]+$/", $idProveedor)) {
+			throw new \InvalidArgumentException("El ID del proveedor debe ser un número entero positivo.");
+		}
+
+		if ((int)$idProveedor <= 0) {
+			throw new \InvalidArgumentException("El ID del proveedor debe ser mayor que cero.");
+		}
+
+		$this->idProveedor = (int)$idProveedor;
+	}
+
+	public function setLote($lote)
+	{
+
+		if (!preg_match('/^[0-9]+$/', $lote)) {
+			throw new \InvalidArgumentException('El lote no es válido.');
+		}
+		if ((int)$lote <= 0) {
+			throw new \InvalidArgumentException('El lote debe ser mayor que cero.');
+		}
+		$this->lote = $lote;
+	}
+
+	public function setIdInsumo($idInsumo)
+	{
+
+		if (!preg_match('/^[0-9]+$/', $idInsumo)) {
+			throw new \InvalidArgumentException('El ID no es válido.');
+		}
+		if ((int)$idInsumo <= 0) {
+			throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+		}
+		$this->idInsumo = $idInsumo;
+	}
 
 
 	// getter
@@ -298,5 +334,20 @@ class ModeloEntrada extends ModelBase
 	public function getFechaDeVencimiento()
 	{
 		return $this->fechaDeVencimiento;
+	}
+
+	public function getIdProveedor()
+	{
+		return $this->idProveedor;
+	}
+
+	public function getLote()
+	{
+		return $this->lote;
+	}
+
+	public function getIdInsumo()
+	{
+		return $this->idInsumo;
 	}
 }

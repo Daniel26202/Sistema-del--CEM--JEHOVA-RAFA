@@ -186,59 +186,56 @@ class ModeloInsumo extends ModelBase
 	public function editar()
 	{
 		try {
-
-			$sql = "SELECT * from insumo where id_insumo=:id_insumo";
+			// Buscar datos actuales para obtener el nombre de la imagen vieja
+			$sql = "SELECT imagen FROM insumo WHERE id_insumo = :id_insumo";
 			$this->setSQL($sql);
-			$validar = $this->search(["id_insumo" => $this->getIdInsumo()]);
-			if ($validar == []) {
-				throw new \Exception("Fallo el id no existe");
+			$datos = $this->search(["id_insumo" => $this->getIdInsumo()], false);
+
+			if (!$datos) {
+				throw new \Exception("Fallo: el id no existe");
 			}
 
-			$sql = "SELECT * FROM insumo WHERE id_insumo =:id_insumo";
-			$this->setSQL($sql);
-			$datos = $this->search(["id_insumo" => $this->getIdInsumo()],false);
+			$imagenNueva = $this->getImagen(); // El nombre generado en el controlador
+			$imagenAntigua = $datos["imagen"];
 
-			$imagen_antigua = $datos["imagen"];
-			$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen_antigua;
-			$imagen = $this->getImagenAntigua();
-			// echo "<img src=".$imagen_antigua.">";
-			$imagen_editar = isset($imagen) ? $imagen : "";
-
-			if ($imagen_editar != "") {
-
-				if (file_exists($rutaImagenAntigua)) {
+			if ($imagenNueva != null) {
+				// SI HAY IMAGEN NUEVA: Borrar la vieja y actualizar campo
+				$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagenAntigua;
+				if (!empty($imagenAntigua) && file_exists($rutaImagenAntigua)) {
 					unlink($rutaImagenAntigua);
 				}
-				$sql = "UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo, marca =:marca, medida =:medida WHERE id_insumo =:id";
-				$this->setSQL($sql);
-				$data = [
-					"imagen" => $this->getImagen(),
-					"nombre" => $this->getNombre(),
-					"descripcion" => $this->getDescripcion(),
-					"stockMinimo" => $this->getStockMinimo(),
-					"marca" => $this->getMarca(),
-					"medida" => $this->getMedida()
-				];
-				$consulta2 = $this->update($data, $this->getIdInsumo());
-			} else {
-				$data = [
-					"nombre" => $this->getNombre(),
-					"descripcion" => $this->getDescripcion(),
-					"stockMinimo" => $this->getStockMinimo(),
-					"marca" => $this->getMarca(),
-					"medida" => $this->getMedida()
-				];
 
-				$sql = "UPDATE insumo SET nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id";
-				$this->setSQL($sql);
-				$consulta3 = $this->update($data, $this->getIdInsumo());
+				$sql = "UPDATE insumo SET imagen = :imagen, nombre = :nombre, descripcion = :descripcion, 
+                    stockMinimo = :stockMinimo, marca = :marca, medida = :medida WHERE id_insumo = :id";
+				$data = [
+					"imagen" => $imagenNueva,
+					"nombre" => $this->getNombre(),
+					"descripcion" => $this->getDescripcion(),
+					"stockMinimo" => $this->getStockMinimo(),
+					"marca" => $this->getMarca(),
+					"medida" => $this->getMedida()
+				];
+			} else {
+				// NO HAY IMAGEN NUEVA: Mantener la actual (no tocar el campo imagen)
+				$sql = "UPDATE insumo SET nombre = :nombre, descripcion = :descripcion, 
+                    stockMinimo = :stockMinimo, marca = :marca, medida = :medida WHERE id_insumo = :id";
+				$data = [
+					"nombre" => $this->getNombre(),
+					"descripcion" => $this->getDescripcion(),
+					"stockMinimo" => $this->getStockMinimo(),
+					"marca" => $this->getMarca(),
+					"medida" => $this->getMedida()
+				];
 			}
-			return ["exito",$imagen_editar];
+
+			$this->setSQL($sql);
+			$this->update($data, $this->getIdInsumo());
+
+			return ["exito", $imagenNueva];
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
-
 
 	//gestionar salidas
 	public function todasLasEntradas()

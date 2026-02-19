@@ -138,19 +138,19 @@ function guardarInsumo()
 
 		$insercion = $modeloInsumo->insertarInsumos();
 
-		// if (is_array($insercion) && $insercion[0] === "exito") {
+		if (is_array($insercion) && $insercion[0] === "exito") {
 
-		// 	$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
-		// 	$bitacora->setTabla("insumo");
-		// 	$bitacora->setActividad("Ha Insertado un insumo");
-		// 	$bitacora->insertarBitacora();
+			$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+			$bitacora->setTabla("insumo");
+			$bitacora->setActividad("Ha Insertado un insumo");
+			$bitacora->insertarBitacora();
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito','data'=>$insercion]);
-		// } else {
-		// 	http_response_code(409);
-		// 	echo json_encode(['ok' => false, 'error' => $insercion]);
-		// 	exit;
-		// }
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
+		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -187,11 +187,22 @@ function editar()
 	$modeloInsumo = new ModeloInsumo();
 	$bitacora = new ModeloBitacora();
 
-	$tiempo = new DateTime();
-	$fecha = date("Y-m-d");
-	$imagen_editar = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
-	$imagen_temporal = $_FILES['imagen']['tmp_name'];
-	// move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_editar);
+	// 1. Verificar si se subió una imagen nueva analizando el error de $_FILES
+	$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
+
+	if ($hayNuevaImagen) {
+		$tiempo = new DateTime();
+		$fecha = date("Y-m-d");
+		$nombreImagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+		$rutaTemporal = $_FILES['imagen']['tmp_name'];
+
+		// Mover el archivo físicamente
+		move_uploaded_file($rutaTemporal, "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $nombreImagen);
+
+		$modeloInsumo->setImagen($nombreImagen);
+	} else {
+		$modeloInsumo->setImagen(null); // Indicamos que no hay cambio de imagen
+	}
 
 	$modeloInsumo->setIdInsumo($_POST["idInsumoOculto"]);
 	$modeloInsumo->setNombre($_POST["nombre"]);
@@ -199,10 +210,6 @@ function editar()
 	$modeloInsumo->setStockMinimo($_POST["stockMinimo"]);
 	$modeloInsumo->setMarca($_POST["marca"]);
 	$modeloInsumo->setMedida($_POST["medida"]);
-	$modeloInsumo->setImagenAntigua($_FILES["imagen"]);
-	$modeloInsumo->setImagen($imagen_editar);
-
-	// echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data'=>$_POST]);
 
 	$edicion = $modeloInsumo->editar();
 

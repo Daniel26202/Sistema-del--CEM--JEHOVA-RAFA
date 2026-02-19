@@ -1,112 +1,155 @@
-<!--MODAL REGISTRAR-->
-
-<div id="modal-exampleProveedores" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-        <!-- Boton que cierra el modal -->
-        <a href="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                <path
-                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-            </svg>
-        </a>
-
-        <div class="d-flex align-items-center">
-            <div>
-                <img src="<?= $urlBase ?>../src/assets/img/proveedor(2).png" width="25" height="25" uk-svg class="me-2 mb-3">
+<!-- agregar Entrada -->
+<div class="modal fade" id="exampleModalProveedor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content tamaño-modal">
+            <div class="modal-header">
+                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelProveedor">Registrar Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="">
-                <p class="uk-modal-title fs-5">
-                    Registrar Proveedor
-                </p>
-            </div>
+            <form class=" form-validable" id="formProveedor">
 
+                <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
+                <input type="hidden" name="id_proveedor" id="id_proveedor">
+                <input type="hidden" name="id_rif_oculto" id="id_rif_oculto">
+
+
+
+                <div class="modal-body">
+
+
+
+                    <label class="label-custom">Nombre / Razon social</label>
+                    <div class="campo-custom">
+
+                        <div class="input-custom ">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-seam azul" viewBox="0 0 16 16">
+                                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"></path>
+                                </svg>
+                            </span>
+                            <input class="form-control txt-custom input-validar inputs" name="nombre" type="text" placeholder="Nombre / Razon social">
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg p-error-validaciones d-none fw-bold">El número de lote debe tener entre 4 y 10 dígitos</p>
+
+                    </div>
+
+
+
+                    <label class="label-custom">Rif</label>
+                    <div class="campo-custom">
+
+                        <div class="input-custom ">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-seam azul" viewBox="0 0 16 16">
+                                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"></path>
+                                </svg>
+                            </span>
+                            <input class="form-control txt-custom input-validar inputs" name="rif" type="text" placeholder="Rif">
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg p-error-validaciones d-none fw-bold">El número de lote debe tener entre 4 y 10 dígitos</p>
+
+                    </div>
+
+
+
+                    <label class="label-custom">Telefono</label>
+                    <div class="campo-custom">
+
+                        <div class="input-custom ">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-seam azul" viewBox="0 0 16 16">
+                                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"></path>
+                                </svg>
+                            </span>
+                            <input class="form-control txt-custom input-validar inputs" name="telefono" type="text" placeholder="Telefono">
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg p-error-validaciones d-none fw-bold">El número de lote debe tener entre 4 y 10 dígitos</p>
+
+                    </div>
+
+
+
+
+                    <label class="label-custom">Correo</label>
+                    <div class="campo-custom">
+
+                        <div class="input-custom ">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-seam azul" viewBox="0 0 16 16">
+                                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"></path>
+                                </svg>
+                            </span>
+                            <input class="form-control txt-custom input-validar inputs" name="correo" type="text" placeholder="correo">
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg p-error-validaciones d-none fw-bold">El número de lote debe tener entre 4 y 10 dígitos</p>
+
+                    </div>
+
+
+
+
+
+                    <label class="label-custom">Direccion</label>
+                    <div class="campo-custom">
+
+                        <div class="input-custom ">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-seam azul" viewBox="0 0 16 16">
+                                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"></path>
+                                </svg>
+                            </span>
+                            <input class="form-control txt-custom input-validar inputs" name="direccion" type="text" placeholder="direccion">
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg p-error-validaciones d-none fw-bold">El número de lote debe tener entre 4 y 10 dígitos</p>
+
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-modals" id="botonModalProveedor">Agregar</button>
+                    </div>
+            </form>
         </div>
-
-        <form class="form-modal" id="modalAgregarProveedor" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/insertar">
-
-            <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
-
-            <div class="alert alert-danger d-none text-center" id="alerta-guardar-proveedor" style="font-size: 10px;">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</div>
-
-            <div class="input-group flex-nowrap">
-                <span class="input-modal mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        class="bi bi-person-fill azul" viewBox="0 0 16 16">
-                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                    </svg>
-                </span>
-                <input class="form-control input-modal input-disabled" type="text" name="nombre" placeholder="Nombre/Razon Social" required>
-            </div>
-
-            <p class="p-error-nombre p-error-validaciones  d-none">El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres</p>
-
-            <div class="input-group flex-nowrap">
-                <span class="input-modal mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        class="bi bi-credit-card-2-front-fill azul" viewBox="0 0 16 16">
-                        <path
-                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2.5 1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-2zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
-                    </svg>
-                </span>
-                <input class="form-control input-modal input-disabled" type="text" name="rif" placeholder="Rif" required>
-            </div>
-
-            <p class="p-error-rif p-error-validaciones  d-none">El RIF debe comenzar con V, J, E, G o P, seguido de un guion y 8 o 9 dígitos.</p>
-
-
-            <div class="input-group flex-nowrap">
-                <span class="input-modal mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        class="bi bi-telephone-fill azul" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
-                    </svg>
-                </span>
-                <input class="form-control input-modal input-disabled" type="text" name="telefono"
-                    placeholder="Telefono" required>
-            </div>
-
-            <p class="p-error-telefono p-error-validaciones  d-none">El Telefono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0212 o 24"</p>
-
-
-            <div class="input-group flex-nowrap">
-                <span class="input-modal mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        class="bi bi-credit-card-2-front-fill azul" viewBox="0 0 16 16">
-                        <path
-                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2.5 1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-2zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
-                    </svg>
-                </span>
-                <input class="form-control input-modal input-disabled" type="text" name="email" placeholder="Email" required>
-            </div>
-
-            <p class="p-error-email p-error-validaciones  d-none">El correo debe contener letras , numeros y/o caracteres especiales y que contenga el @</p>
-
-
-            <div class="input-group flex-nowrap">
-                <span class="input-modal mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        class="bi bi-credit-card-2-front-fill azul" viewBox="0 0 16 16">
-                        <path
-                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2.5 1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-2zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm3 0a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
-                    </svg>
-                </span>
-                <input class="form-control input-modal input-disabled" type="text" name="direccion" placeholder="Direccion" required>
-            </div>
-
-            <p class="p-error-direccion p-error-validaciones  d-none">Debe estar completa y detallada</p>
-
-
-
-            <div class="mt-3 uk-text-right">
-                <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal"
-                    type="button">Cancelar</button>
-                <button class="btn col-3 btn-agregarcita-modal" name="enviar" type="submit" value="">Agregar</button>
-            </div>
-        </form>
-
-
     </div>
 </div>

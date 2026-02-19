@@ -162,6 +162,7 @@ class ModeloProveedores extends ModelBase
 					$this->update($data1, $this->getIdProveedor());
 				}
 			}
+			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}

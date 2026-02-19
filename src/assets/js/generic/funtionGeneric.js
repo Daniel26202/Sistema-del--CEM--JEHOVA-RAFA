@@ -33,7 +33,10 @@ export const showDataModal = (parametros) => {
 
   if (parametros.cedulaOculta)
     parametros.cedulaOculta.value = parametros.data.cedula;
+
   if (parametros.idOculto) parametros.idOculto.value = parametros.data.id;
+
+  if (parametros.rifOculto) parametros.rifOculto.value = parametros.data.rif;
 
   parametros.inputs.forEach((input) => {
     let check = input.nextElementSibling.children[0];
@@ -58,7 +61,7 @@ export const showDataModal = (parametros) => {
 
 export const clearModalEnviar = (parametros) => {
   parametros.labelModal.textContent = parametros.textLabelModal;
-  botonModal.textContent = parametros.btnTextModal;
+  parametros.botonModal.textContent = parametros.btnTextModal;
   parametros.form.classList.remove("editar");
 
   parametros.inputs.forEach((input) => {
@@ -230,11 +233,13 @@ export const searchElements = (
 };
 
 //funcion generica para un cardTable
-export const initCardData =()=> {
+export const initCardData = () => {
   console.log("Inicializando card-table...");
-  const tableWrappers = document.querySelectorAll('.card-table');
+  const tableWrappers = document.querySelectorAll(".card-table");
 
-  console.log(tableWrappers.length + " contenedores encontrados para card-table.");
+  console.log(
+    tableWrappers.length + " contenedores encontrados para card-table.",
+  );
   tableWrappers.forEach((container, idx) => {
     // Evitar que se inicialice dos veces el mismo contenedor
     if (container.dataset.initialized === "true") return;
@@ -319,4 +324,4 @@ export const initCardData =()=> {
     cardList.on("updated", updateMeta);
     updateMeta();
   });
-}
+};

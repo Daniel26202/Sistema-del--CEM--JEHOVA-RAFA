@@ -51,4 +51,4 @@
 <?php require_once './src/vistas/head/footer.php';  ?>
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaInsumosVencidos.js"></script>
 
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/entradasVencidas.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/entradasVencidas.js"></script>

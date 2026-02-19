@@ -49,8 +49,11 @@
 
 
 
+<?php require_once 'modalEntrada.php';  ?>
+
+
 <!-- agregar Entrada -->
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/entradas.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/entradas.js"></script>
 
 
 <?php require_once './src/vistas/head/footer.php';  ?>

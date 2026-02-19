@@ -46,18 +46,15 @@
                 </div>
             </div>
 
+            <div class="mb-2 mb-md-0 caja-btn-margin w-25">
 
-            <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Proveedores")): ?>
-                <!-- no hay -->
-            <?php else: ?>
-
-
-                <button class="btn-guardar-responsive registrarEntrada  btn btn-primary btn-agregar-doctores col-8" uk-toggle="target: #modal-exampleProveedores" id="">
+                <button class=" caja-btn-margin btn btn-modals" data-bs-toggle="modal" data-bs-target="#exampleModalProveedor" id="btnOpenModalProveedor">
                     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                         <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z"></path>
                     </svg>Registrar Proveedores
                 </button>
-            <?php endif; ?>
+            </div>
+
         </div>
 
 
@@ -101,4 +98,4 @@
 
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaProveedores.js"></script>
 
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/proveedor.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/proveedor.js"></script>

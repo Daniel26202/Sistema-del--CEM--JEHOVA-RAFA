@@ -55,6 +55,9 @@
 
 
 
+<?php require_once 'modalProveedores.php'; ?>
+
+
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/proveedor.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/proveedor.js"></script>
