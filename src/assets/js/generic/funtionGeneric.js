@@ -79,15 +79,6 @@ export const clearModalEnviar = (parametros) => {
     });
 };
 
-// obj = {
-//     labelModal: document.getElementById("label-modal"),
-//     btnModal: document.getElementById("btn-modal"),
-//     form: document.getElementById("formulario"),
-//     inputs: document.querySelectorAll("#formulario input"),
-//     textLabelModal: "Agregar nuevo registro",
-//     btnTextModal: "Agregar",
-// };
-
 export const alertConfirm = (text, action, param = "") => {
     Swal.fire({
         icon: "question",

@@ -88,9 +88,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="text-start mb-2">
 
-                    <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Hospitalizacion")): ?>
                         <!-- no hay -->
-                    <?php else: ?>
                         <div id="alertaPrecioHora" style="display:none; color:red;">
                             Debe agregar el precio por hora antes de registrar hospitalizaciones.
                         </div>
@@ -103,7 +101,6 @@
                             </svg>
                             Registrar hospitalización
                         </button>
-                    <?php endif ?>
 
                 </div>
                 <div class="d-flex justify-content-end mb-3 mt-2 me-2 col-3">
@@ -129,9 +126,6 @@
                             <th>Diagnostico</th>
                             <th>Doctor asignado</th>
 
-                            <?php if ($_SESSION['rol'] == "usuario"): ?>
-                                <!-- no hay -->
-                            <?php endif ?>
 
                             <th>Acciones</th>
                         </tr>
