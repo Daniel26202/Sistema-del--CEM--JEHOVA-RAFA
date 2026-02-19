@@ -4,6 +4,7 @@ import {
   alertError,
   alertSuccess,
   initDataTable,
+  cargarImg,
 } from "./generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
 
@@ -355,22 +356,13 @@ addEventListener("DOMContentLoaded", function () {
 
   //funcion la imagen en el formulario para  que se visualize
 
-  const cargarImg = (ar) => {
-    for (var i = 0; i < ar.length; i++) {
-      const reader = new FileReader();
-      reader.readAsDataURL(ar[i]);
-      reader.addEventListener("load", function (e) {
-        let newImg = `<img  style="height: 200px;width: 100%;" src=${e.currentTarget.result}>`;
-        contenedorImg.innerHTML = newImg;
-      });
-    }
-  };
-
   //llamar a la funcion para cargar la imagen del insumo
   imagenInsumo.addEventListener("change", function (e) {
+    let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
+
     contenedorImg.classList.remove("d-none");
     contenedorImgEditar.classList.add("d-none");
-    cargarImg(this.files);
+    cargarImg(this.files, newImg, contenedorImg);
   });
 
   traerInsumoCasiVencidos();
