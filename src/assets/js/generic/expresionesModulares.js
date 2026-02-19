@@ -1,16 +1,15 @@
 // Objeto con las expresiones regulares para validar cada tipo de campo
 const expresiones = {
-  nombre: {
-    expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-    mensajeError:
-      "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
-  },
+    nombre: {
+        expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+        mensajeError: "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+    },
 
-  apellido: {
-    expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-    mensajeError:
-      "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
-  },
+    apellido: {
+        expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+        mensajeError:
+            "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+    },
 
     usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
     correo: { expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, mensajeError: "" },
@@ -34,6 +33,19 @@ const expresiones = {
     marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
     medida: { expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/, mensajeError: "" },
     genero: { expresion: /^"Masculino"|"Femenino"$/, mensajeError: "El Genero debe ser Masculino o Femenino" },
+    tipo: { expresion: /^(Cita|Examenes)$/, mensajeError: "Debe seleccionar un tipo de servicio válido" },
+    id_categoria: {
+        expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
+        mensajeError: "Tiene que ser una categoría existente",
+    },
+    precioD: {
+        expresion: /^\d+(?:[.,]\d+)?$/,
+        mensajeError: "El precio debe ser un número válido, puede incluir decimales con punto o coma",
+    },
+    precioBs: {
+        expresion: /^\d+(?:[.,]\d+)?$/,
+        mensajeError: "El precio debe ser un número válido, puede incluir decimales con punto o coma",
+    },
 };
 
 // Nueva función para validar fechas no futuras ni pasadas
