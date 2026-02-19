@@ -12,6 +12,7 @@ const expresiones = {
       "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
   },
 
+<<<<<<< HEAD
   usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
   correo: {
     expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
@@ -107,6 +108,30 @@ const expresiones = {
     expresion: /^[VJEGP]\-[0-9]{8,9}$/,
     mensajeError: "El RIF debe tener el formato V-12345678 o J-12345678",
   },
+=======
+    usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
+    correo: { expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, mensajeError: "" },
+    password: { expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/, mensajeError: "" },
+    cedula: {
+        expresion: /^([1-9]{1})([0-9]{6,7})$/,
+        mensajeError: "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
+    },
+    telefono: {
+        expresion: /^(0?)(412|414|416|424|426|422|212|24[1-9]|25[1-9])\d{7}$/,
+        mensajeError: 'El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0422',
+    },
+    direccion: { expresion: /^([A-Za-z0-9\s\.,#-]{8,})$/, mensajeError: "Debe estar completa y detallada" },
+    descripcion: { expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/, mensajeError: "" },
+    fn: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+    fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+    cantidad: { expresion: /^([1-9]{1})([0-9]{1,4})?$/, mensajeError: "" },
+    precio: { expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/, mensajeError: "" },
+    fechaDeVencimiento: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+    lote: { expresion: /^[0-9-_]{4,10}$/, mensajeError: "" },
+    marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
+    medida: { expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/, mensajeError: "" },
+    genero: { expresion: /^"Masculino"|"Femenino"$/, mensajeError: "El Genero debe ser Masculino o Femenino" },
+>>>>>>> c36be9eee506c0b5413364f2973e6aff40e2c1f9
 };
 
 // Nueva función para validar fechas no futuras ni pasadas
@@ -234,19 +259,42 @@ export function inicializarValidacionFormulario(formulario) {
         inputsTrue.push(true);
     });
 
+<<<<<<< HEAD
     if (inputsTrue.length == longitudInputs) {
       return true;
     } else return false;
   };
+=======
+    // Retornar función verificadora
+    return function verificarFormulario() {
+        let longitudInputs = inputs.length;
+        let inputsTrue = [];
+
+        inputs.forEach((input) => {
+            if (input.parentElement.classList.contains("valido")) inputsTrue.push(true);
+        });
+
+        if (inputsTrue.length == longitudInputs) {
+            return true;
+        } else return false;
+    };
+>>>>>>> c36be9eee506c0b5413364f2973e6aff40e2c1f9
 }
 
 // Función que valida los campos cada vez que ocurre un evento en un input
 function validarFormulario(e, formulario, campos) {
+<<<<<<< HEAD
   const input = e.target;
   const nameInput = input.name;
   let mensajeError = expresiones[input.name].mensajeError;
 
   let campoCustom = input.closest(".campo-custom");
+=======
+    const input = e.target;
+    const nameInput = input.name;
+    let mensajeError = expresiones[input.name].mensajeError;
+    let campoCustom = input.closest(".campo-custom");
+>>>>>>> c36be9eee506c0b5413364f2973e6aff40e2c1f9
 
   let pError = campoCustom.querySelector("p");
   let check = campoCustom.querySelector(".check");
@@ -289,6 +337,7 @@ function validarFormulario(e, formulario, campos) {
 // Función que valida los campos cada vez que se abra el modal de editar
 
 // Función que valida un campo individual
+<<<<<<< HEAD
 function validarCampo(
   expresion,
   input,
@@ -314,6 +363,25 @@ function validarCampo(
     chulitoYX(check, error, "inValido");
     campos[campo] = false;
   }
+=======
+function validarCampo(expresion, input, campo, campos, formulario, arrayElementos, mensajeError) {
+    let { pError, check, error } = arrayElementos;
+    pError.innerText = mensajeError;
+    pError.classList.add("fw-bold");
+    pError.classList.add("p-error-validaciones");
+
+    if (expresion.test(input.value)) {
+        actualizarEstadoInput(input, "correcto");
+        pError.classList.add("d-none");
+        chulitoYX(check, error, "valido");
+        campos[campo] = true;
+    } else {
+        actualizarEstadoInput(input, "incorrecto");
+        pError.classList.remove("d-none");
+        chulitoYX(check, error, "inValido");
+        campos[campo] = false;
+    }
+>>>>>>> c36be9eee506c0b5413364f2973e6aff40e2c1f9
 }
 
 // Función que actualiza el aspecto visual del input según su estado de validación

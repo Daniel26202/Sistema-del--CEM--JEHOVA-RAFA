@@ -1,18 +1,20 @@
 import { executePetition, alertConfirm, alertError, alertSuccess } from "../generic/funtionGeneric.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Consultas";
+import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
-const modalAgregar = document.getElementById("modalAgregarCategoria");
+const url = "/Sistema-del--CEM--JEHOVA-RAFA/Servicios";
+
+const formulario = document.getElementById("formularioCategoria");
 
 //read
 
 const readCategory = async () => {
-  try {
-    const result = await executePetition(url + "/categoriasAjax", "GET");
+    try {
+        const result = await executePetition(url + "/categoriasAjax", "GET");
 
-    // construir html de filas
-    let html = "";
-    result.forEach((element, index) => {
-      html += ` <tr>
+        // construir html de filas
+        let html = "";
+        result.forEach((element, index) => {
+            html += ` <tr>
                                 <td class="text-center fw-bold">
                                     ${index + 1}
                                 </td>
@@ -33,96 +35,97 @@ const readCategory = async () => {
 
                                 </td>
                             </tr>`;
-    });
+        });
 
-    const selector = ".exampleTableCategoria";
+        const selector = ".exampleTableCategoria";
 
-    // si ya existe DataTable, destrúyela
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().clear().destroy();
+        // si ya existe DataTable, destrúyela
+        if ($.fn.DataTable.isDataTable(selector)) {
+            $(selector).DataTable().clear().destroy();
+        }
+
+        // vuelca el html en el tbody
+        document.querySelector(selector + " tbody").innerHTML = html;
+
+        document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+            ele.value = document.getElementById("id_usuario_session").value;
+        });
+
+        //llamar las funcion de eliminar
+        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+
+                alertConfirm("Esta seguro de eliminar la categoria?", deleteCategory, data);
+            });
+        });
+
+        // re-inicializa
+        $(selector).DataTable({
+            language: {
+                language: {
+                    decimal: ",",
+                    thousands: ".",
+                    lengthMenu: "Mostrar por página _MENU_ ",
+                    zeroRecords: "No se encontraron resultados",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "No hay registros disponibles",
+                    infoFiltered: "(filtrado de _MAX_ registros en total)",
+                    search: "Buscar:",
+                },
+            },
+        });
+    } catch (error) {
+        alertError("Error", error);
     }
-
-    // vuelca el html en el tbody
-    document.querySelector(selector + " tbody").innerHTML = html;
-
-    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-      ele.value = document.getElementById("id_usuario_session").value;
-    });
-
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-
-        alertConfirm("Esta seguro de eliminar la categoria?", deleteCategory, data);
-      });
-    });
-
-    // re-inicializa
-    $(selector).DataTable({
-      language: {
-        language: {
-          decimal: ",",
-          thousands: ".",
-          lengthMenu: "Mostrar por página _MENU_ ",
-          zeroRecords: "No se encontraron resultados",
-          info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-          infoEmpty: "No hay registros disponibles",
-          infoFiltered: "(filtrado de _MAX_ registros en total)",
-          search: "Buscar:",
-        },
-      },
-    });
-  } catch (error) {
-    alertError("Error", error);
-  }
 };
 //create
 const createcategory = async (form, inputs) => {
-  try {
-    const data = new FormData(form);
-    let result = await executePetition(url + "/registrarCategoria", "POST", data);
-    console.log(result);
-    if (result.ok) {
-      alertSuccess(result.message);
+    try {
+        const data = new FormData(form);
+        let result = await executePetition(url + "/registrarCategoria", "POST", data);
+        console.log(result);
+        if (result.ok) {
+            alertSuccess(result.message);
+            form.reset();
 
-      UIkit.modal("#modal-exampleAgregarPatologias").hide();
-      form.reset();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
-      readCategory();
-      UIkit.modal("#modal-categoria").show();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+            readCategory();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //delete
 const deleteCategory = async (data) => {
-  try {
-    const result = await executePetition(url + `/eliminarCategoria/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
-      readCategory();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+    try {
+        const result = await executePetition(url + `/eliminarCategoria/${data}`, "GET");
+        if (result.ok) {
+            alertSuccess(result.message);
+            readCategory();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 readCategory();
 
-modalAgregar.addEventListener("submit", function (e) {
-  e.preventDefault();
-  let inputsBuenos = [];
-  this.querySelectorAll(".input-validar").forEach((input) => {
-    if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-  });
+let verificarFormulario = inicializarValidacionFormulario(formulario);
 
-  if (inputsBuenos.length == 1) {
-    createcategory(this, inputsBuenos);
-  } else {
-    alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
-  }
+formulario.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let inputsBuenos = [];
+    this.querySelectorAll(".input-validar").forEach((input) => {
+        if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
+    });
+
+    let esValido = verificarFormulario();
+
+    if (esValido) {
+        createcategory(this, inputsBuenos);
+    } else {
+        alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+    }
 });

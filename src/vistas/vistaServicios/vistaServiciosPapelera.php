@@ -47,6 +47,7 @@
                         <th class="text-dark">Servicio</th>
                         <th class="text-dark">Precio en BS</th>
                         <th class="text-dark">Precio en $</th>
+                        <th class="text-dark">Tipo</th>
                         <th class="text-dark">Acciones</th>
                     </tr>
                 </thead>
@@ -70,11 +71,7 @@
 
 </div>
 
-</div>
-</div>
 
-
-
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/servicios.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/servicios.js"></script>
 
 <?php require_once './src/vistas/head/footer.php';  ?>

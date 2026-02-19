@@ -45,10 +45,10 @@ class ModeloCategoria extends ModelBase
             ];
 
 
-            $sql= "INSERT INTO categoria_servicio (nombre, estado) VALUES (null, :nombre, :estado)";
+            $sql= "INSERT INTO categoria_servicio (nombre, estado) VALUES (:nombre, :estado)";
             $this->setSQL($sql);
             $this->create($data);
-            
+
             return ["exito", $data];
         } catch (\Exception $e) {
             return $e->getMessage();

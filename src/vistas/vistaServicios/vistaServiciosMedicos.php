@@ -14,8 +14,6 @@
     </h5>
     <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
-
-
     <input type="hidden" id="dolar" value="<?= $_SESSION["dolar"] ?>?>">
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
@@ -24,7 +22,7 @@
 
 
             <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
-                uk-toggle="target: #modal-example" id="btnAgregarServicioMedico">
+                data-bs-toggle="modal" data-bs-target="#modalAgregarServicios" id="btnAgregarServicioMedico">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                     <path
@@ -33,7 +31,7 @@
                 </svg>Registrar Servicio
             </button>
             <button class="btn-guardar-responsive btn btn-primary btn-agregar-doctores col-8"
-                uk-toggle="target: #modal-categoria" id="btnAgregarCategoria">
+                data-bs-toggle="modal" data-bs-target="#modal-categoria" id="btnAgregarCategoria">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                     <path
@@ -64,6 +62,7 @@
                         <th class="text-dark">Servicio</th>
                         <th class="text-dark">Precio en BS</th>
                         <th class="text-dark">Precio en $</th>
+                        <th class="text-dark">Tipo</th>
                         <th class="text-dark">Acciones</th>
                     </tr>
                 </thead>
@@ -78,148 +77,149 @@
     </div>
 
 
-    <!-- modal de agregar -->
-    <div id="modal-example" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-            <!-- Boton que cierra el modal -->
-            <a href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                    class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path
-                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
-            </a>
+</div>
 
-            <div class="d-flex align-items-center mb-3">
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
-                        class="bi bi-clipboard2-plus-fill azul me-3 mb-3" viewBox="0 0 16 16">
-                        <path
-                            d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z" />
-                        <path
-                            d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0Z" />
-                </div>
-                <div class="">
-                    <p class="uk-modal-title fs-5 ">
-                        Registrar Servicio
-                    </p>
-                </div>
 
+<!-- Modal Agregar-->
+<div class="modal fade" id="modalAgregarServicios" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content tamaño-modal">
+            <div class="modal-header">
+                <h5 class="modal-title fs-4 fw-bold" id="modalLabelServicios">Registrar Servicio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form class="form-modal form-validable form-convercion" id="modalAgregar" autocomplete="off">
 
-            <div class="alert alert-danger d-none" role="alert" id="alerta"">
-            <div class="">
-                <p style=" font-size: 12px; height:10px; " class=" text-center">VERIFIQUE EL FORMULARIO ANTES DE
-                ENVIARLO</p>
-            </div>
+                <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
+                <input type="hidden" name="id_servicioMedico" value="" id="id_servicio">
+
+                <div class="modal-body">
+
+
+                    <label class="label-custom">Categorías del Servicio</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-grid-1x2-fill azul" viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5z" />
+                                </svg>
+                            </span>
+
+                            <select class="form-control txt-custom select-custom input-validar inputs" id="selectCategoria" name="id_categoria" required>
+                                <option class='option-select-background' selected value="">Seleccione la Categoría del Servicio</option>                              
+                            </select>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg d-none"></p>
+
+                    </div>
+
+                    <label class="label-custom">Precio en dolares</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-currency-exchange azul" viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 5a5.002 5.002 0 0 0 4.027 4.905 6.46 6.46 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05c0-.046 0-.093.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.46 3.46 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98c-.003.046-.003.097-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5zm16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0zm-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787H8.25zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674l.077.018z" />
+                                </svg>
+                            </span>
+                            <input class="form-control txt-custom input-validar inputs" name="precioD" type="text" placeholder="Precio en dolares">
+                            <span class="input-modal mt-1">$</span>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                </svg>
+                                <svg class="error d-none " width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00 </p>
+                    </div>
+
+                    <label class="label-custom">Precio en bolivares</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-currency-exchange azul" viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 5a5.002 5.002 0 0 0 4.027 4.905 6.46 6.46 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05c0-.046 0-.093.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.46 3.46 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98c-.003.046-.003.097-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5zm16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0zm-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787H8.25zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674l.077.018z" />
+                                </svg>
+                            </span>
+                            <input class="form-control txt-custom input-validar inputs" name="precioBs" type="text" placeholder="Precio en bolivares">
+                            <span class="input-modal mt-1">bs</span>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                </svg>
+                                <svg class="error d-none " width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg d-none">El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00 </p>
+                    </div>
+
+                    <label class="label-custom">Tipo de Servicio</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-grid-1x2-fill azul" viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5z" />
+                                </svg>
+                            </span>
+
+                            <select class="form-control txt-custom select-custom input-validar inputs" id="id_tipo" name="tipo" required>
+                                <option class='option-select-background' selected value="">Seleccione el tipo de Servicio</option>
+
+                                <option class='option-select-background' value="Cita">Cita</option>
+                                <option class='option-select-background' value="Examenes">Exámenes</option>
+
+                            </select>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg d-none"></p>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-modals" id="botonModalServicio" data-bs-dismiss="modal">Registrar</button>
+                </div>
+            </form>
         </div>
-
-        <form class="form-modal form-convercion" id="modalAgregar" autocomplete="off">
-            <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario']; ?>">
-
-            <div class="input-group flex-nowrap">
-                <span class="input-modal mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        class="bi bi-grid-1x2-fill azul" viewBox="0 0 16 16">
-                        <path
-                            d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5z" />
-                    </svg> </span>
-                <select class="form-control input-modal" aria-label="" id="id_categoria" placeholder="id_categoria"
-                    name="id_categoria" required>
-                    <option value="" selected disabled>Seleccione la Categoría del Servicio</option>
-
-                    <?php foreach ($todasLasCategorias as $categoria): ?>
-                        <option value="<?php echo $categoria['id_categoria']; ?>">
-                            <?php echo $categoria["nombre"] ?>
-
-                        </option>
-
-                    <?php endforeach ?>
-
-                </select>
-
-            </div>
-
-
-
-            <div class="input-group flex-nowrap " id="grp_precio">
-                <span class="input-modal mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        class="bi bi-currency-exchange azul" viewBox="0 0 16 16">
-                        <path
-                            d="M0 5a5.002 5.002 0 0 0 4.027 4.905 6.46 6.46 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05c0-.046 0-.093.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.46 3.46 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98c-.003.046-.003.097-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5zm16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0zm-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787H8.25zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674l.077.018z" />
-                    </svg>
-                </span>
-
-                <input class="input-disabled precioBolivares   form-control input-modal" type="text" name="precio" placeholder="Precio" required>
-                <span class="input-modal mt-1">BS</span>
-
-            </div>
-            <div class=" d-none d-flex align-items-center justify-content-center" id="leyenda"
-                style="font-size: 12px; margin-top: -10px; margin-bottom: 5px; ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-info-circle azul me-1" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path
-                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                </svg>
-                <i>El formato del precio es incorrecto, Ejemplo 0,00 - 00,00 - 000,00 - 0.000,00 </i>
-            </div>
-
-            <div class="input-group flex-nowrap " id="grp_precioD">
-                <span class="input-modal mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                        class="bi bi-currency-exchange azul" viewBox="0 0 16 16">
-                        <path
-                            d="M0 5a5.002 5.002 0 0 0 4.027 4.905 6.46 6.46 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05c0-.046 0-.093.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.46 3.46 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98c-.003.046-.003.097-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5zm16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0zm-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787H8.25zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674l.077.018z" />
-                    </svg>
-                </span>
-
-                <input class="form-control input-modal precioDolares" type="text" name="precioD" placeholder="$" required>
-                <span class="input-modal mt-1">$</span>
-
-            </div>
-
-            <select class="form-control input-modal" aria-label=""
-                name="tipo" required>
-                <option value="" selected disabled>Seleccione el de Servicio</option>
-
-
-                <option value="Cita">Cita</option>
-                <option value="Examenes">Examenes</option>
-
-
-
-            </select>
-
-
-
-            <div class="mt-3 uk-text-right">
-                <button class="uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal"
-                    type="button">Cancelar</button>
-                <button class="btn col-5 btn-agregarcita-modal" type="sumit" name="guardar">Agregar</button>
-            </div>
-        </form>
     </div>
 </div>
-</div>
 
 
 
 
-
-
-</div>
-
-</div>
-</div>
-
-<?php //require_once './src/vistas/vistaServicios/modalesCategoria.php'; 
+<?php  require_once './src/vistas/vistaServicios/modalesCategoria.php'; 
 ?>
 
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/servicios.js"></script>
-<script type="module" src="<?= $urlBase; ?>../src/assets/ajax/categoria.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/categoria.js"></script>
 <script src="<?= $urlBase; ?>../src/assets/js/ayudaServicioMedico.js"></script>
 
 
