@@ -36,6 +36,7 @@ export const showDataModal = (parametros) => {
   if (parametros.rifOculto) parametros.rifOculto.value = parametros.data.rif;
 
   parametros.inputs.forEach((input) => {
+    let campoCustom = input.closest(".campo-custom");
     let check = input.nextElementSibling.children[0];
     let error = input.nextElementSibling.children[1];
 
@@ -55,7 +56,7 @@ export const showDataModal = (parametros) => {
 
 export const clearModalEnviar = (parametros) => {
   parametros.labelModal.textContent = parametros.textLabelModal;
-  parametros.botonModal.textContent = parametros.btnTextModal;
+  parametros.btnModal.textContent = parametros.btnTextModal;
   parametros.form.classList.remove("editar");
 
     parametros.btnModal.textContent = parametros.btnTextModal;
