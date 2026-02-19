@@ -1,4 +1,9 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./../assets/ajax/funtionExecutePetition.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+} from "./generic/funtionGeneric";
 // grpFormInCorrect malo
 // grpFormCorrect bueno
 console.log("DOMContentLoaded Insumos");

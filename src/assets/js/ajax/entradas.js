@@ -1,26 +1,32 @@
-    import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+} from "../generic/funtionGeneric.js";
+import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
-    console.log("entradas.js ...");
+addEventListener("DOMContentLoaded", function () {
+  console.log("entradas.js ...");
 
-    const url = "/Sistema-del--CEM--JEHOVA-RAFA/Entrada";
+  const url = "/Sistema-del--CEM--JEHOVA-RAFA/Entrada";
 
-    const modalAgregar = document.getElementById("modalAgregarEntrada");
+  const modalAgregar = document.getElementById("modalAgregarEntrada");
 
-    
-    const readEntrada = async () => {
-      try {
-        let metodo = "";
-        let urlActual = window.location.href;
-    
-        if (!urlActual.includes("papelera")) metodo = "entradasAjax";
-        else metodo = "entradasPapeleraAjax";
-    
-        const result = await executePetition(url + "/" + metodo, "GET");
-        console.log(result)
-        // construir html de filas
-        let html = "";
-        result.forEach((element) => {
-          html += `<tr>
+  const readEntrada = async () => {
+    try {
+      let metodo = "";
+      let urlActual = window.location.href;
+
+      if (!urlActual.includes("papelera")) metodo = "entradasAjax";
+      else metodo = "entradasPapeleraAjax";
+
+      const result = await executePetition(url + "/" + metodo, "GET");
+      console.log(result);
+      // construir html de filas
+      let html = "";
+      result.forEach((element) => {
+        html += `<tr>
                             <td class="text-center">${element.nombre}</td>
                             <td class="text-center">${element.proveedor}</td>
                             <td class="text-center">${element.fechaDeIngreso}</td>
@@ -37,10 +43,12 @@
                                     <!-- eliminar -->
                                     <div class="me-2">
                                         <button class="${
-                                          !urlActual.includes("papelera") ? "" : "d-none"
+                                          !urlActual.includes("papelera")
+                                            ? ""
+                                            : "d-none"
                                         } btn btn-tabla btn-eliminar btnEliminarDoctor btn-dt-tabla mb-1" data-index="${
-            element.id_entrada
-          }">
+                                          element.id_entrada
+                                        }">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                 <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
                                             </svg>
@@ -50,10 +58,12 @@
                                     <!-- eliminar -->
                                     <div>
                                         <button class="${
-                                          !urlActual.includes("papelera") ? "" : "d-none"
+                                          !urlActual.includes("papelera")
+                                            ? ""
+                                            : "d-none"
                                         } btn btnEditarDoctor btn-tabla btn-dt-tabla mb-1 btn-js editar botonesEdi" data-id-tabla="modal-exampleEntradaEditar${
-            element.id_entrada
-          }" uk-toggle="target: #modal-exampleEntradaEditar${element.id_entrada}" data-index='${element.id_entrada}'>
+                                          element.id_entrada
+                                        }" uk-toggle="target: #modal-exampleEntradaEditar${element.id_entrada}" data-index='${element.id_entrada}'>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                                 <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
                                             </svg>
@@ -63,8 +73,8 @@
 
                                     <div class="me-2">
                     <a href="#" class=" btn btn-tabla btn-dt-tabla btnRestablecer ${
-                                          urlActual.includes("papelera") ? "" : "d-none"
-                                        }" data-index="${element.id_entrada}" title="Restablecer Entrada" uk-tooltip=""  aria-describedby="uk-tooltip-27">
+                      urlActual.includes("papelera") ? "" : "d-none"
+                    }" data-index="${element.id_entrada}" title="Restablecer Entrada" uk-tooltip=""  aria-describedby="uk-tooltip-27">
                       <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
                         <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
@@ -123,8 +133,8 @@
                                                 <!-- <input class="form-control input-modal input-disabled input" type="text" placeholder="Ingrese el Insumo" id="nombre_insumo" disabled> -->
                                                 <select class="form-control input-modal" name="id_insumo" id="id_insumoModal">
                                                     <option disabled selected value="${element.id_insumo}">${
-            element.nombre
-          }</option>
+                                                      element.nombre
+                                                    }</option>
                                                     
                                                 </select>
 
@@ -246,167 +256,192 @@
 
                             </td>
                         </tr>`;
-        });
-    
-        const selector = ".exampleTable";
-    
-        // si ya existe DataTable, destrúyela
-        if ($.fn.DataTable.isDataTable(selector)) {
-          $(selector).DataTable().clear().destroy();
-        }
-    
-        // vuelca el html en el tbody
-        document.querySelector(selector + " tbody").innerHTML = html;
-    
-        document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-          ele.value = document.getElementById("id_usuario_session").value;
-        });
-    
-        //llamar las funcion de eliminar
-        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-          btn.addEventListener("click", function () {
-            const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-            alertConfirm("Esta seguro de eliminar la entrada?", deleteEntrada, data);
-          });
-        });
-    
-        //llamar las funciones de editar
-        document.querySelectorAll(".forms-editar").forEach((formEditar) => {
-          formEditar.addEventListener("submit", function (e) {
-            e.preventDefault();
-            let inputsBuenos = [];
-    
-            this.querySelectorAll(".input-validar").forEach((input) => {
-              if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-            });
-    
-            if (
-              inputsBuenos.length == 4
-            ) {
-              updateEntrada(this, inputsBuenos);
-            } else {
-              alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.")
-            }
-          });
-        });
-    
-        //llamar a la uncion de restablecer
-        //llamar las funcion de eliminar
-        document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-          btn.addEventListener("click", function () {
-            const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-            alertConfirm("Esta seguro de restablecer la entrada ?",restablecerEntrada, data)
-          });
-        });
-    
-        // re-inicializa
-        $(selector).DataTable({
-          language: {
-            language: {
-              decimal: ",",
-              thousands: ".",
-              lengthMenu: "Mostrar por página _MENU_ ",
-              zeroRecords: "No se encontraron resultados",
-              info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-              infoEmpty: "No hay registros disponibles",
-              infoFiltered: "(filtrado de _MAX_ registros en total)",
-              search: "Buscar:",
-            },
-          },
-        });
-      } catch (error) {
-        alertError("Error", error)
-      }
-    };
-
-
-    //delete
-    const deleteEntrada = async (data) => {
-      try {
-        const result = await executePetition(url + `/eliminar/${data}`, "GET");
-        if (result.ok) {
-          alertSuccess(result.message)
-    
-          readEntrada();
-        } else throw new Error(`${result.error}`);
-      } catch (error) {
-        alertError("Error", error)
-      }
-    };
-
-    //create
-    const createEntrada = async (form, inputs) => {
-      try {
-        const data = new FormData(form);
-        let result = await executePetition(url + "/guardar", "POST", data);
-        console.log(result);
-        if (result.ok) {
-          alertSuccess(result.message);
-    
-          UIkit.modal("#modal-exampleEntrada").hide();
-          form.reset();
-          inputs = [];
-          inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
-          readEntrada();
-        } else throw new Error(`${result.error}`);
-      } catch (error) {
-        alertError('Error', error)
-      }
-    };
-
-    //update
-    const updateEntrada = async (form, inputs) => {
-      console.log(url + "/editar");
-      try {
-        const data = new FormData(form);
-        let result = await executePetition(url + "/editar", "POST", data);
-        console.log(result);
-        if (result.ok) {
-          alertSuccess(result.message)
-    
-          UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
-          inputs = [];
-          inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
-          readEntrada();
-        } else throw new Error(`${result.error}`);
-      } catch (error) {
-        console.log(error);
-        alertError('Error', error)
-      }
-    };
-
-    //restablecer
-    const restablecerEntrada = async (data) => {
-      try {
-        const result = await executePetition(url + `/restablecerEntrada/${data}`, "GET");
-        if (result.ok) {
-          alertSuccess(result.message)
-    
-          readEntrada();
-        } else throw new Error(`${result.error}`);
-      } catch (error) {
-        alertError("Error",error)
-      }
-    };
-
-    readEntrada();
-
-
-    if (modalAgregar) {
-      modalAgregar.addEventListener("submit", function (e) {
-        e.preventDefault();
-        let inputsBuenos = [];
-        this.querySelectorAll(".input-validar").forEach((input) => {
-          if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-        });
-    
-        if (
-          inputsBuenos.length == 3
-        ) {
-          createEntrada(this, inputsBuenos);
-        } else {
-          alertError("Error", "Por favor verifique que todos los datos esten correctos.");
-        }
-        
       });
+
+      const selector = ".exampleTable";
+
+      // si ya existe DataTable, destrúyela
+      if ($.fn.DataTable.isDataTable(selector)) {
+        $(selector).DataTable().clear().destroy();
+      }
+
+      // vuelca el html en el tbody
+      document.querySelector(selector + " tbody").innerHTML = html;
+
+      document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+        ele.value = document.getElementById("id_usuario_session").value;
+      });
+
+      //llamar las funcion de eliminar
+      document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
+          alertConfirm(
+            "Esta seguro de eliminar la entrada?",
+            deleteEntrada,
+            data,
+          );
+        });
+      });
+
+      //llamar las funciones de editar
+      document.querySelectorAll(".forms-editar").forEach((formEditar) => {
+        formEditar.addEventListener("submit", function (e) {
+          e.preventDefault();
+          let inputsBuenos = [];
+
+          this.querySelectorAll(".input-validar").forEach((input) => {
+            if (input.parentElement.classList.contains("grpFormCorrect"))
+              inputsBuenos.push(true);
+          });
+
+          if (inputsBuenos.length == 4) {
+            updateEntrada(this, inputsBuenos);
+          } else {
+            alertError(
+              "Error al enviar el formulario",
+              "Por favor verifique que todos los datos esten correctos.",
+            );
+          }
+        });
+      });
+
+      //llamar a la uncion de restablecer
+      //llamar las funcion de eliminar
+      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
+          alertConfirm(
+            "Esta seguro de restablecer la entrada ?",
+            restablecerEntrada,
+            data,
+          );
+        });
+      });
+
+      // re-inicializa
+      $(selector).DataTable({
+        language: {
+          language: {
+            decimal: ",",
+            thousands: ".",
+            lengthMenu: "Mostrar por página _MENU_ ",
+            zeroRecords: "No se encontraron resultados",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "No hay registros disponibles",
+            infoFiltered: "(filtrado de _MAX_ registros en total)",
+            search: "Buscar:",
+          },
+        },
+      });
+    } catch (error) {
+      alertError("Error", error);
     }
+  };
+
+  //delete
+  const deleteEntrada = async (data) => {
+    try {
+      const result = await executePetition(url + `/eliminar/${data}`, "GET");
+      if (result.ok) {
+        alertSuccess(result.message);
+
+        readEntrada();
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      alertError("Error", error);
+    }
+  };
+
+  //create
+  const createEntrada = async (form, inputs) => {
+    try {
+      const data = new FormData(form);
+      let result = await executePetition(url + "/guardar", "POST", data);
+      console.log(result);
+      if (result.ok) {
+        alertSuccess(result.message);
+
+        UIkit.modal("#modal-exampleEntrada").hide();
+        form.reset();
+        inputs = [];
+        inputs.forEach((input) =>
+          input.parentElement.classList.remove("grpFormCorrect"),
+        );
+        readEntrada();
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      alertError("Error", error);
+    }
+  };
+
+  //update
+  const updateEntrada = async (form, inputs) => {
+    console.log(url + "/editar");
+    try {
+      const data = new FormData(form);
+      let result = await executePetition(url + "/editar", "POST", data);
+      console.log(result);
+      if (result.ok) {
+        alertSuccess(result.message);
+
+        UIkit.modal(
+          `#${form.parentElement.parentElement.getAttribute("id")}`,
+        ).hide();
+        inputs = [];
+        inputs.forEach((input) =>
+          input.parentElement.classList.remove("grpFormCorrect"),
+        );
+        readEntrada();
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      console.log(error);
+      alertError("Error", error);
+    }
+  };
+
+  //restablecer
+  const restablecerEntrada = async (data) => {
+    try {
+      const result = await executePetition(
+        url + `/restablecerEntrada/${data}`,
+        "GET",
+      );
+      if (result.ok) {
+        alertSuccess(result.message);
+
+        readEntrada();
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      alertError("Error", error);
+    }
+  };
+
+  readEntrada();
+
+  if (modalAgregar) {
+    modalAgregar.addEventListener("submit", function (e) {
+      e.preventDefault();
+      let inputsBuenos = [];
+      this.querySelectorAll(".input-validar").forEach((input) => {
+        if (input.parentElement.classList.contains("grpFormCorrect"))
+          inputsBuenos.push(true);
+      });
+
+      if (inputsBuenos.length == 3) {
+        createEntrada(this, inputsBuenos);
+      } else {
+        alertError(
+          "Error",
+          "Por favor verifique que todos los datos esten correctos.",
+        );
+      }
+    });
+  }
+});

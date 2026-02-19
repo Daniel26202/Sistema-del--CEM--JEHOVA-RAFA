@@ -37,7 +37,9 @@
     </div>
   </div>
 
-  <script type="module" src="<?= $urlBase ?>../src/assets/insumo.js"></script>
+  <?php require_once 'modalInsumos.php'; ?>
+
+  <script type="module" src="<?= $urlBase ?>../src/assets/js/i.js"></script>
 
   <?php require_once './src/vistas/head/footer.php';  ?>
 

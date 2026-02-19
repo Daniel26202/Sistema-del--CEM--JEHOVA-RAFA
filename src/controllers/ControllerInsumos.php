@@ -94,56 +94,66 @@ function guardarInsumo()
 		exit;
 	}
 
-	$modeloInsumo = new ModeloInsumo();
-	$proveedores = new ModeloProveedores();
-	$bitacora = new ModeloBitacora();
+	try {
+
+		$modeloInsumo = new ModeloInsumo();
+		$proveedores = new ModeloProveedores();
+		$bitacora = new ModeloBitacora();
 
 
-	// 1. Quitar separadores de miles
-	$valor = str_replace('.', '', $_POST['precioD']);
-	// 2. Cambiar coma decimal por punto
-	$valor = str_replace(',', '.', $valor);
-	// 3. Convertir a float
-	$numero = (float)$valor;
-	$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
 
-	if ($iva === 1) {
-		$numero += $numero * 0.30;
-	}
+		// 1. Quitar separadores de miles
+		$valor = str_replace('.', '', $_POST['precioD']);
+		// 2. Cambiar coma decimal por punto
+		$valor = str_replace(',', '.', $valor);
+		// 3. Convertir a float
+		$numero = (float)$valor;
+		$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
 
-	$tiempo = new DateTime();
-	$fecha = date("Y-m-d");
+		if ($iva === 1) {
+			$numero += $numero * 0.30;
+		}
 
-	$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
-	$imagen_temporal = $_FILES['imagen']['tmp_name'];
-	move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen);
+		$tiempo = new DateTime();
+		$fecha = date("Y-m-d");
 
-	$modeloInsumo->setNombre($_POST['nombre']);
-	$proveedores->setIdProveedor($_POST['id_proveedor']);
-	$modeloInsumo->setDescripcion($_POST['descripcion']);
-	$modeloInsumo->setFechaDeIngreso($_POST['fecha_de_ingreso']);
-	$modeloInsumo->setFechaDeVencimiento($_POST['fecha_de_vencimiento']);
-	$modeloInsumo->setCantidad($_POST['cantidad']);
-	$modeloInsumo->setStockMinimo($_POST['stockMinimo']);
-	$modeloInsumo->setLote($_POST['lote']);
-	$modeloInsumo->setMarca($_POST['marca']);
-	$modeloInsumo->setMedida($_POST['medida']);
-	$modeloInsumo->setIva($iva);
-	$modeloInsumo->setImagen($imagen);
+		 $imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+		$imagen_temporal = $_FILES['imagen']['tmp_name'];
+		move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
-	$insercion = $modeloInsumo->insertarInsumos();
+		$modeloInsumo->setNombre($_POST['nombre']);
+		$modeloInsumo->setIdProveedor($_POST['proveedor']);
+		$modeloInsumo->setDescripcion($_POST['descripcion']);
+		$modeloInsumo->setFechaDeIngreso($_POST['fecha_de_ingreso']);
+		$modeloInsumo->setFechaDeVencimiento($_POST['fechaDeVencimiento']);
+		$modeloInsumo->setCantidad($_POST['cantidad']);
+		$modeloInsumo->setStockMinimo($_POST['stockMinimo']);
+		$modeloInsumo->setLote($_POST['lote']);
+		$modeloInsumo->setMarca($_POST['marca']);
+		$modeloInsumo->setMedida($_POST['medida']);
+		$modeloInsumo->setIva($iva);
+		$modeloInsumo->setImagen($imagen);
+		$modeloInsumo->setPrecio($valor);
 
-	if (is_array($insercion) && $insercion[0] === "exito") {
 
-		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
-		$bitacora->setTabla("insumo");
-		$bitacora->setActividad("Ha Insertado un insumo");
-		$bitacora->insertarBitacora();
+		$insercion = $modeloInsumo->insertarInsumos();
 
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+		// if (is_array($insercion) && $insercion[0] === "exito") {
+
+		// 	$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		// 	$bitacora->setTabla("insumo");
+		// 	$bitacora->setActividad("Ha Insertado un insumo");
+		// 	$bitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito','data'=>$insercion]);
+		// } else {
+		// 	http_response_code(409);
+		// 	echo json_encode(['ok' => false, 'error' => $insercion]);
+		// 	exit;
+		// }
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $insercion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -181,9 +191,9 @@ function editar()
 	$fecha = date("Y-m-d");
 	$imagen_editar = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
 	$imagen_temporal = $_FILES['imagen']['tmp_name'];
-	move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_editar);
+	// move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_editar);
 
-	$modeloInsumo->setIdInsumo($_POST["Codigo"]);
+	$modeloInsumo->setIdInsumo($_POST["idInsumoOculto"]);
 	$modeloInsumo->setNombre($_POST["nombre"]);
 	$modeloInsumo->setDescripcion($_POST['descripcion']);
 	$modeloInsumo->setStockMinimo($_POST["stockMinimo"]);
@@ -191,6 +201,8 @@ function editar()
 	$modeloInsumo->setMedida($_POST["medida"]);
 	$modeloInsumo->setImagenAntigua($_FILES["imagen"]);
 	$modeloInsumo->setImagen($imagen_editar);
+
+	// echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data'=>$_POST]);
 
 	$edicion = $modeloInsumo->editar();
 
@@ -202,7 +214,7 @@ function editar()
 		$bitacora->setActividad("Ha modificado un insumo");
 		$bitacora->insertarBitacora();
 
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data'=>$edicion]);
 	} else {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $edicion]);
@@ -255,6 +267,6 @@ function permisos($id_rol, $permiso, $modulo)
 	$permisos->setIdRol($id_rol);
 	$permisos->setPermiso($permiso);
 	$permisos->setModulo($modulo);
-	
+
 	return $permisos->gestionarPermisos();
 }

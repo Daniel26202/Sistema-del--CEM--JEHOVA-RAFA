@@ -273,6 +273,9 @@ h5,
 h6 {
     color: var(--color-text-card);
 }
+p{
+    color: var(--color-text-card);
+}
 
 #DataTables_Table_0_info {
     color: var(--color-text-card);

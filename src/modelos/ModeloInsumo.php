@@ -11,7 +11,7 @@ class ModeloInsumo extends ModelBase
 {
 
 
-	private $idInsumo, $cantidadCero, $parametro, $nombre, $imagen, $descripcion, $fechaDeIngreso, $fechaDeVencimiento, $precio, $cantidad, $stockMinimo, $lote, $marca, $medida, $iva, $imagenAntigua, $insumosArray;
+	private $idInsumo, $cantidadCero, $parametro, $nombre, $imagen, $descripcion, $fechaDeIngreso, $fechaDeVencimiento, $precio, $cantidad, $stockMinimo, $lote, $marca, $medida, $iva, $imagenAntigua, $insumosArray, $idProveedor;
 	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
@@ -83,6 +83,7 @@ class ModeloInsumo extends ModelBase
 	{
 		try {
 			$sql = "SELECT fechaDeVencimiento FROM entrada_insumo WHERE id_insumo =:id_insumo ORDER BY fechaDeVencimiento LIMIT 1";
+			$this->setSQL($sql);
 			$consulta = $this->search(["id_insumo" => $this->getIdInsumo()]);
 			return $consulta;
 		} catch (\Exception $e) {
@@ -127,12 +128,10 @@ class ModeloInsumo extends ModelBase
 		try {
 			// $this->conexion->beginTransaction();
 
-			$sql = "call insert_insumo(:imagen, :nombre, :id_proveedor, :descripcion, :fechaDeIngreso, :fechaDeVecimiento, :precio, :cantidad, :stockMinimo, :lote, :marca, :medida, :iva)";
-			$this->setSQL($sql);
 			$data = [
 				"imagen" => $this->getImagen(),
 				"nombre" => $this->getNombre(),
-				"id_proveedor" => $this->returnObjetModel()["modeloProveedores"]->getIdProveedor(),
+				"id_proveedor" => $this->getIdProveedor(),
 				"descripcion" => $this->getDescripcion(),
 				"fechaDeIngreso" => $this->getFechaDeIngreso(),
 				"fechaDeVecimiento" => $this->getFechaDeVencimiento(),
@@ -145,13 +144,12 @@ class ModeloInsumo extends ModelBase
 				"iva" => $this->getIva()
 			];
 
-			$id = $this->storedProcedure($data, true);
-
-
-			$sql = "SELECT * from insumo where id_insumo=:id_insumo";
+			$sql = "call insert_insumo(:imagen, :nombre, :id_proveedor, :descripcion, :fechaDeIngreso, :fechaDeVecimiento,:precio, :cantidad, :stockMinimo, :lote, :marca, :medida, :iva)";
 			$this->setSQL($sql);
-			$consulta = $this->search(["id_insumo" => $id]);
-			$data = ($consulta) ? $consulta : false;
+			
+
+			$this->storedProcedure($data, true,true);
+
 
 			// $this->conexion->commit();
 
@@ -198,20 +196,20 @@ class ModeloInsumo extends ModelBase
 
 			$sql = "SELECT * FROM insumo WHERE id_insumo =:id_insumo";
 			$this->setSQL($sql);
-			$datos = $this->search(["id_insumo" => $this->getIdInsumo()]);
+			$datos = $this->search(["id_insumo" => $this->getIdInsumo()],false);
 
 			$imagen_antigua = $datos["imagen"];
-			$rutaImagenAntigua = "./src/assets/img_ingresadas_por_usuarios/insumos/" . $imagen_antigua;
+			$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen_antigua;
 			$imagen = $this->getImagenAntigua();
 			// echo "<img src=".$imagen_antigua.">";
 			$imagen_editar = isset($imagen) ? $imagen : "";
 
-			if ($imagen_editar["name"] != "") {
+			if ($imagen_editar != "") {
 
 				if (file_exists($rutaImagenAntigua)) {
 					unlink($rutaImagenAntigua);
 				}
-				$sql = "UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo, marca =:marca, medida =:medida WHERE id_insumo =:id_insumo";
+				$sql = "UPDATE insumo SET imagen =:imagen, nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo, marca =:marca, medida =:medida WHERE id_insumo =:id";
 				$this->setSQL($sql);
 				$data = [
 					"imagen" => $this->getImagen(),
@@ -223,8 +221,6 @@ class ModeloInsumo extends ModelBase
 				];
 				$consulta2 = $this->update($data, $this->getIdInsumo());
 			} else {
-				$sql = "UPDATE insumo SET nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id_insumo";
-				$this->setSQL($sql);
 				$data = [
 					"nombre" => $this->getNombre(),
 					"descripcion" => $this->getDescripcion(),
@@ -232,9 +228,12 @@ class ModeloInsumo extends ModelBase
 					"marca" => $this->getMarca(),
 					"medida" => $this->getMedida()
 				];
+
+				$sql = "UPDATE insumo SET nombre =:nombre, descripcion =:descripcion, stockMinimo =:stockMinimo,marca =:marca, medida =:medida WHERE id_insumo =:id";
+				$this->setSQL($sql);
 				$consulta3 = $this->update($data, $this->getIdInsumo());
 			}
-			return ["exito"];
+			return ["exito",$imagen_editar];
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -369,9 +368,6 @@ class ModeloInsumo extends ModelBase
 		if (!preg_match('/^[0-9]+$/', $iva)) {
 			throw new \InvalidArgumentException('El iva no es válido.');
 		}
-		if ((int)$iva <= 0) {
-			throw new \InvalidArgumentException('El iva debe ser mayor que cero.');
-		}
 		$this->iva = $iva;
 	}
 
@@ -437,22 +433,22 @@ class ModeloInsumo extends ModelBase
 	public function setImagen($imagen)
 	{
 		// Validar que el archivo se haya subido sin errores
-		if ($imagen['error'] !== UPLOAD_ERR_OK) {
-			throw new \InvalidArgumentException('Error al subir la imagen.');
-		}
+		// if ($imagen['error'] !== UPLOAD_ERR_OK) {
+		// 	throw new \InvalidArgumentException('Error al subir la imagen.');
+		// }
 
-		// Validar extensión
-		$extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
-		$extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+		// // Validar extensión
+		// $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
+		// $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
 
-		if (!in_array($extension, $extensionesPermitidas)) {
-			throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
-		}
+		// if (!in_array($extension, $extensionesPermitidas)) {
+		// 	throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
+		// }
 
-		// Validar tamaño (ejemplo: máximo 5 MB)
-		if ($imagen['size'] > 5 * 1024 * 1024) {
-			throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-		}
+		// // Validar tamaño (ejemplo: máximo 5 MB)
+		// if ($imagen['size'] > 5 * 1024 * 1024) {
+		// 	throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+		// }
 
 		// Si todo está bien, guardamos el nombre temporal para moverlo después
 		$this->imagen = $imagen;
@@ -511,19 +507,29 @@ class ModeloInsumo extends ModelBase
 	// Setter: fecha de vencimiento debe ser menor a hoy
 	public function setFechaDeVencimiento($fechaDeVencimiento)
 	{
-		try {
-			$fecha = new \DateTime($fechaDeVencimiento);
-			$hoy   = new \DateTime();
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaDeVencimiento);
+		$fechaHoy = date("Y-m-d");
 
-			// Validar que vencimiento < hoy
-			if ($fecha >= $hoy) {
-				throw new \InvalidArgumentException('La fecha de vencimiento debe ser anterior a hoy.');
-			}
-
-			$this->fechaDeVencimiento = $fecha;
-		} catch (\Exception $e) {
-			throw new \InvalidArgumentException('La fecha de vencimiento no es válida.');
+		if (!$dt || $dt->format('Y-m-d') !== $fechaDeVencimiento) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
 		}
+		if ($fechaDeVencimiento <= $fechaHoy) {
+			throw new \InvalidArgumentException("La fecha no puede ser del pasado.");
+		}
+		$this->fechaDeVencimiento = $fechaDeVencimiento;
+	}
+
+	public function setIdProveedor($idProveedor)
+	{
+		if (!preg_match("/^[0-9]+$/", $idProveedor)) {
+			throw new \InvalidArgumentException("El ID del proveedor debe ser un número entero positivo.");
+		}
+
+		if ((int)$idProveedor <= 0) {
+			throw new \InvalidArgumentException("El ID del proveedor debe ser mayor que cero.");
+		}
+
+		$this->idProveedor = (int)$idProveedor;
 	}
 
 	// getter
@@ -611,5 +617,10 @@ class ModeloInsumo extends ModelBase
 	public function getCantidadCero()
 	{
 		return $this->cantidadCero;
+	}
+
+	public function getIdProveedor()
+	{
+		return $this->idProveedor;
 	}
 }
