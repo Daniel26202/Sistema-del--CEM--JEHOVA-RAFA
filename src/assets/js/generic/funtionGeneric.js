@@ -28,17 +28,16 @@ export const showDataModal = (parametros) => {
     parametros.btnModal.textContent = parametros.btnTextModal;
     parametros.form.classList.add("editar");
 
-  if (parametros.cedulaOculta)
-    parametros.cedulaOculta.value = parametros.data.cedula;
+    if (parametros.cedulaOculta) parametros.cedulaOculta.value = parametros.data.cedula;
 
-  if (parametros.idOculto) parametros.idOculto.value = parametros.data.id;
+    if (parametros.idOculto) parametros.idOculto.value = parametros.data.id;
 
-  if (parametros.rifOculto) parametros.rifOculto.value = parametros.data.rif;
+    if (parametros.rifOculto) parametros.rifOculto.value = parametros.data.rif;
 
-  parametros.inputs.forEach((input) => {
-    let campoCustom = input.closest(".campo-custom");
-    let check = input.nextElementSibling.children[0];
-    let error = input.nextElementSibling.children[1];
+    parametros.inputs.forEach((input) => {
+        let campoCustom = input.closest(".campo-custom");
+        let check = input.nextElementSibling.children[0];
+        let error = input.nextElementSibling.children[1];
 
         input.value = parametros.data[input.getAttribute("name")];
         input.parentElement.classList.remove("invalido");
@@ -55,9 +54,9 @@ export const showDataModal = (parametros) => {
 };
 
 export const clearModalEnviar = (parametros) => {
-  parametros.labelModal.textContent = parametros.textLabelModal;
-  parametros.btnModal.textContent = parametros.btnTextModal;
-  parametros.form.classList.remove("editar");
+    parametros.labelModal.textContent = parametros.textLabelModal;
+    parametros.btnModal.textContent = parametros.btnTextModal;
+    parametros.form.classList.remove("editar");
 
     parametros.btnModal.textContent = parametros.btnTextModal;
     parametros.form.classList.remove("editar");
@@ -69,6 +68,9 @@ export const clearModalEnviar = (parametros) => {
         let error = spamP.children[1];
 
         input.value = "";
+        if (input.getAttribute("name") == "nacionalidad") {
+            input.value = "V";
+        }
         input.parentElement.classList.remove("valido");
         input.parentElement.classList.remove("invalido");
         let pError = campoCustom.querySelector("p");
