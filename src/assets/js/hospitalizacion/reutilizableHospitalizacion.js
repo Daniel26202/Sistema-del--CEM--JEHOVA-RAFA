@@ -1,24 +1,8 @@
+import { executePetition } from "../../js/generic/funtionGeneric.js";
+
+
 //function genérica para ejecutar la petición ajax
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
-window.executePetition = async function (url, method, data = null) {
-    try {
-        const options = { method: method };
-
-        if (data instanceof FormData) {
-            options.body = data;
-        } else if (data && typeof data === "object") {
-            options.headers = {
-                "Content-Type": "application/json",
-            };
-            options.body = JSON.stringify(data);
-        }
-
-        let response = await fetch(url, options);
-        return response.json();
-    } catch (error) {
-        return error;
-    }
-};
 
 let objServiciosBD = {};
 
@@ -29,7 +13,7 @@ let objServiciosBD = {};
 // import { traerSerevicio } from './reutilizableHospitalizacion.js';
 // await traerSerevicio("editar");
 
-window.traerSerevicio = async function (direccionM) {
+export const traerSerevicio = async (direccionM) => {
     let resultado = await executePetition(url + "/selectServiciosD", "GET");
     console.log(resultado);
     let text;
@@ -186,95 +170,12 @@ const expresiones = {
     fechaRegreso: /^\d{4}\-\d{2}\-\d{2}$/,
 };
 
-window.campos = {
-    sintomas: false,
-    historial: false,
-    diagnostico: false,
-    indicaciones: false,
-    fechaRegreso: false,
-};
-
-window.validarCamposControl = (expresiones, input, campo) => {
-    if (expresiones.test(input.value)) {
-        input.parentElement.classList.remove("grpFormInCorrectControl");
-        input.parentElement.classList.add("grpFormCorrectControl");
-
-        campos[campo] = true;
-    } else {
-        input.parentElement.classList.remove("grpFormCorrectControl");
-        input.parentElement.classList.add("grpFormInCorrectControl");
-        campos[campo] = false;
-    }
-};
-
-//validar forumlario
-window.validarFormularioControl = function (e) {
-    switch (e.target.name) {
-        case "sintomas[]":
-            // recolecto los inputs
-            let inputCheS = document.querySelectorAll(`.inpSin`);
-
-            // Array.from es para convertir el html en array y el .some es para verificar(en una array) si cumple con la condición especifica; devolviendo true si es verdadero y false si es falso
-            let seleccionadoS = Array.from(inputCheS).some((checkbox) => checkbox.checked);
-            if (seleccionadoS) {
-                campos["sintomas"] = true;
-            } else {
-                campos["sintomas"] = false;
-            }
-            break;
-
-        case "diagnostico":
-            console.log(e.target);
-            
-            validarCamposControl(expresiones.diagnostico, e.target, "diagnostico");
-
-            break;
-
-        case "indicaciones":
-            validarCamposControl(expresiones.indicaciones, e.target, "indicaciones");
-
-            break;
-        case "fechaRegreso":
-            // obtengo la hora de hoy.
-            let hoy = new Date();
-            // para que la hora minutos s mm este en cero, como no lo voy a usar
-            hoy.setHours(0, 0, 0, 0);
-            // tomo la fecha del input
-            let fechaInput = document.querySelector(`.grp_control_fechaRegreso`).value;
-            fechaInput = new Date(fechaInput);
-
-            // obtengo la hora de hoy.
-            let fechaMaxima = new Date();
-            // actualizamos la fecha de hoy, sumándole la fecha(en este caso el año) de hoy más 50
-            fechaMaxima.setFullYear(hoy.getFullYear() + 50);
-            // para que la hora minutos s mm este en cero, como no lo voy a usar
-            fechaMaxima.setHours(0, 0, 0, 0);
-
-            if (
-                expresiones.fechaRegreso.test(document.querySelector(`.grp_control_fechaRegreso`).value) &&
-                fechaInput >= hoy &&
-                fechaInput <= fechaMaxima
-            ) {
-                document.querySelector(`.grp_control_fechaRegreso`).style.borderBottom = "2px solid rgb(13, 240, 13)";
-                document.querySelector("#leyendaFec").classList.add("d-none");
-
-                campos["fechaRegreso"] = true;
-            } else {
-                document.querySelector(`.grp_control_fechaRegreso`).style.borderBottom = "2px solid rgb(224, 3, 3)";
-                document.querySelector("#leyendaFec").classList.remove("d-none");
-
-                campos["fechaRegreso"] = false;
-            }
-            break;
-    }
-};
-
-//function for show and hidden alert the control
-window.showAlert = (alert, text, classAlert) => {
-    alert.classList.add(`${classAlert}`);
-    alert.innerText = `${text}`;
-    alert.classList.remove("d-none");
-    setTimeout(() => {
-        alert.classList.add("d-none");
-    }, 7000);
-};
+// //function for show and hidden alert the control
+// window.showAlert = (alert, text, classAlert) => {
+//     alert.classList.add(`${classAlert}`);
+//     alert.innerText = `${text}`;
+//     alert.classList.remove("d-none");
+//     setTimeout(() => {
+//         alert.classList.add("d-none");
+//     }, 7000);
+// };

@@ -2,11 +2,8 @@
 
 use App\modelos\ModeloHospitalizacion;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloControl;
-use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
-use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloSintomas;
 
@@ -20,7 +17,7 @@ function semaforo()
     }
     $modeloHosp = new ModeloHospitalizacion();
     $cantidadHP = $modeloHosp->semaforo();
-    $_SESSION['semaforo'] = $cantidadHP[0];
+    $_SESSION['semaforo'] = $cantidadHP["cantidadP"];
 }
 
 // mostrar los datos de la tabla (hospitalizaciones pendientes) 
@@ -119,9 +116,8 @@ function serviciosDH($datos)
 function validarPaciente()
 {
     $modeloHosp = new ModeloHospitalizacion();
-    $modeloPacientes = new ModeloPacientes();
 
-    $modeloPacientes->setCedula($_POST["cedula"]);
+    $modeloHosp->setCedula($_POST["cedula"]);
     $vC = $modeloHosp->validarPacienteH();
     echo json_encode($vC);
 }
@@ -130,8 +126,7 @@ function validarPaciente()
 function mostrarInformacionPCD()
 {
     $modeloHosp = new ModeloHospitalizacion();
-    $modeloPacientes = new ModeloPacientes();
-    $modeloPacientes->setCedula($_POST["cedula"]);
+    $modeloHosp->setCedula($_POST["cedula"]);
     $info = $modeloHosp->select();
     echo json_encode($info);
 }
@@ -175,13 +170,10 @@ function agregarH()
         // echo "Las camillas disponibles estan ocupadas";
     } else {
         $modeloHosp = new ModeloHospitalizacion();
-        $modeloPacientes = new ModeloPacientes();
-        $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
-        $modeloControl = new ModeloControl();
 
-        $modeloPacientes->setIdPaciente($_POST["id_paciente"]);
-        $modeloDoctores->setIdDoctor($_POST["id_personal"]);
+        $modeloHosp->setIdPaciente($_POST["id_paciente"]);
+        $modeloHosp->setIdDoctor($_POST["id_personal"]);
         $verificaH = $modeloHosp->verificaHA();
 
         if (isset($_POST["id_paciente"])) {
@@ -204,11 +196,11 @@ function agregarH()
                 $modeloHosp->setCantidadIns($cantidadI);
                 $modeloHosp->setCantidadSer($cantidadS);
                 $modeloHosp->setIdServicio($idServicio);
-                $modeloControl->setHistorial($_POST["historial"]);
-                $modeloControl->setSeveridad($_POST["severidad"]);
-                $modeloControl->setDiagnostico($_POST["diagnostico"]);
-                $modeloDoctores->setIdDoctor($_POST["id_personal"]);
-                $modeloPacientes->setIdPaciente($_POST["id_paciente"]);
+                $modeloHosp->setHistorial($_POST["historial"]);
+                $modeloHosp->setSeveridad($_POST["severidad"]);
+                $modeloHosp->setDiagnostico($_POST["diagnostico"]);
+                $modeloHosp->setIdDoctor($_POST["id_personal"]);
+                $modeloHosp->setIdPaciente($_POST["id_paciente"]);
 
                 $modeloHosp->insertarH();
 
@@ -240,7 +232,6 @@ function modificarH()
 {
     $modeloHosp = new ModeloHospitalizacion();
     $modeloBitacora = new ModeloBitacora();
-    $modeloControl = new ModeloControl();
 
 
     $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : [];
@@ -311,8 +302,8 @@ function modificarH()
     $modeloHosp->setIdServicio($idServicio);
     $modeloHosp->setCantidadSer($cantidadS);
 
-    $modeloControl->setHistorial($_POST["historialE"]);
-    $modeloControl->setDiagnostico($_POST["diagnostico"]);
+    $modeloHosp->setHistorial($_POST["historialE"]);
+    $modeloHosp->setDiagnostico($_POST["diagnostico"]);
 
 
     // esto se puede usar $_POST["id_controlE"]. 
@@ -373,7 +364,6 @@ function buscarIExH()
 function enviarAFacturar()
 {
     $modeloHosp = new ModeloHospitalizacion();
-    $modeloControl = new ModeloControl();
 
     $idH = $_POST["idH"];
     date_default_timezone_set('America/Caracas');
@@ -390,14 +380,14 @@ function enviarAFacturar()
     $modeloHosp->setTotal($total);
     $modeloHosp->setTotalME($totalME);
 
-    $modeloControl->setHistorial($_POST["historialEnF"]);
-    $modeloControl->setSintomas($_POST["sintomas"]);
-    $modeloControl->setPatologias($_POST["patologias"]);
-    $modeloControl->setNota($_POST["nota"]);
-    $modeloControl->setIndicaciones($_POST["indicaciones"]);
-    $modeloControl->setFechaRegreso($_POST["fechaRegreso"]);
-    $modeloControl->setDiagnostico($_POST["diagnostico"]);
-    $modeloControl->setSeveridad($_POST["severidad"]);
+    $modeloHosp->setHistorial($_POST["historialEnF"]);
+    $modeloHosp->setSintomasId($_POST["sintomas"]);
+    $modeloHosp->setPatologiasId($_POST["patologias"]);
+    $modeloHosp->setNota($_POST["nota"]);
+    $modeloHosp->setIndicaciones($_POST["indicaciones"]);
+    $modeloHosp->setFechaRegreso($_POST["fechaRegreso"]);
+    $modeloHosp->setDiagnostico($_POST["diagnostico"]);
+    $modeloHosp->setSeveridad($_POST["severidad"]);
 
     $irF = $modeloHosp->facturarH();
     echo json_encode(["success" => $irF, "data" => $_POST]);

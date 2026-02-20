@@ -13,63 +13,6 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Servicios";
 
 const dolar = parseFloat(document.getElementById("dolar").value);
 
-// const inputs = document.querySelectorAll("#modalAgregar input");
-
-// const expresiones = {
-//     precio: /^(?!0$)(?!1$)\d+([.,]\d+)?$/,
-// };
-
-// const campos = {
-//     precio: true,
-// };
-
-// function validarFormulario(e) {
-//     switch (e.target.name) {
-//         case "precio":
-//             validarCampos(expresiones.precio, e.target, "precio");
-//             break;
-//         case "precioD":
-//             validarCampos(expresiones.precio, e.target, "precioD");
-//             break;
-//     }
-// }
-
-// const validarCampos = (expresiones, input, campo) => {
-//     if (expresiones.test(input.value)) {
-//         document.getElementById(`grp_${campo}`).classList.remove("grpFormInCorrect");
-//         document.getElementById(`grp_${campo}`).classList.add("grpFormCorrect");
-//         campos[campo] = true;
-//     } else {
-//         document.getElementById(`grp_${campo}`).classList.remove("grpFormCorrect");
-//         document.getElementById(`grp_${campo}`).classList.add("grpFormInCorrect");
-//         campos[campo] = false;
-//     }
-//     if (campos.precio === true) {
-//         document.getElementById("leyenda").classList.add("d-none");
-//     }
-//     if (campos.precio === false) {
-//         document.getElementById("leyenda").classList.remove("d-none");
-//     }
-// };
-
-// inputs.forEach((input) => {
-//     input.addEventListener("keyup", validarFormulario);
-//     input.addEventListener("input", validarFormulario);
-//     input.addEventListener("blur", validarFormulario);
-// });
-
-// if (form) {
-//     form.addEventListener("submit", (e) => {
-//         e.preventDefault();
-//         if (campos.precio) {
-//             console.log("se envio");
-//             createService(form, inputs);
-//         } else {
-//             alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
-//         }
-//     });
-// }
-
 //read
 
 let formularioA = document.getElementById("modalAgregar");

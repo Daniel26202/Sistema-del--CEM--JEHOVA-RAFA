@@ -18,6 +18,41 @@
     opacity: 0.9;
 } */
 
+/* off-canvas paciente */
+.titulo-seccion-offcanvas {
+    font-size: 0.826rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #387adf !important;
+    margin-bottom: 0.6rem;
+}
+
+.caja-diagnostico-offcanvas {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid #387adf;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.1rem;
+    min-height: 70px;
+}
+
+.parrafo-offcanvas {
+    text-align: justify;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--color-text-card) !important; /* !important por el svg global */
+    line-height: 1.75;
+    margin: 0;
+}
+
+.parrafo-offcanvas:empty::before {
+    content: "Sin diagnóstico registrado.";
+    color: var(--color-error);
+    font-style: italic;
+    font-weight: 400;
+}
+
 .campo-custom {
     position: relative;
     margin-bottom: 1rem;
@@ -144,7 +179,7 @@
     margin-right: 6px;
 }
 
-.option-select-background{
+.option-select-background {
     background-color: var(--color-bg-card) !important;
 }
 
@@ -159,21 +194,6 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* ////////////////////////||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||////////////////////////////// */
 /* de la x de lo modales */
@@ -273,7 +293,7 @@ h5,
 h6 {
     color: var(--color-text-card);
 }
-p{
+p {
     color: var(--color-text-card);
 }
 
@@ -313,7 +333,9 @@ label {
     opacity: 0;
     transform: scale(1);
     pointer-events: none;
-    transition: opacity 0.3s 0.1s, transform 0.2s 0.1s;
+    transition:
+        opacity 0.3s 0.1s,
+        transform 0.2s 0.1s;
 }
 
 /* Track */
@@ -327,7 +349,9 @@ label {
     height: 14px;
     background-color: rgb(0, 0, 0, 0.38);
     vertical-align: top;
-    transition: background-color 0.2s, opacity 0.2s;
+    transition:
+        background-color 0.2s,
+        opacity 0.2s;
 }
 
 /* Thumb */
@@ -340,8 +364,13 @@ label {
     width: 20px;
     height: 20px;
     background-color: #fff;
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    transition: background-color 0.2s, transform 0.2s;
+    box-shadow:
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    transition:
+        background-color 0.2s,
+        transform 0.2s;
 }
 
 /* Checked */
@@ -376,7 +405,9 @@ label {
 .cl-switch > input:active {
     opacity: 1;
     transform: scale(0);
-    transition: transform 0s, opacity 0s;
+    transition:
+        transform 0s,
+        opacity 0s;
 }
 
 .cl-switch > input:active + span::before {
@@ -595,12 +626,12 @@ html {
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
 
-.cards-horario{
+.cards-horario {
     margin-bottom: 25px !important;
     border: 1px solid #387adf;
     width: 160px;
     padding: 5px;
-    cursor: pointer
+    cursor: pointer;
 }
 
 .lista-menu-pacientes {
@@ -683,7 +714,7 @@ html {
 }
 
 .azul {
-    color: #387adf;
+    color: #387adf !important ;
 }
 
 .btn-agregarConsulta:hover {
@@ -1095,8 +1126,6 @@ html {
     flex-wrap: wrap;
 }
 
-
-
 /* estilos madal de reportes de facturacion  */
 
 .height_modal_factura {
@@ -1312,8 +1341,6 @@ hr {
     color: #387adf;
 }
 
-
-
 .icon-correct {
     color: rgb(13, 240, 13);
 }
@@ -1329,8 +1356,6 @@ hr {
 .icon-incorrect {
     color: rgb(224, 3, 3);
 }
-
-
 
 .grpFormInCorrectEditar:focus {
     border-bottom: 2px solid rgb(224, 3, 3);
@@ -2123,6 +2148,7 @@ td {
     color: #387adf;
 }
 
+
 .tajeta-estadistica-m {
     width: 45%;
     height: 53vh;
@@ -2139,9 +2165,6 @@ td {
     color: #1b1a1a !important;
 }
 
-.icono-card-reporte {
-    color: #1b1a1a !important;
-}
 
 /* /////////////////////////////////////////////////////////////////////////////// */
 /* ............................. MANTENIMIENTO ..................................... */
