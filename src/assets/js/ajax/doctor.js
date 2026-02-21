@@ -1,169 +1,144 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+  initDataTable,
+  cargarImg,
+  showDataModal,
+} from "../generic/funtionGeneric.js";
+
+import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Doctores";
 
-const form = document.getElementById("modalAgregarDoctores");
-const inputs = document.querySelectorAll("#modalAgregarDoctores .inputA");
+let dataDoctor;
+const formDoctor = document.getElementById("modalAgregarDoctores");
+const imagenDoctor = document.getElementById("imagenDoctor");
+const contenedorImg = document.getElementById("contenedor-img");
+const contenedorImgEditar = document.getElementById("contenedor-img-editar");
+const cedulaRegistrada = document.getElementById("cedulaRegistrada");
+const id_doctor = document.getElementById("id_doctor");
+const inputs = formDoctor.querySelectorAll(".campo-editar");
+
+const labelModal = document.getElementById("exampleModalLabelDoctores");
+const btnModal = document.getElementById("botonModal");
+const formEspecialidad = document.getElementById("formEspecialidad");
 
 const selectService = document.querySelector("#id_categoria");
 const modalAgregarSer = document.getElementById("modalAgregarSer");
-const modalAgregarEspecialidad = document.getElementById("modalAgregarEspecialidad");
+const modalAgregarEspecialidad = document.getElementById(
+  "modalAgregarEspecialidad",
+);
+
+const divHorarios = document.getElementById("div-horarios");
+const cajaDeInfo = document.getElementById("cajaDeInfo");
+const pServicios = document.getElementById("p-servicios");
 
 const urlActual = window.location.href;
 
-const expresiones = {
-  cedula: /^([1-9]{1})([0-9]{5,7})$/,
-  nombre: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-  apellido: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-  telefono: /^(0?)(412|414|416|424|426|212|24[1-9]|25[1-9])\d{7}$/,
-  email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-  usuario: /^[a-zA-Z0-9._-]{3,16}$/,
-  password: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/,
-};
-const campos = {
-  cedula: false,
-  nombre: false,
-  apellido: false,
-  telefono: false,
-  usuario: false,
-  password: false,
-  dia: false,
-  horas: false,
-};
-let mens = document.querySelector("#leyendaHoraA");
-let horaEntrada;
-let horaSalida;
-function validarFormulario(e) {
-  console.log(e.target.name);
+//funcion para mostrar mas informacion del doctor
+const info = (id_personal) => {
+  let data = [];
+  let htmlHorario = "";
+  let textServicios = "";
 
-  switch (e.target.name) {
-    case "cedula":
-      validarCampos(expresiones.cedula, e.target, "cedula");
-      break;
-
-    case "nombre":
-      validarCampos(expresiones.nombre, e.target, "nombre");
-
-      break;
-    case "apellido":
-      validarCampos(expresiones.apellido, e.target, "apellido");
-
-      break;
-
-    case "telefono":
-      validarCampos(expresiones.telefono, e.target, "telefono");
-
-      break;
-    case "email":
-      validarCampos(expresiones.email, e.target, "email");
-
-      break;
-    case "usuario":
-      validarCampos(expresiones.usuario, e.target, "usuario");
-      break;
-    case "password":
-      validarCampos(expresiones.password, e.target, "password");
-      break;
-
-    case "dias[]":
-      // recolecto los inputs
-      let inputCheD = document.querySelectorAll(`.diasInA`);
-
-      // Array.from es para convertir el html en array y el .some es para verificar(en una array) si cumple con la condición especifica; devolviendo true si es verdadero y false si es falso
-      let seleccionadoD = Array.from(inputCheD).some((checkbox) => checkbox.checked);
-      if (seleccionadoD) {
-        campos["dia"] = true;
-      } else {
-        campos["dia"] = false;
-      }
-
-      break;
-    case "horaEntrada[]":
-      horaEntrada = e.target.value;
-      console.log(e.target.value);
-
-      break;
-    case "horaSalida[]":
-      horaSalida = e.target.value;
-      // console.log(horaSalida);
-
-      break;
+  for (const item of dataDoctor) {
+    const serivicios = item.servicios.find((s) => s.id_personal == id_personal);
+    if (serivicios) {
+      data.push({ ...item });
+    }
   }
 
-  // si deselecciona un dia
-  if (horaEntrada === undefined && horaSalida === undefined) {
-    mens.classList.add("d-none");
-    campos.horas = true;
-  } else {
-    if (e.target.name === "horaEntrada[]") {
-      // map(Number) es para transformar el string en numero, cuando le pertenece a un array
-      let [hora, minutos] = horaEntrada.split(":").map(Number);
-      hora = hora + 1;
-      if (hora >= 24) hora = 0;
-      // padStart : se asegura que la cadena tenga al menos 2 caracteres, si no los tiene agrega un 0 ejemplo : 9 a 09
-      horaEntrada = `${hora.toString().padStart(2, "0")}:${minutos.toString().padStart(2, "0")}`;
+  if (data.length > 0) {
+    for (const item of data[0].datosHorarios) {
+      htmlHorario = `
+    <!-- Nombre -->
+                <div class="info-group mb-3">
+                    <p class="fw-bold mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-capsule azul mb-1 me-1" viewBox="0 0 16 16">
+                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-2.6 5.854a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
+                        </svg>
+                        Dia:
+                        <span class="parrafo ms-4 h6">${item.diaslaborables}</span>
+
+                    </p>
+
+                    <p class="fw-bold mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1" viewBox="0 0 16 16">
+                            <path d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zm2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z" />
+                        </svg>
+                        Horario:
+                        <span class="parrafo ms-4 h6">${item.horaDeEntrada} a ${item.horaDeSalida}</span>
+
+                    </p>
+                </div>
+    `;
     }
 
-    if (horaEntrada < horaSalida) {
-      mens.classList.add("d-none");
-      campos.horas = true;
+    for (const item of data[0].servicios) {
+      textServicios += item.nombre + " ,  ";
+    }
+  } else {
+    htmlHorario =
+      '<h5 class="text-center">El doctor no tiene un horario disponible</h5>';
+    pServicios = "De momento el doctor no ofrece ningun servicio";
+  }
+  cajaDeInfo.innerHTML = htmlHorario;
+  pServicios.innerText = textServicios;
+};
+
+//funcion para mostrar los dias de la semana
+const mostrarDiasSemana = async () => {
+  try {
+    const result = await executePetition(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Doctores/mostrarDiasSemana",
+      "GET",
+    );
+    let html = "";
+    if (result.length > 0) {
+      result.forEach((element) => {
+        html += ` <div class="col-md-6 mb-3" >
+    <div class="card card-schedule p-3 h-100 shadow-sm border-0" style="background-color: var(--color-bg-card); border: 1px solid var(--color-primary);">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold text-dark">${element.diaslaborables}</span>
+            <div class="form-check form-switch p-0 m-0">
+                <input class="form-check-input day-toggle m-0" name="dias[]" value=${element.id_horario} type="checkbox"  style="width: 2.4em; height: 1.2em; cursor:pointer;">
+            </div>
+        </div>
+
+        <div class="time-container mt-3">
+            <div class="row g-2">
+                <div class="col-6">
+                    <label class="text-muted fw-bold mb-1" style="font-size: 10px; letter-spacing: 0.5px;">ENTRADA</label>
+                    <input type="time" class="form-control form-control-sm border-0 bg-light py-2 px-1" 
+                           style="font-size: 0.8rem; min-height: auto;" value="">
+                </div>
+                <div class="col-6">
+                    <label class="text-muted fw-bold mb-1" style="font-size: 10px; letter-spacing: 0.5px;">SALIDA</label>
+                    <input type="time" class="form-control form-control-sm border-0 bg-light py-2 px-1" 
+                           style="font-size: 0.8rem; min-height: auto;" value="">
+                </div>
+            </div>
+        </div>
+
+        <div class="rest-badge mt-2 text-center py-2 rounded-3 bg-light text-muted small" style="display: none;">
+            <i class="bi bi-moon-stars me-1"></i> Día de descanso
+        </div>
+    </div>
+</div>`;
+      });
     } else {
-      campos.horas = false;
-      mens.classList.remove("d-none");
+      html = `<div class="col-12">
+        <div class="alert alert-warning text-center">
+          No hay días laborables registrados.
+        </div>
+      </div>`;
     }
+    divHorarios.innerHTML = html;
+  } catch (error) {
+    alertError("Error", error);
+    console.log(error);
   }
-}
-
-const validarCampos = (expresiones, input, campo) => {
-  if (expresiones.test(input.value)) {
-    input.parentElement.classList.remove("grpFormInCorrect");
-    input.parentElement.classList.add("grpFormCorrect");
-    campos[campo] = true;
-  } else {
-    input.parentElement.classList.remove("grpFormCorrect");
-    input.parentElement.classList.add("grpFormInCorrect");
-    campos[campo] = false;
-  }
-};
-
-// function ajax
-const listDateFragment = (data) => {
-  let html = "";
-
-  data.forEach((element) => {
-    html += `<div class="d-flex w-50 justify-content-between mb-3">
-
-
-
-
-
-
-                                                    <div class="form-check form-switch d-flex align-items-center">
-                                                        <div>
-                                                            <input class="form-check-input diaslaborables diasIn input" type="checkbox"
-                                                                role="switch" id="flexSwitchCheckDefault" name="dias[]"
-                                                                value="${element.id_horario}">
-                                                        </div>
-                                                        <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault">
-                                                                ${element.diaslaborables}
-                                                            </label></div>
-
-                                                    </div>
-                                                    <div style="width: 60%;">
-
-
-                                                        <div>
-                                                            <input type="time" class="input-dias hora-entrada inputHorario d-none form-control input-modal input-disabled input inputA"
-                                                                title="Hora De Entrada ${element.diaslaborables}" name="horaEntradaNoChecked[]">
-                                                            <input type="time" class="input-dias hora-salida inputHorario mt-2 d-none form-control input-modal input-disabled input inputA"
-                                                                title="Hora De Salida ${element.diaslaborables}>" name="horaSalidaNoChecked[]">
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>`;
-  });
-
-  return html;
 };
 
 //read
@@ -175,17 +150,20 @@ const readDoctor = async () => {
     else metodo = "papeleraDoctoresAjax";
 
     const result = await executePetition(url + "/" + metodo, "GET");
+    dataDoctor = result;
 
     // construir html de filas
     let html = "";
     let html2 = "";
 
     let id_usuario = 0;
-    console.log(result);
+    console.log("readDoctor");
+    console.log(dataDoctor);
 
     if (!urlActual.includes("papelera")) {
-      console.log(result[1]);
-      result[0].forEach((element) => {
+      console.log(result);
+
+      dataDoctor.forEach((element) => {
         html += ` <tr>
                             <td class=" text-center">
                                 ${element.nacionalidad}-${element.cedula}
@@ -211,10 +189,8 @@ const readDoctor = async () => {
                                 <!-- editar -->
 
                                     <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla"
-                                        uk-toggle="target: #modal-editar-doctores${
-                                          element.id_usuario
-                                        }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
-                                        id="btneditarDoctor" data-index="${element.id_personal}">
+                                       data-bs-toggle="modal" data-bs-target="#exampleModalagregarDocotor"
+                                        data-especialidad=${element.id_especialidad} data-index-usuario=${element.id_usuario} data-index="${element.id_personal}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                             <path
@@ -225,7 +201,9 @@ const readDoctor = async () => {
 
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                      !urlActual.includes("paplera") ? "d-none" : ""
+                                      !urlActual.includes("paplera")
+                                        ? "d-none"
+                                        : ""
                                     }" data-index=${element.id_usuario}>
 
 
@@ -238,7 +216,9 @@ const readDoctor = async () => {
                                     </button>
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                      urlActual.includes("papelera") ? "d-none" : ""
+                                      urlActual.includes("papelera")
+                                        ? "d-none"
+                                        : ""
                                     }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -251,9 +231,7 @@ const readDoctor = async () => {
 
                              
                                 <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla" title="Horarios Del Doctor"
-                                    uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${
-                                      element.id_usuario
-                                    }"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModalInfoDoctor"
                                     data-index="${element.id_personal}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-info-circle-fill" viewBox="0 0 16 16">
@@ -265,234 +243,6 @@ const readDoctor = async () => {
                             
                             <td>
 
-                            <!-- modal editar sddsf-->
-                            <div id="modal-editar-doctores${element.id_usuario}" uk-modal class="">
-        <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-            <!-- Boton que cierra el modal -->
-            <a href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
-            </a>
-
-            <div class="d-flex align-items-center mb-3">
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-fill-add azul me-3 mb-3" viewBox="0 0 16 16">
-                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        <path d="M2 13c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z" />
-                    </svg>
-                </div>
-                <div class="">
-                    <p class="uk-modal-title fs-5 ">
-                        Editar Doctor
-                    </p>
-                </div>
-
-            </div>
-            <div class="alert alert-danger d-none alertaFormulario" role="alert">
-                <div class="">
-                    <p style="font-size: 13px;" class="text-center">Por favor, corrige los errores en el formulario.</p>
-                </div>
-            </div>
-
-
-            <form class="me-2 ms-2 formulario_editar forms-editar" data-index="${element.id_personal}" >
-
-                <div class="col w-auto mt-2 mb-4 pb-1">
-                    <div class="d-flex flex-column w-auto ">
-
-
-                        <div class="input-group flex-nowrap margin-inputs grpFormCorrect">
-                            <span class="input-modal mt-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
-                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5ZM9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8Zm1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Zm-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96c.026-.163.04-.33.04-.5ZM7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
-                                </svg>
-                            </span>
-                            <span class="">
-                                <select class="form-control input-modal" aria-label="2" placeholder="Nacionalidad" name="nacionalidad">
-                                    <option value="V" selected>V</option>
-                                    <option value="E">E</option>
-                                </select>
-                            </span>
-                            <input type="number" name="cedula" id="inputUno" class="form-control input-validar input-modal input-disabled inputA" placeholder="Cédula" value="${
-                              element.cedula
-                            }">
-
-                        </div>
-                        <div class="contenedroInputsOcultos${element.id_personal}">
-                        </div>
-
-                        <input type="number" name="cedulaRegistrada" class="form-control input-modal input-disabled d-none" value="${
-                          element.cedula
-                        }">
-
-                        <input type="hidden" name="id_usuario_bitacora" class="form-control input-modal input-disabled id_usuario_bitacora">
- 
-                        <div class="input-group flex-nowrap margin-inputs grpFormCorrect">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="20" height="20"
-                                fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                            </svg>
-
-                            <input type="text" name="nombre" id="inputDos" class="input-validar form-control input-modal input-disabled input inputA mayuscula" placeholder="Nombre" value="${
-                              element.nombre_d
-                            }">
-
-                        </div>
-                        <div class="input-group flex-nowrap margin-inputs grpFormCorrect">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" id="icono-tres" width="20" height="20"
-                                fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                            </svg>
-
-                            <input type="text" name="apellido" id="inputTres" class="form-control input-validar input-modal input-disabled input inputA mayuscula" placeholder="Apellido"
-                                value="${element.apellido}">
-
-                        </div>
-                        <div class="input-group flex-nowrap margin-inputs grpFormCorrect">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" id="icono-cuatro" class="icono-telefono" width="20"
-                                height="20" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                    d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
-                            </svg>
-
-                            <input type="text" name="telefono" id="inputCuatro" class="input-validar  form-control input-modal input-disabled input inputA mayuscula" placeholder="Teléfono"
-                                value="${element.telefono}">
-
-                        </div>
-                        <div class="input-group flex-nowrap margin-inputs grpFormCorrect">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" id="" width="19" height="19" fill="currentColor"
-                                class="bi bi-envelope-at-fill icono" viewBox="0 0 16 16">
-                                <path
-                                    d="M2 2A2 2 0 0 0 .05 3.555L8 8.414l7.95-4.859A2 2 0 0 0 14 2H2Zm-2 9.8V4.698l5.803 3.546L0 11.801Zm6.761-2.97-6.57 4.026A2 2 0 0 0 2 14h6.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.606-3.446l-.367-.225L8 9.586l-1.239-.757ZM16 9.671V4.697l-5.803 3.546.338.208A4.482 4.482 0 0 1 12.5 8c1.414 0 2.675.652 3.5 1.671Z" />
-                                <path
-                                    d="M15.834 12.244c0 1.168-.577 2.025-1.587 2.025-.503 0-1.002-.228-1.12-.648h-.043c-.118.416-.543.643-1.015.643-.77 0-1.259-.542-1.259-1.434v-.529c0-.844.481-1.4 1.26-1.4.585 0 .87.333.953.63h.03v-.568h.905v2.19c0 .272.18.42.411.42.315 0 .639-.415.639-1.39v-.118c0-1.277-.95-2.326-2.484-2.326h-.04c-1.582 0-2.64 1.067-2.64 2.724v.157c0 1.867 1.237 2.654 2.57 2.654h.045c.507 0 .935-.07 1.18-.18v.731c-.219.1-.643.175-1.237.175h-.044C10.438 16 9 14.82 9 12.646v-.214C9 10.36 10.421 9 12.485 9h.035c2.12 0 3.314 1.43 3.314 3.034v.21Zm-4.04.21v.227c0 .586.227.8.581.8.31 0 .564-.17.564-.743v-.367c0-.516-.275-.708-.572-.708-.346 0-.573.245-.573.791Z" />
-                            </svg>
-
-                            <input type="email" name="email" class="input-validar form-control input-modal input-disabled input inputA mayuscula" placeholder="E_mail"
-                                value="${element.correo}">
-
-                        </div>
-
-                        <!-- Nueva Especialidad -->
-
-                        <div class="input-group flex-nowrap margin-inputs grpFormCorrect caja_select_especialidad">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" id="icono-cinco" class="icono" width="20" height="20"
-                                fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z" />
-                                <path
-                                    d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z" />
-                            </svg>
-
-
-                            <select name="selectEspecialidad" class="form-control  input-modal input-disabled input inputA selectEspecialidad " placeholder="Especialidad">
-                                <option selected value="${element.id_especialidad}">
-                                     ${element.nombre}
-                                </option>
-
-                                <?php foreach ($datosEspecialidades as $e): ?>
-                                    <option value="${element.id_especialidad}">
-                                        ${element.nombre}
-                                    </option>
-                                <?php endforeach ?>
-
-                            </select>
-
-                        </div>
-
-
-
-
-                        <!-- caja de los dias -->
-
-                        <div class="input-modal mt-3">
-                            <ul uk-accordion="multiple: true">
-                                <li>
-                                    <a class="uk-accordion-title text-decoration-none" href="#">
-
-                                        <h6 class="acordion-paciente fw-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                                                fill="currentColor" class="bi bi-calendar2-week-fill azul mb-2"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zM8.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM3 10.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z" />
-                                            </svg>
-                                            Modificar El Horario Al Doctor
-                                        </h6>
-                                    </a>
-
-                                    <div class="uk-accordion-content">
-                                    
-                                        <div class="d-flex justify-content-between flex-wrap" >
-
-
-                                            ${listDateFragment(result[1])}
-
-
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-
-
-
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center pe-3 ps-1 d-none leyendaDiaE" id="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-info-circle azul me-1" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z">
-                                </path>
-                                <path
-                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z">
-                                </path>
-                            </svg>
-                            <i class="text-danger">Debe seleccionar al menos un dia laborable</i>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center pe-3 ps-1 d-none msj" id="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-info-circle azul me-1" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z">
-                                </path>
-                                <path
-                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z">
-                                </path>
-                            </svg>
-                            <i class="text-danger">El formato de la hora es incorrecto. La hora de salida tiene que ser más tarde que la hora de entrada.
-                            </i>
-                        </div>
-
-
-                    </div>
-                </div>
-
-
-
-                <!-- inputs ocultos -->
-                <div>
-                    <input type="" name="id_usuario" value=" ${element.id_usuario}" hidden>
-                    <input type="" name="id_especialidad" value=" ${element.id_especialidad}" hidden>
-
-                    <input type="" name="id_personalyespecialidad" value=""
-                        hidden>
-                </div>
-
-                <p class="uk-text-right mt-4">
-                    <button class="uk-button uk-button-default uk-modal-close  btn-cerrar-modal"
-                        type="button">Cancelar</button>
-                    <input class="uk-button btn-agregarcita-modal" name="actualizar" type="submit" value="Editar">
-                </p>
-
-            </form>
-
-        </div>
-    </div>
 
                             </td>
                         </tr>
@@ -527,12 +277,14 @@ const readDoctor = async () => {
                                 <!-- editar -->
 
                                     <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla ${
-                                      !urlActual.includes("paplera") ? "d-none" : ""
+                                      !urlActual.includes("paplera")
+                                        ? "d-none"
+                                        : ""
                                     }"
                                         uk-toggle="target: #modal-editar-doctores${
                                           element.id_usuario
                                         }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
-                                        id="btneditarDoctor" data-index="${element.id_personal}">
+                                        id="btneditarDoctor" data-index="${element.id_personal}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                             <path
@@ -543,7 +295,9 @@ const readDoctor = async () => {
 
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                      urlActual.includes("paplera") ? "d-none" : ""
+                                      urlActual.includes("paplera")
+                                        ? "d-none"
+                                        : ""
                                     }" data-index=${element.id_usuario}>
 
 
@@ -556,7 +310,9 @@ const readDoctor = async () => {
                                     </button>
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                      urlActual.includes("papelera") ? "d-none" : ""
+                                      urlActual.includes("papelera")
+                                        ? "d-none"
+                                        : ""
                                     }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -609,10 +365,16 @@ const readDoctor = async () => {
     //llamar las funcion de eliminar
     if (document.querySelectorAll(".btn-eliminar")) {
       document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-        console.log(btn);
         btn.addEventListener("click", function () {
-          const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-          alertConfirm("Esta seguro de eliminar el doctor?", deleteDoctor, data);
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
+          alertConfirm(
+            "Esta seguro de eliminar el doctor?",
+            deleteDoctor,
+            data,
+          );
         });
       });
     }
@@ -622,56 +384,131 @@ const readDoctor = async () => {
         btn.addEventListener("click", function () {
           console.log(btn);
 
-          const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-          alertConfirm("Esta seguro de restablecer el doctor?", restablecerDoctor, data);
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
+          alertConfirm(
+            "Esta seguro de restablecer el doctor?",
+            restablecerDoctor,
+            data,
+          );
         });
       });
     }
 
-    //llamar las funciones de editar
-    document.querySelectorAll(".forms-editar").forEach((formEditar) => {
-      formEditar.addEventListener("submit", function (e) {
-        e.preventDefault();
-        let inputsBuenos = [];
-
-        this.querySelectorAll(".input-validar").forEach((input) => {
-          if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-        });
-
-        console.log(inputsBuenos);
-
-        if (inputsBuenos.length == 5) {
-          updateDoctor(this, inputsBuenos);
-        } else {
-          alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
-        }
+    ///informacion del doctro
+    document.querySelectorAll(".botonesInfo").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        info(this.getAttribute("data-index"));
       });
     });
 
-    //llamar a la uncion de restablecer
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+    let srcImg = "";
+
+    //llamar a la uncion de editar
+    document.querySelectorAll(".botonesEdi").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        alertConfirm("Esta seguro de restablecer el paciente?", restablecerPattients, data);
+        let tr = btn.closest("tr");
+        inputs[1].value = parseInt(tr.children[0].innerText.slice(2));
+        inputs[2].value = tr.children[1].innerText;
+        inputs[3].value = tr.children[2].innerText;
+        inputs[4].value = tr.children[3].innerText;
+        inputs[5].value = tr.children[4].innerText;
+        inputs[6].value = btn.getAttribute("data-especialidad");
+
+        cedulaRegistrada.value = parseInt(tr.children[0].innerText.slice(2));
+        id_doctor.value = btn.getAttribute("data-index-usuario");
+
+        formDoctor.querySelectorAll(".input-validar").forEach((inp) => {
+          let divParent = inp.closest(".campo-custom");
+          // se activa la validacion con todos excepto con el inputt de la imagen
+
+          if (!inp.classList.contains("campo-editar")) {
+            divParent.classList.add("d-none");
+
+            //le coloco d-none a los label tambien
+            divParent.previousElementSibling.classList.add("d-none");
+            inp.parentElement.classList.add("valido");
+          } else {
+            if (inp.getAttribute("type") == "file") {
+              inp.parentElement.classList.add("valido");
+              // divParent.classList.add("valido");
+            } else {
+              inp.dispatchEvent(new Event("keyup", { bubbles: true }));
+            }
+          }
+        });
+
+        contenedorImg.classList.add("d-none");
+        //ahora gestionar la imagen del insumo es decir mostrar un previsualizacion en el modal de editar
+        contenedorImgEditar.classList.remove("d-none");
+        imgEditar.setAttribute(
+          "src",
+          `../src/assets/images/img_ingresadas_por_usuarios/insumos/${srcImg}`,
+        );
+
+        let id_personal = parseInt(btn.getAttribute("data-index"));
+
+        let coincidencias = dataDoctor.filter(
+          (doc) => doc.id_personal == id_personal,
+        );
+
+        // Crear un conjunto para almacenar todos los id_horario únicos
+        const idHorariosSet = new Set();
+
+        // Recorrer cada objeto en data y agregar sus id_horario al conjunto
+        coincidencias.forEach((item) => {
+          item.datosHorarios.forEach((item2) => {
+            idHorariosSet.add(item2.id_horario);
+          });
+        });
+
+        // Convertir el conjunto a un array para facilitar la comparación
+        const idHorarios = Array.from(idHorariosSet);
+
+        // Iterar sobre cada checkbox
+
+        formDoctor.querySelectorAll(".day-toggle").forEach((checkbox) => {
+          const timeContainer = checkbox.querySelector(".time-container");
+          const restBadge = checkbox.querySelector(".rest-badge");
+
+          checkbox.setAttribute("name", "dias[]");
+
+          // Comprobar si el value del checkbox está incluido en id_horarios
+          const card = checkbox.closest(".card-schedule");
+          const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
+          const inputSalida = card.querySelectorAll('input[type="time"]')[1];
+          if (idHorarios.includes(Number(checkbox.value))) {
+            checkbox.checked = true; // Marcar el checkbox
+            checkbox.setAttribute("name", "diaAnterio[]");
+
+            const dataHorario = buscarcarHorarioPorId(
+              dataDoctor,
+              checkbox.value,
+              btn.getAttribute("data-index"),
+            ).datosHorarios;
+
+            inputEntrada.setAttribute("name", "horaEntrada[]");
+            inputSalida.setAttribute("name", "horaSalida[]");
+
+            console.log(dataHorario[0].horaDeEntrada);
+            inputEntrada.value = dataHorario[0].horaDeEntrada;
+            inputSalida.value = dataHorario[0].horaDeSalida;
+          } else {
+            checkbox.checked = false; // Desmarcar el checkbox
+            inputEntrada.setAttribute("name", "");
+            inputSalida.setAttribute("name", "");
+          }
+        });
       });
+
+      formDoctor.classList.add("editar");
     });
 
     // re-inicializa
-    $(selector).DataTable({
-      language: {
-        language: {
-          decimal: ",",
-          thousands: ".",
-          lengthMenu: "Mostrar por página _MENU_ ",
-          zeroRecords: "No se encontraron resultados",
-          info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-          infoEmpty: "No hay registros disponibles",
-          infoFiltered: "(filtrado de _MAX_ registros en total)",
-          search: "Buscar:",
-        },
-      },
-    });
+    initDataTable(selector);
+
     console.log("cargada...");
   } catch (error) {
     alertError("Error", error);
@@ -679,10 +516,26 @@ const readDoctor = async () => {
   }
 };
 
+//funcion par abuscar horarios especiicos por id\
+const buscarcarHorarioPorId = (list, id_horario, id_personal) => {
+  for (const item of list) {
+    const horario = item.datosHorarios.find(
+      (h) => h.id_horario == id_horario && h.id_personal == id_personal,
+    );
+    if (horario) {
+      return { ...item };
+    }
+  }
+  return null;
+};
+
 //read
 const readEspecialidad = async () => {
   try {
-    const result = await executePetition("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectEspcAjax", "GET");
+    const result = await executePetition(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectEspcAjax",
+      "GET",
+    );
 
     // construir html de filas
     let html = "";
@@ -734,26 +587,20 @@ const readEspecialidad = async () => {
     document.querySelectorAll(".btn-eliminar-epe").forEach((btn) => {
       console.log(btn);
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        alertConfirm("Esta seguro de eliminar la especialidad?", deleteEspecialidad, data);
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de eliminar la especialidad?",
+          deleteEspecialidad,
+          data,
+        );
       });
     });
 
     // re-inicializa
-    $(selector).DataTable({
-      language: {
-        language: {
-          decimal: ",",
-          thousands: ".",
-          lengthMenu: "Mostrar por página _MENU_ ",
-          zeroRecords: "No se encontraron resultados",
-          info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-          infoEmpty: "No hay registros disponibles",
-          infoFiltered: "(filtrado de _MAX_ registros en total)",
-          search: "Buscar:",
-        },
-      },
-    });
+    initDataTable(selector);
     console.log("cargada...");
   } catch (error) {
     alertError("Error", error);
@@ -770,10 +617,6 @@ const createDoctor = async (form, inputs) => {
       alertSuccess(result.message);
 
       readDoctor();
-      UIkit.modal("#modal-agregar-doctores").hide();
-      form.reset();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
@@ -797,17 +640,12 @@ const deleteDoctor = async (data) => {
 const updateDoctor = async (form, inputs) => {
   try {
     const data = new FormData(form);
-    console.log(form);
-    console.log(url + "/editarDoctor");
 
     let result = await executePetition(url + "/editarDoctor", "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
 
-      UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
       readDoctor();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -819,9 +657,32 @@ const updateDoctor = async (form, inputs) => {
 //delete
 const deleteEspecialidad = async (data) => {
   try {
-    const result = await executePetition(`/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`, "GET");
+    const result = await executePetition(
+      `/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`,
+      "GET",
+    );
     if (result.ok) {
       alertSuccess(result.message);
+      readEspecialidad();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
+//create especialida
+const createEspecialidad = async (form) => {
+  try {
+    const data = new FormData(form);
+    let result = await executePetition(
+      url + "/registrarEspecialidad",
+      "POST",
+      data,
+    );
+    console.log(result);
+    if (result.ok) {
+      alertSuccess(result.message);
+
       readEspecialidad();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -846,64 +707,142 @@ readDoctor();
 
 readEspecialidad();
 
-inputs.forEach((input) => {
-  input.addEventListener("input", validarFormulario);
-});
+// Variable externa para contar cuántos días están activos
+let diasActivosContador = 0;
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (
-    campos.cedula &&
-    campos.nombre &&
-    campos.horas &&
-    campos.dia &&
-    campos.apellido &&
-    campos.telefono &&
-    campos.usuario &&
-    campos.password &&
-    campos.email
-  ) {
-    console.log("Se envio");
-    createDoctor(form, inputs);
-  } else {
-    alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
-  }
-});
+mostrarDiasSemana();
 
-modalAgregarSer.addEventListener("submit", function (e) {
-  e.preventDefault();
-  if (document.getElementById("id_doctor").value != "" && selectService.value != "") {
-    let result = executePetition(url + "/guardarDoctores", "POST", new FormData(modalAgregarSer));
-    result.then((res) => {
-      if (res.ok) {
-        alertSuccess(res.message);
-        modalAgregarSer.reset();
-        UIkit.modal("#modal-example-servicio").hide();
-      } else {
-        alertError("Error", res.error);
-      }
-    });
-  } else {
-    alertError("Error", "Debe seleccionar un doctor y un servicio para poder asignarlo.");
-  }
-});
+divHorarios.addEventListener("change", async (e) => {
+  if (e.target.classList.contains("day-toggle")) {
+    const checkbox = e.target;
+    const card = checkbox.closest(".card-schedule");
+    const timeContainer = card.querySelector(".time-container");
+    const restBadge = card.querySelector(".rest-badge");
+    const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
+    const inputSalida = card.querySelectorAll('input[type="time"]')[1];
 
-modalAgregarEspecialidad.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const input = modalAgregarEspecialidad.querySelector('input[name="nombre"]');
-  if (input.value.trim() === "") {
-    alertError("Error", "El campo de especialidad no puede estar vacío.");
-    return;
-  }
-  let result = executePetition(url + "/registrarEspecialidad", "POST", new FormData(modalAgregarEspecialidad));
-  result.then((res) => {
-    if (res.ok) {
-      alertSuccess(res.message);
-      modalAgregarEspecialidad.reset();
-      UIkit.modal("#modal-exampleAgregarEspecialidades").hide();
-      readEspecialidad();
+    // 1. LÓGICA VISUAL
+    if (checkbox.checked) {
+      timeContainer.style.display = "block";
+      restBadge.style.display = "none";
+      card.style.opacity = "1";
+      inputEntrada.setAttribute("name", "horaEntrada[]");
+      inputSalida.setAttribute("name", "horaSalida[]");
     } else {
-      alertError("Error", res.error);
+      timeContainer.style.display = "none";
+      restBadge.style.display = "block";
+      card.style.opacity = "0.8";
+      inputEntrada.setAttribute("name", "");
+      inputSalida.setAttribute("name", "");
     }
-  });
+
+    // 2. VALIDACIÓN: AL MENOS UN DÍA ACTIVO
+    diasActivosContador = divHorarios.querySelectorAll(
+      ".day-toggle:checked",
+    ).length;
+    if (diasActivosContador === 0) {
+      alert("¡Error! Debe haber al menos un día de trabajo seleccionado.");
+      checkbox.checked = true;
+      timeContainer.style.display = "block";
+      restBadge.style.display = "none";
+      card.style.opacity = "1";
+      return;
+    }
+
+    // 3. VALIDACIÓN DE HORAS (Solo si el día está activo)
+    if (checkbox.checked) {
+      validarBloquesCompletos(card);
+    }
+  }
+});
+
+// Escuchar cuando cambian las horas manualmente
+divHorarios.addEventListener("change", (e) => {
+  if (e.target.type === "time") {
+    const card = e.target.closest(".card-schedule");
+    validarBloquesCompletos(card);
+  }
+});
+
+function validarBloquesCompletos(card) {
+  const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
+  const inputSalida = card.querySelectorAll('input[type="time"]')[1];
+
+  // Extraemos hora y minutos por separado
+  let [hEntrada, mEntrada] = inputEntrada.value.split(":").map(Number);
+  let [hSalida, mSalida] = inputSalida.value.split(":").map(Number);
+
+  // REGLA 1: Forzar minutos a 00 (No permitir 14:30, 14:15, etc.)
+  if (mEntrada !== 0 || mSalida !== 0) {
+    alertError(
+      "Error",
+      "Los turnos deben ser en horas exactas (ejemplo: 14:00). Se han ajustado los minutos.",
+    );
+    inputEntrada.value = `${String(hEntrada).padStart(2, "0")}:00`;
+    inputSalida.value = `${String(hSalida).padStart(2, "0")}:00`;
+    // Actualizamos las variables locales después del ajuste
+    mEntrada = 0;
+    mSalida = 0;
+  }
+
+  // REGLA 2: Diferencia mínima de 1 hora
+  const diferencia = hSalida - hEntrada;
+
+  if (diferencia < 1) {
+    alertError(
+      "Error",
+      "El horario de salida debe ser al menos 1 hora después de la entrada.",
+    );
+    // Si hay error, reseteamos a un rango válido por defecto
+    inputSalida.value = `${String(hEntrada + 1).padStart(2, "0")}:00`;
+  }
+}
+
+imagenDoctor.addEventListener("change", function (e) {
+  let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
+
+  contenedorImg.classList.remove("d-none");
+  contenedorImgEditar.classList.add("d-none");
+  cargarImg(this.files, newImg, contenedorImg);
+});
+
+let verificarFormulario = inicializarValidacionFormulario(formDoctor);
+let verificarFormularioEsp = inicializarValidacionFormulario(formEspecialidad);
+
+formDoctor.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let esValido = verificarFormulario();
+
+  if (esValido) {
+    if (formDoctor.classList.contains("editar")) {
+      console.log("editar");
+
+      updateDoctor(this);
+    } else {
+      console.log("guardar");
+      createDoctor(this);
+    }
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
+  }
+});
+
+formEspecialidad.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let esValido = verificarFormularioEsp();
+
+  if (esValido) {
+    console.log("guardar");
+    createEspecialidad(this);
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
+  }
 });

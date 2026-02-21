@@ -10,7 +10,7 @@ use App\modelos\ModeloRoles;
 class ModeloDoctores extends ModelBase
 {
 
-    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad, $imagenTemporal, $checkeds, $diasN, $diasEditar, $diasE;
+    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad, $imagenTemporal, $checkeds, $diasN, $diasEditar, $diasE, $usuario, $id_usuario, $id_rol, $password;
 
     public function __construct($dbSystem = true)
     {
@@ -51,17 +51,14 @@ class ModeloDoctores extends ModelBase
         }
     }
 
+
+
     public function selectDiasDoctor()
     {
         try {
-            $data = [
-                'id_personal' => $this->getIdDoctor(),
-                'tipocategoria' => 'Doctor'
-            ];
-
-            $sql = "SELECT h.*,hyd.* FROM horario h INNER JOIN horarioydoctor hyd ON  h.id_horario = hyd.id_horario INNER JOIN personal p ON p.id_personal = hyd.id_personal WHERE p.id_personal = :id_personal AND p.tipodecategoria =:tipocategoria";
+            $sql = "SELECT h.*,hyd.* FROM horario h INNER JOIN horarioydoctor hyd ON  h.id_horario = hyd.id_horario INNER JOIN personal p ON p.id_personal = hyd.id_personal";
             $this->setSQL($sql);
-            return $this->search($data);
+            return $this->read();
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -135,7 +132,7 @@ class ModeloDoctores extends ModelBase
                 throw new \Exception("La cédula ya está registrada.");
             }
 
-            if ($this->validarUsuario(['usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario()])) {
+            if ($this->validarUsuario(['usuario' => $this->getUsuario()])) {
                 throw new \Exception("El usuario ya está registrada.");
             }
 
@@ -147,38 +144,42 @@ class ModeloDoctores extends ModelBase
                 $imagenTemporal = "";
             }
 
-            $sql = "INSERT INTO segurity.usuario(id_rol, imagen, usuario, correo,  password, estado) VALUES (8,:imagen, :usuario, :correo, :password,:estado);";
-
-            $this->setSQL($sql);
             $data1 = [
-                'id_rol' => $this->returnObjectModel()['modeloRoles']->getIdRol(),
+                'id_rol' => $this->getIdRol(),
                 'imagen' => $imagen,
-                'usuario' => $this->returnObjectModel()['modeloUsuario']->getUsuario(),
+                'usuario' => $this->getUsuario(),
                 'correo' => $this->getEmail(),
-                'password' => $this->returnObjectModel()['modeloUsuario']->getPassword(),
+                'password' => $this->getPassword(),
                 'estado' => 'ACT'
             ];
-            $idUsuario = $this->create($data1);
-
-            $sql = 'INSERT INTO bd.personal(nacionalidad, cedula, nombre, apellido, telefono, id_especialidad, usuario) VALUES (:nacionalidad,:cedula,:nombre,:apellido,:telefono,:id_especialidad,:id_usuario)';
+            $sql = "INSERT INTO segurity.usuario(id_usuario, id_rol, imagen, usuario, correo,  password, estado) VALUES (null,:id_rol,:imagen, :usuario, :correo, :password,:estado);";
 
             $this->setSQL($sql);
+
+            $idUsuario = $this->create($data1);
+
             $data2 = [
                 'nacionalidad' => $this->getNacionalidad(),
                 'cedula' => $this->getCedula(),
                 'nombre' => $this->getNombre(),
                 'apellido' => $this->getApellido(),
                 'telefono' => $this->getTelefono(),
+                'tipodecategoria' => 'Doctor',
                 'id_espacialidad' => $this->getIdEspecialidad(),
-                'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
+                'id_usuario' => $idUsuario
             ];
+
+            // $sql = 'INSERT INTO bd.personal(id_personal,nacionalidad, cedula, nombre, apellido, telefono, tipodecategoria, id_especialidad, usuario) VALUES (null,:nacionalidad,:cedula,:nombre,:apellido,:telefono,:tipodecategoria,:id_especialidad,:id_usuario)';
+            $sql = 'INSERT INTO bd.personal(id_personal,nacionalidad, cedula, nombre, apellido, telefono, tipodecategoria, id_especialidad, usuario) VALUES (null,:nacionalidad,:cedula,:nombre,:apellido,:telefono,:tipodecategoria,:id_espacialidad,:id_usuario)';
+
+            $this->setSQL($sql);
 
             $idPersonal = $this->create($data2);
 
             if ($idUsuario != 0) {
                 if ($imagenTemporal != "") {
                     $imagen = $idUsuario . "_" . $imagen;
-                    move_uploaded_file($imagenTemporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
+                    move_uploaded_file($imagenTemporal, "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $imagen);
                 }
             }
 
@@ -187,13 +188,13 @@ class ModeloDoctores extends ModelBase
                 $contadorDias = 0;
                 foreach ($this->getDias() as $d) {
                     $data = [
-                        'id_personal' => $this->getIdDoctor(),
+                        'id_personal' => $idPersonal,
                         'id_horario' => $d,
                         'horarioDeEntrada' => $this->getHoraEntrada()[$contadorDias],
                         'horaDeSalida' => $this->getHoraSalida()[$contadorDias]
                     ];
 
-                    $sql = "INSERT INTO bd.horarioydoctor (id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal,:id_horario,:horarioDeEntrada,:horaDeSalida)";
+                    $sql = "INSERT INTO bd.horarioydoctor (id_horarioydoctor,id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (null,:id_personal,:id_horario,:horarioDeEntrada,:horaDeSalida)";
 
                     $this->setSQL($sql);
 
@@ -241,7 +242,7 @@ class ModeloDoctores extends ModelBase
         try {
 
             $data1 = [
-                'idUsuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
+                'idUsuario' => $this->getIdUsuario()
             ];
 
             $data2 = [
@@ -262,7 +263,7 @@ class ModeloDoctores extends ModelBase
                 throw new \Exception("El id del usuario no existe");
             }
 
-            if ($this->getCedula() != $this->getCedulaRegistrada() && $this->validarCedula($this->getCedula())) {
+            if ($this->getCedula() != $this->getCedulaRegistrada() && $this->validarCedula(['cedula'=>$this->getCedula()])) {
                 throw new \Exception("La cédula ya está registrada.");
             }
 
@@ -271,21 +272,16 @@ class ModeloDoctores extends ModelBase
             $idPersonal = $this->search($data1, false);
 
             //Editar el usuario (el usuario del doctor).
-            $sql = 'UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_especialidad WHERE id_personal=:id';
+
+            $sql = "UPDATE personal SET nacionalidad=:nacionalidad,cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono,id_especialidad=:id_espacialidad WHERE id_personal=:id";
 
             $this->setSQL($sql);
-            $this->update($data2, $idPersonal);
+            $this->update($data2, $idPersonal['id_personal']);
 
-            // Editar el usuario (el correo del doctor).
-            $sql = 'UPDATE segurity.usuario SET correo =:correo WHERE id_usuario=:id_usuario';
+            // // Editar el usuario (el correo del doctor).
+            $sql = 'UPDATE segurity.usuario SET correo =:correo WHERE id_usuario=:id';
             $this->setSQL($sql);
-            $this->update(['correo' => $this->getEmail()], $this->returnObjectModel()['modeloUsuario']->getIdUsuario());
-
-
-
-
-
-
+            $this->update(['correo' => $this->getEmail()], $this->getIdUsuario());
 
 
             $checkeds = $this->getCheckeds();
@@ -298,20 +294,25 @@ class ModeloDoctores extends ModelBase
             $contadorDias = 0;
             foreach ($checkeds as $idD) {
                 if ($diasN) {
+                    // return['nuevo'];
                     //si el id existe en el array se inserta
                     if (in_array($idD, $diasN)) {
-                        $sqlHorario = "INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);";
-                        $this->setSQL($sqlHorario);
                         $data = [
                             "id_personal" => $idPersonal["id_personal"],
                             "id_horario" => $idD,
                             "horarioDeEntrada" => $horaEntrada[$contadorDias],
                             "horaDeSalida" => $horaSalida[$contadorDias]
                         ];
+
+                        $sqlHorario = "INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);";
+                        $this->setSQL($sqlHorario);
+                        
                         $this->create($data);
                     }
                 }
                 if ($diasEditar) {
+                    // return ['editar'];
+
                     //si el id existe en el array se inserta
                     if (in_array($idD, $diasEditar)) {
 
@@ -330,8 +331,10 @@ class ModeloDoctores extends ModelBase
             }
 
 
-            // si el id existe es porque se deselecciono y se elimina
+            // // si el id existe es porque se deselecciono y se elimina
             if ($diasE) {
+                // return ['eliminar'];
+
                 foreach ($diasE as $idE) {
 
                     $sqlHorarioE = "DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario";
@@ -341,7 +344,7 @@ class ModeloDoctores extends ModelBase
             }
 
 
-            return ["exito"];
+            return ["exito", $data1, $data2, $idPersonal['id_personal']];
         } catch (\Exception $e) {
             // $this->conexion->rollBack();
             return $e->getMessage();
@@ -353,7 +356,7 @@ class ModeloDoctores extends ModelBase
     {
         try {
             $data = [
-                'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
+                'id_usuario' => $this->getIdUsuario()
             ];
 
             $sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";
@@ -435,12 +438,12 @@ class ModeloDoctores extends ModelBase
                 throw new \Exception("El id de la especialidad no existe");
             }
 
-            $sql = 'UPDATE especialidad SET estado = "ACT" WHERE id_especialidad = :id';
+            $sql = 'UPDATE especialidad SET estado = "DES" WHERE id_especialidad = :id';
             $this->setSQL($sql);
 
             $this->update_logic($data['id_especialidad']);
 
-            return ["exito"];
+            return ["exito", $data];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -559,29 +562,46 @@ class ModeloDoctores extends ModelBase
     }
 
 
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
 
 
 
+    public function getIdUsuario()
+    {
+        return $this->id_usuario;
+    }
+    public function getIdRol()
+    {
+        return $this->id_rol;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
 
 
 
     // --- Setters ---
-    public function setDiasEditar(array $diasEditar)
+    public function setDiasEditar($diasEditar)
     {
         $this->diasEditar = $diasEditar;
     }
 
-    public function setDiasE(array $diasE)
+    public function setDiasE($diasE)
     {
         $this->diasE = $diasE;
     }
 
-    public function setDiasN(array $diasN)
+    public function setDiasN($diasN)
     {
         $this->diasN = $diasN;
     }
 
-    public function setCheckeds(array $checkeds)
+    public function setCheckeds($checkeds)
     {
         $this->checkeds = $checkeds;
     }
@@ -616,7 +636,7 @@ class ModeloDoctores extends ModelBase
 
     public function setCedulaRegistrada($cedula)
     {
-        if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/", $cedula)) {
+        if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedula)) {
             throw new \InvalidArgumentException("La cédula registrada debe contener entre 7 y 8 dígitos.");
         }
         $this->cedulaRegistrada = $cedula;
@@ -663,7 +683,7 @@ class ModeloDoctores extends ModelBase
         if ((int)$id_especialidad <= 0) {
             throw new \InvalidArgumentException("El ID del especialidad debe ser mayor que cero.");
         }
-        $this->$id_especialidad = $id_especialidad;
+        $this->idEspecialidad = $id_especialidad;
     }
 
     public function setDias($dias = [])
@@ -671,32 +691,32 @@ class ModeloDoctores extends ModelBase
         if ($dias == []) {
             throw new \InvalidArgumentException("los dias no puede estar vacio.");
         }
-        $this->$dias = $dias;
+        $this->dias = $dias;
     }
 
     public function setHoraEntrada($horaEntrada = [])
     {
-        if ($horaEntrada == []) {
+        if (!is_array($horaEntrada)) {
             throw new \InvalidArgumentException("las horas de entrada no puede estar vacio.");
         }
-        $this->$horaEntrada = $horaEntrada;
+        $this->horaEntrada = $horaEntrada;
     }
 
     public function setHoraSalida($horaSalida = [])
     {
-        if ($horaSalida == []) {
+        if (!is_array($horaSalida)) {
             throw new \InvalidArgumentException("las horas de salida no puede estar vacio.");
         }
-        $this->$horaSalida = $horaSalida;
+        $this->horaSalida = $horaSalida;
     }
 
     public function setImagenTemporal($imagenTemporal)
     {
-        $this->$imagenTemporal = $imagenTemporal;
+        $this->imagenTemporal = $imagenTemporal;
     }
     public function setImagen($imagen)
     {
-        $this->$imagen = $imagen;
+        $this->imagen = $imagen;
     }
 
     public function setNombreEspecialidad($especialidad)
@@ -705,5 +725,46 @@ class ModeloDoctores extends ModelBase
             throw new \InvalidArgumentException("La especialidad debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
         }
         $this->especialidad = $especialidad;
+    }
+
+    public function setUsuario($usuario)
+    {
+        if (!preg_match("/^[a-zA-Z0-9._-]{8,16}$/", $usuario)) {
+            throw new \InvalidArgumentException("El  usuario esta mal.");
+        }
+
+
+        $this->usuario = $usuario;
+    }
+
+    public function setIdUsuario($id_usuario)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_usuario)) {
+            throw new \InvalidArgumentException("El ID del usuario debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_usuario <= 0) {
+            throw new \InvalidArgumentException("El ID del usuario debe ser mayor que cero.");
+        }
+
+        $this->id_usuario = (int)$id_usuario;
+    }
+
+    public function setIdRol($id_rol)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_rol)) {
+            throw new \InvalidArgumentException("El ID del rol debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_rol <= 0) {
+            throw new \InvalidArgumentException("El ID del rol debe ser mayor que cero.");
+        }
+
+        $this->id_rol = (int)$id_rol;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
     }
 }

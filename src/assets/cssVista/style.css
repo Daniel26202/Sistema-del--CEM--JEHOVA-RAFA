@@ -603,6 +603,15 @@ html {
     background-color: var(--color-bg-main);
 }
 
+.accordion-body{
+    background-color: var(--color-bg-main) !important;
+}
+
+.accordion-button{
+    background-color: var(--color-bg-card) !important;
+    color: var(--color-text-card) !important;
+}
+
 /*fondo animado*/
 .main {
     background-color: rgba(0, 0, 0, 0.7);

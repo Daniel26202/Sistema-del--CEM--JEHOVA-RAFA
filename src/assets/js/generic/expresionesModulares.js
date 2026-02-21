@@ -135,6 +135,10 @@ const expresiones = {
     mensajeError:
       "El precio debe ser un número válido, puede incluir decimales con punto o coma",
   },
+  id_especialidad: {
+    expresion: /^\d+$/,
+    mensajeError: "La especialidad esta mal selecionada",
+  },
 };
 
 // Nueva función para validar fechas no futuras ni pasadas
@@ -236,7 +240,6 @@ export function inicializarValidacionFormulario(formulario) {
   const campos = {};
 
   const inputs = formulario.querySelectorAll(".input-validar");
-
   // Inicializar campos
   inputs.forEach((input) => {
     campos[input.name] = false;
@@ -261,21 +264,10 @@ export function inicializarValidacionFormulario(formulario) {
       if (input.parentElement.classList.contains("valido"))
         inputsTrue.push(true);
     });
-
     // Retornar función verificadora
-    return function verificarFormulario() {
-      let longitudInputs = inputs.length;
-      let inputsTrue = [];
-
-      inputs.forEach((input) => {
-        if (input.parentElement.classList.contains("valido"))
-          inputsTrue.push(true);
-      });
-
-      if (inputsTrue.length == longitudInputs) {
-        return true;
-      } else return false;
-    };
+    if (inputsTrue.length == longitudInputs) {
+      return true;
+    } else return false;
   };
 }
 // Función que valida los campos cada vez que ocurre un evento en un input

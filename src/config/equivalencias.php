@@ -117,6 +117,7 @@ return [
     "eliminarEspecialidad" => "consultar",
     "papeleraDoctoresAjax" => "consultar",
     "restablecer" => "eliminar",
+    "mostrarDiasSemana" => "consultar",
 
     //Usuarios
     "usuarios" => "consultar",
