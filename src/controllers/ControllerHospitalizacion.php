@@ -7,18 +7,15 @@ use App\modelos\ModeloInicio;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloSintomas;
 
-
-
-function semaforo()
+function refrescarSemaforo()
 {
-    // verifica si la sesión esta activa.
     if (session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
     }
     $modeloHosp = new ModeloHospitalizacion();
     $cantidadHP = $modeloHosp->semaforo();
-    $_SESSION['semaforo'] = $cantidadHP[0];
-    echo json_encode($_SESSION['semaforo']);
+    $_SESSION['semaforo'] = $cantidadHP[0]['cantidadP'];
+    return $_SESSION['semaforo'];
 }
 
 // mostrar los datos de la tabla (hospitalizaciones pendientes) 
@@ -33,7 +30,7 @@ function traerSesion()
 
     $modeloInicio->setIdPersonal($_SESSION['id_personal']);
     $validacionCargo = $modeloInicio->comprobarCargo();
-    $sesion = [$_SESSION['rol'], $validacionCargo, $_SESSION['semaforo']];
+    $sesion = [$_SESSION['rol'], $validacionCargo, refrescarSemaforo()];
     // datos de las h. pendientes
     $datosH = $modeloHosp->selectsH();
     $array = [$sesion, $datosH];
@@ -166,16 +163,16 @@ function agregarH()
         echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
         exit;
     }
-    if ($_SESSION["semaforo"] >= 2) {
+    if (refrescarSemaforo() >= 2) {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => "En estos momentos, no hay camillas disponibles."]);
         exit;
     }
     try {
 
-
         $modeloHosp = new ModeloHospitalizacion();
         $modeloBitacora = new ModeloBitacora();
+
 
         $modeloHosp->setIdPaciente($_POST["id_paciente"]);
         $modeloHosp->setIdDoctor($_POST["id_personal"]);
