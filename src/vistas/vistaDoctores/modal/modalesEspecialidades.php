@@ -1,116 +1,46 @@
-<div id="modal-especialidad" uk-modal>
-  <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-    <!-- Boton que cierra el modal -->
-    <div class="d-flex justify-content-between ">
+<!-- Modal Agregar-->
+<div class="modal fade" id="exampleModalAgregarEspecialidad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content tamaño-modal">
+      <div class="modal-header">
+        <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Registrar Patologia</h5>
+        <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#exampleModalConsultarSintoma"></button>
+      </div>
+      <form class=" form-validable" id="formEspecialidad">
 
+        <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
-      <div class="d-flex align-items-center mb-3" id="EspecialidadesAyuda">
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="currentColor"
-            class="bi bi-mortarboard-fill azul me-3 mb-3 azul" viewBox="0 0 16 16">
-            <path
-              d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z" />
-            <path
-              d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z" />
-          </svg>
+        <div class="modal-body">
+
+          <label class="label-custom">Nombre de la patologia</label>
+          <div class="campo-custom">
+            <div class="input-custom">
+              <span class="icono-izq">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                  class="bi bi-bandaid-fill azul" viewBox="0 0 16 16">
+                  <path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z" />
+                </svg>
+              </span>
+              <input class="form-control txt-custom input-validar" name="nombre" type="text" placeholder="Nombre del sintoma">
+              <span class="icono-der">
+                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                </svg>
+                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+              </span>
+            </div>
+            <p class="error-msg d-none"></p>
+          </div>
+
         </div>
-        <div class="">
-          <p class="uk-modal-title fs-5 fw-bold">
-            Especialidades
-          </p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-modals-cancelar me-2" data-bs-toggle="modal" data-bs-target="#exampleModalConsultarSintoma">Cancelar</button>
+          <button type="submit" class="btn btn-modals">Registrar</button>
         </div>
-      </div>
-      <!-- Ayuda interactiva -->
-      <div class="d-flex justify-content-end mb-3">
-        <a href="#" uk-tooltip="Ayuda">
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-            class="bi bi-question-octagon-fill azul ms-4" viewBox="0 0 16 16" id="btnayudaEspecialidades">
-            <path
-              d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
-          </svg>
-        </a>
-      </div>
+      </form>
     </div>
-
-    <!-- Buscador -->
-    <div class="d-flex justify-content-end">
-
-
-
-
-      <div class="d-flex justify-content-end mb-4 col-6" id="form-buscador">
-
-        <a class="btn d-none" title="Buscar" id="reiniciarBusquedaEspecialidad" uk-tooltip="Restablecer">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat"
-            viewBox="0 0 16 16">
-            <path
-              d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
-            <path fill-rule="evenodd"
-              d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
-          </svg>
-        </a>
-        <form action="?c=ControladorDoctores/buscarEspecialidad" method="POST" id="form-buscadorEspecialidad"
-          class="d-flex justify-content-end" autocomplete="off">
-          <input class="form-control input-busca" type="text" name="nombre" placeholder="Ingrese Especialidad"
-            id="inputBuscarEspecialidad">
-          <button class="btn boton-buscar" title="Buscar" id="especialidadBuscar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
-              viewBox="0 0 16 16">
-              <path
-                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-            </svg>
-          </button>
-        </form>
-      </div>
-    </div>
-    <div class="">
-      <table class="table table-striped exampleTable2" id="tablaEspecialidad">
-        <thead>
-          <tr>
-            <th class=" text-center">#</th>
-            <th class=" text-center border-start">Nombre</th>
-            <th class=" text-center border-start">Acción</th>
-
-          </tr>
-        </thead>
-        <tbody id="cuerpoTablaEspecialidad">
-
-
-
-
-
-
-
-        </tbody>
-      </table>
-
-      <table class="table table-striped " style="margin-top: -16px;">
-        <thead>
-
-        </thead>
-        <tbody>
-          <tr class="d-none" id="noResultado">
-            <td colspan="9" class="text-center">NO HAY REGISTROS
-
-            </td>
-          </tr>
-        </tbody>
-
-      </table>
-
-
-
-    </div>
-
-    <div class="mt-3 uk-text-right">
-      <button class="uk-button col-6 me-2 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
-        id="cerrarModalEspecialidad">CERRAR</button>
-      <a href="#" class="text-decoration-none">
-        <button class="btn col-5 btn-agregarcita-modal" id="botonAgregarEspecialidad"
-          uk-toggle="target: #modal-exampleAgregarEspecialidades">Registrar</button></a>
-
-    </div>
-
   </div>
 </div>
 
@@ -122,78 +52,38 @@
 
 
 
-<!-- modal agregar especialidad -->
 
-<div id="modal-exampleAgregarEspecialidades" uk-modal>
-  <div class="uk-modal-dialog uk-modal-body tamaño-modal">
 
-    <div class="d-flex justify-content-between ">
-      <div class="d-flex align-items-center mb-3" id="registrarEspecialidades">
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-            class="bi bi-mortarboard-fill azul me-3 mb-3 azul" viewBox="0 0 16 16">
-            <path
-              d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z" />
-            <path
-              d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z" />
-          </svg>
-        </div>
-        <div class="">
-          <p class="uk-modal-title fs-5 ">
-            Registrar Especialidad
-          </p>
-        </div>
+
+<div class="modal fade" id="exampleModalConsultarEspecialidad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content tamaño-modal">
+      <div class="modal-header">
+        <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Gestionar Especialidades</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <!-- Ayuda interactiva -->
-      <div class="d-flex justify-content-end mb-3">
-        <a href="#" uk-tooltip="Ayuda">
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-            class="bi bi-question-octagon-fill azul ms-4" viewBox="0 0 16 16" id="btnayudaEspecialidades2">
-            <path
-              d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z" />
-          </svg>
-        </a>
+      <div class="table table-responsive">
+        <table class="exampleTable2 table table-striped">
+          <thead>
+            <tr>
+              <th class="text-dark text-center">#</th>
+              <th class="text-dark text-center">Nombre</th>
+              <th class="text-dark text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+
+
+
+          </tbody>
+        </table>
       </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-modals" data-bs-toggle="modal" data-bs-target="#exampleModalAgregarEspecialidad">Nuevo</button>
+      </div>
+
     </div>
-
-
-    <div class="alert alert-danger d-none" role="alert" id="alerta">
-      <div class="">
-        <p style="font-size: 13px;" class="text-center">VERIFIQUE EL FORMULARIO ANTES DE ENVIARLO</p>
-      </div>
-    </div>
-
-    <form class="form-modal" id="modalAgregarEspecialidad" action="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/registrarEspecialidad" method="POST">
-
-      <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
-
-      <div class="input-group flex-nowrap margin-inputs" id="grp_nombre">
-        <span class="input-modal mt-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-            class="bi bi-mortarboard-fill azul" viewBox="0 0 16 16">
-            <path
-              d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z" />
-            <path
-              d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z" />
-          </svg>
-        </span>
-
-        <input class="form-control input-modal input-disabled input-paciente" type="text" id="nombre" name="nombre"
-          placeholder="Nombre de la Especialidad" required maxlength="20">
-      </div>
-
-      <div class="mt-3 uk-text-right">
-        <button class="uk-button col-6 me-2 uk-button-default btn-cerrar-modal" type="button"
-          uk-toggle="target: #modal-especialidad" id="cancelarRegistroespecialidades">Cancelar</button>
-        <button class="btn col-5 btn-agregarcita-modal" type="sumit" name="crear"
-          id="botonEnviarEspecialidad">Agregar</button>
-      </div>
-    </form>
   </div>
 </div>
-
-<script src="./src/assets/js/ayudaEspecialidades.js"></script>
-
-
-
-<!-- Modal Eliminar -->

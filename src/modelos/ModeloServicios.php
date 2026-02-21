@@ -42,13 +42,12 @@ class ModeloServicios extends ModelBase
     public function mostrarServiciosDoctor()
     {
         try {
-
-            $data = ['id_doctor' => $this->getIdDoctor()];
+            
 
             $sql = "SELECT categoria_nombre.nombre as categoria, serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM bd.personal p INNER JOIN bd.personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
-            bd.serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN bd.especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN bd.categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria  WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' AND serviciomedico.estado = 'ACT' AND ps.personal_id_personal  = :id_doctor";
+            bd.serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN bd.especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN bd.categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria  WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' AND serviciomedico.estado = 'ACT' ";
             $this->setSQL($sql);
-            return $this->search($data);
+            return $this->read();
         } catch (\Exception $e) {
             return $e->getMessage();
         }

@@ -126,26 +126,32 @@ const readPatients = async () => {
             btn.addEventListener("click", function () {
                 //objetos con todos los parametros de la funcion
                 const parametros = {
-                    labelModal: exampleModalLabel,
-                    textLabelModal: "Modificar Paciente",
-                    form: modalAgregar,
-                    modal: modalAgregar.parentElement.parentElement.parentElement,
-                    btnModal: botonModal,
-                    btnTextModal: "Modificar",
-                    data: {
-                        nacionalidad: btn.closest("tr").children[0].innerText.slice(0, 1),
-                        cedula: parseInt(btn.closest("tr").children[0].innerText.slice(2)),
-                        nombre: btn.closest("tr").children[1].innerText,
-                        apellido: btn.closest("tr").children[2].innerText,
-                        telefono: parseInt(btn.closest("tr").children[3].innerText),
-                        direccion: btn.closest("tr").children[4].innerText,
-                        fn: btn.closest("tr").children[5].innerText,
-                        genero: btn.closest("tr").children[6].innerText,
-                        id: btn.closest("tr").children[8].children[0].getAttribute("data-index"),
-                    },
-                    inputs: inputs,
-                    cedulaOculta: cedulaRegistrada,
-                    idOculto: id_paciente,
+                  labelModal: exampleModalLabel,
+                  textLabelModal: "Modificar Paciente",
+                  form: modalAgregar,
+                  modal: modalAgregar.parentElement.parentElement.parentElement,
+                  btnModal: botonModal,
+                  btnTextModal: "Modificar",
+                  data: {
+                    nacionalidad: btn
+                      .closest("tr")
+                      .children[0].innerText.slice(0, 1),
+                    cedula: parseInt(
+                      btn.closest("tr").children[0].innerText.slice(2),
+                    ),
+                    nombre: btn.closest("tr").children[1].innerText,
+                    apellido: btn.closest("tr").children[2].innerText,
+                    telefono: parseInt(btn.closest("tr").children[3].innerText),
+                    direccion: btn.closest("tr").children[4].innerText,
+                    fn: btn.closest("tr").children[5].innerText,
+                    genero: btn.closest("tr").children[6].innerText,
+                    id: btn
+                      .closest("tr")
+                      .children[8].children[0].getAttribute("data-index"),
+                  },
+                  inputs: inputs,
+                  cedulaOculta: cedulaRegistrada,
+                  idOculto: id_paciente,
                 };
                 showDataModal(parametros);
             });
