@@ -12,23 +12,12 @@ use Exception;
 class ModeloHospitalizacion extends ModelBase
 {
 
-    private $idH, $fechaHora, $idInsumo, $nombreInsumo, $cantidadIns, $idServicio, $fechaControl, $idInsH, $idInsElim, $idInsumosA, $cantidadE, $cantidadA, $fechaHoraFinal, $monto, $montoME, $total, $totalME, $patologiasId, $sintomasId, $cantidadSer;
+    private $idH, $fechaHora, $idInsumo, $nombreInsumo, $cantidadIns, $idServicio, $fechaControl, $idInsH, $idInsElim, $idInsumosA, $cantidadE, $cantidadA, $fechaHoraFinal, $monto, $montoME, $total, $totalME, $patologiasId, $sintomasId, $cantidadSer, $severidad, $nota, $fechaRegreso, $diagnostico, $historial, $indicaciones, $cedula, $id_paciente, $id_doctor;
 
     public function __construct($dbSystem = true)
     {
         parent::__construct($dbSystem);
     }
-
-    private function returnObjetModel()
-    {
-        return [
-            "modeloPacientes" => new ModeloPacientes(),
-            "modeloDoctores" => new ModeloDoctores(),
-            "modeloUsuarios" => new ModeloUsuarios(),
-            "modeloControl" => new ModeloControl()
-        ];
-    }
-
 
     public function index()
     {
@@ -154,7 +143,7 @@ class ModeloHospitalizacion extends ModelBase
             $sql = "SELECT cedula, id_paciente, nombre, apellido FROM paciente WHERE cedula = :cedula AND estado= 'ACT'";
             $this->setSQL($sql);
 
-            $consulta = $this->search(['cedula' => $this->returnObjetModel()["modeloPacientes"]->getCedula()], false);
+            $consulta = $this->search(['cedula' => $this->getCedula()], false);
 
             return !empty($consulta) ? $consulta : false;
         } catch (\Exception $e) {
@@ -171,7 +160,7 @@ class ModeloHospitalizacion extends ModelBase
             $sql = "SELECT con.id_control, con.historiaclinica, con.diagnostico, pac.id_paciente, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM control con INNER JOIN paciente pac ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico WHERE pac.cedula = :cedula AND con.estado = 'ACT' AND sm.estado = 'ACT' AND u.estado = 'ACT' ORDER by con.id_control DESC LIMIT 1";
             $this->setSQL($sql);
 
-            $consulta = $this->search(['cedula' => $this->returnObjetModel()["modeloPacientes"]->getCedula()], false);
+            $consulta = $this->search(['cedula' => $this->getCedula()], false);
 
             return !empty($consulta) ? $consulta : false;
         } catch (\Exception $e) {
@@ -234,8 +223,8 @@ class ModeloHospitalizacion extends ModelBase
             $sql = "SELECT id_hospitalizacion FROM hospitalizacion WHERE id_paciente = :id_paciente AND personal_id_personal = :id_personal AND estado = 'Pendiente';";
             $this->setSQL($sql);
             $data = [
-                'id_paciente' => $this->returnObjetModel()["modeloPacientes"]->getIdPaciente(),
-                'id_personal' => $this->returnObjetModel()["modeloDoctores"]->getIdDoctor()
+                'id_paciente' => $this->getIdPaciente(),
+                'id_personal' => $this->getIdDoctor()
             ];
             $consulta = $this->search($data, false);
 
@@ -252,8 +241,8 @@ class ModeloHospitalizacion extends ModelBase
         try {
             $dataH = [
                 'fecha_hora_inicio' => $this->getFechaHora(),
-                'id_paciente' => $this->returnObjetModel()["modeloPacientes"]->getIdPaciente(),
-                'id_personal' => $this->returnObjetModel()["modeloDoctores"]->getIdDoctor()
+                'id_paciente' => $this->getIdPaciente(),
+                'id_personal' => $this->getIdDoctor()
             ];
 
             $sql = "INSERT INTO hospitalizacion (fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_paciente, fecha_hora_final, estado, personal_id_personal)  VALUES (:fecha_hora_inicio, '', '', '', '', :id_paciente, '', 'Pendiente', :id_personal);";
@@ -333,7 +322,7 @@ class ModeloHospitalizacion extends ModelBase
             $sql = "SELECT u.id_usuario FROM segurity.usuario u JOIN bd.personal p ON p.usuario = u.id_usuario WHERE p.id_personal = :id_personal LIMIT 1;";
             $this->setSQL($sql);
             $data = [
-                'id_personal' => $this->returnObjetModel()["modeloDoctores"]->getIdDoctor()
+                'id_personal' => $this->getIdDoctor()
             ];
             $consulta = $this->search($data, false);
 
@@ -343,12 +332,12 @@ class ModeloHospitalizacion extends ModelBase
             $sql = "INSERT INTO control (id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado, severidad) VALUES (:id_paciente, :id_usuario, :diagnostico, '', :fecha_control, '', '', :historial, 'DES', :severidad);";
             $this->setSQL($sql);
             $data = [
-                'id_paciente' => $this->returnObjetModel()["modeloPacientes"]->getIdPaciente(),
+                'id_paciente' => $this->getIdPaciente(),
                 'id_usuario' => $idUsuario["id_usuario"],
-                'diagnostico' => $this->returnObjetModel()["modeloControl"]->getDiagnostico(),
+                'diagnostico' => $this->getDiagnostico(),
                 'fecha_control' => $this->getFechaControl(),
-                'historial' => $this->returnObjetModel()["modeloControl"]->getHistorial(),
-                'severidad' => $this->returnObjetModel()["modeloControl"]->getSeveridad(),
+                'historial' => $this->getHistorial(),
+                'severidad' => $this->getSeveridad(),
             ];
             //devuelve el id de la hospitalización.
             $this->create($data);
@@ -415,8 +404,8 @@ class ModeloHospitalizacion extends ModelBase
             $sql = "UPDATE control SET historiaclinica = :historial, diagnostico = :diagnostico WHERE id_control = :id;";
             $this->setSQL($sql);
             $data = [
-                "historial" => $this->returnObjetModel()["modeloControl"]->getHistorial(),
-                "diagnostico" => $this->returnObjetModel()["modeloControl"]->getDiagnostico(),
+                "historial" => $this->getHistorial(),
+                "diagnostico" => $this->getDiagnostico(),
             ];
 
             $this->update($data, $idControl["id_control"]);
@@ -682,12 +671,12 @@ class ModeloHospitalizacion extends ModelBase
             $sql = 'UPDATE control SET medicamentosRecetados = :indicaciones, historiaclinica = :historial, diagnostico = :diagnostico, fechaRegreso = :fechaRegreso, nota = :nota, severidad = :severidad WHERE id_control = :id_control;';
             $this->setSQL($sql);
             $data = [
-                "indicaciones" => $this->returnObjetModel()["modeloControl"]->getIndicaciones(),
-                "historial" => $this->returnObjetModel()["modeloControl"]->getHistorial(),
-                "diagnostico" => $this->returnObjetModel()["modeloControl"]->getDiagnostico(),
-                "fechaRegreso" => $this->returnObjetModel()["modeloControl"]->getFechaDeRegreso(),
-                "nota" => $this->returnObjetModel()["modeloControl"]->getNota(),
-                "severidad" => $this->returnObjetModel()["modeloControl"]->getSeveridad(),
+                "indicaciones" => $this->getIndicaciones(),
+                "historial" => $this->getHistorial(),
+                "diagnostico" => $this->getDiagnostico(),
+                "fechaRegreso" => $this->getFechaDeRegreso(),
+                "nota" => $this->getNota(),
+                "severidad" => $this->getSeveridad(),
             ];
             $this->update($data, $datosControl["id_control"]);
 
@@ -730,7 +719,7 @@ class ModeloHospitalizacion extends ModelBase
         try {
 
             // verifica cuantas hospitalizaciones hay pendiente
-            $sql = "SELECT COUNT(*) FROM hospitalizacion WHERE estado = 'Pendiente';";
+            $sql = "SELECT COUNT(*) as cantidadP FROM hospitalizacion WHERE estado = 'Pendiente';";
             $this->setSQL($sql);
             $consulta = $this->read();
 
@@ -1030,7 +1019,139 @@ class ModeloHospitalizacion extends ModelBase
         $this->sintomasId = $sintomasId;
     }
 
-    // getter
+    public function setSeveridad($severidad)
+    {
+        $this->severidad = $severidad;
+    }
+
+    public function setNota($nota)
+    {
+        $this->nota = $nota;
+    }
+
+    public function setFechaRegreso($fechaRegreso)
+    {
+        $dt = \DateTime::createFromFormat('Y-m-d', $fechaRegreso);
+        $fechaHoy = date("Y-m-d");
+
+        if (!$dt || $dt->format('Y-m-d') !== $fechaRegreso) {
+            throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+        }
+        if ($fechaRegreso <= $fechaHoy) {
+            throw new \InvalidArgumentException("La fecha no puede ser del pasado.");
+        }
+
+        $this->fechaRegreso = $fechaRegreso;
+    }
+
+    public function setDiagnostico($diagnostico)
+    {
+        if (!preg_match("/^([A-Za-z0-9\s\.,#-]{8,})$/", $diagnostico)) {
+            throw new \InvalidArgumentException("el diagnostico debe estar completa y detallada.");
+        }
+
+        $this->diagnostico = $diagnostico;
+    }
+
+    public function setHistorial($historial)
+    {
+        if (!preg_match("/^([A-Za-z0-9\s\.,#-]{8,})$/", $historial)) {
+            throw new \InvalidArgumentException("El historial debe estar completa y detallada.");
+        }
+
+        $this->historial = $historial;
+    }
+
+    public function setIndicaciones($indicaciones)
+    {
+
+        if (!preg_match("/^([A-Za-z0-9\s\.,#-]{8,})$/", $indicaciones)) {
+            throw new \InvalidArgumentException("lasindicaciones debe estar completa y detallada.");
+        }
+        $this->indicaciones  = $indicaciones;
+    }
+
+    public function setCedula($cedula)
+    {
+        if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
+            throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
+        }
+        $this->cedula = $cedula;
+    }
+
+    public function setIdPaciente($id_paciente)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_paciente)) {
+            throw new \InvalidArgumentException("El ID del paciente debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_paciente <= 0) {
+            throw new \InvalidArgumentException("El ID del paciente debe ser mayor que cero.");
+        }
+
+        $this->id_paciente = (int)$id_paciente;
+    }
+
+    public function setIdDoctor($id_doctor)
+    {
+        if (!preg_match("/^[0-9]+$/", $id_doctor)) {
+            throw new \InvalidArgumentException("El ID del doctor debe ser un número entero positivo.");
+        }
+
+        if ((int)$id_doctor <= 0) {
+            throw new \InvalidArgumentException("El ID del doctor debe ser mayor que cero.");
+        }
+        $this->id_doctor = $id_doctor;
+    }
+
+
+
+    // getters
+    public function getIdDoctor()
+    {
+        return $this->id_doctor;
+    }
+
+    public function getIdPaciente()
+    {
+        return $this->id_paciente;
+    }
+
+    public function getCedula()
+    {
+        return $this->cedula;
+    }
+
+    public function getIndicaciones()
+    {
+        return $this->indicaciones;
+    }
+
+    public function getHistorial()
+    {
+        return $this->historial;
+    }
+
+    public function getDiagnostico()
+    {
+        return $this->diagnostico;
+    }
+
+    public function getFechaDeRegreso()
+    {
+        return $this->fechaRegreso;
+    }
+
+    public function getNota()
+    {
+        return $this->nota;
+    }
+
+    public function getSeveridad()
+    {
+        return $this->severidad;
+    }
+
     public function getPatologiasId()
     {
         return $this->patologiasId;

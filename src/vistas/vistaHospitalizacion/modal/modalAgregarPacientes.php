@@ -8,7 +8,7 @@
     <!-- Párrafo oculto para cerrar (igual que el original) -->
     <p class="text-center text-white fw-bolder d-none" id="pModalOculto" data-bs-dismiss="modal">Presione clic</p>
 
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-md">
         <div class="modal-content tamaño-modal hospit">
 
             <div class="modal-header border-0 pb-0">
@@ -38,61 +38,70 @@
 
                     <!-- SECCIÓN: BUSCAR PACIENTE -->
                     <div class="ms-4 me-4 mt-3 mb-4">
-                        <!-- Buscador por cédula -->
-                        <div>
+                        <div class="row align-items-center g-2">
 
-                            <label class="label-custom">Buscar paciente</label>
+                            <!-- Buscador por cédula -->
+                            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
 
-                            <div class="campo-custom" bis_skin_checked="1">
-                                <div class="input-custom" id="divGrp_cedula" bis_skin_checked="1">
+                                <label class="label-custom">Buscar paciente</label>
 
-                                    <span class="icono-izq">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
-                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5ZM9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8Zm1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Zm-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96c.026-.163.04-.33.04-.5ZM7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"></path>
-                                        </svg>
-                                    </span>
+                                <div class="campo-custom">
+                                    <div class="input-custom" id="divGrp_cedula">
 
-                                    <!-- Selector de nacionalidad V / E -->
-                                    <select class="form-control-plaintext tamaño-select-mini inputs" id="nacionalidadH" name="nacionalidad" aria-label="Nacionalidad">
-                                        <option value="V" selected="">V</option>
-                                        <option value="E">E</option>
-                                    </select>
+                                        <span class="icono-izq">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5ZM9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8Zm1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Zm-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96c.026-.163.04-.33.04-.5ZM7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
+                                            </svg>
+                                        </span>
 
-                                    <!-- Input cédula — búsqueda automática (debounce 500 ms) -->
-                                    <input class="form-control txt-custom input-validar inputs" type="number" name="cedula" id="bt" placeholder="Cédula del paciente" maxlength="8" minlength="6" oninput="if(this.value.length&gtthis.maxLength) this.value=this.value.slice(0,this.maxLength)">
+                                        <!-- Selector de nacionalidad V / E -->
+                                        <select class="form-control-plaintext tamaño-select-mini inputs" id="nacionalidadH" name="nacionalidad" aria-label="Nacionalidad">
+                                            <option value="V" selected>V</option>
+                                            <option value="E">E</option>
+                                        </select>
 
-                                    <span class="icono-der">
-                                        <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
-                                        </svg>
-                                        <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
-                                        </svg>
-                                    </span>
+                                        <!-- Input cédula — búsqueda automática (debounce 500 ms) -->
+                                        <input class="form-control txt-custom input-validar inputs w-100" type="number" name="cedula" id="bt" placeholder="Cédula del paciente" maxlength="8" minlength="6">
+
+                                        <span class="icono-der">
+                                            <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                            </svg>
+                                            <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                            </svg>
+                                        </span>
+                                    </div>
+
+                                    <p class="error-msg fw-bold p-error-validaciones p-error-cedula d-none">
+                                        La cédula debe contener únicamente números y estar entre 6 a 8 caracteres.
+                                    </p>
                                 </div>
-                                <p class="error-msg fw-bold p-error-validaciones p-error-cedula d-none">
-                                    La cédula debe contener únicamente números y estar entre 6 a 8 caracteres.
-                                </p>
+
                             </div>
 
-                        </div>
-                        <div>
-                            <!-- Enlace al off-canvas (visible solo cuando hay paciente) -->
-                            <a href="#" id="inforPaciente"
-                                class="d-none ms-2 d-flex align-items-center gap-1 text-decoration-none color-icono"
-                                data-bs-toggle="offcanvas" data-bs-target="#offcanvas-paciente-info">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                    class="bi bi-file-text-fill" viewBox="0 0 16 16">
-                                    <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z" />
-                                </svg>
-                                <p class="fw-bolder mb-0" id="p-paciente"></p>
-                            </a>
+                            <!-- Info del paciente encontrado -->
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-7 ps-3 pt-0 pt-lg-3">
 
-                            <p class="fw-bolder ms-2 mb-1" id="p-no-paciente"></p>
-                            <a href="#" class="d-none ms-2 text-decoration-none fw-bold azul" id="aPaciente"
-                                data-bs-toggle="modal" data-bs-target="#modal-examplePaciente" data-bs-dismiss="modal">
-                                Ir a agregar paciente
-                            </a>
+                                <!-- Enlace al off-canvas (visible solo cuando hay paciente) -->
+                                <a href="#" id="inforPaciente"
+                                    class="d-none d-flex align-items-center gap-1 text-decoration-none color-icono"
+                                    data-bs-toggle="offcanvas" data-bs-target="#offcanvas-paciente-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                                        class="bi bi-file-text-fill" viewBox="0 0 16 16">
+                                        <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z" />
+                                    </svg>
+                                    <p class="fw-bolder mb-0" id="p-paciente"></p>
+                                </a>
+
+                                <p class="fw-bolder mb-1" id="p-no-paciente"></p>
+                                <a href="#" class="d-none text-decoration-none fw-bold azul" id="aPaciente"
+                                    data-bs-toggle="modal" data-bs-target="#modal-examplePaciente" data-bs-dismiss="modal">
+                                    Ir a agregar paciente
+                                </a>
+
+                            </div>
+
                         </div>
                     </div>
                     <!-- ── CONTENEDOR: resto del formulario (aparece al encontrar paciente) ── -->
@@ -135,11 +144,11 @@
                         </div>
 
                         <!-- ── SERVICIO MÉDICO ── -->
-                        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-                            <h6 class="fw-bold mt-2 ms-5 mb-2 col-9 ">Servicio médico</h6>
+                        <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+                            <h6 class="fw-bold mt-2 ms-2 mb-2 col-9 ">Servicio médico</h6>
 
                             <!-- Botón agregar (visible cuando ya hay al menos un servicio) -->
-                            <a href="#" class="d-none d-flex align-items-center gap-1 text-decoration-none color-icono fw-bold"
+                            <a href="#" class="d-none d-flex align-items-center gap-1 text-decoration-none color-icono fw-bold azul"
                                 id="btnAServiciosExisteA"
                                 data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
@@ -153,7 +162,7 @@
 
                         <!-- Botón inicial (cuando no hay servicios) -->
                         <div id="btnAServicioNoExiste">
-                            <a href="#" class="d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono"
+                            <a href="#" class="d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono azul"
                                 id="btnASA" data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                                     class="bi bi-plus-circle" viewBox="0 0 16 16">
@@ -172,12 +181,12 @@
                         <div class="row g-3 mb-3" id="div-serviciosA"></div>
 
                         <!-- ── MEDICAMENTOS / INSUMOS ── -->
-                        <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-                            <h6 class="fw-bold mt-2 ms-5 col-9 mb-2 mt-2">Medicamento y precio</h6>
+                        <div class="d-flex justify-content-between align-items-center mt-5 mb-4">
+                            <h6 class="fw-bold mt-2 ms-2 col-9 mb-2 mt-2">Medicamento y precio</h6>
 
 
                             <!-- Botón agregar más insumos (visible cuando ya hay alguno) -->
-                            <a href="#" class="d-none d-flex align-items-center gap-1 text-decoration-none color-icono fw-bold"
+                            <a href="#" class="d-none d-flex align-items-center gap-1 text-decoration-none color-icono fw-bold azul"
                                 id="btnAInsumoExiste"
                                 data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
@@ -191,7 +200,7 @@
 
                         <!-- Botón inicial (cuando no hay insumos) -->
                         <div id="btnAInsumoNoExiste">
-                            <a href="#" class="d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono"
+                            <a href="#" class="d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono azul"
                                 id="btnAIA" data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                                     class="bi bi-plus-circle" viewBox="0 0 16 16">
@@ -273,12 +282,13 @@
 
                     </form>
 
-                    
+
                     <!-- OFFCANVAS(Bootstrap puro) -->
                     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas-paciente-info"
                         aria-labelledby="offcanvasPacienteLabel"
                         data-bs-backdrop="true" data-bs-scroll="false">
 
+                        <!-- HEADER — igual al tuyo -->
                         <div class="offcanvas-header" style="background-color: #387adf;">
                             <div class="d-flex align-items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white"
@@ -286,19 +296,27 @@
                                     <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z" />
                                 </svg>
                                 <h5 class="offcanvas-title fw-bold mb-0 text-white" id="offcanvasPacienteLabel">
-                                    <!-- JS llena el nombre: --> <span id="nombreInfor">Datos del paciente</span>
+                                    <span id="nombreInfor">Datos del paciente</span>
                                 </h5>
                             </div>
                             <button type="button" class="btn-close btn-close-white" id="closeModal"
                                 data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
                         </div>
 
+                        <!-- BODY -->
                         <div class="offcanvas-body" style="background-color: var(--color-bg-card);">
-                            <h5 class="text-center fw-bold mb-3">Diagnóstico previo</h5>
-                            <p class="parrafo-offcanvas" id="inforDiagnostico" style="color: var(--color-text-card);"></p>
-                        </div>
-                    </div>
 
+                            <p class="titulo-seccion-offcanvas">
+                                <i class="bi bi-clipboard2-pulse-fill me-1"></i> Diagnóstico previo
+                            </p>
+
+                            <div class="caja-diagnostico-offcanvas">
+                                <p class="parrafo-offcanvas" id="inforDiagnostico"></p>
+                            </div>
+
+                        </div>
+
+                    </div>
 
         </div>
     </div>
@@ -361,14 +379,14 @@
 
             </div>
 
-                <?php if (empty($doctores)) : ?>
-                    <form class="me-3 ms-3 mt-2 form-validable" method="" id="formularioAgregarH"
-                        action="#">
+            <?php if (empty($doctores)) : ?>
+                <form class="me-3 ms-3 mt-2 form-validable" method="" id="formularioAgregarH"
+                    action="#">
                 <?php else: ?>
 
                     <form class="me-3 ms-3 mt-2 form-validable" method="POST" id="formularioAgregarH"
                         action="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/agregarH">
-                <?php endif; ?>
+                    <?php endif; ?>
 
 
 
@@ -398,7 +416,7 @@
 
                             </div>
                             <div class="d-flex justify-content-end mt-4 mb-3 col-6 divGrp_cedula" id="">
-                                <input class="form-control input-buscar input-validar" type="number" name="cedula" placeholder="Ingrese cédula" id="bt" maxlength="8" minlength="6" required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                                <input class="form-control input-buscar input-validar" type="number" name="cedula" placeholder="Ingrese cédula" id="bt" maxlength="8" minlength="6" required>
                                 <p class="p-error-cedula d-none">La cédula debe contener únicamente números y estar entre 6 a 7 caracteres</p>
 
                                 <a href="#" class="btn btn-buscar" title="Buscar" id="btn-buscar">
@@ -460,11 +478,11 @@
                             <div>
                                 <div class="col-12 d-flex align-items-center justify-content-center  mt-4 pt-3 mb-2">
 
-                                    <div class="col-3 ps-5 pt-1 ">
+                                    <div class="col-3 ps-2 pt-1 ">
 
                                         <div class="d-none" id="btnAServiciosExisteA">
                                             <a href="#"
-                                                class="d-flex justify-content-center align-items-center text-decoration-none"
+                                                class="d-flex justify-content-center align-items-center text-decoration-none me-2"
                                                 id="" data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
                                                 <p class="mt-3 me-1 fw-bolder ">Agregar</p>
                                                 <div class="color-icono">
@@ -518,11 +536,11 @@
 
                             <div class="col-12 d-flex align-items-center justify-content-center  mt-4 pt-3 mb-2">
 
-                                <div class="col-3 ps-5 pt-1 ">
+                                <div class="col-3 ps-2 pt-1 ">
 
                                     <div class="d-none" id="btnAInsumoExiste">
                                         <a href="#"
-                                            class="d-flex justify-content-center align-items-center text-decoration-none"
+                                            class="me-2 d-flex justify-content-center align-items-center text-decoration-none"
                                             id="" data-bs-toggle="modal"
                                             data-bs-target="#modal-agregar-insumos">
                                             <p class="mt-3 me-1 fw-bolder ">Agregar</p>

@@ -146,125 +146,116 @@
 
 <!-- modal consultar -->
 <div id="modalCon">
-    <!-- modal off-canvas que sale a la derecha  (CONSULTA)-->
-    <div id="offcanvas-mostrarH"
-        uk-offcanvas="esc-close: false; mode: reveal; flip: true; overlay: true">
-        <div class="uk-offcanvas-bar">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas-mostrarH"
+        aria-labelledby="offcanvasMostrarLabel"
+        data-bs-backdrop="true" data-bs-scroll="false">
 
-            <button class="uk-offcanvas-close" id="closeModal" type="button" uk-close></button>
-
-            <div class="d-flex align-items-start">
-
-                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
-                    class="bi bi-file-text-fill me-1 pt-1 text-white col-1" viewBox="0 0 16 16">
-                    <path
-                        d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z" />
+        <!-- HEADER -->
+        <div class="offcanvas-header" style="background-color: #387adf;">
+            <div class="d-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white"
+                    class="bi bi-file-text-fill flex-shrink-0" viewBox="0 0 16 16">
+                    <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z" />
                 </svg>
-                <h3 class="fw-bold" id="nombreApellidoM">
-                    <!-- se agrega en el js -->
-                </h3>
-
-            </div>
-            <div class="d-flex align-items-start">
-
-                <h4 class="fw-bold me-2 ">C.I:</h4>
-                <p class="fw-bold fs-5 ce" id="cedulaM">
-                    <!-- se agrega en el js -->
-                </p>
-
-            </div>
-
-            <div class="d-flex align-items-start mt-4 mb-3 ">
-                <div class="col-12">
-                    <h4 class="text-center fw-bold text">Diagnostico</h4>
-                    <p class="parrafo-offcanvas" id="diagnosticoM">
-                        <!-- se agrega en el js -->
+                <div>
+                    <h5 class="offcanvas-title fw-bold mb-0 text-white" id="offcanvasMostrarLabel">
+                        <span id="nombreApellidoM"><!-- JS --></span>
+                    </h5>
+                    <p class="mb-0 text-white fw-bold" style="font-size: .82rem; opacity: .85;">
+                        C.I: <span id="cedulaM"><!-- JS --></span>
                     </p>
                 </div>
             </div>
-
-            <div class="d-flex align-items-start mb-2 ">
-                <div class="col-5">
-                    <h4 class=" fw-bold text">Doctor asignado</h4>
-                    <p class="parrafo-offcanvas" id="doctorM">
-                        <!-- se agrega en el js -->
-                    </p>
-                </div>
-
-                <p class="col-2"></p> <!-- solo separación -->
-                <div>
-                    <h4 class="text-center fw-bold ">Horas de hospitaliza- ción</h4>
-                    <p class="parrafo-offcanvas fs-5 text-center" id="hHosM"></p>
-                </div>
-            </div>
-
-            <div class="mt-1">
-
-            </div>
-
-            <div>
-                <h4 class="text-center fw-bold">Historia clínica</h4>
-                <p class="parrafo-offcanvas text-center" id="historiaM">
-                    <!-- se agrega en el js -->
-                </p>
-            </div>
-
-            <div class="d-flex align-items-start mb-2 ">
-                <div class="col-5">
-                    <h4 class=" fw-bold text">Calculo de monto por hora</h4>
-                    <div class="d-flex justify-content-center align-items-center text-center">
-                        <p class="parrafo-offcanvas fw-bold fs-5" id="cMontoHoraM">
-                            <!-- se agrega en el js -->
-                        </p>
-                        <p class="parrafo-offcanvas fw-bold fs-5">bs</p>
-                    </div>
-
-                </div>
-
-                <p class="col-2"></p> <!-- solo separación -->
-                <div>
-                    <h4 class="text-center fw-bold ">Calculo a moneda extranjera</h4>
-                    <div class="d-flex align-items-center justify-content-center text-center">
-                        <p class="parrafo-offcanvas fs-5 " id="cMoHoraMoExM"></p>
-                        <p class="parrafo-offcanvas fw-bold fs-5">$</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- verifico si es administrador o usuario -->
-            <!-- uno es doctor -->
-            <?php if ($validacionCargo == 1) : ?>
-                <!--no hay-->
-            <?php endif ?>
-
-            <!-- verifico si es administrador o usuario -->
-            <!-- cero es administrador más no doctor -->
-            <?php if ($validacionCargo == 0) : ?>
-                <div class="d-flex align-items-start mt-5">
-
-                    <h4 class="fw-bold me-2 ">Cálculo del total:</h4>
-                    <div class="">
-                        <div class="d-flex align-items-center justify-content-center text-center">
-                            <p class="fw-bold fs-5" id="calculoTotal">${res.total}bs</p>
-                            <p class="fw-bold fs-5">bs</p>
-                        </div>
-
-                        <h4 class="fw-bold text-center">o</h4>
-                        <div class="d-flex align-items-center justify-content-center text-center">
-                            <p class="fw-bold fs-5" id="calculoTotalME">${res.total}bs</p>
-                            <p class="fw-bold fs-5">$</p>
-                        </div>
-                    </div>
-
-                </div>
-            <?php endif ?>
-
+            <button type="button" class="btn-close btn-close-white" id="closeModal"
+                data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
         </div>
+
+        <!-- BODY -->
+        <div class="offcanvas-body" style="background-color: var(--color-bg-card);">
+
+            <!-- Diagnóstico -->
+            <p class="titulo-seccion-offcanvas">
+                <i class="bi bi-clipboard2-pulse-fill me-1"></i> Diagnóstico
+            </p>
+            <div class="caja-diagnostico-offcanvas mb-4">
+                <p class="parrafo-offcanvas" id="diagnosticoM"></p>
+            </div>
+
+            <!-- Doctor + Horas -->
+            <div class="row g-3 mb-4">
+                <div class="col-7">
+                    <p class="titulo-seccion-offcanvas">
+                        <i class="bi bi-person-badge-fill me-1"></i> Doctor asignado
+                    </p>
+                    <div class="caja-diagnostico-offcanvas">
+                        <p class="parrafo-offcanvas" id="doctorM"></p>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <p class="titulo-seccion-offcanvas">
+                        <i class="bi bi-clock-fill me-1"></i> Hrs. hospitali&shy;zación
+                    </p>
+                    <div class="caja-diagnostico-offcanvas text-center">
+                        <p class="parrafo-offcanvas fs-5 text-center" id="hHosM"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historia clínica -->
+            <p class="titulo-seccion-offcanvas">
+                <i class="bi bi-journal-medical me-1"></i> Historia clínica
+            </p>
+            <div class="caja-diagnostico-offcanvas mb-4">
+                <p class="parrafo-offcanvas text-center" id="historiaM"></p>
+            </div>
+
+            <!-- Montos -->
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <p class="titulo-seccion-offcanvas">
+                        <i class="bi bi-calculator me-1"></i> Monto por hora
+                    </p>
+                    <div class="caja-diagnostico-offcanvas text-center">
+                        <p class="parrafo-offcanvas fw-bold fs-5 mb-0" id="cMontoHoraM"></p>
+                        <span class="parrafo-offcanvas fw-bold" style="font-size: .75rem; opacity: .65;">Bs</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <p class="titulo-seccion-offcanvas">
+                        <i class="bi bi-currency-dollar me-1"></i> Moneda extranjera
+                    </p>
+                    <div class="caja-diagnostico-offcanvas text-center">
+                        <p class="parrafo-offcanvas fs-5 mb-0" id="cMoHoraMoExM"></p>
+                        <span class="parrafo-offcanvas fw-bold" style="font-size: .75rem; opacity: .65;">$</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solo admin (cargo == 0) -->
+            <?php if ($validacionCargo == 0) : ?>
+                <p class="titulo-seccion-offcanvas">
+                    <i class="bi bi-receipt me-1"></i> Cálculo del total
+                </p>
+                <div class="caja-diagnostico-offcanvas">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="parrafo-offcanvas fw-bold">En bolívares</span>
+                        <p class="parrafo-offcanvas fw-bold fs-5 mb-0">
+                            <span id="calculoTotal"></span> <small style="font-size:.75rem;opacity:.65;">Bs</small>
+                        </p>
+                    </div>
+                    <hr style="border-color: var(--color-border); margin: .6rem 0;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="parrafo-offcanvas fw-bold">En dólares</span>
+                        <p class="parrafo-offcanvas fw-bold fs-5 mb-0">
+                            <span id="calculoTotalME"></span> <small style="font-size:.75rem;opacity:.65;">$</small>
+                        </p>
+                    </div>
+                </div>
+            <?php endif ?>
+
+        </div><!-- /offcanvas-body -->
     </div>
-    <!-- los modales se agregan en js -->
 </div>
-
-
 
 
 <div class="modal fade " id="modalEnvioFacturaHospitalizacion" data-bs-keyboard="false" tabindex="-1"
@@ -520,10 +511,8 @@
 </div>
 
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/reutilizableHospitalizacion.js"></script>
-<script type="text/javascript"
-    src="<?= $urlBase ?>../src/assets/js/hospitalizacion/validacioneshospitalizacion.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/reutilizableHospitalizacion.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
 <script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>

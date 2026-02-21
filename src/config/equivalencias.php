@@ -138,6 +138,7 @@ return [
     "verificarPassw" => "consultar",
 
     //Hospitalizacion
+    "semaforo" => "consultar",
     "serviciosDH" => "consultar",
     "selectDoctores" => "consultar",
     "selectServiciosD" => "consultar",
