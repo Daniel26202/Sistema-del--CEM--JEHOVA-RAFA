@@ -236,6 +236,7 @@ btnOpenModal.addEventListener("click", function () {
         inputs: inputs,
     };
     clearModalEnviar(parametros);
+    
 });
 
 let verificarFormulario = inicializarValidacionFormulario(modalAgregar);

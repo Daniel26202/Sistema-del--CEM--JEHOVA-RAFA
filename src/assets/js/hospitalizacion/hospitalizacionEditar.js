@@ -4,13 +4,13 @@ import { traerSerevicio } from "../../js/hospitalizacion/reutilizableHospitaliza
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
+const modalHospBoots = new bootstrap.Modal(document.getElementById("modal-agregar-hospitalizacion"));
 
 document.addEventListener("DOMContentLoaded", async function () {
     let resultado = await executePetition(url + "/semaforo/", "GET");
 
     console.log(resultado);
     if (resultado.length > 0) {
-
     }
 });
 // Ajax //////
@@ -298,7 +298,6 @@ const vistaTabla = async () => {
         console.log("algo salio mal");
     } else {
         await traerHoraCosto();
-        mostrarMsj();
         if (resultad[1] == false) {
             html = `<tr>
                                 <td colspan="8" class="text-center">NO HAY REGISTROS
@@ -419,6 +418,7 @@ const vistaTabla = async () => {
             });
 
             document.querySelector("#semaforo").value = resultad[0][2];
+            console.log(resultad[0][2], "semaforo");
 
             document.querySelector("#tbody").innerHTML = html;
             document.querySelector("#div-oculto").innerHTML = htmlModales;
@@ -1081,82 +1081,6 @@ const traerUnInsumoE = async (id) => {
     }
 };
 
-function mostrarMsj() {
-    let urlActual = window.location.href;
-
-    if (urlActual.includes("agregado")) {
-        // quitar esto (&agregado) de la url
-        let nuevaUrl = urlActual.replace("/agregado", "");
-        // se agrega la nueva url
-        window.history.replaceState(null, null, nuevaUrl);
-
-        // agregamos el comentario
-        let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
-                            <a class="uk-alert-close" uk-close></a>
-                            <p class="pe-2 pb-1">Se ha agregado correctamente.</p>
-                        </div>`;
-        document.querySelector("#divComentarios").innerHTML = html;
-    } else if (urlActual.includes("eliminado")) {
-        // quitar esto (&agregado) de la url
-        let nuevaUrl = urlActual.replace("/eliminado", "");
-        // se agrega la nueva url
-        window.history.replaceState(null, null, nuevaUrl);
-
-        // agregamos el comentario
-        let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
-                            <a class="uk-alert-close" uk-close></a>
-                            <p class="pe-2 pb-1">Se elimino correctamente.</p>
-                        </div>`;
-        document.querySelector("#divComentarios").innerHTML = html;
-    } else if (urlActual.includes("error")) {
-        // quitar esto (&agregado) de la url
-        let nuevaUrl = urlActual.replace("/error", "");
-        // se agrega la nueva url
-        window.history.replaceState(null, null, nuevaUrl);
-
-        // agregamos el comentario
-        let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
-                            <a class="uk-alert-close" uk-close></a>
-                            <p class="pe-2 pb-1">La hospitalización ya existe.</p>
-                        </div>`;
-        document.querySelector("#divComentarios").innerHTML = html;
-    } else if (urlActual.includes("registroPaciente")) {
-        // quitar esto (&agregado) de la url
-        let nuevaUrl = urlActual.replace("/registroPaciente", "");
-        // se agrega la nueva url
-        window.history.replaceState(null, null, nuevaUrl);
-
-        // agregamos el comentario
-        let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
-                            <a class="uk-alert-close" uk-close></a>
-                            <p class="pe-2 pb-1">El paciente fue registrado exitosamente.</p>
-                        </div>`;
-        document.querySelector("#divComentarios").innerHTML = html;
-    } else if (urlActual.includes("errSemaforo")) {
-        // quitar esto (&agregado) de la url
-        let nuevaUrl = urlActual.replace("/errSemaforo", "");
-        // se agrega la nueva url
-        window.history.replaceState(null, null, nuevaUrl);
-
-        // agregamos el comentario
-        let html = `<div class="uk-alert-primary comentario me-4 fw-bolder pb-2" style="display: none;" uk-alert>
-                            <a class="uk-alert-close" uk-close></a>
-                            <p class="pe-2 pb-1">En estos momentos, no hay camillas disponibles.</p>
-                        </div>`;
-        document.querySelector("#divComentarios").innerHTML = html;
-    }
-
-    //este es el comentario
-    const comentario = document.querySelector(".comentario");
-    //si existe el comentario lo muestra y después de 8sg lo oculta
-    if (comentario) {
-        comentario.style.display = "block";
-
-        setTimeout(function () {
-            comentario.style.display = "none";
-        }, 8000);
-    }
-}
 
 const formE = document.querySelector("#formularioEditarH");
 const divME = document.querySelector(".divModalE");
@@ -1328,7 +1252,7 @@ const envioFSaveControl = async () => {
     }
 };
 
-let verificarFormulario = inicializarValidacionFormulario(formEnviarFactura);
+let verificarFormularioEF = inicializarValidacionFormulario(formEnviarFactura);
 
 formEnviarFactura.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -1338,13 +1262,51 @@ formEnviarFactura.addEventListener("submit", async function (e) {
         if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
     });
 
-    let esValido = verificarFormulario();
+    let esValido = verificarFormularioEF();
 
     if (esValido) {
         let idH = document.querySelector("#idH").value;
         await envioFSaveControl();
         formEnviarFactura.reset();
         window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H" + idH;
+    } else {
+        alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+    }
+});
+
+// agregar H
+let formularioAgregar = document.getElementById("formularioAgregarH");
+
+//function for save the control
+const createHosp = async () => {
+    try {
+        const data = new FormData(formularioAgregar);
+        let result = await executePetition(url + "/agregarH", "POST", data);
+
+        console.log(result);
+        vistaTabla();
+
+        // modalHospBoots.hide();
+        alertSuccess(result.message);
+    } catch (error) {
+        alertError("Error", error);
+    }
+};
+let verificarFormularioA = inicializarValidacionFormulario(formularioAgregar);
+
+formularioAgregar.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    let inputsBuenos = [];
+    this.querySelectorAll(".input-validar").forEach((input) => {
+        if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
+    });
+
+    let esValido = verificarFormularioA();
+
+    if (esValido) {
+        await createHosp();
+        // formularioAgregar.reset();
     } else {
         alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }

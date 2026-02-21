@@ -110,9 +110,9 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                             class="form-control"
                                             id="username"
                                             name="username"
-                                            placeholder="Tu correo o usuario"
+                                            placeholder="Tu usuario"
                                             required
-                                            data-intro="Ingrese su nombre de usuario o correo electrónico"
+                                            data-intro="Ingrese su nombre de usuario"
                                             data-step="1">
                                     </div>
                                 </div>

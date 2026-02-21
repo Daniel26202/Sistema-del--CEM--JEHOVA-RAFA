@@ -745,19 +745,19 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setIdInsumo($idInsumo)
     {
-        // no hay insumo seleccionado
-        if ($idInsumo === null || $idInsumo === []) {
-            $this->idInsumo = $idInsumo;
-            return;
-        }
-        foreach ($idInsumo as $id) {
-            if (!preg_match('/^[0-9]+$/', $id)) {
-                throw new \InvalidArgumentException('El ID del insumo no es válido.');
-            }
-            if ((int)$id <= 0) {
-                throw new \InvalidArgumentException('El ID del insumo debe ser mayor que cero.');
-            }
-        }
+        // // no hay insumo seleccionado
+        // if ($idInsumo === null || $idInsumo === []) {
+        //     $this->idInsumo = $idInsumo;
+        //     return;
+        // }
+        // foreach ($idInsumo as $id) {
+        //     if (!preg_match('/^[0-9]+$/', $id)) {
+        //         throw new \InvalidArgumentException('El ID del insumo no es válido.');
+        //     }
+        //     if ((int)$id <= 0) {
+        //         throw new \InvalidArgumentException('El ID del insumo debe ser mayor que cero.');
+        //     }
+        // }
         $this->idInsumo = $idInsumo;
     }
 

@@ -1,7 +1,8 @@
 import { executePetition, alertConfirm, alertError, alertSuccess } from "../../js/generic/funtionGeneric.js";
 import { traerSerevicio } from "../../js/hospitalizacion/reutilizableHospitalizacion.js";
-//............... animación de los dos modales ...................
+import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
+//............... animación de los dos modales ...................
 
 const btnInformacionPaciente = document.querySelector("#inforPaciente");
 const divModal = document.querySelector("#divModal");
@@ -129,6 +130,7 @@ let totalPI = 0;
 const sumarTotal = () => {
     // contador del precio de cada insumo
     let PrecioI = 0;
+    let totalPC = 0;
 
     totalPI = 0;
     document.querySelectorAll(".precioInsum").forEach((pI) => {
@@ -343,6 +345,7 @@ const traerUnInsumos = async (id) => {
         }
 
         document.querySelectorAll(".eliminarIns").forEach((elim) => {
+            let idI = -1;
             elim.addEventListener("click", function () {
                 // esto es para traerme el numero del data-index del <a> (btn)
                 idI = parseInt(this.dataset["index"]);
@@ -448,12 +451,31 @@ const traerControlDePaciente = async () => {
     // }
 };
 
-// este evento es para buscar al paciente
-inputCedula.addEventListener("keyup", function () {
-    if (inputCedula.value.length == 7 || inputCedula.value.length == 8) {
+let verificarFormularioA = inicializarValidacionFormulario(formularioAgregar);
+
+inputCedula.addEventListener("keyup", async function (e) {
+    let inputsBuenos = [];
+
+    if (inputCedula.parentElement.classList.contains("valido")) inputsBuenos.push(true);
+    let esValido = verificarFormularioA();
+    console.log("furula", esValido);
+
+    document.querySelector("#aPaciente").classList.add("d-none");
+    parrafoExP.innerText = "";
+    nombreApellidoInfor.innerText = "";
+    diagnosticoInfor.innerText = "";
+    parrafoNoP.classList.toggle("d-none", true);
+
+    if (esValido) {
         traerControlDePaciente();
+    } else {
+        alertError("Error", "Por favor verifique que la cédula este correcta.");
     }
 });
+
+// // este evento es para buscar al paciente
+// inputCedula.addEventListener("keyup", function () {
+// });
 
 // este evento es para buscar el insumo
 document.querySelector("#btn-buscarInsumo").addEventListener("click", function () {
@@ -558,7 +580,4 @@ document.querySelector("#btnAgregarH").addEventListener("click", async () => {
     let fechaHoy = obtenerFechaHoraLocal();
 
     document.querySelector("#fechaHoy").value = fechaHoy;
-});
-formularioAgregar.addEventListener("submit", function (e) {
-    e.preventDefault();
 });

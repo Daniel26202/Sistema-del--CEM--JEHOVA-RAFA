@@ -17,7 +17,8 @@ function semaforo()
     }
     $modeloHosp = new ModeloHospitalizacion();
     $cantidadHP = $modeloHosp->semaforo();
-    $_SESSION['semaforo'] = $cantidadHP["cantidadP"];
+    $_SESSION['semaforo'] = $cantidadHP[0];
+    echo json_encode($_SESSION['semaforo']);
 }
 
 // mostrar los datos de la tabla (hospitalizaciones pendientes) 
@@ -156,19 +157,23 @@ function mostrarUnInsumo($datos)
 //para agregar hospitalización
 function agregarH()
 {
-
-    if (empty($_POST['id_personal']) || empty($_POST['diagnostico']) || empty($_POST['historial'])) {
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
-        return;
-    }
     // verifica si la sesión esta activa.
     if (session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
     }
+    if (empty($_POST)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
     if ($_SESSION["semaforo"] >= 2) {
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/errSemaforo");
-        // echo "Las camillas disponibles estan ocupadas";
-    } else {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "En estos momentos, no hay camillas disponibles."]);
+        exit;
+    }
+    try {
+
+
         $modeloHosp = new ModeloHospitalizacion();
         $modeloBitacora = new ModeloBitacora();
 
@@ -176,45 +181,56 @@ function agregarH()
         $modeloHosp->setIdDoctor($_POST["id_personal"]);
         $verificaH = $modeloHosp->verificaHA();
 
-        if (isset($_POST["id_paciente"])) {
 
-            // es para validar si existe la hospitalización
-            if ($verificaH) {
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/error");
-            } else {
-                // no existe
-                $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
-                $cantidadI = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
+        // es para validar si existe la hospitalización
+        if ($verificaH) {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => "La hospitalización ya existe."]);
+            exit;
+        } else {
+            // no existe
+            $idInsumo = (isset($_POST["id_insumo"])) ? $_POST["id_insumo"] : false;
+            $cantidadI = (isset($_POST["cantidad"])) ? $_POST["cantidad"] : false;
 
-                $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : false;
-                $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
+            $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : false;
+            $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
 
 
-                print_r($_POST);
-                $modeloHosp->setFechaHora($_POST["fecha"]);
-                $modeloHosp->setIdInsumo($idInsumo);
-                $modeloHosp->setCantidadIns($cantidadI);
-                $modeloHosp->setCantidadSer($cantidadS);
-                $modeloHosp->setIdServicio($idServicio);
-                $modeloHosp->setHistorial($_POST["historial"]);
-                $modeloHosp->setSeveridad($_POST["severidad"]);
-                $modeloHosp->setDiagnostico($_POST["diagnostico"]);
-                $modeloHosp->setIdDoctor($_POST["id_personal"]);
-                $modeloHosp->setIdPaciente($_POST["id_paciente"]);
+            print_r($_POST);
+            $modeloHosp->setFechaHora($_POST["fecha"]);
+            $modeloHosp->setIdInsumo($idInsumo);
+            $modeloHosp->setCantidadIns($cantidadI);
+            $modeloHosp->setCantidadSer($cantidadS);
+            $modeloHosp->setIdServicio($idServicio);
+            $modeloHosp->setHistorial($_POST["historial"]);
+            $modeloHosp->setSeveridad($_POST["severidad"]);
+            $modeloHosp->setDiagnostico($_POST["diagnostico"]);
+            $modeloHosp->setIdDoctor($_POST["id_personal"]);
+            $modeloHosp->setIdPaciente($_POST["id_paciente"]);
 
-                $modeloHosp->insertarH();
+            $registro = $modeloHosp->insertarH();
 
+            if (is_array($registro) && $registro[0] === "exito") {
                 // Guardar la bitacora
                 $modeloBitacora->setTabla("hospitalizacion");
                 $modeloBitacora->setActividad("Ha Insertado una hospitalizacion");
                 $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
                 $modeloBitacora->insertarBitacora();
 
-                header("location: /Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion/agregado");
+                echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+            } else {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $registro]);
+                exit;
             }
         }
+    } catch (InvalidArgumentException $e) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+        exit;
     }
 }
+
 
 // traer datos de los insumos correspondiendo a la hospitalización que se edita.
 function traerInsuDHEd($datos)

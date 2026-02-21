@@ -77,12 +77,17 @@ const expresiones = {
 
   proveedor: {
     expresion: /^\d+$/,
-    mensajeError: "El proveedor esta mal selecionado",
+    mensajeError: "El proveedor esta mal seleccionado",
   },
 
+  id_personal: {
+    expresion: /^\d+$/,
+    mensajeError: "El Doctor esta mal seleccionado",
+  },
+  
   id_insumo: {
     expresion: /^\d+$/,
-    mensajeError: "El insumo esta mal selecionado",
+    mensajeError: "El insumo esta mal seleccionado",
   },
   indicaciones: {
     expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
@@ -111,6 +116,10 @@ const expresiones = {
   tipo: {
     expresion: /^(Cita|Examenes)$/,
     mensajeError: "Debe seleccionar un tipo de servicio válido",
+  },
+  severidad: {
+    expresion: /^(LEVE|MODERADA|GRAVE)$/,
+    mensajeError: "Debe seleccionar la severidad",
   },
   id_categoria: {
     expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
