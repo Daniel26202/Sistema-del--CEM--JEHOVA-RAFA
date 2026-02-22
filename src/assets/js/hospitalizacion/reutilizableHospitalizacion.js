@@ -160,15 +160,10 @@ export const traerSerevicio = async (direccionM) => {
             });
         }
     }
+    return objServiciosBD;
 };
 
 //objeto de las expresiones:
-const expresiones = {
-    historial: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
-    diagnostico: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
-    indicaciones: /^([a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:!?'-]{5,})$/,
-    fechaRegreso: /^\d{4}\-\d{2}\-\d{2}$/,
-};
 
 // //function for show and hidden alert the control
 // window.showAlert = (alert, text, classAlert) => {

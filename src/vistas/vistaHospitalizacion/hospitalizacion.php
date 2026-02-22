@@ -88,19 +88,19 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="text-start mb-2">
 
-                        <!-- no hay -->
-                        <div id="alertaPrecioHora" style="display:none; color:red;">
-                            Debe agregar el precio por hora antes de registrar hospitalizaciones.
-                        </div>
-                        <button class="btn btn-primary btn-agregar-pacientes mb-2" data-bs-toggle="modal"
-                            data-bs-target="#modal-agregar-hospitalizacion" id="btnAgregarH">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                class="bi bi-plus-circle-fill me-1" viewBox="0 0 16 16">
-                                <path
-                                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                            </svg>
-                            Registrar hospitalización
-                        </button>
+                    <!-- no hay -->
+                    <div id="alertaPrecioHora" style="display:none; color:red;">
+                        Debe agregar el precio por hora antes de registrar hospitalizaciones.
+                    </div>
+                    <button class="btn btn-primary btn-agregar-pacientes mb-2" data-bs-toggle="modal"
+                        data-bs-target="#modal-agregar-hospitalizacion" id="btnAgregarH">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                            class="bi bi-plus-circle-fill me-1" viewBox="0 0 16 16">
+                            <path
+                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                        </svg>
+                        Registrar hospitalización
+                    </button>
 
                 </div>
                 <div class="d-flex justify-content-end mb-3 mt-2 me-2 col-3">
@@ -144,6 +144,7 @@
 
 </div>
 
+
 <!-- modal consultar -->
 <div id="modalCon">
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas-mostrarH"
@@ -151,7 +152,7 @@
         data-bs-backdrop="true" data-bs-scroll="false">
 
         <!-- HEADER -->
-        <div class="offcanvas-header" style="background-color: #387adf;">
+        <div class="offcanvas-header" style="background-color: var(--color-primary);">
             <div class="d-flex align-items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white"
                     class="bi bi-file-text-fill flex-shrink-0" viewBox="0 0 16 16">
@@ -159,44 +160,44 @@
                 </svg>
                 <div>
                     <h5 class="offcanvas-title fw-bold mb-0 text-white" id="offcanvasMostrarLabel">
-                        <span id="nombreApellidoM"><!-- JS --></span>
+                        <span id="nombreApellidoM"></span>
                     </h5>
-                    <p class="mb-0 text-white fw-bold" style="font-size: .82rem; opacity: .85;">
-                        C.I: <span id="cedulaM"><!-- JS --></span>
+                    <p class="mb-0 text-white" style="font-size:.82rem; opacity:.85;">
+                        C.I: <span id="cedulaM"></span>
                     </p>
                 </div>
             </div>
-            <button type="button" class="btn-close btn-close-white" id="closeModal"
+            <button type="button" class="btn-close btn-close-white"
                 data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
         </div>
 
         <!-- BODY -->
-        <div class="offcanvas-body" style="background-color: var(--color-bg-card);">
+        <div class="offcanvas-body" style="background-color: var(--color-bg-main);">
 
             <!-- Diagnóstico -->
             <p class="titulo-seccion-offcanvas">
                 <i class="bi bi-clipboard2-pulse-fill me-1"></i> Diagnóstico
             </p>
-            <div class="caja-diagnostico-offcanvas mb-4">
+            <div class="caja-diagnostico-offcanvas mb-3">
                 <p class="parrafo-offcanvas" id="diagnosticoM"></p>
             </div>
 
             <!-- Doctor + Horas -->
-            <div class="row g-3 mb-4">
+            <div class="row g-2 mb-3">
                 <div class="col-7">
                     <p class="titulo-seccion-offcanvas">
                         <i class="bi bi-person-badge-fill me-1"></i> Doctor asignado
                     </p>
-                    <div class="caja-diagnostico-offcanvas">
+                    <div class="caja-diagnostico-offcanvas h-auto">
                         <p class="parrafo-offcanvas" id="doctorM"></p>
                     </div>
                 </div>
                 <div class="col-5">
                     <p class="titulo-seccion-offcanvas">
-                        <i class="bi bi-clock-fill me-1"></i> Hrs. hospitali&shy;zación
+                        <i class="bi bi-clock-fill me-1"></i> Tiempo
                     </p>
-                    <div class="caja-diagnostico-offcanvas text-center">
-                        <p class="parrafo-offcanvas fs-5 text-center" id="hHosM"></p>
+                    <div class="caja-diagnostico-offcanvas h-auto text-center">
+                        <p class="parrafo-offcanvas fw-bold" id="hHosM"></p>
                     </div>
                 </div>
             </div>
@@ -205,306 +206,360 @@
             <p class="titulo-seccion-offcanvas">
                 <i class="bi bi-journal-medical me-1"></i> Historia clínica
             </p>
-            <div class="caja-diagnostico-offcanvas mb-4">
-                <p class="parrafo-offcanvas text-center" id="historiaM"></p>
+            <div class="caja-diagnostico-offcanvas mb-3">
+                <p class="parrafo-offcanvas" id="historiaM"></p>
             </div>
 
             <!-- Montos -->
-            <div class="row g-3 mb-4">
+            <div class="row g-2 mb-3">
                 <div class="col-6">
                     <p class="titulo-seccion-offcanvas">
-                        <i class="bi bi-calculator me-1"></i> Monto por hora
+                        <i class="bi bi-calculator me-1"></i> Monto/hora
                     </p>
-                    <div class="caja-diagnostico-offcanvas text-center">
+                    <div class="caja-diagnostico-offcanvas h-auto text-center d-flex align-items-center">
                         <p class="parrafo-offcanvas fw-bold fs-5 mb-0" id="cMontoHoraM"></p>
-                        <span class="parrafo-offcanvas fw-bold" style="font-size: .75rem; opacity: .65;">Bs</span>
+                        <small class="parrafo-offcanvas mt-1 ms-2" style="opacity:.6; font-size:.75rem;">Bs</small>
                     </div>
                 </div>
                 <div class="col-6">
                     <p class="titulo-seccion-offcanvas">
-                        <i class="bi bi-currency-dollar me-1"></i> Moneda extranjera
+                        <i class="bi bi-currency-dollar me-1"></i> Moneda ext.
                     </p>
-                    <div class="caja-diagnostico-offcanvas text-center">
-                        <p class="parrafo-offcanvas fs-5 mb-0" id="cMoHoraMoExM"></p>
-                        <span class="parrafo-offcanvas fw-bold" style="font-size: .75rem; opacity: .65;">$</span>
+                    <div class="caja-diagnostico-offcanvas h-auto text-center d-flex align-items-center">
+                        <p class="parrafo-offcanvas fw-bold fs-5 mb-0" id="cMoHoraMoExM"></p>
+                        <small class="parrafo-offcanvas mt-1 ms-2" style="opacity:.6; font-size:.75rem;">$</small>
                     </div>
                 </div>
             </div>
 
-            <!-- Solo admin (cargo == 0) -->
+            <!-- Total solo admin -->
             <?php if ($validacionCargo == 0) : ?>
                 <p class="titulo-seccion-offcanvas">
-                    <i class="bi bi-receipt me-1"></i> Cálculo del total
+                    <i class="bi bi-receipt me-1"></i> Total estimado
                 </p>
                 <div class="caja-diagnostico-offcanvas">
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="parrafo-offcanvas fw-bold">En bolívares</span>
-                        <p class="parrafo-offcanvas fw-bold fs-5 mb-0">
-                            <span id="calculoTotal"></span> <small style="font-size:.75rem;opacity:.65;">Bs</small>
-                        </p>
+                        <span class="parrafo-offcanvas">En bolívares</span>
+                        <span class="parrafo-offcanvas fw-bold">
+                            <span id="calculoTotal"></span>
+                            <small style="opacity:.6;"> Bs</small>
+                        </span>
                     </div>
-                    <hr style="border-color: var(--color-border); margin: .6rem 0;">
+                    <hr style="border-color: var(--color-border); margin:.5rem 0;">
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="parrafo-offcanvas fw-bold">En dólares</span>
-                        <p class="parrafo-offcanvas fw-bold fs-5 mb-0">
-                            <span id="calculoTotalME"></span> <small style="font-size:.75rem;opacity:.65;">$</small>
-                        </p>
+                        <span class="parrafo-offcanvas">En dólares</span>
+                        <span class="parrafo-offcanvas fw-bold">
+                            <span id="calculoTotalME"></span>
+                            <small style="opacity:.6;"> $</small>
+                        </span>
                     </div>
                 </div>
             <?php endif ?>
 
-        </div><!-- /offcanvas-body -->
-    </div>
-</div>
-
-
-<div class="modal fade " id="modalEnvioFacturaHospitalizacion" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog uk-offcanvas-container" id="">
-        <div class="modal-content rounded-4 pt-3 pb-3 pe-5 ps-5 hospit">
-            <div class=" d-flex justify-content-between align-items-center mt-2 pt-0">
-
-                <div class=" d-flex justify-content-center align-items-center ">
-
-                    <h4 class=" fw-bold ">Informe de alta médica</h4>
-                </div>
-
-                <!-- btn close -->
-                <div>
-                    <a href="#" class="" data-bs-dismiss="modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
-                            class="bi bi-x-circle color-icono" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                            <path
-                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                        </svg>
-                    </a>
-                </div>
-
-            </div>
-            <div class="">
-                <form class="" id="formEnvioFacturaHospitalizacion">
-
-                    <div>
-                        <div class="mt-4 pt-2">
-                            <h4 class="text-center fw-bold">Historia clínica</h4>
-
-                            <div class="uk-margin">
-                                <textarea name="historialEnF" class="uk-textarea" rows="5" placeholder="Textarea"
-                                    aria-label="Textarea" id="historiaEnF"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- acordion Sintomas -->
-                        <div class="input-modal">
-                            <ul uk-accordion="multiple: true">
-                                <li class="uk-open">
-                                    <a class="uk-accordion-title text-decoration-none" href="#">
-
-                                        <h6 class="acordion-paciente"><svg xmlns="http://www.w3.org/2000/svg" width="20"
-                                                height="20" fill="currentColor" class="bi bi-person-fill azul me-2 mb-2"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                            </svg>Síntomas</h6>
-                                    </a>
-                                    <div class="uk-accordion-content">
-
-
-                                        <?php if ($datosS): ?>
-                                            <?php foreach ($datosS as $sintomas): ?>
-
-                                                <div class="form-check form-switch d-flex align-items-center">
-                                                    <div>
-                                                        <input class="form-check-input inputExpresiones inpSin" type="checkbox"
-                                                            role="switch" id="flexSwitchCheckDefault" name="sintomas[]"
-                                                            value="<?= $sintomas["id_sintomas"]; ?>">
-                                                    </div>
-                                                    <div>
-                                                        <label class="form-check-label mt-1" for="flexSwitchCheckDefault">
-                                                            <?= $sintomas['nombre']; ?>
-                                                        </label>
-                                                    </div>
-
-                                                </div>
-
-                                            <?php endforeach ?>
-                                        <?php else: ?>
-                                            <p>NO HAY REGISTROS</p>
-
-                                        <?php endif ?>
-
-
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- patologías -->
-                        <div class="input-modal mt-3">
-                            <ul uk-accordion="multiple: true">
-                                <li class="uk-open">
-                                    <a class="uk-accordion-title text-decoration-none" href="#">
-
-                                        <h6 class="acordion-paciente fw-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                                class="bi bi-calendar2-week-fill azul mb-2" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zM8.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM3 10.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z" />
-                                            </svg>
-                                            Añadir Patología Paciente
-                                        </h6>
-                                    </a>
-
-
-                                    <div class="uk-accordion-content">
-                                        <div class="d-flex justify-content-center">
-
-                                            <input type="button" class="btn btn-outline-secondary fw-bold btnNin col-12 mb-3" value="Ninguno">
-                                        </div>
-                                        <div class="d-flex justify-content-between flex-wrap">
-                                            <?php foreach ($datosPatologias as $patologia): ?>
-
-                                                <div class="d-flex w-50 justify-content-between mb-3">
-
-                                                    <div class="form-check form-switch d-flex align-items-center">
-                                                        <div>
-                                                            <input class="form-check-input inputExpresiones inputPP checkInputs" type="checkbox"
-                                                                role="switch" id="flexSwitchCheckDefault" name="patologias[]"
-                                                                value="<?php echo $patologia['id_patologia'] ?>">
-                                                        </div>
-                                                        <div>
-                                                            <label class="form-check-label mt-2" for="flexSwitchCheckDefault">
-                                                                <?php echo $patologia['nombre_patologia'] ?>
-                                                            </label>
-                                                        </div>
-
-                                                    </div>
-
-
-                                                </div>
-                                            <?php endforeach ?>
-
-
-                                        </div>
-
-                                    </div>
-                                </li>
-                            </ul>
-
-                        </div>
-
-                        <!-- nota -->
-                        <div class="form-floating input-modal">
-                            <textarea class="form-control border-0 input-modal input-modal-remove"
-                                placeholder="Leave a comment here" id="floatingTextarea2" style="height: 50px;"
-                                name="nota"></textarea>
-                            <label for="floatingTextarea2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                    class="bi bi-heart-pulse-fill azul me-2" viewBox="0 0 16 16">
-                                    <path
-                                        d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9z" />
-                                    <path
-                                        d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8z" />
-                                </svg>Nota</label>
-                        </div>
-
-                        <div class="form-floating input-modal">
-                            <textarea class="form-control border-0 input-modal inputExpresiones input-modal-remove"
-                                name="indicaciones" placeholder="Leave a comment here" id="floatingTextarea2"
-                                style="height: 50px;"></textarea>
-                            <label for="floatingTextarea2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                    class="bi bi-receipt-cutoff azul me-1" viewBox="0 0 16 16">
-                                    <path
-                                        d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z" />
-                                    <path
-                                        d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z" />
-                                </svg>
-                                </svg>Prescripciones e indicaciones</label>
-                        </div>
-
-                        <div class="mt-4">
-                            <p class=" p-0 m-0 fw-bolder text-center">Fecha de revisión médica</p>
-
-                            <div class="input-group flex-nowrap mt-1">
-                                <span class="input-modal">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                        class="bi bi-calendar-date-fill azul" viewBox="0 0 16 16">
-                                        <path
-                                            d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zm5.402 9.746c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2" />
-                                        <path
-                                            d="M16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-6.664-1.21c-1.11 0-1.656-.767-1.703-1.407h.683c.043.37.387.82 1.051.82.844 0 1.301-.848 1.305-2.164h-.027c-.153.414-.637.79-1.383.79-.852 0-1.676-.61-1.676-1.77 0-1.137.871-1.809 1.797-1.809 1.172 0 1.953.734 1.953 2.668 0 1.805-.742 2.871-2 2.871zm-2.89-5.435v5.332H5.77V8.079h-.012c-.29.156-.883.52-1.258.777V8.16a13 13 0 0 1 1.313-.805h.632z" />
-                                    </svg>
-                                </span>
-                                <input
-                                    class="form-control input-modal grp_control_fechaRegreso inputExpresiones input-modal-remove"
-                                    type="date" name="fechaRegreso" placeholder="Fecha"
-                                    uk-tooltip="title: Fecha de revisión médica; pos: right" require>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center pe-3 ps-1 d-none" id="leyendaFec">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-info-circle azul me-1" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z">
-                                </path>
-                                <path
-                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z">
-                                </path>
-                            </svg>
-                            <i>El formato de la fecha es incorrecto. Debe ser mayor que la fecha de hoy y no debe exceder los 50
-                                años en el futuro.
-                            </i>
-                        </div>
-
-
-
-                        <div class="mb-3">
-                            <label for="severidad" class="form-label col-12 text-center fw-bold">Severidad</label>
-                            <select class="form-select" id="severidadEnF" name="severidad" required>
-                                <option value="LEVE">Leve</option>
-                                <option value="MODERADA">Moderada</option>
-                                <option value="GRAVE">Grave</option>
-                            </select>
-                        </div>
-
-                        <div class="form-floating input-modal mt-3">
-                            <textarea class="form-control border-0 input-modal inputExpresiones input-modal-remove" rows="5"
-                                placeholder="Diagnóstico" id="diagnosticoEnF"
-                                name="diagnostico"></textarea>
-                            <label for="diagnostico">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                    class="bi bi-heart-pulse-fill azul me-2" viewBox="0 0 16 16">
-                                    <path
-                                        d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9z" />
-                                    <path
-                                        d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8z" />
-                                </svg>Diagnóstico</label>
-                        </div>
-
-                    </div>
-
-                    <div>
-                        <input type="hidden" name="idH" id="idH">
-                        <input type="hidden" name="monto" id="monto">
-                        <input type="hidden" name="montoME" id="montoME">
-                        <input type="hidden" name="total" id="total">
-                        <input type="hidden" name="totalME" id="totalME">
-                    </div>
-
-                    <p class="uk-text-center mt-4 ">
-                        <button class="uk-button rounded-5 btn-cancelar fw-bold" type="button"
-                            data-bs-dismiss="modal">Cancelar</button>
-                        <button class="uk-button uk-button-primary rounded-5 ms-2 fw-bold" type="submit"
-                            data-bs-dismiss="modal">Ir a facturar</button>
-                    </p>
-
-
-                </form>
-            </div>
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
+
+<div class="modal fade" id="modalEnvioFacturaHospitalizacion" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content tamaño-modal">
+
+            <div class="modal-header">
+                <h5 class="modal-title fs-4 fw-bold">Informe de alta médica</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form class="form-validable" id="formEnvioFacturaHospitalizacion">
+
+                <!-- Hidden inputs -->
+                <input type="hidden" name="idH" id="idH">
+                <input type="hidden" name="monto" id="monto">
+                <input type="hidden" name="montoME" id="montoME">
+                <input type="hidden" name="total" id="total">
+                <input type="hidden" name="totalME" id="totalME">
+
+                <div class="modal-body">
+
+                    <!-- Historia Clínica -->
+                    <label class="label-custom">Historia clínica</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-journal-text azul" viewBox="0 0 16 16">
+                                    <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
+                                </svg>
+                            </span>
+                            <textarea name="historialEnF" class="form-control txt-custom inputs input-validar"
+                                placeholder="Historia clínica" style="height: 80px;"
+                                id="historiaEnF"></textarea>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+
+                        </div>
+                        <p class="error-msg fw-bold p-error-validaciones d-none">Por favor, ingrese la historia clínica.</p>
+                    </div>
+
+                    <!-- Síntomas -->
+                    <label class="label-custom">Síntomas</label>
+                    <div class="accordion mb-2" id="accordionSintomasF">
+                        <div class="accordion-item bg-theme">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-theme" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseSintomasF"
+                                    aria-expanded="true">
+                                    Síntomas
+                                </button>
+                            </h2>
+                            <div id="collapseSintomasF" class="accordion-collapse collapse show">
+                                <div class="accordion-body">
+                                    <?php if ($datosS): ?>
+                                        <?php foreach ($datosS as $sintomas): ?>
+                                            <div class="form-check form-switch d-flex align-items-center mb-1">
+                                                <input class="form-check-input inputExpresiones inpSin me-2"
+                                                    type="checkbox" role="switch"
+                                                    name="sintomas[]"
+                                                    value="<?= $sintomas["id_sintomas"]; ?>">
+                                                <label class="form-check-label mt-1">
+                                                    <?= $sintomas['nombre']; ?>
+                                                </label>
+                                            </div>
+                                        <?php endforeach ?>
+                                    <?php else: ?>
+                                        <p>NO HAY REGISTROS</p>
+                                    <?php endif ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patologías -->
+                    <label class="label-custom">Patologías del paciente</label>
+                    <div class="accordion mb-2" id="accordionPatologiasF">
+                        <div class="accordion-item bg-theme">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-theme" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapsePatologiasF"
+                                    aria-expanded="true">
+                                    Patologías
+                                </button>
+                            </h2>
+                            <div id="collapsePatologiasF" class="accordion-collapse collapse show">
+                                <div class="accordion-body">
+                                    <div class="d-flex justify-content-center mb-3">
+                                        <input type="button"
+                                            class="btn btn-outline-secondary fw-bold btnNin col-12"
+                                            value="Ninguno">
+                                    </div>
+                                    <div class="d-flex justify-content-between flex-wrap">
+                                        <?php foreach ($datosPatologias as $patologia): ?>
+                                            <div class="d-flex w-50 justify-content-between mb-2">
+                                                <div class="form-check form-switch d-flex align-items-center">
+                                                    <input class="form-check-input inputExpresiones inputPP checkInputs me-2"
+                                                        type="checkbox" role="switch"
+                                                        name="patologias[]"
+                                                        value="<?php echo $patologia['id_patologia'] ?>">
+                                                    <label class="form-check-label mt-2">
+                                                        <?php echo $patologia['nombre_patologia'] ?>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        <?php endforeach ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nota -->
+                    <label class="label-custom">Nota <span class="text-muted fw-normal">(opcional)</span></label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-heart-pulse-fill azul" viewBox="0 0 16 16">
+                                    <path d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9z" />
+                                    <path d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8z" />
+                                </svg>
+                            </span>
+                            <textarea class="form-control txt-custom inputs" name="nota"
+                                placeholder="La nota es opcional" style="height: 50px;"></textarea>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg fw-bold p-error-validaciones d-none"></p>
+
+                    </div>
+
+                    <!-- Prescripciones e Indicaciones -->
+                    <label class="label-custom">Prescripciones e indicaciones</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-receipt-cutoff azul" viewBox="0 0 16 16">
+                                    <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z" />
+                                    <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z" />
+                                </svg>
+                            </span>
+                            <textarea class="form-control txt-custom inputs input-validar"
+                                name="indicaciones" placeholder="Prescripciones e indicaciones"
+                                style="height: 50px;"></textarea>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg fw-bold p-error-validaciones d-none">Por favor, ingrese las indicaciones.</p>
+                    </div>
+
+                    <!-- Fecha de revisión -->
+                    <label class="label-custom">Fecha de revisión médica</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-calendar-date-fill azul" viewBox="0 0 16 16">
+                                    <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zm5.402 9.746c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2" />
+                                    <path d="M16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-6.664-1.21c-1.11 0-1.656-.767-1.703-1.407h.683c.043.37.387.82 1.051.82.844 0 1.301-.848 1.305-2.164h-.027c-.153.414-.637.79-1.383.79-.852 0-1.676-.61-1.676-1.77 0-1.137.871-1.809 1.797-1.809 1.172 0 1.953.734 1.953 2.668 0 1.805-.742 2.871-2 2.871zm-2.89-5.435v5.332H5.77V8.079h-.012c-.29.156-.883.52-1.258.777V8.16a13 13 0 0 1 1.313-.805h.632z" />
+                                </svg>
+                            </span>
+                            <input class="form-control txt-custom input-validar inputs grp_control_fechaRegreso"
+                                type="date" name="fechaDeCita"
+                                uk-tooltip="title: Fecha de revisión médica; pos: right">
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <!-- leyenda fecha (se muestra con JS igual que antes) -->
+                        <p class="error-msg fw-bold p-error-validaciones d-none" id="leyendaFec">
+                            El formato de la fecha es incorrecto. Debe ser mayor que la fecha de hoy y no debe exceder los 50 años en el futuro.
+                        </p>
+                    </div>
+
+                    <!-- Severidad -->
+                    <label class="label-custom">Severidad</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-heart-pulse-fill azul" viewBox="0 0 16 16">
+                                    <path d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9z" />
+                                    <path d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8z" />
+                                </svg>
+                            </span>
+                            <select class="form-control txt-custom select-custom input-validar" id="severidadEnF" name="severidad" required>
+                                <option class="option-select-background" value="LEVE">Leve</option>
+                                <option class="option-select-background" value="MODERADA">Moderada</option>
+                                <option class="option-select-background" value="GRAVE">Grave</option>
+                            </select>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg fw-bold p-error-validaciones d-none"> </p>
+                    </div>
+
+                    <!-- Diagnóstico -->
+                    <label class="label-custom">Diagnóstico</label>
+                    <div class="campo-custom">
+                        <div class="input-custom">
+                            <span class="icono-izq">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                    class="bi bi-clipboard2-pulse-fill azul" viewBox="0 0 16 16">
+                                    <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5" />
+                                    <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5M9.98 5.356 11.372 8H12a.5.5 0 0 1 0 1h-.75a.5.5 0 0 1-.447-.276L9.97 6.68l-1.475 4.425a.5.5 0 0 1-.93.049L6.44 8.884l-.902 1.127A.5.5 0 0 1 5.15 10H4a.5.5 0 0 1 0-1h.846L6.3 7.116a.5.5 0 0 1 .932.08l.87 2.175" />
+                                </svg>
+                            </span>
+                            <textarea class="form-control txt-custom inputs input-validar"
+                                placeholder="Diagnóstico" style="height: 50px;"
+                                id="diagnosticoEnF" name="diagnostico"></textarea>
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="error-msg fw-bold p-error-validaciones d-none">Por favor, ingrese el diagnóstico.</p>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-modals" data-bs-dismiss="modal">Ir a facturar</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <div id="div-oculto">
     <!-- js -->
