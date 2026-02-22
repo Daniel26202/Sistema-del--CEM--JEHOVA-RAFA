@@ -31,6 +31,26 @@ class ModeloHospitalizacion extends ModelBase
         }
     }
 
+
+    //     public function selectsH()
+    // {
+    //     try {
+    //         $sql = "SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.precio_horas, h.fecha_hora_final, h.total, con.id_control, con.diagnostico, con.historiaclinica, pac.id_paciente, pac.nacionalidad, pac.cedula, pac.nombre, pac.apellido, u.id_usuario, pe.nombre AS nombredoc, pe.apellido AS apellidodoc FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_control = (
+    //                     SELECT con2.id_control FROM control con2 
+    //                     WHERE con2.id_paciente = pac.id_paciente 
+    //                     AND con2.estado = 'DES' 
+    //                     ORDER BY con2.id_control DESC LIMIT 1
+    //                 ) 
+    //                 INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario WHERE u.estado = 'ACT' AND h.estado = 'Pendiente' GROUP BY h.id_hospitalizacion;";
+
+    //         $this->setSQL($sql);
+    //         $consulta = $this->read();
+    //         return !empty($consulta) ? $consulta : false;
+    //     } catch (\Exception $e) {
+    //         return $e->getMessage();
+    //     }
+    // }
+
     // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito, para mostrarlo en la tabla de la vista (de las hospitalizaciones pendientes)
     public function selectsH()
     {
@@ -207,7 +227,9 @@ class ModeloHospitalizacion extends ModelBase
             $sql = "SELECT ins.id_insumo, inv.id_entradaDeInsumo, ins.nombre, ins.precio, sum(inv.cantidad_disponible) AS limite_insumo FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada = inv.id_entrada  WHERE ins.estado = 'ACT' AND ins.id_insumo =:id ORDER BY e.fechaDeIngreso";
             $this->setSQL($sql);
 
-            $consulta = $this->search(['id' => $this->getIdInsumo()], false);
+            $idInsumo = $this->getIdInsumo();
+            $id = is_array($idInsumo) ? $idInsumo[0] : $idInsumo; // 👈
+            $consulta = $this->search(['id' => $id], false);
 
             return !empty($consulta) ? $consulta : false;
         } catch (\Exception $e) {
@@ -249,7 +271,7 @@ class ModeloHospitalizacion extends ModelBase
             $this->setSQL($sql);
             //devuelve el id de la hospitalización.
             $idH = $this->create($dataH);
-
+            $idHospitalizacion = $idH;
             $idInsumos = $this->getIdInsumo();
             // si hay un id del insumo devuelve verdadero si no, devuelve falso
             if ($idInsumos) {
@@ -274,7 +296,7 @@ class ModeloHospitalizacion extends ModelBase
                     $sql = "INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)";
                     $this->setSQL($sql);
                     $data = [
-                        'id_hospitalizacion' => $idH,
+                        'id_hospitalizacion' => $idHospitalizacion,
                         'id_entradaDeInsumo' => $idEntradaDeInsumo["id_entradaDeInsumo"],
                         'cantidad' => $cantidad[$contadorC]
                     ];
@@ -307,7 +329,7 @@ class ModeloHospitalizacion extends ModelBase
                     $sql = "INSERT INTO servicios_hospitalizacion(id_hospitalizacion, id_servicioMedico, cantidad) VALUES (:id_hospitalizacion, :id_servicioMedico, :cantidad)";
                     $this->setSQL($sql);
                     $data = [
-                        'id_hospitalizacion' => $idH,
+                        'id_hospitalizacion' => $idHospitalizacion,
                         'id_servicioMedico' => $idS,
                         'cantidad' => $cantidadS[$contador]
                     ];
@@ -345,10 +367,7 @@ class ModeloHospitalizacion extends ModelBase
 
             $sql = "SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion";
             $this->setSQL($sql);
-            $data = [
-                'id_hospitalizacion' => $this->getIdH(),
-            ];
-            $data = $this->search($data, false);
+            $data = $this->search(['id_hospitalizacion' => $idHospitalizacion], false);
 
 
             return ["exito", $data];
@@ -743,31 +762,53 @@ class ModeloHospitalizacion extends ModelBase
         $this->idH = (int)$idH;
     }
 
+    public function setIdInsumosA($idInsumosA)
+    {
+        // no hay id seleccionado
+        if (empty($idInsumosA)) {
+            $this->idInsumosA = null;
+            return;
+        }
+        foreach ($idInsumosA as $id) {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                throw new \InvalidArgumentException('El ID no es válido.');
+            }
+            if ((int)$id <= 0) {
+                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+            }
+        }
+        $this->idInsumosA = $idInsumosA;
+    }
+
     public function setIdInsumo($idInsumo)
     {
-        // // no hay insumo seleccionado
-        // if ($idInsumo === null || $idInsumo === []) {
-        //     $this->idInsumo = $idInsumo;
-        //     return;
-        // }
-        // foreach ($idInsumo as $id) {
-        //     if (!preg_match('/^[0-9]+$/', $id)) {
-        //         throw new \InvalidArgumentException('El ID del insumo no es válido.');
-        //     }
-        //     if ((int)$id <= 0) {
-        //         throw new \InvalidArgumentException('El ID del insumo debe ser mayor que cero.');
-        //     }
-        // }
+        if (empty($idInsumo)) {
+            $this->idInsumo = null;
+            return;
+        }
+        // Si viene como string/int, convertir a array
+        if (!is_array($idInsumo)) {
+            $idInsumo = [$idInsumo];
+        }
+        foreach ($idInsumo as $id) {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                throw new \InvalidArgumentException('El ID del insumo no es válido.');
+            }
+            if ((int)$id <= 0) {
+                throw new \InvalidArgumentException('El ID del insumo debe ser mayor que cero.');
+            }
+        }
         $this->idInsumo = $idInsumo;
     }
 
     public function setIdServicio($idServicio)
     {
-        // no hay servicio seleccionado
-        if ($idServicio === null || $idServicio === []) {
-            $this->idServicio = $idServicio;
+        // no hay id seleccionado
+        if (empty($idServicio)) {
+            $this->idServicio = null;
             return;
         }
+
         foreach ($idServicio as $id) {
             if (!preg_match('/^[0-9]+$/', $id)) {
                 throw new \InvalidArgumentException('El ID del servicio no es válido.');
@@ -790,28 +831,27 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setFechaHora($fechaHora)
     {
-        $d = new \DateTime($fechaHora);
-        $hoy = new \DateTime();
-        if ($d > $hoy) {
-            throw new \InvalidArgumentException("La fecha no puede ser futura");
-        }
+        // $d = new \DateTime($fechaHora);
+        // $hoy = new \DateTime();
+        // if ($d > $hoy) {
+        //     throw new \InvalidArgumentException("La fecha no puede ser futura");
+        // }
         $this->fechaHora = $fechaHora;
     }
     public function setFechaHoraFinal($fechaHoraFinal)
     {
-        $d = new \DateTime($fechaHoraFinal);
-        $hoy = new \DateTime();
-        if ($d > $hoy) {
-            throw new \InvalidArgumentException("La fecha no puede ser futura");
-        }
+        // $d = new \DateTime($fechaHoraFinal);
+        // $hoy = new \DateTime();
+        // if ($d > $hoy) {
+        //     throw new \InvalidArgumentException("La fecha no puede ser futura");
+        // }
         $this->fechaHoraFinal = $fechaHoraFinal;
     }
 
     public function setCantidadIns($cantidadIns)
     {
-        // no hay insumo seleccionado
-        if ($cantidadIns === null || $cantidadIns === []) {
-            $this->cantidadIns = $cantidadIns;
+        if (empty($cantidadIns)) {
+            $this->cantidadIns = null;
             return;
         }
         foreach ($cantidadIns as $cantidad) {
@@ -827,9 +867,8 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setCantidadSer($cantidadSer)
     {
-        // no hay s seleccionado
-        if ($cantidadSer === null || $cantidadSer === []) {
-            $this->cantidadSer = $cantidadSer;
+        if (empty($cantidadSer)) {
+            $this->cantidadSer = null;
             return;
         }
         foreach ($cantidadSer as $cantidad) {
@@ -846,8 +885,8 @@ class ModeloHospitalizacion extends ModelBase
     public function setIdInsH($idInsH)
     {
         // no hay insumo seleccionado
-        if ($idInsH === null || $idInsH === []) {
-            $this->idInsH = $idInsH;
+        if (empty($idInsH)) {
+            $this->idInsH = null;
             return;
         }
         foreach ($idInsH as $id) {
@@ -861,29 +900,11 @@ class ModeloHospitalizacion extends ModelBase
         $this->idInsH = $idInsH;
     }
 
-    public function setIdInsumosA($idInsumosA)
-    {
-        // no hay insumo seleccionado
-        if ($idInsumosA === null || $idInsumosA === []) {
-            $this->idInsumosA = $idInsumosA;
-            return;
-        }
-        foreach ($idInsumosA as $id) {
-            if (!preg_match('/^[0-9]+$/', $id)) {
-                throw new \InvalidArgumentException('El ID no es válido.');
-            }
-            if ((int)$id <= 0) {
-                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
-            }
-        }
-        $this->idInsumosA = $idInsumosA;
-    }
-
     public function setIdInsElim($idInsElim)
     {
-        // no hay insumo seleccionado
-        if ($idInsElim === null || $idInsElim === []) {
-            $this->idInsElim = $idInsElim;
+        // no hay id seleccionado
+        if (empty($idInsElim)) {
+            $this->idInsElim = null;
             return;
         }
         foreach ($idInsElim as $id) {
@@ -899,9 +920,9 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setCantidadE($cantidadE)
     {
-        // no hay insumo seleccionado
-        if ($cantidadE === null || $cantidadE === []) {
-            $this->cantidadE = $cantidadE;
+        // no hay id seleccionado
+        if (empty($cantidadE)) {
+            $this->cantidadE = null;
             return;
         }
         foreach ($cantidadE as $cantidad) {
@@ -917,9 +938,9 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setCantidadA($cantidadA)
     {
-        // no hay insumo seleccionado
-        if ($cantidadA === null || $cantidadA === []) {
-            $this->cantidadA = $cantidadA;
+        // no hay cantidad seleccionada
+        if (empty($cantidadA)) {
+            $this->cantidadA = null;
             return;
         }
         foreach ($cantidadA as $cantidad) {
@@ -935,15 +956,12 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setFechaControl($fechaControl)
     {
-        if (!preg_match('', $fechaControl)) {
-            throw new \InvalidArgumentException('La fecha no es válida.');
-        }
         $this->fechaControl = $fechaControl;
     }
 
     public function setMonto($monto)
     {
-        if (!preg_match('/^[0-9]+$/', $monto)) {
+        if (!preg_match('/^(?!0$)(?!1$)\d+([.,]\d+)?$/', $monto)) {
             throw new \InvalidArgumentException('El monto no es válido.');
         }
         if ((int)$monto <= 0) {
@@ -954,7 +972,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setMontoME($montoME)
     {
-        if (!preg_match('/^[0-9]+$/', $montoME)) {
+        if (!preg_match('/^(?!0$)(?!1$)\d+([.,]\d+)?$/', $montoME)) {
             throw new \InvalidArgumentException('El monto no es válido.');
         }
         if ((int)$montoME <= 0) {
@@ -965,7 +983,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setTotal($total)
     {
-        if (!preg_match('/^[0-9]+$/', $total)) {
+        if (!preg_match('/^(?!0$)(?!1$)\d+([.,]\d+)?$/', $total)) {
             throw new \InvalidArgumentException('El total no es válido.');
         }
         if ((int)$total <= 0) {
@@ -976,7 +994,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setTotalME($totalME)
     {
-        if (!preg_match('/^[0-9]+$/', $totalME)) {
+        if (!preg_match('/^(?!0$)(?!1$)\d+([.,]\d+)?$/', $totalME)) {
             throw new \InvalidArgumentException('El totalME no es válido.');
         }
         if ((int)$totalME <= 0) {
@@ -986,9 +1004,9 @@ class ModeloHospitalizacion extends ModelBase
     }
     public function setPatologiasId($patologias)
     {
-        // no hay insumo seleccionado
-        if ($patologias === null || $patologias === []) {
-            $this->patologiasId = $patologias;
+        // no hay id seleccionado
+        if (empty($patologias)) {
+            $this->patologiasId = null;
             return;
         }
         foreach ($patologias as $patologia) {
@@ -1003,9 +1021,9 @@ class ModeloHospitalizacion extends ModelBase
     }
     public function setSintomasId($sintomasId)
     {
-        // no hay insumo seleccionado
-        if ($sintomasId === null || $sintomasId === []) {
-            $this->sintomasId = $sintomasId;
+        // no hay id seleccionado
+        if (empty($sintomasId)) {
+            $this->sintomasId = null;
             return;
         }
         foreach ($sintomasId as $sintoma) {
@@ -1052,6 +1070,7 @@ class ModeloHospitalizacion extends ModelBase
 
         $this->diagnostico = $diagnostico;
     }
+
 
     public function setHistorial($historial)
     {

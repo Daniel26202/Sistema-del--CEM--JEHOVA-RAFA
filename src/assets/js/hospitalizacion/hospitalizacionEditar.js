@@ -5,14 +5,6 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
 const modalHospBoots = new bootstrap.Modal(document.getElementById("modal-agregar-hospitalizacion"));
-
-document.addEventListener("DOMContentLoaded", async function () {
-    let resultado = await executePetition(url + "/semaforo/", "GET");
-
-    console.log(resultado);
-    if (resultado.length > 0) {
-    }
-});
 // Ajax //////
 
 // horas y costo de servicio
@@ -288,17 +280,19 @@ let horaInicioHosp = 0;
 const vistaTabla = async () => {
     // try {
     // llamo la función
-    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerSesion");
-    let resultad = await peticion.json();
+    let resultad = await executePetition(url + "/traerSesion", "GET");
+
     console.log(resultad);
 
     let html = "";
-
+console.log("resultad completo:", resultad);
+console.log("datos hospitalizaciones:", resultad[1]);
+console.log("semaforo:", resultad[0][2]);
     if (resultad.length == 0) {
         console.log("algo salio mal");
     } else {
         await traerHoraCosto();
-        if (resultad[1] == false) {
+        if (!resultad[1] || resultad[1].length === 0) {
             html = `<tr>
                                 <td colspan="8" class="text-center">NO HAY REGISTROS
                                 </td>
@@ -491,7 +485,7 @@ const vistaTabla = async () => {
             // obtenemos la cantidad de filas que existen
             const filas = document.querySelectorAll("#tbody tr");
 
-            if (filas.length === 2) {
+            if (filas.length >= 2) {
                 // se oculta el btn y el modal al alcanzar el limite de hospitalizaciones
                 btnAgregar.classList.add("d-none");
                 document.querySelector("#divModal").classList.add("d-none");
@@ -1081,7 +1075,6 @@ const traerUnInsumoE = async (id) => {
     }
 };
 
-
 const formE = document.querySelector("#formularioEditarH");
 const divME = document.querySelector(".divModalE");
 
@@ -1284,10 +1277,13 @@ const createHosp = async () => {
         let result = await executePetition(url + "/agregarH", "POST", data);
 
         console.log(result);
-        vistaTabla();
-
-        // modalHospBoots.hide();
-        alertSuccess(result.message);
+        if (result.ok) {
+            vistaTabla();
+            alertSuccess(result.message);
+            // modalHospBoots.hide();
+        } else {
+            throw new Error(result.error);
+        }
     } catch (error) {
         alertError("Error", error);
     }

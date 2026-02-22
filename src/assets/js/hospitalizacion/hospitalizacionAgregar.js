@@ -454,11 +454,9 @@ const traerControlDePaciente = async () => {
 let verificarFormularioA = inicializarValidacionFormulario(formularioAgregar);
 
 inputCedula.addEventListener("keyup", async function (e) {
-    let inputsBuenos = [];
 
-    if (inputCedula.parentElement.classList.contains("valido")) inputsBuenos.push(true);
-    let esValido = verificarFormularioA();
-    console.log("furula", esValido);
+     // Solo validar el campo cédula, no todo el formulario
+    let cedulaValida = inputCedula.parentElement.classList.contains("valido");
 
     document.querySelector("#aPaciente").classList.add("d-none");
     parrafoExP.innerText = "";
@@ -466,10 +464,8 @@ inputCedula.addEventListener("keyup", async function (e) {
     diagnosticoInfor.innerText = "";
     parrafoNoP.classList.toggle("d-none", true);
 
-    if (esValido) {
+    if (cedulaValida) {
         traerControlDePaciente();
-    } else {
-        alertError("Error", "Por favor verifique que la cédula este correcta.");
     }
 });
 
