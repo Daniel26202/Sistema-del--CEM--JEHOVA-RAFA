@@ -83,7 +83,7 @@ function guardar()
 		$modelo  = returnObjectClass()['paciente'];
 		$bitacora = returnObjectClass()['bitacora'];
 
-		$modelo->setNacionalidad($_POST['nacionalidad']);
+		$modelo->setNacionalidad(isset($_POST['nacionalidad'])? $_POST['nacionalidad']: 'V');
 		$modelo->setCedula($_POST['cedula']);
 		$modelo->setNombre($_POST['nombre']);
 		$modelo->setApellido($_POST['apellido']);

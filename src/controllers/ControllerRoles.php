@@ -45,23 +45,26 @@ function guardarRol()
 
     $modeloRoles->setNombre($_POST["nombre"]);
     $modeloRoles->setDescripcion($_POST["descripcion"]);
-    $modeloPermisos->setModulo($_POST["modulos"]);
-    $modeloPermisos->setPermiso($_POST["permisos"]);
+    // $modeloPermisos->setModulo($_POST["modulos"]);
+    // $modeloPermisos->setPermiso($_POST["permisos"]);
 
-    $insercion = $modeloRoles->insertar();
+    echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 
-    if (is_array($insercion) && $insercion[0] === "exito") {
-        $modeloBitacora->setTabla("Roles");
-        $modeloBitacora->setActividad("Ha Insertado un nuevo rol");
-        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-        $modeloBitacora->insertarBitacora();
 
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-    } else {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $insercion]);
-        exit;
-    }
+    // $insercion = $modeloRoles->insertar();
+
+    // if (is_array($insercion) && $insercion[0] === "exito") {
+    //     $modeloBitacora->setTabla("Roles");
+    //     $modeloBitacora->setActividad("Ha Insertado un nuevo rol");
+    //     $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+    //     $modeloBitacora->insertarBitacora();
+
+    //     echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+    // } else {
+    //     http_response_code(409);
+    //     echo json_encode(['ok' => false, 'error' => $insercion]);
+    //     exit;
+    // }
 }
 
 

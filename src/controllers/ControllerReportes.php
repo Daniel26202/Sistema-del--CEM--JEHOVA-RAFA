@@ -26,6 +26,12 @@ function reportes($parametro)
 
 function buscarPDF()
 {
+	$modeloReporte = new ModeloReporte();
+	$modeloReporte->setFechaInicio($_POST["desdeFecha"]);
+	$modeloReporte->setFinal($_POST["fechaHasta"]);
+
+	print_r($_POST);
+	$citas = $modeloReporte->Citaspdf();
 	require_once './src/vistas/vistaReportes/vistaReporteCitasPdf.php';
 }
 

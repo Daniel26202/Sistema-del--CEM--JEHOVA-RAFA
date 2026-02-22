@@ -11,86 +11,105 @@ const expresiones = {
             "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
     },
 
-    usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
-    correo: {
-        expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-        mensajeError: "El correo debe tener un formato válido (ej: ejemplo@dominio.com)",
-    },
-    password: {
-        expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
-        mensajeError: "",
-    },
-    cedula: {
-        expresion: /^([1-9]{1})([0-9]{6,7})$/,
-        mensajeError: "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
-    },
-    telefono: {
-        expresion: /^(0?)(412|414|416|424|426|422|212|24[1-9]|25[1-9])\d{7}$/,
-        mensajeError: 'El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0422',
-    },
-    direccion: {
-        expresion: /^([A-Za-z0-9\s\.,#-]{8,})$/,
-        mensajeError: "Debe estar completa y detallada",
-    },
-    descripcion: {
-        expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
-        mensajeError: "",
-    },
-    fn: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    cantidad: {
-        expresion: /^([1-9]{1})([0-9]{1,4})?$/,
-        mensajeError: "La cantidad debe ser entre 1 y 9999",
-    },
-    precio: {
-        expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/,
-        mensajeError: "El precio debe tener formato válido (ej: 1.00, 10.00, 100.00)",
-    },
-    precioD: {
-        expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/,
-        mensajeError: "El precio debe tener formato válido (ej: 1.00, 10.00, 100.00)",
-    },
-    fechaDeVencimiento: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
-    lote: {
-        expresion: /^[0-9-_]{4,10}$/,
-        mensajeError: "El número de lote debe tener entre 4 y 10 dígitos",
-    },
-    marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
-    medida: {
-        expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/,
-        mensajeError: "",
-    },
-    stockMinimo: {
-        expresion: /^([1-9]{1})([0-9]{1})?$/,
-        mensajeError: "El stock mínimo debe ser al menos 1",
-    },
-    genero: {
-        expresion: /^"Masculino|| Femenino"$/,
-        mensajeError: "El Genero debe ser Masculino o Femenino",
-    },
+  usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
+  correo: {
+    expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+    mensajeError:
+      "El correo debe tener un formato válido (ej: ejemplo@dominio.com)",
+  },
+  password: {
+    expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
+    mensajeError: "",
+  },
+  passwordNew: {
+    expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
+    mensajeError: "",
+  },
+  passwordConf: {
+    expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
+    mensajeError: "",
+  },
+  cedula: {
+    expresion: /^([1-9]{1})([0-9]{6,7})$/,
+    mensajeError:
+      "La cédula debe contener únicamente números y estar entre 7 a 8 caracteres",
+  },
+  telefono: {
+    expresion: /^(0?)(412|414|416|424|426|422|212|24[1-9]|25[1-9])\d{7}$/,
+    mensajeError:
+      'El Teléfono solo debe contener y comen números, comenzando con "0412 o 0414 o 0416 o 0424 o 0426 o 0422',
+  },
+  direccion: {
+    expresion: /^([A-Za-z0-9\s\.,#-]{8,})$/,
+    mensajeError: "Debe estar completa y detallada",
+  },
+  descripcion: {
+    expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
+    mensajeError: "",
+  },
+  fn: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  cantidad: {
+    expresion: /^([1-9]{1})([0-9]{1,4})?$/,
+    mensajeError: "La cantidad debe ser entre 1 y 9999",
+  },
+  precio: {
+    expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/,
+    mensajeError:
+      "El precio debe tener formato válido (ej: 1.00, 10.00, 100.00)",
+  },
+  precioD: {
+    expresion: /^(?!0$)(?!1$)\d+([.,]\d+)?$/,
+    mensajeError:
+      "El precio debe tener formato válido (ej: 1.00, 10.00, 100.00)",
+  },
+  fechaDeVencimiento: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  lote: {
+    expresion: /^[0-9-_]{4,10}$/,
+    mensajeError: "El número de lote debe tener entre 4 y 10 dígitos",
+  },
+  marca: { expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ\s]{4,10}$/, mensajeError: "" },
+  medida: {
+    expresion: /^\d+(\.\d+)?\s?(ml|L|g|kg|m|cm|mm)$/,
+    mensajeError: "",
+  },
+  stockMinimo: {
+    expresion: /^([1-9]{1})([0-9]{1})?$/,
+    mensajeError: "El stock mínimo debe ser al menos 1",
+  },
+  genero: {
+    expresion: /^"Masculino|| Femenino"$/,
+    mensajeError: "El Genero debe ser Masculino o Femenino",
+  },
 
     proveedor: {
         expresion: /^\d+$/,
         mensajeError: "El proveedor esta mal seleccionado",
     },
 
-    id_personal: {
-        expresion: /^\d+$/,
-        mensajeError: "El Doctor esta mal seleccionado",
-    },
+  id_personal: {
+    expresion: /^\d+$/,
+    mensajeError: "El Doctor esta mal seleccionado",
+  },
 
-    id_insumo: {
-        expresion: /^\d+$/,
-        mensajeError: "El insumo esta mal seleccionado",
-    },
-    indicaciones: {
-        expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
-        mensajeError: "Debe iniciar con mayúscula y tener al menos 8 caracteres.",
-    },
-    diagnostico: {
-        expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
-        mensajeError: "Formato incorrecto: use mayúscula inicial, letras o números (8 o más caracteres).",
-    },
+  id_rol: {
+    expresion: /^\d+$/,
+    mensajeError: "El rol esta mal seleccionado",
+  },
+
+  id_insumo: {
+    expresion: /^\d+$/,
+    mensajeError: "El insumo esta mal seleccionado",
+  },
+  indicaciones: {
+    expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
+    mensajeError: "Debe iniciar con mayúscula y tener al menos 8 caracteres.",
+  },
+  diagnostico: {
+    expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
+    mensajeError:
+      "Formato incorrecto: use mayúscula inicial, letras o números (8 o más caracteres).",
+  },
 
     historial: {
         expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,

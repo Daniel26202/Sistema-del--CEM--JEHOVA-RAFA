@@ -36,7 +36,7 @@ function administradores($parametro)
     $datosU  = $modeloUsuarios->selectAdmin();
     $vistaActiva = "administradores";
     $datosRoles = $modeloRoles->roles();
-    require_once './src/vistas/vistaUsuarios/vistaUsuariosAdmin.php';
+    require_once './src/vistas/vistaUsuarios/vistaUsuarios.php';
 }
 
 function administradoresAjax()
@@ -49,27 +49,39 @@ function administradoresAjax()
 function editarUsuario()
 {
 
-    $modeloUsuarios = new ModeloUsuarios();
-    $modeloBitacora = new ModeloBitacora();
-
-    $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
-    $modeloUsuarios->setUsuario($_POST["usuario"]);
-    $modeloUsuarios->setUsuarioRegistrado($_POST['usuarioRegistrado']);
-    $modeloUsuarios->setImagen($_FILES['imagenUsuario']["name"]);
-    $modeloUsuarios->setImagenTemporal($_FILES['imagenUsuario']['tmp_name']);
-
-    $edicion = $modeloUsuarios->updateUsuario();
-
-
-    if (is_array($edicion) && $edicion[0] === "exito") {
-        $modeloBitacora->setTabla("usuario");
-        $modeloBitacora->setActividad("Ha modificado un  usuario");
-        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-        $modeloBitacora->insertarBitacora();
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-    } else {
+    if (empty($_POST)) {
         http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $edicion]);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
+
+    try {
+        $modeloUsuarios = new ModeloUsuarios();
+        $modeloBitacora = new ModeloBitacora();
+
+        $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
+        $modeloUsuarios->setUsuario($_POST["usuario"]);
+        $modeloUsuarios->setUsuarioRegistrado($_POST['usuarioRegistrado']);
+        $modeloUsuarios->setImagen($_FILES['imagen']["name"]);
+        $modeloUsuarios->setImagenTemporal($_FILES['imagen']['tmp_name']);
+
+        $edicion = $modeloUsuarios->updateUsuario();
+
+
+        if (is_array($edicion) && $edicion[0] === "exito") {
+            $modeloBitacora->setTabla("usuario");
+            $modeloBitacora->setActividad("Ha modificado un  usuario");
+            $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+            $modeloBitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $edicion]);
+            exit;
+        }
+    } catch (InvalidArgumentException $e) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
         exit;
     }
 }
@@ -83,6 +95,7 @@ function borrarUsuario($datos)
     $id_usuario = $datos[0];
     $id_usuario_bitacora = $datos[1];
     $modeloUsuarios->setIdUsuario($id_usuario);
+
     $eliminacion = $modeloUsuarios->eliminacionLogica();
 
     if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -110,7 +123,7 @@ function registrarAdmin()
     $modeloUsuarios->setPassword($passwordEncrip);
     $modeloUsuarios->setCorreo($_POST["correo"]);
     $modeloUsuarios->setIdRol($_POST["id_rol"]);
-    $modeloUsuarios->setImagen($_FILES['imagenUsuario']);
+    $modeloUsuarios->setImagen($_FILES['imagen']);
 
     $id_usuario = $modeloUsuarios->AgregarUsuarios();
 
@@ -119,8 +132,7 @@ function registrarAdmin()
     $modeloDoctores->setNombre($_POST["nombre"]);
     $modeloDoctores->setApellido($_POST["apellido"]);
     $modeloDoctores->setTelefono($_POST["telefono"]);
-    $modeloUsuarios->setCorreo($_POST["correo"]);
-    $modeloUsuarios->setIdUsuario($id_usuario);
+    $modeloDoctores->setIdUsuario($id_usuario);
 
     $insercion = $modeloDoctores->RegistrarAdmin();
 
@@ -135,6 +147,7 @@ function registrarAdmin()
         echo json_encode(['ok' => false, 'error' => $insercion]);
         exit;
     }
+    echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 }
 
 
@@ -196,31 +209,42 @@ function eliminarAdministrador()
 
 function verificarPassw()
 {
-    if (isset($_POST["passwordActual"])) {
+    if (empty($_POST)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
+
+    try {
         $modeloInicioSesion = new ModeloInicioSesion();
         $modeloRecuperarContr = new ModeloRecuperarContr();
         $modeloUsuarios = new ModeloUsuarios();
 
         $modeloInicioSesion->setUsuario($_POST["usuario"]);
-        $modeloInicioSesion->setPassword($_POST["passwordActual"]);
+        $modeloInicioSesion->setPassword($_POST["password"]);
 
         $datosU = $modeloInicioSesion->validarIniciarSesion();
         $verificar = ($datosU) ? "existe" : false;
+
+
         if ($verificar == "existe") {
             // Generamos la contraseña encriptada de la contraseña ingresada
             $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
-            $modeloUsuarios->setIdUsuario($datosU["id_usuario"]);
-            $modeloUsuarios->setPassword($passwordEncrip);
+            $modeloRecuperarContr->setIdUsuario($datosU["id_usuario"]);
+            $modeloRecuperarContr->setPassword($passwordEncrip);
 
             $modeloRecuperarContr->updatePassword();
-
-            echo json_encode(['ok' => true, 'data' => $datosU]);
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $datosU]);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $_POST]);
+            echo json_encode(['ok' => false, 'error' => 'error']);
             exit;
         }
+    } catch (InvalidArgumentException $e) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+        exit;
     }
 }
 

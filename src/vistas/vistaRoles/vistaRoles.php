@@ -69,22 +69,18 @@
                 </div>
             </div>
 
+            <div class="">
+                <button class=" caja-btn-margin btn btn-modals " data-bs-toggle="modal" data-bs-target="#exampleGuardar" 
+                    id="btnRegistrarrol">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
+                        class="bi bi-person-square me-2" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                        <path
+                            d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
+                    </svg>Registrar Rol
+                </button>
+            </div>
 
-            <?php if (!$this->permisos($_SESSION["id_rol"], "guardar", "Roles")): ?>
-                <!-- no hay -->
-            <?php else: ?>
-                <div class="">
-                    <button class="btn btn-primary btn-usuarios btn-agregar-doctores col-3" uk-toggle="target: #modal-exampleGuardar"
-                        id="btnRegistrarrol">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
-                            class="bi bi-person-square me-2" viewBox="0 0 16 16">
-                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                            <path
-                                d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
-                        </svg>Registrar Rol
-                    </button>
-                </div>
-            <?php endif; ?>
 
         </div>
 
@@ -105,9 +101,15 @@
 
 </div>
 
-<?php require_once './src/vistas/vistaRoles/modal/modalMostrarPermisos.php'; ?>
+
+
+
+
+<?php require_once 'modalesRol.php'; ?>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="module" src="<?= $urlBase ?>../src/assets/ajax/roles.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/ajax/roles.js"></script>
+
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaRoles.js"></script>
+
