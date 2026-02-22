@@ -227,7 +227,9 @@ class ModeloHospitalizacion extends ModelBase
             $sql = "SELECT ins.id_insumo, inv.id_entradaDeInsumo, ins.nombre, ins.precio, sum(inv.cantidad_disponible) AS limite_insumo FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo INNER JOIN entrada e ON e.id_entrada = inv.id_entrada  WHERE ins.estado = 'ACT' AND ins.id_insumo =:id ORDER BY e.fechaDeIngreso";
             $this->setSQL($sql);
 
-            $consulta = $this->search(['id' => $this->getIdInsumo()], false);
+            $idInsumo = $this->getIdInsumo();
+            $id = is_array($idInsumo) ? $idInsumo[0] : $idInsumo; // 👈
+            $consulta = $this->search(['id' => $id], false);
 
             return !empty($consulta) ? $consulta : false;
         } catch (\Exception $e) {
@@ -269,7 +271,7 @@ class ModeloHospitalizacion extends ModelBase
             $this->setSQL($sql);
             //devuelve el id de la hospitalización.
             $idH = $this->create($dataH);
-
+            $idHospitalizacion = $idH;
             $idInsumos = $this->getIdInsumo();
             // si hay un id del insumo devuelve verdadero si no, devuelve falso
             if ($idInsumos) {
@@ -294,7 +296,7 @@ class ModeloHospitalizacion extends ModelBase
                     $sql = "INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)";
                     $this->setSQL($sql);
                     $data = [
-                        'id_hospitalizacion' => $idH,
+                        'id_hospitalizacion' => $idHospitalizacion,
                         'id_entradaDeInsumo' => $idEntradaDeInsumo["id_entradaDeInsumo"],
                         'cantidad' => $cantidad[$contadorC]
                     ];
@@ -327,7 +329,7 @@ class ModeloHospitalizacion extends ModelBase
                     $sql = "INSERT INTO servicios_hospitalizacion(id_hospitalizacion, id_servicioMedico, cantidad) VALUES (:id_hospitalizacion, :id_servicioMedico, :cantidad)";
                     $this->setSQL($sql);
                     $data = [
-                        'id_hospitalizacion' => $idH,
+                        'id_hospitalizacion' => $idHospitalizacion,
                         'id_servicioMedico' => $idS,
                         'cantidad' => $cantidadS[$contador]
                     ];
@@ -365,10 +367,7 @@ class ModeloHospitalizacion extends ModelBase
 
             $sql = "SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion";
             $this->setSQL($sql);
-            $data = [
-                'id_hospitalizacion' => $this->getIdH(),
-            ];
-            $data = $this->search($data, false);
+            $data = $this->search(['id_hospitalizacion' => $idHospitalizacion], false);
 
 
             return ["exito", $data];
@@ -763,12 +762,33 @@ class ModeloHospitalizacion extends ModelBase
         $this->idH = (int)$idH;
     }
 
+    public function setIdInsumosA($idInsumosA)
+    {
+        // no hay id seleccionado
+        if (empty($idInsumosA)) {
+            $this->idInsumosA = null;
+            return;
+        }
+        foreach ($idInsumosA as $id) {
+            if (!preg_match('/^[0-9]+$/', $id)) {
+                throw new \InvalidArgumentException('El ID no es válido.');
+            }
+            if ((int)$id <= 0) {
+                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+            }
+        }
+        $this->idInsumosA = $idInsumosA;
+    }
+
     public function setIdInsumo($idInsumo)
     {
-           // no hay id seleccionado
         if (empty($idInsumo)) {
             $this->idInsumo = null;
             return;
+        }
+        // Si viene como string/int, convertir a array
+        if (!is_array($idInsumo)) {
+            $idInsumo = [$idInsumo];
         }
         foreach ($idInsumo as $id) {
             if (!preg_match('/^[0-9]+$/', $id)) {
@@ -880,24 +900,6 @@ class ModeloHospitalizacion extends ModelBase
         $this->idInsH = $idInsH;
     }
 
-    public function setIdInsumosA($idInsumosA)
-    {
-          // no hay id seleccionado
-        if (empty($idInsumosA)) {
-            $this->idInsumosA = null;
-            return;
-        }
-        foreach ($idInsumosA as $id) {
-            if (!preg_match('/^[0-9]+$/', $id)) {
-                throw new \InvalidArgumentException('El ID no es válido.');
-            }
-            if ((int)$id <= 0) {
-                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
-            }
-        }
-        $this->idInsumosA = $idInsumosA;
-    }
-
     public function setIdInsElim($idInsElim)
     {
         // no hay id seleccionado
@@ -936,7 +938,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setCantidadA($cantidadA)
     {
-         // no hay cantidad seleccionada
+        // no hay cantidad seleccionada
         if (empty($cantidadA)) {
             $this->cantidadA = null;
             return;
@@ -959,7 +961,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setMonto($monto)
     {
-        if (!preg_match('/^[0-9]+$/', $monto)) {
+        if (!preg_match('/^(?!0$)(?!1$)\d+([.,]\d+)?$/', $monto)) {
             throw new \InvalidArgumentException('El monto no es válido.');
         }
         if ((int)$monto <= 0) {
@@ -970,7 +972,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setMontoME($montoME)
     {
-        if (!preg_match('/^[0-9]+$/', $montoME)) {
+        if (!preg_match('/^(?!0$)(?!1$)\d+([.,]\d+)?$/', $montoME)) {
             throw new \InvalidArgumentException('El monto no es válido.');
         }
         if ((int)$montoME <= 0) {
@@ -981,7 +983,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setTotal($total)
     {
-        if (!preg_match('/^[0-9]+$/', $total)) {
+        if (!preg_match('/^(?!0$)(?!1$)\d+([.,]\d+)?$/', $total)) {
             throw new \InvalidArgumentException('El total no es válido.');
         }
         if ((int)$total <= 0) {
@@ -992,7 +994,7 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setTotalME($totalME)
     {
-        if (!preg_match('/^[0-9]+$/', $totalME)) {
+        if (!preg_match('/^(?!0$)(?!1$)\d+([.,]\d+)?$/', $totalME)) {
             throw new \InvalidArgumentException('El totalME no es válido.');
         }
         if ((int)$totalME <= 0) {
@@ -1019,7 +1021,7 @@ class ModeloHospitalizacion extends ModelBase
     }
     public function setSintomasId($sintomasId)
     {
-       // no hay id seleccionado
+        // no hay id seleccionado
         if (empty($sintomasId)) {
             $this->sintomasId = null;
             return;
@@ -1068,6 +1070,7 @@ class ModeloHospitalizacion extends ModelBase
 
         $this->diagnostico = $diagnostico;
     }
+
 
     public function setHistorial($historial)
     {

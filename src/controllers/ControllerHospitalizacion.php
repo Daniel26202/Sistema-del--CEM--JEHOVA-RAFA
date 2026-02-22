@@ -173,7 +173,7 @@ function agregarH()
         $modeloHosp = new ModeloHospitalizacion();
         $modeloBitacora = new ModeloBitacora();
 
-
+        $modeloHosp->setFechaControl($_POST["fecha"]);
         $modeloHosp->setIdPaciente($_POST["id_paciente"]);
         $modeloHosp->setIdDoctor($_POST["id_personal"]);
         $verificaH = $modeloHosp->verificaHA();
@@ -192,8 +192,6 @@ function agregarH()
             $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : false;
             $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
 
-
-            print_r($_POST);
             $modeloHosp->setFechaHora($_POST["fecha"]);
             $modeloHosp->setIdInsumo($idInsumo);
             $modeloHosp->setCantidadIns($cantidadI);
