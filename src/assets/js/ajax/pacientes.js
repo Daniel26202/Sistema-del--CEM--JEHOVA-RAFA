@@ -11,6 +11,10 @@ import {
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
+    const modalPaciente = new bootstrap.Modal(
+      document.getElementById("exampleModalagregarPaciente"),
+    );
+
 const modalAgregar = document.getElementById("modalAgregar");
 const exampleModalLabel = document.getElementById("exampleModalLabelPaciente");
 const selectGenero = document.getElementById("selectGenero");
@@ -164,17 +168,15 @@ const readPatients = async () => {
     }
 };
 //create
-const createPatients = async (form, inputs) => {
+const createPatients = async (form) => {
     try {
         const data = new FormData(form);
         let result = await executePetition(url + "/guardar", "POST", data);
         console.log(result);
         if (result.ok) {
             alertSuccess(result.message);
-            form.reset();
-            inputs = [];
-            inputs.forEach((input) => input.parentElement.classList.remove("valido"));
             readPatients();
+            modalPaciente.hide();
         } else throw new Error(`${result.error}`);
     } catch (error) {
         alertError("Error", error);
@@ -182,7 +184,7 @@ const createPatients = async (form, inputs) => {
 };
 
 //update
-const updatePatients = async (form, inputs) => {
+const updatePatients = async (form) => {
     try {
         const data = new FormData(form);
 
@@ -250,18 +252,14 @@ let verificarFormulario = inicializarValidacionFormulario(modalAgregar);
 modalAgregar.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    let inputsBuenos = [];
-    this.querySelectorAll(".input-validar").forEach((input) => {
-        if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
-    });
-
+  
     let esValido = verificarFormulario();
 
     if (esValido) {
         if (modalAgregar.classList.contains("editar")) {
-            updatePatients(this, inputsBuenos);
+            updatePatients(this);
         } else {
-            createPatients(this, inputsBuenos);
+            createPatients(this);
         }
     } else {
         alertError("Error", "Por favor verifique que todos los datos estén correctos.");

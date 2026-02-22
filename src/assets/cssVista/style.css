@@ -1101,7 +1101,7 @@ html {
 }
 
 .cardReporte {
-    background-image: url("../img/grafi.jpg");
+    background-image: url("../images/img/grafi.jpg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -1115,7 +1115,7 @@ html {
 }
 
 .cardReporteFactura {
-    background-image: url("../img/grafico.jpg");
+    background-image: url("../images/img/grafico.jpg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -2146,7 +2146,7 @@ td {
 
 .modalBuscador {
     border-radius: 20px;
-    background-image: url("../img/grafi.jpg");
+    background-image: url("../images/img/grafi.jpg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;

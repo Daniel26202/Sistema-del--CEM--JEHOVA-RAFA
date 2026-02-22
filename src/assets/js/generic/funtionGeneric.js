@@ -31,16 +31,17 @@ export const showDataModal = (parametros) => {
   parametros.btnModal.textContent = parametros.btnTextModal;
   parametros.form.classList.add("editar");
 
-    if (parametros.cedulaOculta) parametros.cedulaOculta.value = parametros.data.cedula;
+  if (parametros.cedulaOculta)
+    parametros.cedulaOculta.value = parametros.data.cedula;
 
-    if (parametros.idOculto) parametros.idOculto.value = parametros.data.id;
+  if (parametros.idOculto) parametros.idOculto.value = parametros.data.id;
 
-    if (parametros.rifOculto) parametros.rifOculto.value = parametros.data.rif;
+  if (parametros.rifOculto) parametros.rifOculto.value = parametros.data.rif;
 
-    parametros.inputs.forEach((input) => {
-        let campoCustom = input.closest(".campo-custom");
-        let check = input.nextElementSibling.children[0];
-        let error = input.nextElementSibling.children[1];
+  parametros.inputs.forEach((input) => {
+    let campoCustom = input.closest(".campo-custom");
+    let check = input.nextElementSibling.children[0];
+    let error = input.nextElementSibling.children[1];
 
     input.value = parametros.data[input.getAttribute("name")];
     input.parentElement.classList.remove("invalido");
@@ -59,9 +60,9 @@ export const showDataModal = (parametros) => {
 };
 
 export const clearModalEnviar = (parametros) => {
-    parametros.labelModal.textContent = parametros.textLabelModal;
-    parametros.btnModal.textContent = parametros.btnTextModal;
-    parametros.form.classList.remove("editar");
+  parametros.labelModal.textContent = parametros.textLabelModal;
+  parametros.btnModal.textContent = parametros.btnTextModal;
+  parametros.form.classList.remove("editar");
 
   parametros.btnModal.textContent = parametros.btnTextModal;
   parametros.form.classList.remove("editar");
@@ -337,4 +338,65 @@ export const cargarImg = (archivo, imgHtml, contenedorImg) => {
       contenedorImg.querySelector("img").src = e.currentTarget.result;
     });
   }
+};
+
+//retorna los permisos del sistema con su respetivo modulo
+export const returnModulos = () => {
+  // Array de módulos, cada uno con su nombre y el permiso asociado.
+  const modulos = [
+    { modulo: "Pacientes", permisosPorModulo: "permisosPacientes" },
+    { modulo: "Patologias", permisosPorModulo: "permisosPatologias" },
+    { modulo: "Factura", permisosPorModulo: "permisosFacturas" },
+    { modulo: "Citas", permisosPorModulo: "permisosCitas" },
+    { modulo: "Servicios", permisosPorModulo: "permisosServicios" },
+    { modulo: "Doctores", permisosPorModulo: "permisosDoctores" },
+    { modulo: "Control", permisosPorModulo: "permisosControles" },
+    {
+      modulo: "Hospitalizacion",
+      permisosPorModulo: "permisosHospitalizaciones",
+    },
+    { modulo: "Insumos", permisosPorModulo: "permisosInsumos" },
+    { modulo: "Entrada", permisosPorModulo: "permisosEntradas" },
+    { modulo: "Proveedores", permisosPorModulo: "permisosProveedores" },
+    { modulo: "Usuarios", permisosPorModulo: "permisosUsuarios" },
+    { modulo: "Roles", permisosPorModulo: "permisosRoles" },
+    { modulo: "Reportes", permisosPorModulo: "permisosReportes" },
+    { modulo: "Estadisticas", permisosPorModulo: "permisosEstadisticas" },
+    { modulo: "Mantenimiento", permisosPorModulo: "permisosMantenimiento" },
+  ];
+
+  // Clasificación de módulos en categorías.
+  const clasificacion = {
+    Administración: ["Usuarios", "Roles", "Mantenimiento"],
+    "Gestión Médica": [
+      "Pacientes",
+      "Patologias",
+      "Citas",
+      "Servicios",
+      "Hospitalizacion",
+      "Doctores",
+      "Control",
+    ],
+    Inventario: ["Insumos", "Entrada", "Proveedores"],
+    Reportes: ["Factura", "Reportes", "Estadisticas"],
+  };
+
+  // Inicializamos un objeto para almacenar los módulos clasificados por categoría.
+  const categorias = Object.keys(clasificacion).reduce((acc, categoria) => {
+    acc[categoria] = []; // Inicializa cada categoría como un array vacío.
+    return acc;
+  }, {});
+
+  // Clasificamos los módulos en las categorías correspondientes.
+  modulos.forEach((modulo) => {
+    for (const [categoria, modulosCategoria] of Object.entries(clasificacion)) {
+      // Si el módulo pertenece a la categoría actual, lo añadimos a esa categoría.
+      if (modulosCategoria.includes(modulo.modulo)) {
+        categorias[categoria].push(modulo);
+        break; // Salimos del bucle interno una vez clasificado.
+      }
+    }
+  });
+
+  return categorias;
 };

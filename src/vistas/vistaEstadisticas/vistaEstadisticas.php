@@ -96,9 +96,9 @@
 
 <?php require_once './src/vistas/vistaEstadisticas/modalsEstadisticas.php'; ?>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/jspdf.umd.min.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/jspdf.umd.min.js"></script>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/html2canvas.min.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/html2canvas.min.js"></script>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/estadisticas.js"></script>
 
