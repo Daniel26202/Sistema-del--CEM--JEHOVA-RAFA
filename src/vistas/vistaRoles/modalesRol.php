@@ -3,16 +3,16 @@
     <div class="modal-dialog ">
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
-                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Registrar Rol</h5>
+                <h5 class="modal-title fs-4 fw-bold" id="title-modal">Registrar Rol</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form class=" form-validable" id="formAgregarRol">
 
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
-                <input type="hidden" name="cedulaRegistrada" id="cedulaRegistrada">
+                <input type="hidden" name="nombreRegiistrado" id="nombreRegiistrado">
 
-                <input type="hidden" name="id" id="id_paciente">
+                <input type="hidden" name="id_rol" id="id_rol">
 
 
                 <div class="modal-body">
@@ -65,31 +65,31 @@
 
 
 
-                    
-                        <div class=''>
-                            <label class="label-custom">Permisos</label>
+
+                    <div class=''>
+                        <label class="label-custom">Permisos</label>
 
 
 
-                            <!-- acordion de horarios -->
-                            <div class="accordion " id="accordionExampleDisp">
-                                <div class="accordion-item bg-theme">
-                                    <h2 class="accordion-header" id="headingOne">
-                                        <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#dispOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Horarios Disponibles
-                                        </button>
-                                    </h2>
-                                    <div id="dispOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDisp">
-                                        <div class="accordion-body d-flex justify-content-between flex-wrap cards-hours" id="accordion-div">
+                        <!-- acordion de horarios -->
+                        <div class="accordion " id="accordionExampleDisp">
+                            <div class="accordion-item bg-theme">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#dispOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Horarios Disponibles
+                                    </button>
+                                </h2>
+                                <div id="dispOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDisp">
+                                    <div class="accordion-body d-flex justify-content-between flex-wrap cards-hours" id="accordion-div">
 
-                                        </div>
                                     </div>
                                 </div>
-
                             </div>
 
-                            
                         </div>
+
+
+                    </div>
                 </div>
 
 
@@ -98,6 +98,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-modals" id="botonModal">Registrar</button>
+                    <button type="button" class="btn btn-modals btn-eliminar">Eliminar</button>
+
                 </div>
             </form>
         </div>

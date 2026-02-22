@@ -8,7 +8,7 @@ use App\modelos\ModeloPermisos;
 
 class ModeloRoles extends ModelBase
 {
-    private $id_rol, $nombre, $nombreRegistrado, $descripcion;
+    private $id_rol, $nombre, $nombreRegistrado, $descripcion, $permisos, $modulos;
 
     public function __construct($dbSystem = false)
     {
@@ -37,15 +37,35 @@ class ModeloRoles extends ModelBase
     public function mostrarPermisos()
     {
         try {
-            $data=[
-                'id_rol'=>$this->getIdRol(),
-                'modulo'=>$this->retrunObjectModel()->getModulo()
+            $data = [
+                'id_rol' => $this->getIdRol()
             ];
-            $sql = "SELECT modulo,permisos FROM permisos WHERE id_rol =:id_rol AND modulo =:modulo  ";
+
+            $sql = "SELECT modulo, permisos FROM permisos WHERE id_rol = :id_rol";
             $this->setSQL($sql);
-            return $this->search($data, false);
+
+            // Obtenemos los datos crudos de la DB (suponiendo que search() devuelve un array de filas)
+            $resultados = $this->search($data);
+
+            // --- PROCESAMIENTO PARA JS ---
+            $permisosParaJS = [];
+
+            if (is_array($resultados)) {
+                foreach ($resultados as $fila) {
+                    // Forzamos a que sea un array si search() devuelve objetos
+                    $fila = (array)$fila;
+
+                    // Mapeamos: "NombreModulo" => "permiso1,permiso2"
+                    // Si el permiso es null, guardamos cadena vacía
+                    $permisosParaJS[$fila['modulo']] = $fila['permisos'] ?? "";
+                }
+            }
+
+            return $permisosParaJS;
         } catch (\Exception $e) {
-            return $e->getMessage();
+            // En caso de error, podrías registrar el log y retornar array vacío
+            error_log($e->getMessage());
+            return [];
         }
     }
 
@@ -54,15 +74,16 @@ class ModeloRoles extends ModelBase
 
     //Insertar  Rol
 
-    public function insertar(){
+    public function insertar()
+    {
         try {
-            $data=[
-                'nombre'=>$this->getNombre(),
+            $data = [
+                'nombre' => $this->getNombre(),
                 'estado' => 'ACT',
-                'nombre' => $this->getDescripcion()
+                'descripcion' => $this->getDescripcion()
             ];
 
-            if ($this->validarRol($this->getNombre())) {
+            if ($this->validarRol(['nombre' => $this->getNombre()])) {
                 throw new \Exception("El nombre del rol ya se encuentra registrado");
             }
 
@@ -71,15 +92,38 @@ class ModeloRoles extends ModelBase
             $this->setSQL($sql);
             $id_rol = $this->create($data);
 
-            //recorro los modulos enviados por el formulario
-            foreach ($this->retrunObjectModel()->getModulos() as $index => $modulo) {
-                $grupoDelPermiso = $this->retrunObjectModel()->getPermisos()[$index];
-                $permisos = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
+            // //recorro los modulos enviados por el formulario
+            // foreach ($this->getModulos() as $index => $modulo) {
+            //     $grupoDelPermiso = $this->retrunObjectModel()->getPermisos()[$index];
+            //     $permisos = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
 
-                $data=[
-                    'id_rol'=>$this->getIdRol(),
-                    'permisos'=>$permisos,
-                    'modulo'=> $this->retrunObjectModel()->getModulo()
+            //     $data=[
+            //         'id_rol'=>$this->getIdRol(),
+            //         'permisos'=>$permisos,
+            //         'modulo'=> $this->retrunObjectModel()->getModulo()
+            //     ];
+            //     $sql = "INSERT INTO permisos (idpermisos, id_rol, permisos, modulo) VALUES (NULL, :id_rol, :permisos, :modulo)";
+            //     $this->setSQL($sql);
+            //     $this->create($data);
+            // }
+
+
+            // 2. Preparar la conexión (ejemplo PDO)
+            // $pdo = new PDO(...);
+
+            // 3. Iterar sobre TODOS los módulos
+            foreach ($this->getModulos() as $moduloNombre) {
+
+                // Verificamos si el módulo actual tiene permisos marcados
+                // Si existe, los unimos con comas; si no, queda como cadena vacía
+                $cadenaPermisos = "";
+                if (isset($this->getPermisos()[$moduloNombre])) {
+                    $cadenaPermisos = implode(',', $this->getPermisos()[$moduloNombre]);
+                }
+                $data = [
+                    'id_rol' => $id_rol,
+                    'permisos' => $cadenaPermisos,
+                    'modulo' => $moduloNombre
                 ];
                 $sql = "INSERT INTO permisos (idpermisos, id_rol, permisos, modulo) VALUES (NULL, :id_rol, :permisos, :modulo)";
                 $this->setSQL($sql);
@@ -99,7 +143,7 @@ class ModeloRoles extends ModelBase
         try {
             $data1 = [
                 'nombre' => $this->getNombre(),
-                'nombre' => $this->getDescripcion()
+                'descripcion' => $this->getDescripcion()
             ];
 
             $data2 = [
@@ -122,7 +166,7 @@ class ModeloRoles extends ModelBase
                 $sql = "UPDATE rol SET  nombre =:nombre, descripción =:descripcion WHERE id_rol = :id";
                 $this->setSQL($sql);
                 $this->update($data1, $this->getIdRol());
-            }else{
+            } else {
                 if ($this->validarRol(['nombre' => $this->getNombre()])) {
                     throw new \Exception("El nombre ya está registrado.");
                 } else {
@@ -133,18 +177,23 @@ class ModeloRoles extends ModelBase
             }
 
             //Recorro los modulos enviados por el formulario
-            foreach ($this->retrunObjectModel()->getModulos() as $index => $modulo) {
-                $grupoDelPermiso = $this->retrunObjectModel()->getPermisos()[$index];
-                $permisos = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
+            foreach ($this->getModulos() as $moduloNombre) {
 
+                // Verificamos si el módulo actual tiene permisos marcados
+                // Si existe, los unimos con comas; si no, queda como cadena vacía
+                $cadenaPermisos = "";
+                if (isset($this->getPermisos()[$moduloNombre])) {
+                    $cadenaPermisos = implode(',', $this->getPermisos()[$moduloNombre]);
+                }
                 $data = [
-                    'permisos' => $permisos,
-                    'modulo' => $this->retrunObjectModel()->getModulo()
+                    'permisos' => $cadenaPermisos,
+                    'modulo' => $moduloNombre
                 ];
-                $sql = "UPDATE  permisos SET  permisos =:permisos WHERE modulo =:modulo AND id_rol =:id_rol";
+                $sql = "UPDATE  permisos SET  permisos =:permisos WHERE modulo =:modulo AND id_rol =:id";
                 $this->setSQL($sql);
-                $this->create($data);
+                $this->update($data, $this->getIdRol());
             }
+
             return ["exito"];
         } catch (\Exception $e) {
 
@@ -183,7 +232,7 @@ class ModeloRoles extends ModelBase
 
 
     //metodo para validar que no se registren dos roles con el mismo nombre
-    public function validarRol($data, $returnNombre =false)
+    public function validarRol($data, $returnNombre = false)
     {
         try {
             $sql = "SELECT * FROM rol WHERE nombre =:nombre";
@@ -220,6 +269,16 @@ class ModeloRoles extends ModelBase
         return $this->descripcion;
     }
 
+
+    public function getPermisos()
+    {
+        return $this->permisos;
+    }
+
+    public function getModulos()
+    {
+        return $this->modulos;
+    }
 
 
     public function setIdRol($id_rol)
@@ -260,4 +319,22 @@ class ModeloRoles extends ModelBase
         $this->descripcion = $descripcion;
     }
 
+
+    public function setModulos($modulos)
+    {
+        if (!is_array($modulos)) {
+            throw new \InvalidArgumentException("Los modulos no es valido.");
+        }
+
+        $this->modulos = $modulos;
+    }
+
+    public function setPermisos($permisos)
+    {
+        if (!is_array($permisos)) {
+            throw new \InvalidArgumentException("El permisos no es valido.");
+        }
+
+        $this->permisos = $permisos;
+    }
 }

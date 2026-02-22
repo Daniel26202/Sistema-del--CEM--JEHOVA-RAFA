@@ -13,22 +13,21 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Roles";
 
 const urlBase = document.getElementById("urlBase").value;
 
-const btnEditarUsuarios = document.querySelectorAll(".editarUsuario");
-const imagenesUsuarios = document.querySelectorAll(".imagenesUsuarios");
-
-const activarMostrarContra = document.querySelectorAll(".mostrarPassword");
-const desMostrarContra = document.querySelectorAll(".ocultarPassword");
-
 const formAgregarRol = document.getElementById("formAgregarRol");
 const rol = document.getElementById("rol");
 const btnRegistrarRol = document.getElementById("btnRegistrarrol");
-
+const inputs = formAgregarRol.querySelectorAll('.input-validar')
 const modalRegistrarRol = new bootstrap.Modal(
   document.getElementById("exampleGuardarRol"),
 );
 
+const id_rol = document.getElementById("id_rol"); 
 // Input para buscar roles
 const buscarRol = document.getElementById("buscarRol");
+const nombreRegiistrado = document.getElementById("nombreRegiistrado"); 
+
+const botonModal = document.getElementById("botonModal");
+const titleModal = document.getElementById('title-modal')
 
 // Filtrar tarjetas según el texto ingresado en el input
 buscarRol.addEventListener("input", function () {
@@ -42,6 +41,17 @@ buscarRol.addEventListener("input", function () {
 });
 
 btnRegistrarRol.addEventListener("click", function () {
+  formAgregarRol.classList.remove("editar");
+  id_rol.value = "";
+botonModal.innerHTML = 'Registrar';
+titleModal.innerText = "Registrar Rol"
+
+  inputs.forEach((input) => {
+    input.value = "";
+    input.parentElement.classList.remove("valido", "invalido");
+    input.nextElementSibling.children[0].classList.add("d-none");
+    input.nextElementSibling.children[1].classList.add("d-none");
+  });
   modalRegistrarRol.show();
 });
 
@@ -99,40 +109,7 @@ function manejarCheckboxConsultar(section) {
   });
 }
 
-// Manejar eventos de los botones "Mostrar Permisos"
-document.querySelectorAll(".btn-mostrar-permisos").forEach((btn) => {
-  btn.addEventListener("click", function () {
-    const id_rol = this.getAttribute("data-index"); // Obtener ID del rol
-    const modalMostrar = document.getElementById(
-      "modal-exampleMostrar" + id_rol,
-    ); // Modal específico
-    const checkboxTodosLosPermisos = modalMostrar.querySelector(
-      ".checkboxTodosLosPermisos" + id_rol,
-    );
 
-    // Manejar el checkbox de "Todos los Permisos"
-    manejarCheckboxTodosLosPermisos(modalMostrar, checkboxTodosLosPermisos);
-
-    // Manejar cada sección del acordeón
-    modalMostrar
-      .querySelectorAll(".accordion-section")
-      .forEach(manejarCheckboxConsultar);
-  });
-});
-
-
-
-
-
-// Manejar el modal de "Guardar"
-const modalGuardar = document.getElementById("modal-exampleGuardar");
-// const checkboxTodosLosPermisosGuardar = modalGuardar.querySelector(".checkboxTodosLosPermisos");
-
-// Manejar el checkbox de "Todos los Permisos" en el modal de "Guardar"
-// manejarCheckboxTodosLosPermisos(modalGuardar, checkboxTodosLosPermisosGuardar);
-
-// Manejar cada sección del acordeón en el modal de "Guardar"
-// modalGuardar.querySelectorAll(".accordion-section").forEach(manejarCheckboxConsultar);
 
 //Ajax
 
@@ -159,7 +136,7 @@ const readRol = async () => {
 
                                     <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
                                       element.id_rol
-                                    }" data-img=${element.id_rol}
+                                    }" data-name="${element.nombre}"  data-descripcion="${element.descripción}" data-img=${element.id_rol}
                                         data-bs-toggle="modal" data-bs-target="#exampleGuardar">Mostrar</button>
                                 </div>
                           </div>
@@ -175,26 +152,46 @@ const readRol = async () => {
     });
 
     //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-      btn.addEventListener("click", function () {
+    document.querySelector(".btn-eliminar").addEventListener("click", function () {
         const data = [
           this.getAttribute("data-index"),
           document.getElementById("id_usuario_session").value,
         ];
         console.log(data);
         alertConfirm("Esta seguro de eliminar el rol?", deleteUser, data);
+    });
+
+    //mostrar modal
+    document.querySelectorAll(".botones-mostrar").forEach((btn) => {
+      btn.addEventListener("click", async function () {
+        
+        botonModal.innerHTML = "Modificar";
+        titleModal.innerText = "Modificar Rol";
+
+        id_rol.value = this.getAttribute("data-index");
+        nombreRegiistrado.value = this.getAttribute('data-name');
+        inputs[0].value = this.getAttribute('data-name');
+        inputs[1].value = this.getAttribute('data-descripcion');
+
+
+        //btn eliminar
+        document.querySelector(".btn-eliminar").setAttribute('data-index', this.getAttribute("data-index"));
+
+
+        inputs.forEach(input => {
+          input.dispatchEvent(new Event('keyup', { bubbles: true }));
+        });
+
+        formAgregarRol.classList.add("editar");
+        modalRegistrarRol.show();
+        let permisosGuardados = await traerPermisosGuardados(
+          this.getAttribute("data-index"),
+        );
+
+        readPermisos(permisosGuardados);
       });
     });
 
-
-
-    //mostrar modal
-document.querySelectorAll('.botones-mostrar').forEach(btn=>{
-  btn.addEventListener('click', function(){
-    console.log('cllikc')
-    modalRegistrarRol.show();
-  })
-})
 
   } catch (error) {
     alertError("Error", error);
@@ -211,6 +208,7 @@ const createRol = async (form) => {
     if (result.ok) {
       alertSuccess(result.message);
       readRol();
+      modalRegistrarRol.hide();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
@@ -218,25 +216,15 @@ const createRol = async (form) => {
 };
 
 //update
-const updateUser = async (form, inputs) => {
+const updateRol = async (form) => {
   try {
     const data = new FormData(form);
-    console.log(form);
-    console.log(inputs);
-
-    let result = await executePetition(url + "/editarUsuario", "POST", data);
+    let result = await executePetition(url + "/modificarRol", "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
-
-      UIkit.modal(
-        `#${form.parentElement.parentElement.getAttribute("id")}`,
-      ).hide();
-      inputs = [];
-      inputs.forEach((input) =>
-        input.parentElement.classList.remove("grpFormCorrect"),
-      );
       readRol();
+      modalRegistrarRol.hide();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     console.log(error);
@@ -250,119 +238,103 @@ const deleteUser = async (data) => {
     const result = await executePetition(url + `/eliminarRol/${data}`, "GET");
     if (result.ok) {
       alertSuccess(result.message);
-
+      modalRegistrarRol.hide();
       readRol();
-
-      UIkit.modal(`#modal-exampleMostrar${data[0]}`).hide();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
   }
 };
 
-//update
-const updateRol = async (form, inputs) => {
+
+
+const traerPermisosGuardados = async (id_rol) => {
   try {
-    const data = new FormData(form);
-
-    let result = await executePetition(url + "/modificarRol", "POST", data);
-    console.log(result);
-    if (result.ok) {
-      alertSuccess(result.message);
-
-      UIkit.modal(
-        `#modal-exampleMostrar${form.getAttribute("data-index")}`,
-      ).hide();
-      inputs = [];
-      inputs.forEach((input) =>
-        input.parentElement.classList.remove("grpFormCorrect"),
-      );
-      readRol();
-    } else throw new Error(`${result.error}`);
+    const result = await executePetition(
+      url + `/cargarPermisosGuardados/${id_rol}`,
+      "GET",
+    );
+    return result;
   } catch (error) {
-    console.log(error);
-    alertError("Error", error);
+    return 0;
   }
 };
 
-const readPermisos = () => {
-  console.log(returnModulos());
-
-  // Generar acordeones
+const readPermisos = (permisosGuardados = {}) => {
   const accordionContainer = document.getElementById("accordion-div");
+  accordionContainer.innerHTML = "";
 
-  //guardar los permisos en la constante categoria'
+  // Trae la lista completa de TODOS los módulos del sistema
   const categorias = returnModulos();
 
   for (const [categoria, modulos] of Object.entries(categorias)) {
-    // Crear el acordeón para la categoría
-    const categoriaId = `heading-${categoria.replace(/\s+/g, "-")}`;
-    const categoriaCollapseId = `collapse-${categoria.replace(/\s+/g, "-")}`;
+    const categoriaSlug = categoria.replace(/\s+/g, "-");
+    const categoriaId = `heading-${categoriaSlug}`;
+    const categoriaCollapseId = `collapse-${categoriaSlug}`;
 
     const categoriaDiv = document.createElement("div");
     categoriaDiv.classList.add("card", "mb-3", "w-100");
 
     categoriaDiv.innerHTML = `
-       <h2 class="accordion-header" id="${categoriaId}">
-            <button class="accordion-button bg-theme text-center"  type="button" data-bs-toggle="collapse" data-bs-target="#${categoriaCollapseId}" aria-expanded="true" aria-controls="${categoriaCollapseId}">
+        <h2 class="accordion-header" id="${categoriaId}">
+            <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#${categoriaCollapseId}" aria-expanded="true" aria-controls="${categoriaCollapseId}">
                 ${categoria}
             </button>
         </h2>
-        <div id="${categoriaCollapseId}" class="accordion-collapse collapse" aria-labelledby="${categoriaId}" data-bs-parent="#${categoriaCollapseId}">
+        <div id="${categoriaCollapseId}" class="accordion-collapse collapse" aria-labelledby="${categoriaId}" data-bs-parent="#accordion-div">
             <div class="accordion-body d-flex flex-wrap cards-hours">
                 ${modulos
-                  .map(
-                    (modulo) =>
-                      `
-                       <div class="card fondo-tabla mb-3 m-auto" style="width: 14rem;">
-                    <input type='hidden' name="modulos[]" value=${modulo.modulo}>
+                  .map((modulo) => {
+                    const modName = modulo.modulo;
+                    const modId = modName.replace(/\s+/g, "-");
+
+                    // 1. Buscamos si el rol tiene permisos en este módulo específico
+                    // Si el rol tiene "Usuarios": "consultar,guardar", esto crea ['consultar', 'guardar']
+                    const permisosDeEsteModulo = permisosGuardados[modName]
+                      ? permisosGuardados[modName].split(",")
+                      : [];
+
+                    // 2. Función que verifica si el permiso actual está en la lista del rol
+                    const isChecked = (permiso) =>
+                      permisosDeEsteModulo.includes(permiso) ? "checked" : "";
+
+                    return `
+                    <div class="card fondo-tabla mb-3 m-auto" style="width: 14rem;">
+                        <input type='hidden' name="modulos[]" value="${modName}">
+                        
                         <div class="card-body">
-                            <h5 class="card-title">${modulo.modulo}</h5>
+                            <h5 class="card-title">${modName}</h5>
 
                             <div class="form-check form-switch d-flex align-items-center">
-                              <div>
-                                <input class="form-check-input tiposDePago" type="checkbox" role="switch" id="flexSwitchCheckDefault0${modulo}" name="permisos[]" value="consultar">
-                              </div>
-                              <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault0${modulo}">
-                                Consultar
-                              </label></div>
-
-                             </div>
+                                <input class="form-check-input" type="checkbox" role="switch" 
+                                    id="check-0-${modId}" 
+                                    name="permisos[${modName}][]" value="consultar" ${isChecked("consultar")}>
+                                <label class="form-check-label ms-2 mt-1" for="check-0-${modId}">Consultar</label>
+                            </div>
 
                             <div class="form-check form-switch d-flex align-items-center">
-                              <div>
-                                <input class="form-check-input tiposDePago" type="checkbox" role="switch" id="flexSwitchCheckDefault1${modulo}" name="permisos[]" value="guardar">
-                              </div>
-                              <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault1${modulo}">
-                                Guardar
-                              </label></div>
+                                <input class="form-check-input" type="checkbox" role="switch" 
+                                    id="check-1-${modId}" 
+                                    name="permisos[${modName}][]" value="guardar" ${isChecked("guardar")}>
+                                <label class="form-check-label ms-2 mt-1" for="check-1-${modId}">Guardar</label>
+                            </div>
 
-                             </div>
+                            <div class="form-check form-switch d-flex align-items-center">
+                                <input class="form-check-input" type="checkbox" role="switch" 
+                                    id="check-2-${modId}" 
+                                    name="permisos[${modName}][]" value="editar" ${isChecked("editar")}>
+                                <label class="form-check-label ms-2 mt-1" for="check-2-${modId}">Editar</label>
+                            </div>
 
-                             <div class="form-check form-switch d-flex align-items-center">
-                              <div>
-                                <input class="form-check-input tiposDePago" type="checkbox" role="switch" id="flexSwitchCheckDefault2${modulo}" name="permisos[]" value="editar">
-                              </div>
-                              <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault2${modulo}">
-                                Editar
-                              </label></div>
-
-                             </div>
-
-
-                             <div class="form-check form-switch d-flex align-items-center">
-                              <div>
-                                <input class="form-check-input tiposDePago" type="checkbox" role="switch" id="flexSwitchCheckDefault3${modulo}" name="permisos[]" value="eliminar">
-                              </div>
-                              <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault3${modulo}">
-                                Eliminar
-                              </label></div>
-
-                             </div>
-
+                            <div class="form-check form-switch d-flex align-items-center">
+                                <input class="form-check-input" type="checkbox" role="switch" 
+                                    id="check-3-${modId}" 
+                                    name="permisos[${modName}][]" value="eliminar" ${isChecked("eliminar")}>
+                                <label class="form-check-label ms-2 mt-1" for="check-3-${modId}">Eliminar</label>
+                            </div>
                         </div>
-                    </div>`,
-                  )
+                    </div>`;
+                  })
                   .join("")}
             </div>
         </div>
@@ -385,7 +357,7 @@ formAgregarRol.addEventListener("submit", function (e) {
 
   if (esValido) {
     if (formAgregarRol.classList.contains("editar")) {
-      // updatePatients(this);
+      updateRol(this);
     } else {
       console.log("guardar");
       createRol(this);
