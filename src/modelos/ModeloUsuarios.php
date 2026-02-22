@@ -76,12 +76,12 @@ class ModeloUsuarios extends ModelBase
 
             if ($usuario == $usuarioRegistrado) {
             } else {
-                if ($this->validarUsuario($this->getUsuario(), true)) {
+                if ($this->validarUsuario(['usuario' => $this->getUsuario()], true)) {
                     throw new \Exception("El usuario ya está registrada.");
                 }
             }
 
-            if ($this->getImagen() == "") {
+            if ($this->getImagen() == null) {
 
                 $sql = 'UPDATE usuario SET  usuario = :usuario WHERE id_usuario = :id';
                 $this->setSQL($sql);
@@ -89,24 +89,25 @@ class ModeloUsuarios extends ModelBase
             } else {
                 $sql = "SELECT imagen FROM usuario WHERE id_usuario=:id_usuario";
                 $this->setSQL($sql);
-                $img = $this->search(['id_usuario' => $this->getIdUsuario()]);
+                $img = $this->search(['id_usuario' => $this->getIdUsuario()], false);
                 $nombreImagenAntigua = $img["imagen"];
 
-                //Editar el usuario.
-                $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario WHERE id_usuario = :id';
-                $this->setSQL($sql);
+                // Editar el usuario.
                 $data = [
-                    'imagen' => $this->getImagen()['name'],
+                    'imagen' => $this->getImagen(),
                     'usuario' => $this->getUsuario()
                 ];
+                $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario WHERE id_usuario = :id';
+                $this->setSQL($sql);
+
                 $this->update($data, $this->getIdUsuario());
 
-                $rutaImagenAntigua = "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenAntigua;
+                $rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenAntigua;
                 if (file_exists($rutaImagenAntigua) && $nombreImagenAntigua != "doctor.png") {
                     unlink($rutaImagenAntigua);
                 }
 
-                move_uploaded_file($this->getImagenTemporal(), "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $this->getImagen()['name']);
+                move_uploaded_file($this->getImagenTemporal(), "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $this->getImagen());
             }
             return ["exito"];
         } catch (\Exception $e) {
@@ -125,9 +126,9 @@ class ModeloUsuarios extends ModelBase
                 throw new \Exception("Fallo el id no existe");
             }
             //editar al doctor.
-            $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id_usuario';
+            $sqlUsuario = 'UPDATE usuario SET estado = "DES" WHERE id_usuario = :id';
             $this->setSQL($sqlUsuario);
-            $this->update([], $this->getIdUsuario());
+            $this->update_logic($this->getIdUsuario());
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -138,7 +139,7 @@ class ModeloUsuarios extends ModelBase
         try {
             $imagenU = $this->getImagen();
 
-            $resultadoDeUsuario = $this->validarUsuario($this->getUsuario());
+            $resultadoDeUsuario = $this->validarUsuario(['usuario' => $this->getUsuario()]);
 
             if ($resultadoDeUsuario) {
 
@@ -162,7 +163,7 @@ class ModeloUsuarios extends ModelBase
                     $imagen = $id_usuario . "_" . $imagenU['name'];
 
                     $imagen_temporal = $imagenU['tmp_name'];
-                    move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
+                    move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $imagen);
                     return ($id_usuario);
                 } else {
                     $nombreImagenUsuario = "doctor.png";
@@ -180,7 +181,7 @@ class ModeloUsuarios extends ModelBase
                     $imagen = $nombreImagenUsuario;
 
                     $imagen_temporal = $imagenU['tmp_name'];
-                    move_uploaded_file($imagen_temporal, "./src/assets/img_ingresadas_por_usuarios/usuarios/" . $imagen);
+                    move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $imagen);
                     return ($id_usuario);
                 }
             }
@@ -229,23 +230,23 @@ class ModeloUsuarios extends ModelBase
 
     public function setImagenTemporal($imagenT)
     {
-        // Validar que el archivo se haya subido sin errores
-        if ($imagenT['error'] !== UPLOAD_ERR_OK) {
-            throw new \InvalidArgumentException('Error al subir la imagen.');
-        }
+        // // Validar que el archivo se haya subido sin errores
+        // if ($imagenT['error'] !== UPLOAD_ERR_OK) {
+        //     throw new \InvalidArgumentException('Error al subir la imagen.');
+        // }
 
-        // Validar extensión
-        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
-        $extension = strtolower(pathinfo($imagenT['name'], PATHINFO_EXTENSION));
+        // // Validar extensión
+        // $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
+        // $extension = strtolower(pathinfo($imagenT['name'], PATHINFO_EXTENSION));
 
-        if (!in_array($extension, $extensionesPermitidas)) {
-            throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
-        }
+        // if (!in_array($extension, $extensionesPermitidas)) {
+        //     throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
+        // }
 
-        // Validar tamaño (ejemplo: máximo 5 MB)
-        if ($imagenT['size'] > 5 * 1024 * 1024) {
-            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-        }
+        // // Validar tamaño (ejemplo: máximo 5 MB)
+        // if ($imagenT['size'] > 5 * 1024 * 1024) {
+        //     throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+        // }
 
         // Si todo está bien, guardamos el nombre temporal para moverlo después
         $this->imagenTemporal = $imagenT;
@@ -254,22 +255,22 @@ class ModeloUsuarios extends ModelBase
     public function setImagen($imagen)
     {
         // Validar que el archivo se haya subido sin errores
-        if ($imagen['error'] !== UPLOAD_ERR_OK) {
-            throw new \InvalidArgumentException('Error al subir la imagen.');
-        }
+        // if ($imagen['error'] !== UPLOAD_ERR_OK) {
+        //     throw new \InvalidArgumentException('Error al subir la imagen.');
+        // }
 
-        // Validar extensión
-        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
-        $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+        // // Validar extensión
+        // $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
+        // $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
 
-        if (!in_array($extension, $extensionesPermitidas)) {
-            throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
-        }
+        // if (!in_array($extension, $extensionesPermitidas)) {
+        //     throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
+        // }
 
-        // Validar tamaño (ejemplo: máximo 5 MB)
-        if ($imagen['size'] > 5 * 1024 * 1024) {
-            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-        }
+        // // Validar tamaño (ejemplo: máximo 5 MB)
+        // if ($imagen['size'] > 5 * 1024 * 1024) {
+        //     throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+        // }
 
         // Si todo está bien, guardamos el nombre temporal para moverlo después
         $this->imagen = $imagen;

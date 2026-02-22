@@ -1,4 +1,13 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+  cargarImg,
+} from "../generic/funtionGeneric.js";
+
+import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
+
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
 
 const urlBase = document.getElementById("urlBase").value;
@@ -9,156 +18,53 @@ const imagenesUsuarios = document.querySelectorAll(".imagenesUsuarios");
 const activarMostrarContra = document.querySelectorAll(".mostrarPassword");
 const desMostrarContra = document.querySelectorAll(".ocultarPassword");
 
-const modalAgregar = document.getElementById('formAgregarAdmin');
+const modalAgregar = document.getElementById("formAgregarAdmin");
 const rol = document.getElementById("rol");
 
-const expresionesEditarUsuario = {
-  imagen: /([A-Za-z0-9._-]\s?)+\.(jpg|JPG|PNG|png|jpeg|JPEG)+/,
-  usuario: /^[a-zA-Z0-9._-]{3,16}$/,
-  password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-};
-
-const camposEditarUsuario = {
-  imagen: true,
-  usuario: true,
-  password: true,
-};
-
-function validarFormularioEditarUsuario(e) {
-  switch (e.target.name) {
-    case "imagenUsuario":
-      let imagenSeparada = e.target.value.split("\\");
-      let nombreImagen = imagenSeparada.pop();
-      if (expresionesEditarUsuario.imagen.test(nombreImagen)) {
-        e.target.parentElement.classList.remove("grpFormInCorrect");
-        e.target.parentElement.classList.add("grpFormCorrect");
-        camposInsumos["imagen"] = true;
-      } else {
-        e.target.parentElement.classList.remove("grpFormCorrect");
-        e.target.parentElement.classList.add("grpFormInCorrect");
-        camposInsumos["imagen"] = false;
-      }
-      break;
-
-    // case "nombre":
-    //     validarCamposEditarUsuario(expresionesEditarUsuario.nombre, e.target, 'nombre');
-    //     break;
-
-    // case "apellido":
-    //     validarCamposEditarUsuario(expresionesEditarUsuario.apellido, e.target, 'apellido');
-
-    //     break;
-    case "usuario":
-      validarCamposEditarUsuario(expresionesEditarUsuario.usuario, e.target, "usuario");
-
-      break;
-
-    case "password":
-      validarCamposEditarUsuario(expresionesEditarUsuario.password, e.target, "password");
-
-      break;
-  }
-}
-
-const validarCamposEditarUsuario = (expresiones, input, campo) => {
-  if (expresiones.test(input.value)) {
-    input.parentElement.classList.remove("grpFormInCorrect");
-    input.parentElement.classList.add("grpFormCorrect");
-    camposEditarUsuario[campo] = true;
-  } else {
-    input.parentElement.classList.remove("grpFormCorrect");
-    input.parentElement.classList.add("grpFormInCorrect");
-    camposEditarUsuario[campo] = false;
-  }
-};
-
-btnEditarUsuarios.forEach((btn) => {
-  btn.addEventListener("click", function () {
-    let id = this.getAttribute("uk-toggle").split(" ")[1].substring(1);
-    let formulario = document.querySelector(`#${id} .uk-modal-dialog .formEditarUsuario`);
-    let inputs = document.querySelectorAll(`#${id} .uk-modal-dialog .formEditarUsuario div .uk-card-body .flex-column input`);
-    let alerta = document.querySelector(`#${id} .uk-modal-dialog .formEditarUsuario #alertaUsuario`);
-    console.log(alerta);
-    inputs.forEach((input) => {
-      input.addEventListener("input", validarFormularioEditarUsuario);
-    });
-
-    formulario.addEventListener("submit", function (e) {
-      e.preventDefault();
-      console.log(camposEditarUsuario.imagen);
-
-      if (camposEditarUsuario.imagen && camposEditarUsuario.password && camposEditarUsuario.usuario) {
-        updateUser(formulario, inputs)
-      } else {
-        alertError("Error", "Por favor verifique que todos los datos esten correctos.");
-      }
-    });
-  });
-});
-
-//imagenes de los usuarios
-imagenesUsuarios.forEach((imagenUsuario) => {
-  imagenUsuario.addEventListener("change", function (e) {
-    let id = this.parentElement.parentElement.parentElement.parentElement.getAttribute("id");
-
-    let imgSrc = document.querySelector(`#${id} .caja-imagen .uk-grid-small .uk-width-auto .uk-border-circle`);
-
-    leerImagenesUsuarios(imagenUsuario.files, imgSrc);
-  });
-});
-
-function leerImagenesUsuarios(ar, img) {
-  for (var i = 0; i < ar.length; i++) {
-    const reader = new FileReader();
-    reader.readAsDataURL(ar[i]);
-    reader.addEventListener("load", function (e) {
-      img.setAttribute("src", `${e.currentTarget.result}`);
-    });
-  }
-}
+const bodyInfoModal = document.getElementById("body-info-modal");
+const imgInfo = document.getElementById("imgInfo");
+const dataInfo = document.querySelectorAll(".data-info");
 
 const inputDos = document.querySelectorAll(".inputDos");
+const formEdiUsuario = document.getElementById("formEdiUsuario");
+const formEdiPass = document.getElementById("formEdiPass");
 
-inputDos.forEach((dos) => {
-  dos.addEventListener("keyup", () => {
+const contenedorImgEditar = document.getElementById("contenedor-img-editar");
+const imgEditar = document.getElementById("imgEditar");
+const contenedorImg = document.getElementById("contenedor-img");
+const inputImg = document.getElementById("inputImg");
+const usuarioRegistrado = document.getElementById("usuarioRegistrado");
+const id_usuario = document.getElementById("id_usuario");
+const usurioHiddenPass = document.getElementById("usurioHiddenPass");
+const btnEliminar = document.getElementById('btnEliminar');
+const formAgregarAdmin = document.getElementById('formAgregarAdmin');
+
+const modalInfoBoots = new bootstrap.Modal(document.getElementById("modal-exampleMostrar"));
+
+
+let nameUser = "";
+let nombreAndApellido = "";
+
+function mostrarContrasena(div) {
+  const input = div.querySelector("input");
+
+  if (input.type == "password") {
+    input.type = "text";
+    desMostrarContra.forEach((des) => {
+      des.classList.remove("d-none");
+    });
+    activarMostrarContra.forEach((act) => {
+      act.classList.add("d-none");
+    });
+  } else {
+    input.type = "password";
+    desMostrarContra.forEach((des) => {
+      des.classList.add("d-none");
+    });
     activarMostrarContra.forEach((act) => {
       act.classList.remove("d-none");
-      if (dos.value == "") {
-        act.classList.add("d-none");
-        desMostrarContra.forEach((des) => {
-          des.classList.add("d-none");
-        });
-      }
-      if (dos.type == "text" && dos.value.length > 0) {
-        desMostrarContra.forEach((des) => {
-          des.classList.remove("d-none");
-        });
-        act.classList.add("d-none");
-      }
     });
-  });
-});
-
-function mostrarContrasena() {
-  inputDos.forEach((dos) => {
-    if (dos.type == "password") {
-      dos.type = "text";
-      desMostrarContra.forEach((des) => {
-        des.classList.remove("d-none");
-      });
-      activarMostrarContra.forEach((act) => {
-        act.classList.add("d-none");
-      });
-    } else {
-      dos.type = "password";
-      desMostrarContra.forEach((des) => {
-        des.classList.add("d-none");
-      });
-      activarMostrarContra.forEach((act) => {
-        act.classList.remove("d-none");
-      });
-    }
-  });
+  }
 }
 
 //Ajax
@@ -176,33 +82,24 @@ const readUser = async () => {
     // construir html de filas
     let html = "";
     result.forEach((element) => {
-      html += `<div class="card contenido col-9 col-sm-6 col-lg-3 tarjeta ms-2 me-4 d-flex align-items-center justify-content-center tarjeta">
-                            
+      html += ` <div class="card contenido mb-4 mx-3" style="width: 18rem;">
+        <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${
+          element.imagen
+        }" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="titulo user-name">Usuario: ${element.user}</h5>
 
-                                <img src="${urlBase}../src/assets/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${element.imagen}" class="mt-2" alt="...">
-                               
-                           
-                            <div class="mt-3">
-                                <div class="ps-3 pe-3 text-center buscar">
+            <p class="mt-3 name-apellido">Nombre: ${element.nombre} ${element.apellido}</p>
+         
 
-                                    <h5 class="card-title mb-1 ">
-                                        ${element.nombre} ${element.apellido}
-                                    </h5>
-                                    <p class="mb-4">
-                                       ${element.user}
-                                    </p>
+                                                
 
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-center flex-column">
-                                    <div class=" mb-3">
-                                        <a href="#" class="mostrar btn btn-User text-decoration-none"
-                                            uk-toggle="target: #modal-exampleMostrar${element.id_usuario}">Mostrar</a>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>`;
+                                    <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
+                                      element.id_usuario
+                                    }" data-img=${element.imagen}
+                                        data-bs-toggle="modal" data-bs-target="#modal-exampleMostrar">Mostrar</button>
+        </div>
+    </div>`;
     });
 
     // vuelca el html en el tbody
@@ -215,58 +112,108 @@ const readUser = async () => {
     //llamar las funcion de eliminar
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        console.log(data)
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        console.log(data);
         alertConfirm("Esta seguro de eliminar el usuario?", deleteUser, data);
       });
     });
 
-
+    console.log(document.querySelectorAll(".botones-mostrar"));
+    document.querySelectorAll(".botones-mostrar").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        mostrarInfo(btn);
+      });
+    });
   } catch (error) {
     alertError("Error", error);
   }
 };
 
+//mostrar inof user
+
+const mostrarInfo = (btn) => {
+  
+  modalInfoBoots.show();
+
+  const card = btn.closest(".card");
+  let src = `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${btn.getAttribute("data-index")}_${btn.getAttribute(
+    "data-img",
+  )}`;
+
+  contenedorImgEditar.classList.remove("d-none");
+
+  imgInfo.src = src;
+  imgEditar.src = src;
+
+  nameUser = card.querySelector(".user-name").innerText;
+  nombreAndApellido = card.querySelector(".name-apellido").innerText;
+
+  dataInfo[0].innerText = nameUser;
+  dataInfo[1].innerText = nombreAndApellido;
+
+  const inputsEdi = formEdiUsuario.querySelectorAll(".input-validar");
+  inputsEdi[1].value = nameUser.slice(9);
+
+  usuarioRegistrado.value = nameUser.slice(9);
+  id_usuario.value = btn.getAttribute("data-index");
+  usurioHiddenPass.value = nameUser.slice(9);
+
+  btnEliminar.setAttribute('data-index', btn.getAttribute("data-index"));
+
+  //llenar de una vez el modal de editar
+  inputsEdi.forEach((inp) => {
+    inp.parentElement.classList.add("valido");
+    inp.parentElement.classList.remove("invalido");
+  });
+};
+
 //create
-const createUser = async (form, inputs) => {
+const createUser = async (form) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(url + "/registrarAdmin", "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
-
-      UIkit.modal("#modal-exampleAgregar").hide();
-      form.reset();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
       readUser();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    console.log("lamentablemente "+ error)
+    console.log("lamentablemente " + error);
     alertError("Error", error);
   }
 };
 
 //update
-const updateUser = async (form, inputs) => {
+const updateUser = async (form) => {
   try {
     const data = new FormData(form);
-    console.log(form);
-    console.log(inputs);
-
     let result = await executePetition(url + "/editarUsuario", "POST", data);
     console.log(result);
+
     if (result.ok) {
       alertSuccess(result.message);
-
-      UIkit.modal(`#${form.parentElement.parentElement.getAttribute("id")}`).hide();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
       readUser();
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    console.log(error);
+    alertError("Error", error);
+  }
+};
+
+//update password
+const updateUserPass = async (form) => {
+  try {
+    const data = new FormData(form);
+    let result = await executePetition(url + "/verificarPassw", "POST", data);
+    console.log(result);
+
+    if (result.ok) {
+      alertSuccess(result.message);
+      readUser();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
     alertError("Error", error);
   }
 };
@@ -274,67 +221,89 @@ const updateUser = async (form, inputs) => {
 //delete
 const deleteUser = async (data) => {
   try {
-    const result = await executePetition(url + `/borrarUsuario/${data}`, "GET");
+    console.log(url + `/borrarUsuario/${data[0]}/${data[1]}`)
+    const result = await executePetition(url + `/borrarUsuario/${data[0]}/${data[1]}`, "GET");
     if (result.ok) {
-      alertSuccess(result.message)
+      alertSuccess(result.message);
 
       readUser();
-
-      UIkit.modal(`#modal-exampleMostrar${data[0]}`).hide();
-
     } else throw new Error(`${result.error}`);
   } catch (error) {
-    alertError("Error", error)
+    alertError("Error", error);
   }
 };
 
 readUser();
 
+//llamar a la funcion para cargar la imagen del insumo
+inputImg.addEventListener("change", function (e) {
+  let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
+
+  contenedorImg.classList.remove("d-none");
+  contenedorImgEditar.classList.add("d-none");
+  cargarImg(this.files, newImg, contenedorImg);
+});
+
 activarMostrarContra.forEach((act) => {
-  act.addEventListener("click", mostrarContrasena);
+  act.addEventListener("click", function () {
+    const divParent = act.closest(".input-custom");
+    mostrarContrasena(divParent);
+  });
 });
 desMostrarContra.forEach((des) => {
-  des.addEventListener("click", mostrarContrasena);
-});
-
-//Buscador
-document.getElementById("Buscarusuario").addEventListener("keyup", function () {
-  const searchTerm = this.value.toLowerCase();
-  const cards = document.querySelectorAll(".card");
-
-  cards.forEach((card) => {
-    const cardTitle = card.querySelector(".card-title").textContent.toLowerCase();
-
-    if (cardTitle.includes(searchTerm)) {
-      card.classList.remove("d-none");
-      // Muestra la tarjeta si coincide
-    } else {
-      card.classList.add("d-none"); // Oculta la tarjeta si no coincide
-    }
+  des.addEventListener("click", function () {
+    const divParent = des.closest(".input-custom");
+    mostrarContrasena(divParent);
   });
 });
 
+let verificarFormularioEdi = inicializarValidacionFormulario(formEdiUsuario);
+let verificarFormularioPass = inicializarValidacionFormulario(formEdiPass);
+let verificarFormularioAdmin = inicializarValidacionFormulario(formAgregarAdmin);
 
-if (modalAgregar) {
-  modalAgregar.addEventListener("submit", function (e) {
-    e.preventDefault();
-    let inputsBuenos = [];
-    this.querySelectorAll(".input-validar").forEach((input) => {
-      if (input.parentElement.classList.contains("grpFormCorrect")) inputsBuenos.push(true);
-    });
-    console.log(inputsBuenos.length);
-    console.log(rol.value);
+formEdiUsuario.addEventListener("submit", function (e) {
+  e.preventDefault();
 
-    if (
-      inputsBuenos.length == 8 &&
-      rol.value != ""
-    ) {
-      createUser(this, inputsBuenos);
-    } else {
-      alertError("Error", "Por favor verifique que todos los datos esten correctos.");
-    }
-    
-  });
+  let esValido = verificarFormularioEdi();
 
-}
+  if (esValido) {
+    console.log("editar");
+    updateUser(this);
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
+  }
+});
 
+formEdiPass.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let esValido = verificarFormularioPass();
+
+  if (esValido) {
+    updateUserPass(this);
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
+  }
+});
+
+
+formAgregarAdmin.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let esValido = verificarFormularioAdmin();
+
+  if (esValido) {
+    createUser(this);
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
+  }
+});

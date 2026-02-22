@@ -22,6 +22,14 @@ const expresiones = {
     expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
     mensajeError: "",
   },
+  passwordNew: {
+    expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
+    mensajeError: "",
+  },
+  passwordConf: {
+    expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
+    mensajeError: "",
+  },
   cedula: {
     expresion: /^([1-9]{1})([0-9]{6,7})$/,
     mensajeError:
@@ -84,7 +92,12 @@ const expresiones = {
     expresion: /^\d+$/,
     mensajeError: "El Doctor esta mal seleccionado",
   },
-  
+
+  id_rol: {
+    expresion: /^\d+$/,
+    mensajeError: "El rol esta mal seleccionado",
+  },
+
   id_insumo: {
     expresion: /^\d+$/,
     mensajeError: "El insumo esta mal seleccionado",

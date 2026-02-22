@@ -213,7 +213,7 @@ class ModeloDoctores extends ModelBase
         try {
             $sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";
             $this->setSQL($sql);
-            $validar = $this->search(['id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()]);
+            $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
 
             if ($validar == []) {
                 throw new \Exception("Fallo el id no existe.");
@@ -226,7 +226,7 @@ class ModeloDoctores extends ModelBase
                 'nombre' => $this->getNombre(),
                 'apellido' => $this->getApellido(),
                 'telefono' => $this->getTelefono(),
-                'id_usuario' => $this->returnObjectModel()['modeloUsuario']->getIdUsuario()
+                'id_usuario' => $this->getIdUsuario()
             ];
             $this->create($data);
 
