@@ -16,18 +16,18 @@ const urlBase = document.getElementById("urlBase").value;
 const formAgregarRol = document.getElementById("formAgregarRol");
 const rol = document.getElementById("rol");
 const btnRegistrarRol = document.getElementById("btnRegistrarrol");
-const inputs = formAgregarRol.querySelectorAll('.input-validar')
+const inputs = formAgregarRol.querySelectorAll(".input-validar");
 const modalRegistrarRol = new bootstrap.Modal(
   document.getElementById("exampleGuardarRol"),
 );
 
-const id_rol = document.getElementById("id_rol"); 
+const id_rol = document.getElementById("id_rol");
 // Input para buscar roles
 const buscarRol = document.getElementById("buscarRol");
-const nombreRegiistrado = document.getElementById("nombreRegiistrado"); 
+const nombreRegiistrado = document.getElementById("nombreRegiistrado");
 
 const botonModal = document.getElementById("botonModal");
-const titleModal = document.getElementById('title-modal')
+const titleModal = document.getElementById("title-modal");
 
 // Filtrar tarjetas según el texto ingresado en el input
 buscarRol.addEventListener("input", function () {
@@ -43,8 +43,9 @@ buscarRol.addEventListener("input", function () {
 btnRegistrarRol.addEventListener("click", function () {
   formAgregarRol.classList.remove("editar");
   id_rol.value = "";
-botonModal.innerHTML = 'Registrar';
-titleModal.innerText = "Registrar Rol"
+  botonModal.innerHTML = "Registrar";
+  titleModal.innerText = "Registrar Rol";
+  document.querySelector(".btn-eliminar").classList.add("d-none");
 
   inputs.forEach((input) => {
     input.value = "";
@@ -109,8 +110,6 @@ function manejarCheckboxConsultar(section) {
   });
 }
 
-
-
 //Ajax
 
 const readRol = async () => {
@@ -152,34 +151,36 @@ const readRol = async () => {
     });
 
     //llamar las funcion de eliminar
-    document.querySelector(".btn-eliminar").addEventListener("click", function () {
+    document
+      .querySelector(".btn-eliminar")
+      .addEventListener("click", function () {
         const data = [
           this.getAttribute("data-index"),
           document.getElementById("id_usuario_session").value,
         ];
         console.log(data);
         alertConfirm("Esta seguro de eliminar el rol?", deleteUser, data);
-    });
+      });
 
     //mostrar modal
     document.querySelectorAll(".botones-mostrar").forEach((btn) => {
       btn.addEventListener("click", async function () {
-        
         botonModal.innerHTML = "Modificar";
         titleModal.innerText = "Modificar Rol";
+        document.querySelector(".btn-eliminar").classList.remove("d-none");
 
         id_rol.value = this.getAttribute("data-index");
-        nombreRegiistrado.value = this.getAttribute('data-name');
-        inputs[0].value = this.getAttribute('data-name');
-        inputs[1].value = this.getAttribute('data-descripcion');
-
+        nombreRegiistrado.value = this.getAttribute("data-name");
+        inputs[0].value = this.getAttribute("data-name");
+        inputs[1].value = this.getAttribute("data-descripcion");
 
         //btn eliminar
-        document.querySelector(".btn-eliminar").setAttribute('data-index', this.getAttribute("data-index"));
+        document
+          .querySelector(".btn-eliminar")
+          .setAttribute("data-index", this.getAttribute("data-index"));
 
-
-        inputs.forEach(input => {
-          input.dispatchEvent(new Event('keyup', { bubbles: true }));
+        inputs.forEach((input) => {
+          input.dispatchEvent(new Event("keyup", { bubbles: true }));
         });
 
         formAgregarRol.classList.add("editar");
@@ -191,8 +192,6 @@ const readRol = async () => {
         readPermisos(permisosGuardados);
       });
     });
-
-
   } catch (error) {
     alertError("Error", error);
   }
@@ -245,8 +244,6 @@ const deleteUser = async (data) => {
     alertError("Error", error);
   }
 };
-
-
 
 const traerPermisosGuardados = async (id_rol) => {
   try {
