@@ -7,7 +7,6 @@ require_once './src/vistas/head/head.php';
     <!-- Contenedor principal (75%) -->
 
     <div class="main-content col-12 col-lg-8 p-4" id="main-content">
-        <?php require_once './src/vistas/alerts.php'; ?>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
