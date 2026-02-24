@@ -420,7 +420,7 @@ class ModeloHospitalizacion extends ModelBase
 
 
             // editar control
-            $sql = "UPDATE control SET historiaclinica = :historial, diagnostico = :diagnostico WHERE id_control = :id;";
+            $sql = "UPDATE control SET historiaclinica = :historial, diagnostico = :diagnostico WHERE id_control = :id ;";
             $this->setSQL($sql);
             $data = [
                 "historial" => $this->getHistorial(),
@@ -462,7 +462,7 @@ class ModeloHospitalizacion extends ModelBase
                     } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
 
                         $cR = $cantidadIHBD["cantidad"] - $cantidadE[$contador];
-                        $sql = "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
+                        $sql = "CALL devolver_insumos_hospitalizacion(:i, :cantidad);";
                         $this->setSQL($sql);
                         $this->storedProcedure(['i' => $cantidadIHBD["id_insumo"], 'cantidad' => $cR]);
                     }
@@ -526,7 +526,7 @@ class ModeloHospitalizacion extends ModelBase
                     $validar = $this->delete(['id_insumo_eliminado' => $idIAEl]);
                     // devolver insumos 
                     if ($validar) {
-                        $sql =  "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
+                        $sql =  "CALL devolver_insumos_hospitalizacion(:i, :cantidad);";
                         $this->setSQL($sql);
                         $this->storedProcedure([
                             'i' => $cantidadIH["id_insumo"],
@@ -613,7 +613,7 @@ class ModeloHospitalizacion extends ModelBase
             return ["exito"];
         } catch (\Exception $e) {
             // $this->conexion->rollBack();
-            $e->getMessage();
+            return $e->getMessage();
         }
     }
 
@@ -635,7 +635,7 @@ class ModeloHospitalizacion extends ModelBase
 
                 foreach ($datosIDH as $indice => $value) {
 
-                    $sql = "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
+                    $sql = "CALL devolver_insumos_hospitalizacion(:i, :cantidad);";
                     $this->setSQL($sql);
                     $this->storedProcedure([
                         'i' => $value["id_insumo"],
@@ -654,7 +654,7 @@ class ModeloHospitalizacion extends ModelBase
             return ["exito"];
         } catch (\Exception $e) {
             // $this->conexion->rollBack();
-            $e->getMessage();
+            return $e->getMessage();
         }
     }
 
@@ -674,7 +674,7 @@ class ModeloHospitalizacion extends ModelBase
             // $this->conexion->beginTransaction();
 
             // editar hospitalización
-            $sql = "UPDATE hospitalizacion SET precio_horas = :precio_horas ,precio_horas_MoEx = :precio_horas_me ,total= :total ,total_MoEx = :total_me ,fecha_hora_final = :fecha_hora_final WHERE id_hospitalizacion = :id_hospitalizacion";
+            $sql = "UPDATE hospitalizacion SET precio_horas = :precio_horas ,precio_horas_MoEx = :precio_horas_me ,total= :total ,total_MoEx = :total_me ,fecha_hora_final = :fecha_hora_final WHERE id_hospitalizacion = :id";
             $this->setSQL($sql);
             $data = [
                 'precio_horas' => $this->getMonto(),
@@ -687,7 +687,7 @@ class ModeloHospitalizacion extends ModelBase
 
             $datosControl = $this->datosControl($this->getIdH());
 
-            $sql = 'UPDATE control SET medicamentosRecetados = :indicaciones, historiaclinica = :historial, diagnostico = :diagnostico, fechaRegreso = :fechaRegreso, nota = :nota, severidad = :severidad WHERE id_control = :id_control;';
+            $sql = 'UPDATE control SET medicamentosRecetados = :indicaciones, historiaclinica = :historial, diagnostico = :diagnostico, fechaRegreso = :fechaRegreso, nota = :nota, severidad = :severidad WHERE id_control = :id;';
             $this->setSQL($sql);
             $data = [
                 "indicaciones" => $this->getIndicaciones(),
@@ -730,7 +730,8 @@ class ModeloHospitalizacion extends ModelBase
             return "exito";
         } catch (\Exception $e) {
             // $this->conexion->rollBack();
-            print_r($e);
+            return $e->getMessage();
+
         }
     }
     public function semaforo()

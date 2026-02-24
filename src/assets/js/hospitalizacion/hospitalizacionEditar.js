@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 import { executePetition, alertConfirm, alertError, alertSuccess } from "../../js/generic/funtionGeneric.js";
 import { traerSerevicio } from "../../js/hospitalizacion/reutilizableHospitalizacion.js";
-import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
+import { inicializarValidacionFormulario, chulitoYX } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
 const modalHospBoots = new bootstrap.Modal(document.getElementById("modal-agregar-hospitalizacion"));
@@ -280,14 +280,14 @@ let horaInicioHosp = 0;
 const vistaTabla = async () => {
     // try {
     // llamo la función
-    let resultad = await executePetition(url + "/traerSesion", "GET");
+    let resultad = await executePetition(url + "/traerSesion/", "GET");
 
     console.log(resultad);
 
     let html = "";
-console.log("resultad completo:", resultad);
-console.log("datos hospitalizaciones:", resultad[1]);
-console.log("semaforo:", resultad[0][2]);
+    console.log("resultad completo:", resultad);
+    console.log("datos hospitalizaciones:", resultad[1]);
+    console.log("semaforo:", resultad[0][2]);
     if (resultad.length == 0) {
         console.log("algo salio mal");
     } else {
@@ -338,15 +338,16 @@ console.log("semaforo:", resultad[0][2]);
                 html += `   <td>
                                         <div class="d-flex flex-wrap col-12 tdTBtn">
                                             <div class="col-12 col-md-6 col-lg-3">
-
-                                                <!-- btn offcanvas mostrar datos -->
-                                                <button class="btn btn-tabla mb-1 me-1 informacionH" uk-toggle="target: #offcanvas-mostrarH" uk-tooltip="información de hospitalización" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
+                                                <button class="btn btn-tabla mb-1 me-1 informacionH"
+                                                    data-bs-toggle="offcanvas"
+                                                    data-bs-target="#offcanvas-mostrarH"
+                                                    uk-tooltip="información de hospitalización"
+                                                    data-id-hospitalizacion="${res["id_hospitalizacion"]}"
+                                                    data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                                         class="bi bi-card-text" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
-                                                        <path
-                                                            d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z" />
+                                                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                                                        <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z" />
                                                     </svg>
                                                 </button>
                                             </div>
@@ -439,7 +440,18 @@ console.log("semaforo:", resultad[0][2]);
             // recorremos los btn editar
             for (const editH of btnEditar) {
                 editH.addEventListener("click", async function () {
-                    await traerSerevicio("editar");
+                    document.querySelectorAll(".input-validar").forEach((input) => {
+                        let campoCustom = input.closest(".campo-custom");
+                        let check = input.nextElementSibling.children[0];
+                        let error = input.nextElementSibling.children[1];
+                        input.parentElement.classList.remove("invalido");
+                        input.parentElement.classList.add("valido");
+
+                        campoCustom.querySelector("p").classList.add("d-none");
+
+                        if (check && error) chulitoYX(check, error, "valido");
+                    });
+                    objServiciosBD = await traerSerevicio("editar");
                     // id de la hospitalización
                     let extra = editH.getAttribute("data-extra");
                     await traerSerevicioH(parseInt(extra));
@@ -531,6 +543,18 @@ const deleteHospitalizacion = async (data) => {
 btnAgregar.addEventListener("click", async function () {
     await vistaTabla();
     let semaforo = document.querySelector("#semaforo").value;
+
+    document.querySelectorAll(".input-validar").forEach((input) => {
+        let campoCustom = input.closest(".campo-custom");
+        let check = input.nextElementSibling.children[0];
+        let error = input.nextElementSibling.children[1];
+        input.parentElement.classList.remove("invalido");
+        input.parentElement.classList.remove("valido");
+
+        campoCustom.querySelector("p").classList.add("d-none");
+
+        if (check && error) chulitoYX(check, error, "vacio");
+    });
     if (parseInt(semaforo) >= 2) {
         btnAgregar.classList.add("d-none");
         document.querySelector("#divModal").classList.add("d-none");
@@ -550,8 +574,7 @@ let divDI = document.querySelector("#divDI");
 const sumaPrecioIH = async (id) => {
     try {
         // llamo la función traer insumos de h
-        let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
-        let resultadoI = await peticionI.json();
+        let resultadoI = await executePetition(url + "/traerInsuDHEd/" + id, "GET");
 
         if (resultadoI.length > 0) {
             let precioIns = 0;
@@ -572,6 +595,7 @@ const sumaPrecioIH = async (id) => {
     }
 };
 let objServiciosHosp = {};
+let objServiciosBD;
 const traerSerevicioH = async (idH) => {
     // llamo la función que trae los servicios de h
     let resultado = await executePetition(url + "/serviciosDH/" + idH, "GET");
@@ -589,7 +613,10 @@ const traerSerevicioH = async (idH) => {
             let newCantidad = parseInt(res.cantidad);
             // Actualizar el precio
             let precioS = newCantidad * objServiciosBD[res.id_servicioMedico]["precio"];
-
+            if (!objServiciosBD[res.id_servicioMedico]) {
+                console.log("Servicio no encontrado en catálogo:", res.id_servicioMedico);
+                continue;
+            }
             htmlL += `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" 
                             data-index="${res.id_servicioMedico}">
                                         <!-- Botón eliminar -->
@@ -647,8 +674,8 @@ const traerSerevicioH = async (idH) => {
 const mostrarIE = async (id) => {
     try {
         // llamo la función buscar Insumos de la hospitalización
-        let peticionI = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/traerInsuDHEd/" + id);
-        let resultadoI = await peticionI.json();
+        let resultadoI = await executePetition(url + "/traerInsuDHEd/" + id, "GET");
+
         let precioIMC = 0;
 
         if (resultadoI.length > 0) {
@@ -783,9 +810,7 @@ const traerInsumosE = async () => {
         valorIE = inputIE.value;
 
         // llamo la función buscar Insumos
-        let peticionInsumos = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarInsumos/" + valorIE);
-
-        let resultadoInsu = await peticionInsumos.json();
+        let resultadoInsu = await executePetition(url + "/mostrarInsumos/" + valorIE, "GET");
 
         //si se trae algo
         if (resultadoInsu.length > 0) {
@@ -926,8 +951,7 @@ function eliminar() {
 const traerUnInsumoE = async (id) => {
     try {
         // llamo la función buscar un Insumo
-        let peticionUnInsumo = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + id);
-        let resultadoUnInsu = await peticionUnInsumo.json();
+        let resultadoUnInsu = await executePetition(url + "/mostrarUnInsumo/" + id, "GET");
 
         // si no se trae nada
         if (resultadoUnInsu == false) {
@@ -1081,16 +1105,9 @@ const divME = document.querySelector(".divModalE");
 // envío de datos de la edición
 const envioDatE = async () => {
     try {
-        const datosFormulario = new FormData(formE);
-
-        const contenidoForm = {
-            method: "POST",
-            body: datosFormulario,
-        };
-
         // llamo la función
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/modificarH", contenidoForm);
-        let result = await peticion.json();
+        const data = new FormData(formE);
+        let result = await executePetition(url + "/modificarH/", "POST", data);
 
         // vista de la tabla
         vistaTabla();
@@ -1100,12 +1117,6 @@ const envioDatE = async () => {
         console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
     }
 };
-
-// para enviar los datos de la edición
-formE.addEventListener("submit", (e) => {
-    envioDatE();
-    e.preventDefault();
-});
 
 // para el buscador de hospitalización
 let inputBuscH = document.querySelector("#inputBuscH");
@@ -1161,8 +1172,7 @@ document.querySelector("#formCostoHora").addEventListener("submit", function (e)
 // operación matemática para saber cual insumo llego a su limite en cantidad
 const limiteI = async (idIn) => {
     try {
-        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/mostrarUnInsumo/" + parseInt(idIn));
-        let resultado = await peticion.json();
+        let resultado = await executePetition(url + "/mostrarUnInsumo/" + parseInt(idIn), "GET");
 
         console.log(resultado);
 
@@ -1226,22 +1236,15 @@ let alertHEnvF = document.querySelector("#alertHEnvF");
 
 let formEnviarFactura = document.querySelector("#formEnvioFacturaHospitalizacion");
 const envioFSaveControl = async () => {
-    let textAlert = "",
-        classAlert = "uk-alert-primary";
     try {
         const data = new FormData(formEnviarFactura);
-        let result = await executePetition(url + "/enviarAFacturar", "POST", data);
+        let result = await executePetition(url + "/enviarAFacturar/", "POST", data);
         alertHEnvF.classList.remove("d-none");
-        textAlert = `Se registro correctamente`;
-        classAlert = "uk-alert-primary";
 
         console.log("Resultado");
         console.log(result);
     } catch (error) {
-        textAlert = `Lamentablemente algo salio mal por favor intente mas tarde`;
-        classAlert = "uk-alert-danger";
-    } finally {
-        showAlert(alertHEnvF, textAlert, classAlert);
+        alertError("Error", error);
     }
 };
 
@@ -1274,7 +1277,7 @@ let formularioAgregar = document.getElementById("formularioAgregarH");
 const createHosp = async () => {
     try {
         const data = new FormData(formularioAgregar);
-        let result = await executePetition(url + "/agregarH", "POST", data);
+        let result = await executePetition(url + "/agregarH/", "POST", data);
 
         console.log(result);
         if (result.ok) {
@@ -1303,6 +1306,27 @@ formularioAgregar.addEventListener("submit", async function (e) {
     if (esValido) {
         await createHosp();
         // formularioAgregar.reset();
+    } else {
+        alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+    }
+});
+
+let verificarFormularioE = inicializarValidacionFormulario(formE);
+
+formE.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    let inputsBuenos = [];
+    this.querySelectorAll(".input-validar").forEach((input) => {
+        if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
+    });
+    console.log("jjsjsjjj");
+
+    let esValido = verificarFormularioE();
+
+    if (esValido) {
+        await envioDatE();
+        // formE.reset();
     } else {
         alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }

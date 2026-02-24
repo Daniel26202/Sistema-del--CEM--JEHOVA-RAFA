@@ -256,7 +256,7 @@
                                     </svg>
                                 </span>
 
-                                <textarea  id="nota" class="form-control txt-custom  inputs "
+                                <textarea  id="nota" class="form-control txt-custom inputs "
                                     placeholder="La nota es opcional" style="height: 50px;"
                                     name="nota"></textarea>
 

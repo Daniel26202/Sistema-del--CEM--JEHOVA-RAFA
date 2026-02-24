@@ -95,8 +95,8 @@ function guardarCita()
 	}
 
 	try {
-		$cita = new ModeloCita();
 		$bitacora = new ModeloBitacora();
+		$cita = new ModeloCita();
 
 		$horaString = $_POST['listHoras'];
 		$resultado = explode('a', $horaString);
@@ -146,9 +146,8 @@ function eliminarCita($datos)
 		exit;
 	}
 	try {
-		$cita = new ModeloCita();
-
 		$bitacora = new ModeloBitacora();
+		$cita = new ModeloCita();
 
 		$cita->setIdCita($datos[0]);
 
@@ -216,8 +215,8 @@ function editarCita()
 	}
 
 	try {
-		$cita = new ModeloCita();
 		$bitacora = new ModeloBitacora();
+		$cita = new ModeloCita();
 
 		$horaString = $_POST['listHoras'];
 		$resultado = explode('a', $horaString);

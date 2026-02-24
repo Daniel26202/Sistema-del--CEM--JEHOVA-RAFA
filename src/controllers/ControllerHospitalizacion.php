@@ -392,11 +392,12 @@ function enviarAFacturar()
     $modeloHosp->setTotalME($totalME);
 
     $modeloHosp->setHistorial($_POST["historialEnF"]);
-    $modeloHosp->setSintomasId($_POST["sintomas"]);
-    $modeloHosp->setPatologiasId($_POST["patologias"]);
+
+    $modeloHosp->setSintomasId(isset($_POST["sintomas"]) ? $_POST["sintomas"] : []);
+    $modeloHosp->setPatologiasId(isset($_POST["patologias"]) ? $_POST["patologias"] : []);
     $modeloHosp->setNota($_POST["nota"]);
     $modeloHosp->setIndicaciones($_POST["indicaciones"]);
-    $modeloHosp->setFechaRegreso($_POST["fechaRegreso"]);
+    $modeloHosp->setFechaRegreso($_POST["fechaDeCita"]);
     $modeloHosp->setDiagnostico($_POST["diagnostico"]);
     $modeloHosp->setSeveridad($_POST["severidad"]);
 
