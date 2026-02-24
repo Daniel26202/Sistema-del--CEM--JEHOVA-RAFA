@@ -199,14 +199,12 @@ class ModeloCita extends ModelBase
 				'estado' => $this->getEstado(),
 				'doctor' => $this->getIdDoctor(),
 				'hora_salida' => $this->getHoraSalida(),
-				'id_cita'=>$this->getIdCita()
 			];
 
-			$sql = "UPDATE cita SET  fecha=:fecha, hora=:hora, estado=:estado, serviciomedico_id_servicioMedico=:id_servicioMedico, paciente_id_paciente=:id_paciente, hora_salida=:hora_salida, doctor=:doctor  WHERE id_cita=:id_cita";
-
+			$sql = "UPDATE cita SET  fecha=:fecha, hora=:hora, estado=:estado, serviciomedico_id_servicioMedico=:id_servicioMedico, paciente_id_paciente=:id_paciente, hora_salida=:hora_salida, doctor=:doctor  WHERE id_cita=:id";
 
 			$this->setSQL($sql);
-			$this->create($data);
+			$this->update($data, $this->getIdCita());
 
 			return ["exito", $data];
 		} catch (\Exception $e) {
