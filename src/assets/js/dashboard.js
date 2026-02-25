@@ -19,6 +19,20 @@ document.addEventListener("DOMContentLoaded", function () {
     especialidades_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"); // Genera el gráfico de especialidades
     sintomas_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes"); // Genera el gráfico de sintomas comunes
     traerDoctor(); //Cargar doctores en el select
+
+    //mostrar una aaler si eun poersona no tiene permiso
+    if(window.location.href.includes('permiso')){
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: 'No tiene permiso para hacer dicha acción por favor comuníquese con el administrador del sistema',
+          customClass: {
+            popup: "switAlert",
+            confirmButton: "btn-agregarcita-modal",
+            cancelButton: "btn-agregarcita-modal-cancelar",
+          },
+        });
+    }
 });
 
 document.getElementById("especialidades").addEventListener("click", function () {

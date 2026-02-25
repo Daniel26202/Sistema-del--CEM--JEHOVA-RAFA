@@ -77,7 +77,6 @@ class Rutas
                             $permitido = $this->modelo->gestionarPermisos();
                     
                             if (!$permitido) {
-                                echo "Error 404 ";
                                 header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
                                 exit;
                             } else {

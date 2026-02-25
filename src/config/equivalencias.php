@@ -234,6 +234,7 @@ return [
     "modificarRol" => "editar",
     "eliminarRol" => "eliminar",
     "validarRol" => "consultar",
+    'cargarPermisosGuardados'=>'consultar',
 
     //Reportes
     "reportes" => "consultar",
