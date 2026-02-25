@@ -182,8 +182,7 @@
                     <button type="button" class="btn btn-modals-cancelar fw-bold rounded-5"
                         data-bs-dismiss="modal">Cancelar</button>
                     <!-- id="btnEH" — lógica JS intacta -->
-                    <button type="submit" class="btn btn-modals fw-bold rounded-5"
-                        data-bs-dismiss="modal" id="btnEH">Guardar</button>
+                    <button type="submit" class="btn btn-modals fw-bold rounded-5" id="btnEH">Guardar</button>
                 </div>
 
             </form>
