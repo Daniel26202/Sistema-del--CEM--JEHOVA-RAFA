@@ -42,10 +42,8 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
     <!-- Bootstrap 5 CSS -->
     <link href="<?= $urlBase ?>./src/assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
     <!-- Intro.js para ayuda interactiva -->
     <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs.min.css">
     <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs-modern.css">
@@ -167,7 +165,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                 </div>
                             </div>
                             <div class="text-center m-3">
-                                <a href="#" class="text-decoration-none text-primary-custom small fw-medium ">Has olvidado tu contraseña?</a>
+                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/mostrarRecuperarContr" class="text-decoration-none text-primary-custom small fw-medium ">Has olvidado tu contraseña?</a>
                             </div>
 
                             <!-- Mensaje de Seguridad -->

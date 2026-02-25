@@ -26,6 +26,8 @@ if (!empty($parametro)) {
     }
 }
 
+$urlBase = $concatenarRuta . '' . $concatenadorEspecial;
+
 ?>
 
 
@@ -38,21 +40,13 @@ if (!empty($parametro)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
+    <link href="<?= $urlBase ?>./src/assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/cssVista/recuperarContr.css">
 
-    <link rel="stylesheet" type="text/css"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/css/uikit.min.css">
-    <link rel="stylesheet" type="text/css"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/cssVista/recuperarContr.css">
-    <link rel="stylesheet" type="text/css"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/introjs.min.css">
-    <link rel="stylesheet" type="text/css"
-        href="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/introjs-modern.css">
+    <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs.min.css">
+    <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs-modern.css">
 
 </head>
-
-<?php $urlBase = $concatenarRuta . '' . $concatenadorEspecial; ?>
 
 <body>
     <main class="contenedor">
@@ -347,21 +341,17 @@ if (!empty($parametro)) {
         </div>
     </main>
 
-    <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/recuperarContr.js"></script>
-    <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/validacionesRecuperarContr.js"></script>
-    <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/uikit/js/uikit.min.js"></script>
-    <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/intro/intro.min.js"></script>
-    <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/js/ayudaInteractivarecContrasena.js"></script>
-    <script type="text/javascript"
-        src="<?= $concatenarRuta ?><?= $concatenadorEspecial ?>./src/assets/app.js"></script>
-
+    
+    
+    <!-- SweetAlert2 -->
+    <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2/sweetalert2@11.js"></script>
+    
+    <script type="module" src="<?= $urlBase ?>./src/assets/js/recuperarContr.js"></script>
+    <script src="<?= $urlBase ?>./src/assets/library/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= $urlBase ?>./src/assets/library/intro/intro.min.js"></script>
+    <!-- <script src="<?= $urlBase ?>./src/assets/js/generic/expresionesModulares.js"></script> -->
+    <script type="text/javascript" src="<?= $urlBase ?>./src/assets/js/ayudaInteractiva/ayudaInteractivarecContrasena.js"></script>
+    <script src="<?= $urlBase ?>./src/assets/app.js"></script>
 
 </body>
 
