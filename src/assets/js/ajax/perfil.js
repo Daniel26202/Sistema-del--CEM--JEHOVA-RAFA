@@ -1,25 +1,36 @@
-import { executePetition, alertError, alertSuccess } from "./funtionExecutePetition.js";
+import {
+  executePetition,
+  alertError,
+  alertSuccess,
+} from "../generic/funtionGeneric.js";
+import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Perfil";
-const modalAgregar = document.getElementById("modalAgregar");
-const inputs = document.querySelectorAll(".input-perfil");
-const inputsValidacion = document.querySelectorAll(".input-validar");
+const formPerfil = document.getElementById("formPerfil");
+const inputsCard = document.querySelectorAll(".fondo-perfil .input-validar");
+const inputsValidacion = document.querySelectorAll(
+  ".form-validable .input-validar",
+);
+const imgPerfilModal = document.getElementById("img-perfil-modal");
+const inputImagen = document.getElementById("inputImagen"); 
+const imgUser = document.getElementById('imgUser')
 
+//modal
+;
+const modalPerfil = new bootstrap.Modal(
+  document.getElementById("exampleModalPerfil"),
+);
 
 //update
-const updatePerfil = async (form, inputs) => {
+const updatePerfil = async (form) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(url + "/guardar", "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
-
-    //   UIkit.modal(`#exampleModal`).hide();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+      modalPerfil.hide();
       readProfile();
-
     } else throw new Error(`${result.error}`);
   } catch (error) {
     console.log(error);
@@ -31,46 +42,75 @@ const updatePerfil = async (form, inputs) => {
 const readProfile = async () => {
   try {
     const result = await executePetition(url + "/perfilAjax", "GET");
-    console.log(result)
+    console.log(result);
 
-    
-    result.forEach(element => {
-        inputs[0].value = element.cedula;
-        inputs[1].value = element.nombre;
-        inputs[2].value = element.apellido;
-        inputs[3].value = element.telefono;
-        inputs[4].value = element.user;
-        inputs[5].value = element.correo;
+    result.forEach((element) => {
+      inputsCard[0].value = element.cedula;
+      inputsCard[1].value = element.nombre;
+      inputsCard[2].value = element.apellido;
+      inputsCard[3].value = element.telefono;
+      inputsCard[4].value = element.user;
+      inputsCard[5].value = element.correo;
 
-        inputsValidacion[0].value = element.cedula;
-        inputsValidacion[1].value = element.nombre;
-        inputsValidacion[2].value = element.apellido;
-        inputsValidacion[3].value = element.telefono;
-        inputsValidacion[4].value = element.user;
-        inputsValidacion[5].value = element.correo;
+      //img
+      imgUser.src = `../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${element.imagen}`;
 
+      inputsValidacion[1].value = element.cedula;
+      inputsValidacion[2].value = element.nombre;
+      inputsValidacion[3].value = element.apellido;
+      inputsValidacion[4].value = element.telefono;
+      inputsValidacion[5].value = element.correo;
+      inputsValidacion[6].value = element.user;
+      
+
+      imgPerfilModal.src = `../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${element.imagen}`;
     });
 
+    //disparar el evento para validar los inputs
+    inputsValidacion.forEach((input) => {
+      if (input.type == "file") {
+        input.parentElement.classList.add("valido");
+      } else {
+        input.dispatchEvent(new Event("keyup", { bubbles: true }));
+      }
+    });
   } catch (error) {
     alertError("Error", error);
   }
 };
 
+//funvion generica para cargar imagenes en js
+ const cargarImgPerfil = (archivo) => {
+  console.log(archivo)
+  for (var i = 0; i < archivo.length; i++) {
+    const reader = new FileReader();
+    reader.readAsDataURL(archivo[i]);
+    reader.addEventListener("load", function (e) {
+      console.log(imgPerfilModal)
+      imgPerfilModal.src = e.currentTarget.result;
+    });
+  }
+};
+
+
 readProfile();
 
-modalAgregar.addEventListener("submit", function (e) {
+let verificarForm = inicializarValidacionFormulario(formPerfil);
+
+inputImagen.addEventListener('change', function(){
+  cargarImgPerfil(this.files)
+})
+
+formPerfil.addEventListener("submit", function (e) {
   e.preventDefault();
-  let inputsMalos = [];
 
-  this.querySelectorAll(".input-validar").forEach((input) => {
-    if (input.parentElement.classList.contains("grpFormInCorrect")) {
-      inputsMalos.push(true);
-    }
-  });
-
-  if (!inputsMalos.length >= 1 && inputsMalos.length <= 6) {
-    updatePerfil(this, inputsMalos);
+  let esValido = verificarForm();
+  if (esValido) {
+    updatePerfil(this);
   } else {
-    alertError("Error al enviar el formulario", "Por favor verifique que todos los datos esten correctos.");
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
   }
 });

@@ -5,6 +5,7 @@ import {
   alertSuccess,
   returnModulos,
 } from "../generic/funtionGeneric.js";
+import Paginator from "../generic/Paginator.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 console.log("roles");
@@ -29,99 +30,12 @@ const nombreRegiistrado = document.getElementById("nombreRegiistrado");
 const botonModal = document.getElementById("botonModal");
 const titleModal = document.getElementById("title-modal");
 
-// Filtrar tarjetas según el texto ingresado en el input
-buscarRol.addEventListener("input", function () {
-  const query = this.value.toLowerCase(); // Convertir a minúsculas para búsqueda insensible a mayúsculas
-  document.querySelectorAll(".tarjeta").forEach((element) => {
-    const nombreDelRol = element
-      .querySelector(".card-title")
-      .innerText.toLowerCase();
-    element.classList.toggle("d-none", !nombreDelRol.includes(query));
-  });
-});
 
-btnRegistrarRol.addEventListener("click", function () {
-  formAgregarRol.classList.remove("editar");
-  id_rol.value = "";
-  botonModal.innerHTML = "Registrar";
-  titleModal.innerText = "Registrar Rol";
-  document.querySelector(".btn-eliminar").classList.add("d-none");
 
-  inputs.forEach((input) => {
-    input.value = "";
-    input.parentElement.classList.remove("valido", "invalido");
-    input.nextElementSibling.children[0].classList.add("d-none");
-    input.nextElementSibling.children[1].classList.add("d-none");
-  });
-  modalRegistrarRol.show();
-});
 
-// Función para manejar el evento de "Todos los Permisos"
-function manejarCheckboxTodosLosPermisos(modal, checkboxTodos) {
-  const allCheckboxes = modal.querySelectorAll('input[type="checkbox"]');
-  checkboxTodos.addEventListener("change", function () {
-    allCheckboxes.forEach((checkbox) => {
-      checkbox.checked = checkboxTodos.checked;
-    });
-  });
 
-  // Validar que al menos "consultar" esté seleccionado en cada sección
-  const sections = modal.querySelectorAll(".accordion-section");
-  // modal.querySelector("form").addEventListener("submit", function (event) {
-  //   console.log(modal);
-  //   let isValid = true;
-  //   let listPermisos = [];
-  //   sections.forEach((section) => {
-  //     const consultarCheckbox = section.querySelector('input[value="consultar"]');
-  //     if (!consultarCheckbox.checked) {
-  //       isValid = false;
-  //     } else {
-  //       section.classList.remove("error");
-  //       listPermisos.push(consultarCheckbox.value);
-  //     }
-  //   });
-
-  //   if (!isValid) {
-  //     event.preventDefault(); // Prevenir envío del formulario
-  //     alertError("Error", "Debe seleccionar al menos 'Consultar' en cada sección..");
-  //   }
-
-  //   if (listPermisos.length >= 1) {
-  //     createRol(modal.querySelector("form"), document.querySelectorAll(".input-validar"));
-  //   } else {
-  //     alertError("Error", "Por favor verifique que todos los datos esten correctos.");
-  //   }
-  // });
-}
-
-// Función para manejar los checkboxes dentro de cada sección del acordeón
-function manejarCheckboxConsultar(section) {
-  const consultarCheckbox = section.querySelector('input[value="consultar"]');
-  const otherCheckboxes = section.querySelectorAll(
-    'input[value="guardar"], input[value="editar"], input[value="eliminar"]',
-  );
-
-  consultarCheckbox.addEventListener("change", function () {
-    const isChecked = consultarCheckbox.checked;
-    otherCheckboxes.forEach((checkbox) => {
-      checkbox.checked = false; // Desmarcar siempre al cambiar
-      checkbox.disabled = !isChecked; // Habilitar o deshabilitar según el estado de "Consultar"
-    });
-  });
-}
-
-//Ajax
-
-const readRol = async () => {
-  try {
-    console.log("cargada");
-
-    const result = await executePetition(url + "/mostrarAjax", "GET");
-
-    // construir html de filas
-    let html = "";
-    result.forEach((element) => {
-      html += `         
+const returnFragmentHtml = (element) => {
+  return `         
                         <div class="card contenido mb-4 mx-3" style="width: 18rem;">
         <img src="${urlBase}../src/assets/images/img/logoRol.jpeg" class="card-img-top" alt="...">
         <div class="card-body">
@@ -141,10 +55,26 @@ const readRol = async () => {
                           </div>
                         
                         `;
-    });
+};
 
-    // vuelca el html en el tbody
-    document.getElementById("div-rol").innerHTML = html;
+//Ajax
+
+const readRol = async () => {
+  try {
+    console.log("cargada");
+
+    const items = await executePetition(url + "/mostrarAjax", "GET");
+
+    const paginator = new Paginator(
+      items,
+      1,
+      "cardContainer",
+      "pagination",
+      "searchInput",
+      returnFragmentHtml,
+    );
+
+    paginator.displayItems();
 
     document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
       ele.value = document.getElementById("id_usuario_session").value;

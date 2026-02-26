@@ -6,25 +6,19 @@ import {
   initDataTable,
   cargarImg,
 } from "./generic/funtionGeneric.js";
+import Paginator from "./generic/Paginator.js"; //paginacion
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
 
 addEventListener("DOMContentLoaded", function () {
   console.log("insumos/");
-  // // grpFormInCorrect malo
-  // // grpFormCorrect bueno
-  // console.log("DOMContentLoaded Insumos");
+
   const modalAgreInsumos = new bootstrap.Modal(
     document.getElementById("exampleModalagregarInsumos"),
   );
 
   const divTarjetsInsumo = document.getElementById("div-tarjets");
   const imagenInsumo = document.getElementById("imagen");
-  // const cantidades = document.querySelectorAll(".cantidad");
-  // const formBuscadorInsumo = document.getElementById("form-buscador-insumo");
-  // const input = document.querySelector("#form-buscador-insumo input");
-  // const eliminarInsumo = document.getElementById("eliminarInsumo");
-  // const inputEditarImagen = document.querySelector(".input-editar-imagen");
-  // //href="?c=controladorInsumos/insumos"
+
   const formInsumos = document.getElementById("modalAgregarInsumos");
   const inputEditar = formInsumos.querySelectorAll(".campo-editar");
 
@@ -34,16 +28,7 @@ addEventListener("DOMContentLoaded", function () {
   const idInsumoOculto = document.getElementById("idInsumoOculto");
 
   console.log(formInsumos);
-  // const inputs = document.querySelectorAll(
-  //   "#formInsumos .input-disabled",
-  // );
 
-  // //editar
-  // const modalEditarInsumos = document.getElementById("modalEditarInsumos");
-  // const inputsEditar = document.querySelectorAll("#modalEditarInsumos .input");
-
-  // //tarjetas
-  // const tarjetas = document.querySelectorAll(".tarjet");
   const divPapelera = document.getElementById("div-papelera");
   const urlBase = document.getElementById("urlBase").value;
 
@@ -158,47 +143,63 @@ addEventListener("DOMContentLoaded", function () {
 
   const readInsumos = async (contenedor) => {
     try {
-      let metodo = "";
+      
+      const items = await executePetition(`${url}/insumosAjax`, 'GET');
+      console.log(items)
+      const paginator = new Paginator(
+        items,
+        1,
+        "cardContainer",
+        "pagination",
+        "searchInput",
+        returnFragmentHtml,
+      );
 
-      if (!urlActual.includes("papelera")) metodo = "insumosAjax";
-      else metodo = "papeleraInsumosAjax";
-      console.log(url + "/" + metodo);
+      paginator.displayItems();
 
-      const result = await executePetition(url + "/" + metodo, "GET");
 
-      // construir html de filas
+      document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+        ele.value = document.getElementById("id_usuario_session").value;
+      });
+
+      document.querySelectorAll(".botones-mostrar").forEach((ele) => {
+        ele.addEventListener("click", function () {
+          infoInsumos(this.getAttribute("data-index"));
+        });
+      });
+
+      //llamar las funcion de eliminar
+
+      document
+        .querySelector(".btn-eliminar")
+        .addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_bitacora").value,
+          ];
+          console.log(data);
+          alertConfirm(
+            "Esta seguro de eliminar el insumo?",
+            deleteInsumo,
+            data,
+          );
+        });
+    } catch (error) {
+      console.log(error);
+      alertError("Error", error);
+    }
+  };
+
+  const readPapeleraInsumos = async (contenedor) => {
+    try {
+      const result = await executePetition(url + "/papeleraInsumosAjax", "GET");
+
       let html = "";
-      console.log(result);
 
-      //si no es la papelera construye cards
+      //html para la papelera
       if (result.length > 0) {
         result.forEach((element) => {
-          if (!urlActual.includes("papelera")) {
-            html += `
-    <div class="card contenido mb-4 mx-3" style="width: 18rem;">
-        <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${
-          element.imagen
-        }" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class=" titulo">${element.nombre}</h5>
-
-            <p class="mt-3">Medida: ${element.medida}</p>
-            <p class="mt-3">Stock-Min: ${element.stockMinimo}</p>
-
-              <p class="${parseInt(element.cantidad_inventario) <= 0 ? "text-danger" : ""}">Cantidad: ${
-                element.cantidad_inventario
-              }</p>                                   
-
-                                    <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
-                                      element.id_insumo
-                                    }"
-                                        data-bs-toggle="modal" data-bs-target="#modal-exampleMostrar">Mostrar</button>
-        </div>
-    </div>
-              `;
-          } else {
-            //html para la papelera
-            html += `<tr>
+          html += `<tr>
                 <td class="text-center">${element.nombre}</td>
                 <td class="text-center">${element.descripcion}</td>
                 <td class="text-center">${element.precio} BS</td>
@@ -215,75 +216,38 @@ addEventListener("DOMContentLoaded", function () {
                 </td>
 
               </tr> `;
-          }
         });
       }
 
-      //resetear datatable si esta en papelera
-      if (urlActual.includes("papelera")) {
-        // si ya existe DataTable, destrúyela
-        if ($.fn.DataTable.isDataTable(selector)) {
-          $(selector).DataTable().clear().destroy();
-        }
+      // si ya existe DataTable, destrúyela
+      if ($.fn.DataTable.isDataTable(selector)) {
+        $(selector).DataTable().clear().destroy();
       }
 
-      // vuelca el html en el tbody
       contenedor.innerHTML = html;
 
-      if (urlActual.includes("papelera")) {
-        // re-inicializa
-        initDataTable(selector);
-      }
+      initDataTable(selector);
 
       document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
         ele.value = document.getElementById("id_usuario_session").value;
       });
 
-      //mostar modal de info
-      if (!urlActual.includes("papelera")) {
-        document.querySelectorAll(".botones-mostrar").forEach((ele) => {
-          ele.addEventListener("click", function () {
-            infoInsumos(this.getAttribute("data-index"));
-          });
-        });
-      }
+      //llamar las funcion de eliminar
 
-      //llamar las funcion de eliminar
-      if (!urlActual.includes("papelera")) {
-        document
-          .querySelector(".btn-eliminar")
-          .addEventListener("click", function () {
-            const data = [
-              this.getAttribute("data-index"),
-              document.getElementById("id_usuario_bitacora").value,
-            ];
-            console.log(data);
-            alertConfirm(
-              "Esta seguro de eliminar el insumo?",
-              deleteInsumo,
-              data,
-            );
-          });
-      }
-      //llamar a la uncion de restablecer
-      //llamar las funcion de eliminar
-      if (urlActual.includes("papelera")) {
-        document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-          btn.addEventListener("click", function () {
-            const data = [
-              this.getAttribute("data-index"),
-              document.getElementById("id_usuario_session").value,
-            ];
-            alertConfirm(
-              "Esta seguro de restablecer el insumo?",
-              restablecerInsumos,
-              data,
-            );
-          });
+      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
+          alertConfirm(
+            "Esta seguro de restablecer el insumo?",
+            restablecerInsumos,
+            data,
+          );
         });
-      }
+      });
     } catch (error) {
-      console.log(error);
       alertError("Error", error);
     }
   };
@@ -298,7 +262,7 @@ addEventListener("DOMContentLoaded", function () {
       if (result.ok) {
         alertSuccess(result.message);
 
-        readInsumos(divPapelera);
+        readPapeleraInsumos(divPapelera);
       } else throw new Error(`${result.error}`);
     } catch (error) {
       alertError("Error", error);
@@ -354,6 +318,31 @@ addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  //RETURN fragment html card
+  const returnFragmentHtml = (element) => {
+    return `
+    <div class="card contenido mb-4 mx-2" style="width: 18rem;">
+        <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${
+          element.imagen
+        }" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class=" titulo">${element.nombre}</h5>
+
+            <p class="mt-3">Medida: ${element.medida}</p>
+            <p class="mt-3">Stock-Min: ${element.stockMinimo}</p>
+
+              <p class="${parseInt(element.cantidad_inventario) <= 0 ? "text-danger" : ""}">Cantidad: ${
+                element.cantidad_inventario
+              }</p>                                   
+
+                                    <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
+                                      element.id_insumo
+                                    }"
+                                        data-bs-toggle="modal" data-bs-target="#modal-exampleMostrar">Mostrar</button>
+        </div>
+    </div>`;
+  };
+
   //funcion la imagen en el formulario para  que se visualize
 
   //llamar a la funcion para cargar la imagen del insumo
@@ -371,7 +360,7 @@ addEventListener("DOMContentLoaded", function () {
   if (!urlActual.includes("papelera")) {
     readInsumos(divTarjetsInsumo);
   } else {
-    readInsumos(divPapelera);
+    readPapeleraInsumos(divPapelera);
   }
 
   let verificarFormularioInsumo = inicializarValidacionFormulario(formInsumos);

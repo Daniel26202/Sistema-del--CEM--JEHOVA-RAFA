@@ -60,8 +60,8 @@
 
             <div class="fondo-tabla m-auto " style="width:95%;">
 
-                <div class=" caja-de-buscador-insumos">
-                    <div class="mover-input-agregarcita caja-insumos mt-2">
+                <div class=" d-flex justify-content-between ">
+                    <div class=" caja-insumos mt-3">
                         <button class=" caja-btn-margin btn btn-modals" data-bs-toggle="modal" data-bs-target="#exampleModalagregarInsumos" id="registrarInsumo">
                             <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-capsule me-1"
                                 viewBox="0 0 16 16">
@@ -72,7 +72,7 @@
                     </div>
 
                     <!-- Buscador de Insumos -->
-                    <div class="mover-input-buscar d-flex mt-3 caja-insumos">
+                    <div class=" d-flex mt-3 caja-insumos">
                         <a href="" class="btn d-none" title="Buscar" id="reiniciarBusquedaInsumo" uk-tooltip="Restablecer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
                                 <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
@@ -80,7 +80,7 @@
                             </svg>
                         </a>
                         <div id="form-buscador-insumo" class="d-flex justify-content-end form-responsive children-caja-insumos" autocomplete="off">
-                            <input class="form-control input-buscar tamaño-input-buscar input-responsive" type="text" name="nombre"
+                            <input class="form-control input-buscar tamaño-input-buscar input-responsive" id="searchInput" type="text" name="nombre"
                                 placeholder="Codigo o Nombre">
 
                             <button class="btn btn-buscar boton-responsive" title="Buscar" type="button">
@@ -99,12 +99,13 @@
 
                 <!--TARJETAS DE INSUMOS-->
 
-                <div id="tarjetas" class="">
-                    <hr>
-                    <div id="div-tarjets" class="tar caja-tarjets-responsive-insumos ">
 
-                    </div>
-                </div>
+                <hr class="mb-4 pb-2">
+
+                <div id="cardContainer" class="tarjects-style  caja-tarjets-responsive-insumos mt-3 "></div>
+
+
+                <div id="pagination" class="pagination-div"></div>
 
 
 
@@ -303,6 +304,7 @@
 
 
 <?php require_once 'modalInsumos.php'; ?>
+
 
 
 <script type="module" src="<?= $urlBase ?>../src/assets/js/insumo.js"></script>

@@ -4,7 +4,7 @@
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Registrar Sintoma</h5>
-                <button type="button" class="btn-close"  data-bs-toggle="modal" data-bs-target="#exampleModalConsultarSintoma"></button>
+                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#exampleModalConsultarSintoma"></button>
             </div>
             <form class=" form-validable" id="modalAgregarSintoma">
 
@@ -56,7 +56,7 @@
 
 
 <div class="modal fade" id="exampleModalConsultarSintoma" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Gestionar Sintomas</h5>

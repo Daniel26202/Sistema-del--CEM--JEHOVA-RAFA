@@ -28,6 +28,8 @@
     margin-bottom: 0.6rem;
 }
 
+
+
 .caja-diagnostico-offcanvas {
     background-color: var(--color-bg-card);
     border: 1px solid var(--color-border);
@@ -238,6 +240,36 @@ input[type="number"] {
         color: #e8f2ff;
     }
 }
+
+/* ///////////estilo de paginacion ////// */
+.pagination-porpia {
+    width: 28px;
+    color: black;
+    background-color: rgb(230, 230, 230);
+    border: 1px solid white;
+    padding: 5px;
+    margin: 1px;
+    border-radius: 3px;
+}
+
+.pagination-disbled{
+    color: rgb(71, 71, 71);
+}
+.pagination-div{
+    display: flex;
+    justify-content: end;
+}
+
+.div-result-none{
+    border-top: 1px solid var(--color-text-card);
+    border-bottom: 1px solid var(--color-text-card);
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 
 .switAlert {
     background-color: var(--color-bg-card);
@@ -986,8 +1018,9 @@ html {
 
 /*INSUMOS*/
 
-.tar {
+.tarjects-style {
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
 }
 
@@ -1958,17 +1991,41 @@ td {
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................Perfil........................ */
 .fondo-perfil {
-    height: 85% !important;
+    width:  75% !important;
 }
+.div-input-perfil{
+    width: 45%;
+}
+.img-perfil {
+    width: 18rem;
+    height: 18rem;
+    /* Obligatorio que sea igual al width */
+    border-radius: 50%;
+    /* Esto crea el círculo */
+    object-fit: cover;
+    /* Para que la imagen no se deforme dentro del círculo */
+}
+.img-perfil-modal {
+    width: 12rem;
+    height: 12rem;
+    /* Obligatorio que sea igual al width */
+    border-radius: 50%;
+    /* Esto crea el círculo */
+    object-fit: cover;
+    /* Para que la imagen no se deforme dentro del círculo */
+}
+
 @media screen and (max-width: 1000px) {
     .fondo-perfil {
-        height: 75% !important;
+        width: 90% !important;
+    }
+    .div-input-perfil {
+        width: 100%;
     }
 }
 @media screen and (max-width: 700px) {
     .fondo-perfil {
-        width: 93% !important;
-        height: 85% !important;
+            width: 95% !important;
     }
 }
 
@@ -2069,10 +2126,7 @@ td {
 /* /////////////////////////////////////////////////////////////////////////// */
 /* ...............................INSIMOS.................................... */
 
-.caja-de-buscador-insumos {
-    display: flex;
-    justify-content: space-between;
-}
+
 
 @media screen and (max-width: 600px) {
     .caja-de-buscador-insumos {

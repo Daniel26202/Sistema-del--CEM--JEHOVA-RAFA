@@ -41,7 +41,7 @@ class ModeloInsumo extends ModelBase
 	{
 		try {
 			$sql = "";
-			if ($cantidadCero) $sql = "SELECT *,sum(inv.cantidad_disponible) cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
+			if ($cantidadCero) $sql = "SELECT *,sum(inv.cantidad_disponible) cantidad_inventario, ROW_NUMBER() OVER (ORDER BY inv.id_insumo) AS indice  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
 
 			else   $sql = "SELECT *,sum(inv.cantidad_disponible) as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='ACT' AND inv.cantidad_disponible > 0  GROUP BY inv.id_insumo ";
 
