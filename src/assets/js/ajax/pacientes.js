@@ -1,19 +1,19 @@
 import {
-    executePetition,
-    alertConfirm,
-    alertError,
-    alertSuccess,
-    initDataTable,
-    showDataModal,
-    clearModalEnviar,
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+  initDataTable,
+  showDataModal,
+  clearModalEnviar,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
-    const modalPaciente = new bootstrap.Modal(
-      document.getElementById("exampleModalagregarPaciente"),
-    );
+const modalPaciente = new bootstrap.Modal(
+  document.getElementById("exampleModalagregarPaciente"),
+);
 
 const modalAgregar = document.getElementById("modalAgregar");
 const exampleModalLabel = document.getElementById("exampleModalLabelPaciente");
@@ -27,21 +27,21 @@ const selector = ".exampleTable";
 
 //read
 const readPatients = async () => {
-    try {
-        let metodo = "";
-        let urlActual = window.location.href;
+  try {
+    let metodo = "";
+    let urlActual = window.location.href;
 
-        if (urlActual.includes("getPacientes")) metodo = "getPacientesAjax";
-        else metodo = "papeleraPacienteAjax";
+    if (urlActual.includes("getPacientes")) metodo = "getPacientesAjax";
+    else metodo = "papeleraPacienteAjax";
 
-        const result = await executePetition(url + "/" + metodo, "GET");
+    const result = await executePetition(url + "/" + metodo, "GET");
 
-        console.log(result);
+    console.log(result);
 
-        // construir html de filas
-        let html = "";
-        result.forEach((element) => {
-            html += `
+    // construir html de filas
+    let html = "";
+    result.forEach((element) => {
+      html += `
                 <tr>
                     <td class="text-center">${element.nacionalidad}-${element.cedula}</td>
                     <td class="text-center">${element.nombre}</td>
@@ -53,10 +53,12 @@ const readPatients = async () => {
                     <td class="text-center">${element.estado_salud}</td>
                     <td class="text-center">
                             <button class="${
-                                !urlActual.includes("getPacientes") ? "d-none" : ""
+                              !urlActual.includes("getPacientes")
+                                ? "d-none"
+                                : ""
                             } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
                             data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" data-index="${
-                                element.id_paciente
+                              element.id_paciente
                             }">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -67,7 +69,9 @@ const readPatients = async () => {
                             </button>
 
                             <button class="${
-                                !urlActual.includes("getPacientes") ? "d-none" : ""
+                              !urlActual.includes("getPacientes")
+                                ? "d-none"
+                                : ""
                             } btn btn-tabla mb-1 btnModalEliminarPaciente btn-dt-tabla btn-eliminar" 
                             data-index=${element.id_paciente}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -79,9 +83,9 @@ const readPatients = async () => {
 
                             <div class="me-2">
                             <a href="#" class="${
-                                urlActual.includes("getPacientes") ? "d-none" : ""
+                              urlActual.includes("getPacientes") ? "d-none" : ""
                             } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
-                                element.id_paciente
+                              element.id_paciente
                             }  title="Restablecer Paciente"
                               uk-tooltip id="btnModalEliminarPaciente">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
@@ -95,173 +99,184 @@ const readPatients = async () => {
                     </td>
                 </tr>
           `;
-        });
+    });
 
-        // si ya existe DataTable, destrúyela
-        if ($.fn.DataTable.isDataTable(selector)) {
-            $(selector).DataTable().clear().destroy();
-        }
-
-        // vuelca el html en el tbody
-        document.querySelector(selector + " tbody").innerHTML = html;
-
-        document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-            ele.value = document.getElementById("id_usuario_session").value;
-        });
-
-        //llamar las funcion de eliminar
-        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-                alertConfirm("Esta seguro de eliminar el paciente?", deletePattients, data);
-            });
-        });
-
-        //llamar a la uncion de restablecer
-        document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-                alertConfirm("Esta seguro de restablecer el paciente?", restablecerPattients, data);
-            });
-        });
-
-        //llamar las funcion de eliminar
-        document.querySelectorAll(".botonesEdi").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                //objetos con todos los parametros de la funcion
-                const parametros = {
-                  labelModal: exampleModalLabel,
-                  textLabelModal: "Modificar Paciente",
-                  form: modalAgregar,
-                  modal: modalAgregar.parentElement.parentElement.parentElement,
-                  btnModal: botonModal,
-                  btnTextModal: "Modificar",
-                  data: {
-                    nacionalidad: btn
-                      .closest("tr")
-                      .children[0].innerText.slice(0, 1),
-                    cedula: parseInt(
-                      btn.closest("tr").children[0].innerText.slice(2),
-                    ),
-                    nombre: btn.closest("tr").children[1].innerText,
-                    apellido: btn.closest("tr").children[2].innerText,
-                    telefono: parseInt(btn.closest("tr").children[3].innerText),
-                    direccion: btn.closest("tr").children[4].innerText,
-                    fn: btn.closest("tr").children[5].innerText,
-                    genero: btn.closest("tr").children[6].innerText,
-                    id: btn
-                      .closest("tr")
-                      .children[8].children[0].getAttribute("data-index"),
-                  },
-                  inputs: inputs,
-                  cedulaOculta: cedulaRegistrada,
-                  idOculto: id_paciente,
-                };
-                showDataModal(parametros);
-            });
-        });
-
-        // re-inicializa
-        initDataTable(selector);
-    } catch (error) {
-        alertError("Error", error);
+    // si ya existe DataTable, destrúyela
+    if ($.fn.DataTable.isDataTable(selector)) {
+      $(selector).DataTable().clear().destroy();
     }
+
+    // vuelca el html en el tbody
+    document.querySelector(selector + " tbody").innerHTML = html;
+
+    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+      ele.value = document.getElementById("id_usuario_session").value;
+    });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de eliminar el paciente?",
+          deletePattients,
+          data,
+        );
+      });
+    });
+
+    //llamar a la uncion de restablecer
+    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de restablecer el paciente?",
+          restablecerPattients,
+          data,
+        );
+      });
+    });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".botonesEdi").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        //objetos con todos los parametros de la funcion
+        const parametros = {
+          labelModal: exampleModalLabel,
+          textLabelModal: "Modificar Paciente",
+          form: modalAgregar,
+          modal: modalAgregar.parentElement.parentElement.parentElement,
+          btnModal: botonModal,
+          btnTextModal: "Modificar",
+          data: {
+            nacionalidad: btn.closest("tr").children[0].innerText.slice(0, 1),
+            cedula: parseInt(btn.closest("tr").children[0].innerText.slice(2)),
+            nombre: btn.closest("tr").children[1].innerText,
+            apellido: btn.closest("tr").children[2].innerText,
+            telefono: parseInt(btn.closest("tr").children[3].innerText),
+            direccion: btn.closest("tr").children[4].innerText,
+            fn: btn.closest("tr").children[5].innerText,
+            genero: btn.closest("tr").children[6].innerText,
+            id: btn
+              .closest("tr")
+              .children[8].children[0].getAttribute("data-index"),
+          },
+          inputs: inputs,
+          cedulaOculta: cedulaRegistrada,
+          idOculto: id_paciente,
+        };
+        showDataModal(parametros);
+      });
+    });
+
+    // re-inicializa
+    initDataTable(selector);
+  } catch (error) {
+    alertError("Error", error);
+  }
 };
 //create
 const createPatients = async (form) => {
-    try {
-        const data = new FormData(form);
-        let result = await executePetition(url + "/guardar", "POST", data);
-        console.log(result);
-        if (result.ok) {
-            alertSuccess(result.message);
-            readPatients();
-            modalPaciente.hide();
-        } else throw new Error(`${result.error}`);
-    } catch (error) {
-        alertError("Error", error);
-    }
+  try {
+    const data = new FormData(form);
+    let result = await executePetition(url + "/guardar", "POST", data);
+    console.log(result);
+    if (result.ok) {
+      alertSuccess(result.message);
+      readPatients();
+      modalPaciente.hide();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
 };
 
 //update
 const updatePatients = async (form) => {
-    try {
-        const data = new FormData(form);
+  try {
+    const data = new FormData(form);
 
-        let result = await executePetition(url + "/setPaciente", "POST", data);
-        console.log(result);
-        if (result.ok) {
-            alertSuccess(result.message);
-
-            readPatients();
-        } else throw new Error(`${result.error}`);
-    } catch (error) {
-        console.log(error);
-        alertError("Error", error);
-    }
+    let result = await executePetition(url + "/setPaciente", "POST", data);
+    console.log(result);
+    if (result.ok) {
+      alertSuccess(result.message);
+      modalPaciente.hide();
+      readPatients();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    console.log(error);
+    alertError("Error", error);
+  }
 };
 
 //delete
 const deletePattients = async (data) => {
-    try {
-        const result = await executePetition(url + `/eliminar/${data}`, "GET");
-        console.log(result);
+  try {
+    const result = await executePetition(url + `/eliminar/${data}`, "GET");
+    console.log(result);
 
-        if (result.ok) {
-            alertSuccess(result.message);
-            readPatients();
-        } else throw new Error(`${result.error}`);
-    } catch (error) {
-        alertError("Error", error);
-    }
+    if (result.ok) {
+      alertSuccess(result.message);
+      readPatients();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
 };
 
 //restablecer
 const restablecerPattients = async (data) => {
-    try {
-        const result = await executePetition(url + `/restablecer/${data}`, "GET");
-        if (result.ok) {
-            alertSuccess(result.message);
+  try {
+    const result = await executePetition(url + `/restablecer/${data}`, "GET");
+    if (result.ok) {
+      alertSuccess(result.message);
 
-            readPatients();
-        } else throw new Error(`${result.error}`);
-    } catch (error) {
-        alertError("Error", error);
-    }
+      readPatients();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
 };
 
 readPatients();
 
 btnOpenModal.addEventListener("click", function () {
-    //objetos con todos los parametros de la funcion
-    const parametros = {
-        labelModal: exampleModalLabel,
-        textLabelModal: "Registrar Paciente",
-        form: modalAgregar,
-        modal: modalAgregar.parentElement.parentElement.parentElement,
-        btnModal: botonModal,
-        btnTextModal: "Registrar",
-        inputs: inputs,
-    };
-    clearModalEnviar(parametros);
-    
+  //objetos con todos los parametros de la funcion
+  const parametros = {
+    labelModal: exampleModalLabel,
+    textLabelModal: "Registrar Paciente",
+    form: modalAgregar,
+    modal: modalAgregar.parentElement.parentElement.parentElement,
+    btnModal: botonModal,
+    btnTextModal: "Registrar",
+    inputs: inputs,
+  };
+  clearModalEnviar(parametros);
 });
 
 let verificarFormulario = inicializarValidacionFormulario(modalAgregar);
 
 modalAgregar.addEventListener("submit", function (e) {
-    e.preventDefault();
+  e.preventDefault();
 
-  
-    let esValido = verificarFormulario();
+  let esValido = verificarFormulario();
 
-    if (esValido) {
-        if (modalAgregar.classList.contains("editar")) {
-            updatePatients(this);
-        } else {
-            createPatients(this);
-        }
+  if (esValido) {
+    if (modalAgregar.classList.contains("editar")) {
+      updatePatients(this);
     } else {
-        alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+      createPatients(this);
     }
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
+  }
 });

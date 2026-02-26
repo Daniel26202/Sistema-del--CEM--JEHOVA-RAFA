@@ -9,14 +9,14 @@ use App\modelos\ModeloUsuarios;
 function perfil($parametro)
 {
 	$ayuda = "btnayudaPerfil";
-	// require_once './src/vistas/vistaPerfil/vistaPerfil.php';
-	echo "perfil";
+	require_once './src/vistas/vistaPerfil/vistaPerfil.php';
 }
 
 function perfilAjax()
 {
 	$modelo = new ModeloPerfil();
-	echo json_encode($modelo->seleccionarUsuario($_SESSION["usuario"]));
+	$modelo->setUsuario($_SESSION["usuario"]);
+	echo json_encode($modelo->seleccionarUsuario());
 }
 
 function permisos($id_rol, $permiso, $modulo)
@@ -31,17 +31,17 @@ function guardar()
 	if (isset($_POST)) {
 		$bitacora = new ModeloBitacora();
 		$modelo = new ModeloPerfil();
-		$modeloUsuario = new ModeloUsuarios();
-		$modeloDoctor = new ModeloDoctores();
 
-		$modeloUsuario->setIdUsuario($_POST["id_usuario"]);
-		$modeloUsuario->setUsuario($_POST["usuario"]);
-		$modeloUsuario->setCorreo($_POST["correo"]);
+		$modelo->setIdUsuario($_POST["id_usuario"]);
+		$modelo->setUsuario($_POST["usuario"]);
+		$modelo->setCorreo($_POST["correo"]);
 
-		$modeloDoctor->setCedula($_POST["cedula"]);
-		$modeloDoctor->setNombre($_POST["nombre"]);
-		$modeloDoctor->setApellido($_POST["apellido"]);
-		$modeloDoctor->setTelefono($_POST["telefono"]);
+		$modelo->setCedula($_POST["cedula"]);
+		$modelo->setNombre($_POST["nombre"]);
+		$modelo->setApellido($_POST["apellido"]);
+		$modelo->setTelefono($_POST["telefono"]);
+		$modelo->setImagen($_FILES['imagen']["name"]);
+		$modelo->setImagenTemporal($_FILES['imagen']['tmp_name']);
 
 
 		$edicion = $modelo->update_perfil();

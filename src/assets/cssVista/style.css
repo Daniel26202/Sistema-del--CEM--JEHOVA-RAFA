@@ -2002,17 +2002,41 @@ td {
 /* ////////////////////////////////////////////////////////////////// */
 /* ............................Perfil........................ */
 .fondo-perfil {
-    height: 85% !important;
+    width:  75% !important;
 }
+.div-input-perfil{
+    width: 45%;
+}
+.img-perfil {
+    width: 18rem;
+    height: 18rem;
+    /* Obligatorio que sea igual al width */
+    border-radius: 50%;
+    /* Esto crea el círculo */
+    object-fit: cover;
+    /* Para que la imagen no se deforme dentro del círculo */
+}
+.img-perfil-modal {
+    width: 12rem;
+    height: 12rem;
+    /* Obligatorio que sea igual al width */
+    border-radius: 50%;
+    /* Esto crea el círculo */
+    object-fit: cover;
+    /* Para que la imagen no se deforme dentro del círculo */
+}
+
 @media screen and (max-width: 1000px) {
     .fondo-perfil {
-        height: 75% !important;
+        width: 90% !important;
+    }
+    .div-input-perfil {
+        width: 100%;
     }
 }
 @media screen and (max-width: 700px) {
     .fondo-perfil {
-        width: 93% !important;
-        height: 85% !important;
+            width: 95% !important;
     }
 }
 
