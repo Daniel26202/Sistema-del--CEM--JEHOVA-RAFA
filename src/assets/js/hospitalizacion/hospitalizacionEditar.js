@@ -4,9 +4,10 @@ import { traerSerevicio } from "../../js/hospitalizacion/reutilizableHospitaliza
 import { inicializarValidacionFormulario, chulitoYX } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
-const modalHospBoots = new bootstrap.Modal(document.getElementById("modal-agregar-hospitalizacion"));
-// Ajax //////
+const modalAHospBoots = new bootstrap.Modal(document.getElementById("modal-agregar-hospitalizacion"));
+const modalEHospBoots = new bootstrap.Modal(document.getElementById("modal-editar-hospitalizacion"));
 
+// Ajax //////
 // horas y costo de servicio
 const horas = document.querySelector("#horasS");
 const costoHoras = document.querySelector("#costoHS");
@@ -341,7 +342,6 @@ const vistaTabla = async () => {
                                                 <button class="btn btn-tabla mb-1 me-1 informacionH"
                                                     data-bs-toggle="offcanvas"
                                                     data-bs-target="#offcanvas-mostrarH"
-                                                    uk-tooltip="información de hospitalización"
                                                     data-id-hospitalizacion="${res["id_hospitalizacion"]}"
                                                     data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
@@ -355,7 +355,7 @@ const vistaTabla = async () => {
 
                                                 <!-- btn modal editar hospitalización -->
                                                 <button class="btn btn-tabla mb-1 editarH me-1" data-bs-toggle="modal"
-                                                    data-bs-target="#modal-editar-hospitalizacion" uk-tooltip="Modificar hospitalización" data-index="${index}"
+                                                    data-bs-target="#modal-editar-hospitalizacion" data-index="${index}"
                                                     data-extra="${res["id_hospitalizacion"]}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                                         class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -375,7 +375,7 @@ const vistaTabla = async () => {
                 if (resultad[0][1] == 0) {
                     html += `       
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <button class="btn btn-tabla mb-1 me-1 btn-eliminar" data-index="${res.id_hospitalizacion}" uk-tooltip="Eliminar hospitalización">
+                                                <button class="btn btn-tabla mb-1 me-1 btn-eliminar" data-index="${res.id_hospitalizacion}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                                                         class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                         <path
@@ -389,8 +389,8 @@ const vistaTabla = async () => {
                 if (resultad[0][1] == 0) {
                     html += `    
                                             <div class="col-12 col-md-6 col-lg-3">
-                                                <a href="#" class="btn btn-tabla mb-1 me-1 text-white btnFH" data-bs-toggle="modal" data-bs-target="#modalEnvioFacturaHospitalizacion" uk-tooltip="Facturar hospitalización" id="" title=""
-                                                    aria-describedby="uk-tooltip-25" data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
+                                                <a href="#" class="btn btn-tabla mb-1 me-1 text-white btnFH" data-bs-toggle="modal" data-bs-target="#modalEnvioFacturaHospitalizacion"  id="" title=""
+                                                    data-id-hospitalizacion="${res["id_hospitalizacion"]}" data-index="${index}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
                                                     <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
                                                     <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
@@ -1109,10 +1109,16 @@ const envioDatE = async () => {
         const data = new FormData(formE);
         let result = await executePetition(url + "/modificarH/", "POST", data);
 
-        // vista de la tabla
-        vistaTabla();
-
-        alertSuccess(result.message);
+        // console.log(result);
+        if (result.ok) {
+            // vista de la tabla
+            vistaTabla();
+            modalEHospBoots.hide();
+            alertSuccess(result.message);
+        } else {
+            modalEHospBoots.show();
+            throw new Error(result.error);
+        }
     } catch (error) {
         console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...");
     }
@@ -1282,8 +1288,8 @@ const createHosp = async () => {
         console.log(result);
         if (result.ok) {
             vistaTabla();
+            modalAHospBoots.hide();
             alertSuccess(result.message);
-            // modalHospBoots.hide();
         } else {
             throw new Error(result.error);
         }
@@ -1305,7 +1311,7 @@ formularioAgregar.addEventListener("submit", async function (e) {
 
     if (esValido) {
         await createHosp();
-        // formularioAgregar.reset();
+        formularioAgregar.reset();
     } else {
         alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }

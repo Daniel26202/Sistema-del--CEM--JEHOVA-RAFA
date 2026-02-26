@@ -95,8 +95,8 @@
             </div>
 
             <p class="uk-text-right mt-4 text-center">
-                <button class="uk-button rounded-5 fw-bold " type="button" data-bs-toggle="modal"
-                    data-bs-target="#modal-editar-hospitalizacion">Cancelar</button>
+                <button type="button" class="btn btn-modals-cancelar fw-bold rounded-5"
+                    data-bs-toggle="modal" data-bs-target="#modal-editar-hospitalizacion">Cancelar</button>
             </p>
 
         </div>

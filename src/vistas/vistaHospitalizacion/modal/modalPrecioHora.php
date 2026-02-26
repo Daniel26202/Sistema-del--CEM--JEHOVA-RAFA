@@ -106,11 +106,12 @@
 
                 </div>
 
-                <p class="uk-text-right mt-4 text-center">
-                    <button class="uk-button rounded-5 fw-bold " type="button" data-bs-toggle="modal">Cancelar</button>
-                    <button class="uk-button uk-button-primary rounded-5 fw-bold d-non" type="submit"
-                        data-bs-dismiss="modal" id="btnCH">Guardar</button>
-                </p>
+                <div class="modal-footer border-0 d-flex justify-content-end gap-2 pt-2">
+                    <button type="button" class="btn btn-modals-cancelar fw-bold rounded-5"
+                        data-bs-toggle="modal">Cancelar</button>
+                    <!-- id="btnEH" — lógica JS intacta -->
+                    <button type="submit" class="btn btn-modals fw-bold rounded-5" data-bs-dismiss="modal" id="btnCH">Guardar</button>
+                </div>
             </form>
 
         </div>
