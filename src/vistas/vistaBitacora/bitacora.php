@@ -4,6 +4,7 @@
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh">
 
 
+  <input type="hidden" id="vistaActiva" value="<?= $vistaActiva ?>">
   <h5 style="width: 95%; " class="m-auto mb-3">Bitácora <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
       class="bi bi-people ms-2" viewBox="0 0 16 16">
       <path
@@ -48,48 +49,21 @@
         </ul>
       </div>
     </div>
-    <?php $bitacora = ($vistaActiva == 'Admin') ? $modeloBitacora->consultarBitacora($_SESSION['id_usuario']) : $modeloBitacora->consultarBitacora() ?>
 
 
     <div class="table table-responsive">
       <table class="example table table-striped ">
         <thead>
           <tr>
-            <th class="text-dark">Nombre Apellido</th>
-            <th class="text-dark">Usuario</th>
-            <th class="text-dark">Modulo</th>
-            <th class="text-dark">Actividad</th>
-            <th class="text-dark">Fecha</th>
-            <th class="text-dark">Hora</th>
+            <th class="text-dark text-center">Nombre Apellido</th>
+            <th class="text-dark text-center">Usuario</th>
+            <th class="text-dark text-center">Modulo</th>
+            <th class="text-dark text-center">Actividad</th>
+            <th class="text-dark text-center">Fecha</th>
+            <th class="text-dark text-center">Hora</th>
           </tr>
         </thead>
         <tbody>
-
-
-          <?php foreach ($bitacora as $b): ?>
-            <tr>
-              <td class="text-center">
-                <?= $b['nombre'] . ' ' . $b['apellido'] ?>
-              </td>
-              <td class="text-center">
-                <?= $b['usuario'] ?>
-              </td>
-              <td class="text-center">
-                <?= $b['tabla'] ?>
-              </td>
-              <td class="text-center">
-                <?= $b['actividad'] ?>
-              </td>
-              <?php $fecha_hora_separadas = explode(" ", $b['fecha_hora']); ?>
-              <td class="text-center">
-                <?= $fecha_hora_separadas[0]; ?>
-              </td>
-              <td class="text-center">
-                <?= $fecha_hora_separadas[1]; ?>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-
         </tbody>
       </table>
     </div>
@@ -102,3 +76,4 @@
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaBitacora.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/ajax/bitacora.js"></script>

@@ -35,3 +35,17 @@ function permisos($id_rol, $permiso, $modulo)
 
 	return $permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 }
+
+function bitacoraAjax()
+{
+	$modeloBitacora = new ModeloBitacora(false);
+	if (session_status() !== PHP_SESSION_ACTIVE) {
+		session_start();
+	}
+
+	if (isset($_GET['vista']) && $_GET['vista'] == 'Admin') {
+		echo json_encode($modeloBitacora->consultarBitacora($_SESSION['id_usuario']));
+	} else {
+		echo json_encode($modeloBitacora->consultarBitacora());
+	}
+}
