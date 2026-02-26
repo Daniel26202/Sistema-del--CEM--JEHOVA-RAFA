@@ -5,7 +5,7 @@ import {
   alertSuccess,
   cargarImg,
 } from "../generic/funtionGeneric.js";
-
+import Paginator from "../generic/Paginator.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
@@ -77,33 +77,21 @@ const readUser = async () => {
     if (!urlActual.includes("administradores")) metodo = "usuariosAjax";
     else metodo = "administradoresAjax";
 
-    const result = await executePetition(url + "/" + metodo, "GET");
+    const items = await executePetition(url + "/" + metodo, "GET");
 
-    // construir html de filas
-    let html = "";
-    result.forEach((element) => {
-      html += ` <div class="card contenido mb-4 mx-3" style="width: 18rem;">
-        <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${
-          element.imagen
-        }" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="titulo user-name">Usuario: ${element.user}</h5>
+    
 
-            <p class="mt-3 name-apellido">Nombre: ${element.nombre} ${element.apellido}</p>
-         
 
-                                                
+    const paginator = new Paginator(
+      items,
+      1,
+      "cardContainer",
+      "pagination",
+      "searchInput",
+      returnFragmentHtml,
+    );
 
-                                    <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
-                                      element.id_usuario
-                                    }" data-img=${element.imagen}
-                                        data-bs-toggle="modal" data-bs-target="#modal-exampleMostrar">Mostrar</button>
-        </div>
-    </div>`;
-    });
-
-    // vuelca el html en el tbody
-    document.getElementById("div-tarjet-user").innerHTML = html;
+    paginator.displayItems();
 
     document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
       ele.value = document.getElementById("id_usuario_session").value;
@@ -131,6 +119,28 @@ const readUser = async () => {
     alertError("Error", error);
   }
 };
+
+//funciona para retirnar el html de las tarjetas
+const returnFragmentHtml=(element)=>{
+  return ` <div class="card contenido mb-4 mx-3" style="width: 18rem;">
+        <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${
+          element.imagen
+        }" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="titulo user-name">Usuario: ${element.user}</h5>
+
+            <p class="mt-3 name-apellido">Nombre: ${element.nombre} ${element.apellido}</p>
+         
+
+                                                
+
+                                    <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
+                                      element.id_usuario
+                                    }" data-img=${element.imagen}
+                                        data-bs-toggle="modal" data-bs-target="#modal-exampleMostrar">Mostrar</button>
+        </div>
+    </div>`
+}
 
 //mostrar inof user
 

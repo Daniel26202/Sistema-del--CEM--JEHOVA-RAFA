@@ -3,8 +3,8 @@ import {
   alertConfirm,
   alertError,
   alertSuccess,
-  initCardData,
 } from "./generic/funtionGeneric.js";
+import Paginator from "./generic/Paginator.js";
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";

@@ -6,6 +6,7 @@ import {
   initDataTable,
   cargarImg,
 } from "./generic/funtionGeneric.js";
+import Paginator from "./generic/Paginator.js"; //paginacion
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
 
 addEventListener("DOMContentLoaded", function () {

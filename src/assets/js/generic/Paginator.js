@@ -97,10 +97,11 @@ class Paginator {
   searchItems(query) {
     this.filteredItems = this.items.filter(
       (item) =>
-        item.nombre.toLowerCase().includes(query.toLowerCase()) ||
-        item.descripcion.toLowerCase().includes(query.toLowerCase()),
+        Object.values(item).some(value=>value.toString().toLowerCase().includes(query.toLowerCase()))
     );
     this.currentPage = 1; // Reiniciar a la primera página después de buscar
     this.displayItems();
   }
 }
+
+export default Paginator;
