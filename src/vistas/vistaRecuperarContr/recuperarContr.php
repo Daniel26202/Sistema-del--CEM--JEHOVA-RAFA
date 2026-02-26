@@ -128,36 +128,59 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                         <div class="d-flex flex-column fondo-formulario w-auto ">
 
                             <!-- I paso para verificar -->
-                            <form action="" method="post" id="formVerificarUCE">
+                            <form class="form-validable" action="" method="post" id="formVerificarUCE">
                                 <div class="d-non" id="formUno">
 
-                                    <div class=" mb-2 pb-1 animacionInput w-auto" id="input-usuario-recpassword">
-
-                                        <svg xmlns="http://www.w3.org/2000/svg" id="icono-uno" width="20" height="20"
-                                            fill="currentColor" class="bi bi-person-fill icono " viewBox="0 0 16 16">
-                                            <path
-                                                d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                                        </svg>
-                                        <input type="text" name="usuario" id="inputUno" class="input"
-                                            placeholder="Usuario">
-
+                                    <label class="label-custom mt-0">Usuario</label>
+                                    <div class="campo-custom" id="input-usuario-recpassword">
+                                        <div class="input-custom">
+                                            <span class="icono-izq">
+                                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                                </svg>
+                                            </span>
+                                            <input class="form-control txt-custom input-validar inputs" name="usuario"
+                                                placeholder="Usuario" type="text">
+                                            <span class="icono-der">
+                                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                                </svg>
+                                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <p class="error-msg d-none"></p>
                                     </div>
 
-                                    <div class=" mb-2 pb-1 animacionInput w-auto" id="input-ps-recpassword">
-
-                                        <svg xmlns="http://www.w3.org/2000/svg" id="icono-dos" width="18" height="18"
-                                            fill="currentColor" class="bi bi-envelope icono ms-1 pe-1"
-                                            viewBox="0 0 16 16">
-                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1l-8 5-8-5V4z" />
-                                            <path d="M0 6.5v5.5A2 2 0 0 0 2 14h12a2 2 0 0 0 2-2V6.5l-8 5-8-5z" />
-                                        </svg>
-                                        <input type="text" name="cE" id="inputDos" class="input"
-                                            placeholder="Correo electrónico">
-
+                                    <label class="label-custom">Correo electrónico</label>
+                                    <div class="campo-custom" id="input-ps-recpassword">
+                                        <div class="input-custom">
+                                            <span class="icono-izq">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                    fill="currentColor" class="bi bi-envelope"
+                                                    viewBox="0 0 16 16">
+                                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1l-8 5-8-5V4z" />
+                                                    <path d="M0 6.5v5.5A2 2 0 0 0 2 14h12a2 2 0 0 0 2-2V6.5l-8 5-8-5z" />
+                                                </svg>
+                                            </span>
+                                            <input class="form-control txt-custom input-validar inputs" name="correo"
+                                                placeholder="Correo electrónico" type="text">
+                                            <span class="icono-der">
+                                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                                </svg>
+                                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <p class="error-msg d-none"></p>
                                     </div>
+
                                     <div>
                                         <input type="hidden" name="id_usuario" id="idUsuario">
-                                        <input type="hidden" name="correo" id="correoV">
+                                        <input type="hidden" name="" id="correoV">
                                     </div>
                                 </div>
                             </form>
@@ -168,15 +191,33 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
                                     <div class=" mb-1 animacionInput w-auto col" id="input-rs-recpassword">
 
-                                        <svg xmlns="http://www.w3.org/2000/svg" id="icono-tres" width="25" height="25"
-                                            fill="currentColor"
-                                            class="bi bi-check-circle-fill icono-respuesta-seguridad "
-                                            viewBox="0 0 16 16">
-                                            <path
-                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                        </svg>
-                                        <input type="text" name="codigo" id="inputTres" class="input"
-                                            placeholder="Código">
+                                        <div class="campo-custom" id="input-usuario-recpassword">
+                                            <div class="input-custom">
+                                                <span class="icono-izq">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                        fill="currentColor"
+                                                        class="bi bi-check-circle-fill"
+                                                        viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                                                    </svg>
+                                                </span>
+                                                <input class="form-control txt-custom input-validar inputs" name="codigo" placeholder="Código" type="text">
+                                                <span class="icono-der">
+                                                    <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                                    </svg>
+                                                    <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <p class="error-msg d-none"></p>
+                                        </div>
+
+
+
+
                                         <div>
                                             <input type="hidden" name="id_usuario" id="idUsuarioDos">
                                             <input type="hidden" name="correo" id="correoVDos">
@@ -188,7 +229,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                     <h5 id="divTime" class="mt-3 mb-0 pb-0 fw-bold text-center d-none">05:00</h5>
                                     <div class="text-center">
                                         <a href="#" id="btnEviarCod"
-                                            class="fs-5 mt-3 text-decoration-none text-black fw-bold">Reenviar el
+                                            class="fs-5 mt-3 text-decoration-none text-primary fw-bold">Reenviar el
                                             código</a>
                                     </div>
 
@@ -201,98 +242,80 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                             <form action="" method="post" id="formRecuperarPassword">
                                 <div class="d-none" id="formTres">
 
-                                    <div class="ms-2 me-2 mb-3 pb-1 animacionInput w-auto"
-                                        id="input-usuario-recpassword">
-                                        <div id="input-new-password">
-
-                                            <img src="<?= $urlBase ?>./src/assets/img/candado.svg" id="icono-cuatro"
-                                                class="icono" alt="">
-                                            <input type="password" name="passwordNew" id="inputNewPass" class="input"
-                                                placeholder="Nueva contraseña">
-
-                                            <a href="#" class="text-decoration-none">
-                                                <svg id="ocultarPasswordRec" xmlns="http://www.w3.org/2000/svg"
-                                                    width="23" height="23" fill="currentColor"
-                                                    class="bi bi-eye-slash-fill azul d-none" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
-                                                    <path
-                                                        d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
+                                    <label class="label-custom mt-0">Nueva contraseña</label>
+                                    <div class="campo-custom" id="input-usuario-recpassword">
+                                        <div class="input-custom">
+                                            <span class="icono-izq">
+                                                <!-- Candado SVG inline -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
                                                 </svg>
-                                                <svg id="mostrarPasswordRec" xmlns="http://www.w3.org/2000/svg"
-                                                    width="23" height="23" fill="currentColor"
-                                                    class="bi bi-eye-fill d-none " viewBox="0 0 16 16">
+                                            </span>
+                                            <input class="form-control txt-custom input-validar inputs" name="passwordNew" id="inputNewPass"
+                                                placeholder="Nueva contraseña" type="password">
+                                            <span class="icono-der">
+                                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                                </svg>
+                                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                </svg>
+                                            </span>
+
+                                            <span class="toggle-password mb-1" data-target="inputNewPass" style="cursor:pointer;">
+                                                <!-- Ojo abierto -->
+                                                <svg class="ojo-ver" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                    fill="currentColor" viewBox="0 0 16 16">
                                                     <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                                                    <path
-                                                        d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
                                                 </svg>
-                                            </a>
+                                                <!-- Ojo tachado -->
+                                                <svg class="ojo-ocultar d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                    fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
+                                                    <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
+                                                </svg>
+                                            </span>
 
                                         </div>
-                                        <div class="d-flex align-items-center justify-content-center pe-3 ps-1 d-none"
-                                            id="leyendaC" style="font-size: 12px; margin-top: 5px;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-info-circle azul me-1"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z">
-                                                </path>
-                                                <path
-                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z">
-                                                </path>
-                                            </svg>
-                                            <i>El formato de la contraseña es incorrecto, debe tener mayúscula, número y
-                                                carácter
-                                                especial.
-                                            </i>
-                                        </div>
+                                        <p class="error-msg d-none">El formato es incorrecto, debe tener mayúscula, número y carácter especial.</p>
                                     </div>
 
-                                    <div class="ms-2 me-2 mb-3 pb-1 animacionInput w-auto"
-                                        id="input-usuario-recpassword">
-                                        <div id="input-new-password">
-
-                                            <img src="<?= $urlBase ?>./src/assets/img/candado.svg" id="icono-cuatro"
-                                                class="icono" alt="">
-                                            <input type="password" name="" id="inputReescContr" class="input"
-                                                placeholder="Reescriba la contraseña">
-
-                                            <a href="#" class="text-decoration-none">
-                                                <svg id="ocultarPasswordRec" xmlns="http://www.w3.org/2000/svg"
-                                                    width="23" height="23" fill="currentColor"
-                                                    class="bi bi-eye-slash-fill azul d-none" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
-                                                    <path
-                                                        d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
+                                    <label class="label-custom">Reescriba la contraseña</label>
+                                    <div class="campo-custom" id="input-ps-recpassword">
+                                        <div class="input-custom">
+                                            <span class="icono-izq">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
                                                 </svg>
-                                                <svg id="mostrarPasswordRec" xmlns="http://www.w3.org/2000/svg"
-                                                    width="23" height="23" fill="currentColor"
-                                                    class="bi bi-eye-fill d-none " viewBox="0 0 16 16">
+                                            </span>
+                                            <input class="form-control txt-custom input-validar inputs" name="passwordNew" id="inputReescContr"
+                                                placeholder="Reescriba la contraseña" type="password">
+                                            <span class="icono-der">
+                                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                                </svg>
+                                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                </svg>
+                                            </span>
+
+                                            <span class="toggle-password mb-1" data-target="inputReescContr" style="cursor:pointer; ">
+                                                <!-- Ojo abierto -->
+                                                <svg class="ojo-ver" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                    fill="currentColor" viewBox="0 0 16 16">
                                                     <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                                                    <path
-                                                        d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
                                                 </svg>
-                                            </a>
-
+                                                <!-- Ojo tachado -->
+                                                <svg class="ojo-ocultar d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                    fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
+                                                    <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
+                                                </svg>
+                                            </span>
                                         </div>
-                                        <div class="d-flex align-items-center justify-content-center pe-3 ps-1 d-none"
-                                            id="leyendaC" style="font-size: 12px; margin-top: 5px;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-info-circle azul me-1"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z">
-                                                </path>
-                                                <path
-                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z">
-                                                </path>
-                                            </svg>
-                                            <i>El formato de la contraseña es incorrecto, debe tener mayúscula, número y
-                                                carácter
-                                                especial.
-                                            </i>
-                                        </div>
+                                        <p class="error-msg d-none">Las contraseñas no coinciden.</p>
                                     </div>
 
                                     <div>
@@ -341,11 +364,11 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
         </div>
     </main>
 
-    
-    
+
+
     <!-- SweetAlert2 -->
     <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2/sweetalert2@11.js"></script>
-    
+
     <script type="module" src="<?= $urlBase ?>./src/assets/js/recuperarContr.js"></script>
     <script src="<?= $urlBase ?>./src/assets/library/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?= $urlBase ?>./src/assets/library/intro/intro.min.js"></script>

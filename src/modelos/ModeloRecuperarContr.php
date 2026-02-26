@@ -3,29 +3,23 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\modelos\ModeloUsuarios;
 
 class ModeloRecuperarContr extends ModelBase
 {
 
-    private $id_usuario, $password;
+    private $id_usuario, $password, $usuario, $correo;
 
     public function __construct($dbSystem = false)
     {
         parent::__construct($dbSystem);
     }
 
-    private function retrunObjectModel()
-    {
-        return new ModeloUsuarios;
-    }
-
     // valido el usuario y el correo
     public function validarUC()
     {
         $data = [
-            'usuario' => $this->retrunObjectModel()->getUsuario(),
-            'correo' => $this->retrunObjectModel()->getCorreo(),
+            'usuario' => $this->getUsuario(),
+            'correo' => $this->getCorreo(),
             'estado' => 'ACT'
         ];
         $sql = "SELECT id_usuario, usuario, correo FROM usuario WHERE usuario = :usuario AND correo = :correo AND estado =:estado";
@@ -56,8 +50,34 @@ class ModeloRecuperarContr extends ModelBase
         return $this->password;
     }
 
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+
+    public function getCorreo()
+    {
+        return $this->correo;
+    }
 
 
+
+
+    public function setCorreo($correo)
+    {
+        if (!preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/", $correo)) {
+            throw new \InvalidArgumentException("El correo debe estar bien escrito.");
+        }
+        $this->correo = $correo;
+    }
+
+    public function setUsuario($usuario)
+    {
+        if (!preg_match("/^[a-zA-Z0-9._-]{8,16}$/", $usuario)) {
+            throw new \InvalidArgumentException("El usuario esta mal escrito.");
+        }
+        $this->usuario = $usuario;
+    }
 
     public function setIdUsuario($id_usuario)
     {

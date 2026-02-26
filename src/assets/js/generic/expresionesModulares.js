@@ -5,28 +5,33 @@ const expresiones = {
         mensajeError: "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
     },
 
+    codigo: {
+        expresion: /^\d{6,11}$/,
+        mensajeError: "El código debe contener solo números y tener al menos 6 caracteres",
+    },
+
     apellido: {
         expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
         mensajeError:
             "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
     },
 
-    usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "" },
+    usuario: { expresion: /^[a-zA-Z0-9._-]{8,16}$/, mensajeError: "Usuario incorrecto, debe tener al menos 8 caracteres" },
     correo: {
         expresion: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
         mensajeError: "El correo debe tener un formato válido (ej: ejemplo@dominio.com)",
     },
     password: {
         expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
-        mensajeError: "",
+        mensajeError: "La contraseña debe tener entre 8 y 12 caracteres, incluir al menos una mayúscula, un número y un carácter especial.",
     },
     passwordNew: {
         expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
-        mensajeError: "",
+        mensajeError: "La contraseña debe tener entre 8 y 12 caracteres, incluir al menos una mayúscula, un número y un carácter especial.",
     },
     passwordConf: {
         expresion: /^(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,12}$/,
-        mensajeError: "",
+        mensajeError: "La contraseña debe tener entre 8 y 12 caracteres, incluir al menos una mayúscula, un número y un carácter especial.",
     },
     cedula: {
         expresion: /^([1-9]{1})([0-9]{6,7})$/,
