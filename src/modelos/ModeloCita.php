@@ -247,7 +247,7 @@ class ModeloCita extends ModelBase
 			$this->setSQL($sql);
 			$horasOcupadas = $this->search($data1);
 
-			//consulta para traer todas la horas queel doctor tiene ocupada
+			//consulta para traer todas la horas queel doctor tiene en total
 
 			$sql = 'SELECT hd.horaDeEntrada, hd.horaDeSalida FROM personal p INNER JOIN horarioydoctor hd ON hd.id_personal = p.id_personal  INNER JOIN horario  h ON h.id_horario = hd.id_horario WHERE p.id_personal =:id_personal AND h.diaslaborables = :dia';
 			$this->setSQL($sql);
@@ -275,35 +275,55 @@ class ModeloCita extends ModelBase
 
 
 
+
 	private function convertTo24Hour($time)
 	{
-		$time = strtolower($time); // Convertir a minúsculas
-		$parts = explode(' ', $time);
-		$hourPart = $parts[0];
-		$modifier = isset($parts[1]) ? $parts[1] : '';
-		list($hours, $minutes) = explode(':', $hourPart);
+		$parts = explode(':', $time);
+		$horas = (int)$parts[0];
+		$minutos = (int)$parts[1];
 
-		$totalMinutes = ($modifier === 'pm' && (int)$hours < 12 ? (int)$hours + 12 : (int)$hours % 12) * 60 + ((int)$minutes ?? 0);
-		return $totalMinutes; // Devuelve el total en minutos
+		return ($horas * 60) + $minutos;
 	}
 
 	private function convertTo12Hour($minutes)
 	{
 		$hours = floor($minutes / 60) % 24;
 		$mins = $minutes % 60;
-		$modifier = $hours >= 12 ? 'PM' : 'AM'; // Usar mayúsculas
-		$formattedHours = ($hours % 12) ?: 12; // Convertir 0 a 12
+
+		$modifier = $hours >= 12 ? 'PM' : 'AM';
+		$formattedHours = ($hours % 12) ?: 12; // Si es 0, lo convierte en 12
+
 		return sprintf('%d:%02d %s', $formattedHours, $mins, $modifier);
 	}
 
 	private function seccionarHoras($start, $end)
 	{
+		// 1. Convertimos los strings "10:00:00" a minutos totales (ej. 600)
 		$startMinutes = $this->convertTo24Hour($start);
 		$endMinutes = $this->convertTo24Hour($end);
 		$intervals = [];
 
+		// Validación: Si el inicio es mayor al fin, el array se queda vacío.
+		if ($startMinutes >= $endMinutes) {
+			return [];
+		}
+
+		// 2. El bucle ahora suma 60 minutos reales en cada vuelta
 		for ($minutes = $startMinutes; $minutes < $endMinutes; $minutes += 60) {
-			$intervals[] = $this->convertTo12Hour($minutes) . ' a ' . $this->convertTo12Hour($minutes + 60);
+
+			$inicioIntervalo = $this->convertTo12Hour($minutes);
+
+			// Calculamos el final del bloque
+			$siguienteBloque = $minutes + 60;
+
+			// Si el siguiente bloque se pasa de la hora de fin, lo recortamos al límite
+			if ($siguienteBloque > $endMinutes) {
+				$siguienteBloque = $endMinutes;
+			}
+
+			$finIntervalo = $this->convertTo12Hour($siguienteBloque);
+
+			$intervals[] = $inicioIntervalo . ' a ' . $finIntervalo;
 		}
 
 		return $intervals;

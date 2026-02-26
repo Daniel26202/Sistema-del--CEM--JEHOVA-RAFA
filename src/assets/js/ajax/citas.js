@@ -212,8 +212,10 @@ addEventListener("DOMContentLoaded", function () {
     fechaGlobal = input.value;
 
     console.log(diasLaborablesDoctor);
-    diasLaborablesDoctor.forEach((ele) => {
+    dateName = dateName.charAt(0).toUpperCase() + dateName.slice(1);
 
+    diasLaborablesDoctor.forEach((ele) => {
+    console.log(ele[dateName]);
       if (ele[dateName]) {
         divHorariosDisp.classList.remove("d-none");
         validarHorarioDisponible(fechaGlobal, id_doctor, listHoraRegistrada);
@@ -232,10 +234,15 @@ addEventListener("DOMContentLoaded", function () {
 
   const validarHorarioDisponible = async (fecha, id, listHoraRegistrada) => {
     try {
+      console.log(
+        `/Sistema-del--CEM--JEHOVA-RAFA/Citas/validarHorariosDisponlibles/${fecha}/${id}`,
+      );
+
       const result = await executePetition(
         `/Sistema-del--CEM--JEHOVA-RAFA/Citas/validarHorariosDisponlibles/${fecha}/${id}`,
         "GET",
       );
+      console.log(result);
 
       let html = "";
 
