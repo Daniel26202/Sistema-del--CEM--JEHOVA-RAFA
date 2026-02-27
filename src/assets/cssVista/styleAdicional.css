@@ -3,7 +3,7 @@
    .card-insumo {
        border: none;
        border-radius: 2rem;
-       background: var(--color-bg-card);
+       background: var(--color-bg-main);
        backdrop-filter: blur(6px);
        -webkit-backdrop-filter: blur(6px);
        box-shadow: 0 20px 35px -10px rgba(0, 30, 60, 0.2);
@@ -165,9 +165,14 @@
 
    /* ── Sección superior (ícono + nombre) ── */
    .seccion-superior-custom {
-       background-color: var(--color-light-blue);
-       border-bottom: 2px solid var(--color-primary);
+       background-color: var(--color-primary);
+       border-bottom: 2px solid var(--color-text-card);
        padding-bottom: 1rem;
+       color: whitesmoke;
+   }
+
+   .seccion-superior-custom span {
+       color: whitesmoke;
    }
 
    .icono-medicamento-grande {

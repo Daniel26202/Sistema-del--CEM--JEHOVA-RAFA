@@ -130,8 +130,8 @@ function mostrarCliente()
 function mostrarPacienteConCita()
 {
 	$modeloFactura = new ModeloFactura();
-
-	$respuesta = $modeloFactura->buscarPacientePorCita($_POST["cedula"]);
+	$modeloFactura->setCedula($_POST["cedula"]);
+	$respuesta = $modeloFactura->buscarPacientePorCita();
 	echo json_encode($respuesta);
 }
 

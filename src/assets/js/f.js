@@ -10,7 +10,7 @@ import { inicializarValidacionFormulario } from "./generic/expresionesModulares.
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
 addEventListener("DOMContentLoaded", function () {
-  console.log("factura...");
+  console.log("factura.:)");
   // Creamos la variable donde van a estar los datos, y de una vez le ponemos una fila para probar
   console.log(window.location.href.includes("facturaCita"));
   let data = [];
@@ -30,34 +30,8 @@ addEventListener("DOMContentLoaded", function () {
 
   const tbodyInsumos = document.getElementById("tbody-insumos");
 
-  //buscador
-  const tablaSevicios = document.getElementById("cuerpoTablaServicios");
-
-  //caja de todos los insumos
-  const caja_insumos_a_seleccionar = document.querySelectorAll(
-    ".caja_insumos_a_seleccionar div",
-  );
-  //input para buscar todos los insumos
-  const buscadorDeTodosLosInsumos = document.getElementById(
-    "buscadorDeTodosLosInsumos",
-  );
-
-  const ConteNotificacionServicio = document.getElementById(
-    "ConteNotificacionServicio",
-  );
-  const ConteNotificacionServicioEli = document.getElementById(
-    "ConteNotificacionServicioEli",
-  );
-  const ConteNotificacionInsumo = document.getElementById(
-    "ConteNotificacionInsumo",
-  );
-  const ConteNotificacionInsumoCon = document.getElementById(
-    "ConteNotificacionInsumoCon",
-  );
-
   const inputCedulaPaciente = document.getElementById("input-cedula-paciente");
   const cedulaPaciente = document.getElementById("cedulaPaciente");
-  const inputs = modalAgregarPaciente.querySelectorAll(".input-validar");
 
   const pacienteClienteCheck = document.querySelector(
     ".paciente-cliente-check",
@@ -79,9 +53,6 @@ addEventListener("DOMContentLoaded", function () {
   const divClienteNoEncontrado = document.getElementById(
     "div-cliente-no-encontrado",
   );
-  const btnOpenModalPaciente = document.getElementById("btnOpenModalPaciente");
-
-  const selectGenero = document.getElementById("selectGenero");
 
   //botones de acciones en la factura
   const btnAddPac = document.getElementById("btnAddPac");
@@ -129,60 +100,62 @@ addEventListener("DOMContentLoaded", function () {
   //input de la referencia
   const referencia = document.getElementById("referencia");
 
+  const inputIdCita = document.getElementById("inputIdCita");
+
   //funcion para comprobar si el paciente es el mismo cliente
 
   const buscarCliente = async (formulario) => {
     // try {
-      let [addClass, removeClass] = ["", ""];
+    let [addClass, removeClass] = ["", ""];
 
-      const datos = new FormData(formulario);
-      const contenido = { method: "POST", body: datos };
-      let peticion = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente",
-        contenido,
-      );
-      let resultado = await peticion.json();
-      console.log(resultado);
-      if (resultado.length > 0) {
-        resultado.forEach((res) => {
-          console.log(res);
-          // calcula la edad
-          const fechaNac = new Date(res.fn);
-          const edadDif = Date.now() - fechaNac.getTime();
-          const edadFecha = new Date(edadDif);
-          const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
-          dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+    const datos = new FormData(formulario);
+    const contenido = { method: "POST", body: datos };
+    let peticion = await fetch(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente",
+      contenido,
+    );
+    let resultado = await peticion.json();
+    console.log(resultado);
+    if (resultado.length > 0) {
+      resultado.forEach((res) => {
+        console.log(res);
+        // calcula la edad
+        const fechaNac = new Date(res.fn);
+        const edadDif = Date.now() - fechaNac.getTime();
+        const edadFecha = new Date(edadDif);
+        const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+        dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
 
-          if (edad >= 18) {
-            [addClass, removeClass] = ["c", "d-none"];
+        if (edad >= 18) {
+          [addClass, removeClass] = ["c", "d-none"];
 
-            document.getElementById("botonPC").classList.remove("d-none");
-          } else {
-            [addClass, removeClass] = ["d-none", "c"];
-            document.getElementById("botonPC").classList.add("d-none");
-          }
+          document.getElementById("botonPC").classList.remove("d-none");
+        } else {
+          [addClass, removeClass] = ["d-none", "c"];
+          document.getElementById("botonPC").classList.add("d-none");
+        }
 
-          document.getElementById("inputCliente").value = res.id_cliente;
-        });
+        document.getElementById("inputCliente").value = res.id_cliente;
+      });
 
-        divClienteNoEncontrado.classList.add("d-none");
-        btnAddCli.classList.add("d-none");
-      } else {
-            [addClass, removeClass] = ["d-none", "c"];
+      divClienteNoEncontrado.classList.add("d-none");
+      btnAddCli.classList.add("d-none");
+    } else {
+      [addClass, removeClass] = ["d-none", "c"];
 
-        dataCliente.innerText = ``;
+      dataCliente.innerText = ``;
 
-        divClienteNoEncontrado.classList.remove("d-none");
-        document.getElementById("inputCliente").value = "";
-        document.getElementById("botonPC").classList.add("d-none");
+      divClienteNoEncontrado.classList.remove("d-none");
+      document.getElementById("inputCliente").value = "";
+      document.getElementById("botonPC").classList.add("d-none");
 
-        btnAddCli.classList.remove("d-none");
-      }
+      btnAddCli.classList.remove("d-none");
+    }
 
-      btnServicio.classList.add(addClass);
-      btnInsumos.classList.add(addClass);
-      btnServicio.classList.remove(removeClass);
-      btnInsumos.classList.remove(removeClass);
+    btnServicio.classList.add(addClass);
+    btnInsumos.classList.add(addClass);
+    btnServicio.classList.remove(removeClass);
+    btnInsumos.classList.remove(removeClass);
     // } catch (error) {
     //   alertError("Error", "Lamentablemente ocurrio un error" + error);
     //   console.log(error);
@@ -275,40 +248,65 @@ addEventListener("DOMContentLoaded", function () {
 
   //buscar cuando el paciente una tiene cita
   const buscarPacienteConCita = async (formularioPaciente) => {
-    const datos = new FormData(formularioPaciente);
+    try {
+      const datos = new FormData(formularioPaciente);
 
-    let resultado = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
-      "POST",
-      datos,
-    );
+      let resultado = await executePetition(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
+        "POST",
+        datos,
+      );
+      console.log(resultado[0]);
+      if (resultado.length > 0) {
+        // Cita encontrada, actualizar UI con datos de la cita
+        const cita = resultado[0];
 
-    console.log(resultado);
-    if (resultado.length > 0) {
-      console.log("2");
+        // 1. Actualizar datos del paciente
+        const fechaNac = new Date(cita.fecha_de_nacimiento);
+        const edadDif = Date.now() - fechaNac.getTime();
+        const edadFecha = new Date(edadDif);
+        const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+        dataCliente.innerText = `PACIENTE: ${cita.nombre_p} ${cita.apellido_p} Edad: ${edad} años`;
+        inputPaciente.value = cita.id_paciente;
 
-      let id_cita = "";
-      resultado.forEach((res) => {
-        id_cita = `/c${res.id_cita}`;
-      });
-      console.log(id_cita);
-      window.location.href =
-        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita" + id_cita;
-    } else {
-      buscarPaciente(formularioPaciente);
+        if (edad >= 18) {
+          document.getElementById("botonPC").classList.remove("d-none");
+        } else {
+          document.getElementById("botonPC").classList.add("d-none");
+        }
+
+        divClienteNoEncontrado.classList.add("d-none");
+        btnAddPac.classList.add("d-none");
+
+        // 2. Limpiar datos previos y agregar servicio de la cita
+        data = []; // Limpiar servicios anteriores
+
+        insertarServicio(
+          cita.id_servicioMedico,
+          cita.categoria,
+          `${cita.nombre_d} ${cita.apellido_d}`,
+          parseFloat(cita.precio),
+          cita.id_doctor_c,
+        );
+
+        //agregar el id cita para enviarlo
+        inputIdCita.value = cita.id_cita;
+
+        // 3. Habilitar botones de acción
+        btnServicio.classList.remove("d-none");
+        btnInsumos.classList.remove("d-none");
+      } else {
+        // No se encontró cita, buscar solo paciente
+        buscarPaciente(formularioPaciente);
+      }
+    } catch (error) {
+      alertError("Error", "Ocurrió un error al buscar la cita del paciente.");
+      console.error(error);
     }
   };
 
-  const traerServiciosMedicos = async () => {
-    try {
-      const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarServicios`,
-        "GET",
-      );
-      let html = "";
-      if (result.length > 0) {
-        result.forEach((res) => {
-          html += `<div class="card card-servicio p-4" style="cursor: pointer;" data-id-servicio="${res.id_servicioMedico}" data-doctor="${res.id_personal}">
+  const returnFragmentHtmlSer = (res) => {
+    return `<div class="card card-servicio p-4" style="cursor: pointer;" data-id-servicio="${res.id_servicioMedico}" data-doctor="${res.id_personal}">
         <!-- nombre del insumo (podemos cambiarlo dinámicamente) -->
         <div class="text-center nombre-card-factura">
             <span>${res.categoria}</span>
@@ -324,12 +322,26 @@ addEventListener("DOMContentLoaded", function () {
             <span class="decor-dot"></span>
         </div>
     </div>`;
-        });
-      } else {
-        html = `<h5 class="text-center">No se encontraron servicios medicos</h5>`;
-      }
+  };
 
-      divModalServicio.innerHTML = html;
+  const traerServiciosMedicos = async () => {
+    try {
+      const result = await executePetition(
+        `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarServicios`,
+        "GET",
+      );
+
+
+      const paginator = new Paginator(
+        result,
+        1,
+        "div-modal-servicio",
+        "paginationSer",
+        "searchInputSer",
+        returnFragmentHtmlSer,
+      );
+
+      paginator.displayItems();
 
       //ffuncionalida para pintan la cata  selecionada
       let cardsServicios = document.querySelectorAll(".card-servicio")
@@ -364,36 +376,33 @@ addEventListener("DOMContentLoaded", function () {
       alertError("Error", `Lamentablemente algo salio mal ${error}`);
     }
   };
-  const renderizarInsumos = () => {
-    let html = "";
-    if (listaModalInsumo.length > 0) {
-      listaModalInsumo.forEach((res) => {
-        html += `
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+
+  const returnFragmentHtml = (res) => {
+    return `<div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div 
           data-index="${res.id_insumo}" 
           data-medida="${res.medida}" 
           iva="${res.iva}" 
           data-precio="${res.precio}" 
           data-cantidad="${res.cantidad_disponible}" 
-          class="card card-insumo h-100">
+          class="card card-insumo ">
 
           <!-- Sección superior: ícono + nombre -->
           <div class="seccion-superior-custom text-center p-3">
             <div class="icono-medicamento-grande mb-2">
               <i class="bi bi-capsule-pill"></i>
             </div>
-            <h6 class="titulo-medicamento mb-1 nombre-search title-insumo">${res.nombre}</h6>
-            <span class="text-muted" style="font-size: 0.82rem;">${res.medida}</span>
+            <h6 class=" mb-1 nombre-search title-insumo">${res.nombre}</h6>
+            <span class="" style="font-size: 0.82rem;">${res.medida}</span>
           </div>
 
           <!-- Sección inferior: detalles + precio + input -->
           <div class="p-3 d-flex flex-column gap-2">
 
             <ul class="lista-detalles ps-0 mb-0">
-              <li class="text-muted"><strong>Medida:</strong> ${res.medida}</li>
-              <li class="text-muted"><strong>IVA:</strong> ${res.iva ? "Sí" : "No"}</li>
-              <li class="text-muted"><strong>Stock:</strong> ${res.cantidad_disponible} unidades</li>
+              <li class=""><strong>Medida:</strong> ${res.medida}</li>
+              <li class=""><strong>IVA:</strong> ${res.iva ? "Sí" : "No"}</li>
+              <li class=""><strong>Stock:</strong> ${res.cantidad_disponible} unidades</li>
             </ul>
 
             <div>
@@ -401,31 +410,52 @@ addEventListener("DOMContentLoaded", function () {
             </div>
 
             <!-- Input estilo nuevo diseño -->
-            <input 
-              type="number"
+            <div class="campo-custom">
+                        <div class="input-custom ">
+                            <span class="icono-izq">
+                                
+
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-clock-history me-1" viewBox="0 0 16 16">
+                        <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z"></path>
+                    </svg>
+                            </span>
+
+                            <input class="form-control txt-custom input-validar inputs cantidadDisplay" type="number"
               min="0"
               max="${res.cantidad_disponible}"
               value="0"
-              class="form-control text-center input-cantidad-custom cantidadDisplay"
               data-index="${res.id_insumo}"
               data-medida="${res.medida}"
               data-iva="${res.iva}"
               data-precio="${res.precio}"
-              data-stock="${res.cantidad_disponible}"
-            />
+              data-stock="${res.cantidad_disponible}">
 
+                            <span class="icono-der">
+                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                            </span>
+                        </div>
+</div>
           </div>
         </div>
       </div>`;
-      });
-    } else {
-      html = `<h5 class="text-center w-100">No se encontraron servicios medicos</h5>`;
-    }
+  };
 
-    divModalInsumo.innerHTML = `<div class="row g-3">${html}</div>`;
+  const renderizarInsumos = () => {
+    const paginator = new Paginator(
+      listaModalInsumo,
+      1,
+      "div-modal-insumo",
+      "pagination",
+      "searchInput",
+      returnFragmentHtml,
+    );
 
-    //inicializar dataCard
-    initCardData();
+    paginator.displayItems();
 
     document.querySelectorAll(".input-cantidad-custom").forEach((input) => {
       const card = input.closest(".card-insumo");
@@ -460,6 +490,7 @@ addEventListener("DOMContentLoaded", function () {
     };
 
     data.push(obj);
+    console.log(data);
     mostrarServicios();
   };
 
@@ -1258,7 +1289,6 @@ addEventListener("DOMContentLoaded", function () {
       let storedDolar = localStorage.getItem("valorDelDolar");
       let montoBS = element["precio"] * storedDolar;
       montoBS = montoBS.toFixed(2);
-      alertSuccess();
       console.log("confirmaciopn", element["id_servicio"]);
       html += `
         <tr>
@@ -1338,6 +1368,7 @@ addEventListener("DOMContentLoaded", function () {
       : [];
 
     cardsInsumos.forEach((card) => {
+      console.log(card.querySelector(".cantidadDisplay"));
       const cantidadSpan = parseInt(
         card.querySelector(".cantidadDisplay").value,
       );
@@ -1347,7 +1378,16 @@ addEventListener("DOMContentLoaded", function () {
       const iva = card.getAttribute("iva");
       const medida = card.getAttribute("data-medida");
 
-      insertarInsumoSeleccionado(id, cantidadSpan, nombre, precio, iva, medida);
+      if (cantidadSpan > 0) {
+        insertarInsumoSeleccionado(
+          id,
+          cantidadSpan,
+          nombre,
+          precio,
+          iva,
+          medida,
+        );
+      }
     });
   });
 
