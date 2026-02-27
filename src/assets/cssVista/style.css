@@ -1521,17 +1521,6 @@ con la clase hover-grande cambia de tamaño*/
     color: #387adf;
 }
 
-/* alerta */
-.comentarioRed {
-    border: 0.1px solid #ffe9ec;
-    box-shadow: #e7dcdd 0 0 2px;
-}
-
-.comentarioAzul {
-    border: 0.1px solid rgb(236, 236, 253);
-    box-shadow: #ddebfa 0 0 2px;
-}
-
 .comentario {
     border-radius: 8px;
 }

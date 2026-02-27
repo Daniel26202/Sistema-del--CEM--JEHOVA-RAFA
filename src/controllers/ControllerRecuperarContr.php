@@ -148,8 +148,11 @@ function verificarUC()
 {
     if (isset($_POST)) {
         $modelo = new ModeloRecuperarContr();
-        $correoM = strtolower($_POST["cE"]);
-        $res = $modelo->validarUC($_POST["usuario"], $correoM);
+        $correoM = strtolower($_POST["correo"]);
+
+        $modelo->setUsuario($_POST["usuario"]);
+        $modelo->setCorreo($correoM);
+        $res = $modelo->validarUC();
         // si el usuario y el correo es correcto, pasa lo siguiente de lo contrario retorna false
         if ($res) {
 
@@ -208,7 +211,10 @@ function cambiarC()
         // Generamos la contraseña encriptada de la contraseña ingresada
         $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
-        $modelo->updatePassword($_POST["id_usuario"], $passwordEncrip);
+        $modelo->setPassword($passwordEncrip);
+        $modelo->setIdUsuario($_POST["id_usuario"]);
+
+        $modelo->updatePassword();
         // verifica si la sesión esta activa.
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
