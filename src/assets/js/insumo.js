@@ -148,7 +148,7 @@ addEventListener("DOMContentLoaded", function () {
       console.log(items)
       const paginator = new Paginator(
         items,
-        1,
+        3,
         "cardContainer",
         "pagination",
         "searchInput",
