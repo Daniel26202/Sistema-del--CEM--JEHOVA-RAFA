@@ -94,6 +94,9 @@
 
 
 
+
+
+
 <?php require_once './src/vistas/vistaEstadisticas/modalsEstadisticas.php'; ?>
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/jspdf.umd.min.js"></script>
