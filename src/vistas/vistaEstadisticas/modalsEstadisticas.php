@@ -285,7 +285,7 @@
                 <div class="cabecera" style="display:flex; justify-content: space-between; background-color: #397ae0; color: white; padding: 10px;">
                     <div class="icon">
                         <img
-                            src="../src/assets/icons/logo.png"
+                            src="../src/assets/images/icons/logo.png"
                             alt="Logo"
                             class="logo"
                             style="width: 290px; height: 100px; margin-left: 20px;" />

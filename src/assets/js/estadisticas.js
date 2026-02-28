@@ -295,121 +295,167 @@ let tasaMorbilidadChartModal = null;
 const tasa_morbilidad = async (url) => {
   let tes = await fetch(url);
   let data = await tes.json();
+  console.log(data);
 
-  if (data.length > 0) {
-    const labels = data.map((item) => item.nombre_patologia);
-    const casos = data.map((item) => parseInt(item.casos, 10));
-    const tasas = data.map((item) => parseFloat(item.tasa_por_1000));
+  if (!data.length > 0) {
+    document.getElementById("textoMorbilidad").classList.add("d-none");
+    // document.getElementById("btnMorbilidad").classList.add("d-none");
+    document.getElementById("tasa_morbilidad").classList.add("d-none");
+    document.getElementById("morbilidad_pdf").classList.add("d-none");
 
-    // Destruir el gráfico anterior si existe
-    if (tasaMorbilidadChart) {
-      tasaMorbilidadChart.destroy();
-    }
-    ctx = document.getElementById("tasa_morbilidad").getContext("2d");
-
-    tasaMorbilidadChart = new Chart(ctx, {
-      data: {
-        labels,
-        datasets: [
-          {
-            type: "bar",
-            label: "Casos",
-            data: casos,
-            backgroundColor: "#36A2EB",
-            yAxisID: "yCasos",
-          },
-          {
-            type: "line",
-            label: "Tasa por cada 1000 pacientes",
-            data: tasas,
-            borderColor: "#8aafff",
-            backgroundColor: "#8aafff",
-            yAxisID: "yTasa",
-          },
-        ],
+    //alert
+    Swal.fire({
+      icon: "question",
+      title: "Confirmacion",
+      text: "No se encontraron datos en dicho rango de fecha por lo tanto si desea imprimir el registro completo de datos presione Aceptar de lo contrario Cancelar",
+      showCancelButton: true,
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar",
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
       },
-      options: {
-        responsive: true,
-        scales: {
-          yCasos: {
-            type: "linear",
-            position: "left",
-            title: { display: true, text: "Número de Casos" },
-          },
-          yTasa: {
-            type: "linear",
-            position: "right",
-            title: { display: true, text: "Tasa por 1 000 pacientes" },
-            grid: { drawOnChartArea: false },
-          },
-        },
-        plugins: {
-          legend: { position: "bottom" },
-          tooltip: { mode: "index", intersect: false },
-        },
-      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        const modal = document.getElementById("btnMorbilidad").closest(".modal-content");
+        //resetera inputs fechas
+        modal.querySelectorAll('.input-validar').forEach(input=>{
+          input.value = '';
+          console.log(input.value)
+          input.parentElement.classList.remove('valido', 'invalido');
+          //iconos
+          input.nextElementSibling.children[0].classList.add('d-none');
+          input.nextElementSibling.children[1].classList.add("d-none");
+        })
+
+
+        tasa_morbilidad(
+          "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad",
+        );
+      }
     });
 
-    if (tasaMorbilidadChartModal) {
-      tasaMorbilidadChartModal.destroy();
-    }
-    document.getElementById("morbilidad_pdf").width = 300;
-    document.getElementById("morbilidad_pdf").height = 180;
-    ctxModal = document.getElementById("morbilidad_pdf").getContext("2d");
+    return;
+  }
 
-    tasaMorbilidadChartModal = new Chart(ctxModal, {
-      data: {
-        labels,
-        datasets: [
-          {
-            type: "bar",
-            label: "Casos",
-            data: casos,
-            backgroundColor: "#36A2EB",
-            yAxisID: "yCasos",
-          },
-          {
-            type: "line",
-            label: "Tasa por cada 1000 pacientes",
-            data: tasas,
-            borderColor: "#8aafff",
-            backgroundColor: "#8aafff",
-            yAxisID: "yTasa",
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        scales: {
-          yCasos: {
-            type: "linear",
-            position: "left",
-            title: { display: true, text: "Número de Casos" },
-          },
-          yTasa: {
-            type: "linear",
-            position: "right",
-            title: { display: true, text: "Tasa por 1 000 pacientes" },
-            grid: { drawOnChartArea: false },
-          },
+  const labels = data.map((item) => item.nombre_patologia);
+  const casos = data.map((item) => parseInt(item.casos, 10));
+  const tasas = data.map((item) => parseFloat(item.tasa_por_1000));
+
+  document.getElementById("tasa_morbilidad").classList.remove("d-none");
+  document.getElementById("morbilidad_pdf").classList.remove("d-none");
+
+  // Destruir el gráfico anterior si existe
+  if (tasaMorbilidadChart) {
+    tasaMorbilidadChart.destroy();
+  }
+  ctx = document.getElementById("tasa_morbilidad").getContext("2d");
+
+  tasaMorbilidadChart = new Chart(ctx, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Casos",
+          data: casos,
+          backgroundColor: "#36A2EB",
+          yAxisID: "yCasos",
         },
-        plugins: {
-          legend: { position: "bottom" },
-          tooltip: { mode: "index", intersect: false },
+        {
+          type: "line",
+          label: "Tasa por cada 1000 pacientes",
+          data: tasas,
+          borderColor: "#8aafff",
+          backgroundColor: "#8aafff",
+          yAxisID: "yTasa",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        yCasos: {
+          type: "linear",
+          position: "left",
+          title: { display: true, text: "Número de Casos" },
+        },
+        yTasa: {
+          type: "linear",
+          position: "right",
+          title: { display: true, text: "Tasa por 1 000 pacientes" },
+          grid: { drawOnChartArea: false },
         },
       },
-    });
+      plugins: {
+        legend: { position: "bottom" },
+        tooltip: { mode: "index", intersect: false },
+      },
+    },
+  });
 
-    // Calcular totales dinámicos
-    const totalCasos = casos.reduce(
-      (acumulador, valorActual) => acumulador + valorActual,
-      0,
-    );
-    const patologiaMayor = labels[casos.indexOf(Math.max(...casos))];
-    const tasaMayor = Math.max(...tasas).toFixed(2);
+  if (tasaMorbilidadChartModal) {
+    tasaMorbilidadChartModal.destroy();
+  }
+  document.getElementById("morbilidad_pdf").width = 300;
+  document.getElementById("morbilidad_pdf").height = 180;
+  ctxModal = document.getElementById("morbilidad_pdf").getContext("2d");
 
-    // Descripción dinámica
-    document.getElementById("textoMorbilidad").innerHTML = `
+  tasaMorbilidadChartModal = new Chart(ctxModal, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Casos",
+          data: casos,
+          backgroundColor: "#36A2EB",
+          yAxisID: "yCasos",
+        },
+        {
+          type: "line",
+          label: "Tasa por cada 1000 pacientes",
+          data: tasas,
+          borderColor: "#8aafff",
+          backgroundColor: "#8aafff",
+          yAxisID: "yTasa",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        yCasos: {
+          type: "linear",
+          position: "left",
+          title: { display: true, text: "Número de Casos" },
+        },
+        yTasa: {
+          type: "linear",
+          position: "right",
+          title: { display: true, text: "Tasa por 1 000 pacientes" },
+          grid: { drawOnChartArea: false },
+        },
+      },
+      plugins: {
+        legend: { position: "bottom" },
+        tooltip: { mode: "index", intersect: false },
+      },
+    },
+  });
+
+  // Calcular totales dinámicos
+  const totalCasos = casos.reduce(
+    (acumulador, valorActual) => acumulador + valorActual,
+    0,
+  );
+  const patologiaMayor = labels[casos.indexOf(Math.max(...casos))];
+  const tasaMayor = Math.max(...tasas).toFixed(2);
+
+  // Descripción dinámica
+  document.getElementById("textoMorbilidad").innerHTML = `
   <p class="text-center">
     Este gráfico muestra la cantidad de casos y la tasa de morbilidad por cada 1 000 pacientes para las patologías más frecuentes.<br>
     <strong>Total de casos registrados:</strong> ${totalCasos}<br>
@@ -420,12 +466,8 @@ const tasa_morbilidad = async (url) => {
     Analiza visualmente cuáles enfermedades tienen mayor impacto en la población y compara la frecuencia absoluta y relativa de cada una, facilitando la toma de decisiones en salud.
   </p>
 `;
-    document.getElementById("textoMorbilidad").classList.remove("d-none");
-    document.getElementById("btnMorbilidad").classList.remove("d-none");
-  } else {
-    document.getElementById("textoMorbilidad").classList.add("d-none");
-    document.getElementById("btnMorbilidad").classList.add("d-none");
-  }
+  document.getElementById("textoMorbilidad").classList.remove("d-none");
+  // document.getElementById("btnMorbilidad").classList.remove("d-none");
 };
 
 //  el gráfico de especialidades
@@ -860,7 +902,7 @@ function validarFecha(input, arrayElementos, campo, formulario) {
   pError.classList.add("fw-bold");
   pError.classList.add("p-error-validaciones");
 
-  if (campo == "fn1" || campo == 'fn2') {
+  if (campo == "fn1" || campo == "fn2") {
     actualizarEstadoInput(input, "incorrecto", formulario);
     if (!expresiones.fn1.expresion.test(input.value)) {
       pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
@@ -928,10 +970,7 @@ function chulitoYX(check, error, Validar) {
 }
 
 //lamar la funcion
-inicializarValidacionFormulario(
-  document.getElementById("buscadoresMorbilidad"),
-);
-
+inicializarValidacionFormulario();
 
 //Funcion para  filtrar por fecha
 
@@ -982,7 +1021,6 @@ document
     );
   });
 
-
 // seccion de generacion de reportes
 
 //generar reporte de especialidades
@@ -1023,11 +1061,11 @@ document.getElementById("btnMorbilidad").addEventListener("click", function () {
         confirmButton: "btn-agregarcita-modal",
         cancelButton: "btn-agregarcita-modal-cancelar",
       },
-    }); 
-    return 
-  } 
+    });
+    return;
+  }
 
-  if (inputs[0].value > inputs[1].value){
+  if (inputs[0].value > inputs[1].value) {
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -1038,13 +1076,18 @@ document.getElementById("btnMorbilidad").addEventListener("click", function () {
         cancelButton: "btn-agregarcita-modal-cancelar",
       },
     });
-    return; 
+    return;
   }
-    generarReporte(
-      elementoImprimirMorbilidad,
-      "reporte_tasa_de_morbilidad.pdf",
-    );
-  
+  generarReporte(
+    elementoImprimirMorbilidad,
+    "reporte_tasa_de_morbilidad.pdf",
+  );
+
+  tasa_morbilidad(
+    `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/filtrar_tasaMorbilidad/${inputs[0].value}/${inputs[1].value}`,
+  );
+
+  console.log("hola");
 });
 
 //repotte insumos
