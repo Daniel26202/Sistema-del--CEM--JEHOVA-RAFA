@@ -106,15 +106,20 @@ class ModeloServicios extends ModelBase
     public function insertarDoctorServicio()
     {
         try {
-            $data1 = ['id_servicioMedico' => $this->getIdServicioMedico()];
+            $data1 = ['id_categoria' => $this->getIdCategoria()];
+
             $data2 = ['id_personal' => $this->getIdDoctor()];
+
+            $sql = "SELECT * FROM serviciomedico where id_categoria =:id_categoria";
+            $this->setSQL($sql);
+            $dataSer =  $this->search($data1,false);
 
             $data3 = [
                 'id_doctor' => $this->getIdDoctor(),
-                'id_servicioMedico' => $this->getIdServicioMedico()
+                'id_servicioMedico' => $dataSer['id_servicioMedico'],
             ];
 
-            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $sql = "SELECT * from categoria_servicio where id_categoria=:id_categoria";
             $this->setSQL($sql);
 
             $validar  = $this->search($data1, false);
@@ -131,7 +136,7 @@ class ModeloServicios extends ModelBase
             if ($validar == []) {
                 throw new \Exception("El id del doctor no existe");
             }
-            if ($this->validarServicioDoctor()) {
+            if ($this->validarServicioDoctor($data3)) {
                 throw new \Exception("EL Servicio ya esta asignado a este doctor");
             }
 
@@ -270,14 +275,9 @@ class ModeloServicios extends ModelBase
     }
 
     //Validdar que un doctor no tenga el mismo servicio
-    public function validarServicioDoctor()
+    public function validarServicioDoctor($data)
     {
         try {
-            $data = [
-                'id_servicioMedico' => $this->getIdServicioMedico(),
-                'id_personal' => $this->getIdDoctor()
-            ];
-
             $sql = "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN  personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal WHERE sm.id_servicioMedico =:id_servicioMedico AND p.id_personal = :id_doctor";
             $this->setSQL($sql);
             $listData = $this->search($data, false);

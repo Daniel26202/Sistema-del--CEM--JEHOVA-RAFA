@@ -5,7 +5,7 @@ use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloServicios;
 use App\modelos\ModeloUsuarios;
-
+use App\modelos\ModeloCategoria;
 //muestro los datos de las cuatro tablas
 function doctores($parametro)
 {
@@ -54,14 +54,14 @@ function DoctoresAjax()
         });
 
         $datosHorarios = [];
-        $servicios =[];
+        $servicios = [];
 
         foreach ($horarioDelDoctor as $hora) {
             $datosHorarios[] = [
                 'horaDeEntrada' => $hora['horaDeEntrada'],
                 'horaDeSalida' => $hora['horaDeSalida'],
                 'id_horario' => $hora['id_horario'],
-                'diaslaborables'=>$hora['diaslaborables'],
+                'diaslaborables' => $hora['diaslaborables'],
                 'id_personal' => $id_personal,
             ];
         }
@@ -87,7 +87,7 @@ function DoctoresAjax()
             'nombre' => $doctor['nombre'],
             'id_usuario' => $doctor['usuario'],
             'datosHorarios' => $datosHorarios,
-            'servicios'=>$servicios
+            'servicios' => $servicios
         ];
     }
 
@@ -113,14 +113,14 @@ function papeleraDoctoresAjax()
     echo json_encode($modeloDoctores->desactivos());
 }
 
-//metodo para mostrar los servicios de los doctores
-// function serviciosDoctor($datos)
-// {
-//     $modeloDoctores = new ModeloDoctores();
-//     $modeloServicios = new ModeloServicios();
-//     $modeloDoctores->setIdDoctor($datos[0]);
-//     echo json_encode();
-// }
+// metodo para mostrar los servicios y los doctores
+function serviciosDoctor()
+{
+    $modeloDoctores = new ModeloDoctores();
+    $modeloCategiria = new ModeloCategoria();
+
+    echo json_encode([$modeloDoctores->select(), $modeloCategiria->seleccionarCategoria()]);
+}
 
 
 function guardarDoctores()
@@ -138,18 +138,20 @@ function guardarDoctores()
         $doctores = new ModeloDoctores();
         $bitacora = new ModeloBitacora();
 
-        $doctores->setIdDoctor($_POST["id_doctor"]);
-        $servicio->setIdServicioMedico($_POST["id_servicioMedico"]);
+        $servicio->setIdDoctor($_POST["id_doctor"]);
+        $servicio->setIdCategoria($_POST["id_categoria"]);
 
-        $bitacora->setId_usuario($_POST['id_usuario']);
+        $bitacora->setId_usuario($_POST['id_usuario_bitacora']);
         $bitacora->setActividad("Ha asignado un servicio medico a un doctor");
         $bitacora->setTabla("Servicio Medico");
+
+
 
         $insercion = $servicio->insertarDoctorServicio();
 
         if (is_array($insercion) && $insercion[0] === "exito") {
             $bitacora->insertarBitacora();
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data'=>$_POST]);
         } else {
             http_response_code(409);
             echo json_encode(['ok' => false, 'error' => $insercion]);
@@ -345,7 +347,7 @@ function registrarEspecialidad()
     $modeloBitacora = new ModeloBitacora();
 
     $modeloDoctores->setNombreEspecialidad($_POST['nombre']);
-    
+
     $insercion = $modeloDoctores->EspecialidadRegistrar();
 
     if (is_array($insercion) && $insercion[0] === "exito") {
@@ -378,7 +380,7 @@ function eliminarEspecialidad($datos)
         $modeloBitacora->setActividad("Ha eliminado una especialidad");
         $modeloBitacora->insertarBitacora();
 
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito','data'=>$eliminacion]);
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $eliminacion]);
     } else {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => $eliminacion]);

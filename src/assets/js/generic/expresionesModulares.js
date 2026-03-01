@@ -101,6 +101,14 @@ const expresiones = {
         expresion: /^\d+$/,
         mensajeError: "El insumo esta mal seleccionado",
     },
+    id_categoria:{
+        expresion: /^\d+$/,
+        mensajeError: "El serivico esta mal seleccionado",
+    },
+    id_doctor:{
+        expresion: /^\d+$/,
+        mensajeError: "El doctor esta mal seleccionado",
+    },
     indicaciones: {
         expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
         mensajeError: "Debe iniciar con mayúscula y tener al menos 8 caracteres.",
@@ -142,10 +150,7 @@ const expresiones = {
         expresion: /^(LEVE|MODERADA|GRAVE)$/,
         mensajeError: "Debe seleccionar la severidad",
     },
-    id_categoria: {
-        expresion: /^([A-ZÁÉÍÓÚÑ][a-záéíóúñ0-9\s\.,#-]{8,})$/,
-        mensajeError: "Tiene que ser una categoría existente",
-    },
+ 
     precioD: {
         expresion: /^\d+(?:[.,]\d+)?$/,
         mensajeError: "El precio debe ser un número válido, puede incluir decimales con punto o coma",
