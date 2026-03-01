@@ -99,3 +99,18 @@ footer {
   margin-top: 20px;
   text-align: center;
 }
+
+/* //reportes normales */
+.cardReporte {
+  height: 280px !important;
+}
+
+.cardReporteFactura {
+  width: 100%;
+  height: 280px !important;
+
+}
+
+.icon-reporte {
+  color: var(--color-primary);
+}

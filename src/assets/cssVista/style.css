@@ -1134,12 +1134,13 @@ html {
 }
 
 .cardReporte {
-    background-image: url("../images/img/grafi.jpg");
+    /* background-image: url("../images/img/grafi.jpg"); */
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
     transition: transform 0.4s ease-in-out;
     box-shadow: #333;
+    
     /* filter: var(--filter-image); */
 }
 
@@ -1148,7 +1149,7 @@ html {
 }
 
 .cardReporteFactura {
-    background-image: url("../images/img/grafico.jpg");
+    /* background-image: url("../images/img/grafico.jpg"); */
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -2189,7 +2190,7 @@ td {
 
 .modalBuscador {
     border-radius: 20px;
-    background-image: url("../images/img/grafi.jpg");
+    /* background-image: url("../images/img/grafi.jpg"); */
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
