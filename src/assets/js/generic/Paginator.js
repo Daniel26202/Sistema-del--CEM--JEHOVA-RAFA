@@ -1,4 +1,5 @@
 class Paginator {
+  // Bien, ya vas entendiendo como funciona la abstraccion y la reutilizacion de codigo.
   constructor(
     items,
     itemsPerPage,
@@ -31,7 +32,10 @@ class Paginator {
     const cardContainer = document.getElementById(this.containerId);
     cardContainer.innerHTML = "";
 
+    // *******************+------------------*********************
+    // Si ya trae solo la cantiadad que le corresponde, no hace falta hacer slice
     const currentItems = this.filteredItems.slice(startIndex, endIndex);
+    // *******************+------------------*********************
 
     this.html = ""; //Vaciar el html antes de llenarlo nuevamente
     if (currentItems.length > 0) {
