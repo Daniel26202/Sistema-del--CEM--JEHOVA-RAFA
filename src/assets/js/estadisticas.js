@@ -319,6 +319,11 @@ const tasa_morbilidad = async (url) => {
     }).then((result) => {
       if (result.isConfirmed) {
         
+        generarReporte(
+          elementoImprimirMorbilidad,
+          "reporte_tasa_de_morbilidad.pdf",
+        );
+        
         const modal = document.getElementById("btnMorbilidad").closest(".modal-content");
         //resetera inputs fechas
         modal.querySelectorAll('.input-validar').forEach(input=>{
@@ -1078,10 +1083,6 @@ document.getElementById("btnMorbilidad").addEventListener("click", function () {
     });
     return;
   }
-  generarReporte(
-    elementoImprimirMorbilidad,
-    "reporte_tasa_de_morbilidad.pdf",
-  );
 
   tasa_morbilidad(
     `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/filtrar_tasaMorbilidad/${inputs[0].value}/${inputs[1].value}`,

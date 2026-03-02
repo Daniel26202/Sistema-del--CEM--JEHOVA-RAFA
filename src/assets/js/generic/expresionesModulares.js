@@ -249,7 +249,7 @@ function validarSelect(select, arrayElementos, campos, formulario, attExpresion)
     }
 }
 
-export function inicializarValidacionFormulario(formulario) {
+function inicializarValidacionFormulario(formulario) {
     const campos = {};
 
     const inputs = formulario.querySelectorAll(".input-validar");
@@ -338,7 +338,7 @@ function actualizarEstadoInput(input, estado) {
     input.parentElement.classList.toggle("invalido", estado === "incorrecto");
 }
 
-export function chulitoYX(check, error, Validar) {
+function chulitoYX(check, error, Validar) {
     if (Validar === "valido") {
         check.classList.remove("d-none");
         error.classList.add("d-none");
@@ -350,3 +350,5 @@ export function chulitoYX(check, error, Validar) {
         error.classList.add("d-none");
     }
 }
+
+export { inicializarValidacionFormulario, chulitoYX };

@@ -47,29 +47,31 @@ class ModeloInicio extends ModelBase
 	{
 		try {
 			if ($data == []) {
-				$sql = "SELECT   cs.nombre AS especialidad,
-	COUNT(c.id_cita) AS total_solicitudes
-													FROM cita c
-													INNER JOIN serviciomedico sm 
-													ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-													INNER JOIN categoria_servicio cs 
-													ON sm.id_categoria = cs.id_categoria
-													GROUP BY cs.nombre
-													ORDER BY total_solicitudes DESC limit 5;
-													";
+				$sql = "SELECT   
+					cs.nombre AS especialidad,
+					COUNT(c.id_cita) AS total_solicitudes
+					FROM cita c
+					INNER JOIN serviciomedico sm 
+					ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+					INNER JOIN categoria_servicio cs 
+					ON sm.id_categoria = cs.id_categoria
+					GROUP BY cs.nombre
+					ORDER BY total_solicitudes DESC limit 5;
+				";
 				$this->setSQL($sql);
 				return $this->read();
 			} else {
-				$sql = "SELECT   cs.nombre AS especialidad,
-	COUNT(c.id_cita) AS total_solicitudes
-													FROM cita c
-													INNER JOIN serviciomedico sm 
-													ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-													INNER JOIN categoria_servicio cs 
-													ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
-													GROUP BY cs.nombre 
-													ORDER BY total_solicitudes DESC limit 5;
-													";
+				$sql = "SELECT   
+					cs.nombre AS especialidad,
+					COUNT(c.id_cita) AS total_solicitudes
+					FROM cita c
+					INNER JOIN serviciomedico sm 
+					ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+					INNER JOIN categoria_servicio cs 
+					ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
+					GROUP BY cs.nombre 
+					ORDER BY total_solicitudes DESC limit 5;
+				";
 				$this->setSQL($sql);
 
 				return $this->search($data);
