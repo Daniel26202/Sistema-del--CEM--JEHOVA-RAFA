@@ -9,35 +9,16 @@ import { inicializarValidacionFormulario } from "./generic/expresionesModulares.
 
 addEventListener("DOMContentLoaded", function () {
   console.log("Reportes...");
-  // const buscarC = document.getElementById("buscarClienteC");
-  const infoFactura = document.querySelectorAll(".infoFactura");
-
-  const formularioDeFecha = document.getElementById("formularioDeFecha");
-  const fechaInicio = document.getElementById("fechaInicio");
-  const fechaFinal = document.getElementById("fechaFinal");
-  const alertaFecha = document.getElementById("alerta-fecha");
-
-  const formularioDeFechaAnulada = document.getElementById(
-    "formularioDeFechaAnulada",
-  );
-  const fechaInicioAnulada = document.getElementById("fechaInicioAnulada");
-  const fechaFinalAnulada = document.getElementById("fechaFinalAnulada");
-  // const alertaFecha = document.getElementById("alerta-fecha");
 
   //constante de entradas de insumos
 
   const checkboxEntradas = document.getElementById("checkboxEntradas");
-  const desdeFechaEntradas = document.getElementById("desdeFechaEntradas");
-  const fechaHastaEntradas = document.getElementById("fechaHastaEntradas");
   const cajaModalEntradas = document.getElementById("cajaModalEntradas");
   const botonDeImprimirEntradas = document.getElementById(
     "botonDeImprimirEntradas",
   );
   const selectInsumoEntradas = document.getElementById("selectInsumoEntradas");
   const formularioEntradas = document.getElementById("formularioEntradas");
-  const alertaDeFechaEntradas = document.getElementById(
-    "alertaDeFechaEntradas",
-  );
   const cajaCheckboxEntrada = document.getElementById("cajaCheckboxEntrada");
 
   const cardFactura = document.getElementById("cardFactura");
@@ -49,6 +30,8 @@ addEventListener("DOMContentLoaded", function () {
   const btnImprimirFactura = document.getElementById("btn-imprimir-factura");
   const btnModalFactura = document.getElementById("btn-modal-factura");
   const titleModalFactura = document.getElementById("titleModalFactura");
+
+  const formularioCita = document.getElementById("formularioCita");
 
   const selector = ".exampleTableFactura";
 
@@ -290,6 +273,9 @@ addEventListener("DOMContentLoaded", function () {
   //enviar fechas para buscar entradas de insumos
   let verificarFormEntradas =
     inicializarValidacionFormulario(formularioEntradas);
+
+  let verificarFormCitas = inicializarValidacionFormulario(formularioCita);
+
   //
   formularioEntradas.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -308,5 +294,34 @@ addEventListener("DOMContentLoaded", function () {
         "Por favor verifique que todos los datos estén correctos.",
       );
     }
+  });
+
+  formularioCita.addEventListener("submit", function (e) {
+    e.preventDefault();
+    let esValido = verificarFormCitas();
+    let inputs = formularioCita.querySelectorAll(".input-validar");
+
+    if (!esValido) {
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
+      return
+    }
+
+    if (inputs[0].value >= inputs[1].value) {
+      alertError(
+        "Error",
+        "La fecha de inicio no puede ser mayor a la fecha final.",
+      );
+      return;
+    }
+
+    inputs[0].setAttribute("name", "desdeFecha");
+    inputs[1].setAttribute("name", "fechaHasta");
+
+    console.log("se envio");
+    formularioCita.submit();
+    return;
   });
 });
