@@ -10,9 +10,9 @@ $pdf = new FPDF();
 
 $pdf->AddPage();
 
-$pdf->Image('./src/assets/Image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
+$pdf->Image('./src/assets/images/image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
 $pdf->SetFont('Arial', 'B', 35);
-$pdf->Image('./src/assets/Image/123.png', 10, -13, 80);
+$pdf->Image('./src/assets/images/image/123.png', 10, -13, 80);
 $pdf->SetTextColor(14, 169, 181);
 $pdf->SetXY(110, 15);
 $pdf->SetFillColor(248, 252, 255);

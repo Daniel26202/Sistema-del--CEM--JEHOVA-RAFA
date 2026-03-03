@@ -54,7 +54,7 @@ addEventListener("DOMContentLoaded", function () {
         ele.style.borderBottom = "2px solid rgb(224, 3, 3)";
         campos["fechaHasta"] = false;
       }
-    }else if (e.target.name == "desdeFechaEntradas") {
+    } else if (e.target.name == "desdeFechaEntradas") {
       if (expresionesReporteCita.fecha.test(ele.value)) {
         ele.style.borderBottom = "2px solid rgb(13, 240, 13)";
         camposEntradas["desdeFechaEntradas"] = true;
@@ -62,7 +62,7 @@ addEventListener("DOMContentLoaded", function () {
         ele.style.borderBottom = "2px solid rgb(224, 3, 3)";
         camposEntradas["desdeFechaEntradas"] = false;
       }
-    }else if (e.target.name == "fechaHastaEntradas") {
+    } else if (e.target.name == "fechaHastaEntradas") {
       if (expresionesReporteCita.fecha.test(ele.value)) {
         ele.style.borderBottom = "2px solid rgb(13, 240, 13)";
         camposEntradas["fechaHastaEntradas"] = true;
@@ -89,7 +89,7 @@ addEventListener("DOMContentLoaded", function () {
     if (desdeFecha.value >= fechaHasta.value) {
       alertaDeFecha.classList.remove("d-none");
       alertaDeFecha.innerText =
-      "Verifique que la fecha de inicio sea menor a la fecha final";
+        "Verifique que la fecha de inicio sea menor a la fecha final";
       setTimeout(function () {
         alertaDeFecha.classList.add("d-none");
       }, 8000);
@@ -99,7 +99,7 @@ addEventListener("DOMContentLoaded", function () {
       } else {
         alertaDeFecha.classList.remove("d-none");
         alertaDeFecha.innerText =
-        "Verifique que las fechas tengan un formato valido";
+          "Verifique que las fechas tengan un formato valido";
         setTimeout(function () {
           alertaDeFecha.classList.add("d-none");
         }, 8000);
@@ -114,56 +114,56 @@ addEventListener("DOMContentLoaded", function () {
   //funcionamiento de entradas de insumos
 
 
-//checkear si quiere filtar por fecha o no
-checkboxEntradas.addEventListener("change", function() {
-  if (this.checked) {
-    cajaModalEntradas.classList.remove("d-none");
-    desdeFechaEntradas.name = "desdeFechaEntradas";
-    fechaHastaEntradas.name = "fechaHastaEntradas";
-  } else {
-    cajaModalEntradas.classList.add("d-none");
-    desdeFechaEntradas.name = "";
-    fechaHastaEntradas.name = "";
-  }
-})
-
-
-//ver que insumo selecciona para el reporte 
-selectInsumoEntradas.addEventListener("change", function() {
-  botonDeImprimirEntradas.classList.remove("d-none");
-  cajaCheckboxEntrada.classList.remove("d-none");
-})
-
-
-
-
-formularioEntradas.addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  if(cajaModalEntradas.classList.contains("d-none")) {
-    this.submit();
-  } else {
-    if (desdeFechaEntradas.value >= fechaHastaEntradas.value) {
-      alertaDeFechaEntradas.classList.remove("d-none");
-      alertaDeFechaEntradas.innerText =
-      "Verifique que la fecha de inicio sea menor a la fecha final";
-      setTimeout(function () {
-        alertaDeFechaEntradas.classList.add("d-none");
-      }, 8000);
+  //checkear si quiere filtar por fecha o no
+  checkboxEntradas.addEventListener("change", function () {
+    if (this.checked) {
+      cajaModalEntradas.classList.remove("d-none");
+      desdeFechaEntradas.name = "desdeFechaEntradas";
+      fechaHastaEntradas.name = "fechaHastaEntradas";
     } else {
-      if (camposEntradas.desdeFechaEntradas && camposEntradas.fechaHastaEntradas) {
-        this.submit();
-      } else {
-        alertaDeFechaEntradas.classList.remove("d-none");
-        alertaDeFechaEntradas.innerText =
-        "Verifique que las fechas tengan un formato valido";
-        setTimeout(function () {
-          alertaDeFechaEntradas.classList.add("d-none");
-        }, 8000);
-      }
+      cajaModalEntradas.classList.add("d-none");
+      desdeFechaEntradas.name = "";
+      fechaHastaEntradas.name = "";
     }
-  }
-});
+  })
+
+
+  //ver que insumo selecciona para el reporte 
+  selectInsumoEntradas.addEventListener("change", function () {
+    botonDeImprimirEntradas.classList.remove("d-none");
+    cajaCheckboxEntrada.classList.remove("d-none");
+  })
+
+
+
+
+  formularioEntradas.addEventListener("submit", function (e) {
+    e.preventDefault();
+    console.log('ya')
+    // if(cajaModalEntradas.classList.contains("d-none")) {
+    //   this.submit();
+    // } else {
+    //   if (desdeFechaEntradas.value >= fechaHastaEntradas.value) {
+    //     alertaDeFechaEntradas.classList.remove("d-none");
+    //     alertaDeFechaEntradas.innerText =
+    //     "Verifique que la fecha de inicio sea menor a la fecha final";
+    //     setTimeout(function () {
+    //       alertaDeFechaEntradas.classList.add("d-none");
+    //     }, 8000);
+    //   } else {
+    //     if (camposEntradas.desdeFechaEntradas && camposEntradas.fechaHastaEntradas) {
+    //       this.submit();
+    //     } else {
+    //       alertaDeFechaEntradas.classList.remove("d-none");
+    //       alertaDeFechaEntradas.innerText =
+    //       "Verifique que las fechas tengan un formato valido";
+    //       setTimeout(function () {
+    //         alertaDeFechaEntradas.classList.add("d-none");
+    //       }, 8000);
+    //     }
+    //   }
+    // }
+  });
 
 
 

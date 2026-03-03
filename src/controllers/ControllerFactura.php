@@ -204,11 +204,11 @@ function guardarFactura()
 function mostrarPDF($parametro)
 {
 	$modeloFactura = new ModeloFactura();
-
-	$datosFactura = $modeloFactura->consultarFacturaSinCita($parametro[0]);
-	$datosPago = $modeloFactura->consultarPagoFactura($parametro[0]);
-	$datosServiciosExtras = $modeloFactura->consultarServiciosExtras($parametro[0]);
-	$datosInsumos = $modeloFactura->consultarFacturaInsumo($parametro[0]);
+	$modeloFactura->setIdFactura($parametro[0]);
+	$datosFactura = $modeloFactura->consultarFacturaSinCita();
+	$datosPago = $modeloFactura->consultarPagoFactura();
+	$datosServiciosExtras = $modeloFactura->consultarServiciosExtras();
+	$datosInsumos = $modeloFactura->consultarFacturaInsumo();
 	require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
 }
 function mostrarPDF2()

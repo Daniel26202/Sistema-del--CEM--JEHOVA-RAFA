@@ -1,17 +1,14 @@
 <?php
 
-$desdeFecha = isset($_POST["desdeFechaEntradas"]) ? $_POST["desdeFechaEntradas"] : "";
-$fechaHastaEntradas = isset($_POST["fechaHastaEntradas"]) ? $_POST["fechaHastaEntradas"] : "";
 
-$entradas = $this->modelo->entradasInsumosPdf($_POST['id_insumo'],$desdeFecha, $fechaHastaEntradas);
 
 class PDF extends FPDF
 {
     function Header()
     {
-        $this->Image('./src/assets/Image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
+        $this->Image('./src/assets/images/image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
         $this->SetFont('Arial', 'B', 20);
-        $this->Image('./src/assets/Image/123.png', 10, -13, 80);
+        $this->Image('./src/assets/images/image/123.png', 10, -13, 80);
         $this->SetTextColor(14, 169, 181);
         $this->SetXY(100, 4);
         $this->SetFillColor(248, 252, 255);

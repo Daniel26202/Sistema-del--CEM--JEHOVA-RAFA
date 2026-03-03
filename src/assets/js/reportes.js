@@ -1,385 +1,312 @@
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+  initDataTable,
+} from "./generic/funtionGeneric.js";
+import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
+
 addEventListener("DOMContentLoaded", function () {
   console.log("Reportes...");
   // const buscarC = document.getElementById("buscarClienteC");
   const infoFactura = document.querySelectorAll(".infoFactura");
-  const anularFactura = document.querySelectorAll(".anularfactura");
 
   const formularioDeFecha = document.getElementById("formularioDeFecha");
   const fechaInicio = document.getElementById("fechaInicio");
   const fechaFinal = document.getElementById("fechaFinal");
   const alertaFecha = document.getElementById("alerta-fecha");
 
-  const formularioDeFechaAnulada = document.getElementById("formularioDeFechaAnulada");
+  const formularioDeFechaAnulada = document.getElementById(
+    "formularioDeFechaAnulada",
+  );
   const fechaInicioAnulada = document.getElementById("fechaInicioAnulada");
   const fechaFinalAnulada = document.getElementById("fechaFinalAnulada");
   // const alertaFecha = document.getElementById("alerta-fecha");
 
-  let idInsumos = [];
+  //constante de entradas de insumos
 
-  // const Checks = document.querySelectorAll(".obtenerPrecio input");
-  // const obtenerCuota = document.getElementById('tbody2').getElementsByTagName('td');
-  // const obtenida = obtenerCuota[2].textContent;
+  const checkboxEntradas = document.getElementById("checkboxEntradas");
+  const desdeFechaEntradas = document.getElementById("desdeFechaEntradas");
+  const fechaHastaEntradas = document.getElementById("fechaHastaEntradas");
+  const cajaModalEntradas = document.getElementById("cajaModalEntradas");
+  const botonDeImprimirEntradas = document.getElementById(
+    "botonDeImprimirEntradas",
+  );
+  const selectInsumoEntradas = document.getElementById("selectInsumoEntradas");
+  const formularioEntradas = document.getElementById("formularioEntradas");
+  const alertaDeFechaEntradas = document.getElementById(
+    "alertaDeFechaEntradas",
+  );
+  const cajaCheckboxEntrada = document.getElementById("cajaCheckboxEntrada");
 
-  const informacionfactura = async (fac) => {
+  const cardFactura = document.getElementById("cardFactura");
+  const dataCardFactura = document.getElementById("data-card-factura");
+  const dataCardServicio = document.getElementById("data-card-servicio");
+  const dataCardInsumos = document.getElementById("data-card-insumos");
+  const dataCardPagos = document.getElementById("data-card-pagos");
+
+  const btnImprimirFactura = document.getElementById("btn-imprimir-factura");
+  const btnModalFactura = document.getElementById("btn-modal-factura");
+  const titleModalFactura = document.getElementById("titleModalFactura");
+
+  const selector = ".exampleTableFactura";
+
+  let dataFactura = [];
+
+  //funcion para llenar el array con todos los datos de la factura
+  const loadDataFactura = async () => {
+    const result = await executePetition(
+      `/Sistema-del--CEM--JEHOVA-RAFA/Reportes/returnDataFactura`,
+      "GET",
+    );
+    dataFactura = result;
+  };
+
+  //functions for factura
+  const readFacturas = async (estado = "ACT") => {
     try {
-      let peticionAjax = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarPago/" + fac);
-      let respuesta = await peticionAjax.json();
-      let html = ``;
-      if (respuesta.length > 0) {
-        console.log("pago");
-        console.log(respuesta);
-        html = ``;
-        respuesta.forEach((r) => {
-          html += `<h5 class="h5-comprobante ">${r.nombre}</h5>
-                                                            <h5 class="h5-comprobante ">
-                                                            ${r.monto} BS
-                                                            </h5>`;
-        });
-        document.querySelectorAll(".pagoDefac").forEach((fa) => {
-          fa.innerHTML = html;
-        });
+      let html = "";
+      let dataFiltrada = dataFactura.filter((data) => data.estado == estado);
+
+      console.log(dataFiltrada);
+      dataFiltrada.forEach((res) => {
+        html += `<tr>
+                            <td class="text-center">${res.id_factura}</td>
+                            <td class="text-center">${res.nacionalidad}-${res.cedula_p}</td>
+                            <td class="text-center">${res.nombre_p}-${res.apellido_p}</td>
+                            <td class="text-center">${res.fecha}</td>
+                            <td class="text-center">${res.total} Bs</td>
+
+                            <td class="text-center">
+
+                                    <button class="btn btn-tabla mb-1  btn-dt-tabla btn-info"
+
+                                        data-index="${res.id_factura}" data-bs-toggle="modal" data-bs-target="#modal-info-factura">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+                                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path>
+                                    </svg>
+                                    </button>
+
+
+                                    <button class=" btn btn-tabla mb-1  btn-dt-tabla btn-anular" data-index="${res.id_factura}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
+                                </svg>
+                            </button>
+
+                            </td>
+
+                        </tr>`;
+      });
+
+      // si ya existe DataTable, destrúyela
+      if ($.fn.DataTable.isDataTable(selector)) {
+        $(selector).DataTable().clear().destroy();
       }
-      let peticionAjax2 = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarMasServicios/" + fac);
-      let respuesta2 = await peticionAjax2.json();
-      let html2 = ``;
-      if (respuesta2.length > 0) {
-        console.log(respuesta2);
-        html2 = ``;
-        respuesta2.forEach((r) => {
-          console.log(r);
+      // vuelca el html en el tbody
+      document.querySelector(selector + " tbody").innerHTML = html;
 
-          html2 += `<h5 class="h5-comprobante ">${r.categoria_servicio}</h5>
-                                                        <h5 class="h5-comprobante ">
-                                                            Dr: ${r.nombre_d}
-                                                            ${r.apellido_d}
-                                                            ${r.precio} Bs
-                                                        </h5>`;
+      //llamar las funcion de eliminar
+      document.querySelectorAll(".btn-info").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          let id = this.getAttribute("data-index");
+          readInfoFactura(id);
         });
+      });
 
-        document.querySelectorAll(".masSer").forEach((fa) => {
-          fa.innerHTML = html2;
+      //llamar las funcion de anular factura
+      document.querySelectorAll(".btn-anular").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
+          console.log(data);
+          alertConfirm(
+            "Esta seguro de anular la factura?",
+            anularFactura,
+            data,
+          );
         });
+      });
 
-        console.log(document.querySelectorAll(".masSer"));
-      } else {
-        let masServ = document.querySelectorAll(".masSer");
-        masServ.forEach((fa) => {
-          fa.textContent = "";
-        });
-        let masServicios = document.querySelectorAll(".masServicios");
-        masServicios.forEach((fa) => {
-          fa.textContent = "";
-        });
-        console.log("No se econtraron resultados");
-      }
-      let peticionAjax3 = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarInsumos/" + fac);
-
-      let respuesta3 = await peticionAjax3.json();
-      console.log(respuesta3);
-      let html3 = ``;
-
-      if (respuesta3.length > 0) {
-        console.log(respuesta3);
-        html3 = ``;
-        respuesta3.forEach((r) => {
-          idInsumos.push(r.id_insumo);
-          console.log(idInsumos);
-
-          html3 += `<div class="d-flex justify-content-between  ">
-                                                            <h5 class="h5-comprobante ">Insumo</h5>
-                                                            <h5 class="h5-comprobante ">
-                                                            ${r.nombre}
-                                                            </h5>
-                                                        </div>
-                                                        <div class="d-flex justify-content-between  ">
-                                                            <h5 class="h5-comprobante ">Cantidad</h5>
-                                                            <h5 class="h5-comprobante ">
-                                                            ${r.cantidad}
-                                                            </h5>
-                                                        </div>
-                                                        <div class="d-flex justify-content-between  ">
-                                                            <h5 class="h5-comprobante ">Precio</h5>
-                                                            <h5 class="h5-comprobante ">
-                                                            ${r.precio} BS
-                                                            </h5>
-                                                        </div>`;
-        });
-        let insumos = document.querySelectorAll(".insumos");
-        insumos.forEach((fa) => {
-          fa.innerHTML = html3;
-        });
-      } else {
-        console.log("No se econtraron resultados");
-        let insumos = document.querySelectorAll(".insumos");
-        insumos.forEach((fa) => {
-          fa.textContent = "";
-        });
-      }
+      // re-inicializa
+      initDataTable(selector);
     } catch (error) {
-      console.log("Error en la solicitud:" + error);
+      alertError("Error", error);
     }
   };
 
-  // buscarC.addEventListener("submit", (e) => {
-  //     e.preventDefault();
-  //     buscarCreditoCliente(buscarC);
-  // });
+  const readInfoFactura = (id) => {
+    let html = "";
+    let htmlServicio = "";
+    let htmlInsumos = "";
+    let htmlPagos = "";
+    let factura = dataFactura.find((data) => data.id_factura == id);
+    html += `
+       <div class="div-total p-3 mb-4 text-center rounded shadow-sm" style="background-color: #3b82f6; color: white;">
+                                        <h3 class="fw-bold mb-0">${factura.total}</h3>
+                                    </div>
 
-  // const anularFac = async (anular,i) => {
-  //   try {
-  //     await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Reportes/anularFactura&id_factura=" + anular+ "&id_insumo="+ i);
+                                    <div class="row mb-1">
+                                        <div class="col-6 text-start text-comprobante"><span class="fw-bold ">Código:</span></div>
+                                        <div class="col-6 text-end text-comprobante"><span>${factura.id_factura}</span></div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-6 text-start text-comprobante"><span class="fw-bold">Fecha:</span></div>
+                                        <div class="col-6 text-end text-comprobante"><span>${factura.fecha}</span></div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-6 text-start text-comprobante"><span class="fw-bold ">Cédula Cliente:</span></div>
+                                        <div class="col-6 text-end text-comprobante"><span>
+                                        ${factura.nacionalidad}-${factura.cedula_p}</span></div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-6 text-start text-comprobante"><span class="fw-bold ">Cliente:</span></div>
+                                        <div class="col-6 text-end text-comprobante"><span>${factura.nombre_p} ${factura.apellido_p}</span></div>
+                                    </div>
+      `;
 
-  //     //   let respuesta = await buscarCita.json();
-  //     //  let html = ``;
-  //     //   if (respuesta.length > 0) {
-  //     //       console.log(respuesta);
-  //     //       html = ``;
-  //     //       respuesta.forEach((cita) => {
+    factura.servicios.forEach((servicio) => {
+      htmlServicio += `
+      <div class=" p-2 rounded mb-3 border-start border-primary border-3 bg-comprobante">
 
-  //     //         html += `<p class="text-center">${cita.especialidad} Dr ${cita.nombre_d} ${cita.apellido_d} ${cita.precio_servicio} Bs</p>
-  //     //          <p class="text-center">${r.categoria_servicio} Dr ${r.nombre_d} ${r.apellido_d} ${r.precio} Bs</p>`
-  //     //         ;
+                                        <div class="d-flex justify-content-between mb-2 bg-comprobante">
+                                            <span class="fw-semibold text-comprobante">${servicio.categoria}</span>
+                                            <span class=" text-comprobante">
+                                                DR: ${servicio.nombre_d} ${servicio.apellido_d}  |   ${servicio.precio}  BS 
+                                            </span>
+                                        </div>
+                                    </div>
 
-  //     //       });
-
-  //     //       let masServ =  document.querySelectorAll('.masSer');
-  //     //       masServ.forEach(fa => {
-  //     //      fa.innerHTML=html;
-
-  //     //    });
-
-  //     //   }else{
-  //     //   console.log("No se econtraron resultados");
-
-  //     //   }
-  //   } catch (error) {
-  //     console.log("Error en la solicitud:", error);
-  //   }
-  // };
-
-  function facturaAnular(anular, i) {
-    anularFac(anular, i);
-    // selecciono todos los tr de la tabla
-    const filas = document.querySelectorAll(".tbody tr");
-    // recolecto el nombre del input
-    let valorInputPaciente = anular;
-    console.log(valorInputPaciente);
-
-    // se convierte en minúscula
-
-    // recorro las filas de la tabla
-    filas.forEach((fila) => {
-      // cuenta los síntomas que existen.
-
-      console.log(fila.children[0]);
-      let paciente = fila.children[0].innerText;
-
-      // se convierte en minúscula
-      paciente = paciente.toLowerCase();
-
-      // verifico si el nombre existe
-      if (paciente.includes(valorInputPaciente)) {
-        fila.classList.add("d-none");
-      }
-      // else {
-      // 	fila.classList.add("d-none");
-
-      // 	// cuenta las veces que no encuentra un síntoma
-      // }
-    });
-  }
-
-  infoFactura.forEach((info) => {
-    info.addEventListener("click", () => {
-      let fac = info.name;
-      array = [];
-      console.log("vuelta");
-      informacionfactura(fac);
+      `;
     });
 
-    anularFactura.forEach((anu) => {
-      anu.addEventListener("click", () => {
-        let anular = anu.name;
-        facturaAnular(anular, idInsumos);
-      });
+    factura.insumos.forEach((insumo) => {
+      htmlInsumos += `
+       <div class=" p-2 rounded mb-3 border-start border-primary border-3 bg-comprobante">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-bold text-comprobante">${insumo.nombre_insumo}</span>
+                                            <span class="text-comprobante">Cant: ${insumo.cantidad_insumo}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between small ">
+                                            <span class="text-comprobante">Base: ${insumo.iva ? insumo.precio_insumo - insumo.precio_insumo * 0.3 : insumo.precio_insumo} BS </span>
+                                            <span class="text-comprobante">IVA:  ${insumo.iva ? insumo.precio_insumo * 0.3 : 0} Bs </span>
+                                        </div>
+                                    </div>
+
+      `;
     });
-  });
 
-  //sirve para buscar las entradas por rango de fecha
-  const traerPorFecha = () => {
-    if (fechaInicio.value >= fechaFinal.value) {
-      alertaFecha.classList.remove("d-none");
-      alertaFecha.innerText = "VERIFIQUE QUE LA FECHA DE  INICIO SEA MENOR A LA FECHA FINAL";
+    factura.pagos.forEach((pago) => {
+      htmlPagos += `
+       <div class="d-flex justify-content-between mb-1 bg-comprobante">
+                                        <span class="text-comprobante">${pago.nombre}</span>
+                                        <span class="fw-bold text-comprobante">${pago.monto} Bs</span>
+                                    </div>
 
-      //funcion de js para el tiempo
-      setTimeout(function () {
-        alertaFecha.classList.add("d-none");
-      }, 8000);
-    } else {
+      `;
+    });
+
+    dataCardFactura.innerHTML = html;
+    dataCardServicio.innerHTML = htmlServicio;
+    dataCardInsumos.innerHTML = htmlInsumos;
+    dataCardPagos.innerHTML = htmlPagos;
+
+    //darle la direccion del pdf al boton
+    btnImprimirFactura.setAttribute(
+      "href",
+      `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPDF/${factura.id_factura}`,
+    );
+  };
+
+  //delete
+  const anularFactura = async (data) => {
+    try {
+      const result = await executePetition(
+        `/Sistema-del--CEM--JEHOVA-RAFA/Reportes/anularFactura/${data}`,
+        "GET",
+      );
+
+      if (result.ok) {
+        alertSuccess(result.message);
+        await loadDataFactura();
+        readFacturas();
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      alertError("Error", error);
+    }
+  };
+
+  //llamar los datos de la factura
+  loadDataFactura();
+
+  //este boton es para gestionar si trae facturas anuladas o normales
+  btnModalFactura.addEventListener("click", async function () {
+    btnModalFactura.classList.toggle("anulada");
+    console.log(dataFactura);
+    if (btnModalFactura.classList.contains("anulada")) {
+      this.innerText = "Facturas Activas";
+      titleModalFactura.innerText = `Gestionar Factura Anuladas`;
+      await readFacturas("Anulada");
       document
-        .getElementById("tbodyReporte")
-        .querySelectorAll("tr")
-        .forEach((ele) => {
-          //y este es para un insumo en espifico
-
-          if (ele.children[3].innerText >= fechaInicio.value && ele.children[3].innerText <= fechaFinal.value) {
-            console.log("W");
-            document.getElementById("btnImprimir").classList.remove("d-none");
-            ele.classList.remove("d-none");
-          } else {
-            ele.classList.add("d-none");
-          }
-        });
+        .querySelectorAll(".btn-anular")
+        .forEach((ele) => ele.classList.add("d-none"));
+      return;
     }
-  };
 
-  document.getElementById("btnImprimir").addEventListener("click", function () {
-    formularioDeFecha.submit();
+    this.innerText = "Facturas Anuladas";
+    titleModalFactura.innerText = `Gestionar Factura Activas`;
+    await readFacturas();
+    document
+      .querySelectorAll(".btn-anular")
+      .forEach((ele) => ele.classList.remove("d-none"));
   });
 
-  //sirve para buscar las entradas por rango de fecha de las facturas
-  const traerPorFechaAnulada = () => {
-    if (fechaInicioAnulada.value >= fechaFinalAnulada.value) {
-      // alertaFecha.classList.remove("d-none");
-      // alertaFecha.innerText =
-      //   "VERIFIQUE QUE LA FECHA DE  INICIO SEA MENOR A LA FECHA FINAL";
-      // //funcion de js para el tiempo
-      // setTimeout(function () {
-      //   alertaFecha.classList.add("d-none");
-      // }, 8000);
+  //llamar a la funcion para cargar las facturas
+  cardFactura.addEventListener("click", function () {
+    readFacturas();
+  });
+
+  //funcionamiento de entradas de insumos
+
+  //checkear si quiere filtar por fecha o no
+  checkboxEntradas.addEventListener("change", function () {
+    if (this.checked) {
+      cajaModalEntradas.classList.remove("d-none");
     } else {
-      document
-        .getElementById("tbodyAnuladas")
-        .querySelectorAll("tr")
-        .forEach((ele) => {
-          //y este es para un insumo en espifico
-
-          if (ele.children[3].innerText >= fechaInicioAnulada.value && ele.children[3].innerText <= fechaFinalAnulada.value) {
-            console.log("W");
-            document.getElementById("btnImprimirAnulada").classList.remove("d-none");
-            ele.classList.remove("d-none");
-          } else {
-            ele.classList.add("d-none");
-          }
-        });
+      cajaModalEntradas.classList.add("d-none");
     }
-  };
-
-  document.getElementById("btnImprimirAnulada").addEventListener("click", function () {
-    formularioDeFechaAnulada.submit();
   });
 
-  formularioDeFecha.addEventListener("submit", function (e) {
+  //ver que insumo selecciona para el reporte
+  selectInsumoEntradas.addEventListener("change", function () {
+    botonDeImprimirEntradas.classList.remove("d-none");
+    cajaCheckboxEntrada.classList.remove("d-none");
+  });
+
+  //enviar fechas para buscar entradas de insumos
+  let verificarFormEntradas =
+    inicializarValidacionFormulario(formularioEntradas);
+  //
+  formularioEntradas.addEventListener("submit", function (e) {
     e.preventDefault();
-  });
+    let esValido = verificarFormEntradas();
 
-  document.getElementById("buscarFecha").addEventListener("click", function () {
-    traerPorFecha();
-  });
-
-  //anuladas
-  formularioDeFechaAnulada.addEventListener("submit", function (e) {
-    e.preventDefault();
-  });
-
-  document.getElementById("buscarFechaAnulada").addEventListener("click", function () {
-    traerPorFechaAnulada();
-  });
-  console.log(document.getElementById("buscarFechaAnulada"));
-
-  let inputPaciente = document.querySelector("#inputBuscarEspecialidad");
-
-  function buscarPaciente() {
-    // selecciono todos los tr de la tabla
-    const filas = document.querySelectorAll(".tbody tr");
-    // recolecto el nombre del input
-    let valorInputPaciente = inputPaciente.value;
-    // se convierte en minúscula
-    valorInputPaciente = valorInputPaciente.toLowerCase();
-    let coincidenciasEncontradas = 0;
-    // recorro las filas de la tabla
-    filas.forEach((fila) => {
-      // cuenta los síntomas que existen.
-
-      console.log(fila.children[1]);
-      let paciente = fila.children[1].innerText;
-
-      // se convierte en minúscula
-      paciente = paciente.toLowerCase();
-
-      // verifico si el nombre existe
-      if (paciente.includes(valorInputPaciente)) {
-        fila.classList.remove("d-none");
-        coincidenciasEncontradas++;
-      } else {
-        fila.classList.add("d-none");
-
-        // cuenta las veces que no encuentra un síntoma
-      }
-
-      inputPaciente.addEventListener("keyup", () => {
-        if (inputPaciente.value === "") {
-          fila.classList.remove("d-none");
-        }
-      });
-    });
-
-    if (coincidenciasEncontradas === 0) {
-      document.getElementById("noresultados").classList.remove("d-none");
-    } else {
-      document.getElementById("noresultados").classList.add("d-none");
+    if (cajaModalEntradas.classList.contains("d-none")) {
+      formularioEntradas.submit();
+      return;
     }
-  }
-
-  inputPaciente.addEventListener("keyup", function () {
-    buscarPaciente();
-  });
-
-  let facturasAnuladas = document.querySelector("#buscarFacturasAnuladas");
-
-  function buscarPaciente() {
-    // selecciono todos los tr de la tabla
-    const filas = document.querySelectorAll(".tbodyAnuladas tr");
-    // recolecto el nombre del input
-    let valorfacturasAnuladas = facturasAnuladas.value;
-    // se convierte en minúscula
-    valorfacturasAnuladas = valorfacturasAnuladas.toLowerCase();
-    let coincidenciasEncontradas = 0;
-    // recorro las filas de la tabla
-    filas.forEach((fila) => {
-      // cuenta los síntomas que existen.
-
-      console.log(fila.children[1]);
-      let paciente = fila.children[1].innerText;
-
-      // se convierte en minúscula
-      paciente = paciente.toLowerCase();
-
-      // verifico si el nombre existe
-      if (paciente.includes(valorfacturasAnuladas)) {
-        fila.classList.remove("d-none");
-        coincidenciasEncontradas++;
-      } else {
-        fila.classList.add("d-none");
-
-        // cuenta las veces que no encuentra un síntoma
-      }
-
-      facturasAnuladas.addEventListener("keyup", () => {
-        if (facturasAnuladas.value === "") {
-          fila.classList.remove("d-none");
-        }
-      });
-    });
-
-    if (coincidenciasEncontradas === 0) {
-      document.getElementById("noresultadosAnuladas").classList.remove("d-none");
+    if (esValido) {
+      console.log("se envio");
+      formularioEntradas.submit();
     } else {
-      document.getElementById("noresultadosAnuladas").classList.add("d-none");
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
     }
-  }
-
-  facturasAnuladas.addEventListener("keyup", function () {
-    buscarPaciente();
   });
 });

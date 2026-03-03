@@ -25,16 +25,15 @@
 //     echo "El archivo no existe.";
 // }
 // ?
-$insumos = $this->modelo->pdfInsumos($_GET["pdf"]);
 
 class PDF extends FPDF
 {
     function Header()
     {
         // Logo
-        $this->Image('./src/assets/Image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
+        $this->Image('./src/assets/images/image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
         $this->SetFont('Arial', 'B', 30);
-        $this->Image('./src/assets/Image/123.png', 10, -13, 80);
+        $this->Image('./src/assets/images/image/123.png', 10, -13, 80);
         $this->SetTextColor(14, 169, 181);
         $this->SetXY(110, 15);
         $this->SetFillColor(248, 252, 255);
@@ -93,6 +92,6 @@ header('Expires: 0');
 
 // Generar el PDF y enviarlo al navegador
 ob_end_clean(); // Limpia el búfer de salida
-$pdf->Output('D'); // 'D' indica que se debe descargar el archivo
+$pdf->Output(); // 'D' indica que se debe descargar el archivo
 exit;
 ?>

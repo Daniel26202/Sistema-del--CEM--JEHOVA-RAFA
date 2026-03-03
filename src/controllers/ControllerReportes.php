@@ -16,12 +16,93 @@ function reportes($parametro)
 	$modeloInsumo = new ModeloInsumo();
 
 	$ayuda = "btnayudaReporte";
-	$facturas = $modeloReporte->consultarFactura();
-	$anuladas = $modeloReporte->consultarFacturaAnuladas();
 	$insumos = $modeloInsumo->insumos();
 	require_once './src/vistas/vistaReportes/vistaReportes.php';
+}
 
-	echo 'reportes';
+function returnDataFactura()
+{
+	$modeloReporte = new ModeloReporte();
+
+	//variable final
+	$result = [];
+	foreach ($modeloReporte->consultarFactura() as $factura) {
+		$id_factura = $factura["id_factura"];
+
+		//filtrar los servicios para la factura
+		$servicios = array_filter($modeloReporte->consultarServiciosExtras(), function ($servicio) use ($id_factura) {
+			return $servicio['id_factura'] === $id_factura;
+		});
+
+		//filtrar los servicios para la factura
+		$insumos = array_filter($modeloReporte->consultarFacturaInsumo(), function ($insumo) use ($id_factura) {
+			return $insumo['id_factura'] === $id_factura;
+		});
+
+
+		//filtrar los servicios para la factura
+		$pagos = array_filter($modeloReporte->consultarPagoFactura(), function ($pago) use ($id_factura) {
+			return $pago['id_factura'] === $id_factura;
+		});
+
+
+		$datosServicios = [];
+		$datosInsumos = [];
+		$datosPago = [];
+
+		foreach ($servicios as $servicio) {
+			$datosServicios[] = [
+				"nombre_d" => $servicio['nombre_d'],
+				"apellido_d" => $servicio['apellido_d'],
+				"categoria" => $servicio['categoria'],
+				'precio' => $servicio['precio'],
+			];
+		}
+
+		foreach ($insumos as $insumo) {
+			$datosInsumos[] = [
+				"nombre_insumo" => $insumo['nombre_insumo'],
+				"cantidad_insumo" => $insumo['cantidad_insumo'],
+				"precio_insumo" => $insumo['precio_insumo'],
+				'iva' => $insumo['iva'],
+			];
+		}
+
+		foreach ($pagos as $pago) {
+			$datosPago[] = [
+				"nombre" => $pago['nombre'],
+				"monto" => $pago['monto'],
+			];
+		}
+
+		$result[] = [
+			'id_factura' => $factura['id_factura'],
+			'nacionalidad' => $factura['nacionalidad'],
+			'cedula_p' => $factura['cedula_p'],
+			'nombre_p' => $factura['nombre_p'],
+			'apellido_p' => $factura['apellido_p'],
+			'fecha' => $factura['fecha'],
+			'total' => $factura['total'],
+			'estado' => $factura['estado'],
+			'servicios' => $datosServicios,
+			'insumos' => $datosInsumos,
+			'pagos' => $datosPago
+		];
+	}
+
+
+	echo json_encode($result);
+}
+
+
+
+
+
+
+function returnDataFacturaAnulada()
+{
+	$modeloReporte = new ModeloReporte();
+	echo json_encode($modeloReporte->consultarFacturaAnuladas());
 }
 
 function buscarPDF()
@@ -37,6 +118,18 @@ function buscarPDF()
 
 function buscarEntradasInsumosPDF()
 {
+	$modeloReporte = new ModeloReporte();
+
+	$desdeFecha = isset($_POST["desdeFechaEntradas"]) ? $_POST["desdeFechaEntradas"] : "";
+	$fechaHastaEntradas = isset($_POST["fechaHastaEntradas"]) ? $_POST["fechaHastaEntradas"] : "";
+
+	$modeloReporte->setFechaInicio($desdeFecha);
+	$modeloReporte->setFinal($fechaHastaEntradas);
+	$modeloReporte->setIdInsumo($_POST['id_insumo']);
+
+	$entradas = $modeloReporte->entradasInsumosPdf();
+
+
 	require_once './src/vistas/vistaReportes/vistaReporteEntradasPdf.php';
 }
 
@@ -69,6 +162,10 @@ function pacientePDF($datos)
 }
 function insumosPDF()
 {
+	$modeloReporte = new ModeloReporte();
+
+	$insumos = $modeloReporte->pdfInsumos();
+
 	require_once './src/vistas/vistaReportes/vistaInsumosPDF.php';
 }
 function reportesFactura()
@@ -130,25 +227,39 @@ function buscarCita()
 	echo json_encode($respuesta);
 }
 
-function anularFactura()
+function anularFactura($datos)
 {
-	$modeloReporte = new ModeloReporte();
-	$modeloBitacora = new ModeloBitacora();
-	$modeloFactura = new ModeloFactura();
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+	try {
+		$modeloReporte = new ModeloReporte();
+		$modeloBitacora = new ModeloBitacora();
 
-	$modeloFactura->setIdFactura($_POST["id_factura"]);
-	$anular = $modeloReporte->anularFac();
+		$modeloReporte->setIdFactura($datos["0"]);
 
-	if ($anular) {
 		// Guardo la bitacora
-		$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$modeloBitacora->setId_usuario($datos[1]);
 		$modeloBitacora->setTabla("factura");
 		$modeloBitacora->setActividad("Ha anulado una factura");
-		$modeloBitacora->insertarBitacora();
-		// // $respuesta =$this->modelo->cantidadAnulada($array);
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/anulada");
-	} else {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes/errorSistem");
+
+		$anular = $modeloReporte->anularFac();
+
+		//Verifica si es un array con clave "exito"
+		if (is_array($anular) && $anular[0] === "exito") {
+			$modeloBitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $anular]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
 

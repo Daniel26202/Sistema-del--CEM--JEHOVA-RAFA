@@ -267,5 +267,8 @@ return [
     "generarRespaldo" => "guardar",
     "restaurarRespaldo" => "guardar",
     "verificacionU" => "consultar",
+    "returnDataFactura"=>'consultar',
+    "returnDataFacturaAnulada" => 'consultar',
+
 
 ];
