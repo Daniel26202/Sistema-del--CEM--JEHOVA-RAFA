@@ -59,6 +59,7 @@ return [
     "mostrarServicios"=>"consultar",
     "mostrarInsumos"=>"consultar",
     "mostrarMetodosDePago"=>"consultar",
+    "datosHospitalizacion"=>'consultar',
 
     //Citas
     "mostrarPacienteCita" => "consultar",

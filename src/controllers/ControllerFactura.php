@@ -64,6 +64,79 @@ function facturarHospitalizacion($parametro)
 	require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
 }
 
+function datosHospitalizacion($parametro)
+{
+	$modeloFactura = new ModeloFactura();
+	$modeloFactura->setIdH($parametro[0]);
+
+	//variable final
+	$result = [];
+
+	foreach ($modeloFactura->mostrarHospitalizacion() as $hospit) {
+		$id_hospit = $hospit['id_hospitalizacion'];
+
+		//filtrar los servicios para la hospitalizacion actual
+		$servicios = array_filter($modeloFactura->serviciosIncluidosHospit(), function ($servicio) use ($id_hospit) {
+			return $servicio['id_hospitalizacion'] === $id_hospit;
+		});
+
+		//filtrar los servicios para la hospitalizacion actual
+		$insumos = array_filter($modeloFactura->unirInsumosHospitalizacion(), function ($insumo) use ($id_hospit) {
+			return $insumo['id_hospitalizacion'] === $id_hospit;
+		});
+
+		$datosServicios = [];
+		$datosInsumos = [];
+
+
+		foreach ($servicios as $servicio) {
+			$datosServicios[] = [
+				'id_servicioMedico' => $servicio['id_servicioMedico'],
+				'id_doctor' => $servicio['id_doctor'],
+				'nombre_d' => $servicio['nombre_d'],
+				'apellido_d' => $servicio['apellido_d'],
+				'categoria' => $servicio['categoria'],
+				'precios_servicio' => $servicio['precios_servicio']
+
+			];
+		}
+
+		foreach ($insumos as $insumo) {
+			$datosInsumos[] = [
+				'id_entradaDeInsumo' => $insumo['id_entradaDeInsumo'],
+				'nombre' => $insumo['nombre'],
+				'medida' => $insumo['medida'],
+				'precio' => $insumo['precio'],
+				'iva' => $insumo['iva'],
+				'cantidad' => $insumo['cantidad'],
+			];
+		}
+	}
+
+
+
+	//agregamos el resultado
+	$result[] = [
+		'id_hospitalizacion' => $hospit['id_hospitalizacion'],
+		'fecha_hora_inicio' => $hospit['fecha_hora_inicio'],
+		'precio_horas' => $hospit['precio_horas'],
+		'fecha_hora_final' => $hospit['fecha_hora_final'],
+		'total_MoEx' => $hospit['total_MoEx'],
+		'total' => $hospit['total'],
+		'id_paciente' => $hospit['id_paciente'],
+		'nacionalidad' => $hospit['nacionalidad'],
+		'nombre_p' => $hospit['nombre'],
+		'apellido_p' => $hospit['apellido'],
+		'nombredoc' => $hospit['nombredoc'],
+		'apellidodoc' => $hospit['apellidodoc'],
+		'fecha_de_nacimiento' => $hospit['fn'],
+		'servicios' => $datosServicios,
+		'insumos' => $datosInsumos
+	];
+
+	echo json_encode($result);
+}
+
 function comprobante($parametro)
 {
 	$modeloFactura = new ModeloFactura();
@@ -168,14 +241,14 @@ function guardarFactura()
 
 	if (!$modeloFactura->getIdCliente()) {
 
-	$coincidencia = $modeloFactura->coincidenciaPacienteCliente();
-	if ($coincidencia) {
-		$id_cliente = $coincidencia;
-	} else {
-		$guardado = $modeloFactura->guardarCliente();
-		$id_cliente = $guardado[1];
-	}
-	$modeloFactura->setIdCliente($id_cliente);
+		$coincidencia = $modeloFactura->coincidenciaPacienteCliente();
+		if ($coincidencia) {
+			$id_cliente = $coincidencia;
+		} else {
+			$guardado = $modeloFactura->guardarCliente();
+			$id_cliente = $guardado[1];
+		}
+		$modeloFactura->setIdCliente($id_cliente);
 	}
 
 

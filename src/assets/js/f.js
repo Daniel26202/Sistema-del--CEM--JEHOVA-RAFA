@@ -78,6 +78,7 @@ addEventListener("DOMContentLoaded", function () {
 
   const bodyModalPago = document.getElementById("body-modal-pago");
   const inputPaciente = document.getElementById("inputPaciente");
+  const inputHospitalizacion = document.getElementById("inputHospitalizacion");
 
   //seccion de pagos
   //Aqui iran los nombres de tipos de pagos
@@ -102,64 +103,66 @@ addEventListener("DOMContentLoaded", function () {
 
   const inputIdCita = document.getElementById("inputIdCita");
 
+  const botonPC = document.getElementById("botonPC");
+
   //funcion para comprobar si el paciente es el mismo cliente
 
   const buscarCliente = async (formulario) => {
-    // try {
-    let [addClass, removeClass] = ["", ""];
+    try {
+      let [addClass, removeClass] = ["", ""];
 
-    const datos = new FormData(formulario);
-    const contenido = { method: "POST", body: datos };
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente",
-      contenido,
-    );
-    let resultado = await peticion.json();
-    console.log(resultado);
-    if (resultado.length > 0) {
-      resultado.forEach((res) => {
-        console.log(res);
-        // calcula la edad
-        const fechaNac = new Date(res.fn);
-        const edadDif = Date.now() - fechaNac.getTime();
-        const edadFecha = new Date(edadDif);
-        const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
-        dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+      const datos = new FormData(formulario);
+      const contenido = { method: "POST", body: datos };
+      let peticion = await fetch(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente",
+        contenido,
+      );
+      let resultado = await peticion.json();
+      console.log(resultado);
+      if (resultado.length > 0) {
+        resultado.forEach((res) => {
+          console.log(res);
+          // calcula la edad
+          const fechaNac = new Date(res.fn);
+          const edadDif = Date.now() - fechaNac.getTime();
+          const edadFecha = new Date(edadDif);
+          const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+          dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
 
-        if (edad >= 18) {
-          [addClass, removeClass] = ["c", "d-none"];
+          if (edad >= 18) {
+            [addClass, removeClass] = ["c", "d-none"];
 
-          document.getElementById("botonPC").classList.remove("d-none");
-        } else {
-          [addClass, removeClass] = ["d-none", "c"];
-          document.getElementById("botonPC").classList.add("d-none");
-        }
+            document.getElementById("botonPC").classList.remove("d-none");
+          } else {
+            [addClass, removeClass] = ["d-none", "c"];
+            document.getElementById("botonPC").classList.add("d-none");
+          }
 
-        document.getElementById("inputCliente").value = res.id_cliente;
-      });
+          document.getElementById("inputCliente").value = res.id_cliente;
+        });
 
-      divClienteNoEncontrado.classList.add("d-none");
-      btnAddCli.classList.add("d-none");
-    } else {
-      [addClass, removeClass] = ["d-none", "c"];
+        divClienteNoEncontrado.classList.add("d-none");
+        btnAddCli.classList.add("d-none");
+      } else {
+        [addClass, removeClass] = ["d-none", "c"];
 
-      dataCliente.innerText = ``;
+        dataCliente.innerText = ``;
 
-      divClienteNoEncontrado.classList.remove("d-none");
-      document.getElementById("inputCliente").value = "";
-      document.getElementById("botonPC").classList.add("d-none");
+        divClienteNoEncontrado.classList.remove("d-none");
+        document.getElementById("inputCliente").value = "";
+        document.getElementById("botonPC").classList.add("d-none");
 
-      btnAddCli.classList.remove("d-none");
+        btnAddCli.classList.remove("d-none");
+      }
+
+      btnServicio.classList.add(addClass);
+      btnInsumos.classList.add(addClass);
+      btnServicio.classList.remove(removeClass);
+      btnInsumos.classList.remove(removeClass);
+    } catch (error) {
+      alertError("Error", "Lamentablemente ocurrio un error" + error);
+      console.log(error);
     }
-
-    btnServicio.classList.add(addClass);
-    btnInsumos.classList.add(addClass);
-    btnServicio.classList.remove(removeClass);
-    btnInsumos.classList.remove(removeClass);
-    // } catch (error) {
-    //   alertError("Error", "Lamentablemente ocurrio un error" + error);
-    //   console.log(error);
-    // }
   };
 
   //buscador paciente cuando no tiene cita
@@ -305,6 +308,76 @@ addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  //buscar Paciente con hispitalizacion
+  const buscarPacienteConHospit = async (id) => {
+    try {
+      let resultado = await executePetition(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/datosHospitalizacion/" + id,
+        "GET",
+      );
+
+      if (!resultado.length > 0) {
+        alertError(
+          "Error",
+          "Lamentablememte no hay hospitalizaciones con ese numero",
+        );
+        return;
+      }
+
+      // hospitalizacion encontrada, actualizar UI con datos de la hospitalizacion
+      const hospit = resultado[0];
+
+      // 1. Actualizar datos del paciente
+      const fechaNac = new Date(hospit.fecha_de_nacimiento);
+      const edadDif = Date.now() - fechaNac.getTime();
+      const edadFecha = new Date(edadDif);
+      const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+      dataCliente.innerText = `PACIENTE: ${hospit.nombre_p} ${hospit.apellido_p} Edad: ${edad} años`;
+      inputPaciente.value = hospit.id_paciente;
+      inputHospitalizacion.value = hospit.id_hospitalizacion;
+      console.log(inputPaciente);
+
+      if (edad >= 18) {
+        document.getElementById("botonPC").classList.remove("d-none");
+      } else {
+        document.getElementById("botonPC").classList.add("d-none");
+      }
+
+      divClienteNoEncontrado.classList.add("d-none");
+      btnAddPac.classList.add("d-none");
+
+      // 2. Limpiar datos previos y agregar servicio de la cita
+      data = []; // Limpiar servicios anteriores
+      dataInsumo = []; //Limpiar insumos anteriores
+
+      hospit.servicios.forEach((servicio) => {
+        insertarServicio(
+          servicio.id_servicioMedico,
+          servicio.categoria,
+          `${servicio.nombre_d} ${servicio.apellido_d}`,
+          parseFloat(servicio.precios_servicio),
+          servicio.id_doctor,
+        );
+      });
+
+      hospit.insumos.forEach((insumo) => {
+        insertarInsumoSeleccionado(
+          insumo.id_entradaDeInsumo,
+          insumo.cantidad,
+          insumo.nombre,
+          insumo.precio,
+          insumo.iva,
+          insumo.medida,
+        );
+      });
+
+      botonPC.classList.remove("d-none");
+      calcularTotal();
+    } catch (error) {
+      alertError("Error", error);
+    }
+  };
+
   const returnFragmentHtmlSer = (res) => {
     return `<div class="card card-servicio p-4" style="cursor: pointer;" data-id-servicio="${res.id_servicioMedico}" data-doctor="${res.id_personal}">
         <!-- nombre del insumo (podemos cambiarlo dinámicamente) -->
@@ -330,7 +403,6 @@ addEventListener("DOMContentLoaded", function () {
         `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarServicios`,
         "GET",
       );
-
 
       const paginator = new Paginator(
         result,
@@ -1446,10 +1518,11 @@ addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  if (window.location.href.includes("facturaCita")) {
-    console.log("cita");
-  } else if (window.location.href.includes("idH")) {
-    console.log("hospitalizacion");
+  let url_factura = window.location.href.split("/")[6];
+  console.log(url_factura)
+  if (url_factura != undefined) {
+    let idH = parseInt(url_factura.slice(1));
+    buscarPacienteConHospit(idH);
   } else {
     console.log("factura normal");
     const formularioPaciente = document.getElementById("form-buscador-factura");
@@ -1466,4 +1539,6 @@ addEventListener("DOMContentLoaded", function () {
   setTimeout(() => {
     renderizarInsumos();
   }, 600);
+
+
 });
