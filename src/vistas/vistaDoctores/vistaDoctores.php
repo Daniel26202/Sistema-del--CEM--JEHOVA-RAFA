@@ -49,8 +49,8 @@
 
 
 
-            <button class="btn-guardar-responsive  caja-btn-margin btn btn-modals col-2 <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
-                uk-toggle="target: #modal-example-servicio" id="DMservicioMedico">
+            <button class="btn-guardar-responsive caja-btn-margin btn btn-modals col-2 <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
+                data-bs-toggle="modal" data-bs-target="#modal-designar-servicio" id="DMservicioMedico">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
                     <path

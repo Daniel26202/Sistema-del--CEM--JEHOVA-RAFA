@@ -24,11 +24,11 @@ const labelModal = document.getElementById("exampleModalLabelDoctores");
 const btnModal = document.getElementById("botonModal");
 const formEspecialidad = document.getElementById("formEspecialidad");
 
-const selectService = document.querySelector("#id_categoria");
-const modalAgregarSer = document.getElementById("modalAgregarSer");
-const modalAgregarEspecialidad = document.getElementById(
-  "modalAgregarEspecialidad",
-);
+const selectDoctor = document.querySelector("#select-doctor");
+const selectService = document.querySelector("#select-servicio");
+const formAsignarServicio = document.getElementById('formAsignarServicio');
+const modalAsignarServicio = new bootstrap.Modal(document.getElementById('modal-designar-servicio'));
+
 
 const divHorarios = document.getElementById("div-horarios");
 const cajaDeInfo = document.getElementById("cajaDeInfo");
@@ -200,11 +200,10 @@ const readDoctor = async () => {
                                     </button>
 
 
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                      !urlActual.includes("paplera")
-                                        ? "d-none"
-                                        : ""
-                                    }" data-index=${element.id_usuario}>
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${!urlActual.includes("paplera")
+            ? "d-none"
+            : ""
+          }" data-index=${element.id_usuario}>
 
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
@@ -215,11 +214,10 @@ const readDoctor = async () => {
 
                                     </button>
 
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                      urlActual.includes("papelera")
-                                        ? "d-none"
-                                        : ""
-                                    }" data-index=${element.id_usuario}>
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${urlActual.includes("papelera")
+            ? "d-none"
+            : ""
+          }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -276,14 +274,12 @@ const readDoctor = async () => {
                             <td class="text-center">
                                 <!-- editar -->
 
-                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla ${
-                                      !urlActual.includes("paplera")
-                                        ? "d-none"
-                                        : ""
-                                    }"
-                                        uk-toggle="target: #modal-editar-doctores${
-                                          element.id_usuario
-                                        }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
+                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla ${!urlActual.includes("paplera")
+            ? "d-none"
+            : ""
+          }"
+                                        uk-toggle="target: #modal-editar-doctores${element.id_usuario
+          }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
                                         id="btneditarDoctor" data-index="${element.id_personal}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -294,11 +290,10 @@ const readDoctor = async () => {
                                     </button>
 
 
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                      urlActual.includes("paplera")
-                                        ? "d-none"
-                                        : ""
-                                    }" data-index=${element.id_usuario}>
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${urlActual.includes("paplera")
+            ? "d-none"
+            : ""
+          }" data-index=${element.id_usuario}>
 
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
@@ -309,11 +304,10 @@ const readDoctor = async () => {
 
                                     </button>
 
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                      urlActual.includes("papelera")
-                                        ? "d-none"
-                                        : ""
-                                    }" data-index=${element.id_usuario}>
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${urlActual.includes("papelera")
+            ? "d-none"
+            : ""
+          }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -324,12 +318,10 @@ const readDoctor = async () => {
                                     </button>
 
                              
-                                <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla ${
-                                  !urlActual.includes("paplera") ? "d-none" : ""
-                                }" title="Horarios Del Doctor"
-                                    uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${
-                                      element.id_usuario
-                                    }"
+                                <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla ${!urlActual.includes("paplera") ? "d-none" : ""
+          }" title="Horarios Del Doctor"
+                                    uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${element.id_usuario
+          }"
                                     data-index="${element.id_usuario}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-info-circle-fill" viewBox="0 0 16 16">
@@ -703,6 +695,57 @@ const restablecerDoctor = async (data) => {
     alertError("Error", error);
   }
 };
+
+
+//asignar servicio
+const asignarServicio = async (form) => {
+  try {
+    const data = new FormData(form);
+    let result = await executePetition(
+      url + "/guardarDoctores",
+      "POST",
+      data,
+    );
+    console.log(result);
+    if (result.ok) {
+      alertSuccess(result.message);
+      modalAsignarServicio.hide();
+      readDoctor();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
+//funcion para llenar los selects de doctor y servicio
+const traerServicioAndDoctor = async () => {
+  try {
+    const result = await executePetition(`${url}/serviciosDoctor`, 'GET');
+    console.log(result)
+
+    let htmlDoc = `<option class="option-select-background" selected="" value="">Seleccionar Doctor</option>`;
+    let htmlSer = `<option class="option-select-background" selected="" value="">Seleccionar Servicio  Medico</option>`;
+
+    //doctores
+    for (const res of result[0]) {
+      console.log(res);
+      htmlDoc += `<option class="option-select-background" name="id_doctor" value="${res.id_personal}">Dr: ${res.nombre_d} ${res.apellido}</option>`;
+    }
+
+    //servicio
+    for (const res of result[1]) {
+      console.log(res);
+      htmlSer += `<option class="option-select-background" name='id_categoria' value="${res.id_categoria}">${res.nombre}</option>`;
+    }
+
+    selectDoctor.innerHTML = htmlDoc;
+    selectService.innerHTML = htmlSer;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+traerServicioAndDoctor();
 readDoctor();
 
 readEspecialidad();
@@ -808,6 +851,7 @@ imagenDoctor.addEventListener("change", function (e) {
 
 let verificarFormulario = inicializarValidacionFormulario(formDoctor);
 let verificarFormularioEsp = inicializarValidacionFormulario(formEspecialidad);
+let verifcarFormAsignar = inicializarValidacionFormulario(formAsignarServicio)
 
 formDoctor.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -839,6 +883,23 @@ formEspecialidad.addEventListener("submit", function (e) {
   if (esValido) {
     console.log("guardar");
     createEspecialidad(this);
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
+  }
+});
+
+
+formAsignarServicio.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let esValido = verifcarFormAsignar();
+
+  if (esValido) {
+    console.log("guardar");
+    asignarServicio(this);
   } else {
     alertError(
       "Error",

@@ -19,7 +19,7 @@
             <path
               d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0Z" />
           </svg>
-          <h5>SELECCIONAR SERVICIOS v5</h5>
+          <h5>SELECCIONAR SERVICIOS </h5>
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
           <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
@@ -31,9 +31,27 @@
         </a>
       </div>
 
-      <div id="ConteNotificacionServicio">
+      <div class=" d-flex justify-content-end mt-3 caja-insumos">
+        <a href="" class="btn d-none" title="Buscar" id="reiniciarBusquedaInsumo" uk-tooltip="Restablecer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+          </svg>
+        </a>
+        <div class="d-flex justify-content-end form-responsive children-caja-insumos" autocomplete="off">
+          <input class="form-control input-buscar tamaño-input-buscar input-responsive" id="searchInputSer" type="text" name="nombre"
+            placeholder="Codigo o Nombre">
 
+          <button class="btn btn-buscar boton-responsive" title="Buscar" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-search" viewBox="0 0 16 16">
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg>
+          </button>
+        </div>
       </div>
+
 
 
       <div class="m-4">
@@ -45,6 +63,9 @@
 
 
         </div>
+
+
+        <div id="paginationSer" class="pagination-div"></div>
 
 
         <div class="modal-footer">
@@ -81,7 +102,7 @@
             <path
               d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
           </svg>
-          <h5>SELECCIONAR INSUMOS 5</h5>
+          <h5>SELECCIONAR INSUMOS </h5>
         </div>
         <a type="button" data-bs-dismiss="modal" aria-label="Close">
           <svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" fill="currentColor"
@@ -94,14 +115,42 @@
       </div>
 
       <div class="form-modal  m-2 " style="width: 97%; overflow-y: auto;">
+        <!-- Buscador de Insumos -->
+        <div class=" d-flex justify-content-end mt-3 caja-insumos">
+          <a href="" class="btn d-none" title="Buscar" id="reiniciarBusquedaInsumo" uk-tooltip="Restablecer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+              <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+              <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+            </svg>
+          </a>
+          <div id="form-buscador-insumo" class="d-flex justify-content-end form-responsive children-caja-insumos" autocomplete="off">
+            <input class="form-control input-buscar tamaño-input-buscar input-responsive" id="searchInput" type="text" name="nombre"
+              placeholder="Codigo o Nombre">
+
+            <button class="btn btn-buscar boton-responsive" title="Buscar" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-search" viewBox="0 0 16 16">
+                <path
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
 
 
-        <div id="div-modal-insumo" class=" modal-body d-flex justify-content-between flex-wrap">
+        <div class=" modal-body d-flex justify-content-between flex-wrap">
 
+
+          <div id="div-modal-insumo" class="d-flex justify-content-between g-3">
+            <!-- js -->
+          </div>
 
 
 
         </div>
+
+        <div id="pagination" class="pagination-div"></div>
+
 
         <div class="modal-footer">
           <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal" id="btnCancelarInsertInsumo">Cancelar</button>
@@ -409,72 +458,7 @@
               </thead>
               <tbody style="font-size: 14px;" id="cuerpoTablaConfirmaroperacion">
 
-                <!-- Código si contiene una 'c' -->
-                <?php if (isset($parametro[0]) && stripos($parametro[0], 'c') !== false): ?>
-                  <?php foreach ($citaFacturar as $datoCita): ?>
-                    <tr>
-                      <input type="hidden" name="servicios[]" value="<?= $datoCita['id_servicioMedico'] ?>">
-                      <input type="hidden" name="precioServicio[]" value="<?= $datoCita['precio'] ?>">
-                      <input type="text" class="d-none" id="inputPaciente" name="id_paciente"
-                        value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none" name="id_paciente" value="<?= $datoCita['id_paciente'] ?>">
-                      <input type="text" class="d-none" name="id_cita" value="<?= $datoCita['id_cita'] ?>">
-                      <input type="text" class="d-none" name="doctores[]" value="<?= $datoCita['doctor'] ?>">
-                      <td>
-                        <div class="fw-bolder">CI:</div>
-                        <?= $datoCita["cedula_p"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">PACIENTE:</div>
-                        <?= $datoCita["nombre_p"]; ?>
-                        <?= $datoCita["apellido_p"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">S/M:</div>
-                        <?= $datoCita["especialidad"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">FECHA:</div>
-                        <?= $datoCita["fecha"]; ?>
-                      </td>
-                    </tr>
-                  <?php endforeach ?>
 
-                <?php
-                // Validar si el parámetro existe y si contiene una "h" (no distingue mayúsculas/minúsculas)
-                elseif (isset($parametro[0]) && stripos($parametro[0], 'h') !== false) :
-                ?>
-
-                  <?php foreach ($hostalizacionFacturar as $hos): ?>
-
-                    <tr>
-
-                      <input type="hidden" class="d-none" name="id_hospitalizacion" value="<?= $hos['id_hospitalizacion'] ?>">
-                      <input type="hidden" class="d-none" name="id_paciente" value="<?= $hos['id_paciente'] ?>">
-                      <td>
-                        <div class="fw-bolder">CI:</div>
-
-                        <?= $hos["cedula"]; ?>
-                      </td>
-                      <td>
-                        <div class="fw-bolder">PACIENTE:</div>
-                        <?= $hos["nombre"]; ?>
-                        <?= $hos["apellido"]; ?>
-                      </td>
-                    </tr>
-                  <?php endforeach ?>
-
-                <?php else: ?>
-
-                  <input type="hidden" class="" id="inputPaciente" name="id_paciente" value="">
-                  <td class="no-cita"></td>
-                  <td class="no-cita"> </td>
-
-
-                  <input type="hidden" class="" id="inputCliente" name="id_cliente" value="">
-                  <td class="data-cliente"></td>
-                  <td class="data-cliente"> </td>
-                <?php endif ?>
               </tbody>
             </table>
             <table class="table table-striped">
@@ -492,36 +476,13 @@
                 </tr>
               </thead>
               <tbody style="font-size: 14px;" id="tbodyInsumos">
-                <?php if (isset($parametro[0]) && stripos($parametro[0], 'h') !== false): ?>
 
-                  <?php foreach ($insumosHospitalizacion as $datoH): ?>
-                    <tr>
-                      <td class="border-top">
-                        <div class="fw-bolder">NOMBRE:</div>
-                        <?= $datoH["nombre"]; ?>
-                      </td>
-
-
-                      <td class="border-top">
-                        <div class="fw-bolder">MEDIDA:</div>
-                        <?= $datoH["medida"]; ?>
-                      </td>
-
-                      <td class="border-top">
-                        <div class="fw-bolder">PRECIO:</div>
-                        <?= $datoH["precio"] . '   $'; ?>
-                      </td>
-
-
-
-                    </tr>
-                  <?php endforeach; ?>
-
-                <?php endif; ?>
               </tbody>
             </table>
 
             <div>
+              <input type="hidden" name="id_cita" id="inputIdCita">
+
               <p class="fw-bolder mb-0 mt-2">TIPOS DE PAGO</p>
               <p id="pagosDeConfirmacion"></p>
               <p id="valorInput"></p>
@@ -536,6 +497,11 @@
               <p class="fw-bolder mb-0 mt-2">TOTAL</p>
 
               <div id="totalDeConfirmacion"></div>
+
+              <!-- //id_paciente -->
+              <input type="text" name="id_paciente" id="inputPaciente">
+              <input type="text" name="id_hospitalizacion" id="inputHospitalizacion">
+
 
 
 

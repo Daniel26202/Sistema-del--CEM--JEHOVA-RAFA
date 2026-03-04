@@ -11,7 +11,7 @@ class ModeloReporte extends ModelBase
 {
 
 
-	private $fechaInicio, $fechaFinal, $numeroDeLote;
+	private $fechaInicio, $fechaFinal, $numeroDeLote, $id_insumo, $id_factura, $estado;
 
 	public function __construct($dbSystem = true)
 	{
@@ -29,7 +29,8 @@ class ModeloReporte extends ModelBase
 	public function consultarFactura()
 	{
 		try {
-			$sql = "SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.id_factura = f.id_factura AND f.estado='ACT' ORDER BY id_factura ASC ;";
+	
+			$sql = "SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente  WHERE f.id_factura = f.id_factura  ORDER BY id_factura ASC ";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -109,7 +110,7 @@ class ModeloReporte extends ModelBase
 
 
 	//consulta sql para mostrar el pdf parametrisado
-	public function entradasInsumosPdf($id_insumo, $desdeFecha, $fechaHasta)
+	public function entradasInsumosPdf()
 	{
 
 		try {
@@ -117,21 +118,22 @@ class ModeloReporte extends ModelBase
 				$data = [
 					'fechaInicio' => $this->getFechaInicio(),
 					'fechaFinal' => $this->getFechaFinal(),
-					'id_insumo' => $this->returnObjectModel()['modeloInsumo']->getIdInsumo()
+					'id_insumo' => $this->getIdInsumo(),
 				];
 
-				$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND e.fechaDeIngreso BETWEEN :fechaInicio AND :fechaFinal AND ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY e.fechaDeIngreso";
+				$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND e.fechaDeIngreso BETWEEN :fechaInicio AND :fechaFinal AND ei.id_insumo =:id_insumo  ORDER BY e.fechaDeIngreso";
 
-				$this->setSQL($sql);
-				return $this->search($data);
-			} else {
-				$data = [
-					'id_insumo' => $this->returnObjectModel()['modeloInsumo']->getIdInsumo()
-				];
-				$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY e.fechaDeIngreso";
 				$this->setSQL($sql);
 				return $this->search($data);
 			}
+
+
+			$data = [
+				'id_insumo' => $this->getIdInsumo()
+			];
+			$sql = "SELECT p.nombre AS nombre_proveedor, p.rif, ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.id_insumo =:id_insumo  ORDER BY e.fechaDeIngreso";
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -163,14 +165,12 @@ class ModeloReporte extends ModelBase
 	public function consultarPagoFactura()
 	{
 		try {
-			$data = [
-				'id_factura' => $this->returnObjectModel()['modeloFactura']->getIdFactura()
-			];
+
 			$sql = "SELECT pf.* , p.nombre
     		FROM pago p INNER JOIN pagodefactura pf ON p.id_pago = pf.id_pago
-    		INNER JOIN factura f ON pf.id_factura = f.id_factura WHERE f.id_factura =:id_factura";
+    		INNER JOIN factura f ON pf.id_factura = f.id_factura";
 			$this->setSQL($sql);
-			return $this->search($data);
+			return $this->read();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -179,12 +179,10 @@ class ModeloReporte extends ModelBase
 	public function consultarServiciosExtras()
 	{
 		try {
-			$data = [
-				'id_factura' => $this->returnObjectModel()['modeloFactura']->getIdFactura()
-			];
-			$sql = "SELECT cs.nombre As categoria_servicio, sf.*,s.*,p.nombre AS nombre_d, p.apellido AS apellido_d FROM serviciomedico_has_factura sf INNER JOIN personal p  ON sf.doctor = p.id_personal INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria  WHERE factura_id_factura =:id_factura ";
+
+			$sql = 'SELECT f.id_factura,cs.nombre as categoria , p.nombre as nombre_d, p.apellido as apellido_d, sm.precio FROM factura  f INNER JOIN detalle_factura df ON df.id_factura = f.id_factura INNER JOIN serviciomedico sm ON sm.id_servicioMedico = df.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal= ps.personal_id_personal WHERE df.tipo = "Servicio" ';
 			$this->setSQL($sql);
-			return $this->search($data);
+			return $this->read();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -192,12 +190,10 @@ class ModeloReporte extends ModelBase
 	public function consultarFacturaInsumo()
 	{
 		try {
-			$data = [
-				'id_factura' => $this->returnObjectModel()['modeloFactura']->getIdFactura()
-			];
-			$sql = "SELECT i.*,fi.*,f.*,ins.nombre, ins.precio FROM entrada_insumo i INNER JOIN factura_has_inventario fi ON i.id_entradaDeInsumo = fi.id_entradaDeInsumo INNER JOIN factura f  ON f.id_factura = fi.factura_id_factura INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo  WHERE f.id_factura =:id_factura";
+
+			$sql = 'SELECT f.id_factura,i.precio as precio_insumo, i.nombre AS nombre_insumo, df.cantidad as cantidad_insumo, i.iva FROM factura  f INNER JOIN detalle_factura df ON df.id_factura = f.id_factura INNER JOIN entrada_insumo ei ON ei.id_entradaDeInsumo = df.entrada_insumo_id_entradaDeInsumo INNER JOIN insumo i ON i.id_insumo = ei.id_insumo   WHERE df.tipo = "Insumo"';
 			$this->setSQL($sql);
-			return $this->search($data);
+			return $this->read();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -206,7 +202,7 @@ class ModeloReporte extends ModelBase
 	{
 		try {
 			$data = [
-				'id_factura' => $this->returnObjectModel()['modeloFactura']->getIdFactura()
+				'id_factura' => $this->getIdFactura()
 			];
 			$sql = "SELECT cs.nombre AS categoria_servicio, d.nombre AS nombre_d, d.apellido AS apellido_d,e.nombre AS especialidad, p.nombre AS nombre_p, p.apellido AS apellido_p, p.nacionalidad, p.cedula AS cedula_p , f.*,c.*,sm.precio AS precio_servicio FROM factura f INNER JOIN cita c ON f.id_cita =c.id_cita  INNER JOIN paciente p ON c.id_paciente = p.id_paciente INNER JOIN serviciomedico sm ON c.id_servicioMedico = sm.id_servicioMedico INNER JOIN personal d ON sm.id_personal = d.id_personal INNER JOIN especialidad e ON d.id_especialidad = e.id_especialidad INNER JOIN usuario u ON d.id_usuario = u.id_usuario INNER JOIN categoria_servicio cs on cs.id_categoria = sm.id_categoria   WHERE id_factura =:id_factura  ";
 			$this->setSQL($sql);
@@ -219,17 +215,21 @@ class ModeloReporte extends ModelBase
 	{
 		try {
 			$data = [
-				'id_factura' => $this->returnObjectModel()['modeloFactura']->getIdFactura()
+				'id_factura' => $this->getIdFactura()
 			];
+
+			$sql = "SELECT * from factura where id_factura=:id_factura";
+			$this->setSQL($sql);
+			$validar  = $this->search($data, false);
+
+			if ($validar == []) {
+				throw new \Exception("El id de la factura no existe");
+			}
+			
 			$sql = "UPDATE factura SET estado = 'Anulada' WHERE id_factura = :id";
 			$this->setSQL($sql);
 			$this->update_logic($data['id_factura']);
-			// Nota hay que revisar esto
-			// if ($consulta->execute()) {
-			// 	$consulta2 =  $this->conexion->prepare("CALL devolver_cantidad_insumos(:id_factura);");
-			// 	$consulta2->bindParam(":id_factura", $id_factura);
-			// 	$consulta2->execute();
-			// }
+			
 			return ['exito'];
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -239,7 +239,7 @@ class ModeloReporte extends ModelBase
 	{
 		try {
 			$data = [
-				'id_factura' => $this->returnObjectModel()['modeloFactura']->getIdFactura()
+				'id_factura' => $this->getIdFactura()
 			];
 			$sql = "SELECT p.nacionalidad, p.nombre AS  nombre_p,p.apellido AS apellido_p,p.cedula AS cedula_p,f.* FROM factura f INNER JOIN paciente p ON f.paciente_id_paciente = p.id_paciente WHERE f.id_factura =:id_factura ";
 			$this->setSQL($sql);
@@ -336,6 +336,9 @@ class ModeloReporte extends ModelBase
 		}
 	}
 
+
+
+	// getters setters
 	public function getFechaInicio()
 	{
 		return $this->fechaInicio;
@@ -350,6 +353,23 @@ class ModeloReporte extends ModelBase
 	{
 		return $this->numeroDeLote;
 	}
+
+	public function getIdInsumo()
+	{
+		return $this->id_insumo;
+	}
+
+	public function getIdFactura()
+	{
+		return $this->id_factura;
+	}
+
+	public function getEstado()
+	{
+		return $this->estado;
+	}
+
+
 
 	public function setNumeroDeLote($numeroDeLote)
 	{
@@ -369,13 +389,18 @@ class ModeloReporte extends ModelBase
 		$dt = \DateTime::createFromFormat('Y-m-d', $fechaInicio);
 		$fechaHoy = date("Y-m-d");
 
+		if ($fechaInicio == '') {
+			$this->fechaInicio = $fechaInicio;
+			return;
+		}
+
 		if (!$dt || $dt->format('Y-m-d') !== $fechaInicio) {
 			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
 		}
 		if ($fechaInicio >= $fechaHoy) {
 			throw new \InvalidArgumentException("La fecha no puede ser del futuro.");
 		}
-		
+
 		$this->fechaInicio = $fechaInicio;
 	}
 
@@ -383,6 +408,11 @@ class ModeloReporte extends ModelBase
 	{
 		$dt = \DateTime::createFromFormat('Y-m-d', $fechaFinal);
 		$fechaHoy = date("Y-m-d");
+
+		if ($fechaFinal == '') {
+			$this->fechaFinal = $fechaFinal;
+			return;
+		}
 
 		if (!$dt || $dt->format('Y-m-d') !== $fechaFinal) {
 			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
@@ -394,5 +424,37 @@ class ModeloReporte extends ModelBase
 			throw new \InvalidArgumentException("La fecha final no puede ser menor o igual a la fecha de inicio.");
 		}
 		$this->fechaFinal = $fechaFinal;
+	}
+
+	public function setIdInsumo($idInsumo)
+	{
+
+		if (!preg_match('/^[0-9]+$/', $idInsumo)) {
+			throw new \InvalidArgumentException('El ID no es válido.');
+		}
+		if ((int)$idInsumo <= 0) {
+			throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+		}
+		$this->id_insumo = $idInsumo;
+	}
+
+	public function setIdFactura($id_factura)
+	{
+		if (!preg_match("/^[0-9]+$/", $id_factura)) {
+			throw new \InvalidArgumentException("El ID de la factura debe ser un número entero positivo.");
+		}
+
+		if ((int)$id_factura <= 0) {
+			throw new \InvalidArgumentException("El ID de la factura debe ser mayor que cero.");
+		}
+
+		$this->id_factura = (int)$id_factura;
+	}
+
+	public function setEstadoFactura($estado)
+	{
+
+
+		$this->estado = $estado;
 	}
 }

@@ -6,9 +6,7 @@ import {
 } from "./generic/funtionGeneric.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 
-console.log("DOMContentLoaded De Factura Dios :( :)");
 // Creamos la variable donde van a estar los datos, y de una vez le ponemos una fila para probar
-console.log(window.location.href.includes("facturaCita"));
 var data = [];
 var dataInsumo = [];
 let listaModalServicio = [];

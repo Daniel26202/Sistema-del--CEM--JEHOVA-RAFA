@@ -212,23 +212,34 @@ addEventListener("DOMContentLoaded", function () {
     fechaGlobal = input.value;
 
     console.log(diasLaborablesDoctor);
-    dateName = dateName.charAt(0).toUpperCase() + dateName.slice(1);
+    // dateName = dateName.charAt(0).toUpperCase() + dateName.slice(1);
+    console.log(dateName)
+    //no se encontraron registros
+    if (!diasLaborablesDoctor.length > 0) {
+      divHorariosDisp.classList.add("d-none");
+      alertError(
+        "Error",
+        `Lamentablemente no se encontraron dias del doctor `,
+      );
+      return;
+    }
 
     diasLaborablesDoctor.forEach((ele) => {
-    console.log(ele[dateName]);
+      console.log(ele[dateName]);
+      if(!ele[dateName]){
+        divHorariosDisp.classList.add("d-none");
+        alertError(
+          "Error",
+          `El ${dateName} no esta dentro del horario del doctor.`,
+        );
+        return;
+      }
       if (ele[dateName]) {
         divHorariosDisp.classList.remove("d-none");
         validarHorarioDisponible(fechaGlobal, id_doctor, listHoraRegistrada);
         console.log("El dia es valido para el doctor");
         return;
-      } else {
-        divHorariosDisp.classList.add("d-none");
-
-        alertError(
-          "Error",
-          `El ${dateName} no esta dentro del horario del doctor.`,
-        );
-      }
+      } 
     });
   };
 
@@ -474,9 +485,8 @@ addEventListener("DOMContentLoaded", function () {
                                         </div>
                                    
                                         <div class="me-2">
-                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${
-                                              element.id_cita
-                                            } 
+                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${element.id_cita
+          } 
                                                 uk-tooltip="Eliminar Cita" id="eliminarCitaP">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                                     fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">

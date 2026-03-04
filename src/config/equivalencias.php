@@ -59,6 +59,7 @@ return [
     "mostrarServicios"=>"consultar",
     "mostrarInsumos"=>"consultar",
     "mostrarMetodosDePago"=>"consultar",
+    "datosHospitalizacion"=>'consultar',
 
     //Citas
     "mostrarPacienteCita" => "consultar",
@@ -267,5 +268,8 @@ return [
     "generarRespaldo" => "guardar",
     "restaurarRespaldo" => "guardar",
     "verificacionU" => "consultar",
+    "returnDataFactura"=>'consultar',
+    "returnDataFacturaAnulada" => 'consultar',
+
 
 ];

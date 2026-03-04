@@ -1,14 +1,24 @@
 // Variables globales
 const { jsPDF } = window.jspdf;
 
+const expresiones = {
+  fn1: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+  fn2: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+
+  fechaDeCita: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
+};
+
 let currentYear, currentMonth;
-let events = []; /* Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...] */
+let events =
+  []; /* Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...] */
 
 //elementos a imprimir
 const elementoImprimirEspecialidad = document.getElementById("imprimir");
 const elementoImprimirSintomas = document.getElementById("imprimirSintomas");
-const elementoImprimirDistribucionPacientes = document.getElementById("imprimirPacientes");
-const elementoImprimirMorbilidad = document.getElementById("imprimirMorbilidad");
+const elementoImprimirDistribucionPacientes =
+  document.getElementById("imprimirPacientes");
+const elementoImprimirMorbilidad =
+  document.getElementById("imprimirMorbilidad");
 const elementoImprimirinsumos = document.getElementById("imprimirInsumos");
 
 //alerts
@@ -16,12 +26,14 @@ const alertEspecialidades = document.querySelector(".alert-no-encontrado");
 const alertSintomas = document.querySelector(".alert-no-encontrado-s");
 const alertMorbilidad = document.querySelector(".alert-no-encontrado-m");
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
-  distribucion_edad_genero("/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero");
+  distribucion_edad_genero(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero",
+  );
   tasa_morbilidad("/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad");
-  especialidades_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas");
+  especialidades_chart(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas",
+  );
   sintomas_chart(`/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes`);
   insumos(`/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/insumos`);
 });
@@ -31,13 +43,19 @@ let distribucion_pacientes_chart_modal = null;
 let totalPacientes = 0;
 let totalPacientesMasculinos = 0;
 let totalPacientesFemeninos = 0;
+
 const distribucion_edad_genero = async (url) => {
   let edadGenero = await fetch(url);
   let data = await edadGenero.json();
 
   data.forEach((elemento) => (totalPacientes += parseInt(elemento.total)));
-  data.forEach((elemento) => (totalPacientesMasculinos = parseInt(elemento.total_masculino)));
-  data.forEach((elemento) => (totalPacientesFemeninos = parseInt(elemento.total_femenino)));
+  data.forEach(
+    (elemento) =>
+      (totalPacientesMasculinos = parseInt(elemento.total_masculino)),
+  );
+  data.forEach(
+    (elemento) => (totalPacientesFemeninos = parseInt(elemento.total_femenino)),
+  );
 
   let label = data.map((item) => item.rango_edad);
   let masculino = data.map((item) => item.masculino);
@@ -212,12 +230,19 @@ const insumos = async (url) => {
   /*   document.getElementById("insumos_pdf").width = 300; */
   /*   document.getElementById("insumos_pdf").height = 180; */
 
-  const ctxModal = document.getElementById("insumos_canva_pdf").getContext("2d");
+  const ctxModal = document
+    .getElementById("insumos_canva_pdf")
+    .getContext("2d");
   if (insumosChartModal) {
     insumosChartModal.destroy();
   }
 
-  console.log("Creando gráfico modal de insumos ctxModal:", ctxModal, "labels:", labels);
+  console.log(
+    "Creando gráfico modal de insumos ctxModal:",
+    ctxModal,
+    "labels:",
+    labels,
+  );
   insumosChartModal = new Chart(ctxModal, {
     type: "bar",
     data: {
@@ -270,118 +295,167 @@ let tasaMorbilidadChartModal = null;
 const tasa_morbilidad = async (url) => {
   let tes = await fetch(url);
   let data = await tes.json();
+  console.log(data);
 
-  if (data.length > 0) {
-      const labels = data.map((item) => item.nombre_patologia);
-      const casos = data.map((item) => parseInt(item.casos, 10));
-      const tasas = data.map((item) => parseFloat(item.tasa_por_1000));
+  if (!data.length > 0) {
+    document.getElementById("textoMorbilidad").classList.add("d-none");
+    // document.getElementById("btnMorbilidad").classList.add("d-none");
+    document.getElementById("tasa_morbilidad").classList.add("d-none");
+    document.getElementById("morbilidad_pdf").classList.add("d-none");
 
-      // Destruir el gráfico anterior si existe
-      if (tasaMorbilidadChart) {
-        tasaMorbilidadChart.destroy();
+    //alert
+    Swal.fire({
+      icon: "question",
+      title: "Confirmacion",
+      text: "No se encontraron datos en dicho rango de fecha por lo tanto si desea imprimir el registro completo de datos presione Aceptar de lo contrario Cancelar",
+      showCancelButton: true,
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar",
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        const modal = document.getElementById("btnMorbilidad").closest(".modal-content");
+        //resetera inputs fechas
+        modal.querySelectorAll('.input-validar').forEach(input=>{
+          input.value = '';
+          console.log(input.value)
+          input.parentElement.classList.remove('valido', 'invalido');
+          //iconos
+          input.nextElementSibling.children[0].classList.add('d-none');
+          input.nextElementSibling.children[1].classList.add("d-none");
+        })
+
+
+        tasa_morbilidad(
+          "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad",
+        );
       }
-      ctx = document.getElementById("tasa_morbilidad").getContext("2d");
+    });
 
-      tasaMorbilidadChart = new Chart(ctx, {
-        data: {
-          labels,
-          datasets: [
-            {
-              type: "bar",
-              label: "Casos",
-              data: casos,
-              backgroundColor: "#36A2EB",
-              yAxisID: "yCasos",
-            },
-            {
-              type: "line",
-              label: "Tasa por cada 1000 pacientes",
-              data: tasas,
-              borderColor: "#8aafff",
-              backgroundColor: "#8aafff",
-              yAxisID: "yTasa",
-            },
-          ],
+    return;
+  }
+
+  const labels = data.map((item) => item.nombre_patologia);
+  const casos = data.map((item) => parseInt(item.casos, 10));
+  const tasas = data.map((item) => parseFloat(item.tasa_por_1000));
+
+  document.getElementById("tasa_morbilidad").classList.remove("d-none");
+  document.getElementById("morbilidad_pdf").classList.remove("d-none");
+
+  // Destruir el gráfico anterior si existe
+  if (tasaMorbilidadChart) {
+    tasaMorbilidadChart.destroy();
+  }
+  ctx = document.getElementById("tasa_morbilidad").getContext("2d");
+
+  tasaMorbilidadChart = new Chart(ctx, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Casos",
+          data: casos,
+          backgroundColor: "#36A2EB",
+          yAxisID: "yCasos",
         },
-        options: {
-          responsive: true,
-          scales: {
-            yCasos: {
-              type: "linear",
-              position: "left",
-              title: { display: true, text: "Número de Casos" },
-            },
-            yTasa: {
-              type: "linear",
-              position: "right",
-              title: { display: true, text: "Tasa por 1 000 pacientes" },
-              grid: { drawOnChartArea: false },
-            },
-          },
-          plugins: {
-            legend: { position: "bottom" },
-            tooltip: { mode: "index", intersect: false },
-          },
+        {
+          type: "line",
+          label: "Tasa por cada 1000 pacientes",
+          data: tasas,
+          borderColor: "#8aafff",
+          backgroundColor: "#8aafff",
+          yAxisID: "yTasa",
         },
-      });
-
-      if (tasaMorbilidadChartModal) {
-        tasaMorbilidadChartModal.destroy();
-      }
-      document.getElementById("morbilidad_pdf").width = 300;
-      document.getElementById("morbilidad_pdf").height = 180;
-      ctxModal = document.getElementById("morbilidad_pdf").getContext("2d");
-
-      tasaMorbilidadChartModal = new Chart(ctxModal, {
-        data: {
-          labels,
-          datasets: [
-            {
-              type: "bar",
-              label: "Casos",
-              data: casos,
-              backgroundColor: "#36A2EB",
-              yAxisID: "yCasos",
-            },
-            {
-              type: "line",
-              label: "Tasa por cada 1000 pacientes",
-              data: tasas,
-              borderColor: "#8aafff",
-              backgroundColor: "#8aafff",
-              yAxisID: "yTasa",
-            },
-          ],
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        yCasos: {
+          type: "linear",
+          position: "left",
+          title: { display: true, text: "Número de Casos" },
         },
-        options: {
-          responsive: true,
-          scales: {
-            yCasos: {
-              type: "linear",
-              position: "left",
-              title: { display: true, text: "Número de Casos" },
-            },
-            yTasa: {
-              type: "linear",
-              position: "right",
-              title: { display: true, text: "Tasa por 1 000 pacientes" },
-              grid: { drawOnChartArea: false },
-            },
-          },
-          plugins: {
-            legend: { position: "bottom" },
-            tooltip: { mode: "index", intersect: false },
-          },
+        yTasa: {
+          type: "linear",
+          position: "right",
+          title: { display: true, text: "Tasa por 1 000 pacientes" },
+          grid: { drawOnChartArea: false },
         },
-      });
+      },
+      plugins: {
+        legend: { position: "bottom" },
+        tooltip: { mode: "index", intersect: false },
+      },
+    },
+  });
 
-      // Calcular totales dinámicos
-      const totalCasos = casos.reduce((acumulador, valorActual) => acumulador + valorActual, 0);
-      const patologiaMayor = labels[casos.indexOf(Math.max(...casos))];
-      const tasaMayor = Math.max(...tasas).toFixed(2);
+  if (tasaMorbilidadChartModal) {
+    tasaMorbilidadChartModal.destroy();
+  }
+  document.getElementById("morbilidad_pdf").width = 300;
+  document.getElementById("morbilidad_pdf").height = 180;
+  ctxModal = document.getElementById("morbilidad_pdf").getContext("2d");
 
-      // Descripción dinámica
-      document.getElementById("textoMorbilidad").innerHTML = `
+  tasaMorbilidadChartModal = new Chart(ctxModal, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Casos",
+          data: casos,
+          backgroundColor: "#36A2EB",
+          yAxisID: "yCasos",
+        },
+        {
+          type: "line",
+          label: "Tasa por cada 1000 pacientes",
+          data: tasas,
+          borderColor: "#8aafff",
+          backgroundColor: "#8aafff",
+          yAxisID: "yTasa",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        yCasos: {
+          type: "linear",
+          position: "left",
+          title: { display: true, text: "Número de Casos" },
+        },
+        yTasa: {
+          type: "linear",
+          position: "right",
+          title: { display: true, text: "Tasa por 1 000 pacientes" },
+          grid: { drawOnChartArea: false },
+        },
+      },
+      plugins: {
+        legend: { position: "bottom" },
+        tooltip: { mode: "index", intersect: false },
+      },
+    },
+  });
+
+  // Calcular totales dinámicos
+  const totalCasos = casos.reduce(
+    (acumulador, valorActual) => acumulador + valorActual,
+    0,
+  );
+  const patologiaMayor = labels[casos.indexOf(Math.max(...casos))];
+  const tasaMayor = Math.max(...tasas).toFixed(2);
+
+  // Descripción dinámica
+  document.getElementById("textoMorbilidad").innerHTML = `
   <p class="text-center">
     Este gráfico muestra la cantidad de casos y la tasa de morbilidad por cada 1 000 pacientes para las patologías más frecuentes.<br>
     <strong>Total de casos registrados:</strong> ${totalCasos}<br>
@@ -392,14 +466,8 @@ const tasa_morbilidad = async (url) => {
     Analiza visualmente cuáles enfermedades tienen mayor impacto en la población y compara la frecuencia absoluta y relativa de cada una, facilitando la toma de decisiones en salud.
   </p>
 `;
-    document.getElementById("textoMorbilidad").classList.remove("d-none");
-    document.getElementById("morbilidad").classList.remove("d-none");
-
-  } else {
-    document.getElementById("textoMorbilidad").classList.add("d-none");
-    document.getElementById("morbilidad").classList.add("d-none");
-
-  }
+  document.getElementById("textoMorbilidad").classList.remove("d-none");
+  // document.getElementById("btnMorbilidad").classList.remove("d-none");
 };
 
 //  el gráfico de especialidades
@@ -413,13 +481,19 @@ const especialidades_chart = async (url) => {
 
     if (data.length > 0) {
       //Quitarle lo oculto a los graficos
-      document.getElementById("especialidades_solicitadas").classList.remove("d-none");
-      document.getElementById("especialidades_solicitadas_pdf").classList.remove("d-none");
+      document
+        .getElementById("especialidades_solicitadas")
+        .classList.remove("d-none");
+      document
+        .getElementById("especialidades_solicitadas_pdf")
+        .classList.remove("d-none");
 
       let especialidades = data.map((item) => item.especialidad);
       let totalSolicitudes = data.map((item) => item.total_solicitudes);
       generarLeyendaEspecialidades(especialidades, totalSolicitudes); // Genera la leyenda de especialidades
-      let ctx = document.getElementById("especialidades_solicitadas").getContext("2d");
+      let ctx = document
+        .getElementById("especialidades_solicitadas")
+        .getContext("2d");
       if (especialidadesChart) {
         especialidadesChart.destroy();
       }
@@ -430,7 +504,13 @@ const especialidades_chart = async (url) => {
           datasets: [
             {
               data: totalSolicitudes,
-              backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
+              backgroundColor: [
+                "#387adf",
+                "#78a0f0",
+                "#a4c7ff",
+                "#ffcc00",
+                "#ff6666",
+              ],
             },
           ],
           options: {
@@ -445,7 +525,9 @@ const especialidades_chart = async (url) => {
       });
 
       // Renderiza el gráfico en el canvas del modal
-      let ctxModal = document.getElementById("especialidades_solicitadas_pdf").getContext("2d");
+      let ctxModal = document
+        .getElementById("especialidades_solicitadas_pdf")
+        .getContext("2d");
 
       // Destruye el gráfico existente en el modal si ya fue creado
       if (especialidadesChartModal) {
@@ -460,7 +542,13 @@ const especialidades_chart = async (url) => {
           datasets: [
             {
               data: totalSolicitudes,
-              backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
+              backgroundColor: [
+                "#387adf",
+                "#78a0f0",
+                "#a4c7ff",
+                "#ffcc00",
+                "#ff6666",
+              ],
             },
           ],
         },
@@ -478,16 +566,24 @@ const especialidades_chart = async (url) => {
       //Aparecer el escrito
 
       totalDeEspecialidades(data);
-      document.querySelectorAll("#texto p").forEach((ele) => ele.classList.remove("d-none"));
+      document
+        .querySelectorAll("#texto p")
+        .forEach((ele) => ele.classList.remove("d-none"));
 
       document.querySelector(".alert-no-encontrado").classList.add("d-none");
     } else {
       document.querySelector(".alert-no-encontrado").classList.remove("d-none");
       //Vaciando todos los elementos si no hay datos para relizar la grafica
-      document.getElementById("especialidades_solicitadas").classList.add("d-none");
-      document.getElementById("especialidades_solicitadas_pdf").classList.add("d-none");
+      document
+        .getElementById("especialidades_solicitadas")
+        .classList.add("d-none");
+      document
+        .getElementById("especialidades_solicitadas_pdf")
+        .classList.add("d-none");
       document.querySelector(".leyenda-container").innerHTML = "";
-      document.querySelectorAll("#texto p").forEach((ele) => ele.classList.add("d-none"));
+      document
+        .querySelectorAll("#texto p")
+        .forEach((ele) => ele.classList.add("d-none"));
       document.getElementById("especialidades").classList.add("d-none");
     }
   } catch (error) {
@@ -496,7 +592,9 @@ const especialidades_chart = async (url) => {
 };
 
 async function totalDeEspecialidades(data) {
-  let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades");
+  let peticion = await fetch(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades",
+  );
   let resultado = await peticion.json();
   document.getElementById("texto").innerHTML = ``;
 
@@ -520,12 +618,18 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
   contenedorLeyenda.innerHTML = "";
 
   // Calcula el total de solicitudes para obtener los porcentajes
-  const totalSolicitudesGlobal = totalSolicitudes.reduce((acumulado, actual) => acumulado + actual, 0);
+  const totalSolicitudesGlobal = totalSolicitudes.reduce(
+    (acumulado, actual) => acumulado + actual,
+    0,
+  );
 
   // Recorre cada especialidad y genera un elemento de leyenda
   especialidades.forEach((especialidad, indice) => {
     // Calcula el porcentaje de solicitudes para esta especialidad
-    const porcentaje = ((totalSolicitudes[indice] / totalSolicitudesGlobal) * 100).toFixed(1);
+    const porcentaje = (
+      (totalSolicitudes[indice] / totalSolicitudesGlobal) *
+      100
+    ).toFixed(1);
 
     // Crea el contenedor principal para el elemento de la leyenda
     const elementoLeyenda = document.createElement("div");
@@ -537,7 +641,13 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
     const cuadroColor = document.createElement("div");
     cuadroColor.style.width = "20px";
     cuadroColor.style.height = "20px";
-    cuadroColor.style.backgroundColor = ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"][indice % 5]; // Selecciona un color basado en el índice
+    cuadroColor.style.backgroundColor = [
+      "#387adf",
+      "#78a0f0",
+      "#a4c7ff",
+      "#ffcc00",
+      "#ff6666",
+    ][indice % 5]; // Selecciona un color basado en el índice
     cuadroColor.style.marginRight = "10px";
     cuadroColor.style.borderRadius = "3px";
 
@@ -568,7 +678,9 @@ const sintomas_chart = async (url) => {
   if (data.length > 0) {
     //Quitarle lo oculto a los graficos
     document.getElementById("sintomas_comunes").classList.remove("d-none");
-    document.getElementById("sintomas_solicitadas_pdf").classList.remove("d-none");
+    document
+      .getElementById("sintomas_solicitadas_pdf")
+      .classList.remove("d-none");
     let sintomas = data.map((item) => item.sintoma);
     let total = data.map((item) => item.total);
 
@@ -584,7 +696,13 @@ const sintomas_chart = async (url) => {
         datasets: [
           {
             data: total,
-            backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
+            backgroundColor: [
+              "#387adf",
+              "#78a0f0",
+              "#a4c7ff",
+              "#ffcc00",
+              "#ff6666",
+            ],
           },
         ],
       },
@@ -593,7 +711,9 @@ const sintomas_chart = async (url) => {
     // Verificar que el canvas del modal exista
     let canvasModal = document.getElementById("sintomas_solicitadas_pdf");
     if (!canvasModal) {
-      console.error("El canvas 'sintomas_solicitadas_pdf' no existe en el DOM.");
+      console.error(
+        "El canvas 'sintomas_solicitadas_pdf' no existe en el DOM.",
+      );
       return;
     }
 
@@ -616,7 +736,13 @@ const sintomas_chart = async (url) => {
         datasets: [
           {
             data: total,
-            backgroundColor: ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"],
+            backgroundColor: [
+              "#387adf",
+              "#78a0f0",
+              "#a4c7ff",
+              "#ffcc00",
+              "#ff6666",
+            ],
           },
         ],
       },
@@ -634,7 +760,9 @@ const sintomas_chart = async (url) => {
     totalDeSintomas(data);
     //aparece el boton de impirmir
     document.getElementById("textoSintomas").classList.remove("d-none");
-    document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.remove("d-none"));
+    document
+      .querySelectorAll("#textoSintomas p")
+      .forEach((ele) => ele.classList.remove("d-none"));
     document.querySelector(".alert-no-encontrado-s").classList.add("d-none");
     document.getElementById("sintomas").classList.remove("d-none");
   } else {
@@ -644,13 +772,17 @@ const sintomas_chart = async (url) => {
     document.getElementById("sintomas_comunes").classList.add("d-none");
     document.getElementById("sintomas_solicitadas_pdf").classList.add("d-none");
     document.querySelector(".leyenda-sintomas-container").innerHTML = "";
-    document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.add("d-none"));
+    document
+      .querySelectorAll("#textoSintomas p")
+      .forEach((ele) => ele.classList.add("d-none"));
     document.getElementById("sintomas").classList.add("d-none");
   }
 };
 
 async function totalDeSintomas(data) {
-  let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todos_los_sintomas");
+  let peticion = await fetch(
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todos_los_sintomas",
+  );
   let resultado = await peticion.json();
   console.log(resultado);
   document.getElementById("textoSintomas").innerHTML = ``;
@@ -670,14 +802,19 @@ async function totalDeSintomas(data) {
 
 function generarLeyendaSintomas(sintomas, total) {
   // Selecciona el contenedor donde se mostrará la leyenda de síntomas
-  const contenedorLeyenda = document.querySelector(".leyenda-sintomas-container");
+  const contenedorLeyenda = document.querySelector(
+    ".leyenda-sintomas-container",
+  );
   if (!contenedorLeyenda) return;
 
   // Limpia cualquier contenido previo en el contenedor
   contenedorLeyenda.innerHTML = "";
 
   // Calcula el total de síntomas para obtener los porcentajes
-  const totalGlobal = total.reduce((acumulado, actual) => acumulado + actual, 0);
+  const totalGlobal = total.reduce(
+    (acumulado, actual) => acumulado + actual,
+    0,
+  );
 
   // Colores para los síntomas (igual que en el gráfico)
   const colores = ["#387adf", "#78a0f0", "#a4c7ff", "#ffcc00", "#ff6666"];
@@ -714,15 +851,141 @@ function generarLeyendaSintomas(sintomas, total) {
   });
 }
 
+//validacioenes de inputs
+function inicializarValidacionFormulario(formulario) {
+  const campos = {};
+  document.querySelectorAll(".input-validar").forEach((input) => {
+    campos[input.name] = false;
+    // Marcar como modificado cuando el usuario interactúa
+    input.addEventListener("keyup", (e) => {
+      validarFormulario(e, formulario, campos);
+    });
+    input.addEventListener("input", (e) => {
+      validarFormulario(e, formulario, campos);
+    });
+    input.addEventListener("blur", (e) => {
+      validarFormulario(e, formulario, campos);
+    });
+  });
+}
+
+function validarFormulario(e, formulario, campos) {
+  const input = e.target;
+  const nameInput = input.name;
+  let mensajeError = expresiones[input.name].mensajeError;
+  let campoCustom = input.closest(".campo-custom");
+
+  let pError = campoCustom.querySelector("p");
+  let check = campoCustom.querySelector(".check");
+  let error = campoCustom.querySelector(".error");
+  let arrayElementos = {
+    pError: pError,
+    check: check,
+    error: error,
+  };
+  campos[nameInput] = validarFecha(
+    input,
+    arrayElementos,
+    nameInput,
+    formulario,
+  );
+}
+
+// Nueva función para validar fechas no futuras ni pasadas
+function validarFecha(input, arrayElementos, campo, formulario) {
+  let { pError, check, error } = arrayElementos;
+  const valorFecha = new Date(input.value);
+  const fechaHoy = new Date();
+  // Establece el tiempo a la medianoche para comparación
+  fechaHoy.setHours(0, 0, 0, 0);
+
+  pError.classList.add("fw-bold");
+  pError.classList.add("p-error-validaciones");
+
+  if (campo == "fn1" || campo == "fn2") {
+    actualizarEstadoInput(input, "incorrecto", formulario);
+    if (!expresiones.fn1.expresion.test(input.value)) {
+      pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
+      pError.classList.remove("d-none");
+      chulitoYX(check, error, "inValido");
+      return false;
+    } else if (valorFecha > fechaHoy) {
+      pError.textContent = "La fecha no puede ser del futuro.";
+      pError.classList.remove("d-none");
+      chulitoYX(check, error, "inValido");
+      return false;
+    }
+  } else if (campo == "fechaDeCita") {
+    actualizarEstadoInput(input, "incorrecto", formulario);
+    if (!expresiones.fn.expresion.test(input.value)) {
+      pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
+      pError.classList.remove("d-none");
+      chulitoYX(check, error, "inValido");
+      return false;
+    } else if (valorFecha < fechaHoy) {
+      pError.textContent = "La fecha no puede ser del pasado.";
+      pError.classList.remove("d-none");
+      chulitoYX(check, error, "inValido");
+      return false;
+    }
+  } else if (campo === "fechaDeVencimiento") {
+    actualizarEstadoInput(input, "incorrecto", formulario);
+    if (!expresiones.fechaDeVencimiento.expresion.test(input.value)) {
+      pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
+      pError.classList.remove("d-none");
+      chulitoYX(check, error, "inValido");
+      return false;
+    } else if (valorFecha <= fechaHoy) {
+      pError.textContent =
+        "La fecha de vencimiento no puede ser del pasado o de hoy.";
+      pError.classList.remove("d-none");
+      chulitoYX(check, error, "inValido");
+      return false;
+    }
+  }
+  // Si pasa todas las validaciones
+  chulitoYX(check, error, "valido");
+  pError.classList.add("d-none");
+  actualizarEstadoInput(input, "correcto", formulario);
+  return true;
+}
+
+// Función que actualiza el aspecto visual del input según su estado de validación
+function actualizarEstadoInput(input, estado) {
+  input.parentElement.classList.toggle("valido", estado === "correcto");
+  input.parentElement.classList.toggle("invalido", estado === "incorrecto");
+}
+
+function chulitoYX(check, error, Validar) {
+  if (Validar === "valido") {
+    check.classList.remove("d-none");
+    error.classList.add("d-none");
+  } else if (Validar === "inValido") {
+    check.classList.add("d-none");
+    error.classList.remove("d-none");
+  } else if (Validar === "vacio") {
+    check.classList.add("d-none");
+    error.classList.add("d-none");
+  }
+}
+
+//lamar la funcion
+inicializarValidacionFormulario();
+
 //Funcion para  filtrar por fecha
 
-function filtrar_por_fecha(funcion, fechaInicio, fechaFinal, divAlert, parametros = "") {
+function filtrar_por_fecha(
+  funcion,
+  fechaInicio,
+  fechaFinal,
+  divAlert,
+  parametros = "",
+) {
   if (fechaInicio < fechaFinal) {
     funcion(parametros);
     divAlert.classList.add("d-none");
   } else {
     divAlert.classList.remove("d-none");
-
   }
 }
 
@@ -731,49 +994,41 @@ function filtrar_por_fecha(funcion, fechaInicio, fechaFinal, divAlert, parametro
 //especialidades por fecha
 document.getElementById("buscarFecha").addEventListener("click", function () {
   let fechaInicio = this.parentElement.firstElementChild.value;
-  let fechaFinal = this.parentElement.firstElementChild.nextElementSibling.value;
+  let fechaFinal =
+    this.parentElement.firstElementChild.nextElementSibling.value;
   filtrar_por_fecha(
     especialidades_chart,
     fechaInicio,
     fechaFinal,
     alertEspecialidades,
-    `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas_filtradas/${fechaInicio}/${fechaFinal}`
+    `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas_filtradas/${fechaInicio}/${fechaFinal}`,
   );
 });
 
 //sintomas por fecha
-document.getElementById("buscarFechaSintomas").addEventListener("click", function () {
-  let fechaInicio = this.parentElement.firstElementChild.value;
-  let fechaFinal = this.parentElement.firstElementChild.nextElementSibling.value;
-  filtrar_por_fecha(
-    sintomas_chart,
-    fechaInicio,
-    fechaFinal,
-    alertSintomas,
-    `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio}/${fechaFinal}`
-  );
-});
-
-//morbilidad fecha
-document.getElementById("buscarFechaMorbilidad").addEventListener("click", function () {
-  let fechaInicio = this.parentElement.firstElementChild.value;
-  let fechaFinal = this.parentElement.firstElementChild.nextElementSibling.value;
-  alert("ddd")
-  filtrar_por_fecha(
-    tasa_morbilidad,
-    fechaInicio,
-    fechaFinal,
-    alertMorbilidad,
-    `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad/${fechaInicio}/${fechaFinal}`
-  );
-});
+document
+  .getElementById("buscarFechaSintomas")
+  .addEventListener("click", function () {
+    let fechaInicio = this.parentElement.firstElementChild.value;
+    let fechaFinal =
+      this.parentElement.firstElementChild.nextElementSibling.value;
+    filtrar_por_fecha(
+      sintomas_chart,
+      fechaInicio,
+      fechaFinal,
+      alertSintomas,
+      `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio}/${fechaFinal}`,
+    );
+  });
 
 // seccion de generacion de reportes
 
 //generar reporte de especialidades
-document.getElementById("especialidades").addEventListener("click", function () {
-  generarReporte(elementoImprimirEspecialidad, "reporte_especialidades.pdf");
-});
+document
+  .getElementById("especialidades")
+  .addEventListener("click", function () {
+    generarReporte(elementoImprimirEspecialidad, "reporte_especialidades.pdf");
+  });
 
 //generar reporte de sintoams
 document.getElementById("sintomas").addEventListener("click", function () {
@@ -782,18 +1037,65 @@ document.getElementById("sintomas").addEventListener("click", function () {
 
 //generar Reporte pacientes
 document.getElementById("pacientes").addEventListener("click", function () {
-  generarReporte(elementoImprimirDistribucionPacientes, "reporte_distribucion_de_pacientes.pdf");
+  generarReporte(
+    elementoImprimirDistribucionPacientes,
+    "reporte_distribucion_de_pacientes.pdf",
+  );
 });
 
 //repotte morbilidad
-document.getElementById("morbilidad").addEventListener("click", function () {
-  generarReporte(elementoImprimirMorbilidad, "reporte_tasa_de_morbilidad.pdf");
+console.log(document.getElementById("btnMorbilidad"));
+document.getElementById("btnMorbilidad").addEventListener("click", function () {
+  const inputs =
+    this.closest(".modal-content").querySelectorAll(".input-validar");
+  if (
+    !inputs[0].parentElement.classList.contains("valido") &&
+    !inputs[1].parentElement.classList.contains("valido")
+  ) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Por favor verifique que todos los datos sean correctos ",
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
+    });
+    return;
+  }
+
+  if (inputs[0].value > inputs[1].value) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Por favor la fecha de inicio no puede ser mayor a la fecha final ",
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
+    });
+    return;
+  }
+  generarReporte(
+    elementoImprimirMorbilidad,
+    "reporte_tasa_de_morbilidad.pdf",
+  );
+
+  tasa_morbilidad(
+    `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/filtrar_tasaMorbilidad/${inputs[0].value}/${inputs[1].value}`,
+  );
+
+  console.log("hola");
 });
 
 //repotte insumos
-document.getElementById("descargarInsumos").addEventListener("click", function () {
-  generarReporte(elementoImprimirinsumos, "imprimirInsumos.pdf");
-});
+document
+  .getElementById("descargarInsumos")
+  .addEventListener("click", function () {
+    generarReporte(elementoImprimirinsumos, "imprimirInsumos.pdf");
+  });
 
 //funcion generica para imprimir pdf
 function generarReporte(elementoImprimir, nombreArchivo) {
@@ -831,7 +1133,13 @@ function generarReporte(elementoImprimir, nombreArchivo) {
 
   // Se establecer el color de fondo
   pdf.setFillColor(r, g, b);
-  pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), "F"); // "F" para rellenar
+  pdf.rect(
+    0,
+    0,
+    pdf.internal.pageSize.getWidth(),
+    pdf.internal.pageSize.getHeight(),
+    "F",
+  ); // "F" para rellenar
 
   elementoImprimir.classList.add("carta-imprimir");
 
