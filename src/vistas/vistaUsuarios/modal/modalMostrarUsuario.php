@@ -112,6 +112,8 @@
 
                     <input type="hidden" id="usuarioRegistrado" name="usuarioRegistrado">
                     <input type="hidden" id="id_usuario" name="id_usuario">
+                    <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
+
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-modals" id="botonModal">Editar Usuario</button>
@@ -144,6 +146,7 @@
             <div class="modal-body">
 
                 <form action="" id="formEdiPass">
+                    <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
                     <input type="hidden" name="usuario" id="usurioHiddenPass">
                     <label class="label-custom">Contraseña Actual</label>
@@ -455,7 +458,7 @@
                         <p class="error-msg d-none"></p>
                     </div>
 
-                    
+
 
                     <label class="label-custom">Usuario</label>
                     <div class="campo-custom">

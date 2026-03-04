@@ -236,6 +236,7 @@ return [
     "eliminarRol" => "eliminar",
     "validarRol" => "consultar",
     'cargarPermisosGuardados'=>'consultar',
+    'returnPermisos'=>'consultar',
 
     //Reportes
     "reportes" => "consultar",

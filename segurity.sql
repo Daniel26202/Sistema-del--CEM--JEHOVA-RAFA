@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-06-2025 a las 15:26:41
+-- Tiempo de generación: 04-03-2026 a las 18:37:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `bd`
+-- Base de datos: `segurity`
 --
 
 -- --------------------------------------------------------
@@ -316,7 +316,405 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (278, 1, 'inicio sesion', 'Ha iniciado una session', '2025-06-08 16:34:47'),
 (279, 1, 'Perfil', 'Ha modificado un perfil', '2025-06-08 17:09:30'),
 (280, 1, 'inicio sesion', 'Ha iniciado una session', '2025-06-08 17:09:34'),
-(281, 1, 'inicio sesion', 'Ha iniciado una session', '2025-06-09 09:22:48');
+(281, 1, 'inicio sesion', 'Ha iniciado una session', '2025-06-09 09:22:48'),
+(282, 1, 'inicio sesion', 'Ha iniciado una session', '2025-06-27 11:22:30'),
+(283, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-06-27 15:46:30'),
+(284, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-06-27 15:47:27'),
+(285, 1, 'inicio sesion', 'Ha iniciado una session', '2025-06-27 18:57:44'),
+(286, 1, 'patologia', 'Ha eliminado una patologia', '2025-06-27 18:59:30'),
+(287, 1, 'patologia', 'Ha restablecido una patologia', '2025-06-27 19:00:00'),
+(288, 1, 'patologia', 'Ha eliminado una patologia', '2025-06-27 19:00:14'),
+(289, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-06-27 19:05:19'),
+(290, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-06-27 19:07:27'),
+(291, 1, 'cerrar session', 'Ha cerrado la session ', '2025-06-27 23:39:02'),
+(292, 1, 'inicio sesion', 'Ha iniciado una session', '2025-06-27 23:39:18'),
+(293, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-06-27 23:41:09'),
+(294, 1, 'paciente', 'Ha modificado un paciente', '2025-06-27 23:41:59'),
+(295, 1, 'paciente', 'Ha modificado un paciente', '2025-06-27 23:42:23'),
+(296, 1, 'mantenimiento', 'Se ha restablecido la base de datos(bd-2025-06-27.zip) desde el respaldo', '2025-06-29 19:20:14'),
+(297, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-06-29 19:30:56'),
+(298, 1, 'inicio sesion', 'Ha iniciado una session', '2025-06-30 15:14:18'),
+(299, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-06-30 15:14:50'),
+(300, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-06-30 16:33:23'),
+(301, 1, 'inicio sesion', 'Ha iniciado una session', '2025-07-02 16:01:51'),
+(302, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-02 16:02:40'),
+(303, 1, 'inicio sesion', 'Ha iniciado una session', '2025-07-03 14:43:51'),
+(304, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-03 14:44:35'),
+(305, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-03 14:49:19'),
+(306, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-03 14:49:52'),
+(307, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-03 16:52:12'),
+(308, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-03 16:52:52'),
+(309, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-03 16:53:01'),
+(310, 1, 'inicio sesion', 'Ha iniciado una session', '2025-07-04 10:57:51'),
+(311, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-04 10:58:22'),
+(312, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-04 11:10:57'),
+(313, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-04 11:20:33'),
+(314, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-04 11:52:58'),
+(315, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-04 11:53:29'),
+(316, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-07-04 11:54:55'),
+(317, 1, 'cerrar session', 'Ha cerrado la session ', '2025-07-04 12:32:22'),
+(318, 1, 'inicio sesion', 'Ha iniciado una session', '2025-07-04 12:32:34'),
+(319, 1, 'cerrar session', 'Ha cerrado la session ', '2025-07-04 12:33:10'),
+(320, 1, 'inicio sesion', 'Ha iniciado una session', '2025-07-04 12:33:28'),
+(321, 1, 'mantenimiento', 'Se ha restablecido la base de datos(bd-2025-07-04) desde el respaldo', '2025-09-04 16:04:16'),
+(322, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-09-04 16:04:50'),
+(323, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-04 16:04:59'),
+(324, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-04 16:04:59'),
+(325, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-04 16:28:41'),
+(326, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-04 16:28:50'),
+(327, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-04 16:29:08'),
+(328, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-04 16:29:13'),
+(329, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-04 16:29:20'),
+(330, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-04 16:29:31'),
+(331, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-06 12:25:10'),
+(332, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-06 12:27:46'),
+(333, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-06 12:27:56'),
+(334, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-09-06 12:28:00'),
+(335, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-09-06 13:26:40'),
+(336, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-06 13:27:30'),
+(337, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-06 13:27:51'),
+(338, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-08 11:19:34'),
+(339, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-08 11:19:52'),
+(340, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-08 11:19:58'),
+(341, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-09-08 12:34:46'),
+(342, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-08 13:14:48'),
+(343, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-08 13:14:59'),
+(344, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-09-08 13:15:43'),
+(345, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-12 11:22:52'),
+(346, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-09-12 11:23:16'),
+(347, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-12 11:23:44'),
+(348, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-12 11:23:52'),
+(349, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-12 11:24:03'),
+(350, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-12 11:25:16'),
+(351, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-12 11:25:23'),
+(352, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-12 15:44:20'),
+(353, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-14 14:34:54'),
+(354, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-14 14:35:56'),
+(355, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-14 14:36:50'),
+(356, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-09-14 14:37:03'),
+(357, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-09-14 14:38:02'),
+(358, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-14 14:38:36'),
+(359, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-09-14 14:38:39'),
+(360, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-15 12:48:00'),
+(361, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-09-15 12:48:52'),
+(362, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-17 14:07:44'),
+(363, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-09-17 14:13:22'),
+(364, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-09-17 14:17:19'),
+(365, 1, 'cita', 'Ha Insertado una  cita', '2025-09-17 12:23:20'),
+(366, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-19 17:10:57'),
+(367, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-09-19 17:12:31'),
+(368, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-09-19 17:13:32'),
+(369, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 17:21:51'),
+(370, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 17:21:55'),
+(371, 1, 'cerrar session', 'Ha cerrado la session ', '2025-09-19 17:45:40'),
+(372, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-19 17:45:48'),
+(373, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 17:50:49'),
+(374, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 17:50:54'),
+(375, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 17:57:33'),
+(376, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 17:58:00'),
+(377, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-09-19 18:04:07'),
+(378, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-09-19 18:06:04'),
+(379, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 18:07:14'),
+(380, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 18:07:21'),
+(381, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 18:07:38'),
+(382, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 18:08:02'),
+(383, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 18:08:18'),
+(384, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 18:09:08'),
+(385, 1, 'hospitalizacion', 'Ha modificado una hospitalizacion', '2025-09-19 18:09:34'),
+(386, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-26 11:28:00'),
+(387, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-09-26 11:35:05'),
+(388, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-09-26 11:36:00'),
+(389, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-09-26 11:37:36'),
+(390, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-09-26 11:41:58'),
+(391, 1, 'control', 'Ha Insertado un nuevo  control medico', '2025-09-26 11:46:27'),
+(392, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-29 16:47:07'),
+(393, 1, 'Perfil', 'Ha modificado un perfil', '2025-09-29 16:47:22'),
+(394, 1, 'Perfil', 'Ha modificado un perfil', '2025-09-29 16:47:38'),
+(395, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-29 17:22:46'),
+(396, 1, 'paciente', 'Ha modificado un paciente', '2025-09-29 17:25:18'),
+(397, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-29 22:53:59'),
+(398, 1, 'paciente', 'Ha modificado un paciente', '2025-09-29 23:22:11'),
+(399, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-09-29 23:24:47'),
+(400, 1, 'sintomas', 'Ha eliminado un  sintoma', '2025-09-29 23:33:18'),
+(401, 1, 'sintomas', 'Ha eliminado un  sintoma', '2025-09-29 23:33:29'),
+(402, 1, 'sintomas', 'Ha Insertado un  sintoma', '2025-09-29 23:34:50'),
+(403, 1, 'sintomas', 'Ha eliminado un  sintoma', '2025-09-29 23:34:56'),
+(404, 1, 'sintomas', 'Ha Insertado un  sintoma', '2025-09-29 23:35:21'),
+(405, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-30 11:48:08'),
+(406, 1, 'paciente', 'Ha modificado un paciente', '2025-09-30 11:50:16'),
+(407, 1, 'sintomas', 'Ha eliminado un  sintoma', '2025-09-30 12:41:40'),
+(408, 1, 'sintomas', 'Ha Insertado un  sintoma', '2025-09-30 12:42:13'),
+(409, 1, 'sintomas', 'Ha eliminado un  sintoma', '2025-09-30 12:42:17'),
+(410, 1, 'paciente', 'Ha modificado un paciente', '2025-09-30 12:44:10'),
+(411, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-09-30 12:45:23'),
+(412, 1, 'paciente', 'Ha restablecido un paciente', '2025-09-30 12:46:00'),
+(413, 1, 'paciente', 'Ha eliminado un  paciente', '2025-09-30 12:46:20'),
+(414, 1, 'patologia', 'Ha eliminado una patologia', '2025-09-30 12:51:30'),
+(415, 1, 'patologia', 'Ha eliminado una patologia', '2025-09-30 12:52:14'),
+(416, 1, 'patologia', 'Ha eliminado una patologia', '2025-09-30 12:52:53'),
+(417, 1, 'patologia', 'Ha Insertado una patologia', '2025-09-30 12:53:09'),
+(418, 1, 'entrada', 'Ha eliminado una entrada', '2025-09-30 12:59:47'),
+(419, 1, 'entrada', 'Ha eliminado una entrada', '2025-09-30 13:10:08'),
+(420, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:10:45'),
+(421, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:11:00'),
+(422, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:11:11'),
+(423, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:11:25'),
+(424, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:11:43'),
+(425, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:13:24'),
+(426, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:13:40'),
+(427, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:18:42'),
+(428, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:18:53'),
+(429, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:19:13'),
+(430, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:19:36'),
+(431, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:19:50'),
+(432, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:20:06'),
+(433, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:20:18'),
+(434, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:20:26'),
+(435, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:20:44'),
+(436, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:21:43'),
+(437, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:22:40'),
+(438, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:22:57'),
+(439, 1, 'entrada', 'Ha eliminado una entrada', '2025-09-30 13:23:13'),
+(440, 1, 'entrada', 'Ha eliminado una entrada', '2025-09-30 13:28:15'),
+(441, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:34:23'),
+(442, 1, 'entrada', 'Ha insertado una entrada', '2025-09-30 13:34:36'),
+(443, 1, 'entrada', 'Ha eliminado una entrada', '2025-09-30 13:34:50'),
+(444, 1, 'entrada', 'Ha restablecido una entrada', '2025-09-30 14:11:44'),
+(445, 1, 'entrada', 'Ha eliminado una entrada', '2025-09-30 14:11:57'),
+(446, 1, 'doctor', 'Ha eliminado un doctor', '2025-09-30 14:17:32'),
+(447, 1, 'doctor', 'Ha Insertado un doctor', '2025-09-30 14:35:57'),
+(448, 1, 'doctor', 'Ha Insertado un doctor', '2025-09-30 14:37:45'),
+(449, 1, 'doctor', 'Ha eliminado un doctor', '2025-09-30 14:45:36'),
+(450, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-30 18:32:23'),
+(451, 1, 'cerrar session', 'Ha cerrado la session ', '2025-09-30 19:22:38'),
+(452, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-30 19:55:03'),
+(453, 1, 'cerrar session', 'Ha cerrado la session ', '2025-09-30 20:53:24'),
+(454, 1, 'inicio sesion', 'Ha iniciado una session', '2025-09-30 21:06:56'),
+(455, 1, 'patologia', 'Ha Insertado una patologia', '2025-10-01 00:31:24'),
+(456, 1, 'patologia', 'Ha eliminado una patologia', '2025-10-01 00:51:22'),
+(457, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-01 08:44:30'),
+(458, 1, 'patologia', 'Ha eliminado una patologia', '2025-10-01 08:47:47'),
+(459, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-10-01 08:51:26'),
+(460, 1, 'doctor', 'Ha modificado un doctor', '2025-10-01 09:13:12'),
+(461, 1, 'Consultas', 'Ha añadido un servicio medico a un doctor', '2025-10-01 09:18:41'),
+(462, 1, 'cita', 'Ha Insertado una  cita', '2025-10-01 07:42:02'),
+(463, 1, 'cita', 'Ha Insertado una  cita', '2025-09-24 07:51:33'),
+(464, 1, 'cita', 'Ha Insertado una  cita', '2025-09-24 07:54:41'),
+(465, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-01 15:02:54'),
+(466, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-02 10:40:51'),
+(467, 1, 'servicioMedico', 'Ha modificadp un servicio medico', '2025-10-02 10:55:28'),
+(468, 1, 'servicioMedico', 'Ha restablecido un servicio medico', '2025-10-02 10:55:52'),
+(469, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-10-02 10:55:59'),
+(470, 1, 'doctor', 'Ha modificado un doctor', '2025-10-02 11:16:07'),
+(471, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-02 14:50:10'),
+(472, 1, 'insumo', 'Ha Insertado un insumo', '2025-10-02 14:57:12'),
+(473, 1, 'insumo', 'Ha modificado un insumo', '2025-10-02 14:59:49'),
+(474, 1, 'insumo', 'Ha modificado un insumo', '2025-10-02 15:00:53'),
+(475, 1, 'entrada', 'Ha insertado una entrada', '2025-10-02 16:14:17'),
+(476, 1, 'proveedor', 'Ha modificado un proveedor', '2025-10-02 23:03:38'),
+(477, 1, 'proveedor', 'Ha modificado un proveedor', '2025-10-02 23:03:45'),
+(478, 1, 'proveedor', 'Ha modificado un proveedor', '2025-10-02 23:03:55'),
+(479, 1, 'proveedor', 'Ha insertado un proveedor', '2025-10-02 23:09:42'),
+(480, 1, 'proveedor', 'Ha modificado un proveedor', '2025-10-02 23:10:47'),
+(481, 1, 'proveedor', 'Ha modificado un proveedor', '2025-10-02 23:10:54'),
+(482, 1, 'proveedor', 'Ha modificado un proveedor', '2025-10-02 23:12:45'),
+(483, 1, 'proveedor', 'Ha modificado un proveedor', '2025-10-02 23:14:00'),
+(484, 1, 'proveedor', 'Ha eliminado un proveedor', '2025-10-02 23:14:08'),
+(485, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-05 22:17:07'),
+(486, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-05 23:08:20'),
+(487, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-06 00:08:29'),
+(488, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-06 17:29:24'),
+(489, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-06 17:31:52'),
+(490, 1, 'servicioMedico', 'Ha eliminado un   servicio medico', '2025-10-07 19:30:08'),
+(491, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-08 08:25:31'),
+(492, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-10-08 08:53:46'),
+(493, 1, 'paciente', 'Ha modificado un paciente', '2025-10-08 08:54:04'),
+(494, 1, 'paciente', 'Ha modificado un paciente', '2025-10-08 08:54:28'),
+(495, 1, 'paciente', 'Ha eliminado un  paciente', '2025-10-08 08:55:28'),
+(496, 1, 'Consultas', 'Ha añadido un servicio medico a un doctor', '2025-10-08 09:01:35'),
+(497, 1, 'categoria_servicio', 'Ha Insertado una nueva  categoria', '2025-10-08 09:03:33'),
+(498, 1, 'categoria_servicio', 'Ha eliminado una  categoria', '2025-10-08 09:06:23'),
+(499, 1, 'categoria_servicio', 'Ha Insertado una nueva  categoria', '2025-10-08 09:07:11'),
+(500, 1, 'servicioMedico', 'Ha Insertado un nuevo  servicio medico', '2025-10-08 09:09:56'),
+(501, 1, 'Consultas', 'Ha añadido un servicio medico a un doctor', '2025-10-08 09:11:11'),
+(502, 1, 'Consultas', 'Ha añadido un servicio medico a un doctor', '2025-10-08 09:12:34'),
+(503, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-10-08 09:24:55'),
+(504, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2025-10-08 09:27:35'),
+(505, 1, 'cita', 'Ha Insertado una  cita', '2025-10-08 07:29:46'),
+(506, 1, 'cita', 'Ha Insertado una  cita', '2025-10-08 07:43:54'),
+(507, 1, 'control', 'Ha Insertado un nuevo  control medico', '2025-10-08 09:50:47'),
+(508, 1, 'control', 'Ha Insertado un nuevo  control medico', '2025-10-08 09:55:55'),
+(509, 1, 'doctor', 'Ha Insertado un doctor', '2025-10-08 09:59:56'),
+(510, 1, 'Consultas', 'Ha añadido un servicio medico a un doctor', '2025-10-08 10:00:29'),
+(511, 1, 'control', 'Ha Insertado un nuevo  control medico', '2025-10-08 10:01:40'),
+(512, 1, 'cerrar session', 'Ha cerrado la session ', '2025-10-08 10:02:22'),
+(513, 52, 'inicio sesion', 'Ha iniciado una session', '2025-10-08 10:02:46'),
+(514, 52, 'cerrar session', 'Ha cerrado la session ', '2025-10-08 10:03:21'),
+(515, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-08 10:03:40'),
+(516, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-08 10:05:15'),
+(517, 1, 'cerrar session', 'Ha cerrado la session ', '2025-10-08 10:05:19'),
+(518, 52, 'inicio sesion', 'Ha iniciado una session', '2025-10-08 10:05:28'),
+(519, 52, 'cerrar session', 'Ha cerrado la session ', '2025-10-08 10:05:48'),
+(520, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-08 10:05:59'),
+(521, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-08 10:06:20'),
+(522, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-13 11:11:31'),
+(523, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-14 12:41:30'),
+(524, 1, 'doctor', 'Ha modificado un doctor', '2025-10-14 12:42:05'),
+(525, 1, 'doctor', 'Ha modificado un doctor', '2025-10-14 12:42:19'),
+(526, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-14 12:51:02'),
+(527, 1, 'doctor', 'Ha modificado un doctor', '2025-10-14 13:05:58'),
+(528, 1, 'doctor', 'Ha modificado un doctor', '2025-10-14 13:06:08'),
+(529, 1, 'cita', 'Ha Insertado una  cita', '2025-10-14 11:10:32'),
+(530, 1, 'cita', 'Ha Insertado una  cita', '2025-10-14 12:22:48'),
+(531, 1, 'cita', 'Ha modificado una  cita', '2025-10-14 12:42:06'),
+(532, 1, 'cita', 'Ha modificado una  cita', '2025-10-14 12:42:12'),
+(533, 1, 'cita', 'Ha modificado una  cita', '2025-10-14 12:42:56'),
+(534, 1, 'cita', 'Ha modificado una  cita', '2025-10-14 12:43:03'),
+(535, 1, 'cita', 'Ha modificado una  cita', '2025-10-14 12:43:12'),
+(536, 1, 'cita', 'Ha modificado una  cita', '2025-10-14 12:43:19'),
+(537, 1, 'cita', 'Ha modificado una  cita', '2025-10-14 12:43:51'),
+(538, 1, 'factura', 'Ha facturado servicios y/o insumos', '2025-10-14 19:48:46'),
+(539, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-14 23:51:48'),
+(540, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-14 23:54:24'),
+(541, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-14 23:55:17'),
+(542, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:00:22'),
+(543, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:00:32'),
+(544, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:00:51'),
+(545, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:01:08'),
+(546, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:02:20'),
+(547, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:03:28'),
+(548, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:05:02'),
+(549, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:05:26'),
+(550, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:05:50'),
+(551, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:06:00'),
+(552, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:08:37'),
+(553, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:08:47'),
+(554, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:09:05'),
+(555, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:17:17'),
+(556, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:17:37'),
+(557, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:17:50'),
+(558, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:18:14'),
+(559, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:18:33'),
+(560, 1, 'Roles', 'Ha Modiicado un rol', '2025-10-15 00:18:47'),
+(561, 1, 'cerrar session', 'Ha cerrado la session ', '2025-10-15 00:19:10'),
+(562, 52, 'inicio sesion', 'Ha iniciado una session', '2025-10-15 00:19:22'),
+(563, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-19 21:15:49'),
+(564, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-10-19 22:16:19'),
+(565, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-20 11:33:50'),
+(566, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-30 18:34:35'),
+(567, 1, 'doctor', 'Ha modificado un doctor', '2025-10-30 18:41:17'),
+(568, 1, 'doctor', 'Ha modificado un doctor', '2025-10-30 18:41:36'),
+(569, 1, 'Consultas', 'Ha añadido un servicio medico a un doctor', '2025-10-30 18:41:50'),
+(570, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-10-30 18:43:23'),
+(571, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-10-30 18:46:30'),
+(572, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-10-30 18:46:30'),
+(573, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-10-30 18:47:04'),
+(574, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-10-30 19:28:30'),
+(575, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-10-30 20:12:38'),
+(576, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-10-30 20:25:13'),
+(577, 1, 'mantenimiento', 'Se ha realizado una descarga del respaldo de la base de datos', '2025-10-30 20:35:21'),
+(578, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-31 16:39:07'),
+(579, 1, 'cerrar session', 'Ha cerrado la session ', '2025-10-31 18:49:23'),
+(580, 1, 'inicio sesion', 'Ha iniciado una session', '2025-10-31 18:54:28'),
+(581, 1, 'inicio sesion', 'Ha iniciado una session', '2025-11-01 11:28:05'),
+(582, 1, 'hospitalizacion', 'Ha Insertado una hospitalizacion', '2025-11-01 11:30:25'),
+(583, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-11-01 11:30:40'),
+(584, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-11-01 11:30:54'),
+(585, 1, 'hospitalizacion', 'Ha eliminado una hospitalizacion', '2025-11-01 11:32:30'),
+(586, 1, 'inicio sesion', 'Ha iniciado una session', '2026-02-28 10:01:36'),
+(587, 1, 'inicio sesion', 'Ha iniciado una session', '2026-02-28 10:15:57'),
+(588, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:16:43'),
+(589, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:17:08'),
+(590, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:17:21'),
+(591, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:17:35'),
+(592, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:17:45'),
+(593, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:19:42'),
+(594, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:20:07'),
+(595, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:20:19'),
+(596, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:21:18'),
+(597, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:21:44'),
+(598, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:22:07'),
+(599, 1, 'insumo', 'Ha modificado un insumo', '2026-02-28 10:22:23'),
+(600, 1, 'Perfil', 'Ha modificado un perfil', '2026-02-28 10:23:34'),
+(601, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2026-02-28 10:27:38'),
+(602, 1, 'paciente', 'Ha modificado un paciente', '2026-02-28 10:28:43'),
+(603, 1, 'patologia', 'Ha restablecido una  patologia', '2026-02-28 10:29:08'),
+(604, 1, 'cita', 'Ha Insertado una  cita', '2026-02-28 10:45:03'),
+(605, 1, 'control', 'Ha Insertado un nuevo  control medico', '2026-02-28 10:46:37'),
+(606, 1, 'control', 'Ha modificado un  control medico', '2026-02-28 10:46:55'),
+(607, 1, 'sintomas', 'Ha Insertado un  sintoma', '2026-02-28 10:47:08'),
+(608, 1, 'sintomas', 'Ha Insertado un  sintoma', '2026-02-28 10:47:19'),
+(609, 1, 'sintomas', 'Ha Insertado un  sintoma', '2026-02-28 10:47:31'),
+(610, 1, 'sintomas', 'Ha Insertado un  sintoma', '2026-02-28 10:47:42'),
+(611, 1, 'sintomas', 'Ha Insertado un  sintoma', '2026-02-28 10:47:55'),
+(612, 1, 'sintomas', 'Ha eliminado un  sintoma', '2026-02-28 10:48:01'),
+(613, 1, 'cerrar session', 'Ha cerrado la session', '2026-02-28 10:50:00'),
+(614, 1, 'inicio sesion', 'Ha iniciado una session', '2026-02-28 10:50:03'),
+(615, 1, 'inicio sesion', 'Ha iniciado una session', '2026-02-28 15:05:19'),
+(616, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-02-28 15:24:03'),
+(617, 1, 'inicio sesion', 'Ha iniciado una session', '2026-02-28 16:04:01'),
+(618, 1, 'inicio sesion', 'Ha iniciado una session', '2026-02-28 17:10:46'),
+(619, 1, 'Perfil', 'Ha modificado un perfil', '2026-02-28 17:22:47'),
+(620, 1, 'inicio sesion', 'Ha iniciado una session', '2026-02-28 17:30:24'),
+(621, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-01 04:17:08'),
+(622, 1, 'Servicio Medico', 'Ha asignado un servicio medico a un doctor', '2026-03-01 06:07:41'),
+(623, 1, 'Servicio Medico', 'Ha asignado un servicio medico a un doctor', '2026-03-01 06:09:18'),
+(624, 1, 'Servicio Medico', 'Ha asignado un servicio medico a un doctor', '2026-03-01 06:11:33'),
+(625, 1, 'cita', 'Ha Insertado una  cita', '2026-03-01 06:12:06'),
+(626, 1, 'cerrar session', 'Ha cerrado la session', '2026-03-01 06:47:48'),
+(627, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-01 12:45:55'),
+(628, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-01 14:50:00'),
+(629, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-01 15:36:19'),
+(630, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-02 14:47:19'),
+(631, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-03 05:21:14'),
+(632, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:29:23'),
+(633, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:29:34'),
+(634, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:30:36'),
+(635, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:30:46'),
+(636, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:31:38'),
+(637, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:32:03'),
+(638, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:32:50'),
+(639, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:33:24'),
+(640, 1, 'factura', 'Ha anulado una factura', '2026-03-03 06:33:34'),
+(641, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-03 08:58:56'),
+(642, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-03 15:14:41'),
+(643, 1, 'paciente', 'Ha modificado un paciente', '2026-03-03 15:15:12'),
+(644, 1, 'paciente', 'Ha modificado un paciente', '2026-03-03 15:15:19'),
+(645, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-03-03 15:31:25'),
+(646, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-03-03 15:33:04'),
+(647, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-03-03 15:39:11'),
+(648, 1, 'cerrar session', 'Ha cerrado la session', '2026-03-03 15:56:24'),
+(649, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-03 15:56:26'),
+(650, 1, 'paciente', 'Ha eliminado un  paciente', '2026-03-03 16:04:36'),
+(651, 1, 'paciente', 'Ha restablecido un paciente', '2026-03-03 16:05:14'),
+(652, 1, 'Perfil', 'Ha modificado un perfil', '2026-03-03 16:21:15'),
+(653, 1, 'paciente', 'Ha modificado un paciente', '2026-03-03 16:22:00'),
+(654, 1, 'paciente', 'Ha eliminado un  paciente', '2026-03-03 16:22:05'),
+(655, 1, 'paciente', 'Ha restablecido un paciente', '2026-03-03 16:22:11'),
+(656, 1, 'cliente', 'Ha eliminado un cliente', '2026-03-03 16:22:17'),
+(657, 1, 'cliente', 'Ha restablecido un cliente', '2026-03-03 16:22:25'),
+(658, 1, 'patologia', 'Ha eliminado una  patologia', '2026-03-03 16:22:32'),
+(659, 1, 'patologia', 'Ha Insertado un nuevo patologia', '2026-03-03 16:22:44');
+INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fecha_hora`) VALUES
+(660, 1, 'patologia', 'Ha eliminado una  patologia', '2026-03-03 16:22:50'),
+(661, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-03-03 16:25:31'),
+(662, 1, 'cita', 'Ha Insertado una  cita', '2026-03-03 16:25:57'),
+(663, 1, 'cita', 'Ha Modificado una  cita', '2026-03-03 16:26:05'),
+(664, 1, 'cita', 'Ha eliminado una  cita', '2026-03-03 16:26:09'),
+(665, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-03-03 16:27:13'),
+(666, 1, 'control', 'Ha Insertado un nuevo  control medico', '2026-03-03 16:29:27'),
+(667, 1, 'control', 'Ha modificado un  control medico', '2026-03-03 16:29:53'),
+(668, 1, 'sintomas', 'Ha eliminado un  sintoma', '2026-03-03 16:30:00'),
+(669, 1, 'insumo', 'Ha modificado un insumo', '2026-03-03 16:30:23'),
+(670, 1, 'usuario', 'Ha modificado un  usuario', '2026-03-03 16:34:00'),
+(671, 1, 'usuario', 'Ha modificado un  usuario', '2026-03-03 16:34:20'),
+(672, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-04 04:21:02'),
+(673, 1, 'Roles', 'Ha Insertado un nuevo rol', '2026-03-04 05:21:35'),
+(674, 1, 'Roles', 'Ha Insertado un nuevo rol', '2026-03-04 05:23:11'),
+(675, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-04 07:08:34'),
+(676, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-04 12:25:21'),
+(677, 1, 'Roles', 'Ha Modificado un rol', '2026-03-04 13:34:57'),
+(678, 1, 'Roles', 'Ha Modificado un rol', '2026-03-04 13:35:15');
 
 -- --------------------------------------------------------
 
@@ -325,43 +723,131 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 --
 
 CREATE TABLE `permisos` (
-  `idpermisos` int(11) NOT NULL,
-  `id_rol` int(11) NOT NULL,
-  `permisos` varchar(200) NOT NULL,
-  `modulo` varchar(50) NOT NULL
+  `id_permiso` int(11) NOT NULL,
+  `permisos` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `permisos`
 --
 
-INSERT INTO `permisos` (`idpermisos`, `id_rol`, `permisos`, `modulo`) VALUES
-(1, 1, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(2, 5, 'consultar', 'Pacientes'),
-(3, 6, 'consultar,guardar', 'Pacientes'),
-(4, 7, 'consultar,guardar', 'Pacientes'),
-(5, 7, 'consultar,guardar,editar,eliminar', 'Patologias'),
-(6, 8, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(7, 8, 'consultar,guardar,eliminar', 'Patologias'),
-(8, 9, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(9, 9, 'consultar,guardar,eliminar', 'Patologias'),
-(10, 1, 'consultar,guardar,editar,eliminar', 'Roles'),
-(11, 1, 'consultar,guardar,editar,eliminar', 'Usuarios'),
-(12, 10, 'consultar,guardar,editar,eliminar', 'Pacientes'),
-(13, 10, 'consultar,guardar,editar,eliminar', 'Patologias'),
-(14, 10, 'consultar,guardar,editar,eliminar', 'Factura'),
-(15, 10, 'consultar,guardar,editar,eliminar', 'Citas'),
-(16, 10, 'consultar,guardar,editar,eliminar', 'Consultas'),
-(17, 10, 'consultar,guardar,editar,eliminar', 'Doctores'),
-(18, 10, 'consultar,guardar,editar,eliminar', 'Control'),
-(19, 10, 'consultar,guardar,editar,eliminar', 'Hospitalizacion'),
-(20, 10, 'consultar,guardar,editar,eliminar', 'Insumos'),
-(21, 10, 'consultar,guardar,editar,eliminar', 'Entrada'),
-(22, 10, 'consultar,guardar,editar,eliminar', 'Proveedores'),
-(23, 10, 'consultar,guardar,editar,eliminar', 'Usuarios'),
-(24, 10, 'consultar,guardar,editar,eliminar', 'Roles'),
-(25, 10, 'consultar,guardar,editar,eliminar', 'Reportes'),
-(26, 10, 'consultar,guardar,editar,eliminar', 'Estadisticas');
+INSERT INTO `permisos` (`id_permiso`, `permisos`) VALUES
+(30, 'consultar'),
+(31, 'guardar'),
+(32, 'eliminar'),
+(33, 'editar');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `permisos_de_rol`
+--
+
+CREATE TABLE `permisos_de_rol` (
+  `id_permisos_de_rol` int(11) NOT NULL,
+  `id_rol` int(11) NOT NULL,
+  `id_permiso` int(11) NOT NULL,
+  `modulo` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `permisos_de_rol`
+--
+
+INSERT INTO `permisos_de_rol` (`id_permisos_de_rol`, `id_rol`, `id_permiso`, `modulo`) VALUES
+(1, 10, 30, 'Pacientes'),
+(2, 10, 31, 'Pacientes'),
+(3, 10, 33, 'Pacientes'),
+(4, 10, 32, 'Pacientes'),
+(8, 10, 30, 'Clientes'),
+(9, 10, 31, 'Clientes'),
+(10, 10, 32, 'Clientes'),
+(11, 10, 33, 'Clientes'),
+(12, 10, 30, 'Patologias'),
+(13, 10, 31, 'Patologias'),
+(14, 10, 32, 'Patologias'),
+(15, 10, 33, 'Patologias'),
+(16, 10, 30, 'Factura'),
+(17, 10, 31, 'Factura'),
+(18, 10, 32, 'Factura'),
+(19, 10, 33, 'Factura'),
+(20, 10, 30, 'Citas'),
+(21, 10, 31, 'Citas'),
+(22, 10, 32, 'Citas'),
+(23, 10, 33, 'Citas'),
+(24, 10, 30, 'Doctores'),
+(25, 10, 31, 'Doctores'),
+(26, 10, 32, 'Doctores'),
+(27, 10, 33, 'Doctores'),
+(28, 10, 30, 'Control'),
+(29, 10, 31, 'Control'),
+(30, 10, 32, 'Control'),
+(31, 10, 33, 'Control'),
+(32, 10, 30, 'Hospitalizacion'),
+(33, 10, 31, 'Hospitalizacion'),
+(34, 10, 32, 'Hospitalizacion'),
+(35, 10, 33, 'Hospitalizacion'),
+(36, 10, 30, 'Insumos'),
+(37, 10, 31, 'Insumos'),
+(38, 10, 32, 'Insumos'),
+(39, 10, 33, 'Insumos'),
+(40, 10, 30, 'Entrada'),
+(41, 10, 31, 'Entrada'),
+(42, 10, 32, 'Entrada'),
+(43, 10, 33, 'Entrada'),
+(44, 10, 30, 'Proveedores'),
+(45, 10, 31, 'Proveedores'),
+(46, 10, 32, 'Proveedores'),
+(47, 10, 33, 'Proveedores'),
+(48, 10, 30, 'Usuarios'),
+(49, 10, 31, 'Usuarios'),
+(50, 10, 32, 'Usuarios'),
+(51, 10, 33, 'Usuarios'),
+(52, 10, 30, 'Roles'),
+(53, 10, 31, 'Roles'),
+(54, 10, 32, 'Roles'),
+(55, 10, 33, 'Roles'),
+(56, 10, 30, 'Reportes'),
+(57, 10, 31, 'Reportes'),
+(58, 10, 32, 'Reportes'),
+(59, 10, 33, 'Reportes'),
+(60, 10, 30, 'Estadisticas'),
+(61, 10, 31, 'Estadisticas'),
+(62, 10, 32, 'Estadisticas'),
+(63, 10, 33, 'Estadisticas'),
+(64, 10, 30, 'Mantenimiento'),
+(65, 10, 31, 'Mantenimiento'),
+(66, 10, 32, 'Mantenimiento'),
+(67, 10, 33, 'Mantenimiento'),
+(68, 10, 30, 'Servicios'),
+(69, 10, 31, 'Servicios'),
+(70, 10, 32, 'Servicios'),
+(71, 10, 33, 'Servicios'),
+(72, 11, 30, 'Usuarios'),
+(73, 11, 31, 'Usuarios'),
+(74, 11, 33, 'Usuarios'),
+(75, 11, 30, 'Insumos'),
+(76, 11, 31, 'Insumos'),
+(77, 11, 30, 'Factura'),
+(78, 11, 31, 'Factura'),
+(79, 11, 32, 'Factura'),
+(80, 12, 30, 'Usuarios'),
+(81, 12, 31, 'Usuarios'),
+(82, 12, 32, 'Usuarios'),
+(83, 12, 33, 'Usuarios'),
+(84, 12, 30, 'Roles'),
+(85, 12, 31, 'Roles'),
+(86, 12, 32, 'Roles'),
+(87, 12, 33, 'Roles'),
+(88, 12, 30, 'Mantenimiento'),
+(89, 12, 31, 'Mantenimiento'),
+(90, 12, 32, 'Mantenimiento'),
+(91, 12, 33, 'Mantenimiento'),
+(95, 8, 30, 'Usuarios'),
+(96, 8, 31, 'Usuarios'),
+(97, 8, 32, 'Usuarios'),
+(98, 8, 31, 'Roles'),
+(99, 8, 32, 'Roles');
 
 -- --------------------------------------------------------
 
@@ -385,9 +871,11 @@ INSERT INTO `rol` (`id_rol`, `nombre`, `estado`, `descripción`) VALUES
 (5, 'Rol', 'DES', 'este es un permiso par los doctores'),
 (6, 'Propio', 'DES', 'descripcio'),
 (7, 'Carlos', 'DES', 'jfhfdsjddjs'),
-(8, 'Doctor', 'ACT', 'en un rol para los doctores'),
+(8, 'Doctor', 'ACT', 'En un rol para los doctores'),
 (9, 'Roletazo', 'DES', 'es un permiso de pruebas'),
-(10, 'Superadmin', 'ACT', 'lsafdfjfd');
+(10, 'Superadmin', 'ACT', 'lsafdfjfd'),
+(11, 'You', 'ACT', 'Es un antinflamatorio son derivados'),
+(12, 'Xxx', 'ACT', 'Es una descipcion');
 
 -- --------------------------------------------------------
 
@@ -410,9 +898,13 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 10, '', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
-(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
-(43, 8, 'img23.jpg', 'Usuario', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT');
+(1, 10, 'venom-marvels-spider-man-2-2023-games-playstation-5-marvel-3840x2160-6499.jpeg', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
+(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'DES'),
+(43, 8, 'IMG-20260226-WA0093.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT'),
+(45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'DES'),
+(46, 8, 'doctor.png', 'weq', 'wbaez975@gmail.com', '$2y$10$WAANXp7gXMUe5ZixhhN4IOOfGrqKYsv7PeHzhf8cgf8xd56nTbqly', 'ACT'),
+(52, 8, 'doctor.png', 'WDaniel1', 'wbaez975@gmail.com', '$2y$10$PYYiGKo3RDTI3JN6eiR6lexHNG90m0WWC1VgAg0cmhKfw3LCmXdaS', 'ACT'),
+(53, 8, 'goku-kintoun-cloud-kame-house-island-dragon-ball-2k-wallpaper-uhdpaper.com-706@5@h.jpg', 'WDaniel000', 'correo@gmail.com', '$2y$10$eDqE5UYML.46g9jv9sK2iusuF4nqXEeCHFd6Ck/yLi1xRRCT/HIc.', 'ACT');
 
 --
 -- Índices para tablas volcadas
@@ -429,8 +921,15 @@ ALTER TABLE `bitacora`
 -- Indices de la tabla `permisos`
 --
 ALTER TABLE `permisos`
-  ADD PRIMARY KEY (`idpermisos`),
-  ADD KEY `id_rol` (`id_rol`);
+  ADD PRIMARY KEY (`id_permiso`);
+
+--
+-- Indices de la tabla `permisos_de_rol`
+--
+ALTER TABLE `permisos_de_rol`
+  ADD PRIMARY KEY (`id_permisos_de_rol`),
+  ADD KEY `id_rol` (`id_rol`,`id_permiso`),
+  ADD KEY `id_permiso` (`id_permiso`);
 
 --
 -- Indices de la tabla `rol`
@@ -453,25 +952,31 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=282;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=679;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos`
 --
 ALTER TABLE `permisos`
-  MODIFY `idpermisos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_permiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT de la tabla `permisos_de_rol`
+--
+ALTER TABLE `permisos_de_rol`
+  MODIFY `id_permisos_de_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- Restricciones para tablas volcadas
@@ -484,10 +989,11 @@ ALTER TABLE `bitacora`
   ADD CONSTRAINT `bitacora_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
--- Filtros para la tabla `permisos`
+-- Filtros para la tabla `permisos_de_rol`
 --
-ALTER TABLE `permisos`
-  ADD CONSTRAINT `permisos_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `permisos_de_rol`
+  ADD CONSTRAINT `permisos_de_rol_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`),
+  ADD CONSTRAINT `permisos_de_rol_ibfk_2` FOREIGN KEY (`id_permiso`) REFERENCES `permisos` (`id_permiso`);
 
 --
 -- Filtros para la tabla `usuario`

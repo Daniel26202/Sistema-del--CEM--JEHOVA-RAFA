@@ -22,7 +22,7 @@ class ModeloPermisos extends ModelBase
             'modulo' => $this->getModulo(),
             'permiso' => $this->getPermiso()
         ];
-        $sql = "SELECT * FROM permisos WHERE id_rol =:id_rol AND modulo =:modulo AND permisos LIKE :permiso limit 1";
+        $sql = "SELECT * FROM permisos_de_rol  pr INNER JOIN permisos p ON p.id_permiso=pr.id_permiso WHERE pr.id_rol =:id_rol AND pr.modulo =:modulo AND p.permisos = :permiso";
         $this->setSQL($sql);
         $listData = $this->search($data, false);
         return !empty($listData) ? 1 : 0;

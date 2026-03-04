@@ -30,10 +30,6 @@ const nombreRegiistrado = document.getElementById("nombreRegiistrado");
 const botonModal = document.getElementById("botonModal");
 const titleModal = document.getElementById("title-modal");
 
-
-
-
-
 const returnFragmentHtml = (element) => {
   return `         
                         <div class="card contenido mb-4 mx-3" style="width: 18rem;">
@@ -67,7 +63,7 @@ const readRol = async () => {
 
     const paginator = new Paginator(
       items,
-      1,
+      3,
       "cardContainer",
       "pagination",
       "searchInput",
@@ -118,7 +114,7 @@ const readRol = async () => {
         let permisosGuardados = await traerPermisosGuardados(
           this.getAttribute("data-index"),
         );
-
+        console.log(permisosGuardados);
         readPermisos(permisosGuardados);
       });
     });
@@ -183,97 +179,107 @@ const traerPermisosGuardados = async (id_rol) => {
     );
     return result;
   } catch (error) {
-    return 0;
+    return error;
   }
 };
-
-const readPermisos = (permisosGuardados = {}) => {
+const readPermisos = async (permisosGuardados = {}) => {
   const accordionContainer = document.getElementById("accordion-div");
+  if (!accordionContainer) return;
+
   accordionContainer.innerHTML = "";
 
-  // Trae la lista completa de TODOS los módulos del sistema
-  const categorias = returnModulos();
+  try {
+    // 1. Obtenemos la lista maestra de permisos (id_permiso y nombre del permiso)
+    const listaPermisosDB = await executePetition(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Roles/returnPermisos",
+    );
 
-  for (const [categoria, modulos] of Object.entries(categorias)) {
-    const categoriaSlug = categoria.replace(/\s+/g, "-");
-    const categoriaId = `heading-${categoriaSlug}`;
-    const categoriaCollapseId = `collapse-${categoriaSlug}`;
+    // 2. Traemos los módulos agrupados por categorías
+    const categorias = returnModulos();
 
-    const categoriaDiv = document.createElement("div");
-    categoriaDiv.classList.add("card", "mb-3", "w-100");
+    for (const [categoria, modulos] of Object.entries(categorias)) {
+      const categoriaSlug = categoria.replace(/\s+/g, "-");
+      const categoriaId = `heading-${categoriaSlug}`;
+      const categoriaCollapseId = `collapse-${categoriaSlug}`;
 
-    categoriaDiv.innerHTML = `
-        <h2 class="accordion-header" id="${categoriaId}">
-            <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#${categoriaCollapseId}" aria-expanded="true" aria-controls="${categoriaCollapseId}">
-                ${categoria}
-            </button>
-        </h2>
-        <div id="${categoriaCollapseId}" class="accordion-collapse collapse" aria-labelledby="${categoriaId}" data-bs-parent="#accordion-div">
-            <div class="accordion-body d-flex flex-wrap cards-hours">
-                ${modulos
-                  .map((modulo) => {
-                    const modName = modulo.modulo;
-                    const modId = modName.replace(/\s+/g, "-");
+      const categoriaDiv = document.createElement("div");
+      categoriaDiv.classList.add("card", "mb-3", "w-100");
 
-                    // 1. Buscamos si el rol tiene permisos en este módulo específico
-                    // Si el rol tiene "Usuarios": "consultar,guardar", esto crea ['consultar', 'guardar']
-                    const permisosDeEsteModulo = permisosGuardados[modName]
-                      ? permisosGuardados[modName].split(",")
-                      : [];
+      categoriaDiv.innerHTML = `
+          <h2 class="accordion-header" id="${categoriaId}">
+              <button class="accordion-button bg-theme text-center" type="button" 
+                      data-bs-toggle="collapse" data-bs-target="#${categoriaCollapseId}">
+                  ${categoria}
+              </button>
+          </h2>
+          <div id="${categoriaCollapseId}" class="accordion-collapse collapse" 
+               aria-labelledby="${categoriaId}" data-bs-parent="#accordion-div">
+              <div class="accordion-body d-flex flex-wrap cards-hours">
+                  ${modulos
+                    .map((modulo) => {
+                      const modName = modulo.modulo;
+                      const modId = modName.replace(/\s+/g, "-");
 
-                    // 2. Función que verifica si el permiso actual está en la lista del rol
-                    const isChecked = (permiso) =>
-                      permisosDeEsteModulo.includes(permiso) ? "checked" : "";
+                      // 3. Convertimos el string "30,31,32,33," en un Array de Strings: ["30", "31", "32", "33"]
+                      const IDsAsignados = permisosGuardados[modName]
+                        ? permisosGuardados[modName]
+                            .split(",")
+                            .filter((id) => id !== "")
+                        : [];
 
-                    return `
-                    <div class="card fondo-tabla mb-3 m-auto" style="width: 14rem;">
-                        <input type='hidden' name="modulos[]" value="${modName}">
-                        
-                        <div class="card-body">
-                            <h5 class="card-title">${modName}</h5>
+                      // 4. Generamos los switches comparando IDs
+                      const switchesHTML = listaPermisosDB
+                        .map((p, index) => {
+                          // Comparamos el ID de la DB con los IDs que tiene el módulo en el objeto
+                          const isChecked = IDsAsignados.includes(
+                            p.id_permiso.toString(),
+                          )
+                            ? "checked"
+                            : "";
 
-                            <div class="form-check form-switch d-flex align-items-center">
-                                <input class="form-check-input" type="checkbox" role="switch" 
-                                    id="check-0-${modId}" 
-                                    name="permisos[${modName}][]" value="consultar" ${isChecked("consultar")}>
-                                <label class="form-check-label ms-2 mt-1" for="check-0-${modId}">Consultar</label>
-                            </div>
+                          return `
+                              <div class="form-check form-switch d-flex align-items-center">
+                                  <input class="form-check-input" type="checkbox" role="switch" 
+                                      id="check-${index}-${modId}" 
+                                      name="permisos[${modName}][]" 
+                                      value="${p.id_permiso}" 
+                                      ${isChecked}>
+                                  <label class="form-check-label ms-2 mt-1" for="check-${index}-${modId}">
+                                      ${p.permisos.charAt(0).toUpperCase() + p.permisos.slice(1)}
+                                  </label>
+                              </div>
+                          `;
+                        })
+                        .join("");
 
-                            <div class="form-check form-switch d-flex align-items-center">
-                                <input class="form-check-input" type="checkbox" role="switch" 
-                                    id="check-1-${modId}" 
-                                    name="permisos[${modName}][]" value="guardar" ${isChecked("guardar")}>
-                                <label class="form-check-label ms-2 mt-1" for="check-1-${modId}">Guardar</label>
-                            </div>
-
-                            <div class="form-check form-switch d-flex align-items-center">
-                                <input class="form-check-input" type="checkbox" role="switch" 
-                                    id="check-2-${modId}" 
-                                    name="permisos[${modName}][]" value="editar" ${isChecked("editar")}>
-                                <label class="form-check-label ms-2 mt-1" for="check-2-${modId}">Editar</label>
-                            </div>
-
-                            <div class="form-check form-switch d-flex align-items-center">
-                                <input class="form-check-input" type="checkbox" role="switch" 
-                                    id="check-3-${modId}" 
-                                    name="permisos[${modName}][]" value="eliminar" ${isChecked("eliminar")}>
-                                <label class="form-check-label ms-2 mt-1" for="check-3-${modId}">Eliminar</label>
-                            </div>
-                        </div>
-                    </div>`;
-                  })
-                  .join("")}
-            </div>
-        </div>
-    `;
-
-    accordionContainer.appendChild(categoriaDiv);
+                      return `
+                      <div class="card fondo-tabla mb-3 m-auto" style="width: 14rem;">
+                          <input type='hidden' name="modulos[]" value="${modName}">
+                          <div class="card-body">
+                              <h5 class="card-title">${modName}</h5>
+                              ${switchesHTML}
+                          </div>
+                      </div>`;
+                    })
+                    .join("")}
+              </div>
+          </div>
+      `;
+      accordionContainer.appendChild(categoriaDiv);
+    }
+  } catch (error) {
+    console.error("Error al renderizar permisos:", error);
   }
 };
 
 readRol();
 
 readPermisos();
+
+//abrir el modal de agregar
+btnRegistrarRol.addEventListener("click", function () {
+  modalRegistrarRol.show();
+});
 
 //validacion formulario
 let verificarFormularioG = inicializarValidacionFormulario(formAgregarRol);

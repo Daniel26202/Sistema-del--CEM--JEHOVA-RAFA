@@ -809,9 +809,6 @@ class ModeloFactura extends ModelBase
 
 	public function setIdH($idH)
 	{
-		if (!preg_match('/^[0-9]+$/', $idH)) {
-			throw new \InvalidArgumentException('El ID no es válido.');
-		}
 
 		$this->idH = (int)$idH;
 	}

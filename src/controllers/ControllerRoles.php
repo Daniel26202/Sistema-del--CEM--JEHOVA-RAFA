@@ -34,12 +34,19 @@ function mostrarPermisos($id_rol, $modulo)
     $modeloRoles->mostrarPermisos();
 }
 
-function cargarPermisosGuardados($datos) {
+function cargarPermisosGuardados($datos)
+{
     $modeloRoles = new ModeloRoles();
     $modeloRoles->setIdRol($datos["0"]);
     echo json_encode($modeloRoles->mostrarPermisos());
 }
 
+
+function returnPermisos()
+{
+    $modeloRoles = new ModeloRoles();
+    echo json_encode($modeloRoles->returnPermisos());
+}
 
 //guardar el rol
 
@@ -61,7 +68,7 @@ function guardarRol()
         $modeloBitacora->setId_usuario($_POST['id_usuario']);
         $modeloBitacora->insertarBitacora();
 
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
     } else {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => $insercion]);

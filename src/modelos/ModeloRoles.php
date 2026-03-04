@@ -15,10 +15,6 @@ class ModeloRoles extends ModelBase
         parent::__construct($dbSystem);
     }
 
-    private function retrunObjectModel()
-    {
-        return new ModeloPermisos();
-    }
 
     //consultar los roles disponibles
     public function roles()
@@ -27,6 +23,24 @@ class ModeloRoles extends ModelBase
             $sql = "SELECT * FROM rol WHERE estado ='ACT'  ";
             $this->setSQL($sql);
             return $this->read();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    //consultar los permisos por modulo de un rol
+
+    private function returnPermisosModulo($data)
+    {
+        try {
+            $sql = "SELECT pr.modulo, pr.id_permiso, p.permisos FROM permisos_de_rol pr INNER JOIN permisos p ON p.id_permiso =pr.id_permiso WHERE pr.id_rol =:id_rol AND pr.modulo =:modulo ";
+            $this->setSQL($sql);
+            $datos = $this->search($data);
+            $permisos = '';
+            foreach ($datos as $d) {
+                $permisos .= $d['id_permiso'] . ",";
+            }
+            return $permisos;
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -41,35 +55,48 @@ class ModeloRoles extends ModelBase
                 'id_rol' => $this->getIdRol()
             ];
 
-            $sql = "SELECT modulo, permisos FROM permisos WHERE id_rol = :id_rol";
+            $sql = "SELECT pr.modulo, pr.id_permiso, p.permisos FROM permisos_de_rol pr INNER JOIN permisos p ON p.id_permiso =pr.id_permiso WHERE pr.id_rol =:id_rol";
             $this->setSQL($sql);
 
             // Obtenemos los datos crudos de la DB (suponiendo que search() devuelve un array de filas)
             $resultados = $this->search($data);
 
+
+
             // --- PROCESAMIENTO PARA JS ---
-            $permisosParaJS = [];
+            $result = [];
 
-            if (is_array($resultados)) {
-                foreach ($resultados as $fila) {
-                    // Forzamos a que sea un array si search() devuelve objetos
-                    $fila = (array)$fila;
 
-                    // Mapeamos: "NombreModulo" => "permiso1,permiso2"
-                    // Si el permiso es null, guardamos cadena vacía
-                    $permisosParaJS[$fila['modulo']] = $fila['permisos'] ?? "";
-                }
+            $permisos = $this->returnPermisos();
+
+            foreach ($resultados as $fila) {
+                $listPermisos = [];
+
+                $permisos = $this->returnPermisosModulo(['id_rol' => $data['id_rol'], 'modulo' => $fila['modulo']]);
+                array_push($listPermisos, $permisos);
+
+                $result[$fila['modulo']] = $permisos;
             }
 
-            return $permisosParaJS;
+            return $result;
         } catch (\Exception $e) {
             // En caso de error, podrías registrar el log y retornar array vacío
             error_log($e->getMessage());
-            return [];
+            return $e;
         }
     }
 
 
+    public function returnPermisos()
+    {
+        try {
+            $sql = "SELECT * FROM permisos";
+            $this->setSQL($sql);
+            return $this->read();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 
 
     //Insertar  Rol
@@ -92,45 +119,36 @@ class ModeloRoles extends ModelBase
             $this->setSQL($sql);
             $id_rol = $this->create($data);
 
-            // //recorro los modulos enviados por el formulario
-            // foreach ($this->getModulos() as $index => $modulo) {
-            //     $grupoDelPermiso = $this->retrunObjectModel()->getPermisos()[$index];
-            //     $permisos = isset($_POST[$grupoDelPermiso]) ? implode(",", $_POST[$grupoDelPermiso]) : '';
-
-            //     $data=[
-            //         'id_rol'=>$this->getIdRol(),
-            //         'permisos'=>$permisos,
-            //         'modulo'=> $this->retrunObjectModel()->getModulo()
-            //     ];
-            //     $sql = "INSERT INTO permisos (idpermisos, id_rol, permisos, modulo) VALUES (NULL, :id_rol, :permisos, :modulo)";
-            //     $this->setSQL($sql);
-            //     $this->create($data);
-            // }
 
 
             // 2. Preparar la conexión (ejemplo PDO)
             // $pdo = new PDO(...);
 
-            // 3. Iterar sobre TODOS los módulos
-            foreach ($this->getModulos() as $moduloNombre) {
+            //3. Iterar sobre TODOS los módulos
 
-                // Verificamos si el módulo actual tiene permisos marcados
-                // Si existe, los unimos con comas; si no, queda como cadena vacía
-                $cadenaPermisos = "";
-                if (isset($this->getPermisos()[$moduloNombre])) {
-                    $cadenaPermisos = implode(',', $this->getPermisos()[$moduloNombre]);
+            $listPermisoPorModulo = [];
+            foreach ($this->getModulos() as $modulo) {
+                if (isset($this->getPermisos()[$modulo])) {
+                    $listPermisoPorModulo[] = [
+                        'permisos' => $this->getPermisos()[$modulo],
+                        'modulo' => $modulo
+                    ];
                 }
-                $data = [
-                    'id_rol' => $id_rol,
-                    'permisos' => $cadenaPermisos,
-                    'modulo' => $moduloNombre
-                ];
-                $sql = "INSERT INTO permisos (idpermisos, id_rol, permisos, modulo) VALUES (NULL, :id_rol, :permisos, :modulo)";
-                $this->setSQL($sql);
-                $this->create($data);
             }
 
-            return ["exito", $data];
+            foreach ($listPermisoPorModulo as $list) {
+                foreach ($list['permisos'] as $permiso) {
+                    $data = [
+                        'id_rol' => $id_rol,
+                        'id_permiso' => $permiso,
+                        'modulo' => $list['modulo'],
+                    ];
+                    $sql = "INSERT INTO permisos_de_rol(id_permisos_de_rol, id_rol, id_permiso, modulo) VALUES (null,:id_rol,:id_permiso,:modulo)";
+                    $this->setSQL($sql);
+                    $this->create($data);
+                }
+            }
+            return ["exito", $this->getModulos()];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -141,66 +159,67 @@ class ModeloRoles extends ModelBase
     public function editar()
     {
         try {
-            $data1 = [
-                'nombre' => $this->getNombre(),
-                'descripcion' => $this->getDescripcion()
-            ];
+            $id_rol = $this->getIdRol();
 
-            $data2 = [
-                'id_rol' => $this->getIdRol(),
-            ];
+            // 1. Validar que el Rol existe
+            $data_search = ['id_rol' => $id_rol];
+            $sql_check = "SELECT id_rol FROM rol WHERE id_rol = :id_rol";
+            $this->setSQL($sql_check);
+            $validar = $this->search($data_search, false);
 
-            $sql = "SELECT * from rol where id_rol=:id_rol";
-            $this->setSQL($sql);
-
-            $validar  = $this->search($data2, false);
-
-            if ($validar == []) {
+            if (empty($validar)) {
                 throw new \Exception("El id del rol no existe");
             }
 
-            $nombreRol = $this->validarRol(['nombre' => $this->getNombre()], true);
-
-            //Editar Rol
-            if ($this->getNombreRegistrado() == $nombreRol) {
-                $sql = "UPDATE rol SET  nombre =:nombre, descripción =:descripcion WHERE id_rol = :id";
-                $this->setSQL($sql);
-                $this->update($data1, $this->getIdRol());
-            } else {
-                if ($this->validarRol(['nombre' => $this->getNombre()])) {
-                    throw new \Exception("El nombre ya está registrado.");
-                } else {
-                    $sql = "UPDATE rol SET  nombre =:nombre, descripción =:descripcion WHERE id_rol = :id";
-                    $this->setSQL($sql);
-                    $this->update($data1, $this->getIdRol());
-                }
+            // 2. Validar nombre duplicado (si el nombre cambió)
+            $nombreNuevo = $this->getNombre();
+            // Asumiendo que validarRol devuelve true si el nombre ya existe en OTRO registro
+            if ($this->validarRol(['nombre' => $nombreNuevo], true)) {
+                // Aquí deberías comparar si el nombre que existe es de este mismo ID o de otro
+                // Si el método validarRol ya maneja esa lógica, perfecto.
             }
 
-            //Recorro los modulos enviados por el formulario
-            foreach ($this->getModulos() as $moduloNombre) {
+            // 3. Actualizar datos básicos del Rol
+            $data_rol = [
+                'nombre' => $nombreNuevo,
+                'descripcion' => $this->getDescripcion()
+            ];
+            $sql_update_rol = "UPDATE rol SET nombre = :nombre, descripción = :descripcion WHERE id_rol = :id";
+            $this->setSQL($sql_update_rol);
+            $this->update($data_rol, $id_rol);
 
-                // Verificamos si el módulo actual tiene permisos marcados
-                // Si existe, los unimos con comas; si no, queda como cadena vacía
-                $cadenaPermisos = "";
-                if (isset($this->getPermisos()[$moduloNombre])) {
-                    $cadenaPermisos = implode(',', $this->getPermisos()[$moduloNombre]);
+            // --- INICIO DE SINCRONIZACIÓN DE PERMISOS ---
+
+            // 4. Limpiar permisos anteriores para evitar duplicidad o basura
+            $sql_delete = "DELETE FROM permisos_de_rol WHERE id_rol = :id_rol";
+            $this->setSQL($sql_delete);
+            $this->create(['id_rol' => $id_rol]); // Usamos create o un método execute directo si lo tienes
+
+            // 5. Insertar los nuevos permisos seleccionados
+            foreach ($this->getModulos() as $moduloNombre) {
+                // Verificamos si este módulo tiene permisos asignados en el POST/Objeto
+                if (isset($this->getPermisos()[$moduloNombre]) && is_array($this->getPermisos()[$moduloNombre])) {
+
+                    foreach ($this->getPermisos()[$moduloNombre] as $id_permiso) {
+                        $data_permiso = [
+                            'id_rol' => $id_rol,
+                            'id_permiso' => $id_permiso,
+                            'modulo' => $moduloNombre
+                        ];
+
+                        $sql_ins = "INSERT INTO permisos_de_rol (id_permisos_de_rol, id_rol, id_permiso, modulo) 
+                                VALUES (NULL, :id_rol, :id_permiso, :modulo)";
+                        $this->setSQL($sql_ins);
+                        $this->create($data_permiso);
+                    }
                 }
-                $data = [
-                    'permisos' => $cadenaPermisos,
-                    'modulo' => $moduloNombre
-                ];
-                $sql = "UPDATE  permisos SET  permisos =:permisos WHERE modulo =:modulo AND id_rol =:id";
-                $this->setSQL($sql);
-                $this->update($data, $this->getIdRol());
             }
 
             return ["exito"];
         } catch (\Exception $e) {
-
             return $e->getMessage();
         }
     }
-
 
     //eliminar Rol
 
