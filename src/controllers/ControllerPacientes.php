@@ -3,6 +3,7 @@
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\modelos\RateLimiter;
 // use App\
 
 
@@ -174,6 +175,12 @@ function eliminar($datos)
 	}
 
 	try {
+		
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 60 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_paciente_' . $idUsuario, 1, 1200);
+
 		$modelo  = returnObjectClass()['paciente'];
 		$bitacora = returnObjectClass()['bitacora'];
 
