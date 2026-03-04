@@ -18,6 +18,29 @@
     opacity: 0.9;
 } */
 
+.toggle-password {
+    color: #555a5e !important;
+    transition:
+        color 0.3s ease,
+        background-color 0.3s ease,
+        transform 0.2s ease;
+    margin-left: 4px; /* muévelo a la derecha */
+}
+
+.toggle-password:hover {
+    color: #387adf !important;
+    filter: drop-shadow(0 0 5px rgba(8, 101, 178, 0.3));
+    transform: translateY(-3%) scale(1.1);
+}
+
+.toggle-password:active {
+    transform: translateY(-3%) scale(0.95);
+}
+
+
+
+
+
 /* off-canvas paciente */
 .titulo-seccion-offcanvas {
     font-size: 0.826rem;
@@ -27,8 +50,6 @@
     color: #387adf !important;
     margin-bottom: 0.6rem;
 }
-
-
 
 .caja-diagnostico-offcanvas {
     background-color: var(--color-bg-card);
@@ -1397,6 +1418,10 @@ hr {
 
 .icon-incorrect {
     color: rgb(224, 3, 3);
+}
+
+.rojo {
+    color: rgb(224, 3, 3) !important;
 }
 
 .grpFormInCorrectEditar:focus {

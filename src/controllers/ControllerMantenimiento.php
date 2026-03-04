@@ -3,19 +3,7 @@
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloMantenimiento;
 use App\modelos\ModeloPermisos;
-use App\modelos\ModeloUsuarios;
 
-
-
-
-function __construct()
-{
-	$backupRuta = __DIR__ . "/../config/backups/";
-	// Crea la carpeta de respaldos si no existe
-	if (!is_dir($backupRuta)) {
-		mkdir($backupRuta, 0777, true);
-	}
-}
 
 function mantenimiento($parametro)
 {
@@ -26,6 +14,10 @@ function mantenimiento($parametro)
 function bajarBdsNube($parametro)
 {
 	$backupRuta = __DIR__ . "/../config/backups/";
+	// Crea la carpeta de respaldos si no existe
+	if (!is_dir($backupRuta)) {
+		mkdir($backupRuta, 0777, true);
+	}
 	$modeloMantenimiento = new ModeloMantenimiento();
 	$resultado = $modeloMantenimiento->traerBdsNube($backupRuta);
 	echo json_encode($resultado);
@@ -38,6 +30,10 @@ function consultarBd($parametro)
 		session_start();
 	}
 	$backupRuta = __DIR__ . "/../config/backups/";
+	// Crea la carpeta de respaldos si no existe
+	if (!is_dir($backupRuta)) {
+		mkdir($backupRuta, 0777, true);
+	}
 	$modeloMantenimiento = new ModeloMantenimiento();
 
 	$idUsuario = $_SESSION["id_usuario"];
@@ -48,67 +44,113 @@ function consultarBd($parametro)
 
 function generarRespaldo($parametro)
 {
-	$backupRuta = __DIR__ . "/../config/backups/";
-	$modeloMantenimiento = new ModeloMantenimiento();
-	$modeloBitacora = new ModeloBitacora();
+	try {
 
-	$id_usuario = $parametro[0];
-	$modeloMantenimiento->generateBackup($backupRuta);
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
 
-	$modeloBitacora->setId_usuario($id_usuario);
-	$modeloBitacora->setTabla("mantenimiento");
-	$modeloBitacora->setActividad("Se ha realizado una descarga del respaldo de la base de datos");
-	$modeloBitacora->insertarBitacora();
+		if (!$_SESSION["validarPBD"]) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Error, no tine permiso para generar el respaldo"]);
+			exit;
+		}
 
-	header("location: /Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento/guardado");
+		$backupRuta = __DIR__ . "/../config/backups/";
+		// Crea la carpeta de respaldos si no existe
+		if (!is_dir($backupRuta)) {
+			mkdir($backupRuta, 0777, true);
+		}
+		$modeloMantenimiento = new ModeloMantenimiento();
+		$modeloBitacora = new ModeloBitacora();
+
+		$id_usuario = $_SESSION["id_usuario"];
+		$mensaje = $modeloMantenimiento->generateBackup($backupRuta);
+
+		$modeloBitacora->setId_usuario($id_usuario);
+		$modeloBitacora->setTabla("mantenimiento");
+		$modeloBitacora->setActividad("Se ha realizado una descarga del respaldo de la base de datos");
+		$modeloBitacora->insertarBitacora();
+
+		echo json_encode(['ok' => true, 'message' => "La descarga se realizó con éxito, " . $mensaje]);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
 function restaurarRespaldo($parametro)
 {
-	$backupRuta = __DIR__ . "/../config/backups/";
-	$modeloMantenimiento = new ModeloMantenimiento();
-	$modeloBitacora = new ModeloBitacora();
-
-	// buscar todos los archivos ZIP de respaldo
-	$archivosZip = glob($backupRuta . "bd-*.zip");
-
-	if (!empty($archivosZip)) {
-
-		print_r($parametro);
-		if (isset($parametro[0]) && $parametro[0] != "nohay") {
-			$nombreBd = $backupRuta .  $parametro[0] . ".zip";
-			$nombreZip = $parametro[0];
-			$id_usuario = $parametro[1];
-		} else {
-			// Ordenar por fecha de modificación
-			usort($archivosZip, function ($a, $b) {
-				return filemtime($b) - filemtime($a);
-			});
-			$nombreZip = basename($archivosZip[0]);
-
-			$nombreBd = $archivosZip[0];
-			$id_usuario = $parametro[1];
+	try {
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
 		}
-		$modeloMantenimiento->restaurarBackup($backupRuta, $nombreBd);
-		$modeloBitacora->setId_usuario($id_usuario);
-		$modeloBitacora->setTabla("mantenimiento");
-		$modeloBitacora->setActividad("Se ha restablecido la base de datos($nombreZip) desde el respaldo");
-		$modeloBitacora->insertarBitacora();
 
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento/restaurado");
-	} else {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento/noExisteRespaldo");
+		if (!$_SESSION["validarPBD"]) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Error, no tine permiso para el respaldo"]);
+			exit;
+		}
+
+		$backupRuta = __DIR__ . "/../config/backups/";
+		// Crea la carpeta de respaldos si no existe
+		if (!is_dir($backupRuta)) {
+			mkdir($backupRuta, 0777, true);
+		}
+
+		$modeloMantenimiento = new ModeloMantenimiento();
+		$modeloBitacora = new ModeloBitacora();
+
+		// buscar todos los archivos ZIP de respaldo
+		$archivosZip = glob($backupRuta . "bd-*.zip");
+
+		if (!empty($archivosZip)) {
+
+			// print_r($parametro);
+			if (isset($parametro[0]) && $parametro[0] != "nohay") {
+				$nombreBd = $backupRuta .  $parametro[0] . ".zip";
+				$nombreZip = $parametro[0];
+			} else {
+				// Ordenar por fecha de modificación
+				usort($archivosZip, function ($a, $b) {
+					return filemtime($b) - filemtime($a);
+				});
+				$nombreZip = basename($archivosZip[0]);
+				$nombreBd = $archivosZip[0];
+			}
+
+			$id_usuario = $_SESSION["id_usuario"];
+
+			$result = $modeloMantenimiento->restaurarBackup($backupRuta, $nombreBd);
+			$modeloBitacora->setId_usuario($id_usuario);
+			$modeloBitacora->setTabla("mantenimiento");
+			$modeloBitacora->setActividad("Se ha restablecido la base de datos($nombreZip) desde el respaldo");
+			$modeloBitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => "La restauración se realizó con éxito, " . $result]);
+		} else {
+			echo json_encode(['ok' => false, 'error' => "No existe respaldo"]);
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
 
-function verificacionU($parametro)
+function verificacionU()
 {
+	if (session_status() !== PHP_SESSION_ACTIVE) {
+		session_start();
+	}
+	$_SESSION["validarPBD"] = false;
 	$modeloMantenimiento = new ModeloMantenimiento();
-	$modeloUsuarios = new ModeloUsuarios();
 
-	$modeloUsuarios->setUsuario($_POST["usuario"]);
-	$modeloUsuarios->setPassword($_POST["password"]);
+	$modeloMantenimiento->setUsuario($_POST["usuario"]);
+	$modeloMantenimiento->setPassword($_POST["password"]);
 	$resultado = $modeloMantenimiento->verifU();
+	$_SESSION["validarPBD"] = ($resultado) ? true : false;
 	echo json_encode($resultado);
 }
 

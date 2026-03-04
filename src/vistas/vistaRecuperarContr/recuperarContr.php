@@ -61,15 +61,15 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                         <div class="carousel-inner">
 
                             <div class="carousel-item active tamano">
-                                <img src="<?= $urlBase ?>./src/assets/img/recuperar1.jpg"
+                                <img src="<?= $urlBase ?>./src/assets/images/img/recuperar1.jpg"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="<?= $urlBase ?>./src/assets/img/recuperar2.png"
+                                <img src="<?= $urlBase ?>./src/assets/images/img/recuperar2.png"
                                     class="d-block col-12 h-100 uk-background-blend-multiply " alt="">
                             </div>
                             <div class="carousel-item tamano">
-                                <img src="<?= $urlBase ?>./src/assets/img/recuperar3.jpg"
+                                <img src="<?= $urlBase ?>./src/assets/images/img/recuperar3.jpg"
                                     class="d-block h-100 uk-background-blend-multiply " alt="">
                             </div>
 
@@ -139,7 +139,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                                                 </svg>
                                             </span>
-                                            <input class="form-control txt-custom input-validar inputs" name="usuario"
+                                            <input class="form-control txt-custom input-validar inputs col" name="usuario"
                                                 placeholder="Usuario" type="text">
                                             <span class="icono-der">
                                                 <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">

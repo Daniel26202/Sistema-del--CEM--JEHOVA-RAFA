@@ -1,5 +1,5 @@
 
-.icono-der {
+/* .icono-der {
     margin-left: 0.4rem;
     display: flex;
     align-items: center;
@@ -37,6 +37,7 @@
         transform: translateX(4px);
     }
 }
+ */
 
 
 
@@ -54,28 +55,13 @@
 
 
 
-
-
-
-
-/* ============================================
-           1. FONDO CON IMAGEN
-           ============================================ */
 body {
     background-image: url("fondoLogin.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-
-    /* si no carga la imagen */
     background-color: #a4cce7;
-
-    /* Layout con flexbox (Bootstrap lo hace con clases también) */
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 /* Overlay semi-transparente opcional */
@@ -91,26 +77,21 @@ body::before {
     pointer-events: none;
 }
 
-/* ============================================
-           2. EFECTOS DE LA TARJETA (Card de Bootstrap)
-           ============================================ */
-.card {
+/* EFECTOS DE LA TARJETA  */
+.cardStyle {
     z-index: 10;
     background: rgba(255, 255, 255, 0.555) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
     border-radius: 3.9vh !important;
-
-    /* EFECTO: Transición suave para hover */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* EFECTO: Hover de la tarjeta */
-.card:hover {
+.cardStyle:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* EFECTO: Animación de entrada */
+/* Animación de entrada */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -122,16 +103,14 @@ body::before {
     }
 }
 
-.card {
+.cardStyle {
     animation: fadeInUp 0.2s ease-out;
 }
 
 .logo {
   width: 13%;
 }
-/* ============================================
-           3. EFECTOS DEL LOGO
-           ============================================ */
+/* EFECTOS DEL LOGO */
 .logo-icon {
     width: 41px;
     height: 41px;
@@ -140,13 +119,12 @@ body::before {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* EFECTO: Hover del logo */
 .logo-icon:hover {
     transform: scale(1.1) rotate(5deg);
     box-shadow: 0 5px 30px rgba(8, 82, 178, 0.5);
 }
 
-/* EFECTO: Animación de pulso continuo */
+/* Animación de pulso continuo */
 @keyframes pulse {
     0%,
     100% {
@@ -172,27 +150,8 @@ body::before {
     background-clip: text;
 }
 
-/* ============================================
-           4. EFECTOS DEL ICONO DE SEGURIDAD
-           ============================================ */
-@keyframes iconScale {
-    0% {
-        transform: scale(0) rotate(-180deg);
-    }
-    100% {
-        transform: scale(1) rotate(0deg);
-    }
-}
 
-.secure-icon {
-    animation: iconScale 0.5s ease-out 0.3s both;
-}
-
-/* ============================================
-           5. EFECTOS DE LOS INPUTS (Form-control de Bootstrap)
-           ============================================ */
-
-
+/* EFECTOS DE LOS INPUTS */
 
 /* Contenedor del input con posición relativa */
 .input-icon-wrapper {
@@ -212,7 +171,7 @@ body::before {
 }
 
 /* Input con padding para el icono */
-.form-control {
+.styleInputs {
     padding-left: 40px !important;
     padding-right: 40px !important;
     border-width: 1.9px;
@@ -223,22 +182,20 @@ body::before {
     box-shadow: 0 8px 10px rgba(8, 101, 178, 0.15) !important;
 }
 
-/* EFECTO: Focus en inputs */
-.form-control:focus {
+.styleInputs:focus {
     background-color: #ffffffe5;
     border-width: 2px;
     box-shadow: 0 0 0 0.2rem rgba(8, 101, 178, 0.15) !important;
     transform: scale(1.01);
 }
 
-/* EFECTO: Icono cambia de color cuando hay focus */
+/* Icono cambia de color cuando hay focus */
 .input-icon-wrapper:focus-within .input-icon {
     color: #387adf !important;
     transform: translateY(-50%) scale(1.1);
 }
 
-/* Label cambia de color con focus */
-.form-label {
+.labelForm {
     transition: color 0.3s ease;
     font-weight: 600;
     text-transform: uppercase;
@@ -246,14 +203,12 @@ body::before {
     letter-spacing: 0.5px;
 }
 
-.input-icon-wrapper:focus-within ~ .form-label,
-.form-control:focus ~ .form-label {
+.input-icon-wrapper:focus-within ~ .labelForm,
+.styleInputs:focus ~ .labelForm {
     color: #387adf !important;
 }
 
-/* ============================================
-           6. BOTÓN TOGGLE DE CONTRASEÑA
-           ============================================ */
+/* BOTON TOGGLE DE CONTRASEÑA */
 .password-toggle {
     position: absolute;
     right: 7px;
@@ -273,10 +228,8 @@ body::before {
     transform: translateY(-50%) scale(0.95);
 }
 
-/* ============================================
-           7. EFECTOS DEL BOTÓN (btn de Bootstrap)
-           ============================================ */
-.btn-primary {
+/* EFECTOS DEL BOTON */
+.btnPrimaryEditado {
     background: linear-gradient(135deg, #387adf 0%, #1c74f7 100%) !important;
     border: none !important;
     box-shadow: 0 3px 12px rgba(8, 60, 178, 0.3);
@@ -289,20 +242,19 @@ body::before {
     width: 108.5%;
 }
 
-/* EFECTO: Hover del botón */
-.btn-primary:hover {
+.btnPrimaryEditado:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(8, 60, 178, 0.5) !important;
 }
 
-/* EFECTO: Click del botón */
-.btn-primary:active {
+/* Click del botón */
+.btnPrimaryEditado:active {
     transform: translateY(-1px) !important;
     box-shadow: 0 2px 8px rgba(8, 60, 178, 0.3) !important;
 }
 
-/* EFECTO: Onda al hacer click */
-.btn-primary::after {
+/* Onda al hacer click */
+.btnPrimaryEditado::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -315,31 +267,12 @@ body::before {
     transition: width 0.6s ease, height 0.6s ease;
 }
 
-.btn-primary:active::after {
+.btnPrimaryEditado:active::after {
     width: 300px;
     height: 300px;
 }
 
-/* ============================================
-           8. ICONO DE SEGURIDAD CON PARPADEO
-           ============================================ */
-@keyframes blink {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.6;
-    }
-}
-
-.security-icon {
-    animation: blink 2s ease-in-out infinite;
-}
-
-/* ============================================
-           9. ENLACES DEL FOOTER
-           ============================================ */
+/* ENLACES DEL FOOTER */
 .footer-links a {
     color: #2f75df;
     transition: color 0.3s ease;
@@ -349,9 +282,6 @@ body::before {
     color: #0066ff;
 }
 
-/* ============================================
-           10. AJUSTES RESPONSIVE ADICIONALES
-           ============================================ */
 @media (max-width: 576px) {
     .logo-icon {
         width: 45px;
@@ -362,14 +292,11 @@ body::before {
         font-size: 24px;
     }
 
-    .card {
+    .cardStyle {
         margin: 10px !important;
     }
 }
 
-/* ============================================
-           11. COLORES PERSONALIZADOS DE BOOTSTRAP
-           ============================================ */
 .text-primary-custom {
     color: #387adf !important;
 }

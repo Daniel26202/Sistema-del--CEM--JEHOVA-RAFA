@@ -1,5 +1,13 @@
 // esto es para los iconos y los input
+import { executePetition, alertConfirm, alertError, alertSuccess, clearStyleVInputs } from "../js/generic/funtionGeneric.js";
+import { inicializarValidacionFormulario, chulitoYX } from "./generic/expresionesModulares.js";
+
 addEventListener("DOMContentLoaded", function () {
+    const url = "/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento";
+    const modalBaseDatos = new bootstrap.Modal(document.getElementById("modalBaseDatos"));
+    const modalVerif = new bootstrap.Modal(document.getElementById("Verificar"));
+    const modalDescarga = new bootstrap.Modal(document.getElementById("descargarBd"));
+
     // buscar en la tabla
     document.getElementById("buscarBD").addEventListener("input", function () {
         const textMayuscl = this.value.toUpperCase();
@@ -25,8 +33,7 @@ addEventListener("DOMContentLoaded", function () {
             let resultadoBBdN = await peticionBBdN.text();
             console.log(resultadoBBdN);
 
-            let peticionConsulBd = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/consultarBd");
-            let resultadoConsulBd = await peticionConsulBd.json();
+            let resultadoConsulBd = await executePetition(url + "/consultarBd/", "GET");
             console.log(resultadoConsulBd);
 
             console.log(" traer bd: ");
@@ -39,151 +46,191 @@ addEventListener("DOMContentLoaded", function () {
             }
 
             if (resultadoConsulBd[0].length > 0) {
-                console.log("consulta datos corectamente");
+                console.log("consulta datos correctamente");
                 let html = ``;
-                let contadorDb = 0;
                 resultadoConsulBd[0].forEach((res) => {
+                    console.log("ressssssssssssssssssss");
+                    console.log(res);
+                    console.log(resultadoConsulBd[1]);
+
                     html += `   <tr>
                                     <td>${res}</td>
                                     <td>
-                                        <a href="#" class="p-2 uk-button-primary rounded-5 fw-bold text-decoration-none text-white" type="button" id="btnEnviar" data-bs-dismiss="modal"
-                                            uk-toggle="target: #restablecer${contadorDb}">Seleccionar</a>
+                                        <button data-base-datos="${res}" class="restaurarBDatos seleccionar rounded-5 p-2 seleccionar btn btn-modals btnrestablecer" type="button" id="btnEnviarS" >Seleccionar</button>
                                     </td>
 
-                                </tr>
-
-                                <!-- modales -->
-                                <div>
-                                    <div id="restablecer${contadorDb}" uk-modal>
-                                        <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-                                            <!-- Boton que cierra el modal -->
-                                            <div class="d-flex justify-content-between mb-5">
-
-                                                <div class="d-flex align-items-center ajustar" id="">
-                                                    <div class="svgPapeleraPatologia">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                                                            class="bi bi-trash-fill azul me-2 mb-1" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <h5>
-                                                            ¿Desea restaurar la base de datos?
-                                                        </h5>
-                                                    </div>
-                                                </div>
-                                                <!-- Ayuda Interactiva -->
-                                                <a href="#">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                                        class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                                        <path
-                                                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-
-
-                                            <div class="mt-5 uk-text-right btn_modal_patologias">
-                                                <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
-                                                    data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Cancelar</button>
-
-                                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/${res}/${resultadoConsulBd[1]}" class="seleccionar">
-                                                    <button class=" btn col-4 btn-agregarcita-modal btnrestablecer"
-                                                        id="">Restaurar</button>
-                                                </a>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>`;
-                    contadorDb++;
+                                </tr>`;
                 });
                 document.querySelector("#datosTable").innerHTML = html;
+                let bd = "";
+                document.querySelectorAll(".restaurarBDatos").forEach((BD) => {
+                    BD.addEventListener("click", function () {
+                        bd = this.getAttribute("data-base-datos");
+                        alertConfirm("¿Desea restaurar la base de datos?", restaurarRespaldo, bd);
+                    });
+                });
+
+                document.getElementById("btnRestaurar").addEventListener("click", function () {
+                    alertConfirm("¿Desea restaurar la base de datos?", restaurarRespaldo, "nohay");
+                });
             } else {
                 console.log("no consulta datos");
                 document.querySelector("#datosTable").innerHTML = "no existen bases de datos descargadas";
             }
         } catch (error) {
-            console.log("error intente Mas Tarde...");
-            console.log(error);
+            alertError("Error", error);
         }
     };
 
     const formularioVU = document.querySelector("#fVerificacionU");
-    let mensajeP = document.querySelector(".mensajeP");
     let semaforo = 0;
-    mensajeP.classList.add("d-none");
+
     const VerificacionUsuario = async (tipoBtn) => {
-        // try {
+        try {
             console.log(semaforo);
-            
-        if (semaforo === 1) return;
-        document.querySelector("#loaderModal").classList.add("desvanecimiento");
-        semaforo = 1;
 
-        const datosFormulario = new FormData(formularioVU);
+            if (semaforo === 1) return;
+            document.querySelector("#loaderModal").classList.add("desvanecimiento");
+            semaforo = 1;
 
-        const contenidoForm = {
-            method: "POST",
-            body: datosFormulario,
-        };
+            // llamo la función
+            const data = new FormData(formularioVU);
+            let resultadoVU = await executePetition(url + "/verificacionU/", "POST", data);
+            console.log(resultadoVU);
 
-        let peticionValidarU = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/verificacionU", contenidoForm);
-        let resultadoVU = await peticionValidarU.json();
-        if (resultadoVU == false) {
-            console.log("El usuario no esta activo o no es super administrador.");
-            mensajeP.classList.remove("d-none");
-        } else {
-            mensajeP.classList.add("d-none");
-            if (tipoBtn === "modalDescargarBD") {
-                // abre el modal de iukit
-                UIkit.modal("#descargarBd").show();
-                document.querySelector("#loaderModal").classList.remove("desvanecimiento");
-            } else if (tipoBtn === "modalRestablecerBD") {
-                await bajarBdsNube();
-                // abre el modal de Bootstrap
-
-                var modal = new bootstrap.Modal(document.getElementById("modalBaseDatos"));
-                modal.show();
+            if (resultadoVU == false) {
+                console.log("El usuario no esta activo o no es super administrador.");
+                alertError("Error", "Contraseña incorrecta, o el usuario no tiene el permiso.");
+            } else {
+                if (tipoBtn === "modalDescargarBD") {
+                    document.querySelector("#loaderModal").classList.remove("desvanecimiento");
+                    modalVerif.hide();
+                    alertConfirm("¿Desea descargar la base de datos?", generarResp);
+                } else if (tipoBtn === "modalRestablecerBD") {
+                    await bajarBdsNube();
+                    // abre el modal de Bootstrap
+                    modalBaseDatos.show();
+                    modalVerif.hide();
+                }
             }
+            semaforo = 0;
+            document.querySelector("#loaderModal").classList.remove("desvanecimiento");
+            return resultadoVU;
+        } catch (error) {
+            document.querySelector("#loaderModal").classList.remove("desvanecimiento");
+            alertError("Error", error);
         }
-        semaforo = 0;
-        document.querySelector("#loaderModal").classList.remove("desvanecimiento");
-
-        // } catch (error) {
-        // console.log("lamentablemente Algo Salio Mal Por favor Intente Mas Tarde...  " + error);
-        // }
     };
 
-    // llamar la funcion para evitar repetir evento
-    function manejadorDescargarBD() {
-        VerificacionUsuario("modalDescargarBD");
+    const idU = document.getElementById("idU").value;
+
+    let semaforoDos = 0;
+    const generarResp = async () => {
+        try {
+            if (semaforoDos === 1) return;
+            document.querySelector("#loaderModal").classList.add("desvanecimiento");
+
+            let resp = await executePetition(url + "/generarRespaldo/" + idU, "GET");
+            console.log(resp);
+            console.log(resp.ok);
+
+            document.querySelector("#loaderModal").classList.remove("desvanecimiento");
+            semaforoDos = 0;
+            if (resp.ok) {
+                alertSuccess(resp.message);
+            } else {
+                throw new Error(resp.error);
+            }
+        } catch (error) {
+            document.querySelector("#loaderModal").classList.remove("desvanecimiento");
+            alertError("Error", error);
+        }
+    };
+
+    let semaforoTres = 0;
+    async function restaurarRespaldo(DB) {
+        try {
+            if (semaforoTres === 1) return;
+            document.querySelector("#loaderModal").classList.add("desvanecimiento");
+
+            let resp = await executePetition(url + "/restaurarRespaldo/" + DB, "GET");
+
+            document.querySelector("#loaderModal").classList.remove("desvanecimiento");
+            semaforoTres = 0;
+            console.log(resp);
+            if (resp.ok) {
+                alertSuccess(resp.message);
+            } else {
+                throw new Error(resp.error);
+            }
+        } catch (error) {
+            alertError("Error", error);
+        }
     }
-    function manejadorRestablecerBD() {
-        VerificacionUsuario("modalRestablecerBD");
-    }
 
-    const btnVerifi = document.querySelector("#btnVerifi");
-
-    document.querySelector("#descarBd").addEventListener("click", function () {
-        formularioVU.reset();
-        // quitar evento existente
-        btnVerifi.removeEventListener("click", manejadorRestablecerBD);
-        btnVerifi.removeEventListener("click", manejadorDescargarBD);
-
-        btnVerifi.addEventListener("click", manejadorDescargarBD);
+    document.querySelectorAll(".btnVerificarV").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            clearStyleVInputs();
+            formularioVU.reset();
+        });
     });
 
-    document.querySelector("#btnRD").addEventListener("click", function () {
-        formularioVU.reset();
-        // quitar evento existente
-        console.log(semaforo);
-        btnVerifi.removeEventListener("click", manejadorRestablecerBD);
-        btnVerifi.removeEventListener("click", manejadorDescargarBD);
+    // llamar la funcion para evitar repetir evento
+    function manejadorDescargarBD() {}
+    function manejadorRestablecerBD() {}
+    const modalV = document.querySelector("#Verificar");
 
-        btnVerifi.addEventListener("click", manejadorRestablecerBD);
+    document.querySelector("#descarBd").addEventListener("click", function () {
+        modalV.setAttribute("data-verific", "descargar");
+    });
+    document.querySelector("#btnRD").addEventListener("click", function () {
+        modalV.setAttribute("data-verific", "restaurar");
+    });
+
+    let verificarFormularioV = inicializarValidacionFormulario(formularioVU);
+
+    formularioVU.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        let inputsBuenos = [];
+        this.querySelectorAll(".input-validar").forEach((input) => {
+            if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
+        });
+
+        let esValido = verificarFormularioV();
+
+        if (esValido) {
+            let verificar = modalV.getAttribute("data-verific");
+            let resltado = false;
+            if (verificar === "descargar") {
+                await VerificacionUsuario("modalDescargarBD");
+            }
+            if (verificar === "restaurar") {
+                await VerificacionUsuario("modalRestablecerBD");
+            }
+            if (resltado) {
+                formularioVU.reset();
+            }
+        } else {
+            alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+        }
+    });
+
+    document.querySelectorAll(".toggle-password").forEach(function (toggle) {
+        toggle.addEventListener("click", function () {
+            const input = document.getElementById(this.getAttribute("data-target"));
+            const ojoVer = this.querySelector(".ojo-ver");
+            const ojoOcultar = this.querySelector(".ojo-ocultar");
+
+            if (input.type === "password") {
+                input.type = "text";
+                ojoVer.classList.add("d-none");
+                ojoOcultar.classList.remove("d-none");
+            } else {
+                input.type = "password";
+                ojoVer.classList.remove("d-none");
+                ojoOcultar.classList.add("d-none");
+            }
+        });
     });
 });

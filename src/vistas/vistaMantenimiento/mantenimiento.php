@@ -24,8 +24,7 @@
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Haz clic para generar y descargar una copia de seguridad de tu base de datos.</p>
-                            <a href="#" class="btn btn-primary btn-block w-100 text-white text-decoration-none card-descarga-btn" data-bs-dismiss="modal"
-                                uk-toggle="#Verificar" id="descarBd">Descargar Respaldo</a>
+                            <a href="#" class="btnVerificarV btn btn-primary btn-block w-100 text-white text-decoration-none card-descarga-btn" data-bs-toggle="modal" data-bs-target="#Verificar" id="descarBd">Descargar Respaldo</a>
                         </div>
                     </div>
                 </div>
@@ -38,8 +37,7 @@
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
                             <p class="card-text">Selecciona un respaldo previamente descargado para restaurar la base de datos.</p>
-                            <button class="btn btn-secondary card-restaurar-btn btn-block w-100 text-decoration-none" data-bs-dismiss="modal"
-                                uk-toggle="#Verificar" id="btnRD">Restaurar Base</button>
+                            <button class="btnVerificarV btn btn-secondary card-restaurar-btn btn-block w-100 text-decoration-none" data-bs-toggle="modal" data-bs-target="#Verificar" id="btnRD">Restaurar Base</button>
 
                         </div>
                     </div>
@@ -63,19 +61,14 @@
 
 
 <!-- modales -->
-
 <div class="modal fade" id="modalBaseDatos" tabindex="-1" aria-labelledby="modalBaseDatosLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="tamaño-modal modal-content">
-            <div class="d-flex justify-content-between align-items-center ps-4 pe-4 ms-1 me-1 pt-4 ">
-                <h4 class="fw-bold" id="modalBaseDatosLabel">Seleccionar Base de Datos</h4>
-                <a href="#" class="" data-bs-dismiss="modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-x-circle color-icono" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
-                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"></path>
-                    </svg>
-                </a>
+            <div class="modal-header">
+                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Seleccionar Base de Datos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body ms-3 mt-3 me-3">
                 <!-- campo de búsqueda -->
                 <div class="d-flex justify-content-end mb-4 mt-2 me-2 col">
@@ -101,85 +94,29 @@
                     </table>
                 </div>
             </div>
-            <div class="d-flex justify-content-end align-items-center ps-4 pe-4 ms-1 me-1 pt-3 pb-4">
 
-                <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button" data-bs-dismiss="modal">Cancelar</button>
-
-                <a href="#" data-bs-dismiss="modal"
-                    uk-toggle="target: #restablecer"><button class="uk-button uk-button-primary rounded-5 fw-bold ms-4" type="submit" id="btnEnviar">Restaurar el más reciente</button></a>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-modals btnrestablecer" id="btnRestaurar">Restaurar el más reciente</button>
             </div>
         </div>
     </div>
 </div>
 
-
-<!-- modal de restaurar la bd mas actual -->
-<div>
-    <div id="restablecer" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-            <!-- Boton que cierra el modal -->
-            <div class="d-flex justify-content-between mb-5">
-
-                <div class="d-flex align-items-center ajustar" id="">
-                    <div class="svgPapeleraPatologia">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                            class="bi bi-trash-fill azul me-2 mb-1" viewBox="0 0 16 16">
-                            <path
-                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h5>
-                            ¿Desea restaurar la base de datos?
-                        </h5>
-                    </div>
-                </div>
-                <!-- Ayuda Interactiva -->
-                <a href="#">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                        class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                        <path
-                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                    </svg>
-                </a>
-            </div>
-
-
-            <div class="mt-5 uk-text-right btn_modal_patologias">
-                <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button"
-                    data-bs-toggle="modal" data-bs-target="#modalBaseDatos">Cancelar</button>
-
-                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/restaurarRespaldo/nohay/<?= $_SESSION["id_usuario"] ?>">
-                    <button class="seleccionar btn col-4 btn-agregarcita-modal btnrestablecer" id="">Restaurar</button>
-                </a>
-
-            </div>
-
-        </div>
-    </div>
-</div>
 <!-- modal de descargar la bd -->
-<div>
-    <div id="descargarBd" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+<input type="hidden" id="idU" value="<?= $_SESSION["id_usuario"] ?>">
+
+<div class="modal fade" id="descargarBd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content tamaño-modal">
             <!-- Boton que cierra el modal -->
+            <div class="modal-header">
+                <h5 class="modal-title fs-4 fw-bold" id="">¿Desea descargar la base de datos?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
             <div class="d-flex justify-content-between mb-5">
 
-                <div class="d-flex align-items-center ajustar" id="">
-                    <div class="svgPapeleraPatologia">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                            class="bi bi-trash-fill azul me-2 mb-1" viewBox="0 0 16 16">
-                            <path
-                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h5>
-                            ¿Desea descargar la base de datos?
-                        </h5>
-                    </div>
-                </div>
                 <!-- Ayuda Interactiva -->
                 <a href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -191,14 +128,9 @@
                 </a>
             </div>
 
-
-            <div class="mt-5 uk-text-right btn_modal_patologias">
-                <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
-
-                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/generarRespaldo/<?= $_SESSION["id_usuario"] ?>">
-                    <button class="seleccionar btn col-4 btn-agregarcita-modal btnrestablecer" id="">Descargar</button>
-                </a>
-
+            <div class="modal-footer">
+                <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="seleccionar btn btn-modals btnrestablecer" id="btnDescargar">Registrar</button>
             </div>
 
         </div>
@@ -206,125 +138,91 @@
 </div>
 
 <!-- modal de verificación -->
-<div>
-    <div id="Verificar" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body tamaño-modal">
+<div class="modal fade" id="Verificar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content tamaño-modal">
             <!-- Boton que cierra el modal -->
-            <div class="d-flex justify-content-center mb-5">
-                <form autocomplete="off" action="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/iniciarSesion" method="POST"
-                    id="fVerificacionU" class="form-validable">
+            <div class="modal-header">
+                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Identificación de usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form autocomplete="off" id="fVerificacionU" class="form-validable">
+                <div class="mb-4 ms-3 me-3">
 
-                    <div class="msjE"></div>
-
-                    <div class=" m-auto">
-
-                        <div class="mb-5 ms-5 mt-5 pt-2 ps-4 col">
-                            <h2 class="titulo text-theme fw-bolder mb-1 " id="titulo">Identificación de usuario</h2>
-                            <div class="linea-titulo ">
-                            </div>
-                        </div>
-                        <div>
-
-                            <p class="mensajeP ms-4 me-4 ico fw-bolder">El usuario tiene que ser super administrador, y el usuario, además de la contraseña, debe ser correcta</p>
-                        </div>
-                        <!-- <div class="fondo_rsp"> -->
-
-
-                        <div class="col-11 m-auto ">
-                            <div class="d-flex flex-column col">
-
-                                <div>
-                                    <?php if ($parametro != ""): ?>
-
-                                        <?php if ($parametro[0] == "mensaje"): ?>
-                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                                style="display: none;" uk-alert>
-                                                <a class="uk-alert-close" uk-close></a>
-                                                <p class="pe-2">Usuario o Contraseña incorrectos.</p>
-                                            </div>
-                                        <?php elseif ($parametro[0] == "captcha"): ?>
-                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                                style="display: none;" uk-alert>
-                                                <a class="uk-alert-close" uk-close></a>
-                                                <p class="pe-2">Captcha fallido</p>
-                                            </div>
-                                        <?php elseif ($parametro[0] == "campos"): ?>
-                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                                style="display: none;" uk-alert>
-                                                <a class="uk-alert-close" uk-close></a>
-                                                <p class="pe-2">Tiene que llenar todos los campos.</p>
-                                            </div>
-                                        <?php elseif ($parametro[0] == "errorSession"): ?>
-                                            <div class="uk-alert-danger comentario comentarioRed me-4 fw-bolder h-25 mb-2"
-                                                style="display: none;" uk-alert>
-                                                <a class="uk-alert-close" uk-close></a>
-                                                <p class="pe-2">Ya tiene una session abierta por favor ciérrala e inténtelo nuevamente.</p>
-
-                                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/cerrar">Cerrar Session</a>
-                                            </div>
-                                        <?php endif ?>
-                                    <?php endif; ?>
-                                </div>
-
-                                <div class="col-12 mb-3 animacionInput" id="ingresar-usuario">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" id="icono-uno" width="20" height="20"
-                                        fill="currentColor" class="bi bi-person-fill icono" viewBox="0 0 16 16">
+                    <div class="ms-2 me-2">
+                        <label class="label-custom mt-3">Usuario</label>
+                        <div class="campo-custom" id="ingresar-usuario">
+                            <div class="input-custom">
+                                <span class="icono-izq">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                        fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                                         <path
                                             d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                                     </svg>
-                                    <input type="text" name="usuario" id="inputUno" class="input input-modal col input-validar"
-                                        placeholder="Usuario" required>
-                                </div>
-
-                                <p class="p-error-usuario d-none p-error-validaciones">El Usuario debe contener Letras, números, guiones y guion bajo, de 8 a 16 caracteres</p>
-
-                                <div class="col-12" id="input-password">
-
-                                    <img src="<?= $urlBase ?>../src/assets/img/candado.svg" id="icono-dos" class="icono candado" alt="">
-                                    <input type="password" name="password" id="inputDos" class="input input-modal col input-validar"
-                                        placeholder="Contraseña" maxlength="40" required>
-                                    </input>
-
-
-                                    <a href="#" class="text-decoration-none btnMostrarContrase">
-                                        <svg id="ocultarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
-                                            fill="currentColor" class="bi bi-eye-slash-fill azul ocultarPassword d-none"
-                                            viewBox="0 0 16 16">
-                                            <path
-                                                d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
-                                            <path
-                                                d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
-                                        </svg>
-                                        <svg id="mostrarPassword" xmlns="http://www.w3.org/2000/svg" width="23" height="23"
-                                            fill="currentColor" class="bi bi-eye-fill azul mostrarPassword" viewBox="0 0 16 16">
-                                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                                            <path
-                                                d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-                                        </svg>
-                                    </a>
-
-
-                                </div>
-
-                                <p class="p-error-password d-none p-error-validaciones">La Contraseña debe contener de 8 a 12 caracteres, una mayúscula, un número y un símbolo
-                                </p>
+                                </span>
+                                <input class="form-control txt-custom input-validar inputs" name="usuario" placeholder="Usuario" type="text">
+                                <span class="icono-der">
+                                    <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                    </svg>
+                                    <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                    </svg>
+                                </span>
                             </div>
+                            <p class="error-msg d-none"></p>
                         </div>
-
                     </div>
 
-                </form>
-            </div>
+                    <div class="ms-2 me-2">
+                        <label class="label-custom mt-0">Contraseña</label>
+                        <div class="campo-custom" id="input-password">
+                            <div class="input-custom">
+                                <span class="icono-izq">
+                                    <!-- Candado SVG inline -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                                    </svg>
+                                </span>
+                                <input class="form-control txt-custom input-validar inputs" name="password"
+                                    placeholder="Contraseña" type="password" id="passwordI">
+                                <span class="icono-der">
+                                    <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                    </svg>
+                                    <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                    </svg>
+                                </span>
+
+                                <span class="toggle-password" data-target="passwordI" style="cursor:pointer;">
+                                    <!-- Ojo abierto -->
+                                    <svg class="ojo-ver" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                        fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                    </svg>
+                                    <!-- Ojo tachado -->
+                                    <svg class="ojo-ocultar d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                        fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z" />
+                                        <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z" />
+                                    </svg>
+                                </span>
+
+                            </div>
+                            <p class="error-msg d-none">El formato es incorrecto, debe tener mayúscula, número y carácter especial.</p>
+                        </div>
+                    </div>
 
 
-            <div class="mt-5 uk-text-right btn_modal_patologias">
-                <button class="uk-button col-4 me-3 uk-button-default uk-modal-close btn-cerrar-modal" type="button">Cancelar</button>
+                </div>
 
-
-                <button class=" btn col-4 btn-agregarcita-modal btnrestablecer" id="btnVerifi">Verificar</button>
-
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-modals btnrestablecer" id="btnVerifi">Registrar</button>
+                </div>
+            </form>
 
         </div>
     </div>
@@ -340,5 +238,5 @@
 
 
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaMantenimiento.js"></script>
-<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/mantenimiento.js"></script>
+<script type="module" src="<?= $urlBase; ?>../src/assets/js/mantenimiento.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>

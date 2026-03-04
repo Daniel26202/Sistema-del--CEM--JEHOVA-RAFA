@@ -69,7 +69,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
 
                 <!-- Card de Bootstrap -->
-                <div class="card rounded-4 shadow-lg ">
+                <div class="card cardStyle rounded-4 shadow-lg ">
                     <div class="card-body p-4">
 
 
@@ -97,7 +97,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                 <div class="campo-custom mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
                                     <!-- Label -->
                                     <div class="text-center text-sm-end col-12 col-sm-4 col-md-4">
-                                        <label for="username" class="form-label text-dark me-sm-3">Usuario</label>
+                                        <label for="username" class="labelForm form-label text-dark me-sm-3">Usuario</label>
                                     </div>
 
                                     <!-- Input con icono -->
@@ -105,7 +105,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                         <i class="bi bi-person-fill input-icon"></i>
                                         <input
                                             type="text"
-                                            class="form-control"
+                                            class="styleInputs form-control"
                                             id="username"
                                             name="username"
                                             placeholder="Tu usuario"
@@ -119,7 +119,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                 <div class="campo-custom mb-3 d-flex flex-wrap justify-content-center align-items-center col-12">
                                     <!-- Label -->
                                     <div class="text-center text-sm-end col-12 col-sm-4 col-md-4">
-                                        <label for="password" class="form-label text-dark me-sm-3">Contraseña</label>
+                                        <label for="password" class="labelForm form-label text-dark me-sm-3">Contraseña</label>
                                     </div>
 
                                     <!-- Input con icono -->
@@ -127,7 +127,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                         <i class="bi bi-lock-fill input-icon"></i>
                                         <input
                                             type="password"
-                                            class="form-control"
+                                            class="styleInputs form-control"
                                             id="password"
                                             name="password"
                                             placeholder="Contraseña"
@@ -157,7 +157,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                 <div class="d-grid gap-2 mt-4 col-7">
                                     <button
                                         type="submit"
-                                        class="btn btn-primary btn-lg rounded-5"
+                                        class="btn btn-primary btnPrimaryEditado  btn-lg rounded-5"
                                         data-intro="Haga clic aquí para iniciar sesión"
                                         data-step="3">
                                         INGRESAR
@@ -171,7 +171,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                             <!-- Mensaje de Seguridad -->
                             <div class="text-center mt-4 pt-2">
                                 <small class="text-secondary-custom">
-                                    <i class="bi bi-shield-check text-success security-icon me-1"></i>
+                                    <i class="bi bi-shield-check text-success me-1"></i>
                                     Acceso seguro y encriptado
                                 </small>
                             </div>
