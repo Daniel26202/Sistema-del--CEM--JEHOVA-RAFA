@@ -14,6 +14,12 @@ class HospitalizacionEditarTest extends TestCase
 
     public function testEditarHospitalizacion()
     {
+        $this->modelo->setId_hospitalizacion(36);
+        $this->modelo->setId_paciente(1);
+        $this->modelo->setId_doctor(1);
+        $this->modelo->setTipo_hospitalizacion("historial");    
+        $this->modelo->setFecha_ingreso("2025-11-01");
+        $this->modelo->setFecha_egreso("2025-11-28");   
         $resultado = $this->modelo->editarH(
             36,
             [0 => 1],

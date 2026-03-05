@@ -14,9 +14,8 @@ class ClienteEliminarTest extends TestCase
 
     public function testEliminarCliente()
     {
-        $resultado = $this->modelo->delete(
-            2000003,
-        );
+        $this->modelo->setId_cliente(2000003);
+        $resultado = $this->modelo->delete();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

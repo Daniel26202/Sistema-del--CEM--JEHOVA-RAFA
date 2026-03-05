@@ -14,10 +14,9 @@ class HospitalizacionEliminarTest extends TestCase
 
     public function testEliminarHospitalizacion()
     {
-        $resultado = $this->modelo->eliminaLogico(
-            28,
-            false
-        );
+        $this->modelo->setId_hospitalizacion(28);
+        $this->modelo->setEstado(false);
+        $resultado = $this->modelo->eliminaLogico() ;
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

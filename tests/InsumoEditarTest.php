@@ -15,15 +15,14 @@ class InsumoEditarTest extends TestCase
 
     public function testEditarInsumos()
     {
-        $resultado = $this->modelo->editar(
-            45,
-            "Insumophpinit",  // nombre
-            "descripcion prueba editando",
-            10,                     // stock mínimo
-            ["name" => ""]  ,                // imagen
-            "MarcaX",
-            "100 g",
-        );
+        $this->modelo->setId_insumo(45);
+        $this->modelo->setNombre_insumo("Insumophpinit");
+        $this->modelo->setDescripcion("descripcion prueba editando");
+        $this->modelo->setStock_minimo(10);
+        $this->modelo->setImagen("");
+        $this->modelo->setMarca("MarcaX");
+        $this->modelo->setPeso("100 g");
+        $resultado = $this->modelo->editar();
 
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);

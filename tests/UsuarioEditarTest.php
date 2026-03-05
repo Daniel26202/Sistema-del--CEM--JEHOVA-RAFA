@@ -14,12 +14,11 @@ class UsuarioEditarTest extends TestCase
 
     public function testEditarUsuario()
     {
-        $resultado = $this->modelo->updateUsuario(
-            "Pedro123",
-             50,
-            "imagen1.png",
-            "./imagenTMP.png",
-        );
+        $this->modelo->setIdUsuario(1); // Asegúrate de que este ID exista en tu base de datos para que la prueba sea válida
+        $this->modelo->setNombre("Pedro123");
+        $this->modelo->setEdad(50);
+        $this->modelo->setImagen("imagen1.png");
+        $resultado = $this->modelo->updateUsuario();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

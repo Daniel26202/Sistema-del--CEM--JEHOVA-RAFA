@@ -14,13 +14,12 @@ class ProveedorInsertarTest extends TestCase
 
     public function testProvedorInsertar()
     {
-        $resultado = $this->modelo->agregar(
-            "Carlos",
-            "J122304",
-            "0424354556",
-            "CCC12345@gmail.com",
-            "El Tocuyo"
-        );
+        $this->modelo->setNombre_proveedor("Carlos");
+        $this->modelo->setRif("J122304");
+        $this->modelo->setTelefono("0424354556");
+        $this->modelo->setCorreo("CCC12345@gmail.com");
+        $this->modelo->setDireccion("El Tocuyo");
+        $resultado = $this->modelo->agregar();
 
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado[0]);

@@ -21,21 +21,23 @@ class InsumoInsertarTest extends TestCase
 
     public function testInsertarInsumos()
     {
-        $resultado = $this->modelo->insertarInsumos(
-            "Insumophpinit",  
-            6,                      
-            "descripcion prueba",
-            "2025-01-01",          
-            "2025-12-31",           
-            100,                    
-            50,                     
-            10,                     
-            "ACT",                  
-            "123456789",         
-            "MarcaX",
-            "100 g",
-            1                     
-        );
+        $this->modelo->setNombre_insumo("Insumophpinit");
+        $this->modelo->setId_categoria(6);
+        $this->modelo->setDescripcion("descripcion prueba");
+        $this->modelo->setFecha_vencimiento("2025-01-01");
+        $this->modelo->setFecha_compra("2025-12-31");
+        $this->modelo->setStock_minimo(100);
+        $this->modelo->setStock_actual(50);
+        $this->modelo->setPrecio(10);
+        $this->modelo->setEstado("ACT");
+        $this->modelo->setCodigo_barras("123456789");
+        $this->modelo->setMarca("MarcaX");
+        $this->modelo->setPeso("100 g");
+        $this->modelo->setImagen($_FILES['imagen']['tmp_name']);
+        
+        $resultado = $this->modelo->insertarInsumos();
+
+        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
 
 
         $this->assertEquals("exito", $resultado[0]);

@@ -14,15 +14,15 @@ class PerfilEditarTest extends TestCase
 
     public function testEditarPerfil()
     {
-        $resultado = $this->modelo->update(
-            47,
-            2000002,
-            "Editado",
-            "Modificado",
-            "04123454320",
-            "Usuario_123",
-            "modificado@gmail.com"
-        );
+        $this->modelo->setId_usuario(47);
+        $this->modelo->setCedula("2000002");
+        $this->modelo->setNombre("Usuario_123");
+        $this->modelo->setApellido("Modificado");
+        $this->modelo->setTelefono("04123454320");
+        $this->modelo->setUsuario("Usuario_123");
+        $this->modelo->setCorreo("modificado@gmail.com");
+        
+        $resultado = $this->modelo->update();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

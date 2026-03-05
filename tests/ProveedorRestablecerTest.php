@@ -14,9 +14,8 @@ class ProveedorRestablecerTest extends TestCase
 
     public function testProvedorRestablecer()
     {
-        $resultado = $this->modelo->restablecerProveedor(
-            8
-        );
+        $this->modelo->setId_proveedor(8);
+        $resultado = $this->modelo->restablecerProveedor();
 
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);

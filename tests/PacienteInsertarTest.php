@@ -13,16 +13,15 @@ class PacienteInsertarTest extends TestCase
 
     public function testInsertarPaciente()
     {
-        $resultado = $this->modelo->insertar(
-            "V",  
-            3722999,                      
-            "Pedro",
-            "Perez",           
-            "04123454327",           
-            "en su casa",                                     
-            "2002-02-20",          
-            "Masculino"                     
-        );
+        $this->modelo->setTipo_identificacion("V");
+        $this->modelo->setNumero_identificacion(3722999);
+        $this->modelo->setNombre("Pedro");
+        $this->modelo->setApellido("Perez");
+        $this->modelo->setTelefono("04123454327");
+        $this->modelo->setDireccion("en su casa");
+        $this->modelo->setFecha_nacimiento("2002-02-20");
+        $this->modelo->setGenero("Masculino");
+        $resultado = $this->modelo->insertar();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado[0]);
     }

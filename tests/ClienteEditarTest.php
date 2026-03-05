@@ -14,17 +14,16 @@ class ClienteEditarTest extends TestCase
 
     public function testEditarCliente()
     {
-        $resultado = $this->modelo->update(
-            2,
-            "V",
-            2000002,
-            "Editado",
-            "Modificado",
-            "04123454320",
-            "en su casa",
-            "2002-02-20",
-            "Masculino"
-        );
+        $this->modelo->setId_cliente(2);
+        $this->modelo->setTipo_identificacion("V");
+        $this->modelo->setNumero_identificacion(2000002);
+        $this->modelo->setNombre("Editado");
+        $this->modelo->setApellido("Modificado");
+        $this->modelo->setTelefono("04123454320");
+        $this->modelo->setDireccion("en su casa");
+        $this->modelo->setFecha_nacimiento("2002-02-20");
+        $this->modelo->setGenero("Masculino");
+        $resultado = $this->modelo->update();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

@@ -14,17 +14,14 @@ class ControlInsertaTest extends TestCase
 
     public function testInsertarControl()
     {
-        $resultado = $this->modelo->insertControl(
-            "historial",
-            1,
-            25,
-            "diagnostico",
-            [0 =>'6', 1 => '8'],
-            "indicaciones",
-            "2025-11-01",
-            [0 => '5', 1 => '7'],
-            "nota"
-        );
+        $this->modelo->setId_usuario(25);
+        $this->modelo->setTipo_control("historial");
+        $this->modelo->setFecha_control("2025-11-01");
+        $this->modelo->setIndicaciones("indicaciones");
+        $this->modelo->setDiagnostico("diagnostico");
+        $this->modelo->setId_cita(1);
+        $this->modelo->setNota("nota");
+        $resultado = $this->modelo->insertControl();
 
         $this->assertEquals("exito", $resultado[0]);
     }
