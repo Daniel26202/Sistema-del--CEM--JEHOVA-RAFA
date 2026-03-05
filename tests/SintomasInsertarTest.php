@@ -14,9 +14,8 @@ class SintomasInsertarTest extends TestCase
 
     public function testInsertarSintomas()
     {
-        $resultado = $this->modelo->insertar(
-            "Sin n n"
-        );
+        $this->modelo->setDescripcion("Sin n n");
+        $resultado = $this->modelo->insertar();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado[0]);
     }

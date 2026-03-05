@@ -14,9 +14,8 @@ class CategoriaInsertarTest extends TestCase
 
     public function testInsertarCategoria()
     {
-        $resultado = $this->modelo->registrarCategoria(
-            "Categorizacions"
-        );
+        $this->modelo->setNombre_categoria("Categorizacions");
+        $resultado = $this->modelo->registrarCategoria();
         $this->assertEquals("exito", $resultado[0]);
     }
 }

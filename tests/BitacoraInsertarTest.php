@@ -14,12 +14,11 @@ class BitacoraInsertarTest extends TestCase
 
     public function testInsertarBitacora()
     {
-        $resultado = $this->modelo->insertarBitacora(
-            47,
-            "PHP UNIT",
-            "Prueba unitaria",
-        );
-        
+        $this->modelo->setId_usuario(47);
+        $this->modelo->setActividad("se hizo una prueba unitaria");
+        $this->modelo->setTabla("php unit");
+
+        $resultado = $this->modelo->insertarBitacora();
         $this->assertEquals("exito", $resultado[0]);
     }
 }

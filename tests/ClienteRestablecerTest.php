@@ -14,9 +14,8 @@ class ClienteRestablecerTest extends TestCase
 
     public function testRestablecerCliente()
     {
-        $resultado = $this->modelo->restablecer(
-            30,
-        );
+        $this->modelo->setId_cliente(30);
+        $resultado = $this->modelo->restablecer();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

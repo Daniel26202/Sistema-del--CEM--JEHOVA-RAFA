@@ -14,9 +14,8 @@ class DoctorRestablecerTest extends TestCase
 
     public function testRestablecerDoctor()
     {
-        $resultado = $this->modelo->restablecerDoctor(
-            47
-        );
+        $this->modelo->setId_doctor(47);
+        $resultado = $this->modelo->restablecerDoctor();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

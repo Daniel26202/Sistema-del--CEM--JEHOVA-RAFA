@@ -14,6 +14,11 @@ class HospitalizacionInsertarTest extends TestCase
 
     public function testInsertarHospitalizacion()
     {
+        $this->modelo->setId_paciente(1);
+        $this->modelo->setId_doctor(1);
+        $this->modelo->setTipo_hospitalizacion("historial");
+        $this->modelo->setFecha_ingreso("2025-10-03 19:08:57");
+        $this->modelo->setFecha_egreso("2025-10-31 19:08:57");
         $resultado = $this->modelo->insertarH(
             34,
             "2025-10-03 19:08:57",

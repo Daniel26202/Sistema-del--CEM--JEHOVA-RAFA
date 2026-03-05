@@ -14,9 +14,8 @@ class InsumoRestablecerTest extends TestCase
 
     public function testRestablecerInsumos()
     {
-        $resultado = $this->modelo->restablecerInsumo(
-            45,
-        );
+        $this->modelo->setId_insumo(45);
+        $resultado = $this->modelo->restablecerInsumo();
 
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);

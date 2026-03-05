@@ -14,9 +14,8 @@ class EspecialidadEliminarTest extends TestCase
 
     public function testEliminarEspecialidad()
     {
-        $resultado = $this->modelo->Especialidadeliminar(
-            8
-        );
+        $this->modelo->setId_especialidad(8);
+        $resultado = $this->modelo->Especialidadeliminar();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

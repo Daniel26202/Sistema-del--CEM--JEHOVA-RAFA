@@ -14,9 +14,8 @@ class CategoriaEliminarTest extends TestCase
 
     public function testEliminarCategoria()
     {
-        $resultado = $this->modelo->eliminarCategoria(
-            106
-        );
+        $this->modelo->setId_categoria(106);
+        $resultado = $this->modelo->eliminarCategoria();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

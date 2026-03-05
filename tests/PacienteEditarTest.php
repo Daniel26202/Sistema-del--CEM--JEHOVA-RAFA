@@ -14,18 +14,18 @@ class PacienteEditarTest extends TestCase
 
     public function testEditarPaciente()
     {
-        $resultado = $this->modelo->update(
-            29,
-            "V",
-            2000002,
-            "Editado",
-            "modificado",
-            "04123454320",
-            "en su casa",
-            "2002-02-20",
-            "Masculino",
-            2000002
-        );
+        $this->modelo->setId_paciente(29);
+        $this->modelo->setTipo_documento("V");
+        $this->modelo->setNumero_documento(2000002);
+        $this->modelo->setNombre("Editado");
+        $this->modelo->setApellido("modificado");
+        $this->modelo->setTelefono("04123454320");
+        $this->modelo->setDireccion("en su casa");
+        $this->modelo->setFecha_nacimiento("2002-02-20");
+        $this->modelo->setGenero("Masculino");
+        $this->modelo->setId_usuario(2000002);
+        
+        $resultado = $this->modelo->update();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado[0]);
     }

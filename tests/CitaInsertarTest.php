@@ -14,14 +14,13 @@ class CitaInsertarTest extends TestCase
 
     public function testInsertarCita()
     {
-        $resultado = $this->modelo->insertarCita(
-            25,
-            24,
-            "2025-10-06",
-            "20:00",
-            "Pendiente",
-            19
-        );
+        $this->modelo->setId_usuario(25);
+        $this->modelo->setId_servicio(24);
+        $this->modelo->setFecha("2025-10-06");
+        $this->modelo->setHora("20:00");
+        $this->modelo->setEstado("Pendiente");
+        $this->modelo->setId_cliente(19);
+        $resultado = $this->modelo->insertarCita();
 
         $this->assertEquals("exito", $resultado[0]);
     }

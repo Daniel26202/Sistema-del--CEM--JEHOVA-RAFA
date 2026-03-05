@@ -14,9 +14,8 @@ class PacienteEliminarTest extends TestCase
 
     public function testEliminarPaciente()
     {
-        $resultado = $this->modelo->delete(
-            2000003,
-        );
+        $this->modelo->setId_paciente(2000003);
+        $resultado = $this->modelo->delete();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado);
     }

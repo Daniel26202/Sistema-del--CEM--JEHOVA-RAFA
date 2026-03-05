@@ -14,48 +14,22 @@ class RolInsertarTest extends TestCase
 
     public function testInsertarRol()
     {
-        $resultado = $this->modelo->insertar(
-            "Nombre",
-            "es un nombre",
-            [
-                "Usuarios",
-                "Roles",
-                "Mantenimiento",
-                "Pacientes",
-                "Patologias",
-                "Citas",
-                "Consultas",
-                "Doctores",
-                "Control",
-                "Hospitalizacion",
-                "Insumos",
-                "Entrada",
-                "Proveedores",
-                "Factura",
-                "Reportes",
-                "Estadisticas"
-            ],
-            [
-                "permisosUsuarios",
-                "permisosRoles",
-                "permisosMantenimiento",
-                "permisosPacientes",
-                "permisosPatologias",
-                "permisosCitas",
-                "permisosConsultas",
-                "permisosDoctores",
-                "permisosControles",
-                "permisosHospitalizaciones",
-                "permisosInsumos",
-                "permisosEntradas",
-                "permisosProveedores",
-                "permisosFacturas",
-                "permisosReportes",
-                "permisosEstadisticas"
-            ]
 
+        $this->modelo->setNombre("Nombre");
+        $this->modelo->setDescripcion("Descripción desde el test");
 
-        );
+        // El modelo espera que los módulos sean un array de strings
+        $modulos = ["Usuarios", "Roles"];
+        $this->modelo->setModulos($modulos);
+
+        // El modelo espera que los permisos sean un array asociativo: ['Modulo' => [id1, id2]]
+        $permisos = [
+            "Usuarios" => [1, 2, 3], // IDs de los permisos para Usuarios
+            "Roles"    => [1, 2]     // IDs de los permisos para Roles
+        ];
+        $this->modelo->setPermisos($permisos);
+
+        $resultado = $this->modelo->insertar();
         // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado[0]);
     }

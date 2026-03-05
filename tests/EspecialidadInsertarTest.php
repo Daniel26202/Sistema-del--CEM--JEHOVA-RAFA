@@ -14,9 +14,8 @@ class EspecialidadInsertarTest extends TestCase
 
     public function testInsertarEspecialidad()
     {
-        $resultado = $this->modelo->Especialidadregistrar(
-            "Especialidad"
-        );
+        $this->modelo->setNombre_especialidad("Especialidad");
+        $resultado = $this->modelo->Especialidadregistrar();
         $this->assertEquals("exito", $resultado [0]);
     }
 }
