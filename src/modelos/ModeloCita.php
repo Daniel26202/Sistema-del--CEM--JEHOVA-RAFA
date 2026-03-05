@@ -3,8 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\modelos\ModeloPacientes;
-use App\modelos\ModeloConsultas;
 use DateTime;
 
 class ModeloCita extends ModelBase
@@ -95,6 +93,7 @@ class ModeloCita extends ModelBase
 	public function insertarCita()
 	{
 		try {
+			$this->beginTransaction();
 
 			$sql = " SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria =:id AND estado  ='ACT' ";
 			$this->setSQL($sql);
@@ -116,9 +115,10 @@ class ModeloCita extends ModelBase
 
 			$this->setSQL($sql);
 			$this->create($data);
-
+			$this->commit();
 			return ["exito", $data];
 		} catch (\Exception $e) {
+			$this->rollBack();
 			return $e->getMessage();
 		}
 	}

@@ -249,9 +249,9 @@ class ModeloServicios extends ModelBase
             $sql = "SELECT e.nombre FROM personal d INNER JOIN especialidad e ON e.id_especialidad = d.id_especialidad WHERE d.id_personal = :id_doctor ";
             $this->setSQL($sql);
 
-            $this->read();
+            return $this->search($data);
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 

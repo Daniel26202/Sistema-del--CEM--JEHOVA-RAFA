@@ -126,6 +126,7 @@ class ModeloDoctores extends ModelBase
     {
 
         try {
+            $this->beginTransaction();
 
 
             if ($this->validarCedula(['cedula' => $this->getCedula()])) {
@@ -202,8 +203,10 @@ class ModeloDoctores extends ModelBase
                     $contadorDias++;
                 }
             }
+            $this->commit();
             return ["exito", $data1, $data2];
         } catch (\Exception $e) {
+            $this->rollBack();
             return $e->getMessage();
         }
     }
@@ -211,6 +214,7 @@ class ModeloDoctores extends ModelBase
     public function RegistrarAdmin()
     {
         try {
+            $this->beginTransaction();
             $sql = "SELECT * from segurity.usuario where id_usuario=:id_usuario";
             $this->setSQL($sql);
             $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
@@ -229,9 +233,10 @@ class ModeloDoctores extends ModelBase
                 'id_usuario' => $this->getIdUsuario()
             ];
             $this->create($data);
-
+            $this->commit();
             return ['exito'];
         } catch (\Exception $e) {
+            $this->rollBack();
             return $e->getMessage();
         }
     }
@@ -240,6 +245,7 @@ class ModeloDoctores extends ModelBase
     public function updateDoctor()
     {
         try {
+            $this->beginTransaction();
 
             $data1 = [
                 'idUsuario' => $this->getIdUsuario()
@@ -263,7 +269,7 @@ class ModeloDoctores extends ModelBase
                 throw new \Exception("El id del usuario no existe");
             }
 
-            if ($this->getCedula() != $this->getCedulaRegistrada() && $this->validarCedula(['cedula'=>$this->getCedula()])) {
+            if ($this->getCedula() != $this->getCedulaRegistrada() && $this->validarCedula(['cedula' => $this->getCedula()])) {
                 throw new \Exception("La cédula ya está registrada.");
             }
 
@@ -306,7 +312,7 @@ class ModeloDoctores extends ModelBase
 
                         $sqlHorario = "INSERT INTO horarioydoctor(id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida);";
                         $this->setSQL($sqlHorario);
-                        
+
                         $this->create($data);
                     }
                 }
@@ -343,10 +349,10 @@ class ModeloDoctores extends ModelBase
                 }
             }
 
-
+            $this->commit();
             return ["exito", $data1, $data2, $idPersonal['id_personal']];
         } catch (\Exception $e) {
-            // $this->conexion->rollBack();
+            $this->rollBack();
             return $e->getMessage();
         }
     }

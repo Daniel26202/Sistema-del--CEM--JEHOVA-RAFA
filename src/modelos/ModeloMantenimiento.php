@@ -36,6 +36,7 @@ class ModeloMantenimiento extends ModelBase
 	public function generateBackup($backupRuta)
 	{
 		try {
+			$this->beginTransaction();
 			$date = date('Y-m-d');
 			$bdSistema = $backupRuta . "bd_$date.sql";
 			$bdSeguridad = $backupRuta . "bdseguri_$date.sql";
@@ -62,23 +63,23 @@ class ModeloMantenimiento extends ModelBase
 					$comando = "$rclone copy $nombreZip almacen:/bases/";
 					system($comando, $estado);
 
+
 					// Mostrar resultado
 					if ($estado === 0) {
-						return "respaldo subido al correo.";
+						// return "respaldo subido al correo.";
 					} else {
-						return "error al subir el respaldo al correo.";
+						// return "error al subir el respaldo al correo.";
 					}
-				} else {
-					return "errorZip";
 				}
-
-				// Se elimina el archivo
-				unlink($bdSistema);
-				unlink($bdSeguridad);
-			} else {
-				return "ErrorRespaldo";
+				if ($bdSistema) {
+					// Se elimina el archivo
+					unlink($bdSistema);
+					unlink($bdSeguridad);
+				}
 			}
+			$this->commit();
 		} catch (\Exception $e) {
+			$this->rollBack();
 			return $e->getMessage();
 		}
 	}

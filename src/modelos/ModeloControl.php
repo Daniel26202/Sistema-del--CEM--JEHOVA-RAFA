@@ -3,8 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\modelos\ModeloUsuarios;
-use App\modelos\ModeloPacientes;
 
 class ModeloControl extends ModelBase
 {
@@ -70,7 +68,7 @@ class ModeloControl extends ModelBase
 
 		$sql = "SELECT * FROM paciente WHERE estado =:estado AND cedula = :cedula";
 		$this->setSQL($sql);
-		return  $this->search($data,false);
+		return  $this->search($data, false);
 	}
 
 
@@ -78,6 +76,7 @@ class ModeloControl extends ModelBase
 	public function insertControl()
 	{
 		try {
+			$this->beginTransaction();
 			$fechaHoy = date("Y-m-d");
 
 			$data = [
@@ -140,8 +139,10 @@ class ModeloControl extends ModelBase
 				$this->setSQL($sql);
 				$this->create($data);
 			}
+			$this->commit();
 			return ["exito"];
 		} catch (\Exception $e) {
+			$this->rollBack();
 			return $e->getMessage();
 		}
 	}
@@ -152,12 +153,12 @@ class ModeloControl extends ModelBase
 	{
 		try {
 			$data = [
-				'diagnostico'=>$this->getDiagnostico(),
+				'diagnostico' => $this->getDiagnostico(),
 				'indicaciones' => $this->getIndicaciones(),
 				'fechaRegreso' => $this->getFechaDeRegreso(),
 				'nota' => $this->getNota(),
 				'historial' => $this->getHistorial(),
-				'severidad' =>$this->getSeveridad()
+				'severidad' => $this->getSeveridad()
 			];
 
 			$data2 = [
@@ -194,7 +195,7 @@ class ModeloControl extends ModelBase
 		$data = ['cedula' => $this->getCedula()];
 		$sql = "SELECT c.id_control FROM control c INNER JOIN paciente p ON p.id_paciente = c.id_paciente WHERE p.cedula = :cedula ORDER BY  c.fecha_control DESC LIMIT 1";
 		$this->setSQL($sql);
-		$control=  $this->search($data, false);
+		$control =  $this->search($data, false);
 		return $control['id_control'] ?? null;
 	}
 
@@ -217,7 +218,7 @@ class ModeloControl extends ModelBase
 		$this->setSQL($sql);
 		return $this->search($data);
 	}
-	
+
 	// mostrar patologia del ultimo control del paciente
 	public function mostrarPatologiaC()
 	{

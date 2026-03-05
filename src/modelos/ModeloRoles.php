@@ -104,6 +104,7 @@ class ModeloRoles extends ModelBase
     public function insertar()
     {
         try {
+            $this->beginTransaction();
             $data = [
                 'nombre' => $this->getNombre(),
                 'estado' => 'ACT',
@@ -148,8 +149,10 @@ class ModeloRoles extends ModelBase
                     $this->create($data);
                 }
             }
+            $this->commit();
             return ["exito", $this->getModulos()];
         } catch (\Exception $e) {
+            $this->rollBack();
             return $e->getMessage();
         }
     }
@@ -159,6 +162,7 @@ class ModeloRoles extends ModelBase
     public function editar()
     {
         try {
+            $this->beginTransaction();
             $id_rol = $this->getIdRol();
 
             // 1. Validar que el Rol existe
@@ -214,9 +218,10 @@ class ModeloRoles extends ModelBase
                     }
                 }
             }
-
+            $this->commit();
             return ["exito"];
         } catch (\Exception $e) {
+            $this->rollBack();
             return $e->getMessage();
         }
     }

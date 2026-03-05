@@ -3,10 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\modelos\ModeloPacientes;
-use App\modelos\ModeloDoctores;
-use App\modelos\ModeloUsuarios;
-use App\modelos\ModeloControl;
 use Exception;
 
 class ModeloHospitalizacion extends ModelBase
@@ -228,7 +224,7 @@ class ModeloHospitalizacion extends ModelBase
             $this->setSQL($sql);
 
             $idInsumo = $this->getIdInsumo();
-            $id = is_array($idInsumo) ? $idInsumo[0] : $idInsumo; 
+            $id = is_array($idInsumo) ? $idInsumo[0] : $idInsumo;
             $consulta = $this->search(['id' => $id], false);
 
             return !empty($consulta) ? $consulta : false;
@@ -261,6 +257,8 @@ class ModeloHospitalizacion extends ModelBase
     {
 
         try {
+            $this->beginTransaction();
+
             $dataH = [
                 'fecha_hora_inicio' => $this->getFechaHora(),
                 'id_paciente' => $this->getIdPaciente(),
@@ -369,9 +367,10 @@ class ModeloHospitalizacion extends ModelBase
             $this->setSQL($sql);
             $data = $this->search(['id_hospitalizacion' => $idHospitalizacion], false);
 
-
+            $this->commit();
             return ["exito", $data];
         } catch (\Exception $e) {
+            $this->rollBack();
             return $e->getMessage();
         }
     }
@@ -404,7 +403,7 @@ class ModeloHospitalizacion extends ModelBase
     public function editarH()
     {
         try {
-            // $this->conexion->beginTransaction();
+            $this->beginTransaction();
             // consulta el id del control
             $sql = "SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion";
             $this->setSQL($sql);
@@ -609,10 +608,10 @@ class ModeloHospitalizacion extends ModelBase
             // $consulta->bindValue(":cantidad", (int)$servIdCNuevas[$idSA], PDO::PARAM_INT);
 
 
-            // $this->conexion->commit();
+            $this->commit();
             return ["exito"];
         } catch (\Exception $e) {
-            // $this->conexion->rollBack();
+            $this->rollBack();
             return $e->getMessage();
         }
     }
@@ -621,7 +620,7 @@ class ModeloHospitalizacion extends ModelBase
     public function eliminaLogico()
     {
         try {
-            // $this->conexion->beginTransaction();
+            $this->beginTransaction();
 
             $sql = "SELECT * from hospitalizacion where id_hospitalizacion=:id_hospitalizacion";
             $this->setSQL($sql);
@@ -650,10 +649,10 @@ class ModeloHospitalizacion extends ModelBase
             $this->setSQL($sql);
             $this->update([], $this->getIdH());
 
-            // $this->conexion->commit();
+            $this->commit();
             return ["exito"];
         } catch (\Exception $e) {
-            // $this->conexion->rollBack();
+            $this->rollBack();
             return $e->getMessage();
         }
     }
@@ -671,7 +670,7 @@ class ModeloHospitalizacion extends ModelBase
     public function facturarH()
     {
         try {
-            // $this->conexion->beginTransaction();
+            $this->beginTransaction();
 
             // editar hospitalización
             $sql = "UPDATE hospitalizacion SET precio_horas = :precio_horas ,precio_horas_MoEx = :precio_horas_me ,total= :total ,total_MoEx = :total_me ,fecha_hora_final = :fecha_hora_final WHERE id_hospitalizacion = :id";
@@ -726,12 +725,11 @@ class ModeloHospitalizacion extends ModelBase
                 $this->create($data);
             }
 
-            // $this->conexion->commit();
+            $this->commit();
             return "exito";
         } catch (\Exception $e) {
-            // $this->conexion->rollBack();
+            $this->rollBack();
             return $e->getMessage();
-
         }
     }
     public function semaforo()
