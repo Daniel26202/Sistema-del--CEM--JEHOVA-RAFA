@@ -5,6 +5,7 @@ use App\modelos\ModeloPermisos;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloUsuarios;
+use App\config\RateLimiter;
 
 function perfil($parametro)
 {
@@ -28,7 +29,18 @@ function permisos($id_rol, $permiso, $modulo)
 //guardar perfil
 function guardar()
 {
-	if (isset($_POST)) {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_perfil_' . $idUsuario, 5, 1);
+
 		$bitacora = new ModeloBitacora();
 		$modelo = new ModeloPerfil();
 
@@ -62,5 +74,9 @@ function guardar()
 			echo json_encode(['ok' => false, 'error' => $edicion]);
 			exit;
 		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }

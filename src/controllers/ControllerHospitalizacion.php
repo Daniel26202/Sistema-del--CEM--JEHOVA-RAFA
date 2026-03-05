@@ -6,6 +6,7 @@ use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloSintomas;
+use App\config\RateLimiter;
 
 function refrescarSemaforo()
 {
@@ -169,6 +170,11 @@ function agregarH()
         exit;
     }
     try {
+
+        $idUsuario = $_SESSION['id_usuario'];
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        $limiter = new RateLimiter();
+        $limiter->verificar('guardar_hospitalizacion' . $idUsuario, 5, 1);
 
         $modeloHosp = new ModeloHospitalizacion();
         $modeloBitacora = new ModeloBitacora();
@@ -339,24 +345,35 @@ function modificarH()
 function eliminaL($datos)
 {
     if (isset($datos)) {
-        $modeloHosp = new ModeloHospitalizacion();
-        $modeloBitacora = new ModeloBitacora();
 
-        $idH = $datos[0];
-        $id_usuario = $datos[1];
+        try {
+            $idUsuario = $_SESSION['id_usuario'];
+            // RATE LIMIT: 5 peticiones cada 1 segundos
+            $limiter = new RateLimiter();
+            $limiter->verificar('eliminar_hospitalizacion_' . $idUsuario, 5, 1);
+            $modeloHosp = new ModeloHospitalizacion();
+            $modeloBitacora = new ModeloBitacora();
 
-        $modeloHosp->setIdH($idH);
-        $eliminacion = $modeloHosp->eliminaLogico();
+            $idH = $datos[0];
+            $id_usuario = $datos[1];
 
-        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-            $modeloBitacora->setTabla("hospitalizacion");
-            $modeloBitacora->setActividad("Ha eliminado una hospitalizacion");
-            $modeloBitacora->setId_usuario($id_usuario);
-            $modeloBitacora->insertarBitacora();
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-        } else {
+            $modeloHosp->setIdH($idH);
+            $eliminacion = $modeloHosp->eliminaLogico();
+
+            if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+                $modeloBitacora->setTabla("hospitalizacion");
+                $modeloBitacora->setActividad("Ha eliminado una hospitalizacion");
+                $modeloBitacora->setId_usuario($id_usuario);
+                $modeloBitacora->insertarBitacora();
+                echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+            } else {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+                exit;
+            }
+        } catch (InvalidArgumentException $e) {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
             exit;
         }
     }

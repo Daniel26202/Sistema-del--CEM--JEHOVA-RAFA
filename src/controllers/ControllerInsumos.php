@@ -4,6 +4,7 @@ use App\modelos\ModeloInsumo;
 use App\modelos\ModeloProveedores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\config\RateLimiter;
 
 
 
@@ -95,6 +96,10 @@ function guardarInsumo()
 	}
 
 	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_insumo_' . $idUsuario, 5, 1);
 
 		$modeloInsumo = new ModeloInsumo();
 		$proveedores = new ModeloProveedores();
@@ -117,7 +122,7 @@ function guardarInsumo()
 		$tiempo = new DateTime();
 		$fecha = date("Y-m-d");
 
-		 $imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+		$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
 		$imagen_temporal = $_FILES['imagen']['tmp_name'];
 		move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen);
 
@@ -145,7 +150,7 @@ function guardarInsumo()
 			$bitacora->setActividad("Ha Insertado un insumo");
 			$bitacora->insertarBitacora();
 
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito','data'=>$insercion]);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $insercion]);
@@ -160,71 +165,107 @@ function guardarInsumo()
 
 function eliminar($datos)
 {
-	$modeloInsumo = new ModeloInsumo();
-	$bitacora = new ModeloBitacora();
 
-	$id_insumo = $datos[0];
-	$id_usuario_bitacora = $datos[1];
-
-	$modeloInsumo->setIdInsumo($id_insumo);
-	$eliminacion = $modeloInsumo->eliminar();
-
-	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-		$bitacora->setId_usuario($id_usuario_bitacora);
-		$bitacora->setTabla("insumo");
-		$bitacora->setActividad("Ha eliminado un insumo");
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+	if (empty($_GET)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_insumo_' . $idUsuario, 5, 1);
+
+		$modeloInsumo = new ModeloInsumo();
+		$bitacora = new ModeloBitacora();
+
+		$id_insumo = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+
+		$modeloInsumo->setIdInsumo($id_insumo);
+		$eliminacion = $modeloInsumo->eliminar();
+
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$bitacora->setId_usuario($id_usuario_bitacora);
+			$bitacora->setTabla("insumo");
+			$bitacora->setActividad("Ha eliminado un insumo");
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
 
 function editar()
 {
-	$modeloInsumo = new ModeloInsumo();
-	$bitacora = new ModeloBitacora();
 
-	// 1. Verificar si se subió una imagen nueva analizando el error de $_FILES
-	$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
-
-	if ($hayNuevaImagen) {
-		$tiempo = new DateTime();
-		$fecha = date("Y-m-d");
-		$nombreImagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
-		$rutaTemporal = $_FILES['imagen']['tmp_name'];
-
-		// Mover el archivo físicamente
-		move_uploaded_file($rutaTemporal, "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $nombreImagen);
-
-		$modeloInsumo->setImagen($nombreImagen);
-	} else {
-		$modeloInsumo->setImagen(null); // Indicamos que no hay cambio de imagen
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
 	}
 
-	$modeloInsumo->setIdInsumo($_POST["idInsumoOculto"]);
-	$modeloInsumo->setNombre($_POST["nombre"]);
-	$modeloInsumo->setDescripcion($_POST['descripcion']);
-	$modeloInsumo->setStockMinimo($_POST["stockMinimo"]);
-	$modeloInsumo->setMarca($_POST["marca"]);
-	$modeloInsumo->setMedida($_POST["medida"]);
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_insumo_' . $idUsuario, 5, 1);
 
-	$edicion = $modeloInsumo->editar();
+		$modeloInsumo = new ModeloInsumo();
+		$bitacora = new ModeloBitacora();
+
+		// 1. Verificar si se subió una imagen nueva analizando el error de $_FILES
+		$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
+
+		if ($hayNuevaImagen) {
+			$tiempo = new DateTime();
+			$fecha = date("Y-m-d");
+			$nombreImagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
+			$rutaTemporal = $_FILES['imagen']['tmp_name'];
+
+			// Mover el archivo físicamente
+			move_uploaded_file($rutaTemporal, "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $nombreImagen);
+
+			$modeloInsumo->setImagen($nombreImagen);
+		} else {
+			$modeloInsumo->setImagen(null); // Indicamos que no hay cambio de imagen
+		}
+
+		$modeloInsumo->setIdInsumo($_POST["idInsumoOculto"]);
+		$modeloInsumo->setNombre($_POST["nombre"]);
+		$modeloInsumo->setDescripcion($_POST['descripcion']);
+		$modeloInsumo->setStockMinimo($_POST["stockMinimo"]);
+		$modeloInsumo->setMarca($_POST["marca"]);
+		$modeloInsumo->setMedida($_POST["medida"]);
+
+		$edicion = $modeloInsumo->editar();
 
 
-	if (is_array($edicion) && $edicion[0] === "exito") {
+		if (is_array($edicion) && $edicion[0] === "exito") {
 
-		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
-		$bitacora->setTabla("insumo");
-		$bitacora->setActividad("Ha modificado un insumo");
-		$bitacora->insertarBitacora();
+			$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+			$bitacora->setTabla("insumo");
+			$bitacora->setActividad("Ha modificado un insumo");
+			$bitacora->insertarBitacora();
 
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data'=>$edicion]);
-	} else {
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $edicion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $edicion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -244,26 +285,43 @@ function papeleraInsumosAjax()
 
 function restablecerInsumo($datos)
 {
-	$modeloInsumo = new ModeloInsumo();
-	$bitacora = new ModeloBitacora();
-
-	$id_insumo = $datos[0];
-	$id_usuario_bitacora = $datos[1];
-	$modeloInsumo->setIdInsumo($id_insumo);
-	$restablecimiento = $modeloInsumo->restablecerInsumo();
-
-
-	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-
-		$bitacora->setId_usuario($id_usuario_bitacora);
-		$bitacora->setTabla("insumo");
-		$bitacora->setActividad("Ha restablecido un insumo");
-		$bitacora->insertarBitacora();
-
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+	if (empty($_POST)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('restablecer_insumo_' . $idUsuario, 5, 1);
+
+		$modeloInsumo = new ModeloInsumo();
+		$bitacora = new ModeloBitacora();
+
+		$id_insumo = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+		$modeloInsumo->setIdInsumo($id_insumo);
+		$restablecimiento = $modeloInsumo->restablecerInsumo();
+
+
+		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+
+			$bitacora->setId_usuario($id_usuario_bitacora);
+			$bitacora->setTabla("insumo");
+			$bitacora->setActividad("Ha restablecido un insumo");
+			$bitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }

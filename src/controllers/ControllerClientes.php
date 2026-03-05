@@ -2,6 +2,7 @@
 
 use App\modelos\ModeloCliente;
 use App\modelos\ModeloBitacora;
+use App\config\RateLimiter;
 // use App\
 
 function Clientes($parametro)
@@ -46,6 +47,12 @@ function guardar()
     }
 
     try {
+
+        $idUsuario = $_SESSION['id_usuario'];
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        $limiter = new RateLimiter();
+        $limiter->verificar('guardar_cliente_' . $idUsuario, 5, 1);
+
         $modeloCliente = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
@@ -83,6 +90,12 @@ function setCliente()
 {
 
     try {
+
+        $idUsuario = $_SESSION['id_usuario'];
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        $limiter = new RateLimiter();
+        $limiter->verificar('editar_cliente_' . $idUsuario, 5, 1);
+
         $modeloCliente = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
@@ -123,6 +136,12 @@ function setCliente()
 function eliminar($datos)
 {
     try {
+
+        $idUsuario = $_SESSION['id_usuario'];
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        $limiter = new RateLimiter();
+        $limiter->verificar('eliminar_cliente_' . $idUsuario, 5, 1);
+
         $id_cliente = $datos[0];
         $id_usuario = $datos[1];
 
@@ -154,6 +173,12 @@ function eliminar($datos)
 function restablecer($datos)
 {
     try {
+
+        $idUsuario = $_SESSION['id_usuario'];
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        $limiter = new RateLimiter();
+        $limiter->verificar('restablecer_cliente_' . $idUsuario, 5, 1);
+
         $id_cliente = $datos[0];
         $id_usuario = $datos[1];
 

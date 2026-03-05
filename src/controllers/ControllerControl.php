@@ -8,6 +8,7 @@ use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloUsuarios;
+use App\config\RateLimiter;
 
 function control($parametro)
 {
@@ -135,6 +136,12 @@ function insertarControl()
 	}
 
 	try {
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_control_' . $idUsuario, 5, 1);
+
 		$modeloControl = new ModeloControl();
 		$modeloBitacora = new ModeloBitacora();
 
@@ -185,6 +192,12 @@ function editarControl()
 	}
 
 	try {
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_control_' . $idUsuario, 5, 1);
+
 		$modeloControl = new ModeloControl();
 		$modeloBitacora = new ModeloBitacora();
 
@@ -289,6 +302,12 @@ function eliminarSintoma($datos)
 
 
 	try {
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_sintoma_' . $idUsuario, 5, 1);
+
 		$modeloSintomas = new ModeloSintomas();
 		$modeloBitacora = new ModeloBitacora();
 
@@ -327,6 +346,12 @@ function agregarSintoma()
 	}
 
 	try {
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_sintoma_' . $idUsuario, 5, 1);
+
 		$modeloSintomas = new ModeloSintomas();
 		$modeloBitacora = new ModeloBitacora();
 

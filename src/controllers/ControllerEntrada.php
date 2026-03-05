@@ -5,6 +5,7 @@ use App\modelos\ModeloInsumo;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloProveedores;
+use App\config\RateLimiter;
 
 
 
@@ -40,27 +41,45 @@ function entradasPapeleraAjax()
 
 function restablecerEntrada($datos)
 {
-	$modeloEntrada = new ModeloEntrada();
-	$modeloBitacora = new ModeloBitacora();
-
-	$id_entrada = $datos[0];
-	$id_usuario_bitacora = $datos[1];
-
-	$modeloEntrada->setIdEntrada($id_entrada);
-	$restablecimiento = $modeloEntrada->restablecerEntrada();
-
-
-	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-
-		$modeloBitacora->setActividad("Ha restablecido una entrada");
-		$modeloBitacora->setTabla("entrada");
-		$modeloBitacora->setId_usuario($id_usuario_bitacora);
-		$modeloBitacora->insertarBitacora();
-
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+	if (empty($_GET)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+	try {
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('restablecer_entrada_' . $idUsuario, 5, 1);
+
+		$modeloEntrada = new ModeloEntrada();
+		$modeloBitacora = new ModeloBitacora();
+
+		$id_entrada = $datos[0];
+		$id_usuario_bitacora = $datos[1];
+
+		$modeloEntrada->setIdEntrada($id_entrada);
+		$restablecimiento = $modeloEntrada->restablecerEntrada();
+
+
+		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+
+			$modeloBitacora->setActividad("Ha restablecido una entrada");
+			$modeloBitacora->setTabla("entrada");
+			$modeloBitacora->setId_usuario($id_usuario_bitacora);
+			$modeloBitacora->insertarBitacora();
+
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -82,6 +101,13 @@ function guardar()
 		exit;
 	}
 	try {
+
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_entrada_' . $idUsuario, 5, 1);
+
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
@@ -132,6 +158,12 @@ function eliminar($datos)
 		exit;
 	}
 	try {
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_entrada_' . $idUsuario, 5, 1);
+
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
 
@@ -167,6 +199,12 @@ function editar()
 		exit;
 	}
 	try {
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_entrada_' . $idUsuario, 5, 1);
+
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
 		$modeloProveedores = new ModeloProveedores();
@@ -193,7 +231,7 @@ function editar()
 			$modeloBitacora->setTabla("entrada");
 			$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
 			$modeloBitacora->insertarBitacora();
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito','data'=>$edicion]);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $edicion]);

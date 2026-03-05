@@ -3,7 +3,7 @@
 use App\modelos\ModeloProveedores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-
+use App\config\RateLimiter;
 
 function proveedores($parametro)
 {
@@ -37,6 +37,10 @@ function insertar()
 		exit;
 	}
 	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_proveedor_' . $idUsuario, 5, 1);
 
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
@@ -78,6 +82,11 @@ function update($datos)
 		exit;
 	}
 	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_proveedor_' . $idUsuario, 5, 1);
+
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
 
@@ -115,6 +124,11 @@ function restablecerProveedor($datos)
 		exit;
 	}
 	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('restblecer_proveedor_' . $idUsuario, 5, 1);
+
 		$id_proveedor = $datos[0];
 		$id_usuario_bitacora = $datos[1];
 
@@ -152,6 +166,11 @@ function editar()
 		exit;
 	}
 	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_proveedor_' . $idUsuario, 5, 1);
+
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
 

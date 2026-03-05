@@ -1,6 +1,6 @@
 <?php
 
-namespace App\modelos;
+namespace App\config;
 
 class RateLimiter
 {
@@ -29,7 +29,7 @@ class RateLimiter
         if (count($intentos) >= $limite) {
             $masAntiguo = min($intentos);
             $espera = $ventanaEnSegundos - ($ahora - $masAntiguo);
-            throw new \Exception("Límite de peticiones alcanzado. Intente de nuevo en $espera segundos.");
+            throw new \InvalidArgumentException("Límite de peticiones alcanzado. Intente de nuevo en $espera segundos.");
         }
 
         // Registrar nuevo intento y guardar
