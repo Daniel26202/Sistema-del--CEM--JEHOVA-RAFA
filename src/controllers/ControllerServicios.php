@@ -5,6 +5,7 @@ use App\modelos\ModeloServicios;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPermisos;
+use App\config\RateLimiter;
 
 function servicios($parametro)
 {
@@ -66,33 +67,45 @@ function guardar()
 		exit;
 	}
 
-	$servicio = new ModeloServicios();
-	$bitacora = new ModeloBitacora();
-	// 1. Quitar separadores de miles
-	$valor =  $_POST['precioD'];
 
-	// 2. Cambiar coma decimal por punto
-	// $valor = str_replace(',', '.', $valor);
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_servicio_' . $idUsuario, 5, 1);
 
-	// 3. Convertir a float
-	$numero = (float)$valor;
+		$servicio = new ModeloServicios();
+		$bitacora = new ModeloBitacora();
+		// 1. Quitar separadores de miles
+		$valor =  $_POST['precioD'];
 
-	$servicio->setIdCategoria($_POST['id_categoria']);
-	$servicio->setPrecio($numero);
-	$servicio->setTipo($_POST['tipo']);
+		// 2. Cambiar coma decimal por punto
+		// $valor = str_replace(',', '.', $valor);
 
-	$bitacora->setId_usuario($_POST['id_usuario']);
-	$bitacora->setActividad("Ha Insertado un nuevo servicio medico");
-	$bitacora->setTabla("servicio Medico");
+		// 3. Convertir a float
+		$numero = (float)$valor;
 
-	$insercion = $servicio->insertarSevicio();
+		$servicio->setIdCategoria($_POST['id_categoria']);
+		$servicio->setPrecio($numero);
+		$servicio->setTipo($_POST['tipo']);
 
-	if (is_array($insercion) && $insercion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-	} else {
+		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setActividad("Ha Insertado un nuevo servicio medico");
+		$bitacora->setTabla("servicio Medico");
+
+		$insercion = $servicio->insertarSevicio();
+
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $insercion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -106,24 +119,36 @@ function eliminar($datos)
 		exit;
 	}
 
-	$servicio = new ModeloServicios();
-	$bitacora = new ModeloBitacora();
 
-	$servicio->setIdServicioMedico($datos[0]);
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_servicio_' . $idUsuario, 5, 1);
 
-	$bitacora->setId_usuario($datos[1]);
-	$bitacora->setActividad("Ha eliminado un servicio medico");
-	$bitacora->setTabla("servicio Medico");
+		$servicio = new ModeloServicios();
+		$bitacora = new ModeloBitacora();
 
-	$eliminacion = $servicio->eliminar();
+		$servicio->setIdServicioMedico($datos[0]);
+
+		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setActividad("Ha eliminado un servicio medico");
+		$bitacora->setTabla("servicio Medico");
+
+		$eliminacion = $servicio->eliminar();
 
 
-	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -135,24 +160,33 @@ function restablecer($datos)
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('restablecer_servicio_' . $idUsuario, 5, 1);
+		$servicio = new ModeloServicios();
+		$bitacora = new ModeloBitacora();
 
-	$servicio = new ModeloServicios();
-	$bitacora = new ModeloBitacora();
+		$servicio->setIdServicioMedico($datos[0]);
 
-	$servicio->setIdServicioMedico($datos[0]);
+		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setActividad("Ha restablecido un servicio medico");
+		$bitacora->setTabla("servicio Medico");
 
-	$bitacora->setId_usuario($datos[1]);
-	$bitacora->setActividad("Ha restablecido un servicio medico");
-	$bitacora->setTabla("servicio Medico");
+		$restablecimiento = $servicio->restablecerServ();
 
-	$restablecimiento = $servicio->restablecerServ();
-
-	if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $restablecimiento]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -164,32 +198,43 @@ function editar()
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
-	$servicio = new ModeloServicios();
-	$bitacora = new ModeloBitacora();
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_servicio_' . $idUsuario, 5, 1);
 
-	//Quitar separadores de miles
-	$valor = str_replace('.', '', $_POST['precioD']);
-	//Cambiar coma decimal por punto
-	$valor = str_replace(',', '.', $valor);
-	$numero = (float)$valor;
+		$servicio = new ModeloServicios();
+		$bitacora = new ModeloBitacora();
 
-	$servicio->setIdCategoria($_POST['id_categoria']);
-	$servicio->setIdServicioMedico($_POST['id_servicioMedico']);
-	$servicio->setPrecio($numero);
-	$servicio->setTipo($_POST['tipo']);
+		//Quitar separadores de miles
+		$valor = str_replace('.', '', $_POST['precioD']);
+		//Cambiar coma decimal por punto
+		$valor = str_replace(',', '.', $valor);
+		$numero = (float)$valor;
 
-	$bitacora->setId_usuario($_POST['id_usuario']);
-	$bitacora->setActividad("Ha modificado un servicio medico");
-	$bitacora->setTabla("servicio Medico");
+		$servicio->setIdCategoria($_POST['id_categoria']);
+		$servicio->setIdServicioMedico($_POST['id_servicioMedico']);
+		$servicio->setPrecio($numero);
+		$servicio->setTipo($_POST['tipo']);
 
-	$edicion = $servicio->editar();
+		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setActividad("Ha modificado un servicio medico");
+		$bitacora->setTabla("servicio Medico");
 
-	if (is_array($edicion) && $edicion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+		$edicion = $servicio->editar();
+
+		if (is_array($edicion) && $edicion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $edicion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $edicion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -212,22 +257,33 @@ function registrarCategoria()
 		exit;
 	}
 
-	$categoria = new ModeloCategoria();
-	$bitacora = new ModeloBitacora();
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_categoria_' . $idUsuario, 5, 1);
 
-	$categoria->setNombre($_POST["nombre"]);
+		$categoria = new ModeloCategoria();
+		$bitacora = new ModeloBitacora();
 
-	$insercion = $categoria->registrarCategoria();
-	
-	if (is_array($insercion) && $insercion[0] === "exito") {
-		$bitacora->setId_usuario($_POST['id_usuario']);
-		$bitacora->setActividad("Ha Insertado una nueva  categoria");
-		$bitacora->setTabla("Categoria de servicio medico");
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
-	} else {
+		$categoria->setNombre($_POST["nombre"]);
+
+		$insercion = $categoria->registrarCategoria();
+
+		if (is_array($insercion) && $insercion[0] === "exito") {
+			$bitacora->setId_usuario($_POST['id_usuario']);
+			$bitacora->setActividad("Ha Insertado una nueva  categoria");
+			$bitacora->setTabla("Categoria de servicio medico");
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $insercion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $insercion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }
@@ -239,23 +295,34 @@ function eliminarCategoria($datos)
 		exit;
 	}
 
-	$categoria = new ModeloCategoria();
-	$bitacora = new ModeloBitacora();
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_categoria_' . $idUsuario, 5, 1);
 
-	$categoria->setIdCategoria($datos[0]);
+		$categoria = new ModeloCategoria();
+		$bitacora = new ModeloBitacora();
 
-	$bitacora->setId_usuario($datos[1]);
-	$bitacora->setActividad("Ha eliminado una categoria");
-	$bitacora->setTabla("Categoria de servicio medico");
+		$categoria->setIdCategoria($datos[0]);
 
-	$eliminacion  = $categoria->eliminarCategoria();
+		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setActividad("Ha eliminado una categoria");
+		$bitacora->setTabla("Categoria de servicio medico");
 
-	if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-		$bitacora->insertarBitacora();
-		echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-	} else {
+		$eliminacion  = $categoria->eliminarCategoria();
+
+		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$bitacora->insertarBitacora();
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			exit;
+		}
+	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $eliminacion]);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
 }

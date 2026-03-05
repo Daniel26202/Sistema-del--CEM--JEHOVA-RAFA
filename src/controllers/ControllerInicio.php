@@ -6,14 +6,13 @@ use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloDoctores;
 
-function returnObjectClass(){
-    return[new ModeloBitacora(),new ModeloInicio(), new ModeloDoctores(), new ModeloCita()];
-}
+
 
 
 function inicio($parametro)
 {
-    [$bitacora, $modeloInicio] = returnObjectClass();
+    $modeloInicio = new ModeloInicio();
+    $bitacora = new ModeloBitacora();
 
     if ($parametro != "" && $parametro[0] == "cerrar") {
         echo $_SESSION["id_usuario"];
@@ -41,7 +40,7 @@ function inicio($parametro)
 
     $validarCargo = $modeloInicio->setIdPersonal($_SESSION["id_personal"]);
     $validarCargo = $modeloInicio->comprobarCargo();
-    $datos_de_personal =  $modeloInicio->datos_doctor(['id_usuario'=>$_SESSION["id_usuario"]]);
+    $datos_de_personal =  $modeloInicio->datos_doctor(['id_usuario' => $_SESSION["id_usuario"]]);
 
     $ayuda = "btnayudaInicio";
 
@@ -86,25 +85,27 @@ function manualUsuario()
 
 function servicios()
 {
-    echo json_encode(returnObjectClass()[1]->servicios());
+    $modeloInicio = new ModeloInicio();
+    echo json_encode($modeloInicio->servicios());
 }
 
 
 
 function citasDeHoy()
 {
-    echo json_encode(returnObjectClass()[3]->mostrarCitaHoy());
+    $modelo = new ModeloCita();
+    echo json_encode($modelo->mostrarCitaHoy());
 }
 
 function cerrarSession()
 {
     $bitacora = new ModeloBitacora(false);
 
-    if(empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
 
     if (session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
@@ -121,57 +122,71 @@ function cerrarSession()
     session_destroy();
 
     echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-
 }
 
 function citas()
 {
-    echo json_encode(returnObjectClass()[3]->mostrarCita());
+    $modelo = new ModeloCita();
+    echo json_encode($modelo->mostrarCita());
 }
 
 function pacientes_hospitalizados()
 {
-    echo json_encode(returnObjectClass()[1]->pacientes_hospitalizados());
+    $modelo = new ModeloInicio();
+    echo json_encode($modelo->pacientes_hospitalizados());
 }
 
 function especialidades_solicitadas()
 {
-    echo json_encode(returnObjectClass()[1]->especialidades_solicitadas());
+    $modelo = new ModeloInicio();
+    echo json_encode($modelo->especialidades_solicitadas());
 }
 function especialidades_solicitadas_filtradas($datos)
 {
-    echo json_encode(returnObjectClass()[1]->especialidades_solicitadas());
+    $modelo = new ModeloInicio();
+
+    echo json_encode($modelo->especialidades_solicitadas());
 }
 
 function todas_las_especialidades()
 {
-    echo json_encode(returnObjectClass()[1]->todas_las_especialidades());
+    $modelo = new ModeloInicio();
+
+    echo json_encode($modelo->todas_las_especialidades());
 }
 
 function sintomas_comunes()
 {
-    echo json_encode(returnObjectClass()[1]->sintomas_comunes());
+    $modelo = new ModeloInicio();
+
+    echo json_encode($modelo->sintomas_comunes());
 }
 
 function sintomas_comunes_filtrados($datos)
 {
-    echo json_encode(returnObjectClass()[1]->sintomas_comunes());
+    $modelo = new ModeloInicio();
+
+    echo json_encode($modelo->sintomas_comunes());
 }
 
 function todos_los_sintomas()
 {
-    echo json_encode(returnObjectClass()[1]->todos_los_sintomas());
+    $modelo = new ModeloInicio();
+
+    echo json_encode($modelo->todos_los_sintomas());
 }
 
 //Datos del horario del doctor
 function mostrarHorario($datos)
 {
-    echo json_encode(returnObjectClass()[1]->mostrarHorarioDoctores($datos[0]));
+    $modelo = new ModeloCita();
+    echo json_encode($modelo->mostrarHorarioDoctores($datos[0]));
 }
 
 function retornarDoctores()
 {
-    echo json_encode(returnObjectClass()[2]->select());
+    $modelo = new ModeloDoctores();
+    echo json_encode($modelo->select());
 }
 
 function exportar_pdf()
@@ -228,7 +243,7 @@ function exportar_pdf()
 
 function diasConMasCitas($parametro)
 {
+    $modelo = new ModeloInicio();
     $id_personal = isset($parametro[0]) ? $parametro[0] : '';
-    echo json_encode(returnObjectClass()[1]->obtenerDiasConMasCitas($id_personal));
-
+    echo json_encode($modelo->obtenerDiasConMasCitas($id_personal));
 }

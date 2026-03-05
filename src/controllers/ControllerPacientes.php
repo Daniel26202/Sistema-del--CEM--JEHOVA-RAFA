@@ -3,6 +3,7 @@
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\config\RateLimiter;
 // use App\
 
 
@@ -12,13 +13,7 @@ use App\modelos\ModeloPermisos;
 // 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 // }
 
-function returnObjectClass()
-{
-	return [
-		"paciente" => new ModeloPacientes(),
-		"bitacora" => new ModeloBitacora()
-	];
-}
+
 
 
 function getPacientes($parametro)
@@ -36,7 +31,7 @@ function getPacientesAjax($parametro)
 		exit;
 	}
 
-	$modelo  = returnObjectClass()['paciente'];
+	$modelo  = new ModeloPacientes();
 	echo json_encode($modelo->index());
 }
 
@@ -52,6 +47,8 @@ function papeleraPaciente($parametro)
 {
 	$modelo  = returnObjectClass()['paciente'];
 	$vistaActiva = 'papelera';
+	$modelo  = new ModeloPacientes();
+
 	$pacientes = $modelo->indexPapelera();
 	require_once './src/vistas/vistaPacientes/pacientes.php';
 }
@@ -63,8 +60,8 @@ function papeleraPacienteAjax()
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
+	$modelo  = new ModeloPacientes();
 
-	$modelo  = returnObjectClass()['paciente'];
 	echo json_encode($modelo->indexPapelera());
 }
 
@@ -79,9 +76,13 @@ function guardar()
 	}
 
 	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_paciente_' . $idUsuario, 5, 1);
 
-		$modelo  = returnObjectClass()['paciente'];
-		$bitacora = returnObjectClass()['bitacora'];
+		$modelo  = new ModeloPacientes();
+		$bitacora = new ModeloBitacora();
 
 		$modelo->setNacionalidad(isset($_POST['nacionalidad'])? $_POST['nacionalidad']: 'V');
 		$modelo->setCedula($_POST['cedula']);
@@ -126,8 +127,13 @@ function setPaciente()
 
 
 	try {
-		$modelo  = returnObjectClass()['paciente'];
-		$bitacora = returnObjectClass()['bitacora'];
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_paciente_' . $idUsuario, 5, 1);
+
+		$modelo  = new ModeloPacientes();
+		$bitacora = new ModeloBitacora();
 
 		$modelo->setIdPaciente(intval($_POST['id']));
 		$modelo->setNacionalidad($_POST['nacionalidad']);
@@ -174,8 +180,14 @@ function eliminar($datos)
 	}
 
 	try {
-		$modelo  = returnObjectClass()['paciente'];
-		$bitacora = returnObjectClass()['bitacora'];
+		
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
+
+		$modelo  = new ModeloPacientes();
+		$bitacora = new ModeloBitacora();
 
 		$modelo->setIdPaciente($datos[0]);
 
@@ -212,8 +224,13 @@ function restablecer($datos)
 
 	try {
 
-		$modelo  = returnObjectClass()['paciente'];
-		$bitacora = returnObjectClass()['bitacora'];
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('restablecer_paciente_' . $idUsuario, 5, 1);
+
+		$modelo  = new ModeloPacientes();
+		$bitacora = new ModeloBitacora();
 
 		$modelo->setIdPaciente($datos[0]);
 

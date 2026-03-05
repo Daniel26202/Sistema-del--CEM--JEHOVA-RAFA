@@ -6,6 +6,7 @@ use App\modelos\ModeloServicios;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
+use App\config\RateLimiter;
 
 function mostrarDataPaciente($datos)
 {
@@ -95,6 +96,12 @@ function guardarCita()
 	}
 
 	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_cita_' . $idUsuario, 5, 1);
+
+
 		$bitacora = new ModeloBitacora();
 		$cita = new ModeloCita();
 
@@ -146,6 +153,14 @@ function eliminarCita($datos)
 		exit;
 	}
 	try {
+
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_cita_' . $idUsuario, 5, 1);
+
+
 		$bitacora = new ModeloBitacora();
 		$cita = new ModeloCita();
 
@@ -215,6 +230,12 @@ function editarCita()
 	}
 
 	try {
+
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_cita_' . $idUsuario, 5, 1);
+
 		$bitacora = new ModeloBitacora();
 		$cita = new ModeloCita();
 

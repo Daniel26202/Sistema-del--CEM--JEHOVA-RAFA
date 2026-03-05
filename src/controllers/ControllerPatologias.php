@@ -3,16 +3,11 @@
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\config\RateLimiter;
 
 
 
 
-function returnObjectClass()
-{
-	$modelo = new ModeloPatologia(true);
-	$bitacora = new ModeloBitacora(false);
-	return [$modelo, $bitacora];
-}
 
 function patologias($parametro)
 {
@@ -23,8 +18,7 @@ function patologias($parametro)
 
 function patologiasAjax()
 {
-	[$modelo] = returnObjectClass();
-
+	$modelo = new ModeloPatologia();
 	echo json_encode($modelo->mostrarPatologias());
 }
 
@@ -43,7 +37,7 @@ function papeleraAjax()
 		exit;
 	}
 
-	[$modelo] = returnObjectClass();
+	$modelo = new ModeloPatologia();
 
 	echo json_encode($modelo->mostrarPatologiasEliminadas());
 }
@@ -51,14 +45,20 @@ function papeleraAjax()
 //insertar patologia 
 function registrarPatologia()
 {
-	try {
-		if (empty($_POST)) {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-			exit;
-		}
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
 
-		[$modelo, $bitacora] = returnObjectClass();
+	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_patologia_' . $idUsuario, 5, 1);
+
+		$modelo = new ModeloPatologia();
+		$bitacora = new ModeloBitacora();
 
 		$modelo->setNombrePatologia($_POST["nombre"]);
 
@@ -95,7 +95,13 @@ function eliminarPatologia($datos)
 	}
 
 	try {
-		[$modelo, $bitacora] = returnObjectClass();
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_patologia_' . $idUsuario, 5, 1);
+
+		$modelo = new ModeloPatologia();
+		$bitacora = new ModeloBitacora();
 
 		$modelo->setIdPatologia($datos[0]);
 
@@ -132,8 +138,13 @@ function restablecerPatologia($datos)
 	}
 
 	try {
+		$idUsuario = $_SESSION['id_usuario'];
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('restablecer_patologia_' . $idUsuario, 5, 1);
 
-		[$modelo, $bitacora] = returnObjectClass();
+		$modelo = new ModeloPatologia();
+		$bitacora = new ModeloBitacora();
 
 		$modelo->setIdPatologia($datos[0]);
 
