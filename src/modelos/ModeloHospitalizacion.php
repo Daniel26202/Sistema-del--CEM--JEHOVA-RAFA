@@ -228,7 +228,7 @@ class ModeloHospitalizacion extends ModelBase
             $this->setSQL($sql);
 
             $idInsumo = $this->getIdInsumo();
-            $id = is_array($idInsumo) ? $idInsumo[0] : $idInsumo; // 👈
+            $id = is_array($idInsumo) ? $idInsumo[0] : $idInsumo; 
             $consulta = $this->search(['id' => $id], false);
 
             return !empty($consulta) ? $consulta : false;

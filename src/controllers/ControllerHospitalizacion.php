@@ -170,8 +170,8 @@ function agregarH()
     }
     try {
 
-        $modeloHosp = new ModeloHospitalizacion();
         $modeloBitacora = new ModeloBitacora();
+        $modeloHosp = new ModeloHospitalizacion();
 
         $modeloHosp->setFechaControl($_POST["fecha"]);
         $modeloHosp->setIdPaciente($_POST["id_paciente"]);

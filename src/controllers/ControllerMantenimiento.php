@@ -72,7 +72,7 @@ function generarRespaldo($parametro)
 		$modeloBitacora->setActividad("Se ha realizado una descarga del respaldo de la base de datos");
 		$modeloBitacora->insertarBitacora();
 
-		echo json_encode(['ok' => true, 'message' => "La descarga se realizó con éxito, " . $mensaje]);
+		echo json_encode(['ok' => true, 'message' => "La descarga se realizó con éxito."]);
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
