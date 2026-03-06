@@ -285,17 +285,19 @@ traerHorarioEspecificoDelDr = async (id) => {
     if (resultado.length > 0) {
         resultado.forEach((res) => {
             div.innerHTML += `
-                <div class="mb-2" id="divAcordion">
-                <div class="d-flex text-horario">Días Laborables: <h6 class="fw-bold text-horario"> ${
+                <div class="mb-2 " >
+                <div class="d-flex text-horario">Día Laborable: <p class="fw-bold text-horario"> ${
                   res.diaslaborables
-                }</h6> </div>
+                }</p> </div>
               
-                <div class="d-flex text-horario">Hora de Entrada: <h6 class="fw-bold text-horario"> ${convertirHora(
+                <div class="d-flex text-horario">Hora de Entrada: <p class="fw-bold text-horario"> ${convertirHora(
                   res.horaDeEntrada
-                )}</h6></div>
-                <div class="d-flex text-horario">Hora de Salida: <h6 class="fw-bold text-horario"> ${convertirHora(
+                )}</p></div>
+                <div class="d-flex text-horario">Hora de Salida: <p class="fw-bold text-horario"> ${convertirHora(
                   res.horaDeSalida
-                )}</h6></div></div>  `;
+                )}</p></div>
+                </div> 
+                `;
         });
 
         document.getElementById("titulo").innerText = `Horario del Doctor`;
@@ -312,6 +314,10 @@ const traerHorarioDoctor = async (id) => {
         // Realiza la petición AJAX
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id);
         let resultado = await peticion.json();
+        console.log(
+          resultado,
+          "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id,
+        );
         //Quitar los dias marcados para marcalos nuevamente
         document.querySelectorAll(".date").forEach((date) => {
             date.classList.remove("diasOcupados");

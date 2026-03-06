@@ -114,7 +114,7 @@ require_once './src/vistas/head/head.php';
         <?php if ($validarCargo): ?>
             <!-- Es un doctor asi que no puede ver el boton -->
         <?php else: ?>
-            <button id="btnHorario" class="btn btn-primary mb-2 w-100 d-none" uk-toggle="target: #modal-info-doctores"></button>
+            <button id="btnHorario" class="btn btn-primary mb-2 w-100 d-none" data-bs-toggle="modal" data-bs-target="#exampleModalInfoDoctor"></button>
         <?php endif; ?>
         <!-- Calendar Container -->
         <div class="card shadow-sm mb-2 table table-responsive" id="calendarCard">
@@ -257,44 +257,39 @@ require_once './src/vistas/head/head.php';
 
 <!-- Modal de horario del doctor -->
 
-<div id="modal-info-doctores" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body tamaño-modal">
-        <form>
+<div class="modal fade" id="exampleModalInfoDoctor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content tamaño-modal">
+            <div class="modal-header">
+                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelDoctores">Informacion sobre Doctor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-            <!-- Botón que cierra el modal -->
-            <a href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                    class="bi bi-x-circle uk-modal-close-default azul " viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path
-                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
-            </a>
+            <div class="modal-body ">
+                <hr>
 
-            <div class="d-flex align-items-center">
-                <div>
+                <h5>Horario del doctor:</h5>
+
+                <div class="horario-insertar d-flex justify-content-between ">
+
                 </div>
-                <div>
-                    <h5 class="text-center" id="titulo">
-                    </h5>
-                </div>
-            </div>
 
-            <div class="modal-body horario-insertar ">
+                <hr>
+
 
             </div>
 
 
 
-            <div class="mt-3 uk-text-right">
 
-                <button class="uk-button fw-bold uk-button-default uk-modal-close btn-cerrar-modal" type="button"
-                    data-bs-dismiss="modal">Cerrar</button>
 
-            </div>
-        </form>
+
+
+
+        </div>
     </div>
 </div>
+
 
 <?php require_once 'src/vistas/vistaEstadisticas/modalsEstadisticas.php'; ?>
 

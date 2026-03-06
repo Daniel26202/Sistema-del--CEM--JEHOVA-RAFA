@@ -180,7 +180,8 @@ function todos_los_sintomas()
 function mostrarHorario($datos)
 {
     $modelo = new ModeloCita();
-    echo json_encode($modelo->mostrarHorarioDoctores($datos[0]));
+    $modelo->setIdDoctor($datos[0]);
+    echo json_encode($modelo->mostrarHorarioDoctores());
 }
 
 function retornarDoctores()
@@ -244,6 +245,7 @@ function exportar_pdf()
 function diasConMasCitas($parametro)
 {
     $modelo = new ModeloInicio();
-    $id_personal = isset($parametro[0]) ? $parametro[0] : '';
-    echo json_encode($modelo->obtenerDiasConMasCitas($id_personal));
+    $id_personal = isset($parametro[0]) ? $parametro[0] : 0;
+    $modelo->setIdPersonal($id_personal);
+    echo json_encode($modelo->obtenerDiasConMasCitas());
 }

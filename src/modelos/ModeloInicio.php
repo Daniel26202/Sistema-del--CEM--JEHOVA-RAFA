@@ -132,10 +132,10 @@ class ModeloInicio extends ModelBase
 	}
 
 
-	public function obtenerDiasConMasCitas($data)
+	public function obtenerDiasConMasCitas()
 	{
 		try {
-			if ($data == '') {
+			if ($this->getIdPersonal() == 0) {
 				$sql = "SELECT 
 								c.fecha,
 								COUNT(c.id_cita) AS total_citas,
@@ -151,7 +151,7 @@ class ModeloInicio extends ModelBase
 				$this->setSQL($sql);
 				return $this->read();
 			} else {
-				$data = ['id_personal' => $this->retrunObjectModel()['modeloDoctores']->getIdDoctor()];
+				$data = ['id_personal' => $this->getIdPersonal()];
 				$sql = "SELECT 
 								c.fecha,
 								e.nombre AS especialidad,
@@ -210,11 +210,10 @@ class ModeloInicio extends ModelBase
 		if (!preg_match('/^[0-9]+$/', $idPersonal)) {
 			throw new \InvalidArgumentException('El ID no es válido.');
 		}
-		if ((int)$idPersonal <= 0) {
-			throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
-		}
+		
 		$this->idPersonal = $idPersonal;
 	}
+
 	public function getIdPersonal()
 	{
 		return $this->idPersonal;
