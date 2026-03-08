@@ -26,11 +26,11 @@ class ModeloInsumo extends ModelBase
 			return $consulta;
 		} catch (\Exception $e) {
 			return $e->getMessage();
-		}
+		}	
 	}
 	public function cantidadCero($cantidadCero) {}
 
-	public function insumos($cantidadCero = true)
+			public function insumos($cantidadCero = true)
 	{
 		try {
 			$sql = "";

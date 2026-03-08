@@ -142,8 +142,8 @@ function insertarControl()
 		$limiter = new RateLimiter();
 		$limiter->verificar('guardar_control_' . $idUsuario, 5, 1);
 
-		$modeloControl = new ModeloControl();
 		$modeloBitacora = new ModeloBitacora();
+		$modeloControl = new ModeloControl();
 
 		$patologia = (isset($_POST["patologias"])) ? $_POST["patologias"] : [null];
 		$sintoma = (isset($_POST["sintomas"])) ? $_POST["sintomas"] : [null];

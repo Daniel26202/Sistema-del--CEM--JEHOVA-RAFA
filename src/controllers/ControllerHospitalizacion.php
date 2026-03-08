@@ -176,11 +176,6 @@ function agregarH()
         $limiter = new RateLimiter();
         $limiter->verificar('guardar_hospitalizacion' . $idUsuario, 5, 1);
 
-        $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('guardar_hospitalizacion' . $idUsuario, 5, 1);
-
         $modeloBitacora = new ModeloBitacora();
         $modeloHosp = new ModeloHospitalizacion();
 
@@ -252,8 +247,8 @@ function traerInsuDHEd($datos)
 // traer datos de los insumos correspondiendo a la hospitalización que se edita.
 function modificarH()
 {
-    $modeloHosp = new ModeloHospitalizacion();
     $modeloBitacora = new ModeloBitacora();
+    $modeloHosp = new ModeloHospitalizacion();
 
 
     $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : [];
@@ -356,8 +351,8 @@ function eliminaL($datos)
             // RATE LIMIT: 5 peticiones cada 1 segundos
             $limiter = new RateLimiter();
             $limiter->verificar('eliminar_hospitalizacion_' . $idUsuario, 5, 1);
-            $modeloHosp = new ModeloHospitalizacion();
             $modeloBitacora = new ModeloBitacora();
+            $modeloHosp = new ModeloHospitalizacion();
 
             $idH = $datos[0];
             $id_usuario = $datos[1];

@@ -101,11 +101,8 @@ function guardarInsumo()
 		$limiter = new RateLimiter();
 		$limiter->verificar('guardar_insumo_' . $idUsuario, 5, 1);
 
-		$modeloInsumo = new ModeloInsumo();
-		$proveedores = new ModeloProveedores();
 		$bitacora = new ModeloBitacora();
-
-
+		$modeloInsumo = new ModeloInsumo();
 
 		// 1. Quitar separadores de miles
 		$valor = str_replace('.', '', $_POST['precioD']);
@@ -140,14 +137,14 @@ function guardarInsumo()
 		$modeloInsumo->setImagen($imagen);
 		$modeloInsumo->setPrecio($valor);
 
+		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$bitacora->setTabla("insumo");
+		$bitacora->setActividad("Ha Insertado un insumo");
+
 
 		$insercion = $modeloInsumo->insertarInsumos();
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
-
-			$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
-			$bitacora->setTabla("insumo");
-			$bitacora->setActividad("Ha Insertado un insumo");
 			$bitacora->insertarBitacora();
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
@@ -178,19 +175,21 @@ function eliminar($datos)
 		$limiter = new RateLimiter();
 		$limiter->verificar('eliminar_insumo_' . $idUsuario, 5, 1);
 
-		$modeloInsumo = new ModeloInsumo();
 		$bitacora = new ModeloBitacora();
+		$modeloInsumo = new ModeloInsumo();
 
 		$id_insumo = $datos[0];
 		$id_usuario_bitacora = $datos[1];
 
 		$modeloInsumo->setIdInsumo($id_insumo);
+
+		$bitacora->setId_usuario($id_usuario_bitacora);
+		$bitacora->setActividad("Ha eliminado un insumo");
+		$bitacora->setTabla("insumo");
+
 		$eliminacion = $modeloInsumo->eliminar();
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-			$bitacora->setId_usuario($id_usuario_bitacora);
-			$bitacora->setTabla("insumo");
-			$bitacora->setActividad("Ha eliminado un insumo");
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -220,8 +219,8 @@ function editar()
 		$limiter = new RateLimiter();
 		$limiter->verificar('editar_insumo_' . $idUsuario, 5, 1);
 
-		$modeloInsumo = new ModeloInsumo();
 		$bitacora = new ModeloBitacora();
+		$modeloInsumo = new ModeloInsumo();
 
 		// 1. Verificar si se subió una imagen nueva analizando el error de $_FILES
 		$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
@@ -247,14 +246,15 @@ function editar()
 		$modeloInsumo->setMarca($_POST["marca"]);
 		$modeloInsumo->setMedida($_POST["medida"]);
 
+		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$bitacora->setActividad("Ha modificado un insumo");
+		$bitacora->setTabla("insumo");
+
 		$edicion = $modeloInsumo->editar();
 
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 
-			$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
-			$bitacora->setTabla("insumo");
-			$bitacora->setActividad("Ha modificado un insumo");
 			$bitacora->insertarBitacora();
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);

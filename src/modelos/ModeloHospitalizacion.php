@@ -388,7 +388,7 @@ class ModeloHospitalizacion extends ModelBase
         return $this->search($data, true);
     }
 
-    public function datosControl($idH)
+    public function datosControl()
     {
         // consulta el id del control
         $sql = "SELECT con.id_control, con.id_paciente FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1;";
@@ -415,7 +415,7 @@ class ModeloHospitalizacion extends ModelBase
                 throw new \Exception("Fallo");
             }
             // consulta el id del control
-            $idControl = $this->datosControl($this->getIdH());
+            $idControl = $this->datosControl();
 
 
             // editar control
@@ -628,7 +628,7 @@ class ModeloHospitalizacion extends ModelBase
             if ($validar == []) {
                 throw new \Exception("Fallo");
             }
-            $datosIDH = $this->EInsumosM($this->getIdH());
+            $datosIDH = $this->EInsumosM();
             // // si hay un id del insumo devuelve verdadero si no, devuelve falso
             if ($datosIDH) {
 
@@ -642,7 +642,7 @@ class ModeloHospitalizacion extends ModelBase
                     ]);
                     // $consulta2->closeCursor();
                 }
-            }
+            }   
 
             // editar el estado hospitalización
             $sql = 'UPDATE hospitalizacion SET estado ="DES" WHERE id_hospitalizacion =:id ;';
@@ -684,7 +684,7 @@ class ModeloHospitalizacion extends ModelBase
             ];
             $this->update($data, $this->getIdH());
 
-            $datosControl = $this->datosControl($this->getIdH());
+            $datosControl = $this->datosControl();
 
             $sql = 'UPDATE control SET medicamentosRecetados = :indicaciones, historiaclinica = :historial, diagnostico = :diagnostico, fechaRegreso = :fechaRegreso, nota = :nota, severidad = :severidad WHERE id_control = :id;';
             $this->setSQL($sql);
