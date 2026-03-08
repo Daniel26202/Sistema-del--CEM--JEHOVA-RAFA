@@ -628,7 +628,7 @@ class ModeloDoctores extends ModelBase
 
     public function setCedula($cedula)
     {
-        if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedula)) {
+        if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
             throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
         }
         $this->cedula = $cedula;
@@ -636,7 +636,7 @@ class ModeloDoctores extends ModelBase
 
     public function setCedulaRegistrada($cedula)
     {
-        if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedula)) {
+        if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
             throw new \InvalidArgumentException("La cédula registrada debe contener entre 7 y 8 dígitos.");
         }
         $this->cedulaRegistrada = $cedula;

@@ -33,6 +33,7 @@ const modalAsignarServicio = new bootstrap.Modal(document.getElementById('modal-
 const divHorarios = document.getElementById("div-horarios");
 const cajaDeInfo = document.getElementById("cajaDeInfo");
 const pServicios = document.getElementById("p-servicios");
+const btnagregarDoctor = document.getElementById("btnagregarDoctor");
 
 const urlActual = window.location.href;
 
@@ -493,6 +494,10 @@ const readDoctor = async () => {
             inputSalida.setAttribute("name", "");
           }
         });
+
+        labelModal.innerText = "Modificar Doctor";
+        btnModal.innerText = "Modificar";
+        contenedorImgEditar.classList.add("d-none");
       });
 
       formDoctor.classList.add("editar");
@@ -840,6 +845,25 @@ function validarBloquesCompletos(card) {
     inputSalida.value = `${String(hEntrada + 1).padStart(2, "0")}:00`;
   }
 }
+
+//funcion para limpiar el formulario
+btnagregarDoctor.addEventListener("click", function () {
+  formDoctor.querySelectorAll(".input-validar").forEach(ele => {
+    let divParent = ele.closest(".campo-custom")
+    divParent.querySelector(".input-custom").classList.remove("valido", "invalido");
+    divParent.querySelector(".check").classList.add("d-none");
+    divParent.querySelector(".error").classList.add("d-none");
+    divParent.querySelector(".error-msg").classList.add("d-none");
+    console.log(divParent);
+    
+    ele.value = "";
+  })
+  labelModal.innerText = "Registrar Doctor";
+  btnModal.innerText = "Registrar";
+  contenedorImgEditar.classList.add("d-none");
+  formDoctor.classList.remove("editar");
+
+})
 
 imagenDoctor.addEventListener("change", function (e) {
   let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
