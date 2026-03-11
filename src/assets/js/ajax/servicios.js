@@ -8,6 +8,7 @@ import {
     showDataModal,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
+import { initConversion } from "../generic/coversion.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Servicios";
 
@@ -15,31 +16,7 @@ const dolar = parseFloat(document.getElementById("dolar").value);
 
 //read
 
-let formularioA = document.getElementById("modalAgregar");
-if (formularioA) {
-    let verificarFormulario = inicializarValidacionFormulario(formularioA);
 
-    formularioA.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        let inputsBuenos = [];
-        this.querySelectorAll(".input-validar").forEach((input) => {
-            if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
-        });
-
-        let esValido = verificarFormulario();
-
-        if (esValido) {
-            if (formularioA.classList.contains("editar")) {
-                updateService(this, inputsBuenos);
-            } else {
-                createService(this, inputsBuenos);
-            }
-        } else {
-            alertError("Error", "Por favor verifique que todos los datos estén correctos.");
-        }
-    });
-}
 //create
 const createService = async (form, inputs) => {
     try {
@@ -294,6 +271,38 @@ btnOpenModalA?.addEventListener("click", function () {
     };
     clearModalEnviar(parametros);
 });
+
+
+let formularioA = document.getElementById("modalAgregar");
+initConversion(formularioA)
+if (formularioA) {
+  let verificarFormulario = inicializarValidacionFormulario(formularioA);
+
+  formularioA.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let inputsBuenos = [];
+    this.querySelectorAll(".input-validar").forEach((input) => {
+      if (input.parentElement.classList.contains("valido"))
+        inputsBuenos.push(true);
+    });
+
+    let esValido = verificarFormulario();
+
+    if (esValido) {
+      if (formularioA.classList.contains("editar")) {
+        updateService(this, inputsBuenos);
+      } else {
+        createService(this, inputsBuenos);
+      }
+    } else {
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
+    }
+  });
+}
 
 readServices();
 readDatosDS();

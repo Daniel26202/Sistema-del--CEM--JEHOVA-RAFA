@@ -1,6 +1,6 @@
 <!-- modal para mostrar todo -->
 <div class="modal fade" id="modal-categoria" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="modalLabelServicios">Categorías</h5>

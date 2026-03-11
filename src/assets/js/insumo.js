@@ -143,30 +143,28 @@ addEventListener("DOMContentLoaded", function () {
 
   const readInsumos = async (contenedor) => {
     try {
-      
-      const items = await executePetition(`${url}/insumosAjax`, 'GET');
-      console.log(items)
+      const items = await executePetition(`${url}/insumosAjax`, "GET");
+      console.log(items);
+      const hola = () => console.log("hola");
+
       const paginator = new Paginator(
         items,
-        3,
+        1,
         "cardContainer",
         "pagination",
         "searchInput",
         returnFragmentHtml,
+        "id_insumo",
+        infoInsumos,
       );
 
-      paginator.displayItems();
 
+      paginator.displayItems();
 
       document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
         ele.value = document.getElementById("id_usuario_session").value;
       });
 
-      document.querySelectorAll(".botones-mostrar").forEach((ele) => {
-        ele.addEventListener("click", function () {
-          infoInsumos(this.getAttribute("data-index"));
-        });
-      });
 
       //llamar las funcion de eliminar
 

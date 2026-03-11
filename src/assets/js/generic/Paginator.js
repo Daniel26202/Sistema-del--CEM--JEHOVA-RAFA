@@ -6,6 +6,8 @@ class Paginator {
     paginationId,
     searchId,
     fragmentHTML,
+    idFilter,
+    callbackButton
   ) {
     this.items = items;
     this.itemsPerPage = itemsPerPage;
@@ -16,6 +18,8 @@ class Paginator {
     this.searchId = searchId;
     this.html = "";
     this.fragmentHTML = fragmentHTML; //para colocar el html dinamico de las tarjetas
+    this.idFilter = idFilter;
+    this.callbackButton = callbackButton
 
     // Agregar evento de búsqueda
     const searchInput = document.getElementById(this.searchId);
@@ -46,6 +50,21 @@ class Paginator {
     }
 
     cardContainer.innerHTML = this.html;
+
+    //Manejo del callbackButton para que no se reescriba la funcion de un elemeto html nuevamente
+    const buttonsCard = cardContainer.querySelectorAll("button");
+
+    buttonsCard.forEach((button) => {
+      let idFilter = this.idFilter;
+
+      button.addEventListener("click", (e)=> {
+        const itemId = e.target.getAttribute("data-index");
+        const itemFilter = currentItems.find((item) => item[idFilter] == itemId);
+        console.log(itemFilter[idFilter]);
+        this.callbackButton(itemFilter[idFilter]);
+
+      });
+    });
 
     this.updatePagination();
   }
@@ -95,9 +114,10 @@ class Paginator {
   }
 
   searchItems(query) {
-    this.filteredItems = this.items.filter(
-      (item) =>
-        Object.values(item).some(value=>value.toString().toLowerCase().includes(query.toLowerCase()))
+    this.filteredItems = this.items.filter((item) =>
+      Object.values(item).some((value) =>
+        value.toString().toLowerCase().includes(query.toLowerCase()),
+      ),
     );
     this.currentPage = 1; // Reiniciar a la primera página después de buscar
     this.displayItems();

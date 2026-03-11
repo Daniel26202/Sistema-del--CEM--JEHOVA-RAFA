@@ -1,3 +1,6 @@
+import { valorDolar } from "./js/generic/coversion.js";
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const root = document.documentElement;
   const themeToggleCheckbox = document.getElementById("themeToggleCheckbox");
@@ -25,4 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   $(".loader-wrapper").fadeOut("slow");
+
+
+  //Activar la funcion para actualizar el valor del dolar
+  valorDolar();
 });
