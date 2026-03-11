@@ -27,8 +27,8 @@ function mostrarServicios()
 
 function mostrarInsumos()
 {
-	$modeloFactura  = new ModeloFactura();
-	echo json_encode($modeloFactura->selectTodosLosInsumos());
+	$modeloInsumos  = new ModeloInsumo();
+	echo json_encode($modeloInsumos->insumos(false));
 }
 
 function mostrarMetodosDePago()

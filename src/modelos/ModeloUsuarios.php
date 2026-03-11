@@ -65,6 +65,7 @@ class ModeloUsuarios extends ModelBase
     public function updateUsuario()
     {
         try {
+            $this->beginTransaction();
             $sql = "SELECT * from usuario where id_usuario=:id_usuario";
             $this->setSQL($sql);
             $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
@@ -109,8 +110,10 @@ class ModeloUsuarios extends ModelBase
 
                 move_uploaded_file($this->getImagenTemporal(), "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $this->getImagen());
             }
+            $this->commit();
             return ["exito"];
         } catch (\Exception $e) {
+            $this->rollBack();
             return $e->getMessage();
         }
     }
@@ -137,6 +140,7 @@ class ModeloUsuarios extends ModelBase
     public function AgregarUsuarios()
     {
         try {
+            $this->beginTransaction();
             $imagenU = $this->getImagen();
 
             $resultadoDeUsuario = $this->validarUsuario(['usuario' => $this->getUsuario()]);
@@ -182,10 +186,12 @@ class ModeloUsuarios extends ModelBase
 
                     $imagen_temporal = $imagenU['tmp_name'];
                     move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $imagen);
+                    $this->commit();
                     return ($id_usuario);
                 }
             }
         } catch (\Exception $e) {
+            $this->rollBack();
             return $e->getMessage();
         }
     }

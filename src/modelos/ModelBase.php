@@ -29,11 +29,11 @@ class ModelBase extends Db
         }
 
         $stmt->execute();
-        if ($insert){
+        if ($insert) {
             return $this->pdo->lastInsertId();
-        }    
+        }
         // $stmt->closeCursor();
-        
+
         // if ($stmt->rowCount() <= 0) {
         //     throw new \Exception("Fallo el id no existe");
         // }
@@ -109,6 +109,22 @@ class ModelBase extends Db
 
         return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    protected function beginTransaction()
+    {
+        $this->pdo->beginTransaction();
+    }
+
+    protected function commit()
+    {
+        $this->pdo->commit();
+    }
+
+    protected function rollBack()
+    {
+        $this->pdo->rollBack();
+    }
+
 
 
 

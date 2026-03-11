@@ -120,6 +120,7 @@ class ModeloProveedores extends ModelBase
 	public function editar()
 	{
 		try {
+			$this->beginTransaction();
 
 			$data1 = [
 				'nombre' => $this->getNombre(),
@@ -162,8 +163,10 @@ class ModeloProveedores extends ModelBase
 					$this->update($data1, $this->getIdProveedor());
 				}
 			}
+			$this->commit();
 			return ["exito"];
 		} catch (\Exception $e) {
+			$this->rollBack();
 			return $e->getMessage();
 		}
 	}

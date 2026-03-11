@@ -4,7 +4,6 @@ use App\modelos\ModeloEntrada;
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-use App\modelos\ModeloProveedores;
 use App\config\RateLimiter;
 
 
@@ -110,8 +109,6 @@ function guardar()
 
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
-		$modeloInsumo = new ModeloInsumo();
-		$modeloProveedores = new ModeloProveedores();
 
 		// Quitar separadores de miles
 		$valor = str_replace('.', '', $_POST['precioD']);
@@ -207,8 +204,6 @@ function editar()
 
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
-		$modeloProveedores = new ModeloProveedores();
-		$modeloInsumo = new ModeloInsumo();
 
 		//Quitar separadores de miles
 		$valor = str_replace('.', '', $_POST['precioD']);

@@ -265,6 +265,7 @@ class ModeloReporte extends ModelBase
 	public function cantidadAnulada($id_insumo, $id_factura, $numero_de_lote)
 	{
 		try {
+			$this->beginTransaction();
 			$sql = "SELECT inv.id_insumo,inv.numero_de_lote,inv.cantidad AS cantidadInsumo FROM inventario inv INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE inv.id_insumo =:id_insumo AND inv.numero_de_lote =:numero_de_lote";
 			$this->setSQL($sql);
 			$data = [
@@ -331,7 +332,9 @@ class ModeloReporte extends ModelBase
 				'numero_de_lote' => $this->getNumeroDeLote()
 			];
 			$this->update($data, $this->returnObjectModel()['modeloInsumo']->getIdInsumo());
+			$this->commit();
 		} catch (\Exception $e) {
+			$this->rollBack();
 			return $e->getMessage();
 		}
 	}

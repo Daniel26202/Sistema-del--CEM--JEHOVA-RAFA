@@ -14,15 +14,7 @@ class ModeloEntrada extends ModelBase
 	{
 		parent::__construct($dbSystem);
 	}
-
-	private function returnObjetModel()
-	{
-		return [
-			"modeloInsumos" => new ModeloInsumo(),
-			"modeloProveedores" => new ModeloProveedores(),
-		];
-	}
-
+	
 	public function selectProveedores()
 	{
 		try {
@@ -52,7 +44,7 @@ class ModeloEntrada extends ModelBase
 		try {
 			$sql = " SELECT ei.id_entradaDeInsumo,i.*,e.*,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE i.id_insumo=:id_insumo AND e.estado = 'ACT' AND i.estado = 'ACT' ORDER BY e.fechaDeIngreso";
 			$this->setSQL($sql);
-			$consulta = $this->search(["id_insumo" => $this->returnObjetModel()['modeloInsumos']->getIdInsumo()]);
+			$consulta = $this->search(["id_insumo" => $this->getIdInsumo()]);
 
 			return ($consulta) ? $consulta : false;
 		} catch (\Exception $e) {
@@ -63,7 +55,7 @@ class ModeloEntrada extends ModelBase
 	public function insertarEntrada()
 	{
 		try {
-			// $this->conexion->beginTransaction();
+			$this->beginTransaction();
 
 			$data = [
 				'lote' => $this->getLote(),
@@ -84,11 +76,11 @@ class ModeloEntrada extends ModelBase
 			// $this->setSQL($sql);
 			// $consulta = $this->search(["id_entrada" => $id], false);
 
-			// $this->conexion->commit();
+			$this->commit();
 
 			return ["exito",$data];
 		} catch (\Exception $e) {
-			// $this->conexion->rollBack();
+			$this->rollBack();
 			return $e->getMessage();
 		}
 	}
@@ -96,7 +88,6 @@ class ModeloEntrada extends ModelBase
 	public function eliminar()
 	{
 		try {
-			// $this->conexion->beginTransaction();
 
 			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
 			$this->setSQL($sql);
@@ -109,10 +100,8 @@ class ModeloEntrada extends ModelBase
 			$this->setSQL($sql);
 			$this->update_logic($this->getIdEntrada());
 
-			// $this->conexion->commit();
 			return ["exito"];
 		} catch (\Exception $e) {
-			// $this->conexion->rollBack();
 			return $e->getMessage();
 		}
 	}
@@ -121,7 +110,7 @@ class ModeloEntrada extends ModelBase
 	public function actualizarEntrada()
 	{
 		try {
-			// $this->conexion->beginTransaction();
+			$this->beginTransaction();
 
 			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
 			$this->setSQL($sql);
@@ -144,10 +133,10 @@ class ModeloEntrada extends ModelBase
 			$data = ['lote' => $this->getLote()];
 			$this->update($data, $this->getIdEntrada());
 
-			// $this->conexion->commit();
+			$this->commit();
 			return ["exito"];
 		} catch (\Exception $e) {
-			// $this->conexion->rollBack();
+			$this->rollBack();
 			return $e->getMessage();
 		}
 	}

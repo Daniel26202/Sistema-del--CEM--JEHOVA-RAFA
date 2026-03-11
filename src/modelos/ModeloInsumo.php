@@ -17,13 +17,6 @@ class ModeloInsumo extends ModelBase
 		parent::__construct($dbSystem);
 	}
 
-	private function returnObjetModel()
-	{
-		return [
-			"modeloProveedores" => new ModeloProveedores(),
-		];
-	}
-
 	public function selectProveedores()
 	{
 		try {
@@ -33,11 +26,11 @@ class ModeloInsumo extends ModelBase
 			return $consulta;
 		} catch (\Exception $e) {
 			return $e->getMessage();
-		}
+		}	
 	}
 	public function cantidadCero($cantidadCero) {}
 
-	public function insumos($cantidadCero = true)
+			public function insumos($cantidadCero = true)
 	{
 		try {
 			$sql = "";
@@ -126,7 +119,7 @@ class ModeloInsumo extends ModelBase
 	public function insertarInsumos()
 	{
 		try {
-			// $this->conexion->beginTransaction();
+			$this->beginTransaction();
 
 			$data = [
 				"imagen" => $this->getImagen(),
@@ -151,11 +144,11 @@ class ModeloInsumo extends ModelBase
 			$this->storedProcedure($data, true,true);
 
 
-			// $this->conexion->commit();
+			$this->commit();
 
 			return ["exito", $data];
 		} catch (\Exception $e) {
-			// $this->conexion->rollBack();
+			$this->rollBack();
 			// Puedes registrar el error si lo deseas: error_log($e->getMessage());
 			return $e->getMessage();
 		}
