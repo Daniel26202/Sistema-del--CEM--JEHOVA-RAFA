@@ -217,8 +217,8 @@ function guardarFactura()
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
 	}
 
-	$modeloFactura = new ModeloFactura();
 	$modeloBitacora = new ModeloBitacora();
+	$modeloFactura = new ModeloFactura();
 
 
 	// $doctor = isset($_POST["doctores"]) ? $_POST["doctores"] : false;
