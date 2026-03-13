@@ -6,6 +6,7 @@ import {
   initDataTable,
   showDataModal,
   clearModalEnviar,
+  hasPermision,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
@@ -23,6 +24,7 @@ const id_proveedor = document.getElementById("id_proveedor");
 const btnOpenModalProveedor = document.getElementById("btnOpenModalProveedor");
 
 const id_rif_oculto = document.getElementById("id_rif_oculto");
+const id_rol_global = document.getElementById("id_rol_global").value;
 
 const urlBase = document.getElementById("urlBase").value;
 
@@ -190,6 +192,12 @@ const readProveedores = async () => {
         );
       });
     });
+
+    //////gestionar persmisos
+    hasPermision(id_rol_global, "Proveedores", "guardar", ".btnOpenModal"); //guardar
+    hasPermision(id_rol_global, "Proveedores", "eliminar", ".btn-eliminar"); //eliminar
+    hasPermision(id_rol_global, "Proveedores", "eliminar", ".btnRestablecer"); //restablecer
+    hasPermision(id_rol_global, "Proveedores", "editar", ".btn-editar"); //editar
 
     // re-inicializa
     initDataTable(selector);

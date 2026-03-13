@@ -4,6 +4,7 @@ import {
   alertError,
   alertSuccess,
   cargarImg,
+  hasPermision,
 } from "../generic/funtionGeneric.js";
 import Paginator from "../generic/Paginator.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -12,16 +13,10 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
 
 const urlBase = document.getElementById("urlBase").value;
 
-const btnEditarUsuarios = document.querySelectorAll(".editarUsuario");
-const imagenesUsuarios = document.querySelectorAll(".imagenesUsuarios");
 
 const activarMostrarContra = document.querySelectorAll(".mostrarPassword");
 const desMostrarContra = document.querySelectorAll(".ocultarPassword");
 
-const modalAgregar = document.getElementById("formAgregarAdmin");
-const rol = document.getElementById("rol");
-
-const bodyInfoModal = document.getElementById("body-info-modal");
 const imgInfo = document.getElementById("imgInfo");
 const dataInfo = document.querySelectorAll(".data-info");
 
@@ -38,6 +33,10 @@ const id_usuario = document.getElementById("id_usuario");
 const usurioHiddenPass = document.getElementById("usurioHiddenPass");
 const btnEliminar = document.getElementById('btnEliminar');
 const formAgregarAdmin = document.getElementById('formAgregarAdmin');
+
+const id_rol_global = document.getElementById("id_rol_global").value;
+
+
 
 const modalInfoBoots = new bootstrap.Modal(document.getElementById("modal-exampleMostrar"));
 
@@ -79,9 +78,6 @@ const readUser = async () => {
 
     const items = await executePetition(url + "/" + metodo, "GET");
 
-    
-
-
     const paginator = new Paginator(
       items,
       1,
@@ -115,6 +111,11 @@ const readUser = async () => {
         mostrarInfo(btn);
       });
     });
+
+    //////gestionar persmisos
+    hasPermision(id_rol_global, "Usuarios", "guardar", ".btnOpenModal"); //guardar
+    hasPermision(id_rol_global, "Usuarios", "eliminar", ".btn-eliminar"); //eliminar
+    hasPermision(id_rol_global, "Usuarios", "editar", ".btn-open-editar"); //editar
   } catch (error) {
     alertError("Error", error);
   }

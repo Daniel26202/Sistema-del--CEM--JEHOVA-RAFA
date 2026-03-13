@@ -21,7 +21,7 @@
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
 
-            <button class="btn-guardar-responsive  caja-btn-margin btn btn-modals"
+            <button class="btn-guardar-responsive  caja-btn-margin btn btn-modals btnOpenModal"
                 data-bs-toggle="modal" data-bs-target="#modalAgregarServicios" id="btnAgregarServicioMedico">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
@@ -30,7 +30,7 @@
                     </path>
                 </svg>Registrar Servicio
             </button>
-            <button class="btn-guardar-responsive  caja-btn-margin btn btn-modals"
+            <button class="btn-guardar-responsive  caja-btn-margin btn btn-modals btnOpenModalCategoria"
                 data-bs-toggle="modal" data-bs-target="#modal-categoria" id="btnAgregarCategoria">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">

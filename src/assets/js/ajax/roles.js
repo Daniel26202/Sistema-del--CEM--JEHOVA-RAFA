@@ -4,6 +4,7 @@ import {
   alertError,
   alertSuccess,
   returnModulos,
+  hasPermision,
 } from "../generic/funtionGeneric.js";
 import Paginator from "../generic/Paginator.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -29,6 +30,7 @@ const nombreRegiistrado = document.getElementById("nombreRegiistrado");
 
 const botonModal = document.getElementById("botonModal");
 const titleModal = document.getElementById("title-modal");
+const id_rol_global = document.getElementById("id_rol_global").value;
 
 const returnFragmentHtml = (element) => {
   return `         
@@ -118,6 +120,12 @@ const readRol = async () => {
         readPermisos(permisosGuardados);
       });
     });
+
+    //////gestionar persmisos
+    hasPermision(id_rol_global, "Roles", "guardar", ".btnOpenModal"); //guardar
+    hasPermision(id_rol_global, "Roles", "eliminar", ".btn-eliminar"); //eliminar
+    hasPermision(id_rol_global, "Roles", "editar", ".btn-open-editar"); //editar
+
   } catch (error) {
     alertError("Error", error);
   }

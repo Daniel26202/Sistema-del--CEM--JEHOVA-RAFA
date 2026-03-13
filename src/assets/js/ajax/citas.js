@@ -5,6 +5,7 @@ import {
   alertSuccess,
   initDataTable,
   convertirHora,
+  hasPermision,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -51,6 +52,8 @@ addEventListener("DOMContentLoaded", function () {
   const modalAgregarPaciente = document.getElementById("modalAgregar");
   const divBtnAddPat = document.getElementById("div-btn-add-pat");
   const btnOpenModalPac = document.getElementById("btnOpenModalPac");
+
+  const id_rol_global = document.getElementById("id_rol_global").value;
 
   let nombreDoctorSelect = "";
   let diasLaborablesDoctor = [];
@@ -213,20 +216,17 @@ addEventListener("DOMContentLoaded", function () {
 
     console.log(diasLaborablesDoctor);
     // dateName = dateName.charAt(0).toUpperCase() + dateName.slice(1);
-    console.log(dateName)
+    console.log(dateName);
     //no se encontraron registros
     if (!diasLaborablesDoctor.length > 0) {
       divHorariosDisp.classList.add("d-none");
-      alertError(
-        "Error",
-        `Lamentablemente no se encontraron dias del doctor `,
-      );
+      alertError("Error", `Lamentablemente no se encontraron dias del doctor `);
       return;
     }
 
     diasLaborablesDoctor.forEach((ele) => {
       console.log(ele[dateName]);
-      if(!ele[dateName]){
+      if (!ele[dateName]) {
         divHorariosDisp.classList.add("d-none");
         alertError(
           "Error",
@@ -239,7 +239,7 @@ addEventListener("DOMContentLoaded", function () {
         validarHorarioDisponible(fechaGlobal, id_doctor, listHoraRegistrada);
         console.log("El dia es valido para el doctor");
         return;
-      } 
+      }
     });
   };
 
@@ -485,8 +485,9 @@ addEventListener("DOMContentLoaded", function () {
                                         </div>
                                    
                                         <div class="me-2">
-                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${element.id_cita
-          } 
+                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${
+                                              element.id_cita
+                                            } 
                                                 uk-tooltip="Eliminar Cita" id="eliminarCitaP">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                                     fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -539,6 +540,11 @@ addEventListener("DOMContentLoaded", function () {
           cargarDatosEditar(btn);
         });
       });
+
+      //////gestionar persmisos
+      hasPermision(id_rol_global, "Citas", "guardar", ".btnOpenModal"); //guardar
+      hasPermision(id_rol_global, "Citas", "eliminar", ".btn-eliminar"); //eliminar
+      hasPermision(id_rol_global, "Citas", "editar", ".botonesEditar"); //editar
 
       // re-inicializa
       initDataTable(selector);

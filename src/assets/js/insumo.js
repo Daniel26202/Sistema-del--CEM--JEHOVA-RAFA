@@ -5,6 +5,7 @@ import {
   alertSuccess,
   initDataTable,
   cargarImg,
+  hasPermision,
 } from "./generic/funtionGeneric.js";
 import Paginator from "./generic/Paginator.js"; //paginacion
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
@@ -27,10 +28,10 @@ addEventListener("DOMContentLoaded", function () {
   const contenedorImg = document.getElementById("contenedor-img");
   const idInsumoOculto = document.getElementById("idInsumoOculto");
 
-  console.log(formInsumos);
-
   const divPapelera = document.getElementById("div-papelera");
   const urlBase = document.getElementById("urlBase").value;
+
+  const id_rol_global = document.getElementById("id_rol_global").value;
 
   const selector = ".exampleTable";
 
@@ -158,13 +159,11 @@ addEventListener("DOMContentLoaded", function () {
         infoInsumos,
       );
 
-
       paginator.displayItems();
 
       document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
         ele.value = document.getElementById("id_usuario_session").value;
       });
-
 
       //llamar las funcion de eliminar
 
@@ -182,6 +181,10 @@ addEventListener("DOMContentLoaded", function () {
             data,
           );
         });
+
+      hasPermision(id_rol_global, "Insumos", "guardar", ".btnOpenModal"); //guardar
+      hasPermision(id_rol_global, "Insumos", "eliminar", ".btn-eliminar"); //elimanar
+      hasPermision(id_rol_global, "Insumos", "editar", ".btn-editar"); //editar
     } catch (error) {
       console.log(error);
       alertError("Error", error);
@@ -245,6 +248,8 @@ addEventListener("DOMContentLoaded", function () {
           );
         });
       });
+
+      hasPermision(id_rol_global, "Insumos", "eliminar", ".btnRestablecer"); //editar
     } catch (error) {
       alertError("Error", error);
     }

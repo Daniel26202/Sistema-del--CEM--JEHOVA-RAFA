@@ -39,7 +39,7 @@ if (!empty($parametro)) {
 </head>
 
 <body>
-
+<input type="hidden" id="id_rol_global" value="<?= $_SESSION['id_rol']; ?>">
 	<div class="loader-wrapper">
 		<div id="content">
 			<img class="mb-3" src="<?= $urlBase ?>../src/assets/images/icons/logo-loader.svg" style="width: 180px; height: 55px;">

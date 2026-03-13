@@ -6,6 +6,7 @@ import {
   initDataTable,
   showDataModal,
   clearModalEnviar,
+  hasPermision,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
@@ -26,6 +27,7 @@ addEventListener("DOMContentLoaded", function () {
 
   const btnOpenModal = document.getElementById("btnOpenModal");
   const id_entrada = document.getElementById("id_entrada");
+  const id_rol_global = document.getElementById("id_rol_global").value;
 
   const readEntrada = async () => {
     try {
@@ -181,6 +183,12 @@ addEventListener("DOMContentLoaded", function () {
           showDataModal(parametros);
         });
       });
+
+      //////gestionar persmisos
+      hasPermision(id_rol_global, "Entrada", "guardar", ".btnOpenModal"); //guardar
+      hasPermision(id_rol_global, "Entrada", "eliminar", ".btn-eliminar"); //eliminar
+      hasPermision(id_rol_global, "Entrada", "eliminar", ".btnRestablecer"); //restablecer
+      hasPermision(id_rol_global, "Entrada", "editar", ".botonesEdi"); //editar
 
       // re-inicializa
       initDataTable(selector);

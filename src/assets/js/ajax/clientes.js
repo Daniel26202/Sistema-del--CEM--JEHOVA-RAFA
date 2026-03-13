@@ -6,6 +6,7 @@ import {
   initDataTable,
   showDataModal,
   clearModalEnviar,
+  hasPermision,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
@@ -19,6 +20,7 @@ const btnOpenModal = document.getElementById("btnOpenModal");
 const inputs = document.querySelectorAll(".inputs");
 const cedulaRegistrada = document.getElementById("cedulaOculta");
 const id_cliente = document.getElementById("id_oculto");
+const id_rol_global = document.getElementById("id_rol_global").value;
 
 //read
 
@@ -101,8 +103,15 @@ const readCustomer = async () => {
     //llamar las funcion de eliminar
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        alertConfirm("Esta seguro de eliminar el cliente?", deleteCustomer, data);
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de eliminar el cliente?",
+          deleteCustomer,
+          data,
+        );
       });
     });
 
@@ -110,9 +119,16 @@ const readCustomer = async () => {
     //llamar las funcion de eliminar
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
 
-        alertConfirm("Esta seguro de restablecer el cliente?", restablecerCustomers, data);
+        alertConfirm(
+          "Esta seguro de restablecer el cliente?",
+          restablecerCustomers,
+          data,
+        );
       });
     });
 
@@ -136,7 +152,9 @@ const readCustomer = async () => {
             direccion: btn.closest("tr").children[4].innerText,
             fn: btn.closest("tr").children[5].innerText,
             genero: btn.closest("tr").children[6].innerText,
-            id: btn.closest("tr").children[7].children[0].getAttribute("data-index"),
+            id: btn
+              .closest("tr")
+              .children[7].children[0].getAttribute("data-index"),
           },
           inputs: inputs,
           cedulaOculta: cedulaRegistrada,
@@ -145,6 +163,12 @@ const readCustomer = async () => {
         showDataModal(parametros);
       });
     });
+
+    //////gestionar persmisos
+    hasPermision(id_rol_global, "Clientes", "guardar", ".btnOpenModal"); //guardar
+    hasPermision(id_rol_global, "Clientes", "eliminar", ".btn-eliminar"); //eliminar
+    hasPermision(id_rol_global, "Clientes", "eliminar", ".btnRestablecer"); //restablecer
+    hasPermision(id_rol_global, "Clientes", "editar", ".botonesEdi"); //editar
 
     // re-inicializa
     initDataTable(selector);
@@ -175,13 +199,15 @@ const updateCustomers = async (form, inputs) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(url + "/setCliente", "POST", data);
-      console.log(result);
+    console.log(result);
 
     if (result.ok) {
       alertSuccess(result.message);
 
       inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("grpFormCorrect"));
+      inputs.forEach((input) =>
+        input.parentElement.classList.remove("grpFormCorrect"),
+      );
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -239,7 +265,8 @@ modalAgregar.addEventListener("submit", function (e) {
 
   let inputsBuenos = [];
   this.querySelectorAll(".input-validar").forEach((input) => {
-    if (input.parentElement.classList.contains("valido")) inputsBuenos.push(true);
+    if (input.parentElement.classList.contains("valido"))
+      inputsBuenos.push(true);
   });
 
   let esValido = verificarFormulario();
@@ -253,6 +280,9 @@ modalAgregar.addEventListener("submit", function (e) {
       createCustomer(this, inputsBuenos);
     }
   } else {
-    alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
   }
 });

@@ -20,7 +20,7 @@
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto table-responsive" style="width: 95%; ">
 
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
-           
+
             <div class="me-4">
                 <div class="mt-3 mb-5">
                     <ul class="sin-circulos d-flex justify-content-end paginacion">
@@ -58,7 +58,7 @@
 
             <div class=" d-flex justify-content-between ">
                 <div class="caja-insumos mt-3">
-                    <button class=" caja-btn-margin btn btn-modals " data-bs-toggle="modal" data-bs-target="#exampleGuardar"
+                    <button class="btnOpenModal caja-btn-margin btn btn-modals " data-bs-toggle="modal" data-bs-target="#exampleGuardar"
                         id="btnRegistrarrol">
                         <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
                             class="bi bi-person-square me-2" viewBox="0 0 16 16">

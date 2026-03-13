@@ -1,9 +1,10 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable } from "../generic/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable, hasPermision } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Patologias";
 
 const modalAgregar = document.getElementById("modalAgregar");
+const id_rol_global = document.getElementById("id_rol_global").value;
 
 //read
 
@@ -26,7 +27,9 @@ const readPathology = async () => {
                             <td class="text-center">
 
                                     <button class="${
-                                      urlActual.includes("papelera") ? "d-none" : ""
+                                      urlActual.includes("papelera")
+                                        ? "d-none"
+                                        : ""
                                     } btn btn-tabla mb-1 btnModalEliminarPatologia btn-dt-tabla btn-eliminar"
                                     
                                         data-index="${element.id_patologia}">
@@ -67,19 +70,38 @@ const readPathology = async () => {
     //llamar las funcion de eliminar
     document.querySelectorAll(".btn-eliminar").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
 
-        alertConfirm("Esta seguro de eliminar la patologia?", deletePathology, data);
+        alertConfirm(
+          "Esta seguro de eliminar la patologia?",
+          deletePathology,
+          data,
+        );
       });
     });
 
     //llamar a la uncion de restablecer
     document.querySelectorAll(".btnRestablecer").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-        alertConfirm("Esta seguro de restablecer la patologia?", restablecerPathology, data);
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de restablecer la patologia?",
+          restablecerPathology,
+          data,
+        );
       });
     });
+
+    //////gestionar persmisos
+    hasPermision(id_rol_global, "Patologias", "guardar", ".btnOpenModal"); //guardar
+    hasPermision(id_rol_global, "Patologias", "eliminar", ".btn-eliminar"); //eliminar
+    hasPermision(id_rol_global, "Patologias", "eliminar", ".btnRestablecer"); //restablecer
 
     // re-inicializa
     initDataTable(selector);

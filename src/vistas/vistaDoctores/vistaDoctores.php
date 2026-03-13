@@ -27,7 +27,7 @@
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
 
-            <button class=" btn-guardar-responsive  caja-btn-margin btn btn-modals col-2 <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>" data-bs-toggle="modal" data-bs-target="#exampleModalagregarDocotor" id="btnagregarDoctor">
+            <button class="btnOpenModal btn-guardar-responsive  caja-btn-margin btn btn-modals col-2 <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>" data-bs-toggle="modal" data-bs-target="#exampleModalagregarDocotor" id="btnagregarDoctor">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                     class="bi bi-plus-circle-fill me-1" viewBox="0 0 16 16">
                     <path
@@ -37,7 +37,7 @@
             </button>
 
 
-            <button class="btn-guardar-responsive  caja-btn-margin btn btn-modals col-2  <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
+            <button class="btnOpenModalEsp btn-guardar-responsive  caja-btn-margin btn btn-modals col-2  <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
                 data-bs-toggle="modal" data-bs-target="#exampleModalConsultarEspecialidad" id="btnEspecialidades">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-lungs-fill azul" viewBox="0 0 16 16">
@@ -49,7 +49,7 @@
 
 
 
-            <button class="btn-guardar-responsive caja-btn-margin btn btn-modals col-2 <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
+            <button class="btnOpenModalSer btn-guardar-responsive caja-btn-margin btn btn-modals col-2 <?= $vistaActiva == "papelera" ? 'd-none' : '' ?>"
                 data-bs-toggle="modal" data-bs-target="#modal-designar-servicio" id="DMservicioMedico">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">

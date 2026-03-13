@@ -29,7 +29,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-modals" id="botonModal" data-bs-toggle="modal" data-bs-target="#modal-exampleEditar">Modificar</button>
+                <button type="button" class="btn btn-modals btn-open-editar" id="botonModal" data-bs-toggle="modal" data-bs-target="#modal-exampleEditar">Modificar</button>
                 <button type="button" class="btn btn-modals btn-eliminar" id="btnEliminar">Eliminar</button>
 
             </div>

@@ -6,6 +6,7 @@ import {
   initDataTable,
   showDataModal,
   clearModalEnviar,
+  hasPermision,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -23,7 +24,9 @@ const botonModal = document.getElementById("botonModal");
 const cedulaRegistrada = document.getElementById("cedulaRegistrada");
 const btnOpenModal = document.getElementById("btnOpenModal");
 const id_paciente = document.getElementById("id_paciente");
+const id_rol_global = document.getElementById("id_rol_global").value;
 const selector = ".exampleTable";
+
 
 //read
 const readPatients = async () => {
@@ -175,6 +178,12 @@ const readPatients = async () => {
       });
     });
 
+    //////gestionar persmisos
+    hasPermision(id_rol_global, "Pacientes", "guardar", ".btnOpenModal"); //guardar
+    hasPermision(id_rol_global, "Pacientes", "eliminar", ".btn-eliminar"); //eliminar
+    hasPermision(id_rol_global, "Pacientes", "eliminar", ".btnRestablecer"); //restablecer
+    hasPermision(id_rol_global, "Pacientes", "editar", ".botonesEdi"); //editar
+
     // re-inicializa
     initDataTable(selector);
   } catch (error) {
@@ -243,6 +252,7 @@ const restablecerPattients = async (data) => {
     alertError("Error", error);
   }
 };
+
 
 readPatients();
 

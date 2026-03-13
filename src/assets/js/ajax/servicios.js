@@ -1,54 +1,54 @@
 import {
-    executePetition,
-    alertConfirm,
-    alertError,
-    alertSuccess,
-    clearModalEnviar,
-    initDataTable,
-    showDataModal,
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+  clearModalEnviar,
+  initDataTable,
+  showDataModal,
+  hasPermision,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 import { initConversion } from "../generic/coversion.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Servicios";
-
 const dolar = parseFloat(document.getElementById("dolar").value);
+const id_rol_global = document.getElementById("id_rol_global").value;
 
 //read
 
-
 //create
 const createService = async (form, inputs) => {
-    try {
-        const data = new FormData(form);
-        console.log(url + "/guardar");
-        let result = await executePetition(url + "/guardar", "POST", data);
-        if (result.ok) {
-            alertSuccess(result.message);
+  try {
+    const data = new FormData(form);
+    console.log(url + "/guardar");
+    let result = await executePetition(url + "/guardar", "POST", data);
+    if (result.ok) {
+      alertSuccess(result.message);
 
-            form.reset();
-            readServices();
-        } else throw new Error(`${result.error}`);
-    } catch (error) {
-        alertError("Error", error);
-    }
+      form.reset();
+      readServices();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
 };
 
 //update
 const updateService = async (form, inputs) => {
-    try {
-        const data = new FormData(form);
+  try {
+    const data = new FormData(form);
 
-        let result = await executePetition(url + "/editar", "POST", data);
-        console.log(result);
-        if (result.ok) {
-            alertSuccess(result.message);
-            readServices();
-        } else throw new Error(`${result.error}`);
-    } catch (error) {
-        console.log(error);
-        alertError("Error", error);
-    }
+    let result = await executePetition(url + "/editar", "POST", data);
+    console.log(result);
+    if (result.ok) {
+      alertSuccess(result.message);
+      readServices();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    console.log(error);
+    alertError("Error", error);
+  }
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,45 +57,45 @@ let selectCategoria = document.querySelector("#selectCategoria");
 let objCServiciosSelect = {};
 let objDoctoresSelect = {};
 const readDatosDS = async () => {
-    let metodo = "";
-    let urlActual = window.location.href;
+  let metodo = "";
+  let urlActual = window.location.href;
 
-    if (!urlActual.includes("papelera")) {
-        metodo = "datosServicios";
-    } else {
-        metodo = "datosServiciosPapelera";
-    }
+  if (!urlActual.includes("papelera")) {
+    metodo = "datosServicios";
+  } else {
+    metodo = "datosServiciosPapelera";
+  }
 
-    const resultSelect = await executePetition(url + "/" + metodo, "GET");
-    console.log(resultSelect);
+  const resultSelect = await executePetition(url + "/" + metodo, "GET");
+  console.log(resultSelect);
 
-    resultSelect["categorias"].forEach((res) => {
-        console.log(res);
+  resultSelect["categorias"].forEach((res) => {
+    console.log(res);
 
-        objCServiciosSelect[res.id_categoria] = res;
-        objDoctoresSelect[res.id_personal] = res;
-        selectCategoria.innerHTML += `<option class='option-select-background' value="${res["id_categoria"]}">${res["nombre"]}</option>`;
-    });
+    objCServiciosSelect[res.id_categoria] = res;
+    objDoctoresSelect[res.id_personal] = res;
+    selectCategoria.innerHTML += `<option class='option-select-background' value="${res["id_categoria"]}">${res["nombre"]}</option>`;
+  });
 };
 
 const readServices = async () => {
-    try {
-        let metodo = "";
-        let urlActual = window.location.href;
+  try {
+    let metodo = "";
+    let urlActual = window.location.href;
 
-        if (!urlActual.includes("papelera")) metodo = "serviciosAjax";
-        else metodo = "papeleraAjax";
+    if (!urlActual.includes("papelera")) metodo = "serviciosAjax";
+    else metodo = "papeleraAjax";
 
-        const result = await executePetition(url + "/" + metodo, "GET");
-        console.log(result);
+    const result = await executePetition(url + "/" + metodo, "GET");
+    console.log(result);
 
-        // construir html de filas
-        let html = "";
-        result.forEach((element) => {
-            let precioD = element.precio.toFixed(2);
-            let precioB = (element.precio * dolar).toFixed(2);
+    // construir html de filas
+    let html = "";
+    result.forEach((element) => {
+      let precioD = element.precio.toFixed(2);
+      let precioB = (element.precio * dolar).toFixed(2);
 
-            html += `<tr>
+      html += `<tr>
                             <td class="text-center">
                                 ${element.categoria}
                             </td>
@@ -132,9 +132,11 @@ const readServices = async () => {
 
 
                                         <a href="#" class="${
-                                            urlActual.includes("papelera") ? "d-none" : ""
+                                          urlActual.includes("papelera")
+                                            ? "d-none"
+                                            : ""
                                         }  btn btns-accion btn-tabla me-2 btn-dt-tabla btn-eliminar" data-index=${
-                                            element.id_servicioMedico
+                                          element.id_servicioMedico
                                         }>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                                                 class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -159,122 +161,148 @@ const readServices = async () => {
                         </tr>
 
 `;
-        });
+    });
 
-        const selector = ".exampleTable";
+    const selector = ".exampleTable";
 
-        // si ya existe DataTable, destrúyela
-        if ($.fn.DataTable.isDataTable(selector)) {
-            $(selector).DataTable().clear().destroy();
-        }
-
-        // vuelca el html en el tbody
-        document.querySelector(selector + " tbody").innerHTML = html;
-
-        document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-            ele.value = document.getElementById("id_usuario_session").value;
-        });
-
-        //llamar las funcion de eliminar
-        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-                alertConfirm("Esta seguro de eliminar el servicio medico?", deleteService, data);
-            });
-        });
-
-        //llamar a la uncion de restablecer
-        //llamar las funcion de eliminar
-        document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
-
-                alertConfirm("Esta seguro de restablecer el servicio medico?", restablecerService, data);
-            });
-        });
-
-        document.querySelectorAll(".botonesEditarSM").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                //objetos con todos los parametros de la funcion
-                let idC = btn.getAttribute("data-id-categoria");
-                let idServicio = btn.getAttribute("data-index");
-
-                const parametros = {
-                    labelModal: divTitle,
-                    textLabelModal: "Modificar Servicio",
-                    form: formularioA,
-                    modal: document.querySelector("#modalAgregarServicios"),
-                    btnModal: document.querySelector("#botonModalServicio"),
-                    btnTextModal: "Modificar",
-                    data: {
-                        id_categoria: idC,
-                        precioBs: parseFloat(btn.closest("tr").children[1].innerText),
-                        precioD: parseFloat(btn.closest("tr").children[2].innerText),
-                        tipo: btn.closest("tr").children[3].innerText,
-                        id: idServicio,
-                    },
-                    inputs: document.querySelectorAll(".inputs"),
-                    cedulaOculta: false,
-                    idOculto: document.getElementById("id_servicio"),
-                };
-                console.log(parametros.data.id_categoria);
-                showDataModal(parametros);
-            });
-        });
-
-        // re-inicializa
-        initDataTable(selector);
-    } catch (error) {
-        alertError("Error", error);
+    // si ya existe DataTable, destrúyela
+    if ($.fn.DataTable.isDataTable(selector)) {
+      $(selector).DataTable().clear().destroy();
     }
+
+    // vuelca el html en el tbody
+    document.querySelector(selector + " tbody").innerHTML = html;
+
+    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+      ele.value = document.getElementById("id_usuario_session").value;
+    });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de eliminar el servicio medico?",
+          deleteService,
+          data,
+        );
+      });
+    });
+
+    //llamar a la uncion de restablecer
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+
+        alertConfirm(
+          "Esta seguro de restablecer el servicio medico?",
+          restablecerService,
+          data,
+        );
+      });
+    });
+
+    document.querySelectorAll(".botonesEditarSM").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        //objetos con todos los parametros de la funcion
+        let idC = btn.getAttribute("data-id-categoria");
+        let idServicio = btn.getAttribute("data-index");
+
+        const parametros = {
+          labelModal: divTitle,
+          textLabelModal: "Modificar Servicio",
+          form: formularioA,
+          modal: document.querySelector("#modalAgregarServicios"),
+          btnModal: document.querySelector("#botonModalServicio"),
+          btnTextModal: "Modificar",
+          data: {
+            id_categoria: idC,
+            precioBs: parseFloat(btn.closest("tr").children[1].innerText),
+            precioD: parseFloat(btn.closest("tr").children[2].innerText),
+            tipo: btn.closest("tr").children[3].innerText,
+            id: idServicio,
+          },
+          inputs: document.querySelectorAll(".inputs"),
+          cedulaOculta: false,
+          idOculto: document.getElementById("id_servicio"),
+        };
+        console.log(parametros.data.id_categoria);
+        showDataModal(parametros);
+      });
+    });
+
+    //////gestionar persmisos
+    hasPermision(id_rol_global, "Servicios", "guardar", ".btnOpenModal"); //guardar
+    hasPermision(
+      id_rol_global,
+      "Servicios",
+      "guardar",
+      ".btnOpenModalCategoria",
+    ); //guardar categoria
+
+    hasPermision(id_rol_global, "Servicios", "eliminar", ".btn-eliminar"); //eliminar
+    hasPermision(id_rol_global, "Servicios", "eliminar", ".btnRestablecer"); //restablecer
+    hasPermision(id_rol_global, "Servicios", "editar", ".botonesEditarSM"); //editar
+
+    // re-inicializa
+    initDataTable(selector);
+  } catch (error) {
+    alertError("Error", error);
+  }
 };
 
 //delete
 const deleteService = async (data) => {
-    try {
-        const result = await executePetition(url + `/eliminar/${data}`, "GET");
-        if (result.ok) {
-            alertSuccess(result.message);
+  try {
+    const result = await executePetition(url + `/eliminar/${data}`, "GET");
+    if (result.ok) {
+      alertSuccess(result.message);
 
-            readServices();
-        } else throw new Error(`${result.error}`);
-    } catch (error) {
-        alertError("Error", error);
-    }
+      readServices();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
 };
 
 // //restablecer
 const restablecerService = async (data) => {
-    try {
-        const result = await executePetition(url + `/restablecer/${data}`, "GET");
-        if (result.ok) {
-            alertSuccess(result.message);
-            readServices();
-        } else throw new Error(`${result.error}`);
-    } catch (error) {
-        alertError("Error", error);
-    }
+  try {
+    const result = await executePetition(url + `/restablecer/${data}`, "GET");
+    if (result.ok) {
+      alertSuccess(result.message);
+      readServices();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
 };
 const divTitle = document.querySelector("#modalLabelServicios");
 const btnOpenModalA = document.querySelector("#btnAgregarServicioMedico");
 
 btnOpenModalA?.addEventListener("click", function () {
-    //objetos con todos los parametros de la funcion
-    const parametros = {
-        labelModal: divTitle,
-        textLabelModal: "Registrar Servicio",
-        form: formularioA,
-        modal: document.querySelector("#modalAgregarServicios"),
-        btnModal: document.querySelector("#botonModalServicio"),
-        btnTextModal: "Registrar",
-        inputs: document.querySelectorAll(".inputs"),
-    };
-    clearModalEnviar(parametros);
+  //objetos con todos los parametros de la funcion
+  const parametros = {
+    labelModal: divTitle,
+    textLabelModal: "Registrar Servicio",
+    form: formularioA,
+    modal: document.querySelector("#modalAgregarServicios"),
+    btnModal: document.querySelector("#botonModalServicio"),
+    btnTextModal: "Registrar",
+    inputs: document.querySelectorAll(".inputs"),
+  };
+  clearModalEnviar(parametros);
 });
 
-
 let formularioA = document.getElementById("modalAgregar");
-initConversion(formularioA)
+initConversion(formularioA);
 if (formularioA) {
   let verificarFormulario = inicializarValidacionFormulario(formularioA);
 

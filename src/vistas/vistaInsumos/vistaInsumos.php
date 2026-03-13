@@ -62,7 +62,7 @@
 
                 <div class=" d-flex justify-content-between ">
                     <div class=" caja-insumos mt-3">
-                        <button class=" caja-btn-margin btn btn-modals" data-bs-toggle="modal" data-bs-target="#exampleModalagregarInsumos" id="registrarInsumo">
+                        <button class=" caja-btn-margin btn btn-modals btnOpenModal" data-bs-toggle="modal" data-bs-target="#exampleModalagregarInsumos" id="registrarInsumo">
                             <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-capsule me-1"
                                 viewBox="0 0 16 16">
                                 <path

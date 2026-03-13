@@ -45,7 +45,7 @@ function getPacientesAjax($parametro)
 
 function papeleraPaciente($parametro)
 {
-	$modelo  = returnObjectClass()['paciente'];
+	$modelo  = new ModeloPacientes();
 	$vistaActiva = 'papelera';
 	$modelo  = new ModeloPacientes();
 

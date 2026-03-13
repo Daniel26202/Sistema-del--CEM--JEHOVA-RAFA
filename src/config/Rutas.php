@@ -44,32 +44,32 @@ class Rutas
         $this->controlador = "Controller" . $this->controlador;
 
         $directorio = "src/controllers/" . $this->controlador . ".php";
-        if(!file_exists($directorio)){
+        if (!file_exists($directorio)) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
             return;
         }
- 
+
         require_once __DIR__ . "/../../" . $directorio;
 
-        if (!function_exists($metodo)){
+        if (!function_exists($metodo)) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
-        }   
-         if (in_array($this->controlador, ["ControllerIniciarSesion", "ControllerRecuperarContr"])) {
-           call_user_func($metodo, $parametro ?? []);
-           return;
-        } 
-                    /*  si el estatus de la session es activio validamos los permisos */
+        }
+        if (in_array($this->controlador, ["ControllerIniciarSesion", "ControllerRecuperarContr"])) {
+            call_user_func($metodo, $parametro ?? []);
+            return;
+        }
+        /*  si el estatus de la session es activio validamos los permisos */
         if (!session_status() === PHP_SESSION_ACTIVE) {
             echo "Session no iniciada";
             return;
         }
-                    
-        if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerBitacora") {
+
+        if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerBitacora" || $this->controlador == 'ControllerPermisos') {
             call_user_func($metodo, $parametro ?? []);
             return;
-        } 
-                        
-        if(empty($_SESSION['id_rol'])){
+        }
+
+        if (empty($_SESSION['id_rol'])) {
             session_destroy();
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
             return;
@@ -79,14 +79,14 @@ class Rutas
         $this->modelo->setIdRol($_SESSION['id_rol']);
         $this->modelo->setPermiso($permiso);
         $this->modelo->setModulo($modulo);
-                            
+
         $permitido = $this->modelo->gestionarPermisos();
-                    
+
         if (!$permitido) {
             header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
             exit;
-        } 
+        }
 
-        call_user_func($metodo, $parametro ?? []);                     
+        call_user_func($metodo, $parametro ?? []);
     }
 }
