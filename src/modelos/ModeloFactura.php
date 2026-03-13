@@ -29,7 +29,7 @@ class ModeloFactura extends ModelBase
 			'modeloCliente' => new ModeloCliente(),
 			'modeloInsumo' => new ModeloInsumo(),
 			'modeloCita' => new ModeloCita(),
-			'modeloHospitalizacion' => new  ModeloHospitalizacion(),
+			'modeloHospitalizacion' => new ModeloHospitalizacion(),
 			'modeloServicios' => new ModeloServicios()
 		];
 	}
@@ -537,21 +537,22 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = ['id_paciente' => $this->getIdPaciente()];
+			$modeloCliente = new ModeloCliente();
 
 			$sql = "SELECT * FROM paciente where id_paciente = :id_paciente";
 			$this->setSQL($sql);
 
 			$dataPaciente = $this->search($data, false);
-			$this->returnObjectModel()['modeloCliente']->setNacionalidad($dataPaciente['nacionalidad']);
-			$this->returnObjectModel()['modeloCliente']->setCedula($dataPaciente['cedula']);
-			$this->returnObjectModel()['modeloCliente']->setNombre($dataPaciente['nombre']);
-			$this->returnObjectModel()['modeloCliente']->setApellido($dataPaciente['apellido']);
-			$this->returnObjectModel()['modeloCliente']->setTelefono($dataPaciente['telefono']);
-			$this->returnObjectModel()['modeloCliente']->setDireccion($dataPaciente['direccion']);
-			$this->returnObjectModel()['modeloCliente']->setFn($dataPaciente['fn']);
-			$this->returnObjectModel()['modeloCliente']->setGenero($dataPaciente['genero']);
+			$modeloCliente->setNacionalidad($dataPaciente['nacionalidad']);
+			$modeloCliente->setCedula($dataPaciente['cedula']);
+			$modeloCliente->setNombre($dataPaciente['nombre']);
+			$modeloCliente->setApellido($dataPaciente['apellido']);
+			$modeloCliente->setTelefono($dataPaciente['telefono']);
+			$modeloCliente->setDireccion($dataPaciente['direccion']);
+			$modeloCliente->setFn($dataPaciente['fn']);
+			$modeloCliente->setGenero($dataPaciente['genero']);
 
-			return $this->returnObjectModel()['modeloCliente']->insertar();
+			return $modeloCliente->insertar();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
