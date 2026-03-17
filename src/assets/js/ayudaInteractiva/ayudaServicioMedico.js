@@ -4,19 +4,22 @@ document.getElementById("btnayudaServicioMedico").addEventListener("click", func
       steps: [
         {
           element: document.querySelector("#DMservicioMedico"),
-          intro: "ACTUALMENTE TE TENCUENTRAS EN LA SECCIÓN DE LOS SERVICIOS MÉDICOS",
+          intro:
+            "ACTUALMENTE TE TENCUENTRAS EN LA SECCIÓN DE LOS SERVICIOS MÉDICOS",
         },
         {
-          element: document.querySelector("#inicioServicio"),
+          element: document.querySelector(".caja-contenedor-tabla"),
           intro: "DESDE AQUÍ PODRÁS GESTIONAR LOS SERVICIOS MÉDICOS",
         },
         {
           element: document.querySelector("#btnAgregarServicioMedico"),
-          intro: "ESTE BOTÓN DESPLIEGA UN MODAL DONDE PODRÁS  REGISTRAR NUEVOS SERVICIOS MÉDICOS DISPONIBLES",
+          intro:
+            "ESTE BOTÓN DESPLIEGA UN MODAL DONDE PODRÁS  REGISTRAR NUEVOS SERVICIOS MÉDICOS DISPONIBLES",
         },
         {
           element: document.querySelector("#btnAgregarCategoria"),
-          intro: "ESTE BOTÓN DESPLIEGA UN MODAL DONDE PODRÁS  REGISTRAR NUEVAS CATEGORIAS DE SERVICIOS",
+          intro:
+            "ESTE BOTÓN DESPLIEGA UN MODAL DONDE PODRÁS  REGISTRAR NUEVAS CATEGORIAS DE SERVICIOS",
         },
         {
           element: document.querySelector("#btnAgregarServicioMedicoPapelera"),
@@ -24,7 +27,8 @@ document.getElementById("btnayudaServicioMedico").addEventListener("click", func
         },
         {
           element: document.querySelector(".dt-search"),
-          intro: "ESTE BUSCADOR TE PERMITE BUSCAR LOS SERVICIOS MÉDICOS REGISTRADOS A TRAVÉS DE LA ESPECIALIDAD",
+          intro:
+            "ESTE BUSCADOR TE PERMITE BUSCAR LOS SERVICIOS MÉDICOS REGISTRADOS A TRAVÉS DE LA ESPECIALIDAD",
         },
         {
           element: document.querySelector(".caja-contenedor-tabla"),
@@ -35,7 +39,7 @@ document.getElementById("btnayudaServicioMedico").addEventListener("click", func
           intro: "ESTE BOTÓN TE PERMITE EDITAR EL SERVICIO MÉDICO ",
         },
         {
-          element: document.querySelector("#btnEliminarServicioMedico"),
+          element: document.querySelector(".btn-eliminar"),
           intro: "ESTE BOTÓN TE PERMITE ELIMINAR EL SERVICIO MÉDICO",
         },
         {

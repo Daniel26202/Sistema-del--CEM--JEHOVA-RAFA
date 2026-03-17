@@ -237,6 +237,6 @@
 </div>
 
 
-<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaMantenimiento.js"></script>
+<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaInteractiva/ayudaMantenimiento.js"></script>
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/mantenimiento.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>

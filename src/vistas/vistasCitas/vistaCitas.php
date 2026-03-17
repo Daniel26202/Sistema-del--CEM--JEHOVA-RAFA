@@ -11,7 +11,7 @@
 
     <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
-    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
+    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto caja-contenedor-tabla" style="width: 95%; ">
 
 
 
@@ -108,4 +108,4 @@
 <?php require_once './src/vistas/head/footer.php'; ?>
 
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaCitasPendientes.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaCitasPendientes.js"></script>

@@ -96,6 +96,6 @@
 <?php require_once './src/vistas/head/footer.php'; ?>
 
 
-<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaProveedores.js"></script>
+<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaInteractiva/ayudaProveedores.js"></script>
 
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/proveedor.js"></script>

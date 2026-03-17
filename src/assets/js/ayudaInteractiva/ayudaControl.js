@@ -11,25 +11,42 @@ document.getElementById('btnayudaControl').addEventListener("click", function() 
             intro: "AHORA TE ENCUENTRAS EN EL MÓDULO DEL CONTROL MÉDICO",
           },
           {
-            element: document.querySelector("#inicioControlM"),
-            intro: "DESDE AQUÍ PODRÁS GESTIONAR LOS CONTROLES MÉDICOS DE LOS PACIENTES",
+            element: document.querySelector(".container"),
+            intro:
+              "DESDE AQUÍ PODRÁS GESTIONAR LOS CONTROLES MÉDICOS DE LOS PACIENTES",
           },
           {
-            element: document.querySelector("#btnControl"),
-            intro: "ESTE BOTÓN DESPLIEGA UN MODAL DONDE PODRÁS REGISTRAR EL CONTROL DE UN PACIENTE",
+            element: document.querySelector("#pacientes"),
+            intro:
+              "DE ESTE LADO ESTAN TODOS LOS PACIENTES QUE TIENEN UN CONTROL MÉDICO ",
           },
+          {
+            element: document.querySelector("#controles"),
+            intro:
+              "AQUÍ VAS A ENCONTRAR TODA LA INFORMACIÓN DE CADA CONTROL DE LOS PACIENTES INCLUYENDO DOS BOTONES UNO PARA DETALLAR EL CONTROL Y EL OTRO PARA EDITAR EL MISMO",
+          },
+
+          {
+            element: document.querySelector("#btnControl"),
+            intro:
+              "ESTE BOTÓN DESPLIEGA UN MODAL DONDE PODRÁS REGISTRAR EL CONTROL DE UN PACIENTE",
+          },
+          {
+            element: document.querySelector(".btnOpenModalSin"),
+            intro: "ESTE BOTÓN DESPLIEGA UN MODAL PARA GESTIONAR LOS SINTOMAS",
+          },
+
           {
             element: document.querySelector(".dt-search"),
             intro: "ESTE BUSCADOR TE PERMITE BUSCAR EL CONTROL DE UN PACIENTE ",
           },
+
           {
-            element: document.querySelector("#controles"),
-            intro: "AQUÍ VAS A ENCONTRAR TODA LA INFORMACIÓN DE CADA CONTROL DE LOS PACIENTES INCLUYENDO DOS BOTONES UNO PARA DETALLAR EL CONTROL Y EL OTRO PARA EDITAR EL MISMO",
+            element: document.querySelector(".row-Patients"),
+            intro:
+              "PARA PODER VER LOS CONTROLES DEL PACIENTE SOLO TIENE QUE DARLE CLICK A LA FILA DEL PACIENTE QUE DESEA CONSULTAR. ",
           },
-          {
-            element: document.querySelector("#pacientes"),
-            intro: "DE ESTE LADO ESTAN TODOS LOS PACIENTES QUE TIENEN UN CONTROL MÉDICO ",
-          },
+
           {
             intro:
               "FIN DEL RECORRIDO POR EL MÓDULO DE CONTROL MÉDICO , ESPERO HABERTE AYUDADO",

@@ -308,5 +308,5 @@
 
 
 <script type="module" src="<?= $urlBase ?>../src/assets/js/insumo.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInsumos.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaInsumos.js"></script>
 <?php require_once './src/vistas/head/footer.php'; ?>

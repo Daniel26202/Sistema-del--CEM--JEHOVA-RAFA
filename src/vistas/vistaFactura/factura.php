@@ -159,4 +159,4 @@
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/list.min.js"></script>
 <script type="module" src="<?= $urlBase ?>../src/assets/js/f.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaFactura.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaFactura.js"></script>

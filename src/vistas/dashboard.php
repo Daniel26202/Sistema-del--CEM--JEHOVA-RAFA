@@ -303,7 +303,7 @@ require_once './src/vistas/head/head.php';
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/dashboard.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaDashboard.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaDashboard.js"></script>
 <?php
 require_once 'src/vistas/head/footer.php';
 ?>

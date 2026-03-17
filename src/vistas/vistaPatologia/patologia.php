@@ -10,7 +10,7 @@
     <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
 
-    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
+    <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto caja-contenedor-tabla" style="width: 95%; ">
 
         <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
 
@@ -57,4 +57,4 @@
     <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/patologia.js"></script>
     <?php require_once './src/vistas/head/footer.php'; ?>
 
-    <script src="<?= $urlBase; ?>../src/assets/js/ayudaPatologia.js"></script>
+    <script src="<?= $urlBase; ?>../src/assets/js/ayudaInteractiva/ayudaPatologia.js"></script>

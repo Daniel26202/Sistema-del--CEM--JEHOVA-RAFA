@@ -91,4 +91,4 @@
 
 
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/entradas.js"></script>
-<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaEntradas.js"></script>
+<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaInteractiva/ayudaEntradas.js"></script>

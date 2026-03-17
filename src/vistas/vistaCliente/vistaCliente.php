@@ -13,7 +13,7 @@
 
   <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
-  <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%;">
+  <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto " id="inicioClientes" style="width: 95%;">
     <div class="me-2 ps-3 col-12 d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
       <div class="mb-2 mb-md-0 caja-btn-margin">
 
@@ -64,7 +64,7 @@
 
 
 
-<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaPaciente.js"></script>
+<script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaInteractiva/ayudaCliente.js"></script>
 
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/clientes.js"></script>
 

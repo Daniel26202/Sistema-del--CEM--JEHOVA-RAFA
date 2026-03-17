@@ -10,16 +10,18 @@ document.addEventListener("DOMContentLoaded", function () {
           },
 
           {
-            element: document.querySelector("#inicioPacientes"),
+            element: document.querySelector(".contenedor-fondo"),
             intro: "ACÁ PODRÁS GESTIONAR TU INFORMACIÓN",
           },
           {
             element: document.querySelector(".fondo-perfil"),
-            intro: "AQUÍ SE MUESTRA UNA TARJETA CON LA INFORMACION DE TU USUARIO.",
+            intro:
+              "AQUÍ SE MUESTRA UNA TARJETA CON LA INFORMACION DE TU USUARIO.",
           },
           {
-            element: document.querySelector(".botonesEdi"),
-            intro: "AL PULSAR ESTE BOTON SE VA A DESPLEGAR UN MODAL PARA MODIFICAR LA INFORMACIÓN DE SU PERFIL",
+            element: document.querySelector("#btnOpenModal"),
+            intro:
+              "AL PULSAR ESTE BOTON SE VA A DESPLEGAR UN MODAL PARA MODIFICAR LA INFORMACIÓN DE SU PERFIL",
           },
           {
             intro: "FIN DEL RECORRIDO POR SU PERFIL , ESPERO HABERTE AYUDADO",

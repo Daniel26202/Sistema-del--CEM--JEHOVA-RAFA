@@ -131,4 +131,4 @@
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaReportes.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaReportes.js"></script>

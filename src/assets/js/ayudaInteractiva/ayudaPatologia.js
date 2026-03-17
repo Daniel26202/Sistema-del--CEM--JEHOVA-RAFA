@@ -10,11 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
           },
 
           {
-            element: document.querySelector("#inicioPacientes"),
+            element: document.querySelector(".caja-contenedor-tabla"),
             intro: "ACÁ PODRÁS GESTIONAR LA INFORMACIÓN DE LAS PATOLOGIAS",
           },
           {
-            element: document.querySelector(".btnRegistrarPatologia"),
+            element: document.querySelector(".btnOpenModal"),
             intro:
               "AL OPRIMIR ESTE BOTÓN SE VA A DESPLEGAR UN MODAL CON UN FORMULARIO PARA REGISTRAR LA INFORMACIÓN DE LOS NUEVAS PATOLOGIAS",
           },

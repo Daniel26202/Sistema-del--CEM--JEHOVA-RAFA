@@ -10,8 +10,9 @@ document.addEventListener("DOMContentLoaded", function () {
           },
 
           {
-            element: document.querySelector("#inicioPacientes"),
-            intro: "ACÁ PODRÁS CONSULTAR LA INFORMACIÓN DE LAS DISTINTAS ACCIONES QUE SE REALIZARON EN EL SISTEMA",
+            element: document.querySelector(".contenedor-fondo"),
+            intro:
+              "ACÁ PODRÁS CONSULTAR LA INFORMACIÓN DE LAS DISTINTAS ACCIONES QUE SE REALIZARON EN EL SISTEMA",
           },
           {
             element: document.querySelector(".sin-circulos"),
@@ -20,15 +21,18 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           {
             element: document.querySelector(".dt-search"),
-            intro: "AQUÍ TIENES UN BUSCADOR QUE AL COLOCAR CUALQUIER DATO SE VA A FILTRAR LOS RESULTADOS",
+            intro:
+              "AQUÍ TIENES UN BUSCADOR QUE AL COLOCAR CUALQUIER DATO SE VA A FILTRAR LOS RESULTADOS",
           },
           {
             element: document.querySelector(".caja-contenedor-tabla"),
-            intro: "EN ESTA TABLA SE MUESTRA LA INFORMACIÓN DE TODOS LAS ACCIONES  RAELIZADAS",
+            intro:
+              "EN ESTA TABLA SE MUESTRA LA INFORMACIÓN DE TODOS LAS ACCIONES  RAELIZADAS",
           },
 
           {
-            intro: "FIN DEL RECORRIDO POR EL MÓDULO DE BITACORA, ESPERO HABERTE AYUDADO",
+            intro:
+              "FIN DEL RECORRIDO POR EL MÓDULO DE BITACORA, ESPERO HABERTE AYUDADO",
           },
         ],
 

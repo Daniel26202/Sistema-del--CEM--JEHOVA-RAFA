@@ -129,4 +129,4 @@
 
 
 <script type="module" src="<?= $urlBase ?>../src/assets/js/ajax/usuarios.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaUsuario.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaUsuario.js"></script>

@@ -9,23 +9,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
           {
             element: document.querySelector(".Inicioh1"),
-            intro: "DESDE AQUÍ PODRÁS ENCONTRAR INFORMACIÓN RELEVANTE ADEMAS DE PODER NAVEGAR POR EL SISTEMA",
+            intro:
+              "DESDE AQUÍ PODRÁS ENCONTRAR INFORMACIÓN RELEVANTE ADEMAS DE PODER NAVEGAR POR EL SISTEMA",
           },
           {
             element: document.querySelector("#tarjetaInicio1"),
-            intro: "AQUÍ PODRÁS ENCONTRAR EL NUMERO DE CITAS PENDIENTES EN EL SISTEMA.",
+            intro:
+              "AQUÍ PODRÁS ENCONTRAR EL NUMERO DE CITAS PENDIENTES EN EL SISTEMA.",
           },
           {
             element: document.querySelector("#tarjetaInicio2"),
-            intro: "AQUÍ PODRÁS ENCONTRAR EL NUMERO DE CITAS PARA HOY EN EL SISTEMA.",
+            intro:
+              "AQUÍ PODRÁS ENCONTRAR EL NUMERO DE CITAS PARA HOY EN EL SISTEMA.",
           },
           {
             element: document.querySelector("#tarjetaInicio3"),
-            intro: "AQUÍ PODRÁS ENCONTRAR EL NUMERO DE HOSPITALIZACIONES PENDIENTES EN EL SISTEMA.",
+            intro:
+              "AQUÍ PODRÁS ENCONTRAR EL NUMERO DE HOSPITALIZACIONES PENDIENTES EN EL SISTEMA.",
           },
           {
             element: document.querySelector("#grafica1"),
-            intro: "AQUÍ PODRÁS VISUALIZAR INFORMACION DE LAS 5 ESPECIALIDADES MAS SOLICITADAS EN FORMA GRAFICA.",
+            intro:
+              "AQUÍ PODRÁS VISUALIZAR INFORMACION DE LAS 5 ESPECIALIDADES MAS SOLICITADAS EN FORMA GRAFICA.",
           },
           {
             element: document.querySelector("#btnGrafica1"),
@@ -34,7 +39,8 @@ document.addEventListener('DOMContentLoaded', function () {
           },
           {
             element: document.querySelector("#grafica2"),
-            intro: "AQUÍ PODRÁS VISUALIZAR INFORMACION DE LAS 5 SINTOMAS  MAS COMUNES EN FORMA GRAFICA.",
+            intro:
+              "AQUÍ PODRÁS VISUALIZAR INFORMACION DE LAS 5 SINTOMAS  MAS COMUNES EN FORMA GRAFICA.",
           },
           {
             element: document.querySelector("#btnGrafica2"),
@@ -43,27 +49,30 @@ document.addEventListener('DOMContentLoaded', function () {
           },
           {
             element: document.querySelector("#calendarCard"),
-            intro: "AQUÍ EN EL CALENDARIO PODRAS CONSULTAR LAS FECHAS CON MAS CITAS Y FILTRAR LAS POR DOCTOR",
+            intro:
+              "AQUÍ EN EL CALENDARIO PODRAS CONSULTAR LAS FECHAS CON MAS CITAS Y FILTRAR LAS POR DOCTOR",
           },
           {
             element: document.querySelector("#precioConsultas"),
-            intro: "AQUÍ  PODRAS VISUALIZAR LOS PRECIOS DE LAS CONSULTAS QUE OFRECEMOS DE UNA MANERA RAPIDA",
+            intro:
+              "AQUÍ  PODRAS VISUALIZAR LOS PRECIOS DE LAS CONSULTAS QUE OFRECEMOS DE UNA MANERA RAPIDA",
           },
           {
-            element: document.querySelector("#aside"),
+            element: document.querySelector("#mySidenav"),
             intro: "MENÚ DE NAVEGACIÓN",
           },
           {
-            element: document.querySelector("#menu"),
-            intro: "AL HACER CLICK A ESTE BOTÓN SE DESPLIEGA EL MENÚ",
-          },
-          {
             element: document.querySelector("#menuInicio"),
-            intro: "AL PULSAR ESTE ÍCONO PODRÁS VOLVER AL INICIO DESDE CUALQUIER PARTE DEL SISTEMA",
+            intro:
+              "AL PULSAR ESTE ÍCONO PODRÁS VOLVER AL INICIO DESDE CUALQUIER PARTE DEL SISTEMA",
           },
           {
             element: document.querySelector("#menuPacientes"),
             intro: "TE DIRIGE AL MÓDULO DE PACIENTES",
+          },
+          {
+            element: document.querySelector("#menuClientes"),
+            intro: "TE DIRIGE AL MÓDULO DE CLIENTES",
           },
           {
             element: document.querySelector("#menuPatologias"),
@@ -79,11 +88,13 @@ document.addEventListener('DOMContentLoaded', function () {
           },
           {
             element: document.querySelector("#menuServicios"),
-            intro: "TE DIRIGE AL MODULO DE SERVICIOS  DONDE ENCONTRARÁS LOS SERVICIOS MÉDICOS QUE OFRECEMOS",
+            intro:
+              "TE DIRIGE AL MODULO DE SERVICIOS  DONDE ENCONTRARÁS LOS SERVICIOS MÉDICOS QUE OFRECEMOS",
           },
           {
             element: document.querySelector("#menuDirectorioMedico"),
-            intro: "TE DIRIGE AL DIRECTORIO MÉDICO DONDE ENCONTRARÁS EL REGISTRO DE DOCTORES",
+            intro:
+              "TE DIRIGE AL DIRECTORIO MÉDICO DONDE ENCONTRARÁS EL REGISTRO DE DOCTORES",
           },
           {
             element: document.querySelector("#menuControlMedico"),
@@ -95,7 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
           },
           {
             element: document.querySelector("#menuInsumos"),
-            intro: "TE DIRIGE AL INVENTARIO DONDE PODRÁS GESTIONAR LOS INSUMOS, LAS ENTRADAS Y LOS PROVEEDORES",
+            intro:
+              "TE DIRIGE AL INVENTARIO DONDE PODRÁS GESTIONAR LOS INSUMOS, LAS ENTRADAS Y LOS PROVEEDORES",
           },
           {
             element: document.querySelector("#menuUsuarios"),
@@ -108,6 +120,10 @@ document.addEventListener('DOMContentLoaded', function () {
           {
             element: document.querySelector("#menuReportesEstadisticos"),
             intro: "TE DIRIGE AL MÓDULO DE REPORTES ESTADISTICOS",
+          },
+          {
+            element: document.querySelector("#menuMantenimiento"),
+            intro: "TE DIRIGE AL MÓDULO DE MANTENIMIENTO",
           },
 
           {

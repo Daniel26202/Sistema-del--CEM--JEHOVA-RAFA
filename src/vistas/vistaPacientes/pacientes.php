@@ -14,7 +14,7 @@
   <!-- alertas -->
 
 
-  <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%;">
+  <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" id="inicioPacientes" style="width: 95%;">
     <div class="me-2 ps-3 col-12 d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
       <div class="mb-2 mb-md-0 caja-btn-margin">
 

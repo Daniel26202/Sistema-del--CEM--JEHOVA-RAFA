@@ -5,15 +5,17 @@ document.addEventListener("DOMContentLoaded", function () {
       .setOptions({
         steps: [
           {
-            intro: "AHORA TE ENCUENTRAS EN LA SECCION PROVEEDORES DEL MODULO INSUMOS",
+            intro:
+              "AHORA TE ENCUENTRAS EN LA SECCION PROVEEDORES DEL MODULO INSUMOS",
           },
 
           {
-            element: document.querySelector("#inicioPacientes"),
-            intro: "ACÁ PODRÁS GESTIONAR LA INFORMACIÓN DE TODOS LOS PROVEEDORES",
+            element: document.querySelector(".caja-contenedor-tabla"),
+            intro:
+              "ACÁ PODRÁS GESTIONAR LA INFORMACIÓN DE TODOS LOS PROVEEDORES",
           },
           {
-            element: document.querySelector(".registrarEntrada"),
+            element: document.querySelector(".btnOpenModal"),
             intro:
               "AL OPRIMIR ESTE BOTÓN SE VA A DESPLEGAR UN MODAL CON UN FORMULARIO PARA REGISTRAR LA INFORMACIÓN DE LOS NUEVOS PROVEEDORES",
           },
@@ -23,19 +25,23 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           {
             element: document.querySelector(".caja-contenedor-tabla"),
-            intro: "EN ESTA TABLA SE MUESTRA LA INFORMACIÓN DE TODOS LOS PROVEEDORES REGISTRADOS",
+            intro:
+              "EN ESTA TABLA SE MUESTRA LA INFORMACIÓN DE TODOS LOS PROVEEDORES REGISTRADOS",
           },
           {
             element: document.querySelector(".btnEditarDoctor"),
-            intro: "AL PULSAR ESTE BOTON SE VA A DESPLEGAR UN MODAL PARA MODIFICAR LA INFORMACIÓN DEL PROVEEDOR",
+            intro:
+              "AL PULSAR ESTE BOTON SE VA A DESPLEGAR UN MODAL PARA MODIFICAR LA INFORMACIÓN DEL PROVEEDOR",
           },
           {
             element: document.querySelector(".btnEliminarDoctor"),
-            intro: "AL PULSAR ESTE BOTON SE VA A DESPLEGAR UN MODAL PARA ELIMINAR LA INFORMACIÓN DEL PROVEEDOR",
+            intro:
+              "AL PULSAR ESTE BOTON SE VA A DESPLEGAR UN MODAL PARA ELIMINAR LA INFORMACIÓN DEL PROVEEDOR",
           },
 
           {
-            intro: "FIN DEL RECORRIDO POR LA SECCION DE PROVEEDORES, ESPERO HABERTE AYUDADO",
+            intro:
+              "FIN DEL RECORRIDO POR LA SECCION DE PROVEEDORES, ESPERO HABERTE AYUDADO",
           },
         ],
 

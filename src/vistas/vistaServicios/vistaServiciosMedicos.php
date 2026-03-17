@@ -221,7 +221,7 @@
 
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/servicios.js"></script>
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/categoria.js"></script>
-<script src="<?= $urlBase; ?>../src/assets/js/ayudaServicioMedico.js"></script>
+<script src="<?= $urlBase; ?>../src/assets/js/ayudaInteractiva/ayudaServicioMedico.js"></script>
 
 
 <?php require_once './src/vistas/head/footer.php';  ?>

@@ -32,7 +32,7 @@ function administradores($parametro)
     $modeloUsuarios = new ModeloUsuarios();
     $modeloRoles = new ModeloRoles();
 
-    $ayuda = "btnayudaAdministrador";
+    $ayuda = "btnayudaUsuario";
     $datosU  = $modeloUsuarios->selectAdmin();
     $vistaActiva = "administradores";
     $datosRoles = $modeloRoles->roles();

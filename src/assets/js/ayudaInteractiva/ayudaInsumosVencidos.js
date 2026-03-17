@@ -5,12 +5,14 @@ document.addEventListener("DOMContentLoaded", function () {
       .setOptions({
         steps: [
           {
-            intro: "AHORA TE ENCUENTRAS EN LA SECCION VENCIDOS DEL MODULO INSUMOS",
+            intro:
+              "AHORA TE ENCUENTRAS EN LA SECCION VENCIDOS DEL MODULO INSUMOS",
           },
 
           {
-            element: document.querySelector("#inicioPacientes"),
-            intro: "ACÁ PODRÁS GESTIONAR LA INFORMACIÓN DE TODOS LOS LAS ENTRADAS DE INSUMOS VENCIDOS",
+            element: document.querySelector(".caja-contenedor-tabla"),
+            intro:
+              "ACÁ PODRÁS GESTIONAR LA INFORMACIÓN DE TODOS LOS LAS ENTRADAS DE INSUMOS VENCIDOS",
           },
           {
             element: document.querySelector(".dt-search"),
@@ -18,11 +20,13 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           {
             element: document.querySelector(".caja-contenedor-tabla"),
-            intro: "EN ESTA TABLA SE MUESTRA LA INFORMACIÓN DE TODAS LAS ENTRADAS REGISTRADAS",
+            intro:
+              "EN ESTA TABLA SE MUESTRA LA INFORMACIÓN DE TODAS LAS ENTRADAS REGISTRADAS",
           },
 
           {
-            intro: "FIN DEL RECORRIDO POR LA SECCION DE VENCIDOS, ESPERO HABERTE AYUDADO",
+            intro:
+              "FIN DEL RECORRIDO POR LA SECCION DE VENCIDOS, ESPERO HABERTE AYUDADO",
           },
         ],
 
