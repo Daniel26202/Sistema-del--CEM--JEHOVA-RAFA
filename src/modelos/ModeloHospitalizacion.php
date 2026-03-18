@@ -485,6 +485,9 @@ class ModeloHospitalizacion extends ModelBase
                     $this->setSQL($sql);
                     $idEntradaDeInsumo = $this->search(['id_insumo' => $idIA, 'cantidad' => $cantidadA[$contadorC]], false);
 
+                    if (!$idEntradaDeInsumo || empty($idEntradaDeInsumo["id_entradaDeInsumo"])) {
+                        throw new \Exception("No hay suficiente stock disponible para el insumo ID: $idIA. Cantidad solicitada: {$cantidadA[$contadorC]}");
+                    }
 
                     // insertar insumos de la hospitalización
                     $sql = 'INSERT INTO insumodehospitalizacion(id_hospitalizacion, id_entradaDeInsumo, cantidad) VALUES (:id_hospitalizacion, :id_entradaDeInsumo, :cantidad)';
@@ -539,7 +542,9 @@ class ModeloHospitalizacion extends ModelBase
 
             // servicios
             $datosSHBD = $this->selectServiciosDH($this->getIdH());
-
+            if (!$datosSHBD) {
+                $datosSHBD = [];
+            }
             $servAnterioresIdC = [];
             $idsServAnteriores = [];
             foreach ($datosSHBD as $i => $datos) {
@@ -642,7 +647,7 @@ class ModeloHospitalizacion extends ModelBase
                     ]);
                     // $consulta2->closeCursor();
                 }
-            }   
+            }
 
             // editar el estado hospitalización
             $sql = 'UPDATE hospitalizacion SET estado ="DES" WHERE id_hospitalizacion =:id ;';

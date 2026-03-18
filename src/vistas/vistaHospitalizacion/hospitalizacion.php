@@ -331,7 +331,7 @@
                                     <?php if ($datosS): ?>
                                         <?php foreach ($datosS as $sintomas): ?>
                                             <div class="form-check form-switch d-flex align-items-center mb-1">
-                                                <input class="form-check-input inputExpresiones inpSin me-2"
+                                                <input class="form-check-input inpSin me-2"
                                                     type="checkbox" role="switch"
                                                     name="sintomas[]"
                                                     value="<?= $sintomas["id_sintomas"]; ?>">
@@ -370,7 +370,7 @@
                                         <?php foreach ($datosPatologias as $patologia): ?>
                                             <div class="d-flex w-50 justify-content-between mb-2">
                                                 <div class="form-check form-switch d-flex align-items-center">
-                                                    <input class="form-check-input inputExpresiones inputPP checkInputs me-2"
+                                                    <input class="form-check-input inputPP checkInputs me-2"
                                                         type="checkbox" role="switch"
                                                         name="patologias[]"
                                                         value="<?php echo $patologia['id_patologia'] ?>">
