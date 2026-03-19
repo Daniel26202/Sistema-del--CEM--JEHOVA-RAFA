@@ -312,3 +312,11 @@ if (!empty($parametro)) {
 			<img class="" src="<?= $urlBase ?>../src/assets/images/icons/logo.png" style="width: 180px; height: 55px;">
 
 		</nav>
+
+
+
+
+
+
+
+		<div id="citas-proximas"></div>
