@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////////////
-import { executePetition, alertConfirm, alertError, alertSuccess } from "../../js/generic/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, clearStyleVInputs } from "../../js/generic/funtionGeneric.js";
 import { traerSerevicio } from "../../js/hospitalizacion/reutilizableHospitalizacion.js";
 import { inicializarValidacionFormulario, chulitoYX } from "../generic/expresionesModulares.js";
 
@@ -27,6 +27,11 @@ iHS.addEventListener("keyup", function () {
 iHME.addEventListener("keyup", function () {
     iHS.value = iHME.value;
 });
+
+let storedDolar = localStorage.getItem("valorDelDolar");
+let mPDolar = localStorage.getItem("costoMoEx");
+let bsM = mPDolar * storedDolar;
+localStorage.setItem("costo", bsM);
 
 iCS.addEventListener("keyup", function () {
     let storedDolar = localStorage.getItem("valorDelDolar");
@@ -434,6 +439,7 @@ const vistaTabla = async () => {
                     document.querySelector("#montoME").value = datos[1];
                     document.querySelector("#total").value = datos[2];
                     document.querySelector("#totalME").value = datos[3];
+                    clearStyleVInputs();
                 });
             }
             const btnEditar = document.querySelectorAll(".editarH");
