@@ -178,8 +178,8 @@ addEventListener("DOMContentLoaded", function () {
         result.forEach((res) => {
           html += `
                 <div class="mb-2" id="divAcordion">
-                  <div class="d-flex ">Días Laborables :  <p class="fw-bold"> ${res.diaslaborables}<p></div>
-                  <div class="d-flex">Hora de: <p class="fw-bold"> ${convertirHora(res.horaDeEntrada)} a ${convertirHora(res.horaDeSalida)}<p></div>
+                  <div class="d-flex "><p class="fw-bold"> Día Laborable: ${res.diaslaborables}<p></div>
+                  <div class="d-flex"> <p class="fw-bold">Hora de: ${convertirHora(res.horaDeEntrada)} a ${convertirHora(res.horaDeSalida)}<p></div>
                   <hr>
                 </div> 
                 `;
@@ -470,30 +470,24 @@ addEventListener("DOMContentLoaded", function () {
                                     <!-- editar -->
                                     
                                         <div class="me-2 botonesEdi ${urlActual.includes("Realizadas") ? "d-none" : ""}">
-                                            <a href="#" class="btns-accion botonesEditar botonesEdi btn-dt-tabla"
+                                            <a href="#" class="btn btn-tabla botonesEditar botonesEdi btn-dt-tabla"
                                                 data-bs-toggle="modal" data-bs-target="#exampleModalCita" id="btnOpenModal" 
                                                 data-index="${element.id_cita}" data-id-categoria="${element.id_categoria}" data-id-doctor="${element.doctor}" uk-tooltip="Modificar Cita"
                                                 id="btnEditarCitaPendiente">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                                                    fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                    <path fill-rule="evenodd"
-                                                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                                </svg>
+                                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
+                                </svg>
                                             </a>
                                         </div>
                                    
                                         <div class="me-2">
-                                            <a href="#" class="btns-accion btn-eliminar btn-dt-tabla" data-index=${
+                                            <a href="#" class="btn btn-tabla btn-eliminar btn-dt-tabla" data-index=${
                                               element.id_cita
                                             } 
                                                 uk-tooltip="Eliminar Cita" id="eliminarCitaP">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                                                    fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
+                                </svg>
                                             </a>
                                         </div>
                                   
