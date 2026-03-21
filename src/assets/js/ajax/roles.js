@@ -261,7 +261,7 @@ const readPermisos = async (permisosGuardados = {}) => {
                         .join("");
 
                       return `
-                      <div class="card fondo-tabla mb-3 m-auto" style="width: 14rem;">
+                      <div class="card fondo-tabla mb-3 m-auto w-100" style="width: 14rem;">
                           <input type='hidden' name="modulos[]" value="${modName}">
                           <div class="card-body">
                               <h5 class="card-title">${modName}</h5>

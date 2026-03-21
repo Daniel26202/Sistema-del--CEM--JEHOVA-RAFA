@@ -152,16 +152,14 @@ export const alertSuccess = (text) => {
 export const initDataTable = (selector) => {
   $(selector).DataTable({
     language: {
-      language: {
-        decimal: ",",
-        thousands: ".",
-        lengthMenu: "Mostrar por página _MENU_ ",
-        zeroRecords: "No se encontraron resultados",
-        info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-        infoEmpty: "No hay registros disponibles",
-        infoFiltered: "(filtrado de _MAX_ registros en total)",
-        search: "Buscar:",
-      },
+      decimal: ",",
+      thousands: ".",
+      lengthMenu: "Mostrar por página _MENU_ ",
+      zeroRecords: "No se encontraron resultados",
+      info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+      infoEmpty: "No hay registros disponibles",
+      infoFiltered: "(filtrado de _MAX_ registros en total)",
+      search: "Buscar:",
     },
   });
 };
@@ -332,7 +330,7 @@ export const returnModulos = () => {
 export const hasPermision = async (id_rol, module, permision, btns) => {
   try {
     const btnsList = document.querySelectorAll(btns);
-    
+
     const result = await executePetition(
       `/Sistema-del--CEM--JEHOVA-RAFA/Permisos/hasPermision/${id_rol}/${module}/${permision}`,
       "GET",
