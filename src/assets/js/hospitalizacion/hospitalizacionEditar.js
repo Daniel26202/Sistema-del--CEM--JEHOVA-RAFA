@@ -1276,7 +1276,7 @@ formEnviarFactura.addEventListener("submit", async function (e) {
         let idH = document.querySelector("#idH").value;
         await envioFSaveControl();
         formEnviarFactura.reset();
-        window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturarHospitalizacion/H" + idH;
+        window.location.href = "/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/h" + idH;
     } else {
         alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }

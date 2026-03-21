@@ -32,6 +32,10 @@ addEventListener("DOMContentLoaded", function () {
   const urlBase = document.getElementById("urlBase").value;
 
   const id_rol_global = document.getElementById("id_rol_global").value;
+  const btnRegistrarInsumo = document.getElementById("registrarInsumo");
+
+  const modalLabelInsumos = document.getElementById("modalLabelInsumos");
+  const btnModalInsumos = document.getElementById("btnModalInsumos");
 
   const selector = ".exampleTable";
 
@@ -139,6 +143,13 @@ addEventListener("DOMContentLoaded", function () {
 
       //agregar la clase editar al formulario
       formInsumos.classList.add("editar");
+
+      document.getElementById("vencimiento").classList.add("d-none");
+      document.getElementById("vencimiento").querySelector(".input-custom").classList.add('valido');
+      contenedorImgEditar.classList.remove("d-none");
+
+          modalLabelInsumos.innerText = "Modificar Insumos";
+          btnModalInsumos.innerText = "Modificar";
     });
   };
 
@@ -365,6 +376,31 @@ addEventListener("DOMContentLoaded", function () {
   } else {
     readPapeleraInsumos(divPapelera);
   }
+
+  //limipiar formularion
+  btnRegistrarInsumo.addEventListener("click", function () {
+    formInsumos.querySelectorAll(".input-validar").forEach((input) => {
+      console.log(input.parentElement);
+
+      input.value = "";
+      input.parentElement.classList.remove("valido");
+      input.parentElement.classList.remove("invalido");
+
+      input.nextElementSibling.children[0].classList.add("d-none");
+      input.nextElementSibling.children[1].classList.add("d-none");
+
+      let div = input.closest(".campo-custom");
+      div.querySelector(".error-msg").classList.add("d-none");
+    });
+
+    document.getElementById("vencimiento").classList.remove("d-none");
+    contenedorImgEditar.classList.add("d-none");
+
+    modalLabelInsumos.innerText = "Agrega Insumos";
+    btnModalInsumos.innerText = "Agregar";
+    
+
+  });
 
   let verificarFormularioInsumo = inicializarValidacionFormulario(formInsumos);
 

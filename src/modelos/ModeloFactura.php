@@ -411,7 +411,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = ['id_factura' => $this->getIdFactura()];
-			$sql = "SELECT cs.nombre As categoria_servicio, sf.*,s.*,p.nombre AS nombre_d, p.apellido AS apellido_d FROM detalle_factura sf  INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria INNER JOIN personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = s.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal  WHERE id_factura =:id_factura ";
+			$sql = "SELECT cs.nombre As categoria_servicio, sf.*,s.*,p.nombre AS nombre_d, p.apellido AS apellido_d FROM detalle_factura sf  INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria INNER JOIN personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = s.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal  WHERE id_factura =:id_factura limit 1";
 
 			$this->setSQL($sql);
 			return $this->search($data);
