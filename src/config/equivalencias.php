@@ -12,6 +12,7 @@ return [
     "eliminar" => "eliminar",
     "restablecer" => "eliminar",
     "getHistorialSalud" => "consultar",
+    "getHistorialSaludAjax"=>"consultar",
 
 
     //Clientes

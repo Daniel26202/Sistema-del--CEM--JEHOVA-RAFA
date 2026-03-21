@@ -27,22 +27,36 @@ const id_paciente = document.getElementById("id_paciente");
 const id_rol_global = document.getElementById("id_rol_global").value;
 const selector = ".exampleTable";
 
-
 //read
 const readPatients = async () => {
-  try {
-    let metodo = "";
-    let urlActual = window.location.href;
+  // try {
+  let metodo = "";
+  let urlActual = window.location.href;
 
-    if (urlActual.includes("getPacientes")) metodo = "getPacientesAjax";
-    else metodo = "papeleraPacienteAjax";
+  if (urlActual.includes("getPacientes")) metodo = "getPacientesAjax";
+  else if (urlActual.includes("getHistorialSalud"))
+    metodo = "getHistorialSaludAjax";
+  else metodo = "papeleraPacienteAjax";
 
-    const result = await executePetition(url + "/" + metodo, "GET");
+  const result = await executePetition(url + "/" + metodo, "GET");
 
-    console.log(result);
+  console.log(result);
 
-    // construir html de filas
-    let html = "";
+  // construir html de filas
+  let html = "";
+  if (urlActual.includes("getHistorialSalud")) {
+    result.forEach((element) => {
+      html += `
+                <tr>
+                    <td class="text-center">${element.nacionalidad}-${element.cedula}</td>
+                    <td class="text-center">${element.nombre_paciente} ${element.apellido_paciente}</td>
+                    <td class="text-center">${element.diagnostico}</td>
+                    <td class="text-center">${element.estado_salud}</td>
+                    
+                </tr>
+          `;
+    });
+  } else {
     result.forEach((element) => {
       html += `
                 <tr>
@@ -103,92 +117,93 @@ const readPatients = async () => {
                 </tr>
           `;
     });
-
-    // si ya existe DataTable, destrúyela
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().clear().destroy();
-    }
-
-    // vuelca el html en el tbody
-    document.querySelector(selector + " tbody").innerHTML = html;
-
-    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-      ele.value = document.getElementById("id_usuario_session").value;
-    });
-
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
-        alertConfirm(
-          "Esta seguro de eliminar el paciente?",
-          deletePattients,
-          data,
-        );
-      });
-    });
-
-    //llamar a la uncion de restablecer
-    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
-        alertConfirm(
-          "Esta seguro de restablecer el paciente?",
-          restablecerPattients,
-          data,
-        );
-      });
-    });
-
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".botonesEdi").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        //objetos con todos los parametros de la funcion
-        const parametros = {
-          labelModal: exampleModalLabel,
-          textLabelModal: "Modificar Paciente",
-          form: modalAgregar,
-          modal: modalAgregar.parentElement.parentElement.parentElement,
-          btnModal: botonModal,
-          btnTextModal: "Modificar",
-          data: {
-            nacionalidad: btn.closest("tr").children[0].innerText.slice(0, 1),
-            cedula: parseInt(btn.closest("tr").children[0].innerText.slice(2)),
-            nombre: btn.closest("tr").children[1].innerText,
-            apellido: btn.closest("tr").children[2].innerText,
-            telefono: parseInt(btn.closest("tr").children[3].innerText),
-            direccion: btn.closest("tr").children[4].innerText,
-            fn: btn.closest("tr").children[5].innerText,
-            genero: btn.closest("tr").children[6].innerText,
-            id: btn
-              .closest("tr")
-              .children[8].children[0].getAttribute("data-index"),
-          },
-          inputs: inputs,
-          cedulaOculta: cedulaRegistrada,
-          idOculto: id_paciente,
-        };
-        showDataModal(parametros);
-      });
-    });
-
-    //////gestionar persmisos
-    hasPermision(id_rol_global, "Pacientes", "guardar", ".btnOpenModal"); //guardar
-    hasPermision(id_rol_global, "Pacientes", "eliminar", ".btn-eliminar"); //eliminar
-    hasPermision(id_rol_global, "Pacientes", "eliminar", ".btnRestablecer"); //restablecer
-    hasPermision(id_rol_global, "Pacientes", "editar", ".botonesEdi"); //editar
-
-    // re-inicializa
-    initDataTable(selector);
-  } catch (error) {
-    alertError("Error", error);
   }
+
+  // si ya existe DataTable, destrúyela
+  if ($.fn.DataTable.isDataTable(selector)) {
+    $(selector).DataTable().clear().destroy();
+  }
+
+  // vuelca el html en el tbody
+  document.querySelector(selector + " tbody").innerHTML = html;
+
+  document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+    ele.value = document.getElementById("id_usuario_session").value;
+  });
+
+  //llamar las funcion de eliminar
+  document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const data = [
+        this.getAttribute("data-index"),
+        document.getElementById("id_usuario_session").value,
+      ];
+      alertConfirm(
+        "Esta seguro de eliminar el paciente?",
+        deletePattients,
+        data,
+      );
+    });
+  });
+
+  //llamar a la uncion de restablecer
+  document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const data = [
+        this.getAttribute("data-index"),
+        document.getElementById("id_usuario_session").value,
+      ];
+      alertConfirm(
+        "Esta seguro de restablecer el paciente?",
+        restablecerPattients,
+        data,
+      );
+    });
+  });
+
+  //llamar las funcion de eliminar
+  document.querySelectorAll(".botonesEdi").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      //objetos con todos los parametros de la funcion
+      const parametros = {
+        labelModal: exampleModalLabel,
+        textLabelModal: "Modificar Paciente",
+        form: modalAgregar,
+        modal: modalAgregar.parentElement.parentElement.parentElement,
+        btnModal: botonModal,
+        btnTextModal: "Modificar",
+        data: {
+          nacionalidad: btn.closest("tr").children[0].innerText.slice(0, 1),
+          cedula: parseInt(btn.closest("tr").children[0].innerText.slice(2)),
+          nombre: btn.closest("tr").children[1].innerText,
+          apellido: btn.closest("tr").children[2].innerText,
+          telefono: parseInt(btn.closest("tr").children[3].innerText),
+          direccion: btn.closest("tr").children[4].innerText,
+          fn: btn.closest("tr").children[5].innerText,
+          genero: btn.closest("tr").children[6].innerText,
+          id: btn
+            .closest("tr")
+            .children[8].children[0].getAttribute("data-index"),
+        },
+        inputs: inputs,
+        cedulaOculta: cedulaRegistrada,
+        idOculto: id_paciente,
+      };
+      showDataModal(parametros);
+    });
+  });
+
+  //////gestionar persmisos
+  hasPermision(id_rol_global, "Pacientes", "guardar", ".btnOpenModal"); //guardar
+  hasPermision(id_rol_global, "Pacientes", "eliminar", ".btn-eliminar"); //eliminar
+  hasPermision(id_rol_global, "Pacientes", "eliminar", ".btnRestablecer"); //restablecer
+  hasPermision(id_rol_global, "Pacientes", "editar", ".botonesEdi"); //editar
+
+  // re-inicializa
+  initDataTable(selector);
+  // } catch (error) {
+  //   alertError("Error", error);
+  // }
 };
 //create
 const createPatients = async (form) => {
@@ -252,7 +267,6 @@ const restablecerPattients = async (data) => {
     alertError("Error", error);
   }
 };
-
 
 readPatients();
 

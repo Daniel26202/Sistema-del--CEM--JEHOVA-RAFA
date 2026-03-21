@@ -1,6 +1,6 @@
 <!-- Historial salud para incluir -->
 <div class="table table-responsive">
-    <table class="example table table-striped">
+    <table class="exampleTable table table-striped">
         <thead>
             <tr>
                 <th class="text-dark">Cédula</th>
@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-           
+
         </tbody>
     </table>
 </div>

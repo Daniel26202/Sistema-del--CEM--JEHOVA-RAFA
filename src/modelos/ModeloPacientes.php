@@ -26,29 +26,27 @@ class ModeloPacientes extends ModelBase
 		}
 	}
 
-	// public function indexHistorial()
-	// {
-	// 	try {
-	// 		$consulta = $this->conexion->prepare("SELECT 
-	// 			h.id_historial,
-	// 			h.id_paciente,
-	// 			p.nombre AS nombre_paciente,
-	// 			p.apellido AS apellido_paciente,
-	// 			p.cedula AS cedula_paciente,
-	// 			h.estado_anterior,
-	// 			h.estado_nuevo,
-	// 			h.fecha_cambio,
-	// 			h.id_control,
-	// 			h.id_usuario
-	// 		FROM 
-	// 			historial_estados h
-	// 		JOIN 
-	// 			paciente p ON h.id_paciente = p.id_paciente");
-	// 		return ($consulta->execute()) ? $consulta->fetchAll() : false;
-	// 	} catch (\Exception $e) {
-	// 		return 0;
-	// 	}
-	// }
+	public function indexHistorial()
+	{
+		try {
+			$sql = "SELECT 		c.id_control,
+				c.id_paciente,
+				p.cedula,
+				p.nacionalidad,
+				p.nombre AS nombre_paciente,
+				p.apellido AS apellido_paciente,
+				p.estado_salud,
+                c.diagnostico
+			FROM 
+				control c
+			JOIN 
+				paciente p ON c.id_paciente = p.id_paciente";
+			$this->setSQL($sql);
+			return $this->read();
+		} catch (\Exception $e) {
+			return $e;
+		}
+	}
 
 	public function indexPapelera()
 	{
