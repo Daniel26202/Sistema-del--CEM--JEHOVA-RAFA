@@ -663,10 +663,39 @@ addEventListener("DOMContentLoaded", function () {
     modalTitle.innerText = "Agendar Cita";
     btnModal.innerText = "Registrar";
 
+    modalAgregarCita.reset();
+
     inputFechaCita.parentElement.classList.remove("valido");
     cedulaCita.parentElement.classList.remove("valido");
     inputFechaCita.parentElement.classList.remove("invalido");
     cedulaCita.parentElement.classList.remove("invalido");
+
+    cedulaCita.nextElementSibling.children[0].classList.add("d-none");
+    cedulaCita.nextElementSibling.children[1].classList.add("d-none");
+
+    inputFechaCita.nextElementSibling.children[0].classList.add("d-none");
+    inputFechaCita.nextElementSibling.children[1].classList.add("d-none");
+
+    cedulaCita.parentElement.parentElement
+      .querySelector(".error-msg")
+      .classList.add("d-none");
+
+    inputFechaCita.parentElement.parentElement
+      .querySelector(".error-msg")
+      .classList.add("d-none");
+
+    //limpiar las divs con datos en el formulario
+    accordionBodyDoctor.innerHTML = "";
+    accordionBodyHorario.innerHTML = "";
+    accordionBodyDisp.innerHTML = "";
+
+    divDoctor.classList.add("d-none");
+    divHorarios.classList.add("d-none");
+    divFecha.classList.add("d-none");
+    divHorariosDisp.classList.add("d-none");
+
+    ///ocultar la data
+    divDataPaciente.classList.add("d-none");
   });
 
   traerServiciosMedicos();
