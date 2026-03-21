@@ -7,7 +7,7 @@
                 <div class="cabecera" style="display:flex; justify-content: space-between; background-color: #397ae0; color: white; padding: 10px;">
                     <div class="icon">
                         <img
-                            src="../src/assets/icons/logo.png"
+                            src="<?= $urlBase ?>../src/assets/images/icons/logo.png"
                             alt="Logo"
                             class="logo"
                             style="width: 290px; height: 100px; margin-left: 20px;" />
@@ -53,7 +53,7 @@
                 <div class="cabecera" style="display:flex; justify-content: space-between; background-color: #397ae0; color: white; padding: 10px;">
                     <div class="icon">
                         <img
-                            src="../src/assets/icons/logo.png"
+                            src="<?= $urlBase ?>../src/assets/images/icons/logo.png"
                             alt="Logo"
                             class="logo"
                             style="width: 290px; height: 100px; margin-left: 20px;" />
@@ -136,7 +136,7 @@
                 <div class="cabecera" style="display:flex; justify-content: space-between; background-color: #397ae0; color: white; padding: 10px;">
                     <div class="icon">
                         <img
-                            src="../src/assets/icons/logo.png"
+                            src=".<?= $urlBase ?>../src/assets/images/icons/logo.png"
                             alt="Logo"
                             class="logo"
                             style="width: 290px; height: 100px; margin-left: 20px;" />
@@ -211,7 +211,7 @@
                 <div class="cabecera" style="display:flex; justify-content: space-between; background-color: #397ae0; color: white; padding: 10px;">
                     <div class="icon">
                         <img
-                            src="../src/assets/icons/logo.png"
+                            src="<?= $urlBase ?>../src/assets/images/icons/logo.png"
                             alt="Logo"
                             class="logo"
                             style="width: 290px; height: 100px; margin-left: 20px;" />
@@ -237,7 +237,7 @@
 
                 </div>
             </div>
-        
+
 
             <div class="d-flex justify-content-center mb-3">
                 <button id="pacientes" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
@@ -289,7 +289,7 @@
 
             <h5 class="mt-4 text-center">Filtrar la Grafica Segun un Periodo de Tiempo</h5>
 
-            <div class=" d-flex justify-content-between modal-body" id="buscadoresMorbilidad" >
+            <div class=" d-flex justify-content-between modal-body" id="buscadoresMorbilidad">
                 <div class="col-5">
                     <label class="label-custom">Fecha de Inicio</label>
                     <div class="campo-custom">
@@ -343,7 +343,7 @@
 
 
 
-           
+
 
             <div class="d-flex justify-content-center mb-3">
                 <button id="btnMorbilidad" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
