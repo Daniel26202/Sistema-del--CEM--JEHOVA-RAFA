@@ -198,8 +198,8 @@ function editarControl()
 		$limiter = new RateLimiter();
 		$limiter->verificar('editar_control_' . $idUsuario, 5, 1);
 
-		$modeloControl = new ModeloControl();
 		$modeloBitacora = new ModeloBitacora();
+		$modeloControl = new ModeloControl();
 
 		$modeloControl->setIdControl($_POST['id_control']);
 		$modeloControl->setHistorial($_POST["historial"]);
