@@ -31,6 +31,7 @@ const nombreRegiistrado = document.getElementById("nombreRegiistrado");
 const botonModal = document.getElementById("botonModal");
 const titleModal = document.getElementById("title-modal");
 const id_rol_global = document.getElementById("id_rol_global").value;
+const btnEliminar = document.getElementById("btn-eliminar");
 
 const returnFragmentHtml = (element) => {
   return `         
@@ -286,7 +287,21 @@ readPermisos();
 
 //abrir el modal de agregar
 btnRegistrarRol.addEventListener("click", function () {
+  
   modalRegistrarRol.show();
+  botonModal.innerHTML = "Registrar";
+  titleModal.innerText = "Registrar Rol";
+  btnEliminar.classList.add("d-none");
+
+  formAgregarRol.querySelectorAll(".input-validar").forEach(input=>{
+    input.value = "";
+    input.parentElement.classList.remove('invalido','valido')
+    input.nextElementSibling.children[0].classList.add("d-none");
+    input.nextElementSibling.children[1].classList.add("d-none");
+    input.parentElement.parentElement.children[1].classList.add('d-none');
+
+  })
+
 });
 
 //validacion formulario

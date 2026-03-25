@@ -149,6 +149,20 @@ export const alertSuccess = (text) => {
   });
 };
 
+export const alertInfo = (title,text) => {
+  Swal.fire({
+    icon: "info",
+    title: title,
+    text: text,
+    customClass: {
+      popup: "switAlert",
+      confirmButton: "btn-agregarcita-modal",
+      cancelButton: "btn-agregarcita-modal-cancelar",
+    },
+  });
+};
+
+
 export const initDataTable = (selector) => {
   $(selector).DataTable({
     language: {

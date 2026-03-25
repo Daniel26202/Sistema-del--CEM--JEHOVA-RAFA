@@ -76,7 +76,7 @@
                             <div class="accordion-item bg-theme">
                                 <h2 class="accordion-header" id="headingOne">
                                     <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#dispOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Horarios Disponibles
+                                        Permisos Disponibles
                                     </button>
                                 </h2>
                                 <div id="dispOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDisp">
@@ -98,7 +98,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-modals btn-open-editar" id="botonModal">Registrar</button>
-                    <button type="button" class="btn btn-modals btn-eliminar">Eliminar</button>
+                    <button type="button" id="btn-eliminar" class="btn btn-modals btn-eliminar">Eliminar</button>
 
                 </div>
             </form>

@@ -685,6 +685,11 @@ html {
     width: 100px !important;
 }
 
+/* /////table//// */
+.text-align-left > th,td{
+    text-align: left !important;
+}
+
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
 
@@ -2011,7 +2016,7 @@ td {
 
 /* Clase papa mostrar todos los textos rojos cuando la validacion no se cumple */
 .p-error-validaciones {
-    color: var(--color-error) !important;
+    color: #dc3545 !important;
 }
 
 /* ////////////////////////////////////////////////////////////////// */
