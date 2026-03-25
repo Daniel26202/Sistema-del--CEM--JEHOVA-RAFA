@@ -157,7 +157,7 @@ class ModeloPatologia extends ModelBase
             $this->setSQL($sql);
             return $this->search(['cedula' => $this->getCedulaPac()]);
         } catch (\Exception $e) {
-            return 0;
+            return $e->getMessage();
         }
     }
 

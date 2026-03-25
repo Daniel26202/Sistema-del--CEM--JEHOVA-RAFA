@@ -499,8 +499,8 @@
               <div id="totalDeConfirmacion"></div>
 
               <!-- //id_paciente -->
-              <input type="text" name="id_paciente" id="inputPaciente">
-              <input type="text" name="id_hospitalizacion" id="inputHospitalizacion">
+              <input type="hidden" name="id_paciente" id="inputPaciente">
+              <input type="hidden" name="id_hospitalizacion" id="inputHospitalizacion">
 
 
 

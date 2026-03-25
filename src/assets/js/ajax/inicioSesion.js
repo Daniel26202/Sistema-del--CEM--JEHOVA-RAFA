@@ -7,9 +7,10 @@ const sendData = async (form) => {
         const data = new FormData(form);
         let result = await executePetition(url + "/iniciarSesion", "POST", data);
         console.log(result);
-
+        
         if (result.ok) {
-            window.location.href = "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio";
+            let ruta = window.location.href;
+            window.location.href = ruta + "Inicio/inicio";
         } else {
             if (result.error == "session_active") {
                 alertConfirm(
