@@ -16,38 +16,55 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 const modalPaciente = new bootstrap.Modal(
   document.getElementById("exampleModalagregarPaciente"),
 );
+const modalInfo = new bootstrap.Modal(document.getElementById("info-paciente"));
 
 const modalAgregar = document.getElementById("modalAgregar");
-const exampleModalLabel = document.getElementById("exampleModalLabelPaciente");
-const selectGenero = document.getElementById("selectGenero");
+const exampleModalLabel = document.getElementById("labelPaciente");
+
 const inputs = document.querySelectorAll(".inputs");
 const botonModal = document.getElementById("botonModal");
 const cedulaRegistrada = document.getElementById("cedulaRegistrada");
 const btnOpenModal = document.getElementById("btnOpenModal");
 const id_paciente = document.getElementById("id_paciente");
 const id_rol_global = document.getElementById("id_rol_global").value;
+const fnTextInfo = document.getElementById('fn-text');
+const direccionTextInfo = document.getElementById("direccion-text");
+
 const selector = ".exampleTable";
+let dataPacientes = [];
+
+//searchObectPattiens es para buscar los datos de un paciente especifico y retornar el objeto
+const searchObectPattiens = (id) =>
+  dataPacientes.find((data) => data.id_paciente == id);
+
+//show info pacientes especifico
+const infoPatients = (id) => {
+  let paciente = searchObectPattiens(id);
+  fnTextInfo.innerText = paciente.fn;
+  direccionTextInfo.innerText = paciente.direccion;
+};
 
 //read
 const readPatients = async () => {
-  // try {
-  let metodo = "";
-  let urlActual = window.location.href;
+  try {
+    let metodo = "";
+    let urlActual = window.location.href;
 
-  if (urlActual.includes("getPacientes")) metodo = "getPacientesAjax";
-  else if (urlActual.includes("getHistorialSalud"))
-    metodo = "getHistorialSaludAjax";
-  else metodo = "papeleraPacienteAjax";
+    if (urlActual.includes("getPacientes")) metodo = "getPacientesAjax";
+    else if (urlActual.includes("getHistorialSalud"))
+      metodo = "getHistorialSaludAjax";
+    else metodo = "papeleraPacienteAjax";
 
-  const result = await executePetition(url + "/" + metodo, "GET");
+    const result = await executePetition(url + "/" + metodo, "GET");
+    dataPacientes = result;
 
-  console.log(result);
+    console.log(result);
 
-  // construir html de filas
-  let html = "";
-  if (urlActual.includes("getHistorialSalud")) {
-    result.forEach((element) => {
-      html += `
+    // construir html de filas
+    let html = "";
+    if (urlActual.includes("getHistorialSalud")) {
+      result.forEach((element) => {
+        html += `
                 <tr  class="text-align-left">
                     <td class="">${element.nacionalidad}-${element.cedula}</td>
                     <td class="">${element.nombre_paciente} ${element.apellido_paciente}</td>
@@ -56,10 +73,10 @@ const readPatients = async () => {
                     
                 </tr>
           `;
-    });
-  } else {
-    result.forEach((element) => {
-      html += `
+      });
+    } else {
+      dataPacientes.forEach((element) => {
+        html += `
                 <tr  class="text-align-left">
                     <td class="">${element.nacionalidad}-${element.cedula}</td>
                     <td class="">${element.nombre}</td>
@@ -97,7 +114,7 @@ const readPatients = async () => {
                                 </svg>
                             </button>
 
-                               <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla" title="Horarios Del Doctor" data-bs-toggle="modal" data-bs-target="#exampleModalInfoDoctor" data-index="22">
+                               <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla" data-index=${element.id_paciente}  data-bs-toggle="modal" data-bs-target="#info-paciente" title="Mas Informacion">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
                                         <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path>
                                     </svg>
@@ -123,101 +140,103 @@ const readPatients = async () => {
                     </td>
                 </tr>
           `;
+      });
+    }
+
+    // si ya existe DataTable, destrúyela
+    if ($.fn.DataTable.isDataTable(selector)) {
+      $(selector).DataTable().clear().destroy();
+    }
+
+    // vuelca el html en el tbody
+    document.querySelector(selector + " tbody").innerHTML = html;
+
+    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+      ele.value = document.getElementById("id_usuario_session").value;
     });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de eliminar el paciente?",
+          deletePattients,
+          data,
+        );
+      });
+    });
+
+    //llamar a la uncion de restablecer
+    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+        alertConfirm(
+          "Esta seguro de restablecer el paciente?",
+          restablecerPattients,
+          data,
+        );
+      });
+    });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".botonesEdi").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        let paciente = searchObectPattiens(btn.getAttribute('data-index'));
+        
+        //objetos con todos los parametros de la funcion
+        const parametros = {
+          labelModal: exampleModalLabel,
+          textLabelModal: "Modificar Paciente",
+          form: modalAgregar,
+          modal: modalAgregar.parentElement.parentElement.parentElement,
+          btnModal: botonModal,
+          btnTextModal: "Modificar",
+          data: {
+            nacionalidad: paciente.nacionalidad,
+            cedula: paciente.cedula,
+            nombre: paciente.nombre,
+            apellido: paciente.apellido,
+            telefono: paciente.telefono,
+            direccion: paciente.direccion,
+            fn: paciente.fn,
+            genero: paciente.genero,
+            id: paciente.id_paciente,
+          },
+          inputs: inputs,
+          cedulaOculta: cedulaRegistrada,
+          idOculto: id_paciente,
+        };
+        showDataModal(parametros);
+      });
+    });
+
+    //mostrar mas info
+    document.querySelectorAll(".botonesInfo").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        let id = btn.getAttribute("data-index");
+        modalInfo.show();
+        infoPatients(id);
+      });
+    });
+
+    //////gestionar persmisos
+    hasPermision(id_rol_global, "Pacientes", "guardar", ".btnOpenModal"); //guardar
+    hasPermision(id_rol_global, "Pacientes", "eliminar", ".btn-eliminar"); //eliminar
+    hasPermision(id_rol_global, "Pacientes", "eliminar", ".btnRestablecer"); //restablecer
+    hasPermision(id_rol_global, "Pacientes", "editar", ".botonesEdi"); //editar
+
+    // re-inicializa
+    initDataTable(selector);
+  } catch (error) {
+    alertError("Error", error);
   }
-
-  // si ya existe DataTable, destrúyela
-  if ($.fn.DataTable.isDataTable(selector)) {
-    $(selector).DataTable().clear().destroy();
-  }
-
-  // vuelca el html en el tbody
-  document.querySelector(selector + " tbody").innerHTML = html;
-
-  document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-    ele.value = document.getElementById("id_usuario_session").value;
-  });
-
-  //llamar las funcion de eliminar
-  document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const data = [
-        this.getAttribute("data-index"),
-        document.getElementById("id_usuario_session").value,
-      ];
-      alertConfirm(
-        "Esta seguro de eliminar el paciente?",
-        deletePattients,
-        data,
-      );
-    });
-  });
-
-  //llamar a la uncion de restablecer
-  document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const data = [
-        this.getAttribute("data-index"),
-        document.getElementById("id_usuario_session").value,
-      ];
-      alertConfirm(
-        "Esta seguro de restablecer el paciente?",
-        restablecerPattients,
-        data,
-      );
-    });
-  });
-
-  //llamar las funcion de eliminar
-  document.querySelectorAll(".botonesEdi").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      //objetos con todos los parametros de la funcion
-      const parametros = {
-        labelModal: exampleModalLabel,
-        textLabelModal: "Modificar Paciente",
-        form: modalAgregar,
-        modal: modalAgregar.parentElement.parentElement.parentElement,
-        btnModal: botonModal,
-        btnTextModal: "Modificar",
-        data: {
-          nacionalidad: btn.closest("tr").children[0].innerText.slice(0, 1),
-          cedula: parseInt(btn.closest("tr").children[0].innerText.slice(2)),
-          nombre: btn.closest("tr").children[1].innerText,
-          apellido: btn.closest("tr").children[2].innerText,
-          telefono: parseInt(btn.closest("tr").children[3].innerText),
-          direccion: btn.closest("tr").children[4].innerText,
-          fn: btn.closest("tr").children[5].innerText,
-          genero: btn.closest("tr").children[6].innerText,
-          id: btn
-            .closest("tr")
-            .children[8].children[0].getAttribute("data-index"),
-        },
-        inputs: inputs,
-        cedulaOculta: cedulaRegistrada,
-        idOculto: id_paciente,
-      };
-      showDataModal(parametros);
-    });
-  });
-
-  //mostrar mas info
-  document.querySelectorAll(".botonesInfo").forEach(btn=>{
-    btn.addEventListener("click", function(){
-      alertInfo("info",'hola')
-    })
-  })
-
-  //////gestionar persmisos
-  hasPermision(id_rol_global, "Pacientes", "guardar", ".btnOpenModal"); //guardar
-  hasPermision(id_rol_global, "Pacientes", "eliminar", ".btn-eliminar"); //eliminar
-  hasPermision(id_rol_global, "Pacientes", "eliminar", ".btnRestablecer"); //restablecer
-  hasPermision(id_rol_global, "Pacientes", "editar", ".botonesEdi"); //editar
-
-  // re-inicializa
-  initDataTable(selector);
-  // } catch (error) {
-  //   alertError("Error", error);
-  // }
 };
 //create
 const createPatients = async (form) => {

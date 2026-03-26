@@ -83,15 +83,15 @@
         <div class="table table-responsive">
             <table class="exampleTable table table-striped ">
                 <thead>
-                    <tr>
-                        <th class="border-start-0 text-center">Cédula</th>
-                        <th class="border-start text-center">Nombre</th>
-                        <th class="border-start text-center">Apellido</th>
-                        <th class="border-start text-center">Teléfono</th>
-                        <th class="border-start text-center" colspan="2">E_mail</th>
-                        <th class="border-start text-center">Especialidad</th>
+                    <tr class="text-align-left">
+                        <th class="border-start-0 ">Cédula</th>
+                        <th class="border-start ">Nombre</th>
+                        <th class="border-start ">Apellido</th>
+                        <th class="border-start ">Teléfono</th>
+                        <th class="border-start " colspan="2">E_mail</th>
+                        <th class="border-start ">Especialidad</th>
 
-                        <th class="border-start text-center">Acciones</th>
+                        <th class="border-start ">Acciones</th>
 
                     </tr>
                 </thead>

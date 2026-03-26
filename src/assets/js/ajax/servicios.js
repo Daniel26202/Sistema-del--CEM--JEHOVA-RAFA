@@ -96,19 +96,19 @@ const readServices = async () => {
       let precioB = (element.precio * dolar).toFixed(2);
 
       html += `<tr>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.categoria}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${precioB}  BS
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${precioD} $
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.tipo}
                             </td>
-                            <td class="">
+                            <td class="text-center">
 
                                 <!-- Horario Del Doctor -->
                                 <div class="d-flex justify-content-center">

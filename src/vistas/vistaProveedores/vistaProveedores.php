@@ -63,7 +63,7 @@
 
             <table class="exampleTable table table-striped">
                 <thead>
-                    <tr>
+                    <tr class="text-align-left">
                         <th class="text-dark text-center">Nombre</th>
                         <th class="text-dark text-center">Rif</th>
                         <th class="text-dark text-center">Teléfono</th>

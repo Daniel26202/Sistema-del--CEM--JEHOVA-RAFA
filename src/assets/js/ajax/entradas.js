@@ -44,13 +44,13 @@ addEventListener("DOMContentLoaded", function () {
       if (result.length > 0) {
         result.forEach((element) => {
           html += `<tr>
-                            <td class="text-center">${element.nombre}</td>
-                            <td class="text-center">${element.proveedor}</td>
-                            <td class="text-center">${element.fechaDeIngreso}</td>
-                            <td class="text-center">${element.fechaDeVencimiento}</td>
-                            <td class="text-center">${element.cantidad_entrada}</td>
-                            <td class="text-center">${element.precio_entrada} BS</td>
-                            <td class="text-center">${element.numero_de_lote}</td>
+                            <td class="">${element.nombre}</td>
+                            <td class="">${element.proveedor}</td>
+                            <td class="">${element.fechaDeIngreso}</td>
+                            <td class="">${element.fechaDeVencimiento}</td>
+                            <td class="">${element.cantidad_entrada}</td>
+                            <td class="">${element.precio_entrada} BS</td>
+                            <td class="">${element.numero_de_lote}</td>
 
 
 

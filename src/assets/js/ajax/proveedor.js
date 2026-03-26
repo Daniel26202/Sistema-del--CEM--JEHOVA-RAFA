@@ -45,19 +45,19 @@ const readProveedores = async () => {
     result.forEach((element) => {
       html += `<tr>
 
-                            <td class=" text-center border-start-0">
+                            <td class="  border-start-0">
                                 ${element.nombre}
                             </td>
-                            <td class=" text-center">
+                            <td class=" ">
                                 ${element.rif}
                             </td>
-                            <td class=" text-center">
+                            <td class=" ">
                                  ${element.telefono}
                             </td>
-                            <td class=" text-center">
+                            <td class=" ">
                                  ${element.email}
                             </td>
-                            <td class=" text-center">
+                            <td class=" ">
                                  ${element.direccion}
                             </td>
                             <td class=" d-flex justify-content-center">

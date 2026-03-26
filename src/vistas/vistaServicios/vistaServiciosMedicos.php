@@ -58,7 +58,7 @@
         <div class="table table-responsive">
             <table class="exampleTable  table table-striped">
                 <thead>
-                    <tr>
+                    <tr class="text-align-left">
                         <th class="text-dark">Servicio</th>
                         <th class="text-dark">Precio en BS</th>
                         <th class="text-dark">Precio en $</th>

@@ -168,22 +168,22 @@ const readDoctor = async () => {
 
       dataDoctor.forEach((element) => {
         html += ` <tr>
-                            <td class=" text-center">
+                            <td class=" ">
                                 ${element.nacionalidad}-${element.cedula}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.nombre_d}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.apellido}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.telefono}
                             </td>
-                            <td class="text-center" colspan="2">
+                            <td class="" colspan="2">
                                 ${element.correo}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.nombre}
                             </td>
 
@@ -256,22 +256,22 @@ const readDoctor = async () => {
     } else {
       result.forEach((element) => {
         html += ` <tr>
-                            <td class=" text-center">
+                            <td class=" ">
                                 ${element.nacionalidad}-${element.cedula}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.nombre_d}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.apellido}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.telefono}
                             </td>
-                            <td class="text-center" colspan="2">
+                            <td class="" colspan="2">
                                 ${element.correo}
                             </td>
-                            <td class="text-center">
+                            <td class="">
                                 ${element.nombre}
                             </td>
 

@@ -192,3 +192,68 @@
             </div>
         </div>
     </div>
+
+
+
+    <!-- //modal info cliente. -->
+
+
+    <div class="modal fade" id="info-cliente" tabindex="-1" aria-labelledby="exampleModalLabelMostrar" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content tamaño-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelMostrar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-info-circle-fill azul mb-1 me-2" viewBox="0 0 16 16">
+                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+                        </svg>
+                        Información
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="modalInfo">
+
+
+                        <br>
+
+                        <!-- Fecha de Vencimiento -->
+                        <div class="info-group mb-3">
+                            <h6 class="fw-bold mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-calendar2-x-fill azul mb-1 me-1" viewBox="0 0 16 16">
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-6.6 5.146a.5.5 0 1 0-.708.708L7.293 10l-1.147 1.146a.5.5 0 0 0 .708.708L8 10.707l1.146 1.147a.5.5 0 0 0 .708-.708L8.707 10l1.147-1.146a.5.5 0 0 0-.708-.708L8 9.293 6.854 8.146z" />
+                                </svg>
+                                Fecha de Nacimiento:
+                                <span class="parrafo ms-4 h6" id="fn-text"></span>
+
+                            </h6>
+
+                        </div>
+
+                        <br>
+
+                        <!-- Descripción -->
+                        <div class="info-group mb-3">
+                            <h6 class="fw-bold mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-text-left azul mb-1 me-1" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                                </svg>
+                                Direccion:
+                                <span class="parrafo ms-4 h6" id="direccion-text"></span>
+
+                            </h6>
+
+                        </div>
+
+
+
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

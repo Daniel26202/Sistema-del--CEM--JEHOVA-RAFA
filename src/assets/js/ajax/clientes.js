@@ -13,6 +13,8 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Clientes";
 
 const modalAgregar = document.getElementById("modalAgregarCliente");
+const modalInfo = new bootstrap.Modal(document.getElementById("info-cliente"));
+
 const selectGenero = document.getElementById("selectGenero");
 const exampleModalLabel = document.getElementById("exampleModalLabelCliente");
 const botonModal = document.getElementById("botonModal");
@@ -21,6 +23,23 @@ const inputs = document.querySelectorAll(".inputs");
 const cedulaRegistrada = document.getElementById("cedulaOculta");
 const id_cliente = document.getElementById("id_oculto");
 const id_rol_global = document.getElementById("id_rol_global").value;
+const fnTextInfo = document.getElementById("fn-text");
+const direccionTextInfo = document.getElementById("direccion-text");
+let dataCustomer = [];
+
+
+//searchObectPattiens es para buscar los datos de un paciente especifico y retornar el objeto
+const searchObectCustomer = (id) =>
+  dataCustomer.find((data) => data.id_cliente == id);
+
+//show info pacientes especifico
+const infoCustomer = (id) => {
+  let customer = searchObectCustomer(id);
+  fnTextInfo.innerText = customer.fn;
+  direccionTextInfo.innerText = customer.direccion;
+};
+
+
 
 //read
 
@@ -33,19 +52,17 @@ const readCustomer = async () => {
     else metodo = "papeleraAjax";
 
     const result = await executePetition(url + "/" + metodo, "GET");
-    console.log(result);
+    dataCustomer = result;
 
     // construir html de filas
     let html = "";
-    result.forEach((element) => {
+    dataCustomer.forEach((element) => {
       html += ` <tr>
-              <td class="text-center">${element.nacionalidad}-${element.cedula}</td>
-              <td class="text-center">${element.nombre}</td>
-              <td class="text-center">${element.apellido}</td>
-              <td class="text-center">${element.telefono}</td>
-              <td class="text-center">${element.direccion}</td>
-              <td class="text-center">${element.fn}</td>
-              <td class="text-center">${element.genero}</td>
+              <td class="">${element.nacionalidad}-${element.cedula}</td>
+              <td class="">${element.nombre}</td>
+              <td class="">${element.apellido}</td>
+              <td class="">${element.telefono}</td>
+              <td class="">${element.genero}</td>
               <td class="text-center">
               <button class="${
                 urlActual.includes("papelera") ? "d-none" : ""
@@ -68,6 +85,12 @@ const readCustomer = async () => {
                                 </svg>
                             </button>
                             </button>
+
+                            <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla" data-index="${element.id_cliente}" data-bs-toggle="modal" data-bs-target="#info-cliente" title="Mas Informacion">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+                                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path>
+                                    </svg>
+                                </button>
 
 
                   <div class="me-2">
@@ -135,6 +158,7 @@ const readCustomer = async () => {
     //llamar las funcion de eliminar
     document.querySelectorAll(".botonesEdi").forEach((btn) => {
       btn.addEventListener("click", function () {
+        let customer = searchObectCustomer(btn.getAttribute("data-index"));
         //objetos con todos los parametros de la funcion
         const parametros = {
           labelModal: exampleModalLabel,
@@ -144,23 +168,30 @@ const readCustomer = async () => {
           btnModal: botonModal,
           btnTextModal: "Modificar",
           data: {
-            nacionalidad: btn.closest("tr").children[0].innerText.slice(0, 1),
-            cedula: parseInt(btn.closest("tr").children[0].innerText.slice(2)),
-            nombre: btn.closest("tr").children[1].innerText,
-            apellido: btn.closest("tr").children[2].innerText,
-            telefono: parseInt(btn.closest("tr").children[3].innerText),
-            direccion: btn.closest("tr").children[4].innerText,
-            fn: btn.closest("tr").children[5].innerText,
-            genero: btn.closest("tr").children[6].innerText,
-            id: btn
-              .closest("tr")
-              .children[7].children[0].getAttribute("data-index"),
+            nacionalidad: customer.nacionalidad,
+            cedula: customer.cedula,
+            nombre: customer.nombre,
+            apellido: customer.apellido,
+            telefono: customer.telefono,
+            direccion: customer.direccion,
+            fn: customer.fn,
+            genero: customer.genero,
+            id: customer.id_cliente,
           },
           inputs: inputs,
           cedulaOculta: cedulaRegistrada,
           idOculto: id_cliente,
         };
         showDataModal(parametros);
+      });
+    });
+
+    //mostrar mas info
+    document.querySelectorAll(".botonesInfo").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        let id = btn.getAttribute("data-index");
+        modalInfo.show();
+        infoCustomer(id);
       });
     });
 
