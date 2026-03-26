@@ -301,7 +301,7 @@
     <div class="modal-dialog ">
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
-                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelDoctores">Registrar Doctor</h5>
+                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelAdmin">Registrar Administrador</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

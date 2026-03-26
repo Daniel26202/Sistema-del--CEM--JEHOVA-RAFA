@@ -6,6 +6,7 @@ import {
   initDataTable,
   alertConfirm,
   hasPermision,
+  clearModalEnviar,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -64,6 +65,14 @@ const nota = document.getElementById("nota");
 const selectorPacietne = ".examplePaciente";
 
 const id_rol_global = document.getElementById("id_rol_global").value;
+
+
+///categoria///
+const openModalSintomas = document.getElementById(
+  "openModalSintomas",
+);
+const inputsSintimo = modalAgregarSintoma.querySelectorAll(".input-validar");
+const exampleModalLabel = document.getElementById("exampleModalLabelPaciente");
 
 let semaforo = 0;
 
@@ -676,6 +685,23 @@ const createPatients = async (form, inputs) => {
 readPatients();
 
 readSintomas();
+
+openModalSintomas.addEventListener("click", function () {
+  
+  
+  //objetos con todos los parametros de la funcion
+  const parametros = {
+    labelModal: exampleModalLabel,
+    textLabelModal: "Registrar Sintoma",
+    form: modalAgregarSintoma,
+    modal: modalAgregarSintoma.parentElement.parentElement.parentElement,
+    btnModal: openModalSintomas,
+    btnTextModal: "Registrar",
+    inputs: inputsSintimo,
+  };
+
+  clearModalEnviar(parametros);
+});
 
 cedulaControl.addEventListener("keyup", function () {
   document.getElementById("cedulaOculta").value = cedulaControl.value;

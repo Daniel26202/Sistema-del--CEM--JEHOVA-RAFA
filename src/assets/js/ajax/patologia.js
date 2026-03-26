@@ -1,10 +1,15 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable, hasPermision } from "../generic/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable, hasPermision, clearModalEnviar } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Patologias";
 
 const modalAgregar = document.getElementById("modalAgregar");
 const id_rol_global = document.getElementById("id_rol_global").value;
+
+const btnOpenModal = document.getElementById("btnOpenModal");
+const botonModal = document.getElementById('botonModal');
+const exampleModalLabel = document.getElementById('exampleModalLabelPaciente');
+const inputs = modalAgregar.querySelectorAll('.input-validar')
 
 //read
 
@@ -170,6 +175,22 @@ const restablecerPathology = async (data) => {
 };
 
 readPathology();
+
+
+btnOpenModal.addEventListener("click", function () {
+  
+  //objetos con todos los parametros de la funcion
+  const parametros = {
+    labelModal: exampleModalLabel,
+    textLabelModal: "Registrar Patología",
+    form: modalAgregar,
+    modal: modalAgregar.parentElement.parentElement.parentElement,
+    btnModal: botonModal,
+    btnTextModal: "Registrar",
+    inputs: inputs,
+  };
+  clearModalEnviar(parametros);
+});
 
 let verificarFormulario = inicializarValidacionFormulario(modalAgregar);
 

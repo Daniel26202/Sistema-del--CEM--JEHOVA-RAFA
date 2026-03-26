@@ -76,7 +76,7 @@
         <div class=" d-flex  <?= $vistaActiva == 'administradores'  ? ' justify-content-between' : 'justify-content-end' ?>">
 
             <div class="caja-insumos mt-3 <?= $vistaActiva == 'administradores'  ? ' ' : 'd-none' ?>">
-                <button class="btnOpenModal caja-btn-margin btn btn-modals" style="width: 100% !important" data-bs-toggle="modal" data-bs-target="#exampleModalagregarAdmin">
+                <button id="btnOpenModal" class="btnOpenModal caja-btn-margin btn btn-modals" style="width: 100% !important" data-bs-toggle="modal" data-bs-target="#exampleModalagregarAdmin">
                     <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor"
                         class="bi bi-person-square me-2" viewBox="0 0 16 16">
                         <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />

@@ -18,6 +18,8 @@ const modalAgregarProveedor = new bootstrap.Modal(
 const formProveedor = document.getElementById("formProveedor");
 const exampleModalLabel = document.getElementById("exampleModalLabelProveedor");
 const botonModal = document.getElementById("botonModalProveedor");
+console.log(botonModal);
+
 
 const inputs = formProveedor.querySelectorAll(".input-validar");
 const id_proveedor = document.getElementById("id_proveedor");
@@ -280,12 +282,15 @@ btnOpenModalProveedor.addEventListener("click", function () {
     textLabelModal: "Registrar Proveedor",
     form: formProveedor,
     modal: formProveedor.parentElement.parentElement.parentElement,
-    botonModal: botonModal,
+    btnModal: botonModal,
     btnTextModal: "Registrar",
     inputs: inputs,
   };
+  console.log(parametros);
+  
   clearModalEnviar(parametros);
 });
+
 
 let verificarFormulario = inicializarValidacionFormulario(formProveedor);
 

@@ -5,6 +5,7 @@ import {
   alertSuccess,
   cargarImg,
   hasPermision,
+  clearModalEnviar,
 } from "../generic/funtionGeneric.js";
 import Paginator from "../generic/Paginator.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -33,13 +34,12 @@ const id_usuario = document.getElementById("id_usuario");
 const usurioHiddenPass = document.getElementById("usurioHiddenPass");
 const btnEliminar = document.getElementById('btnEliminar');
 const formAgregarAdmin = document.getElementById('formAgregarAdmin');
-
 const id_rol_global = document.getElementById("id_rol_global").value;
-
-
-
 const modalInfoBoots = new bootstrap.Modal(document.getElementById("modal-exampleMostrar"));
-
+const btnOpenModal = document.getElementById('btnOpenModal');
+const exampleModalLabel = document.getElementById("exampleModalLabelAdmin");  
+const inputsAdmin = formAgregarAdmin.querySelectorAll('.input-validar')
+const botonModal = document.getElementById("botonModal");
 
 let nameUser = "";
 let nombreAndApellido = "";
@@ -267,6 +267,24 @@ desMostrarContra.forEach((des) => {
     mostrarContrasena(divParent);
   });
 });
+
+
+
+btnOpenModal.addEventListener("click", function () {
+  //objetos con todos los parametros de la funcion
+  const parametros = {
+    labelModal: exampleModalLabel,
+    textLabelModal: "Registrar Administrador",
+    form: formAgregarAdmin,
+    modal: formAgregarAdmin.parentElement.parentElement.parentElement,
+    btnModal: botonModal,
+    btnTextModal: "Registrar",
+    inputs: inputsAdmin,
+  };
+  clearModalEnviar(parametros);
+});
+
+
 
 let verificarFormularioEdi = inicializarValidacionFormulario(formEdiUsuario);
 let verificarFormularioPass = inicializarValidacionFormulario(formEdiPass);

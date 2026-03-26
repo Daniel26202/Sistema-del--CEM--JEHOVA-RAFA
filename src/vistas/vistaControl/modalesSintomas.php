@@ -81,7 +81,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-modals" data-bs-toggle="modal" data-bs-target="#exampleModalAgregarSintoma">Nuevo</button>
+                <button type="button" class="btn btn-modals" id="openModalSintomas" data-bs-toggle="modal" data-bs-target="#exampleModalAgregarSintoma">Nuevo</button>
             </div>
 
         </div>

@@ -1,9 +1,15 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "../generic/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, clearModalEnviar } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Servicios";
 
 const formulario = document.getElementById("formularioCategoria");
+const openBotonModalServicio = document.getElementById(
+  "openBotonModalServicio",
+);
+const botonModalServicio = document.getElementById('botonModalServicio');
+const inputs =formulario.querySelectorAll('.input-validar')
+const exampleModalLabel = document.getElementById("modalLabelServicios"); 
 
 //read
 
@@ -80,7 +86,7 @@ const readCategory = async () => {
     }
 };
 //create
-const createcategory = async (form, inputs) => {
+const createcategory = async (form) => {
     try {
         const data = new FormData(form);
         let result = await executePetition(url + "/registrarCategoria", "POST", data);
@@ -110,6 +116,23 @@ const deleteCategory = async (data) => {
 };
 
 readCategory();
+
+
+openBotonModalServicio.addEventListener("click", function () {
+  
+  //objetos con todos los parametros de la funcion
+  const parametros = {
+    labelModal: exampleModalLabel,
+    textLabelModal: "Registrar Categoría",
+    form: formulario,
+    modal: formulario.parentElement.parentElement.parentElement,
+    btnModal: botonModalServicio,
+    btnTextModal: "Registrar",
+    inputs: inputs,
+  };
+  clearModalEnviar(parametros);
+});
+
 
 let verificarFormulario = inicializarValidacionFormulario(formulario);
 
