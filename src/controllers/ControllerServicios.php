@@ -9,12 +9,14 @@ use App\config\RateLimiter;
 
 function servicios($parametro)
 {
+	$vistaActiva = 'servicios';
 	$ayuda = "btnayudaServicioMedico";
 	require_once "./src/vistas/vistaServicios/vistaServiciosMedicos.php";
 }
 
 function papeleraServicio($parametro)
 {
+	$vistaActiva = 'servicios';
 	require_once "./src/vistas/vistaServicios/vistaServiciosPapelera.php";
 }
 

@@ -109,7 +109,7 @@ if (!empty($parametro)) {
 			</nav>
 		</div>
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio" uk-tooltip="Inicio" id="menuInicio">
+		<a class="nav-link d-flex <?= $vistaActiva == 'inicio' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio" uk-tooltip="Inicio" id="menuInicio">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
 					<path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"></path>
 					<path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"></path>
@@ -118,7 +118,7 @@ if (!empty($parametro)) {
 		</a>
 
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" uk-tooltip="Pacientes" id="menuPacientes">
+		<a class="nav-link d-flex <?= $vistaActiva == 'pacientes' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" uk-tooltip="Pacientes" id="menuPacientes">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-people-fill" viewBox="0 0 16 16">
 					<path
@@ -127,7 +127,7 @@ if (!empty($parametro)) {
 			Pacientes
 		</a>
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes" uk-tooltip="Pacientes" id="menuClientes">
+		<a class="nav-link d-flex <?= $vistaActiva == 'clientes' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes" uk-tooltip="Pacientes" id="menuClientes">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-people-fill" viewBox="0 0 16 16">
 					<path
@@ -136,14 +136,14 @@ if (!empty($parametro)) {
 			Clientes
 		</a>
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias" uk-tooltip="Patologias" id="menuPatologias">
+		<a class="nav-link d-flex <?= $vistaActiva == 'patologias' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias" uk-tooltip="Patologias" id="menuPatologias">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bandaid-fill" viewBox="0 0 16 16">
 					<path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z" />
 				</svg></div>
 			Patologías
 		</a>
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura" uk-tooltip="Facturacion" id="menuFacturacion">
+		<a class="nav-link d-flex <?= $vistaActiva == 'factura' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura" uk-tooltip="Facturacion" id="menuFacturacion">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
 					<path
@@ -167,14 +167,14 @@ if (!empty($parametro)) {
 		</a>
 		<div class="collapse" id="collapseCitas" aria-labelledby="headingCitas" data-bs-parent="#sidenavAccordion d-flex">
 			<nav class="sb-sidenav-menu-nested nav">
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas">Pendientes</a>
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoy">Hoy</a>
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas">Realizadas</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'pendientes' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas">Pendientes</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'hoy' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoy">Hoy</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'realizadas' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas">Realizadas</a>
 			</nav>
 		</div>
 
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Servicios/servicios" uk-tooltip="Servicios" id="menuServicios">
+		<a class="nav-link d-flex  <?= $vistaActiva == 'servicios' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Servicios/servicios" uk-tooltip="Servicios" id="menuServicios">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-heart-fill" viewBox="0 0 16 16">
 					<path fill-rule="evenodd" d="M10.058.501a.501.501 0 0 0-.5-.501h-2.98c-.276 0-.5.225-.5.501A.499.499 0 0 1 5.582 1a.497.497 0 0 0-.497.497V2a.5.5 0 0 0 .5.5h4.968a.5.5 0 0 0 .5-.5v-.503A.497.497 0 0 0 10.555 1a.499.499 0 0 1-.497-.499Z" />
 					<path fill-rule="evenodd" d="M4.174 1h-.57a1.5 1.5 0 0 0-1.5 1.5v12a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-12a1.5 1.5 0 0 0-1.5-1.5h-.642c.055.156.085.325.085.5V2c0 .828-.668 1.5-1.492 1.5H5.581A1.496 1.496 0 0 1 4.09 2v-.5c0-.175.03-.344.085-.5Zm3.894 5.482c1.656-1.673 5.795 1.254 0 5.018-5.795-3.764-1.656-6.69 0-5.018Z" />
@@ -182,7 +182,7 @@ if (!empty($parametro)) {
 			Servicio
 		</a>
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores" uk-tooltip="Directorio Médico" id="menuDirectorioMedico">
+		<a class="nav-link d-flex <?= $vistaActiva == 'doctores' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores" uk-tooltip="Directorio Médico" id="menuDirectorioMedico">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-clipboard2-pulse-fill" viewBox="0 0 16 16">
 					<path
@@ -193,7 +193,7 @@ if (!empty($parametro)) {
 			Directorio Médico
 		</a>
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
+		<a class="nav-link d-flex <?= $vistaActiva == 'control' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-person-fill-gear" viewBox="0 0 16 16">
 					<path
@@ -201,7 +201,7 @@ if (!empty($parametro)) {
 				</svg></div>
 			Control Médico
 		</a>
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
+		<a class="nav-link d-flex <?= $vistaActiva == 'hospitalizacion' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
 			id="menuHospitalizacion">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-heart-pulse-fill" viewBox="0 0 16 16">
@@ -213,7 +213,7 @@ if (!empty($parametro)) {
 			Hospitalización
 		</a>
 
-		<a class="nav-link collapsed d-flex" id="menuInsumos" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInsumos" aria-expanded="false" aria-controls="collapseInsumos">
+		<a class="nav-link collapsed d-flex <?= $vistaActiva == 'insumos' ? 'active' : '' ?>" id="menuInsumos" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInsumos" aria-expanded="false" aria-controls="collapseInsumos">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-capsule" viewBox="0 0 16 16">
 					<path
@@ -231,19 +231,19 @@ if (!empty($parametro)) {
 			<nav class="sb-sidenav-menu-nested nav">
 
 
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos" uk-tooltip="Insumos" id="menuInsumos">Insumos</a>
+				<a class="nav-link mx-5 <?= $vistaActiva == 'insumos' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos" uk-tooltip="Insumos" id="menuInsumos">Insumos</a>
 
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada" uk-tooltip="Entradas">Entradas</a>
+				<a class="nav-link mx-5 <?= $vistaActiva == 'entradas' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada" uk-tooltip="Entradas">Entradas</a>
 
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores" uk-tooltip="Poveedores">Proveedores</a>
+				<a class="nav-link mx-5 <?= $vistaActiva == 'proveedores' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores" uk-tooltip="Poveedores">Proveedores</a>
 
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/InsumosVencidos" uk-tooltip="Vencidos">Vencidos</a>
+				<a class="nav-link mx-5 <?= $vistaActiva == 'vencidos' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/InsumosVencidos" uk-tooltip="Vencidos">Vencidos</a>
 
 			</nav>
 		</div>
 
 
-		<a class="nav-link collapsed d-flex" id="menuUsuarios" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
+		<a class="nav-link collapsed d-flex  <?= $vistaActiva == 'usuarios' ? 'active' : '' ?>" id="menuUsuarios" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsuarios" aria-expanded="false" aria-controls="collapseUsuarios">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-gear-fill" viewBox="0 0 16 16">
 					<path
@@ -259,16 +259,16 @@ if (!empty($parametro)) {
 		<div class="collapse" id="collapseUsuarios" aria-labelledby="headingCitas" data-bs-parent="#sidenavAccordion d-flex">
 			<nav class="sb-sidenav-menu-nested nav">
 
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" uk-tooltip="Usuarios">Usuarios</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'usuarios' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" uk-tooltip="Usuarios">Usuarios</a>
 
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores" uk-tooltip="Administradores">Administradores</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'administradores' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores" uk-tooltip="Administradores">Administradores</a>
 
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" uk-tooltip="Roles">Roles</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'roles' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" uk-tooltip="Roles">Roles</a>
 
 			</nav>
 		</div>
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes" uk-tooltip="Reportes" id="menuReportes">
+		<a class="nav-link d-flex  <?= $vistaActiva == 'reportes' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes" uk-tooltip="Reportes" id="menuReportes">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-clipboard-data-fill" viewBox="0 0 16 16">
 					<path
@@ -279,7 +279,7 @@ if (!empty($parametro)) {
 			Reportes
 		</a>
 
-		<a class="nav-link d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/estadisticas" uk-tooltip="Reportes Estadisticos" id="menuReportesEstadisticos">
+		<a class="nav-link d-flex  <?= $vistaActiva == 'estadisticas' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/estadisticas" uk-tooltip="Reportes Estadisticos" id="menuReportesEstadisticos">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
 					<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
 				</svg></div>
@@ -287,7 +287,7 @@ if (!empty($parametro)) {
 		</a>
 
 
-		<a class="nav-link d-flex" id="menuMantenimiento" href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento" uk-tooltip="Mantenimiento" id="menuReportesEstadisticos">
+		<a class="nav-link d-flex  <?= $vistaActiva == 'mantenimiento' ? 'active' : '' ?>" id="menuMantenimiento" href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento" uk-tooltip="Mantenimiento" id="menuReportesEstadisticos">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench-adjustable" viewBox="0 0 16 16">
 					<path d="M16 4.5a4.5 4.5 0 0 1-1.703 3.526L13 5l2.959-1.11q.04.3.041.61" />
 					<path d="M11.5 9c.653 0 1.273-.139 1.833-.39L12 5.5 11 3l3.826-1.53A4.5 4.5 0 0 0 7.29 6.092l-6.116 5.096a2.583 2.583 0 1 0 3.638 3.638L9.908 8.71A4.5 4.5 0 0 0 11.5 9m-1.292-4.361-.596.893.809-.27a.25.25 0 0 1 .287.377l-.596.893.809-.27.158.475-1.5.5a.25.25 0 0 1-.287-.376l.596-.893-.809.27a.25.25 0 0 1-.287-.377l.596-.893-.809.27-.158-.475 1.5-.5a.25.25 0 0 1 .287.376M3 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />

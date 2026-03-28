@@ -13,7 +13,7 @@ function factura($parametro)
 {
 
 	$modeloInsumos = new ModeloInsumo();
-
+	$vistaActiva = 'factura';
 	$ayuda = "btnayudaFactura";
 	$insumos = $modeloInsumos->insumos();
 	require_once './src/vistas/vistaFactura/factura.php';

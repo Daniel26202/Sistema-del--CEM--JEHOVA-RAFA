@@ -14,7 +14,7 @@ function control($parametro)
 {
 	$modeloInicio = new ModeloInicio();
 
-
+	$vistaActiva = "control";
 	$ayuda = "btnayudaControl";
 
 	if (session_status() !== PHP_SESSION_ACTIVE) {

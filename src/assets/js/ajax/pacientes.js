@@ -27,7 +27,7 @@ const cedulaRegistrada = document.getElementById("cedulaRegistrada");
 const btnOpenModal = document.getElementById("btnOpenModal");
 const id_paciente = document.getElementById("id_paciente");
 const id_rol_global = document.getElementById("id_rol_global").value;
-const fnTextInfo = document.getElementById('fn-text');
+const fnTextInfo = document.getElementById("fn-text");
 const direccionTextInfo = document.getElementById("direccion-text");
 
 const selector = ".exampleTable";
@@ -188,8 +188,8 @@ const readPatients = async () => {
     //llamar las funcion de eliminar
     document.querySelectorAll(".botonesEdi").forEach((btn) => {
       btn.addEventListener("click", function () {
-        let paciente = searchObectPattiens(btn.getAttribute('data-index'));
-        
+        let paciente = searchObectPattiens(btn.getAttribute("data-index"));
+
         //objetos con todos los parametros de la funcion
         const parametros = {
           labelModal: exampleModalLabel,
@@ -241,6 +241,9 @@ const readPatients = async () => {
 //create
 const createPatients = async (form) => {
   try {
+    botonModal.innerText = "Cargando...";
+    botonModal.setAttribute("type", "button");
+    botonModal.setAttribute("disabled", true);
     const data = new FormData(form);
     let result = await executePetition(url + "/guardar", "POST", data);
     console.log(result);
@@ -251,6 +254,10 @@ const createPatients = async (form) => {
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  } finally {
+    botonModal.innerText = "Registrar";
+    botonModal.setAttribute("type", "submit");
+    botonModal.removeAttribute("disabled");
   }
 };
 

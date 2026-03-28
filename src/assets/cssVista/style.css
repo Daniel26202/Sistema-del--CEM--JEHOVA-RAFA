@@ -596,6 +596,11 @@ html {
     background-color: #ffffff;
 }
 
+.sidenav .active{
+    color: #387adf !important;
+    background-color: #ffffff;
+}
+
 .open-sidenav {
     left: 0;
 }

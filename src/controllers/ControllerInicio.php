@@ -43,6 +43,7 @@ function inicio($parametro)
     $datos_de_personal =  $modeloInicio->datos_doctor(['id_usuario' => $_SESSION["id_usuario"]]);
 
     $ayuda = "btnayudaInicio";
+    $vistaActiva ="inicio";
 
     require_once './src/vistas/dashboard.php';
 }

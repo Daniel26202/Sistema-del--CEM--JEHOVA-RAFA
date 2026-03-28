@@ -11,6 +11,7 @@ use App\modelos\ModeloPermisos;
 function estadisticas()
 {
 	$ayuda = "btnayudaEstadistica";
+	$vistaActiva = "estadisticas";
 	require_once './src/vistas/vistaEstadisticas/vistaEstadisticas.php';
 }
 

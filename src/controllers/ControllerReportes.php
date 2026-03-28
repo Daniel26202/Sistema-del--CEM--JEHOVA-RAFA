@@ -14,7 +14,7 @@ function reportes($parametro)
 {
 	$modeloReporte = new ModeloReporte();
 	$modeloInsumo = new ModeloInsumo();
-
+	$vistaActiva = "reportes";
 	$ayuda = "btnayudaReporte";
 	$insumos = $modeloInsumo->insumos();
 	require_once './src/vistas/vistaReportes/vistaReportes.php';

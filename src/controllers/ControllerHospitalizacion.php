@@ -61,11 +61,12 @@ function hospitalizacion($parametro)
     if (session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
     }
-
     $modeloHosp = new ModeloHospitalizacion();
     $modeloInicio = new ModeloInicio();
     $modeloSintomas = new ModeloSintomas();
     $modeloPatologia = new ModeloPatologia();
+
+    $vistaActiva = 'hospitalizacion';
 
     $idUsuario = $_SESSION['id_usuario'];
     $modeloInicio->setIdPersonal($_SESSION['id_personal']);
@@ -87,6 +88,8 @@ function hospitalizacionesRealizadas($parametro)
     }
 
     $modeloInicio = new ModeloInicio();
+    $vistaActiva = 'hospitalizacion';
+
 
     $idUsuario = $_SESSION['id_usuario'];
     $modeloInicio->setIdPersonal($_SESSION['id_personal']);

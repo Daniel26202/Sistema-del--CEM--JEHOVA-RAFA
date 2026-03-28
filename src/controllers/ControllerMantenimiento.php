@@ -8,6 +8,7 @@ use App\modelos\ModeloPermisos;
 function mantenimiento($parametro)
 {
 	$ayuda = "btnayudaMantenimiento";
+	$vistaActiva = 'mantenimiento';
 	require_once './src/vistas/vistaMantenimiento/mantenimiento.php';
 }
 
