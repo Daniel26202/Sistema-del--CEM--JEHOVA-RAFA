@@ -1,4 +1,4 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, clearModalEnviar } from "../generic/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, clearModalEnviar, initDataTable } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Servicios";
@@ -67,20 +67,8 @@ const readCategory = async () => {
         });
 
         // re-inicializa
-        $(selector).DataTable({
-            language: {
-                language: {
-                    decimal: ",",
-                    thousands: ".",
-                    lengthMenu: "Mostrar por página _MENU_ ",
-                    zeroRecords: "No se encontraron resultados",
-                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                    infoEmpty: "No hay registros disponibles",
-                    infoFiltered: "(filtrado de _MAX_ registros en total)",
-                    search: "Buscar:",
-                },
-            },
-        });
+       
+        initDataTable(selector)
     } catch (error) {
         alertError("Error", error);
     }

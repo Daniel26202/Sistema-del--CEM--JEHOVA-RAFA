@@ -47,6 +47,7 @@ class ModeloRoles extends ModelBase
     }
 
 
+
     //Consultar el permiso
     public function mostrarPermisos()
     {

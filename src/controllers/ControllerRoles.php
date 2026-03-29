@@ -179,6 +179,10 @@ function eliminarRol($datos)
     }
 }
 
+
+
+
+
     //  function permisos($id_rol, $permiso, $modulo)
     // {
     //     return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);

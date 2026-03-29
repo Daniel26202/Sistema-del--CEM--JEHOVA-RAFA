@@ -79,6 +79,15 @@ class Rutas
         $this->modelo->setIdRol($_SESSION['id_rol']);
         $this->modelo->setPermiso($permiso);
         $this->modelo->setModulo($modulo);
+        
+        $id_modulo = $this->modelo->returnIdModule();
+
+        if (!$id_modulo) {
+            header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
+            exit;
+        }
+
+        $this->modelo->setIdModulo($id_modulo);
 
         $permitido = $this->modelo->gestionarPermisos();
 

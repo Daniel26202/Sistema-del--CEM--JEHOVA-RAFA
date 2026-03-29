@@ -5,6 +5,7 @@ import {
   alertSuccess,
   returnModulos,
   hasPermision,
+  initDataTable,
 } from "../generic/funtionGeneric.js";
 import Paginator from "../generic/Paginator.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -32,6 +33,11 @@ const botonModal = document.getElementById("botonModal");
 const titleModal = document.getElementById("title-modal");
 const id_rol_global = document.getElementById("id_rol_global").value;
 const btnEliminar = document.getElementById("btn-eliminar");
+const formModulo = document.getElementById("formModulo"); 
+
+const modalGestionarModulo = new bootstrap.Modal(
+  document.getElementById("gestionarModulo"),
+);
 
 const returnFragmentHtml = (element) => {
   return `         
@@ -126,7 +132,6 @@ const readRol = async () => {
     hasPermision(id_rol_global, "Roles", "guardar", ".btnOpenModal"); //guardar
     hasPermision(id_rol_global, "Roles", "eliminar", ".btn-eliminar"); //eliminar
     hasPermision(id_rol_global, "Roles", "editar", ".btn-open-editar"); //editar
-
   } catch (error) {
     alertError("Error", error);
   }
@@ -281,31 +286,141 @@ const readPermisos = async (permisosGuardados = {}) => {
   }
 };
 
+///Gestion de modulos
+const readModule = async () => {
+  try {
+    const result = await executePetition(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/returnModules",
+    );
+    console.log(result);
+    // construir html de filas
+    let html = "";
+    result.forEach((element, index) => {
+      html += ` <tr>
+                                  <td class="text-center fw-bold">
+                                      ${index + 1}
+                                  </td>
+  
+                                  <td class="text-center border-start">
+                                      ${element.nombre}
+                                  </td>
+  
+  
+                                  <td class="border-start text-center">
+                                      <button class="btn-eliminar btn btn-tabla mb-1" data-index="${element.id_modulo}">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                              class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                              <path
+                                                  d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                          </svg>
+                                      </button>
+  
+                                  </td>
+                              </tr>`;
+    });
+
+    const selector = ".exampleTableModulo";
+
+    // si ya existe DataTable, destrúyela
+    if ($.fn.DataTable.isDataTable(selector)) {
+      $(selector).DataTable().clear().destroy();
+    }
+
+    // vuelca el html en el tbody
+    document.querySelector(selector + " tbody").innerHTML = html;
+
+    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+      ele.value = document.getElementById("id_usuario_session").value;
+    });
+
+    //llamar las funcion de eliminar
+    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const data = [
+          this.getAttribute("data-index"),
+          document.getElementById("id_usuario_session").value,
+        ];
+
+        alertConfirm("Esta seguro de eliminar el modulo?", deleteModule, data);
+      });
+    });
+
+    // re-inicializa
+
+    initDataTable(selector);
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
+//create
+const createModule = async (form) => {
+  try {
+    const data = new FormData(form);
+    let result = await executePetition(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/registrarModulo",
+      "POST",
+      data,
+    );
+    console.log(result);
+    if (result.ok) {
+      alertSuccess(result.message);
+      form.reset();
+
+      readModule();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
+//delete
+const deleteModule = async (data) => {
+  try {
+    const result = await executePetition(
+      `/Sistema-del--CEM--JEHOVA-RAFA/Permisos/eliminar_modulo/${data}`,
+      "GET",
+    );
+    if (result.ok) {
+      alertSuccess(result.message);
+      readModule();
+    } else throw new Error(`${result.error}`);
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
 readRol();
 
 readPermisos();
 
+readModule();
+
 //abrir el modal de agregar
 btnRegistrarRol.addEventListener("click", function () {
-  
   modalRegistrarRol.show();
   botonModal.innerHTML = "Registrar";
   titleModal.innerText = "Registrar Rol";
   btnEliminar.classList.add("d-none");
 
-  formAgregarRol.querySelectorAll(".input-validar").forEach(input=>{
+  formAgregarRol.querySelectorAll(".input-validar").forEach((input) => {
     input.value = "";
-    input.parentElement.classList.remove('invalido','valido')
+    input.parentElement.classList.remove("invalido", "valido");
     input.nextElementSibling.children[0].classList.add("d-none");
     input.nextElementSibling.children[1].classList.add("d-none");
-    input.parentElement.parentElement.children[1].classList.add('d-none');
-
-  })
-
+    input.parentElement.parentElement.children[1].classList.add("d-none");
+  });
 });
+
+//cerrar modal del registrar modulo
+document.getElementById("modalAgregarModulo").addEventListener('hidden.bs.modal', function(){
+  modalGestionarModulo.show();
+  console.log('cerrado');
+})
 
 //validacion formulario
 let verificarFormularioG = inicializarValidacionFormulario(formAgregarRol);
+let verificarFormulariosModulo = inicializarValidacionFormulario(formModulo);
 
 formAgregarRol.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -325,3 +440,19 @@ formAgregarRol.addEventListener("submit", function (e) {
     );
   }
 });
+
+formModulo.addEventListener("submit", function (e) {
+  e.preventDefault();
+  let esValido = verificarFormulariosModulo();
+
+  if (esValido) {
+      createModule(this);
+    
+  } else {
+    alertError(
+      "Error",
+      "Por favor verifique que todos los datos estén correctos.",
+    );
+  }
+});
+

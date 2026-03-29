@@ -238,6 +238,8 @@ return [
     "validarRol" => "consultar",
     'cargarPermisosGuardados'=>'consultar',
     'returnPermisos'=>'consultar',
+    'returnModules'=>'consultar',
+    'eliminar_modulo'=>'eliminar',
 
     //Reportes
     "reportes" => "consultar",
