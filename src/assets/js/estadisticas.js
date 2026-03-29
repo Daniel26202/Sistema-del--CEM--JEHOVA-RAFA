@@ -28,11 +28,11 @@ const alertMorbilidad = document.querySelector(".alert-no-encontrado-m");
 
 document.addEventListener("DOMContentLoaded", function () {
   distribucion_edad_genero(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero"
+    "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero",
   );
   tasa_morbilidad("/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad");
   especialidades_chart(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas",
   );
   sintomas_chart(`/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes`);
   insumos(`/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/insumos`);
@@ -51,10 +51,10 @@ const distribucion_edad_genero = async (url) => {
   data.forEach((elemento) => (totalPacientes += parseInt(elemento.total)));
   data.forEach(
     (elemento) =>
-      (totalPacientesMasculinos = parseInt(elemento.total_masculino))
+      (totalPacientesMasculinos = parseInt(elemento.total_masculino)),
   );
   data.forEach(
-    (elemento) => (totalPacientesFemeninos = parseInt(elemento.total_femenino))
+    (elemento) => (totalPacientesFemeninos = parseInt(elemento.total_femenino)),
   );
 
   let label = data.map((item) => item.rango_edad);
@@ -241,7 +241,7 @@ const insumos = async (url) => {
     "Creando gráfico modal de insumos ctxModal:",
     ctxModal,
     "labels:",
-    labels
+    labels,
   );
   insumosChartModal = new Chart(ctxModal, {
     type: "bar",
@@ -282,8 +282,8 @@ const insumos = async (url) => {
     Este gráfico muestra los insumos más utilizados en el sistema.<br>
     <strong>Total de unidades registradas:</strong> ${totalUsos}<br>
     <strong>Insumo más utilizado:</strong> ${insumoTop} con un total de ${Math.max(
-    ...cantidades
-  )} unidades.
+      ...cantidades,
+    )} unidades.
   </p>
   <p class="text-center">
     Esta información permite conocer cuáles insumos tienen mayor rotación y planificar mejor la reposición y abastecimiento.
@@ -334,7 +334,7 @@ const tasa_morbilidad = async (url) => {
         });
 
         tasa_morbilidad(
-          "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad"
+          "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad",
         );
       }
     });
@@ -451,7 +451,7 @@ const tasa_morbilidad = async (url) => {
   // Calcular totales dinámicos
   const totalCasos = casos.reduce(
     (acumulador, valorActual) => acumulador + valorActual,
-    0
+    0,
   );
   const patologiaMayor = labels[casos.indexOf(Math.max(...casos))];
   const tasaMayor = Math.max(...tasas).toFixed(2);
@@ -595,7 +595,7 @@ const especialidades_chart = async (url) => {
 
 async function totalDeEspecialidades(data) {
   let peticion = await fetch(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades"
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades",
   );
   let resultado = await peticion.json();
   document.getElementById("texto").innerHTML = ``;
@@ -622,7 +622,7 @@ function generarLeyendaEspecialidades(especialidades, totalSolicitudes) {
   // Calcula el total de solicitudes para obtener los porcentajes
   const totalSolicitudesGlobal = totalSolicitudes.reduce(
     (acumulado, actual) => acumulado + actual,
-    0
+    0,
   );
 
   // Recorre cada especialidad y genera un elemento de leyenda
@@ -714,7 +714,7 @@ const sintomas_chart = async (url) => {
     let canvasModal = document.getElementById("sintomas_solicitadas_pdf");
     if (!canvasModal) {
       console.error(
-        "El canvas 'sintomas_solicitadas_pdf' no existe en el DOM."
+        "El canvas 'sintomas_solicitadas_pdf' no existe en el DOM.",
       );
       return;
     }
@@ -783,7 +783,7 @@ const sintomas_chart = async (url) => {
 
 async function totalDeSintomas(data) {
   let peticion = await fetch(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todos_los_sintomas"
+    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todos_los_sintomas",
   );
   let resultado = await peticion.json();
   console.log(resultado);
@@ -805,7 +805,7 @@ async function totalDeSintomas(data) {
 function generarLeyendaSintomas(sintomas, total) {
   // Selecciona el contenedor donde se mostrará la leyenda de síntomas
   const contenedorLeyenda = document.querySelector(
-    ".leyenda-sintomas-container"
+    ".leyenda-sintomas-container",
   );
   if (!contenedorLeyenda) return;
 
@@ -815,7 +815,7 @@ function generarLeyendaSintomas(sintomas, total) {
   // Calcula el total de síntomas para obtener los porcentajes
   const totalGlobal = total.reduce(
     (acumulado, actual) => acumulado + actual,
-    0
+    0,
   );
 
   // Colores para los síntomas (igual que en el gráfico)
@@ -856,7 +856,7 @@ function generarLeyendaSintomas(sintomas, total) {
 //validacioenes de inputs
 function inicializarValidacionFormulario(formulario) {
   const campos = {};
-  document.querySelectorAll(".input-validar").forEach((input) => {
+  formulario.querySelectorAll(".input-validar").forEach((input) => {
     campos[input.name] = false;
     // Marcar como modificado cuando el usuario interactúa
     input.addEventListener("keyup", (e) => {
@@ -872,30 +872,35 @@ function inicializarValidacionFormulario(formulario) {
 }
 
 function validarFormulario(e, formulario, campos) {
-  const input = e.target;
-  const nameInput = input.name;
-  let mensajeError = expresiones[input.name].mensajeError;
-  let campoCustom = input.closest(".campo-custom");
+  formulario.querySelectorAll(".input-validar").forEach((input, index) => {
+    const nameInput = input.name;
+    let mensajeError = expresiones[input.name].mensajeError;
+    let campoCustom = input.closest(".campo-custom");
+    
 
-  let pError = campoCustom.querySelector("p");
-  let check = campoCustom.querySelector(".check");
-  let error = campoCustom.querySelector(".error");
-  let arrayElementos = {
-    pError: pError,
-    check: check,
-    error: error,
-  };
-  campos[nameInput] = validarFecha(
-    input,
-    arrayElementos,
-    nameInput,
-    formulario
-  );
+    let pError = campoCustom.querySelector("p");
+    let check = campoCustom.querySelector(".check");
+    let error = campoCustom.querySelector(".error");
+    let arrayElementos = {
+      pError: pError,
+      check: check,
+      error: error,
+    };
+    console.log(campoCustom);
+    
+    campos[nameInput] = validarFecha(
+      input,
+      arrayElementos,
+      nameInput,
+      formulario,
+    );
+  });
 }
 
 // Nueva función para validar fechas no futuras ni pasadas
 function validarFecha(input, arrayElementos, campo, formulario) {
   let { pError, check, error } = arrayElementos;
+  const inputs = formulario.querySelectorAll(".input-validar");
   const valorFecha = new Date(input.value);
   const fechaHoy = new Date();
   // Establece el tiempo a la medianoche para comparación
@@ -911,40 +916,21 @@ function validarFecha(input, arrayElementos, campo, formulario) {
       pError.classList.remove("d-none");
       chulitoYX(check, error, "inValido");
       return false;
-    } else if (valorFecha > fechaHoy) {
+    }
+    if (valorFecha > fechaHoy) {
       pError.textContent = "La fecha no puede ser del futuro.";
       pError.classList.remove("d-none");
       chulitoYX(check, error, "inValido");
       return false;
     }
-  } else if (campo == "fechaDeCita") {
-    actualizarEstadoInput(input, "incorrecto", formulario);
-    if (!expresiones.fn.expresion.test(input.value)) {
-      pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
-      pError.classList.remove("d-none");
-      chulitoYX(check, error, "inValido");
-      return false;
-    } else if (valorFecha < fechaHoy) {
-      pError.textContent = "La fecha no puede ser del pasado.";
-      pError.classList.remove("d-none");
-      chulitoYX(check, error, "inValido");
-      return false;
-    }
-  } else if (campo === "fechaDeVencimiento") {
-    actualizarEstadoInput(input, "incorrecto", formulario);
-    if (!expresiones.fechaDeVencimiento.expresion.test(input.value)) {
-      pError.textContent = "La fecha debe tener el formato YYYY-MM-DD.";
-      pError.classList.remove("d-none");
-      chulitoYX(check, error, "inValido");
-      return false;
-    } else if (valorFecha <= fechaHoy) {
-      pError.textContent =
-        "La fecha de vencimiento no puede ser del pasado o de hoy.";
+    if(inputs[0].value >= inputs[1].value){
+      pError.textContent = "La fecha de inicio no puede ser mayor a la fecha final";
       pError.classList.remove("d-none");
       chulitoYX(check, error, "inValido");
       return false;
     }
   }
+
   // Si pasa todas las validaciones
   chulitoYX(check, error, "valido");
   pError.classList.add("d-none");
@@ -972,7 +958,9 @@ function chulitoYX(check, error, Validar) {
 }
 
 //lamar la funcion
-inicializarValidacionFormulario();
+inicializarValidacionFormulario(
+  document.getElementById("buscadoresMorbilidad"),
+);
 
 // ─── URLs por chart ─────────────────────────────────────────────────────────
 const URL_BASE = "/Sistema-del--CEM--JEHOVA-RAFA";
@@ -1029,7 +1017,7 @@ const alertFechaEsp = document.querySelector("#reporte .alertaFechaInicio");
 const inputInicioSin = document.getElementById("fechaInicioSintomas");
 const inputFinalSin = document.getElementById("fechaFinalSintomas");
 const alertFechaSin = document.querySelector(
-  "#reporteSintomas .alertaFechaInicioSintomas"
+  "#reporteSintomas .alertaFechaInicioSintomas",
 );
 
 // ─── Listeners de búsqueda ───────────────────────────────────────────────────
@@ -1040,7 +1028,7 @@ document.getElementById("buscarFecha").addEventListener("click", function (e) {
     URLS.especialidades,
     inputInicioEsp.value,
     inputFinalEsp.value,
-    alertFechaEsp
+    alertFechaEsp,
   );
 });
 
@@ -1053,7 +1041,7 @@ document
       URLS.sintomas,
       inputInicioSin.value,
       inputFinalSin.value,
-      alertFechaSin
+      alertFechaSin,
     );
   });
 
@@ -1066,62 +1054,23 @@ document.getElementById("reporte").addEventListener("hidden.bs.modal", () => {
 });
 
 document
-  .getElementById("reporteSintomas")
+  .getElementById("reporteTasaMorbilidad")
   .addEventListener("hidden.bs.modal", () => {
-    inputInicioSin.value = "";
-    inputFinalSin.value = "";
-    alertFechaSin.classList.add("d-none");
-    sintomas_chart(URLS.sintomas.default);
+    inputInicioEsp.value = "";
+    inputFinalEsp.value = "";
+    alertFechaEsp.classList.add("d-none");
+    especialidades_chart(URLS.especialidades.default);
   });
 
-/* //Funcion para  filtrar por fecha ANTIGUO
-
-function filtrar_por_fecha(
-  funcion,
-  fechaInicio,
-  fechaFinal,
-  divAlert,
-  parametros = "",
-) {
-  if (fechaInicio < fechaFinal) {
-    funcion(parametros);
-    divAlert.classList.add("d-none");
-  } else {
-    divAlert.classList.remove("d-none");
-  }
-}
-
-//filtros por fecha
-
-//especialidades por fecha
-document.getElementById("buscarFecha").addEventListener("click", function () {
-  let fechaInicio = this.parentElement.firstElementChild.value;
-  let fechaFinal =
-    this.parentElement.firstElementChild.nextElementSibling.value;
-  filtrar_por_fecha(
-    especialidades_chart,
-    fechaInicio,
-    fechaFinal,
-    alertEspecialidades,
-    `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas_filtradas/${fechaInicio}/${fechaFinal}`,
-  );
-});
-
-//sintomas por fecha
 document
-  .getElementById("buscarFechaSintomas")
-  .addEventListener("click", function () {
-    let fechaInicio = this.parentElement.firstElementChild.value;
-    let fechaFinal =
-      this.parentElement.firstElementChild.nextElementSibling.value;
-    filtrar_por_fecha(
-      sintomas_chart,
-      fechaInicio,
-      fechaFinal,
-      alertSintomas,
-      `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio}/${fechaFinal}`,
-    );
-  }); */
+  .getElementById("reporteSintomas")
+  .addEventListener("hidden.bs.modal", () => {
+    // inputInicioSin.value = "";
+    // inputFinalSin.value = "";
+    // alertFechaSin.classList.add("d-none");
+    tasaMorbilidadChart(URLS.morbilidad.default)
+  });
+
 
 // seccion de generacion de reportes
 
@@ -1141,7 +1090,7 @@ document.getElementById("sintomas").addEventListener("click", function () {
 document.getElementById("pacientes").addEventListener("click", function () {
   generarReporte(
     elementoImprimirDistribucionPacientes,
-    "reporte_distribucion_de_pacientes.pdf"
+    "reporte_distribucion_de_pacientes.pdf",
   );
 });
 
@@ -1183,7 +1132,7 @@ document.getElementById("btnMorbilidad").addEventListener("click", function () {
   generarReporte(elementoImprimirMorbilidad, "reporte_tasa_de_morbilidad.pdf");
 
   tasa_morbilidad(
-    `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/filtrar_tasaMorbilidad/${inputs[0].value}/${inputs[1].value}`
+    `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/filtrar_tasaMorbilidad/${inputs[0].value}/${inputs[1].value}`,
   );
 
   console.log("hola");
@@ -1237,7 +1186,7 @@ function generarReporte(elementoImprimir, nombreArchivo) {
     0,
     pdf.internal.pageSize.getWidth(),
     pdf.internal.pageSize.getHeight(),
-    "F"
+    "F",
   ); // "F" para rellenar
 
   elementoImprimir.classList.add("carta-imprimir");
