@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
+-- MariaDB dump 10.19  Distrib 10.4.28-MariaDB, for Win64 (AMD64)
 --
 -- Host: localhost    Database: bd
 -- ------------------------------------------------------
--- Server version	10.4.32-MariaDB
+-- Server version	10.4.28-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -75,38 +75,6 @@ INSERT INTO `cita` VALUES (41,'2025-04-02','12:33:00','ACT',24,23,'00:00:00',0),
 UNLOCK TABLES;
 
 --
--- Table structure for table `cliente`
---
-
-DROP TABLE IF EXISTS `cliente`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cliente` (
-  `id_cliente` int(11) NOT NULL AUTO_INCREMENT,
-  `nacionalidad` varchar(12) NOT NULL,
-  `cedula` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `nombre` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `apellido` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `telefono` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `direccion` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `fn` date NOT NULL,
-  `genero` varchar(16) NOT NULL,
-  `estado` varchar(5) NOT NULL,
-  PRIMARY KEY (`id_cliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `cliente`
---
-
-LOCK TABLES `cliente` WRITE;
-/*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-INSERT INTO `cliente` VALUES (1,'V','12098234','Jose','Lara','04123213212','esuna direccion','2005-10-02','Masculino','ACT'),(2,'V','2000002','Editado','Modificado','04123454320','en su casa','2002-02-20','Masculino','ACT'),(3,'V','3722999','Pedro','Perez','04123454327','en su casa','2002-02-20','Masculino','ACT'),(4,'V','30554144','Carlos','Hernadéz','04121232343','Eb su casa','2012-02-11','masculino','ACT');
-/*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `control`
 --
 
@@ -151,8 +119,14 @@ UNLOCK TABLES;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `SALUDABLE` AFTER INSERT ON `control` FOR EACH ROW IF NEW.diagnostico LIKE '%alta médica%' THEN
+
+
     UPDATE paciente SET estado_salud = 'SALUDABLE'
+
+
     WHERE id_paciente = NEW.id_paciente;
+
+
 END IF */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -169,75 +143,86 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_control_insert` AFTER INSERT ON `control` FOR EACH ROW BEGIN
+
+
     DECLARE enfermedad_cronica BOOLEAN;
+
+
     
+
+
     
+
+
     SET enfermedad_cronica = (NEW.diagnostico LIKE '%crónic%' OR NEW.diagnostico LIKE '%permanente%');
+
+
     
+
+
     
+
+
     IF NEW.severidad = 'GRAVE' OR enfermedad_cronica THEN
+
+
         UPDATE paciente 
+
+
         SET estado_salud = IF(enfermedad_cronica, 'CRONICO', 'ENFERMO')
+
+
         WHERE id_paciente = NEW.id_paciente;
+
+
     ELSEIF NEW.severidad IN ('LEVE', 'MODERADA') THEN
+
+
         UPDATE paciente 
+
+
         SET estado_salud = 'ENFERMO'
+
+
         WHERE id_paciente = NEW.id_paciente;
+
+
     END IF;
+
+
     
+
+
     
+
+
     INSERT INTO historial_estados (id_paciente, estado_anterior, estado_nuevo, fecha_cambio)
+
+
     VALUES (NEW.id_paciente, 
+
+
             (SELECT estado_salud FROM paciente WHERE id_paciente = NEW.id_paciente),
+
+
             IF(NEW.severidad = 'GRAVE' OR enfermedad_cronica, 
+
+
                IF(enfermedad_cronica, 'CRONICO', 'ENFERMO'),
+
+
                'ENFERMO'),
+
+
             NOW());
+
+
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Table structure for table `detalle_factura`
---
-
-DROP TABLE IF EXISTS `detalle_factura`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `detalle_factura` (
-  `id_datelle_factura` int(11) NOT NULL AUTO_INCREMENT,
-  `id_factura` int(11) NOT NULL,
-  `tipo` varchar(35) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `precio_unitario` float(12,2) NOT NULL,
-  `subtotal` float(12,2) NOT NULL,
-  `hospitalizacion_id_hospitalizacion` int(11) DEFAULT NULL,
-  `serviciomedico_id_servicioMedico` int(11) DEFAULT NULL,
-  `entrada_insumo_id_entradaDeInsumo` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_datelle_factura`),
-  KEY `id_factura` (`id_factura`),
-  KEY `hospitalizacion_id_hospitalizacion` (`hospitalizacion_id_hospitalizacion`,`serviciomedico_id_servicioMedico`,`entrada_insumo_id_entradaDeInsumo`),
-  KEY `entrada_insumo_id_entradaDeInsumo` (`entrada_insumo_id_entradaDeInsumo`),
-  KEY `serviciomedico_id_servicioMedico` (`serviciomedico_id_servicioMedico`),
-  CONSTRAINT `detalle_factura_ibfk_1` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id_factura`),
-  CONSTRAINT `detalle_factura_ibfk_2` FOREIGN KEY (`hospitalizacion_id_hospitalizacion`) REFERENCES `hospitalizacion` (`id_hospitalizacion`),
-  CONSTRAINT `detalle_factura_ibfk_3` FOREIGN KEY (`entrada_insumo_id_entradaDeInsumo`) REFERENCES `entrada_insumo` (`id_entradaDeInsumo`),
-  CONSTRAINT `detalle_factura_ibfk_4` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `detalle_factura`
---
-
-LOCK TABLES `detalle_factura` WRITE;
-/*!40000 ALTER TABLE `detalle_factura` DISABLE KEYS */;
-INSERT INTO `detalle_factura` VALUES (1,197,'',1,1000.00,1000.00,NULL,25,NULL),(2,198,'Servicio',1,1000.00,1000.00,NULL,25,NULL),(3,199,'Servicio',1,1000.00,1000.00,NULL,25,NULL),(4,200,'Servicio',1,1000.00,1000.00,NULL,25,NULL),(5,204,'Insumo',1,80.00,80.00,NULL,NULL,53),(6,207,'Servicio',1,3000.00,3000.00,NULL,24,NULL),(7,208,'Hospitalizacion',1,474844.00,474844.00,27,NULL,NULL),(8,209,'Insumo',3,80.00,240.00,NULL,NULL,53),(9,210,'Insumo',1,9.00,9.00,NULL,NULL,52),(10,210,'Insumo',2,9.00,18.00,NULL,NULL,54),(11,211,'Servicio',1,1000.00,1000.00,NULL,25,NULL),(12,211,'Insumo',1,80.00,80.00,NULL,NULL,53),(13,211,'Insumo',1,9.00,9.00,NULL,NULL,54),(14,211,'Insumo',1,5.60,5.60,NULL,NULL,64);
-/*!40000 ALTER TABLE `detalle_factura` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Temporary table structure for view `distribucion_edad_genero`
@@ -903,34 +888,6 @@ INSERT INTO `serviciomedico_has_factura` VALUES (25,58,0),(26,61,0),(25,61,0),(2
 UNLOCK TABLES;
 
 --
--- Table structure for table `servicios_hospitalizacion`
---
-
-DROP TABLE IF EXISTS `servicios_hospitalizacion`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `servicios_hospitalizacion` (
-  `id_detalle` int(11) NOT NULL AUTO_INCREMENT,
-  `id_hospitalizacion` int(11) NOT NULL,
-  `id_servicioMedico` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  PRIMARY KEY (`id_detalle`),
-  KEY `id_hospitalizacion` (`id_hospitalizacion`,`id_servicioMedico`),
-  KEY `id_servicioMedico` (`id_servicioMedico`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `servicios_hospitalizacion`
---
-
-LOCK TABLES `servicios_hospitalizacion` WRITE;
-/*!40000 ALTER TABLE `servicios_hospitalizacion` DISABLE KEYS */;
-INSERT INTO `servicios_hospitalizacion` VALUES (9,34,25,1),(10,35,25,1),(11,39,25,2),(12,40,25,2),(14,41,25,1),(15,42,25,1);
-/*!40000 ALTER TABLE `servicios_hospitalizacion` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `sintomas`
 --
 
@@ -1019,38 +976,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes`(IN `insumo_id` INT,
 BEGIN
 
 
-
-
-
-
-
     DECLARE cantidad_restante INT DEFAULT cantidad_requerida;
-
-
-
-
-
 
 
     DECLARE lote_id INT;
 
 
-
-
-
-
-
     DECLARE lote_cantidad INT;
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1059,61 +991,22 @@ BEGIN
     DECLARE done INT DEFAULT FALSE;
 
 
-
-
-
-
-
     DECLARE lote_cursor CURSOR FOR
-
-
-
-
-
 
 
         SELECT ei.id_entradaDeInsumo, ei.cantidad_disponible
 
 
-
-
-
-
-
         FROM entrada_insumo ei INNER JOIN entrada e 
-
-
-
-
-
 
 
         ON e.id_entrada = ei.id_entrada
 
 
-
-
-
-
-
         WHERE ei.id_insumo = insumo_id AND ei.cantidad_disponible > 0
 
 
-
-
-
-
-
-        ORDER BY e.fechaDeIngreso ASC; 
-
-
-
-
-
-
-
-
-
+        ORDER BY e.fechaDeIngreso ASC; -- FIFO
 
 
 
@@ -1122,30 +1015,10 @@ BEGIN
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
 
-
-
-
-
-
-
-
-
-
-
 
 
 
     OPEN lote_cursor;
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1154,46 +1027,16 @@ BEGIN
     lectura_lote: LOOP
 
 
-
-
-
-
-
         FETCH lote_cursor INTO lote_id, lote_cantidad;
-
-
-
-
-
 
 
         IF done THEN
 
 
-
-
-
-
-
             LEAVE lectura_lote;
 
 
-
-
-
-
-
         END IF;
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1202,121 +1045,46 @@ BEGIN
         IF cantidad_restante <= lote_cantidad THEN
 
 
-
-
-
-
-
             UPDATE entrada_insumo
-
-
-
-
-
 
 
             SET cantidad_disponible = cantidad_disponible - cantidad_restante
 
 
-
-
-
-
-
             WHERE id_entradaDeInsumo = lote_id;
-
-
-
-
-
 
 
             SET cantidad_restante = 0;
 
 
-
-
-
-
-
             LEAVE lectura_lote;
-
-
-
-
-
 
 
         ELSE
 
 
-
-
-
-
-
             UPDATE entrada_insumo
-
-
-
-
-
 
 
             SET cantidad_disponible = 0
 
 
-
-
-
-
-
             WHERE id_entradaDeInsumo = lote_id;
-
-
-
-
-
 
 
             SET cantidad_restante = cantidad_restante - lote_cantidad;
 
 
-
-
-
-
-
         END IF;
 
 
-
-
-
-
-
     END LOOP;
-
-
-
-
-
-
-
-
-
-
 
 
 
 
 
     CLOSE lote_cursor;
-
-
-
-
-
 
 
 END ;;
@@ -1339,145 +1107,55 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos`(IN `id_f
 BEGIN
 
 
-
-
-
-
-
     DECLARE done INT DEFAULT FALSE;
 
 
-
-
-
-
-
-    DECLARE entrada_id INT; 
-
-
-
-
+    DECLARE entrada_id INT; -- Cambié el nombre de la variable para evitar confusiones
 
 
     DECLARE cantidad_en_factura  INT;
 
 
-
-
 
 
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
+    -- Cursor para recorrer las entradas de insumos
 
 
     DECLARE insumo_cursor CURSOR FOR 
 
 
-
-
-
-
-
         SELECT id_entradaDeInsumo, cantidad FROM bd.factura_has_inventario WHERE factura_id_factura = id_factura;
 
 
-
-
 
 
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
+    -- Manejo de excepciones para el cursor
 
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
 
-
-
 
 
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
+    -- Abrir el cursor
 
 
     OPEN insumo_cursor;
 
 
-
-
 
 
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
+    -- Bucle para recorrer las entradas de insumos
 
 
     read_loop: LOOP
 
 
-
-
-
-
-
         FETCH insumo_cursor INTO entrada_id, cantidad_en_factura;
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1486,125 +1164,29 @@ BEGIN
         IF done THEN
 
 
-
-
-
-
-
-            LEAVE read_loop; 
-
-
-
-
+            LEAVE read_loop; -- Salir del bucle si no hay más filas
 
 
         END IF;
 
 
-
-
-
-
-
         
-
-
-
-
-
 
 
         update bd.entrada_insumo set cantidad_disponible = cantidad_disponible + cantidad_en_factura where id_entradaDeInsumo = entrada_id;
 
 
-
-
-
-
-
     END LOOP;
 
 
-
-
 
 
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
+    -- Cerrar el cursor
 
 
     CLOSE insumo_cursor;
 
-
-
-
-
-
-
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `devolver_insumos_hospitalizacion` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_insumos_hospitalizacion`(IN `p_id_insumo` INT, IN `p_cantidad` INT)
-BEGIN
-
-    DECLARE v_idEntrada INT;
-
-
-
-    
-
-    SELECT ei.id_entradaDeInsumo
-
-    INTO v_idEntrada
-
-    FROM entrada_insumo ei
-
-    WHERE ei.id_insumo = p_id_insumo
-
-    ORDER BY ei.fechaDeVencimiento DESC
-
-    LIMIT 1;
-
-
-
-    
-
-    UPDATE entrada_insumo
-
-    SET cantidad_disponible = p_cantidad
-
-    WHERE id_entradaDeInsumo = v_idEntrada;
-
-
-
-    
-
-    SELECT v_idEntrada AS idEntrada_actualizada;
 
 END ;;
 DELIMITER ;
@@ -1626,57 +1208,22 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada`(IN `id_insumo` INT,
 BEGIN
 
 
-
-
-
-
-
     declare id_entrada int;
 
 
-
-
-
-
-
     
-
-
-
-
-
 
 
     INSERT INTO entrada VALUES (null, id_proveedor, lote, fechaDeIngreso, 'ACT');
 
 
-
-
-
-
-
     set id_entrada =  last_insert_id();
-
-
-
-
-
 
 
     
 
 
-
-
-
-
-
     INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
-
-
-
-
-
 
 
 END ;;
@@ -1699,89 +1246,34 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo`(IN `imagen` TEXT, IN
 BEGIN
 
 
-
-
-
-
-
 	declare id_insumo int;
-
-
-
-
-
 
 
     declare id_entrada int;
 
 
-
-
-
-
-
     
-
-
-
-
-
 
 
 	INSERT INTO insumo VALUES (null, imagen, nombre, descripcion, marca, medida, precio , 'ACT',stockMinimo, iva);
 
 
-
-
-
-
-
     set id_insumo = last_insert_id();
 
 
-
-
-
-
-
     
-
-
-
-
-
 
 
     INSERT INTO entrada VALUES (null, id_proveedor, lote, fechaDeIngreso, 'ACT');
 
 
-
-
-
-
-
     set id_entrada =  last_insert_id();
-
-
-
-
-
 
 
     
 
 
-
-
-
-
-
     INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
-
-
-
-
-
 
 
 END ;;
@@ -1872,4 +1364,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-04 14:02:14
+-- Dump completed on 2025-07-04 13:44:26
