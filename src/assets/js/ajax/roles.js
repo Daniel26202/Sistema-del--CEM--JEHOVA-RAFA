@@ -3,7 +3,6 @@ import {
   alertConfirm,
   alertError,
   alertSuccess,
-  returnModulos,
   hasPermision,
   initDataTable,
 } from "../generic/funtionGeneric.js";
@@ -33,11 +32,13 @@ const botonModal = document.getElementById("botonModal");
 const titleModal = document.getElementById("title-modal");
 const id_rol_global = document.getElementById("id_rol_global").value;
 const btnEliminar = document.getElementById("btn-eliminar");
-const formModulo = document.getElementById("formModulo"); 
+const formModulo = document.getElementById("formModulo");
 
 const modalGestionarModulo = new bootstrap.Modal(
   document.getElementById("gestionarModulo"),
 );
+
+let listModule = [];
 
 const returnFragmentHtml = (element) => {
   return `         
@@ -63,6 +64,54 @@ const returnFragmentHtml = (element) => {
 };
 
 //Ajax
+const returnModuleCategiry = async () => {
+  try {
+    const modulos = await executePetition(
+      "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/returnPermisionModule",
+    );
+
+    // Clasificación de módulos en categorías.
+    const clasificacion = {
+      Administración: ["Usuarios", "Roles", "Mantenimiento"],
+      "Gestión Médica": [
+        "Pacientes",
+        "Patologias",
+        "Citas",
+        "Servicios",
+        "Hospitalizacion",
+        "Doctores",
+        "Control",
+      ],
+      Inventario: ["Insumos", "Entrada", "Proveedores"],
+      Reportes: ["Factura", "Reportes", "Estadisticas"],
+    };
+
+    // Inicializamos un objeto para almacenar los módulos clasificados por categoría.
+    const categorias = Object.keys(clasificacion).reduce((acc, categoria) => {
+      acc[categoria] = []; // Inicializa cada categoría como un array vacío.
+      return acc;
+    }, {});
+
+    // Clasificamos los módulos en las categorías correspondientes.
+    modulos.forEach((modulo) => {
+      for (const [categoria, modulosCategoria] of Object.entries(
+        clasificacion,
+      )) {
+        // Si el módulo pertenece a la categoría actual, lo añadimos a esa categoría.
+
+        if (modulosCategoria.includes(modulo.modulo)) {
+          categorias[categoria].push(modulo);
+          break; // Salimos del bucle interno una vez clasificado.
+        }
+      }
+    });
+
+    listModule = categorias;
+  } catch (error) {
+    alertError("Error", error);
+  }
+};
+
 
 const readRol = async () => {
   try {
@@ -123,7 +172,7 @@ const readRol = async () => {
         let permisosGuardados = await traerPermisosGuardados(
           this.getAttribute("data-index"),
         );
-        console.log(permisosGuardados);
+        console.log(this.getAttribute("data-index"), permisosGuardados);
         readPermisos(permisosGuardados);
       });
     });
@@ -209,9 +258,8 @@ const readPermisos = async (permisosGuardados = {}) => {
     );
 
     // 2. Traemos los módulos agrupados por categorías
-    const categorias = returnModulos();
 
-    for (const [categoria, modulos] of Object.entries(categorias)) {
+    for (const [categoria, modulos] of Object.entries(listModule)) {
       const categoriaSlug = categoria.replace(/\s+/g, "-");
       const categoriaId = `heading-${categoriaSlug}`;
       const categoriaCollapseId = `collapse-${categoriaSlug}`;
@@ -390,6 +438,9 @@ const deleteModule = async (data) => {
   }
 };
 
+returnModuleCategiry();
+
+
 readRol();
 
 readPermisos();
@@ -413,10 +464,12 @@ btnRegistrarRol.addEventListener("click", function () {
 });
 
 //cerrar modal del registrar modulo
-document.getElementById("modalAgregarModulo").addEventListener('hidden.bs.modal', function(){
-  modalGestionarModulo.show();
-  console.log('cerrado');
-})
+document
+  .getElementById("modalAgregarModulo")
+  .addEventListener("hidden.bs.modal", function () {
+    modalGestionarModulo.show();
+    console.log("cerrado");
+  });
 
 //validacion formulario
 let verificarFormularioG = inicializarValidacionFormulario(formAgregarRol);
@@ -446,8 +499,7 @@ formModulo.addEventListener("submit", function (e) {
   let esValido = verificarFormulariosModulo();
 
   if (esValido) {
-      createModule(this);
-    
+    createModule(this);
   } else {
     alertError(
       "Error",
@@ -455,4 +507,3 @@ formModulo.addEventListener("submit", function (e) {
     );
   }
 });
-

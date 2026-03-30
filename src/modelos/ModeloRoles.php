@@ -33,7 +33,7 @@ class ModeloRoles extends ModelBase
     private function returnPermisosModulo($data)
     {
         try {
-            $sql = "SELECT pr.modulo, pr.id_permiso, p.permisos FROM permisos_de_rol pr INNER JOIN permisos p ON p.id_permiso =pr.id_permiso WHERE pr.id_rol =:id_rol AND pr.modulo =:modulo ";
+            $sql = "SELECT m.nombre as modulo, pr.id_permiso, p.permisos FROM permisos_de_rol pr INNER JOIN permisos p ON p.id_permiso =pr.id_permiso INNER JOIN modulos m ON m.id_modulo = pr.id_modulo WHERE pr.id_rol =:id_rol AND m.nombre =:modulo ";
             $this->setSQL($sql);
             $datos = $this->search($data);
             $permisos = '';
@@ -46,6 +46,17 @@ class ModeloRoles extends ModelBase
         }
     }
 
+    private function returnIdModule($modulo)
+    {
+        $data = [
+            'nombre' => $modulo
+        ];
+        $sql = "SELECT id_modulo FROM modulos where nombre =:nombre AND estado = 'ACT' ";
+        $this->setSQL($sql);
+        $listData = $this->search($data, false);
+        return !empty($listData) ?  $listData['id_modulo'] : 0;
+    }
+
 
 
     //Consultar el permiso
@@ -56,7 +67,7 @@ class ModeloRoles extends ModelBase
                 'id_rol' => $this->getIdRol()
             ];
 
-            $sql = "SELECT pr.modulo, pr.id_permiso, p.permisos FROM permisos_de_rol pr INNER JOIN permisos p ON p.id_permiso =pr.id_permiso WHERE pr.id_rol =:id_rol";
+            $sql = "SELECT pr.id_modulo,m.nombre AS modulo, pr.id_permiso, p.permisos FROM permisos_de_rol pr INNER JOIN permisos p ON p.id_permiso =pr.id_permiso INNER JOIN modulos m ON m.id_modulo = pr.id_modulo WHERE pr.id_rol =:id_rol";
             $this->setSQL($sql);
 
             // Obtenemos los datos crudos de la DB (suponiendo que search() devuelve un array de filas)
@@ -143,9 +154,9 @@ class ModeloRoles extends ModelBase
                     $data = [
                         'id_rol' => $id_rol,
                         'id_permiso' => $permiso,
-                        'modulo' => $list['modulo'],
+                        'id_modulo' => $this->returnIdModule($list['modulo']),
                     ];
-                    $sql = "INSERT INTO permisos_de_rol(id_permisos_de_rol, id_rol, id_permiso, modulo) VALUES (null,:id_rol,:id_permiso,:modulo)";
+                    $sql = "INSERT INTO permisos_de_rol(id_permisos_de_rol, id_rol, id_permiso, id_modulo) VALUES (null,:id_rol,:id_permiso,:id_modulo)";
                     $this->setSQL($sql);
                     $this->create($data);
                 }
@@ -209,11 +220,11 @@ class ModeloRoles extends ModelBase
                         $data_permiso = [
                             'id_rol' => $id_rol,
                             'id_permiso' => $id_permiso,
-                            'modulo' => $moduloNombre
+                            'id_modulo' => $this->returnIdModule($moduloNombre),
                         ];
 
-                        $sql_ins = "INSERT INTO permisos_de_rol (id_permisos_de_rol, id_rol, id_permiso, modulo) 
-                                VALUES (NULL, :id_rol, :id_permiso, :modulo)";
+                        $sql_ins = "INSERT INTO permisos_de_rol (id_permisos_de_rol, id_rol, id_permiso, id_modulo) 
+                                VALUES (NULL, :id_rol, :id_permiso, :id_modulo)";
                         $this->setSQL($sql_ins);
                         $this->create($data_permiso);
                     }

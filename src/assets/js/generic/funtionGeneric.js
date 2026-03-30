@@ -279,66 +279,6 @@ export const cargarImg = (archivo, imgHtml, contenedorImg) => {
   }
 };
 
-//retorna los permisos del sistema con su respetivo modulo
-export const returnModulos = () => {
-  // Array de módulos, cada uno con su nombre y el permiso asociado.
-  const modulos = [
-    { modulo: "Pacientes", permisosPorModulo: "permisosPacientes" },
-    { modulo: "Patologias", permisosPorModulo: "permisosPatologias" },
-    { modulo: "Factura", permisosPorModulo: "permisosFacturas" },
-    { modulo: "Citas", permisosPorModulo: "permisosCitas" },
-    { modulo: "Servicios", permisosPorModulo: "permisosServicios" },
-    { modulo: "Doctores", permisosPorModulo: "permisosDoctores" },
-    { modulo: "Control", permisosPorModulo: "permisosControles" },
-    {
-      modulo: "Hospitalizacion",
-      permisosPorModulo: "permisosHospitalizaciones",
-    },
-    { modulo: "Insumos", permisosPorModulo: "permisosInsumos" },
-    { modulo: "Entrada", permisosPorModulo: "permisosEntradas" },
-    { modulo: "Proveedores", permisosPorModulo: "permisosProveedores" },
-    { modulo: "Usuarios", permisosPorModulo: "permisosUsuarios" },
-    { modulo: "Roles", permisosPorModulo: "permisosRoles" },
-    { modulo: "Reportes", permisosPorModulo: "permisosReportes" },
-    { modulo: "Estadisticas", permisosPorModulo: "permisosEstadisticas" },
-    { modulo: "Mantenimiento", permisosPorModulo: "permisosMantenimiento" },
-  ];
-
-  // Clasificación de módulos en categorías.
-  const clasificacion = {
-    Administración: ["Usuarios", "Roles", "Mantenimiento"],
-    "Gestión Médica": [
-      "Pacientes",
-      "Patologias",
-      "Citas",
-      "Servicios",
-      "Hospitalizacion",
-      "Doctores",
-      "Control",
-    ],
-    Inventario: ["Insumos", "Entrada", "Proveedores"],
-    Reportes: ["Factura", "Reportes", "Estadisticas"],
-  };
-
-  // Inicializamos un objeto para almacenar los módulos clasificados por categoría.
-  const categorias = Object.keys(clasificacion).reduce((acc, categoria) => {
-    acc[categoria] = []; // Inicializa cada categoría como un array vacío.
-    return acc;
-  }, {});
-
-  // Clasificamos los módulos en las categorías correspondientes.
-  modulos.forEach((modulo) => {
-    for (const [categoria, modulosCategoria] of Object.entries(clasificacion)) {
-      // Si el módulo pertenece a la categoría actual, lo añadimos a esa categoría.
-      if (modulosCategoria.includes(modulo.modulo)) {
-        categorias[categoria].push(modulo);
-        break; // Salimos del bucle interno una vez clasificado.
-      }
-    }
-  });
-
-  return categorias;
-};
 
 //function para retorn true o false dependiendo si el usuario tiene el permiso o no
 export const hasPermision = async (id_rol, module, permision, btns) => {

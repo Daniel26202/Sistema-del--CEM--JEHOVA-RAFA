@@ -240,6 +240,7 @@ return [
     'returnPermisos'=>'consultar',
     'returnModules'=>'consultar',
     'eliminar_modulo'=>'eliminar',
+    'returnPermisionModule'=>'consultar',
 
     //Reportes
     "reportes" => "consultar",

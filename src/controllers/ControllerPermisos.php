@@ -14,6 +14,19 @@ function returnModules()
     echo json_encode($model->returnModules());
 }
 
+function returnPermisionModule()  {
+    $module = new ModeloPermisos();
+
+    $result =[];
+    foreach ($module->returnModules() as $module) {
+        $result[]=[
+            'modulo'=>$module['nombre'],
+            'permisosPorModulo'=>'permisos'. $module['nombre'],
+        ];
+    }
+    echo json_encode($result);
+}
+
 
 function hasPermision($data)
 {
