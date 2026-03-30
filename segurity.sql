@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-03-2026 a las 18:37:13
+-- Tiempo de generación: 30-03-2026 a las 16:16:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -714,7 +714,84 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (675, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-04 07:08:34'),
 (676, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-04 12:25:21'),
 (677, 1, 'Roles', 'Ha Modificado un rol', '2026-03-04 13:34:57'),
-(678, 1, 'Roles', 'Ha Modificado un rol', '2026-03-04 13:35:15');
+(678, 1, 'Roles', 'Ha Modificado un rol', '2026-03-04 13:35:15'),
+(679, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-25 21:56:29'),
+(680, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-26 06:24:04'),
+(681, 1, 'paciente', 'Ha modificado un paciente', '2026-03-26 06:47:34'),
+(682, 1, 'paciente', 'Ha modificado un paciente', '2026-03-26 06:56:46'),
+(683, 1, 'cita', 'Ha Insertado una  cita', '2026-03-26 07:13:06'),
+(684, 1, 'paciente', 'Ha modificado un paciente', '2026-03-26 07:18:49'),
+(685, 1, 'paciente', 'Ha modificado un paciente', '2026-03-26 07:19:39'),
+(686, 1, 'cliente', 'Ha modificado un cliente', '2026-03-26 07:24:54'),
+(687, 1, 'Perfil', 'Ha modificado un perfil', '2026-03-26 07:29:18'),
+(688, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-26 09:17:48'),
+(689, 1, 'cerrar session', 'Ha cerrado la session', '2026-03-26 09:17:58'),
+(690, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-26 09:17:59'),
+(691, 1, 'cerrar session', 'Ha cerrado la session', '2026-03-26 09:18:08'),
+(692, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-26 09:18:13'),
+(693, 1, 'Categoria de servicio medico', 'Ha Insertado una nueva  categoria', '2026-03-26 10:02:39'),
+(694, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2026-03-26 10:58:48'),
+(695, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-28 09:05:58'),
+(696, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2026-03-28 09:26:12'),
+(697, 1, 'cita', 'Ha Insertado una  cita', '2026-03-28 09:26:33'),
+(698, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2026-03-28 10:12:04'),
+(699, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2026-03-28 10:12:48'),
+(700, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2026-03-28 10:17:01'),
+(701, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-28 16:50:38'),
+(702, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-28 17:10:36'),
+(703, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-28 19:57:51'),
+(704, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-28 20:42:10'),
+(705, 1, 'cerrar session', 'Ha cerrado la session', '2026-03-28 20:42:17'),
+(706, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-28 20:42:19'),
+(707, 1, 'cerrar session', 'Ha cerrado la session', '2026-03-28 20:42:28'),
+(708, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-28 20:42:30'),
+(709, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-28 20:57:42'),
+(710, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-29 10:16:08'),
+(711, 1, 'usuario', 'Ha modificado un  usuario', '2026-03-29 10:43:13'),
+(712, 1, 'modulo', 'Ha eliminado un  modulo del sistema', '2026-03-29 11:12:59'),
+(713, 1, 'modulo', 'Ha Insertado un nuevo  modulo', '2026-03-29 11:53:03'),
+(714, 1, 'modulo', 'Ha eliminado un  modulo del sistema', '2026-03-29 11:53:10'),
+(715, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-30 07:57:44'),
+(716, 1, 'modulo', 'Ha Insertado un nuevo  modulo', '2026-03-30 09:38:41'),
+(717, 1, 'Roles', 'Ha Insertado un nuevo rol', '2026-03-30 09:56:18'),
+(718, 1, 'Roles', 'Ha Modificado un rol', '2026-03-30 10:00:21');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `modulos`
+--
+
+CREATE TABLE `modulos` (
+  `id_modulo` int(11) NOT NULL,
+  `nombre` varchar(25) NOT NULL,
+  `estado` varchar(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `modulos`
+--
+
+INSERT INTO `modulos` (`id_modulo`, `nombre`, `estado`) VALUES
+(1, 'Pacientes', 'DES'),
+(2, 'Clientes', 'ACT'),
+(3, 'Patologias', 'ACT'),
+(4, 'Factura', 'ACT'),
+(5, 'Citas', 'ACT'),
+(6, 'Doctores', 'ACT'),
+(7, 'Control', 'ACT'),
+(8, 'Hospitalizacion', 'ACT'),
+(9, 'Insumos', 'ACT'),
+(10, 'Entrada', 'ACT'),
+(11, 'Proveedores', 'ACT'),
+(12, 'Usuarios', 'ACT'),
+(13, 'Roles', 'ACT'),
+(14, 'Reportes', 'ACT'),
+(15, 'Estadisticas', 'ACT'),
+(16, 'Mantenimiento', 'ACT'),
+(17, 'Servicios', 'ACT'),
+(18, 'David', 'DES'),
+(19, 'Dsss', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -747,107 +824,114 @@ CREATE TABLE `permisos_de_rol` (
   `id_permisos_de_rol` int(11) NOT NULL,
   `id_rol` int(11) NOT NULL,
   `id_permiso` int(11) NOT NULL,
-  `modulo` text NOT NULL
+  `id_modulo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `permisos_de_rol`
 --
 
-INSERT INTO `permisos_de_rol` (`id_permisos_de_rol`, `id_rol`, `id_permiso`, `modulo`) VALUES
-(1, 10, 30, 'Pacientes'),
-(2, 10, 31, 'Pacientes'),
-(3, 10, 33, 'Pacientes'),
-(4, 10, 32, 'Pacientes'),
-(8, 10, 30, 'Clientes'),
-(9, 10, 31, 'Clientes'),
-(10, 10, 32, 'Clientes'),
-(11, 10, 33, 'Clientes'),
-(12, 10, 30, 'Patologias'),
-(13, 10, 31, 'Patologias'),
-(14, 10, 32, 'Patologias'),
-(15, 10, 33, 'Patologias'),
-(16, 10, 30, 'Factura'),
-(17, 10, 31, 'Factura'),
-(18, 10, 32, 'Factura'),
-(19, 10, 33, 'Factura'),
-(20, 10, 30, 'Citas'),
-(21, 10, 31, 'Citas'),
-(22, 10, 32, 'Citas'),
-(23, 10, 33, 'Citas'),
-(24, 10, 30, 'Doctores'),
-(25, 10, 31, 'Doctores'),
-(26, 10, 32, 'Doctores'),
-(27, 10, 33, 'Doctores'),
-(28, 10, 30, 'Control'),
-(29, 10, 31, 'Control'),
-(30, 10, 32, 'Control'),
-(31, 10, 33, 'Control'),
-(32, 10, 30, 'Hospitalizacion'),
-(33, 10, 31, 'Hospitalizacion'),
-(34, 10, 32, 'Hospitalizacion'),
-(35, 10, 33, 'Hospitalizacion'),
-(36, 10, 30, 'Insumos'),
-(37, 10, 31, 'Insumos'),
-(38, 10, 32, 'Insumos'),
-(39, 10, 33, 'Insumos'),
-(40, 10, 30, 'Entrada'),
-(41, 10, 31, 'Entrada'),
-(42, 10, 32, 'Entrada'),
-(43, 10, 33, 'Entrada'),
-(44, 10, 30, 'Proveedores'),
-(45, 10, 31, 'Proveedores'),
-(46, 10, 32, 'Proveedores'),
-(47, 10, 33, 'Proveedores'),
-(48, 10, 30, 'Usuarios'),
-(49, 10, 31, 'Usuarios'),
-(50, 10, 32, 'Usuarios'),
-(51, 10, 33, 'Usuarios'),
-(52, 10, 30, 'Roles'),
-(53, 10, 31, 'Roles'),
-(54, 10, 32, 'Roles'),
-(55, 10, 33, 'Roles'),
-(56, 10, 30, 'Reportes'),
-(57, 10, 31, 'Reportes'),
-(58, 10, 32, 'Reportes'),
-(59, 10, 33, 'Reportes'),
-(60, 10, 30, 'Estadisticas'),
-(61, 10, 31, 'Estadisticas'),
-(62, 10, 32, 'Estadisticas'),
-(63, 10, 33, 'Estadisticas'),
-(64, 10, 30, 'Mantenimiento'),
-(65, 10, 31, 'Mantenimiento'),
-(66, 10, 32, 'Mantenimiento'),
-(67, 10, 33, 'Mantenimiento'),
-(68, 10, 30, 'Servicios'),
-(69, 10, 31, 'Servicios'),
-(70, 10, 32, 'Servicios'),
-(71, 10, 33, 'Servicios'),
-(72, 11, 30, 'Usuarios'),
-(73, 11, 31, 'Usuarios'),
-(74, 11, 33, 'Usuarios'),
-(75, 11, 30, 'Insumos'),
-(76, 11, 31, 'Insumos'),
-(77, 11, 30, 'Factura'),
-(78, 11, 31, 'Factura'),
-(79, 11, 32, 'Factura'),
-(80, 12, 30, 'Usuarios'),
-(81, 12, 31, 'Usuarios'),
-(82, 12, 32, 'Usuarios'),
-(83, 12, 33, 'Usuarios'),
-(84, 12, 30, 'Roles'),
-(85, 12, 31, 'Roles'),
-(86, 12, 32, 'Roles'),
-(87, 12, 33, 'Roles'),
-(88, 12, 30, 'Mantenimiento'),
-(89, 12, 31, 'Mantenimiento'),
-(90, 12, 32, 'Mantenimiento'),
-(91, 12, 33, 'Mantenimiento'),
-(95, 8, 30, 'Usuarios'),
-(96, 8, 31, 'Usuarios'),
-(97, 8, 32, 'Usuarios'),
-(98, 8, 31, 'Roles'),
-(99, 8, 32, 'Roles');
+INSERT INTO `permisos_de_rol` (`id_permisos_de_rol`, `id_rol`, `id_permiso`, `id_modulo`) VALUES
+(1, 10, 30, 1),
+(2, 10, 31, 1),
+(3, 10, 33, 1),
+(4, 10, 32, 1),
+(8, 10, 30, 2),
+(9, 10, 31, 2),
+(10, 10, 32, 2),
+(11, 10, 33, 2),
+(12, 10, 30, 3),
+(13, 10, 31, 3),
+(14, 10, 32, 3),
+(15, 10, 33, 3),
+(16, 10, 30, 4),
+(17, 10, 31, 4),
+(18, 10, 32, 4),
+(19, 10, 33, 4),
+(20, 10, 30, 5),
+(21, 10, 31, 5),
+(22, 10, 32, 5),
+(23, 10, 33, 5),
+(24, 10, 30, 6),
+(25, 10, 31, 6),
+(26, 10, 32, 6),
+(27, 10, 33, 6),
+(28, 10, 30, 7),
+(29, 10, 31, 7),
+(30, 10, 32, 7),
+(31, 10, 33, 7),
+(32, 10, 30, 8),
+(33, 10, 31, 8),
+(34, 10, 32, 8),
+(35, 10, 33, 8),
+(36, 10, 30, 9),
+(37, 10, 31, 9),
+(38, 10, 32, 9),
+(39, 10, 33, 9),
+(40, 10, 30, 10),
+(41, 10, 31, 10),
+(42, 10, 32, 10),
+(43, 10, 33, 10),
+(44, 10, 30, 11),
+(45, 10, 31, 11),
+(46, 10, 32, 11),
+(47, 10, 33, 11),
+(48, 10, 30, 12),
+(49, 10, 31, 12),
+(50, 10, 32, 12),
+(51, 10, 33, 12),
+(52, 10, 30, 13),
+(53, 10, 31, 13),
+(54, 10, 32, 13),
+(55, 10, 33, 13),
+(56, 10, 30, 14),
+(57, 10, 31, 14),
+(58, 10, 32, 14),
+(59, 10, 33, 14),
+(60, 10, 30, 15),
+(61, 10, 31, 15),
+(62, 10, 32, 15),
+(63, 10, 33, 15),
+(64, 10, 30, 16),
+(65, 10, 31, 16),
+(66, 10, 32, 16),
+(67, 10, 33, 16),
+(68, 10, 30, 17),
+(69, 10, 31, 17),
+(70, 10, 32, 17),
+(71, 10, 33, 17),
+(72, 11, 30, 12),
+(73, 11, 31, 12),
+(74, 11, 33, 12),
+(75, 11, 30, 9),
+(76, 11, 31, 9),
+(77, 11, 30, 4),
+(78, 11, 31, 4),
+(79, 11, 32, 4),
+(80, 12, 30, 12),
+(81, 12, 31, 12),
+(82, 12, 32, 12),
+(83, 12, 33, 12),
+(84, 12, 30, 13),
+(85, 12, 31, 13),
+(86, 12, 32, 13),
+(87, 12, 33, 13),
+(88, 12, 30, 16),
+(89, 12, 31, 16),
+(90, 12, 32, 16),
+(91, 12, 33, 16),
+(95, 8, 30, 12),
+(96, 8, 31, 12),
+(97, 8, 32, 12),
+(98, 8, 31, 13),
+(99, 8, 32, 13),
+(100, 13, 30, 12),
+(101, 13, 31, 12),
+(102, 13, 32, 12),
+(103, 13, 30, 16),
+(104, 13, 31, 16),
+(105, 1, 30, 12),
+(106, 1, 31, 12);
 
 -- --------------------------------------------------------
 
@@ -867,7 +951,7 @@ CREATE TABLE `rol` (
 --
 
 INSERT INTO `rol` (`id_rol`, `nombre`, `estado`, `descripción`) VALUES
-(1, 'administrador', 'ACT', 'administrador'),
+(1, 'Administrador', 'ACT', 'Administrador'),
 (5, 'Rol', 'DES', 'este es un permiso par los doctores'),
 (6, 'Propio', 'DES', 'descripcio'),
 (7, 'Carlos', 'DES', 'jfhfdsjddjs'),
@@ -875,7 +959,8 @@ INSERT INTO `rol` (`id_rol`, `nombre`, `estado`, `descripción`) VALUES
 (9, 'Roletazo', 'DES', 'es un permiso de pruebas'),
 (10, 'Superadmin', 'ACT', 'lsafdfjfd'),
 (11, 'You', 'ACT', 'Es un antinflamatorio son derivados'),
-(12, 'Xxx', 'ACT', 'Es una descipcion');
+(12, 'Xxx', 'ACT', 'Es una descipcion'),
+(13, 'República', 'ACT', 'Qwwweeweee');
 
 -- --------------------------------------------------------
 
@@ -898,9 +983,9 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 10, 'venom-marvels-spider-man-2-2023-games-playstation-5-marvel-3840x2160-6499.jpeg', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
+(1, 10, 'dragon-ball-z-super-3840x2160-13878.jpg', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
 (42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'DES'),
-(43, 8, 'IMG-20260226-WA0093.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT'),
+(43, 8, 'arte-dragon-ball-super-goku-and-black-goku_7680x4320_xtrafondos.com.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT'),
 (45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'DES'),
 (46, 8, 'doctor.png', 'weq', 'wbaez975@gmail.com', '$2y$10$WAANXp7gXMUe5ZixhhN4IOOfGrqKYsv7PeHzhf8cgf8xd56nTbqly', 'ACT'),
 (52, 8, 'doctor.png', 'WDaniel1', 'wbaez975@gmail.com', '$2y$10$PYYiGKo3RDTI3JN6eiR6lexHNG90m0WWC1VgAg0cmhKfw3LCmXdaS', 'ACT'),
@@ -918,6 +1003,12 @@ ALTER TABLE `bitacora`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
+-- Indices de la tabla `modulos`
+--
+ALTER TABLE `modulos`
+  ADD PRIMARY KEY (`id_modulo`);
+
+--
 -- Indices de la tabla `permisos`
 --
 ALTER TABLE `permisos`
@@ -929,7 +1020,8 @@ ALTER TABLE `permisos`
 ALTER TABLE `permisos_de_rol`
   ADD PRIMARY KEY (`id_permisos_de_rol`),
   ADD KEY `id_rol` (`id_rol`,`id_permiso`),
-  ADD KEY `id_permiso` (`id_permiso`);
+  ADD KEY `id_permiso` (`id_permiso`),
+  ADD KEY `id_modulo` (`id_modulo`);
 
 --
 -- Indices de la tabla `rol`
@@ -952,7 +1044,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=679;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=719;
+
+--
+-- AUTO_INCREMENT de la tabla `modulos`
+--
+ALTER TABLE `modulos`
+  MODIFY `id_modulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos`
@@ -964,13 +1062,13 @@ ALTER TABLE `permisos`
 -- AUTO_INCREMENT de la tabla `permisos_de_rol`
 --
 ALTER TABLE `permisos_de_rol`
-  MODIFY `id_permisos_de_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `id_permisos_de_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
@@ -993,7 +1091,8 @@ ALTER TABLE `bitacora`
 --
 ALTER TABLE `permisos_de_rol`
   ADD CONSTRAINT `permisos_de_rol_ibfk_1` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`),
-  ADD CONSTRAINT `permisos_de_rol_ibfk_2` FOREIGN KEY (`id_permiso`) REFERENCES `permisos` (`id_permiso`);
+  ADD CONSTRAINT `permisos_de_rol_ibfk_2` FOREIGN KEY (`id_permiso`) REFERENCES `permisos` (`id_permiso`),
+  ADD CONSTRAINT `permisos_de_rol_ibfk_3` FOREIGN KEY (`id_modulo`) REFERENCES `modulos` (`id_modulo`);
 
 --
 -- Filtros para la tabla `usuario`

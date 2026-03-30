@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 05, 2025 at 02:52 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 30-03-2026 a las 16:16:53
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,17 +18,14 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `bd`
+-- Base de datos: `bd`
 --
 
 DELIMITER $$
 --
--- Procedures
+-- Procedimientos
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT, IN `cantidad_requerida` INT)   BEGIN
-
-
-
 
 
 
@@ -38,13 +35,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
     DECLARE lote_id INT;
-
-
-
 
 
 
@@ -59,16 +50,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
-
-
-
     DECLARE done INT DEFAULT FALSE;
-
-
-
 
 
 
@@ -78,13 +60,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
         SELECT ei.id_entradaDeInsumo, ei.cantidad_disponible
-
-
-
 
 
 
@@ -94,21 +70,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
         ON e.id_entrada = ei.id_entrada
 
 
 
 
-
-
-
         WHERE ei.id_insumo = insumo_id AND ei.cantidad_disponible > 0
-
-
-
 
 
 
@@ -122,19 +89,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
-
-
-
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-
-
-
-
-
-
 
 
 
@@ -154,16 +109,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
-
-
-
     lectura_lote: LOOP
-
-
-
 
 
 
@@ -173,13 +119,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
         IF done THEN
-
-
-
 
 
 
@@ -189,16 +129,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
         END IF;
-
-
-
-
-
-
 
 
 
@@ -213,13 +144,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
             UPDATE entrada_insumo
-
-
-
 
 
 
@@ -229,13 +154,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
             WHERE id_entradaDeInsumo = lote_id;
-
-
-
 
 
 
@@ -245,13 +164,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
             LEAVE lectura_lote;
-
-
-
 
 
 
@@ -261,13 +174,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
             UPDATE entrada_insumo
-
-
-
 
 
 
@@ -277,13 +184,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
             WHERE id_entradaDeInsumo = lote_id;
-
-
-
 
 
 
@@ -293,24 +194,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
         END IF;
 
 
 
 
-
-
-
     END LOOP;
-
-
-
-
-
-
 
 
 
@@ -325,15 +214,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT
 
 
 
-
-
-
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_factura` INT)   BEGIN
-
-
-
 
 
 
@@ -343,13 +226,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
     DECLARE entrada_id INT; 
-
-
-
 
 
 
@@ -363,23 +240,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
-
-
-
     
 
 
 
-
-
-
     DECLARE insumo_cursor CURSOR FOR 
-
-
-
 
 
 
@@ -394,16 +259,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
-
-
-
     
-
-
-
 
 
 
@@ -417,16 +273,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
-
-
-
     
-
-
-
 
 
 
@@ -440,23 +287,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
-
-
-
     
 
 
 
-
-
-
     read_loop: LOOP
-
-
-
 
 
 
@@ -471,16 +306,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
-
-
-
         IF done THEN
-
-
-
 
 
 
@@ -489,13 +315,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
         END IF;
-
-
-
 
 
 
@@ -505,13 +325,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
         update bd.entrada_insumo set cantidad_disponible = cantidad_disponible + cantidad_en_factura where id_entradaDeInsumo = entrada_id;
-
-
-
 
 
 
@@ -526,16 +340,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
-
-
-
     
-
-
-
 
 
 
@@ -544,53 +349,29 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_
 
 
 
-
-
-
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_insumos_hospitalizacion` (IN `p_id_insumo` INT, IN `p_cantidad` INT)   BEGIN
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_insumo_hospitalizacion` (IN `p_id_insumo` INT, IN `p_cantidad` INT)   BEGIN
     DECLARE v_idEntrada INT;
 
-
-
-    -- Obtener el id de la entrada 
-
+    
     SELECT ei.id_entradaDeInsumo
-
     INTO v_idEntrada
-
     FROM entrada_insumo ei
-
     WHERE ei.id_insumo = p_id_insumo
-
     ORDER BY ei.fechaDeVencimiento DESC
-
     LIMIT 1;
 
-
-
-    --  Actualizar la cantidad de esa entrada
-
+    
     UPDATE entrada_insumo
-
     SET cantidad_disponible = p_cantidad
-
     WHERE id_entradaDeInsumo = v_idEntrada;
 
-
-
-    -- (Opcional) devolver el id actualizado
-
+    
     SELECT v_idEntrada AS idEntrada_actualizada;
-
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT, IN `id_proveedor` INT, IN `fechaDeIngreso` DATE, IN `fechaDeVecimiento` DATE, IN `precio` FLOAT, IN `cantidad` INT, IN `lote` TEXT)   BEGIN
-
-
-
 
 
 
@@ -600,13 +381,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT
 
 
 
-
-
-
     
-
-
-
 
 
 
@@ -616,13 +391,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT
 
 
 
-
-
-
     set id_entrada =  last_insert_id();
-
-
-
 
 
 
@@ -632,13 +401,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_entrada` (IN `id_insumo` INT
 
 
 
-
-
-
     INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
-
-
-
 
 
 
@@ -650,13 +413,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
-
-
-
 	declare id_insumo int;
-
-
-
 
 
 
@@ -666,13 +423,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
-
-
-
     
-
-
-
 
 
 
@@ -682,21 +433,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
-
-
-
     set id_insumo = last_insert_id();
 
 
 
 
-
-
-
     
-
-
-
 
 
 
@@ -706,13 +448,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
-
-
-
     set id_entrada =  last_insert_id();
-
-
-
 
 
 
@@ -722,13 +458,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_insumo` (IN `imagen` TEXT, I
 
 
 
-
-
-
     INSERT INTO entrada_insumo VALUES (null, id_insumo, id_entrada,fechaDeVecimiento,precio, cantidad, cantidad);
-
-
-
 
 
 
@@ -740,7 +470,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categoria_servicio`
+-- Estructura de tabla para la tabla `categoria_servicio`
 --
 
 CREATE TABLE `categoria_servicio` (
@@ -750,7 +480,7 @@ CREATE TABLE `categoria_servicio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `categoria_servicio`
+-- Volcado de datos para la tabla `categoria_servicio`
 --
 
 INSERT INTO `categoria_servicio` (`id_categoria`, `nombre`, `estado`) VALUES
@@ -763,12 +493,13 @@ INSERT INTO `categoria_servicio` (`id_categoria`, `nombre`, `estado`) VALUES
 (103, 'Oftalmología', 'ACT'),
 (104, 'Odontología', 'ACT'),
 (105, 'Hello', 'ACT'),
-(106, 'Categorizacion', 'DES');
+(106, 'Categorizacion', 'DES'),
+(109, 'Xxx', 'ACT');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cita`
+-- Estructura de tabla para la tabla `cita`
 --
 
 CREATE TABLE `cita` (
@@ -783,7 +514,7 @@ CREATE TABLE `cita` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `cita`
+-- Volcado de datos para la tabla `cita`
 --
 
 INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_servicioMedico`, `paciente_id_paciente`, `hora_salida`, `doctor`) VALUES
@@ -815,12 +546,15 @@ INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_ser
 (66, '2025-10-20', '20:00:00', 'DES', 24, 25, '21:10:00', 19),
 (67, '2025-10-24', '10:01:00', 'Realizadas', 24, 25, '11:10:00', 20),
 (68, '2025-10-06', '20:00:00', 'Pendiente', 24, 25, '21:10:00', 19),
-(69, '2025-10-27', '20:00:00', 'Realizadas', 24, 25, '21:10:00', 19);
+(69, '2025-10-27', '20:00:00', 'Realizadas', 24, 25, '21:10:00', 19),
+(70, '2025-10-06', '20:00:00', 'Pendiente', 24, 25, '21:11:00', 19),
+(71, '2026-03-30', '20:00:00', 'Pendiente', 24, 25, '21:00:00', 19),
+(72, '2026-03-31', '14:00:00', 'Pendiente', 25, 104, '15:00:00', 22);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cliente`
+-- Estructura de tabla para la tabla `cliente`
 --
 
 CREATE TABLE `cliente` (
@@ -837,20 +571,19 @@ CREATE TABLE `cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `cliente`
+-- Volcado de datos para la tabla `cliente`
 --
 
 INSERT INTO `cliente` (`id_cliente`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `direccion`, `fn`, `genero`, `estado`) VALUES
-(1, 'V', '12098234', 'Jose', 'Lara', '04123213212', 'esuna direccion', '2006-10-02', 'Femenino', 'ACT'),
+(1, 'V', '12098234', 'Jose', 'Lara', '04123213212', 'esuna direccion', '2005-10-02', 'Masculino', 'ACT'),
 (2, 'V', '2000002', 'Editado', 'Modificado', '04123454320', 'en su casa', '2002-02-20', 'Masculino', 'ACT'),
 (3, 'V', '3722999', 'Pedro', 'Perez', '04123454327', 'en su casa', '2002-02-20', 'Masculino', 'ACT'),
-(4, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'masculino', 'ACT'),
-(5, 'V', '28150004', 'Juan', 'Silva', '04121338031', 'Calle 10 entre 3 y 7', '2001-09-22', 'Masculino', 'ACT');
+(4, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'Masculino', 'ACT');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `control`
+-- Estructura de tabla para la tabla `control`
 --
 
 CREATE TABLE `control` (
@@ -868,33 +601,41 @@ CREATE TABLE `control` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `control`
+-- Volcado de datos para la tabla `control`
 --
 
 INSERT INTO `control` (`id_control`, `id_paciente`, `id_usuario`, `diagnostico`, `medicamentosRecetados`, `fecha_control`, `fechaRegreso`, `nota`, `historiaclinica`, `estado`, `severidad`) VALUES
 (26, 23, 1, 'El chico presenta dificultad para respirar, hinchazón en el cuerpo y dolores de cabeza', 'Cetirizina\r\nSalbutamol\r\nAcetaminofén', '2025-04-02 14:37:34', '2025-04-26', 'Debe hacerse hematología completa', '2wd', 'ACT', 'LEVE'),
-(27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasicoCafeínaViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'Historia bbb', 'ACT', 'LEVE'),
+(27, 24, 1, 'La paciente presenta severos dolores de cabeza, lo cual da a entender que tiene episodios de jaqueca, a su vez también presenta problemas con la visión y mareos\r\nTomar mucha agua', 'Diclofenac potasicoCafeínaViajesan', '2025-04-02 14:45:09', '2025-04-23', 'Tomar mucha agua', 'Historia bbba', 'ACT', 'LEVE'),
 (28, 25, 43, 'diagnostico', 'indicaciones', '2025-06-10 10:11:51', '2026-06-24', 'nota', 'historial\r\n\r\n', 'ACT', 'LEVE'),
 (29, 25, 42, 'jfsdjfsdnfds', 'indicaciones', '2025-06-10 20:07:54', '2026-06-18', 'alguito', 'mhnfdjg algo mas', 'ACT', 'LEVE'),
 (30, 25, 43, 'diagnostivo', 'indicaciones', '2025-06-19 20:29:30', '2025-07-06', 'nota', 'historial clinico  de algo no se', 'ACT', 'LEVE'),
-(31, 89, 42, 'este enfermedad crónica', 'es una indicacion', '2025-06-27 19:24:28', '2025-06-29', 'es una nota', 'este en un historial', 'ACT', 'LEVE'),
+(31, 89, 42, 'este enfermedad crónica', 'es una indicacion', '2025-06-27 19:24:28', '2025-06-29', 'es una nota', 'este en un historialssskjklk', 'ACT', 'LEVE'),
 (32, 25, 43, 'dgdgdgff', 'gdfgd', '2025-09-25 20:24:37', '2025-10-12', 'fghfh', 'sddsds', 'ACT', 'LEVE'),
 (33, 25, 1, 'diagnostico', 'indicaciones', '2025-10-03 11:23:02', '2025-11-01', 'nota', 'historial', 'ACT', 'LEVE'),
 (34, 25, 1, 'diagnostico', 'indicaciones', '2025-10-03 11:23:41', '2025-11-01', 'nota editada', 'historial', 'ACT', 'LEVE'),
-(40, 25, 43, 'diagnostico', 'sqssss', '2025-10-30 20:12:15', '2025-10-31', 'sqs', 'historial', 'ACT', 'LEVE'),
+(40, 25, 43, 'diagnostico', 'sqssssas', '2025-10-30 20:12:15', '2025-10-31', 'sqssa', 'historialsaaaaaasdaslñq', 'ACT', 'LEVE'),
 (41, 25, 46, 'sidasd', '', '2025-11-01 11:30:10', '0000-00-00', '', 'historial', 'DES', 'LEVE'),
-(42, 23, 43, 'dsdsfdsfsd', 'ddsfdssdf', '2025-11-04 12:28:30', '2025-12-06', 'sdfsd', 'dfsfds', 'ACT', 'LEVE');
+(42, 26, 46, 'fewefewf3r', 'w3r3w', '2025-11-03 14:22:41', '2025-11-04', 'r3wr', 'edqwdwefw', 'ACT', 'MODERADA'),
+(43, 102, 43, 'dcsdcsdc', 'dcsdc', '2025-11-03 14:37:35', '2025-11-11', 'zd', 'dcsdcsd', 'ACT', 'LEVE'),
+(44, 23, 42, ':diagnostico', ':indicaciones', '2025-11-03 14:48:38', '2025-11-22', ':nota', ':histoarial', 'ACT', 'LEVE'),
+(45, 102, 1, 'sdasd', 'asdas', '2025-11-03 15:00:02', '2025-11-11', 'sadas', 'wdawd', 'ACT', 'LEVE'),
+(46, 102, 1, 'sdakjk', 'sdakjsjd', '2025-11-03 15:01:59', '2025-11-04', 'skadaksd', 'sadsd', 'ACT', 'LEVE'),
+(47, 102, 42, 'efwfe', 'efwef', '2025-11-03 17:12:57', '2025-11-22', 'edwe', 'fewf', 'ACT', 'LEVE'),
+(48, 102, 1, 'jkjhjkjkjk', 'jkjjkjk', '2025-11-03 17:15:47', '2025-11-19', 'hjhjhjjhjhj', 'jkjjkjk', 'ACT', 'LEVE'),
+(49, 102, 46, 'jkhhuhu', 'hjhjhj', '2025-11-03 17:18:04', '2025-11-19', 'bkkuk', 'hhjhjhjsiiiiioijoijiiojjjjjjjjj', 'ACT', 'LEVE'),
+(50, 102, 1, 'cdsdcsd', 'vfvffvfv', '2025-11-03 17:32:51', '2025-11-26', 'cds', 'vfvf', 'ACT', 'LEVE'),
+(51, 102, 43, 'xwxxw', 'xwxwxw', '2025-11-03 17:34:08', '2025-11-26', 'wxqx', 'xwxqx', 'ACT', 'MODERADA'),
+(52, 102, 1, 'nmnmmnmn', 'm,m,m,m,mnmn', '2025-11-03 17:43:31', '2025-11-14', 'mhhhj', 'mnmnmn', 'ACT', 'LEVE'),
+(53, 102, 1, 'pppppp', 'pppppp', '2025-11-04 10:07:56', '2025-11-12', 'ppppppp', 'ppppp', 'ACT', 'LEVE'),
+(54, 102, 43, 'dcsdf', 'dsfsdf', '2025-11-04 13:11:48', '2025-11-27', 'kdslkdl', 'dfsf', 'ACT', 'MODERADA'),
+(55, 102, 46, 'wdddw', 'swssw', '2025-11-04 13:37:49', '2025-12-05', 'swsws', 'dfsfwd', 'DES', 'LEVE');
 
 --
--- Triggers `control`
+-- Disparadores `control`
 --
 DELIMITER $$
 CREATE TRIGGER `SALUDABLE` AFTER INSERT ON `control` FOR EACH ROW IF NEW.diagnostico LIKE '%alta médica%' THEN
-
-
-
-
-
 
 
 
@@ -904,17 +645,7 @@ CREATE TRIGGER `SALUDABLE` AFTER INSERT ON `control` FOR EACH ROW IF NEW.diagnos
 
 
 
-
-
-
-
-
     WHERE id_paciente = NEW.id_paciente;
-
-
-
-
-
 
 
 
@@ -926,7 +657,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detalle_factura`
+-- Estructura de tabla para la tabla `detalle_factura`
 --
 
 CREATE TABLE `detalle_factura` (
@@ -942,7 +673,7 @@ CREATE TABLE `detalle_factura` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `detalle_factura`
+-- Volcado de datos para la tabla `detalle_factura`
 --
 
 INSERT INTO `detalle_factura` (`id_datelle_factura`, `id_factura`, `tipo`, `cantidad`, `precio_unitario`, `subtotal`, `hospitalizacion_id_hospitalizacion`, `serviciomedico_id_servicioMedico`, `entrada_insumo_id_entradaDeInsumo`) VALUES
@@ -959,16 +690,13 @@ INSERT INTO `detalle_factura` (`id_datelle_factura`, `id_factura`, `tipo`, `cant
 (11, 211, 'Servicio', 1, 1000.00, 1000.00, NULL, 25, NULL),
 (12, 211, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53),
 (13, 211, 'Insumo', 1, 9.00, 9.00, NULL, NULL, 54),
-(14, 211, 'Insumo', 1, 5.60, 5.60, NULL, NULL, 64),
-(15, 214, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53),
-(16, 219, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53),
-(17, 220, 'Insumo', 1, 80.00, 80.00, NULL, NULL, 53);
+(14, 211, 'Insumo', 1, 5.60, 5.60, NULL, NULL, 64);
 
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `distribucion_edad_genero`
--- (See below for the actual view)
+-- Estructura Stand-in para la vista `distribucion_edad_genero`
+-- (Véase abajo para la vista actual)
 --
 CREATE TABLE `distribucion_edad_genero` (
 `rango_edad` varchar(5)
@@ -982,7 +710,7 @@ CREATE TABLE `distribucion_edad_genero` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `entrada`
+-- Estructura de tabla para la tabla `entrada`
 --
 
 CREATE TABLE `entrada` (
@@ -994,7 +722,7 @@ CREATE TABLE `entrada` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `entrada`
+-- Volcado de datos para la tabla `entrada`
 --
 
 INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeIngreso`, `estado`) VALUES
@@ -1041,7 +769,7 @@ INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeI
 -- --------------------------------------------------------
 
 --
--- Table structure for table `entrada_insumo`
+-- Estructura de tabla para la tabla `entrada_insumo`
 --
 
 CREATE TABLE `entrada_insumo` (
@@ -1055,13 +783,13 @@ CREATE TABLE `entrada_insumo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `entrada_insumo`
+-- Volcado de datos para la tabla `entrada_insumo`
 --
 
 INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `fechaDeVencimiento`, `precio`, `cantidad_entrante`, `cantidad_disponible`) VALUES
 (52, 37, 58, '2025-05-25', 9.00, 89, 67),
-(53, 36, 59, '2026-02-11', 750000.00, 34, 0),
-(54, 41, 62, '2026-06-29', 9.00, 20, 13),
+(53, 36, 59, '2026-02-11', 750000.00, 34, 3),
+(54, 41, 62, '2026-06-29', 9.00, 20, 11),
 (55, 42, 63, '2025-06-27', 8.00, 12, 12),
 (56, 36, 64, '2026-06-21', 12.00, 1, 1),
 (57, 36, 65, '2026-06-21', 12.00, 1, 1),
@@ -1072,7 +800,7 @@ INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `
 (62, 36, 70, '2025-06-29', 12.00, 2, 2),
 (63, 36, 71, '2025-06-29', 190.00, 1, 1),
 (64, 43, 72, '2026-07-06', 8.00, 12, 9),
-(65, 44, 73, '2027-06-30', 2.80, 12, 10),
+(65, 44, 73, '2027-06-30', 2.80, 12, 0),
 (66, 45, 74, '2025-12-31', 100.00, 50, 50),
 (67, 44, 75, '2025-12-29', 100.00, 1, 1),
 (68, 44, 76, '2025-12-31', 100.00, 1, 1),
@@ -1081,7 +809,7 @@ INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `especialidad`
+-- Estructura de tabla para la tabla `especialidad`
 --
 
 CREATE TABLE `especialidad` (
@@ -1091,7 +819,7 @@ CREATE TABLE `especialidad` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `especialidad`
+-- Volcado de datos para la tabla `especialidad`
 --
 
 INSERT INTO `especialidad` (`id_especialidad`, `nombre`, `estado`) VALUES
@@ -1105,8 +833,8 @@ INSERT INTO `especialidad` (`id_especialidad`, `nombre`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `especialidades_solicitadas`
--- (See below for the actual view)
+-- Estructura Stand-in para la vista `especialidades_solicitadas`
+-- (Véase abajo para la vista actual)
 --
 CREATE TABLE `especialidades_solicitadas` (
 `especialidad` varchar(25)
@@ -1117,7 +845,7 @@ CREATE TABLE `especialidades_solicitadas` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `factura`
+-- Estructura de tabla para la tabla `factura`
 --
 
 CREATE TABLE `factura` (
@@ -1129,7 +857,7 @@ CREATE TABLE `factura` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `factura`
+-- Volcado de datos para la tabla `factura`
 --
 
 INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `id_cliente`) VALUES
@@ -1234,15 +962,12 @@ INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `id_cliente`) V
 (208, '2025-10-20', 474874.00, 'ACT', 4),
 (209, '2025-10-21', 240.00, 'ACT', 4),
 (210, '2025-10-21', 27.00, 'ACT', 4),
-(211, '2025-10-22', 1094.60, 'ACT', 4),
-(214, '2025-11-05', 80.00, 'ACT', 4),
-(219, '2025-11-05', 80.00, 'ACT', 5),
-(220, '2025-11-05', 80.00, 'ACT', 5);
+(211, '2025-10-22', 1094.60, 'ACT', 4);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `horario`
+-- Estructura de tabla para la tabla `horario`
 --
 
 CREATE TABLE `horario` (
@@ -1251,7 +976,7 @@ CREATE TABLE `horario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `horario`
+-- Volcado de datos para la tabla `horario`
 --
 
 INSERT INTO `horario` (`id_horario`, `diaslaborables`) VALUES
@@ -1266,7 +991,7 @@ INSERT INTO `horario` (`id_horario`, `diaslaborables`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `horarioydoctor`
+-- Estructura de tabla para la tabla `horarioydoctor`
 --
 
 CREATE TABLE `horarioydoctor` (
@@ -1278,7 +1003,7 @@ CREATE TABLE `horarioydoctor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `horarioydoctor`
+-- Volcado de datos para la tabla `horarioydoctor`
 --
 
 INSERT INTO `horarioydoctor` (`id_horarioydoctor`, `id_personal`, `id_horario`, `horaDeEntrada`, `horaDeSalida`) VALUES
@@ -1296,7 +1021,7 @@ INSERT INTO `horarioydoctor` (`id_horarioydoctor`, `id_personal`, `id_horario`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hospitalizacion`
+-- Estructura de tabla para la tabla `hospitalizacion`
 --
 
 CREATE TABLE `hospitalizacion` (
@@ -1313,7 +1038,7 @@ CREATE TABLE `hospitalizacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `hospitalizacion`
+-- Volcado de datos para la tabla `hospitalizacion`
 --
 
 INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `precio_horas`, `precio_horas_MoEx`, `total`, `total_MoEx`, `id_paciente`, `fecha_hora_final`, `estado`, `personal_id_personal`) VALUES
@@ -1334,13 +1059,15 @@ INSERT INTO `hospitalizacion` (`id_hospitalizacion`, `fecha_hora_inicio`, `preci
 (25, '2025-09-14 14:37:52', 0, 0, 0, 0, 25, '0000-00-00 00:00:00', 'DES', 19),
 (26, '2025-09-15 20:17:53', 0, 0, 0, 0, 25, '0000-00-00 00:00:00', 'DES', 19),
 (27, '2025-09-24 19:58:31', 474844, 2407.37, 474874, 2407.52, 25, '2025-10-14 21:26:57', 'Realizada', 19),
-(34, '2025-10-30 20:12:15', 217.91, 1.01, 220.71, 1.02, 25, '2025-10-30 22:55:44', 'Pendiente', 20),
-(35, '2025-11-01 11:30:10', 0, 0, 0, 0, 25, '0000-00-00 00:00:00', 'Pendiente', 22);
+(34, '2025-10-30 20:12:15', 217.91, 1.01, 220.71, 1.02, 25, '2025-10-30 22:55:44', 'DES', 20),
+(35, '2025-11-01 11:30:10', 0, 0, 0, 0, 25, '0000-00-00 00:00:00', 'DES', 22),
+(36, '2025-11-03 14:22:41', 1.34, 0.01, 19.34, 0.09, 26, '2025-11-03 14:23:45', 'Pendiente', 22),
+(37, '2025-11-04 13:37:49', 379.91, 1.76, 382.71, 1.77, 102, '2025-11-04 18:23:02', 'Pendiente', 22);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `insumo`
+-- Estructura de tabla para la tabla `insumo`
 --
 
 CREATE TABLE `insumo` (
@@ -1357,7 +1084,7 @@ CREATE TABLE `insumo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `insumo`
+-- Volcado de datos para la tabla `insumo`
 --
 
 INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `medida`, `precio`, `estado`, `stockMinimo`, `iva`) VALUES
@@ -1383,7 +1110,7 @@ INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `insumodehospitalizacion`
+-- Estructura de tabla para la tabla `insumodehospitalizacion`
 --
 
 CREATE TABLE `insumodehospitalizacion` (
@@ -1394,7 +1121,7 @@ CREATE TABLE `insumodehospitalizacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `insumodehospitalizacion`
+-- Volcado de datos para la tabla `insumodehospitalizacion`
 --
 
 INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospitalizacion`, `id_entradaDeInsumo`, `cantidad`) VALUES
@@ -1412,13 +1139,15 @@ INSERT INTO `insumodehospitalizacion` (`id_insumoDeHospitalizacion`, `id_hospita
 (28, 26, 53, 1),
 (29, 27, 60, 1),
 (35, 34, 65, 1),
-(36, 35, 65, 1);
+(36, 35, 65, 1),
+(37, 36, 54, 2),
+(38, 37, 65, 1);
 
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `insumos_estadisticas`
--- (See below for the actual view)
+-- Estructura Stand-in para la vista `insumos_estadisticas`
+-- (Véase abajo para la vista actual)
 --
 CREATE TABLE `insumos_estadisticas` (
 `nombre_insumo` varchar(25)
@@ -1428,7 +1157,7 @@ CREATE TABLE `insumos_estadisticas` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `paciente`
+-- Estructura de tabla para la tabla `paciente`
 --
 
 CREATE TABLE `paciente` (
@@ -1446,75 +1175,75 @@ CREATE TABLE `paciente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `paciente`
+-- Volcado de datos para la tabla `paciente`
 --
 
 INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `direccion`, `fn`, `genero`, `estado`, `estado_salud`) VALUES
-(23, 'V', '28150004', 'Juan', 'Silva', '04121338031', 'Calle 10 entre 3 y 7', '2001-09-22', 'masculino', 'ACT', 'SALUDABLE'),
-(24, 'V', '28329224', 'Rocio', 'Rodriguez', '04121338031', 'URB EL BOSQUE CALLE 12', '2025-04-02', 'femenino', 'ACT', 'SALUDABLE'),
-(25, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'masculino', 'ACT', 'ENFERMO'),
-(26, 'V', '17664525', 'Sofia', 'Sofia', '4121338031', 'Direccion', '2001-09-22', '', 'ACT', 'SALUDABLE'),
+(23, 'V', '28150004', 'Juan', 'Silva', '04121338031', 'Calle 10 entre 3 y 7', '2001-09-22', 'Masculino', 'ACT', 'SALUDABLE'),
+(24, 'V', '28329224', 'Rocio', 'Rodriguez', '04121338031', 'URB EL BOSQUE CALLE 12', '2025-04-02', 'Femenino', 'ACT', 'SALUDABLE'),
+(25, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232340', 'Eb su casa', '2012-02-11', 'Masculino', 'ACT', 'ENFERMO'),
+(26, 'V', '17664525', 'Sofia', 'Sofia', '4121338031', 'undefined', '2001-03-30', 'Masculino', 'ACT', 'SALUDABLE'),
 (27, 'V', '158961', 'Aaaa', 'Aaaa', '4121338032', 'Direccion', '2001-09-22', 'Masculino', 'DES', 'SALUDABLE'),
-(28, 'V', '2000001', 'Argentina', 'Apellido_1', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
+(28, 'V', '2000001', 'Argentina', 'Apellido_1', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
 (29, 'V', '2000002', 'Editado', 'Modificado', '04123454320', 'en su casa', '2002-02-20', 'Masculino', 'ACT', 'SALUDABLE'),
-(30, 'V', '2000003', 'Chile', 'Apellido_3', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(31, 'V', '2000004', 'Colombia', 'Apellido_4', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(32, 'V', '2000005', 'México', 'Apellido_5', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
+(30, 'V', '2000003', 'Chile', 'Apellido_3', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(31, 'V', '2000004', 'Colombia', 'Apellido_4', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(32, 'V', '2000005', 'México', 'Apellido_5', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
 (33, 'V', '2000006', 'Perú', 'Apellido_6', '04121338031', 'Dirección genérica', '2024-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
-(34, 'V', '2000007', 'Uruguay', 'Apellido_7', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(35, 'V', '2000008', 'Venezuela', 'Apellido_8', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(36, 'V', '2000009', 'Ecuador', 'Apellido_9', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(37, 'V', '2000010', 'Bolivia', 'Apellido_10', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(38, 'V', '2000011', 'Paraguay', 'Apellido_11', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(39, 'V', '2000012', 'Panamá', 'Apellido_12', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(40, 'V', '2000013', 'Costa Rica', 'Apellido_13', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(41, 'V', '2000014', 'Guatemala', 'Apellido_14', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(42, 'V', '2000015', 'El Salvador', 'Apellido_15', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(43, 'V', '2000016', 'Honduras', 'Apellido_16', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(44, 'V', '2000017', 'Nicaragua', 'Apellido_17', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(45, 'V', '2000018', 'Cuba', 'Apellido_18', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(46, 'V', '2000019', 'República Dominicana', 'Apellido_19', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(47, 'V', '2000020', 'Puerto Rico', 'Apellido_20', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(48, 'V', '2000021', 'Canadá', 'Apellido_21', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(49, 'V', '2000022', 'España', 'Apellido_22', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(50, 'V', '2000023', 'Francia', 'Apellido_23', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(51, 'V', '2000024', 'Italia', 'Apellido_24', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(52, 'V', '2000025', 'Alemania', 'Apellido_25', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(53, 'V', '2000026', 'Portugal', 'Apellido_26', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(54, 'V', '2000027', 'Grecia', 'Apellido_27', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(55, 'V', '2000028', 'Rusia', 'Apellido_28', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(56, 'V', '2000029', 'China', 'Apellido_29', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(57, 'V', '2000030', 'Japón', 'Apellido_30', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(58, 'V', '2000031', 'Corea del Sur', 'Apellido_31', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(59, 'V', '2000032', 'India', 'Apellido_32', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(60, 'V', '2000033', 'Australia', 'Apellido_33', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(61, 'V', '2000034', 'Nueva Zelanda', 'Apellido_34', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(62, 'V', '2000035', 'Egipto', 'Apellido_35', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(63, 'V', '2000036', 'Sudáfrica', 'Apellido_36', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(64, 'V', '2000037', 'Nigeria', 'Apellido_37', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(65, 'V', '2000038', 'Kenia', 'Apellido_38', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(66, 'V', '2000039', 'Senegal', 'Apellido_39', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(67, 'V', '2000040', 'Túnez', 'Apellido_40', '04121338031', 'Dirección genérica', '2000-01-01', 'femenino', 'ACT', 'SALUDABLE'),
-(68, 'V', '2000041', 'Argentina', 'Apellido_41', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(69, 'V', '2000042', 'Brasil', 'Apellido_42', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(70, 'V', '2000043', 'Chile', 'Apellido_43', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(71, 'V', '2000044', 'Colombia', 'Apellido_44', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(72, 'V', '2000045', 'México', 'Apellido_45', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(73, 'V', '2000046', 'Perú', 'Apellido_46', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(74, 'V', '2000047', 'Uruguay', 'Apellido_47', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(75, 'V', '2000048', 'Venezuela', 'Apellido_48', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(76, 'V', '2000049', 'Ecuador', 'Apellido_49', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(77, 'V', '2000050', 'Bolivia', 'Apellido_50', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(78, 'V', '2000051', 'Paraguay', 'Apellido_51', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(79, 'V', '2000052', 'Panamá', 'Apellido_52', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(80, 'V', '2000053', 'Costa Rica', 'Apellido_53', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(81, 'V', '2000054', 'Guatemala', 'Apellido_54', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(82, 'V', '2000055', 'El Salvador', 'Apellido_55', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(83, 'V', '2000056', 'Honduras', 'Apellido_56', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(84, 'V', '2000057', 'Nicaragua', 'Apellido_57', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(85, 'V', '2000058', 'Cuba', 'Apellido_58', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(86, 'V', '2000059', 'República Dominicana', 'Apellido_59', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
-(87, 'V', '2000060', 'Puerto Rico', 'Apellido_60', '04121338031', 'Dirección genérica', '2000-01-01', 'masculino', 'ACT', 'SALUDABLE'),
+(34, 'V', '2000007', 'Uruguay', 'Apellido_7', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(35, 'V', '2000008', 'Venezuela', 'Apellido_8', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(36, 'V', '2000009', 'Ecuador', 'Apellido_9', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(37, 'V', '2000010', 'Bolivia', 'Apellido_10', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(38, 'V', '2000011', 'Paraguay', 'Apellido_11', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(39, 'V', '2000012', 'Panamá', 'Apellido_12', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(40, 'V', '2000013', 'Costa Rica', 'Apellido_13', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(41, 'V', '2000014', 'Guatemala', 'Apellido_14', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(42, 'V', '2000015', 'El Salvador', 'Apellido_15', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(43, 'V', '2000016', 'Honduras', 'Apellido_16', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(44, 'V', '2000017', 'Nicaragua', 'Apellido_17', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(45, 'V', '2000018', 'Cuba', 'Apellido_18', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(46, 'V', '20000190', 'República', 'Apellido', '04121338031', 'Direccion generica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(47, 'V', '2000020', 'Puerto Rico', 'Apellido_20', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(48, 'V', '2000021', 'Canadá', 'Apellido_21', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(49, 'V', '2000022', 'España', 'Apellido_22', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(50, 'V', '2000023', 'Francia', 'Apellido_23', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(51, 'V', '2000024', 'Italia', 'Apellido_24', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(52, 'V', '2000025', 'Alemania', 'Apellido_25', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(53, 'V', '2000026', 'Portugal', 'Apellido_26', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(54, 'V', '2000027', 'Grecia', 'Apellido_27', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(55, 'V', '2000028', 'Rusia', 'Apellido_28', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(56, 'V', '2000029', 'China', 'Apellido_29', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(57, 'V', '2000030', 'Japón', 'Apellido_30', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(58, 'V', '2000031', 'Corea del Sur', 'Apellido_31', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(59, 'V', '2000032', 'India', 'Apellido_32', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(60, 'V', '2000033', 'Australia', 'Apellido_33', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(61, 'V', '2000034', 'Nueva Zelanda', 'Apellido_34', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(62, 'V', '2000035', 'Egipto', 'Apellido_35', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(63, 'V', '2000036', 'Sudáfrica', 'Apellido_36', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(64, 'V', '2000037', 'Nigeria', 'Apellido_37', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(65, 'V', '2000038', 'Kenia', 'Apellido_38', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(66, 'V', '2000039', 'Senegal', 'Apellido_39', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(67, 'V', '2000040', 'Túnez', 'Apellido_40', '04121338031', 'Dirección genérica', '2000-01-01', 'Femenino', 'ACT', 'SALUDABLE'),
+(68, 'V', '2000041', 'Argentina', 'Apellido_41', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(69, 'V', '2000042', 'Brasil', 'Apellido_42', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(70, 'V', '2000043', 'Chile', 'Apellido_43', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(71, 'V', '2000044', 'Colombia', 'Apellido_44', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(72, 'V', '2000045', 'México', 'Apellido_45', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(73, 'V', '2000046', 'Perú', 'Apellido_46', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(74, 'V', '2000047', 'Uruguay', 'Apellido_47', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(75, 'V', '2000048', 'Venezuela', 'Apellido_48', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(76, 'V', '2000049', 'Ecuador', 'Apellido_49', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(77, 'V', '2000050', 'Bolivia', 'Apellido_50', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(78, 'V', '2000051', 'Paraguay', 'Apellido_51', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(79, 'V', '2000052', 'Panamá', 'Apellido_52', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(80, 'V', '2000053', 'Costa Rica', 'Apellido_53', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(81, 'V', '2000054', 'Guatemala', 'Apellido_54', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(82, 'V', '2000055', 'El Salvador', 'Apellido_55', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(83, 'V', '2000056', 'Honduras', 'Apellido_56', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(84, 'V', '2000057', 'Nicaragua', 'Apellido_57', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(85, 'V', '2000058', 'Cuba', 'Apellido_58', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(86, 'V', '20000590', 'República', 'Apellido', '04121338031', 'Direccin genrica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
+(87, 'V', '2000060', 'Puerto Rico', 'Apellido_60', '04121338031', 'Dirección genérica', '2000-01-01', 'Masculino', 'ACT', 'SALUDABLE'),
 (88, 'V', '1480973', 'Liam', 'Hendrick', '04128649495', 'En su casa ', '1997-06-28', 'Femenino', 'DES', 'SALUDABLE'),
 (89, 'V', '341234', 'Gol', 'Peterson', '04123433454', 'California', '2000-06-05', 'Masculino', 'DES', 'CRONICO'),
 (90, 'V', '20321830', 'Yuletxy', 'Colmenarez', '04128892449', 'El tocuyo', '1992-02-10', 'Femenino', 'ACT', 'SALUDABLE'),
@@ -1523,12 +1252,18 @@ INSERT INTO `paciente` (`id_paciente`, `nacionalidad`, `cedula`, `nombre`, `apel
 (93, 'V', '303439', 'Awqwkq', 'Qmasm', '04123434322', 'wenew sdnsd', '2025-09-02', 'Masculino', 'ACT', 'SALUDABLE'),
 (94, 'V', '3055415', 'Adsad', 'Asdsd', '04122343323', 'em sfdnfdhf', '2025-09-15', 'Femenino', 'ACT', 'SALUDABLE'),
 (98, 'V', '3722999', 'Pedro', 'Perez', '04123454327', 'en su casa', '2002-02-20', 'Masculino', 'ACT', 'SALUDABLE'),
-(100, 'V', '534534', 'Wewd', 'Xas', '04122323222', 'en su casssa', '2001-09-30', 'Masculino', 'ACT', 'SALUDABLE');
+(100, 'V', '534534', 'Wewd', 'Xas', '04122323222', 'en su casssa', '2001-09-30', 'Masculino', 'ACT', 'SALUDABLE'),
+(102, 'V', '13197426', 'Piolin', 'Paralo', '04122323212', 'wdqwdqwd', '2000-02-21', 'Masculino', 'ACT', 'SALUDABLE'),
+(103, 'V', '1212122', 'Colombia', 'Apellido', '04141322333', 'Direccin genrica', '2026-03-24', 'Masculino', 'ACT', 'SALUDABLE'),
+(104, 'V', '30554145', 'Dixon', 'Bastias', '04142232333', 'En el Tocuyo', '2004-10-08', 'Masculino', 'ACT', 'SALUDABLE'),
+(105, 'V', '23421321', 'Venezuela', 'Apellido', '04121338031', 'wewewqwew', '2001-03-23', 'Masculino', 'ACT', 'SALUDABLE'),
+(106, 'V', '6789089', 'Venezuela', 'Apellido', '04121338031', 'wewewqwew', '2009-03-31', 'Femenino', 'ACT', 'SALUDABLE'),
+(107, 'V', '5665566', 'Venezuela', 'Apellido', '04121338031', 'wewewqwew', '2000-03-17', 'Femenino', 'ACT', 'SALUDABLE');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pago`
+-- Estructura de tabla para la tabla `pago`
 --
 
 CREATE TABLE `pago` (
@@ -1537,7 +1272,7 @@ CREATE TABLE `pago` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `pago`
+-- Volcado de datos para la tabla `pago`
 --
 
 INSERT INTO `pago` (`id_pago`, `nombre`) VALUES
@@ -1549,7 +1284,7 @@ INSERT INTO `pago` (`id_pago`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pagodefactura`
+-- Estructura de tabla para la tabla `pagodefactura`
 --
 
 CREATE TABLE `pagodefactura` (
@@ -1561,43 +1296,10 @@ CREATE TABLE `pagodefactura` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `pagodefactura`
+-- Volcado de datos para la tabla `pagodefactura`
 --
 
 INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `referencia`, `monto`) VALUES
-(105, 5, 84, '', 30.99),
-(106, 7, 84, '', 0.00),
-(107, 5, 85, '', 22.77),
-(108, 5, 86, '', 16.55),
-(109, 5, 87, '', 16.55),
-(110, 5, 88, '', 125.30),
-(111, 5, 89, '', 35.80),
-(112, 5, 90, '', 17.90),
-(113, 5, 91, '2312', 129.30),
-(114, 8, 91, '2312', 1000.00),
-(115, 6, 91, '2312', 1000.00),
-(116, 5, 92, '', 1127.20),
-(117, 8, 92, '', 0.00),
-(118, 5, 93, '', 1123.00),
-(119, 5, 94, '', 2.10),
-(120, 6, 94, '', 0.00),
-(121, 5, 95, '1234', 100.00),
-(122, 6, 95, '1234', 82.12),
-(123, 5, 96, '7897', 500.00),
-(124, 6, 96, '7897', 500.00),
-(125, 5, 97, '', 129.00),
-(126, 5, 98, '2321', 1.00),
-(127, 6, 98, '2321', 0.20),
-(128, 5, 99, '', 29.56),
-(129, 5, 100, '', 29.56),
-(130, 5, 101, '', 0.60),
-(131, 5, 102, '', 1230.00),
-(132, 5, 103, '', 1.00),
-(133, 5, 104, '', 1000.00),
-(134, 5, 105, '', 1000.00),
-(135, 5, 106, '', 1000.00),
-(136, 5, 107, '', 3000.00),
-(137, 5, 108, '', 80.00),
 (138, 5, 109, '1257', 3000.00),
 (139, 6, 109, '1257', 1000.00),
 (140, 5, 110, '', 240.00),
@@ -1705,15 +1407,12 @@ INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `refer
 (242, 5, 208, '', 474874.00),
 (243, 5, 209, '', 240.00),
 (244, 5, 210, '', 27.00),
-(245, 5, 211, '', 1094.60),
-(246, 5, 214, '', 80.00),
-(247, 5, 219, '', 80.00),
-(248, 5, 220, '', 80.00);
+(245, 5, 211, '', 1094.60);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `patologia`
+-- Estructura de tabla para la tabla `patologia`
 --
 
 CREATE TABLE `patologia` (
@@ -1723,7 +1422,7 @@ CREATE TABLE `patologia` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `patologia`
+-- Volcado de datos para la tabla `patologia`
 --
 
 INSERT INTO `patologia` (`id_patologia`, `nombre_patologia`, `estado`) VALUES
@@ -1763,7 +1462,7 @@ INSERT INTO `patologia` (`id_patologia`, `nombre_patologia`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `patologiadepaciente`
+-- Estructura de tabla para la tabla `patologiadepaciente`
 --
 
 CREATE TABLE `patologiadepaciente` (
@@ -1774,7 +1473,7 @@ CREATE TABLE `patologiadepaciente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `patologiadepaciente`
+-- Volcado de datos para la tabla `patologiadepaciente`
 --
 
 INSERT INTO `patologiadepaciente` (`id_patologiaDePaciente`, `id_paciente`, `id_patologia`, `fecha_registro`) VALUES
@@ -1827,12 +1526,23 @@ INSERT INTO `patologiadepaciente` (`id_patologiaDePaciente`, `id_paciente`, `id_
 (241, 25, 5, '2025-10-03 11:23:02'),
 (242, 25, 7, '2025-10-03 11:23:02'),
 (243, 25, 5, '2025-10-03 11:23:41'),
-(244, 25, 7, '2025-10-03 11:23:41');
+(244, 25, 7, '2025-10-03 11:23:41'),
+(245, 26, 5, '2025-11-03 14:23:45'),
+(246, 102, 5, '2025-11-03 14:37:35'),
+(247, 23, 20, '2025-11-03 14:46:59'),
+(248, 102, 5, '2025-11-03 15:00:02'),
+(249, 102, 11, '2025-11-03 15:01:59'),
+(250, 102, 190, '2025-11-03 17:18:04'),
+(251, 102, 17, '2025-11-04 10:07:56'),
+(252, 102, 7, '2025-11-04 13:11:48'),
+(253, 102, 5, '2025-11-04 13:41:16'),
+(254, 102, 5, '2025-11-04 17:31:58'),
+(255, 102, 5, '2025-11-04 18:23:02');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `personal`
+-- Estructura de tabla para la tabla `personal`
 --
 
 CREATE TABLE `personal` (
@@ -1848,7 +1558,7 @@ CREATE TABLE `personal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `personal`
+-- Volcado de datos para la tabla `personal`
 --
 
 INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `tipodecategoria`, `id_especialidad`, `usuario`) VALUES
@@ -1865,7 +1575,7 @@ INSERT INTO `personal` (`id_personal`, `nacionalidad`, `cedula`, `nombre`, `apel
 -- --------------------------------------------------------
 
 --
--- Table structure for table `personal_has_serviciomedico`
+-- Estructura de tabla para la tabla `personal_has_serviciomedico`
 --
 
 CREATE TABLE `personal_has_serviciomedico` (
@@ -1874,7 +1584,7 @@ CREATE TABLE `personal_has_serviciomedico` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `personal_has_serviciomedico`
+-- Volcado de datos para la tabla `personal_has_serviciomedico`
 --
 
 INSERT INTO `personal_has_serviciomedico` (`personal_id_personal`, `serviciomedico_id_servicioMedico`) VALUES
@@ -1895,7 +1605,7 @@ INSERT INTO `personal_has_serviciomedico` (`personal_id_personal`, `serviciomedi
 -- --------------------------------------------------------
 
 --
--- Table structure for table `proveedor`
+-- Estructura de tabla para la tabla `proveedor`
 --
 
 CREATE TABLE `proveedor` (
@@ -1909,7 +1619,7 @@ CREATE TABLE `proveedor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `proveedor`
+-- Volcado de datos para la tabla `proveedor`
 --
 
 INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `rif`, `telefono`, `email`, `direccion`, `estado`) VALUES
@@ -1921,7 +1631,7 @@ INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `rif`, `telefono`, `email`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `serviciomedico`
+-- Estructura de tabla para la tabla `serviciomedico`
 --
 
 CREATE TABLE `serviciomedico` (
@@ -1933,7 +1643,7 @@ CREATE TABLE `serviciomedico` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `serviciomedico`
+-- Volcado de datos para la tabla `serviciomedico`
 --
 
 INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `estado`, `tipo`) VALUES
@@ -1958,7 +1668,7 @@ INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `es
 -- --------------------------------------------------------
 
 --
--- Table structure for table `servicios_hospitalizacion`
+-- Estructura de tabla para la tabla `servicios_hospitalizacion`
 --
 
 CREATE TABLE `servicios_hospitalizacion` (
@@ -1969,17 +1679,19 @@ CREATE TABLE `servicios_hospitalizacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `servicios_hospitalizacion`
+-- Volcado de datos para la tabla `servicios_hospitalizacion`
 --
 
 INSERT INTO `servicios_hospitalizacion` (`id_detalle`, `id_hospitalizacion`, `id_servicioMedico`, `cantidad`) VALUES
 (9, 34, 25, 1),
-(10, 35, 25, 1);
+(10, 35, 25, 1),
+(11, 36, 25, 2),
+(13, 37, 25, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sintomas`
+-- Estructura de tabla para la tabla `sintomas`
 --
 
 CREATE TABLE `sintomas` (
@@ -1989,7 +1701,7 @@ CREATE TABLE `sintomas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `sintomas`
+-- Volcado de datos para la tabla `sintomas`
 --
 
 INSERT INTO `sintomas` (`id_sintomas`, `nombre`, `estado`) VALUES
@@ -2010,7 +1722,7 @@ INSERT INTO `sintomas` (`id_sintomas`, `nombre`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sintomas_control`
+-- Estructura de tabla para la tabla `sintomas_control`
 --
 
 CREATE TABLE `sintomas_control` (
@@ -2020,7 +1732,7 @@ CREATE TABLE `sintomas_control` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `sintomas_control`
+-- Volcado de datos para la tabla `sintomas_control`
 --
 
 INSERT INTO `sintomas_control` (`id_sintomas_control`, `id_sintomas`, `id_control`) VALUES
@@ -2047,13 +1759,29 @@ INSERT INTO `sintomas_control` (`id_sintomas_control`, `id_sintomas`, `id_contro
 (57, 6, 34),
 (58, 8, 34),
 (59, 6, 40),
-(60, 6, 42);
+(60, 6, 42),
+(61, 9, 42),
+(62, 6, 43),
+(63, 6, 45),
+(64, 8, 46),
+(65, 6, 47),
+(66, 8, 48),
+(67, 6, 49),
+(68, 8, 50),
+(69, 8, 51),
+(70, 6, 52),
+(71, 6, 53),
+(72, 6, 54),
+(73, 6, 55),
+(74, 9, 55),
+(75, 6, 55),
+(76, 8, 55);
 
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `tasa_morbilidad`
--- (See below for the actual view)
+-- Estructura Stand-in para la vista `tasa_morbilidad`
+-- (Véase abajo para la vista actual)
 --
 CREATE TABLE `tasa_morbilidad` (
 `nombre_patologia` varchar(25)
@@ -2064,7 +1792,7 @@ CREATE TABLE `tasa_morbilidad` (
 -- --------------------------------------------------------
 
 --
--- Structure for view `distribucion_edad_genero`
+-- Estructura para la vista `distribucion_edad_genero`
 --
 DROP TABLE IF EXISTS `distribucion_edad_genero`;
 
@@ -2073,7 +1801,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Structure for view `especialidades_solicitadas`
+-- Estructura para la vista `especialidades_solicitadas`
 --
 DROP TABLE IF EXISTS `especialidades_solicitadas`;
 
@@ -2082,7 +1810,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Structure for view `insumos_estadisticas`
+-- Estructura para la vista `insumos_estadisticas`
 --
 DROP TABLE IF EXISTS `insumos_estadisticas`;
 
@@ -2091,25 +1819,25 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
--- Structure for view `tasa_morbilidad`
+-- Estructura para la vista `tasa_morbilidad`
 --
 DROP TABLE IF EXISTS `tasa_morbilidad`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `tasa_morbilidad`  AS SELECT `p`.`nombre_patologia` AS `nombre_patologia`, count(distinct `pp`.`id_paciente`) AS `casos`, round(count(distinct `pp`.`id_paciente`) / (select count(0) from `paciente`) * 1000,2) AS `tasa_por_1000` FROM (`patologiadepaciente` `pp` join `patologia` `p` on(`pp`.`id_patologia` = `p`.`id_patologia`)) GROUP BY `pp`.`id_patologia` ORDER BY count(distinct `pp`.`id_paciente`) DESC ;
 
 --
--- Indexes for dumped tables
+-- Índices para tablas volcadas
 --
 
 --
--- Indexes for table `categoria_servicio`
+-- Indices de la tabla `categoria_servicio`
 --
 ALTER TABLE `categoria_servicio`
   ADD PRIMARY KEY (`id_categoria`),
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
--- Indexes for table `cita`
+-- Indices de la tabla `cita`
 --
 ALTER TABLE `cita`
   ADD PRIMARY KEY (`id_cita`,`paciente_id_paciente`),
@@ -2117,13 +1845,13 @@ ALTER TABLE `cita`
   ADD KEY `fk_cita_paciente1_idx` (`paciente_id_paciente`);
 
 --
--- Indexes for table `cliente`
+-- Indices de la tabla `cliente`
 --
 ALTER TABLE `cliente`
   ADD PRIMARY KEY (`id_cliente`);
 
 --
--- Indexes for table `control`
+-- Indices de la tabla `control`
 --
 ALTER TABLE `control`
   ADD PRIMARY KEY (`id_control`),
@@ -2131,7 +1859,7 @@ ALTER TABLE `control`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
--- Indexes for table `detalle_factura`
+-- Indices de la tabla `detalle_factura`
 --
 ALTER TABLE `detalle_factura`
   ADD PRIMARY KEY (`id_datelle_factura`),
@@ -2141,14 +1869,14 @@ ALTER TABLE `detalle_factura`
   ADD KEY `serviciomedico_id_servicioMedico` (`serviciomedico_id_servicioMedico`);
 
 --
--- Indexes for table `entrada`
+-- Indices de la tabla `entrada`
 --
 ALTER TABLE `entrada`
   ADD PRIMARY KEY (`id_entrada`),
   ADD KEY `id_proveedor` (`id_proveedor`);
 
 --
--- Indexes for table `entrada_insumo`
+-- Indices de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
   ADD PRIMARY KEY (`id_entradaDeInsumo`),
@@ -2156,27 +1884,27 @@ ALTER TABLE `entrada_insumo`
   ADD KEY `id_entrada` (`id_entrada`);
 
 --
--- Indexes for table `especialidad`
+-- Indices de la tabla `especialidad`
 --
 ALTER TABLE `especialidad`
   ADD PRIMARY KEY (`id_especialidad`) USING BTREE,
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
--- Indexes for table `factura`
+-- Indices de la tabla `factura`
 --
 ALTER TABLE `factura`
   ADD PRIMARY KEY (`id_factura`,`id_cliente`),
   ADD KEY `id_cliente` (`id_cliente`);
 
 --
--- Indexes for table `horario`
+-- Indices de la tabla `horario`
 --
 ALTER TABLE `horario`
   ADD PRIMARY KEY (`id_horario`);
 
 --
--- Indexes for table `horarioydoctor`
+-- Indices de la tabla `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
   ADD PRIMARY KEY (`id_horarioydoctor`),
@@ -2184,7 +1912,7 @@ ALTER TABLE `horarioydoctor`
   ADD KEY `id_horario` (`id_horario`);
 
 --
--- Indexes for table `hospitalizacion`
+-- Indices de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
   ADD PRIMARY KEY (`id_hospitalizacion`),
@@ -2193,13 +1921,13 @@ ALTER TABLE `hospitalizacion`
   ADD KEY `personal_id_personal` (`personal_id_personal`);
 
 --
--- Indexes for table `insumo`
+-- Indices de la tabla `insumo`
 --
 ALTER TABLE `insumo`
   ADD PRIMARY KEY (`id_insumo`);
 
 --
--- Indexes for table `insumodehospitalizacion`
+-- Indices de la tabla `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
   ADD PRIMARY KEY (`id_insumoDeHospitalizacion`),
@@ -2207,20 +1935,20 @@ ALTER TABLE `insumodehospitalizacion`
   ADD KEY `id_insumo` (`id_entradaDeInsumo`);
 
 --
--- Indexes for table `paciente`
+-- Indices de la tabla `paciente`
 --
 ALTER TABLE `paciente`
   ADD PRIMARY KEY (`id_paciente`),
   ADD UNIQUE KEY `cedula` (`cedula`);
 
 --
--- Indexes for table `pago`
+-- Indices de la tabla `pago`
 --
 ALTER TABLE `pago`
   ADD PRIMARY KEY (`id_pago`);
 
 --
--- Indexes for table `pagodefactura`
+-- Indices de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
   ADD PRIMARY KEY (`id_pagoDeFactura`),
@@ -2228,14 +1956,14 @@ ALTER TABLE `pagodefactura`
   ADD KEY `id_factura` (`id_factura`);
 
 --
--- Indexes for table `patologia`
+-- Indices de la tabla `patologia`
 --
 ALTER TABLE `patologia`
   ADD PRIMARY KEY (`id_patologia`),
   ADD UNIQUE KEY `nombre_patologia` (`nombre_patologia`);
 
 --
--- Indexes for table `patologiadepaciente`
+-- Indices de la tabla `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
   ADD PRIMARY KEY (`id_patologiaDePaciente`),
@@ -2243,7 +1971,7 @@ ALTER TABLE `patologiadepaciente`
   ADD KEY `id_patologia` (`id_patologia`);
 
 --
--- Indexes for table `personal`
+-- Indices de la tabla `personal`
 --
 ALTER TABLE `personal`
   ADD PRIMARY KEY (`id_personal`),
@@ -2251,7 +1979,7 @@ ALTER TABLE `personal`
   ADD KEY `id_especialidad` (`id_especialidad`);
 
 --
--- Indexes for table `personal_has_serviciomedico`
+-- Indices de la tabla `personal_has_serviciomedico`
 --
 ALTER TABLE `personal_has_serviciomedico`
   ADD PRIMARY KEY (`personal_id_personal`,`serviciomedico_id_servicioMedico`),
@@ -2259,21 +1987,21 @@ ALTER TABLE `personal_has_serviciomedico`
   ADD KEY `fk_personal_has_serviciomedico_personal1_idx` (`personal_id_personal`);
 
 --
--- Indexes for table `proveedor`
+-- Indices de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
   ADD PRIMARY KEY (`id_proveedor`),
   ADD UNIQUE KEY `rif` (`rif`);
 
 --
--- Indexes for table `serviciomedico`
+-- Indices de la tabla `serviciomedico`
 --
 ALTER TABLE `serviciomedico`
   ADD PRIMARY KEY (`id_servicioMedico`),
   ADD KEY `id_categoria` (`id_categoria`);
 
 --
--- Indexes for table `servicios_hospitalizacion`
+-- Indices de la tabla `servicios_hospitalizacion`
 --
 ALTER TABLE `servicios_hospitalizacion`
   ADD PRIMARY KEY (`id_detalle`),
@@ -2281,14 +2009,14 @@ ALTER TABLE `servicios_hospitalizacion`
   ADD KEY `id_servicioMedico` (`id_servicioMedico`);
 
 --
--- Indexes for table `sintomas`
+-- Indices de la tabla `sintomas`
 --
 ALTER TABLE `sintomas`
   ADD PRIMARY KEY (`id_sintomas`),
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
--- Indexes for table `sintomas_control`
+-- Indices de la tabla `sintomas_control`
 --
 ALTER TABLE `sintomas_control`
   ADD PRIMARY KEY (`id_sintomas_control`),
@@ -2296,178 +2024,178 @@ ALTER TABLE `sintomas_control`
   ADD KEY `id_control` (`id_control`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT for table `categoria_servicio`
+-- AUTO_INCREMENT de la tabla `categoria_servicio`
 --
 ALTER TABLE `categoria_servicio`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
--- AUTO_INCREMENT for table `cita`
+-- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
--- AUTO_INCREMENT for table `cliente`
+-- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `control`
+-- AUTO_INCREMENT de la tabla `control`
 --
 ALTER TABLE `control`
-  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
--- AUTO_INCREMENT for table `detalle_factura`
+-- AUTO_INCREMENT de la tabla `detalle_factura`
 --
 ALTER TABLE `detalle_factura`
-  MODIFY `id_datelle_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_datelle_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `entrada`
+-- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
   MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
--- AUTO_INCREMENT for table `entrada_insumo`
+-- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
   MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
--- AUTO_INCREMENT for table `especialidad`
+-- AUTO_INCREMENT de la tabla `especialidad`
 --
 ALTER TABLE `especialidad`
   MODIFY `id_especialidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `factura`
+-- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=212;
 
 --
--- AUTO_INCREMENT for table `horario`
+-- AUTO_INCREMENT de la tabla `horario`
 --
 ALTER TABLE `horario`
   MODIFY `id_horario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `horarioydoctor`
+-- AUTO_INCREMENT de la tabla `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
   MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
--- AUTO_INCREMENT for table `hospitalizacion`
+-- AUTO_INCREMENT de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
--- AUTO_INCREMENT for table `insumo`
+-- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
   MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
--- AUTO_INCREMENT for table `insumodehospitalizacion`
+-- AUTO_INCREMENT de la tabla `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
-  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id_insumoDeHospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
--- AUTO_INCREMENT for table `paciente`
+-- AUTO_INCREMENT de la tabla `paciente`
 --
 ALTER TABLE `paciente`
-  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
--- AUTO_INCREMENT for table `pago`
+-- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
   MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `pagodefactura`
+-- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=246;
 
 --
--- AUTO_INCREMENT for table `patologia`
+-- AUTO_INCREMENT de la tabla `patologia`
 --
 ALTER TABLE `patologia`
   MODIFY `id_patologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=210;
 
 --
--- AUTO_INCREMENT for table `patologiadepaciente`
+-- AUTO_INCREMENT de la tabla `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
-  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=245;
+  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=256;
 
 --
--- AUTO_INCREMENT for table `personal`
+-- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
   MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
--- AUTO_INCREMENT for table `proveedor`
+-- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
   MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `serviciomedico`
+-- AUTO_INCREMENT de la tabla `serviciomedico`
 --
 ALTER TABLE `serviciomedico`
   MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
--- AUTO_INCREMENT for table `servicios_hospitalizacion`
+-- AUTO_INCREMENT de la tabla `servicios_hospitalizacion`
 --
 ALTER TABLE `servicios_hospitalizacion`
-  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT for table `sintomas`
+-- AUTO_INCREMENT de la tabla `sintomas`
 --
 ALTER TABLE `sintomas`
   MODIFY `id_sintomas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT for table `sintomas_control`
+-- AUTO_INCREMENT de la tabla `sintomas_control`
 --
 ALTER TABLE `sintomas_control`
-  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
--- Constraints for dumped tables
+-- Restricciones para tablas volcadas
 --
 
 --
--- Constraints for table `cita`
+-- Filtros para la tabla `cita`
 --
 ALTER TABLE `cita`
   ADD CONSTRAINT `fk_cita_paciente1` FOREIGN KEY (`paciente_id_paciente`) REFERENCES `paciente` (`id_paciente`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_cita_serviciomedico1` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Constraints for table `control`
+-- Filtros para la tabla `control`
 --
 ALTER TABLE `control`
   ADD CONSTRAINT `control_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`);
 
 --
--- Constraints for table `detalle_factura`
+-- Filtros para la tabla `detalle_factura`
 --
 ALTER TABLE `detalle_factura`
   ADD CONSTRAINT `detalle_factura_ibfk_1` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id_factura`),
@@ -2476,51 +2204,91 @@ ALTER TABLE `detalle_factura`
   ADD CONSTRAINT `detalle_factura_ibfk_4` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`);
 
 --
--- Constraints for table `entrada`
+-- Filtros para la tabla `entrada`
 --
 ALTER TABLE `entrada`
   ADD CONSTRAINT `entrada_ibfk_1` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`);
 
 --
--- Constraints for table `entrada_insumo`
+-- Filtros para la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
   ADD CONSTRAINT `entrada_insumo_ibfk_1` FOREIGN KEY (`id_insumo`) REFERENCES `insumo` (`id_insumo`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `entrada_insumo_ibfk_2` FOREIGN KEY (`id_entrada`) REFERENCES `entrada` (`id_entrada`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `factura`
+-- Filtros para la tabla `factura`
 --
 ALTER TABLE `factura`
   ADD CONSTRAINT `factura_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`);
 
 --
--- Constraints for table `horarioydoctor`
+-- Filtros para la tabla `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
   ADD CONSTRAINT `horarioydoctor_ibfk_1` FOREIGN KEY (`id_personal`) REFERENCES `personal` (`id_personal`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `horarioydoctor_ibfk_2` FOREIGN KEY (`id_horario`) REFERENCES `horario` (`id_horario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `hospitalizacion`
+-- Filtros para la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
   ADD CONSTRAINT `hospitalizacion_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`),
   ADD CONSTRAINT `hospitalizacion_ibfk_2` FOREIGN KEY (`personal_id_personal`) REFERENCES `personal` (`id_personal`);
 
 --
--- Constraints for table `insumodehospitalizacion`
+-- Filtros para la tabla `insumodehospitalizacion`
 --
 ALTER TABLE `insumodehospitalizacion`
   ADD CONSTRAINT `insumodehospitalizacion_ibfk_1` FOREIGN KEY (`id_hospitalizacion`) REFERENCES `hospitalizacion` (`id_hospitalizacion`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `insumodehospitalizacion_ibfk_2` FOREIGN KEY (`id_entradaDeInsumo`) REFERENCES `entrada_insumo` (`id_entradaDeInsumo`);
 
 --
--- Constraints for table `patologiadepaciente`
+-- Filtros para la tabla `pagodefactura`
+--
+ALTER TABLE `pagodefactura`
+  ADD CONSTRAINT `pagodefactura_ibfk_1` FOREIGN KEY (`id_pago`) REFERENCES `pago` (`id_pago`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pagodefactura_ibfk_2` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id_factura`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
   ADD CONSTRAINT `id_paciente ` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`id_paciente`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `id_patologia` FOREIGN KEY (`id_patologia`) REFERENCES `patologia` (`id_patologia`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `personal`
+--
+ALTER TABLE `personal`
+  ADD CONSTRAINT `personal_ibfk_1` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidad` (`id_especialidad`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `personal_has_serviciomedico`
+--
+ALTER TABLE `personal_has_serviciomedico`
+  ADD CONSTRAINT `personal_has_serviciomedico_ibfk_1` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `personal_has_serviciomedico_ibfk_2` FOREIGN KEY (`personal_id_personal`) REFERENCES `personal` (`id_personal`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `serviciomedico`
+--
+ALTER TABLE `serviciomedico`
+  ADD CONSTRAINT `serviciomedico_ibfk_1` FOREIGN KEY (`id_categoria`) REFERENCES `categoria_servicio` (`id_categoria`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `servicios_hospitalizacion`
+--
+ALTER TABLE `servicios_hospitalizacion`
+  ADD CONSTRAINT `servicios_hospitalizacion_ibfk_1` FOREIGN KEY (`id_hospitalizacion`) REFERENCES `hospitalizacion` (`id_hospitalizacion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `servicios_hospitalizacion_ibfk_2` FOREIGN KEY (`id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sintomas_control`
+--
+ALTER TABLE `sintomas_control`
+  ADD CONSTRAINT `sintomas_control_ibfk_1` FOREIGN KEY (`id_sintomas`) REFERENCES `sintomas` (`id_sintomas`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `sintomas_control_ibfk_2` FOREIGN KEY (`id_control`) REFERENCES `control` (`id_control`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
