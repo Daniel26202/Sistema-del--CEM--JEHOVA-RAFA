@@ -21,16 +21,16 @@ document.addEventListener("DOMContentLoaded", function () {
     traerDoctor(); //Cargar doctores en el select
 
     //mostrar una aaler si eun poersona no tiene permiso
-    if(window.location.href.includes('permiso')){
+    if (window.location.href.includes("permiso")) {
         Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: 'No tiene permiso para hacer dicha acción por favor comuníquese con el administrador del sistema',
-          customClass: {
-            popup: "switAlert",
-            confirmButton: "btn-agregarcita-modal",
-            cancelButton: "btn-agregarcita-modal-cancelar",
-          },
+            icon: "error",
+            title: "Error",
+            text: "No tiene permiso para hacer dicha acción por favor comuníquese con el administrador del sistema",
+            customClass: {
+                popup: "switAlert",
+                confirmButton: "btn-agregarcita-modal",
+                cancelButton: "btn-agregarcita-modal-cancelar",
+            },
         });
     }
 });
@@ -51,7 +51,7 @@ document.getElementById("buscarFecha").addEventListener("click", function () {
         console.log("removida");
         document.querySelector(".alertaFechaInicio").classList.add("d-none");
         especialidades_chart(
-            `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas_filtradas/${fechaInicio.value}/${fechaFinal.value}`
+            `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas_filtradas/${fechaInicio.value}/${fechaFinal.value}`,
         );
     } else {
         document.querySelector(".alertaFechaInicio").classList.remove("d-none");
@@ -68,7 +68,7 @@ document.getElementById("buscarFechaSintomas").addEventListener("click", functio
         console.log("removida");
         document.querySelector(".alertaFechaInicioSintomas").classList.add("d-none");
         sintomas_chart(
-            `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio.value}/${fechaFinal.value}`
+            `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes_filtrados/${fechaInicio.value}/${fechaFinal.value}`,
         );
     } else {
         document.querySelector(".alertaFechaInicioSintomas").classList.remove("d-none");
@@ -76,32 +76,31 @@ document.getElementById("buscarFechaSintomas").addEventListener("click", functio
     }
 });
 
-
 const convertirHora = (horaMilitar) => {
-  // Separamos hora y minutos
-  let [horaStr, minutoStr] = horaMilitar.split(":");
+    // Separamos hora y minutos
+    let [horaStr, minutoStr] = horaMilitar.split(":");
 
-  let hora = parseInt(horaStr, 10);
-  let minutos = parseInt(minutoStr, 10);
+    let hora = parseInt(horaStr, 10);
+    let minutos = parseInt(minutoStr, 10);
 
-  // Validamos rango
-  if (isNaN(hora) || isNaN(minutos) || hora < 0 || hora > 23 || minutos < 0 || minutos > 59) {
-    return "Hora inválida";
-  }
+    // Validamos rango
+    if (isNaN(hora) || isNaN(minutos) || hora < 0 || hora > 23 || minutos < 0 || minutos > 59) {
+        return "Hora inválida";
+    }
 
-  // Determinamos AM o PM
-  let sufijo = hora >= 12 ? "PM" : "AM";
+    // Determinamos AM o PM
+    let sufijo = hora >= 12 ? "PM" : "AM";
 
-  // Convertimos a formato 12 horas
-  let hora12 = hora % 12;
-  if (hora12 === 0) {
-    hora12 = 12;
-  }
+    // Convertimos a formato 12 horas
+    let hora12 = hora % 12;
+    if (hora12 === 0) {
+        hora12 = 12;
+    }
 
-  // Aseguramos que los minutos siempre tengan dos dígitos
-  let minutosFormateados = minutos.toString().padStart(2, "0");
+    // Aseguramos que los minutos siempre tengan dos dígitos
+    let minutosFormateados = minutos.toString().padStart(2, "0");
 
-  return `${hora12}:${minutosFormateados} ${sufijo}`;
+    return `${hora12}:${minutosFormateados} ${sufijo}`;
 };
 
 //validar que el elemento exista
@@ -197,7 +196,7 @@ function renderCalendar(year, month) {
                             cell.setAttribute(
                                 "title",
                                 `Citas: ${workDay.total_citas}
-                DR ${workDay.personal}` // Muestra el número de citas en el tooltip
+                DR ${workDay.personal}`, // Muestra el número de citas en el tooltip
                             );
                         }
 
@@ -265,7 +264,6 @@ const traerDoctor = async () => {
                 html += `<option value="${element.id_personal}">${element.nombre_d}  ${element.apellido}</option>`;
             });
             document.getElementById("selectDoctor").innerHTML = html;
-  
         }
     } catch (error) {
         console.log(error);
@@ -274,38 +272,36 @@ const traerDoctor = async () => {
 
 traerHorarioEspecificoDelDr = async (id) => {
     try {
-    // Realiza la petición AJAX
-    let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/mostrarHorario/" + id);
-    let resultado = await peticion.json();
+        // Realiza la petición AJAX
+        let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/mostrarHorario/" + id);
+        let resultado = await peticion.json();
 
-    document.querySelector(".horario-insertar").innerHTML = "";
-    let div = document.createElement("div");
-    // diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
-    // let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
-    if (resultado.length > 0) {
-        resultado.forEach((res) => {
-            div.innerHTML += `
+        document.querySelector(".horario-insertar").innerHTML = "";
+        let div = document.createElement("div");
+        // diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
+        // let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
+        if (resultado.length > 0) {
+            resultado.forEach((res) => {
+                div.innerHTML += `
                 <div class="mb-2 " >
-                <div class="d-flex text-horario">Día Laborable: <p class="fw-bold text-horario"> ${
-                  res.diaslaborables
-                }</p> </div>
+                <div class="d-flex text-horario">Día Laborable: <p class="fw-bold text-horario"> ${res.diaslaborables}</p> </div>
               
                 <div class="d-flex text-horario">Hora de Entrada: <p class="fw-bold text-horario"> ${convertirHora(
-                  res.horaDeEntrada
+                    res.horaDeEntrada,
                 )}</p></div>
                 <div class="d-flex text-horario">Hora de Salida: <p class="fw-bold text-horario"> ${convertirHora(
-                  res.horaDeSalida
+                    res.horaDeSalida,
                 )}</p></div>
                 </div> 
                 `;
-        });
+            });
 
-        document.getElementById("titulo").innerText = `Horario del Doctor`;
-    }
+            document.getElementById("titulo").innerText = `Horario del Doctor`;
+        }
 
-    document.querySelector(".horario-insertar").appendChild(div);
+        document.querySelector(".horario-insertar").appendChild(div);
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
 };
 
@@ -314,10 +310,7 @@ const traerHorarioDoctor = async (id) => {
         // Realiza la petición AJAX
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id);
         let resultado = await peticion.json();
-        console.log(
-          resultado,
-          "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id,
-        );
+        console.log(resultado, "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/" + id);
         //Quitar los dias marcados para marcalos nuevamente
         document.querySelectorAll(".date").forEach((date) => {
             date.classList.remove("diasOcupados");
@@ -335,7 +328,7 @@ const traerHorarioDoctor = async (id) => {
                 td.setAttribute(
                     "title",
                     `Citas: ${res.total_citas}
-                DR ${res.personal}` // Muestra el número de citas en el tooltip
+                DR ${res.personal}`, // Muestra el número de citas en el tooltip
                 );
             }
             //Darle el teto al boton del horario
@@ -510,13 +503,13 @@ const especialidades_chart = async (url) => {
             //Aparecer el boton de impirmir
             document.getElementById("especialidades").classList.remove("d-none");
             //Aparecer el escrito
-            
+
             totalDeEspecialidades(data);
             document.querySelectorAll("#texto p").forEach((ele) => ele.classList.remove("d-none"));
 
             document.querySelector(".alert-no-encontrado").classList.add("d-none");
         } else {
-            document.querySelector(".alert-no-encontrado").classList.remove("d-none")
+            document.querySelector(".alert-no-encontrado").classList.remove("d-none");
             //Vaciando todos los elementos si no hay datos para relizar la grafica
             document.getElementById("especialidades_solicitadas").classList.add("d-none");
             document.getElementById("especialidades_solicitadas_pdf").classList.add("d-none");
@@ -533,7 +526,7 @@ async function totalDeEspecialidades(data) {
     let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades");
     let resultado = await peticion.json();
     document.getElementById("texto").innerHTML = ``;
-    
+
     let especialidades = data.map((item) => item.especialidad).join(",  ");
 
     // Agrega esto al texto
@@ -550,7 +543,7 @@ let sintomasChart = null;
 const sintomas_chart = async (url) => {
     let sintomas_comunes = await fetch(url);
     let data = await sintomas_comunes.json();
-    
+
     if (data.length > 0) {
         //Quitarle lo oculto a los graficos
         document.getElementById("sintomas_comunes").classList.remove("d-none");
@@ -623,10 +616,9 @@ const sintomas_chart = async (url) => {
         //Aparecer el boton de impirmir
         document.getElementById("textoSintomas").classList.remove("d-none");
         //Aparecer el escrito
-        
+
         document.querySelectorAll("#textoSintomas p").forEach((ele) => ele.classList.remove("d-none"));
         document.querySelector(".alert-no-encontrado-s").classList.add("d-none");
-
     } else {
         document.querySelector(".alert-no-encontrado-s").classList.remove("d-none");
 
