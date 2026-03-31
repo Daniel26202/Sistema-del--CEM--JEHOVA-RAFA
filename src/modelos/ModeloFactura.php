@@ -305,6 +305,7 @@ class ModeloFactura extends ModelBase
 				];
 				$this->setSQL($sql);
 				$this->create($data);
+				$contador++;
 			}
 			//insertar servicios extras
 			if ($this->getServicios()) {

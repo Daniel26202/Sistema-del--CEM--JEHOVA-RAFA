@@ -22,7 +22,22 @@ function factura($parametro)
 function mostrarServicios()
 {
 	$modeloFactura  = new ModeloFactura();
-	echo json_encode($modeloFactura->mostrarServicios());
+
+	$result = [];
+
+	foreach ($modeloFactura->mostrarServicios() as $servicio) {
+		$result[] = [
+			'id' => $servicio['id_servicioMedico']."". $servicio['id_personal'],
+			'id_personal'=> $servicio['id_personal'],
+			'id_servicioMedico' => $servicio['id_servicioMedico'],
+			'id_categoria' => $servicio['id_categoria'],
+			'nombre_d' => $servicio['nombre_d'],
+			'apellido_d' => $servicio['apellido_d'],
+			'precio'  => $servicio['precio'],
+			'categoria' => $servicio['categoria'],
+		];
+	}
+	echo json_encode($result);
 }
 
 function mostrarInsumos()
@@ -238,6 +253,7 @@ function guardarFactura()
 	$modeloFactura->setTotal($_POST["total"]);
 	$modeloFactura->setFormasDePago(isset($_POST["formasDePago"]) ? $_POST["formasDePago"] : []);
 	$modeloFactura->setMontosPago($_POST["montosDePago"]);
+
 
 	if (!$modeloFactura->getIdCliente()) {
 

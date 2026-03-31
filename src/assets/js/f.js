@@ -19,6 +19,10 @@ addEventListener("DOMContentLoaded", function () {
   let listaModalInsumo = [];
   // console.log(data)
 
+  let valorDelDolar = localStorage.getItem("valorDelDolar")
+    ? parseFloat(localStorage.getItem("valorDelDolar"))
+    : 0;
+
   const modalPaciente = new bootstrap.Modal(
     document.getElementById("exampleModalagregarPaciente"),
   );
@@ -104,6 +108,10 @@ addEventListener("DOMContentLoaded", function () {
   const inputIdCita = document.getElementById("inputIdCita");
 
   const botonPC = document.getElementById("botonPC");
+
+  //boton del modal de validacion
+  const btnValidacion = document.getElementById("btnValidacion");
+  const alertaVariosMetodos = document.querySelector(".alerta-varios-metodos");
 
   //funcion para comprobar si el paciente es el mismo cliente
 
@@ -287,7 +295,7 @@ addEventListener("DOMContentLoaded", function () {
         insertarServicio(
           cita.id_servicioMedico,
           cita.categoria,
-          `${cita.nombre_d} ${cita.apellido_d}`,
+          `DR: ${cita.nombre_d} ${cita.apellido_d}`,
           parseFloat(cita.precio),
           cita.id_doctor_c,
         );
@@ -379,22 +387,50 @@ addEventListener("DOMContentLoaded", function () {
   };
 
   const returnFragmentHtmlSer = (res) => {
-    return `<div class="card card-servicio p-4" style="cursor: pointer;" data-id-servicio="${res.id_servicioMedico}" data-doctor="${res.id_personal}">
+    return `<div class="card card-servicio p-4" style="cursor: pointer;" data-index=${res.id_servicioMedico + "" + res.id_personal} data-id-servicio="${res.id_servicioMedico}" data-doctor="${res.id_personal}">
         <!-- nombre del insumo (podemos cambiarlo dinámicamente) -->
         <div class="text-center nombre-card-factura">
             <span>${res.categoria}</span>
         </div>
-        <span class="text-center">DR: ${res.nombre_d} ${res.apellido}</span>
+        <span class="text-center">DR: ${res.nombre_d} ${res.apellido_d}</span>
         <span class="text-center">Precio: ${res.precio} $</span>
         <input type="hidden" value=${res.precio}>
 
         <!-- pequeños detalles decorativos al estilo bootstrap pero con personalidad -->
-        <div class="card-footer-decor">
-            <span class="decor-dot"></span>
-            <span class="decor-dot"></span>
-            <span class="decor-dot"></span>
-        </div>
+        
+                 <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
+                   res.id_servicioMedico + "" + res.id_personal
+                 }">Agregar</button>
     </div>`;
+  };
+
+  const addServicioTable = (id) => {
+    let cardServicios = document.querySelector(`.card[data-index="${id}"]`);
+    console.log(cardServicios);
+
+    let filterService = data.find(
+      (d) =>
+        d.id_servicio == cardServicios.getAttribute("data-id-servicio") &&
+        d.id_doctor == cardServicios.getAttribute("data-doctor"),
+    );
+    if (filterService) {
+      console.log("no");
+
+      alertError(
+        "Error",
+        "No puede agregar el mismo servicio con el mismo doctor.",
+      );
+      return;
+    }
+
+    insertarServicio(
+      cardServicios.getAttribute("data-id-servicio"),
+      cardServicios.children[0].children[0].innerText,
+      cardServicios.children[1].innerText,
+      cardServicios.children[3].value,
+      cardServicios.getAttribute("data-doctor"),
+    );
+    alertSuccess("Se agrego correctamente el servicio medico");
   };
 
   const traerServiciosMedicos = async () => {
@@ -403,6 +439,7 @@ addEventListener("DOMContentLoaded", function () {
         `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarServicios`,
         "GET",
       );
+      console.log(result);
 
       const paginator = new Paginator(
         result,
@@ -411,24 +448,11 @@ addEventListener("DOMContentLoaded", function () {
         "paginationSer",
         "searchInputSer",
         returnFragmentHtmlSer,
+        "id",
+        addServicioTable,
       );
 
       paginator.displayItems();
-
-      //ffuncionalida para pintan la cata  selecionada
-      let cardsServicios = document.querySelectorAll(".card-servicio")
-        ? document.querySelectorAll(".card-servicio")
-        : [];
-
-      cardsServicios.forEach((card, index) => {
-        card.addEventListener("click", function () {
-          if (card.classList.contains("selecionado")) {
-            card.classList.remove("selecionado");
-          } else {
-            card.classList.add("selecionado");
-          }
-        });
-      });
     } catch (error) {
       alertError("Error", `Lamentablemente algo salio mal ${error}`);
     }
@@ -447,6 +471,29 @@ addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       alertError("Error", `Lamentablemente algo salio mal ${error}`);
     }
+  };
+
+  const addInsumoTable = (id_insumo) => {
+    //insertar insumos
+
+    console.log(id_insumo);
+
+    const card = document.querySelector(
+      `.card-insumo[data-index="${id_insumo}"]`,
+    );
+
+    const cantidadSpan = parseInt(card.querySelector(".cantidadDisplay").value);
+    const id = card.getAttribute("data-index");
+    const nombre = card.querySelector(".title-insumo").innerText;
+    const precio = card.getAttribute("data-precio");
+    const iva = card.getAttribute("iva");
+    const medida = card.getAttribute("data-medida");
+
+    if (cantidadSpan > 0) {
+      insertarInsumoSeleccionado(id, cantidadSpan, nombre, precio, iva, medida);
+      return;
+    }
+    alertError("Error", "No hay stock suficiente de " + nombre);
   };
 
   const returnFragmentHtml = (res) => {
@@ -478,7 +525,7 @@ addEventListener("DOMContentLoaded", function () {
             </ul>
 
             <div>
-              <div class="precio-principal">${res.precio} $</div>
+              <div class="precio-principal">${res.precio} $ ${valorDelDolar * res.precio} BS</div>
             </div>
 
             <!-- Input estilo nuevo diseño -->
@@ -511,13 +558,21 @@ addEventListener("DOMContentLoaded", function () {
                                 </svg>
                             </span>
                         </div>
+
+                        
 </div>
+
+            <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
+              res.id_insumo
+            }" style="border-radius: 10px;">Agregar</button>
           </div>
         </div>
       </div>`;
   };
 
   const renderizarInsumos = () => {
+    console.log(listaModalInsumo);
+
     const paginator = new Paginator(
       listaModalInsumo,
       1,
@@ -525,6 +580,8 @@ addEventListener("DOMContentLoaded", function () {
       "pagination",
       "searchInput",
       returnFragmentHtml,
+      "id_insumo",
+      addInsumoTable,
     );
 
     paginator.displayItems();
@@ -554,11 +611,11 @@ addEventListener("DOMContentLoaded", function () {
   };
   const insertarServicio = (id, servicio, doctor, precio, id_doctor) => {
     const obj = {
-      id_servicio: id,
+      id_servicio: parseInt(id),
       servicio: servicio,
       doctor: doctor,
       precio: precio,
-      id_doctor: id_doctor,
+      id_doctor: parseInt(id_doctor),
     };
 
     data.push(obj);
@@ -605,6 +662,8 @@ addEventListener("DOMContentLoaded", function () {
 
     renderizarInsumos();
     mostrarInsumo();
+
+    alertSuccess("Se agrego correctamente el insumo.");
   };
 
   //esto es para ocultar los botones de siguiente y  vaciar
@@ -823,11 +882,11 @@ addEventListener("DOMContentLoaded", function () {
   };
 
   //funcion por si es 2 formas
-  const dosFormas = (forma1, forma2) => {
+  const dosFormas = (forma1, forma2, tiposDePago) => {
     labelForma1.innerText = forma1;
     labelForma2.innerText = forma2;
     btnTipoDePago.classList.remove("d-none");
-    inputsDeValidacion[2].classList.add("d-none");
+    inputsDeValidacion[2].parentElement.classList.add("d-none");
     labelForma3.innerText = "";
     pagosDeConfirmacion.innerText = forma1;
     pagosDeConfirmacion2.innerText = forma2;
@@ -847,8 +906,8 @@ addEventListener("DOMContentLoaded", function () {
       referencia.classList.remove("d-none");
       labelForma2.innerText = "Pago Movil";
       pagosDeConfirmacion2.innerText = "Pago Movil";
-      inputsDeValidacion[0].classList.remove("d-none");
-      inputsDeValidacion[1].classList.remove("d-none");
+      inputsDeValidacion[0].parentElement.classList.remove("d-none");
+      inputsDeValidacion[1].parentElement.classList.remove("d-none");
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.add("d-none");
     } else if (forma1 == "Efectivo" && forma2 == "Transferencia") {
@@ -859,8 +918,8 @@ addEventListener("DOMContentLoaded", function () {
       pagosDeConfirmacion2.innerText = "Transferencia";
       console.log("deberia decir Transferencia");
       console.log(pagosDeConfirmacion2.innerText);
-      inputsDeValidacion[0].classList.remove("d-none");
-      inputsDeValidacion[1].classList.remove("d-none");
+      inputsDeValidacion[0].parentElement.classList.remove("d-none");
+      inputsDeValidacion[1].parentElement.classList.remove("d-none");
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.add("d-none");
     } else if (forma1 == "Divisas" && forma2 == "PagoMovil") {
@@ -869,8 +928,8 @@ addEventListener("DOMContentLoaded", function () {
       referencia.classList.remove("d-none");
       labelForma2.innerText = "Pago Movil";
       pagosDeConfirmacion2.innerText = "Pago Movil";
-      inputsDeValidacion[0].classList.remove("d-none");
-      inputsDeValidacion[1].classList.remove("d-none");
+      inputsDeValidacion[0].parentElement.classList.remove("d-none");
+      inputsDeValidacion[1].parentElement.classList.remove("d-none");
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.remove("d-none");
       labelForma1.innerText = "Divisas en BS";
@@ -881,8 +940,8 @@ addEventListener("DOMContentLoaded", function () {
       console.log(labelForma1.innerText);
       labelForma2.innerText = "Transferencia";
       pagosDeConfirmacion2.innerText = "Transferencial";
-      inputsDeValidacion[0].classList.remove("d-none");
-      inputsDeValidacion[1].classList.remove("d-none");
+      inputsDeValidacion[0].parentElement.classList.remove("d-none");
+      inputsDeValidacion[1].parentElement.classList.remove("d-none");
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.remove("d-none");
       labelForma1.innerText = "Divisas en BS";
@@ -890,7 +949,7 @@ addEventListener("DOMContentLoaded", function () {
   };
 
   //funcion por si son tres formas de pago
-  const tresFormas = (forma1, forma2, forma3) => {
+  const tresFormas = (forma1, forma2, forma3, tiposDePago) => {
     labelForma1.innerText = forma1;
     labelForma2.innerText = forma2;
     labelForma3.innerText = forma3;
@@ -911,7 +970,9 @@ addEventListener("DOMContentLoaded", function () {
       labelForma3.innerText = "Transferencia";
       pagosDeConfirmacion3.innerText = "Transferencia";
       referencia.classList.remove("d-none");
+      inputsDeValidacion[2].parentElement.classList.remove("d-none");
       inputsDeValidacion[2].classList.remove("d-none");
+
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.remove("d-none");
       labelForma2.innerText = "Divisas en BS";
@@ -922,7 +983,9 @@ addEventListener("DOMContentLoaded", function () {
       labelForma3.innerText = "Pago Movil";
       pagosDeConfirmacion3.innerText = "Pago Movil";
       referencia.classList.remove("d-none");
+      inputsDeValidacion[2].parentElement.classList.remove("d-none");
       inputsDeValidacion[2].classList.remove("d-none");
+
       btnValidacion.classList.add("d-none");
       document.getElementById("equivalenteDivisas").classList.remove("d-none");
       labelForma2.innerText = "Divisas en BS";
@@ -977,8 +1040,8 @@ addEventListener("DOMContentLoaded", function () {
     ) {
       btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
       btnTipoDePago.classList.remove("d-none");
-      inputsDeValidacion[0].classList.add("d-none");
-      inputsDeValidacion[1].classList.add("d-none");
+      inputsDeValidacion[0].parentElement.classList.add("d-none");
+      inputsDeValidacion[1].parentElement.classList.add("d-none");
       referencia.classList.remove("d-none");
       btnValidacion.classList.remove("d-none");
       pagosDeConfirmacion.innerText = "Pago Movil";
@@ -1017,8 +1080,8 @@ addEventListener("DOMContentLoaded", function () {
     ) {
       btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
       btnTipoDePago.classList.remove("d-none");
-      inputsDeValidacion[0].classList.add("d-none");
-      inputsDeValidacion[1].classList.add("d-none");
+      inputsDeValidacion[0].parentElement.classList.add("d-none");
+      inputsDeValidacion[1].parentElement.classList.add("d-none");
       referencia.classList.remove("d-none");
       btnValidacion.classList.remove("d-none");
       pagosDeConfirmacion.innerText = "Transferencia";
@@ -1081,7 +1144,7 @@ addEventListener("DOMContentLoaded", function () {
         pagoMovil.checked == false &&
         transferencia.checked == false
       ) {
-        dosFormas("Efectivo", "Divisas");
+        dosFormas("Efectivo", "Divisas", metodosPago);
 
         btnValidacion.addEventListener("click", function () {
           pagosDeConfirmacion.innerText = "";
@@ -1117,7 +1180,7 @@ addEventListener("DOMContentLoaded", function () {
         divisa.checked == false &&
         transferencia.checked == false
       ) {
-        dosFormas("Efectivo", "PagoMovil");
+        dosFormas("Efectivo", "PagoMovil", metodosPago);
 
         btnValidacion.addEventListener("click", function () {
           pagosDeConfirmacion.innerText = "";
@@ -1152,7 +1215,7 @@ addEventListener("DOMContentLoaded", function () {
         divisa.checked == false &&
         pagoMovil.checked == false
       ) {
-        dosFormas("Efectivo", "Transferencia");
+        dosFormas("Efectivo", "Transferencia", metodosPago);
         btnValidacion.addEventListener("click", function () {
           pagosDeConfirmacion.innerText = "";
           pagosDeConfirmacion2.innerText = "";
@@ -1186,7 +1249,7 @@ addEventListener("DOMContentLoaded", function () {
         efectivo.checked == false &&
         transferencia.checked == false
       ) {
-        dosFormas("Divisas", "PagoMovil");
+        dosFormas("Divisas", "PagoMovil", metodosPago);
         btnValidacion.addEventListener("click", function () {
           pagosDeConfirmacion.innerText = "";
           pagosDeConfirmacion2.innerText = "";
@@ -1224,7 +1287,7 @@ addEventListener("DOMContentLoaded", function () {
         efectivo.checked == false &&
         pagoMovil.checked == false
       ) {
-        dosFormas("Divisas", "Transferencia");
+        dosFormas("Divisas", "Transferencia", metodosPago);
         btnValidacion.addEventListener("click", function () {
           pagosDeConfirmacion.innerText = "";
           pagosDeConfirmacion2.innerText = "";
@@ -1264,7 +1327,7 @@ addEventListener("DOMContentLoaded", function () {
         efectivo.checked &&
         pagoMovil.checked == false
       ) {
-        tresFormas("Efectivo", "Divisas", "Transferencia");
+        tresFormas("Efectivo", "Divisas", "Transferencia", metodosPago);
         btnValidacion.addEventListener("click", function () {
           pagosDeConfirmacion.innerText = "";
           pagosDeConfirmacion2.innerText = "";
@@ -1308,7 +1371,7 @@ addEventListener("DOMContentLoaded", function () {
         efectivo.checked &&
         transferencia.checked == false
       ) {
-        tresFormas("Efectivo", "Divisas", "Pago Movil");
+        tresFormas("Efectivo", "Divisas", "Pago Movil", metodosPago);
         btnValidacion.addEventListener("click", function () {
           pagosDeConfirmacion.innerText = "";
           pagosDeConfirmacion2.innerText = "";
@@ -1350,6 +1413,125 @@ addEventListener("DOMContentLoaded", function () {
       }
     }
   };
+
+  //funcion para validar el precio de las 2 formas en el modal de validacion
+  const dosPrecios = (precio1, precio2) => {
+    let precioInt1 = parseFloat(precio1.value) || 0;
+    let precioInt2 = parseFloat(precio2.value) || 0;
+    let total = parseFloat(document.getElementById("totalFactura").value) || 0;
+    let totalInput = precioInt1 + precioInt2;
+
+    if (totalInput == total && precioInt1 > 0 && precioInt2 > 0) {
+      if (!referencia.classList.contains("d-none")) {
+        if (referencia.value.length == 4) {
+          alertaVariosMetodos.classList.add("d-none");
+          btnValidacion.classList.remove("d-none");
+        }
+      } else {
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      }
+    } else {
+      alertaVariosMetodos.classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+    }
+  };
+  //funcion para validar el precio de las 3 formas en el modal de validacion
+  const tresPrecios = (precio1, precio2, precio3) => {
+    let precioInt1 = parseFloat(precio1.value) || 0;
+    let precioInt2 = parseFloat(precio2.value) || 0;
+    let precioInt3 = parseFloat(precio3.value) || 0;
+    let total = parseFloat(document.getElementById("totalFactura").value) || 0;
+    let totalInput = precioInt1 + precioInt2 + precioInt3;
+    if (
+      totalInput == total &&
+      precioInt1 > 0 &&
+      precioInt2 > 0 &&
+      precioInt3 > 0
+    ) {
+      if (!referencia.classList.contains("d-none")) {
+        if (referencia.value.length == 4) {
+          alertaVariosMetodos.classList.add("d-none");
+          btnValidacion.classList.remove("d-none");
+        }
+      } else {
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      }
+    } else {
+      alertaVariosMetodos.classList.remove("d-none");
+      btnValidacion.classList.add("d-none");
+    }
+  };
+
+  //aqui se usa un evento para validar los precios de los input de el modal de validacion
+  inputsDeValidacion.forEach((inputDeValidacion) => {
+    inputDeValidacion.addEventListener("keyup", function () {
+      let totalInput = parseFloat(
+        document.getElementById("input-validacion-pago").value,
+      );
+      if (inputsDeValidacion[2].classList.contains("d-none")) {
+        dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+        let inputUno =
+          inputsDeValidacion[0].value == "" ? 0 : inputsDeValidacion[0].value;
+        let inputDos =
+          inputsDeValidacion[1].value == "" ? 0 : inputsDeValidacion[1].value;
+        let total =
+          parseFloat(totalInput) -
+          (parseFloat(inputUno) + parseFloat(inputDos));
+        total = parseFloat(total.toFixed(2));
+
+        //validacion de el modal de validacion...
+
+        document.getElementById("total-modal-validacion").innerText =
+          `Total a pagar ${total} BS`;
+      } else {
+        tresPrecios(
+          inputsDeValidacion[0],
+          inputsDeValidacion[1],
+          inputsDeValidacion[2],
+        );
+        let inputUno =
+          inputsDeValidacion[0].value == "" ? 0 : inputsDeValidacion[0].value;
+        let inputDos =
+          inputsDeValidacion[1].value == "" ? 0 : inputsDeValidacion[1].value;
+        let inputTres =
+          inputsDeValidacion[2].value == "" ? 0 : inputsDeValidacion[2].value;
+        let total =
+          parseFloat(totalInput) -
+          (parseFloat(inputUno) + parseFloat(inputDos) + parseFloat(inputTres));
+        total = parseFloat(total.toFixed(2));
+
+        //validacion de el modal de validacion...
+
+        document.getElementById("total-modal-validacion").innerText =
+          `Total a pagar ${total} BS`;
+      }
+    });
+  });
+
+  referencia.addEventListener("keyup", function () {
+    console.log(referencia);
+    if (inputsDeValidacion[1].classList.contains("d-none")) {
+      if (referencia.value.length == 4) {
+        alertaVariosMetodos.classList.add("d-none");
+        btnValidacion.classList.remove("d-none");
+      } else {
+        alertaVariosMetodos.classList.remove("d-none");
+        btnValidacion.classList.add("d-none");
+      }
+    } else {
+      if (inputsDeValidacion[2].classList.contains("d-none")) {
+        dosPrecios(inputsDeValidacion[0], inputsDeValidacion[1]);
+      } else {
+        tresPrecios(
+          inputsDeValidacion[0],
+          inputsDeValidacion[1],
+          inputsDeValidacion[2],
+        );
+      }
+    }
+  });
 
   //funcion para llenar el modal de confirmacion
   const mostrarConfirmacion = () => {
@@ -1412,57 +1594,6 @@ addEventListener("DOMContentLoaded", function () {
 
   //////EVEntos
 
-  //insertar servicios
-  btnInsertarServicioModal.addEventListener("click", function () {
-    let cardsServicios = document.querySelectorAll(".card-servicio")
-      ? document.querySelectorAll(".card-servicio")
-      : [];
-
-    cardsServicios.forEach((card) => {
-      if (card.classList.contains("selecionado")) {
-        insertarServicio(
-          card.getAttribute("data-id-servicio"),
-          card.children[0].children[0].innerText,
-          card.children[1].innerText,
-          card.children[3].value,
-          card.getAttribute("data-doctor"),
-        );
-      } else {
-        console.log("no fue selecionad0");
-      }
-    });
-  });
-
-  //insertar insumos
-  btnInsertarInsumo.addEventListener("click", function () {
-    const cardsInsumos = document.querySelectorAll(".card-insumo")
-      ? document.querySelectorAll(".card-insumo")
-      : [];
-
-    cardsInsumos.forEach((card) => {
-      console.log(card.querySelector(".cantidadDisplay"));
-      const cantidadSpan = parseInt(
-        card.querySelector(".cantidadDisplay").value,
-      );
-      const id = card.getAttribute("data-index");
-      const nombre = card.querySelector(".title-insumo").innerText;
-      const precio = card.getAttribute("data-precio");
-      const iva = card.getAttribute("iva");
-      const medida = card.getAttribute("data-medida");
-
-      if (cantidadSpan > 0) {
-        insertarInsumoSeleccionado(
-          id,
-          cantidadSpan,
-          nombre,
-          precio,
-          iva,
-          medida,
-        );
-      }
-    });
-  });
-
   //llamar la uncion de buscar el paciente
   pacienteClienteCheck.addEventListener("change", function () {
     if (this.checked) {
@@ -1519,7 +1650,7 @@ addEventListener("DOMContentLoaded", function () {
   });
 
   let url_factura = window.location.href.split("/")[6];
-  console.log(url_factura)
+  console.log(url_factura);
   if (url_factura != undefined) {
     let idH = parseInt(url_factura.slice(1));
     buscarPacienteConHospit(idH);
@@ -1539,6 +1670,4 @@ addEventListener("DOMContentLoaded", function () {
   setTimeout(() => {
     renderizarInsumos();
   }, 600);
-
-
 });
