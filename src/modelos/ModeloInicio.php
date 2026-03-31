@@ -8,7 +8,7 @@ use App\modelos\ModeloDoctores;
 
 class ModeloInicio extends ModelBase
 {
-	private $idPersonal;
+	private $idPersonal, $fechaInicio, $fechaFinal;
 
 	public function __construct($dbSystem = true)
 	{
@@ -43,10 +43,15 @@ class ModeloInicio extends ModelBase
 		}
 	}
 
-	public function especialidades_solicitadas($data = [])
+	public function especialidades_solicitadas()
 	{
 		try {
-			if ($data == []) {
+			$data = [
+				'fechaInicio' => $this->getFechaInicio(),
+				'fechaFinal' => $this->getFechaFinal()
+			];
+
+			if ($this->getFechaInicio() == '' && $this->getFechaFinal() =="") {
 				$sql = "SELECT   cs.nombre AS especialidad,
 	COUNT(c.id_cita) AS total_solicitudes
 													FROM cita c
@@ -90,10 +95,14 @@ class ModeloInicio extends ModelBase
 		}
 	}
 
-	public function sintomas_comunes($data = [])
+	public function sintomas_comunes()
 	{
 		try {
-			if ($data == []) {
+			$data = [
+				'fechaInicio' => $this->getFechaInicio(),
+				'fechaFinal' => $this->getFechaFinal()
+			];
+			if ($this->getFechaInicio() == "" && $this->getFechaFinal() == '') {
 				$sql = "SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
 												FROM sintomas_control sc
 												INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
@@ -183,7 +192,7 @@ class ModeloInicio extends ModelBase
 			$sql = "SELECT * FROM personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.id_personal =:id_personal AND p.id_especialidad IS NOT null";
 
 			$this->setSQL($sql);
-			$listData = $this->search(['id_personal'=>$this->getIdPersonal()], true);
+			$listData = $this->search(['id_personal' => $this->getIdPersonal()], true);
 
 			return !empty($listData) ? 1 : 0;
 		} catch (\Exception $e) {
@@ -204,18 +213,78 @@ class ModeloInicio extends ModelBase
 		}
 	}
 
+
+
+	public function getIdPersonal()
+	{
+		return $this->idPersonal;
+	}
+
+
+	public function getFechaInicio()
+	{
+		return $this->fechaInicio;
+	}
+
+	public function getFechaFinal()
+	{
+		return $this->fechaFinal;
+	}
+
+
+
+
+
 	public function setIdPersonal($idPersonal)
 	{
 
 		if (!preg_match('/^[0-9]+$/', $idPersonal)) {
 			throw new \InvalidArgumentException('El ID no es válido.');
 		}
-		
+
 		$this->idPersonal = $idPersonal;
 	}
 
-	public function getIdPersonal()
+
+
+
+
+	public function setFechaInicio($fechaInicio = '')
 	{
-		return $this->idPersonal;
+
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaInicio);
+		$fechaHoy = date("Y-m-d");
+
+		if ($fechaInicio == '') {
+			$this->fechaInicio = $fechaInicio;
+			return;
+		}
+
+		if (!$dt || $dt->format('Y-m-d') !== $fechaInicio) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+		}
+		if ($fechaInicio >= $fechaHoy) {
+			throw new \InvalidArgumentException("La fecha no puede ser del futuro.");
+		}
+		$this->fechaInicio = $fechaInicio;
+	}
+
+	public function setFechaFinal($fechaFinal = '')
+	{
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaFinal);
+		$fechaHoy = date("Y-m-d");
+
+		if ($fechaFinal == '') {
+			$this->fechaFinal = $fechaFinal;
+			return;
+		}
+
+		if (!$dt || $dt->format('Y-m-d') !== $fechaFinal) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+		}
+		if ($fechaFinal >= $fechaHoy) {
+			throw new \InvalidArgumentException("La fecha no puede ser del futuro.");
+		}
+		$this->fechaFinal = $fechaFinal;
 	}
 }

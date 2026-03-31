@@ -1,6 +1,24 @@
 // Variables globales
 const { jsPDF } = window.jspdf;
 
+
+// ─── URLs por chart ─────────────────────────────────────────────────────────
+const URL_BASE = "/Sistema-del--CEM--JEHOVA-RAFA";
+const URLS = {
+  especialidades: {
+    default: `${URL_BASE}/Inicio/especialidades_solicitadas`,
+    filtrada: `${URL_BASE}/Inicio/especialidades_solicitadas_filtradas`,
+  },
+  sintomas: {
+    default: `${URL_BASE}/Inicio/sintomas_comunes`,
+    filtrada: `${URL_BASE}/Inicio/sintomas_comunes_filtrados`,
+  },
+  morbilidad: {
+    default: `${URL_BASE}/Estadisticas/tasaMorbilidad`,
+    filtrada: `${URL_BASE}/Estadisticas/filtrar_tasaMorbilidad`,
+  },
+};
+
 const expresiones = {
   fn1: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
   fn2: { expresion: /^\d{4}\-\d{2}\-\d{2}$/, mensajeError: "" },
@@ -30,11 +48,9 @@ document.addEventListener("DOMContentLoaded", function () {
   distribucion_edad_genero(
     "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero",
   );
-  tasa_morbilidad("/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad");
-  especialidades_chart(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas",
-  );
-  sintomas_chart(`/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes`);
+  tasa_morbilidad(URLS.morbilidad.default);
+  especialidades_chart(URLS.especialidades.default);
+  sintomas_chart(URLS.sintomas.default);
   insumos(`/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/insumos`);
 });
 
@@ -334,7 +350,7 @@ const tasa_morbilidad = async (url) => {
         });
 
         tasa_morbilidad(
-          "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/tasaMorbilidad",
+          URLS.morbilidad.default,
         );
       }
     });
@@ -962,22 +978,18 @@ inicializarValidacionFormulario(
   document.getElementById("buscadoresMorbilidad"),
 );
 
-// ─── URLs por chart ─────────────────────────────────────────────────────────
-const URL_BASE = "/Sistema-del--CEM--JEHOVA-RAFA";
-const URLS = {
-  especialidades: {
-    default: `${URL_BASE}/Inicio/especialidades_solicitadas`,
-    filtrada: `${URL_BASE}/Inicio/especialidades_solicitadas_filtradas`,
-  },
-  sintomas: {
-    default: `${URL_BASE}/Inicio/sintomas_comunes`,
-    filtrada: `${URL_BASE}/Inicio/sintomas_comunes_filtrados`,
-  },
-  morbilidad: {
-    default: `${URL_BASE}/Estadisticas/tasaMorbilidad`,
-    filtrada: `${URL_BASE}/Estadisticas/filtrar_tasaMorbilidad`,
-  },
-};
+
+//lamar la funcion para sintomas
+inicializarValidacionFormulario(document.getElementById("buscadoresSintomas"));
+
+//llamar funcion para especialidades
+inicializarValidacionFormulario(
+  document.getElementById("buscadoresEspecialidades"),
+);
+
+
+
+
 
 // ─── Construye la URL con fechas o devuelve la default ──────────────────────
 function buildUrl(urls, fechaInicio, fechaFinal) {
@@ -1021,29 +1033,9 @@ const alertFechaSin = document.querySelector(
 );
 
 // ─── Listeners de búsqueda ───────────────────────────────────────────────────
-document.getElementById("buscarFecha").addEventListener("click", function (e) {
-  e.preventDefault();
-  filtrar_por_fecha(
-    especialidades_chart,
-    URLS.especialidades,
-    inputInicioEsp.value,
-    inputFinalEsp.value,
-    alertFechaEsp,
-  );
-});
 
-document
-  .getElementById("buscarFechaSintomas")
-  .addEventListener("click", function (e) {
-    e.preventDefault();
-    filtrar_por_fecha(
-      sintomas_chart,
-      URLS.sintomas,
-      inputInicioSin.value,
-      inputFinalSin.value,
-      alertFechaSin,
-    );
-  });
+
+
 
 // ─── Resetear filtros al cerrar cada modal ───────────────────────────────────
 document.getElementById("reporte").addEventListener("hidden.bs.modal", () => {
@@ -1075,16 +1067,7 @@ document
 // seccion de generacion de reportes
 
 //generar reporte de especialidades
-document
-  .getElementById("especialidades")
-  .addEventListener("click", function () {
-    generarReporte(elementoImprimirEspecialidad, "reporte_especialidades.pdf");
-  });
 
-//generar reporte de sintoams
-document.getElementById("sintomas").addEventListener("click", function () {
-  generarReporte(elementoImprimirSintomas, "reporte_sintomas.pdf");
-});
 
 //generar Reporte pacientes
 document.getElementById("pacientes").addEventListener("click", function () {
@@ -1094,7 +1077,7 @@ document.getElementById("pacientes").addEventListener("click", function () {
   );
 });
 
-//repotte morbilidad
+//generar repotte morbilidad
 console.log(document.getElementById("btnMorbilidad"));
 document.getElementById("btnMorbilidad").addEventListener("click", function () {
   const inputs =
@@ -1132,11 +1115,106 @@ document.getElementById("btnMorbilidad").addEventListener("click", function () {
   generarReporte(elementoImprimirMorbilidad, "reporte_tasa_de_morbilidad.pdf");
 
   tasa_morbilidad(
-    `/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/filtrar_tasaMorbilidad/${inputs[0].value}/${inputs[1].value}`,
+    `${URLS.morbilidad.filtrada}/${inputs[0].value}/${inputs[1].value}`,
   );
 
   console.log("hola");
 });
+
+//generar pdf sintomas
+
+document.getElementById("sintomas").addEventListener("click", function () {
+  const inputs =
+    this.closest(".modal-content").querySelectorAll(".input-validar");
+  if (
+    !inputs[0].parentElement.classList.contains("valido") &&
+    !inputs[1].parentElement.classList.contains("valido")
+  ) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Por favor verifique que todos los datos sean correctos ",
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
+    });
+    return;
+  }
+
+  if (inputs[0].value > inputs[1].value) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Por favor la fecha de inicio no puede ser mayor a la fecha final ",
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
+    });
+    return;
+  }
+  generarReporte(elementoImprimirSintomas, "reporte_sintomas.pdf");
+
+  sintomas_chart(
+    `${URLS.sintomas.filtrada}/${inputs[0].value}/${inputs[1].value}`,
+  );
+
+  console.log("hola");
+});
+
+
+
+document.getElementById("especialidades").addEventListener("click", function () {
+  console.log('llevo');
+  
+  const inputs =
+    this.closest(".modal-content").querySelectorAll(".input-validar");
+  if (
+    !inputs[0].parentElement.classList.contains("valido") &&
+    !inputs[1].parentElement.classList.contains("valido")
+  ) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Por favor verifique que todos los datos sean correctos ",
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
+    });
+    return;
+  }
+
+  if (inputs[0].value > inputs[1].value) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Por favor la fecha de inicio no puede ser mayor a la fecha final ",
+      customClass: {
+        popup: "switAlert",
+        confirmButton: "btn-agregarcita-modal",
+        cancelButton: "btn-agregarcita-modal-cancelar",
+      },
+    });
+    return;
+  }
+      generarReporte(
+        elementoImprimirEspecialidad,
+        "reporte_especialidades.pdf",
+      );
+
+
+  especialidades_chart(
+    `${URLS.especialidades.filtrada}/${inputs[0].value}/${inputs[1].value}`,
+  );
+
+  console.log("hola");
+});
+
 
 //repotte insumos
 document
