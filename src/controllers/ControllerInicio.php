@@ -146,7 +146,7 @@ function especialidades_solicitadas_filtradas($datos)
 {
     $modelo = new ModeloInicio();
     $modelo->setFechaInicio($datos[0]);
-    $modelo->setFechaInicio($datos[1]);
+    $modelo->setFechaFinal($datos[1]);
     echo json_encode($modelo->especialidades_solicitadas());
 }
 
@@ -168,7 +168,7 @@ function sintomas_comunes_filtrados($datos)
 {
     $modelo = new ModeloInicio();
     $modelo->setFechaInicio($datos[0]);
-    $modelo->setFechaInicio($datos[1]);
+    $modelo->setFechaFinal($datos[1]);
     echo json_encode($modelo->sintomas_comunes());
 }
 
