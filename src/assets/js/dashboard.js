@@ -259,11 +259,11 @@ document
 
 ///
 const convertirHora = (horaMilitar) => {
-  // Separamos hora y minutos
-  let [horaStr, minutoStr] = horaMilitar.split(":");
+    // Separamos hora y minutos
+    let [horaStr, minutoStr] = horaMilitar.split(":");
 
-  let hora = parseInt(horaStr, 10);
-  let minutos = parseInt(minutoStr, 10);
+    let hora = parseInt(horaStr, 10);
+    let minutos = parseInt(minutoStr, 10);
 
   // Validamos rango
   if (
@@ -277,19 +277,19 @@ const convertirHora = (horaMilitar) => {
     return "Hora inválida";
   }
 
-  // Determinamos AM o PM
-  let sufijo = hora >= 12 ? "PM" : "AM";
+    // Determinamos AM o PM
+    let sufijo = hora >= 12 ? "PM" : "AM";
 
-  // Convertimos a formato 12 horas
-  let hora12 = hora % 12;
-  if (hora12 === 0) {
-    hora12 = 12;
-  }
+    // Convertimos a formato 12 horas
+    let hora12 = hora % 12;
+    if (hora12 === 0) {
+        hora12 = 12;
+    }
 
-  // Aseguramos que los minutos siempre tengan dos dígitos
-  let minutosFormateados = minutos.toString().padStart(2, "0");
+    // Aseguramos que los minutos siempre tengan dos dígitos
+    let minutosFormateados = minutos.toString().padStart(2, "0");
 
-  return `${hora12}:${minutosFormateados} ${sufijo}`;
+    return `${hora12}:${minutosFormateados} ${sufijo}`;
 };
 
 //validar que el elemento exista
@@ -485,9 +485,7 @@ traerHorarioEspecificoDelDr = async (id) => {
       resultado.forEach((res) => {
         div.innerHTML += `
                 <div class="mb-2 " >
-                <div class="d-flex text-horario">Día Laborable: <p class="fw-bold text-horario"> ${
-                  res.diaslaborables
-                }</p> </div>
+                <div class="d-flex text-horario">Día Laborable: <p class="fw-bold text-horario"> ${res.diaslaborables}</p> </div>
               
                 <div class="d-flex text-horario">Hora de Entrada: <p class="fw-bold text-horario"> ${convertirHora(
                   res.horaDeEntrada,
