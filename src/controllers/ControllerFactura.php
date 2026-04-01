@@ -258,6 +258,7 @@ function guardarFactura()
 	if (!$modeloFactura->getIdCliente()) {
 
 		$coincidencia = $modeloFactura->coincidenciaPacienteCliente();
+		print_r($coincidencia);
 		if ($coincidencia) {
 			$id_cliente = $coincidencia;
 		} else {
