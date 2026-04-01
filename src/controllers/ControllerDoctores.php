@@ -5,14 +5,17 @@ use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloServicios;
 use App\modelos\ModeloUsuarios;
+use App\modelos\ModeloRoles;
 use App\modelos\ModeloCategoria;
 use App\config\RateLimiter;
+
 //muestro los datos de las cuatro tablas
 function doctores($parametro)
 {
     $modeloDoctores = new ModeloDoctores();
     $modeloServicios = new ModeloServicios();
-
+    $modeloRoles = new ModeloRoles();
+    $datosRoles = $modeloRoles->roles();
     $vistaActiva = 'doctores';
     $ayuda = "btnayudaDoctores";
     $datosEspecialidades = $modeloDoctores->selectEspecialidad();
@@ -209,7 +212,7 @@ function agregarDoctor()
         $modeloDoctores->setDias($_POST['dias']);
         $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
         $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
-        $modeloDoctores->setIdRol(8);
+        $modeloDoctores->setIdRol($_POST['id_rol']);
 
 
         $modeloDoctores->setUsuario($_POST["usuario"]);
