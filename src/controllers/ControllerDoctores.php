@@ -180,7 +180,9 @@ function agregarDoctor()
     }
 
     try {
-
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
         $idUsuario = $_SESSION['id_usuario'];
         // RATE LIMIT: 5 peticiones cada 1 segundos
         $limiter = new RateLimiter();
@@ -218,7 +220,7 @@ function agregarDoctor()
         $insercion = $modeloDoctores->insertarDoctor();
 
         if (is_array($insercion) && $insercion[0] === "exito") {
-            $modeloBitacora->setId_usuario($_POST['id_usuario']);
+            $modeloBitacora->setId_usuario($_SESSION["id_usuario"]);
             $modeloBitacora->setTabla("doctor");
             $modeloBitacora->setActividad("Ha Insertado un nuevo doctor");
             $modeloBitacora->insertarBitacora();

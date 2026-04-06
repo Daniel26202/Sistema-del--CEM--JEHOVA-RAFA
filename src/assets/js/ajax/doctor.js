@@ -1,12 +1,12 @@
 import {
-  executePetition,
-  alertConfirm,
-  alertError,
-  alertSuccess,
-  initDataTable,
-  cargarImg,
-  showDataModal,
-  hasPermision,
+    executePetition,
+    alertConfirm,
+    alertError,
+    alertSuccess,
+    initDataTable,
+    cargarImg,
+    showDataModal,
+    hasPermision,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -27,9 +27,9 @@ const formEspecialidad = document.getElementById("formEspecialidad");
 
 const selectDoctor = document.querySelector("#select-doctor");
 const selectService = document.querySelector("#select-servicio");
-const formAsignarServicio = document.getElementById('formAsignarServicio');
-const modalAsignarServicio = new bootstrap.Modal(document.getElementById('modal-designar-servicio'));
-
+const formAsignarServicio = document.getElementById("formAsignarServicio");
+const modalAsignarServicio = new bootstrap.Modal(document.getElementById("modal-designar-servicio"));
+const modalADoctor = new bootstrap.Modal(document.getElementById("exampleModalagregarDocotor"));
 
 const divHorarios = document.getElementById("div-horarios");
 const cajaDeInfo = document.getElementById("cajaDeInfo");
@@ -41,20 +41,20 @@ const urlActual = window.location.href;
 
 //funcion para mostrar mas informacion del doctor
 const info = (id_personal) => {
-  let data = [];
-  let htmlHorario = "";
-  let textServicios = "";
+    let data = [];
+    let htmlHorario = "";
+    let textServicios = "";
 
-  for (const item of dataDoctor) {
-    const serivicios = item.servicios.find((s) => s.id_personal == id_personal);
-    if (serivicios) {
-      data.push({ ...item });
+    for (const item of dataDoctor) {
+        const serivicios = item.servicios.find((s) => s.id_personal == id_personal);
+        if (serivicios) {
+            data.push({ ...item });
+        }
     }
-  }
 
-  if (data.length > 0) {
-    for (const item of data[0].datosHorarios) {
-      htmlHorario = `
+    if (data.length > 0) {
+        for (const item of data[0].datosHorarios) {
+            htmlHorario = `
     <!-- Nombre -->
                 <div class="info-group mb-3">
                     <p class="fw-bold mb-3">
@@ -76,31 +76,27 @@ const info = (id_personal) => {
                     </p>
                 </div>
     `;
-    }
+        }
 
-    for (const item of data[0].servicios) {
-      textServicios += item.nombre + " ,  ";
+        for (const item of data[0].servicios) {
+            textServicios += item.nombre + " ,  ";
+        }
+    } else {
+        htmlHorario = '<h5 class="text-center">El doctor no tiene un horario disponible</h5>';
+        pServicios = "De momento el doctor no ofrece ningun servicio";
     }
-  } else {
-    htmlHorario =
-      '<h5 class="text-center">El doctor no tiene un horario disponible</h5>';
-    pServicios = "De momento el doctor no ofrece ningun servicio";
-  }
-  cajaDeInfo.innerHTML = htmlHorario;
-  pServicios.innerText = textServicios;
+    cajaDeInfo.innerHTML = htmlHorario;
+    pServicios.innerText = textServicios;
 };
 
 //funcion para mostrar los dias de la semana
 const mostrarDiasSemana = async () => {
-  try {
-    const result = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Doctores/mostrarDiasSemana",
-      "GET",
-    );
-    let html = "";
-    if (result.length > 0) {
-      result.forEach((element) => {
-        html += ` <div class="col-md-6 mb-3" >
+    try {
+        const result = await executePetition("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/mostrarDiasSemana", "GET");
+        let html = "";
+        if (result.length > 0) {
+            result.forEach((element) => {
+                html += ` <div class="col-md-6 mb-3" >
     <div class="card card-schedule p-3 h-100 shadow-sm border-0" style="background-color: var(--color-bg-card); border: 1px solid var(--color-primary);">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="fw-bold text-dark">${element.diaslaborables}</span>
@@ -129,45 +125,45 @@ const mostrarDiasSemana = async () => {
         </div>
     </div>
 </div>`;
-      });
-    } else {
-      html = `<div class="col-12">
+            });
+        } else {
+            html = `<div class="col-12">
         <div class="alert alert-warning text-center">
           No hay días laborables registrados.
         </div>
       </div>`;
+        }
+        divHorarios.innerHTML = html;
+    } catch (error) {
+        alertError("Error", error);
+        console.log(error);
     }
-    divHorarios.innerHTML = html;
-  } catch (error) {
-    alertError("Error", error);
-    console.log(error);
-  }
 };
 
 //read
 const readDoctor = async () => {
-  try {
-    let metodo = "";
+    try {
+        let metodo = "";
 
-    if (!urlActual.includes("papelera")) metodo = "DoctoresAjax";
-    else metodo = "papeleraDoctoresAjax";
+        if (!urlActual.includes("papelera")) metodo = "DoctoresAjax";
+        else metodo = "papeleraDoctoresAjax";
 
-    const result = await executePetition(url + "/" + metodo, "GET");
-    dataDoctor = result;
+        const result = await executePetition(url + "/" + metodo, "GET");
+        dataDoctor = result;
 
-    // construir html de filas
-    let html = "";
-    let html2 = "";
+        // construir html de filas
+        let html = "";
+        let html2 = "";
 
-    let id_usuario = 0;
-    console.log("readDoctor");
-    console.log(dataDoctor);
+        let id_usuario = 0;
+        console.log("readDoctor");
+        console.log(dataDoctor);
 
-    if (!urlActual.includes("papelera")) {
-      console.log(result);
+        if (!urlActual.includes("papelera")) {
+            console.log(result);
 
-      dataDoctor.forEach((element) => {
-        html += ` <tr>
+            dataDoctor.forEach((element) => {
+                html += ` <tr>
                             <td class=" ">
                                 ${element.nacionalidad}-${element.cedula}
                             </td>
@@ -204,9 +200,7 @@ const readDoctor = async () => {
 
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                      !urlActual.includes("paplera")
-                                        ? "d-none"
-                                        : ""
+                                        !urlActual.includes("paplera") ? "d-none" : ""
                                     }" data-index=${element.id_usuario}>
 
 
@@ -219,9 +213,7 @@ const readDoctor = async () => {
                                     </button>
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                      urlActual.includes("papelera")
-                                        ? "d-none"
-                                        : ""
+                                        urlActual.includes("papelera") ? "d-none" : ""
                                     }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -252,10 +244,10 @@ const readDoctor = async () => {
 
         
                         `;
-      });
-    } else {
-      result.forEach((element) => {
-        html += ` <tr>
+            });
+        } else {
+            result.forEach((element) => {
+                html += ` <tr>
                             <td class=" ">
                                 ${element.nacionalidad}-${element.cedula}
                             </td>
@@ -280,12 +272,10 @@ const readDoctor = async () => {
                                 <!-- editar -->
 
                                     <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla ${
-                                      !urlActual.includes("paplera")
-                                        ? "d-none"
-                                        : ""
+                                        !urlActual.includes("paplera") ? "d-none" : ""
                                     }"
                                         uk-toggle="target: #modal-editar-doctores${
-                                          element.id_usuario
+                                            element.id_usuario
                                         }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
                                         id="btneditarDoctor" data-index="${element.id_personal}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -298,9 +288,7 @@ const readDoctor = async () => {
 
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                      urlActual.includes("paplera")
-                                        ? "d-none"
-                                        : ""
+                                        urlActual.includes("paplera") ? "d-none" : ""
                                     }" data-index=${element.id_usuario}>
 
 
@@ -313,9 +301,7 @@ const readDoctor = async () => {
                                     </button>
 
                                     <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                      urlActual.includes("papelera")
-                                        ? "d-none"
-                                        : ""
+                                        urlActual.includes("papelera") ? "d-none" : ""
                                     }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -328,10 +314,10 @@ const readDoctor = async () => {
 
                              
                                 <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla ${
-                                  !urlActual.includes("paplera") ? "d-none" : ""
+                                    !urlActual.includes("paplera") ? "d-none" : ""
                                 }" title="Horarios Del Doctor"
                                     uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${
-                                      element.id_usuario
+                                        element.id_usuario
                                     }"
                                     data-index="${element.id_usuario}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -347,217 +333,193 @@ const readDoctor = async () => {
 
         
                         `;
-      });
+            });
+        }
+
+        const selector = ".exampleTable";
+
+        // si ya existe DataTable, destrúyela
+        if ($.fn.DataTable.isDataTable(selector)) {
+            $(selector).DataTable().clear().destroy();
+        }
+
+        // vuelca el html en el tbody
+        document.querySelector(selector + " tbody").innerHTML = html;
+
+        document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
+            ele.value = document.getElementById("id_usuario_session").value;
+            console.log(ele.value);
+        });
+
+        //llamar las funcion de eliminar
+        if (document.querySelectorAll(".btn-eliminar")) {
+            document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+                btn.addEventListener("click", function () {
+                    const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+                    alertConfirm("Esta seguro de eliminar el doctor?", deleteDoctor, data);
+                });
+            });
+        }
+
+        if (document.querySelectorAll(".btnRestablecer")) {
+            document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+                btn.addEventListener("click", function () {
+                    console.log(btn);
+
+                    const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+                    alertConfirm("Esta seguro de restablecer el doctor?", restablecerDoctor, data);
+                });
+            });
+        }
+
+        ///informacion del doctro
+        document.querySelectorAll(".botonesInfo").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                info(this.getAttribute("data-index"));
+            });
+        });
+
+        let srcImg = "";
+
+        //llamar a la uncion de editar
+        document.querySelectorAll(".botonesEdi").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                let tr = btn.closest("tr");
+                inputs[1].value = parseInt(tr.children[0].innerText.slice(2));
+                inputs[2].value = tr.children[1].innerText;
+                inputs[3].value = tr.children[2].innerText;
+                inputs[4].value = tr.children[3].innerText;
+                inputs[5].value = tr.children[4].innerText;
+                inputs[6].value = btn.getAttribute("data-especialidad");
+
+                cedulaRegistrada.value = parseInt(tr.children[0].innerText.slice(2));
+                id_doctor.value = btn.getAttribute("data-index-usuario");
+
+                formDoctor.querySelectorAll(".input-validar").forEach((inp) => {
+                    let divParent = inp.closest(".campo-custom");
+                    // se activa la validacion con todos excepto con el inputt de la imagen
+
+                    if (!inp.classList.contains("campo-editar")) {
+                        divParent.classList.add("d-none");
+
+                        //le coloco d-none a los label tambien
+                        divParent.previousElementSibling.classList.add("d-none");
+                        inp.parentElement.classList.add("valido");
+                    } else {
+                        if (inp.getAttribute("type") == "file") {
+                            inp.parentElement.classList.add("valido");
+                            // divParent.classList.add("valido");
+                        } else {
+                            inp.dispatchEvent(new Event("keyup", { bubbles: true }));
+                        }
+                    }
+                });
+
+                contenedorImg.classList.add("d-none");
+                //ahora gestionar la imagen del insumo es decir mostrar un previsualizacion en el modal de editar
+                contenedorImgEditar.classList.remove("d-none");
+                imgEditar.setAttribute("src", `../src/assets/images/img_ingresadas_por_usuarios/insumos/${srcImg}`);
+
+                let id_personal = parseInt(btn.getAttribute("data-index"));
+
+                let coincidencias = dataDoctor.filter((doc) => doc.id_personal == id_personal);
+
+                // Crear un conjunto para almacenar todos los id_horario únicos
+                const idHorariosSet = new Set();
+
+                // Recorrer cada objeto en data y agregar sus id_horario al conjunto
+                coincidencias.forEach((item) => {
+                    item.datosHorarios.forEach((item2) => {
+                        idHorariosSet.add(item2.id_horario);
+                    });
+                });
+
+                // Convertir el conjunto a un array para facilitar la comparación
+                const idHorarios = Array.from(idHorariosSet);
+
+                // Iterar sobre cada checkbox
+
+                formDoctor.querySelectorAll(".day-toggle").forEach((checkbox) => {
+                    const timeContainer = checkbox.querySelector(".time-container");
+                    const restBadge = checkbox.querySelector(".rest-badge");
+
+                    checkbox.setAttribute("name", "dias[]");
+
+                    // Comprobar si el value del checkbox está incluido en id_horarios
+                    const card = checkbox.closest(".card-schedule");
+                    const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
+                    const inputSalida = card.querySelectorAll('input[type="time"]')[1];
+                    if (idHorarios.includes(Number(checkbox.value))) {
+                        checkbox.checked = true; // Marcar el checkbox
+                        checkbox.setAttribute("name", "diaAnterio[]");
+
+                        const dataHorario = buscarcarHorarioPorId(
+                            dataDoctor,
+                            checkbox.value,
+                            btn.getAttribute("data-index"),
+                        ).datosHorarios;
+
+                        inputEntrada.setAttribute("name", "horaEntrada[]");
+                        inputSalida.setAttribute("name", "horaSalida[]");
+
+                        console.log(dataHorario[0].horaDeEntrada);
+                        inputEntrada.value = dataHorario[0].horaDeEntrada;
+                        inputSalida.value = dataHorario[0].horaDeSalida;
+                    } else {
+                        checkbox.checked = false; // Desmarcar el checkbox
+                        inputEntrada.setAttribute("name", "");
+                        inputSalida.setAttribute("name", "");
+                    }
+                });
+
+                labelModal.innerText = "Modificar Doctor";
+                btnModal.innerText = "Modificar";
+                contenedorImgEditar.classList.add("d-none");
+            });
+
+            formDoctor.classList.add("editar");
+        });
+
+        //////gestionar persmisos
+        hasPermision(id_rol_global, "Doctores", "guardar", ".btnOpenModal"); //guardar doctor
+        hasPermision(id_rol_global, "Doctores", "guardar", ".btnOpenModalSer"); //guardar servicio
+        hasPermision(id_rol_global, "Doctores", "guardar", ".btnOpenModalEsp"); //guardar especialidad
+
+        hasPermision(id_rol_global, "Doctores", "eliminar", ".btn-eliminar"); //eliminar
+        hasPermision(id_rol_global, "Doctores", "eliminar", ".btnRestablecer"); //restablecer
+        hasPermision(id_rol_global, "Doctores", "editar", ".botonesEdi"); //editar
+
+        // re-inicializa
+        initDataTable(selector);
+
+        console.log("cargada...");
+    } catch (error) {
+        alertError("Error", error);
+        console.log(error);
     }
-
-    const selector = ".exampleTable";
-
-    // si ya existe DataTable, destrúyela
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().clear().destroy();
-    }
-
-    // vuelca el html en el tbody
-    document.querySelector(selector + " tbody").innerHTML = html;
-
-    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-      ele.value = document.getElementById("id_usuario_session").value;
-      console.log(ele.value);
-    });
-
-    //llamar las funcion de eliminar
-    if (document.querySelectorAll(".btn-eliminar")) {
-      document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const data = [
-            this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
-          ];
-          alertConfirm(
-            "Esta seguro de eliminar el doctor?",
-            deleteDoctor,
-            data,
-          );
-        });
-      });
-    }
-
-    if (document.querySelectorAll(".btnRestablecer")) {
-      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          console.log(btn);
-
-          const data = [
-            this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
-          ];
-          alertConfirm(
-            "Esta seguro de restablecer el doctor?",
-            restablecerDoctor,
-            data,
-          );
-        });
-      });
-    }
-
-    ///informacion del doctro
-    document.querySelectorAll(".botonesInfo").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        info(this.getAttribute("data-index"));
-      });
-    });
-
-    let srcImg = "";
-
-    //llamar a la uncion de editar
-    document.querySelectorAll(".botonesEdi").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        let tr = btn.closest("tr");
-        inputs[1].value = parseInt(tr.children[0].innerText.slice(2));
-        inputs[2].value = tr.children[1].innerText;
-        inputs[3].value = tr.children[2].innerText;
-        inputs[4].value = tr.children[3].innerText;
-        inputs[5].value = tr.children[4].innerText;
-        inputs[6].value = btn.getAttribute("data-especialidad");
-
-        cedulaRegistrada.value = parseInt(tr.children[0].innerText.slice(2));
-        id_doctor.value = btn.getAttribute("data-index-usuario");
-
-        formDoctor.querySelectorAll(".input-validar").forEach((inp) => {
-          let divParent = inp.closest(".campo-custom");
-          // se activa la validacion con todos excepto con el inputt de la imagen
-
-          if (!inp.classList.contains("campo-editar")) {
-            divParent.classList.add("d-none");
-
-            //le coloco d-none a los label tambien
-            divParent.previousElementSibling.classList.add("d-none");
-            inp.parentElement.classList.add("valido");
-          } else {
-            if (inp.getAttribute("type") == "file") {
-              inp.parentElement.classList.add("valido");
-              // divParent.classList.add("valido");
-            } else {
-              inp.dispatchEvent(new Event("keyup", { bubbles: true }));
-            }
-          }
-        });
-
-        contenedorImg.classList.add("d-none");
-        //ahora gestionar la imagen del insumo es decir mostrar un previsualizacion en el modal de editar
-        contenedorImgEditar.classList.remove("d-none");
-        imgEditar.setAttribute(
-          "src",
-          `../src/assets/images/img_ingresadas_por_usuarios/insumos/${srcImg}`,
-        );
-
-        let id_personal = parseInt(btn.getAttribute("data-index"));
-
-        let coincidencias = dataDoctor.filter(
-          (doc) => doc.id_personal == id_personal,
-        );
-
-        // Crear un conjunto para almacenar todos los id_horario únicos
-        const idHorariosSet = new Set();
-
-        // Recorrer cada objeto en data y agregar sus id_horario al conjunto
-        coincidencias.forEach((item) => {
-          item.datosHorarios.forEach((item2) => {
-            idHorariosSet.add(item2.id_horario);
-          });
-        });
-
-        // Convertir el conjunto a un array para facilitar la comparación
-        const idHorarios = Array.from(idHorariosSet);
-
-        // Iterar sobre cada checkbox
-
-        formDoctor.querySelectorAll(".day-toggle").forEach((checkbox) => {
-          const timeContainer = checkbox.querySelector(".time-container");
-          const restBadge = checkbox.querySelector(".rest-badge");
-
-          checkbox.setAttribute("name", "dias[]");
-
-          // Comprobar si el value del checkbox está incluido en id_horarios
-          const card = checkbox.closest(".card-schedule");
-          const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
-          const inputSalida = card.querySelectorAll('input[type="time"]')[1];
-          if (idHorarios.includes(Number(checkbox.value))) {
-            checkbox.checked = true; // Marcar el checkbox
-            checkbox.setAttribute("name", "diaAnterio[]");
-
-            const dataHorario = buscarcarHorarioPorId(
-              dataDoctor,
-              checkbox.value,
-              btn.getAttribute("data-index"),
-            ).datosHorarios;
-
-            inputEntrada.setAttribute("name", "horaEntrada[]");
-            inputSalida.setAttribute("name", "horaSalida[]");
-
-            console.log(dataHorario[0].horaDeEntrada);
-            inputEntrada.value = dataHorario[0].horaDeEntrada;
-            inputSalida.value = dataHorario[0].horaDeSalida;
-          } else {
-            checkbox.checked = false; // Desmarcar el checkbox
-            inputEntrada.setAttribute("name", "");
-            inputSalida.setAttribute("name", "");
-          }
-        });
-
-        labelModal.innerText = "Modificar Doctor";
-        btnModal.innerText = "Modificar";
-        contenedorImgEditar.classList.add("d-none");
-      });
-
-      formDoctor.classList.add("editar");
-    });
-
-    //////gestionar persmisos
-    hasPermision(id_rol_global, "Doctores", "guardar", ".btnOpenModal"); //guardar doctor
-    hasPermision(id_rol_global, "Doctores", "guardar", ".btnOpenModalSer"); //guardar servicio
-    hasPermision(id_rol_global, "Doctores", "guardar", ".btnOpenModalEsp"); //guardar especialidad
-
-    hasPermision(id_rol_global, "Doctores", "eliminar", ".btn-eliminar"); //eliminar
-    hasPermision(id_rol_global, "Doctores", "eliminar", ".btnRestablecer"); //restablecer
-    hasPermision(id_rol_global, "Doctores", "editar", ".botonesEdi"); //editar
-
-    // re-inicializa
-    initDataTable(selector);
-
-    console.log("cargada...");
-  } catch (error) {
-    alertError("Error", error);
-    console.log(error);
-  }
 };
 
 //funcion par abuscar horarios especiicos por id\
 const buscarcarHorarioPorId = (list, id_horario, id_personal) => {
-  for (const item of list) {
-    const horario = item.datosHorarios.find(
-      (h) => h.id_horario == id_horario && h.id_personal == id_personal,
-    );
-    if (horario) {
-      return { ...item };
+    for (const item of list) {
+        const horario = item.datosHorarios.find((h) => h.id_horario == id_horario && h.id_personal == id_personal);
+        if (horario) {
+            return { ...item };
+        }
     }
-  }
-  return null;
+    return null;
 };
 
 //read
 const readEspecialidad = async () => {
-  try {
-    const result = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectEspcAjax",
-      "GET",
-    );
+    try {
+        const result = await executePetition("/Sistema-del--CEM--JEHOVA-RAFA/Doctores/selectEspcAjax", "GET");
 
-    // construir html de filas
-    let html = "";
+        // construir html de filas
+        let html = "";
 
-    result.forEach((element, index) => {
-      html += ` 
+        result.forEach((element, index) => {
+            html += ` 
        <tr>
                 <td class="text-center fw-bold">
                  ${index + 1}
@@ -585,189 +547,170 @@ const readEspecialidad = async () => {
       
         
                         `;
-    });
+        });
 
-    const selector = ".exampleTable2";
+        const selector = ".exampleTable2";
 
-    // si ya existe DataTable, destrúyela
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().clear().destroy();
+        // si ya existe DataTable, destrúyela
+        if ($.fn.DataTable.isDataTable(selector)) {
+            $(selector).DataTable().clear().destroy();
+        }
+
+        // vuelca el html en el tbody
+        if (!urlActual.includes("papelera")) {
+            document.querySelector(selector + " tbody").innerHTML = html;
+        }
+
+        //llamar las funcion de eliminar
+        document.querySelectorAll(".btn-eliminar-epe").forEach((btn) => {
+            console.log(btn);
+            btn.addEventListener("click", function () {
+                const data = [this.getAttribute("data-index"), document.getElementById("id_usuario_session").value];
+                alertConfirm("Esta seguro de eliminar la especialidad?", deleteEspecialidad, data);
+            });
+        });
+
+        // re-inicializa
+        initDataTable(selector);
+        console.log("cargada...");
+    } catch (error) {
+        alertError("Error", error);
     }
-
-    // vuelca el html en el tbody
-    if (!urlActual.includes("papelera")) {
-      document.querySelector(selector + " tbody").innerHTML = html;
-    }
-
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar-epe").forEach((btn) => {
-      console.log(btn);
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
-        alertConfirm(
-          "Esta seguro de eliminar la especialidad?",
-          deleteEspecialidad,
-          data,
-        );
-      });
-    });
-
-    // re-inicializa
-    initDataTable(selector);
-    console.log("cargada...");
-  } catch (error) {
-    alertError("Error", error);
-  }
 };
 
 //create
 const createDoctor = async (form, inputs) => {
-  try {
-    const data = new FormData(form);
-    let result = await executePetition(url + "/agregarDoctor", "POST", data);
-    console.log(result);
-    if (result.ok) {
-      alertSuccess(result.message);
-
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+    try {
+        const data = new FormData(form);
+        let result = await executePetition(url + "/agregarDoctor", "POST", data);
+        console.log(result);
+        if (result.ok) {
+            alertSuccess(result.message);
+            modalADoctor.hide();
+            readDoctor();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //delete
 const deleteDoctor = async (data) => {
-  try {
-    const result = await executePetition(url + `/borrarDoctor/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+    try {
+        const result = await executePetition(url + `/borrarDoctor/${data}`, "GET");
+        if (result.ok) {
+            alertSuccess(result.message);
+            readDoctor();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //update
 const updateDoctor = async (form, inputs) => {
-  try {
-    const data = new FormData(form);
+    try {
+        const data = new FormData(form);
 
-    let result = await executePetition(url + "/editarDoctor", "POST", data);
-    console.log(result);
-    if (result.ok) {
-      alertSuccess(result.message);
-
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    console.log(error);
-    alertError("Error", error);
-  }
+        let result = await executePetition(url + "/editarDoctor", "POST", data);
+        console.log(result);
+        if (result.ok) {
+            alertSuccess(result.message);
+            modalADoctor.hide();
+            readDoctor();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        console.log(error);
+        alertError("Error", error);
+    }
 };
 
 //delete
 const deleteEspecialidad = async (data) => {
-  try {
-    const result = await executePetition(
-      `/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`,
-      "GET",
-    );
-    if (result.ok) {
-      alertSuccess(result.message);
-      readEspecialidad();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+    try {
+        const result = await executePetition(`/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`, "GET");
+        if (result.ok) {
+            alertSuccess(result.message);
+            readEspecialidad();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //create especialida
 const createEspecialidad = async (form) => {
-  try {
-    const data = new FormData(form);
-    let result = await executePetition(
-      url + "/registrarEspecialidad",
-      "POST",
-      data,
-    );
-    console.log(result);
-    if (result.ok) {
-      alertSuccess(result.message);
+    try {
+        const data = new FormData(form);
+        let result = await executePetition(url + "/registrarEspecialidad", "POST", data);
+        console.log(result);
+        if (result.ok) {
+            alertSuccess(result.message);
 
-      readEspecialidad();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+            readEspecialidad();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //restablecer
 const restablecerDoctor = async (data) => {
-  try {
-    const result = await executePetition(url + `/restablecer/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
+    try {
+        const result = await executePetition(url + `/restablecer/${data}`, "GET");
+        if (result.ok) {
+            alertSuccess(result.message);
 
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+            readDoctor();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
-
 
 //asignar servicio
 const asignarServicio = async (form) => {
-  try {
-    const data = new FormData(form);
-    let result = await executePetition(
-      url + "/guardarDoctores",
-      "POST",
-      data,
-    );
-    console.log(result);
-    if (result.ok) {
-      alertSuccess(result.message);
-      modalAsignarServicio.hide();
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
+    try {
+        const data = new FormData(form);
+        let result = await executePetition(url + "/guardarDoctores", "POST", data);
+        console.log(result);
+        if (result.ok) {
+            alertSuccess(result.message);
+            modalAsignarServicio.hide();
+            readDoctor();
+        } else throw new Error(`${result.error}`);
+    } catch (error) {
+        alertError("Error", error);
+    }
 };
 
 //funcion para llenar los selects de doctor y servicio
 const traerServicioAndDoctor = async () => {
-  try {
-    const result = await executePetition(`${url}/serviciosDoctor`, 'GET');
-    console.log(result)
+    try {
+        const result = await executePetition(`${url}/serviciosDoctor`, "GET");
+        console.log(result);
 
-    let htmlDoc = `<option class="option-select-background" selected="" value="">Seleccionar Doctor</option>`;
-    let htmlSer = `<option class="option-select-background" selected="" value="">Seleccionar Servicio  Medico</option>`;
+        let htmlDoc = `<option class="option-select-background" selected="" value="">Seleccionar Doctor</option>`;
+        let htmlSer = `<option class="option-select-background" selected="" value="">Seleccionar Servicio  Medico</option>`;
 
-    //doctores
-    for (const res of result[0]) {
-      console.log(res);
-      htmlDoc += `<option class="option-select-background" name="id_doctor" value="${res.id_personal}">Dr: ${res.nombre_d} ${res.apellido}</option>`;
+        //doctores
+        for (const res of result[0]) {
+            console.log(res);
+            htmlDoc += `<option class="option-select-background" name="id_doctor" value="${res.id_personal}">Dr: ${res.nombre_d} ${res.apellido}</option>`;
+        }
+
+        //servicio
+        for (const res of result[1]) {
+            console.log(res);
+            htmlSer += `<option class="option-select-background" name='id_categoria' value="${res.id_categoria}">${res.nombre}</option>`;
+        }
+
+        selectDoctor.innerHTML = htmlDoc;
+        selectService.innerHTML = htmlSer;
+    } catch (error) {
+        console.log(error);
     }
-
-    //servicio
-    for (const res of result[1]) {
-      console.log(res);
-      htmlSer += `<option class="option-select-background" name='id_categoria' value="${res.id_categoria}">${res.nombre}</option>`;
-    }
-
-    selectDoctor.innerHTML = htmlDoc;
-    selectService.innerHTML = htmlSer;
-  } catch (error) {
-    console.log(error)
-  }
-}
+};
 
 traerServicioAndDoctor();
 readDoctor();
@@ -780,173 +723,154 @@ let diasActivosContador = 0;
 mostrarDiasSemana();
 
 divHorarios.addEventListener("change", async (e) => {
-  if (e.target.classList.contains("day-toggle")) {
-    const checkbox = e.target;
-    const card = checkbox.closest(".card-schedule");
-    const timeContainer = card.querySelector(".time-container");
-    const restBadge = card.querySelector(".rest-badge");
-    const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
-    const inputSalida = card.querySelectorAll('input[type="time"]')[1];
+    if (e.target.classList.contains("day-toggle")) {
+        const checkbox = e.target;
+        const card = checkbox.closest(".card-schedule");
+        const timeContainer = card.querySelector(".time-container");
+        const restBadge = card.querySelector(".rest-badge");
+        const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
+        const inputSalida = card.querySelectorAll('input[type="time"]')[1];
 
-    // 1. LÓGICA VISUAL
-    if (checkbox.checked) {
-      timeContainer.style.display = "block";
-      restBadge.style.display = "none";
-      card.style.opacity = "1";
-      inputEntrada.setAttribute("name", "horaEntrada[]");
-      inputSalida.setAttribute("name", "horaSalida[]");
-    } else {
-      timeContainer.style.display = "none";
-      restBadge.style.display = "block";
-      card.style.opacity = "0.8";
-      inputEntrada.setAttribute("name", "");
-      inputSalida.setAttribute("name", "");
-    }
+        // 1. LÓGICA VISUAL
+        if (checkbox.checked) {
+            timeContainer.style.display = "block";
+            restBadge.style.display = "none";
+            card.style.opacity = "1";
+            inputEntrada.setAttribute("name", "horaEntrada[]");
+            inputSalida.setAttribute("name", "horaSalida[]");
+        } else {
+            timeContainer.style.display = "none";
+            restBadge.style.display = "block";
+            card.style.opacity = "0.8";
+            inputEntrada.setAttribute("name", "");
+            inputSalida.setAttribute("name", "");
+        }
 
-    // 2. VALIDACIÓN: AL MENOS UN DÍA ACTIVO
-    diasActivosContador = divHorarios.querySelectorAll(
-      ".day-toggle:checked",
-    ).length;
-    if (diasActivosContador === 0) {
-      alert("¡Error! Debe haber al menos un día de trabajo seleccionado.");
-      checkbox.checked = true;
-      timeContainer.style.display = "block";
-      restBadge.style.display = "none";
-      card.style.opacity = "1";
-      return;
-    }
+        // 2. VALIDACIÓN: AL MENOS UN DÍA ACTIVO
+        diasActivosContador = divHorarios.querySelectorAll(".day-toggle:checked").length;
+        if (diasActivosContador === 0) {
+            alert("¡Error! Debe haber al menos un día de trabajo seleccionado.");
+            checkbox.checked = true;
+            timeContainer.style.display = "block";
+            restBadge.style.display = "none";
+            card.style.opacity = "1";
+            return;
+        }
 
-    // 3. VALIDACIÓN DE HORAS (Solo si el día está activo)
-    if (checkbox.checked) {
-      validarBloquesCompletos(card);
+        // 3. VALIDACIÓN DE HORAS (Solo si el día está activo)
+        if (checkbox.checked) {
+            validarBloquesCompletos(card);
+        }
     }
-  }
 });
 
 // Escuchar cuando cambian las horas manualmente
 divHorarios.addEventListener("change", (e) => {
-  if (e.target.type === "time") {
-    const card = e.target.closest(".card-schedule");
-    validarBloquesCompletos(card);
-  }
+    if (e.target.type === "time") {
+        const card = e.target.closest(".card-schedule");
+        validarBloquesCompletos(card);
+    }
 });
 
 function validarBloquesCompletos(card) {
-  const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
-  const inputSalida = card.querySelectorAll('input[type="time"]')[1];
+    const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
+    const inputSalida = card.querySelectorAll('input[type="time"]')[1];
 
-  // Extraemos hora y minutos por separado
-  let [hEntrada, mEntrada] = inputEntrada.value.split(":").map(Number);
-  let [hSalida, mSalida] = inputSalida.value.split(":").map(Number);
+    // Extraemos hora y minutos por separado
+    let [hEntrada, mEntrada] = inputEntrada.value.split(":").map(Number);
+    let [hSalida, mSalida] = inputSalida.value.split(":").map(Number);
 
-  // REGLA 1: Forzar minutos a 00 (No permitir 14:30, 14:15, etc.)
-  if (mEntrada !== 0 || mSalida !== 0) {
-    alertError(
-      "Error",
-      "Los turnos deben ser en horas exactas (ejemplo: 14:00). Se han ajustado los minutos.",
-    );
-    inputEntrada.value = `${String(hEntrada).padStart(2, "0")}:00`;
-    inputSalida.value = `${String(hSalida).padStart(2, "0")}:00`;
-    // Actualizamos las variables locales después del ajuste
-    mEntrada = 0;
-    mSalida = 0;
-  }
+    // REGLA 1: Forzar minutos a 00 (No permitir 14:30, 14:15, etc.)
+    if (mEntrada !== 0 || mSalida !== 0) {
+        alertError("Error", "Los turnos deben ser en horas exactas (ejemplo: 14:00). Se han ajustado los minutos.");
+        inputEntrada.value = `${String(hEntrada).padStart(2, "0")}:00`;
+        inputSalida.value = `${String(hSalida).padStart(2, "0")}:00`;
+        // Actualizamos las variables locales después del ajuste
+        mEntrada = 0;
+        mSalida = 0;
+    }
 
-  // REGLA 2: Diferencia mínima de 1 hora
-  const diferencia = hSalida - hEntrada;
+    // REGLA 2: Diferencia mínima de 1 hora
+    const diferencia = hSalida - hEntrada;
 
-  if (diferencia < 1) {
-    alertError(
-      "Error",
-      "El horario de salida debe ser al menos 1 hora después de la entrada.",
-    );
-    // Si hay error, reseteamos a un rango válido por defecto
-    inputSalida.value = `${String(hEntrada + 1).padStart(2, "0")}:00`;
-  }
+    if (diferencia < 1) {
+        alertError("Error", "El horario de salida debe ser al menos 1 hora después de la entrada.");
+        // Si hay error, reseteamos a un rango válido por defecto
+        inputSalida.value = `${String(hEntrada + 1).padStart(2, "0")}:00`;
+    }
 }
 
 //funcion para limpiar el formulario
 btnagregarDoctor.addEventListener("click", function () {
-  formDoctor.querySelectorAll(".input-validar").forEach(ele => {
-    let divParent = ele.closest(".campo-custom")
-    divParent.querySelector(".input-custom").classList.remove("valido", "invalido");
-    divParent.querySelector(".check").classList.add("d-none");
-    divParent.querySelector(".error").classList.add("d-none");
-    divParent.querySelector(".error-msg").classList.add("d-none");
-    console.log(divParent);
-    
-    ele.value = "";
-  })
-  labelModal.innerText = "Registrar Doctor";
-  btnModal.innerText = "Registrar";
-  contenedorImgEditar.classList.add("d-none");
-  formDoctor.classList.remove("editar");
+    formDoctor.querySelectorAll(".input-validar").forEach((ele) => {
+        let divParent = ele.closest(".campo-custom");
+        divParent.querySelector(".input-custom").classList.remove("valido", "invalido");
+        divParent.querySelector(".check").classList.add("d-none");
+        divParent.querySelector(".error").classList.add("d-none");
+        divParent.querySelector(".error-msg").classList.add("d-none");
+        console.log(divParent);
 
-})
+        ele.value = "";
+    });
+    labelModal.innerText = "Registrar Doctor";
+    btnModal.innerText = "Registrar";
+    contenedorImgEditar.classList.add("d-none");
+    formDoctor.classList.remove("editar");
+});
 
 imagenDoctor.addEventListener("change", function (e) {
-  let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
+    let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
 
-  contenedorImg.classList.remove("d-none");
-  contenedorImgEditar.classList.add("d-none");
-  cargarImg(this.files, newImg, contenedorImg);
+    contenedorImg.classList.remove("d-none");
+    contenedorImgEditar.classList.add("d-none");
+    cargarImg(this.files, newImg, contenedorImg);
 });
 
 let verificarFormulario = inicializarValidacionFormulario(formDoctor);
 let verificarFormularioEsp = inicializarValidacionFormulario(formEspecialidad);
-let verifcarFormAsignar = inicializarValidacionFormulario(formAsignarServicio)
+let verifcarFormAsignar = inicializarValidacionFormulario(formAsignarServicio);
 
 formDoctor.addEventListener("submit", function (e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  let esValido = verificarFormulario();
+    let esValido = verificarFormulario();
 
-  if (esValido) {
-    if (formDoctor.classList.contains("editar")) {
-      console.log("editar");
+    if (esValido) {
+        if (formDoctor.classList.contains("editar")) {
+            console.log("editar");
 
-      updateDoctor(this);
+            updateDoctor(this);
+        } else {
+            console.log("guardar");
+            createDoctor(this);
+        }
     } else {
-      console.log("guardar");
-      createDoctor(this);
+        alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }
-  } else {
-    alertError(
-      "Error",
-      "Por favor verifique que todos los datos estén correctos.",
-    );
-  }
 });
 
 formEspecialidad.addEventListener("submit", function (e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  let esValido = verificarFormularioEsp();
+    let esValido = verificarFormularioEsp();
 
-  if (esValido) {
-    console.log("guardar");
-    createEspecialidad(this);
-  } else {
-    alertError(
-      "Error",
-      "Por favor verifique que todos los datos estén correctos.",
-    );
-  }
+    if (esValido) {
+        console.log("guardar");
+        createEspecialidad(this);
+    } else {
+        alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+    }
 });
 
-
 formAsignarServicio.addEventListener("submit", function (e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  let esValido = verifcarFormAsignar();
+    let esValido = verifcarFormAsignar();
 
-  if (esValido) {
-    console.log("guardar");
-    asignarServicio(this);
-  } else {
-    alertError(
-      "Error",
-      "Por favor verifique que todos los datos estén correctos.",
-    );
-  }
+    if (esValido) {
+        console.log("guardar");
+        asignarServicio(this);
+    } else {
+        alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+    }
 });

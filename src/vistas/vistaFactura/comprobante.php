@@ -120,7 +120,10 @@
                                 <?php foreach ($datosPago as $datoPago): ?>
                                     <div class="d-flex justify-content-between mb-1 bg-comprobante">
                                         <span class="text-comprobante"><?php echo $datoPago["nombre"] ?></span>
+                                        <span class="text-comprobante">Referencia: <?php echo $datoPago["referencia"] ?></span>
+
                                         <span class="fw-bold text-comprobante"><?php echo $datoPago["monto"] . " BS" ?></span>
+                                        
                                     </div>
                                 <?php endforeach ?>
 

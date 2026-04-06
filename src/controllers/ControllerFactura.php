@@ -248,12 +248,11 @@ function guardarFactura()
 	$modeloFactura->setIdCliente(!empty($_POST["id_cliente"]) ? $_POST["id_cliente"] : 0);
 	$modeloFactura->setIdPaciente(isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : 0);
 	$modeloFactura->setIdCita(isset($_POST["id_cita"]) ? $_POST["id_cita"] : 0);
-	$modeloFactura->setReferencia(!isset($_POST["referencia"]) ? $_POST["referencia"] : 0);
+	$modeloFactura->setReferencia(!empty($_POST["referencia"]) ? $_POST["referencia"] : 0);
 	$modeloFactura->setIdH(isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : 0);
 	$modeloFactura->setTotal($_POST["total"]);
 	$modeloFactura->setFormasDePago(isset($_POST["formasDePago"]) ? $_POST["formasDePago"] : []);
 	$modeloFactura->setMontosPago($_POST["montosDePago"]);
-
 
 	if (!$modeloFactura->getIdCliente()) {
 
