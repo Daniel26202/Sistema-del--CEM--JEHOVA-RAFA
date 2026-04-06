@@ -195,7 +195,7 @@ class ModeloFactura extends ModelBase
 	{
 
 		try {
-			$this->beginTransaction();
+			// $this->beginTransaction();
 			$sql = "SELECT * from cliente where id_cliente=:id_cliente";
 			$this->setSQL($sql);
 			$data1 = [
@@ -219,6 +219,7 @@ class ModeloFactura extends ModelBase
 
 			$id_factura = $this->create($data2);
 
+
 			//Si el id_cita no es null se cambia el estado e la cita
 			if ($this->getIdCita() != null) {
 				$sql = "UPDATE cita SET estado = 'Realizadas' WHERE id_cita =:id";
@@ -236,60 +237,60 @@ class ModeloFactura extends ModelBase
 				$this->update_logic($this->getIdH());
 
 				//insertar en el dealle de factura  la hospitalizacion
-				// $sql = "INSERT INTO detalle_factura  VALUES (null,:id_factura, :tipo, :cantidad,:precioServIndividual, :precioServCompleto,:id_hospitalizacion,:id_servicio,:id_entrada)";
-				// $this->setSQL($sql);
-				// $data3 = [
-				// 	'id_factura' => $id_factura,
-				// 	'tipo' => 'Hospitalizacion',
-				// 	'cantidad' => 1,
-				// 	'precioServIndividual' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
-				// 	'precioServCompleto' => $this->returnObjectModel()['modeloServicios']->getPrecio(),
-				// 	'id_hospitalizacion' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH(),
-				// 	'id_servicio' => null,
-				// 	'id_entrada' => null
-				// ];
-				// $this->create($data3);
+				$sql = "INSERT INTO detalle_factura  VALUES (null,:id_factura, :tipo, :cantidad,:precioServIndividual, :precioServCompleto,:id_hospitalizacion,:id_servicio,:id_entrada)";
+				$this->setSQL($sql);
+				$data3 = [
+					'id_factura' => $id_factura,
+					'tipo' => 'Hospitalizacion',
+					'cantidad' => 1,
+					'precioServIndividual' => $this->getTotal(),
+					'precioServCompleto' => $this->getTotal(),
+					'id_hospitalizacion' => $this->getIdH(),
+					'id_servicio' => null,
+					'id_entrada' => null
+				];
+				$this->create($data3);
 
-				// 	// consulta datos del ultimo contro del paciente hospitalizado
-				// 	$sql = "SELECT con.id_control, con.id_paciente, con.historiaclinica FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1";
-				// 	$this->setSQL($sql);
+				// consulta datos del ultimo contro del paciente hospitalizado
+				$sql = "SELECT con.id_control, con.id_paciente, con.historiaclinica FROM control con INNER JOIN hospitalizacion h ON h.id_paciente = con.id_paciente WHERE h.id_hospitalizacion = :idHosp ORDER by con.id_control DESC LIMIT 1";
+				$this->setSQL($sql);
 
-				// 	$datosControl = $this->search(['idHosp' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH()], false);
+				$datosControl = $this->search(['idHosp' => $this->getIdH()], false);
 
-				// 	$historialEnF = $datosControl["historiaclinica"];
-
-
-				// 	$sql = "SELECT cs.nombre AS servicio, sh.cantidad, sm.tipo FROM servicios_hospitalizacion sh INNER JOIN serviciomedico sm ON sm.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE sh.id_hospitalizacion = :idHosp;";
-				// 	$this->setSQL($sql);
-
-				// 	$servicios = $this->search(['idHosp' => $this->returnObjectModel()['modeloHospitalizacion']->getIdH()]);
+				$historialEnF = $datosControl["historiaclinica"];
 
 
-				// 	if ($servicios) {
-				// 		$textoServicios = "Servicios utilizados: ";
-				// 		$lista = [];
-				// 		foreach ($servicios as $serv) {
-				// 			// para convertir el text en minuscula
-				// 			if (strtolower($serv["tipo"]) === "examenes") {
-				// 				$lista[] = "{$serv["servicio"]} ({$serv["cantidad"]} unidades)";
-				// 			} else {
-				// 				$lista[] = $serv["servicio"];
-				// 			}
-				// 		}
+				$sql = "SELECT cs.nombre AS servicio, sh.cantidad, sm.tipo FROM servicios_hospitalizacion sh INNER JOIN serviciomedico sm ON sm.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE sh.id_hospitalizacion = :idHosp;";
+				$this->setSQL($sql);
 
-				// 		$textoServicios .= implode(", ", $lista) . ".";
+				$servicios = $this->search(['idHosp' => $this->getIdH()]);
 
-				// 		$historialEnF = $textoServicios . "   El paciente: " . $historialEnF;
-				// 	}
 
-				// 	$sql = 'UPDATE control SET historiaclinica = :historial, estado =:estado WHERE id_control = :id';
+				if ($servicios) {
+					$textoServicios = "Servicios utilizados: ";
+					$lista = [];
+					foreach ($servicios as $serv) {
+						// para convertir el text en minuscula
+						if (strtolower($serv["tipo"]) === "examenes") {
+							$lista[] = "{$serv["servicio"]} ({$serv["cantidad"]} unidades)";
+						} else {
+							$lista[] = $serv["servicio"];
+						}
+					}
 
-				// 	$data4 = [
-				// 		'historial' => $historialEnF,
-				// 		'estado' => 'ACT'
-				// 	];
-				// 	$this->setSQL($sql);
-				// 	$this->update($data4, $datosControl["id_control"]);
+					$textoServicios .= implode(", ", $lista) . ".";
+
+					$historialEnF = $textoServicios . "   El paciente: " . $historialEnF;
+				}
+
+				$sql = 'UPDATE control SET historiaclinica = :historial, estado =:estado WHERE id_control = :id';
+
+				$data4 = [
+					'historial' => $historialEnF,
+					'estado' => 'ACT'
+				];
+				$this->setSQL($sql);
+				$this->update($data4, $datosControl["id_control"]);
 			}
 
 			// //insertar tipos de pago
@@ -340,11 +341,13 @@ class ModeloFactura extends ModelBase
 				}
 			}
 
-			if ($this->getInsumos()) {
+			if ($this->getInsumos() && $this->getIdH() == 0) {
 				$contador = 0;
 				foreach ($this->getInsumos() as $i) {
 					//actualizar la cantidad de insumos
 					$id_entrada = $this->selectId_entrada($i);
+
+
 					$data = [
 						'id_factura' => $id_factura,
 						'tipo' => 'Insumo',
@@ -355,7 +358,7 @@ class ModeloFactura extends ModelBase
 					];
 
 					$sql = "INSERT INTO detalle_factura  VALUES (null, :id_factura, :tipo, :cantidad,:precioInsumo, :subtotal,null,null,:i)
-";
+					";
 					$this->setSQL($sql);
 					$this->create($data);
 
@@ -370,10 +373,10 @@ class ModeloFactura extends ModelBase
 					$contador++;
 				}
 			}
-			$this->commit();
-			return [$id_factura, "exito", $data];
+			// $this->commit();
+			return [$id_factura, "exito", $this->getInsumos()];
 		} catch (\Exception $e) {
-			$this->rollback();
+			// $this->rollback();
 			return $e->getMessage();
 		}
 	}

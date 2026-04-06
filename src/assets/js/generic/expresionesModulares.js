@@ -1,8 +1,8 @@
 // Objeto con las expresiones regulares para validar cada tipo de campo
 const expresiones = {
     nombre: {
-        expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
-        mensajeError: "El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
+        expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/,
+        mensajeError: "El nombre debe iniciar con mayúscula, tener al menos 3 letras y puede incluir un segundo nombre separado por un espacio.",
     },
 
     codigo: {
@@ -11,7 +11,7 @@ const expresiones = {
     },
 
     apellido: {
-        expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/,
+        expresion: /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/,
         mensajeError:
             "El Apellido debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres",
     },

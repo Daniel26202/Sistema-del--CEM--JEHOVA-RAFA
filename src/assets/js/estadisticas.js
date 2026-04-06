@@ -1,7 +1,6 @@
 // Variables globales
 const { jsPDF } = window.jspdf;
 
-
 // ─── URLs por chart ─────────────────────────────────────────────────────────
 const URL_BASE = "/Sistema-del--CEM--JEHOVA-RAFA";
 const URLS = {
@@ -349,9 +348,7 @@ const tasa_morbilidad = async (url) => {
           input.nextElementSibling.children[1].classList.add("d-none");
         });
 
-        tasa_morbilidad(
-          URLS.morbilidad.default,
-        );
+        tasa_morbilidad(URLS.morbilidad.default);
       }
     });
 
@@ -892,7 +889,6 @@ function validarFormulario(e, formulario, campos) {
     const nameInput = input.name;
     let mensajeError = expresiones[input.name].mensajeError;
     let campoCustom = input.closest(".campo-custom");
-    
 
     let pError = campoCustom.querySelector("p");
     let check = campoCustom.querySelector(".check");
@@ -903,7 +899,7 @@ function validarFormulario(e, formulario, campos) {
       error: error,
     };
     console.log(campoCustom);
-    
+
     campos[nameInput] = validarFecha(
       input,
       arrayElementos,
@@ -939,8 +935,9 @@ function validarFecha(input, arrayElementos, campo, formulario) {
       chulitoYX(check, error, "inValido");
       return false;
     }
-    if(inputs[0].value >= inputs[1].value){
-      pError.textContent = "La fecha de inicio no puede ser mayor a la fecha final";
+    if (inputs[0].value >= inputs[1].value) {
+      pError.textContent =
+        "La fecha de inicio no puede ser mayor a la fecha final";
       pError.classList.remove("d-none");
       chulitoYX(check, error, "inValido");
       return false;
@@ -978,7 +975,6 @@ inicializarValidacionFormulario(
   document.getElementById("buscadoresMorbilidad"),
 );
 
-
 //lamar la funcion para sintomas
 inicializarValidacionFormulario(document.getElementById("buscadoresSintomas"));
 
@@ -986,10 +982,6 @@ inicializarValidacionFormulario(document.getElementById("buscadoresSintomas"));
 inicializarValidacionFormulario(
   document.getElementById("buscadoresEspecialidades"),
 );
-
-
-
-
 
 // ─── Construye la URL con fechas o devuelve la default ──────────────────────
 function buildUrl(urls, fechaInicio, fechaFinal) {
@@ -1034,40 +1026,90 @@ const alertFechaSin = document.querySelector(
 
 // ─── Listeners de búsqueda ───────────────────────────────────────────────────
 
-
-
-
 // ─── Resetear filtros al cerrar cada modal ───────────────────────────────────
-document.getElementById("reporte").addEventListener("hidden.bs.modal", () => {
-  inputInicioEsp.value = "";
-  inputFinalEsp.value = "";
-  alertFechaEsp.classList.add("d-none");
-  especialidades_chart(URLS.especialidades.default);
-});
 
 document
   .getElementById("reporteTasaMorbilidad")
   .addEventListener("hidden.bs.modal", () => {
-    inputInicioEsp.value = "";
-    inputFinalEsp.value = "";
-    alertFechaEsp.classList.add("d-none");
-    especialidades_chart(URLS.especialidades.default);
+    const inputs = document
+      .getElementById("buscadoresSintomas")
+      .querySelectorAll(".input-validar");
+    inputs.forEach((input) => {
+      let campoCustom = input.closest(".campo-custom");
+      let spamP = campoCustom.querySelector(".icono-der");
+      let check = spamP.children[0];
+      let error = spamP.children[1];
+
+      input.value = "";
+      input.parentElement.classList.remove("invalido", "valido");
+      let pError = campoCustom.querySelector("p");
+      pError.classList.add("d-none");
+
+      if (check && error) {
+        check.classList.add("d-none");
+        error.classList.add("d-none");
+      }
+    });
+    //   alertFechaEsp.classList.add("d-none");
+
+    tasa_morbilidad(URLS.morbilidad.default);
   });
+
+///resetear modal y estadistica
+document.getElementById("reporte").addEventListener("hidden.bs.modal", () => {
+  const inputs = document
+    .getElementById("buscadoresEspecialidades")
+    .querySelectorAll(".input-validar");
+  inputs.forEach((input) => {
+    let campoCustom = input.closest(".campo-custom");
+    let spamP = campoCustom.querySelector(".icono-der");
+    let check = spamP.children[0];
+    let error = spamP.children[1];
+
+    input.value = "";
+    input.parentElement.classList.remove("invalido", "valido");
+    let pError = campoCustom.querySelector("p");
+    pError.classList.add("d-none");
+
+    if (check && error) {
+      check.classList.add("d-none");
+      error.classList.add("d-none");
+    }
+  });
+  //   alertFechaEsp.classList.add("d-none");
+  especialidades_chart(URLS.especialidades.default);
+});
 
 document
   .getElementById("reporteSintomas")
   .addEventListener("hidden.bs.modal", () => {
-    // inputInicioSin.value = "";
-    // inputFinalSin.value = "";
-    // alertFechaSin.classList.add("d-none");
-    tasaMorbilidadChart(URLS.morbilidad.default)
-  });
+    const inputs = document
+      .getElementById("buscadoresSintomas")
+      .querySelectorAll(".input-validar");
+    inputs.forEach((input) => {
+      let campoCustom = input.closest(".campo-custom");
+      let spamP = campoCustom.querySelector(".icono-der");
+      let check = spamP.children[0];
+      let error = spamP.children[1];
 
+      input.value = "";
+      input.parentElement.classList.remove("invalido", "valido");
+      let pError = campoCustom.querySelector("p");
+      pError.classList.add("d-none");
+
+      if (check && error) {
+        check.classList.add("d-none");
+        error.classList.add("d-none");
+      }
+    });
+    //   alertFechaEsp.classList.add("d-none");
+
+    sintomas_chart(URLS.sintomas.default);
+  });
 
 // seccion de generacion de reportes
 
 //generar reporte de especialidades
-
 
 //generar Reporte pacientes
 document.getElementById("pacientes").addEventListener("click", function () {
@@ -1112,11 +1154,17 @@ document.getElementById("btnMorbilidad").addEventListener("click", function () {
     });
     return;
   }
-  generarReporte(elementoImprimirMorbilidad, "reporte_tasa_de_morbilidad.pdf");
 
   tasa_morbilidad(
     `${URLS.morbilidad.filtrada}/${inputs[0].value}/${inputs[1].value}`,
   );
+
+  setTimeout(() => {
+    generarReporte(
+      elementoImprimirMorbilidad,
+      "reporte_tasa_de_morbilidad.pdf",
+    );
+  }, 800);
 
   console.log("hola");
 });
@@ -1156,65 +1204,67 @@ document.getElementById("sintomas").addEventListener("click", function () {
     });
     return;
   }
-  generarReporte(elementoImprimirSintomas, "reporte_sintomas.pdf");
-
   sintomas_chart(
     `${URLS.sintomas.filtrada}/${inputs[0].value}/${inputs[1].value}`,
   );
 
+  setTimeout(() => {
+    generarReporte(elementoImprimirSintomas, "reporte_sintomas.pdf");
+  }, 800);
+
   console.log("hola");
 });
 
+document
+  .getElementById("especialidades")
+  .addEventListener("click", function () {
+    console.log("llevo");
 
+    const inputs =
+      this.closest(".modal-content").querySelectorAll(".input-validar");
+    if (
+      !inputs[0].parentElement.classList.contains("valido") &&
+      !inputs[1].parentElement.classList.contains("valido")
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Por favor verifique que todos los datos sean correctos ",
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
+      });
+      return;
+    }
 
-document.getElementById("especialidades").addEventListener("click", function () {
-  console.log('llevo');
-  
-  const inputs =
-    this.closest(".modal-content").querySelectorAll(".input-validar");
-  if (
-    !inputs[0].parentElement.classList.contains("valido") &&
-    !inputs[1].parentElement.classList.contains("valido")
-  ) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Por favor verifique que todos los datos sean correctos ",
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
-    return;
-  }
+    if (inputs[0].value > inputs[1].value) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Por favor la fecha de inicio no puede ser mayor a la fecha final ",
+        customClass: {
+          popup: "switAlert",
+          confirmButton: "btn-agregarcita-modal",
+          cancelButton: "btn-agregarcita-modal-cancelar",
+        },
+      });
+      return;
+    }
+    especialidades_chart(
+      `${URLS.especialidades.filtrada}/${inputs[0].value}/${inputs[1].value}`,
+    );
 
-  if (inputs[0].value > inputs[1].value) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Por favor la fecha de inicio no puede ser mayor a la fecha final ",
-      customClass: {
-        popup: "switAlert",
-        confirmButton: "btn-agregarcita-modal",
-        cancelButton: "btn-agregarcita-modal-cancelar",
-      },
-    });
-    return;
-  }
+    setTimeout(() => {
       generarReporte(
         elementoImprimirEspecialidad,
         "reporte_especialidades.pdf",
       );
+    }, 800);
 
-
-  especialidades_chart(
-    `${URLS.especialidades.filtrada}/${inputs[0].value}/${inputs[1].value}`,
-  );
-
-  console.log("hola");
-});
-
+    console.log("hola");
+  });
 
 //repotte insumos
 document
