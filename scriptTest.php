@@ -66,12 +66,10 @@ echo "\n END \n";
 
 
 
-
-
-
 /**
  * devuelve la url por ejemplo 'http://localhost:8081/Sistema-del--CEM--JEHOVA-RAFA' si el parametro esta vacio
  * @param mixed $url agrega al final de la url ej.(Area) http://localhost:8081/Sistema-del--CEM--JEHOVA-RAFA/Area
  * @return string
  */
-function url($url='') { return "http://localhost:8081/Sistema-del--CEM--JEHOVA-RAFA/".$url; }
+
+function url($url='') { return "http://localhost/Sistema-del--CEM--JEHOVA-RAFA/".$url; }
