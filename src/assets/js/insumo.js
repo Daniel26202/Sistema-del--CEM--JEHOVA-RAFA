@@ -345,8 +345,8 @@ addEventListener("DOMContentLoaded", function () {
             <p class="mt-3">Medida: ${element.medida}</p>
             <p class="mt-3">Stock-Min: ${element.stockMinimo}</p>
 
-              <p class="${parseInt(element.cantidad_inventario) <= 0 ? "text-danger" : ""}">Cantidad: ${
-                element.cantidad_inventario
+              <p class="${parseInt(element.disponible) <= 0 ? "text-danger" : ""}">Cantidad: ${
+                element.disponible
               }</p>                                   
 
                                     <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${

@@ -86,74 +86,79 @@
                                         </div>
                                     </div>
 
-                                    <?php endforeach ?>
-                                <?php endif; ?>
+                                <?php endforeach ?>
+                            <?php endif; ?>
 
-                                <?php if ($vistaActiva): ?>
-                                    <?php foreach ($serviciosDeHospitalizacion as $d): ?>
-                                        <div class="d-flex justify-content-between mb-2 bg-comprobante">
-                                            <span class="text-comprobante"><?= $d["nombre"]; ?></span>
-                                            <span class="fw-semibold text-comprobante"><?= $d["precio"] . " BS" ?></span>
-                                        </div>
-                                    <?php endforeach ?>
-                                <?php endif; ?>
-
-                                <hr class="my-4 opacity-25">
-
-                                <h6 class="text-center text-uppercase fw-bold mb-3 text-primary" style="letter-spacing: 1px;">Insumos</h6>
-                                <?php foreach ($datosInsumos as $d): ?>
-                                    <div class=" p-2 rounded mb-3 border-start border-primary border-3 bg-comprobante">
-                                        <div class="d-flex justify-content-between">
-                                            <span class="fw-bold text-comprobante"><?php echo $d["nombre"] ?></span>
-                                            <span class="text-comprobante">Cant: <?php echo $d["cantidad"] ?></span>
-                                        </div>
-                                        <div class="d-flex justify-content-between small ">
-                                            <span class="text-comprobante">Base: <?php echo ($d["iva"]) ? $d["precio"] - ($d["precio"] * 0.30) . " BS"  : $d["precio"] . " BS" ?></span>
-                                            <span class="text-comprobante">IVA: <?php echo ($d["iva"]) ? $d["precio"] * 0.30 . " BS"  : "0 BS" ?></span>
-                                        </div>
+                            <?php if ($vistaActiva): ?>
+                                <?php foreach ($serviciosDeHospitalizacion as $d): ?>
+                                    <div class="d-flex justify-content-between mb-2 bg-comprobante">
+                                        <span class="text-comprobante"><?= $d["nombre"]; ?></span>
+                                        <span class="fw-semibold text-comprobante"><?= $d["precio"] . " BS" ?></span>
                                     </div>
                                 <?php endforeach ?>
+                            <?php endif; ?>
 
-                                <hr class="my-4 opacity-25">
+                            <hr class="my-4 opacity-25">
 
-                                <h6 class="text-center text-uppercase fw-bold mb-3 text-primary" style="letter-spacing: 1px;">Métodos de pago</h6>
-                                <?php foreach ($datosPago as $datoPago): ?>
-                                    <div class="d-flex justify-content-between mb-1 bg-comprobante">
-                                        <span class="text-comprobante"><?php echo $datoPago["nombre"] ?></span>
-                                        <span class="text-comprobante">Referencia: <?php echo $datoPago["referencia"] ?></span>
-
-                                        <span class="fw-bold text-comprobante"><?php echo $datoPago["monto"] . " BS" ?></span>
-                                        
+                            <h6 class="text-center text-uppercase fw-bold mb-3 text-primary" style="letter-spacing: 1px;">Insumos</h6>
+                            <?php foreach ($datosInsumos as $d): ?>
+                                <div class=" p-2 rounded mb-3 border-start border-primary border-3 bg-comprobante">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold text-comprobante"><?php echo $d["nombre"] ?></span>
+                                        <span class="text-comprobante">Cant: <?php echo $d["cantidad"] ?></span>
                                     </div>
-                                <?php endforeach ?>
-
+                                    <div class="d-flex justify-content-between small ">
+                                        <span class="text-comprobante">Base: <?php echo ($d["iva"]) ? $d["precio"] - ($d["precio"] * 0.30) . " BS"  : $d["precio"] . " BS" ?></span>
+                                        <span class="text-comprobante">IVA: <?php echo ($d["iva"]) ? $d["precio"] * 0.30 . " BS"  : "0 BS" ?></span>
                                     </div>
+                                </div>
+                            <?php endforeach ?>
 
-                                    <?php $id_factura = $parametro[0]; ?>
+                            <hr class="my-4 opacity-25">
 
-                                    <div class="card-footer bg-transparent border-0 pb-4 bg-comprobante">
-                                        <div class="d-flex justify-content-center">
-                                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPDF/<?php echo $id_factura; ?>"
-                                                class="btn btn-outline-primary rounded-circle p-3 d-flex align-items-center justify-content-center shadow-sm"
-                                                style="width: 60px; height: 60px;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
-                                                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-                                                    <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                                                </svg>
-                                            </a>
-                                        </div>
-                                    </div>
+                            <h6 class="text-center text-uppercase fw-bold mb-3 text-primary" style="letter-spacing: 1px;">Métodos de pago</h6>
+                            <?php $referencia = ''; ?>
+                            <?php foreach ($datosPago as $datoPago): ?>
+                                <div class="d-flex justify-content-between mb-1 bg-comprobante">
+                                    <span class="text-comprobante"><?php echo $datoPago["nombre"] ?></span>
+                                    <span class="fw-bold text-comprobante"><?php echo $datoPago["monto"] . " BS" ?></span>
+                                    <?php $referencia =( $datoPago["referencia"] != '0') ?$datoPago["referencia"]: "Sin Referencia" ?>
+                                </div>
+                            <?php endforeach ?>
+
+                            <hr>
+                            <div class="d-flex justify-content-between mb-1 bg-comprobante">
+                                <span class="text-comprobante">Numero de Referencia:</span>
+                                <span class="fw-bold text-comprobante"><?= $referencia ?></span>
+                            </div>
 
                         </div>
+
+                        <?php $id_factura = $parametro[0]; ?>
+
+                        <div class="card-footer bg-transparent border-0 pb-4 bg-comprobante">
+                            <div class="d-flex justify-content-center">
+                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPDF/<?php echo $id_factura; ?>"
+                                    class="btn btn-outline-primary rounded-circle p-3 d-flex align-items-center justify-content-center shadow-sm"
+                                    style="width: 60px; height: 60px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                                        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                                        <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
+</div>
 
 
 
 
-    <?php require_once './src/vistas/head/footer.php'; ?>
+
+<?php require_once './src/vistas/head/footer.php'; ?>
