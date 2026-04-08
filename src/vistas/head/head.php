@@ -324,28 +324,32 @@ if (!empty($parametro)) {
 
 	<!-- Contenido principal -->
 	<div id="main">
-		<!-- Barra de navegación -->
-		<nav class="navbarHorizontal navbar navbar-expand-lg navbar-light bg-light">
-			<button class="navbar-toggler" type="button" onclick="openNav()">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<!-- < class="navbar-brand" href="#">Mi Sitio Web</> -->
-			<img class="" src="<?= $urlBase ?>../src/assets/images/icons/logo.png" style="width: 180px; height: 55px;">
-
-			<div id="notificacion-campanita" style="position: relative; left: 80%; cursor: pointer; ">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
-					<path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"></path>
-					<path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"></path>
-				</svg>
-				<span id="contador-citas" style="position: absolute; top: -5px; left: 15px; top: -15px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; display: none;"></span>
+		<nav class="navbarHorizontal navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between align-items-center px-3">
+			<div class="d-flex align-items-center">
+				<button class="navbar-toggler me-2" type="button" onclick="openNav()">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<img src="<?= $urlBase ?>../src/assets/images/icons/logo.png" style="width: 150px; height: auto;">
 			</div>
 
+			<div id="notificacion-campanita" class="bell-container">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-bell-fill bell-icon" viewBox="0 0 16 16">
+					<path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+				</svg>
+
+				<span id="contador-citas" class="notification-badge" style="display: none;">0</span>
+
+				<div id="dropdown-citas" class="notif-dropdown">
+					<div class="notif-header">Notificaciones</div>
+					<div id="lista-citas-desplegable" class="notif-body">
+					</div>
+				</div>
+			</div>
 		</nav>
 
 
 
 
 
-
-
-		<div id="citas-proximas"></div>
+		<div id="citas-proximas" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+		</div>

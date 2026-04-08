@@ -695,6 +695,236 @@ html {
     text-align: left !important;
 }
 
+
+
+/* //nuevos estilos de las ntificaciones/ */
+.bell-container {
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.bell-container:hover {
+    transform: scale(1.1);
+    /* Efecto sutil al pasar el mouse */
+}
+
+.bell-icon {
+    width: 24px;
+    /* Tamaño más visible */
+    height: 24px;
+    color: #ffffff;
+    /* Gris oscuro elegante en lugar de negro puro */
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: #ff4757;
+    /* Color coral/rojo moderno */
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 18px;
+    /* Asegura que sea un círculo con números de 1 cifra */
+    height: 18px;
+    border-radius: 50%;
+    /* Círculo perfecto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    /* Borde blanco para que resalte del fondo */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 2px;
+}
+
+
+/* Contenedor de la campana */
+.bell-container {
+    position: relative;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+/* El circulo rojo mejorado */
+.notification-badge {
+    position: absolute;
+    /* Ajustamos posición para que no tape tanto la campana */
+    top: -5px;
+    right: -5px;
+
+    background-color: #ff4757;
+    color: white;
+
+    /* Subimos un poco el tamaño de fuente para legibilidad */
+    font-size: 11px;
+    font-weight: 700;
+    font-family: Arial, sans-serif;
+    /* Asegura una fuente limpia */
+
+    /* Ajuste de tamaño dinámico */
+    min-width: 20px;
+    /* Un poco más grande para que respire */
+    height: 20px;
+    padding: 0 4px;
+    /* Espacio extra a los lados para números de 2 cifras */
+
+    border-radius: 10px;
+    /* Usar un radio alto en lugar de 50% permite que se estire */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Borde blanco para el efecto "corte" profesional */
+    border: 2px solid white;
+    z-index: 10;
+
+    /* Evita que el texto se pegue a los bordes */
+    line-height: 1;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* El Panel Desplegable */
+.notif-dropdown {
+    display: none;
+    position: absolute;
+    top: 120%;
+    /* Aparece justo debajo */
+    right: 0;
+    width: 280px;
+    background: var(--color-bg-card);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border: 1px solid #ddd;
+    overflow: hidden;
+}
+
+.notif-dropdown.active {
+    display: block;
+    animation: fadeSlide 0.3s ease;
+}
+
+.notif-header {
+    padding: 10px;
+    background: var(--color-bg-card);
+    color: var(--color-text-card) !important;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+    text-align: center;
+}
+
+.notif-body {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.cita-item {
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 0.85rem;
+}
+.cita-item strong {
+    color: var(--color-text-card) !important;
+}
+
+.cita-item:hover {
+    background: var(--color-primary);
+}
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Contenedor invisible que sostiene las notificaciones flotantes */
+#citas-flotantes-container {
+    position: fixed;
+    top: 70px;
+    /* Debajo de tu navbar */
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Estilo de la tarjeta de notificación (Igual al estilo del dropdown) */
+.toast-notif {
+    background: var(--color-bg-card);
+    width: 320px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid var(--color-primary);
+    /* El mismo rojo de la campanita */
+    position: relative;
+    animation: slideInRight 0.4s ease forwards;
+    transition: all 0.3s ease;
+}
+
+.toast-notif h5 {
+    color: var(--color-text-card) !important;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.toast-notif strong,small,span{
+    color: var(--color-text-card) !important;
+}
+
+.toast-notif .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 18px;
+}
+
+.toast-notif .close-btn:hover {
+    color: #333;
+}
+
+/* Animación de entrada */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Animación de salida */
+.toast-notif.hide {
+    opacity: 0;
+    transform: translateX(50px);
+}
+
+
 /* ///////////////////////////////////////////////////////////////////////////////// */
 /* .............................PACIENTES CITAS Y CONTROL.......................... */
 
