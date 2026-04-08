@@ -159,7 +159,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                         type="submit"
                                         class="btn btn-primary btnPrimaryEditado  btn-lg rounded-5"
                                         data-intro="Haga clic aquí para iniciar sesión"
-                                        data-step="3">
+                                        data-step="3" id="btnLoginEnviar">
                                         INGRESAR
                                     </button>
                                 </div>

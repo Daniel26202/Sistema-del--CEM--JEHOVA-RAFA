@@ -21,7 +21,7 @@ const TEST_BUILD_INFO = ["name" => "DSG-V1", "id" => 2];
 
 
 
-const TESTLINK_URL = "http://localhost/testlink20/lib/api/xmlrpc/v1/xmlrpc.php";
+const TESTLINK_URL = "http://localhost:8080/testlink20/lib/api/xmlrpc/v1/xmlrpc.php";
 const TESTLINK_USER_API_KEY = "7fb692eba8ef73f3bbd9767fc7bb62f5";
 const TESTLINK_API_KEY = "35ba680c22cfe5ea27b689e765af0e5d65e45567e4b977f8f6e932ac4788c666";
 
