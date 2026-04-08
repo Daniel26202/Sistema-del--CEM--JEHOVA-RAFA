@@ -17,7 +17,7 @@ class PacientesSelenium extends ComunSelenium{
         $this->openSystemDSG(true);
         $this->testRegistrarPaciente();
         $this->testEliminarPaciente();
-       /*  $this->closeBrowser(); */
+        $this->closeBrowser();
         
     }
 
