@@ -128,15 +128,17 @@ const expresiones = {
     mensajeError: "El doctor esta mal seleccionado",
   },
   indicaciones: {
-    expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
-    mensajeError: "Debe iniciar con mayúscula y tener al menos 8 caracteres.",
+    // Permite Mayúscula inicial y luego cualquier combinación de letras (mayus/minus), números y espacios
+    expresion: /^[A-ZÁÉÍÓÚÑ][A-Za-záéíóúñ0-9\s]{7,}$/,
+    mensajeError:
+      "Debe iniciar con mayúscula y tener al menos 8 caracteres (letras o números).",
   },
   diagnostico: {
-    expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
+    // Permite mayúscula inicial, letras, números, acentos, signos de puntuación y saltos de línea (\n)
+    expresion: /^[A-ZÁÉÍÓÚÑ][A-Za-záéíóúñ0-9\s,.\n\r]{7,}$/,
     mensajeError:
-      "Formato incorrecto: use mayúscula inicial, letras o números (8 o más caracteres).",
+      "El diagnóstico debe iniciar con mayúscula y tener al menos 8 caracteres (puedes incluir puntos, comas y saltos de línea).",
   },
-
   historial: {
     expresion: /^[A-ZÁÉÍÓÚÑ\s][a-záéíóúñ0-9\s]{8,}$/,
     mensajeError: "Debe iniciar con mayúscula y tener al menos 8 caracteres.",

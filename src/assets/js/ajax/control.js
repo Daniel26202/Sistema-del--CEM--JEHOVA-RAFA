@@ -41,7 +41,9 @@ const modalAddControl = document.getElementById("modalAgregarControl"); //modal 
 const cedulaControl = document.getElementById("cedulaControl"); //input cedula
 const Not_Patient = document.getElementById("No_paciente");
 console.log(Not_Patient);
+const divSintomasParent = document.getElementById("div-sintomas");
 const divSintomas = document.getElementById("divSintomas");
+const divPatologiasParent = document.getElementById("div-patologias");
 const divPatologias = document.getElementById("divPatologias");
 const divDoctores = document.getElementById("divDoctores");
 
@@ -336,6 +338,11 @@ const returnFragmentControl = async (data, element, index, disabled) => {
 };
 
 const showDataModalEdit = (ele, cedula, id_control) => {
+
+  //ocultar patologias y sintomas
+  divPatologiasParent.classList.add("d-none");
+  divSintomasParent.classList.add("d-none");
+
   modalTitleControl.innerText = "Modificar Control";
   botonModal.innerText = "Modificar";
   modalAddControl.classList.add("editar");
@@ -364,6 +371,10 @@ const showDataModalEdit = (ele, cedula, id_control) => {
 };
 
 const clickButtonOpenModal = () => {
+  //aparecer las patologias y sintomas
+  divPatologiasParent.classList.remove("d-none");
+  divSintomasParent.classList.remove("d-none");
+
   cedulaControl.removeAttribute("disabled");
   modalTitleControl.innerText = "Nuevo Control";
   botonModal.innerText = "Registrar";

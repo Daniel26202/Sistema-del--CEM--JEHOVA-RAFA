@@ -319,8 +319,8 @@ class ModeloControl extends ModelBase
 
 	public function setDiagnostico($diagnostico)
 	{
-		if (!preg_match("/^([A-Za-z0-9\s\.,#-]{8,})$/", $diagnostico)) {
-			throw new \InvalidArgumentException("el diagnostico debe estar completa y detallada.");
+		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][A-Za-záéíóúñ0-9\s,.\n\r]{7,}$/", $diagnostico)) {
+			throw new \InvalidArgumentException("El diagnóstico debe iniciar con mayúscula y tener al menos 8 caracteres (puedes incluir puntos, comas y saltos de línea).");
 		}
 
 		$this->diagnostico = $diagnostico;
@@ -337,8 +337,8 @@ class ModeloControl extends ModelBase
 	public function setIndicaciones($indicaciones)
 	{
 
-		if (!preg_match("/^([A-Za-z0-9\s\.,#-]{8,})$/", $indicaciones)) {
-			throw new \InvalidArgumentException("lasindicaciones debe estar completa y detallada.");
+		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][A-Za-záéíóúñ0-9\s]{7,}$/", $indicaciones)) {
+			throw new \InvalidArgumentException("Debe iniciar con mayúscula y tener al menos 8 caracteres (letras o números).");
 		}
 		$this->indicaciones  = $indicaciones;
 	}
