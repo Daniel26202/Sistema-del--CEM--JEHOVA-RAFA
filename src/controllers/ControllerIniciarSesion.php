@@ -123,6 +123,46 @@ function iniciarSesion()
 
         $bitacora->insertarBitacora();
 
+        // ============================================================
+        // LÓGICA WEBSOCKET MULTIPLATAFORMA (WINDOWS / LINUX)
+        // ============================================================
+        $host = '127.0.0.1';
+        $puerto = 8080;
+
+        // Verificamos si el socket ya está escuchando
+        $socket_activo = @fsockopen($host, $puerto, $errno, $errstr, 1);
+
+        if (!$socket_activo) {
+            $ruta_base = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webSocket.php";
+            $ruta_real = realpath($ruta_base);
+
+            if ($ruta_real && file_exists($ruta_real)) {
+                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    // ✅ CORRECCIÓN PARA WINDOWS
+                    // Usamos cmd /c para asegurar que el comando se interprete bien
+                    // start "" abre una nueva ventana con título vacío
+                    // /B lo mantiene en segundo plano sin abrir ventana visible
+                    $php_path = "C:\\xampp\\php\\php.exe"; // Usa doble backslash en strings PHP
+
+                    // Opción 1: Totalmente silencioso (recomendado)
+                    pclose(popen("cmd /c start \"\" /B \"$php_path\" \"$ruta_real\"", "r"));
+
+                    // Opción 2: Si quieres ver la consola (para debug)
+                    // pclose(popen("start \"WebSocket\" \"$php_path\" \"$ruta_real\"", "r"));
+                } else {
+                    // Comando para Linux
+                    exec("php \"$ruta_real\" > /dev/null 2>&1 &");
+                }
+
+                // Pequeña pausa para dar tiempo a que levante el socket
+                usleep(500000); // 0.5 segundos
+            } else {
+                error_log("WebSocket: Archivo no encontrado en $ruta_real");
+            }
+        } else {
+            fclose($socket_activo);
+        }
+
         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
     } else {
 

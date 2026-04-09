@@ -9,8 +9,10 @@ const sendData = async (form) => {
         console.log(result);
         
         if (result.ok) {
-            let ruta = window.location.href;
-            window.location.href = ruta + "Inicio/inicio";
+          let ruta = window.location.href;
+          // Quita la ruta exacta si existe. Si no, no hace nada (sin error).
+          ruta = ruta.replace("/IniciarSesion/mostrarIniciarSesion", "");
+          window.location.href = ruta + "/Inicio/inicio";
         } else {
             if (result.error == "session_active") {
                 alertConfirm(
