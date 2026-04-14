@@ -185,14 +185,14 @@ class ModeloPatologia extends ModelBase
         $this->cedulaPac = $cedulaPac;
     }
 
-    public function setNombrePatologia($nombrePatologia)
-    {
-        if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombrePatologia)) {
-            throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
-        }
 
-        $this->nombrePatologia  = $nombrePatologia;
-    }
+    public function setNombrePatologia($nombrePatologia)
+	{
+		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/", $nombrePatologia)) {
+			throw new \InvalidArgumentException("El nombre debe iniciar con mayúscula, tener al menos 3 letras y puede incluir un segundo nombre separado por un espacio.");
+		}
+		$this->nombrePatologia = $nombrePatologia;
+	}
 
 
     public function setIdPatologia($idPatologia)

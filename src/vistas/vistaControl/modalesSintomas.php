@@ -37,7 +37,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-toggle="modal" data-bs-target="#exampleModalConsultarSintoma">Cancelar</button>
-                    <button type="submit" class="btn btn-modals">Registrar</button>
+                    <button type="submit" class="btn btn-modals" id='botonModalSintomas'>Registrar</button>
                 </div>
             </form>
         </div>

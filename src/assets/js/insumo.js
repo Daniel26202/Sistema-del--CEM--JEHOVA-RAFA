@@ -6,6 +6,8 @@ import {
   initDataTable,
   cargarImg,
   hasPermision,
+  initLoaderButton,
+  finallyLoaderButton,
 } from "./generic/funtionGeneric.js";
 import Paginator from "./generic/Paginator.js"; //paginacion
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
@@ -286,6 +288,7 @@ addEventListener("DOMContentLoaded", function () {
   //create
   const createInsumos = async (form) => {
     try {
+      initLoaderButton(btnModalInsumos);
       const data = new FormData(form);
       let result = await executePetition(url + "/guardarInsumo", "POST", data);
       console.log(result);
@@ -296,6 +299,8 @@ addEventListener("DOMContentLoaded", function () {
       } else throw new Error(`${result.error}`);
     } catch (error) {
       alertError("Error", error);
+    }finally{
+      finallyLoaderButton(btnModalInsumos)
     }
   };
 
@@ -317,6 +322,7 @@ addEventListener("DOMContentLoaded", function () {
   //update
   const updateInsumos = async (form) => {
     try {
+      initLoaderButton(btnModalInsumos);
       const data = new FormData(form);
       let result = await executePetition(url + "/editar", "POST", data);
       console.log(result);
@@ -329,6 +335,8 @@ addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.log(error);
       alertError("Error", error);
+    }finally{
+      finallyLoaderButton(btnModalInsumos)
     }
   };
 

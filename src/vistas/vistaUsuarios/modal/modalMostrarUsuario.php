@@ -283,7 +283,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-modals" id="botonModal" data-bs-toggle="modal" data-bs-target="#modal-exampleEditar">Editar Usuario</button>
-                        <button type="submit" class="btn btn-modals">Editar Contraseña</button>
+                        <button type="submit" class="btn btn-modals" id="botonModalPass">Editar Contraseña</button>
                         <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
 
                     </div>

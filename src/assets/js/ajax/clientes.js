@@ -7,11 +7,16 @@ import {
   showDataModal,
   clearModalEnviar,
   hasPermision,
+  initLoaderButton,
+  finallyLoaderButton,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Clientes";
 
+const modalAgregarCliente = new bootstrap.Modal(
+  document.getElementById("modalCliente"),
+);
 const modalAgregar = document.getElementById("modalAgregarCliente");
 const modalInfo = new bootstrap.Modal(document.getElementById("info-cliente"));
 
@@ -93,18 +98,18 @@ const readCustomer = async () => {
                                 </button>
 
 
-                  <div class="me-2">
-                    <a href="#" class="${
+                 
+                    <button class="${
                       !urlActual.includes("papelera") ? "d-none" : ""
-                    } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
+                    } btn btn-tabla btn-dt-tabla  mb-1 btnRestablecer"  data-index=${
                       element.id_cliente
                     }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                         <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
                       </svg>
-                    </a>
-                  </div>
+                    </button>
+                  
               </td>
             </tr>`;
     });
@@ -208,41 +213,41 @@ const readCustomer = async () => {
   }
 };
 //create
-const createCustomer = async (form, inputs) => {
+const createCustomer = async (form) => {
   try {
+    initLoaderButton(botonModal)
     const data = new FormData(form);
     let result = await executePetition(url + "/guardar", "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
-      form.reset();
-      inputs = [];
-      inputs.forEach((input) => input.parentElement.classList.remove("valido"));
+      modalAgregarCliente.hide();
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModal)
   }
 };
 
 //update
-const updateCustomers = async (form, inputs) => {
+const updateCustomers = async (form) => {
   try {
+    initLoaderButton(botonModal)
     const data = new FormData(form);
     let result = await executePetition(url + "/setCliente", "POST", data);
     console.log(result);
 
     if (result.ok) {
       alertSuccess(result.message);
-
-      inputs = [];
-      inputs.forEach((input) =>
-        input.parentElement.classList.remove("grpFormCorrect"),
-      );
+      modalAgregarCliente.hide();
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModal)
   }
 };
 

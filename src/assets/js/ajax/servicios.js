@@ -7,6 +7,8 @@ import {
   initDataTable,
   showDataModal,
   hasPermision,
+  initLoaderButton,
+  finallyLoaderButton,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 import { initConversion } from "../generic/coversion.js";
@@ -83,7 +85,7 @@ const readServices = async () => {
     let metodo = "";
     let urlActual = window.location.href;
 
-    if (!urlActual.includes("papelera")) metodo = "serviciosAjax";
+    if (!urlActual.includes("papeleraServicios")) metodo = "serviciosAjax";
     else metodo = "papeleraAjax";
 
     const result = await executePetition(url + "/" + metodo, "GET");
@@ -113,7 +115,7 @@ const readServices = async () => {
                                 <!-- Horario Del Doctor -->
                                 <div class="d-flex justify-content-center">
 
-                                        <a href="#" class="${urlActual.includes("papelera") ? "d-none" : ""}
+                                        <button class="${urlActual.includes("papelera") ? "d-none" : ""}
                                         btn btns-accion btn-tabla me-2 btnEditarCita botonesEditarSM btnPreciosEditar btn-dt-tabla"
                                             data-id-categoria="${element.id_categoria}"
                                             data-id-tabla="modal-exampleEditar${element.id_servicioMedico}" data-bs-toggle="modal" data-bs-target="#modalAgregarServicios" 
@@ -123,13 +125,13 @@ const readServices = async () => {
                                     <path
                                         d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
                                 </svg>
-                                        </a>
+                                        </button>
 
 
                                     <!-- Eliminar servicio-->
 
 
-                                        <a href="#" class="${
+                                        <button class="${
                                           urlActual.includes("papelera")
                                             ? "d-none"
                                             : ""
@@ -141,15 +143,15 @@ const readServices = async () => {
                                                 <path
                                                     d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
                                             </svg>
-                                        </a>
+                                        </button>
 
-                                        <a href="#" class="${!urlActual.includes("papelera") ? "d-none" : ""} btn btn-tabla btn-dt-tabla btnRestablecer"
+                                        <button class="${!urlActual.includes("papelera") ? "d-none" : ""} btn btn-tabla btn-dt-tabla btnRestablecer"
                                         data-index=${element.id_servicioMedico} title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                                                 <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
                                             </svg>
-                                        </a>
+                                        </button>
                                         
                                 </div>
                                 

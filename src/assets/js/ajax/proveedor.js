@@ -7,6 +7,8 @@ import {
   showDataModal,
   clearModalEnviar,
   hasPermision,
+  initLoaderButton, 
+  finallyLoaderButton,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
@@ -207,8 +209,8 @@ const readProveedores = async () => {
 };
 //create
 const createProveedor = async (form) => {
-  console.log(url + "/insertar");
   try {
+    initLoaderButton(botonModal)
     const data = new FormData(form);
     let result = await executePetition(url + "/insertar", "POST", data);
     console.log(result);
@@ -220,25 +222,28 @@ const createProveedor = async (form) => {
   } catch (error) {
     console.log(error);
     alertError("Error", error);
+  }finally{
+    finallyLoaderButton(botonModal)
   }
 };
 
 //update
 const updateProveedor = async (form) => {
   try {
+    initLoaderButton(botonModal)
     const data = new FormData(form);
     let result = await executePetition(url + "/editar", "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
-
       modalAgregarProveedor.hide();
-
       readProveedores();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     console.log(error);
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModal)
   }
 };
 

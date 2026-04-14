@@ -271,16 +271,16 @@ class ModeloPerfil extends ModelBase
 
 	public function setNombre($nombre)
 	{
-		if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombre)) {
-			throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/", $nombre)) {
+			throw new \InvalidArgumentException("El nombre debe iniciar con mayúscula, tener al menos 3 letras y puede incluir un segundo nombre separado por un espacio.");
 		}
 		$this->nombre = $nombre;
 	}
 
 	public function setApellido($apellido)
 	{
-		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}$/", $apellido)) {
-			throw new \InvalidArgumentException("El Apellido debe contener solo letras, iniciar con mayúscula y tener al menos 3 caracteres.");
+		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/", $apellido)) {
+			throw new \InvalidArgumentException("El apellido debe iniciar con mayúscula, tener al menos 3 letras y puede incluir un segundo nombre separado por un espacio.");
 		}
 		$this->apellido = $apellido;
 	}

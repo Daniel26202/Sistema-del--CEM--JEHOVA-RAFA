@@ -7,6 +7,8 @@ import {
   alertConfirm,
   hasPermision,
   clearModalEnviar,
+  initLoaderButton,
+  finallyLoaderButton,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -75,6 +77,7 @@ const openModalSintomas = document.getElementById(
 );
 const inputsSintimo = modalAgregarSintoma.querySelectorAll(".input-validar");
 const exampleModalLabel = document.getElementById("exampleModalLabelPaciente");
+const botonModalSintomas = document.getElementById('botonModalSintomas');
 
 let semaforo = 0;
 
@@ -290,9 +293,8 @@ const returnFragmentControl = async (data, element, index, disabled) => {
                               <td>
                                   <button class="btn col-3 btn-agregarcita-modal editar btnEditar buttomEditControl" type="button"
                                       data-bs-toggle="modal" data-bs-target="#exampleModalagregarControl" 
-                                      data-id-Patient="${
-                                        element.id_Patient
-                                      }" data-cedula=${element.cedula} data-control=${element.id_control} ${disabled}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                      data-id-Patient="${element.id_Patient
+    }" data-cedula=${element.cedula} data-control=${element.id_control} ${disabled}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                           class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                           <path
                                               d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
@@ -526,33 +528,40 @@ const readControl = async (cedulaPatient) => {
 //function for save the control
 const createControl = async () => {
   try {
+    initLoaderButton(botonModal)
     const data = new FormData(modalAddControl);
     let result = await executePetition(url + "/insertarControl", "POST", data);
-
     console.log(result);
-    readControl(result.data.cedula);
-    readPatients();
-
-    modalControlBoots.hide();
-    alertSuccess(result.message);
+    if (result.ok) {
+      alertSuccess(result.message);
+      modalControlBoots.hide();
+      readControl(result.data.cedula);
+      readPatients();
+    } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModal)
   }
 };
 
 //function for update the control
 const updateControl = async () => {
   try {
+    initLoaderButton(botonModal)
     const data = new FormData(modalAddControl);
     let result = await executePetition(url + "/editarControl", "POST", data);
 
-    console.log(result);
-    readControl(result.data.cedulaOculta);
+    if (result.ok) {
+      alertSuccess(result.message);
+      modalControlBoots.hide();
+      readControl(result.data.cedulaOculta);
 
-    modalControlBoots.hide();
-    alertSuccess(result.message);
+    } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModal)
   }
 };
 
@@ -626,26 +635,21 @@ const readSintomas = async () => {
 
 const insertarSintoma = async (data) => {
   try {
+    initLoaderButton(botonModalSintomas)
     const data = new FormData(modalAgregarSintoma);
     const result = await executePetition(url + `/agregarSintoma`, "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
-      readSintomas();
       modalSintomaBoots.hide();
       modalReadSintomaBoots.show();
+      readSintomas();
 
-      modalAgregarSintoma.reset();
-      modalAgregarSintoma
-        .querySelectorAll(".input-validar")
-        .forEach((input) => {
-          input.parentElement.classList.remove("valido");
-          input.nextElementSibling.children[0].classList.add("d-none");
-          input.nextElementSibling.children[1].classList.add("d-none");
-        });
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModalSintomas)
   }
 };
 
@@ -667,7 +671,7 @@ const deleteSintoma = async (data) => {
 
 //create paciente
 //create
-const createPatients = async (form, inputs) => {
+const createPatients = async (form) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(
@@ -698,8 +702,8 @@ readPatients();
 readSintomas();
 
 openModalSintomas.addEventListener("click", function () {
-  
-  
+
+
   //objetos con todos los parametros de la funcion
   const parametros = {
     labelModal: exampleModalLabel,

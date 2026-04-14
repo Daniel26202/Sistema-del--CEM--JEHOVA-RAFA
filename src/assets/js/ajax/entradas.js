@@ -7,6 +7,8 @@ import {
   showDataModal,
   clearModalEnviar,
   hasPermision,
+  initLoaderButton,
+  finallyLoaderButton,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
@@ -216,17 +218,19 @@ addEventListener("DOMContentLoaded", function () {
   //create
   const createEntrada = async (form) => {
     try {
+      initLoaderButton(botonModal);
       const data = new FormData(form);
       let result = await executePetition(url + "/guardar", "POST", data);
       console.log(result);
       if (result.ok) {
         alertSuccess(result.message);
-
-        readEntrada();
         modalAgregarEntrada.hide();
+        readEntrada();
       } else throw new Error(`${result.error}`);
     } catch (error) {
       alertError("Error", error);
+    }finally{
+      finallyLoaderButton(botonModal)
     }
   };
 
@@ -234,6 +238,7 @@ addEventListener("DOMContentLoaded", function () {
   const updateEntrada = async (form, inputs) => {
     console.log(url + "/editar");
     try {
+      initLoaderButton(botonModal);
       const data = new FormData(form);
       let result = await executePetition(url + "/editar", "POST", data);
       console.log(result);
@@ -246,6 +251,8 @@ addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.log(error);
       alertError("Error", error);
+    } finally {
+      finallyLoaderButton(botonModal)
     }
   };
 

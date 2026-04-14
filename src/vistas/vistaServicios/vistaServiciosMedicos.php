@@ -18,10 +18,10 @@
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
 
-        <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between align-items-center row ">
+        <div class="me-2 ps-3 col-12 caja-boton d-flex justify-content-between  ">
 
 
-            <button class="btn-guardar-responsive  caja-btn-margin btn btn-modals btnOpenModal"
+            <button class="<?= ($vistaActiva == 'papelera') ? 'd-none':'' ?> btn-guardar-responsive  caja-btn-margin btn btn-modals btnOpenModal"
                 data-bs-toggle="modal" data-bs-target="#modalAgregarServicios" id="btnAgregarServicioMedico">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
@@ -30,7 +30,7 @@
                     </path>
                 </svg>Registrar Servicio
             </button>
-            <button class="btn-guardar-responsive  caja-btn-margin btn btn-modals btnOpenModalCategoria"
+            <button class="<?= ($vistaActiva == 'papelera') ? 'd-none':'' ?> btn-guardar-responsive  caja-btn-margin btn btn-modals btnOpenModalCategoria"
                 data-bs-toggle="modal" data-bs-target="#modal-categoria" id="btnAgregarCategoria">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
@@ -41,15 +41,10 @@
             </button>
 
 
-            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Servicios/papeleraServicio"
-                class="btn-guardar-responsive caja-btn-margin btn btn-modals" id="btnAgregarServicioMedicoPapelera">
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                    class="bi bi-bandaid-fill me-1" viewBox="0 0 16 16">
-                    <path
-                        d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z">
-                    </path>
-                </svg>Papelera
-            </a>
+            <div class="d-flex flex-column flex-md-row">
+                <a href="<?= $vistaActiva == 'papelera' ? '/Sistema-del--CEM--JEHOVA-RAFA/Servicios/servicios' : '/Sistema-del--CEM--JEHOVA-RAFA/Servicios/papeleraServicio' ?>" class="btn me-md-2 lista-menu-pacientes text-decoration-none"><?= $vistaActiva == 'papelera' ? 'Servicios' : 'Papelera' ?></a>
+            </div>
+
 
         </div>
 

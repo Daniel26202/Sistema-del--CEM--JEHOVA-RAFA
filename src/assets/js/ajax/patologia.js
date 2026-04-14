@@ -1,7 +1,10 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable, hasPermision, clearModalEnviar } from "../generic/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable, hasPermision, clearModalEnviar, initLoaderButton, finallyLoaderButton } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Patologias";
+const modalAgregarPatolgia = new bootstrap.Modal(
+  document.getElementById("exampleModalAgregarPatologia"),
+);
 
 const modalAgregar = document.getElementById("modalAgregar");
 const id_rol_global = document.getElementById("id_rol_global").value;
@@ -31,11 +34,10 @@ const readPathology = async () => {
                             <td class="text-center">${element.nombre_patologia}</td>
                             <td class="text-center">
 
-                                    <button class="${
-                                      urlActual.includes("papelera")
-                                        ? "d-none"
-                                        : ""
-                                    } btn btn-tabla mb-1 btnModalEliminarPatologia btn-dt-tabla btn-eliminar"
+                                    <button class="${urlActual.includes("papelera")
+          ? "d-none"
+          : ""
+        } btn btn-tabla mb-1 btnModalEliminarPatologia btn-dt-tabla btn-eliminar"
                                     
                                         data-index="${element.id_patologia}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -45,18 +47,16 @@ const readPathology = async () => {
                                         </svg>
                                     </button>
 
-                                    <div class="me-2">
-                    <a href="#" class="${
-                      !urlActual.includes("papelera") ? "d-none" : ""
-                    } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
-                      element.id_patologia
-                    }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
+                                    
+                    <button" class="${!urlActual.includes("papelera") ? "d-none" : ""
+        } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${element.id_patologia
+        }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                         <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
                       </svg>
-                    </a>
-                  </div>
+                    </button>
+                 
                             </td>
                             
                         </tr>
@@ -117,33 +117,19 @@ const readPathology = async () => {
 //create
 const createPathology = async (form) => {
   try {
+    initLoaderButton(botonModal)
     const data = new FormData(form);
     let result = await executePetition(url + "/registrarPatologia", "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
-
-      form.reset();
-      document.querySelectorAll('.input-validar').forEach((input) => {
-        let check = input.nextElementSibling.children[0];
-        let error = input.nextElementSibling.children[1];
-
-        input.parentElement.classList.remove("invalido");
-        input.parentElement.classList.remove("valido");
-
-        let campoCustom = input.closest(".campo-custom");
-        let pError = campoCustom.querySelector("p");
-        pError.classList.add("d-none");
-        if (check && error) {
-          check.classList.add("d-none");
-          error.classList.add("d-none");
-        }
-      });
-
+      modalAgregarPatolgia.hide();
       readPathology();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModal)
   }
 };
 
@@ -178,7 +164,7 @@ readPathology();
 
 
 btnOpenModal.addEventListener("click", function () {
-  
+
   //objetos con todos los parametros de la funcion
   const parametros = {
     labelModal: exampleModalLabel,

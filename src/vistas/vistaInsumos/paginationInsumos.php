@@ -19,7 +19,7 @@
 
             <li class="borde-menu activo <?= $vistaActiva == 'proveedores'  ? ' activo-borde ' : '' ?>">
                 <a href="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores" class="text-decoration-none  me-3" id="DMserviciosExtras">
-                    <img src="<?= $urlBase ?>../src/assets/images/img/proveedor (3).png" width="20" height="20" uk-svg class="me-1 bi bi-inboxes-fill me-1 mb-1">Proveedores</a>
+                    <img src="<?= $urlBase ?>../src/assets/images/img/proveedor.png" width="20" height="20" uk-svg class="me-1 bi bi-inboxes-fill me-1 mb-1">Proveedores</a>
             </li>
 
 

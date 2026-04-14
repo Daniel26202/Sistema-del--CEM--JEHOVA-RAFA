@@ -2,11 +2,14 @@ import {
     executePetition,
     alertConfirm,
     alertError,
+    alertInfo,
     alertSuccess,
     initDataTable,
     cargarImg,
     showDataModal,
     hasPermision,
+    initLoaderButton,
+    finallyLoaderButton
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -199,9 +202,8 @@ const readDoctor = async () => {
                                     </button>
 
 
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                        !urlActual.includes("paplera") ? "d-none" : ""
-                                    }" data-index=${element.id_usuario}>
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${!urlActual.includes("paplera") ? "d-none" : ""
+                    }" data-index=${element.id_usuario}>
 
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
@@ -212,9 +214,8 @@ const readDoctor = async () => {
 
                                     </button>
 
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                        urlActual.includes("papelera") ? "d-none" : ""
-                                    }" data-index=${element.id_usuario}>
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${urlActual.includes("papelera") ? "d-none" : ""
+                    }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -271,12 +272,10 @@ const readDoctor = async () => {
                             <td class="text-center">
                                 <!-- editar -->
 
-                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla ${
-                                        !urlActual.includes("paplera") ? "d-none" : ""
-                                    }"
-                                        uk-toggle="target: #modal-editar-doctores${
-                                            element.id_usuario
-                                        }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
+                                    <button class="btn btn-tabla mb-1 btn-js editar botonesEdi btn-dt-tabla ${!urlActual.includes("paplera") ? "d-none" : ""
+                    }"
+                                        uk-toggle="target: #modal-editar-doctores${element.id_usuario
+                    }" data-id-tabla="modal-editar-doctoresmodal-editar-doctores${element.id_usuario}"
                                         id="btneditarDoctor" data-index="${element.id_personal}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -287,9 +286,8 @@ const readDoctor = async () => {
                                     </button>
 
 
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${
-                                        urlActual.includes("paplera") ? "d-none" : ""
-                                    }" data-index=${element.id_usuario}>
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer ${urlActual.includes("paplera") ? "d-none" : ""
+                    }" data-index=${element.id_usuario}>
 
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
@@ -300,9 +298,8 @@ const readDoctor = async () => {
 
                                     </button>
 
-                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${
-                                        urlActual.includes("papelera") ? "d-none" : ""
-                                    }" data-index=${element.id_usuario}>
+                                    <button class="btn btn-tabla mb-1 btn-dt-tabla btn-eliminar ${urlActual.includes("papelera") ? "d-none" : ""
+                    }" data-index=${element.id_usuario}>
 
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -313,12 +310,10 @@ const readDoctor = async () => {
                                     </button>
 
                              
-                                <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla ${
-                                    !urlActual.includes("paplera") ? "d-none" : ""
-                                }" title="Horarios Del Doctor"
-                                    uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${
-                                        element.id_usuario
-                                    }"
+                                <button class="btn btn-tabla mb-1 botonesInfo btn-dt-tabla ${!urlActual.includes("paplera") ? "d-none" : ""
+                    }" title="Horarios Del Doctor"
+                                    uk-toggle="target: #modal-info-doctores" data-id-tabla="modal-info-doctores${element.id_usuario
+                    }"
                                     data-index="${element.id_usuario}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-info-circle-fill" viewBox="0 0 16 16">
@@ -579,11 +574,11 @@ const readEspecialidad = async () => {
 };
 
 //create
-const createDoctor = async (form, inputs) => {
+const createDoctor = async (form) => {
     try {
+        initLoaderButton(btnModal)
         const data = new FormData(form);
         let result = await executePetition(url + "/agregarDoctor", "POST", data);
-        console.log(result);
         if (result.ok) {
             alertSuccess(result.message);
             modalADoctor.hide();
@@ -591,6 +586,8 @@ const createDoctor = async (form, inputs) => {
         } else throw new Error(`${result.error}`);
     } catch (error) {
         alertError("Error", error);
+    } finally {
+        finallyLoaderButton(btnModal)
     }
 };
 
@@ -608,10 +605,10 @@ const deleteDoctor = async (data) => {
 };
 
 //update
-const updateDoctor = async (form, inputs) => {
+const updateDoctor = async (form) => {
     try {
+        initLoaderButton(btnModal)
         const data = new FormData(form);
-
         let result = await executePetition(url + "/editarDoctor", "POST", data);
         console.log(result);
         if (result.ok) {
@@ -622,6 +619,8 @@ const updateDoctor = async (form, inputs) => {
     } catch (error) {
         console.log(error);
         alertError("Error", error);
+    } finally {
+        finallyLoaderButton(btnModal)
     }
 };
 
@@ -794,7 +793,7 @@ function validarBloquesCompletos(card) {
     const diferencia = hSalida - hEntrada;
 
     if (diferencia < 1) {
-        alertError("Error", "El horario de salida debe ser al menos 1 hora después de la entrada.");
+        alertInfo("Informacion", "El horario de salida debe ser al menos 1 hora después de la entrada.");
         // Si hay error, reseteamos a un rango válido por defecto
         inputSalida.value = `${String(hEntrada + 1).padStart(2, "0")}:00`;
     }

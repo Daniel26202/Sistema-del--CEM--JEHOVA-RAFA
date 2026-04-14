@@ -6,6 +6,8 @@ import {
   cargarImg,
   hasPermision,
   clearModalEnviar,
+  initLoaderButton,
+  finallyLoaderButton,
 } from "../generic/funtionGeneric.js";
 import Paginator from "../generic/Paginator.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -40,11 +42,12 @@ const btnOpenModal = document.getElementById('btnOpenModal');
 const exampleModalLabel = document.getElementById("exampleModalLabelAdmin");  
 const inputsAdmin = formAgregarAdmin.querySelectorAll('.input-validar')
 const botonModal = document.getElementById("botonModal");
+const botonModalPass = document.getElementById('botonModalPass');
 
 let nameUser = "";
 let nombreAndApellido = "";
 
-function mostrarContrasena(div) {
+const mostrarContrasena =(div)=> {
   const input = div.querySelector("input");
 
   if (input.type == "password") {
@@ -184,6 +187,7 @@ const mostrarInfo = (btn) => {
 //create
 const createUser = async (form) => {
   try {
+    initLoaderButton(botonModal);
     const data = new FormData(form);
     let result = await executePetition(url + "/registrarAdmin", "POST", data);
     console.log(result);
@@ -194,12 +198,15 @@ const createUser = async (form) => {
   } catch (error) {
     console.log("lamentablemente " + error);
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModal)
   }
 };
 
 //update
 const updateUser = async (form) => {
   try {
+    initLoaderButton(botonModal);
     const data = new FormData(form);
     let result = await executePetition(url + "/editarUsuario", "POST", data);
     console.log(result);
@@ -210,12 +217,15 @@ const updateUser = async (form) => {
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  }finally{
+    finallyLoaderButton(botonModal)
   }
 };
 
 //update password
 const updateUserPass = async (form) => {
   try {
+    initLoaderButton(botonModalPass);
     const data = new FormData(form);
     let result = await executePetition(url + "/verificarPassw", "POST", data);
     console.log(result);
@@ -226,6 +236,8 @@ const updateUserPass = async (form) => {
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
+  } finally {
+    finallyLoaderButton(botonModalPass)
   }
 };
 

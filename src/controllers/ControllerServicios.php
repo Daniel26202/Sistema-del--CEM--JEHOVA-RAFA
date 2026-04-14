@@ -16,8 +16,8 @@ function servicios($parametro)
 
 function papeleraServicio($parametro)
 {
-	$vistaActiva = 'servicios';
-	require_once "./src/vistas/vistaServicios/vistaServiciosPapelera.php";
+	$vistaActiva = 'papelera';
+	require_once "./src/vistas/vistaServicios/vistaServiciosMedicos.php";
 }
 
 function datosServiciosPapelera($parametro)

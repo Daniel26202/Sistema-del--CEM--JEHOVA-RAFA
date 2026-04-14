@@ -1,4 +1,4 @@
-import { executePetition, alertError, alertSuccess } from "../generic/funtionGeneric.js";
+import { executePetition, alertError, alertSuccess,initLoaderButton, finallyLoaderButton } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Perfil";
@@ -8,6 +8,7 @@ const inputsValidacion = document.querySelectorAll(".form-validable .input-valid
 const imgPerfilModal = document.getElementById("img-perfil-modal");
 const inputImagen = document.getElementById("inputImagen");
 const imgUser = document.getElementById("imgUser");
+const botonModal = document.getElementById('botonModal')
 
 //modal
 const modalPerfil = new bootstrap.Modal(document.getElementById("exampleModalPerfil"));
@@ -15,6 +16,7 @@ const modalPerfil = new bootstrap.Modal(document.getElementById("exampleModalPer
 //update
 const updatePerfil = async (form) => {
     try {
+        initLoaderButton(botonModal)
         const data = new FormData(form);
         let result = await executePetition(url + "/guardar", "POST", data);
         console.log(result);
@@ -26,6 +28,8 @@ const updatePerfil = async (form) => {
     } catch (error) {
         console.log(error);
         alertError("Error", error);
+    }finally{
+        finallyLoaderButton(botonModal)
     }
 };
 

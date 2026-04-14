@@ -400,10 +400,9 @@ class ModeloInsumo extends ModelBase
 
 	public function setNombre($nombre)
 	{
-		if (!preg_match('/^[\p{L}]+$/u', $nombre)) {
-			throw new \InvalidArgumentException('El nombre no es válido.');
+		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/", $nombre)) {
+			throw new \InvalidArgumentException("El nombre debe iniciar con mayúscula, tener al menos 3 letras y puede incluir un segundo nombre separado por un espacio.");
 		}
-
 		$this->nombre = $nombre;
 	}
 

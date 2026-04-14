@@ -1,9 +1,11 @@
-import { executePetition, alertConfirm, alertError, alertSuccess } from "../generic/funtionGeneric.js";
+import { executePetition, alertConfirm, alertError, alertSuccess, initLoaderButton, finallyLoaderButton } from "../generic/funtionGeneric.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/iniciarSesion";
-
+const formLog = document.getElementById("loginForm");
+const btnLoginEnviar = document.getElementById('btnLoginEnviar');
 // envió de datos
 const sendData = async (form) => {
     try {
+        initLoaderButton(btnLoginEnviar)
         const data = new FormData(form);
         let result = await executePetition(url + "/iniciarSesion", "POST", data);
         console.log(result);
@@ -23,6 +25,8 @@ const sendData = async (form) => {
         }
     } catch (error) {
         alertError("Error", error);
+    }finally{
+        finallyLoaderButton(btnLoginEnviar,'INGRESAR')
     }
 };
 
@@ -36,7 +40,6 @@ const closedSession = async () => {
     }
 };
 
-const formLog = document.getElementById("loginForm");
 
 addEventListener("DOMContentLoaded", function () {
     formLog.addEventListener("submit", function (e) {

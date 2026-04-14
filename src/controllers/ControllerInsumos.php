@@ -126,7 +126,7 @@ function guardarInsumo()
 		$modeloInsumo->setNombre($_POST['nombre']);
 		$modeloInsumo->setIdProveedor($_POST['proveedor']);
 		$modeloInsumo->setDescripcion($_POST['descripcion']);
-		$modeloInsumo->setFechaDeIngreso($_POST['fecha_de_ingreso']);
+		$modeloInsumo->setFechaDeIngreso(date("Y-m-d"));
 		$modeloInsumo->setFechaDeVencimiento($_POST['fechaDeVencimiento']);
 		$modeloInsumo->setCantidad($_POST['cantidad']);
 		$modeloInsumo->setStockMinimo($_POST['stockMinimo']);

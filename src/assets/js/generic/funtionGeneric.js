@@ -299,3 +299,20 @@ export const hasPermision = async (id_rol, module, permision, btns) => {
     console.log("Error Permisos " + error);
   }
 };
+
+
+//funcion para manejar los loaders de los botones de los formularios////
+
+//esta es para iniciar
+export const initLoaderButton = (btn)=>{
+  btn.innerText = "Cargando...";
+  btn.setAttribute("type", "button");
+  btn.setAttribute("disabled", true);
+}
+
+//esta para finaliZar el loader
+export const finallyLoaderButton = (btn, textButton = "Registrar") => {
+  btn.innerText = textButton;
+  btn.setAttribute("type", "submit");
+  btn.removeAttribute("disabled");
+}
