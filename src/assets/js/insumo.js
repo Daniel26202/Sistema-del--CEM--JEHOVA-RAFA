@@ -8,6 +8,7 @@ import {
   hasPermision,
   initLoaderButton,
   finallyLoaderButton,
+  setImgWithFallback,
 } from "./generic/funtionGeneric.js";
 import Paginator from "./generic/Paginator.js"; //paginacion
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
@@ -131,9 +132,10 @@ addEventListener("DOMContentLoaded", function () {
       contenedorImg.classList.add("d-none");
       //ahora gestionar la imagen del insumo es decir mostrar un previsualizacion en el modal de editar
       contenedorImgEditar.classList.remove("d-none");
-      imgEditar.setAttribute(
-        "src",
-        `../src/assets/images/img_ingresadas_por_usuarios/insumos/${srcImg}`,
+      setImgWithFallback(
+        imgEditar,
+        `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${srcImg}`,
+        `${urlBase}../src/assets/images/img/logoRol.jpeg`,
       );
 
       document
@@ -147,11 +149,14 @@ addEventListener("DOMContentLoaded", function () {
       formInsumos.classList.add("editar");
 
       document.getElementById("vencimiento").classList.add("d-none");
-      document.getElementById("vencimiento").querySelector(".input-custom").classList.add('valido');
+      document
+        .getElementById("vencimiento")
+        .querySelector(".input-custom")
+        .classList.add("valido");
       contenedorImgEditar.classList.remove("d-none");
 
-          modalLabelInsumos.innerText = "Modificar Insumos";
-          btnModalInsumos.innerText = "Modificar";
+      modalLabelInsumos.innerText = "Modificar Insumos";
+      btnModalInsumos.innerText = "Modificar";
     });
   };
 
@@ -173,6 +178,15 @@ addEventListener("DOMContentLoaded", function () {
       );
 
       paginator.displayItems();
+
+      // Aplicar fallback a las imágenes de las tarjetas
+      document.querySelectorAll(".card-img-top").forEach((img) => {
+        setImgWithFallback(
+          img,
+          img.src,
+          `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+        );
+      });
 
       document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
         ele.value = document.getElementById("id_usuario_session").value;
@@ -299,8 +313,8 @@ addEventListener("DOMContentLoaded", function () {
       } else throw new Error(`${result.error}`);
     } catch (error) {
       alertError("Error", error);
-    }finally{
-      finallyLoaderButton(btnModalInsumos)
+    } finally {
+      finallyLoaderButton(btnModalInsumos);
     }
   };
 
@@ -335,8 +349,8 @@ addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.log(error);
       alertError("Error", error);
-    }finally{
-      finallyLoaderButton(btnModalInsumos)
+    } finally {
+      finallyLoaderButton(btnModalInsumos);
     }
   };
 
@@ -346,7 +360,7 @@ addEventListener("DOMContentLoaded", function () {
     <div class="card contenido mb-4 mx-2" style="width: 18rem;">
         <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${
           element.imagen
-        }" class="card-img-top" alt="...">
+        }" class="card-img-top" style="width: 100%; height: 200px; object-fit: cover;" alt="...">
         <div class="card-body">
             <h5 class=" titulo">${element.nombre}</h5>
 
@@ -406,8 +420,6 @@ addEventListener("DOMContentLoaded", function () {
 
     modalLabelInsumos.innerText = "Agrega Insumos";
     btnModalInsumos.innerText = "Agregar";
-    
-
   });
 
   let verificarFormularioInsumo = inicializarValidacionFormulario(formInsumos);

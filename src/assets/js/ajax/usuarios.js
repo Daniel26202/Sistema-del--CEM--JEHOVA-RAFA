@@ -4,6 +4,7 @@ import {
   alertError,
   alertSuccess,
   cargarImg,
+  setImgWithFallback,
   hasPermision,
   clearModalEnviar,
   initLoaderButton,
@@ -15,7 +16,6 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
 
 const urlBase = document.getElementById("urlBase").value;
-
 
 const activarMostrarContra = document.querySelectorAll(".mostrarPassword");
 const desMostrarContra = document.querySelectorAll(".ocultarPassword");
@@ -34,20 +34,22 @@ const inputImg = document.getElementById("inputImg");
 const usuarioRegistrado = document.getElementById("usuarioRegistrado");
 const id_usuario = document.getElementById("id_usuario");
 const usurioHiddenPass = document.getElementById("usurioHiddenPass");
-const btnEliminar = document.getElementById('btnEliminar');
-const formAgregarAdmin = document.getElementById('formAgregarAdmin');
+const btnEliminar = document.getElementById("btnEliminar");
+const formAgregarAdmin = document.getElementById("formAgregarAdmin");
 const id_rol_global = document.getElementById("id_rol_global").value;
-const modalInfoBoots = new bootstrap.Modal(document.getElementById("modal-exampleMostrar"));
-const btnOpenModal = document.getElementById('btnOpenModal');
-const exampleModalLabel = document.getElementById("exampleModalLabelAdmin");  
-const inputsAdmin = formAgregarAdmin.querySelectorAll('.input-validar')
+const modalInfoBoots = new bootstrap.Modal(
+  document.getElementById("modal-exampleMostrar"),
+);
+const btnOpenModal = document.getElementById("btnOpenModal");
+const exampleModalLabel = document.getElementById("exampleModalLabelAdmin");
+const inputsAdmin = formAgregarAdmin.querySelectorAll(".input-validar");
 const botonModal = document.getElementById("botonModal");
-const botonModalPass = document.getElementById('botonModalPass');
+const botonModalPass = document.getElementById("botonModalPass");
 
 let nameUser = "";
 let nombreAndApellido = "";
 
-const mostrarContrasena =(div)=> {
+const mostrarContrasena = (div) => {
   const input = div.querySelector("input");
 
   if (input.type == "password") {
@@ -67,7 +69,7 @@ const mostrarContrasena =(div)=> {
       act.classList.remove("d-none");
     });
   }
-}
+};
 
 //Ajax
 
@@ -91,6 +93,15 @@ const readUser = async () => {
     );
 
     paginator.displayItems();
+
+    // Aplicar fallback a las imágenes de las tarjetas
+    document.querySelectorAll(".card-img-top").forEach((img) => {
+      setImgWithFallback(
+        img,
+        img.src,
+        `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+      );
+    });
 
     document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
       ele.value = document.getElementById("id_usuario_session").value;
@@ -125,11 +136,11 @@ const readUser = async () => {
 };
 
 //funciona para retirnar el html de las tarjetas
-const returnFragmentHtml=(element)=>{
+const returnFragmentHtml = (element) => {
   return ` <div class="card contenido mb-4 mx-3" style="width: 18rem;">
         <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${
           element.imagen
-        }" class="card-img-top" alt="...">
+        }" class="card-img-top" style="width: 100%; height: 200px; object-fit: cover;" alt="...">
         <div class="card-body">
             <h5 class="titulo user-name">Usuario: ${element.user}</h5>
 
@@ -143,13 +154,12 @@ const returnFragmentHtml=(element)=>{
                                     }" data-img=${element.imagen}
                                         data-bs-toggle="modal" data-bs-target="#modal-exampleMostrar">Mostrar</button>
         </div>
-    </div>`
-}
+    </div>`;
+};
 
 //mostrar inof user
 
 const mostrarInfo = (btn) => {
-  
   modalInfoBoots.show();
 
   const card = btn.closest(".card");
@@ -159,8 +169,16 @@ const mostrarInfo = (btn) => {
 
   contenedorImgEditar.classList.remove("d-none");
 
-  imgInfo.src = src;
-  imgEditar.src = src;
+  setImgWithFallback(
+    imgInfo,
+    src,
+    `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+  );
+  setImgWithFallback(
+    imgEditar,
+    src,
+    `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+  );
 
   nameUser = card.querySelector(".user-name").innerText;
   nombreAndApellido = card.querySelector(".name-apellido").innerText;
@@ -175,7 +193,7 @@ const mostrarInfo = (btn) => {
   id_usuario.value = btn.getAttribute("data-index");
   usurioHiddenPass.value = nameUser.slice(9);
 
-  btnEliminar.setAttribute('data-index', btn.getAttribute("data-index"));
+  btnEliminar.setAttribute("data-index", btn.getAttribute("data-index"));
 
   //llenar de una vez el modal de editar
   inputsEdi.forEach((inp) => {
@@ -199,7 +217,7 @@ const createUser = async (form) => {
     console.log("lamentablemente " + error);
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal)
+    finallyLoaderButton(botonModal);
   }
 };
 
@@ -217,8 +235,8 @@ const updateUser = async (form) => {
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
-  }finally{
-    finallyLoaderButton(botonModal)
+  } finally {
+    finallyLoaderButton(botonModal);
   }
 };
 
@@ -237,15 +255,18 @@ const updateUserPass = async (form) => {
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModalPass)
+    finallyLoaderButton(botonModalPass);
   }
 };
 
 //delete
 const deleteUser = async (data) => {
   try {
-    console.log(url + `/borrarUsuario/${data[0]}/${data[1]}`)
-    const result = await executePetition(url + `/borrarUsuario/${data[0]}/${data[1]}`, "GET");
+    console.log(url + `/borrarUsuario/${data[0]}/${data[1]}`);
+    const result = await executePetition(
+      url + `/borrarUsuario/${data[0]}/${data[1]}`,
+      "GET",
+    );
     if (result.ok) {
       alertSuccess(result.message);
 
@@ -280,8 +301,6 @@ desMostrarContra.forEach((des) => {
   });
 });
 
-
-
 btnOpenModal.addEventListener("click", function () {
   //objetos con todos los parametros de la funcion
   const parametros = {
@@ -296,11 +315,10 @@ btnOpenModal.addEventListener("click", function () {
   clearModalEnviar(parametros);
 });
 
-
-
 let verificarFormularioEdi = inicializarValidacionFormulario(formEdiUsuario);
 let verificarFormularioPass = inicializarValidacionFormulario(formEdiPass);
-let verificarFormularioAdmin = inicializarValidacionFormulario(formAgregarAdmin);
+let verificarFormularioAdmin =
+  inicializarValidacionFormulario(formAgregarAdmin);
 
 formEdiUsuario.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -332,7 +350,6 @@ formEdiPass.addEventListener("submit", function (e) {
     );
   }
 });
-
 
 formAgregarAdmin.addEventListener("submit", function (e) {
   e.preventDefault();

@@ -149,7 +149,7 @@ export const alertSuccess = (text) => {
   });
 };
 
-export const alertInfo = (title,text) => {
+export const alertInfo = (title, text) => {
   Swal.fire({
     icon: "info",
     title: title,
@@ -161,7 +161,6 @@ export const alertInfo = (title,text) => {
     },
   });
 };
-
 
 export const initDataTable = (selector) => {
   $(selector).DataTable({
@@ -279,7 +278,6 @@ export const cargarImg = (archivo, imgHtml, contenedorImg) => {
   }
 };
 
-
 //function para retorn true o false dependiendo si el usuario tiene el permiso o no
 export const hasPermision = async (id_rol, module, permision, btns) => {
   try {
@@ -300,19 +298,35 @@ export const hasPermision = async (id_rol, module, permision, btns) => {
   }
 };
 
-
 //funcion para manejar los loaders de los botones de los formularios////
 
 //esta es para iniciar
-export const initLoaderButton = (btn)=>{
+export const initLoaderButton = (btn) => {
   btn.innerText = "Cargando...";
   btn.setAttribute("type", "button");
   btn.setAttribute("disabled", true);
-}
+};
 
 //esta para finaliZar el loader
 export const finallyLoaderButton = (btn, textButton = "Registrar") => {
   btn.innerText = textButton;
   btn.setAttribute("type", "submit");
   btn.removeAttribute("disabled");
-}
+};
+
+export const setImgWithFallback = (
+  imgElement,
+  src,
+  fallbackSrc = "../src/assets/images/img/logoRol.jpeg",
+) => {
+  if (!imgElement) return;
+
+  imgElement.onerror = () => {
+    imgElement.onerror = null;
+    if (imgElement.src !== fallbackSrc) {
+      imgElement.src = fallbackSrc;
+    }
+  };
+
+  imgElement.src = src && src.trim() !== "" ? src : fallbackSrc;
+};
