@@ -129,37 +129,44 @@ function iniciarSesion()
         $host = '127.0.0.1';
         $puerto = 8080;
 
-        // Verificamos si el socket ya está escuchando
+        // 1. Verificamos si el socket ya está escuchando (timeout rápido de 1s)
         $socket_activo = @fsockopen($host, $puerto, $errno, $errstr, 1);
 
         if (!$socket_activo) {
+            // 2. Construcción de ruta robusta usando realpath
             $ruta_base = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webSocket.php";
             $ruta_real = realpath($ruta_base);
 
             if ($ruta_real && file_exists($ruta_real)) {
+
                 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                    // ✅ CORRECCIÓN PARA WINDOWS
-                    // Usamos cmd /c para asegurar que el comando se interprete bien
-                    // start "" abre una nueva ventana con título vacío
-                    // /B lo mantiene en segundo plano sin abrir ventana visible
-                    $php_path = "C:\\xampp\\php\\php.exe"; // Usa doble backslash en strings PHP
+                    // 1. Buscamos el ejecutable de PHP de forma manual y segura
+                    $php_exe = "C:\\xampp\\php\\php.exe";
 
-                    // Opción 1: Totalmente silencioso (recomendado)
-                    pclose(popen("cmd /c start \"\" /B \"$php_path\" \"$ruta_real\"", "r"));
-
-                    // Opción 2: Si quieres ver la consola (para debug)
-                    // pclose(popen("start \"WebSocket\" \"$php_path\" \"$ruta_real\"", "r"));
+                    if (!file_exists($php_exe)) {
+                        // Si no está en C, probamos en D (común en instalaciones personalizadas)
+                        $php_exe = "D:\\xampp\\php\\php.exe";
+                    }
+                    // 2. Ejecución Directa sin 'start' para evitar que se abra en VS Code
+                    // Usamos 'popen' con 'w' y mandamos la salida a NUL
+                    // Esto lo lanza en segundo plano real sin abrir ventanas ni editores
+                    if (file_exists($php_exe)) {
+                        pclose(popen("start /B \"\" \"$php_exe\" \"$ruta_real\" > NUL 2>&1", "r"));
+                    } else {
+                        error_log("JEHOVA-RAFA: No se encontró php.exe en las rutas de XAMPP.");
+                    }
                 } else {
-                    // Comando para Linux
+                    // Linux se mantiene igual, ya que 'php' en consola no abre editores
                     exec("php \"$ruta_real\" > /dev/null 2>&1 &");
                 }
 
-                // Pequeña pausa para dar tiempo a que levante el socket
+                // 3. Pausa estratégica para permitir el "Handshake" inicial del proceso
                 usleep(500000); // 0.5 segundos
             } else {
-                error_log("WebSocket: Archivo no encontrado en $ruta_real");
+                error_log("JEHOVA-RAFA Error: No se encontró webSocket.php en: " . ($ruta_real ?: $ruta_base));
             }
         } else {
+            // Si ya existe, cerramos la conexión de prueba
             fclose($socket_activo);
         }
 
