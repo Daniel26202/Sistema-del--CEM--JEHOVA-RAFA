@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-03-2026 a las 16:16:11
+-- Tiempo de generación: 14-04-2026 a las 20:41:51
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -754,7 +754,66 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (715, 1, 'inicio sesion', 'Ha iniciado una session', '2026-03-30 07:57:44'),
 (716, 1, 'modulo', 'Ha Insertado un nuevo  modulo', '2026-03-30 09:38:41'),
 (717, 1, 'Roles', 'Ha Insertado un nuevo rol', '2026-03-30 09:56:18'),
-(718, 1, 'Roles', 'Ha Modificado un rol', '2026-03-30 10:00:21');
+(718, 1, 'Roles', 'Ha Modificado un rol', '2026-03-30 10:00:21'),
+(719, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 15:40:51'),
+(720, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 16:03:10'),
+(721, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-13 16:03:19'),
+(722, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 16:07:00'),
+(723, 1, 'cliente', 'Ha Insertado un nuevo cliente', '2026-04-13 16:11:31'),
+(724, 1, 'cliente', 'Ha Insertado un nuevo cliente', '2026-04-13 16:12:53'),
+(725, 1, 'cliente', 'Ha Insertado un nuevo cliente', '2026-04-13 16:15:43'),
+(726, 1, 'patologia', 'Ha Insertado un nuevo patologia', '2026-04-13 16:22:23'),
+(727, 1, 'patologia', 'Ha Insertado un nuevo patologia', '2026-04-13 16:22:43'),
+(728, 1, 'patologia', 'Ha Insertado un nuevo patologia', '2026-04-13 16:22:49'),
+(729, 1, 'patologia', 'Ha Insertado un nuevo patologia', '2026-04-13 16:24:13'),
+(730, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 20:20:55'),
+(731, 1, 'cita', 'Ha Insertado una  cita', '2026-04-13 20:28:19'),
+(732, 1, 'cita', 'Ha Insertado una  cita', '2026-04-13 20:29:33'),
+(733, 1, 'doctor', 'Ha Insertado un nuevo doctor', '2026-04-13 20:34:45'),
+(734, 1, 'control', 'Ha Insertado un nuevo  control medico', '2026-04-13 20:44:46'),
+(735, 1, 'sintomas', 'Ha Insertado un  sintoma', '2026-04-13 20:49:25'),
+(736, 1, 'insumo', 'Ha Insertado un insumo', '2026-04-13 21:02:26'),
+(737, 1, 'insumo', 'Ha modificado un insumo', '2026-04-13 21:08:14'),
+(738, 1, 'entrada', 'Ha insertado una entrada', '2026-04-13 21:10:19'),
+(739, 1, 'entrada', 'Ha modificado una entrada', '2026-04-13 21:10:33'),
+(740, 1, 'proveedor', 'Ha insertado un proveedor', '2026-04-13 21:13:57'),
+(741, 1, 'proveedor', 'Ha modificado un proveedor', '2026-04-13 21:14:18'),
+(742, 1, 'Perfil', 'Ha modificado un perfil', '2026-04-13 21:34:26'),
+(743, 1, 'Perfil', 'Ha modificado un perfil', '2026-04-13 21:34:37'),
+(744, 1, 'Perfil', 'Ha modificado un perfil', '2026-04-13 21:34:48'),
+(745, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-13 21:35:14'),
+(746, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 21:37:58'),
+(747, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-13 21:38:08'),
+(748, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 21:38:10'),
+(749, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-13 21:38:25'),
+(750, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 21:38:26'),
+(751, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-13 21:39:05'),
+(752, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 21:39:11'),
+(753, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-13 21:39:16'),
+(754, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-13 21:39:28'),
+(755, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 06:21:59'),
+(756, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-14 06:23:21'),
+(757, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 06:23:24'),
+(758, 1, 'paciente', 'Ha restablecido un paciente', '2026-04-14 06:28:45'),
+(759, 1, 'cliente', 'Ha eliminado un cliente', '2026-04-14 06:29:12'),
+(760, 1, 'cliente', 'Ha restablecido un cliente', '2026-04-14 06:30:12'),
+(761, 1, 'cliente', 'Ha eliminado un cliente', '2026-04-14 07:23:25'),
+(762, 1, 'factura', 'Ha anulado una factura', '2026-04-14 07:25:50'),
+(763, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 10:09:45'),
+(764, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-14 10:11:38'),
+(765, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 10:11:47'),
+(766, 1, 'patologia', 'Ha Insertado un nuevo patologia', '2026-04-14 10:12:10'),
+(767, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-14 12:01:33'),
+(768, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:01:41'),
+(769, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-14 12:02:23'),
+(770, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:07:19'),
+(771, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-14 12:43:42'),
+(772, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:43:48'),
+(773, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-14 12:48:31'),
+(774, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:48:37'),
+(775, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:51:14'),
+(776, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-14 12:56:54'),
+(777, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:56:55');
 
 -- --------------------------------------------------------
 
@@ -773,7 +832,7 @@ CREATE TABLE `modulos` (
 --
 
 INSERT INTO `modulos` (`id_modulo`, `nombre`, `estado`) VALUES
-(1, 'Pacientes', 'DES'),
+(1, 'Pacientes', 'ACT'),
 (2, 'Clientes', 'ACT'),
 (3, 'Patologias', 'ACT'),
 (4, 'Factura', 'ACT'),
@@ -983,13 +1042,14 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 10, 'dragon-ball-z-super-3840x2160-13878.jpg', 'WDaniel123', 'wbaez975@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
+(1, 10, 'dragon-ball-z-super-3840x2160-13878.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
 (42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'DES'),
 (43, 8, 'arte-dragon-ball-super-goku-and-black-goku_7680x4320_xtrafondos.com.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT'),
 (45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'DES'),
 (46, 8, 'doctor.png', 'weq', 'wbaez975@gmail.com', '$2y$10$WAANXp7gXMUe5ZixhhN4IOOfGrqKYsv7PeHzhf8cgf8xd56nTbqly', 'ACT'),
 (52, 8, 'doctor.png', 'WDaniel1', 'wbaez975@gmail.com', '$2y$10$PYYiGKo3RDTI3JN6eiR6lexHNG90m0WWC1VgAg0cmhKfw3LCmXdaS', 'ACT'),
-(53, 8, 'goku-kintoun-cloud-kame-house-island-dragon-ball-2k-wallpaper-uhdpaper.com-706@5@h.jpg', 'WDaniel000', 'correo@gmail.com', '$2y$10$eDqE5UYML.46g9jv9sK2iusuF4nqXEeCHFd6Ck/yLi1xRRCT/HIc.', 'ACT');
+(53, 8, 'goku-kintoun-cloud-kame-house-island-dragon-ball-2k-wallpaper-uhdpaper.com-706@5@h.jpg', 'WDaniel000', 'correo@gmail.com', '$2y$10$eDqE5UYML.46g9jv9sK2iusuF4nqXEeCHFd6Ck/yLi1xRRCT/HIc.', 'ACT'),
+(54, 11, 'goku-ultra-instinct-transformacion-dragon-ball-super_1920x1080_xtrafondos.com.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$i5q.9zYhTYnZmeFnD0triO4f5KwPK/pYU8AK841A.m554dHmnG.ea', 'ACT');
 
 --
 -- Índices para tablas volcadas
@@ -1044,7 +1104,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=719;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=778;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
@@ -1074,7 +1134,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- Restricciones para tablas volcadas
