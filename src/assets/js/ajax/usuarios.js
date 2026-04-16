@@ -82,7 +82,10 @@ const readUser = async () => {
     else metodo = "administradoresAjax";
 
     const items = await executePetition(url + "/" + metodo, "GET");
-
+    let objValidationImg = {
+      setImgWithFallback,
+      imgSrcDefecto: `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+    };
     const paginator = new Paginator(
       items,
       1,
@@ -90,6 +93,9 @@ const readUser = async () => {
       "pagination",
       "searchInput",
       returnFragmentHtml,
+      "id_usuario",
+      mostrarInfo,
+      objValidationImg
     );
 
     paginator.displayItems();
@@ -119,12 +125,12 @@ const readUser = async () => {
       });
     });
 
-    console.log(document.querySelectorAll(".botones-mostrar"));
-    document.querySelectorAll(".botones-mostrar").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        mostrarInfo(btn);
-      });
-    });
+    // console.log(document.querySelectorAll(".botones-mostrar"));
+    // document.querySelectorAll(".botones-mostrar").forEach((btn) => {
+    //   btn.addEventListener("click", function () {
+    //     mostrarInfo(btn);
+    //   });
+    // });
 
     //////gestionar persmisos
     hasPermision(id_rol_global, "Usuarios", "guardar", ".btnOpenModal"); //guardar
@@ -159,9 +165,9 @@ const returnFragmentHtml = (element) => {
 
 //mostrar inof user
 
-const mostrarInfo = (btn) => {
+const mostrarInfo = (id) => {
   modalInfoBoots.show();
-
+  const btn = document.querySelector(`.botones-mostrar[data-index="${id}"]`);
   const card = btn.closest(".card");
   let src = `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${btn.getAttribute("data-index")}_${btn.getAttribute(
     "data-img",
