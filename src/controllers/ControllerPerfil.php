@@ -17,6 +17,7 @@ function perfilAjax()
 {
 	$modelo = new ModeloPerfil();
 	$modelo->setUsuario($_SESSION["usuario"]);
+	$modelo->setIdUsuario($_SESSION['id_usuario']);
 	echo json_encode($modelo->seleccionarUsuario());
 }
 

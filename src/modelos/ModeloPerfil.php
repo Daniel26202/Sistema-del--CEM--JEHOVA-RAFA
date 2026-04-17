@@ -21,9 +21,10 @@ class ModeloPerfil extends ModelBase
 	{
 		try {
 			$data = [
+				'id_usuario'=>$this->getIdUsuario(),
 				'usuario' => $this->getUsuario()
 			];
-			$sql = "SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario";
+			$sql = "SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario and id_usuario=:id_usuario";
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {
