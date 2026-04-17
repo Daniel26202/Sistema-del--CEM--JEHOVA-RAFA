@@ -7,7 +7,8 @@ class Paginator {
     searchId,
     fragmentHTML,
     idFilter,
-    callbackButton
+    callbackButton,
+    objValidationImg = undefined,
   ) {
     this.items = items;
     this.itemsPerPage = itemsPerPage;
@@ -19,7 +20,8 @@ class Paginator {
     this.html = "";
     this.fragmentHTML = fragmentHTML; //para colocar el html dinamico de las tarjetas
     this.idFilter = idFilter;
-    this.callbackButton = callbackButton
+    this.callbackButton = callbackButton;
+    this.objValidationImg = objValidationImg;
 
     // Agregar evento de búsqueda
     const searchInput = document.getElementById(this.searchId);
@@ -57,14 +59,25 @@ class Paginator {
     buttonsCard.forEach((button) => {
       let idFilter = this.idFilter;
 
-      button.addEventListener("click", (e)=> {
+      button.addEventListener("click", (e) => {
         const itemId = e.target.getAttribute("data-index");
-        const itemFilter = currentItems.find((item) => item[idFilter] == itemId);
+        const itemFilter = currentItems.find(
+          (item) => item[idFilter] == itemId,
+        );
         console.log(itemFilter[idFilter]);
         this.callbackButton(itemFilter[idFilter]);
-
       });
     });
+
+    console.log(this.objValidationImg);
+    
+    ///validar si la card tiene una imagen colocar una por defecto si no tiene pues no pasa nada.
+    if (this.objValidationImg) {
+      let imgSrcDefecto = this.objValidationImg.imgSrcDefecto;
+      document.querySelectorAll(".card-img-top").forEach((img) => {
+        this.objValidationImg.setImgWithFallback(img, img.src, imgSrcDefecto);
+      });
+    }
 
     this.updatePagination();
   }

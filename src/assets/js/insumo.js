@@ -132,11 +132,6 @@ addEventListener("DOMContentLoaded", function () {
       contenedorImg.classList.add("d-none");
       //ahora gestionar la imagen del insumo es decir mostrar un previsualizacion en el modal de editar
       contenedorImgEditar.classList.remove("d-none");
-      setImgWithFallback(
-        imgEditar,
-        `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${srcImg}`,
-        `${urlBase}../src/assets/images/img/logoRol.jpeg`,
-      );
 
       document
         .querySelector(".btn-eliminar")
@@ -164,7 +159,10 @@ addEventListener("DOMContentLoaded", function () {
     try {
       const items = await executePetition(`${url}/insumosAjax`, "GET");
       console.log(items);
-      const hola = () => console.log("hola");
+      let objValidationImg = {
+        setImgWithFallback,
+        imgSrcDefecto: `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+      };
 
       const paginator = new Paginator(
         items,
@@ -175,18 +173,10 @@ addEventListener("DOMContentLoaded", function () {
         returnFragmentHtml,
         "id_insumo",
         infoInsumos,
+        objValidationImg
       );
 
       paginator.displayItems();
-
-      // Aplicar fallback a las imágenes de las tarjetas
-      document.querySelectorAll(".card-img-top").forEach((img) => {
-        setImgWithFallback(
-          img,
-          img.src,
-          `${urlBase}../src/assets/images/img/logoRol.jpeg`,
-        );
-      });
 
       document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
         ele.value = document.getElementById("id_usuario_session").value;
