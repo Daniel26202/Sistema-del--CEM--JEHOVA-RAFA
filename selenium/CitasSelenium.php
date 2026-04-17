@@ -114,7 +114,7 @@ $doctorRadio->click();
     $status = $this->getStatusSteps();
 
     $this->testLink->reportTest(
-        138,
+        456,
         $status,
         $this->getSteps(),
         $this->lastTime
@@ -160,7 +160,7 @@ $doctorRadio->click();
         $status = $this->getStatusSteps();
 
         $this->testLink->reportTest(
-            157, // ID TEST CASE TESTLINK
+            475, // ID TEST CASE TESTLINK
             $status,
             $this->getSteps(),
             $this->lastTime
@@ -189,7 +189,7 @@ $doctorRadio->click();
             $status = $this->getStatusSteps();
 
             $this->testLink->reportTest(
-                145,
+                463,
                 $status,
                 $this->getSteps(),
                 $this->lastTime

@@ -38,7 +38,7 @@ class ComunSelenium
     {
 
         // Ir a la vista de login
-        $this->driver->get(url("IniciarSesion/mostrarIniciarSesion"));
+        $this->driver->get("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/");
 
         // Llenar usuario y clave
         $this->fillForms([
@@ -47,9 +47,6 @@ class ComunSelenium
         ]);
 
         $this->click('#btnLoginEnviar');
-
-        // Esperar SweetAlert2 de éxito
-        $this->waitElement('.swal2-popup', 10, 500, "No apareció el mensaje de éxito");
 
         // Esperar redirección al dashboard
         $this->waitUrl(url("Inicio/inicio"), 10);

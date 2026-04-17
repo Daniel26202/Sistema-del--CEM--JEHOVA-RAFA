@@ -60,7 +60,7 @@ class FacturacionSelenium extends ComunSelenium {
     $status = $this->getStatusSteps();
 
     $this->testLink->reportTest(
-        17,
+        365,
         $status,
         $this->getSteps(),
         $this->lastTime

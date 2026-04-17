@@ -21,12 +21,12 @@ class LoginSelenium extends ComunSelenium{
 
         $this->openSystemDSG(true);
         $this->goTo("Pacientes/getPacientes");
-        $this->testLink->reportTest(
-            109,
-            'p',
-            $this->getSteps(),
-            0
-        );
+        // $this->testLink->reportTest(
+        //     109,
+        //     'p',
+        //     $this->getSteps(),
+        //     0
+        // );
 
         //109
 
