@@ -9,7 +9,7 @@ const TESTPLAN_ID        = 681;
 const TEST_BUILD_INFO    = ["name" => "Pruebas de integracion build", "id" => 1];
 const TEST_SUITE_ALFA_INFO = ["name" => "Gestion de pacientes", "id" => 342, "parentId" => 341];
 
-const TESTLINK_URL          = "http://localhost:8080/testlink-1.9.0/testlink-1.9.0/lib/api/xmlrpc.php";
+const TESTLINK_URL          = "http://localhost:8056/testlink-1.9.0/testlink-1.9.0/lib/api/xmlrpc.php";
 const TESTLINK_USER_API_KEY = "34161aa17e5785c01ed4f8b07556ccf8";
 const TESTLINK_API_KEY      = "35ba680c22cfe5ea27b689e765af0e5d65e45567e4b977f8f6e932ac4788c666";
 

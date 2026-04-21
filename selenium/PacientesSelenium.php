@@ -2,7 +2,7 @@
 
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\WebDriverBy; // Necesitas esta clase para localizar elementos
+use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
 class PacientesSelenium extends ComunSelenium
@@ -14,169 +14,236 @@ class PacientesSelenium extends ComunSelenium
         $this->testLink = $testLink;
     }
 
+    private $datosPacientes = [
+        [
+            'cedula'    => '32208990',
+            'nombre'    => 'Jose',
+            'apellido'  => 'Perez',
+            'telefono'  => '04260563224',
+            'direccion' => 'avenida libertador con calle cinco edificio central',
+            'fn'        => '1990-01-01',
+            'genero'    => 'Masculino',
+        ],
+        // [
+        //     'cedula'    => '22163456',
+        //     'nombre'    => 'Maria',
+        //     'apellido'  => 'Lopez',
+        //     'telefono'  => '04140123456',
+        //     'direccion' => 'urb santa monica calle los mangos casa quince',
+        //     'fn'        => '1985-06-15',
+        //     'genero'    => 'Femenino',
+        // ],
+        // [
+        //     'cedula'    => '12365632',
+        //     'nombre'    => 'Carlos',
+        //     'apellido'  => 'Gonzalez',
+        //     'telefono'  => '04120987654',
+        //     'direccion' => 'sector la trinidad avenida principal bloque ocho',
+        //     'fn'        => '1995-03-20',
+        //     'genero'    => 'Masculino',
+        // ],
+    ];
 
+    //   comienza aca 
     public function testPacientes()
     {
-        $this->print("Inicio de test de registro de paciente", 8);
+        $this->print("Inicio de test de módulo Pacientes", 8);
         $this->openSystemDSG(true);
-        $this->testRegistrarPaciente();
-        $this->testEliminarPaciente();
+
+        foreach ($this->datosPacientes as $index => $paciente) {
+            $this->print("--- Paciente " . ($index + 1) . " de " . count($this->datosPacientes) . " ---", 7);
+            $this->testRegistrarPaciente($paciente);
+            $this->testConsultarPacientePorCedula($paciente);
+            $this->testEliminarPaciente($paciente);
+        }
+
         $this->closeBrowser();
     }
 
-    // public function testRegistrarPaciente()
-    // {
-
-    //     $this->createSteps();
-    //     $this->startContador();
-    //     try {
-    //         $this->goTo("Pacientes/getPacientes");
-    //         $this->click("#btnOpenModal");
-    //         $modal = $this->waitElement('#exampleModalagregarPaciente');
-    //         $this->addSteps('p', 'Formulario de registro de paciente abierto correctamente.');
-    //         $modal->findElement($this->selector('#cedulaPaciente'))->sendKeys("30218990");
-    //         $modal->findElement(WebDriverBy::cssSelector('#nombre'))->sendKeys("Jose");
-    //         $modal->findElement(WebDriverBy::cssSelector('#apellido'))->sendKeys("Perez");
-    //         $modal->findElement(WebDriverBy::cssSelector('#telefono'))->sendKeys("04260563224");
-    //         $modal->findElement(WebDriverBy::cssSelector('#direccion'))->sendKeys("mi casa donde vivo");
-    //         $modal->findElement(WebDriverBy::cssSelector('#feNacimiento'))->sendKeys("1990-01-01");
-
-    //         $selectGenero = $modal->findElement(WebDriverBy::cssSelector('select[name="genero"]'));
-    //         $options = $selectGenero->findElements(WebDriverBy::tagName('option'));
-    //         foreach ($options as $option) {
-    //             if ($option->getText() === 'Masculino') {
-    //                 $option->click();
-    //                 break;
-    //             }
-    //         }
-    //         $this->addSteps('p', 'Se ha rellenado el formulario de registro de paciente.');
-
-    //         $modal->findElement(WebDriverBy::cssSelector('#botonEnviar'))->click();
-    //         $this->addSteps('p', 'Se ha pulsado el botón de registrar el paciente.');
-
-    //         $this->driver->wait(5, 500)->until(
-    //             WebDriverExpectedCondition::invisibilityOfElementLocated($this->selector('#modal-examplePaciente')),
-    //         );
-    //         $this->fillForm('#dt-search-0', "30218990", 0);
-    //         $row = $this->findRowInTableByText('#DataTables_Table_0', 'V-30218990');
-    //         $this->endContador();
-    //     } catch (Exception $e) {
-    //         $this->blockSteps(4);
-    //     }
-    //     $status = $this->getStatusSteps();
-    //     $this->testLink->reportTest(
-    //         353,
-    //         $status,
-    //         $this->getSteps(),
-    //         $this->lastTime
-    //     );
-    // }
-
-    public function testRegistrarPaciente()
+    //   Registrar paciente
+    public function testRegistrarPaciente(array $paciente)
     {
         $this->createSteps();
         $this->startContador();
-        try {
-            $this->goTo("Pacientes/getPacientes");
-            $this->click("#btnOpenModal");
-            $modal = $this->waitElement('#exampleModalagregarPaciente');
-            $this->addSteps('p', 'Formulario abierto correctamente.');
 
-            // Función helper para llenar y disparar eventos
-            $fillAndTrigger = function ($selector, $value) {
+        try {
+            // navegar y abrir modal 
+            $this->goTo("Pacientes/getPacientes");
+            sleep(2);
+
+            $this->click("#btnOpenModal");
+            $modal = $this->waitElement('#exampleModalagregarPaciente', 5);
+            $this->addSteps('p', 'Página de pacientes abierta y modal de registro visible.');
+
+            // rellenar formulario y enviar
+            //llenarYDisparar
+            $fillAndTrigger = function (string $selector, string $value) {
                 $input = $this->driver->findElement(WebDriverBy::cssSelector($selector));
                 $input->clear();
                 $input->sendKeys($value);
-                // Disparar eventos de validación
                 $this->driver->executeScript(
-                    "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));
-                 arguments[0].dispatchEvent(new Event('keyup', {bubbles:true}));
-                 arguments[0].dispatchEvent(new Event('blur', {bubbles:true}));",
+                    "var el = arguments[0];
+                     el.dispatchEvent(new Event('input',  {bubbles:true}));
+                     el.dispatchEvent(new Event('keyup',  {bubbles:true}));
+                     el.dispatchEvent(new Event('blur',   {bubbles:true}));",
                     [$input]
                 );
             };
 
-            $fillAndTrigger('#cedulaPaciente', '30218990');
-            $fillAndTrigger('input[name="nombre"]', 'Jose');
-            $fillAndTrigger('input[name="apellido"]', 'Perez');
-            $fillAndTrigger('input[name="telefono"]', '04260563224');
-            $fillAndTrigger('input[name="direccion"]', 'mi casa donde vivo');
+            $fillAndTrigger('#exampleModalagregarPaciente input[name="cedula"]',    $paciente['cedula']);
+            $fillAndTrigger('#exampleModalagregarPaciente input[name="nombre"]',    $paciente['nombre']);
+            $fillAndTrigger('#exampleModalagregarPaciente input[name="apellido"]',  $paciente['apellido']);
+            $fillAndTrigger('#exampleModalagregarPaciente input[name="telefono"]',  $paciente['telefono']);
+            $fillAndTrigger('#exampleModalagregarPaciente input[name="direccion"]', $paciente['direccion']);
 
-            // La fecha necesita JavaScript porque type="date" no acepta sendKeys bien
-            $inputFecha = $this->driver->findElement(WebDriverBy::cssSelector('input[name="fn"]'));
+            // fecha: type="date" necesita JS
+            $inputFecha = $this->driver->findElement(
+                WebDriverBy::cssSelector('#exampleModalagregarPaciente input[name="fn"]')
+            );
             $this->driver->executeScript(
-                "arguments[0].value = '1990-01-01';
-             arguments[0].dispatchEvent(new Event('input', {bubbles:true}));
-             arguments[0].dispatchEvent(new Event('blur', {bubbles:true}));",
+                "var el = arguments[0];
+                 el.value = '{$paciente['fn']}';
+                 el.dispatchEvent(new Event('input', {bubbles:true}));
+                 el.dispatchEvent(new Event('blur',  {bubbles:true}));",
                 [$inputFecha]
             );
 
-            // Seleccionar género
+            // Género
             $selectGenero = $modal->findElement(WebDriverBy::cssSelector('select[name="genero"]'));
-            $options = $selectGenero->findElements(WebDriverBy::tagName('option'));
-            foreach ($options as $option) {
-                if ($option->getText() === 'Masculino') {
+            foreach ($selectGenero->findElements(WebDriverBy::tagName('option')) as $option) {
+                if ($option->getText() === $paciente['genero']) {
                     $option->click();
                     $this->driver->executeScript(
                         "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));
-                     arguments[0].dispatchEvent(new Event('blur', {bubbles:true}));",
+                         arguments[0].dispatchEvent(new Event('blur',  {bubbles:true}));",
                         [$selectGenero]
                     );
                     break;
                 }
             }
 
-            $this->addSteps('p', 'Formulario rellenado correctamente.');
-            sleep(1); // Esperar que la validación procese
-
+            sleep(1);
             $modal->findElement(WebDriverBy::cssSelector('#botonModal'))->click();
-            $this->addSteps('p', 'Botón registrar presionado.');
 
-            $this->driver->wait(5, 500)->until(
+            // Esperar que el modal cierre
+            $this->driver->wait(10, 500)->until(
                 WebDriverExpectedCondition::invisibilityOfElementLocated(
                     $this->selector('#exampleModalagregarPaciente')
                 )
             );
 
-            $this->fillForm('.dataTables_filter input', "30218990", 0);
-            $row = $this->findRowInTableByText('.exampleTable', 'V-30218990');
+            $this->addSteps('p', "Formulario de {$paciente['nombre']} {$paciente['apellido']} enviado y modal cerrado.");
+
+            // verificar en tabla        
+            
+            // $this->goTo("Pacientes/getPacientes");
+            // sleep(2);
+
+            // $this->fillForm('#dt-search-0', $paciente['cedula'], 3);
+            // sleep(1);
+
+            // $this->findRowInTableByText('.exampleTable', 'V-' . $paciente['cedula']);
+            // $this->addSteps('p', "Paciente V-{$paciente['cedula']} encontrado en la tabla.");
+
             $this->endContador();
+
         } catch (Exception $e) {
+            $this->print("Error en testRegistrarPaciente: " . $e->getMessage(), 3);
             $this->blockSteps(3);
         }
+
         $status = $this->getStatusSteps();
         $this->testLink->reportTest(359, $status, $this->getSteps(), $this->lastTime);
     }
 
-    public function testEliminarPaciente()
+    //consultar paciente por cédula
+    public function testConsultarPacientePorCedula(array $paciente)
     {
         $this->createSteps();
         $this->startContador();
+
         try {
-            $this->goTo("Pacientes/getPacientes");
-            $this->addSteps('p', 'Página de pacientes abierta correctamente.');
+            // $this->goTo("Pacientes/getPacientes");
             sleep(2);
-            $this->fillForm('#dt-search-0', "30218990", 0);
-            $row = $this->findRowInTableByText('#DataTables_Table_0', 'V-30218990');
-            $this->addSteps('p', 'Se ha encontrado la fila de paciente.');
-            $btn = $row->findElement(WebDriverBy::cssSelector('button.btnModalEliminarPaciente'))->click();
-            $this->addSteps('p', 'Se ha pulsado el botón de eliminar.');
-            $idModalEliminar = $btn->getAttribute('data-id-tabla');
-            $modalEliminar = $this->waitElement("#$idModalEliminar");
-            $modalEliminar->findElement(WebDriverBy::xpath(".//a[text()='Eliminar']"))->click();
-            $this->addSteps('p', 'Se ha confirmado la eliminación del paciente.');
+            $this->addSteps('p', 'Página de pacientes abierta correctamente.');
+
+            $this->fillForm('#dt-search-0', $paciente['cedula'], 3);
+            sleep(1);
+            $this->addSteps('p', "Cédula {$paciente['cedula']} ingresada en el buscador.");
+
+            $this->findRowInTableByText('.exampleTable', 'V-' . $paciente['cedula']);
+            $this->addSteps('p', "Paciente V-{$paciente['cedula']} encontrado correctamente.");
 
             $this->endContador();
+
         } catch (Exception $e) {
+            $this->print("Error en testConsultarPacientePorCedula: " . $e->getMessage(), 3);
+            $this->blockSteps(3);
+        }
+
+        $status = $this->getStatusSteps();
+        $this->testLink->reportTest(348, $status, $this->getSteps(), $this->lastTime);
+    }
+
+    
+    public function testEliminarPaciente(array $paciente)
+    {
+        $this->createSteps();
+        $this->startContador();
+
+        try {
+            $this->goTo("Pacientes/getPacientes");
+            sleep(2);
+            $this->addSteps('p', 'Página de pacientes abierta correctamente.');
+
+            $this->fillForm('#dt-search-0', $paciente['cedula'], 3);
+            sleep(1);
+            $row = $this->findRowInTableByText('.exampleTable', 'V-' . $paciente['cedula']);
+            $this->addSteps('p', "Fila del paciente V-{$paciente['cedula']} localizada en la tabla.");
+
+            $btnEliminar = $row->findElement(WebDriverBy::cssSelector('button.btn-eliminar'));
+            $this->driver->executeScript(
+                "arguments[0].scrollIntoView({block:'center'});",
+                [$btnEliminar]
+            );
+             // pequeña pausa tras el scroll
+            sleep(1);
+            $this->driver->executeScript("arguments[0].click();", [$btnEliminar]);
+            $this->addSteps('p', 'Botón eliminar presionado (JS click).');
+
+        
+            $this->confirmSweetAlert2("Eliminar SweetAlert2");
+            sleep(2);
+            $this->addSteps('p', "Eliminación de V-{$paciente['cedula']} confirmada.");
+
+            $this->endContador();
+
+        } catch (Exception $e) {
+            $this->print("Error en testEliminarPaciente: " . $e->getMessage(), 3);
             $this->blockSteps(4);
         }
+
         $status = $this->getStatusSteps();
-        $this->testLink->reportTest(
-            353,
-            $status,
-            $this->getSteps(),
-            $this->lastTime
+        $this->testLink->reportTest(353, $status, $this->getSteps(), $this->lastTime);
+    }
+
+
+    private function confirmSweetAlert2(string $descripcion = 'SweetAlert2', int $timeout = 7)
+    {
+        $this->driver->wait($timeout, 300)->until(
+            WebDriverExpectedCondition::visibilityOfElementLocated(
+                WebDriverBy::cssSelector('.swal2-popup')
+            ),
+            "Timeout esperando $descripcion (.swal2-popup no apareció en {$timeout}s)"
         );
-        return;
+
+        $this->driver->findElement(WebDriverBy::cssSelector('.swal2-confirm'))->click();
+
+        $this->driver->wait($timeout, 300)->until(
+            WebDriverExpectedCondition::invisibilityOfElementLocated(
+                WebDriverBy::cssSelector('.swal2-popup')
+            ),
+            "Timeout esperando cierre de $descripcion"
+        );
     }
 }

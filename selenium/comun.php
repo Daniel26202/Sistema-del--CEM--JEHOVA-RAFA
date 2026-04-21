@@ -33,14 +33,10 @@ class ComunSelenium
         }
     }
 
-    // MODIFICAR A PIE SEGUN TU SYTEM
     public function login($clave = "Sistema.30", $usuario = "WDaniel123")
     {
-
-        // Ir a la vista de login
         $this->driver->get("http://localhost/Sistema-del--CEM--JEHOVA-RAFA/");
 
-        // Llenar usuario y clave
         $this->fillForms([
             ['selector' => '#username', 'value' => $usuario],
             ['selector' => '#password', 'value' => $clave],
@@ -48,10 +44,12 @@ class ComunSelenium
 
         $this->click('#btnLoginEnviar');
 
-        // Esperar redirección al dashboard
-        $this->waitUrl(url("Inicio/inicio"), 10);
+        // ✅ urlContains en lugar de urlIs → no importa la barra final ni mayúsculas
+        // ✅ timeout de 15s para darle tiempo al AJAX + redirect
+        $this->driver->wait(15, 500)->until(
+            WebDriverExpectedCondition::urlContains("Inicio/inicio")
+        );
     }
-
 
 
 
@@ -175,7 +173,7 @@ class ComunSelenium
             $selectorOriginal = $selector;
             $selector = $this->selector($selector);
             if ($timeout != 0) {
-                echo "timeout == 0";
+                // echo "timeout == 0";
                 $this->driver->wait($timeout, $interval)->until(
                     WebDriverExpectedCondition::visibilityOfElementLocated($selector),
                     $mensaje

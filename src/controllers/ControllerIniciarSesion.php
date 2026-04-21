@@ -116,7 +116,6 @@ function iniciarSesion()
         $_SESSION['id_personal'] = $validar['id_personal'] ?? null;
         $_SESSION['nombre'] = $validar['nombre_personal'] ?? null;
         $_SESSION['apellido'] = $validar['apellido_personal'] ?? null;
-
         $bitacora->setId_usuario($_SESSION['id_usuario']);
         $bitacora->setActividad("Ha iniciado una session");
         $bitacora->setTabla("inicio sesion");
