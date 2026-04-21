@@ -15,7 +15,6 @@ function inicio($parametro)
     $bitacora = new ModeloBitacora();
 
     if ($parametro != "" && $parametro[0] == "cerrar") {
-        echo $_SESSION["id_usuario"];
         // verifica si la sesión esta activa.
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
@@ -37,6 +36,10 @@ function inicio($parametro)
         exit();
     }
 
+    if(!isset($_SESSION['id_personal'])){
+        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+        exit();
+    }
 
     $validarCargo = $modeloInicio->setIdPersonal($_SESSION["id_personal"]);
     $validarCargo = $modeloInicio->comprobarCargo();

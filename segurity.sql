@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 14-04-2026 a las 20:41:51
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Servidor: localhost
+-- Tiempo de generación: 21-04-2026 a las 14:34:57
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -813,7 +813,12 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (774, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:48:37'),
 (775, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:51:14'),
 (776, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-14 12:56:54'),
-(777, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:56:55');
+(777, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-14 12:56:55'),
+(778, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 10:32:00'),
+(779, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 10:32:02'),
+(780, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 10:32:18'),
+(781, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 10:32:22'),
+(782, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 10:32:28');
 
 -- --------------------------------------------------------
 
@@ -1104,7 +1109,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=778;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=783;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
