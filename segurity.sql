@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 21-04-2026 a las 14:34:57
+-- Tiempo de generación: 21-04-2026 a las 18:46:14
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -818,7 +818,47 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (779, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 10:32:02'),
 (780, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 10:32:18'),
 (781, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 10:32:22'),
-(782, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 10:32:28');
+(782, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 10:32:28'),
+(783, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 10:42:20'),
+(784, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 11:19:49'),
+(785, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 11:39:48'),
+(786, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 11:57:15'),
+(787, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 11:57:18'),
+(788, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 12:05:40'),
+(789, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 12:21:47'),
+(790, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 12:21:56'),
+(791, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 12:33:54'),
+(792, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 12:44:59'),
+(793, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 12:45:14'),
+(794, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 12:46:35'),
+(795, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 13:01:33'),
+(796, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 13:01:40'),
+(797, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 14:16:41'),
+(798, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 14:17:54'),
+(799, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 14:17:55'),
+(800, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 14:19:26'),
+(801, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 14:19:35');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `intentos_login`
+--
+
+CREATE TABLE `intentos_login` (
+  `ip_usuario` varchar(45) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `cantidad_intentos` int(11) DEFAULT 1,
+  `ultimo_intento` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `bloqueado` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `intentos_login`
+--
+
+INSERT INTO `intentos_login` (`ip_usuario`, `id_usuario`, `cantidad_intentos`, `ultimo_intento`, `bloqueado`) VALUES
+('127.0.0.1', 1, 3, '2026-04-21 18:28:38', 1);
 
 -- --------------------------------------------------------
 
@@ -1068,6 +1108,13 @@ ALTER TABLE `bitacora`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
+-- Indices de la tabla `intentos_login`
+--
+ALTER TABLE `intentos_login`
+  ADD PRIMARY KEY (`ip_usuario`),
+  ADD KEY `fk_intento_usuario` (`id_usuario`);
+
+--
 -- Indices de la tabla `modulos`
 --
 ALTER TABLE `modulos`
@@ -1109,7 +1156,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=783;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=802;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
@@ -1150,6 +1197,12 @@ ALTER TABLE `usuario`
 --
 ALTER TABLE `bitacora`
   ADD CONSTRAINT `bitacora_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+
+--
+-- Filtros para la tabla `intentos_login`
+--
+ALTER TABLE `intentos_login`
+  ADD CONSTRAINT `fk_intento_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `permisos_de_rol`
