@@ -9,6 +9,16 @@ import {
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/iniciarSesion";
 const formLog = document.getElementById("loginForm");
 const btnLoginEnviar = document.getElementById("btnLoginEnviar");
+
+
+//mostrar alerta en el login si el usuario esta bloqueado;
+if (window.location.href.includes("bloqued")) {
+  alertError(
+    "Error",
+    "Debido a que el usuario esta bloqueado no puede acceder al sistema.",
+  );
+}
+
 // envió de datos
 const sendData = async (form) => {
   try {
@@ -19,7 +29,13 @@ const sendData = async (form) => {
 
     if (result.ok) {
       let ruta = window.location.href;
-      ruta = ruta.replace("/IniciarSesion/mostrarIniciarSesion", "");
+      let cadenaText ='';
+      if (window.location.href.includes("bloqued")) {
+        cadenaText ='/IniciarSesion/mostrarIniciarSesion/bloqued';
+      }else{
+        cadenaText ='/IniciarSesion/mostrarIniciarSesion';
+      }
+      ruta = ruta.replace(cadenaText, "");
       window.location.href = ruta + "/Inicio/inicio";
     } else {
       if (result.error == "session_active") {

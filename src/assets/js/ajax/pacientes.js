@@ -60,7 +60,11 @@ const readPatients = async () => {
     const result = await executePetition(url + "/" + metodo, "GET");
     dataPacientes = result;
 
-    console.log(result);
+
+    if (!result.ok && result.ok != undefined) {
+      dataPacientes = [];
+      alertError("Error", result.error)
+    }
 
     // construir html de filas
     let html = "";
