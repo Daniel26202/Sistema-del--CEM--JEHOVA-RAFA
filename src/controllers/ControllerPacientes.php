@@ -4,21 +4,11 @@ use App\modelos\ModeloPacientes;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\config\RateLimiter;
-use App\config\ValidationIP;
 // use App\
 
 
 function getPacientes($parametro)
 {
-	$validationIP = new ValidationIP();
-	$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-	$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-	if ($validationIP->verificationIp()) {
-		session_destroy();
-		header('location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/bloqued');
-	}
-
 	$ayuda = "btnayudaPaciente";
 	$vistaActiva = 'pacientes';
 	require_once './src/vistas/vistaPacientes/pacientes.php';
@@ -32,16 +22,6 @@ function getPacientesAjax($parametro)
 		exit;
 	}
 	$modelo  = new ModeloPacientes();
-	$validationIP = new ValidationIP();
-	$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-	$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-	if ($validationIP->verificationIp()) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion ya que el usuario esta bloqueado"]);
-		exit;
-	}
-
 	echo json_encode($modelo->index());
 }
 
@@ -49,42 +29,19 @@ function getPacientesAjax($parametro)
  function getHistorialSalud($parametro)
 {
 	$modelo = new ModeloPacientes();
-	$validationIP = new ValidationIP();
-	$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-	$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-	if ($validationIP->verificationIp()) {
-		session_destroy();
-		header('location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/bloqued');
-	}
+	
 	$vistaActiva = 'historial';
 	require './src/vistas/vistaPacientes/pacientes.php';
 }
 
 function getHistorialSaludAjax()  {
 	$modelo =new ModeloPacientes();
-	$validationIP = new ValidationIP();
-	$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-	$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-	if ($validationIP->verificationIp()) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion ya que el usuario esta bloqueado"]);
-		exit;
-	}
+	
 	echo json_encode($modelo->indexHistorial());
 }
 
 function papeleraPaciente($parametro)
 {
-	$validationIP = new ValidationIP();
-	$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-	$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-	if ($validationIP->verificationIp()) {
-		session_destroy();
-		header('location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/bloqued');
-	}
 
 	$modelo  = new ModeloPacientes();
 	$vistaActiva = 'papelera';
@@ -102,15 +59,6 @@ function papeleraPacienteAjax()
 		exit;
 	}
 	$modelo  = new ModeloPacientes();
-	$validationIP = new ValidationIP();
-	$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-	$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-	if ($validationIP->verificationIp()) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion ya que el usuario esta bloqueado"]);
-		exit;
-	}
 
 	echo json_encode($modelo->indexPapelera());
 }
@@ -133,15 +81,7 @@ function guardar()
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
-		$validationIP = new ValidationIP();
-		$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-		$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-		if ($validationIP->verificationIp()) {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion ya que el usuario esta bloqueado"]);
-			exit;
-		}
+		
 
 		$modelo->setNacionalidad(isset($_POST['nacionalidad'])? $_POST['nacionalidad']: 'V');
 		$modelo->setCedula($_POST['cedula']);
@@ -193,15 +133,7 @@ function setPaciente()
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
-		$validationIP = new ValidationIP();
-		$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-		$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-		if ($validationIP->verificationIp()) {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion ya que el usuario esta bloqueado"]);
-			exit;
-		}
+	
 
 		$modelo->setIdPaciente(intval($_POST['id']));
 		$modelo->setNacionalidad($_POST['nacionalidad']);
@@ -256,16 +188,7 @@ function eliminar($datos)
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
-		$validationIP = new ValidationIP();
-		$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-		$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-		if ($validationIP->verificationIp()) {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion ya que el usuario esta bloqueado"]);
-			exit;
-		}
-
+		
 		$modelo->setIdPaciente($datos[0]);
 
 		$bitacora->setId_usuario($datos[1]);
@@ -308,16 +231,7 @@ function restablecer($datos)
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
-		$validationIP = new ValidationIP();
-		$validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-		$validationIP->setIdUsuario($_SESSION['id_usuario']);
-
-		if ($validationIP->verificationIp()) {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion ya que el usuario esta bloqueado"]);
-			exit;
-		}
-
+		
 		$modelo->setIdPaciente($datos[0]);
 
 		$bitacora->setId_usuario($datos[1]);

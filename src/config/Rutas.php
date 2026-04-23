@@ -3,6 +3,7 @@
 namespace App\config;
 
 use App\modelos\ModeloPermisos;
+use App\config\ValidationIP;
 
 class Rutas
 {
@@ -22,6 +23,17 @@ class Rutas
     /* metodo que utilizamos para gestionar las rutas de todo nuestro sistema */
     public function gestionarRutas()
     {
+        ///esta seccion es para validar el blacklist y el white list
+        $validationIP = new ValidationIP();
+        $validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
+        $validationIP->setIdUsuario((isset($_SESSION['id_usuario'])) ? $_SESSION['id_usuario'] : null);
+
+        if ($validationIP->verificationIp()) {
+            session_destroy();
+            header('location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/bloqued');
+            return;
+        }///
+
         $this->partes = explode("/", $this->url);
         if (strpos($this->url, ".php") !== false) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
@@ -79,7 +91,7 @@ class Rutas
         $this->modelo->setIdRol($_SESSION['id_rol']);
         $this->modelo->setPermiso($permiso);
         $this->modelo->setModulo($modulo);
-        
+
         $id_modulo = $this->modelo->returnIdModule();
 
         if (!$id_modulo) {
@@ -97,5 +109,6 @@ class Rutas
         }
 
         call_user_func($metodo, $parametro ?? []);
+        // echo ($_SERVER['REMOTE_ADDR']);
     }
 }
