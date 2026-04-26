@@ -185,7 +185,6 @@ class PacientesSelenium extends ComunSelenium
         $this->testLink->reportTest(348, $status, $this->getSteps(), $this->lastTime);
     }
 
-    
     public function testEliminarPaciente(array $paciente)
     {
         $this->createSteps();
@@ -201,17 +200,20 @@ class PacientesSelenium extends ComunSelenium
             $row = $this->findRowInTableByText('.exampleTable', 'V-' . $paciente['cedula']);
             $this->addSteps('p', "Fila del paciente V-{$paciente['cedula']} localizada en la tabla.");
 
+            // FIX: usamos JavaScript click en lugar de WebDriver click.
+            // El click normal a veces no dispara el listener del evento
+            // porque el elemento queda fuera del viewport o bajo algún
+            // overlay invisible. JS click bypasea eso completamente.
             $btnEliminar = $row->findElement(WebDriverBy::cssSelector('button.btn-eliminar'));
             $this->driver->executeScript(
                 "arguments[0].scrollIntoView({block:'center'});",
                 [$btnEliminar]
             );
-             // pequeña pausa tras el scroll
-            sleep(1);
+            // pequeña pausa tras el scroll
+            sleep(1); 
             $this->driver->executeScript("arguments[0].click();", [$btnEliminar]);
             $this->addSteps('p', 'Botón eliminar presionado (JS click).');
 
-        
             $this->confirmSweetAlert2("Eliminar SweetAlert2");
             sleep(2);
             $this->addSteps('p', "Eliminación de V-{$paciente['cedula']} confirmada.");
@@ -237,8 +239,10 @@ class PacientesSelenium extends ComunSelenium
             "Timeout esperando $descripcion (.swal2-popup no apareció en {$timeout}s)"
         );
 
+        // Click en confirmar
         $this->driver->findElement(WebDriverBy::cssSelector('.swal2-confirm'))->click();
 
+        // Esperar que desaparezca
         $this->driver->wait($timeout, 300)->until(
             WebDriverExpectedCondition::invisibilityOfElementLocated(
                 WebDriverBy::cssSelector('.swal2-popup')

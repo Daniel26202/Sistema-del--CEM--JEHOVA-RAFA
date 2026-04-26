@@ -5,6 +5,7 @@ namespace App\modelos;
 use App\modelos\Db;
 use App\modelos\ModeloUsuarios;
 use ZipArchive;
+require_once __DIR__ . "/../config/config.php";
 
 class ModeloMantenimiento extends ModelBase
 {
@@ -24,7 +25,6 @@ class ModeloMantenimiento extends ModelBase
 	{
 		parent::__construct($dbSystem);
 
-		require_once __DIR__ . "/../config/config.php";
 		$this->user = user_cos;
 		$this->password = pass_cos;
 		$this->dbname = dbname_cos;

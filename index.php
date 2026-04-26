@@ -1,8 +1,10 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
-
 use App\config\Rutas;
+// cargar variables de entorno desde el archivo .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 $url = isset($_GET['url']) ? $_GET['url'] :  "IniciarSesion/mostrarIniciarSesion";
 

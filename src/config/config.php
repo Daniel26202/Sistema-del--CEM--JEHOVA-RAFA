@@ -1,10 +1,10 @@
 <?php
 // config.php
 // define es para hacer una constante global
-define('host_cos', 'localhost');
-define('user_cos', 'root');
-define('pass_cos', '');
-define('dbsegname_cos', 'segurity');
-define('dbname_cos', 'bd');
+define('host_cos', $_ENV['DB_HOST']);
+define('user_cos', $_ENV['DB_USER']);
+define('pass_cos', $_ENV['DB_PASS']);
+define('dbsegname_cos', $_ENV['DB_NAME_SEGURITY']);
+define('dbname_cos', $_ENV['DB_NAME']);
 
-define('passwordResp_cos', '10qp20wo30ei40ru50ty');
+define('passwordResp_cos', $_ENV['PASSWORD_RESP']);
