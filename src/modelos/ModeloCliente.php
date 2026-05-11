@@ -39,9 +39,8 @@ class ModeloCliente extends ModelBase
     }
 
 
-    public function insertar()
+    private function insertar()
     {
-
         try {
             $data = [
                 'nacionalidad' => $this->getNacionalidad(),
@@ -70,8 +69,40 @@ class ModeloCliente extends ModelBase
         }
     }
 
+    public function guardarCliente($idUsuario = null)
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+        // Validación de datos obligatorios
+        $campos = [
+            $this->nacionalidad,
+            $this->cedula,
+            $this->nombre,
+            $this->apellido,
+            $this->telefono,
+            $this->direccion,
+            $this->fn,
+            $this->genero
+        ];
+        foreach ($campos as $campo) {
+            if (empty($campo)) {
+                throw new \Exception('No se permiten campos vacíos al registrar un cliente.');
+            }
+        }
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        if (class_exists('RateLimiter')) {
+            $limiter = new \RateLimiter();
+            $limiter->verificar('guardar_cliente_' . $idUsuario, 5, 1);
+        }
+        return $this->insertar();
+    }
 
-    public function update_cliente()
+
+    private function update_cliente()
     {
         try {
             $data = [
@@ -84,7 +115,6 @@ class ModeloCliente extends ModelBase
                 'fn' => $this->getFn(),
                 'genero' => $this->getGenero()
             ];
-
 
             $data2 = [
                 'id_cliente' => $this->getIdCliente()
@@ -101,11 +131,8 @@ class ModeloCliente extends ModelBase
 
             $cedula = $this->validarCedula(['cedula' => $this->getCedula()], true);
 
-
             if ($this->getCedulaRegistrada() == $cedula) {
-
                 $sql = "UPDATE cliente SET nacionalidad=:nacionalidad, cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono, direccion=:direccion, fn=:fn, genero=:genero WHERE id_cliente = :id";
-
                 $this->setSQL($sql);
                 $this->update($data, $this->getIdCliente());
             } else {
@@ -114,7 +141,6 @@ class ModeloCliente extends ModelBase
                     throw new \Exception("La cédula ya está registrada.");
                 } else {
                     $sql = "UPDATE cliente SET nacionalidad=:nacionalidad, cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono, direccion=:direccion, fn=:fn, genero=:genero WHERE id_cliente = :id";
-
                     $this->setSQL($sql);
                     $this->update($data, $this->getIdCliente());
                 }
@@ -126,7 +152,40 @@ class ModeloCliente extends ModelBase
         }
     }
 
-    public function deleteC()
+    public function editarCliente($idUsuario = null)
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+        // Validación de datos obligatorios
+        $campos = [
+            $this->id_cliente,
+            $this->nacionalidad,
+            $this->cedula,
+            $this->nombre,
+            $this->apellido,
+            $this->telefono,
+            $this->direccion,
+            $this->fn,
+            $this->genero
+        ];
+        foreach ($campos as $campo) {
+            if (empty($campo)) {
+                throw new \Exception('No se permiten campos vacíos al editar un cliente.');
+            }
+        }
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        if (class_exists('RateLimiter')) {
+            $limiter = new \RateLimiter();
+            $limiter->verificar('editar_cliente_' . $idUsuario, 5, 1);
+        }
+        return $this->update_cliente();
+    }
+
+    private function delete_cliente()
     {
         try {
             $data = [
@@ -151,7 +210,26 @@ class ModeloCliente extends ModelBase
             return $e->getMessage();
         }
     }
-    public function restablecer()
+
+    public function eliminarCliente($idUsuario = null)
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        if (class_exists('RateLimiter')) {
+            $limiter = new \RateLimiter();
+            $limiter->verificar('eliminar_cliente_' . $idUsuario, 5, 1);
+        }
+        if (empty($this->id_cliente)) {
+            throw new \Exception('El id del cliente no puede estar vacío.');
+        }
+        return $this->delete_cliente();
+    }
+    private function restablecer()
     {
         try {
             $data = [
@@ -175,6 +253,25 @@ class ModeloCliente extends ModelBase
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function restablecerCliente($idUsuario = null)
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        if (class_exists('RateLimiter')) {
+            $limiter = new \RateLimiter();
+            $limiter->verificar('restablecer_cliente_' . $idUsuario, 5, 1);
+        }
+        if (empty($this->id_cliente)) {
+            throw new \Exception('El id del cliente no puede estar vacío.');
+        }
+        return $this->restablecer();
     }
 
     public function buscar()

@@ -3,7 +3,6 @@
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter;
 // use App\
 
 
@@ -26,17 +25,18 @@ function getPacientesAjax($parametro)
 }
 
 /* hay q hacerlo con ajax, pero lo hice sencillo, no se si se vaya a pasar a ajax to esto, pa despues del sabado ;) */
- function getHistorialSalud($parametro)
+function getHistorialSalud($parametro)
 {
 	$modelo = new ModeloPacientes();
-	
+
 	$vistaActiva = 'historial';
 	require './src/vistas/vistaPacientes/pacientes.php';
 }
 
-function getHistorialSaludAjax()  {
-	$modelo =new ModeloPacientes();
-	
+function getHistorialSaludAjax()
+{
+	$modelo = new ModeloPacientes();
+
 	echo json_encode($modelo->indexHistorial());
 }
 
@@ -75,15 +75,11 @@ function guardar()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_paciente_' . $idUsuario, 5, 1);
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
-		
 
-		$modelo->setNacionalidad(isset($_POST['nacionalidad'])? $_POST['nacionalidad']: 'V');
+		$modelo->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
 		$modelo->setCedula($_POST['cedula']);
 		$modelo->setNombre($_POST['nombre']);
 		$modelo->setApellido($_POST['apellido']);
@@ -92,15 +88,15 @@ function guardar()
 		$modelo->setFn($_POST['fn']);
 		$modelo->setGenero($_POST['genero']);
 
-		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha Insertado un nuevo paciente");
 		$bitacora->setTabla("paciente");
 
-		$insercion = $modelo->insertar();
+		$insercion = $modelo->guardarPaciente($idUsuario);
 
 		// Verifica si es un array con clave "exito"
 		if (is_array($insercion) && $insercion[0] === "exito") {
-			$bitacora->insertarBitacora();
+			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
 			http_response_code(409);
@@ -127,13 +123,10 @@ function setPaciente()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('editar_paciente_' . $idUsuario, 5, 1);
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
-	
+
 
 		$modelo->setIdPaciente(intval($_POST['id']));
 		$modelo->setNacionalidad($_POST['nacionalidad']);
@@ -146,24 +139,22 @@ function setPaciente()
 		$modelo->setFn($_POST['fn']);
 		$modelo->setGenero($_POST['genero']);
 
-		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha modificado un paciente");
 		$bitacora->setTabla("paciente");
 
-		$edicion = $modelo->update_paciente();
+		$edicion = $modelo->editarPaciente($idUsuario);
 
 
 		//Verifica si es un array con clave "exito"
 		if (is_array($edicion) && $edicion[0] === "exito") {
-			$bitacora->insertarBitacora();
+			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $edicion]);
 			exit;
 		}
-
-
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -180,26 +171,23 @@ function eliminar($datos)
 	}
 
 	try {
-		
+
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
-		
+
 		$modelo->setIdPaciente($datos[0]);
 
-		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha eliminado un  paciente");
 		$bitacora->setTabla("paciente");
 
-		$eliminacion = $modelo->delete_paciente();
+		$eliminacion = $modelo->eliminarPaciente($idUsuario);
 
 		//Verifica si es un array con clave "exito"
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-			$bitacora->insertarBitacora();
+			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
@@ -225,24 +213,21 @@ function restablecer($datos)
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('restablecer_paciente_' . $idUsuario, 5, 1);
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
-		
+
 		$modelo->setIdPaciente($datos[0]);
 
-		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha restablecido un paciente");
 		$bitacora->setTabla("paciente");
 
-		$restablecer = $modelo->restablecer();
+		$restablecer = $modelo->restablecerPaciente($idUsuario);
 
 		//Verifica si es un array con clave "exito"
 		if (is_array($restablecer) && $restablecer[0] === "exito") {
-			$bitacora->insertarBitacora();
+			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);

@@ -16,7 +16,7 @@ class PacientesSelenium extends ComunSelenium
 
     private $datosPacientes = [
         [
-            'cedula'    => '32208990',
+            'cedula'    => '32211990',
             'nombre'    => 'Jose',
             'apellido'  => 'Perez',
             'telefono'  => '04260563224',

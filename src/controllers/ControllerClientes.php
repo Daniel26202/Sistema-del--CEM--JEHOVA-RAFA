@@ -39,7 +39,6 @@ function papeleraAjax()
 
 function guardar()
 {
-
     if (empty($_POST)) {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
@@ -47,12 +46,7 @@ function guardar()
     }
 
     try {
-
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('guardar_cliente_' . $idUsuario, 5, 1);
-
         $modeloCliente = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
@@ -64,15 +58,16 @@ function guardar()
         $modeloCliente->setDireccion($_POST['direccion']);
         $modeloCliente->setFn($_POST['fn']);
         $modeloCliente->setGenero($_POST['genero']);
-        $modeloBitacora->setId_usuario($_POST['id_usuario']);
+
+        $modeloBitacora->setId_usuario($idUsuario);
         $modeloBitacora->setActividad("Ha Insertado un nuevo cliente");
         $modeloBitacora->setTabla("cliente");
 
-        $insercion = $modeloCliente->insertar();
+        $insercion = $modeloCliente->guardarCliente($idUsuario);
 
         // Verifica si es un array con clave "exito"
         if (is_array($insercion) && $insercion[0] === "exito") {
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
             http_response_code(409);
@@ -88,14 +83,8 @@ function guardar()
 
 function setCliente()
 {
-
     try {
-
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('editar_cliente_' . $idUsuario, 5, 1);
-
         $modeloCliente = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
@@ -110,16 +99,14 @@ function setCliente()
         $modeloCliente->setFn($_POST['fn']);
         $modeloCliente->setGenero($_POST['genero']);
 
-        $modeloBitacora->setId_usuario($_POST['id_usuario']);
+        $modeloBitacora->setId_usuario($idUsuario);
         $modeloBitacora->setActividad("Ha modificado un cliente");
         $modeloBitacora->setTabla("cliente");
-        $edicion = $modeloCliente->update_cliente();
-
-        // echo json_encode($modeloCliente->getIdCliente());
+        $edicion = $modeloCliente->editarCliente($idUsuario);
 
         // Verifica si es un array con clave "exito"
         if (is_array($edicion) && $edicion[0] === "exito") {
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -136,28 +123,21 @@ function setCliente()
 function eliminar($datos)
 {
     try {
-
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('eliminar_cliente_' . $idUsuario, 5, 1);
-
         $id_cliente = $datos[0];
-        $id_usuario = $datos[1];
-
         $modeloCliente = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
         $modeloCliente->setIdCliente($id_cliente);
 
-        $modeloBitacora->setId_usuario($id_usuario);
+        $modeloBitacora->setId_usuario($idUsuario);
         $modeloBitacora->setActividad("Ha eliminado un cliente");
         $modeloBitacora->setTabla("cliente");
 
-        $eliminacion = $modeloCliente->deleteC();
+        $eliminacion = $modeloCliente->eliminarCliente($idUsuario);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -173,28 +153,21 @@ function eliminar($datos)
 function restablecer($datos)
 {
     try {
-
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('restablecer_cliente_' . $idUsuario, 5, 1);
-
         $id_cliente = $datos[0];
-        $id_usuario = $datos[1];
-
         $modeloCliente = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
         $modeloCliente->setIdCliente($id_cliente);
 
-        $modeloBitacora->setId_usuario($id_usuario);
+        $modeloBitacora->setId_usuario($idUsuario);
         $modeloBitacora->setActividad("Ha restablecido un cliente");
         $modeloBitacora->setTabla("cliente");
 
-        $restablecer = $modeloCliente->restablecer();
+        $restablecer = $modeloCliente->restablecerCliente($idUsuario);
 
         if (is_array($restablecer) && $restablecer[0] === "exito") {
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
