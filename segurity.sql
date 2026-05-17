@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 17-05-2026 a las 02:09:22
+-- Tiempo de generación: 17-05-2026 a las 15:16:39
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -840,7 +840,35 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (801, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 14:19:35'),
 (802, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-14 15:37:26'),
 (803, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-16 20:08:46'),
-(804, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-16 20:08:48');
+(804, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-16 20:08:48'),
+(805, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-16 20:21:31'),
+(806, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-16 20:23:42'),
+(807, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-16 20:23:44'),
+(808, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 09:50:22'),
+(809, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 09:57:07'),
+(810, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 09:58:12'),
+(811, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 09:58:47'),
+(812, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 09:58:50'),
+(813, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 09:59:00'),
+(814, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 10:01:32'),
+(815, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 10:01:37'),
+(816, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 10:14:53'),
+(817, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 10:15:11'),
+(818, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 10:17:38'),
+(819, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 10:31:40'),
+(820, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 10:52:55'),
+(821, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 10:55:27'),
+(822, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 10:55:56'),
+(823, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 10:56:02'),
+(824, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 10:56:20'),
+(825, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 10:56:31'),
+(826, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 11:03:33'),
+(827, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 11:05:44'),
+(828, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 11:05:49'),
+(829, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 11:06:01'),
+(830, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 11:06:12'),
+(831, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 11:06:31'),
+(832, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 11:06:33');
 
 -- --------------------------------------------------------
 
@@ -1076,7 +1104,7 @@ CREATE TABLE `usuario` (
   `correo` varchar(100) NOT NULL,
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `estado` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `token_session` varchar(55) NOT NULL
+  `token_session` varchar(55) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1084,8 +1112,8 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`, `token_session`) VALUES
-(1, 10, 'dragon-ball-z-super-3840x2160-13878.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', 'c303bef25f1a32857285d4fb68a9d617'),
-(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'DES', ''),
+(1, 10, 'dragon-ball-z-super-3840x2160-13878.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', '6b799db1a94c8c9ae08522db41647b61'),
+(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'DES', NULL),
 (43, 8, 'arte-dragon-ball-super-goku-and-black-goku_7680x4320_xtrafondos.com.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT', ''),
 (45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'DES', ''),
 (46, 8, 'doctor.png', 'weq', 'wbaez975@gmail.com', '$2y$10$WAANXp7gXMUe5ZixhhN4IOOfGrqKYsv7PeHzhf8cgf8xd56nTbqly', 'ACT', ''),
@@ -1153,7 +1181,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=805;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=833;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
