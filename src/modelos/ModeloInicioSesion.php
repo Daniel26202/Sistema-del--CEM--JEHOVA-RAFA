@@ -128,6 +128,19 @@ class ModeloInicioSesion extends ModelBase
 		}
 		return false;
 	}
+
+
+	public function verificacionUsuarioToken() {
+		$data=[
+			'id_usuario'=>$this->getIdUsuario()
+		];
+
+		$sql = 'SELECT usuario FROM usuario WHERE id_usuario =:id_usuario AND token_session is not NULL';
+
+		$this->setSQL($sql);
+		$listData = $this->search($data, false);
+		return !empty($listData) ? 1 : 0;
+	}
 	
 
 	public function getPassword()

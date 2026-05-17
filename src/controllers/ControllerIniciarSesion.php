@@ -106,7 +106,15 @@ function iniciarSesion()
         $modelo->registrarIntento();
 
 
-        if (session_status() === PHP_SESSION_NONE) {
+        $modelo->setIdUsuario($validar['id_usuario']);
+        //validat si la session esta previamente iniciada en otra parte
+      if($modelo->verificacionUsuarioToken()){
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => "Ya hay una session abierta con ese Usuario. para ingresar nuevamente tiene que cerrar todas las sessiones abiertas."]);
+            exit;
+      }
+
+      if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         //Hrllofor my computer yes after 

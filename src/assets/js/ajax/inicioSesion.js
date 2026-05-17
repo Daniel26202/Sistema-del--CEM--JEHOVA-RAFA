@@ -52,7 +52,7 @@ const sendData = async (form) => {
       }
 
     
-      alertError("Error", "La contraseña o usuario son incorrectos.");
+      alertError("Error", result.error);
     }
   } catch (error) {
     alertError("Error", error);

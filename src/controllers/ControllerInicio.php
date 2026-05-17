@@ -3,7 +3,7 @@
 use App\modelos\ModeloInicio;
 use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
+use App\modelos\ModeloUsuarios;
 use App\modelos\ModeloDoctores;
 
 
@@ -13,12 +13,21 @@ function inicio($parametro)
 {
     $modeloInicio = new ModeloInicio();
     $bitacora = new ModeloBitacora();
+    $usuario = new ModeloUsuarios();
 
     if ($parametro != "" && $parametro[0] == "cerrar") {
         // verifica si la sesión esta activa.
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
+
+        //actualizar el token de inicio de session a su estado original es decir Null
+            //actualizar el token del usuario
+        $usuario->setIdUsuario($_SESSION['id_usuario']);
+        $usuario->setTokenInicioSesion(NULL);
+        $usuario->actualizarTokenInicioSesion();
+    
+
         // Guardar la bitácora
 
         $bitacora->setId_usuario($_SESSION['id_usuario']);
