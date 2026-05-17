@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
+use App\config\RateLimiter;
 
 
 class ModeloPacientes extends ModelBase
@@ -60,7 +61,7 @@ class ModeloPacientes extends ModelBase
 	}
 
 
-	public function insertar()
+	private function insertar()
 	{
 
 		try {
@@ -93,7 +94,7 @@ class ModeloPacientes extends ModelBase
 	}
 
 
-	public function update_paciente()
+	private function update_paciente()
 	{
 		try {
 
@@ -148,7 +149,7 @@ class ModeloPacientes extends ModelBase
 		}
 	}
 
-	public function delete_paciente()
+	private function delete_paciente()
 	{
 		try {
 
@@ -174,7 +175,7 @@ class ModeloPacientes extends ModelBase
 			return $e->getMessage();
 		}
 	}
-	public function restablecer()
+	private function restablecer()
 	{
 		try {
 
@@ -219,6 +220,89 @@ class ModeloPacientes extends ModelBase
 			return $e->getMessage();
 		}
 	}
+
+
+	// Métodos públicos con validación básica de sesión para exponer los privados
+	public function guardarPaciente($idUsuario = null)
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+		// Validación de datos obligatorios
+		$campos = [
+			$this->nacionalidad,
+			$this->cedula,
+			$this->nombre,
+			$this->apellido,
+			$this->telefono,
+			$this->direccion,
+			$this->fn,
+			$this->genero
+		];
+		foreach ($campos as $campo) {
+			if (empty($campo)) {
+				throw new \Exception('No se permiten campos vacíos al registrar un paciente.');
+			}
+		}
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('guardar_paciente_' . $idUsuario, 5, 1);
+
+		return $this->insertar();
+	}
+
+	public function editarPaciente($idUsuario = null)
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('editar_paciente_' . $idUsuario, 5, 1);
+
+		// Validación de permisos si aplica
+		return $this->update_paciente();
+	}
+
+	public function eliminarPaciente($idUsuario = null)
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
+
+		// Validación de permisos si aplica
+		return $this->delete_paciente();
+	}
+
+	public function restablecerPaciente($idUsuario = null)
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		$limiter = new RateLimiter();
+		$limiter->verificar('restablecer_paciente_' . $idUsuario, 5, 1);
+
+		// Validación de permisos si aplica
+		return $this->restablecer();
+	}
+
+
 
 	public function getIdPaciente()
 	{
@@ -318,7 +402,7 @@ class ModeloPacientes extends ModelBase
 
 	public function setCedulaRegistrada($cedula)
 	{
-		if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedula)) {
+		if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
 			throw new \InvalidArgumentException("La cédula registrada debe contener entre 7 y 8 dígitos.");
 		}
 		$this->cedulaRegistrada = $cedula;

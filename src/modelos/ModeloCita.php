@@ -90,7 +90,7 @@ class ModeloCita extends ModelBase
 		}
 	}
 
-	public function insertarCita()
+	private function insertarCita()
 	{
 		try {
 			$this->beginTransaction();
@@ -112,7 +112,6 @@ class ModeloCita extends ModelBase
 
 			$sql = "INSERT INTO cita(id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente, hora_salida, doctor) VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente,:hora_salida, :doctor)";
 
-
 			$this->setSQL($sql);
 			$this->create($data);
 			$this->commit();
@@ -123,8 +122,39 @@ class ModeloCita extends ModelBase
 		}
 	}
 
+	public function guardarCita($idUsuario = null)
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+		// Validación de datos obligatorios
+		$campos = [
+			$this->id_paciente,
+			$this->id_servicioMedico,
+			$this->fecha,
+			$this->hora,
+			$this->estado,
+			$this->id_doctor,
+			$this->horaSalida
+		];
+		foreach ($campos as $campo) {
+			if (empty($campo)) {
+				throw new \Exception('No se permiten campos vacíos al registrar una cita.');
+			}
+		}
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		if (class_exists('RateLimiter')) {
+			$limiter = new \RateLimiter();
+			$limiter->verificar('guardar_cita_' . $idUsuario, 5, 1);
+		}
+		return $this->insertarCita();
+	}
 
-	public function eliminarCita()
+
+	private function eliminarCitaPrivada()
 	{
 		try {
 			$data = [
@@ -148,6 +178,25 @@ class ModeloCita extends ModelBase
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+	public function eliminarCitaPublic($idUsuario = null)
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		if (class_exists('RateLimiter')) {
+			$limiter = new \RateLimiter();
+			$limiter->verificar('eliminar_cita_' . $idUsuario, 5, 1);
+		}
+		if (empty($this->id_cita)) {
+			throw new \Exception('El id de la cita no puede estar vacío.');
+		}
+		return $this->eliminarCitaPrivada();
 	}
 
 
@@ -182,10 +231,9 @@ class ModeloCita extends ModelBase
 
 	//editar
 
-	public function update_cita()
+	private function update_cita()
 	{
 		try {
-
 			$sql = " SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria =:id AND estado  ='ACT' ";
 			$this->setSQL($sql);
 			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico()], false);
@@ -210,6 +258,38 @@ class ModeloCita extends ModelBase
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+	public function editarCita($idUsuario = null)
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+		// Validación de datos obligatorios
+		$campos = [
+			$this->id_cita,
+			$this->id_paciente,
+			$this->id_servicioMedico,
+			$this->fecha,
+			$this->hora,
+			$this->estado,
+			$this->id_doctor,
+			$this->horaSalida
+		];
+		foreach ($campos as $campo) {
+			if (empty($campo)) {
+				throw new \Exception('No se permiten campos vacíos al editar una cita.');
+			}
+		}
+		// RATE LIMIT: 5 peticiones cada 1 segundos
+		if (class_exists('RateLimiter')) {
+			$limiter = new \RateLimiter();
+			$limiter->verificar('editar_cita_' . $idUsuario, 5, 1);
+		}
+		return $this->update_cita();
 	}
 
 

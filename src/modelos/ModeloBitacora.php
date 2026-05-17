@@ -29,7 +29,7 @@ class ModeloBitacora extends ModelBase
     }
 
 
-    public function insertarBitacora()
+    private function insertarBitacoraPrivada()
     {
         try {
             $data = [
@@ -48,6 +48,21 @@ class ModeloBitacora extends ModelBase
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function insertarBitacora($idUsuario = null)
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+        // Validación de campos obligatorios
+        if (empty($this->tabla) || empty($this->actividad)) {
+            throw new \Exception('No se permiten campos vacíos en la bitácora (tabla o actividad).');
+        }
+        return $this->insertarBitacoraPrivada();
     }
 
     public function setId_usuario($id_usuario)
