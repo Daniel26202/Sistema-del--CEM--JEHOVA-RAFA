@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 21-04-2026 a las 18:46:14
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 17-05-2026 a las 02:09:22
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -837,7 +837,10 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (798, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 14:17:54'),
 (799, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 14:17:55'),
 (800, 1, 'cerrar session', 'Ha cerrado la session', '2026-04-21 14:19:26'),
-(801, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 14:19:35');
+(801, 1, 'inicio sesion', 'Ha iniciado una session', '2026-04-21 14:19:35'),
+(802, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-14 15:37:26'),
+(803, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-16 20:08:46'),
+(804, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-16 20:08:48');
 
 -- --------------------------------------------------------
 
@@ -852,13 +855,6 @@ CREATE TABLE `intentos_login` (
   `ultimo_intento` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `bloqueado` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `intentos_login`
---
-
-INSERT INTO `intentos_login` (`ip_usuario`, `id_usuario`, `cantidad_intentos`, `ultimo_intento`, `bloqueado`) VALUES
-('127.0.0.1', 1, 3, '2026-04-21 18:28:38', 1);
 
 -- --------------------------------------------------------
 
@@ -1079,22 +1075,23 @@ CREATE TABLE `usuario` (
   `usuario` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `correo` varchar(100) NOT NULL,
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `estado` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
+  `estado` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `token_session` varchar(55) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`) VALUES
-(1, 10, 'dragon-ball-z-super-3840x2160-13878.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT'),
-(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'DES'),
-(43, 8, 'arte-dragon-ball-super-goku-and-black-goku_7680x4320_xtrafondos.com.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT'),
-(45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'DES'),
-(46, 8, 'doctor.png', 'weq', 'wbaez975@gmail.com', '$2y$10$WAANXp7gXMUe5ZixhhN4IOOfGrqKYsv7PeHzhf8cgf8xd56nTbqly', 'ACT'),
-(52, 8, 'doctor.png', 'WDaniel1', 'wbaez975@gmail.com', '$2y$10$PYYiGKo3RDTI3JN6eiR6lexHNG90m0WWC1VgAg0cmhKfw3LCmXdaS', 'ACT'),
-(53, 8, 'goku-kintoun-cloud-kame-house-island-dragon-ball-2k-wallpaper-uhdpaper.com-706@5@h.jpg', 'WDaniel000', 'correo@gmail.com', '$2y$10$eDqE5UYML.46g9jv9sK2iusuF4nqXEeCHFd6Ck/yLi1xRRCT/HIc.', 'ACT'),
-(54, 11, 'goku-ultra-instinct-transformacion-dragon-ball-super_1920x1080_xtrafondos.com.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$i5q.9zYhTYnZmeFnD0triO4f5KwPK/pYU8AK841A.m554dHmnG.ea', 'ACT');
+INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`, `token_session`) VALUES
+(1, 10, 'dragon-ball-z-super-3840x2160-13878.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', 'c303bef25f1a32857285d4fb68a9d617'),
+(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'DES', ''),
+(43, 8, 'arte-dragon-ball-super-goku-and-black-goku_7680x4320_xtrafondos.com.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT', ''),
+(45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'DES', ''),
+(46, 8, 'doctor.png', 'weq', 'wbaez975@gmail.com', '$2y$10$WAANXp7gXMUe5ZixhhN4IOOfGrqKYsv7PeHzhf8cgf8xd56nTbqly', 'ACT', ''),
+(52, 8, 'doctor.png', 'WDaniel1', 'wbaez975@gmail.com', '$2y$10$PYYiGKo3RDTI3JN6eiR6lexHNG90m0WWC1VgAg0cmhKfw3LCmXdaS', 'ACT', ''),
+(53, 8, 'goku-kintoun-cloud-kame-house-island-dragon-ball-2k-wallpaper-uhdpaper.com-706@5@h.jpg', 'WDaniel000', 'correo@gmail.com', '$2y$10$eDqE5UYML.46g9jv9sK2iusuF4nqXEeCHFd6Ck/yLi1xRRCT/HIc.', 'ACT', ''),
+(54, 11, 'goku-ultra-instinct-transformacion-dragon-ball-super_1920x1080_xtrafondos.com.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$i5q.9zYhTYnZmeFnD0triO4f5KwPK/pYU8AK841A.m554dHmnG.ea', 'ACT', '');
 
 --
 -- Índices para tablas volcadas
@@ -1156,7 +1153,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=802;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=805;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`

@@ -128,6 +128,7 @@ class ModeloInicioSesion extends ModelBase
 		}
 		return false;
 	}
+	
 
 	public function getPassword()
 	{

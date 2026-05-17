@@ -2,6 +2,7 @@
 
 use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloUsuarios;
 
 // require_once __DIR__ . "/../config/config.php";
 
@@ -21,8 +22,10 @@ function logIn($parametro)
 
 function iniciarSesion()
 {
-    $modelo = new ModeloInicioSesion(false);
-    $bitacora = new ModeloBitacora(false);
+    $modelo = new ModeloInicioSesion();
+    $bitacora = new ModeloBitacora();
+    $usuario = new ModeloUsuarios();
+
     $ipCliente = $_SERVER['REMOTE_ADDR']; // Obtenemos la IP del que intenta entrar
     $modelo->setIpUsuario($ipCliente);
 
@@ -80,113 +83,117 @@ function iniciarSesion()
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['ok' => false, 'error' => 'Campos vacíos']);
         exit;
-    } else {
-        $modelo->setUsuario($_POST['username']);
-        $modelo->setPassword($_POST['password']);
+        return;
+    }
+
+    $modelo->setUsuario($_POST['username']);
+    $modelo->setPassword($_POST['password']);
 
 
 
-        $data = [
-            "usuario" => $modelo->getUsuario()
-        ];
-        $validarUsuarioExistente = $modelo->validarUsuarioExistente($data);
-        $validar = $modelo->validarIniciarSesion($data);
+    $data = [
+        "usuario" => $modelo->getUsuario()
+    ];
+    $validarUsuarioExistente = $modelo->validarUsuarioExistente($data);
+    $validar = $modelo->validarIniciarSesion($data);
 
-        // 3. Configurar datos para el registro de auditoría
-        $modelo->setIpUsuario($ipCliente);
-        $modelo->setIdUsuario($validarUsuarioExistente != false ? $validarUsuarioExistente['id_usuario'] : null);
-        if ($validar) {
+    // 3. Configurar datos para el registro de auditoría
+    $modelo->setIpUsuario($ipCliente);
+    $modelo->setIdUsuario($validarUsuarioExistente != false ? $validarUsuarioExistente['id_usuario'] : null);
+
+    if ($validar) {
+        $modelo->setIntentosFallidos(0);
+        $modelo->registrarIntento();
 
 
-            $modelo->setIntentosFallidos(0);
-            $modelo->registrarIntento();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        //Hrllofor my computer yes after 
 
+        //token random for session for bloqued my system clicnic
+        
+        //crear token aleatorio para la session
+        $token_session = bin2hex(random_bytes(16));
 
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
+        //actualizar el token del usuario
+        $usuario->setIdUsuario($validar['id_usuario']);
+        $usuario->setTokenInicioSesion($token_session);
+        $usuario->actualizarTokenInicioSesion();
 
-            $session_inciada_por_usuario = isset($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
+        // Inicializar variables de sesión
+        $_SESSION['usuario'] = $_POST['username'];
+        $_SESSION['rol'] = $validar['rol'] ?? null;
+        $_SESSION['id_rol'] = $validar['id_rol'] ?? null;
+        $_SESSION['id_usuario'] = $validar['id_usuario'] ?? null;
+        $_SESSION['id_personal'] = $validar['id_personal'] ?? null;
+        $_SESSION['nombre'] = $validar['nombre_personal'] ?? null;
+        $_SESSION['apellido'] = $validar['apellido_personal'] ?? null;
+        $_SESSION['token_session'] = $token_session ?? null;
+        $bitacora->setId_usuario($_SESSION['id_usuario']);
+        $bitacora->setActividad("Ha iniciado una session");
+        $bitacora->setTabla("inicio sesion");
 
-            if ($session_inciada_por_usuario) {
-                http_response_code(409);
-                header('Content-Type: application/json; charset=utf-8');
-                echo json_encode(['ok' => false, 'error' => 'session_active']);
-                exit;
-            }
+        $bitacora->insertarBitacora();
+        //websoket
+        $host = '127.0.0.1';
+        $puerto = 8080;
 
-            // Inicializar variables de sesión
-            $_SESSION['usuario'] = $_POST['username'];
-            $_SESSION['rol'] = $validar['rol'] ?? null;
-            $_SESSION['id_rol'] = $validar['id_rol'] ?? null;
-            $_SESSION['id_usuario'] = $validar['id_usuario'] ?? null;
-            $_SESSION['id_personal'] = $validar['id_personal'] ?? null;
-            $_SESSION['nombre'] = $validar['nombre_personal'] ?? null;
-            $_SESSION['apellido'] = $validar['apellido_personal'] ?? null;
-            $bitacora->setId_usuario($_SESSION['id_usuario']);
-            $bitacora->setActividad("Ha iniciado una session");
-            $bitacora->setTabla("inicio sesion");
+        $socket_activo = @fsockopen($host, $puerto, $errno, $errstr, 1);
 
-            $bitacora->insertarBitacora();
-            //websoket
-            $host = '127.0.0.1';
-            $puerto = 8080;
+        if (!$socket_activo) {
 
-            $socket_activo = @fsockopen($host, $puerto, $errno, $errstr, 1);
+            $ruta_base = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webSocket.php";
+            $ruta_real = realpath($ruta_base);
 
-            if (!$socket_activo) {
+            if ($ruta_real && file_exists($ruta_real)) {
 
-                $ruta_base = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webSocket.php";
-                $ruta_real = realpath($ruta_base);
+                //para windows
+                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 
-                if ($ruta_real && file_exists($ruta_real)) {
+                    $php_exe = "C:\\xampp\\php\\php.exe";
 
-                    //para windows
-                    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    if (!file_exists($php_exe)) {
 
-                        $php_exe = "C:\\xampp\\php\\php.exe";
-
-                        if (!file_exists($php_exe)) {
-
-                            $php_exe = "D:\\xampp\\php\\php.exe";
-                        }
-
-                        if (file_exists($php_exe)) {
-                            pclose(popen("start /B \"\" \"$php_exe\" \"$ruta_real\" > NUL 2>&1", "r"));
-                        } else {
-                            error_log("JEHOVA-RAFA: No se encontró php.exe en las rutas de XAMPP.");
-                        }
-                    } else {
-                        //para linux
-                        exec("php \"$ruta_real\" > /dev/null 2>&1 &");
+                        $php_exe = "D:\\xampp\\php\\php.exe";
                     }
 
-                    usleep(500000); // 0.5 segundos
+                    if (file_exists($php_exe)) {
+                        pclose(popen("start /B \"\" \"$php_exe\" \"$ruta_real\" > NUL 2>&1", "r"));
+                    } else {
+                        error_log("JEHOVA-RAFA: No se encontró php.exe en las rutas de XAMPP.");
+                    }
                 } else {
-                    error_log("JEHOVA-RAFA Error: No se encontró webSocket.php en: " . ($ruta_real ?: $ruta_base));
+                    //para linux
+                    exec("php \"$ruta_real\" > /dev/null 2>&1 &");
                 }
+
+                usleep(500000); // 0.5 segundos
             } else {
-
-                fclose($socket_activo);
+                error_log("JEHOVA-RAFA Error: No se encontró webSocket.php en: " . ($ruta_real ?: $ruta_base));
             }
-
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
 
-            $modelo->setIntentosFallidos(1);
-            $modelo->registrarIntento();
-
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $validar]);
-            exit;
+            fclose($socket_activo);
         }
+
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+    } else {
+
+        $modelo->setIntentosFallidos(1);
+        $modelo->registrarIntento();
+
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $validar]);
+        exit;
     }
-    //         } else {
-    //             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
-    //         }
-    //     }
-    // }
 }
+//         } else {
+//             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/captcha");
+//         }
+//     }
+// }
+
 
 //Metodo para mostrar la vista de la pagina de error ç
 function error()

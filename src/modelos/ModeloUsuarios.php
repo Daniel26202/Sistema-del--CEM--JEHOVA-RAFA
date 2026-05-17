@@ -8,7 +8,7 @@ use App\modelos\ModelBase;
 class ModeloUsuarios extends ModelBase
 {
 
-    private $id_usuario, $usuario, $password, $correo, $imagen, $imagenTemporal, $id_rol, $usuarioRegistrado;
+    private $id_usuario, $usuario, $password, $correo, $imagen, $imagenTemporal, $id_rol, $usuarioRegistrado, $token_inicio_sesion;
 
     public function __construct($dbSystem = false)
     {
@@ -25,6 +25,7 @@ class ModeloUsuarios extends ModelBase
             return $e->getMessage();
         }
     }
+
 
 
     //buscamos a los usuarios en la base de datos
@@ -196,6 +197,35 @@ class ModeloUsuarios extends ModelBase
         }
     }
 
+    //metodo para actualizar el token de inicio de sesión del usuario
+    public function actualizarTokenInicioSesion()
+    {
+        try {
+            $data = [
+                'token_session' => $this->getTokenInicioSesion(),
+            ];
+
+            $sql = "UPDATE usuario SET token_session = :token_session WHERE id_usuario = :id";
+            $this->setSQL($sql);
+
+            $this->update($data, $this->getIdUsuario());
+            return ['exito', $data];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    // Dentro de tu modelo
+    public function verificarTokenActivo()
+    {
+        // Buscamos el token que manda actualmente en la base de datos
+        $sql = "SELECT token_session FROM segurity.usuario WHERE id_usuario = :id";
+        $this->setSQL($sql);
+        $resultado = $this->search(['id' => $this->getIdUsuario()], false);
+
+        return $resultado ? $resultado['token_session'] : null;
+    }
+
     public function getIdUsuario()
     {
         return $this->id_usuario;
@@ -231,6 +261,10 @@ class ModeloUsuarios extends ModelBase
     public function getImagen()
     {
         return $this->imagen;
+    }
+    public function getTokenInicioSesion()
+    {
+        return $this->token_inicio_sesion;
     }
 
 
@@ -335,5 +369,10 @@ class ModeloUsuarios extends ModelBase
             throw new \InvalidArgumentException("El correo debe estar bien escrito.");
         }
         $this->correo = $correo;
+    }
+
+    public function setTokenInicioSesion($token_inicio_sesion)
+    {
+        $this->token_inicio_sesion = $token_inicio_sesion;
     }
 }
