@@ -3,10 +3,11 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
+
 class ModeloCategoria extends ModelBase
 {
 
-    private $idCategoria ,$nombre;
+    private $idCategoria, $nombre;
 
     public function __construct($dbSystem = true)
     {
@@ -35,17 +36,28 @@ class ModeloCategoria extends ModelBase
             return $e->getMessage();
         }
     }
-
+    public function BCategoria($data)
+    {
+        try {
+            $sql = "SELECT * FROM categoria_servicio WHERE nombre = :nombre AND estado = 'ACT'";
+            $this->setSQL($sql);
+            return $this->search($data);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
     public function registrarCategoria()
     {
         try {
-            $data =[
+            $data = [
                 'nombre' => $this->getNombre(),
                 'estado' => 'ACT'
             ];
-
-
-            $sql= "INSERT INTO categoria_servicio (nombre, estado) VALUES (:nombre, :estado)";
+            $listData = $this->BCategoria(['nombre' => $this->getNombre()]);
+            if (!empty($listData)) {
+                throw new \Exception("La categoría ya existe en el sistema.");
+            }
+            $sql = "INSERT INTO categoria_servicio (nombre, estado) VALUES (:nombre, :estado)";
             $this->setSQL($sql);
             $this->create($data);
 
@@ -73,7 +85,7 @@ class ModeloCategoria extends ModelBase
             $sql = "UPDATE categoria_servicio SET estado = 'DES' WHERE id_categoria =:id";
             $this->setSQL($sql);
             $this->update_logic($data['id_categoria']);
-            
+
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -84,7 +96,7 @@ class ModeloCategoria extends ModelBase
     {
         return $this->idCategoria;
     }
-    
+
     public function getNombre()
     {
         return $this->nombre;
@@ -98,8 +110,8 @@ class ModeloCategoria extends ModelBase
 
     public function setNombre($nombre)
     {
-        if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombre)) {
-            throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
+        if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-zA-ZáéíóúñÁÉÍÓÚÑ\s]{2,49}$/", $nombre)) {
+            throw new \InvalidArgumentException("La categoría debe iniciar con mayúscula, contener al menos 3 letras y solo puede incluir letras y espacios.");
         }
 
         $this->nombre = $nombre;

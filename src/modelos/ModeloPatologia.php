@@ -63,9 +63,16 @@ class ModeloPatologia extends ModelBase
 
 
             if ($this->nombrePatologia(['nombrePatologia' => $this->getNombrePatologia()])) {
-                throw new \Exception("La patologia ya existe en el sistema.");
+                throw new \Exception("La patología ya existe en el sistema.");
             }
-
+            
+            $sql = "SELECT * FROM patologia WHERE estado = 'DES' AND nombre_patologia = :nombrePatologia";
+            $this->setSQL($sql);
+            $listData = $this->search(['nombrePatologia' => $this->getNombrePatologia()], false);
+            if (!empty($listData)) {
+                throw new \Exception("La patología ya existe en el sistema, esta en papelera.");
+            }
+            
             $sql = "INSERT INTO patologia (nombre_patologia, estado) VALUES (:nombrePatologia, :estado)";
             $this->setSQL($sql);
 
@@ -188,8 +195,8 @@ class ModeloPatologia extends ModelBase
 
     public function setNombrePatologia($nombrePatologia)
 	{
-		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/", $nombrePatologia)) {
-			throw new \InvalidArgumentException("El nombre debe iniciar con mayúscula, tener al menos 3 letras y puede incluir un segundo nombre separado por un espacio.");
+		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-zA-ZáéíóúñÁÉÍÓÚÑ0-9\s-]{2,70}$/", $nombrePatologia)) {
+			throw new \InvalidArgumentException("El nombre de la patología debe iniciar con mayúscula, tener al menos 3 caracteres y solo puede incluir letras, números, espacios o guiones.");
 		}
 		$this->nombrePatologia = $nombrePatologia;
 	}

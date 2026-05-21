@@ -60,7 +60,7 @@ function registrarPatologia()
 		$modelo = new ModeloPatologia();
 		$bitacora = new ModeloBitacora();
 
-		$modelo->setNombrePatologia($_POST["nombre"]);
+		$modelo->setNombrePatologia($_POST["patologia"]);
 
 		$bitacora->setId_usuario($_POST['id_usuario']);
 		$bitacora->setActividad("Ha Insertado un nuevo patologia");

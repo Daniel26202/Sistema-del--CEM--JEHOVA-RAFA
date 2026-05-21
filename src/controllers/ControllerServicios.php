@@ -268,7 +268,7 @@ function registrarCategoria()
 		$categoria = new ModeloCategoria();
 		$bitacora = new ModeloBitacora();
 
-		$categoria->setNombre($_POST["nombre"]);
+		$categoria->setNombre($_POST["categoria"]);
 
 		$insercion = $categoria->registrarCategoria();
 

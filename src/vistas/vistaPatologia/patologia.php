@@ -24,9 +24,9 @@
                     </button>
                 </div>
 
-                
 
-                 <div class="d-flex flex-column flex-md-row">
+
+                <div class="d-flex flex-column flex-md-row">
                     <a href="<?= $vistaActiva == 'papelera' ? '/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias' : '/Sistema-del--CEM--JEHOVA-RAFA/Patologias/papeleraPatologias' ?>" class="btn me-md-2 lista-menu-pacientes text-decoration-none"><?= $vistaActiva == 'papelera' ? 'Patologias' : 'Papelera' ?></a>
                 </div>
 
