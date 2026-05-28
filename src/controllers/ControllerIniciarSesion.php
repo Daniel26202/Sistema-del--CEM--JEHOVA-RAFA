@@ -107,20 +107,22 @@ function iniciarSesion()
 
 
         $modelo->setIdUsuario($validar['id_usuario']);
-        //validat si la session esta previamente iniciada en otra parte
-      if($modelo->verificacionUsuarioToken()){
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => "Ya hay una session abierta con ese Usuario. para ingresar nuevamente tiene que cerrar todas las sessiones abiertas."]);
-            exit;
-      }
-
-      if (session_status() === PHP_SESSION_NONE) {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+        //validat si la session esta previamente iniciada en otra parte
+        if ($modelo->verificacionUsuarioToken()) {
+            $_SESSION['id_usuario_verificar'] = $validar['id_usuario'];
+
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => "session_active"]);
+            exit;
+        }
+
         //Hrllofor my computer yes after 
 
         //token random for session for bloqued my system clicnic
-        
+
         //crear token aleatorio para la session
         $token_session = bin2hex(random_bytes(16));
 

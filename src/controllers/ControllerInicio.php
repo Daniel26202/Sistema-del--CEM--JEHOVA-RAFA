@@ -22,11 +22,11 @@ function inicio($parametro)
         }
 
         //actualizar el token de inicio de session a su estado original es decir Null
-            //actualizar el token del usuario
+        //actualizar el token del usuario
         $usuario->setIdUsuario($_SESSION['id_usuario']);
         $usuario->setTokenInicioSesion(NULL);
         $usuario->actualizarTokenInicioSesion();
-    
+
 
         // Guardar la bitácora
 
@@ -45,7 +45,7 @@ function inicio($parametro)
         exit();
     }
 
-    if(!isset($_SESSION['id_personal'])){
+    if (!isset($_SESSION['id_personal'])) {
         header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
         exit();
     }
@@ -55,7 +55,7 @@ function inicio($parametro)
     $datos_de_personal =  $modeloInicio->datos_doctor(['id_usuario' => $_SESSION["id_usuario"]]);
 
     $ayuda = "btnayudaInicio";
-    $vistaActiva ="inicio";
+    $vistaActiva = "inicio";
 
     require_once './src/vistas/dashboard.php';
 }
@@ -113,7 +113,7 @@ function citasDeHoy()
 function cerrarSession()
 {
     $bitacora = new ModeloBitacora(false);
-
+    $usuario = new ModeloUsuarios();
     if (empty($_GET)) {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
@@ -124,8 +124,11 @@ function cerrarSession()
         session_start();
     }
     // Guardar la bitácora
-
-    $bitacora->setId_usuario($_SESSION['id_usuario']);
+    $usuario->setTokenInicioSesion(null);
+    $usuario->setIdUsuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
+    $usuario->actualizarTokenInicioSesion();
+    
+    $bitacora->setId_usuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
     $bitacora->setActividad("Ha cerrado la session");
     $bitacora->setTabla("cerrar session");
 
