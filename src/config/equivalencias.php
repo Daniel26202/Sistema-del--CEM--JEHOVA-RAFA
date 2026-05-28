@@ -82,6 +82,7 @@ return [
     "validarHorariosDisponlibles" => "consultar",
     "mostrarServiciosMedicosAjax" => "consultar",
     'mostrarDataPaciente' => 'consultar',
+    'retornarTodasLasCitas' => 'consultar',
 
 
     //Servicios Medicos
