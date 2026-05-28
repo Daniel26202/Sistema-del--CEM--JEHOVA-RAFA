@@ -3,6 +3,7 @@
 use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloUsuarios;
+use Firebase\JWT\JWT;
 
 // require_once __DIR__ . "/../config/config.php";
 
@@ -205,8 +206,115 @@ function iniciarSesion()
 // }
 
 
+
+
+
 //Metodo para mostrar la vista de la pagina de error ç
 function error()
 {
     require_once __DIR__ . "/../../src/vistas/vistaIniciarSesion/vistaError.php";
+}
+
+
+
+
+
+function iniciarSesionMovil()
+{
+    $modelo = new ModeloInicioSesion();
+    $bitacora = new ModeloBitacora();
+
+    // 1. Llegim el JSON en cru enviat per la App / Thunder Client
+    $jsonContenido = file_get_contents('php://input');
+    $datosInput = json_decode($jsonContenido, true);
+
+    $userParam = $datosInput['username'] ?? '';
+    $passParam = $datosInput['password'] ?? '';
+
+    // Validació de camps buits
+    if ($userParam === '' || $passParam === '') {
+        http_response_code(409);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['ok' => false, 'error' => 'Camps buits']);
+        exit;
+    }
+
+    $ipCliente = $_SERVER['REMOTE_ADDR'];
+    $modelo->setIpUsuario($ipCliente);
+
+    // Validació de seguretat contra bloquejos d'IP per intents fallits
+    if ($modelo->verificarBloqueoIP()) {
+        http_response_code(429);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'ok' => false,
+            'error' => 'Bloquejat',
+            'message' => 'Massa intents fallits. Accés restringit durant 15 minuts.'
+        ]);
+        exit;
+    }
+
+    $modelo->setUsuario($userParam);
+    $modelo->setPassword($passParam);
+
+    $data = [
+        "usuario" => $modelo->getUsuario()
+    ];
+
+    $validarUsuarioExistente = $modelo->validarUsuarioExistente($data);
+    $validar = $modelo->validarIniciarSesion($data);
+
+    $modelo->setIdUsuario($validarUsuarioExistente != false ? $validarUsuarioExistente['id_usuario'] : null);
+
+    if ($validar) {
+        $modelo->setIntentosFallidos(0);
+        $modelo->registrarIntento();
+        $modelo->setIdUsuario($validar['id_usuario']);
+
+        // ❌ QUITA ESTO — causa el 500 cuando no hay sesión web activa
+        // if ($modelo->verificacionUsuarioToken()) { ... }
+
+        // ✅ Sigue directo al JWT
+        $clave_secreta = "Clave_Secreta_Criptografica_CEM_JEHOVA_RAFA_2026";
+        $payload = [
+            'iss' => 'http://192.168.1.39',
+            'iat' => time(),
+            'exp' => time() + (60 * 60 * 36),
+            'id_usuario' => $validar['id_usuario'],
+            'usuario'    => $userParam,
+            'rol'        => $validar['rol'] ?? null,
+            'id_personal' => $validar['id_personal'] ?? null,
+            'nombre'     => $validar['nombre_personal'] ?? null,
+            'apellido'   => $validar['apellido_personal'] ?? null
+        ];
+
+        $jwt = \Firebase\JWT\JWT::encode($payload, $clave_secreta, 'HS256');
+
+        $bitacora->setId_usuario($validar['id_usuario']);
+        $bitacora->setActividad("Ha iniciado sesión desde la aplicación móvil");
+        $bitacora->setTabla("inicio sesion");
+        $bitacora->insertarBitacora();
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'ok'      => true,
+            'message' => 'Autenticación móvil exitosa.',
+            'token'   => $jwt,
+            'usuario' => [
+                'nombre'   => $validar['nombre_personal'],
+                'apellido' => $validar['apellido_personal'],
+                'rol'      => $validar['rol']
+            ]
+        ]);
+        exit;
+    } else {
+        // En cas de fallada, sumem un intent erroni a la base de dades
+        $modelo->setIntentosFallidos(1);
+        $modelo->registrarIntento();
+
+        http_response_code(409);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['ok' => false, 'error' => 'Usuari o contrasenya incorrectes']);
+        exit;
+    }
 }

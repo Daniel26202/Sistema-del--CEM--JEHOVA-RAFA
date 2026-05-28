@@ -3,7 +3,7 @@
         'name' => 'sistema/clinica',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '742cd49988c500454a1fff3c46a2beba4c3e7f2b',
+        'reference' => '7f9a42eb806b6671ba9dee6fb540e1d115750019',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -33,6 +33,15 @@
             'replaced' => array(
                 0 => '*',
             ),
+        ),
+        'firebase/php-jwt' => array(
+            'pretty_version' => 'v7.0.5',
+            'version' => '7.0.5.0',
+            'reference' => '47ad26bab5e7c70ae8a6f08ed25ff83631121380',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../firebase/php-jwt',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'graham-campbell/result-type' => array(
             'pretty_version' => 'v1.1.4',
@@ -202,7 +211,7 @@
         'sistema/clinica' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '742cd49988c500454a1fff3c46a2beba4c3e7f2b',
+            'reference' => '7f9a42eb806b6671ba9dee6fb540e1d115750019',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

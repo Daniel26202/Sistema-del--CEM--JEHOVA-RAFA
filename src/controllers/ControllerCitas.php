@@ -271,6 +271,30 @@ function editarCita()
 	}
 }
 
+function retornarTodasLasCitas()
+{
+	// Línea 1: Limpia el búfer de salida para eliminar cualquier espacio en blanco o eco previo.
+	if (ob_get_length()) ob_clean();
+
+	// Línea 2: Declara que el servidor responderá estrictamente con datos en formato JSON.
+	header("Content-Type: application/json; charset=UTF-8");
+
+	// Línea 3: Permite el acceso CORS para que tu aplicación móvil no sea bloqueada por seguridad.
+	header("Access-Control-Allow-Origin: *");
+
+	// Línea 4: Instancia el modelo de citas para acceder a las consultas de la base de datos.
+	$cita = new App\modelos\ModeloCita();
+
+	// Línea 5: Ejecuta el método existente que busca las citas pendientes en MariaDB.
+	$resultado = $cita->mostrarCita();
+
+	// Línea 6: Convierte el array de registros a un texto estructurado en JSON y lo imprime.
+	echo json_encode($resultado);
+
+	// Línea 7: Finaliza la ejecución inmediatamente para evitar que se cargue código HTML o vistas web.
+	exit;
+}
+
 // function permisos($id_rol, $permiso, $modulo)
 // {
 // 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);

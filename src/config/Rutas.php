@@ -4,6 +4,8 @@ namespace App\config;
 
 use App\modelos\ModeloPermisos;
 use App\config\ValidationIP;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class Rutas
 {
@@ -20,7 +22,7 @@ class Rutas
         $this->equivalentes = require_once __DIR__ . "/../../src/config/equivalencias.php";
     }
 
-    /* metodo que utilizamos para gestionar las rutas de todo nuestro sistema */
+    /* método que utilizamos para gestionar las rutas de todo nuestro sistema */
     public function gestionarRutas()
     {
         ///esta seccion es para validar el blacklist y el white list
@@ -32,7 +34,7 @@ class Rutas
             session_destroy();
             header('location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/bloqued');
             return;
-        }///
+        } ///
 
         $this->partes = explode("/", $this->url);
         if (strpos($this->url, ".php") !== false) {
@@ -65,13 +67,51 @@ class Rutas
 
         if (!function_exists($metodo)) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            exit; // 🔥 CORRECCIÓN 1: Detener la ejecución si el método no existe
         }
+
         if (in_array($this->controlador, ["ControllerIniciarSesion", "ControllerRecuperarContr"])) {
             call_user_func($metodo, $parametro ?? []);
             return;
         }
-        /*  si el estatus de la session es activio validamos los permisos */
-        if (!session_status() === PHP_SESSION_ACTIVE) {
+
+        // ==========================================
+        // SECCIÓN: APP MÓVIL (INTERCEPTOR JWT)
+        // ==========================================
+        $headers = apache_request_headers();
+
+        if (isset($headers['Authorization'])) {
+
+            $token = str_replace('Bearer ', '', $headers['Authorization']);
+            $clave_secreta = "Clave_Secreta_Criptografica_CEM_JEHOVA_RAFA_2026";
+
+            try {
+                $datosToken = \Firebase\JWT\JWT::decode($token, new Key($clave_secreta, 'HS256'));
+
+                $_SESSION['id_usuario'] = $datosToken->id_usuario;
+
+                // 🔥 CORRECCIÓN 2: Asegurar mapeo correcto del ID de Rol desde el objeto JWT
+                $_SESSION['id_rol']     = $datosToken->id_rol ?? ($datosToken->rol ?? null);
+
+                call_user_func($metodo, $parametro ?? []);
+                exit; // Detiene el script para que no interfiera la lógica de las vistas web
+
+            } catch (\Exception $e) {
+                if (ob_get_length()) ob_clean();
+                header("Content-Type: application/json; charset=utf-8");
+                http_response_code(401);
+                echo json_encode([
+                    'ok' => false,
+                    'error' => 'Sesión móvil expirada o inválida. Por favor, vuelva a ingresar sus credenciales en la App.'
+                ]);
+                exit;
+            }
+        }
+
+        // ==========================================
+        // SECCIÓN: VISTAS WEB (SISTEMA TRADICIONAL)
+        // ==========================================
+        if (session_status() !== PHP_SESSION_ACTIVE) { // 🔥 CORRECCIÓN 3: Corregida sintaxis de validación de sesión activa
             echo "Session no iniciada";
             return;
         }
@@ -108,7 +148,7 @@ class Rutas
             exit;
         }
 
+        // 🔥 CORRECCIÓN 4: Ejecución final para peticiones web tradicionales
         call_user_func($metodo, $parametro ?? []);
-        // echo ($_SERVER['REMOTE_ADDR']);
     }
 }
