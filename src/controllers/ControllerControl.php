@@ -131,28 +131,20 @@ function insertarControl()
 {
 	if (empty($_POST)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
 		exit;
 	}
-
 	try {
-
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_control_' . $idUsuario, 5, 1);
 
 		$modeloBitacora = new ModeloBitacora();
-		$modeloControl = new ModeloControl();
+		$modeloControl  = new ModeloControl();
 
-		$patologia = (isset($_POST["patologias"])) ? $_POST["patologias"] : [null];
-		$sintoma = (isset($_POST["sintomas"])) ? $_POST["sintomas"] : [null];
-
-
+		$patologia = isset($_POST["patologias"]) ? $_POST["patologias"] : [null];
+		$sintoma   = isset($_POST["sintomas"])   ? $_POST["sintomas"]   : [null];
 
 		$modeloControl->setIdUsuario($_POST["doctor"]);
 		$modeloControl->setIdPaciente($_POST["id_paciente"]);
-
 		$modeloControl->setHistorial($_POST["historial"]);
 		$modeloControl->setDiagnostico($_POST["diagnostico"]);
 		$modeloControl->setSintomas($sintoma);
@@ -162,14 +154,13 @@ function insertarControl()
 		$modeloControl->setNota($_POST["nota"]);
 		$modeloControl->setSeveridad($_POST["severidad"]);
 
-		$registro = $modeloControl->insertControl();
+		$registro = $modeloControl->insertControl($idUsuario);
 
 		if (is_array($registro) && $registro[0] === "exito") {
-			$modeloBitacora->setId_usuario($_POST['id_usuario']);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("control");
-			$modeloBitacora->setActividad("Ha Insertado un nuevo  control medico");
-			$modeloBitacora->insertarBitacora();
-
+			$modeloBitacora->setActividad("Ha Insertado un nuevo control medico");
+			$modeloBitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
 			http_response_code(409);
@@ -187,19 +178,14 @@ function editarControl()
 {
 	if (empty($_POST)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
 		exit;
 	}
-
 	try {
-
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('editar_control_' . $idUsuario, 5, 1);
 
 		$modeloBitacora = new ModeloBitacora();
-		$modeloControl = new ModeloControl();
+		$modeloControl  = new ModeloControl();
 
 		$modeloControl->setIdControl($_POST['id_control']);
 		$modeloControl->setHistorial($_POST["historial"]);
@@ -209,15 +195,13 @@ function editarControl()
 		$modeloControl->setNota($_POST["nota"]);
 		$modeloControl->setSeveridad($_POST["severidad"]);
 
-		$editar = $modeloControl->editarControl();
+		$editar = $modeloControl->editarControl($idUsuario);
 
 		if (is_array($editar) && $editar[0] === "exito") {
-
-			$modeloBitacora->setId_usuario($_POST['id_usuario']);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("control");
-			$modeloBitacora->setActividad("Ha modificado un  control medico");
-			$modeloBitacora->insertarBitacora();
-
+			$modeloBitacora->setActividad("Ha modificado un control medico");
+			$modeloBitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
 			http_response_code(409);
@@ -230,6 +214,7 @@ function editarControl()
 		exit;
 	}
 }
+
 // mostrar síntomas de pacientes del ultimo  control
 function mostrarSP($datos)
 {
@@ -313,13 +298,12 @@ function eliminarSintoma($datos)
 
 
 		$id_sintomas = $datos[0];
-		$id_usuario_bitacora = $datos[1];
 		$modeloSintomas->setIdSintomas($id_sintomas);
 		$eliminar = $modeloSintomas->eliminarL();
 
 		if (is_array($eliminar) && $eliminar[0] === "exito") {
 			// Guardar la bitacora
-			$modeloBitacora->setId_usuario($id_usuario_bitacora);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("sintomas");
 			$modeloBitacora->setActividad("Ha eliminado un  sintoma");
 			$modeloBitacora->insertarBitacora();
@@ -359,7 +343,7 @@ function agregarSintoma()
 		$insertar = $modeloSintomas->insertar();
 		if ($insertar) {
 			// Guardar la bitacora
-			$modeloBitacora->setId_usuario($_POST['id_usuario']);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("sintomas");
 			$modeloBitacora->setActividad("Ha Insertado un  sintoma");
 			$modeloBitacora->insertarBitacora();

@@ -4,9 +4,9 @@ namespace App\modelos;
 
 use App\modelos\ModelBase;
 
+
 class ModeloEstadisticas extends ModelBase
 {
-
   private $fechaInicio, $fechaFinal;
 
   public function __construct($dbSystem = true)
@@ -18,14 +18,12 @@ class ModeloEstadisticas extends ModelBase
   {
     try {
       $sql = "SELECT * FROM distribucion_edad_genero";
-
       $this->setSQL($sql);
       return $this->read();
     } catch (\Exception $e) {
       return $e->getMessage();
     }
   }
-
 
   public function insumos()
   {
@@ -38,7 +36,22 @@ class ModeloEstadisticas extends ModelBase
     }
   }
 
-  public function tasa_morbilidad()
+  // Método robusto para tasa morbilidad
+  public function obtenerTasaMorbilidad($fechaInicio = '', $fechaFinal = '')
+  {
+    // Validación centralizada
+    if ($fechaInicio !== '' && $fechaFinal !== '') {
+      $this->setFechaInicio($fechaInicio);
+      $this->setFechaFinal($fechaFinal);
+    } else {
+      $this->fechaInicio = '';
+      $this->fechaFinal = '';
+    }
+    return $this->tasa_morbilidad_privada();
+  }
+
+  // Método privado real
+  private function tasa_morbilidad_privada()
   {
     try {
       $data = [
@@ -83,7 +96,6 @@ class ModeloEstadisticas extends ModelBase
 
   public function setFechaInicio($fechaInicio = '')
   {
-
     $dt = \DateTime::createFromFormat('Y-m-d', $fechaInicio);
     $fechaHoy = date("Y-m-d");
 

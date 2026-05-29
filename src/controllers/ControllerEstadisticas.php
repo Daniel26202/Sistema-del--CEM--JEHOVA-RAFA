@@ -25,19 +25,24 @@ function edadGenero()
 function tasaMorbilidad()
 {
 	$modeloEstadisticas = new ModeloEstadisticas();
-
-	$tasa_morbilidad = $modeloEstadisticas->tasa_morbilidad();
+	// Sin filtro de fechas
+	$tasa_morbilidad = $modeloEstadisticas->obtenerTasaMorbilidad();
 	echo json_encode($tasa_morbilidad);
 }
 
 function filtrar_tasaMorbilidad($datos)
 {
 	$modeloEstadisticas = new ModeloEstadisticas();
-	$modeloEstadisticas->setFechaInicio($datos[0]);
-	$modeloEstadisticas->setFechaFinal($datos[1]);
-
-	$tasa_morbilidad = $modeloEstadisticas->tasa_morbilidad();
-	echo json_encode($tasa_morbilidad);
+	try {
+		$fechaInicio = $datos[0] ?? '';
+		$fechaFinal = $datos[1] ?? '';
+		$tasa_morbilidad = $modeloEstadisticas->obtenerTasaMorbilidad($fechaInicio, $fechaFinal);
+		echo json_encode($tasa_morbilidad);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
 function permisos($id_rol, $permiso, $modulo)

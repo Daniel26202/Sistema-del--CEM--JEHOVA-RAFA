@@ -83,9 +83,15 @@ function guardar()
 
 function setCliente()
 {
+    if (empty($_POST)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
+        exit;
+    }
+
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        $modeloCliente = new ModeloCliente();
+        $modeloCliente  = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
         $modeloCliente->setIdCliente($_POST['id']);
@@ -102,9 +108,9 @@ function setCliente()
         $modeloBitacora->setId_usuario($idUsuario);
         $modeloBitacora->setActividad("Ha modificado un cliente");
         $modeloBitacora->setTabla("cliente");
+
         $edicion = $modeloCliente->editarCliente($idUsuario);
 
-        // Verifica si es un array con clave "exito"
         if (is_array($edicion) && $edicion[0] === "exito") {
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
@@ -122,10 +128,16 @@ function setCliente()
 
 function eliminar($datos)
 {
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
+        exit;
+    }
+
     try {
-        $idUsuario = $_SESSION['id_usuario'];
+        $idUsuario  = $_SESSION['id_usuario'];
         $id_cliente = $datos[0];
-        $modeloCliente = new ModeloCliente();
+        $modeloCliente  = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
         $modeloCliente->setIdCliente($id_cliente);
@@ -150,12 +162,19 @@ function eliminar($datos)
         exit;
     }
 }
+
 function restablecer($datos)
 {
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
+        exit;
+    }
+
     try {
-        $idUsuario = $_SESSION['id_usuario'];
+        $idUsuario  = $_SESSION['id_usuario'];
         $id_cliente = $datos[0];
-        $modeloCliente = new ModeloCliente();
+        $modeloCliente  = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
         $modeloCliente->setIdCliente($id_cliente);
