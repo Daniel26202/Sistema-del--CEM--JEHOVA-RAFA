@@ -141,7 +141,7 @@ function iniciarSesion()
         $_SESSION['nombre'] = $validar['nombre_personal'] ?? null;
         $_SESSION['apellido'] = $validar['apellido_personal'] ?? null;
         $_SESSION['token_session'] = $token_session ?? null;
-        $bitacora->setId_usuario($_SESSION['id_usuario']);
+        $bitacora->setId_usuario($validar['id_usuario']);
         $bitacora->setActividad("Ha iniciado una session");
         $bitacora->setTabla("inicio sesion");
 
@@ -277,10 +277,11 @@ function iniciarSesionMovil()
         // ✅ Sigue directo al JWT
         $clave_secreta = "Clave_Secreta_Criptografica_CEM_JEHOVA_RAFA_2026";
         $payload = [
-            'iss' => 'http://192.168.1.39',
-            'iat' => time(),
-            'exp' => time() + (60 * 60 * 36),
+            'iss'        => 'http://192.168.110.236',
+            'iat'        => time(),
+            'exp'        => time() + (60 * 60 * 36),
             'id_usuario' => $validar['id_usuario'],
+            'id_rol'     => $validar['id_rol'],  
             'usuario'    => $userParam,
             'rol'        => $validar['rol'] ?? null,
             'id_personal' => $validar['id_personal'] ?? null,
@@ -293,7 +294,7 @@ function iniciarSesionMovil()
         $bitacora->setId_usuario($validar['id_usuario']);
         $bitacora->setActividad("Ha iniciado sesión desde la aplicación móvil");
         $bitacora->setTabla("inicio sesion");
-        $bitacora->insertarBitacora();
+        $bitacora->insertarBitacora($validar['id_usuario']);
 
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([

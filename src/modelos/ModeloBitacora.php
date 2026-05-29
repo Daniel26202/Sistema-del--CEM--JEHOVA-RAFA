@@ -52,16 +52,25 @@ class ModeloBitacora extends ModelBase
 
     public function insertarBitacora($idUsuario = null)
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+
+        // Usa el parámetro si viene, si no busca en sesión
+        $id = $idUsuario ?? $_SESSION['id_usuario'] ?? null;
+
+        if (!$id) {
             throw new \Exception('No hay sesión activa o usuario no autenticado.');
         }
+
         // Validación de campos obligatorios
         if (empty($this->tabla) || empty($this->actividad)) {
             throw new \Exception('No se permiten campos vacíos en la bitácora (tabla o actividad).');
         }
+
+        // Asegura que el modelo tenga el id correcto
+        $this->id_usuario = $id;
+
         return $this->insertarBitacoraPrivada();
     }
 
