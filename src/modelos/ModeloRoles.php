@@ -3,7 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\modelos\ModeloPermisos;
+use App\config\RateLimiter;
 
 
 class ModeloRoles extends ModelBase
@@ -15,6 +15,7 @@ class ModeloRoles extends ModelBase
         parent::__construct($dbSystem);
     }
 
+    // ── READ ────────────────────────────────────────────────
 
     //consultar los roles disponibles
     public function roles()
@@ -29,34 +30,6 @@ class ModeloRoles extends ModelBase
     }
 
     //consultar los permisos por modulo de un rol
-
-    private function returnPermisosModulo($data)
-    {
-        try {
-            $sql = "SELECT m.nombre as modulo, pr.id_permiso, p.permisos FROM permisos_de_rol pr INNER JOIN permisos p ON p.id_permiso =pr.id_permiso INNER JOIN modulos m ON m.id_modulo = pr.id_modulo WHERE pr.id_rol =:id_rol AND m.nombre =:modulo ";
-            $this->setSQL($sql);
-            $datos = $this->search($data);
-            $permisos = '';
-            foreach ($datos as $d) {
-                $permisos .= $d['id_permiso'] . ",";
-            }
-            return $permisos;
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-    private function returnIdModule($modulo)
-    {
-        $data = [
-            'nombre' => $modulo
-        ];
-        $sql = "SELECT id_modulo FROM modulos where nombre =:nombre AND estado = 'ACT' ";
-        $this->setSQL($sql);
-        $listData = $this->search($data, false);
-        return !empty($listData) ?  $listData['id_modulo'] : 0;
-    }
-
 
 
     //Consultar el permiso
@@ -110,10 +83,76 @@ class ModeloRoles extends ModelBase
         }
     }
 
+    //metodo para validar que no se registren dos roles con el mismo nombre
+    public function validarRol($data, $returnNombre = false)
+    {
+        try {
+            $sql = "SELECT * FROM rol WHERE nombre =:nombre";
+            $this->setSQL($sql);
+            $listData = $this->search($data, false);
+
+            if ($returnNombre) {
+                return !empty($listData) ? $listData['nombre'] : 0;
+            } else {
+                return !empty($listData) ? 1 : 0;
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+
+    // ── PRIVADOS─────────────────────────────────────────
+
+    private function returnPermisosModulo($data)
+    {
+        try {
+            $sql = "SELECT m.nombre as modulo, pr.id_permiso, p.permisos FROM permisos_de_rol pr INNER JOIN permisos p ON p.id_permiso =pr.id_permiso INNER JOIN modulos m ON m.id_modulo = pr.id_modulo WHERE pr.id_rol =:id_rol AND m.nombre =:modulo ";
+            $this->setSQL($sql);
+            $datos = $this->search($data);
+            $permisos = '';
+            foreach ($datos as $d) {
+                $permisos .= $d['id_permiso'] . ",";
+            }
+            return $permisos;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    private function returnIdModule($modulo)
+    {
+        $data = [
+            'nombre' => $modulo
+        ];
+        $sql = "SELECT id_modulo FROM modulos where nombre =:nombre AND estado = 'ACT' ";
+        $this->setSQL($sql);
+        $listData = $this->search($data, false);
+        return !empty($listData) ?  $listData['id_modulo'] : 0;
+    }
+
+    private function validarSesion($idUsuario): void
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+    }
+
+    private function validarCamposObligatorios(array $campos, string $contexto = ''): void
+    {
+        foreach ($campos as $campo) {
+            if (empty($campo)) {
+                throw new \Exception("No se permiten campos vacíos{$contexto}.");
+            }
+        }
+    }
 
     //Insertar  Rol
 
-    public function insertar()
+    private function insertar()
     {
         try {
             $this->beginTransaction();
@@ -132,12 +171,7 @@ class ModeloRoles extends ModelBase
             $this->setSQL($sql);
             $id_rol = $this->create($data);
 
-
-
-            // 2. Preparar la conexión (ejemplo PDO)
-            // $pdo = new PDO(...);
-
-            //3. Iterar sobre TODOS los módulos
+            //itertar todos lo modulos
 
             $listPermisoPorModulo = [];
             foreach ($this->getModulos() as $modulo) {
@@ -171,7 +205,7 @@ class ModeloRoles extends ModelBase
 
 
     //modificar Rol
-    public function editar()
+    private function editar()
     {
         try {
             $this->beginTransaction();
@@ -240,7 +274,7 @@ class ModeloRoles extends ModelBase
 
     //eliminar Rol
 
-    public function eliminar()
+    private function eliminar()
     {
         try {
             $data = [
@@ -266,24 +300,46 @@ class ModeloRoles extends ModelBase
         }
     }
 
+    // ── PÚBLICOS QUE LLAMAN A LAS PRIVADAS \────────────────────
 
-    //metodo para validar que no se registren dos roles con el mismo nombre
-    public function validarRol($data, $returnNombre = false)
+    public function guardarRol($idUsuario = null)
     {
-        try {
-            $sql = "SELECT * FROM rol WHERE nombre =:nombre";
-            $this->setSQL($sql);
-            $listData = $this->search($data, false);
-
-            if ($returnNombre) {
-                return !empty($listData) ? $listData['nombre'] : 0;
-            } else {
-                return !empty($listData) ? 1 : 0;
-            }
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->nombre,
+            $this->descripcion,
+            $this->modulos,
+            $this->permisos
+        ], ' al registrar un rol');
+        (new RateLimiter())->verificar('guardar_rol_' . $idUsuario, 5, 1);
+        return $this->insertar();
     }
+
+    public function editarRol($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->id_rol,
+            $this->descripcion,
+            $this->nombre,
+        ], ' al editar un rol');
+        (new RateLimiter())->verificar('editar_rol_' . $idUsuario, 5, 1);
+        return $this->editar();
+    }
+
+    public function eliminarRol($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->id_rol
+        ], ' al eliminar un rol');
+        (new RateLimiter())->verificar('eliminar_rol_' . $idUsuario, 5, 1);
+        return $this->eliminar();
+    }
+
+
+
+    ///getters and setters
 
     public function getIdRol()
     {

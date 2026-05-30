@@ -3,7 +3,6 @@
 use App\modelos\ModeloProveedores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter;
 
 function proveedores($parametro)
 {
@@ -38,9 +37,6 @@ function insertar()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_proveedor_' . $idUsuario, 5, 1);
 
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
@@ -51,12 +47,12 @@ function insertar()
 		$modeloProveedores->setEmail($_POST["correo"]);
 		$modeloProveedores->setDireccion($_POST["direccion"]);
 
-		$insercion = $modeloProveedores->agregar();
+		$insercion = $modeloProveedores->guardarEntrada($idUsuario);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
 			$modeloBitacora->setActividad("Ha insertado un proveedor");
 			$modeloBitacora->setTabla("proveedor");
-			$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+			$modeloBitacora->setId_usuario($idUsuario);
 
 			$modeloBitacora->insertarBitacora();
 
@@ -83,21 +79,17 @@ function update($datos)
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('editar_proveedor_' . $idUsuario, 5, 1);
 
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
 
 		$id_proveedor = $datos[0];
-		$id_usuario_bitacora = $datos[1];
 
 		$modeloProveedores->setIdProveedor($id_proveedor);
-		$eliminacion = $modeloProveedores->delte();
+		$eliminacion = $modeloProveedores->deleteEntrada($idUsuario);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-			$modeloBitacora->setId_usuario($id_usuario_bitacora);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("proveedor");
 			$modeloBitacora->setActividad("Ha eliminado un proveedor");
 			$modeloBitacora->insertarBitacora();
@@ -125,13 +117,8 @@ function restablecerProveedor($datos)
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('restblecer_proveedor_' . $idUsuario, 5, 1);
 
 		$id_proveedor = $datos[0];
-		$id_usuario_bitacora = $datos[1];
-
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
 
@@ -139,7 +126,7 @@ function restablecerProveedor($datos)
 		$restablecimiento = $modeloProveedores->restablecerProveedor();
 
 		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-			$modeloBitacora->setId_usuario($id_usuario_bitacora);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("proveedor");
 			$modeloBitacora->setActividad("Ha restablecido un proveedor");
 			$modeloBitacora->insertarBitacora();
@@ -167,9 +154,6 @@ function editar()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('editar_proveedor_' . $idUsuario, 5, 1);
 
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
@@ -182,11 +166,11 @@ function editar()
 		$modeloProveedores->setDireccion($_POST["direccion"]);
 		$modeloProveedores->setRifRegistrado($_POST["id_rif_oculto"]);
 
-		$editado = $modeloProveedores->editar();
+		$editado = $modeloProveedores->editarEntrada($idUsuario);
 
 
 		if (is_array($editado) && $editado[0] === "exito") {
-			$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("proveedor");
 			$modeloBitacora->setActividad("Ha modificado un proveedor");
 			$modeloBitacora->insertarBitacora();

@@ -7,7 +7,6 @@ use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloRecuperarContr;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloRoles;
-use App\config\RateLimiter;
 
 
 
@@ -58,9 +57,6 @@ function editarUsuario()
     try {
 
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('editar_usuario_' . $idUsuario, 5, 1);
 
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();
@@ -71,13 +67,13 @@ function editarUsuario()
         $modeloUsuarios->setImagen($_FILES['imagen']["name"]);
         $modeloUsuarios->setImagenTemporal($_FILES['imagen']['tmp_name']);
 
-        $edicion = $modeloUsuarios->updateUsuario();
+        $edicion = $modeloUsuarios->editarUsuario($idUsuario);
 
 
         if (is_array($edicion) && $edicion[0] === "exito") {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha modificado un  usuario");
-            $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+            $modeloBitacora->setId_usuario($idUsuario);
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
         } else {
@@ -104,23 +100,19 @@ function borrarUsuario($datos)
     try {
 
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('eliminar_doctor_' . $idUsuario, 5, 1);
 
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();
 
         $id_usuario = $datos[0];
-        $id_usuario_bitacora = $datos[1];
         $modeloUsuarios->setIdUsuario($id_usuario);
 
-        $eliminacion = $modeloUsuarios->eliminacionLogica();
+        $eliminacion = $modeloUsuarios->eliminarUsuario($idUsuario);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha eliminado un  usuario");
-            $modeloBitacora->setId_usuario($id_usuario_bitacora);
+            $modeloBitacora->setId_usuario($idUsuario);
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
@@ -144,10 +136,6 @@ function registrarAdmin()
 
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('guardar_usuario_admin_' . $idUsuario, 5, 1);
-
         $modeloUsuarios = new ModeloUsuarios();
         $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
@@ -161,7 +149,7 @@ function registrarAdmin()
         $modeloUsuarios->setIdRol($_POST["id_rol"]);
         $modeloUsuarios->setImagen($_FILES['imagen']);
 
-        $id_usuario = $modeloUsuarios->AgregarUsuarios();
+        $id_usuario = $modeloUsuarios->agregarUsuario($idUsuario);
 
         $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
         $modeloDoctores->setCedula($_POST["cedula"]);
@@ -175,7 +163,7 @@ function registrarAdmin()
         if (is_array($insercion) && $insercion[0] === "exito") {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha insertado un administrador");
-            $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+            $modeloBitacora->setId_usuario($idUsuario);
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {

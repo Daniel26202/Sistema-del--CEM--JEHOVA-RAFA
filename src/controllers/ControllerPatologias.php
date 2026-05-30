@@ -53,20 +53,16 @@ function registrarPatologia()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_patologia_' . $idUsuario, 5, 1);
-
 		$modelo = new ModeloPatologia();
 		$bitacora = new ModeloBitacora();
 
 		$modelo->setNombrePatologia($_POST["patologia"]);
 
-		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha Insertado un nuevo patologia");
 		$bitacora->setTabla("patologia");
 
-		$insercion = $modelo->insertarPatologia();
+		$insercion = $modelo->guardarPatologia($idUsuario);
 
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
@@ -96,20 +92,18 @@ function eliminarPatologia($datos)
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('eliminar_patologia_' . $idUsuario, 5, 1);
+
 
 		$modelo = new ModeloPatologia();
 		$bitacora = new ModeloBitacora();
 
 		$modelo->setIdPatologia($datos[0]);
 
-		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha eliminado una  patologia");
 		$bitacora->setTabla("patologia");
 
-		$eliminar = $modelo->eliminarPatologia();
+		$eliminar = $modelo->deletePatologia($idUsuario);
 
 		if (is_array($eliminar) && $eliminar[0] === "exito") {
 			$bitacora->insertarBitacora();
@@ -139,20 +133,17 @@ function restablecerPatologia($datos)
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('restablecer_patologia_' . $idUsuario, 5, 1);
 
 		$modelo = new ModeloPatologia();
 		$bitacora = new ModeloBitacora();
 
 		$modelo->setIdPatologia($datos[0]);
 
-		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha restablecido una  patologia");
 		$bitacora->setTabla("patologia");
 
-		$eliminar = $modelo->restablecer();
+		$eliminar = $modelo->restablecerPatologia($idUsuario);
 
 		if (is_array($eliminar) && $eliminar[0] === "exito") {
 			$bitacora->insertarBitacora();

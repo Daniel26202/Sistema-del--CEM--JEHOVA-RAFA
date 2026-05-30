@@ -4,6 +4,7 @@ namespace App\modelos;
 
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloBase;
+use App\config\RateLimiter;
 
 class ModeloEntrada extends ModelBase
 {
@@ -14,7 +15,8 @@ class ModeloEntrada extends ModelBase
 	{
 		parent::__construct($dbSystem);
 	}
-	
+
+	// ── READ ────────────────────────────────────────────────
 	public function selectProveedores()
 	{
 		try {
@@ -52,7 +54,35 @@ class ModeloEntrada extends ModelBase
 		}
 	}
 
-	public function insertarEntrada()
+	//insumos
+	public function insumos()
+	{
+		try {
+			$sql = "SELECT * FROM insumo WHERE estado = 'ACT' ";
+			$this->setSQL($sql);
+			$consulta = $this->read();
+			return ($consulta) ? $consulta : false;
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+
+	public function seleccionarDesactivos()
+	{
+		try {
+			$sql = " SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'DES'  ORDER BY ei.fechaDeVencimiento ";
+			$this->setSQL($sql);
+			$consulta = $this->read();
+			return ($consulta) ? $consulta : false;
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+	// ── PRIVADOS─────────────────────────────────────────
+
+	private function insertarEntrada()
 	{
 		try {
 			$this->beginTransaction();
@@ -72,10 +102,6 @@ class ModeloEntrada extends ModelBase
 			
 			$this->storedProcedure($data, false, true);
 
-			// $sql = "SELECT * from entrada where id_entrada=:id_entrada";
-			// $this->setSQL($sql);
-			// $consulta = $this->search(["id_entrada" => $id], false);
-
 			$this->commit();
 
 			return ["exito",$data];
@@ -85,7 +111,7 @@ class ModeloEntrada extends ModelBase
 		}
 	}
 
-	public function eliminar()
+	private function eliminar()
 	{
 		try {
 
@@ -107,7 +133,7 @@ class ModeloEntrada extends ModelBase
 	}
 
 
-	public function actualizarEntrada()
+	private function actualizarEntrada()
 	{
 		try {
 			$this->beginTransaction();
@@ -142,34 +168,7 @@ class ModeloEntrada extends ModelBase
 	}
 
 
-	//insumos
-	public function insumos()
-	{
-		try {
-			$sql = "SELECT * FROM insumo WHERE estado = 'ACT' ";
-			$this->setSQL($sql);
-			$consulta = $this->read();
-			return ($consulta) ? $consulta : false;
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
-
-
-	public function seleccionarDesactivos()
-	{
-		try {
-			$sql = " SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'DES'  ORDER BY ei.fechaDeVencimiento ";
-			$this->setSQL($sql);
-			$consulta = $this->read();
-			return ($consulta) ? $consulta : false;
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
-
-
-	public function restablecerEntrada()
+	private function restablecer()
 	{
 		try {
 			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
@@ -185,6 +184,80 @@ class ModeloEntrada extends ModelBase
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+
+	private function validarSesion($idUsuario): void
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+	}
+
+	private function validarCamposObligatorios(array $campos, string $contexto = ''): void
+	{
+		foreach ($campos as $campo) {
+			if (empty($campo)) {
+				throw new \Exception("No se permiten campos vacíos{$contexto}.");
+			}
+		}
+	}
+
+	// ── PÚBLICOS  QUE LLAMAN A LAS PRIVADAS────────────────────
+
+
+	public function guardarEntrada($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->lote,
+			$this->idProveedor,
+			$this->fechaDeIngreso,
+			$this->idInsumo,
+			$this->fechaDeVencimiento,
+			$this->precio,
+			$this->cantidadDisponible
+		], ' al registrar una entrada');
+		(new RateLimiter())->verificar('guardar_entrada_' . $idUsuario, 5, 1);
+		return $this->insertarEntrada();
+	}
+
+	public function eliminarEntrada($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->idEntrada
+		], ' al eliminar una entrada');
+		(new RateLimiter())->verificar('eliminar_entrada_' . $idUsuario, 5, 1);
+		return $this->eliminar();
+	}
+
+	public function updateEntrda($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->idEntrada,
+			$this->fechaDeVencimiento,
+			$this->precio,
+			$this->cantidadEntrante,
+			$this->lote
+		], ' al editar una entrada');
+		(new RateLimiter())->verificar('editar_entrada_' . $idUsuario, 5, 1);
+		return $this->actualizarEntrada();
+	}
+
+
+	public function restablecerEntrada($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->idEntrada
+		], ' al restablecer una entrada');
+		(new RateLimiter())->verificar('restablecer_entrada_' . $idUsuario, 5, 1);
+		return $this->restablecer();
 	}
 
 	// setter

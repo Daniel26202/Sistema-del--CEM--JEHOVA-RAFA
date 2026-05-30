@@ -3,8 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\Validations;
-
+use App\config\RateLimiter;
 class ModeloPatologia extends ModelBase
 {
 
@@ -16,6 +15,7 @@ class ModeloPatologia extends ModelBase
     }
 
 
+    // ── READ ────────────────────────────────────────────────
     public function mostrarPatologias()
     {
         try {
@@ -51,8 +51,38 @@ class ModeloPatologia extends ModelBase
         }
     }
 
+    // mostrar patologia del paciente
+    public function mostrarPatologiaP()
+    {
+        try {
 
-    public function insertarPatologia()
+            $data = [
+                'id_patologia' => $this->getIdPatologia()
+            ];
+
+            $sql = "SELECT pat.id_patologia, pat.nombre_patologia FROM patologiadepaciente pdp INNER JOIN patologia pat ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pdp.id_paciente = pac.id_paciente WHERE pac.id_paciente = :id_paciente";
+            $this->setSQL($sql);
+
+            return $this->search($data);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function buscarPatologiaPaciente()
+    {
+        try {
+            $sql = "SELECT * FROM patologia pat INNER JOIN patologiadepaciente pdp ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pac.id_paciente = pdp.id_paciente WHERE pac.cedula =:cedula";
+            $this->setSQL($sql);
+            return $this->search(['cedula' => $this->getCedulaPac()]);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+
+    // ── PRIVADOS─────────────────────────────────────────
+    private function insertarPatologia()
     {
         try {
 
@@ -84,7 +114,7 @@ class ModeloPatologia extends ModelBase
         }
     }
 
-    public function eliminarPatologia()
+    private function eliminarPatologia()
     {
         try {
             $data = [
@@ -111,7 +141,7 @@ class ModeloPatologia extends ModelBase
         }
     }
 
-    public function restablecer()
+    private function restablecer()
     {
         try {
             $data = [
@@ -138,34 +168,54 @@ class ModeloPatologia extends ModelBase
         }
     }
 
-
-    // mostrar patologia del paciente
-    public function mostrarPatologiaP()
+    private function validarSesion($idUsuario): void
     {
-        try {
-
-            $data = [
-                'id_patologia' => $this->getIdPatologia()
-            ];
-
-            $sql = "SELECT pat.id_patologia, pat.nombre_patologia FROM patologiadepaciente pdp INNER JOIN patologia pat ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pdp.id_paciente = pac.id_paciente WHERE pac.id_paciente = :id_paciente";
-            $this->setSQL($sql);
-
-            return $this->search($data);
-        } catch (\Exception $e) {
-            return $e->getMessage();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
         }
     }
 
-    public function buscarPatologiaPaciente()
+    private function validarCamposObligatorios(array $campos, string $contexto = ''): void
     {
-        try {
-            $sql = "SELECT * FROM patologia pat INNER JOIN patologiadepaciente pdp ON pdp.id_patologia = pat.id_patologia INNER JOIN paciente pac ON pac.id_paciente = pdp.id_paciente WHERE pac.cedula =:cedula";
-            $this->setSQL($sql);
-            return $this->search(['cedula' => $this->getCedulaPac()]);
-        } catch (\Exception $e) {
-            return $e->getMessage();
+        foreach ($campos as $campo) {
+            if (empty($campo)) {
+                throw new \Exception("No se permiten campos vacíos{$contexto}.");
+            }
         }
+    }
+
+    // ── PÚBLICOS  QUE LLAMAN A LAS PRIVADAS ────────────────────
+
+    public function guardarPatologia($idUsuario = null){
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->nombrePatologia
+        ], 'al registrar la patologia');
+        (new RateLimiter())->verificar('guardar_patologia_' . $idUsuario, 5, 1);
+        return $this->insertarPatologia();
+    }
+
+    public function deletePatologia($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->idPatologia
+        ], 'al eliminar la patologia');
+        (new RateLimiter())->verificar('eliminar_patologia_' . $idUsuario, 5, 1);
+        return $this->eliminarPatologia();
+    }
+
+    public function restablecerPatologia($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->idPatologia
+        ], 'al restablecer la patologia');
+        (new RateLimiter())->verificar('restablecer_patologia_' . $idUsuario, 5, 1);
+        return $this->restablecer();
     }
 
     public function getCedulaPac()

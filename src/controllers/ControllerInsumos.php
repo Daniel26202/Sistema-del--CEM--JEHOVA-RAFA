@@ -4,7 +4,7 @@ use App\modelos\ModeloInsumo;
 use App\modelos\ModeloProveedores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter;
+
 
 
 
@@ -16,6 +16,7 @@ function insumos($parametro)
 		exit;
 	}
 
+	$idUsuario = $_SESSION['id_usuario'];
 	$modeloInsumo = new ModeloInsumo();
 	$ayuda = "btnayudaInsumo";
 	$vistaActiva = "insumos";
@@ -23,7 +24,7 @@ function insumos($parametro)
 	$proveedores = $modeloInsumo->selectProveedores();
 	$insumos = $modeloInsumo->insumos();
 	if ($insumos) {
-		$modeloInsumo->vencerInsumos();
+		$modeloInsumo->vencerInsumos($idUsuario);
 		//$modeloInsumo->insumoProximos();
 	}
 	require_once './src/vistas/vistaInsumos/vistaInsumos.php';
@@ -97,9 +98,7 @@ function guardarInsumo()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_insumo_' . $idUsuario, 5, 1);
+
 
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
@@ -137,12 +136,12 @@ function guardarInsumo()
 		$modeloInsumo->setImagen($imagen);
 		$modeloInsumo->setPrecio($valor);
 
-		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setTabla("insumo");
 		$bitacora->setActividad("Ha Insertado un insumo");
 
 
-		$insercion = $modeloInsumo->insertarInsumos();
+		$insercion = $modeloInsumo->guardarInsumo($idUsuario);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
 			$bitacora->insertarBitacora();
@@ -171,23 +170,19 @@ function eliminar($datos)
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('eliminar_insumo_' . $idUsuario, 5, 1);
 
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
 
 		$id_insumo = $datos[0];
-		$id_usuario_bitacora = $datos[1];
 
 		$modeloInsumo->setIdInsumo($id_insumo);
 
-		$bitacora->setId_usuario($id_usuario_bitacora);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha eliminado un insumo");
 		$bitacora->setTabla("insumo");
 
-		$eliminacion = $modeloInsumo->eliminar();
+		$eliminacion = $modeloInsumo->eliminarInsumo($idUsuario);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$bitacora->insertarBitacora();
@@ -215,9 +210,6 @@ function editar()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('editar_insumo_' . $idUsuario, 5, 1);
 
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
@@ -246,11 +238,11 @@ function editar()
 		$modeloInsumo->setMarca($_POST["marca"]);
 		$modeloInsumo->setMedida($_POST["medida"]);
 
-		$bitacora->setId_usuario($_POST['id_usuario_bitacora']);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha modificado un insumo");
 		$bitacora->setTabla("insumo");
 
-		$edicion = $modeloInsumo->editar();
+		$edicion = $modeloInsumo->editarInsumo($idUsuario);
 
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
@@ -285,7 +277,7 @@ function papeleraInsumosAjax()
 
 function restablecerInsumo($datos)
 {
-	if (empty($_POST)) {
+	if (empty($_GET)) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
@@ -293,22 +285,18 @@ function restablecerInsumo($datos)
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('restablecer_insumo_' . $idUsuario, 5, 1);
 
 		$modeloInsumo = new ModeloInsumo();
 		$bitacora = new ModeloBitacora();
 
 		$id_insumo = $datos[0];
-		$id_usuario_bitacora = $datos[1];
 		$modeloInsumo->setIdInsumo($id_insumo);
-		$restablecimiento = $modeloInsumo->restablecerInsumo();
+		$restablecimiento = $modeloInsumo->restablecerInsumo($idUsuario);
 
 
 		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
 
-			$bitacora->setId_usuario($id_usuario_bitacora);
+			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setTabla("insumo");
 			$bitacora->setActividad("Ha restablecido un insumo");
 			$bitacora->insertarBitacora();

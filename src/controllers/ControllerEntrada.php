@@ -49,25 +49,20 @@ function restablecerEntrada($datos)
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('restablecer_entrada_' . $idUsuario, 5, 1);
-
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
 
 		$id_entrada = $datos[0];
-		$id_usuario_bitacora = $datos[1];
 
 		$modeloEntrada->setIdEntrada($id_entrada);
-		$restablecimiento = $modeloEntrada->restablecerEntrada();
+		$restablecimiento = $modeloEntrada->restablecerEntrada($idUsuario);
 
 
 		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
 
 			$modeloBitacora->setActividad("Ha restablecido una entrada");
 			$modeloBitacora->setTabla("entrada");
-			$modeloBitacora->setId_usuario($id_usuario_bitacora);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->insertarBitacora();
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
@@ -100,12 +95,7 @@ function guardar()
 		exit;
 	}
 	try {
-
-
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_entrada_' . $idUsuario, 5, 1);
 
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
@@ -124,12 +114,12 @@ function guardar()
 		$modeloEntrada->setCantidadDisponible($_POST["cantidad"]);
 		$modeloEntrada->setPrecio($precio);
 
-		$insercion = $modeloEntrada->insertarEntrada();
+		$insercion = $modeloEntrada->guardarEntrada($idUsuario);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
 			$modeloBitacora->setActividad("Ha insertado una entrada");
 			$modeloBitacora->setTabla("entrada");
-			$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
@@ -157,23 +147,19 @@ function eliminar($datos)
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('eliminar_entrada_' . $idUsuario, 5, 1);
 
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
 
 		$id_entrada = $datos[0];
-		$id_usuario_bitacora = $datos[1];
 
 		$modeloEntrada->setIdEntrada($id_entrada);
-		$elimincion = $modeloEntrada->eliminar();
+		$elimincion = $modeloEntrada->eliminarEntrada($idUsuario);
 
 		if (is_array($elimincion) && $elimincion[0] === "exito") {
 			$modeloBitacora->setActividad("Ha eliminado una entrada");
 			$modeloBitacora->setTabla("entrada");
-			$modeloBitacora->setId_usuario($id_usuario_bitacora);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -198,9 +184,6 @@ function editar()
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('editar_entrada_' . $idUsuario, 5, 1);
 
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
@@ -219,12 +202,12 @@ function editar()
 		$modeloEntrada->setCantidadEntrante($_POST["cantidad"]);
 		$modeloEntrada->setPrecio($precio);
 
-		$edicion = $modeloEntrada->actualizarEntrada();
+		$edicion = $modeloEntrada->updateEntrda($idUsuario);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$modeloBitacora->setActividad("Ha modificado una entrada");
 			$modeloBitacora->setTabla("entrada");
-			$modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
+			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {

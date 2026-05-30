@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
+use App\config\RateLimiter;
 
 
 class ModeloUsuarios extends ModelBase
@@ -14,6 +15,9 @@ class ModeloUsuarios extends ModelBase
     {
         parent::__construct($dbSystem);
     }
+
+    // ── READ ────────────────────────────────────────────────
+
     //buscamos a los usuarios en la base de datos
     public function select()
     {
@@ -58,12 +62,40 @@ class ModeloUsuarios extends ModelBase
         }
     }
 
+    //metodo para actualizar el token de inicio de sesión del usuario
+    public function actualizarTokenInicioSesion()
+    {
+        try {
+            $data = [
+                'token_session' => $this->getTokenInicioSesion(),
+            ];
 
+            $sql = "UPDATE usuario SET token_session = :token_session WHERE id_usuario = :id";
+            $this->setSQL($sql);
 
+            $this->update($data, $this->getIdUsuario());
+            return ['exito', $data];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    // Dentro de tu modelo
+    public function verificarTokenActivo()
+    {
+        // Buscamos el token que manda actualmente en la base de datos
+        $sql = "SELECT token_session FROM segurity.usuario WHERE id_usuario = :id";
+        $this->setSQL($sql);
+        $resultado = $this->search(['id' => $this->getIdUsuario()], false);
+
+        return $resultado ? $resultado['token_session'] : null;
+    }
+
+    // ── PRIVADOS─────────────────────────────────────────
 
 
     //esto es para editar un usuario.
-    public function updateUsuario()
+    private function updateUsuario()
     {
         try {
             $this->beginTransaction();
@@ -120,7 +152,7 @@ class ModeloUsuarios extends ModelBase
     }
 
     //esto es para editar el estado (en activo a desactivo) del usuario.
-    public function eliminacionLogica()
+    private function eliminacionLogica()
     {
         try {
             $sql = "SELECT * from usuario where id_usuario=:id_usuario";
@@ -138,7 +170,7 @@ class ModeloUsuarios extends ModelBase
             return $e->getMessage();
         }
     }
-    public function AgregarUsuarios()
+    private function agregar()
     {
         try {
             $this->beginTransaction();
@@ -197,35 +229,67 @@ class ModeloUsuarios extends ModelBase
         }
     }
 
-    //metodo para actualizar el token de inicio de sesión del usuario
-    public function actualizarTokenInicioSesion()
+
+    private function validarSesion($idUsuario): void
     {
-        try {
-            $data = [
-                'token_session' => $this->getTokenInicioSesion(),
-            ];
-
-            $sql = "UPDATE usuario SET token_session = :token_session WHERE id_usuario = :id";
-            $this->setSQL($sql);
-
-            $this->update($data, $this->getIdUsuario());
-            return ['exito', $data];
-        } catch (\Exception $e) {
-            return $e->getMessage();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
         }
     }
 
-    // Dentro de tu modelo
-    public function verificarTokenActivo()
+    private function validarCamposObligatorios(array $campos, string $contexto = ''): void
     {
-        // Buscamos el token que manda actualmente en la base de datos
-        $sql = "SELECT token_session FROM segurity.usuario WHERE id_usuario = :id";
-        $this->setSQL($sql);
-        $resultado = $this->search(['id' => $this->getIdUsuario()], false);
-
-        return $resultado ? $resultado['token_session'] : null;
+        foreach ($campos as $campo) {
+            if (empty($campo)) {
+                throw new \Exception("No se permiten campos vacíos{$contexto} .");
+            }
+        }
     }
 
+    // ── PÚBLICOS  QUE LLAMAN A LOS PRIVADOS────────────────────
+
+    
+    public function editarUsuario($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->usuario,
+            $this->id_usuario
+        ], ' al editar un usuario');
+        (new RateLimiter())->verificar('editar_usuario_' . $idUsuario, 5, 1);
+        return $this->updateUsuario();
+    }
+
+    public function eliminarUsuario($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->id_usuario
+        ], ' al eliminar un usuario');
+        (new RateLimiter())->verificar('eliminar_usuario_' . $idUsuario, 5, 1);
+        return $this->eliminacionLogica();
+    }
+
+    public function agregarUsuario($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->imagen,
+            $this->usuario,
+            $this->correo,
+            $this->password,
+            $this->id_rol
+        ], ' al guardar un usuario');
+        (new RateLimiter())->verificar('guardar_usuario_' . $idUsuario, 5, 1);
+        return $this->agregar();
+    }
+
+
+
+    // GETTERS Y SETTERS
     public function getIdUsuario()
     {
         return $this->id_usuario;

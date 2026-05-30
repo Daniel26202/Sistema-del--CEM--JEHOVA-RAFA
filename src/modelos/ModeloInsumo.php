@@ -2,10 +2,10 @@
 // SELECT i.*,e.*,SUM(e.cantidad) AS cantidad_sumada FROM entrada e INNER JOIN insumo i ON e.id_insumo = i.id_insumo GROUP BY i.nombre HAVING i.id_insumo = 2
 namespace App\modelos;
 
+use DateTime;
 use App\modelos\ModelBase;
 use App\modelos\ModeloProveedores;
-use DateTime;
-use  App\config\Validations;
+use App\config\RateLimiter;
 
 class ModeloInsumo extends ModelBase
 {
@@ -106,13 +106,53 @@ class ModeloInsumo extends ModelBase
 		}
 	}
 
+	//gestionar salidas
+	public function todasLasEntradas()
+	{
+		try {
+			$sql = "SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  i.estado = 'ACT' AND e.estado = 'ACT' AND fechaDeVencimiento BETWEEN CURRENT_DATE + INTERVAL 1 DAY AND CURRENT_DATE + INTERVAL 7 DAY ORDER BY  ei.fechaDeVencimiento";
+			$this->setSQL($sql);
+			$consulta = $this->read();
+			return ($consulta) ? $consulta : false;
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+
+	//funcion mejorada de actualizacion de la cantidad
+	public function actualizar_cantidad_insumo()
+	{
+		try {
+			$sql = " SELECT ei.id_insumo, ei.fechaDeVencimiento, SUM(ei.cantidad_disponible) AS cantidad, e.numero_de_lote FROM entrada_insumo ei INNER JOIN entrada e on e.id_entrada = ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE AND e.estado = 'ACT' ";
+			$this->setSQL($sql);
+			$consulta = $this->search(['id_insumo' => $this->getIdInsumo()], true);
+			return ($consulta) ? $consulta : false;
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+	//
+	public function papelera()
+	{
+		try {
+			$sql = "SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
+			$this->setSQL($sql);
+			$consulta = $this->read();
+
+			return ($consulta) ? $consulta : false;
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
 
 
 
 
-
+	// ── PRIVADOS─────────────────────────────────────────
 	//insertar insumo
-	public function insertarInsumos()
+	private function insertarInsumos()
 	{
 		try {
 			$this->beginTransaction();
@@ -152,7 +192,7 @@ class ModeloInsumo extends ModelBase
 
 
 
-	public function eliminar()
+	private function eliminar()
 	{
 		try {
 			$sql = "SELECT * from insumo where id_insumo=:id_insumo";
@@ -172,7 +212,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 
-	public function editar()
+	private function editar()
 	{
 		try {
 			// Buscar datos actuales para obtener el nombre de la imagen vieja
@@ -226,21 +266,9 @@ class ModeloInsumo extends ModelBase
 		}
 	}
 
-	//gestionar salidas
-	public function todasLasEntradas()
-	{
-		try {
-			$sql = "SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  i.estado = 'ACT' AND e.estado = 'ACT' AND fechaDeVencimiento BETWEEN CURRENT_DATE + INTERVAL 1 DAY AND CURRENT_DATE + INTERVAL 7 DAY ORDER BY  ei.fechaDeVencimiento";
-			$this->setSQL($sql);
-			$consulta = $this->read();
-			return ($consulta) ? $consulta : false;
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
 
 
-	public function vencerInsumos()
+	private function vencer()
 	{
 		try {
 			$insumos = $this->insumos();
@@ -259,38 +287,8 @@ class ModeloInsumo extends ModelBase
 		}
 	}
 
-	//funcion mejorada de actualizacion de la cantidad
-	public function actualizar_cantidad_insumo()
-	{
-		try {
-			$sql = " SELECT ei.id_insumo, ei.fechaDeVencimiento, SUM(ei.cantidad_disponible) AS cantidad, e.numero_de_lote FROM entrada_insumo ei INNER JOIN entrada e on e.id_entrada = ei.id_entrada WHERE ei.id_insumo =:id_insumo AND ei.fechaDeVencimiento > CURRENT_DATE AND e.estado = 'ACT' ";
-			$this->setSQL($sql);
-			$consulta = $this->search(['id_insumo' => $this->getIdInsumo()], true);
-			return ($consulta) ? $consulta : false;
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
 
-
-
-	//
-	public function papelera()
-	{
-		try {
-			$sql = "SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
-			$this->setSQL($sql);
-			$consulta = $this->read();
-
-			return ($consulta) ? $consulta : false;
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
-
-
-
-	public function restablecerInsumo()
+	private function restablecer()
 	{
 		try {
 			$sql = "SELECT * from insumo where id_insumo=:id_insumo";
@@ -309,6 +307,84 @@ class ModeloInsumo extends ModelBase
 		}
 	}
 
+	private function validarSesion($idUsuario): void
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+	}
+
+	private function validarCamposObligatorios(array $campos, string $contexto = ''): void
+	{
+		foreach ($campos as $campo) {
+			if (empty($campo)) {
+				throw new \Exception("No se permiten campos vacíos{$contexto}.");
+			}
+		}
+	}
+
+
+	//____________PUBLICAS QUE USAN LAS PRIVADAS
+
+	public function guardarInsumo($idUsuario = null) {
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->nombre,
+			$this->idProveedor,
+			$this->descripcion,
+			$this->fechaDeIngreso,
+			$this->fechaDeVencimiento,
+			$this->precio,
+			$this->cantidad,
+			$this->stockMinimo,
+			$this->lote,
+			$this->marca,
+			$this->medida,
+		], 'al registrar un insumo');
+		(new RateLimiter())->verificar('guardar_insumo_' . $idUsuario, 5, 1);
+		return $this->insertarInsumos();
+	}
+
+	public function eliminarInsumo($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([$this->idInsumo], ' al eliminar un insumo');
+		(new RateLimiter())->verificar('eliminar_insumo_' . $idUsuario, 5, 1);
+		return $this->eliminar();
+	}
+
+	public function editarInsumo($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->imagen,
+			$this->nombre,
+			$this->descripcion,
+			$this->stockMinimo,
+			$this->marca,
+			$this->medida,
+		], 'al editar un insumo');
+		(new RateLimiter())->verificar('editar_insumo_' . $idUsuario, 5, 1);
+		return $this->editar();
+	}
+
+	public function restablecerInsumo($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([$this->idInsumo], ' al restablecer un insumo');
+		(new RateLimiter())->verificar('restablecer_insumo_' . $idUsuario, 5, 1);
+		return $this->restablecer();
+	}
+
+	public function vencerInsumos($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		(new RateLimiter())->verificar('vencer_insumo_' . $idUsuario, 5, 1);
+		return $this->vencer();
+	}
 
 
 	// getter y setter

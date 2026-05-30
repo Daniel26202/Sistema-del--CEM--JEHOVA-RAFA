@@ -3,7 +3,6 @@
 use \App\modelos\ModeloRoles;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter;
 
 function mostrar($parametro)
 {
@@ -58,10 +57,6 @@ function guardarRol()
     }
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('guardar_rol_' . $idUsuario, 5, 1);
-
         $modeloRoles = new ModeloRoles();
         $modeloBitacora = new ModeloBitacora();
 
@@ -70,12 +65,12 @@ function guardarRol()
         $modeloRoles->setModulos($_POST["modulos"]);
         $modeloRoles->setPermisos($_POST["permisos"]);
 
-        $insercion = $modeloRoles->insertar();
+        $insercion = $modeloRoles->guardarRol($idUsuario);
 
         if (is_array($insercion) && $insercion[0] === "exito") {
             $modeloBitacora->setTabla("Roles");
             $modeloBitacora->setActividad("Ha Insertado un nuevo rol");
-            $modeloBitacora->setId_usuario($_POST['id_usuario']);
+            $modeloBitacora->setId_usuario($idUsuario);
             $modeloBitacora->insertarBitacora();
 
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
@@ -102,9 +97,6 @@ function modificarRol()
     }
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('editar_rol_' . $idUsuario, 5, 1);
 
         $modeloRoles = new ModeloRoles();
         $modeloBitacora = new ModeloBitacora();
@@ -116,13 +108,13 @@ function modificarRol()
         $modeloRoles->setModulos($_POST["modulos"]);
         $modeloRoles->setPermisos($_POST["permisos"]);
 
-        $edicion =  $modeloRoles->editar();
+        $edicion =  $modeloRoles->editarRol($idUsuario);
 
 
         if (is_array($edicion) && $edicion[0] === "exito") {
             $modeloBitacora->setTabla("Roles");
             $modeloBitacora->setActividad("Ha Modificado un rol");
-            $modeloBitacora->setId_usuario($_POST['id_usuario']);
+            $modeloBitacora->setId_usuario($idUsuario);
             $modeloBitacora->insertarBitacora();
 
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
@@ -148,22 +140,17 @@ function eliminarRol($datos)
     }
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('eliminar_rol_' . $idUsuario, 5, 1);
-
         $modeloRoles = new ModeloRoles();
         $modeloBitacora = new ModeloBitacora();
 
         $id_rol = $datos[0];
-        $id_usuario = $datos[1];
         $modeloRoles->setIdRol($id_rol);
-        $eliminacion = $modeloRoles->eliminar();
+        $eliminacion = $modeloRoles->eliminarRol($idUsuario);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $modeloBitacora->setTabla("Roles");
             $modeloBitacora->setActividad("Ha Eliminado un rol");
-            $modeloBitacora->setId_usuario($id_usuario);
+            $modeloBitacora->setId_usuario($idUsuario);
             $modeloBitacora->insertarBitacora();
 
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);

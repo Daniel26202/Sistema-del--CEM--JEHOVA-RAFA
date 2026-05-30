@@ -3,6 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
+use App\config\RateLimiter;
 
 class ModeloProveedores extends ModelBase
 {
@@ -13,7 +14,7 @@ class ModeloProveedores extends ModelBase
 		parent::__construct($dbSystem);
 	}
 
-
+	// ── READ ────────────────────────────────────────────────
 	public function consultar()
 	{
 		try {
@@ -37,7 +38,28 @@ class ModeloProveedores extends ModelBase
 		}
 	}
 
-	public function agregar()
+	// ── PRIVADOS─────────────────────────────────────────
+
+
+	private function validarRif($data, $returnRif = false)
+	{
+		try {
+			$sql = "SELECT * FROM proveedor WHERE rif =:rif";
+			$this->setSQL($sql);
+			$listData = $this->search($data, false);
+
+			if ($returnRif) {
+				return !empty($listData) ? $listData['rif'] : 0;
+			} else {
+				return !empty($listData) ? 1 : 0;
+			}
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+
+	private function agregar()
 	{
 		try {
 			$data = [
@@ -64,7 +86,7 @@ class ModeloProveedores extends ModelBase
 	}
 
 	// eliminación logica
-	public function delte()
+	private function eliminar()
 	{
 		try {
 			$data = [
@@ -90,7 +112,7 @@ class ModeloProveedores extends ModelBase
 		}
 	}
 
-	public function restablecerProveedor()
+	private function restablecer()
 	{
 		try {
 			$data = [
@@ -117,7 +139,7 @@ class ModeloProveedores extends ModelBase
 	}
 
 
-	public function editar()
+	private function editar()
 	{
 		try {
 			$this->beginTransaction();
@@ -171,21 +193,74 @@ class ModeloProveedores extends ModelBase
 		}
 	}
 
-	private function validarRif($data, $returnRif = false)
-	{
-		try {
-			$sql = "SELECT * FROM proveedor WHERE rif =:rif";
-			$this->setSQL($sql);
-			$listData = $this->search($data, false);
+	// ── PÚBLICOS ────────────────────
 
-			if ($returnRif) {
-				return !empty($listData) ? $listData['rif'] : 0;
-			} else {
-				return !empty($listData) ? 1 : 0;
-			}
-		} catch (\Exception $e) {
-			return 0;
+	private function validarSesion($idUsuario): void
+	{
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
 		}
+		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+			throw new \Exception('No hay sesión activa o usuario no autenticado.');
+		}
+	}
+
+	private function validarCamposObligatorios(array $campos, string $contexto = ''): void
+	{
+		foreach ($campos as $campo) {
+			if (empty($campo)) {
+				throw new \Exception("No se permiten campos vacíos{$contexto}.");
+			}
+		}
+	}
+
+	public function guardarEntrada($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->nombre,
+			$this->rif,
+			$this->telefono,
+			$this->email,
+			$this->direccion,
+		], ' al registrar un proveedor');
+		(new RateLimiter())->verificar('guardar_proveedor_' . $idUsuario, 5, 1);
+		return $this->agregar();
+	}
+
+	public function deleteEntrada($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->idProveedor
+		], ' al eliminar un proveedor');
+		(new RateLimiter())->verificar('eliminar_proveedor_' . $idUsuario, 5, 1);
+		return $this->eliminar();
+	}
+
+	public function restablecerProveedor($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->idProveedor
+		], ' al restablecer un proveedor');
+		(new RateLimiter())->verificar('restablecer_proveedor_' . $idUsuario, 5, 1);
+		return $this->restablecer();
+	}
+
+	public function editarEntrada($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->nombre,
+			$this->rif,
+			$this->telefono,
+			$this->email,
+			$this->direccion,
+			$this->idProveedor
+		], ' al editar un proveedor');
+		(new RateLimiter())->verificar('editar_proveedor_' . $idUsuario, 5, 1);
+		return $this->editar();
 	}
 
 
