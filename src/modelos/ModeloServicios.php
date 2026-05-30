@@ -5,6 +5,7 @@ namespace App\modelos;
 use App\modelos\ModelBase;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloCategoria;
+use App\config\RateLimiter;
 
 class ModeloServicios extends ModelBase
 {
@@ -15,6 +16,8 @@ class ModeloServicios extends ModelBase
     {
         parent::__construct($dbSystem);
     }
+
+    // ── READ ────────────────────────────────────────────────
 
     public function mostrarDoctores()
     {
@@ -64,179 +67,6 @@ class ModeloServicios extends ModelBase
             return $e->getMessage();
         }
     }
-
-    public function insertarSevicio()
-    {
-        try {
-
-            $sql = "SELECT * FROM  categoria_servicio where id_categoria=:id_categoria";
-            $this->setSQL($sql);
-            $data = ['id_categoria' => $this->getIdCategoria()];
-
-            $validar = $this->search($data);
-
-            if ($validar == []) {
-                throw new \Exception("El id de la categoria no existe");
-            }
-
-            if ($this->nombreServicio()) {
-                throw new \Exception("El Servicio Medico  ya  existe");
-            }
-
-
-            $sql = "INSERT INTO serviciomedico (id_categoria, precio, estado, tipo) VALUES (:id_categoria, :precio, :estado, :tipo)";
-
-            $this->setSQL($sql);
-            $data = [
-                'id_categoria' => $this->getIdCategoria(),
-                'precio' => $this->getPrecio(),
-                'estado' => 'ACT',
-                'tipo' => $this->getTipo()
-            ];
-            $this->create($data);
-
-            return ["exito", $data];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-
-
-    public function insertarDoctorServicio()
-    {
-        try {
-            $data1 = ['id_categoria' => $this->getIdCategoria()];
-
-            $data2 = ['id_personal' => $this->getIdDoctor()];
-
-            $sql = "SELECT * FROM serviciomedico where id_categoria =:id_categoria";
-            $this->setSQL($sql);
-            $dataSer =  $this->search($data1,false);
-
-            $data3 = [
-                'id_doctor' => $this->getIdDoctor(),
-                'id_servicioMedico' => $dataSer['id_servicioMedico'],
-            ];
-
-            $sql = "SELECT * from categoria_servicio where id_categoria=:id_categoria";
-            $this->setSQL($sql);
-
-            $validar  = $this->search($data1, false);
-
-            if ($validar == []) {
-                throw new \Exception("El id del servicio no existe");
-            }
-
-            $sql = "SELECT * from personal where id_personal=:id_personal";
-            $this->setSQL($sql);
-
-            $validar  = $this->search($data2, false);
-
-            if ($validar == []) {
-                throw new \Exception("El id del doctor no existe");
-            }
-            if ($this->validarServicioDoctor($data3)) {
-                throw new \Exception("EL Servicio ya esta asignado a este doctor");
-            }
-
-            $sql = "INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)";
-
-            $this->setSQL($sql);
-            $this->create($data3);
-
-            return ["exito"];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function eliminar()
-    {
-        try {
-            $data = [
-                'id_servicioMedico' => $this->getIdServicioMedico()
-            ];
-
-            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
-            $this->setSQL($sql);
-
-            $validar  = $this->search($data, false);
-
-            if ($validar == []) {
-                throw new \Exception("El id del paciente no existe");
-            }
-
-            $sql = "UPDATE servicioMedico SET estado = 'DES' WHERE id_servicioMedico =:id";
-            $this->setSQL($sql);
-
-            $this->update_logic($data['id_servicioMedico']);
-            return ["exito"];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-    public function restablecerServ()
-    {
-        try {
-            $data = [
-                'id_servicioMedico' => $this->getIdServicioMedico()
-            ];
-
-            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
-            $this->setSQL($sql);
-
-            $validar  = $this->search($data, false);
-
-            if ($validar == []) {
-                throw new \Exception("El id del paciente no existe");
-            }
-
-            $sql = "UPDATE servicioMedico SET estado = 'ACT' WHERE id_servicioMedico =:id";
-            $this->setSQL($sql);
-
-            $this->update_logic($data['id_servicioMedico']);
-            return ["exito"];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-
-    public function editar()
-    {
-        try {
-
-
-            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
-            $this->setSQL($sql);
-
-            $data2 = [
-                'id_servicioMedico' => $this->getIdServicioMedico()
-            ];
-            $validar  = $this->search($data2, false);
-
-            if ($validar == []) {
-                throw new \Exception("El id del servicio no existe");
-            }
-            if ($this->nombreServicio()) {
-                throw new \Exception("El tipo de servicio, ya existe");
-            }
-
-            $sql = "UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id";
-            $this->setSQL($sql);
-
-            $data1 = [
-                'precio' => $this->getPrecio(),
-                'tipo' => $this->getTipo(),
-            ];
-            $this->update($data1, $this->getIdServicioMedico());
-            return ["exito"];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
 
     //traer datos del doctor
     public function especialidadDoctor()
@@ -288,6 +118,259 @@ class ModeloServicios extends ModelBase
         }
     }
 
+    // ── PRIVADOS─────────────────────────────────────────
+
+
+    private function validarSesion($idUsuario): void
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+    }
+
+    private function validarCamposObligatorios(array $campos, string $contexto = ''): void
+    {
+        foreach ($campos as $campo) {
+            if (empty($campo)) {
+                throw new \Exception("No se permiten campos vacíos{$contexto}.");
+            }
+        }
+    }
+
+    private function insertarSevicio()
+    {
+        try {
+
+            $sql = "SELECT * FROM  categoria_servicio where id_categoria=:id_categoria";
+            $this->setSQL($sql);
+            $data = ['id_categoria' => $this->getIdCategoria()];
+
+            $validar = $this->search($data);
+
+            if ($validar == []) {
+                throw new \Exception("El id de la categoria no existe");
+            }
+
+            if ($this->nombreServicio()) {
+                throw new \Exception("El Servicio Medico  ya  existe");
+            }
+
+
+            $sql = "INSERT INTO serviciomedico (id_categoria, precio, estado, tipo) VALUES (:id_categoria, :precio, :estado, :tipo)";
+
+            $this->setSQL($sql);
+            $data = [
+                'id_categoria' => $this->getIdCategoria(),
+                'precio' => $this->getPrecio(),
+                'estado' => 'ACT',
+                'tipo' => $this->getTipo()
+            ];
+            $this->create($data);
+
+            return ["exito", $data];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    private function insertarDoctorServicio()
+    {
+        try {
+            $data1 = ['id_categoria' => $this->getIdCategoria()];
+
+            $data2 = ['id_personal' => $this->getIdDoctor()];
+
+            $sql = "SELECT * FROM serviciomedico where id_categoria =:id_categoria";
+            $this->setSQL($sql);
+            $dataSer =  $this->search($data1,false);
+
+            $data3 = [
+                'id_doctor' => $this->getIdDoctor(),
+                'id_servicioMedico' => $dataSer['id_servicioMedico'],
+            ];
+
+            $sql = "SELECT * from categoria_servicio where id_categoria=:id_categoria";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data1, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del servicio no existe");
+            }
+
+            $sql = "SELECT * from personal where id_personal=:id_personal";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data2, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del doctor no existe");
+            }
+            if ($this->validarServicioDoctor($data3)) {
+                throw new \Exception("EL Servicio ya esta asignado a este doctor");
+            }
+
+            $sql = "INSERT INTO personal_has_serviciomedico (personal_id_personal, serviciomedico_id_servicioMedico) VALUES (:id_doctor, :id_servicioMedico)";
+
+            $this->setSQL($sql);
+            $this->create($data3);
+
+            return ["exito"];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    private function eliminar()
+    {
+        try {
+            $data = [
+                'id_servicioMedico' => $this->getIdServicioMedico()
+            ];
+
+            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del paciente no existe");
+            }
+
+            $sql = "UPDATE servicioMedico SET estado = 'DES' WHERE id_servicioMedico =:id";
+            $this->setSQL($sql);
+
+            $this->update_logic($data['id_servicioMedico']);
+            return ["exito"];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    private function restablecerServ()
+    {
+        try {
+            $data = [
+                'id_servicioMedico' => $this->getIdServicioMedico()
+            ];
+
+            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $this->setSQL($sql);
+
+            $validar  = $this->search($data, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del paciente no existe");
+            }
+
+            $sql = "UPDATE servicioMedico SET estado = 'ACT' WHERE id_servicioMedico =:id";
+            $this->setSQL($sql);
+
+            $this->update_logic($data['id_servicioMedico']);
+            return ["exito"];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    private function editar()
+    {
+        try {
+
+
+            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $this->setSQL($sql);
+
+            $data2 = [
+                'id_servicioMedico' => $this->getIdServicioMedico()
+            ];
+            $validar  = $this->search($data2, false);
+
+            if ($validar == []) {
+                throw new \Exception("El id del servicio no existe");
+            }
+            if ($this->nombreServicio()) {
+                throw new \Exception("El tipo de servicio, ya existe");
+            }
+
+            $sql = "UPDATE serviciomedico SET precio = :precio, tipo= :tipo WHERE id_servicioMedico = :id";
+            $this->setSQL($sql);
+
+            $data1 = [
+                'precio' => $this->getPrecio(),
+                'tipo' => $this->getTipo(),
+            ];
+            $this->update($data1, $this->getIdServicioMedico());
+            return ["exito"];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+
+
+    // publicas que llama a las privadas
+
+    public function guardarServicio($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->idCategoria,
+            $this->precio,
+            $this->tipo,
+        ], ' al registrar un servicio');
+        (new RateLimiter())->verificar('guardar_servicio_' . $idUsuario, 5, 1);
+        return $this->insertarSevicio();
+    }
+
+
+    public function asignarServicioDoctor($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->idCategoria,
+            $this->id_doctor,
+        ], ' al asignar un servicio');
+        (new RateLimiter())->verificar('asignar_servicio_' . $idUsuario, 5, 1);
+        return $this->insertarDoctorServicio();
+    }
+
+    public function eliminarServicio($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->id_servicioMedico
+        ], ' al eliminar un servicio');
+        (new RateLimiter())->verificar('eliminar_servicio_' . $idUsuario, 5, 1);
+        return $this->eliminar();
+    }
+
+    public function restablecerServicio($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->id_servicioMedico
+        ], ' al restablecer un servicio');
+        (new RateLimiter())->verificar('restablecer_servicio_' . $idUsuario, 5, 1);
+        return $this->restablecerServ();
+    }
+
+    public function editarServicio($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->id_servicioMedico,
+            $this->precio,
+            $this->tipo,
+        ], ' al editar un servicio');
+        (new RateLimiter())->verificar('editar_servicio_' . $idUsuario, 5, 1);
+        return $this->editar();
+    }
+
+
+    //// GETTERS AND SETTERS
     public function getIdServicioMedico()
     {
 
@@ -354,7 +437,7 @@ class ModeloServicios extends ModelBase
     public function setPrecio($precio)
     {
         if (!preg_match("/^(?!0$)(?!1$)\d+([.,]\d+)?$/", $precio)) {
-            throw new \InvalidArgumentException("El precio esta mal.");
+            throw new \InvalidArgumentException("El precio esta mal.".$precio);
         }
 
         $this->precio  = $precio;

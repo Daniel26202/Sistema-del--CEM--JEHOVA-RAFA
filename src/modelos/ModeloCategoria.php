@@ -3,7 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-
+use App\config\RateLimiter;
 class ModeloCategoria extends ModelBase
 {
 
@@ -14,6 +14,7 @@ class ModeloCategoria extends ModelBase
         parent::__construct($dbSystem);
     }
 
+    // ── READ ────────────────────────────────────────────────
 
     public function seleccionarCategoria()
     {
@@ -46,7 +47,31 @@ class ModeloCategoria extends ModelBase
             return $e->getMessage();
         }
     }
-    public function registrarCategoria()
+
+
+    // ── PRIVADOS─────────────────────────────────────────
+
+
+    private function validarSesion($idUsuario): void
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+    }
+
+    private function validarCamposObligatorios(array $campos, string $contexto = ''): void
+    {
+        foreach ($campos as $campo) {
+            if (empty($campo)) {
+                throw new \Exception("No se permiten campos vacíos{$contexto}.");
+            }
+        }
+    }
+
+    private function registrarCategoria()
     {
         try {
             $data = [
@@ -67,7 +92,7 @@ class ModeloCategoria extends ModelBase
         }
     }
 
-    public function eliminarCategoria()
+    private function eliminar()
     {
         try {
             $data = [
@@ -92,6 +117,31 @@ class ModeloCategoria extends ModelBase
         }
     }
 
+    // ── PÚBLICOS QUE LLAMAN A LAS PRIVADAS ────────────────────
+
+
+    public function guardarCategoria($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->nombre,
+        ], ' al registrar una categoria');
+        (new RateLimiter())->verificar('guardar_categoria_' . $idUsuario, 5, 1);
+        return $this->registrarCategoria();
+    }
+
+    public function eliminarCategoria($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->idCategoria,
+        ], ' al eliminar una categoria');
+        (new RateLimiter())->verificar('eliminar_categoria_' . $idUsuario, 5, 1);
+        return $this->eliminar();
+    }
+
+
+    //GETTERS AND SETTERS
     public function getIdCategoria()
     {
         return $this->idCategoria;

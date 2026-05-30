@@ -17,6 +17,10 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Servicios";
 const dolar = parseFloat(document.getElementById("dolar").value);
 const id_rol_global = document.getElementById("id_rol_global").value;
 
+const modalAgregarServicio = new bootstrap.Modal(
+  document.getElementById("modalAgregarServicios"),
+);
+
 //read
 
 //create
@@ -27,8 +31,8 @@ const createService = async (form, inputs) => {
     let result = await executePetition(url + "/guardar", "POST", data);
     if (result.ok) {
       alertSuccess(result.message);
-
       form.reset();
+      modalAgregarServicio.hide();
       readServices();
     } else throw new Error(`${result.error}`);
   } catch (error) {

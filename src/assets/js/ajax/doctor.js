@@ -9,13 +9,30 @@ import {
     showDataModal,
     hasPermision,
     initLoaderButton,
-    finallyLoaderButton
+    finallyLoaderButton,
+    clearModalEnviar
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Doctores";
 
 let dataDoctor;
+
+const modalGestionarEspecialidad = new bootstrap.Modal(
+  document.getElementById("exampleModalConsultarEspecialidad"),
+);
+const modaAgregarEspecialidad = new bootstrap.Modal(
+  document.getElementById("exampleModalAgregarEspecialidad"),
+);
+
+const openBtnModalEspecialidad = document.getElementById(
+  "openBtnModalEspecialidad",
+);
+
+const exampleModalEspecialidad = document.getElementById(
+  "exampleModalLabelEspec",
+);
+const btnModalEspecialidad = document.getElementById("btnModalEspecialidad");
 const formDoctor = document.getElementById("modalAgregarDoctores");
 const imagenDoctor = document.getElementById("imagenDoctor");
 const contenedorImg = document.getElementById("contenedor-img");
@@ -39,6 +56,7 @@ const cajaDeInfo = document.getElementById("cajaDeInfo");
 const pServicios = document.getElementById("p-servicios");
 const btnagregarDoctor = document.getElementById("btnagregarDoctor");
 const id_rol_global = document.getElementById("id_rol_global").value;
+const inputsEspecialidad = formEspecialidad.querySelectorAll(".campo-editar");
 
 const urlActual = window.location.href;
 
@@ -645,7 +663,8 @@ const createEspecialidad = async (form) => {
         console.log(result);
         if (result.ok) {
             alertSuccess(result.message);
-
+            modaAgregarEspecialidad.hide();
+            modalGestionarEspecialidad.show();
             readEspecialidad();
         } else throw new Error(`${result.error}`);
     } catch (error) {
@@ -715,6 +734,21 @@ traerServicioAndDoctor();
 readDoctor();
 
 readEspecialidad();
+
+
+openBtnModalEspecialidad.addEventListener("click", function () {
+  //objetos con todos los parametros de la funcion
+  const parametros = {
+    labelModal: exampleModalEspecialidad,
+    textLabelModal: "Registrar Patologia",
+    form: formEspecialidad,
+    modal: formEspecialidad.parentElement.parentElement.parentElement,
+    btnModal: btnModalEspecialidad,
+    btnTextModal: "Registrar",
+    inputs: inputsEspecialidad,
+  };
+  clearModalEnviar(parametros);
+});
 
 // Variable externa para contar cuántos días están activos
 let diasActivosContador = 0;

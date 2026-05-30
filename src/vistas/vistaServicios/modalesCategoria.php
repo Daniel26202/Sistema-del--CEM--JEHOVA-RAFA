@@ -114,7 +114,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modal-categoria">Cancelar</button>
-                    <button type="submit" class="btn btn-modals" id="botonModalServicio" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalAgregarPatologias">Registrar</button>
+                    <button type="submit" class="btn btn-modals" id="botonModalServicio" >Registrar</button>
                     <span id="spinner-cargando" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                 </div>
         </div>

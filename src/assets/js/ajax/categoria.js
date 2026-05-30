@@ -11,6 +11,15 @@ const botonModalServicio = document.getElementById('botonModalServicio');
 const inputs =formulario.querySelectorAll('.input-validar')
 const exampleModalLabel = document.getElementById("modalLabelServicios"); 
 
+// modal categoria
+const modalCategoria = new bootstrap.Modal(
+  document.getElementById("modal-categoria"),
+);
+//modal agregar categoria
+const modalAgregarCategoria = new bootstrap.Modal(
+  document.getElementById("modalAgregarPatologias"),
+);
+
 //read
 
 const readCategory = async () => {
@@ -82,7 +91,8 @@ const createcategory = async (form) => {
         if (result.ok) {
             alertSuccess(result.message);
             form.reset();
-
+            modalAgregarCategoria.hide();
+            modalCategoria.show();
             readCategory();
         } else throw new Error(`${result.error}`);
     } catch (error) {

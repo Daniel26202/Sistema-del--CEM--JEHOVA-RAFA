@@ -18,7 +18,7 @@
     <div class="me-2 ps-3 col-12 d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start">
       <div class="mb-2 mb-md-0 caja-btn-margin">
 
-        <button class="<?= $vistaActiva == 'papelera' ? 'd-none' : '' ?> caja-btn-margin btn btn-modals btnOpenModal" style="width: 100% !important" data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" id="btnOpenModal">
+        <button class="<?= $vistaActiva != 'pacientes'  ? 'd-none' : '' ?> caja-btn-margin btn btn-modals btnOpenModal" style="width: 100% !important" data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" id="btnOpenModal">
           <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bandaid-fill mx-2" viewBox="0 0 16 16">
             <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
           </svg>Registrar paciente

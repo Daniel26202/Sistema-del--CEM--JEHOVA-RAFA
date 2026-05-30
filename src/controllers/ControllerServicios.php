@@ -5,7 +5,6 @@ use App\modelos\ModeloServicios;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter;
 
 function servicios($parametro)
 {
@@ -72,9 +71,6 @@ function guardar()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_servicio_' . $idUsuario, 5, 1);
 
 		$servicio = new ModeloServicios();
 		$bitacora = new ModeloBitacora();
@@ -91,11 +87,11 @@ function guardar()
 		$servicio->setPrecio($numero);
 		$servicio->setTipo($_POST['tipo']);
 
-		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha Insertado un nuevo servicio medico");
 		$bitacora->setTabla("servicio Medico");
 
-		$insercion = $servicio->insertarSevicio();
+		$insercion = $servicio->guardarServicio($idUsuario);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
 			$bitacora->insertarBitacora();
@@ -124,20 +120,16 @@ function eliminar($datos)
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('eliminar_servicio_' . $idUsuario, 5, 1);
-
 		$servicio = new ModeloServicios();
 		$bitacora = new ModeloBitacora();
 
 		$servicio->setIdServicioMedico($datos[0]);
 
-		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha eliminado un servicio medico");
 		$bitacora->setTabla("servicio Medico");
 
-		$eliminacion = $servicio->eliminar();
+		$eliminacion = $servicio->eliminarServicio($idUsuario);
 
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -164,19 +156,17 @@ function restablecer($datos)
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('restablecer_servicio_' . $idUsuario, 5, 1);
+
 		$servicio = new ModeloServicios();
 		$bitacora = new ModeloBitacora();
 
 		$servicio->setIdServicioMedico($datos[0]);
 
-		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha restablecido un servicio medico");
 		$bitacora->setTabla("servicio Medico");
 
-		$restablecimiento = $servicio->restablecerServ();
+		$restablecimiento = $servicio->restablecerServicio($idUsuario);
 
 		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
 			$bitacora->insertarBitacora();
@@ -202,10 +192,7 @@ function editar()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('editar_servicio_' . $idUsuario, 5, 1);
-
+	
 		$servicio = new ModeloServicios();
 		$bitacora = new ModeloBitacora();
 
@@ -220,11 +207,11 @@ function editar()
 		$servicio->setPrecio($numero);
 		$servicio->setTipo($_POST['tipo']);
 
-		$bitacora->setId_usuario($_POST['id_usuario']);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha modificado un servicio medico");
 		$bitacora->setTabla("servicio Medico");
 
-		$edicion = $servicio->editar();
+		$edicion = $servicio->editarServicio($idUsuario);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$bitacora->insertarBitacora();
@@ -261,19 +248,16 @@ function registrarCategoria()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_categoria_' . $idUsuario, 5, 1);
 
 		$categoria = new ModeloCategoria();
 		$bitacora = new ModeloBitacora();
 
 		$categoria->setNombre($_POST["categoria"]);
 
-		$insercion = $categoria->registrarCategoria();
+		$insercion = $categoria->guardarCategoria($idUsuario);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
-			$bitacora->setId_usuario($_POST['id_usuario']);
+			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha Insertado una nueva  categoria");
 			$bitacora->setTabla("Categoria de servicio medico");
 			$bitacora->insertarBitacora();
@@ -299,20 +283,18 @@ function eliminarCategoria($datos)
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('eliminar_categoria_' . $idUsuario, 5, 1);
+
 
 		$categoria = new ModeloCategoria();
 		$bitacora = new ModeloBitacora();
 
 		$categoria->setIdCategoria($datos[0]);
 
-		$bitacora->setId_usuario($datos[1]);
+		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha eliminado una categoria");
 		$bitacora->setTabla("Categoria de servicio medico");
 
-		$eliminacion  = $categoria->eliminarCategoria();
+		$eliminacion  = $categoria->eliminarCategoria($idUsuario);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$bitacora->insertarBitacora();

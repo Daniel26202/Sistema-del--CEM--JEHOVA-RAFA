@@ -7,7 +7,7 @@ use App\modelos\ModeloServicios;
 use App\modelos\ModeloUsuarios;
 use App\modelos\ModeloRoles;
 use App\modelos\ModeloCategoria;
-use App\config\RateLimiter;
+
 
 //muestro los datos de las cuatro tablas
 function doctores($parametro)
@@ -139,9 +139,7 @@ function guardarDoctores()
     try {
 
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('guardar_doctor_servicio_' . $idUsuario, 5, 1);
+
 
         $servicio = new ModeloServicios();
         $doctores = new ModeloDoctores();
@@ -154,18 +152,17 @@ function guardarDoctores()
         $bitacora->setActividad("Ha asignado un servicio medico a un doctor");
         $bitacora->setTabla("Servicio Medico");
 
+        $insercion = $servicio->asignarServicioDoctor($idUsuario);
+        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 
-
-        $insercion = $servicio->insertarDoctorServicio();
-
-        if (is_array($insercion) && $insercion[0] === "exito") {
-            $bitacora->insertarBitacora();
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
-        } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $insercion]);
-            exit;
-        }
+        // if (is_array($insercion) && $insercion[0] === "exito") {
+        //     $bitacora->insertarBitacora();
+        //     echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+        // } else {
+        //     http_response_code(409);
+        //     echo json_encode(['ok' => false, 'error' => $insercion]);
+        //     exit;
+        // }
     } catch (InvalidArgumentException $e) {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
