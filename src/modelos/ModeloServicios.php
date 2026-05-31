@@ -33,7 +33,7 @@ class ModeloServicios extends ModelBase
     public function mostrarServicios()
     {
         try {
-            $sql =  "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = 'ACT' AND sm.estado = 'ACT'";
+            $sql =  "SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = 'ACT' AND sm.estado = 'ACT'";
 
             $this->setSQL($sql);
             return $this->read();
@@ -60,7 +60,7 @@ class ModeloServicios extends ModelBase
     public function mostrarServiciosDes()
     {
         try {
-            $sql = 'SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "DES" OR sm.estado = "DES"';
+            $sql = 'SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria  FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "DES" OR sm.estado = "DES"';
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -95,7 +95,7 @@ class ModeloServicios extends ModelBase
                 'estado' => 'ACT'
             ];
 
-            $sql = "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.id_categoria = :id_categoria AND sm.estado =:estado AND sm.tipo = :tipo";
+            $sql = "SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria  FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.id_categoria = :id_categoria AND sm.estado =:estado AND sm.tipo = :tipo";
             $this->setSQL($sql);
             $listData = $this->search($data, false);
             return !empty($listData) ? 1 : 0;
@@ -108,7 +108,7 @@ class ModeloServicios extends ModelBase
     public function validarServicioDoctor($data)
     {
         try {
-            $sql = "SELECT *,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN  personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal WHERE sm.id_servicioMedico =:id_servicioMedico AND p.id_personal = :id_doctor";
+            $sql = "SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria  FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria INNER JOIN  personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico INNER JOIN personal p ON p.id_personal = ps.personal_id_personal WHERE sm.id_servicioMedico =:id_servicioMedico AND p.id_personal = :id_doctor";
             $this->setSQL($sql);
             $listData = $this->search($data, false);
 
@@ -144,7 +144,7 @@ class ModeloServicios extends ModelBase
     {
         try {
 
-            $sql = "SELECT * FROM  categoria_servicio where id_categoria=:id_categoria";
+            $sql = "SELECT id_categoria,nombre FROM  categoria_servicio where id_categoria=:id_categoria";
             $this->setSQL($sql);
             $data = ['id_categoria' => $this->getIdCategoria()];
 
@@ -183,7 +183,7 @@ class ModeloServicios extends ModelBase
 
             $data2 = ['id_personal' => $this->getIdDoctor()];
 
-            $sql = "SELECT * FROM serviciomedico where id_categoria =:id_categoria";
+            $sql = "SELECT id_categoria FROM serviciomedico where id_categoria =:id_categoria";
             $this->setSQL($sql);
             $dataSer =  $this->search($data1,false);
 
@@ -192,7 +192,7 @@ class ModeloServicios extends ModelBase
                 'id_servicioMedico' => $dataSer['id_servicioMedico'],
             ];
 
-            $sql = "SELECT * from categoria_servicio where id_categoria=:id_categoria";
+            $sql = "SELECT id_categoria from categoria_servicio where id_categoria=:id_categoria";
             $this->setSQL($sql);
 
             $validar  = $this->search($data1, false);
@@ -201,7 +201,7 @@ class ModeloServicios extends ModelBase
                 throw new \Exception("El id del servicio no existe");
             }
 
-            $sql = "SELECT * from personal where id_personal=:id_personal";
+            $sql = "SELECT id_personal from personal where id_personal=:id_personal";
             $this->setSQL($sql);
 
             $validar  = $this->search($data2, false);
@@ -231,7 +231,7 @@ class ModeloServicios extends ModelBase
                 'id_servicioMedico' => $this->getIdServicioMedico()
             ];
 
-            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $sql = "SELECT id_servicioMedico from serviciomedico where id_servicioMedico=:id_servicioMedico";
             $this->setSQL($sql);
 
             $validar  = $this->search($data, false);
@@ -256,7 +256,7 @@ class ModeloServicios extends ModelBase
                 'id_servicioMedico' => $this->getIdServicioMedico()
             ];
 
-            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $sql = "SELECT id_servicioMedico from serviciomedico where id_servicioMedico=:id_servicioMedico";
             $this->setSQL($sql);
 
             $validar  = $this->search($data, false);
@@ -280,7 +280,7 @@ class ModeloServicios extends ModelBase
         try {
 
 
-            $sql = "SELECT * from serviciomedico where id_servicioMedico=:id_servicioMedico";
+            $sql = "SELECT id_servicioMedico from serviciomedico where id_servicioMedico=:id_servicioMedico";
             $this->setSQL($sql);
 
             $data2 = [

@@ -16,14 +16,15 @@ class ModeloControl extends ModelBase
 
 	public function buscarPacientes()
 	{
-		$sql = "SELECT p.* FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula LIKE :cedula AND co.estado = 'ACT' GROUP BY p.cedula";
+		$sql = "SELECT p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula LIKE :cedula AND co.estado = 'ACT' GROUP BY p.cedula";
 		$this->setSQL($sql);
 		return $this->search(['cedula' => '%' . $this->getCedula() . '%']);
 	}
 
+
 	public function consultarPacientes()
 	{
-		$sql = "SELECT * FROM paciente p INNER JOIN control c ON c.id_paciente = p.id_paciente WHERE p.estado = 'ACT' GROUP BY cedula";
+		$sql = "SELECT p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud FROM paciente p INNER JOIN control c ON c.id_paciente = p.id_paciente WHERE p.estado = 'ACT' GROUP BY cedula";
 		$this->setSQL($sql);
 		return $this->read();
 	}
@@ -31,7 +32,7 @@ class ModeloControl extends ModelBase
 	public function mostrarControlPacienteA()
 	{
 		$data = ['cedula' => $this->getCedula(), 'estado' => 'ACT'];
-		$sql  = "SELECT co.*, p.* FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula = :cedula AND co.estado = :estado";
+		$sql  = "SELECT co.id_control,co.id_usuario,co.diagnostico,co.medicamentosRecetados,co.fecha_control,co.fechaRegreso,co.nota, co.historiaclinica,co.severidad, p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud  FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula = :cedula AND co.estado = :estado";
 		$this->setSQL($sql);
 		return $this->search($data);
 	}
@@ -39,7 +40,7 @@ class ModeloControl extends ModelBase
 	public function mostrarControlPacienteU()
 	{
 		$data = ['cedula' => $this->getCedula(), 'estado' => 'ACT', 'id' => $this->getIdUsuario()];
-		$sql  = "SELECT co.*, p.*, usu.id_usuario FROM control co INNER JOIN paciente p ON co.id_paciente = p.id_paciente INNER JOIN segurity.usuario usu ON co.id_usuario = usu.id_usuario WHERE p.cedula = :cedula AND co.estado = :estado AND usu.id_usuario = :id";
+		$sql  = "SELECT co.id_control,co.id_usuario,co.diagnostico,co.medicamentosRecetados,co.fecha_control,co.fechaRegreso,co.nota, co.historiaclinica,co.severidad, p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud, usu.id_usuario FROM control co INNER JOIN paciente p ON co.id_paciente = p.id_paciente INNER JOIN segurity.usuario usu ON co.id_usuario = usu.id_usuario WHERE p.cedula = :cedula AND co.estado = :estado AND usu.id_usuario = :id";
 		$this->setSQL($sql);
 		return $this->search($data);
 	}
@@ -47,7 +48,7 @@ class ModeloControl extends ModelBase
 	public function mostrarPaciente()
 	{
 		$data = ['cedula' => $this->getCedula(), 'estado' => 'ACT'];
-		$sql  = "SELECT * FROM paciente WHERE estado = :estado AND cedula = :cedula";
+		$sql  = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM paciente WHERE estado = :estado AND cedula = :cedula";
 		$this->setSQL($sql);
 		return $this->search($data, false);
 	}
@@ -162,7 +163,7 @@ class ModeloControl extends ModelBase
 			];
 			$data2 = ['id_control' => $this->getIdControl()];
 
-			$sql = "SELECT * FROM control WHERE id_control = :id_control";
+			$sql = "SELECT id_control FROM control WHERE id_control = :id_control";
 			$this->setSQL($sql);
 			if ($this->search($data2, false) == []) {
 				throw new \Exception("El id del control no existe.");

@@ -20,7 +20,7 @@ class ModeloPacientes extends ModelBase
 	public function index()
 	{
 		try {
-			$sql = "SELECT * FROM paciente WHERE estado = 'ACT'";
+			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM paciente WHERE estado = 'ACT'";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -52,7 +52,7 @@ class ModeloPacientes extends ModelBase
 	public function indexPapelera()
 	{
 		try {
-			$sql = "SELECT * FROM paciente WHERE estado = 'DES'";
+			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM paciente WHERE estado = 'DES'";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -109,7 +109,7 @@ class ModeloPacientes extends ModelBase
 			];
 			$data2 = ['id_paciente' => $this->getIdPaciente()];
 
-			$sql = "SELECT * FROM paciente WHERE id_paciente = :id_paciente";
+			$sql = "SELECT id_paciente FROM paciente WHERE id_paciente = :id_paciente";
 			$this->setSQL($sql);
 			if ($this->search($data2, false) == []) {
 				throw new \Exception("El id del paciente no existe.");
@@ -143,7 +143,7 @@ class ModeloPacientes extends ModelBase
 		try {
 			$data = ['id_paciente' => $this->getIdPaciente()];
 
-			$sql = "SELECT * FROM paciente WHERE id_paciente = :id_paciente";
+			$sql = "SELECT id_paciente FROM paciente WHERE id_paciente = :id_paciente";
 			$this->setSQL($sql);
 			if ($this->search($data, false) == []) {
 				throw new \Exception("El id del paciente no existe.");
@@ -164,7 +164,7 @@ class ModeloPacientes extends ModelBase
 		try {
 			$data = ['id_paciente' => $this->getIdPaciente()];
 
-			$sql = "SELECT * FROM paciente WHERE id_paciente = :id_paciente";
+			$sql = "SELECT id_paciente FROM paciente WHERE id_paciente = :id_paciente";
 			$this->setSQL($sql);
 			if ($this->search($data, false) == []) {
 				throw new \Exception("El id del paciente no existe.");
@@ -183,7 +183,7 @@ class ModeloPacientes extends ModelBase
 	private function validarCedula($data, $returnCedula = false)
 	{
 		try {
-			$sql = "SELECT * FROM paciente WHERE cedula = :cedula";
+			$sql = "SELECT cedula FROM paciente WHERE cedula = :cedula";
 			$this->setSQL($sql);
 			$listData = $this->search($data, false);
 

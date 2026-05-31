@@ -21,7 +21,7 @@ class ModeloRoles extends ModelBase
     public function roles()
     {
         try {
-            $sql = "SELECT * FROM rol WHERE estado ='ACT'  ";
+            $sql = "SELECT id_rol,nombre,descripcion FROM rol WHERE estado ='ACT'  ";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -87,7 +87,7 @@ class ModeloRoles extends ModelBase
     public function validarRol($data, $returnNombre = false)
     {
         try {
-            $sql = "SELECT * FROM rol WHERE nombre =:nombre";
+            $sql = "SELECT nombre FROM rol WHERE nombre =:nombre";
             $this->setSQL($sql);
             $listData = $this->search($data, false);
 
@@ -281,7 +281,7 @@ class ModeloRoles extends ModelBase
                 'id_rol' => $this->getIdRol()
             ];
 
-            $sql = "SELECT * from rol where id_rol=:id_rol";
+            $sql = "SELECT id_rol from rol where id_rol=:id_rol";
             $this->setSQL($sql);
 
             $validar  = $this->search($data, false);

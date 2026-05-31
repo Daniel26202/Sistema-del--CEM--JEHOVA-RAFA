@@ -44,6 +44,100 @@ function administradoresAjax()
     echo json_encode($modeloUsuarios->selectAdmin());
 }
 
+function listaNegra() {
+    require_once './src/vistas/vistaUsuarios/vistaListaNegra.php';
+}
+
+function listaNegraAjax()
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    echo json_encode($modeloUsuarios->selectUserInBlackList());
+}
+
+function listaUserAjax()
+{
+    $modeloUsuarios = new ModeloUsuarios();
+    echo json_encode($modeloUsuarios->selectAllUser());
+}
+
+// editar usuario
+function addUserBlackList()
+{
+
+    if (empty($_POST)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
+
+    try {
+
+        $idUsuario = $_SESSION['id_usuario'];
+
+        $modeloUsuarios = new ModeloUsuarios();
+        $modeloBitacora = new ModeloBitacora();
+
+        $modeloUsuarios->setIdUsuario($_POST["id_personal"]);
+        $add = $modeloUsuarios->addUserBlackList($idUsuario);
+
+        if (is_array($add) && $add[0] === "exito") {
+            $modeloBitacora->setTabla("usuario");
+            $modeloBitacora->setActividad("Ha agregado a la lista negra a un usuario");
+            $modeloBitacora->setId_usuario($idUsuario);
+            $modeloBitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $add]);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $add]);
+            exit;
+        }
+    } catch (InvalidArgumentException $e) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+        exit;
+    }
+}
+
+// quitar el usuario de la blackList
+function removeBlackList($datos)
+{
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
+
+    try {
+
+        $idUsuario = $_SESSION['id_usuario'];
+
+        $modeloUsuarios = new ModeloUsuarios();
+        $modeloBitacora = new ModeloBitacora();
+
+        $id_usuario = $datos[0];
+        $modeloUsuarios->setIdUsuario($id_usuario);
+
+        $remove = $modeloUsuarios->removeUserBlackList($idUsuario);
+
+        if (is_array($remove) && $remove[0] === "exito") {
+            $modeloBitacora->setTabla("usuario");
+            $modeloBitacora->setActividad("Ha quitado un  usuario de la lista negra");
+            $modeloBitacora->setId_usuario($idUsuario);
+            $modeloBitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $remove]);
+            exit;
+        }
+    } catch (InvalidArgumentException $e) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+        exit;
+    }
+}
+
+
 // editar usuario
 function editarUsuario()
 {

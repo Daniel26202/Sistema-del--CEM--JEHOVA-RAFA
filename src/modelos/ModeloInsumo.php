@@ -4,7 +4,6 @@ namespace App\modelos;
 
 use DateTime;
 use App\modelos\ModelBase;
-use App\modelos\ModeloProveedores;
 use App\config\RateLimiter;
 
 class ModeloInsumo extends ModelBase
@@ -20,20 +19,20 @@ class ModeloInsumo extends ModelBase
 	public function selectProveedores()
 	{
 		try {
-			$sql = "SELECT * FROM proveedor";
+			$sql = "SELECT id_proveedor,nombre,rif FROM proveedor WHERE estado = 'ACT'";
 			$this->setSQL($sql);
 			$consulta = $this->read();
 			return $consulta;
 		} catch (\Exception $e) {
 			return $e->getMessage();
-		}	
+		}
 	}
 	public function cantidadCero($cantidadCero) {}
 
-			public function insumos()
+	public function insumos()
 	{
 		try {
-			 $sql = "SELECT *,SUM(ei.cantidad_disponible) AS disponible FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo =ei.id_insumo INNER JOIN entrada e ON e.id_entrada =ei.id_entrada WHERE i.estado ='ACT' AND  e.estado ='ACT' AND ei.fechaDeVencimiento > CURRENT_DATE GROUP by i.id_insumo ";
+			$sql = "SELECT i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,SUM(ei.cantidad_disponible) AS disponible FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo =ei.id_insumo INNER JOIN entrada e ON e.id_entrada =ei.id_entrada WHERE i.estado ='ACT' AND  e.estado ='ACT' AND ei.fechaDeVencimiento > CURRENT_DATE GROUP by i.id_insumo ";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -45,7 +44,7 @@ class ModeloInsumo extends ModelBase
 	public function InsumosVencidos()
 	{
 		try {
-			$sql = "SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE";
+			$sql = "SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE";
 			$this->setSQL($sql);
 			$consulta = $this->read();
 			return $consulta;
@@ -58,7 +57,7 @@ class ModeloInsumo extends ModelBase
 	public function insumosInfo()
 	{
 		try {
-			$sql = "SELECT * FROM insumo WHERE id_insumo =:id_insumo";
+			$sql = "SELECT  id_insumo, imagen, nombre, descripcion, marca, medida, precio, stockMinimo, iva FROM insumo WHERE id_insumo =:id_insumo";
 			$this->setSQL($sql);
 			$consulta = $this->search(["id_insumo" => $this->getIdInsumo()]);
 			return $consulta;
@@ -96,7 +95,7 @@ class ModeloInsumo extends ModelBase
 	public function buscarInsumos()
 	{
 		try {
-			$sql = "SELECT * FROM insumo WHERE nombre LIKE :buscar AND estado = 'ACT' OR id_insumo LIKE :buscar AND estado = 'ACT'";
+			$sql = "SELECT id_insumo, imagen, nombre, descripcion, marca, medida, precio, stockMinimo, iva FROM insumo WHERE nombre LIKE :buscar AND estado = 'ACT' OR id_insumo LIKE :buscar AND estado = 'ACT'";
 			$parametro = $this->getParametro();
 			$buscar = "$parametro%";
 			$consulta = $this->search(["buscar" => $buscar]);
@@ -110,7 +109,7 @@ class ModeloInsumo extends ModelBase
 	public function todasLasEntradas()
 	{
 		try {
-			$sql = "SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  i.estado = 'ACT' AND e.estado = 'ACT' AND fechaDeVencimiento BETWEEN CURRENT_DATE + INTERVAL 1 DAY AND CURRENT_DATE + INTERVAL 7 DAY ORDER BY  ei.fechaDeVencimiento";
+			$sql = "SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  i.estado = 'ACT' AND e.estado = 'ACT' AND fechaDeVencimiento BETWEEN CURRENT_DATE + INTERVAL 1 DAY AND CURRENT_DATE + INTERVAL 7 DAY ORDER BY  ei.fechaDeVencimiento";
 			$this->setSQL($sql);
 			$consulta = $this->read();
 			return ($consulta) ? $consulta : false;
@@ -137,7 +136,7 @@ class ModeloInsumo extends ModelBase
 	public function papelera()
 	{
 		try {
-			$sql = "SELECT *,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
+			$sql = "SELECT i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
 			$this->setSQL($sql);
 			$consulta = $this->read();
 
@@ -175,9 +174,9 @@ class ModeloInsumo extends ModelBase
 
 			$sql = "call insert_insumo(:imagen, :nombre, :id_proveedor, :descripcion, :fechaDeIngreso, :fechaDeVecimiento,:precio, :cantidad, :stockMinimo, :lote, :marca, :medida, :iva)";
 			$this->setSQL($sql);
-			
 
-			$this->storedProcedure($data, true,true);
+
+			$this->storedProcedure($data, true, true);
 
 
 			$this->commit();
@@ -195,7 +194,7 @@ class ModeloInsumo extends ModelBase
 	private function eliminar()
 	{
 		try {
-			$sql = "SELECT * from insumo where id_insumo=:id_insumo";
+			$sql = "SELECT id_insumo from insumo where id_insumo=:id_insumo";
 			$this->setSQL($sql);
 			$validar = $this->search(["id_insumo" => $this->getIdInsumo()]);
 			if ($validar == []) {
@@ -291,7 +290,7 @@ class ModeloInsumo extends ModelBase
 	private function restablecer()
 	{
 		try {
-			$sql = "SELECT * from insumo where id_insumo=:id_insumo";
+			$sql = "SELECT id_insumo from insumo where id_insumo=:id_insumo";
 			$this->setSQL($sql);
 			$validar = $this->search(['id_insumo' => $this->getIdInsumo()]);
 			if ($validar == []) {
@@ -329,7 +328,8 @@ class ModeloInsumo extends ModelBase
 
 	//____________PUBLICAS QUE USAN LAS PRIVADAS
 
-	public function guardarInsumo($idUsuario = null) {
+	public function guardarInsumo($idUsuario = null)
+	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([
 			$this->nombre,

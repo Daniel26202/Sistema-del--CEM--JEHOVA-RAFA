@@ -44,6 +44,8 @@ addEventListener("DOMContentLoaded", function () {
       "GET",
     );
     dataFactura = result;
+    console.log(dataFactura);
+    
   };
 
   //functions for factura

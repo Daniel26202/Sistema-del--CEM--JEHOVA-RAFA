@@ -19,7 +19,7 @@ class ModeloPatologia extends ModelBase
     public function mostrarPatologias()
     {
         try {
-            $sql = "SELECT * FROM patologia WHERE estado = 'ACT' ";
+            $sql = "SELECT id_patologia,nombre_patologia FROM patologia WHERE estado = 'ACT' ";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -30,7 +30,7 @@ class ModeloPatologia extends ModelBase
     public function mostrarPatologiasEliminadas()
     {
         try {
-            $sql = "SELECT * FROM patologia WHERE estado = 'DES' ";
+            $sql = "SELECT id_patologia,nombre_patologia FROM patologia WHERE estado = 'DES' ";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -41,7 +41,7 @@ class ModeloPatologia extends ModelBase
     public function nombrePatologia($data)
     {
         try {
-            $sql = "SELECT * FROM patologia WHERE estado = 'ACT' AND nombre_patologia = :nombrePatologia";
+            $sql = "SELECT nombre_patologia FROM patologia WHERE estado = 'ACT' AND nombre_patologia = :nombrePatologia";
             $this->setSQL($sql);
             $listData = $this->search($data, false);
 
@@ -69,6 +69,7 @@ class ModeloPatologia extends ModelBase
         }
     }
 
+
     public function buscarPatologiaPaciente()
     {
         try {
@@ -79,7 +80,6 @@ class ModeloPatologia extends ModelBase
             return $e->getMessage();
         }
     }
-
 
     // ── PRIVADOS─────────────────────────────────────────
     private function insertarPatologia()
@@ -96,7 +96,7 @@ class ModeloPatologia extends ModelBase
                 throw new \Exception("La patología ya existe en el sistema.");
             }
             
-            $sql = "SELECT * FROM patologia WHERE estado = 'DES' AND nombre_patologia = :nombrePatologia";
+            $sql = "SELECT id_patologia FROM patologia WHERE estado = 'DES' AND nombre_patologia = :nombrePatologia";
             $this->setSQL($sql);
             $listData = $this->search(['nombrePatologia' => $this->getNombrePatologia()], false);
             if (!empty($listData)) {
@@ -121,7 +121,7 @@ class ModeloPatologia extends ModelBase
                 'id_patologia' => $this->getIdPatologia()
             ];
 
-            $sql = "SELECT * from patologia where id_patologia=:id_patologia";
+            $sql = "SELECT id_patologia from patologia where id_patologia=:id_patologia";
             $this->setSQL($sql);
 
             $validar  = $this->search($data, false);
@@ -148,7 +148,7 @@ class ModeloPatologia extends ModelBase
                 'id_patologia' => $this->getIdPatologia()
             ];
 
-            $sql = "SELECT * from patologia where id_patologia=:id_patologia";
+            $sql = "SELECT id_patologia from patologia where id_patologia=:id_patologia";
             $this->setSQL($sql);
 
             $validar  = $this->search($data, false);

@@ -19,7 +19,7 @@ class ModeloCliente extends ModelBase
     public function index()
     {
         try {
-            $sql = "SELECT * FROM cliente WHERE estado = 'ACT'";
+            $sql = "SELECT id_cliente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM cliente WHERE estado = 'ACT'";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -30,7 +30,7 @@ class ModeloCliente extends ModelBase
     public function indexPapelera()
     {
         try {
-            $sql = "SELECT * FROM cliente WHERE estado = 'DES'";
+            $sql = "SELECT id_cliente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM cliente WHERE estado = 'DES'";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -102,7 +102,7 @@ class ModeloCliente extends ModelBase
             ];
             $data2 = ['id_cliente' => $this->getIdCliente()];
 
-            $sql = "SELECT * FROM cliente WHERE id_cliente = :id_cliente";
+            $sql = "SELECT id_cliente FROM cliente WHERE id_cliente = :id_cliente";
             $this->setSQL($sql);
             if ($this->search($data2, false) == []) {
                 throw new \Exception("El id del cliente no existe.");
@@ -134,7 +134,7 @@ class ModeloCliente extends ModelBase
         try {
             $data = ['id_cliente' => $this->getIdCliente()];
 
-            $sql = "SELECT * FROM cliente WHERE id_cliente = :id_cliente";
+            $sql = "SELECT id_cliente FROM cliente WHERE id_cliente = :id_cliente";
             $this->setSQL($sql);
             if ($this->search($data, false) == []) {
                 throw new \Exception("El id del cliente no existe.");
@@ -155,7 +155,7 @@ class ModeloCliente extends ModelBase
         try {
             $data = ['id_cliente' => $this->getIdCliente()];
 
-            $sql = "SELECT * FROM cliente WHERE id_cliente = :id_cliente";
+            $sql = "SELECT id_cliente FROM cliente WHERE id_cliente = :id_cliente";
             $this->setSQL($sql);
             if ($this->search($data, false) == []) {
                 throw new \Exception("El id del cliente no existe.");
@@ -175,7 +175,7 @@ class ModeloCliente extends ModelBase
     private function validarCedula($data, $returnCedula = false)
     {
         try {
-            $sql = "SELECT * FROM cliente WHERE cedula = :cedula";
+            $sql = "SELECT id_cliente,cedula FROM cliente WHERE cedula = :cedula";
             $this->setSQL($sql);
             $listData = $this->search($data, false);
 

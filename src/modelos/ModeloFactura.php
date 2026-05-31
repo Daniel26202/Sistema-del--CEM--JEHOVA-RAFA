@@ -45,18 +45,6 @@ class ModeloFactura extends ModelBase
 
 	// ── READ────────────────────
 
-	private function returnObjectModel()
-	{
-		return [
-			'modeloPacientes' => new ModeloPacientes(),
-			'modeloCliente' => new ModeloCliente(),
-			'modeloInsumo' => new ModeloInsumo(),
-			'modeloCita' => new ModeloCita(),
-			'modeloHospitalizacion' => new ModeloHospitalizacion(),
-			'modeloServicios' => new ModeloServicios()
-		];
-	}
-
 	public function buscarPacientePorCita()
 	{
 		try {
@@ -235,11 +223,7 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = ['id_factura' => $this->getIdFactura()];
-			$sql = "SELECT f.*, c.nombre as nombre_p, c.apellido AS apellido_p,
-                            nacionalidad, c.cedula AS cedula_p
-                    FROM factura f
-                    INNER JOIN cliente c ON c.id_cliente = f.id_cliente
-                    WHERE id_factura = :id_factura";
+			$sql = "SELECT * FROM view_factura WHERE id_factura = :id_factura";
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {

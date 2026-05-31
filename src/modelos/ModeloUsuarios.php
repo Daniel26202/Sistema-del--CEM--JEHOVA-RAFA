@@ -17,12 +17,25 @@ class ModeloUsuarios extends ModelBase
     }
 
     // ── READ ────────────────────────────────────────────────
+    //select all user
+
+    public function selectAllUser()
+    {
+        try {
+            $sql = 'SELECT u.usuario as user, u.id_usuario, u.id_rol, u.imagen, u.correo, p.id_personal,p.nacionalidad,p.cedula,p.nombre,p.apellido,p.telefono FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado != "BLOQUED" ';
+            $this->setSQL($sql);
+            return $this->read();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
 
     //buscamos a los usuarios en la base de datos
     public function select()
     {
         try {
-            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS NOT null';
+            $sql = 'SELECT u.usuario as user, u.id_usuario, u.id_rol, u.imagen, u.correo, p.id_personal,p.nacionalidad,p.cedula,p.nombre,p.apellido,p.telefono FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS NOT null';
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -36,7 +49,7 @@ class ModeloUsuarios extends ModelBase
     public function selectAdmin()
     {
         try {
-            $sql = 'SELECT u.usuario as user, u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS null';
+            $sql = 'SELECT u.usuario as user, u.id_usuario, u.id_rol, u.imagen, u.correo, p.id_personal,p.nacionalidad,p.cedula,p.nombre,p.apellido,p.telefono FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "ACT" AND p.id_especialidad IS null';
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -44,11 +57,23 @@ class ModeloUsuarios extends ModelBase
         }
     }
 
+    public function selectUserInBlackList()
+    {
+        try {
+            $sql = 'SELECT u.usuario as user, u.id_usuario, u.id_rol, u.imagen, u.correo, p.id_personal,p.nacionalidad,p.cedula,p.nombre,p.apellido,p.telefono FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "BLOQUED" ';
+            $this->setSQL($sql);
+            return $this->read();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+
     //validar usuario
     private function validarUsuario($data, $returnUsuario = false)
     {
         try {
-            $sql = "SELECT * FROM usuario WHERE usuario =:usuario";
+            $sql = "SELECT usuario FROM usuario WHERE usuario =:usuario";
             $this->setSQL($sql);
             $listData = $this->search($data, false);
 
@@ -93,13 +118,55 @@ class ModeloUsuarios extends ModelBase
 
     // ── PRIVADOS─────────────────────────────────────────
 
+    private function userBlackList()
+    {
+        try {
+            $sql = "SELECT id_usuario from usuario where id_usuario=:id_usuario";
+            $this->setSQL($sql);
+            $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
+            if ($validar == []) {
+                throw new \Exception("El usuario  no existe.");
+            }
+
+            // Editar el usuario.
+            $data = [
+                'estado' => 'BLOQUED'
+            ];
+            $sql = 'UPDATE usuario SET estado = :estado WHERE id_usuario = :id';
+            $this->setSQL($sql);
+            $this->update($data, $this->getIdUsuario());
+            return ['exito'];
+        } catch (\Exception $e) {
+            $this->rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    private function removeBlackList()
+    {
+        try {
+            $sql = "SELECT id_usuario from usuario where id_usuario=:id_usuario";
+            $this->setSQL($sql);
+            $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
+            if ($validar == []) {
+                throw new \Exception("Fallo el id no existe");
+            }
+            //editar al doctor.
+            $sqlUsuario = 'UPDATE usuario SET estado = "ACT" WHERE id_usuario = :id';
+            $this->setSQL($sqlUsuario);
+            $this->update_logic($this->getIdUsuario());
+            return ["exito"];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 
     //esto es para editar un usuario.
     private function updateUsuario()
     {
         try {
             $this->beginTransaction();
-            $sql = "SELECT * from usuario where id_usuario=:id_usuario";
+            $sql = "SELECT id_usuario from usuario where id_usuario=:id_usuario";
             $this->setSQL($sql);
             $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
             if ($validar == []) {
@@ -155,7 +222,7 @@ class ModeloUsuarios extends ModelBase
     private function eliminacionLogica()
     {
         try {
-            $sql = "SELECT * from usuario where id_usuario=:id_usuario";
+            $sql = "SELECT id_usuario from usuario where id_usuario=:id_usuario";
             $this->setSQL($sql);
             $validar = $this->search(['id_usuario' => $this->getIdUsuario()]);
             if ($validar == []) {
@@ -251,7 +318,27 @@ class ModeloUsuarios extends ModelBase
 
     // ── PÚBLICOS  QUE LLAMAN A LOS PRIVADOS────────────────────
 
-    
+    public function addUserBlackList($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->id_usuario
+        ], ' al agregar un usuario en la lista negra');
+        (new RateLimiter())->verificar('blacklist_usuario_' . $idUsuario, 5, 1);
+        return $this->userBlackList();
+    }
+
+    public function removeUserBlackList($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->id_usuario
+        ], ' al quitar un usuario de la lista negra');
+        (new RateLimiter())->verificar('remover_blackList_usuario_' . $idUsuario, 5, 1);
+        return $this->removeBlackList();
+    }
+
+
     public function editarUsuario($idUsuario = null)
     {
         $this->validarSesion($idUsuario);

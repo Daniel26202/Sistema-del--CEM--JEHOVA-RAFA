@@ -20,7 +20,7 @@ class ModeloEntrada extends ModelBase
 	public function selectProveedores()
 	{
 		try {
-			$sql = "SELECT * FROM proveedor WHERE estado ='ACT' ";
+			$sql = "SELECT id_proveedor,nombre,rif  FROM proveedor WHERE estado ='ACT' ";
 			$this->setSQL($sql);
 			$consulta = $this->read();
 			return ($consulta) ? $consulta : false;
@@ -44,7 +44,7 @@ class ModeloEntrada extends ModelBase
 	public function insumosEntrada()
 	{
 		try {
-			$sql = " SELECT ei.id_entradaDeInsumo,i.*,e.*,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE i.id_insumo=:id_insumo AND e.estado = 'ACT' AND i.estado = 'ACT' ORDER BY e.fechaDeIngreso";
+			$sql = " SELECT ei.id_entradaDeInsumo,i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,e.*,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE i.id_insumo=:id_insumo AND e.estado = 'ACT' AND i.estado = 'ACT' ORDER BY e.fechaDeIngreso";
 			$this->setSQL($sql);
 			$consulta = $this->search(["id_insumo" => $this->getIdInsumo()]);
 
@@ -58,7 +58,7 @@ class ModeloEntrada extends ModelBase
 	public function insumos()
 	{
 		try {
-			$sql = "SELECT * FROM insumo WHERE estado = 'ACT' ";
+			$sql = "SELECT  id_insumo, imagen, nombre, descripcion, marca, medida, precio, stockMinimo, iva FROM insumo WHERE estado = 'ACT' ";
 			$this->setSQL($sql);
 			$consulta = $this->read();
 			return ($consulta) ? $consulta : false;
@@ -71,7 +71,7 @@ class ModeloEntrada extends ModelBase
 	public function seleccionarDesactivos()
 	{
 		try {
-			$sql = " SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'DES'  ORDER BY ei.fechaDeVencimiento ";
+			$sql = " SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva ,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'DES'  ORDER BY ei.fechaDeVencimiento ";
 			$this->setSQL($sql);
 			$consulta = $this->read();
 			return ($consulta) ? $consulta : false;
@@ -115,7 +115,7 @@ class ModeloEntrada extends ModelBase
 	{
 		try {
 
-			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			$sql = "SELECT id_entrada from entrada where id_entrada=:id_entrada";
 			$this->setSQL($sql);
 			$validar = $this->search(["id_entrada" => $this->getIdEntrada()], false);
 			if ($validar == []) {
@@ -138,7 +138,7 @@ class ModeloEntrada extends ModelBase
 		try {
 			$this->beginTransaction();
 
-			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			$sql = "SELECT id_entrada from entrada where id_entrada=:id_entrada";
 			$this->setSQL($sql);
 			$validar = $this->search(["id_entrada" => $this->getIdEntrada()]);
 			if ($validar == []) {
@@ -171,7 +171,7 @@ class ModeloEntrada extends ModelBase
 	private function restablecer()
 	{
 		try {
-			$sql = "SELECT * from entrada where id_entrada=:id_entrada";
+			$sql = "SELECT id_entrada from entrada where id_entrada=:id_entrada";
 			$this->setSQL($sql);
 			$validar=$this->search(["id_entrada" => $this->getIdEntrada()]);
 			if ($validar == []) {

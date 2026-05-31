@@ -18,7 +18,7 @@ class ModeloProveedores extends ModelBase
 	public function consultar()
 	{
 		try {
-			$sql = "SELECT * FROM proveedor WHERE estado='ACT' ";
+			$sql = "SELECT id_proveedor,nombre,rif,telefono,direccion FROM proveedor WHERE estado='ACT' ";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -30,7 +30,7 @@ class ModeloProveedores extends ModelBase
 	public function papeleraConsultar()
 	{
 		try {
-			$sql = "SELECT * FROM proveedor WHERE estado='DES' ";
+			$sql = "SELECT id_proveedor,nombre,rif,telefono,direccion FROM proveedor WHERE estado='DES' ";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -44,7 +44,7 @@ class ModeloProveedores extends ModelBase
 	private function validarRif($data, $returnRif = false)
 	{
 		try {
-			$sql = "SELECT * FROM proveedor WHERE rif =:rif";
+			$sql = "SELECT rif FROM proveedor WHERE rif =:rif";
 			$this->setSQL($sql);
 			$listData = $this->search($data, false);
 
@@ -93,7 +93,7 @@ class ModeloProveedores extends ModelBase
 				'id_proveedor' => $this->getIdProveedor()
 			];
 
-			$sql = "SELECT * from proveedor where id_proveedor=:id_proveedor";
+			$sql = "SELECT id_proveedor from proveedor where id_proveedor=:id_proveedor";
 			$this->setSQL($sql);
 
 			$validar  = $this->search($data, false);
@@ -119,7 +119,7 @@ class ModeloProveedores extends ModelBase
 				'id_proveedor' => $this->getIdProveedor()
 			];
 
-			$sql = "SELECT * from proveedor where id_proveedor=:id_proveedor";
+			$sql = "SELECT id_proveedor from proveedor where id_proveedor=:id_proveedor";
 			$this->setSQL($sql);
 
 			$validar  = $this->search($data, false);
@@ -157,7 +157,7 @@ class ModeloProveedores extends ModelBase
 			];
 
 
-			$sql = "SELECT * from proveedor where id_proveedor=:id_proveedor";
+			$sql = "SELECT id_proveedor from proveedor where id_proveedor=:id_proveedor";
 			$this->setSQL($sql);
 
 			$validar  = $this->search($data2, false);

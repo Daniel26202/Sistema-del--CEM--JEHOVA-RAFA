@@ -25,7 +25,7 @@ class ModeloCita extends ModelBase
 				'cedula'       => $this->getCedula(),
 				'estado'       => 'ACT'
 			];
-			$sql = "SELECT * FROM paciente WHERE nacionalidad = :nacionalidad AND cedula = :cedula AND estado = :estado";
+			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM paciente WHERE nacionalidad = :nacionalidad AND cedula = :cedula AND estado = :estado";
 			$this->setSQL($sql);
 			return $this->search($data, false);
 		} catch (\Exception $e) {
@@ -36,7 +36,7 @@ class ModeloCita extends ModelBase
 	public function mostrarServicioDoctor()
 	{
 		try {
-			$sql = "SELECT * FROM categoria_servicio WHERE estado = 'ACT'";
+			$sql = "SELECT id_categoria, nombre FROM categoria_servicio WHERE estado = 'ACT'";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -236,7 +236,7 @@ class ModeloCita extends ModelBase
 		try {
 			$data = ['id_cita' => $this->getIdCita()];
 
-			$sql = "SELECT * FROM cita WHERE id_cita = :id_cita";
+			$sql = "SELECT id_cita FROM cita WHERE id_cita = :id_cita";
 			$this->setSQL($sql);
 			if ($this->search($data, false) == []) {
 				throw new \Exception("El id de la cita no existe.");

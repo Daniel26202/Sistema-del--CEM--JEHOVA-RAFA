@@ -139,6 +139,11 @@ return [
     "editarAdministrador" => "editar",
     "eliminarAdministrador" => "eliminar",
     "verificarPassw" => "consultar",
+    'listaNegra'=>'consultar',
+    'listaNegraAjax'=>'consultar',
+    'addUserBlackList'=>'guardar',
+    'removeBlackList'=>'eliminar',
+    'listaUserAjax'=>'consultar',
 
     //Hospitalizacion
     "semaforo" => "consultar",

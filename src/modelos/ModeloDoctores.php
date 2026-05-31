@@ -21,7 +21,7 @@ class ModeloDoctores extends ModelBase
     public function selectEspecialidad()
     {
         try {
-            $sql = "SELECT * FROM especialidad WHERE estado = 'ACT'";
+            $sql = "SELECT id_especialidad, nombre FROM especialidad WHERE estado = 'ACT'";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -32,7 +32,7 @@ class ModeloDoctores extends ModelBase
     public function selectDias()
     {
         try {
-            $sql = "SELECT * FROM horario";
+            $sql = "SELECT id_horario, diaslaborables FROM horario";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -43,7 +43,7 @@ class ModeloDoctores extends ModelBase
     public function selectDiasDoctor()
     {
         try {
-            $sql = "SELECT h.*, hyd.* FROM horario h INNER JOIN horarioydoctor hyd ON h.id_horario = hyd.id_horario INNER JOIN personal p ON p.id_personal = hyd.id_personal";
+            $sql = "SELECT h.id_horario, h.diaslaborables, hyd.horaDeEntrada, hyd.horaDeSalida, hyd.id_personal FROM horario h INNER JOIN horarioydoctor hyd ON h.id_horario = hyd.id_horario INNER JOIN personal p ON p.id_personal = hyd.id_personal";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -67,7 +67,7 @@ class ModeloDoctores extends ModelBase
     public function select()
     {
         try {
-            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
+            $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -78,7 +78,7 @@ class ModeloDoctores extends ModelBase
     public function desactivos()
     {
         try {
-            $sql = 'SELECT u.*, p.*, p.nombre as nombre_d, es.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "DES" AND es.id_especialidad IS NOT NULL';
+            $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "DES" AND es.id_especialidad IS NOT NULL';
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -103,7 +103,7 @@ class ModeloDoctores extends ModelBase
     private function validarCedula($data)
     {
         try {
-            $sql = "SELECT u.*, p.* FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE p.cedula = :cedula";
+            $sql = "SELECT p.cedula FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE p.cedula = :cedula";
             $this->setSQL($sql);
             $listData = $this->search($data, false);
             return !empty($listData) ? 1 : 0;
@@ -188,7 +188,7 @@ class ModeloDoctores extends ModelBase
             $this->beginTransaction();
 
             $data1 = ['idUsuario' => $this->getIdUsuario()];
-            $sql   = "SELECT * FROM personal WHERE usuario = :idUsuario";
+            $sql   = "SELECT usuario FROM personal WHERE usuario = :idUsuario";
             $this->setSQL($sql);
             if ($this->search($data1, false) == []) {
                 throw new \Exception("El id del usuario no existe.");
@@ -267,7 +267,7 @@ class ModeloDoctores extends ModelBase
     {
         try {
             $data = ['id_usuario' => $this->getIdUsuario()];
-            $sql  = "SELECT * FROM segurity.usuario WHERE id_usuario = :id_usuario";
+            $sql  = "SELECT id_usuario FROM segurity.usuario WHERE id_usuario = :id_usuario";
             $this->setSQL($sql);
             if ($this->search($data, false) == []) {
                 throw new \Exception("El id del usuario no existe.");
@@ -285,7 +285,7 @@ class ModeloDoctores extends ModelBase
     {
         try {
             $data = ['id_usuario' => $this->getIdUsuario()];
-            $sql  = "SELECT * FROM segurity.usuario WHERE id_usuario = :id_usuario";
+            $sql  = "SELECT id_usuario FROM segurity.usuario WHERE id_usuario = :id_usuario";
             $this->setSQL($sql);
             if ($this->search($data, false) == []) {
                 throw new \Exception("El id del usuario no existe.");
@@ -316,7 +316,7 @@ class ModeloDoctores extends ModelBase
     {
         try {
             $data = ['id_especialidad' => $this->getIdEspecialidad()];
-            $sql  = "SELECT * FROM especialidad WHERE id_especialidad = :id_especialidad";
+            $sql  = "SELECT id_especialidad FROM especialidad WHERE id_especialidad = :id_especialidad";
             $this->setSQL($sql);
             if ($this->search($data, false) == []) {
                 throw new \Exception("El id de la especialidad no existe.");
