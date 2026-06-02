@@ -299,3 +299,15 @@ function retornarTodasLasCitas()
 // {
 // 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 // }
+
+
+function retornarCitasHoy()
+{
+    if (ob_get_length()) ob_clean();
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Access-Control-Allow-Origin: *");
+
+    $cita = new App\modelos\ModeloCita();
+    echo json_encode($cita->mostrarCitaHoy());
+    exit;
+}

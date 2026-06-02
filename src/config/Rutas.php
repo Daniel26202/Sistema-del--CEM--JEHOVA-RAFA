@@ -67,7 +67,7 @@ class Rutas
 
         if (!function_exists($metodo)) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
-            exit; // 🔥 CORRECCIÓN 1: Detener la ejecución si el método no existe
+            exit; // Detener la ejecución si el método no existe
         }
 
         if (in_array($this->controlador, ["ControllerIniciarSesion", "ControllerRecuperarContr"])) {
@@ -75,22 +75,21 @@ class Rutas
             return;
         }
 
-        // ==========================================
         // SECCIÓN: APP MÓVIL (INTERCEPTOR JWT)
-        // ==========================================
         $headers = apache_request_headers();
 
         if (isset($headers['Authorization'])) {
 
             $token = str_replace('Bearer ', '', $headers['Authorization']);
-            $clave_secreta = "Clave_Secreta_Criptografica_CEM_JEHOVA_RAFA_2026";
 
             try {
-                $datosToken = \Firebase\JWT\JWT::decode($token, new Key($clave_secreta, 'HS256'));
+                // rsa
+                $clavePublica = file_get_contents(__DIR__ . '/../../src/config/keys/public.key');
+                $datosToken = \Firebase\JWT\JWT::decode($token, new Key($clavePublica, 'RS256'));
 
                 $_SESSION['id_usuario'] = $datosToken->id_usuario;
 
-                // 🔥 CORRECCIÓN 2: Asegurar mapeo correcto del ID de Rol desde el objeto JWT
+                //  Asegurar mapeo correcto del ID de Rol desde el objeto JWT
                 $_SESSION['id_rol']     = $datosToken->id_rol ?? ($datosToken->rol ?? null);
 
                 call_user_func($metodo, $parametro ?? []);
@@ -111,7 +110,7 @@ class Rutas
         // ==========================================
         // SECCIÓN: VISTAS WEB (SISTEMA TRADICIONAL)
         // ==========================================
-        if (session_status() !== PHP_SESSION_ACTIVE) { // 🔥 CORRECCIÓN 3: Corregida sintaxis de validación de sesión activa
+        if (session_status() !== PHP_SESSION_ACTIVE) { // Corregida sintaxis de validación de sesión activa
             echo "Session no iniciada";
             return;
         }
@@ -148,7 +147,7 @@ class Rutas
             exit;
         }
 
-        // 🔥 CORRECCIÓN 4: Ejecución final para peticiones web tradicionales
+        //  Ejecución final para peticiones web tradicionales
         call_user_func($metodo, $parametro ?? []);
     }
 }

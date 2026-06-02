@@ -84,7 +84,6 @@ function iniciarSesion()
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['ok' => false, 'error' => 'Campos vacíos']);
         exit;
-        return;
     }
 
     $modelo->setUsuario($_POST['username']);
@@ -224,7 +223,7 @@ function iniciarSesionMovil()
     $modelo = new ModeloInicioSesion();
     $bitacora = new ModeloBitacora();
 
-    // 1. Llegim el JSON en cru enviat per la App / Thunder Client
+    // Llegim el JSON en cru enviat per la App / Thunder Client
     $jsonContenido = file_get_contents('php://input');
     $datosInput = json_decode($jsonContenido, true);
 
@@ -248,8 +247,8 @@ function iniciarSesionMovil()
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
             'ok' => false,
-            'error' => 'Bloquejat',
-            'message' => 'Massa intents fallits. Accés restringit durant 15 minuts.'
+            'error' => 'Bloqueado',
+            'message' => 'Demasiados intentos fallidos. Su acceso ha sido restringido por 15 minutos.'
         ]);
         exit;
     }
@@ -271,25 +270,24 @@ function iniciarSesionMovil()
         $modelo->registrarIntento();
         $modelo->setIdUsuario($validar['id_usuario']);
 
-        // ❌ QUITA ESTO — causa el 500 cuando no hay sesión web activa
-        // if ($modelo->verificacionUsuarioToken()) { ... }
 
-        // ✅ Sigue directo al JWT
-        $clave_secreta = "Clave_Secreta_Criptografica_CEM_JEHOVA_RAFA_2026";
+        // Sigue directo al JWT
+        $clavePrivada = file_get_contents(__DIR__ . '/../../src/config/keys/private.key');
+
         $payload = [
             'iss'        => 'http://192.168.110.236',
             'iat'        => time(),
             'exp'        => time() + (60 * 60 * 36),
             'id_usuario' => $validar['id_usuario'],
-            'id_rol'     => $validar['id_rol'],  
+            'id_rol'     => $validar['id_rol'],
             'usuario'    => $userParam,
             'rol'        => $validar['rol'] ?? null,
             'id_personal' => $validar['id_personal'] ?? null,
             'nombre'     => $validar['nombre_personal'] ?? null,
             'apellido'   => $validar['apellido_personal'] ?? null
         ];
-
-        $jwt = \Firebase\JWT\JWT::encode($payload, $clave_secreta, 'HS256');
+        
+        $jwt = \Firebase\JWT\JWT::encode($payload, $clavePrivada, 'RS256');
 
         $bitacora->setId_usuario($validar['id_usuario']);
         $bitacora->setActividad("Ha iniciado sesión desde la aplicación móvil");
@@ -315,7 +313,7 @@ function iniciarSesionMovil()
 
         http_response_code(409);
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['ok' => false, 'error' => 'Usuari o contrasenya incorrectes']);
+        echo json_encode(['ok' => false, 'error' => 'Usuario o contraseña incorrectas']);
         exit;
     }
 }
