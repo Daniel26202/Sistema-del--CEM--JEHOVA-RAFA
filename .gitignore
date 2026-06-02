@@ -8,6 +8,5 @@
 
 # Ignorar archivos temporales de sistemas operativos
 *.swp
-src/config/config.php
 src/config/keys/private.key
 src/config/keys/public.key
