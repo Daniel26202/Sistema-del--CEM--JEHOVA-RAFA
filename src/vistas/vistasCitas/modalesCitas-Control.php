@@ -7,6 +7,11 @@
             </div>
             <form class=" form-validable" id="modalAgregarCita">
 
+                <div class="alert alert-warning d-none justify-content-between align-items-center mb-3" id="alerta-temporizador">
+                    <span>⚠️ Asegure su cupo completando el formulario.</span>
+                    <strong>Tiempo restante: <span id="cuenta-regresiva" class="badge bg-danger fs-6">05:00</span></strong>
+                </div>
+
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
                 <input type="hidden" id="id_paciente" name="id_paciente">
@@ -16,7 +21,7 @@
 
                 <div class="modal-body">
 
-                    <label class="label-custom">Buscar Cédula</label>
+                    <label class="label-custom">Buzscar Cédula</label>
                     <div class="campo-custom">
                         <div class="input-custom">
                             <span class="icono-izq">
@@ -229,7 +234,7 @@
                 </div>
                 <div class="modal-footer d-none" id="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-modals" id="botonModal" >Registrar</button>
+                    <button type="submit" class="btn btn-modals" id="botonModal">Registrar</button>
                 </div>
             </form>
 
@@ -440,7 +445,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-modals" id="botonModal" >Registrar</button>
+                    <button type="submit" class="btn btn-modals" id="botonModal">Registrar</button>
                 </div>
             </form>
         </div>

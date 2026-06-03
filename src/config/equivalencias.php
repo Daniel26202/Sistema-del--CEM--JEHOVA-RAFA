@@ -83,6 +83,7 @@ return [
     "mostrarServiciosMedicosAjax" => "consultar",
     'mostrarDataPaciente' => 'consultar',
     'retornarTodasLasCitas' => 'consultar',
+    'apartarCupo'=>'guardar',
 
 
     //Servicios Medicos

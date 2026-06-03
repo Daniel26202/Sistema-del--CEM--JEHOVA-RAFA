@@ -198,56 +198,118 @@ class ModeloCita extends ModelBase
 
 	// ── PRIVADOS─────────────────────────────────────────
 
-	private function insertarCita()
+	private function reservar()
 	{
 		try {
 			$this->beginTransaction();
-
-			$dataValidar= [
-				'doctor' => $this->getIdDoctor(),
-				'fecha'  => $this->getFecha(),
-				'hora'   => $this->getHora(),
-				'estado'=> 'Pendiente'
-			];
 
 			$sql = "SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria = :id AND estado = 'ACT'";
 			$this->setSQL($sql);
 			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico()], false);
 			$id = $id_servicioMedico['id_servicioMedico'];
 
-			// Agregamos 'FOR UPDATE' al final para ponerle un candado a este bloque de tiempo en MariaDB
-			$sqlValidar = "SELECT id_cita FROM cita 
-                           WHERE doctor = :doctor 
-                             AND fecha = :fecha 
-                             AND hora = :hora 
-                             AND estado = 'Pendiente' 
-                           FOR UPDATE";
-
-			$this->setSQL($sqlValidar);
-			$citaOcupada = $this->search($dataValidar, false);
-
-			// Gracias al FOR UPDATE, estamos 100% seguros de que nadie modificó esto en paralelo.
-			if (!empty($citaOcupada)) {
-				throw new \Exception("El doctor ya tiene una cita agendada en este horario.");
+			// 1. SI HUBO CAMBIO DE OPINIÓN: Liberamos el cupo viejo poniéndolo en 'Expirado'
+			if ($this->getIdCita() !== null && $this->getIdCita()  > 0) {
+				$sqlLiberar = "UPDATE cita SET estado = 'Expirado' WHERE id_cita = :id_ant AND estado = 'Reservado'";
+				$this->setSQL($sqlLiberar);
+				$this->update_logic(['id_ant' => $this->getIdCita()]);
 			}
 
+			// 2. VALIDACIÓN OPTIMISTA CONCURRENTE
 			$data = [
-				'id_paciente'      => $this->getIdPaciente(),
-				'id_servicioMedico' => $id,
-				'fecha'            => $this->getFecha(),
-				'hora'             => $this->getHora(),
-				'estado'           => $this->getEstado(),
-				'doctor'           => $this->getIdDoctor(),
-				'hora_salida'      => $this->getHoraSalida()
+				'doctor' => $this->getIdDoctor(),
+				'fecha'  => $this->getFecha(),
+				'hora'   => $this->getHora()
 			];
 
-			$sql = "INSERT INTO cita (id_cita, fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente, hora_salida, doctor)
-                    VALUES (NULL, :fecha, :hora, :estado, :id_servicioMedico, :id_paciente, :hora_salida, :doctor)";
-			$this->setSQL($sql);
-			$this->create($data);
-			$this->commit();
+			$sqlValidar = "SELECT id_cita FROM cita 
+                       WHERE doctor = :doctor 
+                         AND fecha = :fecha 
+                         AND hora = :hora 
+                         AND (
+                              estado IN ('Pendiente', 'Realizadas') 
+                              OR (estado = 'Reservado' AND creado_en >= NOW() - INTERVAL 5 MINUTE)
+                             )";
 
+			$this->setSQL($sqlValidar);
+			if (!empty($this->search($data, false))) {
+				throw new \Exception("Este horario ya fue seleccionado por otro usuario en tiempo real.");
+			}
+
+			// 3. REGISTRO DE LA NUEVA RESERVA
+			$dataInsert = [
+				'fecha'             => $this->getFecha(),
+				'hora'              => $this->getHora(),
+				'estado'            => 'Reservado',
+				'id_servicio'       => $id,
+				'id_paciente'       => $this->getIdPaciente(),
+				'hora_salida'       => $this->getHoraSalida(),
+				'doctor'            => $this->getIdDoctor()
+			];
+
+			$sqlInsert = "INSERT INTO cita (fecha, hora, estado, serviciomedico_id_servicioMedico, paciente_id_paciente, hora_salida, doctor)
+                      VALUES (:fecha, :hora, :estado, :id_servicio, :id_paciente, :hora_salida, :doctor)";
+
+			$this->setSQL($sqlInsert);
+			$idCitaGenerada = $this->create($dataInsert);
+
+			$this->commit();
 			return ["exito", $data];
+		} catch (\Exception $e) {
+			$this->rollBack();
+			return $e->getMessage();
+		}
+	}
+
+
+	private function insertarCita()
+	{
+		try {
+			$this->beginTransaction();
+
+
+			$sql = "SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria = :id AND estado =:estado ";
+			$this->setSQL($sql);
+			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico(), 'estado' => 'ACT'], false);
+
+			if (!$id_servicioMedico) {
+				throw new \Exception("El servicio seleccionado no se encuentra activo.");
+			}
+			$idService = $id_servicioMedico['id_servicioMedico'];
+
+			$sqlConfirmar = "UPDATE cita 
+						 SET estado = :estado, 
+							 serviciomedico_id_servicioMedico = :id_servicio, 
+							 paciente_id_paciente = :id_paciente, 
+							 hora_salida = :hora_salida
+						 WHERE doctor = :id 
+						   AND fecha = :fecha 
+						   AND hora = :hora 
+						   AND estado = 'Reservado'";
+
+			$dataUpdate = [
+				'id_paciente' => $this->getIdPaciente(),
+				'id_servicio' => $idService,
+				'fecha'       => $this->getFecha(),
+				'hora'        => $this->getHora(),
+				'estado'      => $this->getEstado(), // Pasará a 'Pendiente'
+				'hora_salida' => $this->getHoraSalida()
+			];
+
+			$this->setSQL($sqlConfirmar);
+			$this->update($dataUpdate, $this->getIdDoctor());
+
+
+			$this->setSQL("SELECT ROW_COUNT()");
+			$filas = $this->query();
+			$filasAfectadas = $filas->fetchColumn();
+
+			if ($filasAfectadas == 0) {
+				throw new \Exception("Su tiempo límite de reserva (5 minutos) ha expirado en el servidor. Seleccione el horario nuevamente.");
+			}
+
+			$this->commit();
+			return ["exito", $dataUpdate];
 		} catch (\Exception $e) {
 			$this->rollBack();
 			return $e->getMessage();
@@ -320,12 +382,30 @@ class ModeloCita extends ModelBase
 
 	private function validarCamposObligatorios(array $campos, string $contexto = ''): void
 	{
+		$x = 1;
 		foreach ($campos as $campo) {
 			if (empty($campo)) {
-				throw new \Exception("No se permiten campos vacíos{$contexto}.");
+				throw new \Exception("No se permiten campos vacíos {$contexto} campo {$x}.");
 			}
+			$x++;
 		}
 	}
+
+	public function reservarCita($idUsuario = null)
+	{
+		$this->validarSesion($idUsuario);
+		$this->validarCamposObligatorios([
+			$this->id_paciente,
+			$this->id_servicioMedico,
+			$this->fecha,
+			$this->hora,
+			$this->id_doctor,
+			$this->horaSalida
+		], ' al reservar cita una cita');
+		(new RateLimiter())->verificar('reservar_cita_' . $idUsuario, 5, 1);
+		return $this->reservar();
+	}
+
 
 	public function guardarCita($idUsuario = null)
 	{
@@ -445,8 +525,12 @@ class ModeloCita extends ModelBase
 
 	// ── Setters ───────────────────────────────────────────────────────────────
 
-	public function setIdCita($id_cita)
+	public function setIdCita($id_cita, $aceptedNull = false)
 	{
+		if ($aceptedNull) {
+			$this->id_cita = $id_cita;
+			return;
+		}
 		if (!preg_match("/^[0-9]+$/", $id_cita) || (int)$id_cita <= 0) {
 			throw new \InvalidArgumentException("El ID de la cita debe ser un número entero positivo.");
 		}
