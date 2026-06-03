@@ -32,7 +32,7 @@ class ModeloInsumo extends ModelBase
 	public function insumos()
 	{
 		try {
-			$sql = "SELECT i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,SUM(ei.cantidad_disponible) AS disponible FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo =ei.id_insumo INNER JOIN entrada e ON e.id_entrada =ei.id_entrada WHERE i.estado ='ACT' AND  e.estado ='ACT' AND ei.fechaDeVencimiento > CURRENT_DATE GROUP by i.id_insumo ";
+			$sql = "SELECT * from view_resumen_insumos ";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {

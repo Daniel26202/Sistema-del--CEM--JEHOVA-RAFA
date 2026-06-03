@@ -41,8 +41,8 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
-                            <p class="card-text">Haz clic para generar y descargar una copia de seguridad de tu base de datos.</p>
-                            <a href="#" class="btnVerificarV btn btn-primary btn-block w-100 text-white text-decoration-none card-descarga-btn" data-bs-toggle="modal" data-bs-target="#Verificar" id="descarBd">Descargar Respaldo</a>
+                            <p class="card-text">Haz clic para crear una nueva copia de seguridad de tu base de datos.</p>
+                            <a href="#" class="btnVerificarV btn btn-primary btn-block w-100 text-white text-decoration-none card-descarga-btn" data-bs-toggle="modal" data-bs-target="#Verificar" id="descarBd">Crear copia de seguridad</a>
                         </div>
                     </div>
                 </div>
@@ -54,8 +54,8 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex flex-column justify-content-between h-100">
-                            <p class="card-text">Selecciona un respaldo previamente descargado para restaurar la base de datos.</p>
-                            <button class="btnVerificarV btn btn-secondary card-restaurar-btn btn-block w-100 text-decoration-none" data-bs-toggle="modal" data-bs-target="#Verificar" id="btnRD">Restaurar Base</button>
+                            <p class="card-text">Selecciona un respaldo previamente descargado para restaurar la copia de seguridad.</p>
+                            <button class="btnVerificarV btn btn-secondary card-restaurar-btn btn-block w-100 text-decoration-none" data-bs-toggle="modal" data-bs-target="#Verificar" id="btnRD">Restaurar la copia de seguridad</button>
 
                         </div>
                     </div>
@@ -148,7 +148,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="seleccionar btn btn-modals btnrestablecer" id="btnDescargar">Registrar</button>
+                <button type="submit" class="seleccionar btn btn-modals btnrestablecer" id="btnDescargar">Confirmar</button>
             </div>
 
         </div>
@@ -238,7 +238,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-modals btnrestablecer" id="btnVerifi">Registrar</button>
+                    <button type="submit" class="btn btn-modals btnrestablecer" id="btnVerifi">Verificar</button>
                 </div>
             </form>
 

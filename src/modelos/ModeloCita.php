@@ -203,10 +203,33 @@ class ModeloCita extends ModelBase
 		try {
 			$this->beginTransaction();
 
+			$dataValidar= [
+				'doctor' => $this->getIdDoctor(),
+				'fecha'  => $this->getFecha(),
+				'hora'   => $this->getHora(),
+				'estado'=> 'Pendiente'
+			];
+
 			$sql = "SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria = :id AND estado = 'ACT'";
 			$this->setSQL($sql);
 			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico()], false);
 			$id = $id_servicioMedico['id_servicioMedico'];
+
+			// Agregamos 'FOR UPDATE' al final para ponerle un candado a este bloque de tiempo en MariaDB
+			$sqlValidar = "SELECT id_cita FROM cita 
+                           WHERE doctor = :doctor 
+                             AND fecha = :fecha 
+                             AND hora = :hora 
+                             AND estado = 'Pendiente' 
+                           FOR UPDATE";
+
+			$this->setSQL($sqlValidar);
+			$citaOcupada = $this->search($dataValidar, false);
+
+			// Gracias al FOR UPDATE, estamos 100% seguros de que nadie modificó esto en paralelo.
+			if (!empty($citaOcupada)) {
+				throw new \Exception("El doctor ya tiene una cita agendada en este horario.");
+			}
 
 			$data = [
 				'id_paciente'      => $this->getIdPaciente(),
