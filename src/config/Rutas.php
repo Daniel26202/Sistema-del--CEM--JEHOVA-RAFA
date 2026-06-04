@@ -75,12 +75,14 @@ class Rutas
             return;
         }
 
-        // SECCIÓN: APP MÓVIL (INTERCEPTOR JWT)
+        // APP MÓVIL (INTERCEPTOR JWT)............................
         $headers = apache_request_headers();
+        // Captura el header sin importar si viene como Authorization, authorization o por las variables globales de servidor
+        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null;
 
-        if (isset($headers['Authorization'])) {
+        if (isset($authHeader)) {
 
-            $token = str_replace('Bearer ', '', $headers['Authorization']);
+            $token = str_replace('Bearer ', '', $authHeader);
 
             try {
                 // rsa
@@ -93,8 +95,7 @@ class Rutas
                 $_SESSION['id_rol']     = $datosToken->id_rol ?? ($datosToken->rol ?? null);
 
                 call_user_func($metodo, $parametro ?? []);
-                exit; // Detiene el script para que no interfiera la lógica de las vistas web
-
+                exit;
             } catch (\Exception $e) {
                 if (ob_get_length()) ob_clean();
                 header("Content-Type: application/json; charset=utf-8");
@@ -106,11 +107,9 @@ class Rutas
                 exit;
             }
         }
-
-        // ==========================================
-        // SECCIÓN: VISTAS WEB (SISTEMA TRADICIONAL)
-        // ==========================================
-        if (session_status() !== PHP_SESSION_ACTIVE) { // Corregida sintaxis de validación de sesión activa
+        // VISTAS WEB............. 
+        // Corregida sintaxis de validación de sesión activa
+        if (session_status() !== PHP_SESSION_ACTIVE) {
             echo "Session no iniciada";
             return;
         }
