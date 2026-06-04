@@ -47,6 +47,42 @@ class ModeloHospitalizacion extends ModelBase
     //     }
     // }
 
+
+    public function mostrarHospitalizacionesApk()
+    {
+        try {
+            $sql = "SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.estado AS estado_h, p.id_paciente, p.nombre   AS nombre_p, p.apellido AS apellido_p, p.cedula, TIMESTAMPDIFF(YEAR, p.fn, CURDATE()) AS edad, pe.nombre   AS nombre_d, pe.apellido AS apellido_d, con.diagnostico, con.historiaclinica,con.severidad
+                FROM hospitalizacion h
+                INNER JOIN paciente p  ON p.id_paciente   = h.id_paciente
+                INNER JOIN personal pe ON pe.id_personal  = h.personal_id_personal
+                LEFT JOIN control con ON con.id_control = ( 
+                    SELECT con2.id_control FROM control con2
+                    WHERE con2.id_paciente = p.id_paciente AND con2.estado = 'DES' 
+                    ORDER BY con2.id_control DESC
+                    LIMIT 1
+                )
+                WHERE h.estado = 'Pendiente' ORDER BY h.fecha_hora_inicio ASC";
+            $this->setSQL($sql);
+            return $this->read();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function contarAltasHoy($fecha)
+    {
+        try {
+            $sql = "SELECT COUNT(*) AS total FROM hospitalizacion WHERE estado = 'Realizada' AND DATE(fecha_hora_final) = :fecha";
+            $this->setSQL($sql);
+            $result = $this->search(['fecha' => $fecha], false);
+            return (int)($result['total'] ?? 0);
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
+
+
+
     // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito, para mostrarlo en la tabla de la vista (de las hospitalizaciones pendientes)
     public function selectsH()
     {

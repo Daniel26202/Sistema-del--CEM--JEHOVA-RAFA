@@ -433,3 +433,47 @@ function permisos($id_rol, $permiso, $modulo)
     $modeloPermisos->setModulo($modulo);
     return $modeloPermisos->gestionarPermisos();
 }
+
+function hospitalizacionApk()
+{
+    if (ob_get_length()) ob_clean();
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Access-Control-Allow-Origin: *");
+
+    date_default_timezone_set('America/Caracas');
+
+    try {
+        $modelo    = new ModeloHospitalizacion();
+        $pacientes = $modelo->mostrarHospitalizacionesApk();
+
+        if (!is_array($pacientes)) {
+            throw new \Exception("Error al obtener hospitalizaciones: " . $pacientes);
+        }
+
+        // Contar ingresos de hoy comparando con fecha PHP (no CURDATE de MySQL)
+        $hoy          = date("Y-m-d");
+        $ingresosHoy  = 0;
+        foreach ($pacientes as $p) {
+            if (substr($p['fecha_hora_inicio'], 0, 10) === $hoy) {
+                $ingresosHoy++;
+            }
+        }
+
+        $altasHoy = $modelo->contarAltasHoy($hoy);
+
+        echo json_encode([
+            'pacientes' => $pacientes,
+            'stats'     => [
+                'total_camas'  => 2,
+                'ocupadas'     => count($pacientes),
+                'disponibles'  => 2 - count($pacientes),
+                'ingresos_hoy' => $ingresosHoy,
+                'altas_hoy'    => $altasHoy,
+            ]
+        ]);
+    } catch (\Throwable $e) {
+        http_response_code(500);
+        echo json_encode(["ok" => false, "error" => $e->getMessage()]);
+    }
+    exit;
+}

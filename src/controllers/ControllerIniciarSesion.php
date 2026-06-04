@@ -275,7 +275,7 @@ function iniciarSesionMovil()
         $clavePrivada = file_get_contents(__DIR__ . '/../../src/config/keys/private.key');
 
         $payload = [
-            'iss'        => 'http://192.168.110.236',
+            'iss'        => $_ENV['url_sistema_web'],
             'iat'        => time(),
             'exp'        => time() + (60 * 60 * 36),
             'id_usuario' => $validar['id_usuario'],

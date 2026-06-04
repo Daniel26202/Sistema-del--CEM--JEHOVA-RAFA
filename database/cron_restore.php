@@ -36,7 +36,7 @@ if ($archivoZip === 'nohay') {
 $resultado = $modelo->restaurarBackup($backupRuta, $archivoZip);
 
 //valido la respuesta del modelo
-if (strpos($resultado, 'exitosa') !== false) {
+if (strpos($resultado, 'exitosa') !== false) {  
     echo "¡Éxito!: " . $resultado . "\n";
 } else {
     echo "Error en la restauración: " . $resultado . "\n";

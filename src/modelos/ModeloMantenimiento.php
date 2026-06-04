@@ -83,7 +83,7 @@ class ModeloMantenimiento extends ModelBase
 			$passwordStr = (!empty($this->password)) ? "-p\"{$this->password}\"" : "";
 			$auth = "-u{$username} {$passwordStr}";
 
-			
+
 			$estadoSi = 1;
 			$estadoSe = 1;
 
@@ -114,21 +114,22 @@ class ModeloMantenimiento extends ModelBase
 			//respaldo diferencial (cambios desde el último completo, pero con estructuras limpias para evitar conflictos de llaves)
 			elseif ($tipo === 'diferencial') {
 				// Acumula cambios desde el último Completo. Guarda datos pero evita conflictos de llaves recreando estructuras limpias
-				$cmdSi = "{$mysqldump} {$auth} --single-transaction --quick {$this->dbname} > \"{$bdSistema}\"";
+				$cmdSi = "{$mysqldump} {$auth} --single-transaction --quick --events {$this->dbname} > \"{$bdSistema}\"";
 				system($cmdSi, $estadoSi);
 
-				$cmdSe = "{$mysqldump} {$auth} --single-transaction --quick {$this->dbsegname} > \"{$bdSeguridad}\"";
+				$cmdSe = "{$mysqldump} {$auth} --single-transaction --quick --events {$this->dbsegname} > \"{$bdSeguridad}\"";
 				system($cmdSe, $estadoSe);
 			}
 
 			//resplado completo o por defecto
 			else {
-
-				$cmdSi = "{$mysqldump} {$auth} --flush-logs --delete-master-logs --single-transaction --routines --triggers {$this->dbname} > \"{$bdSistema}\"";
-				system($cmdSi, $estadoSi);
-
-				$cmdSe = "{$mysqldump} {$auth} --single-transaction --routines --triggers {$this->dbsegname} > \"{$bdSeguridad}\"";
+				// SE AGREGÓ --events AQUÍ
+				$cmdSe = "{$mysqldump} {$auth} --single-transaction --routines --triggers --events {$this->dbsegname} > \"{$bdSeguridad}\"";
 				system($cmdSe, $estadoSe);
+
+				// SE AGREGÓ --events AQUÍ
+				$cmdSi = "{$mysqldump} {$auth} --flush-logs --delete-master-logs --single-transaction --routines --triggers --events {$this->dbname} > \"{$bdSistema}\"";
+				system($cmdSi, $estadoSi);
 			}
 
 
@@ -207,7 +208,7 @@ class ModeloMantenimiento extends ModelBase
 	public function restaurarBackup($backupRuta, $nombreZip)
 	{
 		try {
-			// Corregimos la asignación de la ruta completa (asumiendo que $nombreZip ya puede traer .zip)
+			// Corregimos la asignación de la ruta completa
 			if (strpos($nombreZip, $backupRuta) === false) {
 				$rutaCompletaZip = $backupRuta . $nombreZip;
 			} else {
@@ -228,7 +229,7 @@ class ModeloMantenimiento extends ModelBase
 				mkdir($carpetaDesconp, 0777, true);
 			}
 
-			// Extraer el ZIP (usando la variable correcta con la ruta completa validada)
+			// Extraer el ZIP
 			$zip = new ZipArchive();
 			if ($zip->open($rutaCompletaZip) === TRUE) {
 				$zip->extractTo($carpetaDesconp);
@@ -237,21 +238,16 @@ class ModeloMantenimiento extends ModelBase
 				return "Error al abrir el archivo ZIP local: " . basename($rutaCompletaZip);
 			}
 
-			// buscar archivos SQL extraídos
+			// Buscar archivos SQL extraídos
 			$archivosSql = glob($carpetaDesconp . "*.sql");
 			if (empty($archivosSql)) {
 				return "No se encontraron archivos SQL dentro del respaldo.";
 			}
 
-			
-			$mysqlBin = "/opt/lampp/bin/mysql";
-			if (!file_exists($mysqlBin)) {
-				$mysqlBin = $this->getEjecutable('mysql'); 
-			}
-
-			$username = $this->user;
-			$passwordStr = (!empty($this->password)) ? "-p\"{$this->password}\"" : "";
-			$auth = "-u{$username} {$passwordStr}";
+			// SEPARAR Y FORZAR ORDEN DE RESTAURACIÓN (Seguridad primero)..............
+			$archivoSeguridad = null;
+			$archivoPrincipal = null;
+			$otrosArchivos = [];
 
 			foreach ($archivosSql as $archiSql) {
 				// Saltamos los archivos incrementales
@@ -259,7 +255,38 @@ class ModeloMantenimiento extends ModelBase
 					continue;
 				}
 
-				
+				if (strpos($archiSql, 'bdseguri') !== false) {
+					$archivoSeguridad = $archiSql;
+				} elseif (strpos($archiSql, 'bd_') !== false) {
+					$archivoPrincipal = $archiSql;
+				} else {
+					$otrosArchivos[] = $archiSql;
+				}
+			}
+
+			// Armamos la lista final asegurando el orden correcto
+			$archivosAProcesar = [];
+			if ($archivoSeguridad) {
+				$archivosAProcesar[] = $archivoSeguridad; // Primero va la seguridad
+			}
+			if ($archivoPrincipal) {
+				$archivosAProcesar[] = $archivoPrincipal; // Luego va la principal
+			}
+			$archivosAProcesar = array_merge($archivosAProcesar, $otrosArchivos);
+
+			// ======================================================================
+
+			$mysqlBin = "/opt/lampp/bin/mysql";
+			if (!file_exists($mysqlBin)) {
+				$mysqlBin = $this->getEjecutable('mysql');
+			}
+
+			$username = $this->user;
+			$passwordStr = (!empty($this->password)) ? "-p\"{$this->password}\"" : "";
+			$auth = "-u{$username} {$passwordStr}";
+
+			foreach ($archivosAProcesar as $archiSql) {
+
 				if (strpos($archiSql, 'bdseguri') !== false) {
 					$bd = $this->dbsegname;
 				} else {
@@ -269,9 +296,10 @@ class ModeloMantenimiento extends ModelBase
 				$flagsBds = "--force";
 
 				if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-					$comando = "\"{$mysqlBin}\" {$auth} --init-command=\"SET FOREIGN_KEY_CHECKS=0;\" {$bd} < \"{$archiSql}\" 2>&1";
+					// WINDOWS
+					$comando = "cmd /c \"\"{$mysqlBin}\" {$auth} --init-command=\"SET FOREIGN_KEY_CHECKS=0;\" {$bd} < \"{$archiSql}\" 2>&1\"";
 				} else {
-					
+					// Linux
 					$comando = "{$mysqlBin} {$auth} {$flagsBds} {$bd} -e \"SET FOREIGN_KEY_CHECKS=0; SOURCE {$archiSql}; SET FOREIGN_KEY_CHECKS=1;\" 2>&1";
 				}
 
@@ -296,8 +324,11 @@ class ModeloMantenimiento extends ModelBase
 				}
 			}
 
+			// Limpieza de archivos temporales procesados
 			foreach ($archivosSql as $archiSql) {
-				unlink($archiSql);
+				if (file_exists($archiSql)) {
+					unlink($archiSql);
+				}
 			}
 
 			if (is_dir($carpetaDesconp)) {
@@ -309,6 +340,7 @@ class ModeloMantenimiento extends ModelBase
 			return $e->getMessage();
 		}
 	}
+
 	public function verifU()
 	{
 		try {
