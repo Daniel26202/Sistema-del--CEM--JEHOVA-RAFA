@@ -67,7 +67,7 @@ class ModeloMantenimiento extends ModelBase
 			$this->beginTransaction();
 			$date = date('Y-m-d_H-i-s');
 
-			// 1. DEFINIMOS LOS 4 PREFIJOS INTERNOS EXACTOS
+			//defino los prefijos exactos
 			$prefijo = "full_";
 			if ($tipo === 'incremental') $prefijo = "inc_";
 			if ($tipo === 'diferencial') $prefijo = "diff_";
@@ -83,13 +83,11 @@ class ModeloMantenimiento extends ModelBase
 			$passwordStr = (!empty($this->password)) ? "-p\"{$this->password}\"" : "";
 			$auth = "-u{$username} {$passwordStr}";
 
-			// Inicializamos las variables de estado unificadas para la consola
+			
 			$estadoSi = 1;
 			$estadoSe = 1;
 
-			// ======================================================================
-			// CAMINO 1: RESPALDO DE LOGS DE TRANSACCIONES
-			// ======================================================================
+			// respaldo de logs (solo para el corte de logs binarios, sin datos ni estructuras, pero forzando el flush para marcar el punto de control)
 			if ($tipo === 'log') {
 				$comandoFlush = "{$mysqlBin} {$auth} -e \"FLUSH LOGS;\" 2>&1";
 				system($comandoFlush, $estadoFlush);
@@ -103,9 +101,7 @@ class ModeloMantenimiento extends ModelBase
 				}
 			}
 
-			// ======================================================================
-			// CAMINO 2: RESPALDO INCREMENTAL INTER-DÍA
-			// ======================================================================
+			//respaldo incremental (solo datos nuevos desde el último respaldo, sin estructuras ni triggers para evitar conflictos)
 			elseif ($tipo === 'incremental') {
 				// Solo datos nuevos desde el último respaldo. No guarda estructuras (--no-create-info) ni triggers
 				$cmdSi = "{$mysqldump} {$auth} --flush-logs --single-transaction --no-create-info --skip-triggers {$this->dbname} > \"{$bdSistema}\"";
@@ -115,9 +111,7 @@ class ModeloMantenimiento extends ModelBase
 				system($cmdSe, $estadoSe);
 			}
 
-			// ======================================================================
-			// CAMINO 3: RESPALDO DIFERENCIAL
-			// ======================================================================
+			//respaldo diferencial (cambios desde el último completo, pero con estructuras limpias para evitar conflictos de llaves)
 			elseif ($tipo === 'diferencial') {
 				// Acumula cambios desde el último Completo. Guarda datos pero evita conflictos de llaves recreando estructuras limpias
 				$cmdSi = "{$mysqldump} {$auth} --single-transaction --quick {$this->dbname} > \"{$bdSistema}\"";
@@ -127,11 +121,9 @@ class ModeloMantenimiento extends ModelBase
 				system($cmdSe, $estadoSe);
 			}
 
-			// ======================================================================
-			// CAMINO 4: RESPALDO GENERAL / COMPLETO
-			// ======================================================================
+			//resplado completo o por defecto
 			else {
-				// Estructura, Datos, Procedimientos y Triggers. Limpia logs viejos para iniciar nueva semana
+
 				$cmdSi = "{$mysqldump} {$auth} --flush-logs --delete-master-logs --single-transaction --routines --triggers {$this->dbname} > \"{$bdSistema}\"";
 				system($cmdSi, $estadoSi);
 
@@ -139,12 +131,10 @@ class ModeloMantenimiento extends ModelBase
 				system($cmdSe, $estadoSe);
 			}
 
-			// EVALUACIÓN DE ÉXITO CENTRALIZADA PARA LOS 4 CAMINOS
+
 			$estado = ($estadoSi === 0 && $estadoSe === 0) ? 0 : 1;
 
-			// ======================================================================
-			// PROCESAMIENTO Y EMPAQUETADO ZIP LOCAL BLINDADO
-			// ======================================================================
+
 			if ($estado === 0 && file_exists($bdSistema) && file_exists($bdSeguridad)) {
 
 				$zip = new ZipArchive();
@@ -156,7 +146,6 @@ class ModeloMantenimiento extends ModelBase
 					$zip->close();
 				}
 
-				// VALIDACIÓN DE SEGURIDAD ESTRICTA: ¿Se guardó el archivo ZIP real en el disco?
 				if (file_exists($nombreZip) && filesize($nombreZip) > 0) {
 					// Solo si el ZIP es válido eliminamos los archivos temporales sueltos
 					unlink($bdSistema);
@@ -254,10 +243,10 @@ class ModeloMantenimiento extends ModelBase
 				return "No se encontraron archivos SQL dentro del respaldo.";
 			}
 
-			// CORRECCIÓN CLAVE: Forzamos el binario de MySQL interno de tu XAMPP en Linux
+			
 			$mysqlBin = "/opt/lampp/bin/mysql";
 			if (!file_exists($mysqlBin)) {
-				$mysqlBin = $this->getEjecutable('mysql'); // Por si acaso corre en otra plataforma
+				$mysqlBin = $this->getEjecutable('mysql'); 
 			}
 
 			$username = $this->user;
@@ -270,21 +259,19 @@ class ModeloMantenimiento extends ModelBase
 					continue;
 				}
 
-				// Seleccionamos la base de datos destino correcta
+				
 				if (strpos($archiSql, 'bdseguri') !== false) {
 					$bd = $this->dbsegname;
 				} else {
 					$bd = $this->dbname;
 				}
 
-				// Dejamos solo --force en las banderas de consola para evitar opciones desconocidas
 				$flagsBds = "--force";
 
 				if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 					$comando = "\"{$mysqlBin}\" {$auth} --init-command=\"SET FOREIGN_KEY_CHECKS=0;\" {$bd} < \"{$archiSql}\" 2>&1";
 				} else {
-					// SOLUCCIÓN DEFINITIVA PARA TU XAMPP EN LINUX:
-					// Ejecutamos en una sola línea de MariaDB: Apagar llaves, cargar el archivo y volver a encenderlas.
+					
 					$comando = "{$mysqlBin} {$auth} {$flagsBds} {$bd} -e \"SET FOREIGN_KEY_CHECKS=0; SOURCE {$archiSql}; SET FOREIGN_KEY_CHECKS=1;\" 2>&1";
 				}
 
@@ -309,7 +296,6 @@ class ModeloMantenimiento extends ModelBase
 				}
 			}
 
-			// Eliminamos los archivos .sql sueltos para no dejar basura en el servidor
 			foreach ($archivosSql as $archiSql) {
 				unlink($archiSql);
 			}

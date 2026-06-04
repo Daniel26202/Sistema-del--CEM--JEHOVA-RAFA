@@ -7,12 +7,12 @@ if (php_sapi_name() !== 'cli') {
     die("Acceso denegado. Este script solo puede ejecutarse desde la terminal.");
 }
 
-// CARGAMOS EL AUTOLOAD DE COMPOSER PARA QUE ENCUENTRE TODAS LAS CLASES (Db, ModelBase, etc.)
+//cargar el vendor de Composer si existe
 if (file_exists($baseDir. "/vendor/autoload.php")) {
     require_once $baseDir. "/vendor/autoload.php";
 }
 
-// cargar variables de entorno desde el archivo .env
+
 $dotenv = Dotenv\Dotenv::createImmutable($baseDir);
 $dotenv->load();
 
@@ -21,9 +21,9 @@ require_once $baseDir . "/src/modelos/ModeloMantenimiento.php";
 
 use App\modelos\ModeloMantenimiento;
 
-// Toma el argumento de la consola (completo, incremental, diferencial o log). Por defecto 'completo'.
+//tomo el tipo de respaldo desde la consola, si no hay, se hará un respaldo completo por defecto
 $tipo = isset($argv[1]) ? $argv[1] : 'completo';
-$backupRuta = __DIR__ . "/src/config/backups/";
+$backupRuta = __DIR__ . "/../src/config/backups/";
 
 if (!is_dir($backupRuta)) {
     mkdir($backupRuta, 0777, true);
