@@ -97,9 +97,25 @@ class ModeloControl extends ModelBase
 
 	private function insertarControlDB()
 	{
+		$transaccionActiva = false;
 		try {
+			// 1. INICIAMOS LA TRANSACCIÓN DIRECTAMENTE
 			$this->beginTransaction();
+			$transaccionActiva = true;
 			$fechaHoy = date("Y-m-d");
+
+
+			// 2. BLOQUEO PESIMISTA A NIVEL DE FILA (FOR UPDATE)
+			// Congelamos el registro del paciente para que ningún otro módulo 
+			// altere sus datos médicos mientras se procesa este control histórico.
+			$sqlPaciente = "SELECT id_paciente, estado_salud FROM paciente WHERE id_paciente = :id_paciente FOR UPDATE";
+			$this->setSQL($sqlPaciente);
+			$paciente = $this->search(['id_paciente' => $this->id_paciente], false);
+
+			if (!$paciente) {
+				throw new \Exception("El paciente especificado no existe.");
+			}
+
 
 			$validar = $this->search(['id_usuario' => $this->getIdUsuario()], false);
 			if (empty($validar)) {
@@ -145,7 +161,9 @@ class ModeloControl extends ModelBase
 			$this->commit();
 			return ["exito"];
 		} catch (\Exception $e) {
-			$this->rollBack();
+			if ($transaccionActiva) {
+				$this->rollBack();
+			}
 			return $e->getMessage();
 		}
 	}
