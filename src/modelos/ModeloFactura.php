@@ -444,14 +444,21 @@ class ModeloFactura extends ModelBase
 
 	private function insertar()
 	{
+		// Definimos una bandera para saber si la transacción realmente se inició
+		$transaccionActiva = false;
 		try {
-			// Verificar que el cliente exista
+
+
+			$this->beginTransaction();
+			$transaccionActiva = true; // Marcamos que la transacción está abierta
+
+			
 			$this->setSQL("SELECT * FROM cliente WHERE id_cliente = :id_cliente");
 			if ($this->search(['id_cliente' => $this->getIdCliente()], false) == []) {
 				throw new \Exception("El id del cliente no existe.");
 			}
 
-			// Insertar factura
+		
 			$this->setSQL("INSERT INTO factura VALUES (null, :fecha, :total, :estado, :id_cliente)");
 			$id_factura = $this->create([
 				'fecha'      => $this->getFecha(),
@@ -460,14 +467,21 @@ class ModeloFactura extends ModelBase
 				'id_cliente' => $this->getIdCliente()
 			]);
 
-			// Cerrar cita si aplica
+			
 			if ($this->getIdCita() != null) {
+				// Bloqueo pesimista de fila seguro
+				$this->setSQL("SELECT id_cita FROM cita WHERE id_cita = :id FOR UPDATE");
+				$this->search(['id' => $this->getIdCita()], false);
+
 				$this->setSQL("UPDATE cita SET estado = 'Realizadas' WHERE id_cita = :id");
 				$this->update_logic($this->getIdCita());
 			}
 
 			// Cerrar hospitalización si aplica
 			if ($this->getIdH() != 0) {
+				$this->setSQL("SELECT id_hospitalizacion FROM hospitalizacion WHERE id_hospitalizacion = :id FOR UPDATE");
+				$this->search(['id' => $this->getIdH()], false);
+
 				$this->setSQL("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion = :id");
 				$this->update_logic($this->getIdH());
 
@@ -551,6 +565,10 @@ class ModeloFactura extends ModelBase
 				foreach ($this->getInsumos() as $i) {
 					$id_entrada = $this->selectId_entrada($i);
 
+					// Bloqueo de fila exclusivo para los lotes del insumo actual
+					$this->setSQL("SELECT id_entradaDeInsumo FROM entrada_insumo WHERE id_insumo = :insumo FOR UPDATE");
+					$this->search(['insumo' => $i]);
+
 					$this->setSQL("INSERT INTO detalle_factura VALUES (null,:id_factura,:tipo,:cantidad,:precioInsumo,:subtotal,null,null,:i)");
 					$this->create([
 						'id_factura' => $id_factura,
@@ -568,8 +586,15 @@ class ModeloFactura extends ModelBase
 				}
 			}
 
+			//confitmar
+			$this->commit();
 			return [$id_factura, "exito", $this->getInsumos()];
 		} catch (\Exception $e) {
+			// rollback si algo fallo
+			if ($transaccionActiva) {
+				$this->rollBack();
+			}
+			//error
 			return $e->getMessage();
 		}
 	}

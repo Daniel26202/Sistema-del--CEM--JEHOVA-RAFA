@@ -400,7 +400,7 @@ addEventListener("DOMContentLoaded", function () {
       cardServicios.getAttribute("data-id-servicio"),
       cardServicios.children[0].children[0].innerText,
       cardServicios.children[1].innerText,
-      cardServicios.children[3].value,
+      cardServicios.children[4].value,
       cardServicios.getAttribute("data-doctor"),
     );
     alertSuccess("Se agrego correctamente el servicio medico");
@@ -682,22 +682,28 @@ addEventListener("DOMContentLoaded", function () {
   }
 
   // // Funcion para actualizar la tabla  servicios
+
   function mostrarServicios() {
+
     calcularTotal();
     // Aqui pondremos el codigo HTML que tendra el body de la tabla
     let html = ``;
     // Recorremos la lista de arriba y añadimos los datos a la variable html
+    console.log(data);
+    
     data.forEach((element, index) => {
-      let storedDolar = localStorage.getItem("valorDelDolar");
-      let montoBS = element["precio"] * storedDolar;
+      let storedDolar = parseFloat(localStorage.getItem("valorDelDolar"));
+      let montoBS = parseFloat(element["precio"]) * storedDolar;
       montoBS = montoBS.toFixed(2);
+      console.log(element["precio"],storedDolar, montoBS);
+      
       html += `
           <tr class="border-top">
           <td class="border-top"><div class="fw-bolder">SERVICIO :</div> ${element["servicio"]}</td>
           <td class="border-top"><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
           <td class="border-top">
             <div class="fw-bolder">PRECIO:</div>
-            <p class="mb-1">${montoBS} BS</p>
+            <p class="mb-1">${montoBS} dfBS</p>
             <p class="m-0 p-0">o</p>
             <p class="mt-1">${parseFloat(element["precio"]).toFixed(2)} $</p>
           </td>
