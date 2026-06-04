@@ -1,20 +1,23 @@
 <?php
 // cron_backup.php
+
+$baseDir =__DIR__.'/..';
+
 if (php_sapi_name() !== 'cli') {
     die("Acceso denegado. Este script solo puede ejecutarse desde la terminal.");
 }
 
 // CARGAMOS EL AUTOLOAD DE COMPOSER PARA QUE ENCUENTRE TODAS LAS CLASES (Db, ModelBase, etc.)
-if (file_exists(__DIR__ . "/vendor/autoload.php")) {
-    require_once __DIR__ . "/vendor/autoload.php";
+if (file_exists($baseDir. "/vendor/autoload.php")) {
+    require_once $baseDir. "/vendor/autoload.php";
 }
 
 // cargar variables de entorno desde el archivo .env
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv\Dotenv::createImmutable($baseDir);
 $dotenv->load();
 
-require_once __DIR__ . "/src/modelos/ModelBase.php";
-require_once __DIR__ . "/src/modelos/ModeloMantenimiento.php";
+require_once $baseDir . "/src/modelos/ModelBase.php";
+require_once $baseDir . "/src/modelos/ModeloMantenimiento.php";
 
 use App\modelos\ModeloMantenimiento;
 

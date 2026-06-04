@@ -1,24 +1,27 @@
 <?php
 // cron_restore.php
+$baseDir =__DIR__.'/..';
+
+
 if (php_sapi_name() !== 'cli') {
 die("Acceso denegado. Este script solo puede ejecutarse desde la terminal.\n");
 }
 
 // Cargamos el autoload de Composer
-if (file_exists(__DIR__ . "/vendor/autoload.php")) {
-require_once __DIR__ . "/vendor/autoload.php";
+if (file_exists($baseDir. "/vendor/autoload.php")) {
+require_once $baseDir. "/vendor/autoload.php";
 }
 
 // Cargar variables de entorno
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv\Dotenv::createImmutable($baseDir);
 $dotenv->load();
 
-require_once __DIR__ . "/src/modelos/ModelBase.php";
-require_once __DIR__ . "/src/modelos/ModeloMantenimiento.php";
+require_once $baseDir. "/src/modelos/ModelBase.php";
+require_once $baseDir. "/src/modelos/ModeloMantenimiento.php";
 
 use App\modelos\ModeloMantenimiento;
 
-$backupRuta = __DIR__ . "/src/config/backups/";
+$backupRuta = $baseDir . "/src/config/backups/";
 
 // Tomamos el nombre del archivo ZIP de los argumentos de la consola
 // Si no se pasa ninguno, se asume 'nohay' para buscar el más reciente
