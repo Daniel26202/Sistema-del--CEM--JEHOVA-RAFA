@@ -11,6 +11,7 @@ use App\modelos\ModeloPermisos;
 
 function factura($parametro)
 {
+
 	$modeloInsumos = new ModeloInsumo();
 	$vistaActiva = 'factura';
 	$ayuda = "btnayudaFactura";

@@ -671,6 +671,10 @@ const especialidades_chart = async (url) => {
       if (especialidadesChart) {
         especialidadesChart.destroy();
       }
+
+      // Evaluamos el color inicial leyendo tu localStorage directamente
+      let colorTextoInicial =
+        localStorage.getItem("theme") === "dark" ? "#e0e1dd" : "#1b1a1a";
       especialidadesChart = new Chart(ctx, {
         type: "pie",
         data: {
@@ -687,11 +691,23 @@ const especialidades_chart = async (url) => {
               ],
             },
           ],
-          options: {
-            responsive: false,
-            plugins: {
-              legend: {
-                display: false, // La leyenda con jsPDF
+        },
+        options: {
+          responsive: true, // 👈 CAMBIO CLAVE: Permite que el gráfico se adapte al ancho de la tarjeta
+          maintainAspectRatio: true, // 👈 Mantiene la proporción circular perfecta del pastel
+          plugins: {
+            legend: {
+              display: true, // Tu leyenda nativa activa
+              position: "bottom", // Abajo para optimizar el espacio vertical
+              align: "center",
+              labels: {
+                color: colorTextoInicial,
+                boxWidth: 12, // Reducimos un poco el cuadro de color para ganar espacio
+                padding: 10, // Ajustamos el espaciado para que no empuje el gráfico hacia afuera
+                font: {
+                  size: 12, // 12px es ideal para que quepa en pantallas medianas/pequeñas
+                  weight: "bold",
+                },
               },
             },
           },
@@ -803,6 +819,11 @@ const sintomas_chart = async (url) => {
     if (sintomasChart) {
       sintomasChart.destroy();
     }
+
+    // Evaluamos el color inicial leyendo tu localStorage directamente
+    let colorTextoInicial =
+      localStorage.getItem("theme") === "dark" ? "#e0e1dd" : "#1b1a1a";
+
     sintomasChart = new Chart(ctx, {
       type: "pie",
       data: {
@@ -819,6 +840,27 @@ const sintomas_chart = async (url) => {
             ],
           },
         ],
+      }, // En esta línea se cierra data correctamente
+      options: {
+        // Solución estructural: options va afuera del objeto data
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: true, // Tu leyenda nativa activa
+            position: "bottom", // Abajo para optimizar el espacio vertical dentro de la caja
+            align: "center",
+            labels: {
+              color: colorTextoInicial,
+              boxWidth: 12, // Reducimos un poco el cuadro de color para ganar espacio
+              padding: 10, // Ajustamos el espaciado interno
+              font: {
+                size: 12, // 12px es ideal para que no se desborde la tarjeta
+                weight: "bold",
+              },
+            },
+          },
+        },
       },
     });
 
@@ -1136,3 +1178,29 @@ document
 
     sintomas_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes");
   });
+
+
+  // Escuchar el evento que creamos en el Paso 1
+window.addEventListener("themeChanged", () => {
+  // Determinamos el nuevo color
+  const nuevoColor =
+    localStorage.getItem("theme") === "dark" ? "#e0e1dd" : "#1b1a1a";
+
+  // Si el gráfico principal existe, cambiar color y actualizar en caliente
+  if (especialidadesChart) {
+    especialidadesChart.options.plugins.legend.labels.color = nuevoColor;
+    especialidadesChart.update();
+  }
+
+  // Si el gráfico del modal existe, hacer lo mismo
+  if (especialidadesChartModal) {
+    especialidadesChartModal.options.plugins.legend.labels.color = nuevoColor;
+    especialidadesChartModal.update();
+  }
+
+  // --- Actualizar Síntomas ---
+  if (sintomasChart) {
+    sintomasChart.options.plugins.legend.labels.color = nuevoColor;
+    sintomasChart.update();
+  }
+});

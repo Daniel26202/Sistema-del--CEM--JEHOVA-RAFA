@@ -13,3 +13,7 @@ src/config/keys/public.key
 
 #respaldos
 src/config/backups
+
+# Ignorar la carpeta de dependencias
+vendor/
+
