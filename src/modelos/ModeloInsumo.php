@@ -153,8 +153,29 @@ class ModeloInsumo extends ModelBase
 	//insertar insumo
 	private function insertarInsumos()
 	{
+		// Bandera de control para evitar fallos de transacción en el catch
+		$transaccionActiva = false;
+
 		try {
+			// 1. INICIAMOS LA TRANSACCIÓN DE MANERA INMEDIATA
 			$this->beginTransaction();
+			$transaccionActiva = true;
+
+			// 2. PROTECCIÓN CONTRA CONDICIONES DE CARRERA (FOR UPDATE)
+			// Evaluamos si el insumo ya existe en el catálogo bloqueando la fila de forma pesimista.
+			// Esto evita que otra computadora registre el mismo ítem al mismo milisegundo.
+			$this->setSQL("SELECT id_insumo FROM insumo WHERE nombre = :nombre FOR UPDATE");
+			$existeInsumo = $this->search(['nombre' => $this->getNombre()], false);
+
+			if ($existeInsumo) {
+				throw new \Exception("Ya existe un insumo registrado con este nombre en el catálogo.");
+			}
+
+			// También validamos que el proveedor esté activo y bloqueamos su lectura
+			// para que no sea eliminado o modificado durante la carga de la mercancía.
+			$this->setSQL("SELECT id_proveedor FROM proveedor WHERE id_proveedor = :id_prov FOR UPDATE");
+			$this->search(['id_prov' => $this->getIdProveedor()], false);
+
 
 			$data = [
 				"imagen" => $this->getImagen(),
@@ -183,8 +204,10 @@ class ModeloInsumo extends ModelBase
 
 			return ["exito", $data];
 		} catch (\Exception $e) {
-			$this->rollBack();
-			// Puedes registrar el error si lo deseas: error_log($e->getMessage());
+			// Solo ejecutamos el rollback si la transacción realmente se abrió con éxito
+			if ($transaccionActiva) {
+				$this->rollBack();
+			}
 			return $e->getMessage();
 		}
 	}
