@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 21-04-2026 a las 14:34:40
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 04-06-2026 a las 00:09:30
+-- Versión del servidor: 10.4.32-MariaDB-log
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -510,46 +510,65 @@ CREATE TABLE `cita` (
   `serviciomedico_id_servicioMedico` int(11) NOT NULL,
   `paciente_id_paciente` int(11) NOT NULL,
   `hora_salida` time NOT NULL,
-  `doctor` int(11) NOT NULL
+  `doctor` int(11) NOT NULL,
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `cita`
 --
 
-INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_servicioMedico`, `paciente_id_paciente`, `hora_salida`, `doctor`) VALUES
-(41, '2025-04-02', '12:33:00', 'ACT', 24, 23, '00:00:00', 0),
-(42, '2025-04-02', '12:33:00', 'ACT', 25, 23, '00:00:00', 0),
-(43, '2025-04-02', '12:33:00', 'ACT', 22, 23, '00:00:00', 0),
-(44, '2025-04-02', '12:33:00', 'ACT', 22, 23, '00:00:00', 0),
-(45, '2025-04-21', '22:00:00', 'Realizadas', 26, 25, '00:00:00', 0),
-(46, '2025-04-25', '12:00:00', 'Pendiente', 27, 25, '00:00:00', 0),
-(47, '2025-05-05', '20:00:00', 'Realizadas', 26, 25, '00:00:00', 0),
-(48, '2025-05-12', '20:00:00', 'Pendiente', 26, 23, '00:00:00', 0),
-(49, '2025-06-02', '20:00:00', 'Pendiente', 24, 25, '21:00:00', 0),
-(50, '2025-06-02', '21:00:00', 'Pendiente', 24, 25, '21:00:00', 0),
-(51, '2025-06-02', '22:00:00', 'Pendiente', 24, 25, '22:05:00', 0),
-(52, '2025-06-02', '22:10:00', 'Pendiente', 24, 25, '23:05:00', 0),
-(53, '2025-06-09', '20:00:00', 'Pendiente', 24, 25, '21:05:00', 0),
-(54, '2025-06-09', '21:11:00', 'Pendiente', 24, 25, '22:05:00', 0),
-(55, '2025-06-16', '20:00:00', 'Pendiente', 24, 34, '21:06:00', 0),
-(56, '2025-06-20', '10:05:00', 'Pendiente', 24, 25, '11:06:00', 0),
-(57, '2025-06-27', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0),
-(58, '2025-06-27', '11:07:00', 'Pendiente', 24, 25, '12:06:00', 0),
-(59, '2025-06-27', '12:07:00', 'Pendiente', 24, 25, '13:06:00', 0),
-(60, '2025-07-04', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0),
-(61, '2025-07-04', '11:07:00', 'Pendiente', 24, 25, '12:06:00', 0),
-(62, '2025-07-11', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0),
-(63, '2025-07-28', '20:00:00', 'Pendiente', 24, 25, '21:06:00', 19),
-(64, '2025-07-25', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 20),
-(65, '2025-09-29', '20:00:00', 'Pendiente', 24, 25, '21:09:00', 19),
-(66, '2025-10-20', '20:00:00', 'DES', 24, 25, '21:10:00', 19),
-(67, '2025-10-24', '10:01:00', 'Realizadas', 24, 25, '11:10:00', 20),
-(68, '2025-10-06', '20:00:00', 'Pendiente', 24, 25, '21:10:00', 19),
-(69, '2025-10-27', '20:00:00', 'Realizadas', 24, 25, '21:10:00', 19),
-(70, '2025-10-06', '20:00:00', 'Pendiente', 24, 25, '21:11:00', 19),
-(71, '2026-03-30', '20:00:00', 'Pendiente', 24, 25, '21:00:00', 19),
-(72, '2026-03-31', '14:00:00', 'Pendiente', 25, 104, '15:00:00', 22);
+INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_servicioMedico`, `paciente_id_paciente`, `hora_salida`, `doctor`, `creado_en`) VALUES
+(41, '2025-04-02', '12:33:00', 'ACT', 24, 23, '00:00:00', 0, '2026-06-03 20:07:05'),
+(42, '2025-04-02', '12:33:00', 'ACT', 25, 23, '00:00:00', 0, '2026-06-03 20:07:05'),
+(43, '2025-04-02', '12:33:00', 'ACT', 22, 23, '00:00:00', 0, '2026-06-03 20:07:05'),
+(44, '2025-04-02', '12:33:00', 'ACT', 22, 23, '00:00:00', 0, '2026-06-03 20:07:05'),
+(45, '2025-04-21', '22:00:00', 'Realizadas', 26, 25, '00:00:00', 0, '2026-06-03 20:07:05'),
+(46, '2025-04-25', '12:00:00', 'Pendiente', 27, 25, '00:00:00', 0, '2026-06-03 20:07:05'),
+(47, '2025-05-05', '20:00:00', 'Realizadas', 26, 25, '00:00:00', 0, '2026-06-03 20:07:05'),
+(48, '2025-05-12', '20:00:00', 'Pendiente', 26, 23, '00:00:00', 0, '2026-06-03 20:07:05'),
+(49, '2025-06-02', '20:00:00', 'Pendiente', 24, 25, '21:00:00', 0, '2026-06-03 20:07:05'),
+(50, '2025-06-02', '21:00:00', 'Pendiente', 24, 25, '21:00:00', 0, '2026-06-03 20:07:05'),
+(51, '2025-06-02', '22:00:00', 'Pendiente', 24, 25, '22:05:00', 0, '2026-06-03 20:07:05'),
+(52, '2025-06-02', '22:10:00', 'Pendiente', 24, 25, '23:05:00', 0, '2026-06-03 20:07:05'),
+(53, '2025-06-09', '20:00:00', 'Pendiente', 24, 25, '21:05:00', 0, '2026-06-03 20:07:05'),
+(54, '2025-06-09', '21:11:00', 'Pendiente', 24, 25, '22:05:00', 0, '2026-06-03 20:07:05'),
+(55, '2025-06-16', '20:00:00', 'Pendiente', 24, 34, '21:06:00', 0, '2026-06-03 20:07:05'),
+(56, '2025-06-20', '10:05:00', 'Pendiente', 24, 25, '11:06:00', 0, '2026-06-03 20:07:05'),
+(57, '2025-06-27', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0, '2026-06-03 20:07:05'),
+(58, '2025-06-27', '11:07:00', 'Pendiente', 24, 25, '12:06:00', 0, '2026-06-03 20:07:05'),
+(59, '2025-06-27', '12:07:00', 'Pendiente', 24, 25, '13:06:00', 0, '2026-06-03 20:07:05'),
+(60, '2025-07-04', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0, '2026-06-03 20:07:05'),
+(61, '2025-07-04', '11:07:00', 'Pendiente', 24, 25, '12:06:00', 0, '2026-06-03 20:07:05'),
+(62, '2025-07-11', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 0, '2026-06-03 20:07:05'),
+(63, '2025-07-28', '20:00:00', 'Pendiente', 24, 25, '21:06:00', 19, '2026-06-03 20:07:05'),
+(64, '2025-07-25', '10:00:00', 'Pendiente', 24, 25, '11:06:00', 20, '2026-06-03 20:07:05'),
+(65, '2025-09-29', '20:00:00', 'Pendiente', 24, 25, '21:09:00', 19, '2026-06-03 20:07:05'),
+(66, '2025-10-20', '20:00:00', 'DES', 24, 25, '21:10:00', 19, '2026-06-03 20:07:05'),
+(67, '2025-10-24', '10:01:00', 'Realizadas', 24, 25, '11:10:00', 20, '2026-06-03 20:07:05'),
+(68, '2025-10-06', '20:00:00', 'Pendiente', 24, 25, '21:10:00', 19, '2026-06-03 20:07:05'),
+(69, '2025-10-27', '20:00:00', 'Realizadas', 24, 25, '21:10:00', 19, '2026-06-03 20:07:05'),
+(70, '2025-10-06', '20:00:00', 'Pendiente', 24, 25, '21:11:00', 19, '2026-06-03 20:07:05'),
+(71, '2026-03-30', '20:00:00', 'Pendiente', 24, 25, '21:00:00', 19, '2026-06-03 20:07:05'),
+(72, '2026-03-31', '14:00:00', 'Pendiente', 25, 104, '15:00:00', 22, '2026-06-03 20:07:05'),
+(74, '2026-06-08', '20:00:00', 'Expirado', 24, 25, '21:00:00', 19, '2026-06-03 20:47:25'),
+(75, '2026-06-22', '20:00:00', 'Expirado', 26, 104, '21:00:00', 19, '2026-06-03 20:53:25'),
+(76, '2026-06-22', '20:00:00', 'Pendiente', 26, 104, '21:00:00', 19, '2026-06-03 20:48:08'),
+(77, '2026-06-15', '20:00:00', 'Expirado', 24, 104, '21:00:00', 19, '2026-06-03 20:58:25'),
+(78, '2026-06-15', '21:00:00', 'Expirado', 24, 104, '22:00:00', 19, '2026-06-03 20:59:25'),
+(79, '2026-06-08', '20:00:00', 'Expirado', 24, 25, '21:00:00', 19, '2026-06-03 21:14:25'),
+(80, '2026-06-08', '21:00:00', 'Expirado', 24, 25, '22:00:00', 19, '2026-06-03 21:15:25'),
+(81, '2026-06-08', '20:00:00', 'Expirado', 24, 25, '21:00:00', 19, '2026-06-03 21:26:25'),
+(82, '2026-06-15', '20:00:00', 'Expirado', 24, 25, '21:00:00', 19, '2026-06-03 21:37:25'),
+(83, '2026-06-15', '21:00:00', 'Expirado', 24, 25, '22:00:00', 19, '2026-06-03 21:37:25'),
+(84, '2026-06-08', '20:00:00', 'Expirado', 26, 104, '21:00:00', 19, '2026-06-03 21:46:25'),
+(85, '2026-06-15', '20:00:00', 'Expirado', 24, 25, '21:00:00', 19, '2026-06-03 21:52:25'),
+(86, '2026-06-08', '20:00:00', 'Expirado', 24, 92, '21:00:00', 19, '2026-06-03 21:58:25'),
+(87, '2026-06-08', '21:00:00', 'Expirado', 24, 25, '22:00:00', 19, '2026-06-03 21:59:25'),
+(88, '2026-06-15', '20:00:00', 'Expirado', 24, 25, '21:00:00', 19, '2026-06-03 22:04:25'),
+(89, '2026-06-15', '21:00:00', 'Expirado', 24, 25, '22:00:00', 19, '2026-06-03 22:07:25'),
+(90, '2026-06-22', '22:00:00', 'Expirado', 24, 25, '23:00:00', 19, '2026-06-03 22:09:25'),
+(91, '2026-06-11', '05:00:00', 'Pendiente', 24, 25, '06:00:00', 20, '2026-06-03 22:06:57');
 
 -- --------------------------------------------------------
 
@@ -764,7 +783,8 @@ INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeI
 (74, 6, 123456789, '2025-01-01', 'ACT'),
 (75, 6, 123456789, '2025-10-03', 'ACT'),
 (76, 6, 12345679, '2025-10-03', 'DES'),
-(77, 7, 8099, '2025-10-09', 'DES');
+(77, 7, 8099, '2025-10-09', 'DES'),
+(78, 6, 1212, '2026-06-02', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -804,7 +824,8 @@ INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `
 (66, 45, 74, '2025-12-31', 100.00, 50, 50),
 (67, 44, 75, '2025-12-29', 100.00, 1, 1),
 (68, 44, 76, '2025-12-31', 100.00, 1, 1),
-(69, 36, 77, '2026-02-11', 7900.00, 34, 34);
+(69, 36, 77, '2026-02-11', 7900.00, 34, 34),
+(70, 46, 78, '2026-07-01', 1.00, 10, 10);
 
 -- --------------------------------------------------------
 
@@ -1105,7 +1126,8 @@ INSERT INTO `insumo` (`id_insumo`, `imagen`, `nombre`, `descripcion`, `marca`, `
 (42, '2025-06-21_1750492723_1259289.jpg', 'Card', 'es una descripcion', 'Microsoft', '1 g', 8.00, 'DES', 5, 0),
 (43, '2025-06-29_1751222978_img5.jpg', 'Julio', 'es un SO ', 'Microsoft', '1 g', 8.00, 'ACT', 1, 1),
 (44, '2025-09-15_1757981960_descargar2.jpg', 'Preuva', 'es un SO ', 'Microsoft', '1 g', 2.80, 'ACT', 3, 1),
-(45, '2025-10-03_1759535262_Big Sur Ligh.jpg', 'Insumophpinit', 'descripcion prueba editando', 'MarcaX', '100 g', 100.00, 'DES', 10, 1);
+(45, '2025-10-03_1759535262_Big Sur Ligh.jpg', 'Insumophpinit', 'descripcion prueba editando', 'MarcaX', '100 g', 100.00, 'DES', 10, 1),
+(46, '2026-06-02_1780448376_code.png', 'Asds', 'Ssdsaasdsasadd', 'Marca', '200 ml', 1.00, 'ACT', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1792,6 +1814,80 @@ CREATE TABLE `tasa_morbilidad` (
 -- --------------------------------------------------------
 
 --
+-- Estructura Stand-in para la vista `view_detalle_entradas`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `view_detalle_entradas` (
+`fechaDeVencimiento` date
+,`id_entradaDeInsumo` int(11)
+,`imagen` varchar(500)
+,`nombre` varchar(25)
+,`descripcion` text
+,`marca` varchar(35)
+,`medida` varchar(35)
+,`precio` float(12,2)
+,`stockMinimo` int(11)
+,`iva` tinyint(1)
+,`id_insumo_e` int(11)
+,`id_entrada` int(11)
+,`id_proveedor` int(11)
+,`numero_de_lote` int(16)
+,`fechaDeIngreso` date
+,`estado` varchar(10)
+,`cantidad_entrada` int(12)
+,`precio_entrada` decimal(12,2)
+,`proveedor` varchar(25)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `view_paciente_hospitalizado`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `view_paciente_hospitalizado` (
+`id_hospitalizacion` int(11)
+,`fecha_hora_inicio` datetime
+,`precio_horas` float
+,`fecha_hora_final` datetime
+,`total` float
+,`id_control` int(11)
+,`diagnostico` text
+,`historiaclinica` text
+,`id_paciente` int(11)
+,`nacionalidad` varchar(12)
+,`cedula` varchar(25)
+,`nombre` varchar(25)
+,`apellido` varchar(25)
+,`id_usuario` int(11)
+,`nombredoc` varchar(25)
+,`apellidodoc` varchar(25)
+,`estado_usuario` varchar(25)
+,`estado_hospitalizacion` varchar(25)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `view_resumen_insumos`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `view_resumen_insumos` (
+`id_insumo` int(11)
+,`imagen` varchar(500)
+,`nombre` varchar(25)
+,`descripcion` text
+,`marca` varchar(35)
+,`medida` varchar(35)
+,`precio` float(12,2)
+,`stockMinimo` int(11)
+,`iva` tinyint(1)
+,`disponible` decimal(33,0)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura para la vista `distribucion_edad_genero`
 --
 DROP TABLE IF EXISTS `distribucion_edad_genero`;
@@ -1824,6 +1920,33 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `tasa_morbilidad`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `tasa_morbilidad`  AS SELECT `p`.`nombre_patologia` AS `nombre_patologia`, count(distinct `pp`.`id_paciente`) AS `casos`, round(count(distinct `pp`.`id_paciente`) / (select count(0) from `paciente`) * 1000,2) AS `tasa_por_1000` FROM (`patologiadepaciente` `pp` join `patologia` `p` on(`pp`.`id_patologia` = `p`.`id_patologia`)) GROUP BY `pp`.`id_patologia` ORDER BY count(distinct `pp`.`id_paciente`) DESC ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `view_detalle_entradas`
+--
+DROP TABLE IF EXISTS `view_detalle_entradas`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_detalle_entradas`  AS SELECT `ei`.`fechaDeVencimiento` AS `fechaDeVencimiento`, `ei`.`id_entradaDeInsumo` AS `id_entradaDeInsumo`, `i`.`imagen` AS `imagen`, `i`.`nombre` AS `nombre`, `i`.`descripcion` AS `descripcion`, `i`.`marca` AS `marca`, `i`.`medida` AS `medida`, `i`.`precio` AS `precio`, `i`.`stockMinimo` AS `stockMinimo`, `i`.`iva` AS `iva`, `i`.`id_insumo` AS `id_insumo_e`, `e`.`id_entrada` AS `id_entrada`, `e`.`id_proveedor` AS `id_proveedor`, `e`.`numero_de_lote` AS `numero_de_lote`, `e`.`fechaDeIngreso` AS `fechaDeIngreso`, `e`.`estado` AS `estado`, `ei`.`cantidad_entrante` AS `cantidad_entrada`, `ei`.`precio` AS `precio_entrada`, `p`.`nombre` AS `proveedor` FROM (((`entrada_insumo` `ei` join `insumo` `i` on(`i`.`id_insumo` = `ei`.`id_insumo`)) join `entrada` `e` on(`e`.`id_entrada` = `ei`.`id_entrada`)) join `proveedor` `p` on(`p`.`id_proveedor` = `e`.`id_proveedor`)) WHERE `i`.`estado` = 'ACT' AND `e`.`estado` = 'ACT' AND `ei`.`fechaDeVencimiento` > curdate() ORDER BY `ei`.`fechaDeVencimiento` ASC ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `view_paciente_hospitalizado`
+--
+DROP TABLE IF EXISTS `view_paciente_hospitalizado`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_paciente_hospitalizado`  AS SELECT `h`.`id_hospitalizacion` AS `id_hospitalizacion`, `h`.`fecha_hora_inicio` AS `fecha_hora_inicio`, `h`.`precio_horas` AS `precio_horas`, `h`.`fecha_hora_final` AS `fecha_hora_final`, `h`.`total` AS `total`, `con`.`id_control` AS `id_control`, `con`.`diagnostico` AS `diagnostico`, `con`.`historiaclinica` AS `historiaclinica`, `pac`.`id_paciente` AS `id_paciente`, `pac`.`nacionalidad` AS `nacionalidad`, `pac`.`cedula` AS `cedula`, `pac`.`nombre` AS `nombre`, `pac`.`apellido` AS `apellido`, `u`.`id_usuario` AS `id_usuario`, `pe`.`nombre` AS `nombredoc`, `pe`.`apellido` AS `apellidodoc`, `u`.`estado` AS `estado_usuario`, `h`.`estado` AS `estado_hospitalizacion` FROM ((((((`hospitalizacion` `h` join `paciente` `pac` on(`h`.`id_paciente` = `pac`.`id_paciente`)) join `control` `con` on(`con`.`id_control` = (select `con2`.`id_control` from `control` `con2` where `con2`.`id_paciente` = `pac`.`id_paciente` and `con2`.`estado` = 'DES' order by `con2`.`id_control` desc limit 1))) join `segurity`.`usuario` `u` on(`con`.`id_usuario` = `u`.`id_usuario`)) join `personal` `pe` on(`pe`.`usuario` = `u`.`id_usuario`)) join `personal_has_serviciomedico` `psm` on(`psm`.`personal_id_personal` = `pe`.`id_personal`)) join `serviciomedico` `sm` on(`sm`.`id_servicioMedico` = `psm`.`serviciomedico_id_servicioMedico`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `view_resumen_insumos`
+--
+DROP TABLE IF EXISTS `view_resumen_insumos`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_resumen_insumos`  AS SELECT `i`.`id_insumo` AS `id_insumo`, `i`.`imagen` AS `imagen`, `i`.`nombre` AS `nombre`, `i`.`descripcion` AS `descripcion`, `i`.`marca` AS `marca`, `i`.`medida` AS `medida`, `i`.`precio` AS `precio`, `i`.`stockMinimo` AS `stockMinimo`, `i`.`iva` AS `iva`, sum(`ei`.`cantidad_disponible`) AS `disponible` FROM ((`entrada_insumo` `ei` join `insumo` `i` on(`i`.`id_insumo` = `ei`.`id_insumo`)) join `entrada` `e` on(`e`.`id_entrada` = `ei`.`id_entrada`)) WHERE `i`.`estado` = 'ACT' AND `e`.`estado` = 'ACT' AND `ei`.`fechaDeVencimiento` > curdate() GROUP BY `i`.`id_insumo` ;
 
 --
 -- Índices para tablas volcadas
@@ -2037,7 +2160,7 @@ ALTER TABLE `categoria_servicio`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
@@ -2061,13 +2184,13 @@ ALTER TABLE `detalle_factura`
 -- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidad`
@@ -2103,7 +2226,7 @@ ALTER TABLE `hospitalizacion`
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `insumodehospitalizacion`
@@ -2289,6 +2412,17 @@ ALTER TABLE `servicios_hospitalizacion`
 ALTER TABLE `sintomas_control`
   ADD CONSTRAINT `sintomas_control_ibfk_1` FOREIGN KEY (`id_sintomas`) REFERENCES `sintomas` (`id_sintomas`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `sintomas_control_ibfk_2` FOREIGN KEY (`id_control`) REFERENCES `control` (`id_control`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+DELIMITER $$
+--
+-- Eventos
+--
+CREATE DEFINER=`root`@`localhost` EVENT `limpiar_reservas_vencidas` ON SCHEDULE EVERY 1 MINUTE STARTS '2026-06-03 16:08:25' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE cita 
+  SET estado = 'Expirado' 
+  WHERE estado = 'Reservado' 
+    AND creado_en < NOW() - INTERVAL 5 MINUTE$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

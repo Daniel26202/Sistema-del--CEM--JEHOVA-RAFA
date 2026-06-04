@@ -10,3 +10,6 @@
 *.swp
 src/config/keys/private.key
 src/config/keys/public.key
+
+#respaldos
+src/config/backups

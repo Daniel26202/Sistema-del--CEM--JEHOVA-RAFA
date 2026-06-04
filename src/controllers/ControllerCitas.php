@@ -87,6 +87,69 @@ function validarHorariosDisponlibles($datos)
 	}
 }
 
+//metodo para reservar la cita
+function apartarCupo()
+{
+	// if (ob_get_length()) ob_clean();
+	// header("Content-Type: application/json; charset=UTF-8");
+
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		exit;
+	}
+
+
+	try {
+		$cita = new ModeloCita();
+		$bitacora = new ModeloBitacora();
+		$idUsuario= $_SESSION['id_usuario'];
+
+		// Separamos el string de hora idéntico a como lo haces en guardarCita
+		$horaString = $_POST['hora_string'];
+		$resultado = explode('a', $horaString);
+		$resultado = array_map('trim', $resultado);
+
+		$fechaHora1 = DateTime::createFromFormat('g:i A', $resultado[0]);
+		$horaCita = $fechaHora1->format('H:i:s');
+		$fechaHora2 = DateTime::createFromFormat('g:i A', $resultado[1]);
+		$horaCitaSalida = $fechaHora2->format('H:i:s');
+
+		$cita->setFecha($_POST['fecha']);
+		$cita->setHora($horaCita);
+		$cita->setIdDoctor(intval($_POST['doctor']));
+
+		$cita->setIdPaciente(intval($_POST['id_paciente']));
+		$cita->setIdServicioMedico(intval($_POST['id_servicioMedico']));
+		$cita->setHoraSalida($horaCitaSalida);
+
+		// Evaluamos si viene un ID anterior por cambio de opinión
+		$cita->setIdCita(isset($_POST['id_cita_anterior']) ? intval($_POST['id_cita_anterior']) : null, true);
+
+
+		$bitacora->setId_usuario($idUsuario);
+		$bitacora->setActividad("Ha Insertado una  cita");
+		$bitacora->setTabla("cita");
+
+
+		$reserva = $cita->reservarCita($idUsuario);
+
+		if (is_array($reserva) && $reserva[0] === "exito") {
+			$bitacora->insertarBitacora($idUsuario);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $reserva[1]]);
+		} else {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => $reserva]);
+			exit;
+		}
+		
+	} catch (Exception $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
+}
+
 function guardarCita()
 {
 	if (empty($_POST)) {

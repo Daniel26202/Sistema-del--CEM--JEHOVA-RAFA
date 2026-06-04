@@ -33,7 +33,7 @@ class ModeloEntrada extends ModelBase
 	{
 		try {
 			//se cambio para que muestre las entradas act y que no estan vencidas
-			$consulta = " SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.*,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_entrante AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'ACT' AND i.estado = 'ACT' AND ei.fechaDeVencimiento > CURRENT_DATE ORDER BY ei.fechaDeVencimiento ";
+			$consulta = "SELECT * FROM view_detalle_entradas";
 			$this->setSQL($consulta);
 			return $this->read();
 		} catch (\Exception $e) {

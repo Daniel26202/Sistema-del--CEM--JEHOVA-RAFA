@@ -8,6 +8,8 @@ import {
   hasPermision,
   initLoaderButton,
   finallyLoaderButton,
+  iniciarTemporizador,
+  detenerTemporizador,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -229,21 +231,19 @@ addEventListener("DOMContentLoaded", function () {
     diasLaborablesDoctor.forEach((ele) => {
       console.log(ele[dateName]);
       if (!ele[dateName]) {
-        
         //agregar clase de invalido al input ya que el dia no esta dentro del horario  del doctor
-        let campoCustom = input.closest('.campo-custom');
-        let inputCustom = campoCustom.querySelector('.input-custom');
-        let check = campoCustom.querySelector('.check');
-        let error = campoCustom.querySelector('.error');
+        let campoCustom = input.closest(".campo-custom");
+        let inputCustom = campoCustom.querySelector(".input-custom");
+        let check = campoCustom.querySelector(".check");
+        let error = campoCustom.querySelector(".error");
 
-        inputCustom.classList.remove('valido');
-        inputCustom.classList.add('invalido');
+        inputCustom.classList.remove("valido");
+        inputCustom.classList.add("invalido");
 
-        check.classList.add('d-none');
-        error.classList.remove('d-none')
+        check.classList.add("d-none");
+        error.classList.remove("d-none");
 
         console.log(campoCustom, inputCustom, check, error);
-        
 
         divHorariosDisp.classList.add("d-none");
         alertError(
@@ -333,6 +333,9 @@ addEventListener("DOMContentLoaded", function () {
               card2.style.backgroundColor = "#387adf";
               input.value = textHora;
               input.setAttribute("name", "listHoras");
+              if (!modalAgregarCita.classList.contains("editar")) {
+                seleccionarHorarioDisponibilidad(card2);
+              }
             } else {
               console.log("los demas se quito es estile");
               console.log(card2.children[0]);
@@ -499,8 +502,9 @@ addEventListener("DOMContentLoaded", function () {
                                         </div>
                                    
                                         <div class="me-2">
-                                            <a href="#" class="btn btn-tabla btn-eliminar btn-dt-tabla" data-index=${element.id_cita
-          } 
+                                            <a href="#" class="btn btn-tabla btn-eliminar btn-dt-tabla" data-index=${
+                                              element.id_cita
+                                            } 
                                                 uk-tooltip="Eliminar Cita" id="eliminarCitaP">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"></path>
@@ -567,20 +571,25 @@ addEventListener("DOMContentLoaded", function () {
   //create
   const createCita = async (form) => {
     try {
-      initLoaderButton(btnModal)
+      initLoaderButton(btnModal);
       const data = new FormData(form);
       let result = await executePetition(url + "/guardarCita", "POST", data);
       console.log(result);
       if (result.ok) {
         alertSuccess(result.message);
+        //deterner temporizador
+        detenerTemporizador("citas");
         //funvcion para resetaer el formulario
         resetForm(form);
         readCita();
       } else throw new Error(`${result.error}`);
     } catch (error) {
-      alertError("Error", "El Formulario debe estar lleno para poder enviarlo.");
+      alertError(
+        "Error",
+        "El Formulario debe estar lleno para poder enviarlo.",
+      );
     } finally {
-      finallyLoaderButton(btnModal)
+      finallyLoaderButton(btnModal);
     }
   };
 
@@ -604,7 +613,7 @@ addEventListener("DOMContentLoaded", function () {
   //update
   const updateCitas = async (form) => {
     try {
-      initLoaderButton(btnModal)
+      initLoaderButton(btnModal);
       const data = new FormData(form);
       let result = await executePetition(url + "/editarCita", "POST", data);
       console.log(result);
@@ -617,9 +626,12 @@ addEventListener("DOMContentLoaded", function () {
       } else throw new Error(`${result.error}`);
     } catch (error) {
       console.log(error);
-      alertError("Error", "El Formulario debe estar lleno para poder enviarlo.");
+      alertError(
+        "Error",
+        "El Formulario debe estar lleno para poder enviarlo.",
+      );
     } finally {
-      finallyLoaderButton(btnModal)
+      finallyLoaderButton(btnModal);
     }
   };
 
@@ -650,6 +662,63 @@ addEventListener("DOMContentLoaded", function () {
       } else throw new Error(`${result.error}`);
     } catch (error) {
       alertError("Error", error);
+    }
+  };
+
+  // Agregamos "async" al inicio de la función
+  const seleccionarHorarioDisponibilidad = async (elementoTarjetaHora) => {
+    console.log("id_doctor" + id_doctor);
+
+    const form = new FormData();
+    form.append("fecha", inputFechaCita.value);
+    form.append("hora_string", elementoTarjetaHora.innerText.trim());
+    form.append("doctor", id_doctor);
+    form.append("id_paciente", inputIdPaciente.value);
+    form.append("id_servicioMedico", selectServicios.value);
+
+    // Si ya tiene un ID en el input oculto (cambio de opinión)
+    if (inputIdCita.value && inputIdCita.value !== "") {
+      form.append("id_cita_anterior", inputIdCita.value);
+    }
+
+    // Estructura obligatoria try/catch para manejar el asincronismo de forma segura
+    try {
+      // Reemplazamos el .then() por "await"
+      const data = await executePetition(url + "/apartarCupo", "POST", form);
+      let result = await executePetition(url + "/guardarCita", "POST", data);
+
+      if (data.ok) {
+        console.log(
+          "Cupo apartado de manera optimista en MariaDB con async/await.",
+        );
+
+        // Guardamos el ID de la nueva cita generada
+        inputIdCita.value = data.id_cita;
+
+        // DISPARAMOS LAS ALERTAS SILENCIOSAS EN SEGUNDO PLANO
+        iniciarTemporizador(
+          "citas",
+          {
+            idModal: "exampleModalCita",
+            idFormulario: "modalAgregarCita",
+            callbackAlExpirar: function () {
+              inputIdPaciente.value = "";
+              inputIdCita.value = "";
+              divDataPaciente.classList.add("d-none");
+            },
+          },
+          "¡Atención! Le quedan 30 segundos para agendar la cita antes de que expire el cupo",
+        );
+      } else {
+        alertError(
+          "Horario No Disponible",
+          data.error || "Este cupo ya fue apartado por otro usuario.",
+        );
+      }
+    } catch (error) {
+      // Reemplazamos el .catch() tradicional
+      console.error("Error en la petición asíncrona con async/await:", error);
+      alertError("Error de Conexión", "No se pudo comunicar con el servidor.");
     }
   };
 
@@ -727,6 +796,7 @@ addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
 
     let inputs = this.querySelectorAll(".input-validar");
+    console.log(inputs);
 
     if (inputs.length == 2) {
       console.log(modalAgregarCita);

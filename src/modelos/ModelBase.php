@@ -110,6 +110,13 @@ class ModelBase extends Db
         return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    protected function query()
+    {
+        $sql = $this->getSQL();
+        return $this->pdo->query($sql);
+    }
+
+
     protected function beginTransaction()
     {
         $this->pdo->beginTransaction();
