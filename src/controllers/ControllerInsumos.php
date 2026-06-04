@@ -136,15 +136,13 @@ function guardarInsumo()
 		$modeloInsumo->setImagen($imagen);
 		$modeloInsumo->setPrecio($valor);
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setTabla("insumo");
-		$bitacora->setActividad("Ha Insertado un insumo");
-
-
 		$insercion = $modeloInsumo->guardarInsumo($idUsuario);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
-			$bitacora->insertarBitacora();
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setTabla("insumo");
+			$bitacora->setActividad("Ha Insertado un insumo");
+			$bitacora->insertarBitacora($idUsuario);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
@@ -178,14 +176,13 @@ function eliminar($datos)
 
 		$modeloInsumo->setIdInsumo($id_insumo);
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha eliminado un insumo");
-		$bitacora->setTabla("insumo");
-
 		$eliminacion = $modeloInsumo->eliminarInsumo($idUsuario);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-			$bitacora->insertarBitacora();
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha eliminado un insumo");
+			$bitacora->setTabla("insumo");
+			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
@@ -238,16 +235,16 @@ function editar()
 		$modeloInsumo->setMarca($_POST["marca"]);
 		$modeloInsumo->setMedida($_POST["medida"]);
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha modificado un insumo");
-		$bitacora->setTabla("insumo");
 
 		$edicion = $modeloInsumo->editarInsumo($idUsuario);
 
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha modificado un insumo");
+			$bitacora->setTabla("insumo");
 
-			$bitacora->insertarBitacora();
+			$bitacora->insertarBitacora($idUsuario);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {

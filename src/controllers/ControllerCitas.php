@@ -180,13 +180,12 @@ function guardarCita()
 		$cita->setEstado("Pendiente");
 		$cita->setIdDoctor(intval($_POST["id_personal"]));
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha Insertado una  cita");
-		$bitacora->setTabla("cita");
-
 		$insercion = $cita->guardarCita($idUsuario);
-
+		
 		if (is_array($insercion) && $insercion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha Insertado una  cita");
+			$bitacora->setTabla("cita");
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
@@ -218,14 +217,13 @@ function eliminarCita($datos)
 		$cita = new ModeloCita();
 
 		$cita->setIdCita($datos[0]);
-
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha eliminado una  cita");
-		$bitacora->setTabla("cita");
-
+		
 		$eliminacion = $cita->eliminarCitaPublic($idUsuario);
-
+		
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha eliminado una  cita");
+			$bitacora->setTabla("cita");
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -309,13 +307,12 @@ function editarCita()
 		$cita->setIdDoctor(intval($_POST["id_personal"]));
 		$cita->setIdCita($_POST['id_cita']);
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha Modificado una  cita");
-		$bitacora->setTabla("cita");
-
 		$edicion = $cita->editarCita($idUsuario);
-
+		
 		if (is_array($edicion) && $edicion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha Modificado una  cita");
+			$bitacora->setTabla("cita");
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {

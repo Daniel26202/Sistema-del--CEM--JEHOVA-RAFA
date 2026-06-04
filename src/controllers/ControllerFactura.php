@@ -228,7 +228,7 @@ function guardarFactura()
 		exit;
 	}
 
-	$idUsuario     = $_SESSION['id_usuario'];
+	$idUsuario = $_SESSION['id_usuario'];
 	$modeloBitacora = new ModeloBitacora();
 	$modeloFactura  = new ModeloFactura();
 
@@ -253,7 +253,7 @@ function guardarFactura()
 		if ($coincidencia) {
 			$id_cliente = $coincidencia;
 		} else {
-			$guardado   = $modeloFactura->guardarCliente($idUsuario);
+			$guardado = $modeloFactura->guardarCliente($idUsuario);
 			$id_cliente = $guardado[1];
 		}
 		$modeloFactura->setIdCliente($id_cliente);
@@ -265,7 +265,7 @@ function guardarFactura()
 		$modeloBitacora->setId_usuario($idUsuario);
 		$modeloBitacora->setActividad("Ha facturado servicios y/o insumos");
 		$modeloBitacora->setTabla("factura");
-		$modeloBitacora->insertarBitacora();
+		$modeloBitacora->insertarBitacora($idUsuario);
 
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $guardar[0]);
 	} else {
