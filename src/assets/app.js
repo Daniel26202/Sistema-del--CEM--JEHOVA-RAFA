@@ -25,6 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
       /* text para saber en que modo esta */
       localStorage.setItem("modo", isDark ? "Oscuro" : "Claro");
       textModo.innerText = isDark ? "Modo Oscuro" : "Modo Claro";
+
+      // 👇 NUEVO: Avisar a los gráficos que el tema cambió
+      window.dispatchEvent(new Event("themeChanged"));
     });
   }
   $(".loader-wrapper").fadeOut("slow");
