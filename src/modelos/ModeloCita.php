@@ -65,13 +65,13 @@ class ModeloCita extends ModelBase
 		try {
 			$data = ['id_doctor' => $this->getIdDoctor()];
 			$sql  = "SELECT sm.*, hyd.*, h.diaslaborables 
-                     FROM horarioydoctor hyd 
-                     INNER JOIN personal d ON d.id_personal = hyd.id_personal 
-                     INNER JOIN horario h ON h.id_horario = hyd.id_horario 
-                     INNER JOIN personal_has_serviciomedico psm ON d.id_personal = psm.personal_id_personal 
-                     INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico 
-                     WHERE d.id_personal = :id_doctor 
-                     GROUP BY hyd.id_horarioydoctor";
+                    FROM horarioydoctor hyd 
+                    INNER JOIN personal d ON d.id_personal = hyd.id_personal 
+                    INNER JOIN horario h ON h.id_horario = hyd.id_horario 
+                    INNER JOIN personal_has_serviciomedico psm ON d.id_personal = psm.personal_id_personal 
+                    INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico 
+                    WHERE d.id_personal = :id_doctor 
+                    GROUP BY hyd.id_horarioydoctor";
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {
@@ -83,9 +83,9 @@ class ModeloCita extends ModelBase
 	{
 		try {
 			$sql = 'SELECT c.doctor, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.id_categoria, cs.nombre as categoria,
-                           c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
-                           pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
-                           p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
+                        c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
+                        pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
+                        p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
                     FROM bd.serviciomedico sm
                     INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
@@ -110,15 +110,15 @@ class ModeloCita extends ModelBase
                             c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
                             pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo, pe.id_especialidad,
                             p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
-                     FROM bd.serviciomedico sm
-                     INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-                     INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
-                     INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-                     INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
-                     INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
-                     INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
-                     INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
-                     WHERE c.estado = "Pendiente" AND c.doctor = psm.personal_id_personal AND c.fecha = :fecha';
+                    FROM bd.serviciomedico sm
+                    INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+                    INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
+                    INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+                    INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
+                    INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
+                    INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
+                    INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
+                    WHERE c.estado = "Pendiente" AND c.doctor = psm.personal_id_personal AND c.fecha = :fecha';
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {
@@ -130,9 +130,9 @@ class ModeloCita extends ModelBase
 	{
 		try {
 			$sql = "SELECT c.doctor, cs.id_categoria, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria,
-                           c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
-                           pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo, pe.id_especialidad,
-                           p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
+                        c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
+                        pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo, pe.id_especialidad,
+                        p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
                     FROM bd.serviciomedico sm
                     INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
@@ -144,6 +144,25 @@ class ModeloCita extends ModelBase
                     WHERE c.estado = 'Realizadas' AND c.doctor = psm.personal_id_personal";
 			$this->setSQL($sql);
 			return $this->read();
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+	public function mostrarTodasCitasHoy()
+	{
+		try {
+			$data = ['fecha' => date("Y-m-d")];
+			$sql  = 'SELECT c.id_cita, c.doctor, c.fecha, c.hora, c.estado,
+                    cs.id_categoria, cs.nombre AS categoria, e.nombre AS especialidad, pe.nombre AS nombre_d,
+                    pe.apellido AS apellido_d, p.id_paciente, p.nombre AS nombre_p, p.apellido AS apellido_p,
+                    p.telefono AS telefono_p FROM bd.cita c INNER JOIN bd.serviciomedico sm
+                    ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico INNER JOIN bd.categoria_servicio cs
+                    ON cs.id_categoria = sm.id_categoria INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
+                INNER JOIN bd.personal pe ON pe.id_personal = c.doctor INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
+                WHERE c.fecha  = :fecha AND c.estado IN ("Pendiente", "Realizadas") ORDER BY pe.nombre, c.hora';
+			$this->setSQL($sql);
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}

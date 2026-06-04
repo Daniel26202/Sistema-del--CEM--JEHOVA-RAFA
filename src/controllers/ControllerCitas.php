@@ -270,44 +270,26 @@ function editarCita()
 		exit;
 	}
 }
-
-function retornarTodasLasCitas()
+function citasHoyCompletasApk()
 {
-	// Línea 1: Limpia el búfer de salida para eliminar cualquier espacio en blanco o eco previo.
-	if (ob_get_length()) ob_clean();
-
-	// Línea 2: Declara que el servidor responderá estrictamente con datos en formato JSON.
-	header("Content-Type: application/json; charset=UTF-8");
-
-	// Línea 3: Permite el acceso CORS para que tu aplicación móvil no sea bloqueada por seguridad.
-	header("Access-Control-Allow-Origin: *");
-
-	// Línea 4: Instancia el modelo de citas para acceder a las consultas de la base de datos.
-	$cita = new App\modelos\ModeloCita();
-
-	// Línea 5: Ejecuta el método existente que busca las citas pendientes en MariaDB.
-	$resultado = $cita->mostrarCita();
-
-	// Línea 6: Convierte el array de registros a un texto estructurado en JSON y lo imprime.
-	echo json_encode($resultado);
-
-	// Línea 7: Finaliza la ejecución inmediatamente para evitar que se cargue código HTML o vistas web.
-	exit;
-}
-
-// function permisos($id_rol, $permiso, $modulo)
-// {
-// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }
-
-
-function retornarCitasHoy()
-{
+    // Limpia el búfer de salida para eliminar cualquier espacio en blanco o eco previo.
     if (ob_get_length()) ob_clean();
     header("Content-Type: application/json; charset=UTF-8");
+    // Permite el acceso CORS
     header("Access-Control-Allow-Origin: *");
-
-    $cita = new App\modelos\ModeloCita();
-    echo json_encode($cita->mostrarCitaHoy());
+    //  establce la zona horaria 
+    date_default_timezone_set('America/Caracas'); 
+    try {
+        $cita = new ModeloCita();
+        $resultado = $cita->mostrarTodasCitasHoy();
+        
+        echo json_encode($resultado);
+    } catch (\Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "ok" => false,
+            "error" => "Error interno en el servidor: " . $e->getMessage()
+        ]);
+    }
     exit;
 }
