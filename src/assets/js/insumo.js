@@ -12,6 +12,8 @@ import {
 } from "./generic/funtionGeneric.js";
 import Paginator from "./generic/Paginator.js"; //paginacion
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
+import { initConversion } from "./generic/coversion.js";
+
 
 addEventListener("DOMContentLoaded", function () {
   console.log("insumos/");
@@ -410,10 +412,14 @@ addEventListener("DOMContentLoaded", function () {
 
     modalLabelInsumos.innerText = "Agrega Insumos";
     btnModalInsumos.innerText = "Agregar";
+
+    //oculatar img
+    contenedorImg.classList.add('d-none')
   });
 
   let verificarFormularioInsumo = inicializarValidacionFormulario(formInsumos);
 
+  initConversion(formInsumos);
   formInsumos.addEventListener("submit", function (e) {
     e.preventDefault();
 
