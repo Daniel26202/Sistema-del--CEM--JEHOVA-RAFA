@@ -109,7 +109,7 @@ addEventListener("DOMContentLoaded", function () {
         "GET",
       );
       console.log(result);
-      let html = `<option class="option-select-background" selected="" disabled value="0">Seleccionar Genero</option>`;
+      let html = `<option class="option-select-background" selected="" disabled value="0">Seleccionar Servicio médico</option>`;
 
       if (result.length > 0) {
         result.forEach((res) => {
