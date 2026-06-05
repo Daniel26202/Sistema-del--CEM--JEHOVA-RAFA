@@ -167,7 +167,7 @@ class ModeloRoles extends ModelBase
             }
 
             //Insertar Rol
-            $sql = "INSERT INTO rol (id_rol, nombre, estado, descripción) VALUES (NULL, :nombre, :estado, :descripcion)";
+            $sql = "INSERT INTO rol (id_rol, nombre, estado, descripcion) VALUES (NULL, :nombre, :estado, :descripcion)";
             $this->setSQL($sql);
             $id_rol = $this->create($data);
 
@@ -234,7 +234,7 @@ class ModeloRoles extends ModelBase
                 'nombre' => $nombreNuevo,
                 'descripcion' => $this->getDescripcion()
             ];
-            $sql_update_rol = "UPDATE rol SET nombre = :nombre, descripción = :descripcion WHERE id_rol = :id";
+            $sql_update_rol = "UPDATE rol SET nombre = :nombre, descripcion = :descripcion WHERE id_rol = :id";
             $this->setSQL($sql_update_rol);
             $this->update($data_rol, $id_rol);
 

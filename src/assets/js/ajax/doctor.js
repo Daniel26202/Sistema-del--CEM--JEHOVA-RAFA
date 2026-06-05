@@ -59,6 +59,7 @@ const id_rol_global = document.getElementById("id_rol_global").value;
 const inputsEspecialidad = formEspecialidad.querySelectorAll(".campo-editar");
 
 const urlActual = window.location.href;
+console.log(urlActual);
 
 //funcion para mostrar mas informacion del doctor
 const info = (id_personal) => {
@@ -171,6 +172,7 @@ const readDoctor = async () => {
 
         const result = await executePetition(url + "/" + metodo, "GET");
         dataDoctor = result;
+        console.log(dataDoctor);
 
         // construir html de filas
         let html = "";

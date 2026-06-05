@@ -7,9 +7,9 @@ class PDF extends FPDF
     function Header()
     {
         // Logo
-        $this->Image('./src/assets/images/Image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
+        $this->Image('./src/assets/images/image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
         $this->SetFont('Arial', 'B', 30);
-        $this->Image('./src/assets/images/Image/123.png', 10, -13, 80);
+        $this->Image('./src/assets/images/image/123.png', 10, -13, 80);
         $this->SetTextColor(14, 169, 181);
         $this->SetXY(110, 15);
         $this->SetFillColor(248, 252, 255);
@@ -31,11 +31,11 @@ $pdf->SetTextColor(14, 169, 181);
 
 
 $pdf->Cell(5);
-$pdf->Cell(30, 20, utf8_decode('NOMBRE'), 0, 0, 'C');
-$pdf->Cell(35, 20, utf8_decode('APELLIDO'), 0, 0, 'C');
-$pdf->Cell(30, 20, utf8_decode('CEDULA'), 0, 0, 'C');
-$pdf->Cell(45, 20, utf8_decode('TELEFONO'), 0, 0, 'C');
-$pdf->Cell(40, 20, utf8_decode('DIRECCIÓN'), 0, 0, 'C');
+$pdf->Cell(30, 20, 'NOMBRE', 0, 0, 'C');
+$pdf->Cell(35, 20, 'APELLIDO', 0, 0, 'C');
+$pdf->Cell(30, 20, 'CEDULA', 0, 0, 'C');
+$pdf->Cell(45, 20, 'TELEFONO', 0, 0, 'C');
+$pdf->Cell(40, 20, 'DIRECCIÓN', 0, 0, 'C');
 foreach($pacientes as $paciente){
 
 $pdf->Ln(10);
@@ -48,11 +48,11 @@ $pdf->Ln(10);
 $pdf->SetFont('Arial', '', 10);
 
 $pdf->Cell(5);
-$pdf->Cell(30, 20, utf8_decode($paciente["nombre"]), 0, 0, 'C');
-$pdf->Cell(35, 20, utf8_decode($paciente["apellido"]), 0, 0, 'C');
-$pdf->Cell(30, 20, utf8_decode($paciente["nacionalidad"].'-'.$paciente["cedula"]), 0, 0, 'C');
-$pdf->Cell(45, 20, utf8_decode($paciente["telefono"]), 0, 0, 'C');
-$pdf->Cell(40, 20, utf8_decode($paciente["direccion"]), 0, 0, 'C');
+$pdf->Cell(30, 20, $paciente["nombre"], 0, 0, 'C');
+$pdf->Cell(35, 20, $paciente["apellido"], 0, 0, 'C');
+$pdf->Cell(30, 20, $paciente["nacionalidad"].'-'.$paciente["cedula"], 0, 0, 'C');
+$pdf->Cell(45, 20, $paciente["telefono"], 0, 0, 'C');
+$pdf->Cell(40, 20, $paciente["direccion"], 0, 0, 'C');
 }
 $pdf->SetFont('Arial', '', 12);
 
