@@ -54,27 +54,27 @@ class ModeloInicio extends ModelBase
 			if ($this->getFechaInicio() == '' && $this->getFechaFinal() =="") {
 				$sql = "SELECT   cs.nombre AS especialidad,
 	COUNT(c.id_cita) AS total_solicitudes
-													FROM cita c
-													INNER JOIN serviciomedico sm 
-													ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-													INNER JOIN categoria_servicio cs 
-													ON sm.id_categoria = cs.id_categoria
-													GROUP BY cs.nombre
-													ORDER BY total_solicitudes DESC limit 5;
-													";
+					FROM cita c
+					INNER JOIN serviciomedico sm 
+					ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+					INNER JOIN categoria_servicio cs 
+					ON sm.id_categoria = cs.id_categoria
+					GROUP BY cs.nombre
+					ORDER BY total_solicitudes DESC limit 5;
+					";
 				$this->setSQL($sql);
 				return $this->read();
 			} else {
 				$sql = "SELECT   cs.nombre AS especialidad,
 	COUNT(c.id_cita) AS total_solicitudes
-													FROM cita c
-													INNER JOIN serviciomedico sm 
-													ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-													INNER JOIN categoria_servicio cs 
-													ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
-													GROUP BY cs.nombre 
-													ORDER BY total_solicitudes DESC limit 5;
-													";
+					FROM cita c
+					INNER JOIN serviciomedico sm 
+					ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+					INNER JOIN categoria_servicio cs 
+					ON sm.id_categoria = cs.id_categoria WHERE c.fecha BETWEEN :fechaInicio AND :fechaFinal
+					GROUP BY cs.nombre 
+					ORDER BY total_solicitudes DESC limit 5;
+					";
 				$this->setSQL($sql);
 
 				return $this->search($data);
@@ -104,20 +104,20 @@ class ModeloInicio extends ModelBase
 			];
 			if ($this->getFechaInicio() == "" && $this->getFechaFinal() == '') {
 				$sql = "SELECT s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
-												FROM sintomas_control sc
-												INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
-												GROUP BY s.nombre
-												ORDER BY total DESC lIMIT 5;
-													";
+					FROM sintomas_control sc
+					INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas
+					GROUP BY s.nombre
+					ORDER BY total DESC lIMIT 5;
+						";
 				$this->setSQL($sql);
 				return $this->read();
 			} else {
 				$sql = "SELECT c.fecha_control, s.nombre AS sintoma, COUNT(sc.id_sintomas_control) AS total
-												FROM sintomas_control sc
-												INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control WHERE c.fecha_control BETWEEN :fechaInicio AND :fechaFinal
-												GROUP BY s.nombre
-												ORDER BY total DESC lIMIT 5;
-													";
+							FROM sintomas_control sc
+							INNER JOIN sintomas s ON sc.id_sintomas = s.id_sintomas INNER JOIN control c ON c.id_control = sc.id_control WHERE c.fecha_control BETWEEN :fechaInicio AND :fechaFinal
+							GROUP BY s.nombre
+							ORDER BY total DESC lIMIT 5;
+								";
 
 				$this->setSQL($sql);
 				return $this->search($data);

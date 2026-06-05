@@ -47,21 +47,30 @@ class ModeloHospitalizacion extends ModelBase
     //     }
     // }
 
-
     public function mostrarHospitalizacionesApk()
     {
         try {
-            $sql = "SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.estado AS estado_h, p.id_paciente, p.nombre   AS nombre_p, p.apellido AS apellido_p, p.cedula, TIMESTAMPDIFF(YEAR, p.fn, CURDATE()) AS edad, pe.nombre   AS nombre_d, pe.apellido AS apellido_d, con.diagnostico, con.historiaclinica,con.severidad
-                FROM hospitalizacion h
-                INNER JOIN paciente p  ON p.id_paciente   = h.id_paciente
-                INNER JOIN personal pe ON pe.id_personal  = h.personal_id_personal
-                LEFT JOIN control con ON con.id_control = ( 
-                    SELECT con2.id_control FROM control con2
-                    WHERE con2.id_paciente = p.id_paciente AND con2.estado = 'DES' 
-                    ORDER BY con2.id_control DESC
-                    LIMIT 1
-                )
-                WHERE h.estado = 'Pendiente' ORDER BY h.fecha_hora_inicio ASC";
+            $sql = "SELECT  h.id_hospitalizacion, h.fecha_hora_inicio, h.fecha_hora_final, h.precio_horas, h.total, h.estado AS estado_h, p.id_paciente, p.nombre AS nombre_p, p.apellido AS apellido_p, p.cedula, p.nacionalidad, TIMESTAMPDIFF(YEAR, p.fn, CURDATE()) AS edad, pe.nombre AS nombre_d, pe.apellido AS apellido_d, u.id_usuario, con.id_control, con.diagnostico, con.historiaclinica, con.severidad FROM hospitalizacion h
+                INNER JOIN paciente p
+                    ON p.id_paciente = h.id_paciente
+                    AND p.estado = 'ACT'
+                INNER JOIN control con
+                    ON con.id_control = (
+                        SELECT con2.id_control
+                        FROM control con2
+                        WHERE con2.id_paciente = p.id_paciente
+                          AND con2.estado = 'DES'
+                        ORDER BY con2.id_control DESC
+                        LIMIT 1
+                    )
+                INNER JOIN segurity.usuario u
+                    ON u.id_usuario = con.id_usuario
+                    AND u.estado = 'ACT'
+                INNER JOIN personal pe
+                    ON pe.usuario = u.id_usuario
+                WHERE h.estado = 'Pendiente'
+                GROUP BY h.id_hospitalizacion
+                ORDER BY h.fecha_hora_inicio ASC";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -87,7 +96,7 @@ class ModeloHospitalizacion extends ModelBase
     public function selectsH()
     {
         try {
-            $sql = "SELECT * FROM view_paciente_hospitalizado WHERE estado_servicio= 'ACT'  AND estado_usuario = 'ACT' AND estado_hospitalizacion = 'Pendiente' GROUP BY id_hospitalizacion";
+            $sql = "SELECT * FROM view_paciente_hospitalizado WHERE estado_usuario = 'ACT' AND estado_hospitalizacion = 'Pendiente' GROUP BY id_hospitalizacion";
 
             $this->setSQL($sql);
             $consulta = $this->read();

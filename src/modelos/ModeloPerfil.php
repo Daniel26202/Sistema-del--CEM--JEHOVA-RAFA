@@ -17,11 +17,22 @@ class ModeloPerfil extends ModelBase
 		parent::__construct($dbSystem);
 	}
 
+	public function seleccionarUsuarioApk()
+	{
+		try {
+			$sql = "SELECT  u.id_usuario, u.usuario, u.correo, u.imagen, u.id_rol, p.nombre, p.apellido, p.cedula, p.telefono, p.nacionalidad, p.tipodecategoria, e.nombre AS especialidad FROM segurity.usuario u INNER JOIN bd.personal p  ON p.usuario = u.id_usuario LEFT JOIN bd.especialidad e  ON e.id_especialidad = p.id_especialidad WHERE u.id_usuario = :id_usuario";
+			$this->setSQL($sql);
+			return $this->search(['id_usuario' => $this->getIdUsuario()], false);
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
 	public function seleccionarUsuario()
 	{
 		try {
 			$data = [
-				'id_usuario'=>$this->getIdUsuario(),
+				'id_usuario' => $this->getIdUsuario(),
 				'usuario' => $this->getUsuario()
 			];
 			$sql = "SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario and id_usuario=:id_usuario";
