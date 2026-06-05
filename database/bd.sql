@@ -6,18 +6,6 @@ COLLATE utf8mb4_unicode_ci;
 
 USE `bd`;
 
--- 3. Tu truco de seguridad para las llaves foráneas (para que no se tranque)
-SET FOREIGN_KEY_CHECKS = 0;
-
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: localhost
--- Tiempo de generación: 05-06-2026 a las 06:08:17
--- Versión del servidor: 10.4.32-MariaDB-log
--- Versión de PHP: 8.2.12
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
