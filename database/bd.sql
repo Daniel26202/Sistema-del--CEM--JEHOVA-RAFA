@@ -1,9 +1,20 @@
+-- 1. Crear la base de datos SÓLO si no existe en el sistema
+CREATE DATABASE IF NOT EXISTS `bd` 
+DEFAULT CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+-- 2. Seleccionar la base de datos obligatoriamente para todo lo que viene abajo
+USE `bd`;
+
+-- 3. Tu truco de seguridad para las llaves foráneas (para que no se tranque)
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 05-06-2026 a las 05:13:25
+-- Tiempo de generación: 05-06-2026 a las 06:08:17
 -- Versión del servidor: 10.4.32-MariaDB-log
 -- Versión de PHP: 8.2.12
 
@@ -749,31 +760,6 @@ CREATE TABLE `entrada` (
 --
 
 INSERT INTO `entrada` (`id_entrada`, `id_proveedor`, `numero_de_lote`, `fechaDeIngreso`, `estado`) VALUES
-(38, 6, 1, '2025-04-05', 'ACT'),
-(39, 7, 2, '2025-04-06', 'ACT'),
-(40, 6, 3435, '2025-04-21', 'ACT'),
-(41, 6, 3435, '2025-04-21', 'ACT'),
-(42, 7, 3456, '2025-04-21', 'ACT'),
-(43, 6, 1233, '2025-04-21', 'ACT'),
-(44, 7, 3232, '2025-04-29', 'ACT'),
-(45, 7, 3232, '2025-04-29', 'ACT'),
-(46, 7, 3232, '2025-04-29', 'ACT'),
-(47, 7, 3232, '2025-04-29', 'ACT'),
-(48, 6, 3232, '2025-05-02', 'ACT'),
-(49, 7, 1212, '2025-05-02', 'ACT'),
-(50, 6, 2334, '2025-05-02', 'ACT'),
-(51, 7, 2323, '2025-05-05', 'ACT'),
-(52, 7, 4553, '2025-05-05', 'ACT'),
-(53, 7, 4553, '2025-05-05', 'DES'),
-(54, 7, 2323, '2025-05-07', 'ACT'),
-(55, 6, 2323, '2025-05-08', 'ACT'),
-(56, 6, 2323, '2025-05-08', 'ACT'),
-(57, 6, 1212, '2025-05-08', 'ACT'),
-(58, 6, 5664, '2025-05-22', 'ACT'),
-(59, 7, 8098, '2025-06-10', 'ACT'),
-(61, 7, 5656, '2025-06-20', 'ACT'),
-(62, 7, 1234, '2025-06-21', 'ACT'),
-(63, 6, 5651, '2025-06-21', 'ACT'),
 (64, 7, 2134, '2025-06-21', 'ACT'),
 (65, 7, 2134, '2025-06-21', 'ACT'),
 (66, 6, 2134, '2025-06-21', 'DES'),
@@ -807,31 +793,6 @@ CREATE TABLE `entrada_insumo` (
   `cantidad_entrante` int(12) NOT NULL,
   `cantidad_disponible` int(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `entrada_insumo`
---
-
-INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `fechaDeVencimiento`, `precio`, `cantidad_entrante`, `cantidad_disponible`) VALUES
-(52, 37, 58, '2025-05-25', 9.00, 89, 67),
-(53, 36, 59, '2026-02-11', 750000.00, 34, 3),
-(54, 41, 62, '2026-06-29', 9.00, 20, 11),
-(55, 42, 63, '2025-06-27', 8.00, 12, 12),
-(56, 36, 64, '2026-06-21', 12.00, 1, 1),
-(57, 36, 65, '2026-06-21', 12.00, 1, 1),
-(58, 31, 66, '2026-06-21', 12.00, 1, 0),
-(59, 37, 67, '2025-06-29', 13.00, 2, 2),
-(60, 31, 68, '2027-06-21', 120.00, 9, 0),
-(61, 41, 69, '2025-06-29', 12.00, 5, 5),
-(62, 36, 70, '2025-06-29', 12.00, 2, 2),
-(63, 36, 71, '2025-06-29', 190.00, 1, 1),
-(64, 43, 72, '2026-07-06', 8.00, 12, 9),
-(65, 44, 73, '2027-06-30', 2.80, 12, 0),
-(66, 45, 74, '2025-12-31', 100.00, 50, 50),
-(67, 44, 75, '2025-12-29', 100.00, 1, 1),
-(68, 44, 76, '2025-12-31', 100.00, 1, 1),
-(69, 36, 77, '2026-02-11', 7900.00, 34, 34),
-(70, 46, 78, '2026-07-01', 1.00, 10, 10);
 
 -- --------------------------------------------------------
 
