@@ -81,3 +81,30 @@ function guardar()
 		exit;
 	}
 }
+
+function perfilApk()
+{
+	if (ob_get_length()) ob_clean();
+	header("Content-Type: application/json; charset=UTF-8");
+	header("Access-Control-Allow-Origin: *");
+
+	try {
+		$modelo = new ModeloPerfil();
+		$modelo->setIdUsuario($_SESSION['id_usuario']);
+		$perfil = $modelo->seleccionarUsuarioApk();
+
+		if (!$perfil || empty($perfil)) {
+			throw new \Exception("No se encontró el perfil.");
+		}
+
+		// Nunca enviar datos sensibles al móvil
+		unset($perfil['password']);
+		unset($perfil['token_session']);
+
+		echo json_encode(['ok' => true, 'data' => $perfil]);
+	} catch (\Throwable $e) {
+		http_response_code(500);
+		echo json_encode(["ok" => false, "error" => $e->getMessage()]);
+	}
+	exit;
+}

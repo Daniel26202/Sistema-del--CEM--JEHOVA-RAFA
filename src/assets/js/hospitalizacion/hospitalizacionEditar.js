@@ -310,7 +310,7 @@ const vistaTabla = async () => {
 
             // console.log(resultad[1]);
             // recorro los datos de hospitalización
-            console.log(resultad[1]);
+            console.log(resultad);
 
             resultad[1].forEach((res, index) => {
                 horaInicioHosp = res.fecha_hora_inicio;
