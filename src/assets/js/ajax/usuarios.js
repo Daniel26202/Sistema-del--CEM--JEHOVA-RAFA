@@ -15,6 +15,14 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
 
+
+const modalEditarUsuario = new bootstrap.Modal(
+  document.getElementById("modal-exampleEditar"),
+);
+const modalEditarPass = new bootstrap.Modal(
+  document.getElementById("modal-exampleEditarPass"),
+);
+
 const urlBase = document.getElementById("urlBase").value;
 
 const activarMostrarContra = document.querySelectorAll(".mostrarPassword");
@@ -238,11 +246,12 @@ const updateUser = async (form) => {
     if (result.ok) {
       alertSuccess(result.message);
       readUser();
+      modalEditarUsuario.hide();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal);
+    finallyLoaderButton(botonModal, "Editar Usuario");
   }
 };
 
@@ -257,11 +266,12 @@ const updateUserPass = async (form) => {
     if (result.ok) {
       alertSuccess(result.message);
       readUser();
+      modalEditarPass.hide();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModalPass);
+    finallyLoaderButton(botonModalPass, "Editar Contraseña");
   }
 };
 
@@ -320,6 +330,10 @@ btnOpenModal.addEventListener("click", function () {
   };
   clearModalEnviar(parametros);
 });
+
+botonModal.addEventListener('click', function() {
+  contenedorImg.classList.add('d-none')
+})
 
 let verificarFormularioEdi = inicializarValidacionFormulario(formEdiUsuario);
 let verificarFormularioPass = inicializarValidacionFormulario(formEdiPass);

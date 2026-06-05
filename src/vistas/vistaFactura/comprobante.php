@@ -46,14 +46,14 @@
                         </div>
 
                         <div class="card-body px-4 px-md-5 bg-comprobante">
-
+d
                             <?php foreach ($datosFactura as $datoFactura): ?>
                                 <div class="div-total p-3 mb-4 text-center rounded shadow-sm" style="background-color: #3b82f6; color: white;">
                                     <h3 class="fw-bold mb-0"><?php echo $datoFactura['total'] . " BS" ?></h3>
                                 </div>
 
                                 <div class="row mb-1">
-                                    <div class="col-6 text-start text-comprobante"><span class="fw-bold ">Código:</span></div>
+                                    <div class="col-6 text-start text-comprobante"><span class="fw-bold ">d Código:</span></div>
                                     <div class="col-6 text-end text-comprobante"><span><?php echo $datoFactura['id_factura'] ?></span></div>
                                 </div>
                                 <div class="row mb-1">

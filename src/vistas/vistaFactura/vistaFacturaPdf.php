@@ -25,7 +25,7 @@ $pdf->SetFont('Arial', 'B', 15);
 
 $pdf->Ln(40);
 $pdf->SetTextColor(14, 169, 181);
-$pdf->Cell(62, 10, utf8_decode('CODIGO:  ').$datosFactura[0]['id_factura'], 0, 0, 'C') ;
+$pdf->Cell(62, 10, 'CODIGO:  '.$datosFactura[0]['id_factura'], 0, 0, 'C') ;
 
 
 $pdf->Ln(15);
@@ -34,7 +34,7 @@ $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetFillColor(14, 169, 181);
 $pdf->SetTextColor(255,255,255);
 
-$pdf->Cell(170, 10, utf8_decode('DATOS DEL PACIENTE'), 0, 0, 'C',1);
+$pdf->Cell(170, 10, 'DATOS DEL PACIENTE', 0, 0, 'C',1);
 $pdf->Ln(14);
 $pdf->Cell(10);
 
@@ -51,7 +51,7 @@ $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetFillColor(14, 169, 181);
 $pdf->SetTextColor(255,255,255);
-$pdf->Cell(170, 10, utf8_decode('DETALLES'), 0, 0, 'C',1);
+$pdf->Cell(170, 10, 'DETALLES', 0, 0, 'C',1);
 
 foreach($datosServiciosExtras as $d){
 $pdf->Ln(14);
@@ -75,7 +75,7 @@ $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetFillColor(14, 169, 181);
 $pdf->SetTextColor(255, 255, 255);
-$pdf->Cell(170, 10, utf8_decode('INSUMOS'), 0, 0, 'C', 1);
+$pdf->Cell(170, 10, 'INSUMOS', 0, 0, 'C', 1);
 $pdf->Ln(14);
 foreach($datosInsumos as $insumo){
 $pdf->Ln(14);

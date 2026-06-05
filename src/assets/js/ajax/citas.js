@@ -781,6 +781,9 @@ addEventListener("DOMContentLoaded", function () {
 
     ///ocultar la data
     divDataPaciente.classList.add("d-none");
+
+    //ocultar btn paciente
+    divBtnAddPat.classList.add("d-none");
   });
 
   traerServiciosMedicos();

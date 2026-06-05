@@ -7,9 +7,9 @@ class PDF extends FPDF
 {
     function Header()
     {
-        $this->Image('./src/assets/images/Image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
+        $this->Image('./src/assets/images/image/depositphotos_87603960-stock-illustration-soft-bending-line-blue-sky-transformed.jpeg', 0, 0, 350);
         $this->SetFont('Arial', 'B', 30);
-        $this->Image('./src/assets/images/Image/123.png', 10, -13, 80);
+        $this->Image('./src/assets/images/image/123.png', 10, -13, 80);
         $this->SetTextColor(14, 169, 181);
         $this->SetXY(110, 15);
         $this->SetFillColor(248, 252, 255);
@@ -29,21 +29,21 @@ $pdf->SetTextColor(14, 169, 181);
 foreach($citas as $cita){
 // AQUI PONES EL FOREACH
 $pdf->Cell(10);
-$pdf->Cell(40, 20, utf8_decode('FECHA: '), 0, 0, 'L');
+$pdf->Cell(40, 20, 'FECHA: ', 0, 0, 'L');
 $pdf->SetFont('Arial', '', 15);
-$pdf->Cell(20, 20, utf8_decode('').$cita["fecha"], 0, 0, 'L');
+$pdf->Cell(20, 20, "".$cita["fecha"], 0, 0, 'L');
 
 $pdf->Cell(20);
 $pdf->SetFont('Arial', 'B', 15);
-$pdf->Cell(30, 20, utf8_decode('HORA: '), 0, 0, 'L');
+$pdf->Cell(30, 20, 'HORA: ', 0, 0, 'L');
 $pdf->SetFont('Arial', '', 15);
-$pdf->Cell(20, 20, utf8_decode($cita["hora"]), 0, 0, 'L');
+$pdf->Cell(20, 20, $cita["hora"], 0, 0, 'L');
 
 $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 15);
-$pdf->Cell(40, 20, utf8_decode('DOCTOR: '), 0, 0, 'L');
+$pdf->Cell(40, 20, 'DOCTOR: ', 0, 0, 'L');
 $pdf->SetFont('Arial', '', 15);
 $pdf->Cell(20, 20, strtoupper($cita["nombre_d"].' '.$cita["apellido_d"]), 0, 0, 'L');
 
@@ -51,14 +51,14 @@ $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 15);
-$pdf->Cell(40, 20, utf8_decode('PACIENTE: '), 0, 0, 'L');
+$pdf->Cell(40, 20, 'PACIENTE: ', 0, 0, 'L');
 $pdf->SetFont('Arial', '', 15);
 $pdf->Cell(20, 20, strtoupper($cita["nombre_p"].' '.$cita["apellido_p"]), 0, 0, 'L');
 
 
 $pdf->Cell(35);
 $pdf->SetFont('Arial', 'B', 15);
-$pdf->Cell(10, 20, utf8_decode('       CI: '), 0, 0, 'L');
+$pdf->Cell(10, 20, '       CI: ', 0, 0, 'L');
 $pdf->SetFont('Arial', '', 15);
 $pdf->Cell(20, 20, strtoupper('       '.$cita["nacionalidad"].'-'.$cita["cedula_p"]), 0, 0, 'L');
 
@@ -66,20 +66,20 @@ $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 15);
-$pdf->Cell(40, 20, utf8_decode('TELEFONO: '), 0, 0, 'L');
+$pdf->Cell(40, 20, 'TELEFONO: ', 0, 0, 'L');
 $pdf->SetFont('Arial', '', 15);
-$pdf->Cell(20, 20, utf8_decode($cita["telefono_p"]), 0, 0, 'L');
+$pdf->Cell(20, 20, $cita["telefono_p"], 0, 0, 'L');
 
 $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 15);
-$pdf->Cell(40, 20, utf8_decode('ESTADO: '), 0, 0, 'L');
+$pdf->Cell(40, 20, 'ESTADO: ', 0, 0, 'L');
 $pdf->Cell(20, 20, strtoupper($cita["estado"]), 0, 0, 'L');
 $pdf->Ln(12);
 
 $pdf->Cell(10);
-$pdf->Cell(80, 20, utf8_decode('-------------------------------------------------------------------------------------------------'), 0, 0, 'L');
+$pdf->Cell(80, 20, '-------------------------------------------------------------------------------------------------', 0, 0, 'L');
 $pdf->Ln(12);
 
 }

@@ -49,13 +49,13 @@ const returnFragmentHtml = (element) => {
                                         ${element.nombre}
                                     </h5>
                                     <p class="mb-4">
-                                        ${element.descripción}
+                                        ${element.descripcion}
                                     </p>
                                                 
 
                                     <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
                                       element.id_rol
-                                    }" data-name="${element.nombre}"  data-descripcion="${element.descripción}" data-img=${element.id_rol}
+                                    }" data-name="${element.nombre}"  data-descripcion="${element.descripcion}" data-img=${element.id_rol}
                                         data-bs-toggle="modal" data-bs-target="#exampleGuardar">Mostrar</button>
                                 </div>
                           </div>
