@@ -1,10 +1,23 @@
--- 1. Crear la base de datos SÓLO si no existe en el sistema
+
 CREATE DATABASE IF NOT EXISTS `bd` 
 DEFAULT CHARACTER SET utf8mb4 
 COLLATE utf8mb4_unicode_ci;
 
--- 2. Seleccionar la base de datos obligatoriamente para todo lo que viene abajo
+
 USE `bd`;
+
+-- 3. Tu truco de seguridad para las llaves foráneas (para que no se tranque)
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: localhost
+-- Tiempo de generación: 05-06-2026 a las 06:08:17
+-- Versión del servidor: 10.4.32-MariaDB-log
+-- Versión de PHP: 8.2.12
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
