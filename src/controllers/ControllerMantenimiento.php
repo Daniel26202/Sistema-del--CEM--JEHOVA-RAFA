@@ -176,7 +176,7 @@ function verificacionU()
 	$modeloMantenimiento->setPassword($_POST["password"]);
 	$resultado = $modeloMantenimiento->verifU();
 	$_SESSION["validarPBD"] = ($resultado) ? true : false;
-	echo json_encode($resultado);
+	echo json_encode(($resultado) ? true : false);
 }
 
 function permisos($id_rol, $permiso, $modulo)

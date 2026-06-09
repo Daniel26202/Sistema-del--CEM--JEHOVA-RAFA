@@ -23,6 +23,12 @@ function logIn($parametro)
 
 function iniciarSesion()
 {
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+        exit;
+    }
+    
     $modelo = new ModeloInicioSesion();
     $bitacora = new ModeloBitacora();
     $usuario = new ModeloUsuarios();

@@ -183,7 +183,7 @@ class ModeloServicios extends ModelBase
 
             $data2 = ['id_personal' => $this->getIdDoctor()];
 
-            $sql = "SELECT id_categoria FROM serviciomedico where id_categoria =:id_categoria";
+            $sql = "SELECT id_categoria,id_servicioMedico FROM serviciomedico where id_categoria =:id_categoria";
             $this->setSQL($sql);
             $dataSer =  $this->search($data1,false);
 
