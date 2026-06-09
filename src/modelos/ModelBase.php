@@ -97,19 +97,18 @@ class ModelBase extends Db
 
     protected function search($params, $all = true)
     {
-
         $sql = $this->getSQL();
         $stmt = $this->pdo->prepare($sql);
 
         foreach ($params as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+            // si es un entero, lo enlazamos como PARAM_INT (entero), si no, como STR (string)
+            $type = is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+            $stmt->bindValue(":$key", $value, $type);
         }
 
         $stmt->execute();
-
-        return $all ? $stmt->fetchAll(PDO::FETCH_ASSOC) : $stmt->fetch(PDO::FETCH_ASSOC);
+        return $all ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-
     protected function query()
     {
         $sql = $this->getSQL();

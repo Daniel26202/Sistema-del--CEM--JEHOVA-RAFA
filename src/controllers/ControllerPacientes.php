@@ -13,15 +13,38 @@ function getPacientes($parametro)
 	require_once './src/vistas/vistaPacientes/pacientes.php';
 }
 
-function getPacientesAjax($parametro)
+function getPacientesAjax()
 {
 	if (empty($_GET)) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
-	$modelo  = new ModeloPacientes();
-	echo json_encode($modelo->index());
+	// estos parametros ya los envia datatable por defecto
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	$modelo = new ModeloPacientes();
+
+	// traigo los datos de todos los registros
+	$pacientes = $modelo->index($inicio, $limite, $buscar);
+
+	// Aqui solamente el total de registros
+	$totalRegistros = $modelo->contarTotalPacientes();
+	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalPacientes($buscar) : $totalRegistros;
+
+	// devuelvo esta estructuta (la cual es estandar para datatable)
+	$respuesta = [
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $pacientes
+	];
+
+	echo json_encode($respuesta);
+	exit;
 }
 
 /* hay q hacerlo con ajax, pero lo hice sencillo, no se si se vaya a pasar a ajax to esto, pa despues del sabado ;) */

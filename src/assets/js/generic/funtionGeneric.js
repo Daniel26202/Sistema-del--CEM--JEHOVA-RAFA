@@ -162,8 +162,39 @@ export const alertInfo = (title, text) => {
   });
 };
 
-export const initDataTable = (selector) => {
-  $(selector).DataTable({
+export const initDataTable = (
+  selector,
+  urlControlador,
+  columnas,
+  callbackDatos = null,
+  callbackEventos = null
+) => {
+  return $(selector).DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: urlControlador,
+      type: "GET",
+      //esto es para si lo necesito guardar la data en una variable
+      dataSrc: function (json) {
+        if (callbackDatos && typeof callbackDatos === "function") {
+          callbackDatos(json.data);
+        }
+        return json.data;
+      },
+      error: function (xhr, error, thrown) {
+        console.error("Error en DataTables Ajax: ", error);
+      },
+    },
+    //columnas dimanicas seguna la tabla
+    columns: columnas,
+
+    // basicamente esto es para llamar a los eventos que esten relacionados con la tabla ejemplo los botones de eliminar
+    drawCallback: function (settings) {
+      if (callbackEventos && typeof callbackEventos === "function") {
+        callbackEventos();
+      }
+    },
     language: {
       decimal: ",",
       thousands: ".",
@@ -173,6 +204,7 @@ export const initDataTable = (selector) => {
       infoEmpty: "No hay registros disponibles",
       infoFiltered: "(filtrado de _MAX_ registros en total)",
       search: "Buscar:",
+      processing: "Carganfo Registros...",
     },
   });
 };
@@ -331,9 +363,6 @@ export const setImgWithFallback = (
   imgElement.src = src && src.trim() !== "" ? src : fallbackSrc;
 };
 
-
-
-
 // Objeto interno invisible para almacenar los hilos de los temporizadores en memoria
 const procesosActivos = {};
 
@@ -342,60 +371,62 @@ const procesosActivos = {};
  * @param {string} idUnico - Identificador del módulo (ej: 'citas')
  * @param {Object} config - Configuración de IDs del DOM y callbacks
  */
-export function iniciarTemporizador(idUnico, config, textAlert = '') {
-    // Si ya existían alarmas corriendo para este formulario, las cancelamos primero
-    detenerTemporizador(idUnico);
+export function iniciarTemporizador(idUnico, config, textAlert = "") {
+  // Si ya existían alarmas corriendo para este formulario, las cancelamos primero
+  detenerTemporizador(idUnico);
 
-    procesosActivos[idUnico] = {};
+  procesosActivos[idUnico] = {};
 
-    // ── ALERTA 1: A los 4 minutos y 30 segundos (Faltan 30 segundos para expirar)
-    // 4.5 minutos * 60 segundos * 1000 milisegundos = 270000 ms
-    procesosActivos[idUnico].alertaProximidad = setTimeout(() => {
-        alertInfo('Información', textAlert)
-    }, 270000);
+  // ── ALERTA 1: A los 4 minutos y 30 segundos (Faltan 30 segundos para expirar)
+  // 4.5 minutos * 60 segundos * 1000 milisegundos = 270000 ms
+  procesosActivos[idUnico].alertaProximidad = setTimeout(() => {
+    alertInfo("Información", textAlert);
+  }, 270000);
 
-    // ── ALERTA 2: A los 5 minutos exactos (Expiración total)
-    // 5 minutos * 60 segundos * 1000 milisegundos = 300000 ms
-    procesosActivos[idUnico].alertaCierre = setTimeout(() => {
-        // 1. Cerrar el modal dinámicamente con Bootstrap
-        if (config.idModal) {
-            const modalElement = document.getElementById(config.idModal);
-            if (modalElement) {
-                const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-                modalInstance.hide();
-            }
-        }
+  // ── ALERTA 2: A los 5 minutos exactos (Expiración total)
+  // 5 minutos * 60 segundos * 1000 milisegundos = 300000 ms
+  procesosActivos[idUnico].alertaCierre = setTimeout(() => {
+    // 1. Cerrar el modal dinámicamente con Bootstrap
+    if (config.idModal) {
+      const modalElement = document.getElementById(config.idModal);
+      if (modalElement) {
+        const modalInstance =
+          bootstrap.Modal.getInstance(modalElement) ||
+          new bootstrap.Modal(modalElement);
+        modalInstance.hide();
+      }
+    }
 
-        // 2. Resetear el formulario HTML
-        if (config.idFormulario) {
-            const formulario = document.getElementById(config.idFormulario);
-            if (formulario) formulario.reset();
-        }
+    // 2. Resetear el formulario HTML
+    if (config.idFormulario) {
+      const formulario = document.getElementById(config.idFormulario);
+      if (formulario) formulario.reset();
+    }
 
-        // 3. Ejecutar limpiezas extras de variables en tu citas.js
-        if (typeof config.callbackAlExpirar === 'function') {
-            config.callbackAlExpirar();
-        }
+    // 3. Ejecutar limpiezas extras de variables en tu citas.js
+    if (typeof config.callbackAlExpirar === "function") {
+      config.callbackAlExpirar();
+    }
 
-        // 4. Alerta final indicando el cierre
-        alertInfo(
-          "Información",
-          "⌛ El tiempo límite de 5 minutos ha expirado. El formulario ha sido cerrado y el cupo fue liberado.",
-        );
-    }, 300000);
+    // 4. Alerta final indicando el cierre
+    alertInfo(
+      "Información",
+      "⌛ El tiempo límite de 5 minutos ha expirado. El formulario ha sido cerrado y el cupo fue liberado.",
+    );
+  }, 300000);
 }
 
 /**
  * Cancela las alertas activas (Se llama cuando el administrador guarda con éxito antes de los 5 min).
  */
 export function detenerTemporizador(idUnico) {
-    if (procesosActivos[idUnico]) {
-        if (procesosActivos[idUnico].alertaProximidad) {
-            clearTimeout(procesosActivos[idUnico].alertaProximidad);
-        }
-        if (procesosActivos[idUnico].alertaCierre) {
-            clearTimeout(procesosActivos[idUnico].alertaCierre);
-        }
-        delete procesosActivos[idUnico];
+  if (procesosActivos[idUnico]) {
+    if (procesosActivos[idUnico].alertaProximidad) {
+      clearTimeout(procesosActivos[idUnico].alertaProximidad);
     }
+    if (procesosActivos[idUnico].alertaCierre) {
+      clearTimeout(procesosActivos[idUnico].alertaCierre);
+    }
+    delete procesosActivos[idUnico];
+  }
 }

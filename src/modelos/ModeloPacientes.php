@@ -15,17 +15,47 @@ class ModeloPacientes extends ModelBase
 		parent::__construct($dbSystem);
 	}
 
-	// ── READ (sin protección según el profe) ────────────────────────────────
-
-	public function index()
+	
+	public function index($inicio = 0, $limite = 10, $buscar = '')
 	{
 		try {
 			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM paciente WHERE estado = 'ACT'";
+
+			$data = [];
+			if (!empty($buscar)) {
+				$sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+				$data['buscar'] = "%$buscar%"; 
+			}
+
+			$sql .= " ORDER BY id_paciente DESC LIMIT :inicio, :limite";
+
 			$this->setSQL($sql);
-			return $this->read();
+
+			$data =[
+				'inicio'=> (int)$inicio,
+				'limite'=> (int)$limite
+			];
+
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+	//nuevo metodo para calcular el total de registros para mostrar en datatable
+	public function contarTotalPacientes($buscar = '')
+	{
+		$data = []; // Empezamos con un array vacío
+		$sql = "SELECT COUNT(*) as total FROM paciente WHERE estado = 'ACT'";
+		if (!empty($buscar)) {
+			$sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+			$data['buscar'] = "%$buscar%";
+		}
+
+		$this->setSQL($sql);
+		$resultado = $this->search($data, false);
+
+		return $resultado['total'] ?? 0;
 	}
 
 	public function indexHistorial()
