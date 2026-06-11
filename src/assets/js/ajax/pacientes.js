@@ -63,7 +63,10 @@ const readPatients = async () => {
     }
 
     const columnsPacientes = [
-      { data: "cedula" },
+      {
+        data: "cedula",
+        render: (data, type, row) => `${row.nacionalidad}-${data}`,
+      },
       { data: "nombre" },
       { data: "apellido" },
       { data: "telefono" },
@@ -125,6 +128,13 @@ const readPatients = async () => {
                         </div>`;
         },
       },
+    ];
+
+    const columsHistorial = [
+      { data: "cedula" },
+      { data: "nombre_paciente" },
+      { data: "diagnostico" },
+      { data: "estado_salud" },
     ];
 
     // Callback de eventos específicos para médicos
@@ -212,7 +222,9 @@ const readPatients = async () => {
     initDataTable(
       selector,
       url + "/" + metodo,
-      columnsPacientes,
+      !urlActual.includes("getHistorialSalud")
+        ? columnsPacientes
+        : columsHistorial,
       (datosServer) => {
         dataPacientes = [];
         dataPacientes.push(...datosServer);

@@ -16,25 +16,79 @@ class ModeloCliente extends ModelBase
 
     // ── READ ────────────────────────────────────────────────
 
-    public function index()
+    public function index($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cliente', $ordenDir = 'DESC')
     {
         try {
-            $sql = "SELECT id_cliente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM cliente WHERE estado = 'ACT'";
+            $sql = "SELECT id_cliente, nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero FROM cliente WHERE estado='ACT' ";
+
+            $data = [];
+            if (!empty($buscar)) {
+                $sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
             $this->setSQL($sql);
-            return $this->read();
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $resultado = $this->search($data);
+            return is_array($resultado) ? $resultado : [];
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public function indexPapelera($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cliente', $ordenDir = 'DESC')
+    {
+        try {
+            $sql = "SELECT id_cliente, nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero FROM cliente WHERE estado='DES' ";
+
+            $data = [];
+            if (!empty($buscar)) {
+                $sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
+            $this->setSQL($sql);
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $resultado = $this->search($data);
+            return is_array($resultado) ? $resultado : [];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function indexPapelera()
+    public function contarTotalClientes($estado, $buscar = '')
     {
         try {
-            $sql = "SELECT id_cliente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM cliente WHERE estado = 'DES'";
+            $data = [
+                'estado' => $estado
+            ];
+            $sql = "SELECT COUNT(*) as total FROM cliente WHERE estado = :estado";
+
+            if (!empty($buscar)) {
+                $sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
             $this->setSQL($sql);
-            return $this->read();
+            $resultado = $this->search($data, false);
+
+            if (is_array($resultado) && isset($resultado['total'])) {
+                return (int)$resultado['total'];
+            }
+
+            return 0;
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return 0;
         }
     }
 

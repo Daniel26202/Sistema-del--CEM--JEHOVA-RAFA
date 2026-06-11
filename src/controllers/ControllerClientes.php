@@ -16,13 +16,45 @@ function Clientes($parametro)
 }
 
 
+// Modifica la función clientesAjax() en ControllerClientes.php para que quede así:
 function clientesAjax()
 {
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
+        exit;
+    }
+
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+
+    $columnasMapeadas = ['cedula', 'nombre', 'apellido', 'telefono', 'genero'];
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_cliente';
+
     $modeloCliente = new ModeloCliente();
+    $clientes = $modeloCliente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
-    echo json_encode($modeloCliente->index());
+    $totalRegistros = $modeloCliente->contarTotalClientes('ACT');
+    $totalFiltrados = !empty($buscar) ? $modeloCliente->contarTotalClientes('ACT', $buscar) : $totalRegistros;
+
+    $respuesta = [
+        "draw"            => $draw,
+        "recordsTotal"    => (int)$totalRegistros,
+        "recordsFiltered" => (int)$totalFiltrados,
+        "data"            => $clientes
+    ];
+
+    echo json_encode($respuesta);
+    exit;
 }
-
 
 function papelera($parametro)
 {
@@ -32,9 +64,41 @@ function papelera($parametro)
 
 function papeleraAjax()
 {
-    $modeloCliente = new ModeloCliente();
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
+        exit;
+    }
 
-    echo json_encode($modeloCliente->indexPapelera());
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+
+    $columnasMapeadas = ['cedula', 'nombre', 'apellido', 'telefono', 'genero'];
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_cliente';
+
+    $modeloCliente = new ModeloCliente();
+    $clientes = $modeloCliente->indexPapelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+    $totalRegistros = $modeloCliente->contarTotalClientes('DES');
+    $totalFiltrados = !empty($buscar) ? $modeloCliente->contarTotalClientes('DES', $buscar) : $totalRegistros;
+
+    $respuesta = [
+        "draw"            => $draw,
+        "recordsTotal"    => (int)$totalRegistros,
+        "recordsFiltered" => (int)$totalFiltrados,
+        "data"            => $clientes
+    ];
+
+    echo json_encode($respuesta);
+    exit;
 }
 
 function guardar()

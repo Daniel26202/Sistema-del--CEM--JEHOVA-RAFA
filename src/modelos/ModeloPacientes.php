@@ -15,27 +15,86 @@ class ModeloPacientes extends ModelBase
 		parent::__construct($dbSystem);
 	}
 
-	
-	public function index($inicio = 0, $limite = 10, $buscar = '')
+
+	public function index($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
 	{
 		try {
-			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM paciente WHERE estado = 'ACT'";
+		
+			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero 
+                FROM paciente 
+                WHERE estado = 'ACT'";
 
 			$data = [];
+
 			if (!empty($buscar)) {
 				$sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
-				$data['buscar'] = "%$buscar%"; 
+				$data['buscar'] = "%$buscar%";
 			}
 
-			$sql .= " ORDER BY id_paciente DESC LIMIT :inicio, :limite";
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
 			$this->setSQL($sql);
 
-			$data =[
-				'inicio'=> (int)$inicio,
-				'limite'=> (int)$limite
-			];
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+			return $this->search($data);
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
 
+
+	public function indexHistorial($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
+	{
+		try {
+			$sql = "SELECT 
+                        c.id_control,
+                        c.id_paciente,
+                        p.cedula,
+                        p.nacionalidad,
+                       CONCAT(p.nombre,' ',p.apellido) AS nombre_paciente,
+                        p.estado_salud,
+                        c.diagnostico
+                    FROM  control c
+                    JOIN  paciente p ON c.id_paciente = p.id_paciente";
+			$data = [];
+			if (!empty($buscar)) {
+				$sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+			$sql .= " ORDER BY id_control DESC LIMIT :inicio, :limite";
+
+			$this->setSQL($sql);
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+
+			return $this->search($data);
+		} catch (\Exception $e) {
+			return $e;
+		}
+	}
+
+	public function indexPapelera($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
+	{
+		try {
+
+			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero 
+                FROM paciente 
+                WHERE estado = 'DES'";
+
+			$data = [];
+
+			if (!empty($buscar)) {
+				$sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
+			$this->setSQL($sql);
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
 			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -43,10 +102,12 @@ class ModeloPacientes extends ModelBase
 	}
 
 	//nuevo metodo para calcular el total de registros para mostrar en datatable
-	public function contarTotalPacientes($buscar = '')
+	public function contarTotalPacientes($estado, $buscar = '')
 	{
-		$data = []; // Empezamos con un array vacío
-		$sql = "SELECT COUNT(*) as total FROM paciente WHERE estado = 'ACT'";
+		$data = [
+			'estado' => $estado
+		];
+		$sql = "SELECT COUNT(*) as total FROM paciente WHERE estado =:estado";
 		if (!empty($buscar)) {
 			$sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
 			$data['buscar'] = "%$buscar%";
@@ -58,36 +119,20 @@ class ModeloPacientes extends ModelBase
 		return $resultado['total'] ?? 0;
 	}
 
-	public function indexHistorial()
+	//nuevo metodo para calcular el total de registros para mostrar en datatable
+	public function contarTotalHistorial($buscar = '')
 	{
-		try {
-			$sql = "SELECT 
-                        c.id_control,
-                        c.id_paciente,
-                        p.cedula,
-                        p.nacionalidad,
-                        p.nombre       AS nombre_paciente,
-                        p.apellido     AS apellido_paciente,
-                        p.estado_salud,
-                        c.diagnostico
-                    FROM  control c
-                    JOIN  paciente p ON c.id_paciente = p.id_paciente";
-			$this->setSQL($sql);
-			return $this->read();
-		} catch (\Exception $e) {
-			return $e;
+		$data = [];
+		$sql = "SELECT COUNT(*) as total FROM  control c JOIN  paciente p ON c.id_paciente = p.id_paciente";
+		if (!empty($buscar)) {
+			$sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+			$data['buscar'] = "%$buscar%";
 		}
-	}
 
-	public function indexPapelera()
-	{
-		try {
-			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido , telefono, direccion, fn, genero FROM paciente WHERE estado = 'DES'";
-			$this->setSQL($sql);
-			return $this->read();
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
+		$this->setSQL($sql);
+		$resultado = $this->search($data, false);
+
+		return $resultado['total'] ?? 0;
 	}
 
 	// ── PRIVADOS (lógica pura de BD) ─────────────────────────────────────────

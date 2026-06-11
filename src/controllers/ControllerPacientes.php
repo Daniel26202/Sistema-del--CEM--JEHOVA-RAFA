@@ -17,36 +17,44 @@ function getPacientesAjax()
 {
 	if (empty($_GET)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
-	// estos parametros ya los envia datatable por defecto
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
 	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
+
+	//mapeada en el mismo orden que la tabla (para ordenar datatable)
+	$columnasMapeadas = ['id_paciente', 'cedula', 'nombre', 'apellido', 'telefono', 'direccion'];
+
+	// capturo el índice de la columna cliqueada
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	// direccion (asc o desc)
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+	//si ordena por el id por defecto
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
+
 	$modelo = new ModeloPacientes();
 
-	// traigo los datos de todos los registros
-	$pacientes = $modelo->index($inicio, $limite, $buscar);
+	$pacientes = $modelo->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
-	// Aqui solamente el total de registros
-	$totalRegistros = $modelo->contarTotalPacientes();
-	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalPacientes($buscar) : $totalRegistros;
+	$totalRegistros = $modelo->contarTotalPacientes('ACT');
+	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalPacientes('ACT', $buscar) : $totalRegistros;
 
-	// devuelvo esta estructuta (la cual es estandar para datatable)
-	$respuesta = [
-		"draw"            => $draw,
-		"recordsTotal"    => (int)$totalRegistros,
-		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $pacientes
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($pacientes) ? $pacientes : []
 	];
 
-	echo json_encode($respuesta);
+	echo json_encode($response);
 	exit;
 }
-
 /* hay q hacerlo con ajax, pero lo hice sencillo, no se si se vaya a pasar a ajax to esto, pa despues del sabado ;) */
 function getHistorialSalud($parametro)
 {
@@ -58,9 +66,41 @@ function getHistorialSalud($parametro)
 
 function getHistorialSaludAjax()
 {
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+
+	//mapeada en el mismo orden que la tabla (para ordenar datatable)
+	$columnasMapeadas = ['id_paciente', 'cedula', 'nombre', 'apellido', 'telefono', 'direccion'];
+
+	// capturo el índice de la columna cliqueada
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	// direccion (asc o desc)
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+	//si ordena por el id por defecto
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
+
 	$modelo = new ModeloPacientes();
 
-	echo json_encode($modelo->indexHistorial());
+	// traigo los datos de todos los registros
+	$pacientes = $modelo->indexHistorial($inicio, $limite, $buscar,$ordenColumna,$ordenDir);
+
+	// Aqui solamente el total de registros
+	$totalRegistros = $modelo->contarTotalHistorial();
+	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalHistorial($buscar) : $totalRegistros;
+
+	// devuelvo esta estructuta (la cual es estandar para datatable)
+	$respuesta = [
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $pacientes
+	];
+
+	echo json_encode($respuesta);
+	exit;
 }
 
 function papeleraPaciente($parametro)
@@ -78,12 +118,43 @@ function papeleraPacienteAjax()
 {
 	if (empty($_GET)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
-	$modelo  = new ModeloPacientes();
 
-	echo json_encode($modelo->indexPapelera());
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+
+	//mapeada en el mismo orden que la tabla (para ordenar datatable)
+	$columnasMapeadas = ['id_paciente', 'cedula', 'nombre', 'apellido', 'telefono', 'direccion'];
+
+	// capturo el índice de la columna cliqueada
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	// direccion (asc o desc)
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+	//si ordena por el id por defecto
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
+
+	$modelo = new ModeloPacientes();
+
+	$pacientes = $modelo->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modelo->contarTotalPacientes('DES');
+	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalPacientes('DES', $buscar) : $totalRegistros;
+
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($pacientes) ? $pacientes : []
+	];
+
+	echo json_encode($response);
+	exit;
 }
 
 
