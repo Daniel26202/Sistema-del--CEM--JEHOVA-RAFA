@@ -1,4 +1,14 @@
-import { executePetition, alertConfirm, alertError, alertSuccess, initDataTable, hasPermision, clearModalEnviar, initLoaderButton, finallyLoaderButton } from "../generic/funtionGeneric.js";
+import {
+  executePetition,
+  alertConfirm,
+  alertError,
+  alertSuccess,
+  initDataTable,
+  hasPermision,
+  clearModalEnviar,
+  initLoaderButton,
+  finallyLoaderButton,
+} from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Patologias";
@@ -10,9 +20,9 @@ const modalAgregar = document.getElementById("modalAgregar");
 const id_rol_global = document.getElementById("id_rol_global").value;
 
 const btnOpenModal = document.getElementById("btnOpenModal");
-const botonModal = document.getElementById('botonModal');
-const exampleModalLabel = document.getElementById('exampleModalLabelPaciente');
-const inputs = modalAgregar.querySelectorAll('.input-validar')
+const botonModal = document.getElementById("botonModal");
+const exampleModalLabel = document.getElementById("exampleModalLabelPaciente");
+const inputs = modalAgregar.querySelectorAll(".input-validar");
 
 //read
 
@@ -24,22 +34,32 @@ const readPathology = async () => {
     if (!urlActual.includes("papelera")) metodo = "patologiasAjax";
     else metodo = "papeleraAjax";
 
-    const result = await executePetition(url + "/" + metodo, "GET");
+    const selector = ".exampleTable";
 
-    // construir html de filas
-    let html = "";
-    result.forEach((element, index) => {
-      html += `<tr>
-                            <td class="text-center">${index + 1}</td>
-                            <td class="text-center">${element.nombre_patologia}</td>
-                            <td class="text-center">
+    // si ya existe DataTable, destrúyela
+    if ($.fn.DataTable.isDataTable(selector)) {
+      $(selector).DataTable().clear().destroy();
+    }
 
-                                    <button class="${urlActual.includes("papelera")
-          ? "d-none"
-          : ""
-        } btn btn-tabla mb-1 btnModalEliminarPatologia btn-dt-tabla btn-eliminar"
+    const columnsPathology = [
+      {
+        data: null,
+        render: function (data, type, row, meta) {
+          // Genera el número de fila real tomando en cuenta la paginación actual
+          return meta.row + meta.settings._iDisplayStart + 1;
+        },
+      },
+      { data: "nombre_patologia" },
+      {
+        data: null,
+        orderable: false,
+        render: function (data, type, row) {
+          return `
+         <button class="${
+           urlActual.includes("papelera") ? "d-none" : ""
+         } btn btn-tabla mb-1 btnModalEliminarPatologia btn-dt-tabla btn-eliminar"
                                     
-                                        data-index="${element.id_patologia}">
+                                        data-index="${row.id_patologia}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                             class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                             <path
@@ -48,9 +68,11 @@ const readPathology = async () => {
                                     </button>
 
                                     
-                    <button" class="${!urlActual.includes("papelera") ? "d-none" : ""
-        } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${element.id_patologia
-        }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
+                    <button" class="${
+                      !urlActual.includes("papelera") ? "d-none" : ""
+                    } btn btn-tabla btn-dt-tabla btnRestablecer"  data-index=${
+                      row.id_patologia
+                    }  title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                         <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
@@ -60,56 +82,59 @@ const readPathology = async () => {
                             </td>
                             
                         </tr>
-`;
-    });
-    const selector = ".exampleTable";
+      `;
+        },
+      },
+    ];
 
-    // si ya existe DataTable, destrúyela
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().clear().destroy();
-    }
+    const asignarEventos = () => {
+      //llamar las funcion de eliminar
+      document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
 
-    // vuelca el html en el tbody
-    document.querySelector(selector + " tbody").innerHTML = html;
-
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
-
-        alertConfirm(
-          "Esta seguro de eliminar la patologia?",
-          deletePathology,
-          data,
-        );
+          alertConfirm(
+            "Esta seguro de eliminar la patologia?",
+            deletePathology,
+            data,
+          );
+        });
       });
-    });
 
-    //llamar a la uncion de restablecer
-    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
-        alertConfirm(
-          "Esta seguro de restablecer la patologia?",
-          restablecerPathology,
-          data,
-        );
+      //llamar a la uncion de restablecer
+      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
+          alertConfirm(
+            "Esta seguro de restablecer la patologia?",
+            restablecerPathology,
+            data,
+          );
+        });
       });
-    });
 
-    //////gestionar persmisos
-    hasPermision(id_rol_global, "Patologias", "guardar", ".btnOpenModal"); //guardar
-    hasPermision(id_rol_global, "Patologias", "eliminar", ".btn-eliminar"); //eliminar
-    hasPermision(id_rol_global, "Patologias", "eliminar", ".btnRestablecer"); //restablecer
+      //////gestionar persmisos
+      hasPermision(id_rol_global, "Patologias", "guardar", ".btnOpenModal"); //guardar
+      hasPermision(id_rol_global, "Patologias", "eliminar", ".btn-eliminar"); //eliminar
+      hasPermision(id_rol_global, "Patologias", "eliminar", ".btnRestablecer"); //restablecer
+    };
 
     // re-inicializa
-    initDataTable(selector);
+    initDataTable(
+      selector,
+      url + "/" + metodo,
+      columnsPathology,
+      (datosServer) => {
+        console.log(datosServer);
+      },
+      asignarEventos,
+    );
   } catch (error) {
     alertError("Error", error);
   }
@@ -117,9 +142,13 @@ const readPathology = async () => {
 //create
 const createPathology = async (form) => {
   try {
-    initLoaderButton(botonModal)
+    initLoaderButton(botonModal);
     const data = new FormData(form);
-    let result = await executePetition(url + "/registrarPatologia", "POST", data);
+    let result = await executePetition(
+      url + "/registrarPatologia",
+      "POST",
+      data,
+    );
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
@@ -129,14 +158,17 @@ const createPathology = async (form) => {
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal)
+    finallyLoaderButton(botonModal);
   }
 };
 
 //delete
 const deletePathology = async (data) => {
   try {
-    const result = await executePetition(url + `/eliminarPatologia/${data}`, "GET");
+    const result = await executePetition(
+      url + `/eliminarPatologia/${data}`,
+      "GET",
+    );
     if (result.ok) {
       alertSuccess(result.message);
 
@@ -150,7 +182,10 @@ const deletePathology = async (data) => {
 //restablecer
 const restablecerPathology = async (data) => {
   try {
-    const result = await executePetition(url + `/restablecerPatologia/${data}`, "GET");
+    const result = await executePetition(
+      url + `/restablecerPatologia/${data}`,
+      "GET",
+    );
     if (result.ok) {
       alertSuccess(result.message);
       readPathology();
@@ -162,9 +197,7 @@ const restablecerPathology = async (data) => {
 
 readPathology();
 
-
 btnOpenModal.addEventListener("click", function () {
-
   //objetos con todos los parametros de la funcion
   const parametros = {
     labelModal: exampleModalLabel,
@@ -184,14 +217,16 @@ if (modalAgregar) {
   modalAgregar.addEventListener("submit", function (e) {
     e.preventDefault();
 
-
     let esValido = verificarFormulario();
     console.log(esValido);
 
     if (esValido) {
       createPathology(this);
     } else {
-      alertError("Error", "Por favor verifique que todos los datos estén correctos.");
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
     }
   });
 }

@@ -16,28 +16,82 @@ class ModeloPatologia extends ModelBase
 
 
     // ── READ ────────────────────────────────────────────────
-    public function mostrarPatologias()
+    public function mostrarPatologias($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_patologia', $ordenDir = 'DESC')
     {
         try {
-            $sql = "SELECT id_patologia,nombre_patologia FROM patologia WHERE estado = 'ACT' ";
+            $sql = "SELECT id_patologia, nombre_patologia FROM patologia WHERE estado = 'ACT'";
+            $data = [];
+
+            if (!empty($buscar)) {
+                $sql .= " AND (nombre_patologia LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            // Concatenamos las variables validadas de orden y añadimos los marcadores de límite
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
-            return $this->read();
+
+            // Insertamos los límites protegiendo el array de parámetros
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $resultado = $this->search($data);
+            return is_array($resultado) ? $resultado : [];
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return [];
         }
     }
 
-    public function mostrarPatologiasEliminadas()
+
+
+    public function mostrarPatologiasEliminadas($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_patologia', $ordenDir = 'DESC')
     {
         try {
-            $sql = "SELECT id_patologia,nombre_patologia FROM patologia WHERE estado = 'DES' ";
+            $sql = "SELECT id_patologia, nombre_patologia FROM patologia WHERE estado = 'DES'";
+            $data = [];
+
+            if (!empty($buscar)) {
+                $sql .= " AND (nombre_patologia LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
-            return $this->read();
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $resultado = $this->search($data);
+            return is_array($resultado) ? $resultado : [];
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return [];
         }
     }
 
+    public function contarTotalPatologias($estado, $buscar = '')
+    {
+        try {
+            $data = ['estado' => $estado];
+            $sql = "SELECT COUNT(*) as total FROM patologia WHERE estado = :estado";
+
+            if (!empty($buscar)) {
+                $sql .= " AND (nombre_patologia LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $this->setSQL($sql);
+            $resultado = $this->search($data, false);
+
+            if (is_array($resultado) && isset($resultado['total'])) {
+                return (int)$resultado['total'];
+            }
+            return 0;
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
+    
     public function nombrePatologia($data)
     {
         try {

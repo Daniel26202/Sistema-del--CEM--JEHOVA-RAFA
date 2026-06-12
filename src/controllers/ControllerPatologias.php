@@ -18,8 +18,34 @@ function patologias($parametro)
 
 function patologiasAjax()
 {
-	$modelo = new ModeloPatologia();
-	echo json_encode($modelo->mostrarPatologias());
+  
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+    $columnasMapeadas = ['id_patologia', 'nombre_patologia'];
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+    
+
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_patologia';
+
+    $modelo = new ModeloPatologia();
+    
+
+    $patologias = $modelo->mostrarPatologias($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+    $totalRegistros = $modelo->contarTotalPatologias('ACT');
+    $totalFiltrados = !empty($buscar) ? $modelo->contarTotalPatologias('ACT', $buscar) : $totalRegistros;
+
+    echo json_encode([
+        "draw"            => $draw,
+        "recordsTotal"    => (int)$totalRegistros,
+        "recordsFiltered" => (int)$totalFiltrados,
+        "data"            => $patologias
+    ]);
+    exit;
 }
 
 function papeleraPatologias($parametro)
@@ -31,15 +57,33 @@ function papeleraPatologias($parametro)
 
 function papeleraAjax()
 {
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	$columnasMapeadas = ['id_patologia', 'nombre_patologia'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_patologia';
 
 	$modelo = new ModeloPatologia();
 
-	echo json_encode($modelo->mostrarPatologiasEliminadas());
+
+	$patologias = $modelo->mostrarPatologiasEliminadas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$totalRegistros = $modelo->contarTotalPatologias('DES');
+	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalPatologias('DES', $buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $patologias
+	]);
+	exit;
 }
 
 //insertar patologia 

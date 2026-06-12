@@ -33,8 +33,38 @@ function citas($parametro)
 
 function citasAjax()
 {
-	$cita = new ModeloCita();
-	echo json_encode($cita->mostrarCita());
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	// Mapeo estricto del orden visual de las columnas en el JS de Citas
+	$columnasMapeadas = ['paciente_cedula', 'paciente_nombre', 'telefono', 'doctor_nombre', 'categoria', 'fecha', 'hora', 'estado'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
+
+	$modeloCita = new ModeloCita();
+	$citas = $modeloCita->mostrarCita($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloCita->contarTotalCitas('pendiente', 'Pendiente');
+	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('pendiente', 'Pendiente', $buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $citas
+	]);
+	exit;
 }
 
 function citasHoy($parametro)
@@ -47,9 +77,38 @@ function citasHoy($parametro)
 
 function citasHoyAjax()
 {
-	$cita = new ModeloCita();
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
 
-	echo json_encode($cita->mostrarCitaHoy());
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	// Mapeo estricto del orden visual de las columnas en el JS de Citas
+	$columnasMapeadas = ['paciente_cedula', 'paciente_nombre', 'telefono', 'doctor_nombre', 'categoria', 'fecha', 'hora', 'estado'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
+
+	$modeloCita = new ModeloCita();
+	$citas = $modeloCita->mostrarCitaHoy($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloCita->contarTotalCitas('hoy', 'Pendiente');
+	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('hoy', 'Pendiente', $buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $citas
+	]);
+	exit;
 }
 function citasP($parametro)
 {
@@ -103,7 +162,7 @@ function apartarCupo()
 	try {
 		$cita = new ModeloCita();
 		$bitacora = new ModeloBitacora();
-		$idUsuario= $_SESSION['id_usuario'];
+		$idUsuario = $_SESSION['id_usuario'];
 
 		// Separamos el string de hora idéntico a como lo haces en guardarCita
 		$horaString = $_POST['hora_string'];
@@ -142,7 +201,6 @@ function apartarCupo()
 			echo json_encode(['ok' => false, 'error' => $reserva]);
 			exit;
 		}
-		
 	} catch (Exception $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -181,7 +239,7 @@ function guardarCita()
 		$cita->setIdDoctor(intval($_POST["id_personal"]));
 
 		$insercion = $cita->guardarCita($idUsuario);
-		
+
 		if (is_array($insercion) && $insercion[0] === "exito") {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha Insertado una  cita");
@@ -217,9 +275,9 @@ function eliminarCita($datos)
 		$cita = new ModeloCita();
 
 		$cita->setIdCita($datos[0]);
-		
+
 		$eliminacion = $cita->eliminarCitaPublic($idUsuario);
-		
+
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha eliminado una  cita");
@@ -257,9 +315,37 @@ function citasRealizadas($parametro)
 
 function citasRealizadasAjax()
 {
-	$cita = new ModeloCita();
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
 
-	echo json_encode($cita->mostrarCitaR());
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	$columnasMapeadas = ['paciente_cedula', 'paciente_nombre', 'telefono', 'doctor_nombre', 'categoria', 'fecha', 'hora', 'estado'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
+
+	$modeloCita = new ModeloCita();
+	$citas = $modeloCita->mostrarCitaR($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloCita->contarTotalCitas('realizada', 'Realizadas');
+	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('realizada', 'Realizadas', $buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $citas
+	]);
+	exit;
 }
 
 function mostrarDoctoresCita($datos)
@@ -308,7 +394,7 @@ function editarCita()
 		$cita->setIdCita($_POST['id_cita']);
 
 		$edicion = $cita->editarCita($idUsuario);
-		
+
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha Modificado una  cita");
@@ -332,24 +418,24 @@ function editarCita()
 }
 function citasHoyCompletasApk()
 {
-    // Limpia el búfer de salida para eliminar cualquier espacio en blanco o eco previo.
-    if (ob_get_length()) ob_clean();
-    header("Content-Type: application/json; charset=UTF-8");
-    // Permite el acceso CORS
-    header("Access-Control-Allow-Origin: *");
-    //  establce la zona horaria 
-    date_default_timezone_set('America/Caracas'); 
-    try {
-        $cita = new ModeloCita();
-        $resultado = $cita->mostrarTodasCitasHoy();
-        
-        echo json_encode($resultado);
-    } catch (\Throwable $e) {
-        http_response_code(500);
-        echo json_encode([
-            "ok" => false,
-            "error" => "Error interno en el servidor: " . $e->getMessage()
-        ]);
-    }
-    exit;
+	// Limpia el búfer de salida para eliminar cualquier espacio en blanco o eco previo.
+	if (ob_get_length()) ob_clean();
+	header("Content-Type: application/json; charset=UTF-8");
+	// Permite el acceso CORS
+	header("Access-Control-Allow-Origin: *");
+	//  establce la zona horaria 
+	date_default_timezone_set('America/Caracas');
+	try {
+		$cita = new ModeloCita();
+		$resultado = $cita->mostrarTodasCitasHoy();
+
+		echo json_encode($resultado);
+	} catch (\Throwable $e) {
+		http_response_code(500);
+		echo json_encode([
+			"ok" => false,
+			"error" => "Error interno en el servidor: " . $e->getMessage()
+		]);
+	}
+	exit;
 }

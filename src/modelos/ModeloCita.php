@@ -79,13 +79,13 @@ class ModeloCita extends ModelBase
 		}
 	}
 
-	public function mostrarCita()
+	public function mostrarCita($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cita', $ordenDir = 'DESC')
 	{
 		try {
 			$sql = 'SELECT c.doctor, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.id_categoria, cs.nombre as categoria,
                         c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
-                        pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
-                        p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
+                        pe.nacionalidad, pe.cedula, pe.nombre as doctor_nombre, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
+                        p.nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
                     FROM bd.serviciomedico sm
                     INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
@@ -94,45 +94,74 @@ class ModeloCita extends ModelBase
                     INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
                     INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
                     INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
-                    WHERE c.estado = "Pendiente" AND c.doctor = psm.personal_id_personal AND c.fecha >= CURRENT_DATE';
+                    WHERE c.estado = "Pendiente" AND c.doctor = psm.personal_id_personal AND p.estado = "ACT" AND c.fecha >= CURRENT_DATE';
+
+			$data = [];
+			if (!empty($buscar)) {
+				$sql .= " AND (p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR c.fecha LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 			$this->setSQL($sql);
-			return $this->read();
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+
+			$resultado = $this->search($data);
+			return is_array($resultado) ? $resultado : [];
 		} catch (\Exception $e) {
-			return $e->getMessage();
+			return [];
 		}
 	}
 
-	public function mostrarCitaHoy()
+	public function mostrarCitaHoy($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cita', $ordenDir = 'DESC')
 	{
 		try {
-			$data = ['fecha' => date("Y-m-d")];
-			$sql  = 'SELECT c.doctor, cs.id_categoria, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria,
-                            c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
-                            pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo, pe.id_especialidad,
-                            p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
-                    FROM bd.serviciomedico sm
-                    INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-                    INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
-                    INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
-                    INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
-                    INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
-                    INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
-                    INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
-                    WHERE c.estado = "Pendiente" AND c.doctor = psm.personal_id_personal AND c.fecha = :fecha';
-			$this->setSQL($sql);
-			return $this->search($data);
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
-
-	public function mostrarCitaR()
-	{
-		try {
-			$sql = "SELECT c.doctor, cs.id_categoria, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.nombre as categoria,
+			try {
+				$sql = 'SELECT c.doctor, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.id_categoria, cs.nombre as categoria,
                         c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
-                        pe.nacionalidad, pe.cedula, pe.nombre as nombre_d, pe.apellido as apellido_d, pe.telefono, u.correo, pe.id_especialidad,
-                        p.nacionalidad, p.cedula, p.nombre AS nombre_p, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
+                        pe.nacionalidad, pe.cedula, pe.nombre as doctor_nombre, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
+                        p.nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
+                    FROM bd.serviciomedico sm
+                    INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+                    INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
+                    INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+                    INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
+                    INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
+                    INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
+                    INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
+                    WHERE c.estado = "Pendiente" AND c.doctor = psm.personal_id_personal AND p.estado = "ACT" AND c.fecha = CURRENT_DATE';
+
+				$data = [];
+				if (!empty($buscar)) {
+					$sql .= " AND (p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR c.fecha LIKE :buscar)";
+					$data['buscar'] = "%$buscar%";
+				}
+
+				$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+				$this->setSQL($sql);
+
+				$data['inicio'] = (int)$inicio;
+				$data['limite'] = (int)$limite;
+
+				$resultado = $this->search($data);
+				return is_array($resultado) ? $resultado : [];
+			} catch (\Exception $e) {
+				return [];
+			}
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+	public function mostrarCitaR($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cita', $ordenDir = 'DESC')
+	{
+		try {
+			$sql = "SELECT c.doctor, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.id_categoria, cs.nombre as categoria,
+                        c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
+                        pe.nacionalidad, pe.cedula, pe.nombre as doctor_nombre, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
+                        p.nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
                     FROM bd.serviciomedico sm
                     INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
@@ -142,10 +171,61 @@ class ModeloCita extends ModelBase
                     INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
                     INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
                     WHERE c.estado = 'Realizadas' AND c.doctor = psm.personal_id_personal";
+			$data = [];
+			if (!empty($buscar)) {
+				$sql .= " AND (p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR c.fecha LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 			$this->setSQL($sql);
-			return $this->read();
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+
+			$resultado = $this->search($data);
+			return is_array($resultado) ? $resultado : [];
 		} catch (\Exception $e) {
 			return $e->getMessage();
+		}
+	}
+
+	public function contarTotalCitas($tipoCita, $estado, $buscar = '')
+	{
+		try {
+			$data = ['estado' => $estado];
+			$sql = "SELECT COUNT(*) as total 
+                FROM bd.serviciomedico sm
+                    INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+                    INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
+                    INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+                    INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
+                    INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
+                    INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
+                    INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
+                WHERE c.estado = :estado AND c.doctor = psm.personal_id_personal";
+			
+			if ($tipoCita == 'hoy') {
+				$sql.= " AND c.fecha = CURRENT_DATE ";
+			}
+			if ($tipoCita == 'pendiente') {
+				$sql .= " AND c.fecha >= CURRENT_DATE ";
+			}
+
+			if (!empty($buscar)) {
+				$sql .= " AND (p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR c.fecha LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$this->setSQL($sql);
+			$resultado = $this->search($data, false);
+
+			if (is_array($resultado) && isset($resultado['total'])) {
+				return (int)$resultado['total'];
+			}
+			return 0;
+		} catch (\Exception $e) {
+			return 0;
 		}
 	}
 
