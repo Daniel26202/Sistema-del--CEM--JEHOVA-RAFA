@@ -9,7 +9,7 @@ class ModeloSintomas extends ModelBase
 
     private $id_sintoma, $nombre;
 
-    public function __construct($dbSystem =true)
+    public function __construct($dbSystem = true)
     {
         parent::__construct($dbSystem);
     }
@@ -25,13 +25,54 @@ class ModeloSintomas extends ModelBase
         }
     }
 
+    public function selectSintomas($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
+    {
+        try {
+            $sql = 'SELECT id_sintomas,nombre FROM sintomas WHERE estado = "ACT"';
+            $data = [];
+
+            if (!empty($buscar)) {
+                $sql .= " AND (nombre LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
+            $this->setSQL($sql);
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+            return $this->search($data);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+
+    public function contarTotalSintomas($estado, $buscar = '')
+    {
+        $data = [
+            'estado' => $estado
+        ];
+        $sql = "SELECT COUNT(*) as total FROM sintomas WHERE estado =:estado";
+        if (!empty($buscar)) {
+            $sql .= " AND (nombre LIKE :buscar )";
+            $data['buscar'] = "%$buscar%";
+        }
+
+        $this->setSQL($sql);
+        $resultado = $this->search($data, false);
+
+        return $resultado['total'] ?? 0;
+    }
+
     public function insertar()
     {
 
         try {
-            $data =[
-                'nombre'=>$this->getNombre(),
-                'estado'=>'ACT'
+            $data = [
+                'nombre' => $this->getNombre(),
+                'estado' => 'ACT'
             ];
             $sql = 'INSERT INTO sintomas(id_sintomas, nombre, estado) VALUES (null,:nombre,:estado);';
             $this->setSQL($sql);
@@ -92,7 +133,7 @@ class ModeloSintomas extends ModelBase
         $this->id_sintoma = (int)$id_sintoma;
     }
 
-    
+
 
     public function setNombre($nombre)
     {
@@ -101,5 +142,4 @@ class ModeloSintomas extends ModelBase
         }
         $this->nombre = $nombre;
     }
-
 }

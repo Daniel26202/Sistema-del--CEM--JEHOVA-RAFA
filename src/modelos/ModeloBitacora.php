@@ -15,17 +15,50 @@ class ModeloBitacora extends ModelBase
         parent::__construct($dbSystem);
     }
 
-    public function consultarBitacora($data = [])
+    public function consultarBitacora($id_usuario, $inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'fecha_hora', $ordenDir = 'DESC')
     {
-        if ($data != []) {
-            $sql = "SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE b.id_usuario =:id_usuario";
-            $this->setSQL($sql);
-            return $this->search($data);
+        $sql = '';
+        $data = [];
+        if ($id_usuario) {
+            $data['id_usuario'] = $id_usuario;
+            $sql = "SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.id_usuario =:id_usuario";
+        } else {
+            $sql = "SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.id_usuario is not null";
         }
 
-        $sql = "SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario ";
+        if (!empty($buscar)) {
+            $sql .= " AND (p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR b.tabla LIKE :buscar OR u.usuario LIKE :buscar OR b.actividad LIKE :buscar OR b.fecha_hora LIKE :buscar)";
+            $data['buscar'] = "%$buscar%";
+        }
+
+        $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
         $this->setSQL($sql);
-        return $this->read();
+
+        $data['inicio'] = (int)$inicio;
+        $data['limite'] = (int)$limite;
+        return $this->search($data);
+    }
+
+    public function contarTotalBitacora($id_usuario, $buscar = '')
+    {
+        $sql ='';
+        $data = [];
+        if ($id_usuario) {
+            $data['id_usuario'] = $id_usuario;
+            $sql = "SELECT COUNT(*) as total FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE b.id_usuario =:id_usuario";
+        } else {
+            $sql = "SELECT COUNT(*) as total FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.id_usuario is not null";
+        }
+        if (!empty($buscar)) {
+            $sql .= " AND (p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR b.tabla LIKE :buscar OR u.usuario LIKE :buscar OR b.actividad LIKE :buscar OR b.fecha_hora LIKE :buscar)";
+            $data['buscar'] = "%$buscar%";
+        }
+
+        $this->setSQL($sql);
+        $resultado = $this->search($data, false);
+
+        return $resultado['total'] ?? 0;
     }
 
 

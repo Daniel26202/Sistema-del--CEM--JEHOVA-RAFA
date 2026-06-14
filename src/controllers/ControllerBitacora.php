@@ -36,16 +36,89 @@ function permisos($id_rol, $permiso, $modulo)
 	return $permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 }
 
-function bitacoraAjax()
+function bitacoraAjaxUser()
 {
-	$modeloBitacora = new ModeloBitacora(false);
-	if (session_status() !== PHP_SESSION_ACTIVE) {
-		session_start();
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
 	}
 
-	if (isset($_GET['vista']) && $_GET['vista'] == 'Admin') {
-		echo json_encode($modeloBitacora->consultarBitacora($_SESSION['id_usuario']));
-	} else {
-		echo json_encode($modeloBitacora->consultarBitacora());
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+
+	//mapeada en el mismo orden que la tabla (para ordenar datatable)
+	$columnasMapeadas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha', 'hora'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'fecha_hora';
+
+
+	$modeloBitacora = new ModeloBitacora(false);
+	$modeloInicio = new ModeloInicio();
+
+	$bitacoras = $modeloBitacora->consultarBitacora($_SESSION['id_usuario'], $inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloBitacora->contarTotalBitacora($_SESSION['id_usuario']);
+	$totalFiltrados = !empty($buscar) ? $modeloBitacora->contarTotalBitacora($_SESSION['id_usuario'], $buscar) : $totalRegistros;
+
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($bitacoras) ? $bitacoras : [],
+	];
+
+	echo json_encode($response);
+	exit;
+}
+
+function bitacoraAjaxAdmin()
+{
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
 	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+
+	//mapeada en el mismo orden que la tabla (para ordenar datatable)
+	$columnasMapeadas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha', 'hora'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'fecha_hora';
+
+
+	$modeloBitacora = new ModeloBitacora(false);
+
+	$bitacoras = $modeloBitacora->consultarBitacora(0,$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloBitacora->contarTotalBitacora(0);
+	$totalFiltrados = !empty($buscar) ? $modeloBitacora->contarTotalBitacora(0,$buscar) : $totalRegistros;
+
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($bitacoras) ? $bitacoras : [],
+	];
+
+	echo json_encode($response);
+	exit;
 }

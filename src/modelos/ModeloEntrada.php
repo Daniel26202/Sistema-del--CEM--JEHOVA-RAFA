@@ -29,16 +29,46 @@ class ModeloEntrada extends ModelBase
 		}
 	}
 
-	public function todasLasEntradas()
+	public function todasLasEntradas($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_entrada', $ordenDir = 'DESC')
 	{
 		try {
 			//se cambio para que muestre las entradas act y que no estan vencidas
-			$consulta = "SELECT * FROM view_detalle_entradas";
-			$this->setSQL($consulta);
-			return $this->read();
+			$sql = "SELECT * FROM view_detalle_entradas WHERE estado ='ACT' ";
+
+			$data = [];
+
+			if (!empty($buscar)) {
+				$sql .= " AND (nombre LIKE :buscar OR proveedor LIKE :buscar OR fechaDeIngreso LIKE :buscar OR fechaDeVencimiento LIKE :buscar OR cantidad_entrada LIKE :buscar OR precio_entrada LIKE :buscar OR numero_de_lote LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
+			$this->setSQL($sql);
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+	public function contarTotalEntradas($estado,$buscar = '')
+	{
+		$data = [
+			'estado'=>$estado
+		];
+		$sql = "SELECT COUNT(*) as total FROM view_detalle_entradas WHERE estado =:estado ";
+		if (!empty($buscar)) {
+			$sql .= " AND (nombre LIKE :buscar OR proveedor LIKE :buscar OR fechaDeIngreso LIKE :buscar OR fechaDeVencimiento LIKE :buscar OR cantidad_entrada LIKE :buscar OR precio_entrada LIKE :buscar OR numero_de_lote LIKE :buscar)";
+			$data['buscar'] = "%$buscar%";
+		}
+
+		$this->setSQL($sql);
+		$resultado = $this->search($data, false);
+
+		return $resultado['total'] ?? 0;
 	}
 
 	public function insumosEntrada()
@@ -68,13 +98,26 @@ class ModeloEntrada extends ModelBase
 	}
 
 
-	public function seleccionarDesactivos()
+	public function seleccionarDesactivos($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_entrada', $ordenDir = 'DESC')
 	{
 		try {
-			$sql = " SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva ,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE  e.estado = 'DES'  ORDER BY ei.fechaDeVencimiento ";
+			//se cambio para que muestre las entradas act y que no estan vencidas
+			$sql = "SELECT * FROM view_detalle_entradas WHERE estado ='DES' ";
+
+			$data = [];
+
+			if (!empty($buscar)) {
+				$sql .= " AND (nombre LIKE :buscar OR proveedor LIKE :buscar OR fechaDeIngreso LIKE :buscar OR fechaDeVencimiento LIKE :buscar OR cantidad_entrada LIKE :buscar OR precio_entrada LIKE :buscar OR numero_de_lote LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
 			$this->setSQL($sql);
-			$consulta = $this->read();
-			return ($consulta) ? $consulta : false;
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -99,12 +142,12 @@ class ModeloEntrada extends ModelBase
 
 			$sql = "call insert_entrada(:id_insumo, :id_proveedor, :fechaDeIngreso, :fechaDeVencimiento, :precio, :cantidad_disponible, :lote)";
 			$this->setSQL($sql);
-			
+
 			$this->storedProcedure($data, false, true);
 
 			$this->commit();
 
-			return ["exito",$data];
+			return ["exito", $data];
 		} catch (\Exception $e) {
 			$this->rollBack();
 			return $e->getMessage();
@@ -173,7 +216,7 @@ class ModeloEntrada extends ModelBase
 		try {
 			$sql = "SELECT id_entrada from entrada where id_entrada=:id_entrada";
 			$this->setSQL($sql);
-			$validar=$this->search(["id_entrada" => $this->getIdEntrada()]);
+			$validar = $this->search(["id_entrada" => $this->getIdEntrada()]);
 			if ($validar == []) {
 				throw new \Exception("Fallo");
 			}

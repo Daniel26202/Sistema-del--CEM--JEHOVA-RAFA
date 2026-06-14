@@ -30,15 +30,50 @@ class ModeloServicios extends ModelBase
             return $e->getMessage();
         }
     }
-    public function mostrarServicios()
+    public function mostrarServicios($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cita', $ordenDir = 'DESC')
     {
         try {
             $sql =  "SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = 'ACT' AND sm.estado = 'ACT'";
 
+            $data = [];
+            if (!empty($buscar)) {
+                $sql .= " AND ( cs.nombre LIKE :buscar OR sm.precio LIKE :buscar OR sm.tipo LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
-            return $this->read();
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $resultado = $this->search($data);
+            return is_array($resultado) ? $resultado : [];
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return [];
+        }
+    }
+
+    public function contarTotalServicios($estado, $buscar = '')
+    {
+        try {
+            $data = ['estado' => $estado];
+            $sql = "SELECT COUNT(*) as total  FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = 'ACT' AND sm.estado =:estado ";
+
+            if (!empty($buscar)) {
+                $sql .= " AND (p.cedula LIKE :buscar OR categoria LIKE :buscar OR sm.precio LIKE :buscar OR sm.estado LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $this->setSQL($sql);
+            $resultado = $this->search($data, false);
+
+            if (is_array($resultado) && isset($resultado['total'])) {
+                return (int)$resultado['total'];
+            }
+            return 0;
+        } catch (\Exception $e) {
+            return 0;
         }
     }
 
@@ -57,12 +92,25 @@ class ModeloServicios extends ModelBase
     }
 
 
-    public function mostrarServiciosDes()
+    public function mostrarServiciosDes($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cita', $ordenDir = 'DESC')
     {
         try {
-            $sql = 'SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria  FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = "DES" OR sm.estado = "DES"';
+            $sql =  "SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = 'ACT' AND sm.estado = 'DES'";
+
+            $data = [];
+            if (!empty($buscar)) {
+                $sql .= " AND ( cs.nombre LIKE :buscar OR sm.precio LIKE :buscar OR sm.tipo LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
-            return $this->read();
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $resultado = $this->search($data);
+            return is_array($resultado) ? $resultado : [];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -240,7 +288,7 @@ class ModeloServicios extends ModelBase
                 throw new \Exception("El id del paciente no existe");
             }
 
-            $sql = "UPDATE servicioMedico SET estado = 'DES' WHERE id_servicioMedico =:id";
+            $sql = "UPDATE serviciomedico SET estado = 'DES' WHERE id_servicioMedico =:id";
             $this->setSQL($sql);
 
             $this->update_logic($data['id_servicioMedico']);
@@ -265,7 +313,7 @@ class ModeloServicios extends ModelBase
                 throw new \Exception("El id del paciente no existe");
             }
 
-            $sql = "UPDATE servicioMedico SET estado = 'ACT' WHERE id_servicioMedico =:id";
+            $sql = "UPDATE serviciomedico SET estado = 'ACT' WHERE id_servicioMedico =:id";
             $this->setSQL($sql);
 
             $this->update_logic($data['id_servicioMedico']);

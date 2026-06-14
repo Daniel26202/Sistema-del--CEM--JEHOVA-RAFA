@@ -33,18 +33,65 @@ function mostrarDiasSemana()
 
 function selectEspcAjax()
 {
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+        exit;
+    }
+
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+    $columnasMapeadas = ['id_especialidad','nombre'];
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_especialidad';
+
     $modeloDoctores = new ModeloDoctores();
-    echo json_encode($modeloDoctores->selectEspecialidad());
+    $especialidades = $modeloDoctores->selectTodasEspecialidades($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+    $totalRegistros = $modeloDoctores->contarTotalEspecialidades('ACT');
+    $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalEspecialidades('ACT', $buscar) : $totalRegistros;
+
+    echo json_encode([
+        "draw"            => $draw,
+        "recordsTotal"    => (int)$totalRegistros,
+        "recordsFiltered" => (int)$totalFiltrados,
+        "data"            => $especialidades
+    ]);
+    exit;
 }
 
 function DoctoresAjax()
 {
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+        exit;
+    }
+
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+    $columnasMapeadas = ['cedula', 'nombre_d', 'apellido', 'telefono', 'correo', 'nombre'];
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_personal';
+
     $modeloDoctores = new ModeloDoctores();
     $modeloServicio = new ModeloServicios();
 
     //variable final
     $result = [];
-    foreach ($modeloDoctores->select() as $doctor) {
+    foreach ($modeloDoctores->select($inicio, $limite, $buscar, $ordenColumna, $ordenDir) as $doctor) {
         $id_personal = $doctor['id_personal'];
 
         //filtrar los horarios para el doctor actual
@@ -89,13 +136,22 @@ function DoctoresAjax()
             'telefono' => $doctor['telefono'],
             'correo' => $doctor['correo'],
             'nombre' => $doctor['nombre'],
-            'id_usuario' => $doctor['usuario'],
+            'id_usuario' => $doctor['id_usuario'],
             'datosHorarios' => $datosHorarios,
             'servicios' => $servicios
         ];
     }
 
-    echo json_encode($result);
+    $totalRegistros = $modeloDoctores->contarTotalDoctores('ACT');
+    $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalDoctores('ACT', $buscar) : $totalRegistros;
+
+    echo json_encode([
+        "draw"            => $draw,
+        "recordsTotal"    => (int)$totalRegistros,
+        "recordsFiltered" => (int)$totalFiltrados,
+        "data"            => $result
+    ]);
+    exit;
 }
 
 function papelera($parametro)
@@ -113,8 +169,89 @@ function papelera($parametro)
 
 function papeleraDoctoresAjax()
 {
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+        exit;
+    }
+
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+    $columnasMapeadas = ['cedula', 'nombre_d', 'apellido', 'telefono', 'correo', 'nombre'];
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_personal';
+
     $modeloDoctores = new ModeloDoctores();
-    echo json_encode($modeloDoctores->desactivos());
+    $modeloServicio = new ModeloServicios();
+
+    $result =[];
+    foreach ($modeloDoctores->desactivos($inicio, $limite, $buscar, $ordenColumna, $ordenDir) as $doctor) {
+        $id_personal = $doctor['id_personal'];
+
+        //filtrar los horarios para el doctor actual
+        $horarioDelDoctor = array_filter($modeloDoctores->selectDiasDoctor(), function ($horario) use ($id_personal) {
+            return $horario['id_personal'] === $id_personal;
+        });
+
+        //filtrar tambien los servicios 
+        $serviciosPorDoctor = array_filter($modeloServicio->mostrarServiciosDoctor(), function ($servicio) use ($id_personal) {
+            return $servicio['id_personal'] === $id_personal;
+        });
+
+        $datosHorarios = [];
+        $servicios = [];
+
+        foreach ($horarioDelDoctor as $hora) {
+            $datosHorarios[] = [
+                'horaDeEntrada' => $hora['horaDeEntrada'],
+                'horaDeSalida' => $hora['horaDeSalida'],
+                'id_horario' => $hora['id_horario'],
+                'diaslaborables' => $hora['diaslaborables'],
+                'id_personal' => $id_personal,
+            ];
+        }
+
+        foreach ($serviciosPorDoctor as $servicio) {
+            $servicios[] = [
+                'id_servicioMedico' => $servicio['id_servicioMedico'],
+                'nombre' => $servicio['nombre_categoria'],
+                'id_personal' => $id_personal,
+            ];
+        }
+
+        //agregamos el resultado
+        $result[] = [
+            'id_personal' => $doctor['id_personal'],
+            'id_especialidad' => $doctor['id_especialidad'],
+            'nacionalidad' => $doctor['nacionalidad'],
+            'cedula' => $doctor['cedula'],
+            'nombre_d' => $doctor['nombre_d'],
+            'apellido' => $doctor['apellido'],
+            'telefono' => $doctor['telefono'],
+            'correo' => $doctor['correo'],
+            'nombre' => $doctor['nombre'],
+            'id_usuario' => $doctor['id_usuario'],
+            'datosHorarios' => $datosHorarios,
+            'servicios' => $servicios
+        ];
+    }
+
+    $totalRegistros = $modeloDoctores->contarTotalDoctores('DES');
+    $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalDoctores('DES', $buscar) : $totalRegistros;
+
+    echo json_encode([
+        "draw"            => $draw,
+        "recordsTotal"    => (int)$totalRegistros,
+        "recordsFiltered" => (int)$totalFiltrados,
+        "data"            => $result
+    ]);
+    exit;
 }
 
 // metodo para mostrar los servicios y los doctores

@@ -50,8 +50,42 @@ function listaNegra() {
 
 function listaNegraAjax()
 {
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+        exit;
+    }
+
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+
+    $columnasMapeadas = ['cedula', 'nombre', 'apellido', 'telefono', 'correo','user'];
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_usuario';
+
     $modeloUsuarios = new ModeloUsuarios();
-    echo json_encode($modeloUsuarios->selectUserInBlackList());
+    $usuarios = $modeloUsuarios->selectUserInBlackList($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+    $totalRegistros = $modeloUsuarios->contarTotalUsuariosBlackList();
+    $totalFiltrados = !empty($buscar) ? $modeloUsuarios->contarTotalUsuariosBlackList($buscar) : $totalRegistros;
+
+    //datos que se le envia al js (esto es estandar de datatable)
+    $response = [
+        "draw" => $draw,
+        "recordsTotal" => $totalRegistros,
+        "recordsFiltered" => $totalFiltrados,
+        "data" => is_array($usuarios) ? $usuarios : []
+    ];
+
+    echo json_encode($response);
+    exit;
 }
 
 function listaUserAjax()

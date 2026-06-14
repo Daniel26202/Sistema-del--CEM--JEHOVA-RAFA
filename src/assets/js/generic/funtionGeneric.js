@@ -204,7 +204,7 @@ export const initDataTable = (
       infoEmpty: "No hay registros disponibles",
       infoFiltered: "(filtrado de _MAX_ registros en total)",
       search: "Buscar:",
-      processing: "Carganfo Registros...",
+      processing: "Cargando Registros...",
     },
   });
 };

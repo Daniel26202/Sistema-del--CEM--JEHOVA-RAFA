@@ -89,41 +89,38 @@ const readServices = async () => {
     let metodo = "";
     let urlActual = window.location.href;
 
-    if (!urlActual.includes("papeleraServicios")) metodo = "serviciosAjax";
+    if (!urlActual.includes("papeleraServicio")) metodo = "serviciosAjax";
     else metodo = "papeleraAjax";
+    const selector = ".exampleTable";
 
-    const result = await executePetition(url + "/" + metodo, "GET");
-    console.log(result);
+    // si ya existe DataTable, destrúyela
+    if ($.fn.DataTable.isDataTable(selector)) {
+      $(selector).DataTable().clear().destroy();
+    }
 
-    // construir html de filas
-    let html = "";
-    result.forEach((element) => {
-      let precioD = element.precio.toFixed(2);
-      let precioB = (element.precio * dolar).toFixed(2);
-
-      html += `<tr>
-                            <td class="">
-                                ${element.categoria}
-                            </td>
-                            <td class="">
-                                ${precioB}  BS
-                            </td>
-                            <td class="">
-                                ${precioD} $
-                            </td>
-                            <td class="">
-                                ${element.tipo}
-                            </td>
-                            <td class="text-center">
-
-                                <!-- Horario Del Doctor -->
+    const columnsServicios = [
+      { data: "categoria" },
+      {
+        data: "precio",
+        render: (data, type, row) => `${(data * dolar).toFixed(2)} BS`,
+      },
+      {
+        data: "precio",
+        render: (data, type, row) => `${(data).toFixed(2)} $`,
+      },
+      { data: "tipo" },
+      {
+        data: null,
+        orderable: false,
+        render: function (data, type, row) {
+          return `<!-- Horario Del Doctor -->
                                 <div class="d-flex justify-content-center">
 
                                         <button class="${urlActual.includes("papelera") ? "d-none" : ""}
                                         btn btns-accion btn-tabla me-2 btnEditarCita botonesEditarSM btnPreciosEditar btn-dt-tabla"
-                                            data-id-categoria="${element.id_categoria}"
-                                            data-id-tabla="modal-exampleEditar${element.id_servicioMedico}" data-bs-toggle="modal" data-bs-target="#modalAgregarServicios" 
-                                            id="btnEditarServicioMedico" data-index=${element.id_servicioMedico}>
+                                            data-id-categoria="${row.id_categoria}"
+                                            data-id-tabla="modal-exampleEditar${row.id_servicioMedico}" data-bs-toggle="modal" data-bs-target="#modalAgregarServicios" 
+                                            id="btnEditarServicioMedico" data-index=${row.id_servicioMedico}>
                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -139,8 +136,8 @@ const readServices = async () => {
                                           urlActual.includes("papelera")
                                             ? "d-none"
                                             : ""
-                                        }  btn btns-accion btn-tabla me-2 btn-dt-tabla btn-eliminar" data-index=${
-                                          element.id_servicioMedico
+                                        }  btn btns-accion btn-tabla me-2 btn-dt-tabla btn-eliminar-servicio" data-index=${
+                                          row.id_servicioMedico
                                         }>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                                 class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -150,113 +147,96 @@ const readServices = async () => {
                                         </button>
 
                                         <button class="${!urlActual.includes("papelera") ? "d-none" : ""} btn btn-tabla btn-dt-tabla btnRestablecer"
-                                        data-index=${element.id_servicioMedico} title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
+                                        data-index=${row.id_servicioMedico} title="Restablecer Paciente" uk-tooltip id="btnModalEliminarPaciente">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                                                 <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
                                             </svg>
                                         </button>
                                         
-                                </div>
-                                
-                        
-                            </td>
-                            
-                        </tr>
+                                </div>`;
+        },
+      },
+    ];
 
-`;
-    });
-
-    const selector = ".exampleTable";
-
-    // si ya existe DataTable, destrúyela
-    if ($.fn.DataTable.isDataTable(selector)) {
-      $(selector).DataTable().clear().destroy();
-    }
-
-    // vuelca el html en el tbody
-    document.querySelector(selector + " tbody").innerHTML = html;
-
-    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-      ele.value = document.getElementById("id_usuario_session").value;
-    });
-
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
-        alertConfirm(
-          "Esta seguro de eliminar el servicio medico?",
-          deleteService,
-          data,
-        );
+    const asignarEventos = () => {
+      //llamar las funcion de eliminar
+      document.querySelectorAll(".btn-eliminar-servicio").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index")
+          ];
+          alertConfirm(
+            "Esta seguro de eliminar el servicio medico?",
+            deleteService,
+            data,
+          );
+        });
       });
-    });
 
-    //llamar a la uncion de restablecer
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
+      //llamar a la uncion de restablecer
+      //llamar las funcion de eliminar
+      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
 
-        alertConfirm(
-          "Esta seguro de restablecer el servicio medico?",
-          restablecerService,
-          data,
-        );
+          alertConfirm(
+            "Esta seguro de restablecer el servicio medico?",
+            restablecerService,
+            data,
+          );
+        });
       });
-    });
 
-    document.querySelectorAll(".botonesEditarSM").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        //objetos con todos los parametros de la funcion
-        let idC = btn.getAttribute("data-id-categoria");
-        let idServicio = btn.getAttribute("data-index");
+      document.querySelectorAll(".botonesEditarSM").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          //objetos con todos los parametros de la funcion
+          let idC = btn.getAttribute("data-id-categoria");
+          let idServicio = btn.getAttribute("data-index");
 
-        const parametros = {
-          labelModal: divTitle,
-          textLabelModal: "Modificar Servicio",
-          form: formularioA,
-          modal: document.querySelector("#modalAgregarServicios"),
-          btnModal: document.querySelector("#botonModalServicio"),
-          btnTextModal: "Modificar",
-          data: {
-            id_categoria: idC,
-            precioBs: parseFloat(btn.closest("tr").children[1].innerText),
-            precioD: parseFloat(btn.closest("tr").children[2].innerText),
-            tipo: btn.closest("tr").children[3].innerText,
-            id: idServicio,
-          },
-          inputs: document.querySelectorAll(".inputs"),
-          cedulaOculta: false,
-          idOculto: document.getElementById("id_servicio"),
-        };
-        console.log(parametros.data.id_categoria);
-        showDataModal(parametros);
+          const parametros = {
+            labelModal: divTitle,
+            textLabelModal: "Modificar Servicio",
+            form: formularioA,
+            modal: document.querySelector("#modalAgregarServicios"),
+            btnModal: document.querySelector("#botonModalServicio"),
+            btnTextModal: "Modificar",
+            data: {
+              id_categoria: idC,
+              precioBs: parseFloat(btn.closest("tr").children[1].innerText),
+              precioD: parseFloat(btn.closest("tr").children[2].innerText),
+              tipo: btn.closest("tr").children[3].innerText,
+              id: idServicio,
+            },
+            inputs: document.querySelectorAll(".inputs"),
+            cedulaOculta: false,
+            idOculto: document.getElementById("id_servicio"),
+          };
+          console.log(parametros.data.id_categoria);
+          showDataModal(parametros);
+        });
       });
-    });
 
-    //////gestionar persmisos
-    hasPermision(id_rol_global, "Servicios", "guardar", ".btnOpenModal"); //guardar
-    hasPermision(
-      id_rol_global,
-      "Servicios",
-      "guardar",
-      ".btnOpenModalCategoria",
-    ); //guardar categoria
+      //////gestionar persmisos
+      hasPermision(id_rol_global, "Servicios", "guardar", ".btnOpenModal"); //guardar
+      hasPermision(
+        id_rol_global,
+        "Servicios",
+        "guardar",
+        ".btnOpenModalCategoria",
+      ); //guardar categoria
 
-    hasPermision(id_rol_global, "Servicios", "eliminar", ".btn-eliminar"); //eliminar
-    hasPermision(id_rol_global, "Servicios", "eliminar", ".btnRestablecer"); //restablecer
-    hasPermision(id_rol_global, "Servicios", "editar", ".botonesEditarSM"); //editar
-
+      hasPermision(id_rol_global, "Servicios", "eliminar", ".btn-eliminar-servicio"); //eliminar
+      hasPermision(id_rol_global, "Servicios", "eliminar", ".btnRestablecer"); //restablecer
+      hasPermision(id_rol_global, "Servicios", "editar", ".botonesEditarSM"); //editar
+    };
+    
     // re-inicializa
-    initDataTable(selector);
+    initDataTable(selector, url + "/" + metodo,columnsServicios,(datosServer)=>{console.log(datosServer);
+    }, asignarEventos);
   } catch (error) {
     alertError("Error", error);
   }
@@ -264,17 +244,19 @@ const readServices = async () => {
 
 //delete
 const deleteService = async (data) => {
+  console.log(data);
+  
   try {
     const result = await executePetition(url + `/eliminar/${data}`, "GET");
     if (result.ok) {
       alertSuccess(result.message);
-
       readServices();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
   }
 };
+
 
 // //restablecer
 const restablecerService = async (data) => {

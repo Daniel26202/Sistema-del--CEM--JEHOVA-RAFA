@@ -22,12 +22,6 @@ class ModeloControl extends ModelBase
 	}
 
 
-	public function consultarPacientes()
-	{
-		$sql = "SELECT p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud FROM paciente p INNER JOIN control c ON c.id_paciente = p.id_paciente WHERE p.estado = 'ACT' GROUP BY cedula";
-		$this->setSQL($sql);
-		return $this->read();
-	}
 
 	public function mostrarControlPacienteA()
 	{

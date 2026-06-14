@@ -30,8 +30,40 @@ function control($parametro)
 
 function returnSistomasPaciente()
 {
+
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	// Mapeo estricto del orden visual de las columnas en el JS de Citas
+	$columnasMapeadas = ['id_sintomas', 'nombre'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_sintomas';
+
 	$modeloSintomas = new ModeloSintomas();
-	echo json_encode($modeloSintomas->selects());
+
+	$sintomas = $modeloSintomas->selectSintomas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloSintomas->contarTotalSintomas('ACT');
+	$totalFiltrados = !empty($buscar) ? $modeloSintomas->contarTotalSintomas('ACT', $buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $sintomas
+	]);
+	exit;
 }
 
 function returnPatologiasPaciente()
@@ -54,10 +86,38 @@ function returnDoctores()
 
 function listPacientesJS()
 {
-	$modeloControl = new ModeloControl();
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
 
-	$respuesta = $modeloControl->consultarPacientes();
-	echo json_encode($respuesta);
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	// Mapeo estricto del orden visual de las columnas en el JS de Citas
+	$columnasMapeadas = ['cedula','nombre','fn','genero'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
+
+	$modeloPaciente = new ModeloPacientes();
+	$pacientes = $modeloPaciente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloPaciente->contarTotalPacientes('ACT');
+	$totalFiltrados = !empty($buscar) ? $modeloPaciente->contarTotalPacientes('ACT',$buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $pacientes
+	]);
+	exit;
 }
 
 function mostrarBusquedaPacientesJS($datos)

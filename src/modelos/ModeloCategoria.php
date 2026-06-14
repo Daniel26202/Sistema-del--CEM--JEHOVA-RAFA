@@ -27,14 +27,49 @@ class ModeloCategoria extends ModelBase
         }
     }
 
-    public function seleccionarTodasLasCategoria()
+    public function seleccionarTodasLasCategoria($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cita', $ordenDir = 'DESC')
+    {
+        $sql='';
+        try {
+            $data = ['estado'=>'ACT'];
+            $sql = "SELECT * FROM categoria_servicio WHERE estado =:estado";
+            if (!empty($buscar)) {
+                $sql .= " AND ( nombre LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+            $this->setSQL($sql);
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $resultado = $this->search($data);
+            return is_array($resultado) ? $resultado : [];
+        } catch (\Exception $e) {
+            return [$e->getMessage(), $sql];
+        }
+    }
+    public function contarTotalCategorias($buscar = '')
     {
         try {
-            $sql = "SELECT * FROM categoria_servicio WHERE estado = 'ACT'";
+            $data = [];
+            $sql = "SELECT COUNT(*) as total  FROM categoria_servicio WHERE estado = 'ACT' ";
+
+            if (!empty($buscar)) {
+                $sql .= " AND (p.cedula LIKE :buscar OR nombre LIKE :buscar OR sm.precio LIKE :buscar OR sm.estado LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
             $this->setSQL($sql);
-            return $this->read();
+            $resultado = $this->search($data, false);
+
+            if (is_array($resultado) && isset($resultado['total'])) {
+                return (int)$resultado['total'];
+            }
+            return 0;
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return 0;
         }
     }
     public function BCategoria($data)

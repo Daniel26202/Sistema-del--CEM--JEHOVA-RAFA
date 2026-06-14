@@ -75,7 +75,7 @@
                         <th class="border-start ">Nombre</th>
                         <th class="border-start ">Apellido</th>
                         <th class="border-start ">Teléfono</th>
-                        <th class="border-start " colspan="2">E_mail</th>
+                        <th class="border-start ">Correo</th>
                         <th class="border-start ">Especialidad</th>
 
                         <th class="border-start ">Acciones</th>
@@ -95,10 +95,10 @@
 
 
 <?php
-if ($vistaActiva != "papelera") {
-    require_once './src/vistas/vistaDoctores/modal/modalAgregarDoctores.php';
-    require_once './src/vistas/vistaDoctores/modal/modalesEspecialidades.php';
-}
+
+require_once './src/vistas/vistaDoctores/modal/modalAgregarDoctores.php';
+require_once './src/vistas/vistaDoctores/modal/modalesEspecialidades.php';
+
 ?>
 
 <script type="text/javascript" src="<?= $urlBase; ?>../src/assets/js/ayudaInteractiva/ayudaDoctores.js"></script>

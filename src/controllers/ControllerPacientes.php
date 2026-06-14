@@ -66,6 +66,12 @@ function getHistorialSalud($parametro)
 
 function getHistorialSaludAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+	
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;

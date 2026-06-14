@@ -36,53 +36,76 @@ const inputs = formAgregarBlackList.querySelectorAll(".inputs");
   //read
   const readBlackList = async () => {
     try {
-      const result = await executePetition(url + "/listaNegraAjax", "GET");
-      console.log(result);
+      // const result = await executePetition(url + "/listaNegraAjax", "GET");
+      // console.log(result);
 
-      // construir html de filas
-      let html = "";
-      result.forEach((element) => {
-        html += `
-                  <tr  class="text-align-left">
-                      <td class="">${element.nacionalidad}-${element.cedula}</td>
-                      <td class="">${element.nombre}</td>
-                      <td class="">${element.apellido}</td>
-                      <td class="">${element.telefono}</td>
-                      <td class="">${element.correo}</td>
-                      <td class="">${element.user}</td>
-                      <td class="text-center">
-                              <button class=" btn btn-tabla btn-dt-tabla mb-1 btnRestablecer" data-index="${element.id_usuario}" title="Restablecer Paciente" uk-tooltip="" id="btnModalEliminarPaciente">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
-                                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
-                                  <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
-                          </div>
-                      </td>
-                  </tr>
-            `;
-      });
+      // // construir html de filas
+      // let html = "";
+      // result.forEach((element) => {
+      //   html += `
+      //             <tr  class="text-align-left">
+      //                 <td class="">${element.nacionalidad}-${element.cedula}</td>
+      //                 <td class="">${element.nombre}</td>
+      //                 <td class="">${element.apellido}</td>
+      //                 <td class="">${element.telefono}</td>
+      //                 <td class="">${element.correo}</td>
+      //                 <td class="">${element.user}</td>
+      //                 <td class="text-center">
+      //                         <button class=" btn btn-tabla btn-dt-tabla mb-1 btnRestablecer" data-index="${element.id_usuario}" title="Restablecer Paciente" uk-tooltip="" id="btnModalEliminarPaciente">
+      //                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
+      //                             <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
+      //                             <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
+      //                     </div>
+      //                 </td>
+      //             </tr>
+      //       `;
+      // });
 
       // si ya existe DataTable, destrúyela
       if ($.fn.DataTable.isDataTable(selector)) {
         $(selector).DataTable().clear().destroy();
       }
 
-      // vuelca el html en el tbody
-      document.querySelector(selector + " tbody").innerHTML = html;
+      const columnsBlackList = [
+        {
+          data: "cedula",
+          render: (data, type, row) => `${row.nacionalidad}-${data}`,
+        },
+        { data: "nombre" },
+        { data: "apellido" },
+        { data: "telefono" },
+        { data: "correo" },
+        { data: "user" },
+        {
+          data: null,
+          orderable: false,
+          render: function (data, type, row) {
+            return `<button class=" btn btn-tabla btn-dt-tabla mb-1 btnRestablecer" data-index="${row.id_usuario}" title="Desbloquear Usuario." uk-tooltip="" id="btnModalEliminarPaciente">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise " viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"></path>
+                                  <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"></path>
+                                </svg>
+                              </button>`;
+          },
+        },
+      ];
 
-      //llamar las funcion de eliminar
-      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const data = [this.getAttribute("data-index")];
-          alertConfirm(
-            "Esta seguro de desbloquear el usuario?",
-            restablecerUsuario,
-            data,
-          );
+      const asignarEventos = () => {
+        //llamar las funcion de eliminar
+        document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const data = [this.getAttribute("data-index")];
+            alertConfirm(
+              "Esta seguro de desbloquear el usuario?",
+              restablecerUsuario,
+              data,
+            );
+          });
         });
-      });
+      };
 
       // re-inicializa
-      initDataTable(selector);
+      initDataTable(selector, url + "/listaNegraAjax",columnsBlackList,(datosServer)=>console.log(datosServer),asignarEventos);
     } catch (error) {
       alertError("Error", error);
     }

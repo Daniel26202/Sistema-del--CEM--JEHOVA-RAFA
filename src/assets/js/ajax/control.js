@@ -70,15 +70,12 @@ const selectorPacietne = ".examplePaciente";
 
 const id_rol_global = document.getElementById("id_rol_global").value;
 
-
 ///categoria///
-const openModalSintomas = document.getElementById(
-  "openModalSintomas",
-);
+const openModalSintomas = document.getElementById("openModalSintomas");
 const inputsSintimo = modalAgregarSintoma.querySelectorAll(".input-validar");
 const exampleModalLabel = document.getElementById("exampleModalLabelPaciente");
-const botonModalSintomas = document.getElementById('botonModalSintomas');
-
+const botonModalSintomas = document.getElementById("botonModalSintomas");
+const btnOpenManagerSintomas = document.getElementById("btnOpenModal");
 let semaforo = 0;
 
 let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
@@ -341,7 +338,6 @@ const returnFragmentControl = async (data, element, index, disabled) => {
 };
 
 const showDataModalEdit = (ele, cedula, id_control) => {
-
   //ocultar patologias y sintomas
   divPatologiasParent.classList.add("d-none");
   divSintomasParent.classList.add("d-none");
@@ -403,54 +399,59 @@ const clickButtonOpenModal = () => {
 //function for add Patients in table
 const readPatients = async () => {
   try {
-    let result = await executePetition(url + "/listPacientesJS", "GET");
-    let html = "";
-    if (result.length > 0) {
-      result.forEach((element) => {
-        html += `
-                          <tr class="row-Patients">
-                              <td>${element.cedula}</td>
-                              <td>${element.nombre}</td>
-                              <td>${element.fn}</td>
-                              <td>${element.genero}</td>
-                          </tr>
-              `;
-      });
-    } else {
-      html = `<tr class="collapse-row">
-                              <td colspan="5">
-                                  <div class="text-center">
-                                      No se encontraron resultados.
-                                  </div>
-                              </td>
-                          </tr>`;
-    }
     // si ya existe DataTable, destrúyela
     if ($.fn.DataTable.isDataTable(selectorPacietne)) {
       $(selectorPacietne).DataTable().clear().destroy();
     }
 
-    tbodyPatients.innerHTML = html;
+    const columnsPacientes = [
+      {
+        data: "cedula",
+        render: function (data, type, row) {
+          return `${row.nacionalidad}-${data}`;
+        },
+      },
+      {
+        data: "nombre",
+        render: function (data, type, row) {
+          return `${data} `;
+        },
+      },
+      { data: "fn" },
+      { data: "genero" },
+    ];
 
-    //Bucle and Event for selected the Patient and the control medico
-    document.querySelectorAll(".row-Patients").forEach((row) => {
-      row.addEventListener("click", function () {
-        let background = row.style.backgroundColor;
-        document.querySelectorAll(".row-Patients").forEach((row) => {
-          row.style.backgroundColor = "";
+    const asignarEventosPacientes = () => {
+      console.log(document.querySelectorAll("#tbody-pacientes tr td"));
+
+      //Bucle and Event for selected the Patient and the control medico
+      document.querySelectorAll("#tbody-pacientes tr").forEach((row) => {
+        row.addEventListener("click", function () {
+          let background = row.style.backgroundColor;
+          document.querySelectorAll("#tbody-pacientes tr").forEach((row) => {
+            row.style.backgroundColor = "";
+          });
+          row.style.backgroundColor =
+            background == "var(--color-primary)" ? "" : "var(--color-primary)";
+
+          let cedula = this.closest("tr").children[0].innerText.slice(2);
+          readControl(cedula);
         });
-        row.style.backgroundColor =
-          background == "var(--color-primary)" ? "" : "var(--color-primary)";
-
-        let cedula = this.closest("tr").children[0].innerText;
-        readControl(cedula);
       });
-    });
 
-    //////gestionar persmisos
-    hasPermision(id_rol_global, "Control", "guardar", ".btnOpenModal"); //guardar
+      //////gestionar persmisos
+      hasPermision(id_rol_global, "Control", "guardar", ".btnOpenModal"); //guardar
+    };
 
-    initDataTable(selectorPacietne);
+    initDataTable(
+      selectorPacietne,
+      `${url}/listPacientesJS`,
+      columnsPacientes,
+      (datosServer) => {
+        console.log(datosServer);
+      },
+      asignarEventosPacientes,
+    );
   } catch (error) {
     alertError("Error", error);
   }
@@ -467,11 +468,11 @@ const readControl = async (cedulaPatient) => {
       url + "/mostrarControlPacientesJS/" + cedulaPatient,
       "GET",
     );
-    console.log("readControl", result);
+    console.log("readControl", result, result[0].length > 0);
     let html = "";
     tbodyControl.innerHTML = ``;
     let index = 0;
-    if (result[0].length > 0)
+    if (result[0].length > 0) {
       for (const element of result[0]) {
         let disabled = "disabled";
         if (index == result[0].length - 1) {
@@ -484,11 +485,11 @@ const readControl = async (cedulaPatient) => {
           index,
           disabled,
         );
-        tbodyControl.parentElement.classList.remove("d-none");
-        textStartControl.classList.add("d-none");
+
         index++;
       }
-    else {
+    } else {
+      html = "";
       html = `<tr class="collapse-row">
                               <td colspan="5">
                                   <div class="text-center">
@@ -498,6 +499,8 @@ const readControl = async (cedulaPatient) => {
                           </tr>`;
     }
 
+    tbodyControl.parentElement.classList.remove("d-none");
+    textStartControl.classList.add("d-none");
     tbodyControl.innerHTML = html;
 
     //aqui es dondeseva a ejecutar la funcionarlidarde llenar con los datosal presionar elboton de editar
@@ -516,7 +519,6 @@ const readControl = async (cedulaPatient) => {
 
     hasPermision(id_rol_global, "Control", "guardar", ".btnOpenModalSin"); //guardar sintomas
     hasPermision(id_rol_global, "Control", "editar", ".buttomEditControl"); //editar
-
   } catch (error) {
     console.error("hola el error es :" + error);
     alertError("Error", error);
@@ -529,7 +531,7 @@ const readControl = async (cedulaPatient) => {
 //function for save the control
 const createControl = async () => {
   try {
-    initLoaderButton(botonModal)
+    initLoaderButton(botonModal);
     const data = new FormData(modalAddControl);
     let result = await executePetition(url + "/insertarControl", "POST", data);
     console.log(result);
@@ -542,14 +544,14 @@ const createControl = async () => {
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal)
+    finallyLoaderButton(botonModal);
   }
 };
 
 //function for update the control
 const updateControl = async () => {
   try {
-    initLoaderButton(botonModal)
+    initLoaderButton(botonModal);
     const data = new FormData(modalAddControl);
     let result = await executePetition(url + "/editarControl", "POST", data);
 
@@ -557,12 +559,11 @@ const updateControl = async () => {
       alertSuccess(result.message);
       modalControlBoots.hide();
       readControl(result.data.cedulaOculta);
-
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal)
+    finallyLoaderButton(botonModal);
   }
 };
 
@@ -572,35 +573,6 @@ const readSintomas = async () => {
     let metodo = "";
     let urlActual = window.location.href;
 
-    const result = await executePetition(
-      url + "/returnSistomasPaciente" + metodo,
-      "GET",
-    );
-
-    // construir html de filas
-    let html = "";
-    result.forEach((element, index) => {
-      html += `<tr>
-                            <td class="text-center">${index + 1}</td>
-                            <td class="text-center">${element.nombre}</td>
-                            <td class="text-center">
-
-                                    <button class="btn btn-tabla mb-1  btn-dt-tabla btn-eliminar"
-                                    
-                                        data-index="${element.id_sintomas}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                            class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                            <path
-                                                d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                        </svg>
-                                    </button>
-
-                        
-                            </td>
-                            
-                        </tr>
-`;
-    });
     const selector = ".exampleTableSintoma";
 
     // si ya existe DataTable, destrúyela
@@ -608,27 +580,61 @@ const readSintomas = async () => {
       $(selector).DataTable().clear().destroy();
     }
 
-    // vuelca el html en el tbody
-    document.querySelector(selector + " tbody").innerHTML = html;
+    const columnsSintomas = [
+      {
+        data: null,
+        render: function (data, type, row, meta) {
+          // Genera el número de fila real tomando en cuenta la paginación actual
+          return meta.row + meta.settings._iDisplayStart + 1;
+        },
+      },
+      { data: "nombre" },
+      {
+        data: null,
+        orderable: false,
+        render: function (data, type, row) {
+          return `
+                 <button class="btn btn-tabla mb-1  btn-dt-tabla btn-eliminar"
+                                    
+                                        data-index="${row.id_sintomas}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                            class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                        </svg>
+                                    </button>
+      `;
+        },
+      },
+    ];
 
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
+    const asignarEventosSintomas = () => {
+      //llamar las funcion de eliminar
+      document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+          ];
 
-        alertConfirm(
-          "Esta seguro de eliminar el sintoma?",
-          deleteSintoma,
-          data,
-        );
+          alertConfirm(
+            "Esta seguro de eliminar el sintoma?",
+            deleteSintoma,
+            data,
+          );
+        });
       });
-    });
+    };
 
     // re-inicializa
-    initDataTable(selector);
+    initDataTable(
+      selector,
+      `${url}/returnSistomasPaciente`,
+      columnsSintomas,
+      (datosServer) => {
+        console.log(datosServer);
+      },
+      asignarEventosSintomas,
+    );
   } catch (error) {
     alertError("Error", error);
   }
@@ -636,7 +642,7 @@ const readSintomas = async () => {
 
 const insertarSintoma = async (data) => {
   try {
-    initLoaderButton(botonModalSintomas)
+    initLoaderButton(botonModalSintomas);
     const data = new FormData(modalAgregarSintoma);
     const result = await executePetition(url + `/agregarSintoma`, "POST", data);
     console.log(result);
@@ -645,12 +651,11 @@ const insertarSintoma = async (data) => {
       modalSintomaBoots.hide();
       modalReadSintomaBoots.show();
       readSintomas();
-
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModalSintomas)
+    finallyLoaderButton(botonModalSintomas);
   }
 };
 
@@ -700,11 +705,11 @@ const createPatients = async (form) => {
 
 readPatients();
 
-readSintomas();
+btnOpenManagerSintomas.addEventListener("click", function () {
+  readSintomas();
+});
 
 openModalSintomas.addEventListener("click", function () {
-
-
   //objetos con todos los parametros de la funcion
   const parametros = {
     labelModal: exampleModalLabel,

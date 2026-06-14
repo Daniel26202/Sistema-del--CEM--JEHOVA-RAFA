@@ -2,33 +2,42 @@ import { executePetition, initDataTable } from "../generic/funtionGeneric.js";
 
 const vistaActiva = document.getElementById("vistaActiva").value;
 const selector = ".example";
+let urlActual = window.location.href;
 
 const readBitacora = async () => {
   try {
-    const result = await executePetition("bitacoraAjax", "GET");
-    console.log(result);
-    let html = "";
-
-    result.forEach((element) => {
-      html += `
-                <tr>
-                    <td class="text-center">${element.nombre} ${element.apellido}</td>
-                    <td class="text-center">${element.usuario}</td>
-                    <td class="text-center">${element.tabla}</td>
-                    <td class="text-center">${element.actividad}</td>
-                    <td class="text-center">${element.fecha_hora.split(" ")[0]}</td>
-                    <td class="text-center">${element.fecha_hora.split(" ")[1]}</td>
-                </tr>
-            `;
-    });
+    let metodo = urlActual.includes("bitacoraUsuario")
+      ? "bitacoraAjaxUser"
+      : "bitacoraAjaxAdmin";
+    const columnsBitacora = [
+      {
+        data: "nombre",
+        render: (data, type, row) => `${data} ${row.apellido}`,
+      },
+      { data: "usuario" },
+      { data: "tabla" },
+      { data: "actividad" },
+      {
+        data: "fecha",
+        render: (data, type, row) => `${row.fecha_hora.split(" ")[0]}`,
+      },
+      {
+        data: "hora",
+        render: (data, type, row) => `${row.fecha_hora.split(" ")[1]}`,
+      },
+    ];
 
     // si ya existe DataTable, destrúyela
     if ($.fn.DataTable.isDataTable(selector)) {
       $(selector).DataTable().clear().destroy();
     }
 
-    document.querySelector(`${selector} tbody`).innerHTML = html;
-    initDataTable(selector);
+    initDataTable(
+      selector,
+      metodo,
+      columnsBitacora,
+      (datosServer) => console.log(datosServer),
+    );
   } catch (error) {
     console.log(error);
   }

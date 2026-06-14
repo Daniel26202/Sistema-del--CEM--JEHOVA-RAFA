@@ -13,8 +13,43 @@ function proveedores($parametro)
 
 function proveedoresAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	$columnasMapeadas = ['nombre', 'rif', 'telefono', 'correo', 'direccion'];
+
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	// direccion (asc o desc)
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_proveedor';
+
 	$modeloProveedores = new ModeloProveedores();
-	echo json_encode($modeloProveedores->consultar());
+	$proveedores = $modeloProveedores->consultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloProveedores->contarTotalProveedores('ACT');
+	$totalFiltrados = !empty($buscar) ? $modeloProveedores->contarTotalProveedores('ACT', $buscar) : $totalRegistros;
+
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($proveedores) ? $proveedores : []
+	];
+
+	echo json_encode($response);
+	exit;
+	
 }
 
 function papelera($parametro)
@@ -24,8 +59,42 @@ function papelera($parametro)
 
 function proveedoresPapeleraAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	$columnasMapeadas = ['nombre', 'rif', 'telefono', 'correo', 'direccion'];
+
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	// direccion (asc o desc)
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_proveedor';
+
 	$modeloProveedores = new ModeloProveedores();
-	echo json_encode($modeloProveedores->papeleraConsultar());
+	$proveedores = $modeloProveedores->papeleraConsultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloProveedores->contarTotalProveedores('DES');
+	$totalFiltrados = !empty($buscar) ? $modeloProveedores->contarTotalProveedores('DES', $buscar) : $totalRegistros;
+
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($proveedores) ? $proveedores : []
+	];
+
+	echo json_encode($response);
+	exit;
 }
 
 function insertar()

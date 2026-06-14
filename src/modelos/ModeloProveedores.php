@@ -15,27 +15,66 @@ class ModeloProveedores extends ModelBase
 	}
 
 	// ── READ ────────────────────────────────────────────────
-	public function consultar()
+	public function consultar($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_proveedor', $ordenDir = 'DESC')
 	{
 		try {
-			$sql = "SELECT id_proveedor,nombre,rif,telefono,direccion FROM proveedor WHERE estado='ACT' ";
+			$sql = "SELECT id_proveedor,nombre,rif,telefono,direccion,email as correo FROM proveedor WHERE estado='ACT' ";
+			$data=[];
+			if (!empty($buscar)) {
+				$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR descripcion LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
 			$this->setSQL($sql);
-			return $this->read();
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
 
 
-	public function papeleraConsultar()
+	public function papeleraConsultar($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_proveedor', $ordenDir = 'DESC')
 	{
 		try {
-			$sql = "SELECT id_proveedor,nombre,rif,telefono,direccion FROM proveedor WHERE estado='DES' ";
+			$sql = "SELECT id_proveedor,nombre,rif,telefono,direccion,email as correo FROM proveedor WHERE estado='DES' ";
+			$data = [];
+			if (!empty($buscar)) {
+				$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR descripcion LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
 			$this->setSQL($sql);
-			return $this->read();
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+
+	public function contarTotalProveedores($estado, $buscar = '')
+	{
+		$data = [
+			'estado' => $estado
+		];
+		$sql = "SELECT COUNT(*) as total FROM proveedor WHERE estado=:estado";
+		if (!empty($buscar)) {
+			$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR descripcion LIKE :buscar)";
+			$data['buscar'] = "%$buscar%";
+		}
+
+		$this->setSQL($sql);
+		$resultado = $this->search($data, false);
+
+		return $resultado['total'] ?? 0;
 	}
 
 	// ── PRIVADOS─────────────────────────────────────────

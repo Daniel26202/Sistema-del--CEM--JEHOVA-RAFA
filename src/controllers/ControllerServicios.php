@@ -35,28 +35,116 @@ function datosServicios($parametro)
 	$modeloCategoria = new ModeloCategoria();
 
 	$doctores = $modeloServicios->mostrarDoctores();
-	$todasLasCategorias = $modeloCategoria->seleccionarTodasLasCategoria();
+	$todasLasCategorias = $modeloCategoria->seleccionarCategoria();
 	echo json_encode(["doctores" => $doctores, "categorias" => $todasLasCategorias]);
 }
 
 function categoriasAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	// mapeo de columnas
+	$columnasMapeadas = ['nombre', 'precio_bolivar', 'precio_dolar', 'tipo'];
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_servicioMedico';
+
 	$modeloCategoria = new ModeloCategoria();
 
-	echo json_encode($modeloCategoria->seleccionarCategoria());
+	$categorias = $modeloCategoria->seleccionarTodasLasCategoria($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloCategoria->contarTotalCategorias();
+	$totalFiltrados = !empty($buscar) ? $modeloCategoria->contarTotalCategorias($buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $categorias
+	]);
+	exit;
 }
 
 function serviciosAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	// mapeo de columnas
+	$columnasMapeadas = ['categoria', 'precio_bolivar', 'precio_dolar', 'tipo'];
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_servicioMedico';
+
 	$modeloServicios = new ModeloServicios();
 
-	echo json_encode($modeloServicios->mostrarServicios());
+	$servicios = $modeloServicios->mostrarServicios($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloServicios->contarTotalServicios('ACT');
+	$totalFiltrados = !empty($buscar) ? $modeloServicios->contarTotalServicios('ACT', $buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $servicios
+	]);
+	exit;
 }
 
 function papeleraAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	// mapeo de columnas
+	$columnasMapeadas = ['categoria', 'precio_bolivar', 'precio_dolar', 'tipo'];
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_servicioMedico';
+
 	$modeloServicios = new ModeloServicios();
-	echo json_encode($modeloServicios->mostrarServiciosDes());
+
+	$servicios = $modeloServicios->mostrarServiciosDes($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloServicios->contarTotalServicios('DES');
+	$totalFiltrados = !empty($buscar) ? $modeloServicios->contarTotalServicios('DES', $buscar) : $totalRegistros;
+
+	echo json_encode([
+		"draw"            => $draw,
+		"recordsTotal"    => (int)$totalRegistros,
+		"recordsFiltered" => (int)$totalFiltrados,
+		"data"            => $servicios
+	]);
+	exit;
 }
 
 function guardar()
@@ -117,7 +205,6 @@ function eliminar($datos)
 		exit;
 	}
 
-
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
 		$servicio = new ModeloServicios();
@@ -130,7 +217,6 @@ function eliminar($datos)
 		$bitacora->setTabla("servicio Medico");
 
 		$eliminacion = $servicio->eliminarServicio($idUsuario);
-
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$bitacora->insertarBitacora();
@@ -192,7 +278,7 @@ function editar()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-	
+
 		$servicio = new ModeloServicios();
 		$bitacora = new ModeloBitacora();
 

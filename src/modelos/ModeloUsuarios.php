@@ -57,17 +57,46 @@ class ModeloUsuarios extends ModelBase
         }
     }
 
-    public function selectUserInBlackList()
+    public function selectUserInBlackList($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_usuario', $ordenDir = 'DESC')
     {
         try {
             $sql = 'SELECT u.usuario as user, u.id_usuario, u.id_rol, u.imagen, u.correo, p.id_personal,p.nacionalidad,p.cedula,p.nombre,p.apellido,p.telefono FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= "BLOQUED" ';
+
+            $data = [];
+
+            if (!empty($buscar)) {
+                $sql .= " AND (u.usuario LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR p.telefono LIKE :buscar OR u.correo LIKE :buscar OR p.cedula LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
             $this->setSQL($sql);
-            return $this->read();
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+            return $this->search($data);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
+    public function contarTotalUsuariosBlackList($buscar = '')
+    {
+        $data = [
+        ];
+        $sql = "SELECT COUNT(*) as total  FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= 'BLOQUED' ";
+
+        if (!empty($buscar)) {
+            $sql .= " AND (u.usuario LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR p.telefono LIKE :buscar OR u.correo LIKE :buscar OR p.cedula LIKE :buscar)";
+            $data['buscar'] = "%$buscar%";
+        }
+
+        $this->setSQL($sql);
+        $resultado = $this->search($data, false);
+
+        return $resultado['total'] ?? 0;
+    }
 
     //validar usuario
     private function validarUsuario($data, $returnUsuario = false)

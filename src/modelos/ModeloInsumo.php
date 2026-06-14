@@ -41,18 +41,46 @@ class ModeloInsumo extends ModelBase
 	}
 
 
-	public function InsumosVencidos()
+	public function InsumosVencidos($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
 	{
 		try {
 			$sql = "SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE";
+
+			$data = [];
+
+			if (!empty($buscar)) {
+				$sql .= " AND (i.nombre LIKE :buscar OR p.nombre LIKE :buscar OR ei.fechaDeVencimiento LIKE :buscar OR ei.fechaDeIngreso LIKE :buscar OR ei.cantidad_entrada LIKE :buscar OR ei.precio LIKE :buscar OR e.numero_de_lote LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
 			$this->setSQL($sql);
-			$consulta = $this->read();
-			return $consulta;
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
 
+	public function contarTotalInsumosVencidos($buscar = '')
+	{
+		$data = [];
+		
+		$sql = "SELECT COUNT(*) as total  FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE";
+
+		if (!empty($buscar)) {
+			$sql .= " AND (i.nombre LIKE :buscar OR p.nombre LIKE :buscar OR ei.fechaDeVencimiento LIKE :buscar OR ei.fechaDeIngreso LIKE :buscar OR ei.cantidad_entrada LIKE :buscar OR ei.precio LIKE :buscar OR e.numero_de_lote LIKE :buscar)";
+			$data['buscar'] = "%$buscar%";
+		}
+
+		$this->setSQL($sql);
+		$resultado = $this->search($data, false);
+
+		return $resultado['total'] ?? 0;
+	}
 
 	public function insumosInfo()
 	{

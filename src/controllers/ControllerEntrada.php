@@ -21,8 +21,43 @@ function entrada($parametro)
 
 function entradasAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	$columnasMapeadas = ['nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
+
 	$modeloEntrada = new ModeloEntrada();
-	echo json_encode($modeloEntrada->todasLasEntradas());
+
+	$entradas = $modeloEntrada->todasLasEntradas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloEntrada->contarTotalEntradas('ACT');
+	$totalFiltrados = !empty($buscar) ? $modeloEntrada->contarTotalEntradas('ACT',$buscar) : $totalRegistros;
+
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($entradas) ? $entradas : []
+	];
+
+	echo json_encode($response);
+	exit;
+
 }
 
 function papelera($parametro)
@@ -34,8 +69,42 @@ function papelera($parametro)
 
 function entradasPapeleraAjax()
 {
+	if (empty($_GET)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+		exit;
+	}
+
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+	$columnasMapeadas = ['nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
+
 	$modeloEntrada = new ModeloEntrada();
-	echo json_encode($modeloEntrada->seleccionarDesactivos());
+
+	$entradas = $modeloEntrada->seleccionarDesactivos($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$totalRegistros = $modeloEntrada->contarTotalEntradas('DES');
+	$totalFiltrados = !empty($buscar) ? $modeloEntrada->contarTotalEntradas('DES', $buscar) : $totalRegistros;
+
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($entradas) ? $entradas : []
+	];
+
+	echo json_encode($response);
+	exit;
 }
 
 function restablecerEntrada($datos)
