@@ -309,7 +309,7 @@ if (!empty($parametro)) {
 					Mantenimiento
 				</a>
 
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacora" uk-tooltip="Bitacora">Bitácora</a>
+				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacoraUsuario" uk-tooltip="Bitacora">Bitácora</a>
 
 				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/listaNegra" uk-tooltip="Lista Negra">Lista Negra</a>
 

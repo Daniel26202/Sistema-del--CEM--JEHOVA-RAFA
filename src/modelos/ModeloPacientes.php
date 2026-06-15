@@ -3,8 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
-
 
 class ModeloPacientes extends ModelBase
 {
@@ -19,7 +17,7 @@ class ModeloPacientes extends ModelBase
 	public function index($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
 	{
 		try {
-		
+
 			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero 
                 FROM paciente 
                 WHERE estado = 'ACT'";
@@ -307,8 +305,6 @@ class ModeloPacientes extends ModelBase
 			$this->genero
 		]);
 
-		(new RateLimiter())->verificar('guardar_paciente_' . $idUsuario, 5, 1);
-
 		return $this->insertar();
 	}
 
@@ -329,8 +325,6 @@ class ModeloPacientes extends ModelBase
 			$this->genero
 		]);
 
-		(new RateLimiter())->verificar('editar_paciente_' . $idUsuario, 5, 1);
-
 		return $this->update_paciente();
 	}
 
@@ -340,8 +334,6 @@ class ModeloPacientes extends ModelBase
 
 		$this->validarCamposObligatorios([$this->id_paciente]);
 
-		(new RateLimiter())->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
-
 		return $this->delete_paciente();
 	}
 
@@ -350,9 +342,6 @@ class ModeloPacientes extends ModelBase
 		$this->validarSesion($idUsuario);
 
 		$this->validarCamposObligatorios([$this->id_paciente]);
-
-		(new RateLimiter())->verificar('restablecer_paciente_' . $idUsuario, 5, 1);
-
 		return $this->restablecer();
 	}
 

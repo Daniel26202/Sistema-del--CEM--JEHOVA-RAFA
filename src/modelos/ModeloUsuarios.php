@@ -3,7 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
 
 
 class ModeloUsuarios extends ModelBase
@@ -353,7 +352,6 @@ class ModeloUsuarios extends ModelBase
         $this->validarCamposObligatorios([
             $this->id_usuario
         ], ' al agregar un usuario en la lista negra');
-        (new RateLimiter())->verificar('blacklist_usuario_' . $idUsuario, 5, 1);
         return $this->userBlackList();
     }
 
@@ -363,7 +361,6 @@ class ModeloUsuarios extends ModelBase
         $this->validarCamposObligatorios([
             $this->id_usuario
         ], ' al quitar un usuario de la lista negra');
-        (new RateLimiter())->verificar('remover_blackList_usuario_' . $idUsuario, 5, 1);
         return $this->removeBlackList();
     }
 
@@ -375,7 +372,6 @@ class ModeloUsuarios extends ModelBase
             $this->usuario,
             $this->id_usuario
         ], ' al editar un usuario');
-        (new RateLimiter())->verificar('editar_usuario_' . $idUsuario, 5, 1);
         return $this->updateUsuario();
     }
 
@@ -385,7 +381,6 @@ class ModeloUsuarios extends ModelBase
         $this->validarCamposObligatorios([
             $this->id_usuario
         ], ' al eliminar un usuario');
-        (new RateLimiter())->verificar('eliminar_usuario_' . $idUsuario, 5, 1);
         return $this->eliminacionLogica();
     }
 
@@ -399,7 +394,6 @@ class ModeloUsuarios extends ModelBase
             $this->password,
             $this->id_rol
         ], ' al guardar un usuario');
-        (new RateLimiter())->verificar('guardar_usuario_' . $idUsuario, 5, 1);
         return $this->agregar();
     }
 

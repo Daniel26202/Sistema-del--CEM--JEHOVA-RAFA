@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 17-05-2026 a las 15:16:39
--- Versión del servidor: 10.4.32-MariaDB
+-- Tiempo de generación: 15-06-2026 a las 23:38:05
+-- Versión del servidor: 10.4.32-MariaDB-log
 -- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -16,9 +16,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
-
-CREATE DATABASE IF NOT EXISTS `segurity` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `segurity`;
 
 --
 -- Base de datos: `segurity`
@@ -871,21 +868,249 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (829, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 11:06:01'),
 (830, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 11:06:12'),
 (831, 1, 'cerrar session', 'Ha cerrado la session', '2026-05-17 11:06:31'),
-(832, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 11:06:33');
+(832, 1, 'inicio sesion', 'Ha iniciado una session', '2026-05-17 11:06:33'),
+(833, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-02 20:56:56'),
+(834, 1, 'mantenimiento', 'Se ha restablecido la base de datos local desde el archivo (full_bd-2026-06-02_20-57-59.zip)', '2026-06-02 20:58:20'),
+(835, 1, 'insumo', 'Ha Insertado un insumo', '2026-06-02 20:59:36'),
+(836, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-03 10:53:24'),
+(837, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-03 10:53:26'),
+(838, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 16:41:35'),
+(839, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 16:48:01'),
+(840, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 16:48:08'),
+(841, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 16:53:03'),
+(842, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 16:53:38'),
+(843, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:09:20'),
+(844, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:10:16'),
+(845, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:20:59'),
+(846, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:31:39'),
+(847, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:31:54'),
+(848, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:41:23'),
+(849, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:46:50'),
+(850, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:53:10'),
+(851, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:54:00'),
+(852, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 17:58:25'),
+(853, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 18:01:55'),
+(854, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 18:02:43'),
+(855, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 18:03:33'),
+(856, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 18:03:41'),
+(857, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 18:06:55'),
+(858, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 18:06:57'),
+(859, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-03 21:17:00'),
+(860, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-03 21:23:39'),
+(861, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-03 21:23:45'),
+(862, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-03 22:11:00'),
+(863, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 22:14:04'),
+(864, 1, 'cita', 'Ha Insertado una  cita', '2026-06-03 22:14:06'),
+(865, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-06-03 22:21:16'),
+(866, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-06-03 22:33:00'),
+(867, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-06-03 22:33:04'),
+(868, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-03 22:47:41'),
+(869, 1, 'insumo', 'Ha Insertado un insumo', '2026-06-03 22:51:02'),
+(870, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-04 10:02:08'),
+(871, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-04 10:02:11'),
+(872, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-04 13:12:16'),
+(873, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-04 13:12:20'),
+(874, 1, 'mantenimiento', 'Se ha realizado un respaldo (completo) manual de la base de datos', '2026-06-04 13:24:45'),
+(875, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-04 13:47:41'),
+(876, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-04 13:48:29'),
+(877, 1, 'insumo', 'Ha Insertado un insumo', '2026-06-04 15:04:29'),
+(878, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-04 20:15:18'),
+(879, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-04 20:15:25'),
+(880, 1, 'Perfil', 'Ha modificado un perfil', '2026-06-04 20:18:02'),
+(881, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-06-04 20:24:26'),
+(882, 1, 'paciente', 'Ha Insertado un nuevo paciente', '2026-06-04 20:48:20'),
+(883, 1, 'cita', 'Ha Insertado una  cita', '2026-06-04 20:54:21'),
+(884, 1, 'cita', 'Ha Insertado una  cita', '2026-06-04 20:54:34'),
+(885, 1, 'cita', 'Ha Insertado una  cita', '2026-06-04 20:55:03'),
+(886, 1, 'cita', 'Ha Insertado una  cita', '2026-06-04 20:55:05'),
+(887, 1, 'cita', 'Ha Modificado una  cita', '2026-06-04 20:55:25'),
+(888, 1, 'sintomas', 'Ha eliminado un  sintoma', '2026-06-04 21:13:52'),
+(889, 1, 'usuario', 'Ha modificado un  usuario', '2026-06-04 21:14:42'),
+(890, 1, 'usuario', 'Ha modificado un  usuario', '2026-06-04 21:21:51'),
+(891, 1, 'usuario', 'Ha modificado un  usuario', '2026-06-04 21:22:38'),
+(892, 1, 'usuario', 'Ha modificado un  usuario', '2026-06-04 21:24:09'),
+(893, 1, 'usuario', 'Ha modificado un  usuario', '2026-06-04 21:24:21'),
+(894, 1, 'usuario', 'Ha modificado un  usuario', '2026-06-04 21:24:55'),
+(895, 1, 'usuario', 'Ha modificado un  usuario', '2026-06-04 21:34:36'),
+(896, 1, 'usuario', 'Ha modificado un  usuario', '2026-06-04 21:34:57'),
+(897, 1, 'Roles', 'Ha Modificado un rol', '2026-06-04 22:02:37'),
+(898, 1, 'Roles', 'Ha Modificado un rol', '2026-06-04 22:02:50'),
+(899, 1, 'insumo', 'Ha Insertado un insumo', '2026-06-04 22:31:25'),
+(900, 1, 'insumo', 'Ha Insertado un insumo', '2026-06-04 22:35:09'),
+(901, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-05 01:10:51'),
+(902, 1, 'mantenimiento', 'Se ha restablecido la base de datos local desde el archivo (full_bd-2026-06-05_01-17-28.zip)', '2026-06-05 01:25:59'),
+(903, 1, 'mantenimiento', 'Se ha realizado un respaldo (completo) manual de la base de datos', '2026-06-05 01:26:07'),
+(904, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-06-05 01:28:07'),
+(905, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-06 18:49:26'),
+(906, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-06 18:49:31'),
+(907, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-06 18:50:25'),
+(908, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-07 10:02:18'),
+(909, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-07 11:20:23'),
+(910, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-07 11:24:34'),
+(911, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-07 11:25:07'),
+(912, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-07 11:25:29'),
+(913, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-07 11:26:18'),
+(914, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-07 17:27:48'),
+(915, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-08 19:42:08'),
+(916, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-08 20:43:17'),
+(917, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-08 20:45:05'),
+(918, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-08 20:45:47'),
+(919, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-08 21:10:46'),
+(920, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-09 09:30:36'),
+(921, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-09 10:08:00'),
+(922, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-09 10:09:02'),
+(923, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-09 10:10:05'),
+(924, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-09 11:21:41'),
+(925, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-09 16:40:22'),
+(926, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-09 16:48:12'),
+(927, 1, 'paciente', 'Ha modificado un paciente', '2026-06-09 16:53:34'),
+(928, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-09 17:33:39'),
+(929, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-09 18:06:28'),
+(930, 1, 'factura', 'Ha facturado servicios y/o insumos', '2026-06-09 18:07:04'),
+(931, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-10 15:54:35'),
+(932, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-10 16:29:22'),
+(933, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-10 17:11:36'),
+(934, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-11 18:24:56'),
+(935, 1, 'cliente', 'Ha eliminado un cliente', '2026-06-11 19:08:55'),
+(936, 1, 'cliente', 'Ha restablecido un cliente', '2026-06-11 19:09:12'),
+(937, 1, 'patologia', 'Ha eliminado una  patologia', '2026-06-11 20:20:39'),
+(938, 1, 'patologia', 'Ha restablecido una  patologia', '2026-06-11 20:23:47'),
+(939, 1, 'patologia', 'Ha Insertado un nuevo patologia', '2026-06-11 20:24:00'),
+(940, 1, 'patologia', 'Ha eliminado una  patologia', '2026-06-11 20:24:09'),
+(941, 1, 'patologia', 'Ha eliminado una  patologia', '2026-06-11 20:26:20'),
+(942, 1, 'cita', 'Ha Insertado una  cita', '2026-06-11 21:11:57'),
+(943, 1, 'cita', 'Ha Insertado una  cita', '2026-06-11 21:11:58'),
+(944, 1, 'cita', 'Ha Modificado una  cita', '2026-06-11 21:20:36'),
+(945, 1, 'cita', 'Ha Modificado una  cita', '2026-06-11 21:20:43'),
+(946, 1, 'cita', 'Ha eliminado una  cita', '2026-06-11 21:20:57'),
+(947, 1, 'cita', 'Ha eliminado una  cita', '2026-06-11 21:42:01'),
+(948, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-12 19:05:37'),
+(949, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-12 19:32:57'),
+(950, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-12 19:33:00'),
+(951, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-12 19:33:15'),
+(952, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-12 19:34:08'),
+(953, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-12 19:34:12'),
+(954, 1, 'servicio Medico', 'Ha modificado un servicio medico', '2026-06-12 19:35:04'),
+(955, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-13 10:23:06'),
+(956, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:24:02'),
+(957, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:24:39'),
+(958, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-13 10:25:05'),
+(959, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:26:57'),
+(960, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:35:33'),
+(961, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:36:25'),
+(962, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:36:39'),
+(963, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:37:41'),
+(964, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:37:54'),
+(965, 1, 'servicio Medico', 'Ha modificado un servicio medico', '2026-06-13 10:38:07'),
+(966, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:39:16'),
+(967, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:39:25'),
+(968, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:40:39'),
+(969, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 10:40:58'),
+(970, 1, 'servicio Medico', 'Ha eliminado un servicio medico', '2026-06-13 10:45:47'),
+(971, 1, 'servicio Medico', 'Ha eliminado un servicio medico', '2026-06-13 10:45:52'),
+(972, 1, 'servicio Medico', 'Ha restablecido un servicio medico', '2026-06-13 10:55:58'),
+(973, 1, 'Categoria de servicio medico', 'Ha eliminado una categoria', '2026-06-13 11:24:39'),
+(974, 1, 'Categoria de servicio medico', 'Ha Insertado una nueva  categoria', '2026-06-13 11:28:29'),
+(975, 1, 'Categoria de servicio medico', 'Ha Insertado una nueva  categoria', '2026-06-13 11:28:35'),
+(976, 1, 'Categoria de servicio medico', 'Ha Insertado una nueva  categoria', '2026-06-13 11:28:54'),
+(977, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-13 16:46:29'),
+(978, 1, 'doctor', 'Ha restablecido un doctor', '2026-06-13 18:49:08'),
+(979, 1, 'doctor', 'Ha eliminado un doctor', '2026-06-13 18:49:33'),
+(980, 1, 'especialidad', 'Ha eliminado una especialidad', '2026-06-13 20:13:30'),
+(981, 1, 'sintomas', 'Ha eliminado un  sintoma', '2026-06-13 21:42:12'),
+(982, 1, 'insumo', 'Ha Insertado un insumo', '2026-06-13 21:43:08'),
+(983, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-14 09:40:34'),
+(984, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-14 09:40:56'),
+(985, 1, 'entrada', 'Ha eliminado una entrada', '2026-06-14 09:58:56'),
+(986, 1, 'entrada', 'Ha restablecido una entrada', '2026-06-14 10:08:30'),
+(987, 1, 'entrada', 'Ha modificado una entrada', '2026-06-14 10:08:44'),
+(988, 1, 'proveedor', 'Ha eliminado un proveedor', '2026-06-14 10:31:41'),
+(989, 1, 'proveedor', 'Ha restablecido un proveedor', '2026-06-14 10:31:46'),
+(990, 1, 'paciente', 'Ha eliminado un  paciente', '2026-06-14 11:45:28'),
+(991, 1, 'usuario', 'Ha agregado a la lista negra a un usuario', '2026-06-14 12:00:33'),
+(992, 1, 'usuario', 'Ha quitado un  usuario de la lista negra', '2026-06-14 12:02:49'),
+(993, 1, 'Perfil', 'Ha modificado un perfil', '2026-06-14 12:03:38'),
+(994, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-14 12:04:19'),
+(995, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-14 16:12:39'),
+(996, 1, 'insumo', 'Ha Insertado un insumo', '2026-06-14 16:13:51'),
+(997, 1, 'doctor', 'Ha Insertado un nuevo doctor', '2026-06-14 16:54:15'),
+(998, 55, 'inicio sesion', 'Ha iniciado una session', '2026-06-14 16:54:55'),
+(999, 55, 'cerrar session', 'Ha cerrado la session', '2026-06-14 17:19:53'),
+(1000, 55, 'inicio sesion', 'Ha iniciado una session', '2026-06-14 17:19:56'),
+(1001, 55, 'Perfil', 'Ha modificado un perfil', '2026-06-14 17:20:13'),
+(1002, 55, 'inicio sesion', 'Ha iniciado una session', '2026-06-15 16:07:21'),
+(1003, 55, 'cerrar session', 'Ha cerrado la session', '2026-06-15 16:07:28'),
+(1004, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-15 16:07:34'),
+(1005, 55, 'inicio sesion', 'Ha iniciado una session', '2026-06-15 16:56:13'),
+(1006, 55, 'cerrar session', 'Ha cerrado la session', '2026-06-15 17:09:10'),
+(1007, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-15 17:09:19'),
+(1008, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-15 17:33:41'),
+(1009, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-15 17:36:11'),
+(1010, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-15 17:36:42');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `intentos_login`
+-- Estructura de tabla para la tabla `control_rate_limit`
 --
 
-CREATE TABLE `intentos_login` (
-  `ip_usuario` varchar(45) NOT NULL,
-  `id_usuario` int(11) DEFAULT NULL,
-  `cantidad_intentos` int(11) DEFAULT 1,
-  `ultimo_intento` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `bloqueado` tinyint(1) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `control_rate_limit` (
+  `id` int(11) NOT NULL,
+  `ip` varchar(50) NOT NULL,
+  `endpoind` varchar(50) NOT NULL,
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `control_rate_limit`
+--
+
+INSERT INTO `control_rate_limit` (`id`, `ip`, `endpoind`, `creado_en`) VALUES
+(1, '::1', 'factura', '2026-06-15 21:33:24'),
+(2, '::1', 'mostrarServicios', '2026-06-15 21:33:25'),
+(3, '::1', 'mostrarInsumos', '2026-06-15 21:33:25'),
+(4, '::1', 'mostrarMetodosDePago', '2026-06-15 21:33:25'),
+(5, '::1', 'valorDolar', '2026-06-15 21:33:25'),
+(6, '::1', 'inicio', '2026-06-15 21:33:41'),
+(7, '::1', 'mostrarIniciarSesion', '2026-06-15 21:33:41'),
+(8, '::1', 'assets', '2026-06-15 21:33:41'),
+(9, '::1', 'error', '2026-06-15 21:33:41'),
+(10, '::1', 'getPacientes', '2026-06-15 21:35:44'),
+(11, '::1', 'mostrarIniciarSesion', '2026-06-15 21:35:44'),
+(12, '::1', 'iniciarSesion', '2026-06-15 21:35:59'),
+(13, '::1', 'iniciarSesion', '2026-06-15 21:36:11'),
+(14, '::1', 'inicio', '2026-06-15 21:36:12'),
+(15, '::1', 'assets', '2026-06-15 21:36:12'),
+(16, '::1', 'assets', '2026-06-15 21:36:12'),
+(17, '::1', 'assets', '2026-06-15 21:36:12'),
+(18, '::1', 'assets', '2026-06-15 21:36:12'),
+(19, '::1', 'error', '2026-06-15 21:36:12'),
+(20, '::1', 'error', '2026-06-15 21:36:12'),
+(21, '::1', 'error', '2026-06-15 21:36:12'),
+(22, '::1', 'error', '2026-06-15 21:36:12'),
+(23, '::1', 'diasConMasCitas', '2026-06-15 21:36:12'),
+(24, '::1', 'servicios', '2026-06-15 21:36:12'),
+(25, '::1', 'citas', '2026-06-15 21:36:12'),
+(26, '::1', 'pacientes_hospitalizados', '2026-06-15 21:36:12'),
+(27, '::1', 'citasDeHoy', '2026-06-15 21:36:12'),
+(28, '::1', 'especialidades_solicitadas', '2026-06-15 21:36:12'),
+(29, '::1', 'sintomas_comunes', '2026-06-15 21:36:12'),
+(30, '::1', 'retornarDoctores', '2026-06-15 21:36:12'),
+(31, '::1', 'valorDolar', '2026-06-15 21:36:12'),
+(32, '::1', 'todos_los_sintomas', '2026-06-15 21:36:12'),
+(33, '::1', 'todas_las_especialidades', '2026-06-15 21:36:12'),
+(34, '::1', 'getPacientes', '2026-06-15 21:36:16'),
+(35, '::1', 'getPacientesAjax', '2026-06-15 21:36:16'),
+(36, '::1', 'valorDolar', '2026-06-15 21:36:16'),
+(37, '::1', 'hasPermision', '2026-06-15 21:36:16'),
+(38, '::1', 'hasPermision', '2026-06-15 21:36:16'),
+(39, '::1', 'hasPermision', '2026-06-15 21:36:16'),
+(40, '::1', 'hasPermision', '2026-06-15 21:36:16'),
+(41, '::1', 'inicio', '2026-06-15 21:36:42'),
+(42, '::1', 'mostrarIniciarSesion', '2026-06-15 21:36:42'),
+(43, '::1', 'iniciarSesion', '2026-06-15 21:37:11'),
+(44, '::1', 'iniciarSesion', '2026-06-15 21:37:21'),
+(45, '::1', 'iniciarSesion', '2026-06-15 21:37:22');
 
 -- --------------------------------------------------------
 
@@ -963,74 +1188,6 @@ CREATE TABLE `permisos_de_rol` (
 --
 
 INSERT INTO `permisos_de_rol` (`id_permisos_de_rol`, `id_rol`, `id_permiso`, `id_modulo`) VALUES
-(1, 10, 30, 1),
-(2, 10, 31, 1),
-(3, 10, 33, 1),
-(4, 10, 32, 1),
-(8, 10, 30, 2),
-(9, 10, 31, 2),
-(10, 10, 32, 2),
-(11, 10, 33, 2),
-(12, 10, 30, 3),
-(13, 10, 31, 3),
-(14, 10, 32, 3),
-(15, 10, 33, 3),
-(16, 10, 30, 4),
-(17, 10, 31, 4),
-(18, 10, 32, 4),
-(19, 10, 33, 4),
-(20, 10, 30, 5),
-(21, 10, 31, 5),
-(22, 10, 32, 5),
-(23, 10, 33, 5),
-(24, 10, 30, 6),
-(25, 10, 31, 6),
-(26, 10, 32, 6),
-(27, 10, 33, 6),
-(28, 10, 30, 7),
-(29, 10, 31, 7),
-(30, 10, 32, 7),
-(31, 10, 33, 7),
-(32, 10, 30, 8),
-(33, 10, 31, 8),
-(34, 10, 32, 8),
-(35, 10, 33, 8),
-(36, 10, 30, 9),
-(37, 10, 31, 9),
-(38, 10, 32, 9),
-(39, 10, 33, 9),
-(40, 10, 30, 10),
-(41, 10, 31, 10),
-(42, 10, 32, 10),
-(43, 10, 33, 10),
-(44, 10, 30, 11),
-(45, 10, 31, 11),
-(46, 10, 32, 11),
-(47, 10, 33, 11),
-(48, 10, 30, 12),
-(49, 10, 31, 12),
-(50, 10, 32, 12),
-(51, 10, 33, 12),
-(52, 10, 30, 13),
-(53, 10, 31, 13),
-(54, 10, 32, 13),
-(55, 10, 33, 13),
-(56, 10, 30, 14),
-(57, 10, 31, 14),
-(58, 10, 32, 14),
-(59, 10, 33, 14),
-(60, 10, 30, 15),
-(61, 10, 31, 15),
-(62, 10, 32, 15),
-(63, 10, 33, 15),
-(64, 10, 30, 16),
-(65, 10, 31, 16),
-(66, 10, 32, 16),
-(67, 10, 33, 16),
-(68, 10, 30, 17),
-(69, 10, 31, 17),
-(70, 10, 32, 17),
-(71, 10, 33, 17),
 (72, 11, 30, 12),
 (73, 11, 31, 12),
 (74, 11, 33, 12),
@@ -1051,18 +1208,86 @@ INSERT INTO `permisos_de_rol` (`id_permisos_de_rol`, `id_rol`, `id_permiso`, `id
 (89, 12, 31, 16),
 (90, 12, 32, 16),
 (91, 12, 33, 16),
-(95, 8, 30, 12),
-(96, 8, 31, 12),
-(97, 8, 32, 12),
-(98, 8, 31, 13),
-(99, 8, 32, 13),
 (100, 13, 30, 12),
 (101, 13, 31, 12),
 (102, 13, 32, 12),
 (103, 13, 30, 16),
 (104, 13, 31, 16),
 (105, 1, 30, 12),
-(106, 1, 31, 12);
+(106, 1, 31, 12),
+(107, 8, 30, 12),
+(108, 8, 31, 12),
+(109, 8, 32, 12),
+(110, 8, 31, 13),
+(111, 8, 32, 13),
+(112, 10, 30, 12),
+(113, 10, 31, 12),
+(114, 10, 32, 12),
+(115, 10, 33, 12),
+(116, 10, 30, 13),
+(117, 10, 31, 13),
+(118, 10, 32, 13),
+(119, 10, 33, 13),
+(120, 10, 30, 16),
+(121, 10, 31, 16),
+(122, 10, 32, 16),
+(123, 10, 33, 16),
+(124, 10, 30, 1),
+(125, 10, 31, 1),
+(126, 10, 32, 1),
+(127, 10, 33, 1),
+(128, 10, 30, 3),
+(129, 10, 31, 3),
+(130, 10, 32, 3),
+(131, 10, 33, 3),
+(132, 10, 30, 5),
+(133, 10, 31, 5),
+(134, 10, 32, 5),
+(135, 10, 33, 5),
+(136, 10, 30, 6),
+(137, 10, 31, 6),
+(138, 10, 32, 6),
+(139, 10, 33, 6),
+(140, 10, 30, 7),
+(141, 10, 31, 7),
+(142, 10, 32, 7),
+(143, 10, 33, 7),
+(144, 10, 30, 8),
+(145, 10, 31, 8),
+(146, 10, 32, 8),
+(147, 10, 33, 8),
+(148, 10, 30, 17),
+(149, 10, 31, 17),
+(150, 10, 32, 17),
+(151, 10, 33, 17),
+(152, 10, 30, 9),
+(153, 10, 31, 9),
+(154, 10, 32, 9),
+(155, 10, 33, 9),
+(156, 10, 30, 10),
+(157, 10, 31, 10),
+(158, 10, 32, 10),
+(159, 10, 33, 10),
+(160, 10, 30, 11),
+(161, 10, 31, 11),
+(162, 10, 32, 11),
+(163, 10, 33, 11),
+(164, 10, 30, 4),
+(165, 10, 31, 4),
+(166, 10, 32, 4),
+(167, 10, 33, 4),
+(168, 10, 30, 14),
+(169, 10, 31, 14),
+(170, 10, 32, 14),
+(171, 10, 33, 14),
+(172, 10, 30, 15),
+(173, 10, 31, 15),
+(174, 10, 32, 15),
+(175, 10, 33, 15),
+(176, 10, 30, 2),
+(177, 10, 33, 2),
+(178, 10, 32, 2),
+(179, 10, 31, 2);
 
 -- --------------------------------------------------------
 
@@ -1074,21 +1299,21 @@ CREATE TABLE `rol` (
   `id_rol` int(11) NOT NULL,
   `nombre` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `estado` varchar(45) NOT NULL,
-  `descripción` varchar(45) NOT NULL
+  `descripcion` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `rol`
 --
 
-INSERT INTO `rol` (`id_rol`, `nombre`, `estado`, `descripción`) VALUES
+INSERT INTO `rol` (`id_rol`, `nombre`, `estado`, `descripcion`) VALUES
 (1, 'Administrador', 'ACT', 'Administrador'),
 (5, 'Rol', 'DES', 'este es un permiso par los doctores'),
 (6, 'Propio', 'DES', 'descripcio'),
 (7, 'Carlos', 'DES', 'jfhfdsjddjs'),
 (8, 'Doctor', 'ACT', 'En un rol para los doctores'),
 (9, 'Roletazo', 'DES', 'es un permiso de pruebas'),
-(10, 'Superadmin', 'ACT', 'lsafdfjfd'),
+(10, 'Superadmin', 'ACT', 'Jsafdfjfdhv'),
 (11, 'You', 'ACT', 'Es un antinflamatorio son derivados'),
 (12, 'Xxx', 'ACT', 'Es una descipcion'),
 (13, 'República', 'ACT', 'Qwwweeweee');
@@ -1115,14 +1340,15 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`, `token_session`) VALUES
-(1, 10, 'dragon-ball-z-super-3840x2160-13878.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', '6b799db1a94c8c9ae08522db41647b61'),
-(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'DES', NULL),
-(43, 8, 'arte-dragon-ball-super-goku-and-black-goku_7680x4320_xtrafondos.com.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT', ''),
-(45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'DES', ''),
-(46, 8, 'doctor.png', 'weq', 'wbaez975@gmail.com', '$2y$10$WAANXp7gXMUe5ZixhhN4IOOfGrqKYsv7PeHzhf8cgf8xd56nTbqly', 'ACT', ''),
+(1, 10, 'guason_1920x1080_xtrafondos.com.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', NULL),
+(42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', NULL),
+(43, 8, '137329.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT', ''),
+(45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'ACT', ''),
+(46, 8, 'doctor.png', 'weq', 'wbaez975@gmail.com', '$2y$10$WAANXp7gXMUe5ZixhhN4IOOfGrqKYsv7PeHzhf8cgf8xd56nTbqly', 'DES', ''),
 (52, 8, 'doctor.png', 'WDaniel1', 'wbaez975@gmail.com', '$2y$10$PYYiGKo3RDTI3JN6eiR6lexHNG90m0WWC1VgAg0cmhKfw3LCmXdaS', 'ACT', ''),
 (53, 8, 'goku-kintoun-cloud-kame-house-island-dragon-ball-2k-wallpaper-uhdpaper.com-706@5@h.jpg', 'WDaniel000', 'correo@gmail.com', '$2y$10$eDqE5UYML.46g9jv9sK2iusuF4nqXEeCHFd6Ck/yLi1xRRCT/HIc.', 'ACT', ''),
-(54, 11, 'goku-ultra-instinct-transformacion-dragon-ball-super_1920x1080_xtrafondos.com.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$i5q.9zYhTYnZmeFnD0triO4f5KwPK/pYU8AK841A.m554dHmnG.ea', 'ACT', '');
+(54, 11, 'goku-ultra-instinct-transformacion-dragon-ball-super_1920x1080_xtrafondos.com.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$i5q.9zYhTYnZmeFnD0triO4f5KwPK/pYU8AK841A.m554dHmnG.ea', 'ACT', ''),
+(55, 8, 'japan-artistic-3840x2160-25406.jpg', 'UsuarioPrueba', 'correo@gmail.com', '$2y$10$5CuFzn2FHNlROcp9s8kByuYXW.xEdlGROLdral6FJQtOyLphEzr2C', 'ACT', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -1136,11 +1362,10 @@ ALTER TABLE `bitacora`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
--- Indices de la tabla `intentos_login`
+-- Indices de la tabla `control_rate_limit`
 --
-ALTER TABLE `intentos_login`
-  ADD PRIMARY KEY (`ip_usuario`),
-  ADD KEY `fk_intento_usuario` (`id_usuario`);
+ALTER TABLE `control_rate_limit`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `modulos`
@@ -1184,7 +1409,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=833;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1011;
+
+--
+-- AUTO_INCREMENT de la tabla `control_rate_limit`
+--
+ALTER TABLE `control_rate_limit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
@@ -1202,7 +1433,7 @@ ALTER TABLE `permisos`
 -- AUTO_INCREMENT de la tabla `permisos_de_rol`
 --
 ALTER TABLE `permisos_de_rol`
-  MODIFY `id_permisos_de_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `id_permisos_de_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=180;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -1214,7 +1445,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- Restricciones para tablas volcadas
@@ -1225,12 +1456,6 @@ ALTER TABLE `usuario`
 --
 ALTER TABLE `bitacora`
   ADD CONSTRAINT `bitacora_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
-
---
--- Filtros para la tabla `intentos_login`
---
-ALTER TABLE `intentos_login`
-  ADD CONSTRAINT `fk_intento_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `permisos_de_rol`

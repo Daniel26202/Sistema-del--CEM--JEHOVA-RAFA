@@ -4,7 +4,6 @@ namespace App\modelos;
 
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloBase;
-use App\config\RateLimiter;
 
 class ModeloEntrada extends ModelBase
 {
@@ -264,7 +263,6 @@ class ModeloEntrada extends ModelBase
 			$this->precio,
 			$this->cantidadDisponible
 		], ' al registrar una entrada');
-		(new RateLimiter())->verificar('guardar_entrada_' . $idUsuario, 5, 1);
 		return $this->insertarEntrada();
 	}
 
@@ -274,7 +272,6 @@ class ModeloEntrada extends ModelBase
 		$this->validarCamposObligatorios([
 			$this->idEntrada
 		], ' al eliminar una entrada');
-		(new RateLimiter())->verificar('eliminar_entrada_' . $idUsuario, 5, 1);
 		return $this->eliminar();
 	}
 
@@ -288,7 +285,6 @@ class ModeloEntrada extends ModelBase
 			$this->cantidadEntrante,
 			$this->lote
 		], ' al editar una entrada');
-		(new RateLimiter())->verificar('editar_entrada_' . $idUsuario, 5, 1);
 		return $this->actualizarEntrada();
 	}
 
@@ -299,7 +295,6 @@ class ModeloEntrada extends ModelBase
 		$this->validarCamposObligatorios([
 			$this->idEntrada
 		], ' al restablecer una entrada');
-		(new RateLimiter())->verificar('restablecer_entrada_' . $idUsuario, 5, 1);
 		return $this->restablecer();
 	}
 

@@ -3,7 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
 use DateTime;
 
 class ModeloCita extends ModelBase
@@ -501,7 +500,6 @@ class ModeloCita extends ModelBase
 			$this->id_doctor,
 			$this->horaSalida
 		], ' al reservar cita una cita');
-		(new RateLimiter())->verificar('reservar_cita_' . $idUsuario, 5, 1);
 		return $this->reservar();
 	}
 
@@ -518,7 +516,6 @@ class ModeloCita extends ModelBase
 			$this->id_doctor,
 			$this->horaSalida
 		], ' al registrar una cita');
-		(new RateLimiter())->verificar('guardar_cita_' . $idUsuario, 5, 1);
 		return $this->insertarCita();
 	}
 
@@ -526,7 +523,6 @@ class ModeloCita extends ModelBase
 	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([$this->id_cita], ' al eliminar una cita');
-		(new RateLimiter())->verificar('eliminar_cita_' . $idUsuario, 5, 1);
 		return $this->eliminarCitaPrivada();
 	}
 
@@ -543,7 +539,6 @@ class ModeloCita extends ModelBase
 			$this->id_doctor,
 			$this->horaSalida
 		], ' al editar una cita');
-		(new RateLimiter())->verificar('editar_cita_' . $idUsuario, 5, 1);
 		return $this->update_cita();
 	}
 

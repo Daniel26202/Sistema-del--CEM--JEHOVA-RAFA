@@ -5,7 +5,6 @@ namespace App\modelos;
 use App\modelos\ModelBase;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloCategoria;
-use App\config\RateLimiter;
 
 class ModeloServicios extends ModelBase
 {
@@ -369,7 +368,6 @@ class ModeloServicios extends ModelBase
             $this->precio,
             $this->tipo,
         ], ' al registrar un servicio');
-        (new RateLimiter())->verificar('guardar_servicio_' . $idUsuario, 5, 1);
         return $this->insertarSevicio();
     }
 
@@ -381,7 +379,6 @@ class ModeloServicios extends ModelBase
             $this->idCategoria,
             $this->id_doctor,
         ], ' al asignar un servicio');
-        (new RateLimiter())->verificar('asignar_servicio_' . $idUsuario, 5, 1);
         return $this->insertarDoctorServicio();
     }
 
@@ -391,7 +388,6 @@ class ModeloServicios extends ModelBase
         $this->validarCamposObligatorios([
             $this->id_servicioMedico
         ], ' al eliminar un servicio');
-        (new RateLimiter())->verificar('eliminar_servicio_' . $idUsuario, 5, 1);
         return $this->eliminar();
     }
 
@@ -401,7 +397,6 @@ class ModeloServicios extends ModelBase
         $this->validarCamposObligatorios([
             $this->id_servicioMedico
         ], ' al restablecer un servicio');
-        (new RateLimiter())->verificar('restablecer_servicio_' . $idUsuario, 5, 1);
         return $this->restablecerServ();
     }
 
@@ -413,7 +408,6 @@ class ModeloServicios extends ModelBase
             $this->precio,
             $this->tipo,
         ], ' al editar un servicio');
-        (new RateLimiter())->verificar('editar_servicio_' . $idUsuario, 5, 1);
         return $this->editar();
     }
 

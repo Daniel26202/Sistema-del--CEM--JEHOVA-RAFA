@@ -36,16 +36,7 @@ function iniciarSesion()
     $ipCliente = $_SERVER['REMOTE_ADDR']; // Obtenemos la IP del que intenta entrar
     $modelo->setIpUsuario($ipCliente);
 
-    if ($modelo->verificarBloqueoIP()) {
-        http_response_code(429); // Código estándar para "Muchos intentos"
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode([
-            'ok' => false,
-            'error' => 'Bloqueado',
-            'message' => 'Demasiados intentos fallidos. Su acceso ha sido restringido por 15 minutos.'
-        ]);
-        exit; // Detenemos el script aquí
-    }
+
 
     // if (isset($_POST)) {
     //     // Clave secreta proporcionada por Google.
@@ -109,21 +100,7 @@ function iniciarSesion()
 
     if ($validar) {
         $modelo->setIntentosFallidos(0);
-        $modelo->registrarIntento();
-
-
-        $modelo->setIdUsuario($validar['id_usuario']);
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        //validat si la session esta previamente iniciada en otra parte
-        if ($modelo->verificacionUsuarioToken()) {
-            $_SESSION['id_usuario_verificar'] = $validar['id_usuario'];
-
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => "session_active"]);
-            exit;
-        }
+       
 
         //Hrllofor my computer yes after 
 
@@ -196,8 +173,6 @@ function iniciarSesion()
         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
     } else {
 
-        $modelo->setIntentosFallidos(1);
-        $modelo->registrarIntento();
 
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => $validar]);
@@ -247,17 +222,7 @@ function iniciarSesionMovil()
     $ipCliente = $_SERVER['REMOTE_ADDR'];
     $modelo->setIpUsuario($ipCliente);
 
-    // Validació de seguretat contra bloquejos d'IP per intents fallits
-    if ($modelo->verificarBloqueoIP()) {
-        http_response_code(429);
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode([
-            'ok' => false,
-            'error' => 'Bloqueado',
-            'message' => 'Demasiados intentos fallidos. Su acceso ha sido restringido por 15 minutos.'
-        ]);
-        exit;
-    }
+
 
     $modelo->setUsuario($userParam);
     $modelo->setPassword($passParam);
@@ -272,8 +237,6 @@ function iniciarSesionMovil()
     $modelo->setIdUsuario($validarUsuarioExistente != false ? $validarUsuarioExistente['id_usuario'] : null);
 
     if ($validar) {
-        $modelo->setIntentosFallidos(0);
-        $modelo->registrarIntento();
         $modelo->setIdUsuario($validar['id_usuario']);
 
 
@@ -314,8 +277,6 @@ function iniciarSesionMovil()
         exit;
     } else {
         // En cas de fallada, sumem un intent erroni a la base de dades
-        $modelo->setIntentosFallidos(1);
-        $modelo->registrarIntento();
 
         http_response_code(409);
         header('Content-Type: application/json; charset=utf-8');

@@ -3,7 +3,7 @@
 namespace App\config;
 
 use App\modelos\ModeloPermisos;
-use App\config\ValidationIP;
+use App\config\RateLimiter2;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -26,15 +26,11 @@ class Rutas
     public function gestionarRutas()
     {
         ///esta seccion es para validar el blacklist y el white list
-        $validationIP = new ValidationIP();
-        $validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-        $validationIP->setIdUsuario((isset($_SESSION['id_usuario'])) ? $_SESSION['id_usuario'] : null);
+        // $validationIP = new ValidationIP();
+        // $validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
+        // $validationIP->setIdUsuario((isset($_SESSION['id_usuario'])) ? $_SESSION['id_usuario'] : null);
 
-        if ($validationIP->verificationIp()) {
-            session_destroy();
-            header('location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion/bloqued');
-            return;
-        } ///
+
 
         $this->partes = explode("/", $this->url);
         if (strpos($this->url, ".php") !== false) {
@@ -46,6 +42,17 @@ class Rutas
         $metodo = $this->partes[1];
         $parametro = "";
         $modulo =  $this->controlador;
+
+        //validacion rate limit
+        $rateLimit = new RateLimiter();
+        $rateLimit->setIP($_SERVER['REMOTE_ADDR']);
+        $rateLimit->setEndpoind($metodo);
+        $rateLimit->setLimitePeticiones();
+        
+        if ($rateLimit->checkRateLimitByIP()) {
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            return;
+        }
 
         if (isset($this->partes[2])) {
             for ($i = 2; $i < count($this->partes); $i++) {

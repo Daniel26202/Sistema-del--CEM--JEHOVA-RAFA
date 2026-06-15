@@ -66,69 +66,6 @@ class ModeloInicioSesion extends ModelBase
 		}
 	}
 
-	// Método para registrar fallos o limpiar la tabla si el login es exitoso
-	public function registrarIntento()
-	{
-		$ip = $this->getIpUsuario();
-		$idU = $this->getIdUsuario();
-
-		if ($this->getIntentosFallidos()) {
-	
-			$sql = "INSERT INTO segurity.intentos_login (ip_usuario, id_usuario, cantidad_intentos, bloqueado) 
-                VALUES (:ip, :id_u, 1, 0) 
-                ON DUPLICATE KEY UPDATE 
-                id_usuario = :id_u, 
-                cantidad_intentos = cantidad_intentos + 1, 
-                bloqueado = IF(cantidad_intentos >= 3, 1, 0)";
-
-			$this->setSQL($sql);
-
-
-			$data = [
-				'ip' => $ip,
-				'id_u' => $idU 
-			];
-
-
-			$this->create($data);
-		} else {
-			//  LOGIN EXITOso (LIMPIAR) la table
-			$sql = "DELETE FROM segurity.intentos_login WHERE ip_usuario = :ip";
-
-			$this->setSQL($sql);
-
-
-			$data = ['ip' => $ip];
-
-			$this->delete($data);
-		}
-	}
-
-	// Método para consultar si una IP tiene el acceso restringido
-	public function verificarBloqueoIP()
-	{
-	
-		$sql = "SELECT cantidad_intentos, bloqueado, ultimo_intento 
-            FROM segurity.intentos_login WHERE ip_usuario = :ip";
-
-		$this->setSQL($sql);
-		$resultado = $this->search(['ip' => $this->getIpUsuario()], false);
-
-		if ($resultado && $resultado['bloqueado'] == 1) {
-			$tiempoBloqueo = strtotime($resultado['ultimo_intento']) + (15 * 60);
-
-			if (time() < $tiempoBloqueo) {
-				return true; 
-			} else {
-				
-				$this->setIntentosFallidos(0);
-				$this->registrarIntento(); 
-				return false;
-			}
-		}
-		return false;
-	}
-
 
 	public function verificacionUsuarioToken() {
 		$data=[

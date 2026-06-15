@@ -3,7 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
 class ModeloCategoria extends ModelBase
 {
 
@@ -161,7 +160,6 @@ class ModeloCategoria extends ModelBase
         $this->validarCamposObligatorios([
             $this->nombre,
         ], ' al registrar una categoria');
-        (new RateLimiter())->verificar('guardar_categoria_' . $idUsuario, 5, 1);
         return $this->registrarCategoria();
     }
 
@@ -171,7 +169,6 @@ class ModeloCategoria extends ModelBase
         $this->validarCamposObligatorios([
             $this->idCategoria,
         ], ' al eliminar una categoria');
-        (new RateLimiter())->verificar('eliminar_categoria_' . $idUsuario, 5, 1);
         return $this->eliminar();
     }
 

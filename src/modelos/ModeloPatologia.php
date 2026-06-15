@@ -3,7 +3,7 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
+
 class ModeloPatologia extends ModelBase
 {
 
@@ -248,7 +248,6 @@ class ModeloPatologia extends ModelBase
         $this->validarCamposObligatorios([
             $this->nombrePatologia
         ], 'al registrar la patologia');
-        (new RateLimiter())->verificar('guardar_patologia_' . $idUsuario, 5, 1);
         return $this->insertarPatologia();
     }
 
@@ -258,7 +257,6 @@ class ModeloPatologia extends ModelBase
         $this->validarCamposObligatorios([
             $this->idPatologia
         ], 'al eliminar la patologia');
-        (new RateLimiter())->verificar('eliminar_patologia_' . $idUsuario, 5, 1);
         return $this->eliminarPatologia();
     }
 
@@ -268,7 +266,6 @@ class ModeloPatologia extends ModelBase
         $this->validarCamposObligatorios([
             $this->idPatologia
         ], 'al restablecer la patologia');
-        (new RateLimiter())->verificar('restablecer_patologia_' . $idUsuario, 5, 1);
         return $this->restablecer();
     }
 
