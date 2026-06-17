@@ -88,8 +88,8 @@ class RateLimiter extends ModelBase
         $this->endpoind = $endpoind;
     }
 
-    //se le coloco limite por ip de 5 solo para probarlo
-    public function setLimitePeticiones($limite_ip = 5)
+    //se le coloco limite por ip de 80 solo para probarlo
+    public function setLimitePeticiones($limite_ip = 80)
     {
         $this->limite_ip = $limite_ip;
     }
