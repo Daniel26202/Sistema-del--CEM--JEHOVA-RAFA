@@ -18,6 +18,130 @@
     opacity: 0.9;
 } */
 
+
+/* ── Ícono cuadrado redondeado ── */
+.insumo-v2-icon {
+  width: 46px; height: 46px; flex-shrink: 0;
+  border-radius: 14px;
+  background: rgba(56,122,223,.12);
+  border: 1.5px solid rgba(56,122,223,.25);
+  color: var(--color-primary);
+  font-size: 1.35rem;
+}
+
+/* ── Badge medida ── */
+.insumo-v2-medida {
+  font-size: 0.76rem; font-weight: 700;
+  color: var(--color-primary) !important;
+  background: rgba(56,122,223,.1);
+  border-radius: 50px; padding: 1px 9px;
+}
+
+/* ── Chips ── */
+.chip {
+  font-size: 0.73rem; font-weight: 600;
+  color: var(--color-text-card) !important;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px; padding: 3px 9px;
+}
+.chip i { color: var(--color-primary) !important; }
+
+/* ── Precios ── */
+.precio-usd, .serv-usd {
+  font-size: 1.2rem; font-weight: 900;
+  color: var(--color-primary) !important; line-height: 1;
+}
+.precio-bs, .serv-bs {
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--color-text-card) !important; opacity: 0.55;
+}
+
+/* ── Input cantidad ── */
+.insumo-v2-input-wrap {
+  border: 1.8px solid var(--color-primary);
+  border-radius: 12px; overflow: hidden;
+  background: var(--color-surface);
+  transition: box-shadow 0.2s;
+}
+.insumo-v2-input-wrap:focus-within {
+  box-shadow: 0 0 0 3px rgba(56,122,223,.15);
+}
+.insumo-v2-input-wrap input {
+  border: none !important; background: transparent !important;
+  box-shadow: none !important; outline: none;
+  color: var(--color-text-card) !important;
+  -moz-appearance: textfield;
+}
+.insumo-v2-input-wrap input::-webkit-inner-spin-button,
+.insumo-v2-input-wrap input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* ── Botón premium ── */
+.btn-v2 {
+  background: linear-gradient(135deg, #387adf 0%, #2563c7 100%);
+  border: none; border-radius: 12px;
+  color: #fff !important; font-weight: 700;
+  box-shadow: 0 3px 10px rgba(56,122,223,.3);
+  transition: all 0.2s;
+}
+.btn-v2:hover {
+  background: linear-gradient(135deg, #2563c7 0%, #1a4fa8 100%);
+  box-shadow: 0 5px 16px rgba(56,122,223,.45);
+  transform: translateY(-1px); color: #fff !important;
+}
+
+/* ── Hover elevación cards ── */
+.card-insumo-v2, .card-servicio-v2 {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card-insumo-v2:hover, .card-servicio-v2:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(56,122,223,.18) !important;
+}
+
+/* ── Cabecera servicio ── */
+.serv-v2-header {
+  background: linear-gradient(135deg,
+    rgba(56,122,223,.1) 0%,
+    rgba(56,122,223,.03) 100%);
+}
+.serv-v2-icon {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #387adf 0%, #2563c7 100%);
+  font-size: 1.15rem;
+  box-shadow: 0 4px 10px rgba(56,122,223,.35);
+  color: #fff !important;
+}
+.serv-v2-avatar {
+  width: 30px; height: 30px;
+  background: rgba(56,122,223,.1);
+  border: 1.5px solid rgba(56,122,223,.25);
+  color: var(--color-primary) !important;
+  font-size: 0.85rem;
+}
+.serv-v2-nombre {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.serv-label {
+  font-size: 0.68rem; opacity: 0.5; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--color-text-card) !important;
+}
+.serv-usd { font-size: 1.4rem; }
+
+
+
+
+
+
+
+
+
+
+
+
+
 .toggle-password {
     color: #555a5e !important;
     transition:
