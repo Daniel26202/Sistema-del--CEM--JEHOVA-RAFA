@@ -4,7 +4,6 @@ namespace App\modelos;
 
 use DateTime;
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
 
 class ModeloInsumo extends ModelBase
 {
@@ -395,7 +394,6 @@ class ModeloInsumo extends ModelBase
 			$this->marca,
 			$this->medida,
 		], 'al registrar un insumo');
-		(new RateLimiter())->verificar('guardar_insumo_' . $idUsuario, 5, 1);
 		return $this->insertarInsumos();
 	}
 
@@ -403,7 +401,6 @@ class ModeloInsumo extends ModelBase
 	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([$this->idInsumo], ' al eliminar un insumo');
-		(new RateLimiter())->verificar('eliminar_insumo_' . $idUsuario, 5, 1);
 		return $this->eliminar();
 	}
 
@@ -418,7 +415,6 @@ class ModeloInsumo extends ModelBase
 			$this->marca,
 			$this->medida,
 		], 'al editar un insumo');
-		(new RateLimiter())->verificar('editar_insumo_' . $idUsuario, 5, 1);
 		return $this->editar();
 	}
 
@@ -426,14 +422,12 @@ class ModeloInsumo extends ModelBase
 	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([$this->idInsumo], ' al restablecer un insumo');
-		(new RateLimiter())->verificar('restablecer_insumo_' . $idUsuario, 5, 1);
 		return $this->restablecer();
 	}
 
 	public function vencerInsumos($idUsuario = null)
 	{
 		$this->validarSesion($idUsuario);
-		(new RateLimiter())->verificar('vencer_insumo_' . $idUsuario, 5, 1);
 		return $this->vencer();
 	}
 

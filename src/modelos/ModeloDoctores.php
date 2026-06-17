@@ -5,7 +5,7 @@ namespace App\modelos;
 use App\modelos\ModelBase;
 use App\modelos\ModeloUsuarios;
 use App\modelos\ModeloRoles;
-use App\config\RateLimiter;
+
 
 class ModeloDoctores extends ModelBase
 {
@@ -458,7 +458,6 @@ class ModeloDoctores extends ModelBase
             $this->password,
             $this->id_rol
         ], ' al registrar un doctor');
-        (new RateLimiter())->verificar('guardar_doctor_' . $idUsuario, 5, 1);
         return $this->insertarDoctorDB();
     }
 
@@ -475,7 +474,6 @@ class ModeloDoctores extends ModelBase
             $this->idEspecialidad,
             $this->id_usuario
         ], ' al editar un doctor');
-        (new RateLimiter())->verificar('editar_doctor_' . $idUsuario, 5, 1);
         return $this->updateDoctorDB();
     }
 
@@ -483,7 +481,6 @@ class ModeloDoctores extends ModelBase
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->id_usuario], ' al eliminar un doctor');
-        (new RateLimiter())->verificar('eliminar_doctor_' . $idUsuario, 5, 1);
         return $this->eliminacionLogicaDB();
     }
 
@@ -491,7 +488,6 @@ class ModeloDoctores extends ModelBase
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->id_usuario], ' al restablecer un doctor');
-        (new RateLimiter())->verificar('restablecer_doctor_' . $idUsuario, 5, 1);
         return $this->restablecerDoctorDB();
     }
 
@@ -499,7 +495,6 @@ class ModeloDoctores extends ModelBase
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->especialidad], ' al registrar una especialidad');
-        (new RateLimiter())->verificar('guardar_especialidad_' . $idUsuario, 5, 1);
         return $this->especialidadRegistrarDB();
     }
 
@@ -507,7 +502,6 @@ class ModeloDoctores extends ModelBase
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->idEspecialidad], ' al eliminar una especialidad');
-        (new RateLimiter())->verificar('eliminar_especialidad_' . $idUsuario, 5, 1);
         return $this->especialidadEliminarDB();
     }
 

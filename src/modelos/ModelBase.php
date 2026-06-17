@@ -140,7 +140,7 @@ class ModelBase extends Db
         return $this->sql;
     }
 
-    public function setSQL($sql)
+    public function setSQL($sql = '')
     {
         $this->sql = $sql;
     }

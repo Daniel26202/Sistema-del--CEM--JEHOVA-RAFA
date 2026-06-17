@@ -3,7 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
 
 class ModeloProveedores extends ModelBase
 {
@@ -263,7 +262,6 @@ class ModeloProveedores extends ModelBase
 			$this->email,
 			$this->direccion,
 		], ' al registrar un proveedor');
-		(new RateLimiter())->verificar('guardar_proveedor_' . $idUsuario, 5, 1);
 		return $this->agregar();
 	}
 
@@ -273,7 +271,6 @@ class ModeloProveedores extends ModelBase
 		$this->validarCamposObligatorios([
 			$this->idProveedor
 		], ' al eliminar un proveedor');
-		(new RateLimiter())->verificar('eliminar_proveedor_' . $idUsuario, 5, 1);
 		return $this->eliminar();
 	}
 
@@ -283,7 +280,6 @@ class ModeloProveedores extends ModelBase
 		$this->validarCamposObligatorios([
 			$this->idProveedor
 		], ' al restablecer un proveedor');
-		(new RateLimiter())->verificar('restablecer_proveedor_' . $idUsuario, 5, 1);
 		return $this->restablecer();
 	}
 
@@ -298,7 +294,6 @@ class ModeloProveedores extends ModelBase
 			$this->direccion,
 			$this->idProveedor
 		], ' al editar un proveedor');
-		(new RateLimiter())->verificar('editar_proveedor_' . $idUsuario, 5, 1);
 		return $this->editar();
 	}
 

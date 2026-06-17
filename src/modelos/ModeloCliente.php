@@ -3,7 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
 
 class ModeloCliente extends ModelBase
 {
@@ -276,7 +275,6 @@ class ModeloCliente extends ModelBase
             $this->fn,
             $this->genero
         ], ' al registrar un cliente');
-        (new RateLimiter())->verificar('guardar_cliente_' . $idUsuario, 5, 1);
         return $this->insertar();
     }
 
@@ -295,7 +293,6 @@ class ModeloCliente extends ModelBase
             $this->fn,
             $this->genero
         ], ' al editar un cliente');
-        (new RateLimiter())->verificar('editar_cliente_' . $idUsuario, 5, 1);
         return $this->update_cliente();
     }
 
@@ -303,7 +300,6 @@ class ModeloCliente extends ModelBase
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->id_cliente], ' al eliminar un cliente');
-        (new RateLimiter())->verificar('eliminar_cliente_' . $idUsuario, 5, 1);
         return $this->delete_cliente();
     }
 
@@ -311,7 +307,6 @@ class ModeloCliente extends ModelBase
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->id_cliente], ' al restablecer un cliente');
-        (new RateLimiter())->verificar('restablecer_cliente_' . $idUsuario, 5, 1);
         return $this->restablecer();
     }
 

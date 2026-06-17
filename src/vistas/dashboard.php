@@ -149,74 +149,74 @@ require_once './src/vistas/head/head.php';
             <div class="card shadow-sm">
                 <?php if ($validarCargo): ?>
                     <?php foreach ($datos_de_personal as $d): ?>
-                        <div class="card-tittle">
-                            <h5 class="mb-0 fw-bolder text-center pt-3">Doctor: <?= $d["nombre"] ?> <?= $d["apellido"] ?></h5>
-                        </div>
 
                         <div class="card-body">
-                            <div class="d-flex mt-4">
-                                <div class="col-6 m-auto">
-                                    <form class="form-modal perfil " id="perfil">
-                                        <div class="input-group flex-nowrap">
+                            <div class="d-flex mt-1">
+                                <div class="col-12 m-auto">
+                                    <div class="form-modal perfil " id="perfil">
+                                        <div class="mx-5">
 
+                                            <img id="imgUser" src="../src/assets/images/img_ingresadas_por_usuarios/usuarios/<?= $d['id_usuario'] ?>_<?= $d['imagen'] ?>" alt="" class="img-perfil-inicio">
+                                        </div>
+                                        <div class="">
+                                            <label class="label-custom">Cédula</label>
+                                            <div class="campo-custom">
+                                                <div class="input-custom">
+                                                    <span class="icono-izq">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
+                                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5ZM9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8Zm1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Zm-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96c.026-.163.04-.33.04-.5ZM7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"></path>
+                                                        </svg>
+                                                    </span>
 
+                                                    <select class="form-control-plaintext tamaño-select-mini inputs" aria-label="2" placeholder="Nacionalidad" name="nacionalidad">
+                                                        <option value="V" selected="">V</option>
+                                                        <option value="E">E</option>
+                                                    </select>
 
-                                            <span class="input-modal">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                                    class="bi bi-person-vcard-fill azul" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5ZM9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8Zm1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Zm-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96c.026-.163.04-.33.04-.5ZM7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
-                                                </svg>
-                                            </span>
-                                            <input class="form-control input-modal input-perfil" type="text" name="cedula" placeholder="Cedula"
-                                                value="<?= $d["cedula"] ?>" disabled>
+                                                    <input disabled="true" class="form-control txt-custom input-validar inputs" id="cedulaPaciente" name="cedula" value="<?= $d["cedula"] ?>" type="number" placeholder="Cédula del paciente">
+
+                                                    <span class="icono-der">
+                                                        <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                                        </svg>
+                                                        <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                                        </svg>
+                                                    </span>
+                                                </div>
+
+                                                <p class="error-msg d-none"></p>
+                                            </div>
                                         </div>
 
-                                        <div class="input-group flex-nowrap">
-                                            <span class="input-modal mt-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                                    class="bi bi-person-fill azul" viewBox="0 0 16 16">
-                                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                                </svg>
-                                            </span>
-                                            <input class="form-control input-modal input-perfil" type="text" name="nombreyapellido"
-                                                placeholder="Nombre y Apellido" disabled value="<?= $d["usuario"] ?>">
-
+                                        <div class="">
+                                            <label class="label-custom">Teléfono</label>
+                                            <div class="campo-custom">
+                                                <div class="input-custom">
+                                                    <span class="icono-izq">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telephone-fill azul" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
+                                                        </svg>
+                                                    </span>
+                                                    <input disabled class="form-control txt-custom input-validar inputs" name="telefono" type="number" placeholder="Teléfono del paciente" value="<?= $d["telefono"] ?>">
+                                                    <span class="icono-der">
+                                                        <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                                        </svg>
+                                                        <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <p class="error-msg d-none"></p>
+                                            </div>
                                         </div>
-                                        <div class="input-group flex-nowrap">
-                                            <span class="input-modal mt-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                                    class="bi bi-telephone-fill azul" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd"
-                                                        d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
-                                                </svg>
-                                            </span>
-                                            <input class="form-control input-modal input-perfil" type="text" name="telefono" placeholder="Teléfono"
-                                                disabled value="<?= $d["telefono"] ?>">
-                                        </div>
+                                    </div>
 
-                                        <div class="input-group flex-nowrap">
-                                            <span class="input-modal mt-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                                    class="bi bi-person-fill azul" viewBox="0 0 16 16">
-                                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                                </svg>
-                                            </span>
-                                            <input class="form-control input-modal input-perfil" type="text" name="usuario" placeholder="Usuario"
-                                                disabled value="<?= $d["usuario"] ?>">
-                                        </div>
-
-
-                                    </form>
 
                                 </div>
 
-                                <div class="m-auto">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" fill="currentColor"
-                                        class="bi bi-person-fill azul" viewBox="0 0 16 16">
-                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                    </svg>
-                                </div>
+
                             <?php endforeach ?>
 
                             </div>

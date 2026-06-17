@@ -3,7 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
 
 
 class ModeloRoles extends ModelBase
@@ -311,7 +310,6 @@ class ModeloRoles extends ModelBase
             $this->modulos,
             $this->permisos
         ], ' al registrar un rol');
-        (new RateLimiter())->verificar('guardar_rol_' . $idUsuario, 5, 1);
         return $this->insertar();
     }
 
@@ -323,7 +321,6 @@ class ModeloRoles extends ModelBase
             $this->descripcion,
             $this->nombre,
         ], ' al editar un rol');
-        (new RateLimiter())->verificar('editar_rol_' . $idUsuario, 5, 1);
         return $this->editar();
     }
 
@@ -333,7 +330,6 @@ class ModeloRoles extends ModelBase
         $this->validarCamposObligatorios([
             $this->id_rol
         ], ' al eliminar un rol');
-        (new RateLimiter())->verificar('eliminar_rol_' . $idUsuario, 5, 1);
         return $this->eliminar();
     }
 

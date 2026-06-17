@@ -3,7 +3,6 @@
 namespace App\modelos;
 
 use App\modelos\ModelBase;
-use App\config\RateLimiter;
 
 class ModeloControl extends ModelBase
 {
@@ -224,7 +223,6 @@ class ModeloControl extends ModelBase
 			$this->fechaRegreso,
 			$this->severidad
 		], ' al registrar un control');
-		(new RateLimiter())->verificar('guardar_control_' . $idUsuario, 5, 1);
 		return $this->insertarControlDB();
 	}
 
@@ -239,7 +237,6 @@ class ModeloControl extends ModelBase
 			$this->fechaRegreso,
 			$this->severidad
 		], ' al editar un control');
-		(new RateLimiter())->verificar('editar_control_' . $idUsuario, 5, 1);
 		return $this->editarControlDB();
 	}
 

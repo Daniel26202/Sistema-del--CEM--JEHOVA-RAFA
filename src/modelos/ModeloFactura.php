@@ -9,7 +9,6 @@ use App\modelos\ModeloPacientes;
 use App\modelos\ModeloCita;
 use App\modelos\ModeloHospitalizacion;
 use App\modelos\ModeloServicios;
-use App\config\RateLimiter;
 
 class ModeloFactura extends ModelBase
 {
@@ -633,9 +632,6 @@ class ModeloFactura extends ModelBase
 			$this->formasDePago,
 			$this->montosDePago
 		], ' al registrar una factura');
-
-		(new RateLimiter())->verificar('guardar_factura_' . $idUsuario, 5, 1);
-
 		return $this->insertar();
 	}
 

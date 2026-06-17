@@ -2395,6 +2395,16 @@ td {
     object-fit: cover;
     /* Para que la imagen no se deforme dentro del círculo */
 }
+
+.img-perfil-inicio {
+    width: 12rem;
+    height: 12rem;
+    /* Obligatorio que sea igual al width */
+    border-radius: 50%;
+    /* Esto crea el círculo */
+    object-fit: cover;
+    /* Para que la imagen no se deforme dentro del círculo */
+}
 .img-perfil-modal {
     width: 12rem;
     height: 12rem;
