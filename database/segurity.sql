@@ -21,6 +21,13 @@ SET time_zone = "+00:00";
 -- Base de datos: `segurity`
 --
 
+CREATE DATABASE IF NOT EXISTS `segurity` 
+DEFAULT CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+USE `segurity`;
+
+
 -- --------------------------------------------------------
 
 --

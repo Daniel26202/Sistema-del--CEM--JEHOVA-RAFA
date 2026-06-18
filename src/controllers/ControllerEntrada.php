@@ -4,7 +4,6 @@ use App\modelos\ModeloEntrada;
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter;
 
 
 

@@ -2,7 +2,6 @@
 
 use App\modelos\ModeloCliente;
 use App\modelos\ModeloBitacora;
-use App\config\RateLimiter;
 // use App\
 
 function Clientes($parametro)

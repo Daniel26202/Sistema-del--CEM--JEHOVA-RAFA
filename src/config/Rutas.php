@@ -3,13 +3,13 @@
 namespace App\config;
 
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter2;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class Rutas
 {
     private $url, $partes, $controlador, $modelo, $equivalentes;
+    private $rateLimit;
 
     public function __construct($url)
     {
@@ -17,6 +17,7 @@ class Rutas
             session_start();
         }
 
+        $this->rateLimit = new RateLimiter();
         $this->url = $url;
         $this->modelo = new ModeloPermisos();
         $this->equivalentes = require_once __DIR__ . "/../../src/config/equivalencias.php";
@@ -25,11 +26,27 @@ class Rutas
     /* método que utilizamos para gestionar las rutas de todo nuestro sistema */
     public function gestionarRutas()
     {
-        ///esta seccion es para validar el blacklist y el white list
-        // $validationIP = new ValidationIP();
-        // $validationIP->setIpUsuario($_SERVER['REMOTE_ADDR']);
-        // $validationIP->setIdUsuario((isset($_SESSION['id_usuario'])) ? $_SESSION['id_usuario'] : null);
+        $file = false;
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+        //validacion rate limit
+        $this->rateLimit->setIP($ip);
+        // $rateLimit->setEndpoind($metodo);
+        // $rateLimit->setLimitePeticiones();
 
+        // pero si la peticion es para un archivo
+        $accept_files_extensions = ["css", "js", "png", "jpg", "jpeg", "gif", "svg", "ico"];
+        if (in_array(pathinfo($this->url, PATHINFO_EXTENSION), $accept_files_extensions)) {
+            $file = true;
+        }
+        
+        else if ($this->rateLimit->evaluarLimiteDB()) {
+            header("HTTP/1.1 429 Too Many Requests");
+            // header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            die("Too Many Requests");
+        }
 
 
         $this->partes = explode("/", $this->url);
@@ -43,16 +60,6 @@ class Rutas
         $parametro = "";
         $modulo =  $this->controlador;
 
-        //validacion rate limit
-        $rateLimit = new RateLimiter();
-        $rateLimit->setIP($_SERVER['REMOTE_ADDR']);
-        $rateLimit->setEndpoind($metodo);
-        $rateLimit->setLimitePeticiones();
-        
-        if ($rateLimit->checkRateLimitByIP()) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
-            return;
-        }
 
         if (isset($this->partes[2])) {
             for ($i = 2; $i < count($this->partes); $i++) {
@@ -67,14 +74,14 @@ class Rutas
         $directorio = "src/controllers/" . $this->controlador . ".php";
         if (!file_exists($directorio)) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
-            return;
+            die("Directorio no encontrado");
         }
 
         require_once __DIR__ . "/../../" . $directorio;
 
         if (!function_exists($metodo)) {
             header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
-            exit; // Detener la ejecución si el método no existe
+            die("Método no encontrado");
         }
 
         if (in_array($this->controlador, ["ControllerIniciarSesion", "ControllerRecuperarContr"])) {
@@ -116,9 +123,19 @@ class Rutas
         }
         // VISTAS WEB............. 
         // Corregida sintaxis de validación de sesión activa
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            echo "Session no iniciada";
-            return;
+        // if (session_status() !== PHP_SESSION_ACTIVE) {
+        //     echo "Session no iniciada";
+        //     return;
+        // } Otra vez, esto esta en el construct, por Dios
+        
+        
+        $sessionId = session_id();
+        $this->rateLimit->setSessionId($sessionId);
+
+        if (!$file && $this->rateLimit->evaluar_rate_limit_by_user()) {
+            http_response_code(429);
+            echo json_encode(['error' => 'Demasiadas peticiones. Por favor, intente más tarde.']);
+            exit;
         }
 
         if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerBitacora" || $this->controlador == 'ControllerPermisos') {
@@ -126,11 +143,11 @@ class Rutas
             return;
         }
 
-        if (empty($_SESSION['id_rol'])) {
-            session_destroy();
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
-            return;
-        }
+        // if (empty($_SESSION['id_rol'])) {
+        //     session_destroy();
+        //     header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
+        //     return;
+        // }
 
         $permiso = $this->equivalentes[$metodo] ?? $metodo;
         $this->modelo->setIdRol($_SESSION['id_rol']);
@@ -141,7 +158,7 @@ class Rutas
 
         if (!$id_modulo) {
             header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
-            exit;
+            die("Módulo no encontrado");
         }
 
         $this->modelo->setIdModulo($id_modulo);
@@ -150,7 +167,7 @@ class Rutas
 
         if (!$permitido) {
             header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
-            exit;
+            die("Permiso denegado");
         }
 
         //  Ejecución final para peticiones web tradicionales

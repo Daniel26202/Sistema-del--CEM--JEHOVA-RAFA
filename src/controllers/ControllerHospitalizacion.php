@@ -6,7 +6,7 @@ use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloSintomas;
-use App\config\RateLimiter;
+// use App\config\RateLimiter;
 
 function refrescarSemaforo()
 {
@@ -176,8 +176,8 @@ function agregarH()
 
         $idUsuario = $_SESSION['id_usuario'];
         // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('guardar_hospitalizacion' . $idUsuario, 5, 1);
+        // $limiter = new RateLimiter();
+        // $limiter->verificar('guardar_hospitalizacion' . $idUsuario, 5, 1);
 
         $modeloBitacora = new ModeloBitacora();
         $modeloHosp = new ModeloHospitalizacion();
@@ -352,8 +352,8 @@ function eliminaL($datos)
         try {
             $idUsuario = $_SESSION['id_usuario'];
             // RATE LIMIT: 5 peticiones cada 1 segundos
-            $limiter = new RateLimiter();
-            $limiter->verificar('eliminar_hospitalizacion_' . $idUsuario, 5, 1);
+            // $limiter = new RateLimiter();
+            // $limiter->verificar('eliminar_hospitalizacion_' . $idUsuario, 5, 1);
             $modeloBitacora = new ModeloBitacora();
             $modeloHosp = new ModeloHospitalizacion();
 

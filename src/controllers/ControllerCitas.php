@@ -6,7 +6,6 @@ use App\modelos\ModeloServicios;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter;
 
 function mostrarDataPaciente($datos)
 {

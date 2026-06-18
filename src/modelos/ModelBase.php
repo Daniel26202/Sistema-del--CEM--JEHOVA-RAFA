@@ -144,4 +144,8 @@ class ModelBase extends Db
     {
         $this->sql = $sql;
     }
+    public function getPDO()
+    {
+        return $this->pdo;
+    }
 }

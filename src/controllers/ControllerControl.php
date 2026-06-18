@@ -350,8 +350,8 @@ function eliminarSintoma($datos)
 
 		$idUsuario = $_SESSION['id_usuario'];
 		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('eliminar_sintoma_' . $idUsuario, 5, 1);
+		// $limiter = new RateLimiter();
+		// $limiter->verificar('eliminar_sintoma_' . $idUsuario, 5, 1);
 
 		$modeloSintomas = new ModeloSintomas();
 		$modeloBitacora = new ModeloBitacora();
@@ -393,8 +393,8 @@ function agregarSintoma()
 
 		$idUsuario = $_SESSION['id_usuario'];
 		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_sintoma_' . $idUsuario, 5, 1);
+		// $limiter = new RateLimiter();
+		// $limiter->verificar('guardar_sintoma_' . $idUsuario, 5, 1);
 
 		$modeloSintomas = new ModeloSintomas();
 		$modeloBitacora = new ModeloBitacora();

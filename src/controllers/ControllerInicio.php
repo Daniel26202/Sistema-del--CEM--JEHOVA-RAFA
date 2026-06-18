@@ -17,9 +17,9 @@ function inicio($parametro)
 
     if ($parametro != "" && $parametro[0] == "cerrar") {
         // verifica si la sesión esta activa.
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
+        // if (session_status() !== PHP_SESSION_ACTIVE) {
+        //     session_start();
+        // } que esto ya esta en index
 
         //actualizar el token de inicio de session a su estado original es decir Null
         //actualizar el token del usuario
@@ -120,9 +120,9 @@ function cerrarSession()
         exit;
     }
 
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
+    // if (session_status() !== PHP_SESSION_ACTIVE) {
+    //     session_start();
+    // } Y otra vez
     // Guardar la bitácora
     $usuario->setTokenInicioSesion(null);
     $usuario->setIdUsuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);

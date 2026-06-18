@@ -42,6 +42,7 @@ if (!empty($parametro)) {
 
  $urlBase =  $concatenarRuta . '' . $concatenadorEspecial; 
 
+
 ?>
 
 <!DOCTYPE html>
