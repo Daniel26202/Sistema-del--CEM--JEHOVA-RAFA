@@ -42,7 +42,7 @@ class RateLimiter extends ModelBase
         if ($totalPeticiones >= $this->getLimitePeticiones()) {
             return true; // bloqueado por exceso de peticiones
         }
-        
+
         $data = [
             'ip' => $this->getIPUser(),
             'endpoind' => $this->getEndpoind(),
@@ -88,10 +88,28 @@ class RateLimiter extends ModelBase
         $this->endpoind = $endpoind;
     }
 
-    //se le coloco limite por ip de 80 solo para probarlo
-    public function setLimitePeticiones($limite_ip = 80)
+    //se le coloco limite por ip 
+    public function setLimitePeticiones($limite_ip = null)
     {
-        $this->limite_ip = $limite_ip;
+        if ($limite_ip !== null) {
+            $this->limite_ip = $limite_ip;
+            return;
+        }
+
+        $equivalentes = require __DIR__ . "/../../src/config/equivalencias.php";
+        $permiso = $equivalentes[$this->endpoind] ?? null;
+
+        switch ($permiso) {
+            case 'guardar':
+            case 'editar':
+            case 'eliminar':
+                $this->limite_ip = 18;
+                break;
+            case 'consultar':
+                $this->limite_ip = 80;
+                break;
+            default:
+                $this->limite_ip = 30; 
+        }
     }
 }
-

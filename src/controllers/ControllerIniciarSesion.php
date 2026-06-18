@@ -4,7 +4,7 @@ use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloUsuarios;
 use Firebase\JWT\JWT;
-
+use App\config\RateLimiter;
 // require_once __DIR__ . "/../config/config.php";
 
 function mostrarIniciarSesion($parametro)
@@ -28,12 +28,27 @@ function iniciarSesion()
         echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
         exit;
     }
-    
+    // Obtenemos la IP del que intenta entrar
+    $ipCliente = $_SERVER['REMOTE_ADDR'];
+
+    // RATE LIMIT estricto para login: 5 intentos por minuto por IP
+    $rateLimit = new RateLimiter();
+    $rateLimit->setIP($ipCliente);
+    $rateLimit->setEndpoind('iniciarSesion');
+    $rateLimit->setLimitePeticiones(5);
+
+
+    if ($rateLimit->checkRateLimitByIP()) {
+        http_response_code(429);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['ok' => false, 'error' => 'Demasiados intentos. Espere un momento antes de volver a intentarlo.']);
+        exit;
+    }
+
     $modelo = new ModeloInicioSesion();
     $bitacora = new ModeloBitacora();
     $usuario = new ModeloUsuarios();
 
-    $ipCliente = $_SERVER['REMOTE_ADDR']; // Obtenemos la IP del que intenta entrar
     $modelo->setIpUsuario($ipCliente);
 
 
@@ -100,7 +115,7 @@ function iniciarSesion()
 
     if ($validar) {
         $modelo->setIntentosFallidos(0);
-       
+
 
         //Hrllofor my computer yes after 
 
@@ -255,7 +270,7 @@ function iniciarSesionMovil()
             'nombre'     => $validar['nombre_personal'] ?? null,
             'apellido'   => $validar['apellido_personal'] ?? null
         ];
-        
+
         $jwt = \Firebase\JWT\JWT::encode($payload, $clavePrivada, 'RS256');
 
         $bitacora->setId_usuario($validar['id_usuario']);
