@@ -103,13 +103,13 @@ class RateLimiter extends ModelBase
             case 'guardar':
             case 'editar':
             case 'eliminar':
-                $this->limite_ip = 18;
+                $this->limite_ip = 50;
                 break;
             case 'consultar':
-                $this->limite_ip = 80;
+                $this->limite_ip = 100;
                 break;
             default:
-                $this->limite_ip = 30; 
+                $this->limite_ip = 80; 
         }
     }
 }

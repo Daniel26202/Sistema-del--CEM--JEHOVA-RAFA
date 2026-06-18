@@ -35,7 +35,7 @@ function iniciarSesion()
     $rateLimit = new RateLimiter();
     $rateLimit->setIP($ipCliente);
     $rateLimit->setEndpoind('iniciarSesion');
-    $rateLimit->setLimitePeticiones(5);
+    $rateLimit->setLimitePeticiones(20);
 
 
     if ($rateLimit->checkRateLimitByIP()) {
