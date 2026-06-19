@@ -82,8 +82,8 @@ function generarCodigo($correoM)
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         // correo del sistema 
-        $mail->Username = 'sistemajehovarafatrayectoiii@gmail.com';
-        $mail->Password = 'zamcdjqyqnyklmrj';
+        $mail->Username = $_ENV["NameCorreoClinica"];
+        $mail->Password = $_ENV["PasswordCorreoClinica"];
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
@@ -100,7 +100,7 @@ function generarCodigo($correoM)
         $mail->CharSet = 'UTF-8';
 
         // Remitente
-        $mail->setFrom('sistemajehovarafatrayectoiii@gmail.com', 'Clínica JEHOVA RAFA');
+        $mail->setFrom($_ENV["NameCorreoClinica"], 'Clínica JEHOVA RAFA');
         // destinatario. correo del usuario
         $mail->addAddress($correoM);
 

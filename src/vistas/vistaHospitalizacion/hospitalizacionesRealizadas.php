@@ -112,3 +112,36 @@
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionesRealizadas.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table class="table table-striped ">
+    <thead>
+        <tr>
+            <th>Cédula</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Diagnostico</th>
+            <th>Doctor asignado</th>
+            <!-- <th>Horas</th> -->
+
+
+        </tr>
+    </thead>
+    <tbody id="tbodyR">
+        <!-- se agrega en el js -->
+    </tbody>
+</table>

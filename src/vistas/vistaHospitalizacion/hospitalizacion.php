@@ -103,19 +103,10 @@
                     </button>
 
                 </div>
-                <div class="d-flex justify-content-end mb-3 mt-2 me-2 col-3">
-                    <input class="form-control input-busca" type="number" name="" placeholder="Ingrese cédula"
-                        id="inputBuscH">
-                    <button class="btn boton-buscar" title="Buscar" id="btnBuscH">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-search" viewBox="0 0 16 16">
-                            <path
-                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                        </svg>
-                    </button>
-                </div>
+
             </div>
-            <div class=" table-responsive">
+
+            <div class="table table-responsive">
 
                 <table class="table exampleTable table-striped ">
                     <thead>
@@ -259,8 +250,6 @@
         </div>
     </div>
 </div>
-
-
 
 
 
@@ -566,8 +555,263 @@
 </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- diseños que se van a usar................................................................................ -->
+
+
+<!-- para el modal de agregar insumo o servicio-->
+
+<div class="prueba">
+    <!-- insumo -->
+    <div class="col-12">
+
+        <div id="div-modal-insumo" class="row g-3">
+
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card card-insumo-v2 border rounded-4 shadow-sm h-100"
+                    data-index="36" data-medida="400 ml" data-precio="80" data-cantidad="2">
+
+                    <!-- TOP: nombre + medida -->
+                    <div class="card-body pb-2">
+                        <p class="fw-bold mb-1 fs-6" style="color:var(--color-text-card)">Ansumo</p>
+                        <span class="insumo-v2-medida">400 ml</span>
+                    </div>
+
+                    <hr class="mx-3 my-0 opacity-25">
+
+                    <!-- BODY -->
+                    <div class="card-body d-flex flex-column gap-2 pt-2">
+
+                        <!-- Chips -->
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="chip d-inline-flex align-items-center gap-1">
+                                <i class="bi bi-tag"></i> Sin IVA
+                            </span>
+                            <span class="chip d-inline-flex align-items-center gap-1">
+                                <i class="bi bi-boxes"></i> Stock: 2
+                            </span>
+                        </div>
+
+                        <!-- Precio -->
+                        <div>
+                            <div class="precio-usd">$80.00</div>
+                            <div class="precio-bs">46.614,90 Bs</div>
+                        </div>
+
+                        <!-- Input cantidad -->
+                        <div class="insumo-v2-input-wrap d-flex align-items-center">
+                            <span class="d-flex align-items-center px-2 text-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+                                </svg>
+                            </span>
+                            <input class="form-control input-validar inputs cantidadDisplay py-2"
+                                type="number" min="1" max="2" value="1"
+                                data-index="36" data-medida="400 ml"
+                                data-iva="0" data-precio="80.00" data-stock="2">
+                            <span class="d-flex align-items-center px-2">
+                                <svg class="check d-none" width="18" height="18" fill="#28a745" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                </svg>
+                                <svg class="error d-none" width="18" height="18" fill="#dc3545" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </span>
+                        </div>
+
+                        <!-- Botón -->
+                        <button class="btn btn-v2 botones-mostrar w-100 d-flex align-items-center justify-content-center gap-2 mt-auto"
+                            data-index="36">
+                            <i class="bi bi-plus-circle-fill"></i> Agregar
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- servicio -->
+    <div class="col-12 mt-5">
+
+
+        <div id="div-modal-servicio" class="row g-3">
+
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card card-servicio-v2 border rounded-4 shadow-sm h-100"
+                    style="cursor:pointer"
+                    data-index="2518" data-id-servicio="25" data-doctor="18">
+
+                    <!-- Cabecera -->
+                    <div class="serv-v2-header p-3 border-bottom text-center">
+                        <p class="serv-v2-nombre fw-bold mb-1 fs-6" style="color:var(--color-text-card)">
+                            Emergencia
+                        </p>
+                        <span class="badge" style="background:var(--color-primary); font-size:0.68rem">
+                            Servicio médico
+                        </span>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="card-body d-flex flex-column gap-2">
+
+                        <!-- Doctor -->
+                        <p class="text-center mb-0 fw-semibold" style="font-size:0.85rem; color:var(--color-text-card)">
+                            DR: Wilmer Baez
+                        </p>
+
+                        <hr class="my-1 opacity-25">
+
+                        <!-- Precios centrados -->
+                        <div class="text-center">
+                            <div class="serv-label">Precio</div>
+                            <div class="serv-usd">$1.000,00</div>
+                            <div class="serv-bs">582.686,20 Bs</div>
+                        </div>
+
+                        <!-- Botón al fondo -->
+                        <div class="mt-auto pt-1">
+                            <input type="hidden" value="1000.00" class="precio-servicio">
+                            <button class="btn btn-v2 botones-mostrar w-100 d-flex align-items-center justify-content-center gap-2"
+                                data-index="2518">
+                                <i class="bi bi-plus-circle-fill"></i> Agregar
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- diseño despues de agregado  -->
+
+
+
+
+
+
+
+<!-- servicio -->
+<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA"
+    data-index="${res.id_servicioMedico}">
+    <!-- Botón eliminar -->
+    <button type="button"
+        class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarServ"
+        data-index="${res.id_servicioMedico}"
+        style="background:none; border:none; font-size:2rem; font-weight:bold; color:#0d6efd; cursor:pointer; z-index:10;">
+        ×
+    </button>
+
+    <!-- Tarjeta -->
+    <a href="#"
+        class="card text-decoration-none shadow-sm border-0 rounded-4"
+        style="background: #f4f9ff61; transition: all 0.2s ease;">
+
+        <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
+            <div class="fw-semibold text-dark mb-2 m-auto d-flex ">
+                <p class="me-1 text-center cantidadServicio" style="font-size:1rem;">
+                    Cantidad
+                </p>
+                <p class="" style="font-size:1rem;">
+                    categoria
+                </p>
+            </div>
+            <p class="text-muted mb-1" style="font-size:0.9rem;">
+                nombre
+                apellido
+            </p>
+            <p class="fw-bold text-primary mb-0 precioS" style="font-size:0.95rem;">
+                582.686,20 Bs <span class="text-muted fw-normal" style="font-size:0.8rem;">($1.000,00)</span>
+            </p>
+
+            <div>
+                <input type="hidden" name="id_servicio[]" class=""
+                    value="${res.id_servicioMedico}">
+                <input type="hidden" name="cantidadS[]" class="cantidadServicioInput"
+                    value="${newCantidad}">
+            </div>
+        </div>
+    </a>
+</div>
+
+
+<!-- insumos -->
+<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative insumo-item"
+    data-index="36">
+
+    <!-- Botón eliminar -->
+    <button type="button"
+        class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarInsumo"
+        data-index="36"
+        style="background:none; border:none; font-size:2rem; font-weight:bold; color:#0d6efd; cursor:pointer; z-index:10;">
+        ×
+    </button>
+
+    <!-- Tarjeta -->
+    <a href="#"
+        class="card text-decoration-none shadow-sm border-0 rounded-4"
+        style="background: #f4f9ff61; transition: all 0.2s ease;">
+
+        <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
+
+            <!-- Fila superior: Cantidad y Medida -->
+            <div class="fw-semibold text-dark mb-2 m-auto d-flex align-items-center">
+                <p class="me-1 mb-0 text-center cantidadInsumo" style="font-size:1rem;">
+                    Cant: 1
+                </p>
+                <p class="mb-0 text-muted" style="font-size:1rem;">
+                    | 400 ml
+                </p>
+            </div>
+
+            <!-- Medio: Nombre del insumo, Stock e IVA -->
+            <p class="text-muted mb-1" style="font-size:0.9rem;">
+                <strong class="text-dark">Ansumo</strong> <br>
+                <span style="font-size: 0.75rem;">(Stock: 2 | Sin IVA)</span>
+            </p>
+
+            <!-- Inferior: Precios -->
+            <p class="fw-bold text-primary mb-0 precioInsumo" style="font-size:0.95rem;">
+                46.614,90 Bs <span class="text-muted fw-normal" style="font-size:0.8rem;">($80.00)</span>
+            </p>
+
+            <!-- Inputs ocultos para enviar en el formulario -->
+            <div>
+                <input type="hidden" name="id_insumo[]" class="" value="36">
+                <input type="hidden" name="cantidadI[]" class="cantidadInsumoInput" value="1">
+                <input type="hidden" name="precioI[]" value="80.00">
+            </div>
+        </div>
+    </a>
+</div>
+
+
+
+
+
+
+
 <script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/reutilizableHospitalizacion.js"></script>
-<script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionAgregar.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacion.js"></script>
 <script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>

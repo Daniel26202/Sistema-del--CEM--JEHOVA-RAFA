@@ -19,39 +19,98 @@ function refrescarSemaforo()
     return $_SESSION['semaforo'];
 }
 
-// mostrar los datos de la tabla (hospitalizaciones pendientes) 
-function traerSesion()
-{
-    // verifica si la sesión esta activa.
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-    $modeloHosp = new ModeloHospitalizacion();
-    $modeloInicio = new ModeloInicio();
 
-    $modeloInicio->setIdPersonal($_SESSION['id_personal']);
-    $validacionCargo = $modeloInicio->comprobarCargo();
-    $sesion = [$_SESSION['rol'], $validacionCargo, refrescarSemaforo()];
-    // datos de las h. pendientes
-    $datosH = $modeloHosp->selectsH();
-    $array = [$sesion, $datosH];
-    echo json_encode($array);
+// mostrar los datos de la tabla (hospitalizaciones pendientes)
+function traerHospP()
+{
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+        exit;
+    }
+
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+    // mapeada en el mismo orden que las columnas de la tabla en la vista
+    $columnasMapeadas = ['id_hospitalizacion', 'cedula', 'nombre', 'apellido', 'fecha_hospitalizacion']; // ajusta esto a tus columnas reales
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_hospitalizacion';
+
+    $modeloHosp = new ModeloHospitalizacion();
+
+    $datosH = $modeloHosp->selectsH($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+    $totalRegistros = $modeloHosp->contarTotalH('Pendiente');
+    $totalFiltrados = !empty($buscar) ? $modeloHosp->contarTotalH('Pendiente', $buscar) : $totalRegistros;
+
+    $response = [
+        "draw" => $draw,
+        "recordsTotal" => $totalRegistros,
+        "recordsFiltered" => $totalFiltrados,
+        "data" => is_array($datosH) ? $datosH : []
+    ];
+
+    echo json_encode($response);
+    exit;
 }
-// mostrar los datos de la tabla (hospitalizaciones realizadas) 
-function traerSesionR()
+
+// mostrar los datos de la tabla (hospitalizaciones realizadas)
+function traerHospR()
+{
+    if (empty($_GET)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+        exit;
+    }
+
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+    $columnasMapeadas = ['id_hospitalizacion', 'cedula', 'nombre', 'apellido', 'fecha_hospitalizacion']; // ajusta esto a tus columnas reales
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_hospitalizacion';
+
+    $modeloHosp = new ModeloHospitalizacion();
+
+    $datosH = $modeloHosp->selectsHR($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+    $totalRegistros = $modeloHosp->contarTotalH('Realizada');
+    $totalFiltrados = !empty($buscar) ? $modeloHosp->contarTotalH('Realizada', $buscar) : $totalRegistros;
+
+    $response = [
+        "draw" => $draw,
+        "recordsTotal" => $totalRegistros,
+        "recordsFiltered" => $totalFiltrados,
+        "data" => is_array($datosH) ? $datosH : []
+    ];
+
+    echo json_encode($response);
+    exit;
+}
+
+
+function traerIdURSesion()
 {
     // verifica si la sesión esta activa.
     if (session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
     }
-    $modeloHosp = new ModeloHospitalizacion();
     $modeloInicio = new ModeloInicio();
 
     $modeloInicio->setIdPersonal($_SESSION['id_personal']);
     $validacionCargo = $modeloInicio->comprobarCargo();
-    // datos de las h. realizadas
-    $datosH = $modeloHosp->selectsHR();
-    $array = [$validacionCargo, $datosH];
+
+
+    $array = ["id_usuario" => $_SESSION["id_usuario"], "id_rol" => $_SESSION["id_rol"], "validacionCargo" => $validacionCargo, "semaforoH" => refrescarSemaforo()];
     echo json_encode($array);
 }
 
@@ -348,25 +407,26 @@ function modificarH()
 function eliminaL($datos)
 {
     if (isset($datos)) {
+        // verifica si la sesión esta activa.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
 
         try {
             $idUsuario = $_SESSION['id_usuario'];
-            // RATE LIMIT: 5 peticiones cada 1 segundos
-            $limiter = new RateLimiter();
-            $limiter->verificar('eliminar_hospitalizacion_' . $idUsuario, 5, 1);
+
             $modeloBitacora = new ModeloBitacora();
             $modeloHosp = new ModeloHospitalizacion();
 
             $idH = $datos[0];
-            $id_usuario = $datos[1];
 
             $modeloHosp->setIdH($idH);
-            $eliminacion = $modeloHosp->eliminaLogico();
+            $eliminacion = $modeloHosp->eliminaLogico($idUsuario);
 
             if (is_array($eliminacion) && $eliminacion[0] === "exito") {
                 $modeloBitacora->setTabla("hospitalizacion");
                 $modeloBitacora->setActividad("Ha eliminado una hospitalizacion");
-                $modeloBitacora->setId_usuario($id_usuario);
+                $modeloBitacora->setId_usuario($idUsuario);
                 $modeloBitacora->insertarBitacora();
                 echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
             } else {

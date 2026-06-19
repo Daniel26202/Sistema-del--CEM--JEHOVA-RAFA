@@ -54,17 +54,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <!-- Contenedor principal de Bootstrap -->
     <div class="container mb-5 mt-3 ">
 
-
-        <!-- Fecha Actual -->
-        <div class="text-center mb-4">
-            <small class="text-bg-light-custom text-uppercase fw-medium" style="font-size: 0.7rem; letter-spacing: 0.5px;">
-                <?php
-                setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'Spanish_Spain');
-                echo strftime("%A, %d DE %B, %Y");
-                ?>
-            </small>
-        </div>
-        <div class="row justify-content-center  ">
+        <div class="row justify-content-center mt-5  ">
             <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-7">
 
 

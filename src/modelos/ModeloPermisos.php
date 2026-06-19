@@ -28,14 +28,15 @@ class ModeloPermisos extends ModelBase
         return !empty($listData) ? 1 : 0;
     }
 
-    public function returnIdModule() {
+    public function returnIdModule()
+    {
         $data = [
-            'nombre'=>$this->getModulo()
+            'nombre' => $this->getModulo()
         ];
-        $sql ="SELECT id_modulo FROM modulos where nombre =:nombre AND estado = 'ACT' ";
+        $sql = "SELECT id_modulo FROM modulos where nombre =:nombre AND estado = 'ACT' ";
         $this->setSQL($sql);
         $listData = $this->search($data, false);
-        return !empty($listData) ?  $listData['id_modulo']: 0;
+        return !empty($listData) ?  $listData['id_modulo'] : 0;
     }
 
     public function returnModules()
@@ -161,7 +162,7 @@ class ModeloPermisos extends ModelBase
 
     public function setPermiso($permiso)
     {
-        if (!$permiso == 'consultar' || !$permiso == 'guardar' || !$permiso == 'editar' || !$permiso == 'eliminar') {
+        if (!in_array($permiso, ['consultar', 'guardar', 'editar', 'eliminar'])) {
             throw new \InvalidArgumentException("El permiso no es valido.");
         }
 
@@ -170,7 +171,7 @@ class ModeloPermisos extends ModelBase
 
     public function setPermisos($permisos)
     {
-        if (is_array($permisos)) {
+        if (!is_array($permisos)) {
             throw new \InvalidArgumentException("El permisos no es valido.");
         }
 

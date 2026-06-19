@@ -1,3 +1,9 @@
+
+
+
+
+
+
 <!-- MODAL DE AGREGAR INSUMOS -->
 <div class="modal fade " id="modal-agregar-insumos" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
