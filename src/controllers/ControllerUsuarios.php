@@ -319,8 +319,8 @@ function editarAdministrador()
     try {
         $idUsuario = $_SESSION['id_usuario'];
         // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('editar_usuario_admin_' . $idUsuario, 5, 1);
+        // $limiter = new RateLimiter();
+        // $limiter->verificar('editar_usuario_admin_' . $idUsuario, 5, 1);
 
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();
@@ -370,8 +370,8 @@ function eliminarAdministrador()
     try {
         $idUsuario = $_SESSION['id_usuario'];
         // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('eliminar_usuario_admin_' . $idUsuario, 5, 1);
+        // $limiter = new RateLimiter();
+        // $limiter->verificar('eliminar_usuario_admin_' . $idUsuario, 5, 1);
 
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();

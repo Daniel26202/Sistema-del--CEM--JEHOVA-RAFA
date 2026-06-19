@@ -5,7 +5,7 @@ use App\modelos\ModeloPermisos;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloUsuarios;
-use App\config\RateLimiter;
+// use App\config\RateLimiter;
 
 function perfil($parametro)
 {
@@ -39,8 +39,8 @@ function guardar()
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
 		// RATE LIMIT: 5 peticiones cada 1 segundos
-		$limiter = new RateLimiter();
-		$limiter->verificar('guardar_perfil_' . $idUsuario, 5, 1);
+		// $limiter = new RateLimiter();
+		// $limiter->verificar('guardar_perfil_' . $idUsuario, 5, 1);
 
 		$bitacora = new ModeloBitacora();
 		$modelo = new ModeloPerfil();

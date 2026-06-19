@@ -3,7 +3,7 @@
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
-use App\config\RateLimiter;
+// use App\config\RateLimiter;
 
 
 

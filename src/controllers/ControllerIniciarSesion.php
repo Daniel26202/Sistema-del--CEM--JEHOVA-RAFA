@@ -3,8 +3,7 @@
 use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloUsuarios;
-use Firebase\JWT\JWT;
-use App\config\RateLimiter;
+// use Firebase\JWT\JWT;
 // require_once __DIR__ . "/../config/config.php";
 
 function mostrarIniciarSesion($parametro)
@@ -31,19 +30,22 @@ function iniciarSesion()
     // Obtenemos la IP del que intenta entrar
     $ipCliente = $_SERVER['REMOTE_ADDR'];
 
+
+
+    //  Esto es hacerlo po segunda vez, pero ya esta en el index
     // RATE LIMIT estricto para login: 5 intentos por minuto por IP
-    $rateLimit = new RateLimiter();
-    $rateLimit->setIP($ipCliente);
-    $rateLimit->setEndpoind('iniciarSesion');
-    $rateLimit->setLimitePeticiones(20);
+    // $rateLimit = new RateLimiter();
+    // $rateLimit->setIP($ipCliente);
+    // $rateLimit->setEndpoind('iniciarSesion');
+    // $rateLimit->setLimitePeticiones(20);
 
 
-    if ($rateLimit->checkRateLimitByIP()) {
-        http_response_code(429);
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['ok' => false, 'error' => 'Demasiados intentos. Espere un momento antes de volver a intentarlo.']);
-        exit;
-    }
+    // if ($rateLimit->checkRateLimitByIP()) {
+    //     http_response_code(429);
+    //     header('Content-Type: application/json; charset=utf-8');
+    //     echo json_encode(['ok' => false, 'error' => 'Demasiados intentos. Espere un momento antes de volver a intentarlo.']);
+    //     exit;
+    // }
 
     $modelo = new ModeloInicioSesion();
     $bitacora = new ModeloBitacora();

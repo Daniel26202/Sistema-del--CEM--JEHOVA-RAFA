@@ -3,7 +3,7 @@
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloBitacora;
 
-use App\config\RateLimiter;
+// use App\config\RateLimiter;
 
 
 ////modulos/////
@@ -68,8 +68,8 @@ function registrarModulo()
     try {
         $idUsuario = $_SESSION['id_usuario'];
         // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('guardar_modulo_' . $idUsuario, 5, 1);
+        // $limiter = new RateLimiter();
+        // $limiter->verificar('guardar_modulo_' . $idUsuario, 5, 1);
 
         $modulo = new ModeloPermisos();
         $bitacora = new ModeloBitacora();
@@ -109,8 +109,8 @@ function eliminar_modulo($datos)
 
         $idUsuario = $_SESSION['id_usuario'];
         // RATE LIMIT: 5 peticiones cada 1 segundos
-        $limiter = new RateLimiter();
-        $limiter->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
+        // $limiter = new RateLimiter();
+        // $limiter->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
 
         $modelo  = new ModeloPermisos();
         $bitacora = new ModeloBitacora();
