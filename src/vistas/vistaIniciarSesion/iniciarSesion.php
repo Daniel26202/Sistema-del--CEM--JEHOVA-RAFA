@@ -60,7 +60,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
             <small class="text-bg-light-custom text-uppercase fw-medium" style="font-size: 0.7rem; letter-spacing: 0.5px;">
                 <?php
                 setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'Spanish_Spain');
-                echo strftime("%A, %d DE %B, %Y");
+                echo strtotime("%A, %d DE %B, %Y");
                 ?>
             </small>
         </div>

@@ -134,7 +134,7 @@ class Rutas
 
         if (!$file && $this->rateLimit->evaluar_rate_limit_by_user()) {
             http_response_code(429);
-            echo json_encode(['error' => 'Demasiadas peticiones. Por favor, intente más tarde.']);
+            echo json_encode(['error' => 'Demasiadas peticiones. Por favor, intente ma tarde.']);
             exit;
         }
 

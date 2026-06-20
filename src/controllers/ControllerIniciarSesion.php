@@ -13,12 +13,6 @@ function mostrarIniciarSesion($parametro)
 }
 
 // iniciar sesión 
-function logIn($parametro)
-{
-
-    $modelo = new ModeloInicioSesion(true);
-    $bitacora = new ModeloBitacora(true);
-}
 
 function iniciarSesion()
 {

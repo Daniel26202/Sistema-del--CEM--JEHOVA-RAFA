@@ -15,3 +15,8 @@ src/config/keys/public.key
 # Ignorar la carpeta de dependencias
 vendor/
 
+desktop.ini
+Thumbs.db
+src/assets/img_ingresadas_por_usuario/
+
+
