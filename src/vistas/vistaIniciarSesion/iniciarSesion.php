@@ -65,6 +65,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
             </small>
         </div>
         <div class="row justify-content-center  ">
+        <div class="row justify-content-center mt-5  ">
             <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-7">
 
 

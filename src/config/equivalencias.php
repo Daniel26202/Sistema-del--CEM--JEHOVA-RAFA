@@ -6,18 +6,18 @@ return [
     "getPacientes" => "consultar",
     "getPacientesAjax" => "consultar",
     "papeleraPaciente" => "consultar",
-    "papeleraPacienteAjax"=> "consultar",
+    "papeleraPacienteAjax" => "consultar",
     "guardar" => "guardar",
     "setPaciente"  => "editar",
     "eliminar" => "eliminar",
     "restablecer" => "eliminar",
     "getHistorialSalud" => "consultar",
-    "getHistorialSaludAjax"=>"consultar",
+    "getHistorialSaludAjax" => "consultar",
 
 
     //Clientes
     "Clientes" => "consultar",
-    "clientesAjax"=>'consultar',
+    "clientesAjax" => 'consultar',
     "papeleraPaciente" => "consultar",
     "papeleraAjax" => "consultar",
     "guardar" => "guardar",
@@ -57,10 +57,10 @@ return [
     "facturarHospitalizacion" => "consultar",
     "coincidenciaPacienteCliente" => "consultar",
     "guardarCliente" => "consultar",
-    "mostrarServicios"=>"consultar",
-    "mostrarInsumos"=>"consultar",
-    "mostrarMetodosDePago"=>"consultar",
-    "datosHospitalizacion"=>'consultar',
+    "mostrarServicios" => "consultar",
+    "mostrarInsumos" => "consultar",
+    "mostrarMetodosDePago" => "consultar",
+    "datosHospitalizacion" => 'consultar',
 
     //Citas
     "mostrarPacienteCita" => "consultar",
@@ -83,7 +83,7 @@ return [
     "mostrarServiciosMedicosAjax" => "consultar",
     'mostrarDataPaciente' => 'consultar',
     'retornarTodasLasCitas' => 'consultar',
-    'apartarCupo'=>'guardar',
+    'apartarCupo' => 'guardar',
 
 
     //Servicios Medicos
@@ -106,7 +106,7 @@ return [
 
     //Doctores
     "doctores" => "consultar",
-    "DoctoresAjax"=> "consultar",
+    "DoctoresAjax" => "consultar",
     "agregarDoctor" => "guardar",
     "editarDoctor" => "editar",
     "borrarDoctor" => "eliminar",
@@ -117,7 +117,7 @@ return [
     "buscarDoctor" => "consultar",
     "buscarHorario" => "consultar",
     "guardarDoctores" => "guardar",
-    "selectEspcAjax"=>"guardar",
+    "selectEspcAjax" => "guardar",
     "eliminarEspecialidad" => "consultar",
     "papeleraDoctoresAjax" => "consultar",
     "restablecer" => "eliminar",
@@ -140,19 +140,19 @@ return [
     "editarAdministrador" => "editar",
     "eliminarAdministrador" => "eliminar",
     "verificarPassw" => "consultar",
-    'listaNegra'=>'consultar',
-    'listaNegraAjax'=>'consultar',
-    'addUserBlackList'=>'guardar',
-    'removeBlackList'=>'eliminar',
-    'listaUserAjax'=>'consultar',
+    'listaNegra' => 'consultar',
+    'listaNegraAjax' => 'consultar',
+    'addUserBlackList' => 'guardar',
+    'removeBlackList' => 'eliminar',
+    'listaUserAjax' => 'consultar',
 
     //Hospitalizacion
     "semaforo" => "consultar",
     "serviciosDH" => "consultar",
     "selectDoctores" => "consultar",
     "selectServiciosD" => "consultar",
-    "traerSesion" => "consultar",
-    "traerSesionR" => "consultar",
+    "traerHospP" => "consultar",
+    "traerHospR" => "consultar",
     "hospitalizacion" => "consultar",
     "hospitalizacionesRealizadas" => "consultar",
     "validarPaciente"  => "consultar",
@@ -166,7 +166,7 @@ return [
     "eliminaL" => "eliminar",
     "enviarAFacturar" => "guardar",
     "buscarIExH" => "consultar",
-
+    "traerIdURSesion" => "consultar",
 
     //Control
     "control" => "consultar",
@@ -184,9 +184,9 @@ return [
     "eliminarSintoma" => "eliminar",
     "agregarSintoma" => "editar",
     "listPacientesJS" => "consultar",
-    "returnSistomasPaciente"=>"consultar",
-    "returnPatologiasPaciente"=>"consultar",
-    "returnDoctores"=>"consultar",
+    "returnSistomasPaciente" => "consultar",
+    "returnPatologiasPaciente" => "consultar",
+    "returnDoctores" => "consultar",
 
     //Insumos
     "insumos" => "consultar",
@@ -243,11 +243,11 @@ return [
     "modificarRol" => "editar",
     "eliminarRol" => "eliminar",
     "validarRol" => "consultar",
-    'cargarPermisosGuardados'=>'consultar',
-    'returnPermisos'=>'consultar',
-    'returnModules'=>'consultar',
-    'eliminar_modulo'=>'eliminar',
-    'returnPermisionModule'=>'consultar',
+    'cargarPermisosGuardados' => 'consultar',
+    'returnPermisos' => 'consultar',
+    'returnModules' => 'consultar',
+    'eliminar_modulo' => 'eliminar',
+    'returnPermisionModule' => 'consultar',
 
     //Reportes
     "reportes" => "consultar",
@@ -280,7 +280,7 @@ return [
     "generarRespaldo" => "guardar",
     "restaurarRespaldo" => "guardar",
     "verificacionU" => "consultar",
-    "returnDataFactura"=>'consultar',
+    "returnDataFactura" => 'consultar',
     "returnDataFacturaAnulada" => 'consultar',
 
 

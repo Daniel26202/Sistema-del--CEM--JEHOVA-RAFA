@@ -1,5 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////////////
-import { executePetition, alertConfirm, alertError, alertSuccess, clearStyleVInputs } from "../../js/generic/funtionGeneric.js";
+import {
+    executePetition,
+    alertConfirm,
+    alertError,
+    alertSuccess,
+    clearStyleVInputs,
+    safeParseInt,
+} from "../../js/generic/funtionGeneric.js";
 import { traerSerevicio } from "../../js/hospitalizacion/reutilizableHospitalizacion.js";
 import { inicializarValidacionFormulario, chulitoYX } from "../generic/expresionesModulares.js";
 
@@ -219,16 +226,25 @@ async function editar(indice) {
 }
 
 function botonInputNumber(btn, inputN) {
-    let dataI = btn.getAttribute("data-index");
-    let min = inputN.getAttribute("min");
-    let max = inputN.getAttribute("max");
-    let step = inputN.getAttribute("step");
-    let val = inputN.getAttribute("value");
-    let calcStep = dataI == "aumentar" ? step * 1 : dataI == "disminuir" ? step * -1 : false;
-    let nuevoValor = parseInt(val) + calcStep;
+    if (!btn || !inputN) return;
+    // aumentar / disminuir
+    const action = btn.getAttribute("data-index");
+    const min = safeParseInt(inputN.getAttribute("min"), 10, 0);
+    const max = safeParseInt(inputN.getAttribute("max"), 10, Number.MAX_SAFE_INTEGER);
+    const step = safeParseInt(inputN.getAttribute("step"), 10, 1);
 
-    if (nuevoValor >= min && nuevoValor <= max) {
-        inputN.setAttribute("value", nuevoValor);
+    // valor actual del input (si no tiene value, usa el atributo)
+    const current = safeParseInt(inputN.value ?? inputN.getAttribute("value"), 10, 0);
+
+    const delta = action === "aumentar" ? step : action === "disminuir" ? -step : 0;
+    const nuevo = current + delta;
+
+    if (nuevo >= min && nuevo <= max) {
+        inputN.value = nuevo;
+        inputN.setAttribute("value", nuevo);
+
+        // dispara evento input para que otras funciones reaccionen
+        inputN.dispatchEvent(new Event("input", { bubbles: true }));
     }
 }
 
@@ -695,7 +711,7 @@ const mostrarIE = async (id) => {
 
                 html += `
                     <p class="text-danger text-center m-0 p-0 d-none">Límite de cantidad alcanzado</p>
-                    <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregados" data-index=>
+                    <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregados divPadreInsumos" data-index=>
 
                         <div class="col-2 ps-4 pb-1">
                             <a href="#" class="ms-2 eliminarInsE eleEli" data-index="${res.id_insumoDeHospitalizacion}">
@@ -1025,7 +1041,7 @@ const traerUnInsumoE = async (id) => {
             if (existeIn) {
                 html = `
                     <p class="text-danger text-center m-0 p-0 d-none">Límite de cantidad alcanzado</p>
-                    <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregados">
+                    <div class="d-flex mt-4 mb-4 align-items-center col-12 divInsumosAgregados divPadreInsumos">
     
                         <div class="col-2 ps-4 pb-1">
                             <a href="#" class="ms-2 eliminarInsE">
@@ -1342,4 +1358,23 @@ formE.addEventListener("submit", async function (e) {
     } else {
         alertError("Error", "Por favor verifique que todos los datos estén correctos.");
     }
+});
+
+function obtenerFechaHoraLocal() {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+    const dia = String(fecha.getDate()).padStart(2, "0");
+    const horas = String(fecha.getHours()).padStart(2, "0");
+    const minutos = String(fecha.getMinutes()).padStart(2, "0");
+    const segundos = String(fecha.getSeconds()).padStart(2, "0");
+    return `${año}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
+}
+
+document.querySelector("#btnAgregarH").addEventListener("click", async () => {
+    await traerSerevicio("agregar");
+    // tomo la fecha de hoy
+    let fechaHoy = obtenerFechaHoraLocal();
+
+    document.querySelector("#fechaHoy").value = fechaHoy;
 });

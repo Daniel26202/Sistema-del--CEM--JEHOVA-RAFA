@@ -4,6 +4,7 @@ namespace App\modelos;
 
 use App\modelos\ModelBase;
 use Exception;
+use App\config\RateLimiter;
 
 class ModeloHospitalizacion extends ModelBase
 {
@@ -92,19 +93,118 @@ class ModeloHospitalizacion extends ModelBase
 
 
 
-    // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito, para mostrarlo en la tabla de la vista (de las hospitalizaciones pendientes)
-    public function selectsH()
+
+
+
+
+
+
+
+
+
+
+
+
+    // selecciono las hospitalizaciones pendientes con paginación, búsqueda y orden para DataTable
+    public function selectsH($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_hospitalizacion', $ordenDir = 'DESC')
     {
         try {
-            $sql = "SELECT * FROM view_paciente_hospitalizado WHERE estado_usuario = 'ACT' AND estado_hospitalizacion = 'Pendiente' GROUP BY id_hospitalizacion";
+            $sql = "SELECT * FROM view_paciente_hospitalizado 
+                WHERE estado_usuario = 'ACT' AND estado_hospitalizacion = 'Pendiente'";
+
+            $data = [];
+
+            if (!empty($buscar)) {
+                $sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " GROUP BY id_hospitalizacion ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
             $this->setSQL($sql);
-            $consulta = $this->read();
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $consulta = $this->search($data);
             return !empty($consulta) ? $consulta : false;
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
+
+    // selecciono las hospitalizaciones realizadas con paginación, búsqueda y orden para DataTable
+    public function selectsHR($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_hospitalizacion', $ordenDir = 'DESC')
+    {
+        try {
+            $sql = "SELECT * FROM view_paciente_hospitalizado 
+                WHERE estado_hospitalizacion = 'Realizada'";
+
+            $data = [];
+
+            if (!empty($buscar)) {
+                $sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $sql .= " GROUP BY id_hospitalizacion ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
+            $this->setSQL($sql);
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $consulta = $this->search($data);
+            return !empty($consulta) ? $consulta : false;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    // cuenta el total de hospitalizaciones según el estado (para recordsTotal/recordsFiltered de DataTable)
+    public function contarTotalH($estadoHosp, $buscar = '')
+    {
+        $data = [
+            'estadoHosp' => $estadoHosp
+        ];
+
+        $sql = "SELECT COUNT(DISTINCT id_hospitalizacion) as total FROM view_paciente_hospitalizado 
+            WHERE estado_hospitalizacion = :estadoHosp";
+
+        if ($estadoHosp === 'Pendiente') {
+            $sql .= " AND estado_usuario = 'ACT'";
+        }
+
+        if (!empty($buscar)) {
+            $sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
+            $data['buscar'] = "%$buscar%";
+        }
+
+        $this->setSQL($sql);
+        $resultado = $this->search($data, false);
+
+        return $resultado['total'] ?? 0;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function selectDoctores()
     {
@@ -178,21 +278,6 @@ class ModeloHospitalizacion extends ModelBase
             return $e->getMessage();
         }
     }
-
-    // selecciono 6 tablas de la base de datos con el INNER JOIN, uso solo los datos que necesito, para mostrarlo en la tabla de la vista (de las hospitalizaciones realizadas)
-    public function selectsHR()
-    {
-        try {
-            $sql = "SELECT * FROM view_paciente_hospitalizado WHERE estado_hospitalizacion = 'Realizada' GROUP BY id_hospitalizacion";
-
-            $this->setSQL($sql);
-            $consulta = $this->read();
-            return !empty($consulta) ? $consulta : false;
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
 
 
 
@@ -506,7 +591,7 @@ class ModeloHospitalizacion extends ModelBase
                     } else if ($cantidadE[$contador] < $cantidadIHBD["cantidad"]) {
 
                         $cR = $cantidadIHBD["cantidad"] - $cantidadE[$contador];
-                        $sql = "CALL devolver_insumos_hospitalizacion(:i, :cantidad);";
+                        $sql = "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
                         $this->setSQL($sql);
                         $this->storedProcedure(['i' => $cantidadIHBD["id_insumo"], 'cantidad' => $cR]);
                     }
@@ -573,7 +658,7 @@ class ModeloHospitalizacion extends ModelBase
                     $validar = $this->delete(['id_insumo_eliminado' => $idIAEl]);
                     // devolver insumos 
                     if ($validar) {
-                        $sql =  "CALL devolver_insumos_hospitalizacion(:i, :cantidad);";
+                        $sql =  "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
                         $this->setSQL($sql);
                         $this->storedProcedure([
                             'i' => $cantidadIH["id_insumo"],
@@ -667,7 +752,7 @@ class ModeloHospitalizacion extends ModelBase
     }
 
     // eliminación lógica
-    public function eliminaLogico()
+    public function eliminaLogicoPrivada()
     {
         try {
             $this->beginTransaction();
@@ -684,7 +769,7 @@ class ModeloHospitalizacion extends ModelBase
 
                 foreach ($datosIDH as $indice => $value) {
 
-                    $sql = "CALL devolver_insumos_hospitalizacion(:i, :cantidad);";
+                    $sql = "CALL devolver_insumo_hospitalizacion(:i, :cantidad);";
                     $this->setSQL($sql);
                     $this->storedProcedure([
                         'i' => $value["id_insumo"],
@@ -796,6 +881,44 @@ class ModeloHospitalizacion extends ModelBase
             print_r("ocurrio un error en hospitalización, intente mas tarde");
         }
     }
+
+    // funciones reutilizables 
+    private function validarSesion($idUsuario): void
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+            throw new \Exception('No hay sesión activa o usuario no autenticado.');
+        }
+    }
+
+    private function validarCamposObligatorios(array $campos): void
+    {
+        foreach ($campos as $campo) {
+            if (empty($campo)) {
+                throw new \Exception('No se permiten campos vacíos.');
+            }
+        }
+    }
+
+
+    //  funciones filtro 
+
+    public function eliminaLogico($idUsuario)
+    {
+        $this->validarSesion($idUsuario);
+
+        $this->validarCamposObligatorios([$this->idH]);
+        // RATE LIMIT: 5 peticiones cada 1 segundos
+        (new RateLimiter())->verificar('eliminar_hospitalizacion_' . $idUsuario, 5, 1);
+
+        return $this->eliminaLogicoPrivada();
+    }
+
+
+
+
 
 
     // getter y setter.............
