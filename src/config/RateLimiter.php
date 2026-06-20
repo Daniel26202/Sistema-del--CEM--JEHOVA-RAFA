@@ -9,13 +9,11 @@ class RateLimiter extends ModelBase
 {
     private $limite_ip = 60;
     private $ventana_tiempo_IP = 10;
-    
     private $limite_user = 20;
     private $ventana_tiempo_user = 1;
-    private $sessionId = '';
-    
+    private $sessionId = '';    
     private $ip = '';
-    // private $endpoind = '';
+
 
     public function __construct($dbSystem = false)
     {
@@ -57,36 +55,6 @@ class RateLimiter extends ModelBase
         }
 
         return false;
-
-        // $haceUnMinuto = $ahora - $this->ventana_tiempo;
-        // $data = ['haceUnMinuto' => $haceUnMinuto];
-        // $sql = "DELETE FROM control_rate_limit WHERE creado_en < :haceUnMinuto";
-        // $this->setSQL($sql);
-        // $this->delete($data);
-
-        // $data = [
-        //     'ip' => $this->getIPUser(),
-        //     'endpoind' => $this->getEndpoind(),
-        //     'haceUnMinuto' => $haceUnMinuto
-        // ];
-        // $sql = "SELECT COUNT(*) as total FROM control_rate_limit WHERE ip = :ip AND endpoind = :endpoind AND creado_en >= :haceUnMinuto";
-        // $this->setSQL($sql);
-        // $datos = $this->search($data, false);
-        // $totalPeticiones = $datos['total'];
-
-        // if ($totalPeticiones >= $this->limite_ip) {
-        //     return true; // bloqueado por exceso de peticiones
-        // }
-
-        // $data = [
-        //     'ip' => $this->getIPUser(),
-        //     'endpoind' => $this->getEndpoind(),
-        // ];
-        // $sql = "INSERT INTO control_rate_limit (id, ip, endpoind) VALUES (null, :ip, :endpoind)";
-        // $this->setSQL($sql);
-        // $this->create($data);
-
-        // return false; //se permite
     }
 
     public function evaluar_rate_limit_by_user()
@@ -125,10 +93,6 @@ class RateLimiter extends ModelBase
         return $this->sessionId;
     }
 
-    // public function getEndpoind()
-    // {
-    //     return $this->endpoind;
-    // }
 
     public function getLimitePeticiones()
     {
@@ -146,49 +110,24 @@ class RateLimiter extends ModelBase
     }
 
 
-    public function setIP($ip)
+    public function setIP(string $ip)
     {
         $this->ip = (string)$ip;
     }
-    public function setVentanaTiempoIP($time){
+    public function setVentanaTiempoIP(int $time){
         $this->ventana_tiempo_IP = (int)$time;
     }
-    public function setVentanaTiempoUser($time){
+    public function setVentanaTiempoUser(int $time){
         $this->ventana_tiempo_user = (int)$time;
     }
 
 
-    // public function setEndpoind($endpoind)
-    // {
-    //     $this->endpoind = $endpoind;
-    // }
-
     public function setLimitePeticiones(int $limite_ip)
     {
         $this->limite_ip = (int)$limite_ip;
-        // if ($limite_ip !== null) {
-        //     $this->limite_ip = $limite_ip;
-        //     return;
-        // }
-
-        // $equivalentes = require __DIR__ . "/../../src/config/equivalencias.php";
-        // $permiso = $equivalentes[$this->endpoind] ?? null;
-
-        // switch ($permiso) {
-        //     case 'guardar':
-        //     case 'editar':
-        //     case 'eliminar':
-        //         $this->limite_ip = 50;
-        //         break;
-        //     case 'consultar':
-        //         $this->limite_ip = 100;
-        //         break;
-        //     default:
-        //         $this->limite_ip = 80; 
-        // }
     }
     
-    public function setSessionId($sessionId)
+    public function setSessionId(string $sessionId)
     {
         $this->sessionId = (string)$sessionId;
     }

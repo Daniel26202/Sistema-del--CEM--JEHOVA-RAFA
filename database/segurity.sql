@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 15-06-2026 a las 23:38:05
+-- Tiempo de generación: 20-06-2026 a las 02:25:44
 -- Versión del servidor: 10.4.32-MariaDB-log
 -- Versión de PHP: 8.2.12
 
@@ -20,13 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `segurity`
 --
-
-CREATE DATABASE IF NOT EXISTS `segurity` 
-DEFAULT CHARACTER SET utf8mb4 
-COLLATE utf8mb4_unicode_ci;
-
-USE `segurity`;
-
 
 -- --------------------------------------------------------
 
@@ -1053,7 +1046,8 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 (1007, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-15 17:09:19'),
 (1008, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-15 17:33:41'),
 (1009, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-15 17:36:11'),
-(1010, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-15 17:36:42');
+(1010, 1, 'cerrar session', 'Ha cerrado la session', '2026-06-15 17:36:42'),
+(1011, 1, 'inicio sesion', 'Ha iniciado una session', '2026-06-19 20:15:54');
 
 -- --------------------------------------------------------
 
@@ -1064,60 +1058,8 @@ INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `tabla`, `actividad`, `fech
 CREATE TABLE `control_rate_limit` (
   `id` int(11) NOT NULL,
   `ip` varchar(50) NOT NULL,
-  `endpoind` varchar(50) NOT NULL,
   `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `control_rate_limit`
---
-
-INSERT INTO `control_rate_limit` (`id`, `ip`, `endpoind`, `creado_en`) VALUES
-(1, '::1', 'factura', '2026-06-15 21:33:24'),
-(2, '::1', 'mostrarServicios', '2026-06-15 21:33:25'),
-(3, '::1', 'mostrarInsumos', '2026-06-15 21:33:25'),
-(4, '::1', 'mostrarMetodosDePago', '2026-06-15 21:33:25'),
-(5, '::1', 'valorDolar', '2026-06-15 21:33:25'),
-(6, '::1', 'inicio', '2026-06-15 21:33:41'),
-(7, '::1', 'mostrarIniciarSesion', '2026-06-15 21:33:41'),
-(8, '::1', 'assets', '2026-06-15 21:33:41'),
-(9, '::1', 'error', '2026-06-15 21:33:41'),
-(10, '::1', 'getPacientes', '2026-06-15 21:35:44'),
-(11, '::1', 'mostrarIniciarSesion', '2026-06-15 21:35:44'),
-(12, '::1', 'iniciarSesion', '2026-06-15 21:35:59'),
-(13, '::1', 'iniciarSesion', '2026-06-15 21:36:11'),
-(14, '::1', 'inicio', '2026-06-15 21:36:12'),
-(15, '::1', 'assets', '2026-06-15 21:36:12'),
-(16, '::1', 'assets', '2026-06-15 21:36:12'),
-(17, '::1', 'assets', '2026-06-15 21:36:12'),
-(18, '::1', 'assets', '2026-06-15 21:36:12'),
-(19, '::1', 'error', '2026-06-15 21:36:12'),
-(20, '::1', 'error', '2026-06-15 21:36:12'),
-(21, '::1', 'error', '2026-06-15 21:36:12'),
-(22, '::1', 'error', '2026-06-15 21:36:12'),
-(23, '::1', 'diasConMasCitas', '2026-06-15 21:36:12'),
-(24, '::1', 'servicios', '2026-06-15 21:36:12'),
-(25, '::1', 'citas', '2026-06-15 21:36:12'),
-(26, '::1', 'pacientes_hospitalizados', '2026-06-15 21:36:12'),
-(27, '::1', 'citasDeHoy', '2026-06-15 21:36:12'),
-(28, '::1', 'especialidades_solicitadas', '2026-06-15 21:36:12'),
-(29, '::1', 'sintomas_comunes', '2026-06-15 21:36:12'),
-(30, '::1', 'retornarDoctores', '2026-06-15 21:36:12'),
-(31, '::1', 'valorDolar', '2026-06-15 21:36:12'),
-(32, '::1', 'todos_los_sintomas', '2026-06-15 21:36:12'),
-(33, '::1', 'todas_las_especialidades', '2026-06-15 21:36:12'),
-(34, '::1', 'getPacientes', '2026-06-15 21:36:16'),
-(35, '::1', 'getPacientesAjax', '2026-06-15 21:36:16'),
-(36, '::1', 'valorDolar', '2026-06-15 21:36:16'),
-(37, '::1', 'hasPermision', '2026-06-15 21:36:16'),
-(38, '::1', 'hasPermision', '2026-06-15 21:36:16'),
-(39, '::1', 'hasPermision', '2026-06-15 21:36:16'),
-(40, '::1', 'hasPermision', '2026-06-15 21:36:16'),
-(41, '::1', 'inicio', '2026-06-15 21:36:42'),
-(42, '::1', 'mostrarIniciarSesion', '2026-06-15 21:36:42'),
-(43, '::1', 'iniciarSesion', '2026-06-15 21:37:11'),
-(44, '::1', 'iniciarSesion', '2026-06-15 21:37:21'),
-(45, '::1', 'iniciarSesion', '2026-06-15 21:37:22');
 
 -- --------------------------------------------------------
 
@@ -1347,7 +1289,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `imagen`, `usuario`, `correo`, `password`, `estado`, `token_session`) VALUES
-(1, 10, 'guason_1920x1080_xtrafondos.com.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', NULL),
+(1, 10, 'guason_1920x1080_xtrafondos.com.jpg', 'WDaniel123', 'correco@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', 'b699c574fcf8b77af6a2284b433a8960'),
 (42, 8, 'img30.png', 'Usuario123', 'WDaniel123@gmail.com', '$2y$10$1bMoW4177.FH45HrSHx/KOVV.LBAbDXnaGn1nMx3OtJ3MAah2NYnq', 'ACT', NULL),
 (43, 8, '137329.jpg', 'Usuario123', 'WDaniel143@gmail.com', '$2y$10$80gqRMUNCdZY2z7rKB7CxeCTQtH2zSJ/WdNBtaQ1/pHVyLWqNZvOW', 'ACT', ''),
 (45, 8, 'doctor.png', 'yuE23', 'wbaez975@gmail.com', '$2y$10$ohxfRe.SGkI.b83el1Sqxu9eFyeA4IyFIjLafFnlaosIxMLvschm.', 'ACT', ''),
@@ -1416,13 +1358,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1011;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1012;
 
 --
 -- AUTO_INCREMENT de la tabla `control_rate_limit`
 --
 ALTER TABLE `control_rate_limit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
