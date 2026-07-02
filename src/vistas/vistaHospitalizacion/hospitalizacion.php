@@ -10,7 +10,7 @@
     <div class="m-auto" style="width: 95%;">
         <div class=" d-flex justify-content-between mb-2">
             <div class=" d-flex align-items-center ">
-                <h5 class="fw-bolder ms-3">Hospitalizaciones pendientes</h5>
+                <h5 class="fw-bolder ms-3">Hospitalizaciones <?= $vistaActiva == 'hospitalizacion' ? 'pendientes' : 'realizadas' ?></h5>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                     class="color-borde-ventas bi bi-plus-circle ms-1" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -19,7 +19,7 @@
                 </svg>
             </div>
 
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end <?= $vistaActiva != 'hospitalizacion' ? 'd-none' : '' ?>">
                 <div class="fondoPH mb-2 color-letras" id="btnPH" data-bs-toggle="modal" data-bs-target="#modal-agregar-precio-hora">
 
                     <p class="fw-bolder p-0 pt m-0">Costo por Hora</p>
@@ -42,28 +42,27 @@
 
 
         </div>
-
         <div class=" me-5 pe-1 mb-2 mt-3 d-flex justify-content-end w-100">
 
             <ul class="sin-circulos d-flex justify-content-end">
 
                 <li class="">
-                    <div class="borde-de-menu activo-border mb-1"></div>
+                    <div class="borde-de-menu <?= $vistaActiva == 'hospitalizacion' ? 'activo-border' : '' ?> mb-1"></div>
                     <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion"
                         class="text-decoration-none me-3 color-letras" id="DMservicioMedico">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="20" fill="currentColor"
-                            class="bi bi-clipboard-pulse me-1 color-activo-svg" viewBox="0 0 16 16">
+                            class="bi bi-clipboard-pulse me-1 <?= $vistaActiva == 'hospitalizacion' ? 'color-activo-svg' : '' ?>" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
                                 d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm-2 0h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2m6.979 3.856a.5.5 0 0 0-.968.04L7.92 10.49l-.94-3.135a.5.5 0 0 0-.895-.133L4.232 10H3.5a.5.5 0 0 0 0 1h1a.5.5 0 0 0 .416-.223l1.41-2.115 1.195 3.982a.5.5 0 0 0 .968-.04L9.58 7.51l.94 3.135A.5.5 0 0 0 11 11h1.5a.5.5 0 0 0 0-1h-1.128z" />
                         </svg>Hospitalizaciones</a>
                 </li>
                 <li class="li">
-                    <div class="borde-de-menu mb-1 color-linea"></div>
+                    <div class="borde-de-menu mb-1 color-linea <?= $vistaActiva != 'hospitalizacion' ? 'activo-border' : '' ?>"></div>
                     <div class="hover-grande">
                         <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacionesRealizadas"
-                            class="text-decoration-none me-3 color-letras" id="DMserviciosExtras">
+                            class="text-decoration-none me-3 color-letras " id="DMserviciosExtras">
                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="20" fill="currentColor"
-                                class="bi bi-clipboard-check me-1" viewBox="0 0 16 16">
+                                class="bi bi-clipboard-check me-1 <?= $vistaActiva != 'hospitalizacion' ? 'color-activo-svg' : '' ?>" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd"
                                     d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0" />
                                 <path
@@ -92,7 +91,7 @@
                     <div id="alertaPrecioHora" style="display:none; color:red;">
                         Debe agregar el precio por hora antes de registrar hospitalizaciones.
                     </div>
-                    <button class="btn btn-primary btn-agregar-pacientes mb-2" data-bs-toggle="modal"
+                    <button class="caja-btn-margin btn btn-modals btnOpenModal <?= $vistaActiva != 'hospitalizacion' ? 'd-none' : '' ?>" data-bs-toggle="modal"
                         data-bs-target="#modal-agregar-hospitalizacion" id="btnAgregarH">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
                             class="bi bi-plus-circle-fill me-1" viewBox="0 0 16 16">
@@ -528,28 +527,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div id="div-oculto">
     <!-- js -->
 </div>
@@ -567,259 +544,24 @@
 
 
 
-<!-- diseños que se van a usar................................................................................ -->
-
-
-<!-- para el modal de agregar insumo o servicio-->
-
-<div class="prueba">
-    <!-- insumo -->
-    <div class="col-12">
-
-        <div id="div-modal-insumo" class="row g-3">
-
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="card card-insumo-v2 border rounded-4 shadow-sm h-100"
-                    data-index="36" data-medida="400 ml" data-precio="80" data-cantidad="2">
-
-                    <!-- TOP: nombre + medida -->
-                    <div class="card-body pb-2">
-                        <p class="fw-bold mb-1 fs-6" style="color:var(--color-text-card)">Ansumo</p>
-                        <span class="insumo-v2-medida">400 ml</span>
-                    </div>
-
-                    <hr class="mx-3 my-0 opacity-25">
-
-                    <!-- BODY -->
-                    <div class="card-body d-flex flex-column gap-2 pt-2">
-
-                        <!-- Chips -->
-                        <div class="d-flex flex-wrap gap-2">
-                            <span class="chip d-inline-flex align-items-center gap-1">
-                                <i class="bi bi-tag"></i> Sin IVA
-                            </span>
-                            <span class="chip d-inline-flex align-items-center gap-1">
-                                <i class="bi bi-boxes"></i> Stock: 2
-                            </span>
-                        </div>
-
-                        <!-- Precio -->
-                        <div>
-                            <div class="precio-usd">$80.00</div>
-                            <div class="precio-bs">46.614,90 Bs</div>
-                        </div>
-
-                        <!-- Input cantidad -->
-                        <div class="insumo-v2-input-wrap d-flex align-items-center">
-                            <span class="d-flex align-items-center px-2 text-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                    fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
-                                </svg>
-                            </span>
-                            <input class="form-control input-validar inputs cantidadDisplay py-2"
-                                type="number" min="1" max="2" value="1"
-                                data-index="36" data-medida="400 ml"
-                                data-iva="0" data-precio="80.00" data-stock="2">
-                            <span class="d-flex align-items-center px-2">
-                                <svg class="check d-none" width="18" height="18" fill="#28a745" viewBox="0 0 16 16">
-                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                                </svg>
-                                <svg class="error d-none" width="18" height="18" fill="#dc3545" viewBox="0 0 16 16">
-                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                </svg>
-                            </span>
-                        </div>
-
-                        <!-- Botón -->
-                        <button class="btn btn-v2 botones-mostrar w-100 d-flex align-items-center justify-content-center gap-2 mt-auto"
-                            data-index="36">
-                            <i class="bi bi-plus-circle-fill"></i> Agregar
-                        </button>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- servicio -->
-    <div class="col-12 mt-5">
-
-
-        <div id="div-modal-servicio" class="row g-3">
-
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="card card-servicio-v2 border rounded-4 shadow-sm h-100"
-                    style="cursor:pointer"
-                    data-index="2518" data-id-servicio="25" data-doctor="18">
-
-                    <!-- Cabecera -->
-                    <div class="serv-v2-header p-3 border-bottom text-center">
-                        <p class="serv-v2-nombre fw-bold mb-1 fs-6" style="color:var(--color-text-card)">
-                            Emergencia
-                        </p>
-                        <span class="badge" style="background:var(--color-primary); font-size:0.68rem">
-                            Servicio médico
-                        </span>
-                    </div>
-
-                    <!-- Body -->
-                    <div class="card-body d-flex flex-column gap-2">
-
-                        <!-- Doctor -->
-                        <p class="text-center mb-0 fw-semibold" style="font-size:0.85rem; color:var(--color-text-card)">
-                            DR: Wilmer Baez
-                        </p>
-
-                        <hr class="my-1 opacity-25">
-
-                        <!-- Precios centrados -->
-                        <div class="text-center">
-                            <div class="serv-label">Precio</div>
-                            <div class="serv-usd">$1.000,00</div>
-                            <div class="serv-bs">582.686,20 Bs</div>
-                        </div>
-
-                        <!-- Botón al fondo -->
-                        <div class="mt-auto pt-1">
-                            <input type="hidden" value="1000.00" class="precio-servicio">
-                            <button class="btn btn-v2 botones-mostrar w-100 d-flex align-items-center justify-content-center gap-2"
-                                data-index="2518">
-                                <i class="bi bi-plus-circle-fill"></i> Agregar
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</div>
-
-
-<!-- diseño despues de agregado  -->
 
 
 
 
 
 
-
-<!-- servicio -->
-<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA"
-    data-index="${res.id_servicioMedico}">
-    <!-- Botón eliminar -->
-    <button type="button"
-        class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarServ"
-        data-index="${res.id_servicioMedico}"
-        style="background:none; border:none; font-size:2rem; font-weight:bold; color:#0d6efd; cursor:pointer; z-index:10;">
-        ×
-    </button>
-
-    <!-- Tarjeta -->
-    <a href="#"
-        class="card text-decoration-none shadow-sm border-0 rounded-4"
-        style="background: #f4f9ff61; transition: all 0.2s ease;">
-
-        <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
-            <div class="fw-semibold text-dark mb-2 m-auto d-flex ">
-                <p class="me-1 text-center cantidadServicio" style="font-size:1rem;">
-                    Cantidad
-                </p>
-                <p class="" style="font-size:1rem;">
-                    categoria
-                </p>
-            </div>
-            <p class="text-muted mb-1" style="font-size:0.9rem;">
-                nombre
-                apellido
-            </p>
-            <p class="fw-bold text-primary mb-0 precioS" style="font-size:0.95rem;">
-                582.686,20 Bs <span class="text-muted fw-normal" style="font-size:0.8rem;">($1.000,00)</span>
-            </p>
-
-            <div>
-                <input type="hidden" name="id_servicio[]" class=""
-                    value="${res.id_servicioMedico}">
-                <input type="hidden" name="cantidadS[]" class="cantidadServicioInput"
-                    value="${newCantidad}">
-            </div>
-        </div>
-    </a>
-</div>
-
-
-<!-- insumos -->
-<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative insumo-item"
-    data-index="36">
-
-    <!-- Botón eliminar -->
-    <button type="button"
-        class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarInsumo"
-        data-index="36"
-        style="background:none; border:none; font-size:2rem; font-weight:bold; color:#0d6efd; cursor:pointer; z-index:10;">
-        ×
-    </button>
-
-    <!-- Tarjeta -->
-    <a href="#"
-        class="card text-decoration-none shadow-sm border-0 rounded-4"
-        style="background: #f4f9ff61; transition: all 0.2s ease;">
-
-        <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
-
-            <!-- Fila superior: Cantidad y Medida -->
-            <div class="fw-semibold text-dark mb-2 m-auto d-flex align-items-center">
-                <p class="me-1 mb-0 text-center cantidadInsumo" style="font-size:1rem;">
-                    Cant: 1
-                </p>
-                <p class="mb-0 text-muted" style="font-size:1rem;">
-                    | 400 ml
-                </p>
-            </div>
-
-            <!-- Medio: Nombre del insumo, Stock e IVA -->
-            <p class="text-muted mb-1" style="font-size:0.9rem;">
-                <strong class="text-dark">Ansumo</strong> <br>
-                <span style="font-size: 0.75rem;">(Stock: 2 | Sin IVA)</span>
-            </p>
-
-            <!-- Inferior: Precios -->
-            <p class="fw-bold text-primary mb-0 precioInsumo" style="font-size:0.95rem;">
-                46.614,90 Bs <span class="text-muted fw-normal" style="font-size:0.8rem;">($80.00)</span>
-            </p>
-
-            <!-- Inputs ocultos para enviar en el formulario -->
-            <div>
-                <input type="hidden" name="id_insumo[]" class="" value="36">
-                <input type="hidden" name="cantidadI[]" class="cantidadInsumoInput" value="1">
-                <input type="hidden" name="precioI[]" value="80.00">
-            </div>
-        </div>
-    </a>
-</div>
-
-
-
-
-
-
-
-<script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/reutilizableHospitalizacion.js"></script>
+<!-- <script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/reutilizableHospitalizacion.js"></script> -->
 <script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacion.js"></script>
-<script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script>
+<!-- <script type="module" src="<?= $urlBase ?>../src/assets/js/hospitalizacion/hospitalizacionEditar.js"></script> -->
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 <?php require_once './src/vistas/vistaPacientes/modalAgregarPaciente.php'; ?>
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
+<?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarHospitalizacion.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarHospitalizacion.php'; ?>
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalEliminarHospitalizacion.php'; ?>
+<?php //require_once './src/vistas/vistaHospitalizacion/modal/modalEliminarHospitalizacion.php'; 
+?>
 
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarInsumos.php'; ?>
+<?php //require_once './src/vistas/vistaHospitalizacion/modal/modalEditarInsumos.php'; 
+?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarInsumos.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalPrecioHora.php'; ?>

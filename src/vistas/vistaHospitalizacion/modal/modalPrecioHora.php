@@ -3,7 +3,7 @@
 <div class="modal fade" id="modal-agregar-precio-hora" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-md-down  uk-offcanvas-container">
-        <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4 hospit">
+        <div class="modal-content tamaño-modal rounded-4 pt-3 pb-3 pe-4 ps-4 hospit">
 
 
             <div class=" d-flex justify-content-between align-items-center mt-2 pt-0">
@@ -119,5 +119,5 @@
 </div>
 
 
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
+<?php //require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarHospitalizacion.php'; ?>

@@ -1,14 +1,8 @@
-
-
-
-
-
-
 <!-- MODAL DE AGREGAR INSUMOS -->
 <div class="modal fade " id="modal-agregar-insumos" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen-md-down  uk-offcanvas-container">
-        <div class="modal-content rounded-4 pt-3 pb-3 pe-4 ps-4 hospit">
+    <div class="modal-dialog modal-xl  uk-offcanvas-container">
+        <div class="modal-content tamaño-modal rounded-4 pt-3 pb-3 pe-4 ps-4 hospit">
 
 
             <div class=" d-flex justify-content-between align-items-center mt-2 pt-0">
@@ -40,28 +34,24 @@
             <input type="hidden" id="semaforo">
 
             <div class="mb-5 pb-2">
-                <form class="me-3 ms-3 mt-2" method="POST" action="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/agregarH">
-                    <div class="d-flex justify-content-between align-items-center mt-1 ">
-
-                        <div class="col-6">
-                            <p class="ms-3 mt-4 fw-bolder " id="p-no-insumos"></p>
-                        </div>
-
-                        <div class="d-flex justify-content-end mt-4 mb-3 col-6">
-                            <input class="form-control input-buscar" type="text" name="nombre"
-                                placeholder="Ingrese nombre" id="btbt">
-                            <a href="#" class="btn btn-buscar" title="Buscar" id="btn-buscarInsumo">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-search" viewBox="0 0 16 16">
-                                    <path
-                                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                                </svg>
-                            </a>
-                        </div>
-
-                    </div>
-                </form>
                 <div class="" id="">
+
+                    <div class="d-flex justify-content-end mb-2">
+                        <div class=" d-flex mt-3 caja-insumos">
+                            <div id="form-buscador-insumo" class="d-flex justify-content-end form-responsive children-caja-insumos" autocomplete="off">
+                                <input class="form-control input-buscar tamaño-input-buscar input-responsive" id="searchInputInsumos" type="text" name="nombre"
+                                    placeholder="Buscar...">
+
+                                <button class="btn btn-buscar boton-responsive" title="Buscar" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-search" viewBox="0 0 16 16">
+                                        <path
+                                            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="mb-3 col-12 d-flex align-items-center justify-content-center  mt-4 pt-2 mb-2">
                         <h5 class="fw-bold text-center">Insumos</h5>
@@ -69,35 +59,12 @@
 
                     <div class="d-flex flex-wrap" id="insumoExiste"></div>
 
-                    <div class="d-flex flex-wrap" id="insumos">
+                    <div class="d-flex flex-wrap" id="div-insumos-modal">
 
-                        <?php if ($datosI): ?>
-                            <?php foreach ($datosI as $datoI): ?>
-                                <div class="col-6 divInsumos" data-index=<?php echo $datoI["id_insumo"]; ?>>
-                                    <a href="#" class="text-center text-decoration-none m-0" data-bs-toggle="modal"
-                                        data-bs-target="#modal-agregar-hospitalizacion">
-                                        <div class="color-icono d-flex align-items-center justify-content-center p-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
-                                                class="bi bi-plus-circle me-2 " viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                <path
-                                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                            </svg>
-                                            <p class="mt-3 ">
-                                                <?php echo $datoI["nombre"]; ?>
-                                            </p>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php endforeach ?>
-                        <?php else: ?>
-                            <p class="m-auto">En estos momentos, no hay insumos disponibles</p>
-                        <?php endif ?>
 
                     </div>
 
-
+                    <div id="pagination-insumos" class="pagination-div"></div>
                 </div>
             </div>
 
@@ -111,5 +78,6 @@
 </div>
 
 
-<?php require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; ?>
+<?php //require_once './src/vistas/vistaHospitalizacion/modal/modalAgregarPacientes.php'; 
+?>
 <?php require_once './src/vistas/vistaHospitalizacion/modal/modalEditarHospitalizacion.php'; ?>

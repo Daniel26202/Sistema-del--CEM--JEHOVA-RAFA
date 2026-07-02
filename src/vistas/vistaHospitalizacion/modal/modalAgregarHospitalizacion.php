@@ -3,7 +3,7 @@
      Diseño alineado al modal de Registrar Paciente
 ===================================================== -->
 <div class="modal fade" id="modal-agregar-hospitalizacion" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="modalHospitalizacionLabel" aria-hidden="true">
+    aria-labelledby="modalHospitalizacionLabel" aria-hidden="true" data-modal='agregar'>
 
     <!-- Párrafo oculto para cerrar (igual que el original) -->
     <p class="text-center text-white fw-bolder d-none" id="pModalOculto" data-bs-dismiss="modal">Presione clic</p>
@@ -33,11 +33,11 @@
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 
                 <!-- SECCIÓN: BUSCAR PACIENTE -->
-                <div class="ms-4 me-4 mt-3 mb-4">
+                <div class="">
                     <div class="row align-items-center g-2">
 
                         <!-- Buscador por cédula -->
-                        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+                        <div class="col-12">
 
                             <label class="label-custom">Buscar paciente</label>
 
@@ -52,12 +52,12 @@
 
                                     <!-- Selector de nacionalidad V / E -->
                                     <select class="form-control-plaintext tamaño-select-mini inputs" id="nacionalidadH" name="nacionalidad" aria-label="Nacionalidad">
-                                        <option value="V" selected>V</option>
-                                        <option value="E">E</option>
+                                        <option class="option-select-background" value="V" selected>V</option>
+                                        <option class="option-select-background" value="E">E</option>
                                     </select>
 
                                     <!-- Input cédula — búsqueda automática (debounce 500 ms) -->
-                                    <input class="form-control txt-custom input-validar inputs w-100" type="number" name="cedula" id="bt" placeholder="Cédula del paciente" maxlength="8" minlength="6">
+                                    <input class="form-control txt-custom input-validar inputs w-100" type="number" name="cedula" id="input_cedula_paciente" placeholder="Cédula del paciente" maxlength="9" minlength="7">
 
                                     <span class="icono-der">
                                         <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -92,8 +92,8 @@
 
                             <p class="fw-bolder mb-1" id="p-no-paciente"></p>
                             <a href="#" class="d-none text-decoration-none fw-bold azul" id="aPaciente"
-                                data-bs-toggle="modal" data-bs-target="#modal-examplePaciente" data-bs-dismiss="modal">
-                                Ir a agregar paciente
+                                data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" data-bs-dismiss="modal">
+                                Agregar al paciente no registrado
                             </a>
 
                         </div>
@@ -128,9 +128,9 @@
                                 </select>
                             <?php else: ?>
                                 <select class="txt-custom select-custom input-validar" name="id_personal" id="doctorS" required>
-                                    <option value="" selected disabled>Seleccionar doctor</option>
+                                    <option class="option-select-background" value="" selected disabled>Seleccionar doctor</option>
                                     <?php foreach ($doctores as $doc): ?>
-                                        <option value="<?= $doc['id_personal'] ?>">
+                                        <option class="option-select-background" value="<?= $doc['id_personal'] ?>">
                                             <?= $doc['nombre'] . ' ' . $doc['apellido'] ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -168,8 +168,8 @@
 
                     <!-- Botón inicial (cuando no hay servicios) -->
                     <div id="btnAServicioNoExiste">
-                        <a href="#" class="d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono azul"
-                            id="btnASA" data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
+                        <a href="#" class="d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono azul cargar-servicios"
+                            data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                                 class="bi bi-plus-circle" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -206,7 +206,7 @@
 
                     <!-- Botón inicial (cuando no hay insumos) -->
                     <div id="btnAInsumoNoExiste">
-                        <a href="#" class="d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono azul"
+                        <a href="#" class="d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono azul cargar-insumos"
                             id="btnAIA" data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">
                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                                 class="bi bi-plus-circle" viewBox="0 0 16 16">
@@ -218,7 +218,7 @@
                     </div>
 
                     <!-- Insumos (JS los inserta aquí) -->
-                    <div class="mb-3" id="div-insumosA"></div>
+                    <div class="mb-3 row mt-3" id="div-insumosA"></div>
 
                     <!-- ── HISTORIA CLÍNICA ── -->
                     <h5 class="text-center fw-bold mt-4 mb-3">Historia clínica</h5>
@@ -258,9 +258,9 @@
                                 </svg>
                             </span>
                             <select class="txt-custom select-custom input-validar" id="severidad" name="severidad" required>
-                                <option value="LEVE">Leve</option>
-                                <option value="MODERADA">Moderada</option>
-                                <option value="GRAVE">Grave</option>
+                                <option class="option-select-background" value="LEVE">Leve</option>
+                                <option class="option-select-background" value="MODERADA">Moderada</option>
+                                <option class="option-select-background" value="GRAVE">Grave</option>
                             </select>
                             <span class="icono-der">
                                 <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -360,32 +360,10 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- MODAL DE AGREGAR servicios -->
 <div class="modal fade" id="modal-agregar-servicios" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen-md-down">
-        <div class="modal-content rounded-4 p-4">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content tamaño-modal rounded-4 p-4">
 
             <div class="d-flex justify-content-between align-items-center btnServicioNoEx">
                 <div class="d-flex align-items-center">
@@ -401,34 +379,31 @@
             </div>
 
             <div class="modal-body">
-                <form class="me-3 ms-3 mt-2" method="POST" action="">
-                    <div class="d-flex justify-content-between align-items-center mt-1 ">
+                <div class="d-flex justify-content-end mb-2">
+                    <div class=" d-flex mt-3 caja-insumos">
+                        <div id="form-buscador-insumo" class="d-flex justify-content-end form-responsive children-caja-insumos" autocomplete="off">
+                            <input class="form-control input-buscar tamaño-input-buscar input-responsive" id="searchInputServices" type="text" name="nombre"
+                                placeholder="Buscar...">
 
-                        <div class="col-6">
-                            <p class="ms-3 mt-4 fw-bolder " id="p-no-servicio"></p>
-                        </div>
-
-                        <div class="d-flex justify-content-end mt-4 mb-3 col-6">
-                            <input class="form-control input-buscar" type="text" name="nombre"
-                                placeholder="Ingrese nombre" id="btnBuscardorServicio">
-                            <a href="#" class="btn btn-buscar" title="Buscar" id="btn-buscarServicio">
+                            <button class="btn btn-buscar boton-responsive" title="Buscar" type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-search" viewBox="0 0 16 16">
                                     <path
                                         d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                                 </svg>
-                            </a>
+                            </button>
                         </div>
-
                     </div>
-                </form>
+                </div>
 
                 <h5 class="fw-bold text-center mb-3">Servicios</h5>
 
-                <div class="row g-3" id="servicios">
+                <div class="row g-3 d-flex justify-content-between" id="servicios">
 
                     <p class="m-auto d-none" id="noHayServicio">En estos momentos, no hay servicios disponibles</p>
                 </div>
+
+                <div id="pagination-services" class="pagination-div"></div>
             </div>
 
             <p class="uk-text-right mt-4 text-center">

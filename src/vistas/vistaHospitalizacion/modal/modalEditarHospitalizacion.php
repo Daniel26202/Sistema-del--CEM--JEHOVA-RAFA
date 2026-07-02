@@ -3,7 +3,7 @@
      Diseño alineado al modal de Agregar hospitalización
 ===================================================== -->
 <div class="modal fade divModalE" id="modal-editar-hospitalizacion" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="modalEditarHospitalizacionLabel" aria-hidden="true">
+    aria-labelledby="modalEditarHospitalizacionLabel" aria-hidden="true" data-modal='editar'>
 
     <div class="modal-dialog modal-md">
         <div class="modal-content tamaño-modal hospit">
@@ -65,7 +65,7 @@
                     <!-- Botón inicial (cuando no hay servicios aún) -->
                     <div id="btnAServicioNoExiste">
                         <a href="#" id="btnASE"
-                            class="azul d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono"
+                            class="azul d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono cargar-servicios"
                             data-bs-toggle="modal" data-bs-target="#modal-agregar-servicios">
                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                                 class="bi bi-plus-circle" viewBox="0 0 16 16">
@@ -103,8 +103,8 @@
                     <!-- Botón inicial (cuando no hay insumos) -->
                     <div id="btnAInsumoNoExisteE">
                         <a href="#"
-                            class="azul d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono"
-                            data-bs-toggle="modal" data-bs-target="#modal-editar-insumos">
+                            class="azul d-flex align-items-center justify-content-center gap-2 text-decoration-none color-icono cargar-insumos"
+                            data-bs-toggle="modal" data-bs-target="#modal-agregar-insumos">
                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                                 class="bi bi-plus-circle" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -115,7 +115,7 @@
                     </div>
 
                     <!-- Insumos (JS los inserta aquí — IDs intactos) -->
-                    <div class="mb-3 div-insumosAE" id="divDI"></div>
+                    <div class="mb-3 div-insumosAE row" id="divDI"></div>
 
                     <!-- ── HISTORIA CLÍNICA ── -->
                     <h5 class="text-center fw-bold mt-4 mb-3 pt-1">Historia clínica</h5>
@@ -129,7 +129,7 @@
                                 </svg>
                             </span>
                             <!-- name="historialE" id="historiaE" — lógica JS intacta -->
-                            <textarea name="historialE" class="txt-custom input-validar" rows="5"
+                            <textarea name="historialE" class="txt-custom input-validar inputs-editar" rows="5"
                                 placeholder="Historial médico del paciente"
                                 id="historiaE"></textarea>
 
@@ -158,7 +158,7 @@
                                 </svg>
                             </span>
                             <!-- id="diagnostico" name="diagnostico" — lógica JS intacta -->
-                            <textarea class="txt-custom input-validar" rows="4"
+                            <textarea class="txt-custom input-validar inputs-editar" rows="4"
                                 placeholder="Diagnóstico del paciente"
                                 id="diagnostico" name="diagnostico"></textarea>
 

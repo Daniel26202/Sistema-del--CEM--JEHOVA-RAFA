@@ -4,12 +4,11 @@ namespace App\modelos;
 
 use App\modelos\ModelBase;
 use Exception;
-use App\config\RateLimiter;
 
 class ModeloHospitalizacion extends ModelBase
 {
 
-    private $idH, $fechaHora, $idInsumo, $nombreInsumo, $cantidadIns, $idServicio, $fechaControl, $idInsH, $idInsElim, $idInsumosA, $cantidadE, $cantidadA, $fechaHoraFinal, $monto, $montoME, $total, $totalME, $patologiasId, $sintomasId, $cantidadSer, $severidad, $nota, $fechaRegreso, $diagnostico, $historial, $indicaciones, $cedula, $id_paciente, $id_doctor;
+    private $idH, $fechaHora, $idInsumo, $nombreInsumo, $cantidadIns, $idServicio, $fechaControl, $idInsH, $idInsElim, $idInsumosA, $cantidadE, $cantidadA, $fechaHoraFinal, $monto, $montoME, $total, $totalME, $patologiasId, $sintomasId, $cantidadSer, $severidad, $nota, $fechaRegreso, $diagnostico, $historial, $indicaciones, $cedula, $id_paciente, $id_doctor, $idServiceElim;
 
     public function __construct($dbSystem = true)
     {
@@ -237,12 +236,12 @@ class ModeloHospitalizacion extends ModelBase
     {
         try {
 
-            $sql = "SELECT * FROM servicios_hospitalizacion WHERE id_hospitalizacion = :id_hospitalizacion;";
+            $sql = "SELECT sh.id_hospitalizacion, sh.cantidad,sm.id_servicioMedico, sm.precio, sm.tipo, cs.nombre as categoria FROM servicios_hospitalizacion  sh INNER JOIN serviciomedico sm on sm.id_servicioMedico = sh.id_servicioMedico INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE sh.id_hospitalizacion =:id_hospitalizacion";
             $this->setSQL($sql);
 
             $consulta = $this->search(['id_hospitalizacion' => $this->getIdH()], true);
 
-            return !empty($consulta) ? $consulta : false;
+            return !empty($consulta) ? $consulta : [];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -291,7 +290,7 @@ class ModeloHospitalizacion extends ModelBase
 
             $consulta = $this->search(['cedula' => $this->getCedula()], false);
 
-            return !empty($consulta) ? $consulta : false;
+            return !empty($consulta) ? $consulta : 0;
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -308,7 +307,7 @@ class ModeloHospitalizacion extends ModelBase
 
             $consulta = $this->search(['cedula' => $this->getCedula()], false);
 
-            return !empty($consulta) ? $consulta : false;
+            return !empty($consulta) ? $consulta : 0;
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -318,11 +317,11 @@ class ModeloHospitalizacion extends ModelBase
     public function selectsInsumos()
     {
         try {
-            $sql = "SELECT ins.*, sum(inv.cantidad_disponible) AS cantidad FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo WHERE estado = 'ACT' AND inv.cantidad_disponible > 0 GROUP BY inv.id_insumo";
+            $sql = "SELECT ins.*, sum(inv.cantidad_disponible) AS cantidad_disponible FROM insumo ins INNER JOIN entrada_insumo inv ON inv.id_insumo = ins.id_insumo WHERE estado = 'ACT' AND inv.cantidad_disponible > 0 GROUP BY inv.id_insumo";
 
             $this->setSQL($sql);
             $consulta = $this->read();
-            return !empty($consulta) ? $consulta : false;
+            return !empty($consulta) ? $consulta : [];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -395,7 +394,7 @@ class ModeloHospitalizacion extends ModelBase
                 'id_personal' => $this->getIdDoctor()
             ];
 
-            $sql = "INSERT INTO hospitalizacion (fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_paciente, fecha_hora_final, estado, personal_id_personal)  VALUES (:fecha_hora_inicio, '', '', '', '', :id_paciente, '', 'Pendiente', :id_personal);";
+            $sql = "INSERT INTO hospitalizacion (fecha_hora_inicio, precio_horas, precio_horas_MoEx, total, total_MoEx, id_paciente, fecha_hora_final, estado, personal_id_personal)  VALUES (:fecha_hora_inicio, 0.00, 0.00, 0.00, 0.00, :id_paciente, '0000-00-00 00:00:00', 'Pendiente', :id_personal);";
             $this->setSQL($sql);
             //devuelve el id de la hospitalización.
             $idH = $this->create($dataH);
@@ -479,7 +478,7 @@ class ModeloHospitalizacion extends ModelBase
             $idUsuario = !empty($consulta) ? $consulta : false;
 
             // insertar control
-            $sql = "INSERT INTO control (id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado, severidad) VALUES (:id_paciente, :id_usuario, :diagnostico, '', :fecha_control, '', '', :historial, 'DES', :severidad);";
+            $sql = "INSERT INTO control (id_paciente, id_usuario, diagnostico, medicamentosRecetados, fecha_control, fechaRegreso, nota, historiaclinica, estado, severidad) VALUES (:id_paciente, :id_usuario, :diagnostico, '', :fecha_control, '0000-00-00', '', :historial, 'DES', :severidad);";
             $this->setSQL($sql);
             $data = [
                 'id_paciente' => $this->getIdPaciente(),
@@ -510,7 +509,7 @@ class ModeloHospitalizacion extends ModelBase
     public function EInsumosM()
     {
 
-        $sql = "SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, inv.cantidad_disponible AS limite_insumo FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = 'DES' AND u.estado = 'ACT' AND ins.estado = 'ACT' AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo;";
+        $sql = "SELECT h.id_hospitalizacion, idh.id_insumoDeHospitalizacion, ins.id_insumo, idh.cantidad, ins.nombre, ins.precio, h.fecha_hora_inicio, inv.cantidad_disponible AS limite_insumo , ins.medida FROM hospitalizacion h INNER JOIN paciente pac ON h.id_paciente = pac.id_paciente INNER JOIN control con ON con.id_paciente = pac.id_paciente INNER JOIN segurity.usuario u ON con.id_usuario = u.id_usuario INNER JOIN personal pe ON pe.usuario = u.id_usuario INNER JOIN personal_has_serviciomedico psm ON psm.personal_id_personal = pe.id_personal INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico INNER JOIN insumodehospitalizacion idh ON h.id_hospitalizacion = idh.id_hospitalizacion INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE con.estado = 'DES' AND u.estado = 'ACT' AND ins.estado = 'ACT' AND h.id_hospitalizacion = :id GROUP BY ins.id_insumo;";
         $this->setSQL($sql);
         $data = [
             'id' => $this->getIdH(),
@@ -648,9 +647,12 @@ class ModeloHospitalizacion extends ModelBase
                 foreach ($idInsElim as $idIAEl) {
 
                     // selecciono la cantidad del insumo existente de la hospitalización
-                    $consulta = 'SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE idh.id_insumoDeHospitalizacion = :id;';
+                    $consulta = 'SELECT idh.cantidad, ins.id_insumo FROM insumodehospitalizacion idh INNER JOIN entrada_insumo inv ON idh.id_entradaDeInsumo = inv.id_entradaDeInsumo INNER JOIN insumo ins ON inv.id_insumo = ins.id_insumo WHERE idh.id_insumoDeHospitalizacion = :id';
                     $this->setSQL($consulta);
                     $cantidadIH = $this->search(['id' => $idIAEl], false);
+                    if (empty($cantidadIH)) {
+                        continue;
+                    }
 
                     // elimina insumos de la hospitalización
                     $sql = 'DELETE FROM insumodehospitalizacion WHERE id_insumoDeHospitalizacion = :id_insumo_eliminado';
@@ -738,8 +740,6 @@ class ModeloHospitalizacion extends ModelBase
                     ], $this->getIdH());
                 }
             }
-
-
             // $consulta->bindValue(":cantidad", (int)$servIdCNuevas[$idSA], PDO::PARAM_INT);
 
 
@@ -910,9 +910,6 @@ class ModeloHospitalizacion extends ModelBase
         $this->validarSesion($idUsuario);
 
         $this->validarCamposObligatorios([$this->idH]);
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        (new RateLimiter())->verificar('eliminar_hospitalizacion_' . $idUsuario, 5, 1);
-
         return $this->eliminaLogicoPrivada();
     }
 
@@ -1054,6 +1051,55 @@ class ModeloHospitalizacion extends ModelBase
         $this->cantidadSer = $cantidadSer;
     }
 
+    public function setIdServiceElim($idServiceElim)
+    {
+        // Si está vacío, asignar null
+        if (empty($idServiceElim)) {
+            $this->idServiceElim = null;
+            return;
+        }
+
+        // 🔥 Si es string, intentar decodificar JSON (viene de JavaScript)
+        if (is_string($idServiceElim)) {
+            $decodificado = json_decode($idServiceElim, true);
+            if (is_array($decodificado) && !empty($decodificado)) {
+                $idServiceElim = $decodificado;
+            } else {
+                // Si no es JSON válido, podría ser "123,456,789"
+                $idServiceElim = array_map('trim', explode(',', $idServiceElim));
+                $idServiceElim = array_filter($idServiceElim, 'strlen');
+            }
+        }
+
+        // Si no es array, convertirlo a array
+        if (!is_array($idServiceElim)) {
+            $idServiceElim = [$idServiceElim];
+        }
+
+        // 🔥 Recorrer y validar cada ID
+        $idsValidos = [];
+        foreach ($idServiceElim as $id) {
+            // Si el elemento es un array (por si vino anidado), extraer el ID
+            if (is_array($id)) {
+                $id = $id['id_detalle'] ?? $id['id'] ?? reset($id);
+            }
+
+            // Validar que sea numérico positivo
+            if (is_numeric($id) && (int)$id > 0) {
+                $idsValidos[] = (int)$id;
+            }
+        }
+
+        // Si no hay IDs válidos, asignar null
+        if (empty($idsValidos)) {
+            $this->idServiceElim = null;
+            return;
+        }
+
+        // Asignar el array de IDs válidos
+        $this->idServiceElim = $idsValidos;
+    }
+
     public function setIdInsH($idInsH)
     {
         // no hay insumo seleccionado
@@ -1074,20 +1120,51 @@ class ModeloHospitalizacion extends ModelBase
 
     public function setIdInsElim($idInsElim)
     {
-        // no hay id seleccionado
+        // Si está vacío, asignar null
         if (empty($idInsElim)) {
             $this->idInsElim = null;
             return;
         }
-        foreach ($idInsElim as $id) {
-            if (!preg_match('/^[0-9]+$/', $id)) {
-                throw new \InvalidArgumentException('El ID no es válido.');
-            }
-            if ((int)$id <= 0) {
-                throw new \InvalidArgumentException('El ID debe ser mayor que cero.');
+
+        // 🔥 Si es string, intentar decodificar JSON (viene de JavaScript)
+        if (is_string($idInsElim)) {
+            $decodificado = json_decode($idInsElim, true);
+            if (is_array($decodificado) && !empty($decodificado)) {
+                $idInsElim = $decodificado;
+            } else {
+                // Si no es JSON válido, podría ser "123,456,789"
+                $idInsElim = array_map('trim', explode(',', $idInsElim));
+                $idInsElim = array_filter($idInsElim, 'strlen');
             }
         }
-        $this->idInsElim = $idInsElim;
+
+        // Si no es array, convertirlo a array
+        if (!is_array($idInsElim)) {
+            $idInsElim = [$idInsElim];
+        }
+
+        // 🔥 Recorrer y validar cada ID
+        $idsValidos = [];
+        foreach ($idInsElim as $id) {
+            // Si el elemento es un array (por si vino anidado), extraer el ID
+            if (is_array($id)) {
+                $id = $id['id_insumoDeHospitalizacion'] ?? $id['id'] ?? reset($id);
+            }
+
+            // Validar que sea numérico positivo
+            if (is_numeric($id) && (int)$id > 0) {
+                $idsValidos[] = (int)$id;
+            }
+        }
+
+        // Si no hay IDs válidos, asignar null
+        if (empty($idsValidos)) {
+            $this->idInsElim = null;
+            return;
+        }
+
+        // Asignar el array de IDs válidos
+        $this->idInsElim = $idsValidos;
     }
 
     public function setCantidadE($cantidadE)
@@ -1393,6 +1470,12 @@ class ModeloHospitalizacion extends ModelBase
 
     public function getIdInsElim()
     {
+        if (empty($this->idInsElim)) {
+            return null;
+        }
+        if (!is_array($this->idInsElim)) {
+            return [$this->idInsElim];
+        }
         return $this->idInsElim;
     }
 
@@ -1440,4 +1523,6 @@ class ModeloHospitalizacion extends ModelBase
     {
         return $this->cantidadSer;
     }
+
+    
 }

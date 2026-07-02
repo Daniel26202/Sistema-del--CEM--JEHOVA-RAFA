@@ -106,6 +106,4 @@
 <?php require_once 'modalesCitas-Control.php'; ?>
 <?php require_once './src/vistas/head/footer.php'; ?>
 <script type="module" src="<?= $urlBase ?>../src/assets/js/ajax/citas.js"></script>
-
-
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaCitasPendientes.js"></script>

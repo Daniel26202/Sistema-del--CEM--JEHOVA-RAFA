@@ -167,6 +167,7 @@ return [
     "enviarAFacturar" => "guardar",
     "buscarIExH" => "consultar",
     "traerIdURSesion" => "consultar",
+    "selectInsumos"=>'consultar',
 
     //Control
     "control" => "consultar",
