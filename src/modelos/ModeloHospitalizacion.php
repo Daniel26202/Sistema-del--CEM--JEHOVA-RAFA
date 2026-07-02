@@ -730,9 +730,9 @@ class ModeloHospitalizacion extends ModelBase
 
 
             // Actualizar cantidades de servicios
-            if ($servIguales != null || $servIguales != []) {
+            if (!empty($servIguales)) {
                 foreach ($servIguales as $idS) {
-                    $sql = 'UPDATE servicios_hospitalizacion SET cantidad = :cantidad WHERE id_hospitalizacion = :id AND id_servicioMedico = :id';
+                    $sql = 'UPDATE servicios_hospitalizacion SET cantidad = :cantidad WHERE id_servicioMedico = :id_servicioMedico AND id_hospitalizacion = :id';
                     $this->setSQL($sql);
                     $this->update([
                         'id_servicioMedico' => $idS,

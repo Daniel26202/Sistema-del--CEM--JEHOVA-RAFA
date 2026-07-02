@@ -104,6 +104,7 @@
                 <div class="d-none" id="contenedorFormAgregar">
 
                     <!-- ── DOCTOR ── -->
+                     
                     <label class="label-custom">Seleccione el doctor</label>
 
                     <?php if (empty($doctores)): ?>
@@ -184,7 +185,7 @@
                     </p>
 
                     <!-- Tarjetas de servicios (JS las inserta aquí) -->
-                    <div class="row g-3 mb-3" id="div-serviciosA"></div>
+                    <div class="row g-3 mt-2" id="div-serviciosA"></div>
 
                     <!-- ── MEDICAMENTOS / INSUMOS ── -->
                     <div class="d-flex justify-content-between align-items-center mt-5 mb-4">

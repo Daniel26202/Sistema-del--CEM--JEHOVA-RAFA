@@ -37,7 +37,6 @@ const formularioEditar = document.getElementById("formularioEditarH");
 const formCostoHoras = document.getElementById("formCostoHora");
 const formAgregarPaciente = document.getElementById("modalAgregar");
 const cedulaPaciente = document.getElementById("cedulaPaciente");
-const botonModal = document.getElementById("btnEnviar");
 const parrafoExP = document.getElementById("p-paciente");
 const parrafoNoP = document.getElementById("p-no-paciente");
 const contenedorForm = document.getElementById("contenedorFormAgregar");
@@ -68,7 +67,7 @@ const costoHorasMoEx = document.querySelector("#costoHSMoEx");
 const btnGuardarCH = document.querySelector("#btnCH");
 const alertaNoHayPrecioH = document.getElementById("alertaPrecioHora");
 const btnAgregar = document.getElementById("btnAgregarH");
-const btn_open_modal_paciente = document.getElementById('aPaciente');
+const btn_open_modal_paciente = document.getElementById("aPaciente");
 // inputs del costo y las horas del servicio
 let iHS = document.getElementById("inpHorasS");
 let iCS = document.getElementById("inpCostoHS");
@@ -87,7 +86,7 @@ let dataInsumo = [];
 let dataInsumosModal = [];
 let dataServicesModal = [];
 let objServiciosHosp = {};
-let objServiciosBD ={};
+let objServiciosBD = {};
 let insumosEliminados = [];
 let servicesEliminados = [];
 let modoInsumoActual = "agregar";
@@ -218,43 +217,56 @@ const returnFragmentInsumos = (res) => {
 };
 
 
-
+  const resetForm = (form) => {
+    form.reset();
+    //quitar clase a los inputs
+    document.querySelectorAll(".input-validar").forEach((input) => {
+      input.parentElement.classList.remove("valido");
+      input.parentElement.classList.remove("invalido");
+      let span = input.nextElementSibling;
+      span.children[0].classList.add("d-none");
+      span.children[1].classList.add("d-none");
+    });
+    contenedorForm.classList.add('d-none')
+    btnInformacionPaciente.classList.add("d-none");
+    btnEnviar.classList.add('d-none')
+  };
 
 const traerSerevicio = async (direccionM) => {
-    let resultado = await executePetition(url + "/selectServiciosD", "GET");
-    console.log(resultado);
-    let text;
-    let modal;
-    if (direccionM === "agregar") {
-        text = "A";
-        modal = "#modal-agregar-hospitalizacion";
-    } else if (direccionM === "editar") {
-        text = "E";
-        modal = "#modal-editar-hospitalizacion";
+  let resultado = await executePetition(url + "/selectServiciosD", "GET");
+  console.log(resultado);
+  let text;
+  let modal;
+  if (direccionM === "agregar") {
+    text = "A";
+    modal = "#modal-agregar-hospitalizacion";
+  } else if (direccionM === "editar") {
+    text = "E";
+    modal = "#modal-editar-hospitalizacion";
+  }
+  let btnCancelar = document.querySelector("#btnCancelar");
+  let noHayServicio = document.querySelector("#noHayServicio");
+  let noPAservicio = document.querySelector("#NoPAservicio" + text);
+  let serviciosConten = document.querySelector("#div-servicios" + text);
+
+  btnCancelar.setAttribute("data-bs-target", modal);
+  // si no se trae nada
+  if (resultado.length < 1) {
+    console.log("hay un problema, el servicio seleccionado no existe");
+    if (noHayServicio) {
+      noHayServicio.classList.remove("d-none");
     }
-    let btnCancelar = document.querySelector("#btnCancelar");
-    let noHayServicio = document.querySelector("#noHayServicio");
-    let noPAservicio = document.querySelector("#NoPAservicio" + text);
-    let serviciosConten = document.querySelector("#div-servicios" + text);
 
-    btnCancelar.setAttribute("data-bs-target", modal);
-    // si no se trae nada
-    if (resultado.length < 1) {
-        console.log("hay un problema, el servicio seleccionado no existe");
-        if (noHayServicio) {
-            noHayServicio.classList.remove("d-none");
-        }
+    //si se trae algo
+  } else {
+    if (noHayServicio) {
+      noHayServicio.classList.add("d-none");
+    }
+    let html = ``;
 
-        //si se trae algo
-    } else {
-        if (noHayServicio) {
-            noHayServicio.classList.add("d-none");
-        }
-        let html = ``;
-
-        for (const datoS of resultado) {
-            objServiciosBD[datoS["id_servicioMedico"]] = datoS;
-            html += `<div class="col-12 col-sm-6 col-md-4 col-lg-4 divServicio"
+    for (const datoS of resultado) {
+      objServiciosBD[datoS["id_servicioMedico"]] = datoS;
+      html += `<div class="col-12 col-sm-6 col-md-4 col-lg-4 divServicio"
                                 data-index="${datoS["id_servicioMedico"]}">
                                 <a href="#" class="card text-center text-decoration-none h-100"
                                     data-bs-toggle="modal" data-bs-target="${modal}">
@@ -265,20 +277,20 @@ const traerSerevicio = async (direccionM) => {
                                     </div>
                                 </a>
                             </div>`;
-        }
+    }
 
-        console.log(objServiciosBD);
+    console.log(objServiciosBD);
 
-        document.querySelector("#servicios").innerHTML = html;
-        let htmlL = ``;
-        let divServicios = document.querySelectorAll(".divServicio");
-        if (divServicios) {
-            for (const div of divServicios) {
-                div.addEventListener("click", function () {
-                    let idS = parseInt(this.getAttribute("data-index"));
-                    console.log(idS);
+    document.querySelector("#servicios").innerHTML = html;
+    let htmlL = ``;
+    let divServicios = document.querySelectorAll(".divServicio");
+    if (divServicios) {
+      for (const div of divServicios) {
+        div.addEventListener("click", function () {
+          let idS = parseInt(this.getAttribute("data-index"));
+          console.log(idS);
 
-                    htmlL = `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" data-index="${idS}">
+          htmlL = `<div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA" data-index="${idS}">
                                     <!-- Botón eliminar -->
                                     <button type="button"
                                         class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarServ"
@@ -315,59 +327,70 @@ const traerSerevicio = async (direccionM) => {
                                     </a>
                                 </div>`;
 
-                    if (objServiciosBD[idS]["tipo"] == "Examenes") {
-                        // buscar si el servicio ya está agregado en el contenedor
-                        const servicioExistente = serviciosConten.querySelector(`.servicioA[data-index="${idS}"]`);
+          if (objServiciosBD[idS]["tipo"] == "Examenes") {
+            // buscar si el servicio ya está agregado en el contenedor
+            const servicioExistente = serviciosConten.querySelector(
+              `.servicioA[data-index="${idS}"]`,
+            );
 
-                        if (servicioExistente) {
-                            // aumentar la cantidad Serv
-                            const pCantidad = servicioExistente.querySelector(".cantidadServicio");
-                            const inputCantidad = servicioExistente.querySelector(".cantidadServicioInput");
-                            if (pCantidad) {
-                                let newCantidad = parseInt(pCantidad.textContent.trim()) || 1;
-                                newCantidad = newCantidad + 1;
-                                pCantidad.textContent = newCantidad;
-                                inputCantidad.value = newCantidad;
-                                // Actualizar el precio
-                                let precioS = newCantidad * objServiciosBD[idS]["precio"];
-                                let pMoneyS = servicioExistente.querySelector(".precioS");
-                                if (pMoneyS) {
-                                    pMoneyS.textContent = precioS + " Bs";
-                                }
-                            }
-                        } else {
-                            // si no existe, agrega el servicio tipo examen
-                            serviciosConten.innerHTML += htmlL;
-                            document.querySelector("#btnAS" + text).classList.add("d-none");
-                            document.querySelector("#btnAServiciosExiste" + text).classList.remove("d-none");
-                        }
-                    } else {
-                        const servicioExistente = serviciosConten.querySelector(`.servicioA[data-index="${idS}"]`);
-
-                        if (servicioExistente) {
-                            noPAservicio.classList.remove("d-none");
-                            setTimeout(() => {
-                                noPAservicio.classList.add("d-none");
-                            }, 8000);
-                        } else {
-                            serviciosConten.innerHTML += htmlL;
-                            document.querySelector("#btnAS" + text).classList.add("d-none");
-                            document.querySelector("#btnAServiciosExiste" + text).classList.remove("d-none");
-                        }
-                    }
-                });
+            if (servicioExistente) {
+              // aumentar la cantidad Serv
+              const pCantidad =
+                servicioExistente.querySelector(".cantidadServicio");
+              const inputCantidad = servicioExistente.querySelector(
+                ".cantidadServicioInput",
+              );
+              if (pCantidad) {
+                let newCantidad = parseInt(pCantidad.textContent.trim()) || 1;
+                newCantidad = newCantidad + 1;
+                pCantidad.textContent = newCantidad;
+                inputCantidad.value = newCantidad;
+                // Actualizar el precio
+                let precioS = newCantidad * objServiciosBD[idS]["precio"];
+                let pMoneyS = servicioExistente.querySelector(".precioS");
+                if (pMoneyS) {
+                  pMoneyS.textContent = precioS + " Bs";
+                }
+              }
+            } else {
+              // si no existe, agrega el servicio tipo examen
+              serviciosConten.innerHTML += htmlL;
+              document.querySelector("#btnAS" + text).classList.add("d-none");
+              document
+                .querySelector("#btnAServiciosExiste" + text)
+                .classList.remove("d-none");
             }
-        }
-        if (serviciosConten) {
-            serviciosConten.addEventListener("click", function (e) {
-                console.log(e);
+          } else {
+            const servicioExistente = serviciosConten.querySelector(
+              `.servicioA[data-index="${idS}"]`,
+            );
 
-                const servicioElem = e.target.closest(".servicioA");
-                servicioElem.remove();
-            });
-        }
+            if (servicioExistente) {
+              noPAservicio.classList.remove("d-none");
+              setTimeout(() => {
+                noPAservicio.classList.add("d-none");
+              }, 8000);
+            } else {
+              serviciosConten.innerHTML += htmlL;
+              document.querySelector("#btnAS" + text).classList.add("d-none");
+              document
+                .querySelector("#btnAServiciosExiste" + text)
+                .classList.remove("d-none");
+            }
+          }
+        });
+      }
     }
-    return objServiciosBD;
+    if (serviciosConten) {
+      serviciosConten.addEventListener("click", function (e) {
+        console.log(e);
+
+        const servicioElem = e.target.closest(".servicioA");
+        servicioElem.remove();
+      });
+    }
+  }
+  return objServiciosBD;
 };
 
 //aquí se utiliza los siguientes elementos para traerse los datos de paciente y también buscarlo
@@ -401,7 +424,6 @@ const search_paciente = async (cedula) => {
 
       if (resultado_info) {
         diagnosticoInfor.innerText = `${resultado_info.diagnostico}`;
-
         let historia = resultado_info.historiaclinica;
         // trim() quita los espacios en el principio y al final
         historiaclinica.value = historia.trim();
@@ -820,11 +842,13 @@ const readHosp = async () => {
           idOculto: null,
         };
         showDataModal(parametros);
+        console.log(hospit);
+        
         if (hospit.servicios && hospit.servicios.length > 0) {
           dataServices = hospit.servicios.map((serv) => ({
             id_servicioMedico: serv.id_servicioMedico,
             categoria: serv.categoria || "",
-            doctor: (serv.nombre || "") + " " + (serv.apellido || ""),
+            doctor: (hospit.nombredoc || "") + " " + (hospit.apellidodoc || ""),
             precio: parseFloat(serv.precio || 0),
             precio_bolivares: parseFloat(serv.precio || 0) * valorDelDolar,
             cantidad: parseInt(serv.cantidad || 1),
@@ -1069,8 +1093,22 @@ const readInsumos = () => {
 
 //consultar servicios agregados en el modal de hospitalizacion
 const readServicesHosp = (contenedor = div_services) => {
+  if (!contenedor) {
+    console.error("No existe el contenedor");
+    return;
+  }
+
+  if (!dataServices || dataServices.length === 0) {
+    contenedor.innerHTML = `<div class="col-12 text-center py-3">
+            <i class="bi bi-box-seam fs-2 d-block mb-2"></i>
+            No hay servicios agregados
+        </div>`;
+    return;
+  }
   let html = "";
   dataServices.forEach((service, index) => {
+    console.log(service.doctor);
+    
     html += `
     <div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative servicioA"
     data-index="${service.id_servicioMedico}">
@@ -1100,7 +1138,7 @@ const readServicesHosp = (contenedor = div_services) => {
                 ${service.doctor}
             </p>
             <p class="fw-bold text-primary mb-0 precioS" style="font-size:0.95rem;">
-                ${service.precio_bolivares.toFixed(2)} Bs <span class="text-muted fw-normal" style="font-size:0.8rem;">$ ${service.precio.toFixed(2)}</span>
+                ${parseFloat(service.precio_bolivares).toFixed(2)} Bs <span class="text-muted fw-normal" style="font-size:0.8rem;">$ ${parseFloat(service.precio).toFixed(2)}</span>
             </p>
 
             <div>
@@ -1121,7 +1159,7 @@ const readServicesHosp = (contenedor = div_services) => {
     btn.addEventListener("click", function () {
       let modo = btn.closest(".modal").getAttribute("data-modal");
       let contenedor_card =
-        modo == "agregar" ? div_services_modal : div_servicios_edit;
+        modo == "agregar" ? div_services : div_servicios_edit;
       dataServices.splice(parseInt(btn.getAttribute("data-index")), 1);
       readServicesHosp(contenedor_card);
     });
@@ -1134,111 +1172,108 @@ const readInsumosHosp = (array, contenedor) => {
     return;
   }
   if (!array || array.length === 0) {
-    contenedor.innerHTML = `<div class="col-12 text-center text-muted py-3">
-            <i class="bi bi-box-seam fs-2 d-block mb-2"></i>
-            No hay insumos agregados
-        </div>`;
+    contenedor.innerHTML = `<div class="col-12 text-center py-3">
+            <i class="bi bi-box-seam fs-2 d-block mb-2"></i>
+            No hay insumos agregados
+        </div>`;
     return;
   }
-  console.log(array);
 
   let html = "";
   array.forEach((insumo, index) => {
     const esExistente = !!insumo.id_insumoDeHospitalizacion;
     const esNuevo = insumo.esNuevo || false;
+
     html += `
-        <div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative insumo-item" data-index="${index}">
-            <!-- Botón eliminar -->
-            <button type="button"
-                class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarInsumo"
-                data-index="${index}"
-                style="background:none; border:none; font-size:2rem; font-weight:bold; color:#dc3545; cursor:pointer; z-index:10;">
-                ×
-            </button>
+        <div class="col-12 col-sm-6 col-md-6 col-lg-6 position-relative insumo-item" data-index="${index}">
+            <!-- Botón eliminar -->
+            <button type="button"
+                class="position-absolute top-0 start-50 translate-middle-x mt-1 eliminarInsumo"
+                data-index="${index}"
+                style="background:none; border:none; font-size:2rem; font-weight:bold; color:#0d6efd; cursor:pointer; z-index:10;">
+                ×
+            </button>
 
-            <!-- BADGE -->
-            <div class="position-absolute top-0 end-0 mt-2 me-2">
-                ${esNuevo ? '<span class="badge bg-success">Nuevo</span>' : ""}
-                ${esExistente && !esNuevo ? '<span class="badge bg-primary">Existente</span>' : ""}
-            </div>
+            <!-- Badge (Nuevo / Existente) -->
+            <div class="position-absolute top-0 end-0 mt-2 me-2">
+                ${esNuevo ? '<span class="badge bg-success">Nuevo</span>' : ""}
+                ${esExistente && !esNuevo ? '<span class="badge bg-primary">Existente</span>' : ""}
+            </div>
 
-            <!-- Tarjeta -->
-            <div class="card text-decoration-none shadow-sm border-0 rounded-4"
-                style="background: #f4f9ff61; transition: all 0.2s ease;">
+            <!-- Tarjeta (igual estructura que servicios) -->
+            <div class="card text-decoration-none shadow-sm border-0 rounded-4"
+                style="background: #f4f9ff61; transition: all 0.2s ease;">
 
-                <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
+                <div class="card-body d-flex flex-column justify-content-center text-center mt-1 py-5 pb-4">
 
-                    <div class="fw-semibold text-dark mb-2 m-auto d-flex align-items-center">
-                        <p class="me-1 mb-0 text-center cantidadInsumo" style="font-size:1.2rem;">
-                            Cant: ${insumo.cantidad}
-                        </p>
-                        <p class="mb-0 text-muted" style="font-size:1rem;">
-                            | ${insumo.medida || "N/A"}
-                        </p>
-                    </div>
+                    <!-- Nombre + cantidad -->
+                    <div class="fw-semibold text-dark mb-2 m-auto d-flex align-items-center">
+                        <p class="me-1 mb-0 text-center cantidadInsumo" style="font-size:1.2rem;">
+                            ${insumo.cantidad}
+                        </p>
+                        <p class="mb-0 " style="font-size:1rem;">
+                            ${insumo.nombre}
+                        </p>
+                    </div>
 
-                    <p class="text-muted mb-1" style="font-size:0.9rem;">
-                        <strong class="text-dark">${insumo.nombre}</strong> <br>
-                        <span style="font-size: 0.75rem;">
-                            ${insumo.iva ? "Con IVA" : "Sin IVA"}
-                        </span>
-                    </p>
+                    <!-- Medida y tipo IVA -->
+                    <p class="text-muted mb-1" style="font-size:0.9rem;">
+                        ${insumo.medida || "N/A"} 
+                        <span class="badge bg-secondary ms-1">${insumo.iva ? "Con IVA" : "Sin IVA"}</span>
+                    </p>
 
-                    <p class="fw-bold text-primary mb-0 precioInsumo" style="font-size:0.95rem;">
-                        ${insumo.precio_bolivares.toFixed(2)} Bs 
-                        <span class="text-muted fw-normal" style="font-size:0.8rem;">($ ${insumo.precio.toFixed(2)})</span>
-                    </p>
+                    <!-- Precio -->
+                    <p class="fw-bold text-primary mb-0 precioInsumo" style="font-size:0.95rem;">
+                        ${insumo.precio_bolivares.toFixed(2)} Bs 
+                        <span class="text-muted fw-normal" style="font-size:0.8rem;">($ ${insumo.precio.toFixed(2)})</span>
+                    </p>
 
-                    <div>
-                        ${
-      esExistente
-        ? `
-                            <!-- Insumo EXISTENTE: se edita -->
-                            <input type="hidden" name="id_idh[]" value="${insumo.id_insumoDeHospitalizacion}">
-                            <input type="hidden" name="cantidad[]" value="${insumo.cantidad}">
-                        `
-        : `
-                            <!-- Insumo NUEVO: se agrega -->
-                            <input type="hidden" name="id_insumoA[]" value="${insumo.id_insumo}">
-                            <input type="hidden" name="cantidadA[]" value="${insumo.cantidad}">
-                        `
-    }
-                        <input type="hidden" name="precioI[]" value="${insumo.precio}">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-
-
-        `;
+                    <!-- Inputs ocultos -->
+                    <div>
+                        ${
+                          esExistente
+                            ? `
+                            <input type="hidden" name="id_idh[]" value="${insumo.id_insumoDeHospitalizacion}">
+                            <input type="hidden" name="cantidad[]" value="${insumo.cantidad}">
+                        `
+                            : `
+                            <input type="hidden" name="id_insumoA[]" value="${insumo.id_insumo}">
+                            <input type="hidden" name="cantidadA[]" value="${insumo.cantidad}">
+                        `
+                        }
+                        <input type="hidden" name="precioI[]" value="${insumo.precio}">
+                    </div>
+                </div>
+            </div>
+        </div>`;
   });
 
   contenedor.innerHTML = html;
 
+  // Eventos de eliminación
   document.querySelectorAll(".eliminarInsumo").forEach((btn) => {
     btn.addEventListener("click", function () {
       const index = parseInt(this.getAttribute("data-index"));
-      const insumoEliminado = dataInsumo[index];
-      if (!insumoEliminado) return; // Si es existente, guardar su ID para eliminarlo en el backend
+      const insumoEliminado = array[index];
+      if (!insumoEliminado) return;
+
+      // Si es existente, guardar su ID para eliminarlo en backend
       if (insumoEliminado.id_insumoDeHospitalizacion) {
         insumosEliminados.push(insumoEliminado.id_insumoDeHospitalizacion);
-      } // Devolver stock al modal de insumos
-      if (servicesEliminados.id_detalle) {
-        servicesEliminados.push(servicesEliminados.id_detalle);
       }
+
+      // Devolver stock al modal de insumos
       const insumoEnModal = dataInsumosModal.find(
         (item) => item.id_insumo == insumoEliminado.id_insumo,
       );
-
       if (insumoEnModal) {
         insumoEnModal.cantidad_disponible += insumoEliminado.cantidad;
-      } // Eliminar del array
-      dataInsumo.splice(index, 1); // Re-renderizar
-      readInsumosHosp(dataInsumo, contenedor);
+      }
+
+      // Eliminar del array
+      array.splice(index, 1);
+      // Re-renderizar
+      readInsumosHosp(array, contenedor);
     });
   });
 };
@@ -1248,6 +1283,10 @@ const renderizarInsumosAndSerivicos = async () => {
   try {
     dataInsumosModal = await executePetition(url + "/selectInsumos");
     dataServicesModal = await executePetition(url + "/selectServiciosD");
+    console.log('----------------');
+    
+    console.log(dataServicesModal);
+    
   } catch (error) {
     dataInsumosModal = [];
     dataServicesModal = [];
@@ -1298,7 +1337,7 @@ const createPatients = async (form, inputs) => {
 //create
 const createHosp = async (form) => {
   try {
-    initLoaderButton(botonModal);
+    initLoaderButton(btnEnviar);
     const data = new FormData(form);
     let result = await executePetition(url + "/agregarH", "POST", data);
     if (result.ok) {
@@ -1309,13 +1348,13 @@ const createHosp = async (form) => {
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal);
+    finallyLoaderButton(btnEnviar);
   }
 };
 //update
 const updateHosp = async (form) => {
   try {
-    initLoaderButton(botonModal);
+    initLoaderButton(btnEnviar);
     const data = new FormData(form);
     if (insumosEliminados && insumosEliminados.length > 0) {
       data.append("id_insumos_eliminados", JSON.stringify(insumosEliminados));
@@ -1340,7 +1379,7 @@ const updateHosp = async (form) => {
     alertError("Error", error.message || error);
     console.error(error);
   } finally {
-    finallyLoaderButton(botonModal);
+    finallyLoaderButton(btnEnviar);
   }
 };
 
@@ -1399,7 +1438,6 @@ btn_open_modal_services.forEach((btn) => {
   });
 });
 
-
 btns_cargar_insumos.forEach((btn) => {
   btn.addEventListener("click", function () {
     let modal = btn.closest(".modal");
@@ -1445,15 +1483,18 @@ btn_add_hosp.addEventListener("click", function () {
   });
 
   dataInsumo = [];
+  dataServices = [];
   insumosEliminados = [];
   servicesEliminados = [];
+  readServicesHosp(div_services);
   readInsumosHosp(dataInsumo, div_insumos);
+  resetForm(formularioAgregar);
 });
 
-btn_open_modal_paciente.addEventListener('click',function(){
+btn_open_modal_paciente.addEventListener("click", function () {
   cedulaPaciente.value = input_cedula.value;
   cedulaPaciente.dispatchEvent(new Event("keyup", { bubbles: true }));
-})
+});
 
 //enviar costo horas
 formCostoHoras.addEventListener("submit", function (e) {

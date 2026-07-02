@@ -81,7 +81,7 @@
                     </p>
 
                     <!-- Tarjetas de servicios (JS las inserta aquí — ID intacto) -->
-                    <div class="row g-3 mb-3" id="div-serviciosE"></div>
+                    <div class="row g-3 mt-2" id="div-serviciosE"></div>
 
                     <!-- ── MEDICAMENTOS / INSUMOS ── -->
                     <div class="d-flex justify-content-between align-items-center mt-5 mb-4">
@@ -115,7 +115,7 @@
                     </div>
 
                     <!-- Insumos (JS los inserta aquí — IDs intactos) -->
-                    <div class="mb-3 div-insumosAE row" id="divDI"></div>
+                    <div class="mb-3 div-insumosAE row mt-3" id="divDI"></div>
 
                     <!-- ── HISTORIA CLÍNICA ── -->
                     <h5 class="text-center fw-bold mt-4 mb-3 pt-1">Historia clínica</h5>
