@@ -1,13 +1,16 @@
 <?php
 
-use App\modelos\ModeloCliente;
-use App\modelos\ModeloBitacora;
-// use App\
+use App\models\Db;
+use App\models\ModeloCliente;
+use App\models\ModeloBitacora;
+use App\models\Validator;
 
 function Clientes($parametro)
 {
-    $modeloBitacora = new ModeloBitacora();
-    $modeloCliente = new ModeloCliente();
+    $db = new Db();
+    $validator = new Validator();
+    $modeloBitacora = new ModeloBitacora($db,$validator);
+    $modeloCliente = new ModeloCliente($db, $validator);
 
     $ayuda = "btnayudaPaciente";
     $vistaActiva = 'clientes';
@@ -24,6 +27,10 @@ function clientesAjax()
         exit;
     }
 
+    $db = new Db();
+    $validator = new Validator();
+    $modeloCliente = new ModeloCliente($db,$validator);
+
     $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
     $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
     $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -35,20 +42,15 @@ function clientesAjax()
     $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
     $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
-
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_cliente';
 
-    $modeloCliente = new ModeloCliente();
-    $clientes = $modeloCliente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-    $totalRegistros = $modeloCliente->contarTotalClientes('ACT');
-    $totalFiltrados = !empty($buscar) ? $modeloCliente->contarTotalClientes('ACT', $buscar) : $totalRegistros;
+    $data = $modeloCliente->index('ACT',$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
     $respuesta = [
         "draw"            => $draw,
-        "recordsTotal"    => (int)$totalRegistros,
-        "recordsFiltered" => (int)$totalFiltrados,
-        "data"            => $clientes
+        "recordsTotal"    => (int)$data['total'],
+        "recordsFiltered" => (int)$data['total_filtrado'],
+        "data"            => $data['data']
     ];
 
     echo json_encode($respuesta);
@@ -69,6 +71,10 @@ function papeleraAjax()
         exit;
     }
 
+    $db = new Db();
+    $validator = new Validator();
+    $modeloCliente = new ModeloCliente($db, $validator);
+
     $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
     $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
     $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -83,19 +89,14 @@ function papeleraAjax()
 
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_cliente';
 
-    $modeloCliente = new ModeloCliente();
-    $clientes = $modeloCliente->indexPapelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-    $totalRegistros = $modeloCliente->contarTotalClientes('DES');
-    $totalFiltrados = !empty($buscar) ? $modeloCliente->contarTotalClientes('DES', $buscar) : $totalRegistros;
+    $data = $modeloCliente->index('DES', $inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
     $respuesta = [
         "draw"            => $draw,
-        "recordsTotal"    => (int)$totalRegistros,
-        "recordsFiltered" => (int)$totalFiltrados,
-        "data"            => $clientes
+        "recordsTotal"    => (int)$data['total'],
+        "recordsFiltered" => (int)$data['total_filtrado'],
+        "data"            => $data['data']
     ];
-
     echo json_encode($respuesta);
     exit;
 }
@@ -110,8 +111,13 @@ function guardar()
 
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        $modeloCliente = new ModeloCliente();
-        $modeloBitacora = new ModeloBitacora();
+        $db = new Db();
+        $validator = new Validator();
+        $modeloCliente = new ModeloCliente($db, $validator);
+        $modeloBitacora = new ModeloBitacora($db, $validator);
+
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
 
         $modeloCliente->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
         $modeloCliente->setCedula($_POST['cedula']);
@@ -126,12 +132,13 @@ function guardar()
         $modeloBitacora->setActividad("Ha Insertado un nuevo cliente");
         $modeloBitacora->setTabla("cliente");
 
-        $insercion = $modeloCliente->guardarCliente($idUsuario);
+        $insercion = $modeloCliente->guardar($modeloCliente->get_all(), $validator);
 
         // Verifica si es un array con clave "exito"
-        if (is_array($insercion) && $insercion[0] === "exito") {
-            $modeloBitacora->insertarBitacora($idUsuario);
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+        if (is_array($insercion)) {
+            $modeloBitacora->guardar($modeloBitacora->get_all(), $validator);
+
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
         } else {
             http_response_code(409);
             echo json_encode(['ok' => false, 'error' => $insercion]);
@@ -154,8 +161,12 @@ function setCliente()
 
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        $modeloCliente  = new ModeloCliente();
-        $modeloBitacora = new ModeloBitacora();
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
+        $modeloCliente  = new ModeloCliente($db,$validator);
+        $modeloBitacora = new ModeloBitacora($db, $validator);
 
         $modeloCliente->setIdCliente($_POST['id']);
         $modeloCliente->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
@@ -172,10 +183,10 @@ function setCliente()
         $modeloBitacora->setActividad("Ha modificado un cliente");
         $modeloBitacora->setTabla("cliente");
 
-        $edicion = $modeloCliente->editarCliente($idUsuario);
+        $edicion = $modeloCliente->actualizar($modeloCliente->get_all(),['id_cliente'=>$modeloCliente->getIdCliente()],$validator);
 
-        if (is_array($edicion) && $edicion[0] === "exito") {
-            $modeloBitacora->insertarBitacora($idUsuario);
+        if (is_array($edicion)) {
+            $modeloBitacora->guardar($modeloBitacora->get_all(), $validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -200,8 +211,12 @@ function eliminar($datos)
     try {
         $idUsuario  = $_SESSION['id_usuario'];
         $id_cliente = $datos[0];
-        $modeloCliente  = new ModeloCliente();
-        $modeloBitacora = new ModeloBitacora();
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
+        $modeloCliente  = new ModeloCliente($db, $validator);
+        $modeloBitacora = new ModeloBitacora($db, $validator);
 
         $modeloCliente->setIdCliente($id_cliente);
 
@@ -209,10 +224,10 @@ function eliminar($datos)
         $modeloBitacora->setActividad("Ha eliminado un cliente");
         $modeloBitacora->setTabla("cliente");
 
-        $eliminacion = $modeloCliente->eliminarCliente($idUsuario);
+        $eliminacion = $modeloCliente->actualizar(['estado'=>'DES'],['id_cliente'=>$modeloCliente->getIdCliente()],$validator);
 
-        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-            $modeloBitacora->insertarBitacora($idUsuario);
+        if (is_array($eliminacion)) {
+            $modeloBitacora->guardar($modeloBitacora->get_all(), $validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -237,8 +252,12 @@ function restablecer($datos)
     try {
         $idUsuario  = $_SESSION['id_usuario'];
         $id_cliente = $datos[0];
-        $modeloCliente  = new ModeloCliente();
-        $modeloBitacora = new ModeloBitacora();
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
+        $modeloCliente  = new ModeloCliente($db, $validator);
+        $modeloBitacora = new ModeloBitacora($db,$validator);
 
         $modeloCliente->setIdCliente($id_cliente);
 
@@ -246,10 +265,10 @@ function restablecer($datos)
         $modeloBitacora->setActividad("Ha restablecido un cliente");
         $modeloBitacora->setTabla("cliente");
 
-        $restablecer = $modeloCliente->restablecerCliente($idUsuario);
+        $restablecer = $modeloCliente->actualizar(['estado'=>'ACT'],['id_cliente'=>$modeloCliente->getIdCliente()], $validator);
 
-        if (is_array($restablecer) && $restablecer[0] === "exito") {
-            $modeloBitacora->insertarBitacora($idUsuario);
+        if (is_array($restablecer)) {
+            $modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);

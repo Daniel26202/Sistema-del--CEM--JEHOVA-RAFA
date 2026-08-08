@@ -218,7 +218,9 @@ const readPatients = async () => {
       hasPermision(id_rol_global, "Pacientes", "eliminar", ".btnRestablecer"); //restablecer
       hasPermision(id_rol_global, "Pacientes", "editar", ".botonesEdi"); //editar
     };
-
+    const filtro ={
+      estado:'ACT'
+    }
     initDataTable(
       selector,
       url + "/" + metodo,
@@ -230,6 +232,7 @@ const readPatients = async () => {
         dataPacientes.push(...datosServer);
       },
       asignarEventos,
+      filtro
     );
   } catch (error) {
     alertError("Error", error);

@@ -1,9 +1,9 @@
 <?php
 
-use App\modelos\ModeloInsumo;
-use App\modelos\ModeloProveedores;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
+use App\models\ModeloInsumo;
+use App\models\ModeloProveedores;
+use App\models\ModeloBitacora;
+use App\models\ModeloPermisos;
 
 
 
@@ -21,10 +21,10 @@ function insumos($parametro)
 	$ayuda = "btnayudaInsumo";
 	$vistaActiva = "insumos";
 
-	$proveedores = $modeloInsumo->selectProveedores();
-	$insumos = $modeloInsumo->insumos();
+	// $proveedores = $modeloInsumo->selectProveedores();
+	// $insumos = $modeloInsumo->insumos();
 	if ($insumos) {
-		$modeloInsumo->vencerInsumos($idUsuario);
+		// $modeloInsumo->vencerInsumos($idUsuario);
 		//$modeloInsumo->insumoProximos();
 	}
 	require_once './src/vistas/vistaInsumos/vistaInsumos.php';

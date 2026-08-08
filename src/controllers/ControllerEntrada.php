@@ -1,20 +1,22 @@
 <?php
 
-use App\modelos\ModeloEntrada;
-use App\modelos\ModeloInsumo;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
-
-
+use App\models\ModeloEntrada;
+use App\models\ModeloInsumo;
+use App\models\ModeloBitacora;
+use App\models\ModeloPermisos;
+use App\models\Db;
+use App\models\Validator;
 
 
 function entrada($parametro)
 {
-	$modeloEntrada = new ModeloEntrada();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloEntrada = new ModeloEntrada($db, $validator);
 	$ayuda = "btnayudaEntrada";
 	$vistaActiva = "entradas";
-	$insumos = $modeloEntrada->insumos();
-	$proveedores = $modeloEntrada->selectProveedores();
+	// $insumos = $modeloEntrada->insumos();
+	// $proveedores = $modeloEntrada->selectProveedores();
 	require_once './src/vistas/vistaEntrada/vistaEntrada.php';
 }
 
@@ -26,6 +28,9 @@ function entradasAjax()
 		exit;
 	}
 
+	$db = new Db();
+	$validator = new Validator();
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -39,19 +44,16 @@ function entradasAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
 
-	$modeloEntrada = new ModeloEntrada();
+	$modeloEntrada = new ModeloEntrada($db,$validator);
 
-	$entradas = $modeloEntrada->todasLasEntradas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloEntrada->contarTotalEntradas('ACT');
-	$totalFiltrados = !empty($buscar) ? $modeloEntrada->contarTotalEntradas('ACT',$buscar) : $totalRegistros;
+	$data = $modeloEntrada->todasLasEntradas('ACT',$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	//datos que se le envia al js (esto es estandar de datatable)
 	$response = [
 		"draw" => $draw,
-		"recordsTotal" => $totalRegistros,
-		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($entradas) ? $entradas : []
+		"recordsTotal" => $data['total'],
+		"recordsFiltered" => $data['total_filtrado'],
+		"data" => is_array($data['data']) ? $data['data'] : []
 	];
 
 	echo json_encode($response);
@@ -61,8 +63,10 @@ function entradasAjax()
 
 function papelera($parametro)
 {
-	$modeloEntrada = new ModeloEntrada();
-	$insumos = $modeloEntrada->insumos();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloEntrada = new ModeloEntrada($db, $validator);
+	// $insumos = $modeloEntrada->insumos();
 	require_once './src/vistas/vistaEntrada/vistaEntradaDesactiva.php';
 }
 
@@ -74,6 +78,9 @@ function entradasPapeleraAjax()
 		exit;
 	}
 
+	$db = new Db();
+	$validator = new Validator();
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -87,19 +94,16 @@ function entradasPapeleraAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
 
-	$modeloEntrada = new ModeloEntrada();
+	$modeloEntrada = new ModeloEntrada($db, $validator);
 
-	$entradas = $modeloEntrada->seleccionarDesactivos($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloEntrada->contarTotalEntradas('DES');
-	$totalFiltrados = !empty($buscar) ? $modeloEntrada->contarTotalEntradas('DES', $buscar) : $totalRegistros;
+	$data = $modeloEntrada->todasLasEntradas('DES',$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	//datos que se le envia al js (esto es estandar de datatable)
 	$response = [
 		"draw" => $draw,
-		"recordsTotal" => $totalRegistros,
-		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($entradas) ? $entradas : []
+		"recordsTotal" => $data['total'],
+		"recordsFiltered" => $data['total_filtrado'],
+		"data" => is_array($data['data']) ? $data['data'] : []
 	];
 
 	echo json_encode($response);
@@ -117,21 +121,25 @@ function restablecerEntrada($datos)
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-		$modeloEntrada = new ModeloEntrada();
-		$modeloBitacora = new ModeloBitacora();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$modeloEntrada = new ModeloEntrada($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		$id_entrada = $datos[0];
 
 		$modeloEntrada->setIdEntrada($id_entrada);
-		$restablecimiento = $modeloEntrada->restablecerEntrada($idUsuario);
+		$restablecimiento = $modeloEntrada->actualizar(['estado'=>'ACT'],['id_entrada'=>$modeloEntrada->getIdEntrada()],$validator);
 
 
-		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+		if (is_array($restablecimiento)) {
 
 			$modeloBitacora->setActividad("Ha restablecido una entrada");
 			$modeloBitacora->setTabla("entrada");
 			$modeloBitacora->setId_usuario($idUsuario);
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -146,14 +154,6 @@ function restablecerEntrada($datos)
 	}
 }
 
-function proveedoresEditar()
-{
-	$modeloEntrada = new ModeloEntrada();
-	$respuesta = $modeloEntrada->selectProveedores();
-	echo json_encode($respuesta);
-}
-
-
 
 function guardar()
 {
@@ -164,9 +164,12 @@ function guardar()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-
-		$modeloEntrada = new ModeloEntrada();
-		$modeloBitacora = new ModeloBitacora();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$modeloEntrada = new ModeloEntrada($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		// Quitar separadores de miles
 		$valor = str_replace('.', '', $_POST['precioD']);
@@ -174,21 +177,19 @@ function guardar()
 		$valor = str_replace(',', '.', $valor);
 		$precio = (float)$valor;
 
-		$modeloEntrada->setIdInsumo($_POST["id_insumo"]);
 		$modeloEntrada->setLote($_POST["lote"]);
-		$modeloEntrada->setIdProveedor($_POST["proveedor"]);
 		$modeloEntrada->setFechaDeIngreso(date("Y-m-d"));
 		$modeloEntrada->setFechaDeVencimiento($_POST["fechaDeVencimiento"]);
 		$modeloEntrada->setCantidadDisponible($_POST["cantidad"]);
 		$modeloEntrada->setPrecio($precio);
 
-		$insercion = $modeloEntrada->guardarEntrada($idUsuario);
+		$insercion = $modeloEntrada->guardar($modeloEntrada->get_all(),$validator);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
 			$modeloBitacora->setActividad("Ha insertado una entrada");
 			$modeloBitacora->setTabla("entrada");
 			$modeloBitacora->setId_usuario($idUsuario);
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
 			http_response_code(409);
@@ -205,7 +206,7 @@ function guardar()
 	}
 }
 
-function eliminar($datos)
+function eliminar(array $datos)
 {
 	if (empty($_GET)) {
 		http_response_code(409);
@@ -215,20 +216,23 @@ function eliminar($datos)
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-
-		$modeloEntrada = new ModeloEntrada();
-		$modeloBitacora = new ModeloBitacora();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$modeloEntrada = new ModeloEntrada($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		$id_entrada = $datos[0];
 
 		$modeloEntrada->setIdEntrada($id_entrada);
-		$elimincion = $modeloEntrada->eliminarEntrada($idUsuario);
+		$elimincion = $modeloEntrada->actualizar(['estado'=>'DES'],['id_entrada'=>$modeloEntrada->getIdEntrada()],$validator);
 
 		if (is_array($elimincion) && $elimincion[0] === "exito") {
 			$modeloBitacora->setActividad("Ha eliminado una entrada");
 			$modeloBitacora->setTabla("entrada");
 			$modeloBitacora->setId_usuario($idUsuario);
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
@@ -252,9 +256,12 @@ function editar()
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-
-		$modeloEntrada = new ModeloEntrada();
-		$modeloBitacora = new ModeloBitacora();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$modeloEntrada = new ModeloEntrada($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		//Quitar separadores de miles
 		$valor = str_replace('.', '', $_POST['precioD']);
@@ -264,19 +271,19 @@ function editar()
 
 		// $modeloInsumo->setIdInsumo($_POST["id_insumo"]);
 		$modeloEntrada->setLote($_POST["lote"]);
-		$modeloEntrada->setIdProveedor($_POST["proveedor"]);
+		// $modeloEntrada->setIdProveedor($_POST["proveedor"]);
 		$modeloEntrada->setIdEntrada($_POST["id_entrada"]);
 		$modeloEntrada->setFechaDeVencimiento($_POST["fechaDeVencimiento"]);
 		$modeloEntrada->setCantidadEntrante($_POST["cantidad"]);
 		$modeloEntrada->setPrecio($precio);
 
-		$edicion = $modeloEntrada->updateEntrda($idUsuario);
+		$edicion = $modeloEntrada->actualizar($modeloEntrada->get_all(),['id_entrada'=>$modeloEntrada->get_all()],$validator);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$modeloBitacora->setActividad("Ha modificado una entrada");
 			$modeloBitacora->setTabla("entrada");
 			$modeloBitacora->setId_usuario($idUsuario);
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {
 			http_response_code(409);
@@ -292,19 +299,12 @@ function editar()
 
 function entradaInsumo()
 {
-	$modeloEntrada = new ModeloEntrada();
-	$modeloInsumo = new ModeloInsumo();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloEntrada = new ModeloEntrada($db,$validator);
+	$modeloInsumo = new ModeloInsumo($db,$validator);
 
 	$modeloInsumo->setIdInsumo($_GET['id_insumo']);
-	$respuesta = $modeloEntrada->insumosEntrada();
-	echo json_encode($respuesta);
-}
-
-function permisos($id_rol, $permiso, $modulo)
-{
-	$modeloPermisos = new ModeloPermisos();
-	$modeloPermisos->setIdRol($id_rol);
-	$modeloPermisos->setPermiso($permiso);
-	$modeloPermisos->setModulo($modulo);
-	return $modeloPermisos->gestionarPermisos();
+	// $respuesta = $modeloEntrada->insumosEntrada();
+	echo json_encode([]);
 }

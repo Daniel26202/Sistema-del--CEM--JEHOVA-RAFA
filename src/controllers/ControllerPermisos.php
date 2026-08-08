@@ -1,7 +1,10 @@
 <?php
 
-use App\modelos\ModeloPermisos;
-use App\modelos\ModeloBitacora;
+use App\models\ModeloPermisos;
+use App\models\ModeloBitacora;
+use App\models\Db;
+use App\models\Validator;
+
 
 // use App\config\RateLimiter;
 
@@ -9,13 +12,15 @@ use App\modelos\ModeloBitacora;
 ////modulos/////
 function returnModules()
 {
-    $model = new ModeloPermisos();
+    $db = new Db();
+    $model = new ModeloPermisos($db);
 
     echo json_encode($model->returnModules());
 }
 
 function returnPermisionModule()  {
-    $module = new ModeloPermisos();
+    $db = new Db();
+    $module = new ModeloPermisos($db);
 
     $result =[];
     foreach ($module->returnModules() as $module) {
@@ -36,7 +41,8 @@ function hasPermision($data)
         exit;
     }
     try {
-        $model = new ModeloPermisos();
+        $db = new Db();
+        $model = new ModeloPermisos($db);
         $model->setIdRol($data[0]);
         $model->setModulo($data[1]);
         $model->setPermiso($data[2]);
@@ -67,22 +73,23 @@ function registrarModulo()
 
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        // $limiter = new RateLimiter();
-        // $limiter->verificar('guardar_modulo_' . $idUsuario, 5, 1);
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
 
-        $modulo = new ModeloPermisos();
-        $bitacora = new ModeloBitacora();
+        $modulo = new ModeloPermisos($db);
+        $bitacora = new ModeloBitacora($db,$validator);
 
         $modulo->setModulo($_POST["nombre"]);
 
-        $insercion = $modulo->registrarModulo();
+        $insercion = $modulo->guardar($modulo->get_all(), $validator);
 
         if (is_array($insercion) && $insercion[0] === "exito") {
             $bitacora->setId_usuario($_POST['id_usuario']);
             $bitacora->setActividad("Ha Insertado un nuevo  modulo");
             $bitacora->setTabla("modulo");
-            $bitacora->insertarBitacora();
+            $bitacora->guardar($bitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
             http_response_code(409);
@@ -97,7 +104,7 @@ function registrarModulo()
 }
 
 
-function eliminar_modulo($datos)
+function eliminar_modulo(array $datos)
 {
     if (empty($_GET)) {
         http_response_code(409);
@@ -108,12 +115,13 @@ function eliminar_modulo($datos)
     try {
 
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        // $limiter = new RateLimiter();
-        // $limiter->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
 
-        $modelo  = new ModeloPermisos();
-        $bitacora = new ModeloBitacora();
+        $modelo  = new ModeloPermisos($db);
+        $bitacora = new ModeloBitacora($db,$validator);
 
         $modelo->setIdModulo($datos[0]);
 
@@ -121,11 +129,11 @@ function eliminar_modulo($datos)
         $bitacora->setActividad("Ha eliminado un  modulo del sistema");
         $bitacora->setTabla("modulo");
 
-        $eliminacion = $modelo->delete_modulo();
+        $eliminacion = $modelo->actualizar(['estado'=>'DES'],['id_modulo'=>$modelo->getIdModulo()],$validator);
 
         //Verifica si es un array con clave "exito"
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-            $bitacora->insertarBitacora();
+            $bitacora->guardar($bitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);

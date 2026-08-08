@@ -4,7 +4,7 @@ RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # Bloquea el acceso directo a archivos .php en las carpetas "controladores" y "modelos"
-RewriteRule ^src/(controladores|modelos)/.*\.php$ - [F,L]
+RewriteRule ^src/(controllers|models)/.*\.php$ - [F,L]
 
 # Redirige todo excepto archivos y carpetas existentes
 RewriteCond %{REQUEST_FILENAME} !-f

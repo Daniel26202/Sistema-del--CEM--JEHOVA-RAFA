@@ -1,8 +1,8 @@
 <?php
 
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloMantenimiento;
-use App\modelos\ModeloPermisos;
+use App\models\ModeloBitacora;
+use App\models\ModeloMantenimiento;
+use App\models\ModeloPermisos;
 
 
 function mantenimiento($parametro)

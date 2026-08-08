@@ -1,18 +1,21 @@
 <?php
 
-use App\modelos\ModeloFactura;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloCita;
-use App\modelos\ModeloCliente;
-use App\modelos\ModeloHospitalizacion;
-use App\modelos\ModeloInsumo;
-use App\modelos\ModeloPacientes;
-use App\modelos\ModeloPermisos;
+use App\models\ModeloFactura;
+use App\models\ModeloBitacora;
+use App\models\ModeloCita;
+use App\models\ModeloCliente;
+use App\models\ModeloHospitalizacion;
+use App\models\ModeloInsumo;
+use App\models\ModeloPacientes;
+use App\models\ModeloPermisos;
+use App\models\Db;
+use App\models\Validator;
 
 function factura($parametro)
 {
-
-	$modeloInsumos = new ModeloInsumo();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloInsumos = new ModeloInsumo($db,$validator);
 	$vistaActiva = 'factura';
 	$ayuda = "btnayudaFactura";
 	$insumos = $modeloInsumos->insumos();
@@ -21,7 +24,9 @@ function factura($parametro)
 
 function mostrarServicios()
 {
-	$modeloFactura = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloFactura = new ModeloFactura($db,$validator);
 	$result = [];
 
 	foreach ($modeloFactura->mostrarServicios() as $servicio) {
@@ -41,20 +46,26 @@ function mostrarServicios()
 
 function mostrarInsumos()
 {
-	$modeloInsumos = new ModeloInsumo();
-	echo json_encode($modeloInsumos->insumos(false));
+	$db = new Db();
+	$validator = new Validator();
+	$modeloInsumos = new ModeloInsumo($db,$validator);
+	// echo json_encode($modeloInsumos->insumos(false));
 }
 
 function mostrarMetodosDePago()
 {
-	$modeloFactura = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloFactura = new ModeloFactura($db,$validator);
 	echo json_encode($modeloFactura->mostrarTiposDePagos());
 }
 
 function facturaCita($parametro)
 {
-	$modeloInsumos = new ModeloInsumo();
-	$modeloFactura = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloInsumos = new ModeloInsumo($db,$validator);
+	$modeloFactura = new ModeloFactura($db,$validator);
 
 	$idCita = preg_replace('/\D/', '', $parametro[0]);
 
@@ -64,14 +75,16 @@ function facturaCita($parametro)
 	$tiposDePagos = $modeloFactura->mostrarTiposDePagos();
 	$todosLosInsumos = $insumos;
 	$extras = $modeloFactura->mostrarServicios();
-	$citaFacturar = $modeloFactura->mostrarCitaFactura();
+	// $citaFacturar = $modeloFactura->mostrarCitaFactura();
 
 	require_once './src/vistas/vistaFactura/facturaCita.php';
 }
 
 function facturarHospitalizacion($parametro)
 {
-	$modeloFactura = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloFactura = new ModeloFactura($db,$validator);
 	$idHospitalizacion = preg_replace('/\D/', '', $parametro[0]);
 
 	$modeloFactura->setIdH($idHospitalizacion);
@@ -86,7 +99,9 @@ function facturarHospitalizacion($parametro)
 
 function datosHospitalizacion($parametro)
 {
-	$modeloFactura = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloFactura = new ModeloFactura($db,$validator);
 	$modeloFactura->setIdH($parametro[0]);
 
 	$result = [];
@@ -153,7 +168,9 @@ function datosHospitalizacion($parametro)
 
 function comprobante($parametro)
 {
-	$modeloFactura = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloFactura = new ModeloFactura($db,$validator);
 
 	if ($parametro == "") {
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
@@ -182,7 +199,9 @@ function mostrarPaciente()
 		exit;
 	}
 	try {
-		$modeloFactura = new ModeloFactura();
+		$db = new Db();
+		$validator = new Validator();
+		$modeloFactura = new ModeloFactura($db,$validator);
 		$modeloFactura->setCedula($_POST['cedula']);
 		echo json_encode($modeloFactura->buscar());
 	} catch (InvalidArgumentException $e) {
@@ -200,7 +219,9 @@ function mostrarCliente()
 		exit;
 	}
 	try {
-		$modeloFactura = new ModeloFactura();
+		$db = new Db();
+		$validator = new Validator();
+		$modeloFactura = new ModeloFactura($db,$validator);
 		$modeloFactura->setCedula($_POST['cedula']);
 		echo json_encode($modeloFactura->buscarCliente());
 	} catch (InvalidArgumentException $e) {
@@ -217,7 +238,9 @@ function mostrarPacienteConCita()
 		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
-	$modeloFactura = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloFactura = new ModeloFactura($db,$validator);
 	$modeloFactura->setCedula($_POST["cedula"]);
 	echo json_encode($modeloFactura->buscarPacientePorCita());
 }
@@ -230,8 +253,12 @@ function guardarFactura()
 	}
 
 	$idUsuario = $_SESSION['id_usuario'];
-	$modeloBitacora = new ModeloBitacora();
-	$modeloFactura  = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$validator->set_session($_SESSION);
+	$validator->set_id_usuario($idUsuario);
+	$modeloBitacora = new ModeloBitacora($db,$validator);
+	$modeloFactura  = new ModeloFactura($db,$validator);
 
 	$modeloFactura->setFecha(date("Y-m-d"));
 	$modeloFactura->setServicios(isset($_POST["servicios"]) ? $_POST["servicios"] : []);
@@ -266,7 +293,7 @@ function guardarFactura()
 		$modeloBitacora->setId_usuario($idUsuario);
 		$modeloBitacora->setActividad("Ha facturado servicios y/o insumos");
 		$modeloBitacora->setTabla("factura");
-		$modeloBitacora->insertarBitacora($idUsuario);
+		$modeloBitacora->guardar($modeloBitacora->get_all(),$idUsuario);
 
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $guardar[0]);
 	} else {
@@ -277,7 +304,9 @@ function guardarFactura()
 
 function mostrarPDF($parametro)
 {
-	$modeloFactura = new ModeloFactura();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloFactura = new ModeloFactura($db,$validator);
 	$modeloFactura->setIdFactura($parametro[0]);
 	$datosFactura = $modeloFactura->consultarFacturaSinCita();
 	$datosPago = $modeloFactura->consultarPagoFactura();
@@ -294,13 +323,4 @@ function mostrarPDF2()
 function mostrarPDF3()
 {
 	require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
-}
-
-function permisos($id_rol, $permiso, $modulo)
-{
-	$modeloPermisos = new ModeloPermisos();
-	$modeloPermisos->setIdRol($id_rol);
-	$modeloPermisos->setPermiso($permiso);
-	$modeloPermisos->setModulo($modulo);
-	return $modeloPermisos->gestionarPermisos();
 }

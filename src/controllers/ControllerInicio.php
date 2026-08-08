@@ -1,19 +1,23 @@
 <?php
 
-use App\modelos\ModeloInicio;
-use App\modelos\ModeloCita;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloUsuarios;
-use App\modelos\ModeloDoctores;
-
-
-
+use App\models\Db;
+use App\models\ModeloInicio;
+use App\models\ModeloCita;
+use App\models\ModeloBitacora;
+use App\models\ModeloUsuarios;
+use App\models\ModeloDoctores;
+use App\models\Validator;
 
 function inicio($parametro)
 {
-    $modeloInicio = new ModeloInicio();
-    $bitacora = new ModeloBitacora();
-    $usuario = new ModeloUsuarios();
+    $db = new Db();
+    $validator = new Validator();
+    $validator->set_session($_SESSION);
+    $validator->set_id_usuario($_SESSION['id_usuario']);
+
+    $modeloInicio = new ModeloInicio($db,$validator);
+    $bitacora = new ModeloBitacora($db,$validator);
+    $usuario = new ModeloUsuarios($db,$validator);
 
     if ($parametro != "" && $parametro[0] == "cerrar") {
         // verifica si la sesión esta activa.
@@ -25,7 +29,7 @@ function inicio($parametro)
         //actualizar el token del usuario
         $usuario->setIdUsuario($_SESSION['id_usuario']);
         $usuario->setTokenInicioSesion(NULL);
-        $usuario->actualizarTokenInicioSesion();
+        // $usuario->actualizarTokenInicioSesion();
 
 
         // Guardar la bitácora
@@ -34,7 +38,8 @@ function inicio($parametro)
         $bitacora->setActividad("Ha cerrado la session");
         $bitacora->setTabla("cerrar session");
 
-        $bitacora->insertarBitacora();
+        $bitacora->guardar($bitacora->get_all(), $_SESSION['id_usuario']);
+
         // Destruyen las variables de las sesión 
         session_unset();
         session_destroy();
@@ -98,7 +103,8 @@ function manualUsuario()
 
 function servicios()
 {
-    $modeloInicio = new ModeloInicio();
+    $db = new Db();
+    $modeloInicio = new ModeloInicio($db);
     echo json_encode($modeloInicio->servicios());
 }
 
@@ -106,14 +112,18 @@ function servicios()
 
 function citasDeHoy()
 {
-    $modelo = new ModeloCita();
+    $db = new Db();
+    $validator = new Validator();
+    $modelo = new ModeloCita($db, $validator);
     echo json_encode($modelo->mostrarCitaHoy());
 }
 
 function cerrarSession()
 {
-    $bitacora = new ModeloBitacora(false);
-    $usuario = new ModeloUsuarios();
+    $db = new Db();
+    $validator = new Validator();
+    $bitacora = new ModeloBitacora($db, $validator);
+    $usuario = new ModeloUsuarios($db, $validator);
     if (empty($_GET)) {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
@@ -126,13 +136,14 @@ function cerrarSession()
     // Guardar la bitácora
     $usuario->setTokenInicioSesion(null);
     $usuario->setIdUsuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
-    $usuario->actualizarTokenInicioSesion();
+    // $usuario->actualizarTokenInicioSesion();
     
     $bitacora->setId_usuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
     $bitacora->setActividad("Ha cerrado la session");
     $bitacora->setTabla("cerrar session");
 
-    $bitacora->insertarBitacora();
+    $bitacora->guardar($bitacora->get_all(), $_SESSION['id_usuario']);
+
     // Destruyen las variables de las sesión 
     session_unset();
     session_destroy();
@@ -142,69 +153,84 @@ function cerrarSession()
 
 function citas()
 {
-    $modelo = new ModeloCita();
+    $db = new Db();
+    $validator = new Validator();
+    $modelo = new ModeloCita($db,$validator);
     echo json_encode($modelo->mostrarCita());
 }
 
 function pacientes_hospitalizados()
 {
-    $modelo = new ModeloInicio();
+    $db = new Db();
+    $modelo = new ModeloInicio($db);
     echo json_encode($modelo->pacientes_hospitalizados());
 }
 
 function especialidades_solicitadas()
 {
-    $modelo = new ModeloInicio();
-    echo json_encode($modelo->especialidades_solicitadas());
+    $db = new Db();
+    $modelo = new ModeloInicio($db);
+    // echo json_encode($modelo->especialidades_solicitadas());
+    echo json_encode([]);
 }
 function especialidades_solicitadas_filtradas($datos)
 {
-    $modelo = new ModeloInicio();
+    $db = new Db();
+    $modelo = new ModeloInicio($db);
     $modelo->setFechaInicio($datos[0]);
     $modelo->setFechaFinal($datos[1]);
-    echo json_encode($modelo->especialidades_solicitadas());
+    // echo json_encode($modelo->especialidades_solicitadas());
+    echo json_encode([]);
 }
 
 function todas_las_especialidades()
 {
-    $modelo = new ModeloInicio();
-
+    $db = new Db();
+    $modelo = new ModeloInicio($db);
     echo json_encode($modelo->todas_las_especialidades());
 }
 
 function sintomas_comunes()
 {
-    $modelo = new ModeloInicio();
-
-    echo json_encode($modelo->sintomas_comunes());
+    $db = new Db();
+    $modelo = new ModeloInicio($db);
+    // echo json_encode($modelo->sintomas_comunes());
+    echo json_encode([]);
 }
 
 function sintomas_comunes_filtrados($datos)
 {
-    $modelo = new ModeloInicio();
+    $db = new Db();
+    $modelo = new ModeloInicio($db);
     $modelo->setFechaInicio($datos[0]);
     $modelo->setFechaFinal($datos[1]);
-    echo json_encode($modelo->sintomas_comunes());
+    // echo json_encode($modelo->sintomas_comunes());
+    echo json_encode([]);
 }
 
 function todos_los_sintomas()
 {
-    $modelo = new ModeloInicio();
-
+    $db = new Db();
+    $modelo = new ModeloInicio($db);
     echo json_encode($modelo->todos_los_sintomas());
 }
 
 //Datos del horario del doctor
 function mostrarHorario($datos)
 {
-    $modelo = new ModeloCita();
-    $modelo->setIdDoctor($datos[0]);
-    echo json_encode($modelo->mostrarHorarioDoctores());
+    $db = new Db();
+    $validator = new Validator();
+    $modelo = new ModeloCita($db, $validator);
+    // $modelo->setIdDoctor($datos[0]);
+    // echo json_encode($modelo->mostrarHorarioDoctores());
+    echo json_encode([]);
 }
 
 function retornarDoctores()
 {
-    $modelo = new ModeloDoctores();
+    $db = new Db();
+    $validator = new Validator();
+    $modelo = new ModeloDoctores($db, $validator);
     echo json_encode($modelo->select());
 }
 
@@ -259,11 +285,12 @@ function exportar_pdf()
 }
 
 
-
 function diasConMasCitas($parametro)
 {
-    $modelo = new ModeloInicio();
+    $db = new Db();
+    $modelo = new ModeloInicio($db);
     $id_personal = isset($parametro[0]) ? $parametro[0] : 0;
     $modelo->setIdPersonal($id_personal);
-    echo json_encode($modelo->obtenerDiasConMasCitas());
+    // echo json_encode($modelo->obtenerDiasConMasCitas());
+    echo json_encode([]);
 }

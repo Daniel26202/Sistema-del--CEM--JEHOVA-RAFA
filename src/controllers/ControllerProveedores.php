@@ -1,8 +1,9 @@
 <?php
 
-use App\modelos\ModeloProveedores;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
+use App\models\ModeloProveedores;
+use App\models\ModeloBitacora;
+use App\models\Db;
+use App\models\Validator;
 
 function proveedores($parametro)
 {
@@ -19,6 +20,9 @@ function proveedoresAjax()
 		exit;
 	}
 
+	$db = new Db();
+	$validator = new Validator();
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -26,25 +30,20 @@ function proveedoresAjax()
 
 	$columnasMapeadas = ['nombre', 'rif', 'telefono', 'correo', 'direccion'];
 
-
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 	// direccion (asc o desc)
 	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_proveedor';
 
-	$modeloProveedores = new ModeloProveedores();
-	$proveedores = $modeloProveedores->consultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloProveedores->contarTotalProveedores('ACT');
-	$totalFiltrados = !empty($buscar) ? $modeloProveedores->contarTotalProveedores('ACT', $buscar) : $totalRegistros;
-
+	$modeloProveedores = new ModeloProveedores($db, $validator);
+	$data = $modeloProveedores->consultar('ACT',$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 	//datos que se le envia al js (esto es estandar de datatable)
 	$response = [
 		"draw" => $draw,
-		"recordsTotal" => $totalRegistros,
-		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($proveedores) ? $proveedores : []
+		"recordsTotal" => $data['total'],
+		"recordsFiltered" => $data['total_filtrado'],
+		"data" => is_array($data['data']) ? $data['data'] : []
 	];
 
 	echo json_encode($response);
@@ -65,6 +64,9 @@ function proveedoresPapeleraAjax()
 		exit;
 	}
 
+	$db = new Db();
+	$validator = new Validator();
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -79,18 +81,15 @@ function proveedoresPapeleraAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_proveedor';
 
-	$modeloProveedores = new ModeloProveedores();
-	$proveedores = $modeloProveedores->papeleraConsultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloProveedores->contarTotalProveedores('DES');
-	$totalFiltrados = !empty($buscar) ? $modeloProveedores->contarTotalProveedores('DES', $buscar) : $totalRegistros;
+	$modeloProveedores = new ModeloProveedores($db,$validator);
+	$data = $modeloProveedores->consultar('DES',$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	//datos que se le envia al js (esto es estandar de datatable)
 	$response = [
 		"draw" => $draw,
-		"recordsTotal" => $totalRegistros,
-		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($proveedores) ? $proveedores : []
+		"recordsTotal" => $data['total'],
+		"recordsFiltered" => $data['total_filtrado'],
+		"data" => is_array($data['data']) ? $data['data'] : []
 	];
 
 	echo json_encode($response);
@@ -106,9 +105,12 @@ function insertar()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-
-		$modeloProveedores = new ModeloProveedores();
-		$modeloBitacora = new ModeloBitacora();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$modeloProveedores = new ModeloProveedores($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		$modeloProveedores->setNombre($_POST["nombre"]);
 		$modeloProveedores->setRif($_POST["rif"]);
@@ -116,16 +118,15 @@ function insertar()
 		$modeloProveedores->setEmail($_POST["correo"]);
 		$modeloProveedores->setDireccion($_POST["direccion"]);
 
-		$insercion = $modeloProveedores->guardarEntrada($idUsuario);
+		$insercion = $modeloProveedores->guardar($modeloProveedores->get_all(),$validator);
 
-		if (is_array($insercion) && $insercion[0] === "exito") {
+		if (is_array($insercion)) {
 			$modeloBitacora->setActividad("Ha insertado un proveedor");
 			$modeloBitacora->setTabla("proveedor");
 			$modeloBitacora->setId_usuario($idUsuario);
 
-			$modeloBitacora->insertarBitacora();
-
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $insercion]);
@@ -139,7 +140,7 @@ function insertar()
 }
 
 // eliminación logica
-function update($datos)
+function update(array $datos)
 {
 	if (empty($_GET)) {
 		http_response_code(409);
@@ -148,20 +149,24 @@ function update($datos)
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
 
-		$modeloProveedores = new ModeloProveedores();
-		$modeloBitacora = new ModeloBitacora();
+		$modeloProveedores = new ModeloProveedores($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		$id_proveedor = $datos[0];
 
 		$modeloProveedores->setIdProveedor($id_proveedor);
-		$eliminacion = $modeloProveedores->deleteEntrada($idUsuario);
+		$eliminacion = $modeloProveedores->actualizar(['estado'=>'DES'],['id_proveedor'=>$modeloProveedores->getIdProveedor()],$validator);
 
-		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+		if (is_array($eliminacion)) {
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("proveedor");
 			$modeloBitacora->setActividad("Ha eliminado un proveedor");
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -186,19 +191,22 @@ function restablecerProveedor($datos)
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
 		$id_proveedor = $datos[0];
-		$modeloProveedores = new ModeloProveedores();
-		$modeloBitacora = new ModeloBitacora();
+		$modeloProveedores = new ModeloProveedores($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		$modeloProveedores->setIdProveedor($id_proveedor);
-		$restablecimiento = $modeloProveedores->restablecerProveedor();
+		$restablecimiento = $modeloProveedores->actualizar(['estado'=>'ACT'],['id_proveedor'=>$modeloProveedores->getIdProveedor()],$validator);
 
-		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+		if (is_array($restablecimiento)) {
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("proveedor");
 			$modeloBitacora->setActividad("Ha restablecido un proveedor");
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -223,9 +231,13 @@ function editar()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
 
-		$modeloProveedores = new ModeloProveedores();
-		$modeloBitacora = new ModeloBitacora();
+		$modeloProveedores = new ModeloProveedores($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		$modeloProveedores->setIdProveedor($_POST["id_proveedor"]);
 		$modeloProveedores->setNombre($_POST["nombre"]);
@@ -233,16 +245,15 @@ function editar()
 		$modeloProveedores->setTelefono($_POST["telefono"]);
 		$modeloProveedores->setEmail($_POST["correo"]);
 		$modeloProveedores->setDireccion($_POST["direccion"]);
-		$modeloProveedores->setRifRegistrado($_POST["id_rif_oculto"]);
 
-		$editado = $modeloProveedores->editarEntrada($idUsuario);
+		$editado = $modeloProveedores->actualizar($modeloProveedores->get_all(),['id_proveedor'=>$modeloProveedores->getIdProveedor()],$validator);
 
 
-		if (is_array($editado) && $editado[0] === "exito") {
+		if (is_array($editado)) {
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("proveedor");
 			$modeloBitacora->setActividad("Ha modificado un proveedor");
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {

@@ -167,7 +167,8 @@ export const initDataTable = (
   urlControlador,
   columnas,
   callbackDatos = null,
-  callbackEventos = null
+  callbackEventos = null,
+  dataExtra = null
 ) => {
   return $(selector).DataTable({
     processing: true,
@@ -175,6 +176,12 @@ export const initDataTable = (
     ajax: {
       url: urlControlador,
       type: "GET",
+      data: function(d){
+        d.estado = 'ACT'
+        if (dataExtra) {
+          Object.assign(d,dataExtra);
+        }
+      },
       //esto es para si lo necesito guardar la data en una variable
       dataSrc: function (json) {
         if (callbackDatos && typeof callbackDatos === "function") {

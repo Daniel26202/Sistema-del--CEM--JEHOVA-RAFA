@@ -1,8 +1,10 @@
 <?php
 
-use App\modelos\ModeloInicioSesion;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloUsuarios;
+use App\models\Db;
+use App\models\ModeloInicioSesion;
+use App\models\ModeloBitacora;
+use App\models\ModeloUsuarios;
+use App\models\Validator;
 // use Firebase\JWT\JWT;
 // require_once __DIR__ . "/../config/config.php";
 
@@ -21,6 +23,9 @@ function iniciarSesion()
         echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
         exit;
     }
+
+
+
     // Obtenemos la IP del que intenta entrar
     $ipCliente = $_SERVER['REMOTE_ADDR'];
 
@@ -40,14 +45,10 @@ function iniciarSesion()
     //     echo json_encode(['ok' => false, 'error' => 'Demasiados intentos. Espere un momento antes de volver a intentarlo.']);
     //     exit;
     // }
-
-    $modelo = new ModeloInicioSesion();
-    $bitacora = new ModeloBitacora();
-    $usuario = new ModeloUsuarios();
+    $db = new Db(true);
+    $modelo = new ModeloInicioSesion($db);
 
     $modelo->setIpUsuario($ipCliente);
-
-
 
     // if (isset($_POST)) {
     //     // Clave secreta proporcionada por Google.
@@ -97,19 +98,20 @@ function iniciarSesion()
     $modelo->setUsuario($_POST['username']);
     $modelo->setPassword($_POST['password']);
 
-
-
-    $data = [
-        "usuario" => $modelo->getUsuario()
-    ];
-    $validarUsuarioExistente = $modelo->validarUsuarioExistente($data);
-    $validar = $modelo->validarIniciarSesion($data);
-
+    $validarUsuarioExistente = $modelo->validarUsuarioExistente();
+    $validar = $modelo->validarIniciarSesion();
     // 3. Configurar datos para el registro de auditoría
     $modelo->setIpUsuario($ipCliente);
     $modelo->setIdUsuario($validarUsuarioExistente != false ? $validarUsuarioExistente['id_usuario'] : null);
 
+
     if ($validar) {
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($_SESSION['id_usuario']);
+        $bitacora = new ModeloBitacora($db, $validator);
+        $usuario = new ModeloUsuarios($db, $validator);
+
         $modelo->setIntentosFallidos(0);
 
 
@@ -123,7 +125,7 @@ function iniciarSesion()
         //actualizar el token del usuario
         $usuario->setIdUsuario($validar['id_usuario']);
         $usuario->setTokenInicioSesion($token_session);
-        $usuario->actualizarTokenInicioSesion();
+        // $usuario->actualizarTokenInicioSesion();
 
         // Inicializar variables de sesión
         $_SESSION['usuario'] = $_POST['username'];
@@ -134,11 +136,12 @@ function iniciarSesion()
         $_SESSION['nombre'] = $validar['nombre_personal'] ?? null;
         $_SESSION['apellido'] = $validar['apellido_personal'] ?? null;
         $_SESSION['token_session'] = $token_session ?? null;
+
         $bitacora->setId_usuario($validar['id_usuario']);
         $bitacora->setActividad("Ha iniciado una session");
         $bitacora->setTabla("inicio sesion");
 
-        $bitacora->insertarBitacora();
+        $bitacora->guardar($bitacora->get_all(),$validator);
         //websoket
         $host = '127.0.0.1';
         $puerto = 8080;
@@ -212,8 +215,12 @@ function error()
 
 function iniciarSesionMovil()
 {
-    $modelo = new ModeloInicioSesion();
-    $bitacora = new ModeloBitacora();
+    $db = new Db(true);
+    $validator = new Validator();
+    $validator->set_session($_SESSION);
+    $validator->set_id_usuario($_SESSION['id_usuario']);
+    $modelo = new ModeloInicioSesion($db);
+    $bitacora = new ModeloBitacora($db, $validator);
 
     // Llegim el JSON en cru enviat per la App / Thunder Client
     $jsonContenido = file_get_contents('php://input');
@@ -238,12 +245,9 @@ function iniciarSesionMovil()
     $modelo->setUsuario($userParam);
     $modelo->setPassword($passParam);
 
-    $data = [
-        "usuario" => $modelo->getUsuario()
-    ];
 
-    $validarUsuarioExistente = $modelo->validarUsuarioExistente($data);
-    $validar = $modelo->validarIniciarSesion($data);
+    $validarUsuarioExistente = $modelo->validarUsuarioExistente();
+    $validar = $modelo->validarIniciarSesion();
 
     $modelo->setIdUsuario($validarUsuarioExistente != false ? $validarUsuarioExistente['id_usuario'] : null);
 
@@ -272,7 +276,8 @@ function iniciarSesionMovil()
         $bitacora->setId_usuario($validar['id_usuario']);
         $bitacora->setActividad("Ha iniciado sesión desde la aplicación móvil");
         $bitacora->setTabla("inicio sesion");
-        $bitacora->insertarBitacora($validar['id_usuario']);
+        $bitacora->guardar($bitacora->get_all(), $validar['id_usuario']);
+
 
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([

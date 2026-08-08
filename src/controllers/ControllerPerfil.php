@@ -1,11 +1,9 @@
 <?php
 
-use App\modelos\ModeloPerfil;
-use App\modelos\ModeloPermisos;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloDoctores;
-use App\modelos\ModeloUsuarios;
-// use App\config\RateLimiter;
+use App\models\ModeloPerfil;
+use App\models\ModeloBitacora;
+use App\models\Db;
+use App\models\Validator;
 
 function perfil($parametro)
 {
@@ -15,18 +13,13 @@ function perfil($parametro)
 
 function perfilAjax()
 {
-	$modelo = new ModeloPerfil();
+	$db = new Db();
+	$validator = new Validator();
+	$modelo = new ModeloPerfil($db,$validator);
 	$modelo->setUsuario($_SESSION["usuario"]);
 	$modelo->setIdUsuario($_SESSION['id_usuario']);
 	echo json_encode($modelo->seleccionarUsuario());
 }
-
-function permisos($id_rol, $permiso, $modulo)
-{
-	$permisos = new ModeloPermisos();
-	return $permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-}
-
 //guardar perfil
 function guardar()
 {
@@ -38,12 +31,13 @@ function guardar()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		// $limiter = new RateLimiter();
-		// $limiter->verificar('guardar_perfil_' . $idUsuario, 5, 1);
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
 
-		$bitacora = new ModeloBitacora();
-		$modelo = new ModeloPerfil();
+		$bitacora = new ModeloBitacora($db,$validator);
+		$modelo = new ModeloPerfil($db,$validator);
 
 		$modelo->setIdUsuario($_POST["id_usuario"]);
 		$modelo->setUsuario($_POST["usuario"]);
@@ -57,7 +51,7 @@ function guardar()
 		$modelo->setImagenTemporal($_FILES['imagen']['tmp_name']);
 
 
-		$edicion = $modelo->update_perfil();
+		$edicion = $modelo->actualizar($modelo->get_all(),['id_usuario'=>$modelo->getIdUsuario()],$validator);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$_SESSION['usuario'] = $_POST['usuario'];
@@ -67,7 +61,7 @@ function guardar()
 			$bitacora->setId_usuario($_POST["id_usuario"]);
 			$bitacora->setTabla("Perfil");
 			$bitacora->setActividad("Ha modificado un perfil");
-			$bitacora->insertarBitacora();
+			$bitacora->guardar($bitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -89,7 +83,9 @@ function perfilApk()
 	header("Access-Control-Allow-Origin: *");
 
 	try {
-		$modelo = new ModeloPerfil();
+		$db = new Db();
+		$validator = new Validator();
+		$modelo = new ModeloPerfil($db,$validator);
 		$modelo->setIdUsuario($_SESSION['id_usuario']);
 		$perfil = $modelo->seleccionarUsuarioApk();
 

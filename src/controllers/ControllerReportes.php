@@ -1,10 +1,11 @@
 <?php
 
-use App\modelos\ModeloReporte;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloFactura;
-use App\modelos\ModeloInsumo;
-use App\modelos\ModeloPermisos;
+use App\models\ModeloReporte;
+use App\models\ModeloBitacora;
+use App\models\ModeloFactura;
+use App\models\ModeloInsumo;
+use App\models\Db;
+use App\models\Validator;
 // use FPDF\FPDF; 	
 
 
@@ -12,17 +13,20 @@ use App\modelos\ModeloPermisos;
 
 function reportes($parametro)
 {
-	$modeloReporte = new ModeloReporte();
-	$modeloInsumo = new ModeloInsumo();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloReporte = new ModeloReporte($db);
+	$modeloInsumo = new ModeloInsumo($db,$validator);
 	$vistaActiva = "reportes";
 	$ayuda = "btnayudaReporte";
-	$insumos = $modeloInsumo->insumos();
+	// $insumos = $modeloInsumo->insumos();
 	require_once './src/vistas/vistaReportes/vistaReportes.php';
 }
 
 function returnDataFactura()
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 
 	//variable final
 	$result = [];
@@ -101,13 +105,15 @@ function returnDataFactura()
 
 function returnDataFacturaAnulada()
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 	echo json_encode($modeloReporte->consultarFacturaAnuladas());
 }
 
 function buscarPDF()
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 	$modeloReporte->setFechaInicio($_POST["desdeFecha"]);
 	$modeloReporte->setFinal($_POST["fechaHasta"]);
 
@@ -118,7 +124,8 @@ function buscarPDF()
 
 function buscarEntradasInsumosPDF()
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 
 	$desdeFecha = isset($_POST["desdeFechaEntradas"]) ? $_POST["desdeFechaEntradas"] : "";
 	$fechaHastaEntradas = isset($_POST["fechaHastaEntradas"]) ? $_POST["fechaHastaEntradas"] : "";
@@ -135,7 +142,8 @@ function buscarEntradasInsumosPDF()
 
 function factura($parametro)
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 	$modeloFactura = new ModeloFactura();
 
 	$modeloFactura->setIdFactura($parametro[0]);
@@ -155,14 +163,16 @@ function factura($parametro)
 }
 function pacientePDF($datos)
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 
 	$pacientes = $modeloReporte->pdfPaciente();
 	require_once './src/vistas/vistaReportes/vistaPacientePDF.php';
 }
 function insumosPDF()
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 
 	$insumos = $modeloReporte->pdfInsumos();
 
@@ -181,7 +191,8 @@ function reportesFacturasAnuladas()
 function buscarPago($datos)
 {
 	$id_factura = $datos[0];
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 	$modeloFactura = new ModeloFactura();
 	$modeloFactura->setIdFactura($id_factura);
 
@@ -192,7 +203,8 @@ function buscarPago($datos)
 
 function buscarMasServicios($datos)
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 	$modeloFactura = new ModeloFactura();
 
 	$id_factura = $datos[0];
@@ -205,7 +217,8 @@ function buscarMasServicios($datos)
 
 function buscarInsumos($datos)
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 	$modeloFactura = new ModeloFactura();
 
 	$id_factura = $datos[0];
@@ -218,7 +231,8 @@ function buscarInsumos($datos)
 
 function buscarCita()
 {
-	$modeloReporte = new ModeloReporte();
+	$db = new Db();
+	$modeloReporte = new ModeloReporte($db);
 	$modeloFactura = new ModeloFactura();
 
 	$modeloFactura->setIdFactura($_GET["id_factura"]);
@@ -235,8 +249,13 @@ function anularFactura($datos)
 		exit;
 	}
 	try {
-		$modeloReporte = new ModeloReporte();
-		$modeloBitacora = new ModeloBitacora();
+		$idUsuario = $_SESSION['id_usuario'];
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$modeloReporte = new ModeloReporte($db);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		$modeloReporte->setIdFactura($datos["0"]);
 
@@ -245,11 +264,12 @@ function anularFactura($datos)
 		$modeloBitacora->setTabla("factura");
 		$modeloBitacora->setActividad("Ha anulado una factura");
 
-		$anular = $modeloReporte->anularFac();
+		// $anular = $modeloReporte->anularFac();
+		$anular = [];
 
 		//Verifica si es un array con clave "exito"
-		if (is_array($anular) && $anular[0] === "exito") {
-			$modeloBitacora->insertarBitacora();
+		if (is_array($anular)) {
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);

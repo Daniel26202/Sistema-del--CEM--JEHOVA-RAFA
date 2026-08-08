@@ -1,18 +1,20 @@
 <?php
 
-use App\modelos\ModeloControl;
-use App\modelos\ModeloSintomas;
-use App\modelos\ModeloPatologia;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
-use App\modelos\ModeloInicio;
-use App\modelos\ModeloPacientes;
-use App\modelos\ModeloUsuarios;
-use App\config\RateLimiter;
+use App\models\ModeloControl;
+use App\models\ModeloSintomas;
+use App\models\ModeloPatologia;
+use App\models\ModeloBitacora;
+use App\models\ModeloPermisos;
+use App\models\ModeloInicio;
+use App\models\ModeloPacientes;
+use App\models\Db;
+use App\models\Validator;
 
 function control($parametro)
 {
-	$modeloInicio = new ModeloInicio();
+	$db = new Db();
+
+	$modeloInicio = new ModeloInicio($db);
 
 	$vistaActiva = "control";
 	$ayuda = "btnayudaControl";
@@ -37,6 +39,9 @@ function returnSistomasPaciente()
 		exit;
 	}
 
+	$db = new Db();
+	$validator = new Validator();
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -50,37 +55,40 @@ function returnSistomasPaciente()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_sintomas';
 
-	$modeloSintomas = new ModeloSintomas();
+	$modeloSintomas = new ModeloSintomas($db,$validator);
 
-	$sintomas = $modeloSintomas->selectSintomas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloSintomas->contarTotalSintomas('ACT');
-	$totalFiltrados = !empty($buscar) ? $modeloSintomas->contarTotalSintomas('ACT', $buscar) : $totalRegistros;
+	$data = $modeloSintomas->selectSintomas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	echo json_encode([
 		"draw"            => $draw,
-		"recordsTotal"    => (int)$totalRegistros,
-		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $sintomas
+		"recordsTotal"    => (int)$data['total'],
+		"recordsFiltered" => (int)$data['total_filtrado'],
+		"data"            => is_array($data['data']) ? $data['data'] :[]
 	]);
 	exit;
 }
 
 function returnPatologiasPaciente()
 {
-	$modeloPatologia = new ModeloPatologia();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloPatologia = new ModeloPatologia($db,$validator);
 	echo json_encode($modeloPatologia->mostrarPatologias());
 }
 
 function returnPatologiasPacienteId()
 {
-	$modeloPatologia = new ModeloControl();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloPatologia = new ModeloControl($db,$validator);
 	echo json_encode($modeloPatologia->mostrarPatologiaC());
 }
 
 function returnDoctores()
 {
-	$modeloControl = new ModeloControl();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloControl = new ModeloControl($db,$validator);
 	echo json_encode($modeloControl->mostrarDoctor());
 }
 
@@ -91,6 +99,9 @@ function listPacientesJS()
 		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
+
+	$db = new Db();
+	$validator = new Validator();
 
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
@@ -105,27 +116,25 @@ function listPacientesJS()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
 
-	$modeloPaciente = new ModeloPacientes();
-	$pacientes = $modeloPaciente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloPaciente->contarTotalPacientes('ACT');
-	$totalFiltrados = !empty($buscar) ? $modeloPaciente->contarTotalPacientes('ACT',$buscar) : $totalRegistros;
+	$modeloPaciente = new ModeloPacientes($db,$validator);
+	$data = $modeloPaciente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	echo json_encode([
 		"draw"            => $draw,
-		"recordsTotal"    => (int)$totalRegistros,
-		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $pacientes
+		"recordsTotal"    => (int)$data['total'],
+		"recordsFiltered" => (int)$data['total_filtrado'],
+		"data"            => is_array($data['data']) ? $data['data'] :[]
 	]);
 	exit;
 }
 
 function mostrarBusquedaPacientesJS($datos)
 {
-	$modeloControl = new ModeloControl();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloControl = new ModeloControl($db,$validator);
 	$modeloControl->setCedula($datos[0]);
 	$modeloControl->setNacionalidad($datos[1]);
-
 
 	$respuesta = $modeloControl->buscarPacientes();
 	echo json_encode($respuesta);
@@ -133,10 +142,12 @@ function mostrarBusquedaPacientesJS($datos)
 
 function mostrarControlPacientesJS($datos)
 {
-	$modeloControl = new ModeloControl();
-	$modeloSintomas = new ModeloSintomas();
-	$modeloPatologia = new ModeloPatologia();
-	$modeloInicio = new ModeloInicio();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloControl = new ModeloControl($db,$validator);
+	$modeloSintomas = new ModeloSintomas($db,$validator);
+	$modeloPatologia = new ModeloPatologia($db,$validator);
+	$modeloInicio = new ModeloInicio($db);
 
 	// verifica si la sesión esta activa.
 	if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -177,8 +188,9 @@ function mostrarControlPacientesJS($datos)
 
 function mostrarPacienteJS($datos)
 {
-	$modeloControl = new ModeloControl();
-
+	$db = new Db();
+	$validator = new Validator();
+	$modeloControl = new ModeloControl($db,$validator);
 	$modeloControl->setNacionalidad($datos[0]);
 	$modeloControl->setCedula($datos[1]);
 	// me traigo los datos de los pacientes
@@ -196,9 +208,13 @@ function insertarControl()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
 
-		$modeloBitacora = new ModeloBitacora();
-		$modeloControl  = new ModeloControl();
+		$modeloBitacora = new ModeloBitacora($db,$validator);
+		$modeloControl  = new ModeloControl($db,$validator);
 
 		$patologia = isset($_POST["patologias"]) ? $_POST["patologias"] : [null];
 		$sintoma   = isset($_POST["sintomas"])   ? $_POST["sintomas"]   : [null];
@@ -214,13 +230,13 @@ function insertarControl()
 		$modeloControl->setNota($_POST["nota"]);
 		$modeloControl->setSeveridad($_POST["severidad"]);
 
-		$registro = $modeloControl->insertControl($idUsuario);
+		$registro = $modeloControl->insertControl();
 
-		if (is_array($registro) && $registro[0] === "exito") {
+		if (is_array($registro)) {
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("control");
 			$modeloBitacora->setActividad("Ha Insertado un nuevo control medico");
-			$modeloBitacora->insertarBitacora($idUsuario);
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
 			http_response_code(409);
@@ -243,9 +259,12 @@ function editarControl()
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-
-		$modeloBitacora = new ModeloBitacora();
-		$modeloControl  = new ModeloControl();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
+		$modeloControl  = new ModeloControl($db,$validator);
 
 		$modeloControl->setIdControl($_POST['id_control']);
 		$modeloControl->setHistorial($_POST["historial"]);
@@ -255,13 +274,13 @@ function editarControl()
 		$modeloControl->setNota($_POST["nota"]);
 		$modeloControl->setSeveridad($_POST["severidad"]);
 
-		$editar = $modeloControl->editarControl($idUsuario);
+		$editar = $modeloControl->editarControl();
 
-		if (is_array($editar) && $editar[0] === "exito") {
+		if (is_array($editar)) {
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("control");
 			$modeloBitacora->setActividad("Ha modificado un control medico");
-			$modeloBitacora->insertarBitacora($idUsuario);
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
 			http_response_code(409);
@@ -278,7 +297,9 @@ function editarControl()
 // mostrar síntomas de pacientes del ultimo  control
 function mostrarSP($datos)
 {
-	$modeloControl = new ModeloControl();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloControl = new ModeloControl($db,$validator);
 	$cedula = $datos[0];
 
 	$modeloControl->setCedula($cedula);
@@ -290,9 +311,10 @@ function mostrarSP($datos)
 // mostrar patología de pacientes del ultimo  control
 function mostrarPP($datos)
 {
-	$modeloControl = new ModeloControl();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloControl = new ModeloControl($db,$validator);
 	$cedula = $datos[0];
-
 	$modeloControl->setCedula($cedula);
 
 	$id_control = ($modeloControl->mostrarUltimoIdControl() != null) ? $modeloControl->mostrarUltimoIdControl() : 0;
@@ -315,7 +337,9 @@ function mostrarSPAll($datos)
 // mostrar patología de pacientes
 function mostrarPPAll($datos)
 {
-	$modeloControl = new ModeloControl();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloControl = new ModeloControl($db,$validator);
 	$modeloControl->setIdControl($datos[0]);
 
 	$registradosP = $modeloControl->mostrarPatologiaP();
@@ -327,7 +351,9 @@ function mostrarPPAll($datos)
 // mostrar patología de paciente por id del paciente
 function mostrarPIdP($datos)
 {
-	$modeloControl = new ModeloControl();
+	$db = new Db();
+	$validator = new Validator();
+	$modeloControl = new ModeloControl($db,$validator);
 
 	$idC = $datos[0];
 	$modeloControl->setIdControl($idC);
@@ -349,24 +375,25 @@ function eliminarSintoma($datos)
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		// $limiter = new RateLimiter();
-		// $limiter->verificar('eliminar_sintoma_' . $idUsuario, 5, 1);
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
 
-		$modeloSintomas = new ModeloSintomas();
-		$modeloBitacora = new ModeloBitacora();
+		$modeloSintomas = new ModeloSintomas($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 
 		$id_sintomas = $datos[0];
 		$modeloSintomas->setIdSintomas($id_sintomas);
-		$eliminar = $modeloSintomas->eliminarL();
+		$eliminar = $modeloSintomas->actualizar(['estado'=>'DES'],['id_sintoma'=>$modeloSintomas->getIdSintoma()],$validator);
 
-		if (is_array($eliminar) && $eliminar[0] === "exito") {
+		if (is_array($eliminar)) {
 			// Guardar la bitacora
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("sintomas");
 			$modeloBitacora->setActividad("Ha eliminado un  sintoma");
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -392,21 +419,22 @@ function agregarSintoma()
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		// $limiter = new RateLimiter();
-		// $limiter->verificar('guardar_sintoma_' . $idUsuario, 5, 1);
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
 
-		$modeloSintomas = new ModeloSintomas();
-		$modeloBitacora = new ModeloBitacora();
+		$modeloSintomas = new ModeloSintomas($db,$validator);
+		$modeloBitacora = new ModeloBitacora($db,$validator);
 
 		$modeloSintomas->setNombre($_POST["nombre"]);
-		$insertar = $modeloSintomas->insertar();
+		$insertar = $modeloSintomas->guardar($modeloSintomas->get_all(),$validator);
 		if ($insertar) {
 			// Guardar la bitacora
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("sintomas");
 			$modeloBitacora->setActividad("Ha Insertado un  sintoma");
-			$modeloBitacora->insertarBitacora();
+			$modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
@@ -419,13 +447,4 @@ function agregarSintoma()
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
-}
-
-function permisos($id_rol, $permiso, $modulo)
-{
-	$modeloPermisos = new ModeloPermisos();
-	$modeloPermisos->setIdRol($id_rol);
-	$modeloPermisos->setPermiso($permiso);
-	$modeloPermisos->setModulo($modulo);
-	return $modeloPermisos->gestionarPermisos();
 }

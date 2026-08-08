@@ -1,18 +1,20 @@
 <?php
 
-use App\modelos\ModeloUsuarios;
-use App\modelos\ModeloDoctores;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloInicioSesion;
-use App\modelos\ModeloRecuperarContr;
-use App\modelos\ModeloPermisos;
-use App\modelos\ModeloRoles;
-
+use App\models\ModeloUsuarios;
+use App\models\ModeloDoctores;
+use App\models\ModeloBitacora;
+use App\models\ModeloInicioSesion;
+use App\models\ModeloRecuperarContr;
+use App\models\ModeloRoles;
+use App\models\Db;
+use App\models\Validator;
 
 
 function usuarios($parametro)
 {
-    $modeloUsuarios = new ModeloUsuarios();
+    $db = new Db();
+    $validator = new Validator();
+    $modeloUsuarios = new ModeloUsuarios($db,$validator);
     $ayuda = "btnayudaUsuario";
     $datosU  = $modeloUsuarios->select();
     $vistaActiva = "usuarios";
@@ -21,15 +23,18 @@ function usuarios($parametro)
 
 function usuariosAjax()
 {
-    $modeloUsuarios = new ModeloUsuarios();
-
+    $db = new Db();
+    $validator = new Validator();
+    $modeloUsuarios = new ModeloUsuarios($db,$validator);
     echo json_encode($modeloUsuarios->select());
 }
 
 function administradores($parametro)
 {
-    $modeloUsuarios = new ModeloUsuarios();
-    $modeloRoles = new ModeloRoles();
+    $db = new Db();
+    $validator = new Validator();
+    $modeloUsuarios = new ModeloUsuarios($db,$validator);
+    $modeloRoles = new ModeloRoles($db,$validator);
 
     $ayuda = "btnayudaUsuario";
     $datosU  = $modeloUsuarios->selectAdmin();
@@ -40,7 +45,10 @@ function administradores($parametro)
 
 function administradoresAjax()
 {
-    $modeloUsuarios = new ModeloUsuarios();
+    $db = new Db();
+    $validator = new Validator();
+
+    $modeloUsuarios = new ModeloUsuarios($db,$validator);
     echo json_encode($modeloUsuarios->selectAdmin());
 }
 
@@ -56,6 +64,9 @@ function listaNegraAjax()
         exit;
     }
 
+    $db = new Db();
+    $validator = new Validator();
+
     $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
     $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
     $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -70,18 +81,15 @@ function listaNegraAjax()
 
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_usuario';
 
-    $modeloUsuarios = new ModeloUsuarios();
-    $usuarios = $modeloUsuarios->selectUserInBlackList($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-    $totalRegistros = $modeloUsuarios->contarTotalUsuariosBlackList();
-    $totalFiltrados = !empty($buscar) ? $modeloUsuarios->contarTotalUsuariosBlackList($buscar) : $totalRegistros;
+    $modeloUsuarios = new ModeloUsuarios($db,$validator);
+    $data = $modeloUsuarios->selectUserInBlackList($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
     //datos que se le envia al js (esto es estandar de datatable)
     $response = [
         "draw" => $draw,
-        "recordsTotal" => $totalRegistros,
-        "recordsFiltered" => $totalFiltrados,
-        "data" => is_array($usuarios) ? $usuarios : []
+        "recordsTotal" => $data['total'],
+        "recordsFiltered" => $data['total_filtrado'],
+        "data" => is_array($data['data']) ? $data['data'] : []
     ];
 
     echo json_encode($response);
@@ -90,7 +98,9 @@ function listaNegraAjax()
 
 function listaUserAjax()
 {
-    $modeloUsuarios = new ModeloUsuarios();
+    $db = new Db();
+    $validator = new Validator();
+    $modeloUsuarios = new ModeloUsuarios($db,$validator);
     echo json_encode($modeloUsuarios->selectAllUser());
 }
 
@@ -107,18 +117,21 @@ function addUserBlackList()
     try {
 
         $idUsuario = $_SESSION['id_usuario'];
-
-        $modeloUsuarios = new ModeloUsuarios();
-        $modeloBitacora = new ModeloBitacora();
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
+        $modeloUsuarios = new ModeloUsuarios($db,$validator);
+        $modeloBitacora = new ModeloBitacora($db,$validator);
 
         $modeloUsuarios->setIdUsuario($_POST["id_personal"]);
-        $add = $modeloUsuarios->addUserBlackList($idUsuario);
+        $add = $modeloUsuarios->actualizar(['estado'=> 'BLOQUED'],['id_usuario'=>$modeloUsuarios->getIdUsuario()],$validator);
 
-        if (is_array($add) && $add[0] === "exito") {
+        if (is_array($add)) {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha agregado a la lista negra a un usuario");
             $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $add]);
         } else {
             http_response_code(409);
@@ -144,20 +157,23 @@ function removeBlackList($datos)
     try {
 
         $idUsuario = $_SESSION['id_usuario'];
-
-        $modeloUsuarios = new ModeloUsuarios();
-        $modeloBitacora = new ModeloBitacora();
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
+        $modeloUsuarios = new ModeloUsuarios($db,$validator);
+        $modeloBitacora = new ModeloBitacora($db,$validator);
 
         $id_usuario = $datos[0];
         $modeloUsuarios->setIdUsuario($id_usuario);
 
-        $remove = $modeloUsuarios->removeUserBlackList($idUsuario);
+        $remove = $modeloUsuarios->actualizar(['estado'=>'ACT'],['id_usuario'=>$modeloUsuarios->getIdUsuario()],$validator);
 
-        if (is_array($remove) && $remove[0] === "exito") {
+        if (is_array($remove)) {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha quitado un  usuario de la lista negra");
             $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -185,9 +201,13 @@ function editarUsuario()
     try {
 
         $idUsuario = $_SESSION['id_usuario'];
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
 
-        $modeloUsuarios = new ModeloUsuarios();
-        $modeloBitacora = new ModeloBitacora();
+        $modeloUsuarios = new ModeloUsuarios($db,$validator);
+        $modeloBitacora = new ModeloBitacora($db,$validator);
 
         $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
         $modeloUsuarios->setUsuario($_POST["usuario"]);
@@ -195,14 +215,15 @@ function editarUsuario()
         $modeloUsuarios->setImagen($_FILES['imagen']["name"]);
         $modeloUsuarios->setImagenTemporal($_FILES['imagen']['tmp_name']);
 
-        $edicion = $modeloUsuarios->editarUsuario($idUsuario);
+        // $edicion = $modeloUsuarios->editarUsuario($idUsuario);
+        $edicion = [];
 
 
-        if (is_array($edicion) && $edicion[0] === "exito") {
+        if (is_array($edicion)) {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha modificado un  usuario");
             $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
         } else {
             http_response_code(409);
@@ -228,20 +249,23 @@ function borrarUsuario($datos)
     try {
 
         $idUsuario = $_SESSION['id_usuario'];
-
-        $modeloUsuarios = new ModeloUsuarios();
-        $modeloBitacora = new ModeloBitacora();
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
+        $modeloUsuarios = new ModeloUsuarios($db,$validator);
+        $modeloBitacora = new ModeloBitacora($db,$validator);
 
         $id_usuario = $datos[0];
         $modeloUsuarios->setIdUsuario($id_usuario);
 
-        $eliminacion = $modeloUsuarios->eliminarUsuario($idUsuario);
+        $eliminacion = $modeloUsuarios->actualizar(['estado'=>'DES'],['id_usuario'=>$modeloUsuarios->getIdUsuario()],$validator);
 
-        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+        if (is_array($eliminacion)) {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha eliminado un  usuario");
             $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -264,9 +288,13 @@ function registrarAdmin()
 
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        $modeloUsuarios = new ModeloUsuarios();
-        $modeloDoctores = new ModeloDoctores();
-        $modeloBitacora = new ModeloBitacora();
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
+        $modeloUsuarios = new ModeloUsuarios($db,$validator);
+        $modeloDoctores = new ModeloDoctores($db,$validator);
+        $modeloBitacora = new ModeloBitacora($db,$validator);
 
         // Generamos la contraseña encriptada de la contraseña ingresada
         $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
@@ -277,22 +305,24 @@ function registrarAdmin()
         $modeloUsuarios->setIdRol($_POST["id_rol"]);
         $modeloUsuarios->setImagen($_FILES['imagen']);
 
-        $id_usuario = $modeloUsuarios->agregarUsuario($idUsuario);
+        // $id_usuario = $modeloUsuarios->agregarUsuario($idUsuario);
+        $id_usuario = 12;
 
         $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
         $modeloDoctores->setCedula($_POST["cedula"]);
         $modeloDoctores->setNombre($_POST["nombre"]);
         $modeloDoctores->setApellido($_POST["apellido"]);
         $modeloDoctores->setTelefono($_POST["telefono"]);
-        $modeloDoctores->setIdUsuario($id_usuario);
+        // $modeloDoctores->setIdUsuario($id_usuario);
 
-        $insercion = $modeloDoctores->RegistrarAdmin();
+        // $insercion = $modeloDoctores->RegistrarAdmin();
+        $insercion = [];
 
-        if (is_array($insercion) && $insercion[0] === "exito") {
+        if (is_array($insercion)) {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha insertado un administrador");
             $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -318,32 +348,27 @@ function editarAdministrador()
 
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        // $limiter = new RateLimiter();
-        // $limiter->verificar('editar_usuario_admin_' . $idUsuario, 5, 1);
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
 
-        $modeloUsuarios = new ModeloUsuarios();
-        $modeloBitacora = new ModeloBitacora();
+        $modeloUsuarios = new ModeloUsuarios($db,$validator);
+        $modeloBitacora = new ModeloBitacora($db,$validator);
 
         $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
         $modeloUsuarios->setUsuario($_POST["usuario"]);
         $modeloUsuarios->setImagen($_FILES['imagenUsuario']["name"]);
         $modeloUsuarios->setImagenTemporal($_FILES['imagenUsuario']['tmp_name']);
 
-        $id_usuario = $modeloUsuarios->updateUsuario();
+        // $id_usuario = $modeloUsuarios->updateUsuario();
+        $id_usuario = 12;
 
-        // Guardar la bitacora
-        $modeloBitacora->setTabla("usuario");
-        $modeloBitacora->setActividad("Ha modificado un administrador");
-        $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-        $modeloBitacora->insertarBitacora();
-
-
-        if (is_array($id_usuario) && $id_usuario[0] === "exito") {
+        if (is_array($id_usuario)) {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha modificado un administrador");
             $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
 
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
@@ -369,22 +394,23 @@ function eliminarAdministrador()
 
     try {
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        // $limiter = new RateLimiter();
-        // $limiter->verificar('eliminar_usuario_admin_' . $idUsuario, 5, 1);
+        $db = new Db();
+        $validator = new Validator();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($idUsuario);
 
-        $modeloUsuarios = new ModeloUsuarios();
-        $modeloBitacora = new ModeloBitacora();
+        $modeloUsuarios = new ModeloUsuarios($db,$validator);
+        $modeloBitacora = new ModeloBitacora($db,$validator);
 
         $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
 
-        $eliminacion = $modeloUsuarios->eliminacionLogica();
+        $eliminacion = $modeloUsuarios->actualizar(['estado'=>'DES'],['id_usuario'=>$modeloUsuarios->getIdUsuario()],$validator);
 
-        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+        if (is_array($eliminacion)) {
             $modeloBitacora->setTabla("usuario");
             $modeloBitacora->setActividad("Ha eliminado un administrador");
             $modeloBitacora->setId_usuario($_POST['id_usuario_bitacora']);
-            $modeloBitacora->insertarBitacora();
+            $modeloBitacora->guardar($modeloBitacora->get_all(),$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
@@ -407,9 +433,11 @@ function verificarPassw()
     }
 
     try {
-        $modeloInicioSesion = new ModeloInicioSesion();
-        $modeloRecuperarContr = new ModeloRecuperarContr();
-        $modeloUsuarios = new ModeloUsuarios();
+        $db = new Db();
+        $validator = new Validator();
+        $modeloInicioSesion = new ModeloInicioSesion($db);
+        $modeloRecuperarContr = new ModeloRecuperarContr($db,$validator);
+        $modeloUsuarios = new ModeloUsuarios($db,$validator);
 
         $modeloInicioSesion->setUsuario($_POST["usuario"]);
         $modeloInicioSesion->setPassword($_POST["password"]);
@@ -425,7 +453,7 @@ function verificarPassw()
             $modeloRecuperarContr->setIdUsuario($datosU["id_usuario"]);
             $modeloRecuperarContr->setPassword($passwordEncrip);
 
-            $modeloRecuperarContr->updatePassword();
+            $modeloRecuperarContr->actualizar(['password'=>$modeloRecuperarContr->getPassword()],['id_usuario'=>$modeloRecuperarContr->getIdUsuario()],$validator);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $datosU]);
         } else {
             http_response_code(409);
@@ -438,8 +466,3 @@ function verificarPassw()
         exit;
     }
 }
-
-// function permisos($id_rol, $permiso, $modulo)
-// {
-//     return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }

@@ -1,16 +1,19 @@
 <?php
 
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
-use App\modelos\ModeloInicio;
-
+use App\models\Db;
+use App\models\ModeloBitacora;
+use App\models\ModeloPermisos;
+use App\models\ModeloInicio;
+use App\models\Validator;
 
 function bitacoraUsuario($parametro)
 {
 	$ayuda = "btnayudaBitacora";
 	$vistaActiva = 'Usuario';
-	$modeloInicio = new ModeloInicio(true);
-	$modeloBitacora = new ModeloBitacora(false);
+	$db = new Db();
+	$validator = new Validator();
+	$modeloInicio = new ModeloInicio($db);
+	$modeloBitacora = new ModeloBitacora($db, $validator);
 
 	$modeloInicio->setIdPersonal($_SESSION['id_personal']);
 	$cargo = $modeloInicio->comprobarCargo();
@@ -21,8 +24,10 @@ function bitacora($parametro)
 {
 	$ayuda = "btnayudaBitacora";
 	$vistaActiva = 'Admin';
-	$modeloInicio = new ModeloInicio(true);
-	$modeloBitacora = new ModeloBitacora(false);
+	$db = new Db();
+	$validator = new Validator();
+	$modeloInicio = new ModeloInicio($db);
+	$modeloBitacora = new ModeloBitacora($db, $validator);
 
 	$modeloInicio->setIdPersonal($_SESSION['id_personal']);
 	$cargo = $modeloInicio->comprobarCargo();
@@ -31,7 +36,8 @@ function bitacora($parametro)
 
 function permisos($id_rol, $permiso, $modulo)
 {
-	$permisos = new ModeloPermisos();
+	$db = new Db();
+	$permisos = new ModeloPermisos($db);
 
 	return $permisos->gestionarPermisos($id_rol, $permiso, $modulo);
 }
@@ -43,6 +49,9 @@ function bitacoraAjaxUser()
 		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
+
+	$db = new Db();
+	$validator = new Validator();
 
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
@@ -60,20 +69,17 @@ function bitacoraAjaxUser()
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'fecha_hora';
 
 
-	$modeloBitacora = new ModeloBitacora(false);
-	$modeloInicio = new ModeloInicio();
+	$modeloBitacora = new ModeloBitacora($db, $validator);
+	$modeloInicio = new ModeloInicio($db);
 
-	$bitacoras = $modeloBitacora->consultarBitacora($_SESSION['id_usuario'], $inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloBitacora->contarTotalBitacora($_SESSION['id_usuario']);
-	$totalFiltrados = !empty($buscar) ? $modeloBitacora->contarTotalBitacora($_SESSION['id_usuario'], $buscar) : $totalRegistros;
+	$data = $modeloBitacora->consultarBitacora($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	//datos que se le envia al js (esto es estandar de datatable)
 	$response = [
 		"draw" => $draw,
-		"recordsTotal" => $totalRegistros,
-		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($bitacoras) ? $bitacoras : [],
+		"recordsTotal" => $data['total'],
+		"recordsFiltered" => $data['total_filtrado'],
+		"data" => is_array($data['data']) ? $data['data'] : [],
 	];
 
 	echo json_encode($response);
@@ -88,6 +94,9 @@ function bitacoraAjaxAdmin()
 		exit;
 	}
 
+	$db = new Db();
+	$validator = new Validator();
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -104,19 +113,16 @@ function bitacoraAjaxAdmin()
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'fecha_hora';
 
 
-	$modeloBitacora = new ModeloBitacora(false);
+	$modeloBitacora = new ModeloBitacora($db, $validator);
 
-	$bitacoras = $modeloBitacora->consultarBitacora(0,$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloBitacora->contarTotalBitacora(0);
-	$totalFiltrados = !empty($buscar) ? $modeloBitacora->contarTotalBitacora(0,$buscar) : $totalRegistros;
+	$data = $modeloBitacora->consultarBitacora($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	//datos que se le envia al js (esto es estandar de datatable)
 	$response = [
 		"draw" => $draw,
-		"recordsTotal" => $totalRegistros,
-		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($bitacoras) ? $bitacoras : [],
+		"recordsTotal" => $data['total'],
+		"recordsFiltered" => $data['total_filtrado'],
+		"data" => is_array($data['data']) ? $data['data'] : [],
 	];
 
 	echo json_encode($response);

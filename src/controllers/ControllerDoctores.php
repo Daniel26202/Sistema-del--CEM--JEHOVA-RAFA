@@ -1,25 +1,27 @@
 <?php
 
-use App\modelos\ModeloDoctores;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
-use App\modelos\ModeloServicios;
-use App\modelos\ModeloUsuarios;
-use App\modelos\ModeloRoles;
-use App\modelos\ModeloCategoria;
-
+use App\models\Validator;
+use App\models\Db;
+use App\models\ModeloDoctores;
+use App\models\ModeloBitacora;
+use App\models\ModeloPermisos;
+use App\models\ModeloServicios;
+use App\models\ModeloRoles;
+use App\models\ModeloCategoria;
 
 //muestro los datos de las cuatro tablas
 function doctores($parametro)
 {
-    $modeloDoctores = new ModeloDoctores();
-    $modeloServicios = new ModeloServicios();
-    $modeloRoles = new ModeloRoles();
+    $db = new Db();
+    $validator = new Validator();
+    $modeloDoctores = new ModeloDoctores($db,$validator);
+    $modeloServicios = new ModeloServicios($db, $validator);
+    $modeloRoles = new ModeloRoles($db, $validator);
     $datosRoles = $modeloRoles->roles();
     $vistaActiva = 'doctores';
     $ayuda = "btnayudaDoctores";
-    $datosEspecialidades = $modeloDoctores->selectEspecialidad();
-    $doctores = $modeloServicios->mostrarDoctores();
+    // $datosEspecialidades = $modeloDoctores->selectEspecialidad();
+    // $doctores = $modeloServicios->mostrarDoctores();
     $todasLasServicios = $modeloServicios->mostrarServicios();
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
@@ -27,44 +29,46 @@ function doctores($parametro)
 //funcion para retornaar los dias de la semana
 function mostrarDiasSemana()
 {
-    $modeloDoctores = new ModeloDoctores();
+    $db = new Db();
+    $validator = new Validator();
+    $modeloDoctores = new ModeloDoctores($db, $validator);
     echo json_encode($modeloDoctores->selectDias());
 }
 
-function selectEspcAjax()
-{
-    if (empty($_GET)) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
-        exit;
-    }
+// function selectEspcAjax()
+// {
+//     if (empty($_GET)) {
+//         http_response_code(409);
+//         echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
+//         exit;
+//     }
+//     $db = new Db();
+//     $validator = new Validator();
 
-    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
-    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
-    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
-    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+//     $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+//     $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+//     $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+//     $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
-    $columnasMapeadas = ['id_especialidad','nombre'];
+//     $columnasMapeadas = ['id_especialidad','nombre'];
 
-    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
-    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+//     $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+//     $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
-    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_especialidad';
+//     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_especialidad';
 
-    $modeloDoctores = new ModeloDoctores();
-    $especialidades = $modeloDoctores->selectTodasEspecialidades($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+//     $modeloDoctores = new ModeloDoctores($db, $validator);
+//     // $especialidades = $modeloDoctores->selectTodasEspecialidades($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
-    $totalRegistros = $modeloDoctores->contarTotalEspecialidades('ACT');
-    $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalEspecialidades('ACT', $buscar) : $totalRegistros;
 
-    echo json_encode([
-        "draw"            => $draw,
-        "recordsTotal"    => (int)$totalRegistros,
-        "recordsFiltered" => (int)$totalFiltrados,
-        "data"            => $especialidades
-    ]);
-    exit;
-}
+//     echo json_encode([
+//         "draw"            => $draw,
+//         "recordsTotal"    => (int)$totalRegistros,
+//         "recordsFiltered" => (int)$totalFiltrados,
+//         // "data"            => $especialidades
+//     ]);
+//     exit;
+// }
 
 function DoctoresAjax()
 {
@@ -73,7 +77,9 @@ function DoctoresAjax()
         echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
         exit;
     }
-
+    
+    $db = new Db();
+    $validator = new Validator();
     $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
     $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
     $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -86,13 +92,14 @@ function DoctoresAjax()
 
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_personal';
 
-    $modeloDoctores = new ModeloDoctores();
-    $modeloServicio = new ModeloServicios();
+    $modeloDoctores = new ModeloDoctores($db, $validator);
+    $modeloServicio = new ModeloServicios($db, $validator);
 
     //variable final
+    $data = $modeloDoctores->select('ACT',$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
     $result = [];
-    foreach ($modeloDoctores->select($inicio, $limite, $buscar, $ordenColumna, $ordenDir) as $doctor) {
-        $id_personal = $doctor['id_personal'];
+    foreach ($modeloDoctores->select('ACT',$inicio, $limite, $buscar, $ordenColumna, $ordenDir) as $doctor) {
+        $id_personal = $doctor['data']['id_personal'];
 
         //filtrar los horarios para el doctor actual
         $horarioDelDoctor = array_filter($modeloDoctores->selectDiasDoctor(), function ($horario) use ($id_personal) {
@@ -142,13 +149,11 @@ function DoctoresAjax()
         ];
     }
 
-    $totalRegistros = $modeloDoctores->contarTotalDoctores('ACT');
-    $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalDoctores('ACT', $buscar) : $totalRegistros;
 
     echo json_encode([
         "draw"            => $draw,
-        "recordsTotal"    => (int)$totalRegistros,
-        "recordsFiltered" => (int)$totalFiltrados,
+        "recordsTotal"    => (int)$data['total'],
+        "recordsFiltered" => (int)$data['total_filtrado'],
         "data"            => $result
     ]);
     exit;
@@ -156,13 +161,15 @@ function DoctoresAjax()
 
 function papelera($parametro)
 {
-    $modeloDoctores = new ModeloDoctores();
-    $modeloServicios = new ModeloServicios();
+    $db = new Db();
+    $validator = new Validator();
+    $modeloDoctores = new ModeloDoctores($db, $validator);
+    $modeloServicios = new ModeloServicios($db, $validator);
     $vistaActiva = 'papelera';
     $ayuda = "btnayudaDoctores";
     $datosDias = $modeloDoctores->selectDias();
-    $datosEspecialidades = $modeloDoctores->selectEspecialidad();
-    $doctores = $modeloServicios->mostrarDoctores();
+    // $datosEspecialidades = $modeloDoctores->selectEspecialidad();
+    // $doctores = $modeloServicios->mostrarDoctores();
     $todasLasServicios = $modeloServicios->mostrarServicios();
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
@@ -175,6 +182,9 @@ function papeleraDoctoresAjax()
         exit;
     }
 
+    $db = new Db();
+    $validator = new Validator();
+
     $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
     $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
     $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -187,11 +197,12 @@ function papeleraDoctoresAjax()
 
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_personal';
 
-    $modeloDoctores = new ModeloDoctores();
-    $modeloServicio = new ModeloServicios();
+    $modeloDoctores = new ModeloDoctores($db, $validator);
+    $modeloServicio = new ModeloServicios($db, $validator);
 
     $result =[];
-    foreach ($modeloDoctores->desactivos($inicio, $limite, $buscar, $ordenColumna, $ordenDir) as $doctor) {
+    $data = $modeloDoctores->select('DES', $inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+    foreach ($modeloDoctores->select('DES',$inicio, $limite, $buscar, $ordenColumna, $ordenDir) as $doctor) {
         $id_personal = $doctor['id_personal'];
 
         //filtrar los horarios para el doctor actual
@@ -240,15 +251,12 @@ function papeleraDoctoresAjax()
             'datosHorarios' => $datosHorarios,
             'servicios' => $servicios
         ];
-    }
 
-    $totalRegistros = $modeloDoctores->contarTotalDoctores('DES');
-    $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalDoctores('DES', $buscar) : $totalRegistros;
-
+        }
     echo json_encode([
         "draw"            => $draw,
-        "recordsTotal"    => (int)$totalRegistros,
-        "recordsFiltered" => (int)$totalFiltrados,
+        "recordsTotal"    => (int)$data['total'],
+        "recordsFiltered" => (int)$data['total_filtrado'],
         "data"            => $result
     ]);
     exit;
@@ -257,10 +265,12 @@ function papeleraDoctoresAjax()
 // metodo para mostrar los servicios y los doctores
 function serviciosDoctor()
 {
-    $modeloDoctores = new ModeloDoctores();
-    $modeloCategiria = new ModeloCategoria();
+    $db = new Db();
+    $validator = new Validator();
+    $modeloDoctores = new ModeloDoctores($db,$validator);
+    // $modeloCategiria = new ModeloCategoria($db, $validator);
 
-    echo json_encode([$modeloDoctores->select(), $modeloCategiria->seleccionarCategoria()]);
+    // echo json_encode([$modeloDoctores->select(), $modeloCategiria->seleccionarCategoria()]);
 }
 
 
@@ -277,20 +287,22 @@ function guardarDoctores()
 
         $idUsuario = $_SESSION['id_usuario'];
 
+        $db = new Db();
+        $validator = new Validator();
 
-        $servicio = new ModeloServicios();
-        $doctores = new ModeloDoctores();
-        $bitacora = new ModeloBitacora();
+        $servicio = new ModeloServicios($db, $validator);
+        $doctores = new ModeloDoctores($db, $validator);
+        $bitacora = new ModeloBitacora($db, $validator);
 
-        $servicio->setIdDoctor($_POST["id_doctor"]);
-        $servicio->setIdCategoria($_POST["id_categoria"]);
+        // $servicio->setIdDoctor($_POST["id_doctor"]);
+        // $servicio->setIdCategoria($_POST["id_categoria"]);
 
         $bitacora->setId_usuario($idUsuario);
         $bitacora->setActividad("Ha asignado un servicio medico a un doctor");
         $bitacora->setTabla("Servicio Medico");
 
-        $insercion = $servicio->asignarServicioDoctor($idUsuario);
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
+        // $insercion = $servicio->asignarServicioDoctor($idUsuario);
+        // echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 
         // if (is_array($insercion) && $insercion[0] === "exito") {
         //     $bitacora->insertarBitacora();
@@ -307,149 +319,150 @@ function guardarDoctores()
     }
 }
 
-function agregarDoctor()
-{
-    if (empty($_POST)) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
-        exit;
-    }
-    try {
-        if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-        $idUsuario = $_SESSION['id_usuario'];
+// function agregarDoctor()
+// {
+//     if (empty($_POST)) {
+//         http_response_code(409);
+//         echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
+//         exit;
+//     }
+//     try {
+//         if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+//         $idUsuario = $_SESSION['id_usuario'];
 
-        $modeloDoctores = new ModeloDoctores();
-        $modeloBitacora = new ModeloBitacora();
+//         $modeloDoctores = new ModeloDoctores();
+//         $modeloBitacora = new ModeloBitacora();
 
-        $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
-        $imagen         = isset($_FILES['imagen']['name']) ? $_FILES['imagen']['name'] : false;
+//         $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
+//         $imagen         = isset($_FILES['imagen']['name']) ? $_FILES['imagen']['name'] : false;
 
-        $modeloDoctores->setCedula($_POST["cedula"]);
-        $modeloDoctores->setNombre($_POST["nombre"]);
-        $modeloDoctores->setApellido($_POST["apellido"]);
-        $modeloDoctores->setTelefono($_POST["telefono"]);
-        $modeloDoctores->setEmail($_POST['correo']);
-        $modeloDoctores->setNacionalidad($_POST['nacionalidad']);
-        $modeloDoctores->setImagen($imagen);
-        $modeloDoctores->setImagenTemporal($_FILES['imagen']['tmp_name']);
-        $modeloDoctores->setIdEspecialidad($_POST["id_especialidad"]);
-        $modeloDoctores->setDias($_POST['dias']);
-        $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
-        $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
-        $modeloDoctores->setIdRol($_POST['id_rol']);
-        $modeloDoctores->setUsuario($_POST["usuario"]);
-        $modeloDoctores->setPassword($passwordEncrip);
+//         $modeloDoctores->setCedula($_POST["cedula"]);
+//         $modeloDoctores->setNombre($_POST["nombre"]);
+//         $modeloDoctores->setApellido($_POST["apellido"]);
+//         $modeloDoctores->setTelefono($_POST["telefono"]);
+//         $modeloDoctores->setEmail($_POST['correo']);
+//         $modeloDoctores->setNacionalidad($_POST['nacionalidad']);
+//         $modeloDoctores->setImagen($imagen);
+//         $modeloDoctores->setImagenTemporal($_FILES['imagen']['tmp_name']);
+//         $modeloDoctores->setIdEspecialidad($_POST["id_especialidad"]);
+//         $modeloDoctores->setDias($_POST['dias']);
+//         $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
+//         $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
+//         $modeloDoctores->setIdRol($_POST['id_rol']);
+//         $modeloDoctores->setUsuario($_POST["usuario"]);
+//         $modeloDoctores->setPassword($passwordEncrip);
 
-        $insercion = $modeloDoctores->insertarDoctor($idUsuario);
+//         $insercion = $modeloDoctores->insertarDoctor($idUsuario);
 
-        if (is_array($insercion) && $insercion[0] === "exito") {
-            $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->setTabla("doctor");
-            $modeloBitacora->setActividad("Ha Insertado un nuevo doctor");
-            $modeloBitacora->insertarBitacora($idUsuario);
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
-        } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $insercion]);
-            exit;
-        }
-    } catch (InvalidArgumentException $e) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-        exit;
-    }
-}
+//         if (is_array($insercion) && $insercion[0] === "exito") {
+//             $modeloBitacora->setId_usuario($idUsuario);
+//             $modeloBitacora->setTabla("doctor");
+//             $modeloBitacora->setActividad("Ha Insertado un nuevo doctor");
+//             $modeloBitacora->insertarBitacora($idUsuario);
+//             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
+//         } else {
+//             http_response_code(409);
+//             echo json_encode(['ok' => false, 'error' => $insercion]);
+//             exit;
+//         }
+//     } catch (InvalidArgumentException $e) {
+//         http_response_code(409);
+//         echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+//         exit;
+//     }
+// }
 
-function editarDoctor()
-{
-    if (empty($_POST)) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
-        exit;
-    }
-    try {
-        $idUsuario = $_SESSION['id_usuario'];
+// function editarDoctor()
+// {
+//     if (empty($_POST)) {
+//         http_response_code(409);
+//         echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
+//         exit;
+//     }
+//     try {
+//         $idUsuario = $_SESSION['id_usuario'];
 
-        $modeloDoctores = new ModeloDoctores();
-        $modeloBitacora = new ModeloBitacora();
+//         $modeloDoctores = new ModeloDoctores();
+//         $modeloBitacora = new ModeloBitacora();
 
-        $dias      = isset($_POST["dias"])      ? $_POST["dias"]      : [];
-        $diaAnterio = isset($_POST["diaAnterio"]) ? $_POST["diaAnterio"] : [];
+//         $dias      = isset($_POST["dias"])      ? $_POST["dias"]      : [];
+//         $diaAnterio = isset($_POST["diaAnterio"]) ? $_POST["diaAnterio"] : [];
 
-        $idDiaDbE   = !empty($x = array_diff($diaAnterio, $dias))   ? $x : false;
-        $idDiaNuevo = !empty($x = array_diff($dias, $diaAnterio))   ? $x : false;
-        $igualesDb  = !empty($x = array_intersect($dias, $diaAnterio)) ? $x : false;
+//         $idDiaDbE   = !empty($x = array_diff($diaAnterio, $dias))   ? $x : false;
+//         $idDiaNuevo = !empty($x = array_diff($dias, $diaAnterio))   ? $x : false;
+//         $igualesDb  = !empty($x = array_intersect($dias, $diaAnterio)) ? $x : false;
 
-        $modeloDoctores->setCedula($_POST["cedula"]);
-        $modeloDoctores->setNombre($_POST["nombre"]);
-        $modeloDoctores->setApellido($_POST["apellido"]);
-        $modeloDoctores->setTelefono($_POST["telefono"]);
-        $modeloDoctores->setIdEspecialidad($_POST["id_especialidad"]);
-        $modeloDoctores->setEmail($_POST["correo"]);
-        $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
-        $modeloDoctores->setDiasE($idDiaDbE);
-        $modeloDoctores->setDiasN($idDiaNuevo);
-        $modeloDoctores->setDiasEditar($igualesDb);
-        $modeloDoctores->setCheckeds($dias);
-        $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
-        $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
-        $modeloDoctores->setCedulaRegistrada($_POST['cedulaRegistrada']);
-        $modeloDoctores->setIdUsuario($_POST["id_usuario"]);
+//         $modeloDoctores->setCedula($_POST["cedula"]);
+//         $modeloDoctores->setNombre($_POST["nombre"]);
+//         $modeloDoctores->setApellido($_POST["apellido"]);
+//         $modeloDoctores->setTelefono($_POST["telefono"]);
+//         $modeloDoctores->setIdEspecialidad($_POST["id_especialidad"]);
+//         $modeloDoctores->setEmail($_POST["correo"]);
+//         $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
+//         $modeloDoctores->setDiasE($idDiaDbE);
+//         $modeloDoctores->setDiasN($idDiaNuevo);
+//         $modeloDoctores->setDiasEditar($igualesDb);
+//         $modeloDoctores->setCheckeds($dias);
+//         $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
+//         $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
+//         $modeloDoctores->setCedulaRegistrada($_POST['cedulaRegistrada']);
+//         $modeloDoctores->setIdUsuario($_POST["id_usuario"]);
 
-        $edicion = $modeloDoctores->updateDoctor($idUsuario);
+//         $edicion = $modeloDoctores->updateDoctor($idUsuario);
 
-        if (is_array($edicion) && $edicion[0] === "exito") {
-            $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->setTabla("doctor");
-            $modeloBitacora->setActividad("Ha modificado un doctor");
-            $modeloBitacora->insertarBitacora($idUsuario);
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
-        } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $edicion]);
-            exit;
-        }
-    } catch (InvalidArgumentException $e) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-        exit;
-    }
-}
+//         if (is_array($edicion) && $edicion[0] === "exito") {
+//             $modeloBitacora->setId_usuario($idUsuario);
+//             $modeloBitacora->setTabla("doctor");
+//             $modeloBitacora->setActividad("Ha modificado un doctor");
+//             $modeloBitacora->insertarBitacora($idUsuario);
+//             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
+//         } else {
+//             http_response_code(409);
+//             echo json_encode(['ok' => false, 'error' => $edicion]);
+//             exit;
+//         }
+//     } catch (InvalidArgumentException $e) {
+//         http_response_code(409);
+//         echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+//         exit;
+//     }
+// }
 
-function borrarDoctor($datos)
-{
-    if (empty($_GET)) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
-        exit;
-    }
-    try {
-        $idUsuario           = $_SESSION['id_usuario'];
-        $id_usuario_doctor   = $datos[0];
+// function borrarDoctor($datos)
+// {
+//     if (empty($_GET)) {
+//         http_response_code(409);
+//         echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
+//         exit;
+//     }
+//     try {
+//         $idUsuario           = $_SESSION['id_usuario'];
+//         $id_usuario_doctor   = $datos[0];
 
-        $modeloDoctores = new ModeloDoctores();
-        $modeloBitacora = new ModeloBitacora();
 
-        $modeloDoctores->setIdUsuario($id_usuario_doctor);
-        $eliminacion = $modeloDoctores->eliminacionLogica($idUsuario);
+//         $modeloDoctores = new ModeloDoctores();
+//         $modeloBitacora = new ModeloBitacora();
 
-        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-            $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->setTabla("doctor");
-            $modeloBitacora->setActividad("Ha eliminado un doctor");
-            $modeloBitacora->insertarBitacora($idUsuario);
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-        } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
-            exit;
-        }
-    } catch (InvalidArgumentException $e) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-        exit;
-    }
-}
+//         $modeloDoctores->setIdUsuario($id_usuario_doctor);
+//         $eliminacion = $modeloDoctores->eliminacionLogica($idUsuario);
+
+//         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+//             $modeloBitacora->setId_usuario($idUsuario);
+//             $modeloBitacora->setTabla("doctor");
+//             $modeloBitacora->setActividad("Ha eliminado un doctor");
+//             $modeloBitacora->insertarBitacora($idUsuario);
+//             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+//         } else {
+//             http_response_code(409);
+//             echo json_encode(['ok' => false, 'error' => $eliminacion]);
+//             exit;
+//         }
+//     } catch (InvalidArgumentException $e) {
+//         http_response_code(409);
+//         echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+//         exit;
+//     }
+// }
 
 function restablecer($datos)
 {

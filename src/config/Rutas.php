@@ -2,7 +2,8 @@
 
 namespace App\config;
 
-use App\modelos\ModeloPermisos;
+use App\models\ModeloPermisos;
+use App\models\Db;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -17,9 +18,10 @@ class Rutas
             session_start();
         }
 
-        $this->rateLimit = new RateLimiter();
+        $db = new Db(false);
+        $this->rateLimit = new RateLimiter($db);
         $this->url = $url;
-        $this->modelo = new ModeloPermisos();
+        $this->modelo = new ModeloPermisos($db);
         $this->equivalentes = require_once __DIR__ . "/../../src/config/equivalencias.php";
     }
 

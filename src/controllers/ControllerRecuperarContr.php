@@ -1,6 +1,8 @@
 <?php
 
-use App\modelos\ModeloRecuperarContr;
+use App\models\Db;
+use App\models\ModeloRecuperarContr;
+use App\models\Validator;
 //librería de correo
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -147,7 +149,9 @@ function reenviarCodigo()
 function verificarUC()
 {
     if (isset($_POST)) {
-        $modelo = new ModeloRecuperarContr();
+        $db = new Db();
+        $validator = new Validator();
+        $modelo = new ModeloRecuperarContr($db,$validator);
         $correoM = strtolower($_POST["correo"]);
 
         $modelo->setUsuario($_POST["usuario"]);
@@ -206,15 +210,18 @@ function verificarCodigo()
 function cambiarC()
 {
     if (isset($_POST)) {
-        $modelo = new ModeloRecuperarContr();
+        $db = new Db();
+        $validator = new Validator();
+        $modelo = new ModeloRecuperarContr($db,$validator);
 
         // Generamos la contraseña encriptada de la contraseña ingresada
         $passwordEncrip = password_hash($_POST["passwordNew"], PASSWORD_BCRYPT);
 
         $modelo->setPassword($passwordEncrip);
         $modelo->setIdUsuario($_POST["id_usuario"]);
-
-        $modelo->updatePassword();
+        $validator->set_session($_SESSION);
+        $validator->set_id_usuario($_POST["id_usuario"]);
+        $modelo->actualizar(['password'=>$modelo->getPassword()],['id_usuario'=>$modelo->getIdUsuario()],$validator);
         // verifica si la sesión esta activa.
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();

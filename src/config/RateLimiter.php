@@ -2,7 +2,8 @@
 
 namespace App\config;
 
-use App\modelos\ModelBase;
+use App\models\ModelBase;
+use App\models\interfaces\InterfaceConnection;
 
 
 class RateLimiter extends ModelBase
@@ -15,9 +16,9 @@ class RateLimiter extends ModelBase
     private $ip = '';
 
 
-    public function __construct($dbSystem = false)
+    public function __construct(InterfaceConnection $conn)
     {
-        parent::__construct($dbSystem);
+        parent::__construct($conn);
     }
 
 

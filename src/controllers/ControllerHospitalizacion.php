@@ -1,11 +1,11 @@
 <?php
 
-use App\modelos\ModeloHospitalizacion;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
-use App\modelos\ModeloInicio;
-use App\modelos\ModeloPatologia;
-use App\modelos\ModeloSintomas;
+use App\models\ModeloHospitalizacion;
+use App\models\ModeloBitacora;
+use App\models\ModeloPermisos;
+use App\models\ModeloInicio;
+use App\models\ModeloPatologia;
+use App\models\ModeloSintomas;
 // use App\config\RateLimiter;
 
 function refrescarSemaforo()

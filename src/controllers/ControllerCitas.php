@@ -1,11 +1,11 @@
 <?php
 
-use App\modelos\ModeloCita;
-use App\modelos\ModeloBitacora;
-use App\modelos\ModeloServicios;
-use App\modelos\ModeloDoctores;
-use App\modelos\ModeloPacientes;
-use App\modelos\ModeloPermisos;
+use App\models\ModeloCita;
+use App\models\ModeloBitacora;
+use App\models\ModeloServicios;
+use App\models\ModeloDoctores;
+use App\models\ModeloPacientes;
+use App\models\ModeloPermisos;
 
 function mostrarDataPaciente($datos)
 {
