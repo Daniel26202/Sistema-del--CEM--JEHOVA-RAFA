@@ -16,7 +16,7 @@ class ModeloBitacora extends ModelBase
 
     use TraitCreate;
 
-    public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+    public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali = null)
     {
         parent::__construct($conn);
         $this->set_tables(["bitacora"]);

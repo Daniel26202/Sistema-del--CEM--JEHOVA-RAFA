@@ -16,7 +16,7 @@ class ModeloControl extends ModelBase
 
 	use TraitCreate,TraitUpdate;
 
-	public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+	public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali = null)
 	{
 		parent::__construct($conn);
 		$this->validator = $vali;

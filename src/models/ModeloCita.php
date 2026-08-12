@@ -17,14 +17,14 @@ class ModeloCita extends ModelBase
 
 	use TraitCreate, TraitUpdate;
 
-	public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+	public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali = null)
 	{
 		parent::__construct($conn);
 		$this->validator = $vali;
 	}
 
 
-	private function existeCita(string $doctor,string $fecha,string $hora)
+	private function existeCita(string $doctor, string $fecha, string $hora)
 	{
 		//consulta puntual por ello uso pdo directamente
 		$sql = "SELECT id_cita FROM cita 
@@ -285,7 +285,7 @@ class ModeloCita extends ModelBase
 			$listData = $this->read(false);
 
 
-			$cita_existente = $this->existeCita($this->getIdDoctor(),$this->getFecha(),$this->getHora());
+			$cita_existente = $this->existeCita($this->getIdDoctor(), $this->getFecha(), $this->getHora());
 			//consulta puntual por ello uso pdo directamente
 			$sqlValidar = "SELECT id_cita FROM cita 
 	                   WHERE doctor = :doctor 
@@ -313,7 +313,7 @@ class ModeloCita extends ModelBase
 				'doctor'            => $this->getIdDoctor()
 			];
 
-			$data = $this->guardar($dataInsert,$this->validator);
+			$data = $this->guardar($dataInsert, $this->validator);
 			$this->commit();
 			return [$data];
 		} catch (\Exception $e) {
@@ -323,7 +323,7 @@ class ModeloCita extends ModelBase
 	}
 
 
-	public function insertarCita()
+	public function guardarCita()
 	{
 		try {
 			$this->beginTransaction();
@@ -350,19 +350,19 @@ class ModeloCita extends ModelBase
 			$this->set_tables(['cita']);
 			$this->set_condicion_aditional($coditions2);
 
-			$columns_edit =[
-				'estado'=>$this->getEstado(),
-				'serviciomedico_id_servicioMedico' =>$id_servicioMedico,
-				'paciente_id_paciente'=>$this->getIdPaciente(),
-				'hora_salida'=>$this->getHoraSalida()
+			$columns_edit = [
+				'estado' => $this->getEstado(),
+				'serviciomedico_id_servicioMedico' => $id_servicioMedico,
+				'paciente_id_paciente' => $this->getIdPaciente(),
+				'hora_salida' => $this->getHoraSalida()
 			];
 			$data_condicion = [
-				'doctor'=>$this->getIdDoctor(),
-				'fecha'=>$this->getFecha(),
-				'hora'=>$this->getHora(),
-				'estado'=> 'Reservado'
+				'doctor' => $this->getIdDoctor(),
+				'fecha' => $this->getFecha(),
+				'hora' => $this->getHora(),
+				'estado' => 'Reservado'
 			];
-			$this->actualizar($columns_edit,$data_condicion,$this->validator);
+			$this->actualizar($columns_edit, $data_condicion, $this->validator);
 
 			$query = $this->getPDO()->prepare("SELECT ROW_COUNT()");
 			$query->execute();
@@ -414,6 +414,18 @@ class ModeloCita extends ModelBase
 	}
 
 	// ── Getters ───────────────────────────────────────────────────────────────
+	public function get_all()
+	{
+		return [
+			'fecha' => $this->getFecha(),
+			'hora' => $this->getHora(),
+			'estado' => $this->getEstado(),
+			'serviciomedico_id_servicioMedico' =>$this->getIdServicioMedico(),
+			'paciente_id_paciente'=>$this->getIdPaciente(),
+			'hora_salida'=>$this->getHoraSalida(),
+			'doctor'=>$this->getIdDoctor()
+		];
+	}
 
 	public function getIdCita()
 	{

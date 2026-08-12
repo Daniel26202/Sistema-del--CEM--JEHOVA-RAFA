@@ -17,7 +17,7 @@ class ModeloDoctores extends ModelBase
     private $validator;
     use TraitCreate, TraitUpdate,TraitDelete;
 
-    public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+    public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali = null)
     {
         parent::__construct($conn);
         $this->validator = $vali;
@@ -48,6 +48,8 @@ class ModeloDoctores extends ModelBase
         $this->set_colums(['h.id_horario', 'h.diaslaborables', 'hyd.horaDeEntrada', 'hyd.horaDeSalida', 'hyd.id_personal']);
         $this->set_alias($alias);
         $this->set_union($unions);
+        $this->set_condicion_aditional([]);
+        $this->set_limit(0);
         return $this->read();
     }
 

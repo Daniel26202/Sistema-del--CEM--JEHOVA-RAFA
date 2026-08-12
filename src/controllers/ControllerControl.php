@@ -40,7 +40,6 @@ function returnSistomasPaciente()
 	}
 
 	$db = new Db();
-	$validator = new Validator();
 
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
@@ -55,7 +54,7 @@ function returnSistomasPaciente()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_sintomas';
 
-	$modeloSintomas = new ModeloSintomas($db,$validator);
+	$modeloSintomas = new ModeloSintomas($db);
 
 	$data = $modeloSintomas->selectSintomas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
@@ -71,25 +70,23 @@ function returnSistomasPaciente()
 function returnPatologiasPaciente()
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloPatologia = new ModeloPatologia($db,$validator);
+	$modeloPatologia = new ModeloPatologia($db);
 	echo json_encode($modeloPatologia->mostrarPatologias());
 }
 
 function returnPatologiasPacienteId()
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloPatologia = new ModeloControl($db,$validator);
+	$modeloPatologia = new ModeloControl($db);
 	echo json_encode($modeloPatologia->mostrarPatologiaC());
 }
 
 function returnDoctores()
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloControl = new ModeloControl($db,$validator);
-	echo json_encode($modeloControl->mostrarDoctor());
+	$modeloControl = new ModeloControl($db);
+	// echo json_encode($modeloControl->mostrarDoctor());
+	echo json_encode([]);
 }
 
 function listPacientesJS()
@@ -101,7 +98,6 @@ function listPacientesJS()
 	}
 
 	$db = new Db();
-	$validator = new Validator();
 
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
@@ -116,8 +112,8 @@ function listPacientesJS()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
 
-	$modeloPaciente = new ModeloPacientes($db,$validator);
-	$data = $modeloPaciente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$modeloPaciente = new ModeloPacientes($db);
+	$data = $modeloPaciente->index('ACT',$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	echo json_encode([
 		"draw"            => $draw,
@@ -131,22 +127,21 @@ function listPacientesJS()
 function mostrarBusquedaPacientesJS($datos)
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloControl = new ModeloControl($db,$validator);
+	$modeloControl = new ModeloControl($db);
 	$modeloControl->setCedula($datos[0]);
 	$modeloControl->setNacionalidad($datos[1]);
 
-	$respuesta = $modeloControl->buscarPacientes();
+	// $respuesta = $modeloControl->buscarPacientes();
+	$respuesta =[];
 	echo json_encode($respuesta);
 }
 
 function mostrarControlPacientesJS($datos)
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloControl = new ModeloControl($db,$validator);
-	$modeloSintomas = new ModeloSintomas($db,$validator);
-	$modeloPatologia = new ModeloPatologia($db,$validator);
+	$modeloControl = new ModeloControl($db);
+	$modeloSintomas = new ModeloSintomas($db);
+	$modeloPatologia = new ModeloPatologia($db);
 	$modeloInicio = new ModeloInicio($db);
 
 	// verifica si la sesión esta activa.
@@ -162,7 +157,8 @@ function mostrarControlPacientesJS($datos)
 	$sintomas = $modeloSintomas->selects();
 	// patologías
 	$modeloControl->setCedula($cedula);
-	$registradosP = $modeloPatologia->buscarPatologiaPaciente();
+	// $registradosP = $modeloPatologia->buscarPatologiaPaciente();
+	$registradosP =[];
 	$patologias = $modeloPatologia->mostrarPatologias();
 
 	// cero es administrador mas no doctor 
@@ -194,7 +190,8 @@ function mostrarPacienteJS($datos)
 	$modeloControl->setNacionalidad($datos[0]);
 	$modeloControl->setCedula($datos[1]);
 	// me traigo los datos de los pacientes
-	$respuesta = $modeloControl->mostrarPaciente();
+	// $respuesta = $modeloControl->mostrarPaciente();
+	$respuesta =[];
 
 	echo json_encode($respuesta);
 }
@@ -298,8 +295,7 @@ function editarControl()
 function mostrarSP($datos)
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloControl = new ModeloControl($db,$validator);
+	$modeloControl = new ModeloControl($db);
 	$cedula = $datos[0];
 
 	$modeloControl->setCedula($cedula);
@@ -312,15 +308,15 @@ function mostrarSP($datos)
 function mostrarPP($datos)
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloControl = new ModeloControl($db,$validator);
+	$modeloControl = new ModeloControl($db);
 	$cedula = $datos[0];
 	$modeloControl->setCedula($cedula);
 
 	$id_control = ($modeloControl->mostrarUltimoIdControl() != null) ? $modeloControl->mostrarUltimoIdControl() : 0;
 	$modeloControl->setIdControl($id_control);
 
-	$registradosP = $modeloControl->mostrarPatologiaP();
+	// $registradosP = $modeloControl->mostrarPatologiaP();
+	$respuestaP =[];
 	echo json_encode($registradosP);
 }
 
@@ -328,7 +324,8 @@ function mostrarPP($datos)
 // mostrar síntomas de pacientes 
 function mostrarSPAll($datos)
 {
-	$modeloControl = new ModeloControl();
+	$db = new Db();
+	$modeloControl = new ModeloControl($db);
 	$modeloControl->setIdControl($datos[0]);
 
 	$respuestaS = $modeloControl->mostrarSintomasPaId();
@@ -338,11 +335,11 @@ function mostrarSPAll($datos)
 function mostrarPPAll($datos)
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloControl = new ModeloControl($db,$validator);
+	$modeloControl = new ModeloControl($db);
 	$modeloControl->setIdControl($datos[0]);
 
-	$registradosP = $modeloControl->mostrarPatologiaP();
+	// $registradosP = $modeloControl->mostrarPatologiaP();
+	$registradosP =[];
 	echo json_encode($registradosP);
 }
 
@@ -352,8 +349,7 @@ function mostrarPPAll($datos)
 function mostrarPIdP($datos)
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloControl = new ModeloControl($db,$validator);
+	$modeloControl = new ModeloControl($db);
 
 	$idC = $datos[0];
 	$modeloControl->setIdControl($idC);
@@ -371,7 +367,6 @@ function eliminarSintoma($datos)
 		exit;
 	}
 
-
 	try {
 
 		$idUsuario = $_SESSION['id_usuario'];
@@ -386,7 +381,7 @@ function eliminarSintoma($datos)
 
 		$id_sintomas = $datos[0];
 		$modeloSintomas->setIdSintomas($id_sintomas);
-		$eliminar = $modeloSintomas->actualizar(['estado'=>'DES'],['id_sintoma'=>$modeloSintomas->getIdSintoma()],$validator);
+		$eliminar = $modeloSintomas->actualizar(['estado'=>'DES'],['id_sintomas'=>$modeloSintomas->getIdSintoma()],$validator);
 
 		if (is_array($eliminar)) {
 			// Guardar la bitacora

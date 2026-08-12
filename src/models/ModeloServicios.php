@@ -16,7 +16,7 @@ class ModeloServicios extends ModelBase
     private $validator;
     use TraitCreate,TraitUpdate;
 
-    public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+    public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali=null)
     {
         parent::__construct($conn);
         $this->validator = $vali;
@@ -62,8 +62,8 @@ class ModeloServicios extends ModelBase
         $alias = [
             'p',
             'ps',
-            'e',
             'sm',
+            'e',
             'cs'
         ];
         $unions = [
@@ -73,7 +73,7 @@ class ModeloServicios extends ModelBase
             'cs.id_categoria = sm.id_categoria'
         ];
         $this->set_tables(["personal", "personal_has_serviciomedico","serviciomedico", "especialidad", "categoria_servicio"]);
-        $this->set_colums(['cs.nombre AS categoria', 'sm.id_servicioMedico','p.nombre AS nombre_personal', 'p.apellido AS apellido_personal', 'p.id_personal AS id_personal', 'sm.precio', 'e.nombre AS nombre_especialidad', 'sm.id_servicioMedico']);
+        $this->set_colums(['cs.nombre AS categoria', 'sm.id_servicioMedico','p.nombre AS nombre_personal', 'p.apellido AS apellido_personal', 'p.id_personal AS id_personal', 'sm.precio', 'e.nombre AS nombre_especialidad']);
         $this->set_alias($alias);
         $this->set_union($unions);
         $this->set_condicion_aditional($coditions);

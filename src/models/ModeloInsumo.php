@@ -18,9 +18,10 @@ class ModeloInsumo extends ModelBase
 	private $validator;
 	use TraitCreate,TraitUpdate;
 
-	public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+	public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali =null)
 	{
 		parent::__construct($conn);
+		$this->set_tables(['insumo']);
 		$this->validator = $vali;
 	}
 	public function insumos()
@@ -31,7 +32,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 
-	public function InsumosVencidos($start = 0, $limit = 10, $search = '', $ordenColumn = 'id_paciente', $ordenDir = 'DESC')
+	public function InsumosVencidos($start = 0, $limit = 10, $search = '', $ordenColumn = 'ei.fechaDeVencimiento', $ordenDir = 'DESC')
 	{
 		$alias = ['ei', 'i', 'e', 'p'];
 		$unions = [
@@ -41,11 +42,11 @@ class ModeloInsumo extends ModelBase
 		];
 		$coditions = [
 			'condiciones' => ['ei.fechaDeVencimiento' => 'CURRENT_DATE'],
-			'conectores' => [''],
+			'conectores' => [],
 			'operadores' => ['<=']
 		];
 		$this->set_tables(["entrada_insumo", "insumo", "entrada", "proveedor"]);
-		$this->set_colums(['ei.fechaDeVencimiento', 'ei.id_entradaDeInsumo', 'i.imagen', 'i.nombre', 'i.descripcion', 'i.marca', 'i.medida', 'i.precio', 'i.stockMinimo', 'i.iva', 'i.id_insumo AS id_insumo_e', 'ei.cantidad_disponible AS cantidad_entrada', 'ei.precio AS precio_entrada', 'p.nombre AS proveedor']);
+		$this->set_colums(['ei.fechaDeVencimiento', 'e.fechaDeIngreso','e.numero_de_lote','ei.id_entradaDeInsumo', 'i.imagen', 'i.nombre', 'i.descripcion', 'i.marca', 'i.medida', 'i.precio', 'i.stockMinimo', 'i.iva', 'i.id_insumo AS id_insumo_e', 'ei.cantidad_disponible AS cantidad_entrada', 'ei.precio AS precio_entrada', 'p.nombre AS proveedor']);
 		$this->set_alias($alias);
 		$this->set_union($unions);
 
@@ -63,7 +64,7 @@ class ModeloInsumo extends ModelBase
 	{
 		$coditions = [
 			'condiciones' => ['id_insumo' => $this->getIdInsumo()],
-			'conectores' => [''],
+			'conectores' => [],
 			'operadores' => ['=']
 		];
 		$this->set_tables(['insumo']);
@@ -146,7 +147,7 @@ class ModeloInsumo extends ModelBase
 
 	// ── PRIVADOS─────────────────────────────────────────
 	//insertar insumo
-	private function insertarInsumos()
+	public function guardarInsumo()
 	{
 		// Bandera de control para evitar fallos de transacción en el catch
 		$transaccionActiva = false;
@@ -211,7 +212,7 @@ class ModeloInsumo extends ModelBase
 		}
 	}
 
-	public function editar()
+	public function editarInsumo()
 	{
 		try {
 			// Buscar datos actuales para obtener el nombre de la imagen vieja

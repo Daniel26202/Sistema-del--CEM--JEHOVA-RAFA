@@ -16,9 +16,10 @@ class ModeloSintomas extends ModelBase
     private $validator;
     use TraitCreate,TraitUpdate;
 
-    public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+    public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali = null)
     {
         parent::__construct($conn);
+        $this->set_tables(['sintomas']);
         $this->validator = $vali;
     }
 
@@ -39,7 +40,7 @@ class ModeloSintomas extends ModelBase
     {
         $coditions = [
             'condiciones' => ['estado' => 'ACT'],
-            'conectores' => [''],
+            'conectores' => [],
             'operadores' => ['=']
         ];
         $this->set_tables(["sintomas"]);

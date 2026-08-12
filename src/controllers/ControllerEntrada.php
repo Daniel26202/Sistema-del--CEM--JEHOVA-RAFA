@@ -11,8 +11,7 @@ use App\models\Validator;
 function entrada($parametro)
 {
 	$db = new Db();
-	$validator = new Validator();
-	$modeloEntrada = new ModeloEntrada($db, $validator);
+	$modeloEntrada = new ModeloEntrada($db);
 	$ayuda = "btnayudaEntrada";
 	$vistaActiva = "entradas";
 	// $insumos = $modeloEntrada->insumos();
@@ -29,14 +28,13 @@ function entradasAjax()
 	}
 
 	$db = new Db();
-	$validator = new Validator();
 
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
 	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
-	$columnasMapeadas = ['nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	$columnasMapeadas = ['i.nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
 
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 
@@ -44,7 +42,7 @@ function entradasAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
 
-	$modeloEntrada = new ModeloEntrada($db,$validator);
+	$modeloEntrada = new ModeloEntrada($db);
 
 	$data = $modeloEntrada->todasLasEntradas('ACT',$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 

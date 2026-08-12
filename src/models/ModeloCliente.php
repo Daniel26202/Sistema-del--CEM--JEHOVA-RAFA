@@ -72,9 +72,9 @@ class ModeloCliente extends ModelBase
             'apellido' => $this->getApellido(),
             'telefono' => $this->getTelefono(),
             'direccion' => $this->getDireccion(),
-            'fecha_de_nacimiento' => $this->getFn(),
+            'fn' => $this->getFn(),
             'genero' => $this->getGenero(),
-            'estado' => $this->getEstado(),
+            'estado' => 'ACT',
         ];
     }
 

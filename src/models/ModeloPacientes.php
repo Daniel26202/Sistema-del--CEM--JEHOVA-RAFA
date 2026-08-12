@@ -14,7 +14,7 @@ class ModeloPacientes extends ModelBase
 	private $validator;
 	use TraitCreate, TraitUpdate;
 
-	public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+	public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali = null)
 	{
 		parent::__construct($conn);
 		$this->set_tables(['paciente']);

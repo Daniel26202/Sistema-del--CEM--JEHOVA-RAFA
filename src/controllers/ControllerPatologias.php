@@ -114,7 +114,7 @@ function registrarPatologia()
 
 		if (is_array($insercion)) {
 			$bitacora->guardar($bitacora->get_all(),$validator);
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $insercion]);

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\models;
 
 use App\models\ModelBase;
@@ -7,61 +8,66 @@ use App\models\TraitUpdate;
 use App\models\interfaces\InterfaceConnection;
 use App\models\interfaces\InterfaceValidator;
 
-class ModeloCategoria extends ModelBase
+class ModeloEspecialidad extends ModelBase
 {
 
-    private $idCategoria, $nombre;
+    private $idEspecialidad, $nombre;
     private $validator;
 
     use TraitCreate, TraitUpdate;
 
-    public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+    public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali = null)
     {
         parent::__construct($conn);
-        $this->set_tables(["categoria_servicio"]);
+        $this->set_tables(["especialidad"]);
         //clase para validar la session
         $this->validator = $vali;
     }
 
 
-    public function seleccionarCategoria()
+    public function seleccionarEspecialidad()
     {
-        $this->set_tables(["categoria_servicio"]);
-        $this->set_colums(['id_categoria', 'nombre']);
+        $this->set_tables(["especialidad"]);
+        $this->set_colums(['id_especialidad', 'nombre']);
         return $this->read();
     }
 
-    public function seleccionarTodasLasCategoria($start = 0, $limit = 10, $search = '', $ordenColumn = 'id_categoria', $ordenDir = 'DESC')
+    public function select($start = 0, $limit = 10, $search = '', $ordenColumn = 'id_especialidad', $ordenDir = 'DESC')
     {
-        $this->set_tables(["categoria_servicio"]);
-        $this->set_colums(['id_categoria', 'nombre']);
+        $coditions = [
+            'condiciones' => ['estado' => 'ACT'],
+            'conectores' => [],
+            'operadores' => ['=']
+        ];
+        $this->set_tables(["especialidad"]);
+        $this->set_colums(['id_especialidad', 'nombre']);
         $this->set_search($search);
         $this->set_start($start);
         $this->set_limit($limit);
         $this->set_orden_dir($ordenDir);
         $this->set_orden_column($ordenColumn);
+        $this->set_condicion_aditional($coditions);
         return $this->pagination();
     }
 
-    public function BCategoria($data)
+    public function BEspecialidad($data)
     {
-        $this->set_tables(["categoria_servicio"]);
-        $this->set_colums(['id_categoria', 'nombre']);
+        $this->set_tables(["especialidad"]);
+        $this->set_colums(['id_especialidad', 'nombre']);
         return $this->read();
     }
 
-    //GETTERS AND SETTERS
-
+        //GETTERS AND SETTERS
     public function get_all(){
         return [
-            'id_categiria'=>$this->getIdCategoria(),
             'nombre'=>$this->getNombre(),
             'estado'=>'ACT',
         ];
     }
-    public function getIdCategoria()
+
+    public function getIdEspecialidad()
     {
-        return $this->idCategoria;
+        return $this->idEspecialidad;
     }
 
     public function getNombre()
@@ -69,9 +75,9 @@ class ModeloCategoria extends ModelBase
         return $this->nombre;
     }
 
-    public function setIdCategoria($idCategoria)
+    public function setidEspecialidad($idEspecialidad)
     {
-        $this->idCategoria = $idCategoria;
+        $this->idEspecialidad = $idEspecialidad;
     }
 
 

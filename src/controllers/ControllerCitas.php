@@ -2,15 +2,14 @@
 
 use App\models\ModeloCita;
 use App\models\ModeloBitacora;
-use App\models\ModeloServicios;
-use App\models\ModeloDoctores;
-use App\models\ModeloPacientes;
-use App\models\ModeloPermisos;
+use App\models\Db;
+use App\models\Validator;
 
 function mostrarDataPaciente($datos)
 {
 	try {
-		$cita = new ModeloCita();
+		$db = new Db();
+		$cita = new ModeloCita($db);
 
 		$cita->setNacionalidad($datos[0]);
 		$cita->setCedula($datos[1]);
@@ -38,6 +37,8 @@ function citasAjax()
 		exit;
 	}
 
+	$db = new Db();
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -51,17 +52,14 @@ function citasAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
 
-	$modeloCita = new ModeloCita();
-	$citas = $modeloCita->mostrarCita($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloCita->contarTotalCitas('pendiente', 'Pendiente');
-	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('pendiente', 'Pendiente', $buscar) : $totalRegistros;
+	$modeloCita = new ModeloCita($db);
+	$data = $modeloCita->mostrarCita($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	echo json_encode([
 		"draw"            => $draw,
-		"recordsTotal"    => (int)$totalRegistros,
-		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $citas
+		"recordsTotal"    => (int)$data['total'],
+		"recordsFiltered" => (int)$data['total_filtrado'],
+		"data"            => is_array($data) ? $data['data']:[]
 	]);
 	exit;
 }
@@ -82,6 +80,8 @@ function citasHoyAjax()
 		exit;
 	}
 
+	$db = new Db();
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -95,32 +95,31 @@ function citasHoyAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
 
-	$modeloCita = new ModeloCita();
-	$citas = $modeloCita->mostrarCitaHoy($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloCita->contarTotalCitas('hoy', 'Pendiente');
-	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('hoy', 'Pendiente', $buscar) : $totalRegistros;
+	$modeloCita = new ModeloCita($db);
+	$data = $modeloCita->mostrarCita($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	echo json_encode([
 		"draw"            => $draw,
-		"recordsTotal"    => (int)$totalRegistros,
-		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $citas
+		"recordsTotal"    => (int)$data['total'],
+		"recordsFiltered" => (int)$data['total_filtrado'],
+		"data"            => is_array($data['data'])?$data['data']:[]
 	]);
 	exit;
 }
 function citasP($parametro)
 {
-	$cita = new ModeloCita();
-
+	$db = new Db();
+	$cita = new ModeloCita($db);
 	echo json_encode($cita->mostrarCita());
 }
 
 function mostrarServiciosMedicosAjax()
 {
-	$cita = new ModeloCita();
+	$db = new Db();
+	$cita = new ModeloCita($db);
 
-	echo json_encode($cita->mostrarServicioDoctor());
+	// echo json_encode($cita->mostrarServicioDoctor());
+	echo json_encode([]);
 }
 
 function validarHorariosDisponlibles($datos)
@@ -132,7 +131,9 @@ function validarHorariosDisponlibles($datos)
 	}
 
 	try {
-		$cita = new ModeloCita();
+		$db = new Db();
+
+		$cita = new ModeloCita($db);
 
 		$cita->setIdDoctor($datos[1]);
 		$cita->setFecha($datos[0]);
@@ -159,9 +160,13 @@ function apartarCupo()
 
 
 	try {
-		$cita = new ModeloCita();
-		$bitacora = new ModeloBitacora();
 		$idUsuario = $_SESSION['id_usuario'];
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$cita = new ModeloCita($db,$validator);
+		$bitacora = new ModeloBitacora($db,$validator);
 
 		// Separamos el string de hora idéntico a como lo haces en guardarCita
 		$horaString = $_POST['hora_string'];
@@ -190,11 +195,11 @@ function apartarCupo()
 		$bitacora->setTabla("cita");
 
 
-		$reserva = $cita->reservarCita($idUsuario);
+		$reserva = $cita->reservarCita();
 
-		if (is_array($reserva) && $reserva[0] === "exito") {
-			$bitacora->insertarBitacora($idUsuario);
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $reserva[1]]);
+		if (is_array($reserva)) {
+			$bitacora->guardar($bitacora->get_all(),$validator);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $reserva]);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $reserva]);
@@ -217,8 +222,12 @@ function guardarCita()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		$bitacora = new ModeloBitacora();
-		$cita = new ModeloCita();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$bitacora = new ModeloBitacora($db,$validator);
+		$cita = new ModeloCita($db,$validator);
 
 		$horaString = $_POST['listHoras'];
 		$resultado = explode('a', $horaString);
@@ -237,14 +246,14 @@ function guardarCita()
 		$cita->setEstado("Pendiente");
 		$cita->setIdDoctor(intval($_POST["id_personal"]));
 
-		$insercion = $cita->guardarCita($idUsuario);
+		$insercion = $cita->guardarCita();
 
-		if (is_array($insercion) && $insercion[0] === "exito") {
+		if (is_array($insercion)) {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha Insertado una  cita");
 			$bitacora->setTabla("cita");
-			$bitacora->insertarBitacora($idUsuario);
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
+			$bitacora->guardar($bitacora->get_all(),$validator);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
 			http_response_code(409);
 			echo json_encode(['ok' => false, 'error' => $insercion]);
@@ -270,18 +279,22 @@ function eliminarCita($datos)
 	}
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		$bitacora = new ModeloBitacora();
-		$cita = new ModeloCita();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$bitacora = new ModeloBitacora($db,$validator);
+		$cita = new ModeloCita($db,$validator);
 
 		$cita->setIdCita($datos[0]);
 
-		$eliminacion = $cita->eliminarCitaPublic($idUsuario);
+		$eliminacion = $cita->actualizar(['estado'=>'DES'],['id_cita'=>$cita->getIdCita()],$validator);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha eliminado una  cita");
 			$bitacora->setTabla("cita");
-			$bitacora->insertarBitacora($idUsuario);
+			$bitacora->guardar($bitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
@@ -300,8 +313,8 @@ function eliminarCita($datos)
 }
 function citasHoyP()
 {
-	$cita = new ModeloCita();
-
+	$db = new Db();
+	$cita = new ModeloCita($db);
 	echo json_encode($cita->mostrarCitaHoy());
 }
 
@@ -319,6 +332,7 @@ function citasRealizadasAjax()
 		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
+	$db = new Db();
 
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
@@ -332,34 +346,34 @@ function citasRealizadasAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
 
-	$modeloCita = new ModeloCita();
-	$citas = $modeloCita->mostrarCitaR($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
-
-	$totalRegistros = $modeloCita->contarTotalCitas('realizada', 'Realizadas');
-	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('realizada', 'Realizadas', $buscar) : $totalRegistros;
+	$modeloCita = new ModeloCita($db);
+	$data = $modeloCita->mostrarCita($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	echo json_encode([
 		"draw"            => $draw,
-		"recordsTotal"    => (int)$totalRegistros,
-		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $citas
+		"recordsTotal"    => (int)$data['total'],
+		"recordsFiltered" => (int)$data['total_filtrado'],
+		"data"            => is_array($data['data']) ? $data['data'] : []
 	]);
 	exit;
 }
 
 function mostrarDoctoresCita($datos)
 {
-	$cita = new ModeloCita();
-	$cita->setIdServicioMedico($datos[0]);
-	echo json_encode($cita->mostrarDoctores());
+	$db = new Db();
+	$cita = new ModeloCita($db);
+	// $cita->setIdServicioMedico($datos[0]);
+	// echo json_encode($cita->mostrarDoctores());
+	echo json_encode([]);
 }
 
 function mostrarHorario($datos)
 {
-	$cita = new ModeloCita();
-	$cita->setIdDoctor($datos[0]);
-	echo json_encode($cita->mostrarHorarioDoctores());
-	// echo json_encode(['dffdf']);
+	$db = new Db();
+	$cita = new ModeloCita($db);
+	// $cita->setIdDoctor($datos[0]);
+	// echo json_encode($cita->mostrarHorarioDoctores());
+	echo json_encode(['dffdf']);
 }
 function editarCita()
 {
@@ -371,8 +385,12 @@ function editarCita()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-		$bitacora = new ModeloBitacora();
-		$cita = new ModeloCita();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$bitacora = new ModeloBitacora($db,$validator);
+		$cita = new ModeloCita($db,$validator);
 
 		$horaString = $_POST['listHoras'];
 		$resultado = explode('a', $horaString);
@@ -392,13 +410,13 @@ function editarCita()
 		$cita->setIdDoctor(intval($_POST["id_personal"]));
 		$cita->setIdCita($_POST['id_cita']);
 
-		$edicion = $cita->editarCita($idUsuario);
+		$edicion = $cita->actualizar($cita->get_all(),['id_cita'=>$cita->getIdCita()],$validator);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha Modificado una  cita");
 			$bitacora->setTabla("cita");
-			$bitacora->insertarBitacora($idUsuario);
+			$bitacora->guardar($bitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
@@ -425,7 +443,8 @@ function citasHoyCompletasApk()
 	//  establce la zona horaria 
 	date_default_timezone_set('America/Caracas');
 	try {
-		$cita = new ModeloCita();
+		$db = new Db();
+		$cita = new ModeloCita($db);
 		$resultado = $cita->mostrarTodasCitasHoy();
 
 		echo json_encode($resultado);

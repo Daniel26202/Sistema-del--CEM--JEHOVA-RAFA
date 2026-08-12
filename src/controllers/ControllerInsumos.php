@@ -1,5 +1,7 @@
 <?php
 
+use App\models\Db;
+use App\models\Validator;
 use App\models\ModeloInsumo;
 use App\models\ModeloProveedores;
 use App\models\ModeloBitacora;
@@ -17,29 +19,32 @@ function insumos($parametro)
 	}
 
 	$idUsuario = $_SESSION['id_usuario'];
-	$modeloInsumo = new ModeloInsumo();
+	$db =new Db();
+	$modeloInsumo = new ModeloInsumo($db);
 	$ayuda = "btnayudaInsumo";
 	$vistaActiva = "insumos";
 
 	// $proveedores = $modeloInsumo->selectProveedores();
 	// $insumos = $modeloInsumo->insumos();
-	if ($insumos) {
-		// $modeloInsumo->vencerInsumos($idUsuario);
-		//$modeloInsumo->insumoProximos();
-	}
+	// if ($insumos) {
+	// 	// $modeloInsumo->vencerInsumos($idUsuario);
+	// 	//$modeloInsumo->insumoProximos();
+	// }
 	require_once './src/vistas/vistaInsumos/vistaInsumos.php';
 }
 
 function insumosAjax()
 {
-	$modeloInsumo = new ModeloInsumo();
+	$db = new Db();
+	$modeloInsumo = new ModeloInsumo($db);
 	echo json_encode($modeloInsumo->insumos());
 }
 
 
 function InsumosVencidos($parametro)
 {
-	$modeloInsumo = new ModeloInsumo();
+	$db = new Db();
+	$modeloInsumo = new ModeloInsumo($db);
 
 	$ayuda = "btnayudaVencido";
 	$vistaActiva = "vencidos";
@@ -54,6 +59,7 @@ function vencidos()
 		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
+	$db = new Db();
 
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
@@ -68,19 +74,16 @@ function vencidos()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
 
-	$modeloInsumo = new ModeloInsumo();
+	$modeloInsumo = new ModeloInsumo($db);
 
-	$vencidos = $modeloInsumo->InsumosVencidos();
-
-	$totalRegistros = $modeloInsumo->contarTotalInsumosVencidos();
-	$totalFiltrados = !empty($buscar) ? $modeloInsumo->contarTotalInsumosVencidos($buscar) : $totalRegistros;
+	$data = $modeloInsumo->InsumosVencidos($inicio,$limite,$buscar,$ordenColumna,$ordenDir);
 
 	//datos que se le envia al js (esto es estandar de datatable)
 	$response = [
 		"draw" => $draw,
-		"recordsTotal" => $totalRegistros,
-		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($vencidos) ? $vencidos : []
+		"recordsTotal" => $data['total'],
+		"recordsFiltered" => $data['total_filtrado'],
+		"data" => is_array($data['data']) ? $data['data'] : []
 	];
 
 	echo json_encode($response);
@@ -89,7 +92,8 @@ function vencidos()
 
 function info($datos)
 {
-	$modeloInsumo = new ModeloInsumo();
+	$db = new Db();
+	$modeloInsumo = new ModeloInsumo($db);
 
 	$id_insumo = $datos[0];
 	$modeloInsumo->setIdInsumo($id_insumo);
@@ -112,7 +116,8 @@ function mostrarBusquedaInsumo()
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
-	$modeloInsumo = new ModeloInsumo();
+	$db = new Db();
+	$modeloInsumo = new ModeloInsumo($db);
 
 	$modeloInsumo->setParametro($_POST['nombre']);
 
@@ -132,9 +137,12 @@ function guardarInsumo()
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
 
-
-		$bitacora = new ModeloBitacora();
-		$modeloInsumo = new ModeloInsumo();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$bitacora = new ModeloBitacora($db,$validator);
+		$modeloInsumo = new ModeloInsumo($db,$validator);
 
 		// 1. Quitar separadores de miles
 		$valor = str_replace('.', '', $_POST['precioD']);
@@ -169,13 +177,13 @@ function guardarInsumo()
 		$modeloInsumo->setImagen($imagen);
 		$modeloInsumo->setPrecio($valor);
 
-		$insercion = $modeloInsumo->guardarInsumo($idUsuario);
+		$insercion = $modeloInsumo->guardarInsumo();
 
-		if (is_array($insercion) && $insercion[0] === "exito") {
+		if (is_array($insercion)) {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setTabla("insumo");
 			$bitacora->setActividad("Ha Insertado un insumo");
-			$bitacora->insertarBitacora($idUsuario);
+			$bitacora->guardar($bitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
@@ -201,21 +209,24 @@ function eliminar($datos)
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-
-		$bitacora = new ModeloBitacora();
-		$modeloInsumo = new ModeloInsumo();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$bitacora = new ModeloBitacora($db,$validator);
+		$modeloInsumo = new ModeloInsumo($db,$validator);
 
 		$id_insumo = $datos[0];
 
 		$modeloInsumo->setIdInsumo($id_insumo);
 
-		$eliminacion = $modeloInsumo->eliminarInsumo($idUsuario);
+		$eliminacion = $modeloInsumo->actualizar(['estado'=>'DES'],['id_insumo'=>$modeloInsumo->getIdInsumo()],$validator);
 
-		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+		if (is_array($eliminacion)) {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha eliminado un insumo");
 			$bitacora->setTabla("insumo");
-			$bitacora->insertarBitacora($idUsuario);
+			$bitacora->guardar($bitacora->get_all(),$validator);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
@@ -240,9 +251,12 @@ function editar()
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-
-		$bitacora = new ModeloBitacora();
-		$modeloInsumo = new ModeloInsumo();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$bitacora = new ModeloBitacora($db,$validator);
+		$modeloInsumo = new ModeloInsumo($db,$validator);
 
 		// 1. Verificar si se subió una imagen nueva analizando el error de $_FILES
 		$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
@@ -269,15 +283,15 @@ function editar()
 		$modeloInsumo->setMedida($_POST["medida"]);
 
 
-		$edicion = $modeloInsumo->editarInsumo($idUsuario);
+		$edicion = $modeloInsumo->editarInsumo();
 
 
-		if (is_array($edicion) && $edicion[0] === "exito") {
+		if (is_array($edicion)) {
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setActividad("Ha modificado un insumo");
 			$bitacora->setTabla("insumo");
 
-			$bitacora->insertarBitacora($idUsuario);
+			$bitacora->guardar($bitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {
@@ -300,8 +314,8 @@ function papelera($parametro)
 
 function papeleraInsumosAjax()
 {
-	$modeloInsumo = new ModeloInsumo();
-
+	$db = new Db();
+	$modeloInsumo = new ModeloInsumo($db);
 	echo json_encode($modeloInsumo->papelera());
 }
 
@@ -315,21 +329,24 @@ function restablecerInsumo($datos)
 
 	try {
 		$idUsuario = $_SESSION['id_usuario'];
-
-		$modeloInsumo = new ModeloInsumo();
-		$bitacora = new ModeloBitacora();
+		$db = new Db();
+		$validator = new Validator();
+		$validator->set_session($_SESSION);
+		$validator->set_id_usuario($idUsuario);
+		$modeloInsumo = new ModeloInsumo($db,$validator);
+		$bitacora = new ModeloBitacora($db,$validator);
 
 		$id_insumo = $datos[0];
 		$modeloInsumo->setIdInsumo($id_insumo);
-		$restablecimiento = $modeloInsumo->restablecerInsumo($idUsuario);
+		$restablecimiento = $modeloInsumo->actualizar(['estado'=>'ACT'],['id_insumo'=>$modeloInsumo->getIdInsumo()],$validator);
 
 
-		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+		if (is_array($restablecimiento)) {
 
 			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setTabla("insumo");
 			$bitacora->setActividad("Ha restablecido un insumo");
-			$bitacora->insertarBitacora();
+			$bitacora->guardar($bitacora->get_all(),$validator);
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
@@ -342,14 +359,4 @@ function restablecerInsumo($datos)
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
-}
-
-function permisos($id_rol, $permiso, $modulo)
-{
-	$permisos = new ModeloPermisos();
-	$permisos->setIdRol($id_rol);
-	$permisos->setPermiso($permiso);
-	$permisos->setModulo($modulo);
-
-	return $permisos->gestionarPermisos();
 }

@@ -14,7 +14,7 @@ class ModeloEntrada extends ModelBase
 	private $validator;
 	use TraitCreate, TraitUpdate;
 
-	public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+	public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali = null)
 	{
 		parent::__construct($conn);
 		$this->set_tables(["entrada"]);
@@ -25,12 +25,23 @@ class ModeloEntrada extends ModelBase
 	public function todasLasEntradas($estado = 'ACT', $start = 0, $limit = 10, $search = '', $ordenColumn = 'id_entrada', $ordenDir = 'DESC')
 	{
 		$coditions = [
-			'condiciones' => ['estado' => $estado],
-			'conectores' => [''],
+			'condiciones' => ['e.estado' => $estado],
+			'conectores' => [],
 			'operadores' => ['=']
 		];
-		$this->set_tables(["cliente"]);
-		$this->set_colums(['id_cliente', 'nacionalidad', 'cedula', 'nombre', 'apellido', 'telefono', 'direccion', 'fn', 'genero']);
+		$alias =[
+			'e',
+			'p',
+			'ei',
+			'i'
+		];
+		$unions =[
+			'p.id_proveedor = e.id_proveedor ',
+			'ei.id_entrada = e.id_entrada',
+			'i.id_insumo = ei.id_insumo'
+		];
+		$this->set_tables(["entrada","proveedor",'entrada_insumo','insumo']);
+		$this->set_colums(['i.nombre','p.nombre AS proveedor','e.fechaDeIngreso','ei.fechaDeVencimiento', 'ei.cantidad_entrante AS cantidad_entrada', 'ei.precio AS precio_entrada','e.numero_de_lote']);
 
 		$this->set_search($search);
 		$this->set_start($start);
@@ -38,26 +49,10 @@ class ModeloEntrada extends ModelBase
 		$this->set_orden_dir($ordenDir);
 		$this->set_orden_column($ordenColumn);
 		$this->set_condicion_aditional($coditions);
+		$this->set_union($unions);
+		$this->set_alias($alias);
 
 		return $this->pagination();
-
-		//se cambio para que muestre las entradas act y que no estan vencidas
-		$sql = "SELECT * FROM view_detalle_entradas WHERE estado ='ACT' ";
-
-		$data = [];
-
-		if (!empty($buscar)) {
-			$sql .= " AND (nombre LIKE :buscar OR proveedor LIKE :buscar OR fechaDeIngreso LIKE :buscar OR fechaDeVencimiento LIKE :buscar OR cantidad_entrada LIKE :buscar OR precio_entrada LIKE :buscar OR numero_de_lote LIKE :buscar)";
-			$data['buscar'] = "%$buscar%";
-		}
-
-		$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
-
-		$this->setSQL($sql);
-
-		$data['inicio'] = (int)$inicio;
-		$data['limite'] = (int)$limite;
-		return $this->search($data);
 	}
 
 

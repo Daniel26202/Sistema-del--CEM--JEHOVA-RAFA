@@ -16,9 +16,10 @@ class ModeloPatologia extends ModelBase
 
     use TraitCreate, TraitUpdate;
     
-    public function __construct(InterfaceConnection $conn, InterfaceValidator $vali)
+    public function __construct(InterfaceConnection $conn, ?InterfaceValidator $vali=null)
     {
         parent::__construct($conn);
+        $this->set_tables(["patologia"]);
         $this->validator = $vali;
     }
 
@@ -59,7 +60,8 @@ class ModeloPatologia extends ModelBase
 
     public function get_all() {
         return [
-            'nombre_patologia' =>$this->getNombrePatologia()
+            'nombre_patologia' =>$this->getNombrePatologia(),
+            'estado'=>'ACT'
         ];
     }
 

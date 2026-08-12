@@ -165,12 +165,12 @@ class Rutas
 
         $this->modelo->setIdModulo($id_modulo);
 
-        $permitido = $this->modelo->gestionarPermisos();
+        // $permitido = $this->modelo->gestionarPermisos();
 
-        if (!$permitido) {
-            header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
-            die("Permiso denegado");
-        }
+        // if (!$permitido) {
+        //     header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
+        //     die("Permiso denegado");
+        // }
 
         //  Ejecución final para peticiones web tradicionales
         call_user_func($metodo, $parametro ?? []);
