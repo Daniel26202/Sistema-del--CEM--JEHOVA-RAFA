@@ -164,7 +164,8 @@ const readServices = async () => {
       document.querySelectorAll(".btn-eliminar-servicio").forEach((btn) => {
         btn.addEventListener("click", function () {
           const data = [
-            this.getAttribute("data-index")
+            this.getAttribute("data-index"),
+            0
           ];
           alertConfirm(
             "Esta seguro de eliminar el servicio medico?",
@@ -180,12 +181,12 @@ const readServices = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            1,
           ];
 
           alertConfirm(
             "Esta seguro de restablecer el servicio medico?",
-            restablecerService,
+            deleteService,
             data,
           );
         });
@@ -247,7 +248,8 @@ const deleteService = async (data) => {
   console.log(data);
   
   try {
-    const result = await executePetition(url + `/eliminar/${data}`, "GET");
+    const payload = { id: data[0], estado: data[1] };
+    const result = await executePetition(url + `/eliminar`, "POST",payload);
     if (result.ok) {
       alertSuccess(result.message);
       readServices();
@@ -257,19 +259,6 @@ const deleteService = async (data) => {
   }
 };
 
-
-// //restablecer
-const restablecerService = async (data) => {
-  try {
-    const result = await executePetition(url + `/restablecer/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
-      readServices();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
-};
 const divTitle = document.querySelector("#modalLabelServicios");
 const btnOpenModalA = document.querySelector("#btnAgregarServicioMedico");
 

@@ -93,7 +93,7 @@ const readPathology = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            0,
           ];
 
           alertConfirm(
@@ -109,11 +109,11 @@ const readPathology = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            1,
           ];
           alertConfirm(
             "Esta seguro de restablecer la patologia?",
-            restablecerPathology,
+            deletePathology,
             data,
           );
         });
@@ -165,29 +165,15 @@ const createPathology = async (form) => {
 //delete
 const deletePathology = async (data) => {
   try {
+    const payload = { id: data[0], estado: data[1] };
     const result = await executePetition(
-      url + `/eliminarPatologia/${data}`,
-      "GET",
+      url + `/eliminarPatologia/`,
+      "POST",
+      payload
     );
     if (result.ok) {
       alertSuccess(result.message);
 
-      readPathology();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
-};
-
-//restablecer
-const restablecerPathology = async (data) => {
-  try {
-    const result = await executePetition(
-      url + `/restablecerPatologia/${data}`,
-      "GET",
-    );
-    if (result.ok) {
-      alertSuccess(result.message);
       readPathology();
     } else throw new Error(`${result.error}`);
   } catch (error) {

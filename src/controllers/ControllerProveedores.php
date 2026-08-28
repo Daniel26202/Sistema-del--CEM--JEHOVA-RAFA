@@ -33,6 +33,10 @@ function proveedoresAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_proveedor';
 
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_proveedor';
+	}
+
 	$modeloProveedores = new ModeloProveedores();
 	$proveedores = $modeloProveedores->consultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
@@ -49,7 +53,6 @@ function proveedoresAjax()
 
 	echo json_encode($response);
 	exit;
-	
 }
 
 function papelera($parametro)
@@ -79,6 +82,10 @@ function proveedoresPapeleraAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_proveedor';
 
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_proveedor';
+	}
+
 	$modeloProveedores = new ModeloProveedores();
 	$proveedores = $modeloProveedores->papeleraConsultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
@@ -105,6 +112,17 @@ function insertar()
 		exit;
 	}
 	try {
+
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modeloProveedores = new ModeloProveedores();
@@ -128,6 +146,7 @@ function insertar()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
 			http_response_code(409);
+			error_log("Error en insertar: " . $insercion); // Registro interno
 			echo json_encode(['ok' => false, 'error' => $insercion]);
 			exit;
 		}
@@ -135,80 +154,63 @@ function insertar()
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
+	} catch (Exception $e) {
+		http_response_code(409);
+		error_log("Error en guardarProveedor: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error al guardar el proveedor']);
+		exit;
 	}
 }
 
 // eliminación logica
-function update($datos)
+function update()
 {
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
 
-		$id_proveedor = $datos[0];
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input["id"] ?? null;
 
-		$modeloProveedores->setIdProveedor($id_proveedor);
-		$eliminacion = $modeloProveedores->deleteEntrada($idUsuario);
+		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
+		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
+
+		$modeloProveedores->setIdProveedor($id);
+		$eliminacion = $modeloProveedores->deleteEntrada($idUsuario,$estado);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->setTabla("proveedor");
-			$modeloBitacora->setActividad("Ha eliminado un proveedor");
+			$modeloBitacora->setActividad("Ha {$text} un proveedor");
 			$modeloBitacora->insertarBitacora();
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			error_log("Error en update: " . $eliminacion);
+			echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el proveedor."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
-	}
-}
-
-
-function restablecerProveedor($datos)
-{
-	if (empty($_GET)) {
+	} catch (Exception $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-	try {
-		$idUsuario = $_SESSION['id_usuario'];
-
-		$id_proveedor = $datos[0];
-		$modeloProveedores = new ModeloProveedores();
-		$modeloBitacora = new ModeloBitacora();
-
-		$modeloProveedores->setIdProveedor($id_proveedor);
-		$restablecimiento = $modeloProveedores->restablecerProveedor();
-
-		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-			$modeloBitacora->setId_usuario($idUsuario);
-			$modeloBitacora->setTabla("proveedor");
-			$modeloBitacora->setActividad("Ha restablecido un proveedor");
-			$modeloBitacora->insertarBitacora();
-
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
-			exit;
-		}
-	} catch (InvalidArgumentException $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		error_log("Error en guardarProveedor: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error al eliminar al proveedor']);
 		exit;
 	}
 }
@@ -222,6 +224,16 @@ function editar()
 		exit;
 	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modeloProveedores = new ModeloProveedores();
@@ -247,18 +259,18 @@ function editar()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $editado]);
+			error_log("Error en editar: " . $editado); // Registro interno
+			echo json_encode(['ok' => false, 'error' => 'Error al editar el proveedor.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
+	} catch (Exception $e) {
+		http_response_code(409);
+		error_log("Error en editar: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error al editar el proveedor']);
+		exit;
 	}
 }
-
-
-// function permisos($id_rol, $permiso, $modulo)
-// {
-// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-// }

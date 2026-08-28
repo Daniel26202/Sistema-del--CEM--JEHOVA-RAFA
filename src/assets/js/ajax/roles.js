@@ -68,6 +68,7 @@ const returnModuleCategiry = async () => {
   try {
     const modulos = await executePetition(
       "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/returnPermisionModule",
+      "GET",
     );
 
     // Clasificación de módulos en categorías.
@@ -111,7 +112,6 @@ const returnModuleCategiry = async () => {
     alertError("Error", error);
   }
 };
-
 
 const readRol = async () => {
   try {
@@ -223,7 +223,8 @@ const updateRol = async (form) => {
 //delete
 const deleteUser = async (data) => {
   try {
-    const result = await executePetition(url + `/eliminarRol/${data}`, "GET");
+    const payload = { id: data[0] };
+    const result = await executePetition(url + `/eliminarRol`, "POST");
     if (result.ok) {
       alertSuccess(result.message);
       modalRegistrarRol.hide();
@@ -254,9 +255,9 @@ const readPermisos = async (permisosGuardados = {}) => {
   try {
     // 1. Obtenemos la lista maestra de permisos (id_permiso y nombre del permiso)
     const listaPermisosDB = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Roles/returnPermisos",
+      "/Sistema-del--CEM--JEHOVA-RAFA/Roles/returnPermisos","GET"
     );
-
+    
     // 2. Traemos los módulos agrupados por categorías
 
     for (const [categoria, modulos] of Object.entries(listModule)) {
@@ -337,36 +338,6 @@ const readPermisos = async (permisosGuardados = {}) => {
 ///Gestion de modulos
 const readModule = async () => {
   try {
-    const result = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/returnModules",
-    );
-    console.log(result);
-    // construir html de filas
-    let html = "";
-    result.forEach((element, index) => {
-      html += ` <tr>
-                                  <td class="text-center fw-bold">
-                                      ${index + 1}
-                                  </td>
-  
-                                  <td class="text-center border-start">
-                                      ${element.nombre}
-                                  </td>
-  
-  
-                                  <td class="border-start text-center">
-                                      <button class="btn-eliminar btn btn-tabla mb-1" data-index="${element.id_modulo}">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                              class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                              <path
-                                                  d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                          </svg>
-                                      </button>
-  
-                                  </td>
-                              </tr>`;
-    });
-
     const selector = ".exampleTableModulo";
 
     // si ya existe DataTable, destrúyela
@@ -374,28 +345,58 @@ const readModule = async () => {
       $(selector).DataTable().clear().destroy();
     }
 
-    // vuelca el html en el tbody
-    document.querySelector(selector + " tbody").innerHTML = html;
-
-    document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-      ele.value = document.getElementById("id_usuario_session").value;
-    });
+    const columns = [
+      {
+        data: null,
+        render: function (data, type, row, meta) {
+          // Genera el número de fila real tomando en cuenta la paginación actual
+          return meta.row + meta.settings._iDisplayStart + 1;
+        },
+      },
+      { data: "nombre" },
+      {
+        data: null,
+        orderable: false,
+        render: function (data, type, row) {
+          return `<button class="btn-eliminar btn btn-tabla mb-1" data-index="${row.id_modulo}">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                              class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                              <path
+                                                  d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                          </svg>
+                                      </button>`;
+        },
+      },
+    ];
 
     //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const data = [
-          this.getAttribute("data-index"),
-          document.getElementById("id_usuario_session").value,
-        ];
+    const asignarEventos = () => {
+      document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const data = [
+            this.getAttribute("data-index"),
+            document.getElementById("id_usuario_session").value,
+          ];
 
-        alertConfirm("Esta seguro de eliminar el modulo?", deleteModule, data);
+          alertConfirm(
+            "Esta seguro de eliminar el modulo?",
+            deleteModule,
+            data,
+          );
+        });
       });
-    });
-
+    };
     // re-inicializa
-
-    initDataTable(selector);
+    let url_contoller = "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/returnModules";
+    initDataTable(
+      selector,
+      url_contoller,
+      columns,
+      (data) => {
+        console.log(data);
+      },
+      asignarEventos,
+    );
   } catch (error) {
     alertError("Error", error);
   }
@@ -439,7 +440,6 @@ const deleteModule = async (data) => {
 };
 
 returnModuleCategiry();
-
 
 readRol();
 

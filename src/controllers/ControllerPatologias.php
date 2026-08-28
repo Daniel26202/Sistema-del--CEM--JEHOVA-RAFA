@@ -2,7 +2,7 @@
 
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
+use App\modelos\ModeloSanetizarJSON;
 // use App\config\RateLimiter;
 
 
@@ -33,9 +33,15 @@ function patologiasAjax()
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_patologia';
 
     $modelo = new ModeloPatologia();
+	$sanitizador = new ModeloSanetizarJSON();
+
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_patologia';
+	}
     
 
     $patologias = $modelo->mostrarPatologias($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$patologiasSanetizada = $sanitizador->sanitizeRecursive($patologias);
     $totalRegistros = $modelo->contarTotalPatologias('ACT');
     $totalFiltrados = !empty($buscar) ? $modelo->contarTotalPatologias('ACT', $buscar) : $totalRegistros;
 
@@ -43,7 +49,7 @@ function patologiasAjax()
         "draw"            => $draw,
         "recordsTotal"    => (int)$totalRegistros,
         "recordsFiltered" => (int)$totalFiltrados,
-        "data"            => $patologias
+        "data"            => is_array($patologiasSanetizada) ? $patologiasSanetizada : []
     ]);
     exit;
 }
@@ -69,11 +75,17 @@ function papeleraAjax()
 
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_patologia';
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_patologia';
+	}
+
 
 	$modelo = new ModeloPatologia();
+	$sanitizador = new ModeloSanetizarJSON();
 
 
 	$patologias = $modelo->mostrarPatologiasEliminadas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$patologiasSanetizada = $sanitizador->sanitizeRecursive($patologias);
 	$totalRegistros = $modelo->contarTotalPatologias('DES');
 	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalPatologias('DES', $buscar) : $totalRegistros;
 
@@ -81,7 +93,7 @@ function papeleraAjax()
 		"draw"            => $draw,
 		"recordsTotal"    => (int)$totalRegistros,
 		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $patologias
+		"data"            => is_array($patologiasSanetizada) ? $patologiasSanetizada : []
 	]);
 	exit;
 }
@@ -96,6 +108,15 @@ function registrarPatologia()
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 		$modelo = new ModeloPatologia();
 		$bitacora = new ModeloBitacora();
@@ -114,7 +135,8 @@ function registrarPatologia()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $insercion]);
+			error_log("Error en registrarPatologia: " . $insercion); // Registro interno
+			echo json_encode(['ok' => false, 'error' => 'Error al guardar la patologia.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -125,7 +147,7 @@ function registrarPatologia()
 }
 
 //eliminar patologia
-function eliminarPatologia($datos)
+function eliminarPatologia()
 {
 
 	if (empty($_GET)) {
@@ -135,26 +157,44 @@ function eliminarPatologia($datos)
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
+		
 		$idUsuario = $_SESSION['id_usuario'];
 
 
 		$modelo = new ModeloPatologia();
 		$bitacora = new ModeloBitacora();
 
-		$modelo->setIdPatologia($datos[0]);
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input["id"] ?? null;
+
+		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
+		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
+
+		$modelo->setIdPatologia($id);
 
 		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha eliminado una  patologia");
+		$bitacora->setActividad("Ha {$text} una  patologia");
 		$bitacora->setTabla("patologia");
 
-		$eliminar = $modelo->deletePatologia($idUsuario);
+		$eliminar = $modelo->deletePatologia($idUsuario,$estado);
 
 		if (is_array($eliminar) && $eliminar[0] === "exito") {
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminar]);
+			error_log("Error en {$text_error}: " . $eliminar);
+			echo json_encode(['ok' => false, 'error' => "Error al {$text_error} la patologia."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -163,50 +203,3 @@ function eliminarPatologia($datos)
 		exit;
 	}
 }
-
-
-function restablecerPatologia($datos)
-{
-
-
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
-	try {
-		$idUsuario = $_SESSION['id_usuario'];
-
-		$modelo = new ModeloPatologia();
-		$bitacora = new ModeloBitacora();
-
-		$modelo->setIdPatologia($datos[0]);
-
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha restablecido una  patologia");
-		$bitacora->setTabla("patologia");
-
-		$eliminar = $modelo->restablecerPatologia($idUsuario);
-
-		if (is_array($eliminar) && $eliminar[0] === "exito") {
-			$bitacora->insertarBitacora();
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminar]);
-			exit;
-		}
-	} catch (InvalidArgumentException $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
-	}
-}
-
-
-
-	//  function permisos($id_rol, $permiso, $modulo)
-	// {
-	// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-	// }

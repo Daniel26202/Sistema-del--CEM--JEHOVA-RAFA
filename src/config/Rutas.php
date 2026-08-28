@@ -143,11 +143,11 @@ class Rutas
             return;
         }
 
-        // if (empty($_SESSION['id_rol'])) {
-        //     session_destroy();
-        //     header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
-        //     return;
-        // }
+        if (empty($_SESSION['id_rol'])) {
+            session_destroy();
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
+            return;
+        }
 
         $permiso = $this->equivalentes[$metodo] ?? $metodo;
         $this->modelo->setIdRol($_SESSION['id_rol']);

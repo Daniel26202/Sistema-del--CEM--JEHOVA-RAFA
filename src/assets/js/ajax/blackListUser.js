@@ -25,8 +25,7 @@ addEventListener("DOMContentLoaded", function () {
   const selectUser = document.getElementById("select-user");
   const btnOpenModal = document.getElementById("btnOpenModal");
   const exampleModalLabel = document.getElementById("labelBlackList");
-const inputs = formAgregarBlackList.querySelectorAll(".inputs");
-
+  const inputs = formAgregarBlackList.querySelectorAll(".inputs");
 
   const selector = ".exampleTable";
 
@@ -105,7 +104,13 @@ const inputs = formAgregarBlackList.querySelectorAll(".inputs");
       };
 
       // re-inicializa
-      initDataTable(selector, url + "/listaNegraAjax",columnsBlackList,(datosServer)=>console.log(datosServer),asignarEventos);
+      initDataTable(
+        selector,
+        url + "/listaNegraAjax",
+        columnsBlackList,
+        (datosServer) => console.log(datosServer),
+        asignarEventos,
+      );
     } catch (error) {
       alertError("Error", error);
     }
@@ -164,11 +169,12 @@ const inputs = formAgregarBlackList.querySelectorAll(".inputs");
   //delete
   const restablecerUsuario = async (data) => {
     try {
+      const payload = { id: data[0] };
       const result = await executePetition(
-        url + `/removeBlackList/${data}`,
-        "GET",
+        url + `/removeBlackList`,
+        "POST",
+        payload,
       );
-      console.log(result);
 
       if (result.ok) {
         alertSuccess(result.message);
@@ -195,8 +201,7 @@ const inputs = formAgregarBlackList.querySelectorAll(".inputs");
       inputs: inputs,
     };
     clearModalEnviar(parametros);
-    console.log('si');
-    
+    console.log("si");
   });
 
   formAgregarBlackList.addEventListener("submit", function (e) {

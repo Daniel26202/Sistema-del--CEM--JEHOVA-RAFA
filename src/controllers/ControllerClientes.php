@@ -2,6 +2,7 @@
 
 use App\modelos\ModeloCliente;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloSanetizarJSON;
 // use App\
 
 function Clientes($parametro)
@@ -39,6 +40,12 @@ function clientesAjax()
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_cliente';
 
     $modeloCliente = new ModeloCliente();
+    $sanitizador = new ModeloSanetizarJSON();
+
+    if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+        $ordenColumna = 'id_paciente';
+    }
+
     $clientes = $modeloCliente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
     $totalRegistros = $modeloCliente->contarTotalClientes('ACT');
@@ -84,6 +91,12 @@ function papeleraAjax()
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_cliente';
 
     $modeloCliente = new ModeloCliente();
+    $sanitizador = new ModeloSanetizarJSON();
+
+    if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+        $ordenColumna = 'id_paciente';
+    }
+
     $clientes = $modeloCliente->indexPapelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
     $totalRegistros = $modeloCliente->contarTotalClientes('DES');
@@ -109,6 +122,16 @@ function guardar()
     }
 
     try {
+
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario = $_SESSION['id_usuario'];
         $modeloCliente = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
@@ -122,19 +145,19 @@ function guardar()
         $modeloCliente->setFn($_POST['fn']);
         $modeloCliente->setGenero($_POST['genero']);
 
-        $modeloBitacora->setId_usuario($idUsuario);
-        $modeloBitacora->setActividad("Ha Insertado un nuevo cliente");
-        $modeloBitacora->setTabla("cliente");
-
         $insercion = $modeloCliente->guardarCliente($idUsuario);
 
         // Verifica si es un array con clave "exito"
         if (is_array($insercion) && $insercion[0] === "exito") {
+            $modeloBitacora->setId_usuario($idUsuario);
+            $modeloBitacora->setActividad("Ha Insertado un nuevo cliente");
+            $modeloBitacora->setTabla("cliente");
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $insercion]);
+            error_log("Error en guardar: " . $insercion);
+            echo json_encode(['ok' => false, 'error' => "Error al guardar el cliente."]);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -153,6 +176,16 @@ function setCliente()
     }
 
     try {
+
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario = $_SESSION['id_usuario'];
         $modeloCliente  = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
@@ -168,18 +201,18 @@ function setCliente()
         $modeloCliente->setFn($_POST['fn']);
         $modeloCliente->setGenero($_POST['genero']);
 
-        $modeloBitacora->setId_usuario($idUsuario);
-        $modeloBitacora->setActividad("Ha modificado un cliente");
-        $modeloBitacora->setTabla("cliente");
-
         $edicion = $modeloCliente->editarCliente($idUsuario);
 
         if (is_array($edicion) && $edicion[0] === "exito") {
+            $modeloBitacora->setId_usuario($idUsuario);
+            $modeloBitacora->setActividad("Ha modificado un cliente");
+            $modeloBitacora->setTabla("cliente");
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $edicion]);
+            error_log("Error en setCliente: " . $edicion);
+            echo json_encode(['ok' => false, 'error' => "Error al editar el cliente."]);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -189,7 +222,7 @@ function setCliente()
     }
 }
 
-function eliminar($datos)
+function eliminar()
 {
     if (empty($_GET)) {
         http_response_code(409);
@@ -198,62 +231,40 @@ function eliminar($datos)
     }
 
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario  = $_SESSION['id_usuario'];
-        $id_cliente = $datos[0];
+        $input = json_decode(file_get_contents("php://input"), true);
+        $id = $input["id"] ?? null;
+
+        $estado = empty($input["estado"]) ? 'DES' : 'ACT';
+        $text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+        $text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
+
         $modeloCliente  = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloCliente->setIdCliente($id_cliente);
+        $modeloCliente->setIdCliente($id);
 
-        $modeloBitacora->setId_usuario($idUsuario);
-        $modeloBitacora->setActividad("Ha eliminado un cliente");
-        $modeloBitacora->setTabla("cliente");
-
-        $eliminacion = $modeloCliente->eliminarCliente($idUsuario);
+        $eliminacion = $modeloCliente->eliminarCliente($idUsuario, $estado);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+            $modeloBitacora->setId_usuario($idUsuario);
+            $modeloBitacora->setActividad("Ha {$text} un cliente");
+            $modeloBitacora->setTabla("cliente");
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
-            exit;
-        }
-    } catch (InvalidArgumentException $e) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-        exit;
-    }
-}
-
-function restablecer($datos)
-{
-    if (empty($_GET)) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
-        exit;
-    }
-
-    try {
-        $idUsuario  = $_SESSION['id_usuario'];
-        $id_cliente = $datos[0];
-        $modeloCliente  = new ModeloCliente();
-        $modeloBitacora = new ModeloBitacora();
-
-        $modeloCliente->setIdCliente($id_cliente);
-
-        $modeloBitacora->setId_usuario($idUsuario);
-        $modeloBitacora->setActividad("Ha restablecido un cliente");
-        $modeloBitacora->setTabla("cliente");
-
-        $restablecer = $modeloCliente->restablecerCliente($idUsuario);
-
-        if (is_array($restablecer) && $restablecer[0] === "exito") {
-            $modeloBitacora->insertarBitacora($idUsuario);
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-        } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $restablecer]);
+            error_log("Error en eliminar: " . $eliminacion);
+            echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el cliente."]);
             exit;
         }
     } catch (InvalidArgumentException $e) {

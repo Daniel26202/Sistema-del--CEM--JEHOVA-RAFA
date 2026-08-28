@@ -79,6 +79,9 @@ const info = (id_personal) => {
     }
   }
 
+  console.log(data);
+  
+
   if (data.length > 0) {
     for (const item of data[0].datosHorarios) {
       htmlHorario = `
@@ -105,13 +108,15 @@ const info = (id_personal) => {
     `;
     }
 
-    for (const item of data[0].servicios) {
-      textServicios += item.nombre + " ,  ";
+    if (data[0].servicios.length > 0) {
+      for (const item of data[0].servicios) {
+        textServicios += item.nombre + " ,  ";
+      }
     }
   } else {
     htmlHorario =
       '<h5 class="text-center">El doctor no tiene un horario disponible</h5>';
-    pServicios = "De momento el doctor no ofrece ningun servicio";
+    textServicios = "De momento el doctor no ofrece ningun servicio";
   }
   cajaDeInfo.innerHTML = htmlHorario;
   pServicios.innerText = textServicios;
@@ -269,7 +274,7 @@ const readDoctor = async () => {
       if (document.querySelectorAll(".btn-eliminar")) {
         document.querySelectorAll(".btn-eliminar").forEach((btn) => {
           btn.addEventListener("click", function () {
-            const data = [this.getAttribute("data-index")];
+            const data = [this.getAttribute("data-index"),0];
             alertConfirm(
               "Esta seguro de eliminar el doctor?",
               deleteDoctor,
@@ -284,12 +289,12 @@ const readDoctor = async () => {
           btn.addEventListener("click", function () {
             console.log(btn);
 
-            const data = [this.getAttribute("data-index")];
+            const data = [this.getAttribute("data-index"),1];
             console.log(data);
 
             alertConfirm(
               "Esta seguro de restablecer el doctor?",
-              restablecerDoctor,
+              deleteDoctor,
               data,
             );
           });
@@ -494,7 +499,7 @@ const readEspecialidad = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            0,
           ];
           alertConfirm(
             "Esta seguro de eliminar la especialidad?",
@@ -542,7 +547,12 @@ const createDoctor = async (form) => {
 //delete
 const deleteDoctor = async (data) => {
   try {
-    const result = await executePetition(url + `/borrarDoctor/${data}`, "GET");
+    const payload = { id: data[0], estado: data[1] };
+        const result = await executePetition(
+          url + `/borrarDoctor`,
+          "POST",
+          payload,
+        );
     if (result.ok) {
       alertSuccess(result.message);
       readDoctor();
@@ -575,9 +585,11 @@ const updateDoctor = async (form) => {
 //delete
 const deleteEspecialidad = async (data) => {
   try {
+    const payload = { id: data[0], estado: data[1] };
     const result = await executePetition(
-      `/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad/${data}`,
-      "GET",
+      `/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad`,
+      "POST",
+      payload
     );
     if (result.ok) {
       alertSuccess(result.message);
@@ -609,25 +621,16 @@ const createEspecialidad = async (form) => {
   }
 };
 
-//restablecer
-const restablecerDoctor = async (data) => {
-  try {
-    const result = await executePetition(url + `/restablecer/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
-
-      readDoctor();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
-};
 
 //asignar servicio
 const asignarServicio = async (form) => {
   try {
     const data = new FormData(form);
-    let result = await executePetition(url + "/guardarDoctores", "POST", data);
+    let result = await executePetition(
+      url + "/asignarServicioDoctor",
+      "POST",
+      data,
+    );
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);

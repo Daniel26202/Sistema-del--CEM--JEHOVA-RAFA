@@ -8,6 +8,8 @@ class ModeloProveedores extends ModelBase
 {
 
 	private $idProveedor, $nombre, $rif, $rif_registrado, $telefono, $email, $direccion;
+	private $columnasPermitidas = ['id_proveedor','nombre', 'rif', 'telefono', 'correo', 'direccion'];
+	private $ordenesPermitidos = ['ASC', 'DESC'];
 	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
@@ -23,6 +25,9 @@ class ModeloProveedores extends ModelBase
 				$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR descripcion LIKE :buscar)";
 				$data['buscar'] = "%$buscar%";
 			}
+
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_proveedor';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
@@ -47,6 +52,9 @@ class ModeloProveedores extends ModelBase
 				$data['buscar'] = "%$buscar%";
 			}
 
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_proveedor';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
 			$this->setSQL($sql);
@@ -59,7 +67,7 @@ class ModeloProveedores extends ModelBase
 		}
 	}
 
-	public function contarTotalProveedores($estado, $buscar = '')
+	public function contarTotalProveedores($estado ='ACT', $buscar = '')
 	{
 		$data = [
 			'estado' => $estado
@@ -124,7 +132,7 @@ class ModeloProveedores extends ModelBase
 	}
 
 	// eliminación logica
-	private function eliminar()
+	private function eliminar($estado ='DES')
 	{
 		try {
 			$data = [
@@ -140,36 +148,10 @@ class ModeloProveedores extends ModelBase
 				throw new \Exception("El id del proveedor no existe");
 			}
 
-			$sql = "UPDATE proveedor SET estado = 'DES' WHERE id_proveedor =:id";
+			$sql = "UPDATE proveedor SET estado =:estado WHERE id_proveedor =:id";
 			$this->setSQL($sql);
 
-			$this->update_logic($data['id_proveedor']);
-			return ["exito"];
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
-
-	private function restablecer()
-	{
-		try {
-			$data = [
-				'id_proveedor' => $this->getIdProveedor()
-			];
-
-			$sql = "SELECT id_proveedor from proveedor where id_proveedor=:id_proveedor";
-			$this->setSQL($sql);
-
-			$validar  = $this->search($data, false);
-
-			if ($validar == []) {
-				throw new \Exception("El id del proveedor no existe");
-			}
-
-			$sql = "UPDATE proveedor SET estado = 'ACT' WHERE id_proveedor =:id";
-			$this->setSQL($sql);
-
-			$this->update_logic($data['id_proveedor']);
+			$this->update(['estado'=>$estado],$data['id_proveedor']);
 			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -265,24 +247,14 @@ class ModeloProveedores extends ModelBase
 		return $this->agregar();
 	}
 
-	public function deleteEntrada($idUsuario = null)
+	public function deleteEntrada($idUsuario = null,$estado ='DES')
 	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([
 			$this->idProveedor
 		], ' al eliminar un proveedor');
-		return $this->eliminar();
+		return $this->eliminar($estado);
 	}
-
-	public function restablecerProveedor($idUsuario = null)
-	{
-		$this->validarSesion($idUsuario);
-		$this->validarCamposObligatorios([
-			$this->idProveedor
-		], ' al restablecer un proveedor');
-		return $this->restablecer();
-	}
-
 	public function editarEntrada($idUsuario = null)
 	{
 		$this->validarSesion($idUsuario);

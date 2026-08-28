@@ -555,7 +555,7 @@ addEventListener("DOMContentLoaded", function () {
           btn.addEventListener("click", function () {
             const data = [
               this.getAttribute("data-index"),
-              document.getElementById("id_usuario_session").value,
+              0,
             ];
 
             alertConfirm("Esta seguro de eliminar la cita?", deleteCita, data);
@@ -619,9 +619,10 @@ addEventListener("DOMContentLoaded", function () {
   //delete
   const deleteCita = async (data) => {
     try {
+      const payload = { id: data[0], estado: data[1] };
       const result = await executePetition(
-        url + `/eliminarCita/${data}`,
-        "GET",
+        url + `/eliminarCita/`,
+        "POST",payload
       );
       if (result.ok) {
         alertSuccess(result.message);

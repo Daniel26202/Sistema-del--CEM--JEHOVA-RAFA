@@ -114,7 +114,7 @@ const readProveedores = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            0
           ];
           alertConfirm(
             "Esta seguro de eliminar el proveedor?",
@@ -157,12 +157,12 @@ const readProveedores = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            1,
           ];
           console.log(data);
           alertConfirm(
             "Esta seguro de restablecer el proveedor?",
-            restablecerProveedor,
+            daleteProveedor,
             data,
           );
         });
@@ -230,26 +230,10 @@ const updateProveedor = async (form) => {
 };
 
 //delete
-const daleteProveedor = async (data) => {
+const daleteProveedor = async (data) => {  
   try {
-    const result = await executePetition(url + `/update/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
-
-      readProveedores();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
-};
-
-//restablecer
-const restablecerProveedor = async (data) => {
-  try {
-    const result = await executePetition(
-      url + `/restablecerProveedor/${data}`,
-      "GET",
-    );
+    const payload = { id: data[0], estado: data[1] };
+    const result = await executePetition(url + `/update`, "POST",payload);
     if (result.ok) {
       alertSuccess(result.message);
 

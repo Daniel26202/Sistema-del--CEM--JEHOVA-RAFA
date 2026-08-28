@@ -3,26 +3,65 @@ import {
   inicializarValidacionFormulario,
 } from "./expresionesModulares.js";
 
+const sanitizeText = (text) => {
+  if (!text) return "";
+  const map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "/": "&#x2F;",
+  };
+  return String(text).replace(/[&<>"'/]/g, function (s) {
+    return map[s];
+  });
+};
+
 //function generica for execute petiticon ajax
 export const executePetition = async (url, method, data = null) => {
   try {
     const options = { method: method };
 
+    // ✅ Obtener el token CSRF (desde meta tag o variable global)
+    const csrfToken = document
+      .querySelector('meta[name="csrf-token"]')
+      ?.getAttribute("content");
+
+    // ✅ Si es una petición que modifica datos, añadir el header CSRF
+    const unsafeMethods = ["POST", "PUT", "PATCH", "DELETE"];
+    if (unsafeMethods.includes(method.toUpperCase()) && csrfToken) {
+      options.headers = options.headers || {};
+      options.headers["X-CSRF-Token"] = csrfToken;
+    }
+
     if (data instanceof FormData) {
       options.body = data;
     } else if (data && typeof data === "object") {
       options.headers = {
+        ...options.headers, // ✅ Conserva el header CSRF
         "Content-Type": "application/json",
       };
       options.body = JSON.stringify(data);
     }
 
     let response = await fetch(url, options);
-    return response.json();
+    let result =  await response.json();
+
+    if (result.message) {
+      result.message = sanitizeText(result.message);
+    }
+    if (result.error) {
+      result.error = sanitizeText(result.error);
+    }
+
+    return result;
+
   } catch (error) {
     return error;
   }
 };
+
 
 //mostrar datos a editat
 
@@ -167,7 +206,7 @@ export const initDataTable = (
   urlControlador,
   columnas,
   callbackDatos = null,
-  callbackEventos = null
+  callbackEventos = null,
 ) => {
   return $(selector).DataTable({
     processing: true,

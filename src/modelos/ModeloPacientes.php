@@ -7,6 +7,9 @@ use App\modelos\ModelBase;
 class ModeloPacientes extends ModelBase
 {
 	private $id_paciente, $nacionalidad, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $direccion, $fn, $genero;
+	// lista blanca de columnas permitidas
+	private $columnasPermitidas = ['id_paciente', 'cedula', 'nombre', 'apellido', 'telefono', 'direccion'];
+	private $ordenesPermitidos = ['ASC', 'DESC'];
 
 	public function __construct($dbSystem = true)
 	{
@@ -17,7 +20,7 @@ class ModeloPacientes extends ModelBase
 	public function index($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
 	{
 		try {
-
+			
 			$sql = "SELECT id_paciente, nacionalidad, cedula, nombre, apellido, telefono, direccion, fn, genero 
                 FROM paciente 
                 WHERE estado = 'ACT'";
@@ -29,6 +32,9 @@ class ModeloPacientes extends ModelBase
 				$data['buscar'] = "%$buscar%";
 			}
 
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_paciente';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+			
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
 			$this->setSQL($sql);
@@ -42,7 +48,7 @@ class ModeloPacientes extends ModelBase
 	}
 
 
-	public function indexHistorial($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
+	public function indexHistorial($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_control', $ordenDir = 'DESC')
 	{
 		try {
 			$sql = "SELECT 
@@ -60,7 +66,9 @@ class ModeloPacientes extends ModelBase
 				$sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
 				$data['buscar'] = "%$buscar%";
 			}
-			$sql .= " ORDER BY id_control DESC LIMIT :inicio, :limite";
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_control';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
 			$this->setSQL($sql);
 			$data['inicio'] = (int)$inicio;
@@ -87,6 +95,9 @@ class ModeloPacientes extends ModelBase
 				$data['buscar'] = "%$buscar%";
 			}
 
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_paciente';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+			
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
 			$this->setSQL($sql);
@@ -100,7 +111,7 @@ class ModeloPacientes extends ModelBase
 	}
 
 	//nuevo metodo para calcular el total de registros para mostrar en datatable
-	public function contarTotalPacientes($estado, $buscar = '')
+	public function contarTotalPacientes(string $estado, $buscar = '')
 	{
 		$data = [
 			'estado' => $estado
@@ -211,7 +222,7 @@ class ModeloPacientes extends ModelBase
 		}
 	}
 
-	private function delete_paciente()
+	private function delete_paciente($estado = 'DES')
 	{
 		try {
 			$data = ['id_paciente' => $this->getIdPaciente()];
@@ -222,9 +233,9 @@ class ModeloPacientes extends ModelBase
 				throw new \Exception("El id del paciente no existe.");
 			}
 
-			$sql = "UPDATE paciente SET estado = 'DES' WHERE id_paciente = :id";
+			$sql = "UPDATE paciente SET estado = :estado WHERE id_paciente = :id";
 			$this->setSQL($sql);
-			$this->update_logic($data['id_paciente']);
+			$this->update(['estado'=>$estado],$data['id_paciente']);
 
 			return ["exito"];
 		} catch (\Exception $e) {
@@ -232,26 +243,6 @@ class ModeloPacientes extends ModelBase
 		}
 	}
 
-	private function restablecer()
-	{
-		try {
-			$data = ['id_paciente' => $this->getIdPaciente()];
-
-			$sql = "SELECT id_paciente FROM paciente WHERE id_paciente = :id_paciente";
-			$this->setSQL($sql);
-			if ($this->search($data, false) == []) {
-				throw new \Exception("El id del paciente no existe.");
-			}
-
-			$sql = "UPDATE paciente SET estado = 'ACT' WHERE id_paciente = :id";
-			$this->setSQL($sql);
-			$this->update_logic($data['id_paciente']);
-
-			return ["exito"];
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
 
 	private function validarCedula($data, $returnCedula = false)
 	{
@@ -328,21 +319,13 @@ class ModeloPacientes extends ModelBase
 		return $this->update_paciente();
 	}
 
-	public function eliminarPaciente($idUsuario = null)
+	public function eliminarPaciente($idUsuario = null,$estado ='DES')
 	{
 		$this->validarSesion($idUsuario);
 
 		$this->validarCamposObligatorios([$this->id_paciente]);
 
-		return $this->delete_paciente();
-	}
-
-	public function restablecerPaciente($idUsuario = null)
-	{
-		$this->validarSesion($idUsuario);
-
-		$this->validarCamposObligatorios([$this->id_paciente]);
-		return $this->restablecer();
+		return $this->delete_paciente($estado);
 	}
 
 	// ── Getters & Setters ────────────────────────────────────────────────────

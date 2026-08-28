@@ -10,6 +10,9 @@ class ModeloEntrada extends ModelBase
 
 	private $fechaDeVencimiento, $fechaDeIngreso, $precio, $cantidadDisponible, $idEntrada, $cantidadEntrante, $idProveedor, $lote, $idInsumo;
 
+	private $columnasPermitidas = ['id_entrada','nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	private $ordenesPermitidos = ['ASC', 'DESC'];
+
 	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
@@ -40,6 +43,9 @@ class ModeloEntrada extends ModelBase
 				$sql .= " AND (nombre LIKE :buscar OR proveedor LIKE :buscar OR fechaDeIngreso LIKE :buscar OR fechaDeVencimiento LIKE :buscar OR cantidad_entrada LIKE :buscar OR precio_entrada LIKE :buscar OR numero_de_lote LIKE :buscar)";
 				$data['buscar'] = "%$buscar%";
 			}
+
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_entrada';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
@@ -110,6 +116,9 @@ class ModeloEntrada extends ModelBase
 				$data['buscar'] = "%$buscar%";
 			}
 
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_entrada';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
 			$this->setSQL($sql);
@@ -153,7 +162,7 @@ class ModeloEntrada extends ModelBase
 		}
 	}
 
-	private function eliminar()
+	private function eliminar($estado='DES')
 	{
 		try {
 
@@ -164,9 +173,9 @@ class ModeloEntrada extends ModelBase
 				throw new \Exception("Fallo");
 			}
 
-			$sql = "UPDATE entrada SET estado='DES' WHERE id_entrada =:id";
+			$sql = "UPDATE entrada SET estado=:estado WHERE id_entrada =:id";
 			$this->setSQL($sql);
-			$this->update_logic($this->getIdEntrada());
+			$this->update(['estado'=>$estado],$this->getIdEntrada());
 
 			return ["exito"];
 		} catch (\Exception $e) {
@@ -266,13 +275,13 @@ class ModeloEntrada extends ModelBase
 		return $this->insertarEntrada();
 	}
 
-	public function eliminarEntrada($idUsuario = null)
+	public function eliminarEntrada($idUsuario = null,$estado = 'DES')
 	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([
 			$this->idEntrada
 		], ' al eliminar una entrada');
-		return $this->eliminar();
+		return $this->eliminar($estado);
 	}
 
 	public function updateEntrda($idUsuario = null)

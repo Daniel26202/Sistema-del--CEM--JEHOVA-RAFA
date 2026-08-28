@@ -10,6 +10,9 @@ class ModeloUsuarios extends ModelBase
 
     private $id_usuario, $usuario, $password, $correo, $imagen, $imagenTemporal, $id_rol, $usuarioRegistrado, $token_inicio_sesion;
 
+    private $columnasPermitidas = ['id_usuario','cedula', 'nombre', 'apellido', 'telefono', 'correo', 'user'];
+    private $ordenesPermitidos = ['ASC', 'DESC'];
+
     public function __construct($dbSystem = false)
     {
         parent::__construct($dbSystem);
@@ -67,6 +70,9 @@ class ModeloUsuarios extends ModelBase
                 $sql .= " AND (u.usuario LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR p.telefono LIKE :buscar OR u.correo LIKE :buscar OR p.cedula LIKE :buscar)";
                 $data['buscar'] = "%$buscar%";
             }
+
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_especialidad';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
@@ -314,6 +320,7 @@ class ModeloUsuarios extends ModelBase
 
                     $imagen_temporal = $imagenU['tmp_name'];
                     move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $imagen);
+
                     $this->commit();
                     return ($id_usuario);
                 }

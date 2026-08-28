@@ -500,6 +500,8 @@
             <p id="p-referencia"></p>
 
             <input type="text" class="d-none" id="inputTotalDeConfirmacion" name="total">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+
 
 
             <input type="hidden" id="referencia_confirmar" name="referencia">

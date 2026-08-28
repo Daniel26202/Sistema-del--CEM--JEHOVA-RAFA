@@ -9,6 +9,7 @@
           <form class=" form-validable" id="modalAgregar">
 
             <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
             <input type="hidden" name="cedulaRegistrada" id="cedulaRegistrada">
 
@@ -214,7 +215,7 @@
             <form id="modalInfo">
 
 
-            <br>
+              <br>
 
               <!-- Fecha de Vencimiento -->
               <div class="info-group mb-3">

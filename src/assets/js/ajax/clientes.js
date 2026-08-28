@@ -116,7 +116,7 @@ const readCustomer = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            0,
           ];
           alertConfirm(
             "Esta seguro de eliminar el cliente?",
@@ -132,12 +132,12 @@ const readCustomer = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            1,
           ];
 
           alertConfirm(
             "Esta seguro de restablecer el cliente?",
-            restablecerCustomers,
+            deleteCustomer,
             data,
           );
         });
@@ -247,23 +247,11 @@ const updateCustomers = async (form) => {
 //delete
 const deleteCustomer = async (data) => {
   try {
-    const result = await executePetition(url + `/eliminar/${data}`, "GET");
+    const payload = { id: data[0], estado: data[1] };
+    const result = await executePetition(url + `/eliminar/`, "POST",payload);
     if (result.ok) {
       alertSuccess(result.message);
 
-      readCustomer();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
-};
-
-//restablecer
-const restablecerCustomers = async (data) => {
-  try {
-    const result = await executePetition(url + `/restablecer/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {

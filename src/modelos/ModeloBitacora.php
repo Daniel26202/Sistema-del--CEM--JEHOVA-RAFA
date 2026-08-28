@@ -9,6 +9,8 @@ date_default_timezone_set("America/Caracas");
 class ModeloBitacora extends ModelBase
 {
     private $id_usuario, $tabla, $actividad;
+    private $columnasPermitidas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha', 'hora'];
+    private $ordenesPermitidos = ['ASC', 'DESC'];
 
     public function __construct($dbSystem = false)
     {
@@ -30,6 +32,9 @@ class ModeloBitacora extends ModelBase
             $sql .= " AND (p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR b.tabla LIKE :buscar OR u.usuario LIKE :buscar OR b.actividad LIKE :buscar OR b.fecha_hora LIKE :buscar)";
             $data['buscar'] = "%$buscar%";
         }
+
+        $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_bitacora';
+        $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
         $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 

@@ -14,12 +14,15 @@ import Paginator from "./generic/Paginator.js"; //paginacion
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
 import { initConversion } from "./generic/coversion.js";
 
-
 addEventListener("DOMContentLoaded", function () {
   console.log("insumos/");
 
   const modalAgreInsumos = new bootstrap.Modal(
     document.getElementById("exampleModalagregarInsumos"),
+  );
+
+  const modalInfoInsumos = new bootstrap.Modal(
+    document.getElementById("modal-exampleMostrar"),
   );
 
   const divTarjetsInsumo = document.getElementById("div-tarjets");
@@ -175,7 +178,7 @@ addEventListener("DOMContentLoaded", function () {
         returnFragmentHtml,
         "id_insumo",
         infoInsumos,
-        objValidationImg
+        objValidationImg,
       );
 
       paginator.displayItems();
@@ -189,10 +192,7 @@ addEventListener("DOMContentLoaded", function () {
       document
         .querySelector(".btn-eliminar")
         .addEventListener("click", function () {
-          const data = [
-            this.getAttribute("data-index"),
-            document.getElementById("id_usuario_bitacora").value,
-          ];
+          const data = [this.getAttribute("data-index"), 0];
           console.log(data);
           alertConfirm(
             "Esta seguro de eliminar el insumo?",
@@ -212,80 +212,56 @@ addEventListener("DOMContentLoaded", function () {
 
   const readPapeleraInsumos = async (contenedor) => {
     try {
-      const result = await executePetition(url + "/papeleraInsumosAjax", "GET");
-
-      let html = "";
-
-      //html para la papelera
-      if (result.length > 0) {
-        result.forEach((element) => {
-          html += `<tr>
-                <td class="text-center">${element.nombre}</td>
-                <td class="text-center">${element.descripcion}</td>
-                <td class="text-center">${element.precio} BS</td>
-                <td class="text-center">${element.cantidad_inventario}</td>
-                <td class="text-center">${element.stockMinimo}</td>
-
-                <td class="d-flex justify-content-center">
-
-                  <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer" data-index="${element.id_insumo}" title="Restablecer" >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
-                      <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
-                    </svg></button>
-                </td>
-
-              </tr> `;
-        });
-      }
-
       // si ya existe DataTable, destrúyela
       if ($.fn.DataTable.isDataTable(selector)) {
         $(selector).DataTable().clear().destroy();
       }
 
-      contenedor.innerHTML = html;
+      const columns = [
+        { data: "nombre" },
+        { data: "descripcion" },
+        { data: "precio" },
+        { data: "cantidad_inventario" },
+        { data: "stockMinimo" },
+        {
+          data: null,
+          orderable: false,
+          render: function (data, type, row) {
+            return `
+              <button class="btn btn-tabla mb-1 btn-dt-tabla btnRestablecer" data-index="${row.id_insumo}" title="Restablecer" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
+                      <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
+                    </svg></button>
+            `;
+          },
+        },
+      ];
 
-      initDataTable(selector);
-
-      document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
-        ele.value = document.getElementById("id_usuario_session").value;
-      });
-
-      //llamar las funcion de eliminar
-
-      document.querySelectorAll(".btnRestablecer").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const data = [
-            this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
-          ];
-          alertConfirm(
-            "Esta seguro de restablecer el insumo?",
-            restablecerInsumos,
-            data,
-          );
+      const asignarEventos = () => {
+        document.querySelectorAll(".btnRestablecer").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const data = [this.getAttribute("data-index"), 1];
+            alertConfirm(
+              "Esta seguro de restablecer el insumo?",
+              restablecerInsumo,
+              data,
+            );
+          });
         });
-      });
+      };
+
+      initDataTable(
+        selector,
+        url + "/papeleraInsumosAjax",
+        columns,
+        (data) => {
+          console.log(data);
+        },
+        asignarEventos,
+      );
 
       hasPermision(id_rol_global, "Insumos", "eliminar", ".btnRestablecer"); //editar
-    } catch (error) {
-      alertError("Error", error);
-    }
-  };
-
-  //restablecer
-  const restablecerInsumos = async (data) => {
-    try {
-      const result = await executePetition(
-        url + `/restablecerInsumo/${data}`,
-        "GET",
-      );
-      if (result.ok) {
-        alertSuccess(result.message);
-
-        readPapeleraInsumos(divPapelera);
-      } else throw new Error(`${result.error}`);
     } catch (error) {
       alertError("Error", error);
     }
@@ -314,11 +290,25 @@ addEventListener("DOMContentLoaded", function () {
 
   const deleteInsumo = async (data) => {
     try {
-      const result = await executePetition(url + `/eliminar/${data}`, "GET");
+      const payload = { id: data[0], estado: data[1] };
+      const result = await executePetition(url + `/eliminar`, "POST", payload);
       if (result.ok) {
+        modalInfoInsumos.hide();
         alertSuccess(result.message);
-
         readInsumos(divTarjetsInsumo);
+      } else throw new Error(`${result.error}`);
+    } catch (error) {
+      alertError("Error", error);
+    }
+  };
+
+  const restablecerInsumo = async (data) => {
+    try {
+      const payload = { id: data[0], estado: data[1] };
+      const result = await executePetition(url + `/eliminar`, "POST", payload);
+      if (result.ok) {
+        modalInfoInsumos.hide();
+        alertSuccess(result.message);
       } else throw new Error(`${result.error}`);
     } catch (error) {
       alertError("Error", error);
@@ -414,7 +404,7 @@ addEventListener("DOMContentLoaded", function () {
     btnModalInsumos.innerText = "Agregar";
 
     //oculatar img
-    contenedorImg.classList.add('d-none')
+    contenedorImg.classList.add("d-none");
   });
 
   let verificarFormularioInsumo = inicializarValidacionFormulario(formInsumos);
@@ -424,7 +414,6 @@ addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
 
     let esValido = verificarFormularioInsumo();
-
     if (esValido) {
       if (formInsumos.classList.contains("editar")) {
         console.log("editar");

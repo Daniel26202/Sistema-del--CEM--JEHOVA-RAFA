@@ -147,13 +147,12 @@ const traerDoctorSintomasPatologias = async () => {
       url + "/returnPatologiasPaciente/",
       "GET",
     );
-    console.log(sintomas, patologias);
 
     let htmlSintomas = ``;
     let htmlPatologias = ``;
 
-    if (sintomas.length > 0) {
-      sintomas.forEach((res) => {
+    if (sintomas["data"].length > 0) {
+      sintomas["data"].forEach((res) => {
         htmlSintomas += `<div class="form-check form-switch d-flex align-items-center">
     <div class="form-check-sintomas">
         <input value="${res.id_sintomas}" name="sintomas[]" class="form-check-input check-sintomas" type="checkbox" value="${res.id_sintomas}" id="checkChecked${res.id_sintomas}">
@@ -247,20 +246,22 @@ const checkedCheckboxes = async (
     const result = await executePetition(`${url}/${metodo}/${cedula}`, "GET");
     const ids = Array.from(checkboxes).map((checkbox) => checkbox.value);
 
-    console.log(result);
-
     if (result.length > 0) {
       result.forEach((res) => {
+        console.log(res);
+
         if (!ids.includes(res.id_sintoma || res.id_patologia)) {
-          document.getElementById(
+          let checkbox = document.getElementById(
             `checkChecked${res.id_sintoma || res.id_patologia}`,
-          ).checked = true;
-          editar &&
-            document
-              .getElementById(
-                `checkChecked${res.id_sintoma || res.id_patologia}`,
-              )
-              .setAttribute("disabled", true);
+          );
+
+          if (checkbox) {
+            checkbox.setAttribute("checked", true);
+          }
+
+          if (editar && checkbox) {
+            checkbox.setAttribute("disabled", true);
+          }
         }
       });
     }
@@ -612,9 +613,7 @@ const readSintomas = async () => {
       //llamar las funcion de eliminar
       document.querySelectorAll(".btn-eliminar").forEach((btn) => {
         btn.addEventListener("click", function () {
-          const data = [
-            this.getAttribute("data-index"),
-          ];
+          const data = [this.getAttribute("data-index")];
 
           alertConfirm(
             "Esta seguro de eliminar el sintoma?",

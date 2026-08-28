@@ -109,7 +109,8 @@ class ModeloControl extends ModelBase
 				throw new \Exception("El paciente especificado no existe.");
 			}
 
-
+			$sql_usuario = 'SELECT id_usuario FROM segurity.usuario WHERE id_usuario = :id_usuario';
+			$this->setSQL($sql_usuario);
 			$validar = $this->search(['id_usuario' => $this->getIdUsuario()], false);
 			if (empty($validar)) {
 				throw new \Exception("El id del usuario no existe.");
@@ -144,11 +145,13 @@ class ModeloControl extends ModelBase
 			$this->setSQL($sql);
 			$idControl = $this->create($data);
 
-			foreach ($this->getSintomas() as $sintoma) {
-				$data = ['sintoma' => $sintoma, 'idControl' => $idControl];
-				$sql  = "INSERT INTO sintomas_control (id_sintomas_control, id_sintomas, id_control) VALUES (null, :sintoma, :idControl)";
-				$this->setSQL($sql);
-				$this->create($data);
+			if (!empty($this->getSintomas())) {
+				foreach ($this->getSintomas() as $sintoma) {
+					$data = ['sintoma' => $sintoma, 'idControl' => $idControl];
+					$sql  = "INSERT INTO sintomas_control (id_sintomas_control, id_sintomas, id_control) VALUES (null, :sintoma, :idControl)";
+					$this->setSQL($sql);
+					$this->create($data);
+				}
 			}
 
 			$this->commit();

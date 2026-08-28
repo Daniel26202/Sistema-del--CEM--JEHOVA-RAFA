@@ -8,6 +8,9 @@ use DateTime;
 class ModeloCita extends ModelBase
 {
 	private $id_cita, $fecha, $hora, $estado, $id_doctor, $horaSalida, $id_servicioMedico, $id_paciente, $nacionalidad, $cedula;
+	private $columnasPermitidas = ['paciente_cedula', 'paciente_nombre', 'telefono', 'doctor_nombre', 'categoria', 'fecha', 'hora', 'estado', 'c.id_cita'];
+
+	private $ordenesPermitidos = ['ASC', 'DESC'];
 
 	public function __construct($dbSystem = true)
 	{
@@ -101,6 +104,9 @@ class ModeloCita extends ModelBase
 				$data['buscar'] = "%$buscar%";
 			}
 
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_cita';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 			$this->setSQL($sql);
 
@@ -137,6 +143,9 @@ class ModeloCita extends ModelBase
 					$sql .= " AND (p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar OR c.fecha LIKE :buscar)";
 					$data['buscar'] = "%$buscar%";
 				}
+
+				$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_cita';
+				$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
 				$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 				$this->setSQL($sql);
@@ -176,6 +185,9 @@ class ModeloCita extends ModelBase
 				$data['buscar'] = "%$buscar%";
 			}
 
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_cita';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+			
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 			$this->setSQL($sql);
 
@@ -414,7 +426,7 @@ class ModeloCita extends ModelBase
 		}
 	}
 
-	private function eliminarCitaPrivada()
+	private function eliminarCitaPrivada($estado = 'DES')
 	{
 		try {
 			$data = ['id_cita' => $this->getIdCita()];
@@ -425,9 +437,9 @@ class ModeloCita extends ModelBase
 				throw new \Exception("El id de la cita no existe.");
 			}
 
-			$sql = "UPDATE cita SET estado = 'DES' WHERE id_cita = :id";
+			$sql = "UPDATE cita SET estado =:estado WHERE id_cita = :id";
 			$this->setSQL($sql);
-			$this->update_logic($data['id_cita']);
+			$this->update(['estado'=>$estado],$data['id_cita']);
 
 			return ["exito"];
 		} catch (\Exception $e) {
@@ -519,11 +531,11 @@ class ModeloCita extends ModelBase
 		return $this->insertarCita();
 	}
 
-	public function eliminarCitaPublic($idUsuario = null)
+	public function eliminarCitaPublic($idUsuario = null,$estado = 'DES')
 	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([$this->id_cita], ' al eliminar una cita');
-		return $this->eliminarCitaPrivada();
+		return $this->eliminarCitaPrivada($estado);
 	}
 
 	public function editarCita($idUsuario = null)

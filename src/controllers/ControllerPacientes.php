@@ -2,7 +2,7 @@
 
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
+use App\modelos\ModeloSanetizarJSON;
 // use App\
 
 
@@ -38,8 +38,13 @@ function getPacientesAjax()
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
 
 	$modelo = new ModeloPacientes();
+	$sanitizador = new ModeloSanetizarJSON();
 
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_paciente';
+	}
 	$pacientes = $modelo->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$pacientesSanitizados = $sanitizador->sanitizeRecursive($pacientes);
 
 	$totalRegistros = $modelo->contarTotalPacientes('ACT');
 	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalPacientes('ACT', $buscar) : $totalRegistros;
@@ -49,12 +54,13 @@ function getPacientesAjax()
 		"draw" => $draw,
 		"recordsTotal" => $totalRegistros,
 		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($pacientes) ? $pacientes : []
+		"data" => is_array($pacientesSanitizados) ? $pacientesSanitizados : []
 	];
 
 	echo json_encode($response);
 	exit;
 }
+
 /* hay q hacerlo con ajax, pero lo hice sencillo, no se si se vaya a pasar a ajax to esto, pa despues del sabado ;) */
 function getHistorialSalud($parametro)
 {
@@ -71,7 +77,7 @@ function getHistorialSaludAjax()
 		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
-	
+
 	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
 	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
@@ -88,10 +94,16 @@ function getHistorialSaludAjax()
 	//si ordena por el id por defecto
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
 
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_paciente';
+	}
+
 	$modelo = new ModeloPacientes();
+	$sanitizador = new ModeloSanetizarJSON();
 
 	// traigo los datos de todos los registros
-	$pacientes = $modelo->indexHistorial($inicio, $limite, $buscar,$ordenColumna,$ordenDir);
+	$pacientes = $modelo->indexHistorial($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$pacientesSanitizados = $sanitizador->sanitizeRecursive($pacientes);
 
 	// Aqui solamente el total de registros
 	$totalRegistros = $modelo->contarTotalHistorial();
@@ -102,7 +114,7 @@ function getHistorialSaludAjax()
 		"draw"            => $draw,
 		"recordsTotal"    => (int)$totalRegistros,
 		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $pacientes
+		"data"            => is_array($pacientesSanitizados) ? $pacientesSanitizados:[]
 	];
 
 	echo json_encode($respuesta);
@@ -143,10 +155,17 @@ function papeleraPacienteAjax()
 	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 	//si ordena por el id por defecto
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_paciente';
+	}
 
 	$modelo = new ModeloPacientes();
+	$sanitizador = new ModeloSanetizarJSON();
 
-	$pacientes = $modelo->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$pacientes = $modelo->indexPapelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$pacientesSanitizados = $sanitizador->sanitizeRecursive($pacientes);
+
+
 
 	$totalRegistros = $modelo->contarTotalPacientes('DES');
 	$totalFiltrados = !empty($buscar) ? $modelo->contarTotalPacientes('DES', $buscar) : $totalRegistros;
@@ -156,7 +175,7 @@ function papeleraPacienteAjax()
 		"draw" => $draw,
 		"recordsTotal" => $totalRegistros,
 		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($pacientes) ? $pacientes : []
+		"data" => is_array($pacientesSanitizados) ? $pacientesSanitizados : []
 	];
 
 	echo json_encode($response);
@@ -174,6 +193,15 @@ function guardar()
 	}
 
 	try {
+		// 🔒 Validar CSRF token
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modelo  = new ModeloPacientes();
@@ -200,7 +228,8 @@ function guardar()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $insercion]);
+			error_log("Error en guardarPaciente: " . $insercion); // Registro interno
+			echo json_encode(['ok' => false, 'error' => 'Error al guardar el paciente.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -222,6 +251,16 @@ function setPaciente()
 
 
 	try {
+		// 🔒 Validar CSRF token
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modelo  = new ModeloPacientes();
@@ -252,7 +291,8 @@ function setPaciente()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $edicion]);
+			error_log("Error en editarPaciente: " . $edicion);
+			echo json_encode(['ok' => false, 'error' => 'Error al modificar el paciente.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -262,76 +302,48 @@ function setPaciente()
 	}
 }
 
-function eliminar($datos)
+function eliminar()
 {
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
 	try {
+
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
 
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
 
-		$modelo->setIdPaciente($datos[0]);
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input["id"] ?? null;
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha eliminado un  paciente");
-		$bitacora->setTabla("paciente");
+		$estado = empty($input["estado"]) ? 'DES':'ACT';
+		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
-		$eliminacion = $modelo->eliminarPaciente($idUsuario);
+
+		$modelo->setIdPaciente($id);
+
+		$eliminacion = $modelo->eliminarPaciente($idUsuario,$estado);
 
 		//Verifica si es un array con clave "exito"
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha {$text} un  paciente");
+			$bitacora->setTabla("paciente");
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminacion]);
-			exit;
-		}
-	} catch (InvalidArgumentException $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
-	}
-}
-
-function restablecer($datos)
-{
-
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
-	try {
-
-		$idUsuario = $_SESSION['id_usuario'];
-
-		$modelo  = new ModeloPacientes();
-		$bitacora = new ModeloBitacora();
-
-		$modelo->setIdPaciente($datos[0]);
-
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha restablecido un paciente");
-		$bitacora->setTabla("paciente");
-
-		$restablecer = $modelo->restablecerPaciente($idUsuario);
-
-		//Verifica si es un array con clave "exito"
-		if (is_array($restablecer) && $restablecer[0] === "exito") {
-			$bitacora->insertarBitacora($idUsuario);
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $restablecer]);
+			error_log("Error en {$text_error}: " . $eliminacion);
+			echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el paciente."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

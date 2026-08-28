@@ -63,23 +63,30 @@ const readCategory = async () => {
       },
     ];
 
-  const asignarEvestos = () => {
-    //llamar las funcion de eliminar
-    document.querySelectorAll(".btn-eliminar-categoria").forEach((btn) => {
+    const asignarEvestos = () => {
+      //llamar las funcion de eliminar
+      document.querySelectorAll(".btn-eliminar-categoria").forEach((btn) => {
         btn.addEventListener("click", function () {
-            const data = [this.getAttribute("data-index")];
-            alertConfirm(
+          const data = [this.getAttribute("data-index"), 0];
+          alertConfirm(
             "Esta seguro de eliminar la categoria?",
             deleteCategory,
             data,
-            );
+          );
         });
-    });
-  };
+      });
+    };
     // re-inicializa
 
-    initDataTable(selector,`${url}/categoriasAjax`,columsCategoria,(datosServer)=>{console.log(datosServer);
-    }, asignarEvestos);
+    initDataTable(
+      selector,
+      `${url}/categoriasAjax`,
+      columsCategoria,
+      (datosServer) => {
+        console.log(datosServer);
+      },
+      asignarEvestos,
+    );
   } catch (error) {
     alertError("Error", error);
   }
@@ -109,10 +116,14 @@ const createcategory = async (form) => {
 //delete
 const deleteCategory = async (data) => {
   try {
+    const payload = { id: data[0], estado: data[1] };
+
     const result = await executePetition(
-      url + `/eliminarCategoria/${data}`,
-      "GET",
+      url + `/eliminarCategoria/`,
+      "POST",
+      payload,
     );
+
     if (result.ok) {
       alertSuccess(result.message);
       readCategory();
@@ -121,7 +132,6 @@ const deleteCategory = async (data) => {
     alertError("Error", error);
   }
 };
-
 
 openBotonModalServicio.addEventListener("click", function () {
   //objetos con todos los parametros de la funcion
@@ -137,9 +147,9 @@ openBotonModalServicio.addEventListener("click", function () {
   clearModalEnviar(parametros);
 });
 
-btnAgregarCategoria.addEventListener('click',function(){
-    readCategory();
-})
+btnAgregarCategoria.addEventListener("click", function () {
+  readCategory();
+});
 
 let verificarFormulario = inicializarValidacionFormulario(formulario);
 

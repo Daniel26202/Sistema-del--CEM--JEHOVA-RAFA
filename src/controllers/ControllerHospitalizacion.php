@@ -44,6 +44,7 @@ function traerHospP()
     $modeloHosp = new ModeloHospitalizacion();
 
     $resultado = [];
+
     foreach ($modeloHosp->selectsH($inicio, $limite, $buscar, $ordenColumna, $ordenDir) as $hospit) {
         $id_hosp = $hospit['id_hospitalizacion'];
         $modeloHosp->setIdH($id_hosp);

@@ -10,6 +10,10 @@ class ModeloInsumo extends ModelBase
 
 
 	private $idInsumo, $cantidadCero, $parametro, $nombre, $imagen, $descripcion, $fechaDeIngreso, $fechaDeVencimiento, $precio, $cantidad, $stockMinimo, $lote, $marca, $medida, $iva, $imagenAntigua, $insumosArray, $idProveedor;
+
+	private $columnasPermitidas = ['id_entrada','nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	private $ordenesPermitidos = ['ASC', 'DESC'];
+
 	public function __construct($dbSystem = true)
 	{
 		parent::__construct($dbSystem);
@@ -31,7 +35,7 @@ class ModeloInsumo extends ModelBase
 	public function insumos()
 	{
 		try {
-			$sql = "SELECT * from view_resumen_insumos ";
+			$sql = "SELECT * from view_resumen_insumos where estado_insumo='ACT' ";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
@@ -40,7 +44,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 
-	public function InsumosVencidos($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
+	public function InsumosVencidos($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_entrada', $ordenDir = 'DESC')
 	{
 		try {
 			$sql = "SELECT ei.fechaDeVencimiento,ei.id_entradaDeInsumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,i.id_insumo AS id_insumo_e,e.*,ei.cantidad_disponible AS cantidad_entrada, ei.precio AS precio_entrada ,p.nombre AS proveedor FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE";
@@ -51,6 +55,9 @@ class ModeloInsumo extends ModelBase
 				$sql .= " AND (i.nombre LIKE :buscar OR p.nombre LIKE :buscar OR ei.fechaDeVencimiento LIKE :buscar OR ei.fechaDeIngreso LIKE :buscar OR ei.cantidad_entrada LIKE :buscar OR ei.precio LIKE :buscar OR e.numero_de_lote LIKE :buscar)";
 				$data['buscar'] = "%$buscar%";
 			}
+
+			$ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_entrada';
+			$ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
 			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
@@ -160,18 +167,47 @@ class ModeloInsumo extends ModelBase
 	}
 
 	//
-	public function papelera()
+	public function papelera($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_insumo', $ordenDir = 'DESC')
 	{
 		try {
-			$sql = "SELECT i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0  GROUP BY inv.id_insumo ";
-			$this->setSQL($sql);
-			$consulta = $this->read();
+			$sql = "SELECT i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0 GROUP BY inv.id_insumo ";
 
-			return ($consulta) ? $consulta : false;
+			$data = [];
+
+			if (!empty($buscar)) {
+				$sql .= " AND (i.nombre LIKE :buscar OR i.descripcion LIKE :buscar OR i.marca LIKE :buscar  OR i.medida LIKE :buscar  OR i.precio LIKE :buscar  OR i.stockMinimo LIKE :buscar  OR cantidad_inventario LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+
+			$this->setSQL($sql);
+
+			$data['inicio'] = (int)$inicio;
+			$data['limite'] = (int)$limite;
+			return $this->search($data);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
+
+	public function contarTotal($buscar = '')
+	{
+		$data = [];
+
+		$sql = "SELECT COUNT(*) as total FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0 GROUP BY inv.id_insumo  ";
+
+		if (!empty($buscar)) {
+			$sql .= " AND (i.nombre LIKE :buscar OR i.descripcion LIKE :buscar OR i.marca LIKE :buscar  OR i.medida LIKE :buscar  OR i.precio LIKE :buscar  OR i.stockMinimo LIKE :buscar  OR cantidad_inventario LIKE :buscar)";
+			$data['buscar'] = "%$buscar%";
+		}
+
+		$this->setSQL($sql);
+		$resultado = $this->search($data, false);
+
+		return $resultado['total'] ?? 0;
+	}
+
 
 
 
@@ -241,7 +277,7 @@ class ModeloInsumo extends ModelBase
 
 
 
-	private function eliminar()
+	private function eliminar($estado = 'DES')
 	{
 		try {
 			$sql = "SELECT id_insumo from insumo where id_insumo=:id_insumo";
@@ -251,9 +287,9 @@ class ModeloInsumo extends ModelBase
 				throw new \Exception("Fallo");
 			}
 
-			$sql = "UPDATE insumo SET estado = 'DES' WHERE id_insumo =:id";
+			$sql = "UPDATE insumo SET estado =:estado WHERE id_insumo =:id";
 			$this->setSQL($sql);
-			$consulta = $this->update([], $this->getIdInsumo());
+			$consulta = $this->update(['estado'=>$estado], $this->getIdInsumo());
 			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -337,24 +373,6 @@ class ModeloInsumo extends ModelBase
 	}
 
 
-	private function restablecer()
-	{
-		try {
-			$sql = "SELECT id_insumo from insumo where id_insumo=:id_insumo";
-			$this->setSQL($sql);
-			$validar = $this->search(['id_insumo' => $this->getIdInsumo()]);
-			if ($validar == []) {
-				throw new \Exception("Fallo el id no existe");
-			}
-			$sql = "UPDATE insumo SET estado = 'ACT' WHERE id_insumo =:id";
-			$this->setSQL($sql);
-			$this->update([], $this->getIdInsumo());
-
-			return ["exito"];
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
-	}
 
 	private function validarSesion($idUsuario): void
 	{
@@ -397,11 +415,11 @@ class ModeloInsumo extends ModelBase
 		return $this->insertarInsumos();
 	}
 
-	public function eliminarInsumo($idUsuario = null)
+	public function eliminarInsumo($idUsuario = null,$estado ='DES')
 	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([$this->idInsumo], ' al eliminar un insumo');
-		return $this->eliminar();
+		return $this->eliminar($estado);
 	}
 
 	public function editarInsumo($idUsuario = null)
@@ -416,13 +434,6 @@ class ModeloInsumo extends ModelBase
 			$this->medida,
 		], 'al editar un insumo');
 		return $this->editar();
-	}
-
-	public function restablecerInsumo($idUsuario = null)
-	{
-		$this->validarSesion($idUsuario);
-		$this->validarCamposObligatorios([$this->idInsumo], ' al restablecer un insumo');
-		return $this->restablecer();
 	}
 
 	public function vencerInsumos($idUsuario = null)

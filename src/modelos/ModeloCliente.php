@@ -7,6 +7,8 @@ use App\modelos\ModelBase;
 class ModeloCliente extends ModelBase
 {
     private $id_cliente, $nacionalidad, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $direccion, $fn, $genero;
+    private $columnasPermitidas = ['id_cliente', 'cedula', 'nombre', 'apellido', 'telefono', 'direccion'];
+    private $ordenesPermitidos = ['ASC', 'DESC'];
 
     public function __construct($dbSystem = true)
     {
@@ -25,6 +27,9 @@ class ModeloCliente extends ModelBase
                 $sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
                 $data['buscar'] = "%$buscar%";
             }
+
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_paciente';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
@@ -51,6 +56,8 @@ class ModeloCliente extends ModelBase
                 $data['buscar'] = "%$buscar%";
             }
 
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_paciente';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
             $this->setSQL($sql);
@@ -182,7 +189,7 @@ class ModeloCliente extends ModelBase
         }
     }
 
-    private function delete_cliente()
+    private function delete_cliente($estado = 'DES')
     {
         try {
             $data = ['id_cliente' => $this->getIdCliente()];
@@ -193,30 +200,9 @@ class ModeloCliente extends ModelBase
                 throw new \Exception("El id del cliente no existe.");
             }
 
-            $sql = "UPDATE cliente SET estado = 'DES' WHERE id_cliente = :id";
+            $sql = "UPDATE cliente SET estado =:estado WHERE id_cliente = :id";
             $this->setSQL($sql);
-            $this->update_logic($data['id_cliente']);
-
-            return ["exito"];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-    private function restablecer()
-    {
-        try {
-            $data = ['id_cliente' => $this->getIdCliente()];
-
-            $sql = "SELECT id_cliente FROM cliente WHERE id_cliente = :id_cliente";
-            $this->setSQL($sql);
-            if ($this->search($data, false) == []) {
-                throw new \Exception("El id del cliente no existe.");
-            }
-
-            $sql = "UPDATE cliente SET estado = 'ACT' WHERE id_cliente = :id";
-            $this->setSQL($sql);
-            $this->update_logic($data['id_cliente']);
+            $this->update(['estado'=>$estado],$data['id_cliente']);
 
             return ["exito"];
         } catch (\Exception $e) {
@@ -296,18 +282,11 @@ class ModeloCliente extends ModelBase
         return $this->update_cliente();
     }
 
-    public function eliminarCliente($idUsuario = null)
+    public function eliminarCliente($idUsuario = null,$estado = 'DES')
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->id_cliente], ' al eliminar un cliente');
-        return $this->delete_cliente();
-    }
-
-    public function restablecerCliente($idUsuario = null)
-    {
-        $this->validarSesion($idUsuario);
-        $this->validarCamposObligatorios([$this->id_cliente], ' al restablecer un cliente');
-        return $this->restablecer();
+        return $this->delete_cliente($estado);
     }
 
     // ── Getters & Setters ─────────────────────────────────────────────────────

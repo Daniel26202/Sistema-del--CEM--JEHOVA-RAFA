@@ -10,7 +10,6 @@ use App\modelos\ModeloBitacora;
 function returnModules()
 {
     $model = new ModeloPermisos();
-
     echo json_encode($model->returnModules());
 }
 
