@@ -100,8 +100,8 @@ class Rutas
 
             try {
                 // rsa
-                $clavePublica = file_get_contents(__DIR__ . '/../../src/config/keys/public.key');
-                $datosToken = \Firebase\JWT\JWT::decode($token, new Key($clavePublica, 'RS256'));
+                $secrtJWT = $_ENV['JWT_SECRET'];
+                $datosToken = \Firebase\JWT\JWT::decode($token, new Key($secrtJWT, 'HS256'));
 
                 $_SESSION['id_usuario'] = $datosToken->id_usuario;
 

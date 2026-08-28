@@ -1,5 +1,5 @@
 <?php
-
+use App\config\Cifrado;
 use App\modelos\ModeloPerfil;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloBitacora;
@@ -101,10 +101,10 @@ function perfilApk()
 		unset($perfil['password']);
 		unset($perfil['token_session']);
 
-		echo json_encode(['ok' => true, 'data' => $perfil]);
+		echo json_encode(Cifrado::cifrarRespuesta(['ok' => true, 'data' => $perfil]));
 	} catch (\Throwable $e) {
 		http_response_code(500);
-		echo json_encode(["ok" => false, "error" => $e->getMessage()]);
+		echo json_encode(Cifrado::cifrarRespuesta(["ok" => false, "error" => $e->getMessage()]));
 	}
 	exit;
 }

@@ -6,6 +6,7 @@ use App\modelos\ModeloServicios;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
+use App\config\Cifrado;
 
 function mostrarDataPaciente($datos)
 {
@@ -415,6 +416,7 @@ function editarCita()
 		exit;
 	}
 }
+
 function citasHoyCompletasApk()
 {
 	// Limpia el búfer de salida para eliminar cualquier espacio en blanco o eco previo.
@@ -428,13 +430,13 @@ function citasHoyCompletasApk()
 		$cita = new ModeloCita();
 		$resultado = $cita->mostrarTodasCitasHoy();
 
-		echo json_encode($resultado);
+		echo json_encode(Cifrado::cifrarRespuesta($resultado));
 	} catch (\Throwable $e) {
 		http_response_code(500);
-		echo json_encode([
+		echo json_encode(Cifrado::cifrarRespuesta([
 			"ok" => false,
 			"error" => "Error interno en el servidor: " . $e->getMessage()
-		]);
+		]));
 	}
 	exit;
 }
