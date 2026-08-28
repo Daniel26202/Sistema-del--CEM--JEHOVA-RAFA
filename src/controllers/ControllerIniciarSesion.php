@@ -3,6 +3,8 @@
 use App\modelos\ModeloInicioSesion;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloUsuarios;
+use App\config\Cifrado;
+
 // use Firebase\JWT\JWT;
 // require_once __DIR__ . "/../config/config.php";
 
@@ -223,7 +225,6 @@ function error()
 
 
 
-
 function iniciarSesionMovil()
 {
     $modelo = new ModeloInicioSesion();
@@ -240,7 +241,7 @@ function iniciarSesionMovil()
     if ($userParam === '' || $passParam === '') {
         http_response_code(409);
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['ok' => false, 'error' => 'Camps buits']);
+        echo json_encode(Cifrado::cifrarRespuesta(['ok' => false, 'error' => 'Camps buits']));
         exit;
     }
 
@@ -264,9 +265,7 @@ function iniciarSesionMovil()
     if ($validar) {
         $modelo->setIdUsuario($validar['id_usuario']);
 
-
-        // Sigue directo al JWT
-        $clavePrivada = file_get_contents(__DIR__ . '/../../src/config/keys/private.key');
+        $secretJWT = $_ENV['JWT_SECRET'];
 
         $payload = [
             'iss'        => $_ENV['url_sistema_web'],
@@ -281,15 +280,14 @@ function iniciarSesionMovil()
             'apellido'   => $validar['apellido_personal'] ?? null
         ];
 
-        $jwt = \Firebase\JWT\JWT::encode($payload, $clavePrivada, 'RS256');
+        $jwt = \Firebase\JWT\JWT::encode($payload, $secretJWT, 'HS256');
 
         $bitacora->setId_usuario($validar['id_usuario']);
         $bitacora->setActividad("Ha iniciado sesión desde la aplicación móvil");
         $bitacora->setTabla("inicio sesion");
         $bitacora->insertarBitacora($validar['id_usuario']);
 
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode([
+        $respuesta = [
             'ok'      => true,
             'message' => 'Autenticación móvil exitosa.',
             'token'   => $jwt,
@@ -298,14 +296,17 @@ function iniciarSesionMovil()
                 'apellido' => $validar['apellido_personal'],
                 'rol'      => $validar['rol']
             ]
-        ]);
+        ];
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(Cifrado::cifrarRespuesta($respuesta));
         exit;
     } else {
         // En cas de fallada, sumem un intent erroni a la base de dades
 
         http_response_code(409);
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['ok' => false, 'error' => 'Usuario o contraseña incorrectas']);
+        echo json_encode(Cifrado::cifrarRespuesta(['ok' => false, 'error' => 'Usuario o contraseña incorrectas']));
         exit;
     }
 }
