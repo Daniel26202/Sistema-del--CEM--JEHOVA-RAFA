@@ -155,7 +155,7 @@ const traerDoctorSintomasPatologias = async () => {
       sintomas["data"].forEach((res) => {
         htmlSintomas += `<div class="form-check form-switch d-flex align-items-center">
     <div class="form-check-sintomas">
-        <input value="${res.id_sintomas}" name="sintomas[]" class="form-check-input check-sintomas" type="checkbox" value="${res.id_sintomas}" id="checkChecked${res.id_sintomas}">
+        <input value="${res.id_sintomas}" name="sintomas[]" class="" type="checkbox" value="${res.id_sintomas}" id="checkChecked${res.id_sintomas}" style="width: 2.4em; height: 1.2em; cursor:pointer;">
         <label class="form-check-label-sintomas" for="checkChecked${res.id_sintomas}">
             ${res.nombre}
         </label>
@@ -167,7 +167,7 @@ const traerDoctorSintomasPatologias = async () => {
       patologias.forEach((res) => {
         htmlPatologias += `<div class="form-check form-switch d-flex align-items-center">
     <div class="form-check-patologias">
-        <input value="${res.id_patologia}" name="patologias[]" class="form-check-input check-patologias" type="checkbox" value="${res.id_patologia}" id="checkChecked${res.id_patologia}">
+        <input value="${res.id_patologia}" name="patologias[]" class="" type="checkbox" value="${res.id_patologia}" id="checkChecked${res.id_patologia}" style="width: 2.4em; height: 1.2em; cursor:pointer;">
         <label class="form-check-label-patologias" for="checkChecked${res.id_patologia}">
             ${res.nombre_patologia}
         </label>
@@ -193,37 +193,51 @@ const traerDoctores = async () => {
   try {
     const doctores = await executePetition(url + "/returnDoctores/", "GET");
 
-    let htmlDoctores = ``;
+    let htmlDoctores = "";
 
-    if (doctores.length > 0) {
+    if (doctores && doctores.length > 0) {
+      // Abrimos la fila con 2 columnas
+      htmlDoctores = `<div class="row row-cols-1 row-cols-md-2 g-2">`;
+
       doctores.forEach((res, index) => {
-        htmlDoctores += `<div class="contenido card cards-horario" data-index=${index} id=${res.id_usuario} selection=false >
-            <input type='hidden' class="valorDoctor" >
-            <h5 style="font-size: 15;" class="text-center text-doctor">DR ${res.nombredoc} ${res.apellidodoc}</h5>
-          </div>`;
+        htmlDoctores += `
+          <div class="col">
+            <div class="contenido card cards-horario" 
+                 data-index="${index}" 
+                 id="${res.id_usuario}" 
+                 selection="false">
+              <input type="hidden" class="valorDoctor">
+              <h5 style="font-size: 15px;" class="text-center text-doctor">
+                DR ${res.nombredoc} ${res.apellidodoc}
+              </h5>
+            </div>
+          </div>
+        `;
       });
+
+      htmlDoctores += `</div>`;
+    } else {
+      htmlDoctores = `<p class="text-center text-muted">No hay doctores disponibles</p>`;
     }
+
+    // Insertamos el HTML en el contenedor
     divDoctores.innerHTML = htmlDoctores;
 
+    // La lógica de selección NO cambia, porque seguimos usando la misma clase
     document.querySelectorAll(".cards-horario").forEach((card) => {
       card.addEventListener("click", function () {
-        //aparecer el boton de guardar
         modalFooter.classList.remove("d-none");
 
-        let dataIndex = this.getAttribute("data-index");
-        let id = this.getAttribute("id");
+        const dataIndex = this.getAttribute("data-index");
+        const id = this.getAttribute("id");
 
         document.querySelectorAll(".cards-horario").forEach((card2) => {
-          let input = card2.children[0];
-          if (card2.getAttribute("data-index") == dataIndex) {
-            console.log("se tecleo este input");
-            console.log(card2.children[0]);
+          const input = card2.children[0]; // el input hidden
+          if (card2.getAttribute("data-index") === dataIndex) {
             card2.style.backgroundColor = "#387adf";
             input.value = id;
             input.setAttribute("name", "doctor");
           } else {
-            console.log("los demas se quito es estile");
-            console.log(card2.children[0]);
             card2.style.backgroundColor = "";
             input.value = 0;
             input.setAttribute("name", "");
@@ -235,7 +249,6 @@ const traerDoctores = async () => {
     alertError("Error", "Lamentablemente algo salió mal. " + error);
   }
 };
-
 const checkedCheckboxes = async (
   checkboxes,
   metodo,
@@ -395,6 +408,7 @@ const clickButtonOpenModal = () => {
     input.parentElement.parentElement.children[1].classList.add("d-none");
     console.log(input.parentElement.parentElement);
   });
+  modalFooter.classList.add('d-none')
 };
 
 //function for add Patients in table
@@ -423,26 +437,43 @@ const readPatients = async () => {
     ];
 
     const asignarEventosPacientes = () => {
-      console.log(document.querySelectorAll("#tbody-pacientes tr td"));
+      // Variable global para controlar si ya hay una petición en curso
+      let isProcessing = false;
 
-      //Bucle and Event for selected the Patient and the control medico
       document.querySelectorAll("#tbody-pacientes tr").forEach((row) => {
-        row.addEventListener("click", function () {
-          let background = row.style.backgroundColor;
-          document.querySelectorAll("#tbody-pacientes tr").forEach((row) => {
-            row.style.backgroundColor = "";
-          });
-          row.style.backgroundColor =
-            background == "var(--color-primary)" ? "" : "var(--color-primary)";
+        row.addEventListener("click", async function () {
+  
+          if (isProcessing) return;
 
-          let cedula = this.closest("tr").children[0].innerText.slice(2);
-          readControl(cedula);
+          if (this.style.backgroundColor === "var(--color-primary)") return;
+
+
+          document.querySelectorAll("#tbody-pacientes tr").forEach((r) => {
+            r.style.backgroundColor = "";
+          });
+
+          this.style.backgroundColor = "var(--color-primary)";
+
+          const cedula = this.closest("tr").children[0].innerText.slice(2);
+
+          isProcessing = true;
+
+          try {
+
+            await readControl(cedula);
+          } catch (error) {
+            console.error("Error al obtener datos del paciente:", error);
+            alertError("Error", "No se pudo cargar la información del paciente.");
+          } finally {
+            // 7. Desbloquear, permitiendo nuevos clics
+            isProcessing = false;
+          }
         });
       });
 
       //////gestionar persmisos
       hasPermision(id_rol_global, "Control", "guardar", ".btnOpenModal"); //guardar
-    };
+    };;
 
     initDataTable(
       selectorPacietne,
@@ -540,7 +571,6 @@ const createControl = async () => {
       alertSuccess(result.message);
       modalControlBoots.hide();
       readControl(result.data.cedula);
-      readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
@@ -660,9 +690,11 @@ const insertarSintoma = async (data) => {
 
 const deleteSintoma = async (data) => {
   try {
+    const payload = { id: data[0]};
     const result = await executePetition(
-      url + `/eliminarSintoma/${data}`,
-      "GET",
+      url + `/eliminarSintoma`,
+      "POST",
+      payload
     );
     if (result.ok) {
       alertSuccess(result.message);

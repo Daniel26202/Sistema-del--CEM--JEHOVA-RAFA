@@ -2,6 +2,7 @@
 
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloBitacora;
+use App\modelos\ModeloSanetizarJSON;
 
 // use App\config\RateLimiter;
 
@@ -9,8 +10,36 @@ use App\modelos\ModeloBitacora;
 ////modulos/////
 function returnModules()
 {
+    $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+    $inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+    $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+    $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+
+    $columnasMapeadas = ['id_patologia', 'nombre_patologia'];
+
+    $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+    $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
+
+
+    $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_modulo';
+
     $model = new ModeloPermisos();
-    echo json_encode($model->returnModules());
+    $sanitizador = new ModeloSanetizarJSON();
+
+    if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+        $ordenColumna = 'id_modulo';
+    }
+
+    $data = $sanitizador->sanitizeRecursive($model->returnModulesPaginados($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
+    $totalRegistros = $model->contarTotal();
+    $totalFiltrados = !empty($buscar) ? $model->contarTotal($buscar) : $totalRegistros;
+    echo json_encode([
+        "draw"            => $draw,
+        "recordsTotal"    => (int)$totalRegistros,
+        "recordsFiltered" => (int)$totalFiltrados,
+        "data"            => is_array($data) ? $data : []
+    ]);
+    exit;
 }
 
 function returnPermisionModule()  {

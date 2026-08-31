@@ -43,7 +43,9 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <!-- Bootstrap 5 CSS -->
     <link href="<?= $urlBase ?>./src/assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+        integrity="sha384-3x/lgBw1vK5H5rQwKv6VkRKjqK6CkXhSgfIhHnXc33M6DvtZb6N1XW4hJ8J5mS8E"
+        crossorigin="anonymous">
     <!-- Intro.js para ayuda interactiva -->
     <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs.min.css">
     <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs-modern.css">
@@ -64,7 +66,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                 ?>
             </small>
         </div>
- 
+
         <div class="row justify-content-center mt-5  ">
             <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-7">
 
@@ -195,7 +197,9 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     </div>
 
     <!-- Scripts -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer
+        integrity="sha384-3x/lgBw1vK5H5rQwKv6VkRKjqK6CkXhSgfIhHnXc33M6DvtZb6N1XW4hJ8J5mS8E"
+        crossorigin="anonymous"></script>
     <!-- SweetAlert2 -->
     <script type="text/javascript" src="<?= $urlBase ?>./src/assets/library/sweetalert2/sweetalert2@11.js"></script>
 

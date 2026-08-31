@@ -281,7 +281,7 @@ function serviciosDoctor()
     $modeloDoctores = new ModeloDoctores();
     $modeloCategiria = new ModeloCategoria();
 
-    echo json_encode([$modeloDoctores->select(), $modeloCategiria->seleccionarCategoria()]);
+    echo json_encode([$modeloDoctores->selectDoctores(), $modeloCategiria->seleccionarCategoria()]);
 }
 
 

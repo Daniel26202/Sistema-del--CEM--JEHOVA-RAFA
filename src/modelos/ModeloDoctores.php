@@ -99,7 +99,7 @@ class ModeloDoctores extends ModelBase
             $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
             $data = [];
             if (!empty($buscar)) {
-                $sql .= " AND (u.correo LIKE :buscar OR u.nacionalidad LIKE :buscar OR u.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
+                $sql .= " AND (u.correo LIKE :buscar OR p.nacionalidad LIKE :buscar OR p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
                 $data['buscar'] = "%$buscar%";
             }
             $ordenColumna = in_array($ordenColumna, $this->columnasPermitidasDoctores) ? $ordenColumna : 'id_personal';
@@ -117,13 +117,20 @@ class ModeloDoctores extends ModelBase
         }
     }
 
+
+    public function selectDoctores() {
+        $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
+        $this->setSQL($sql);
+        return $this->read();
+    }
+
     public function desactivos($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_personal', $ordenDir = 'DESC')
     {
         try {
             $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "DES" AND es.id_especialidad IS NOT NULL';
             $data = [];
             if (!empty($buscar)) {
-                $sql .= " AND (u.correo LIKE :buscar OR u.nacionalidad LIKE :buscar OR u.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
+                $sql .= " AND (u.correo LIKE :buscar OR p.nacionalidad LIKE :buscar OR p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
                 $data['buscar'] = "%$buscar%";
             }
             $ordenColumna = in_array($ordenColumna, $this->columnasPermitidasDoctores) ? $ordenColumna : 'id_personal';
@@ -149,7 +156,7 @@ class ModeloDoctores extends ModelBase
             $sql = 'SELECT COUNT(*) as total FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado =:estado AND es.id_especialidad IS NOT NULL';
 
             if (!empty($buscar)) {
-                $sql .= " AND (u.correo LIKE :buscar OR u.nacionalidad LIKE :buscar OR u.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
+                $sql .= " AND (u.correo LIKE :buscar OR p.nacionalidad LIKE :buscar OR p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
                 $data['buscar'] = "%$buscar%";
             }
             $this->setSQL($sql);

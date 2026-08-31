@@ -20,9 +20,6 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-center">
-        <?php require_once './src/vistas/alerts.php'; ?>
-    </div>
 
     <div class="container mt-5 col-md-9">
 

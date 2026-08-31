@@ -383,13 +383,6 @@ function mostrarPIdP($datos)
 function eliminarSintoma($datos)
 {
 
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
-
 	try {
 
 		$headers = getallheaders();
@@ -402,13 +395,14 @@ function eliminarSintoma($datos)
 			exit;
 		}
 
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input["id"] ?? null;
+
 		$idUsuario = $_SESSION['id_usuario'];
 		$modeloSintomas = new ModeloSintomas();
 		$modeloBitacora = new ModeloBitacora();
 
-
-		$id_sintomas = $datos[0];
-		$modeloSintomas->setIdSintomas($id_sintomas);
+		$modeloSintomas->setIdSintomas($id);
 		$eliminar = $modeloSintomas->eliminarL();
 
 		if (is_array($eliminar) && $eliminar[0] === "exito") {
@@ -420,8 +414,8 @@ function eliminarSintoma($datos)
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminar]);
+			error_log("Error en eliminarSintoma: " . $eliminar);
+			echo json_encode(['ok' => false, 'error' => "Error en al eliminar el sintoma."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -467,7 +461,8 @@ function agregarSintoma()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $insertar]);
+			error_log("Error en agregarSintoma: " . $insertar);
+			echo json_encode(['ok' => false, 'error' => "Error en guardar el sintoma."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

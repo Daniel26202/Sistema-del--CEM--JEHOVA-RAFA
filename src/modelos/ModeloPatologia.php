@@ -30,10 +30,10 @@ class ModeloPatologia extends ModelBase
             }
 
             if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
-                $ordenColumna = 'id_paciente';
+                $ordenColumna = 'id_patologia';
             }
 
-            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_paciente';
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_patologia';
             $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
             // Concatenamos las variables validadas de orden y añadimos los marcadores de límite

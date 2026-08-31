@@ -73,9 +73,8 @@ const info = (id_personal) => {
   let textServicios = "";
 
   for (const item of dataDoctor) {
-    const serivicios = item.servicios.find((s) => s.id_personal == id_personal);
-    if (serivicios) {
-      data.push({ ...item });
+    if(item['id_personal'] == id_personal){
+        data.push({...item});
     }
   }
 
@@ -108,6 +107,8 @@ const info = (id_personal) => {
     `;
     }
 
+    console.log(data[0]);
+    
     if (data[0].servicios.length > 0) {
       for (const item of data[0].servicios) {
         textServicios += item.nombre + " ,  ";
@@ -432,6 +433,8 @@ const readDoctor = async () => {
       (datosServer) => {
         dataDoctor = [];
         dataDoctor.push(...datosServer);
+        console.log(datosServer);
+        
       },
       asignarEventos,
     );

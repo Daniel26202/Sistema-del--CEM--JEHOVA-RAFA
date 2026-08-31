@@ -108,7 +108,7 @@ class ModeloHospitalizacion extends ModelBase
     public function selectsH($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_hospitalizacion', $ordenDir = 'DESC')
     {
         try {
-            $sql = "SELECT * FROM view_paciente_hospitalizado WHERE estado_usuario = 'ACT' AND estado_hospitalizacion = 'Pendiente'";
+            $sql = "SELECT * FROM view_paciente_hospitalizado WHERE estado_hospitalizacion = 'Pendiente'";
 
             $data = [];
 

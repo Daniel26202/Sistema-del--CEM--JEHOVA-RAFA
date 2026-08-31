@@ -112,15 +112,8 @@ function iniciarSesion()
     $modelo->setIdUsuario($validarUsuarioExistente != false ? $validarUsuarioExistente['id_usuario'] : null);
 
     if ($validar) {
-        // =============================================================
-        // ✅ CORRECCIÓN 1.1: Regenerar ID de sesión (previene Session Fixation)
-        // =============================================================
-        // Se genera un nuevo ID de sesión y se destruye el anterior.
-        // Esto asegura que el ID de sesión no sea conocido por un atacante
-        // antes de que el usuario se autentique.
-        // =============================================================
+        // regenerar ID de sesión (previene Session Fixation)
         session_regenerate_id(true);
-
         $modelo->setIntentosFallidos(0);
 
 

@@ -8,6 +8,8 @@ class ModeloPermisos extends ModelBase
 {
 
     private $id_rol, $permiso, $modulo, $permisos, $modulos, $id_modulo;
+    private $columnasPermitidas = ['id_modulo', 'nombre'];
+    private $ordenesPermitidos = ['ASC', 'DESC'];
 
     public function __construct($dbSystem = false)
     {
@@ -50,6 +52,59 @@ class ModeloPermisos extends ModelBase
         }
     }
 
+    public function returnModulesPaginados($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_modulo', $ordenDir = 'DESC')
+    {
+        try {
+            $sql = "SELECT * FROM modulos where estado = 'ACT' ";       
+            $data = [];
+
+            if (!empty($buscar)) {
+                $sql .= " AND (nombre LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+                $ordenColumna = 'id_modulo';
+            }
+
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_modulo';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+
+            $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+            $this->setSQL($sql);
+
+            $data['inicio'] = (int)$inicio;
+            $data['limite'] = (int)$limite;
+
+            $resultado = $this->search($data);
+            return is_array($resultado) ? $resultado : [];
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function contarTotal($buscar = '')
+    {
+        try {
+            $data = [];
+            $sql = "SELECT COUNT(*) as total FROM modulos WHERE estado = 'ACT' ";
+
+            if (!empty($buscar)) {
+                $sql .= " AND (nombre LIKE :buscar)";
+                $data['buscar'] = "%$buscar%";
+            }
+
+            $this->setSQL($sql);
+            $resultado = $this->search($data, false);
+
+            if (is_array($resultado) && isset($resultado['total'])) {
+                return (int)$resultado['total'];
+            }
+            return 0;
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
 
     public function registrarModulo()
     {

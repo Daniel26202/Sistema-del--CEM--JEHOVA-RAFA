@@ -6,6 +6,7 @@ use App\config\Rutas;
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+
 $url = isset($_GET['url']) ? $_GET['url'] :  "IniciarSesion/mostrarIniciarSesion";
 
 // borrar cache ...
