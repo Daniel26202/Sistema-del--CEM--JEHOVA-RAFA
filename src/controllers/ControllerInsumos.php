@@ -1,11 +1,8 @@
 <?php
 
 use App\modelos\ModeloInsumo;
-use App\modelos\ModeloProveedores;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
-
-
+use App\modelos\ModeloSanetizarJSON;
 
 
 function insumos($parametro)
@@ -18,11 +15,12 @@ function insumos($parametro)
 
 	$idUsuario = $_SESSION['id_usuario'];
 	$modeloInsumo = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
 	$ayuda = "btnayudaInsumo";
 	$vistaActiva = "insumos";
 
-	$proveedores = $modeloInsumo->selectProveedores();
-	$insumos = $modeloInsumo->insumos();
+	$proveedores = $sanetizar->sanitizeRecursive($modeloInsumo->selectProveedores());
+	$insumos = $sanetizar->sanitizeRecursive($modeloInsumo->insumos());
 	if ($insumos) {
 		$modeloInsumo->vencerInsumos($idUsuario);
 		//$modeloInsumo->insumoProximos();
@@ -33,17 +31,19 @@ function insumos($parametro)
 function insumosAjax()
 {
 	$modeloInsumo = new ModeloInsumo();
-	echo json_encode($modeloInsumo->insumos());
+	$sanetizar = new ModeloSanetizarJSON();
+	echo json_encode($sanetizar->sanitizeRecursive($modeloInsumo->insumos()));
 }
 
 
 function InsumosVencidos($parametro)
 {
 	$modeloInsumo = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	$ayuda = "btnayudaVencido";
 	$vistaActiva = "vencidos";
-	$insumos = $modeloInsumo->insumos();
+	$insumos = $sanetizar->sanitizeRecursive($modeloInsumo->insumos());
 	require_once './src/vistas/vistaInsumos/vistaInsumosVencidos.php';
 }
 
@@ -67,10 +67,14 @@ function vencidos()
 	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_entrada';
+	}
 
 	$modeloInsumo = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
 
-	$vencidos = $modeloInsumo->InsumosVencidos();
+	$vencidos = $sanetizar->sanitizeRecursive($modeloInsumo->InsumosVencidos($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloInsumo->contarTotalInsumosVencidos();
 	$totalFiltrados = !empty($buscar) ? $modeloInsumo->contarTotalInsumosVencidos($buscar) : $totalRegistros;
@@ -90,12 +94,14 @@ function vencidos()
 function info($datos)
 {
 	$modeloInsumo = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
+
 
 	$id_insumo = $datos[0];
 	$modeloInsumo->setIdInsumo($id_insumo);
 
-	$datosDeInsumo = $modeloInsumo->insumosInfo();
-	$datosDeVencimiento =  $modeloInsumo->retornarFechaDeVencimiento();
+	$datosDeInsumo = $sanetizar->sanitizeRecursive($modeloInsumo->insumosInfo());
+	$datosDeVencimiento =  $sanetizar->sanitizeRecursive($modeloInsumo->retornarFechaDeVencimiento());
 	$informacion = array(
 		'insumo' => $datosDeInsumo,
 		'vencimiento' => $datosDeVencimiento,
@@ -113,11 +119,11 @@ function mostrarBusquedaInsumo()
 		exit;
 	}
 	$modeloInsumo = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	$modeloInsumo->setParametro($_POST['nombre']);
 
-	$respuesta = $modeloInsumo->buscarInsumos();
-	// $respuesta = array('nombre' => "Dixon");
+	$respuesta = $sanetizar->sanitizeRecursive($modeloInsumo->buscarInsumos());
 	echo json_encode($respuesta);
 }
 
@@ -130,9 +136,16 @@ function guardarInsumo()
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
-
-
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
 
@@ -180,7 +193,8 @@ function guardarInsumo()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $insercion]);
+			error_log("Error en guardarInsumo: " . $insercion);
+			echo json_encode(['ok' => false, 'error' => 'Error al guardar el insumo.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -190,36 +204,44 @@ function guardarInsumo()
 	}
 }
 
-function eliminar($datos)
+function eliminar()
 {
 
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
 	try {
-		$idUsuario = $_SESSION['id_usuario'];
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
+		$idUsuario = $_SESSION['id_usuario'];
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
 
-		$id_insumo = $datos[0];
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input["id"] ?? null;
 
-		$modeloInsumo->setIdInsumo($id_insumo);
+		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
+		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
-		$eliminacion = $modeloInsumo->eliminarInsumo($idUsuario);
+		$modeloInsumo->setIdInsumo($id);
+
+		$eliminacion = $modeloInsumo->eliminarInsumo($idUsuario, $estado);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$bitacora->setId_usuario($idUsuario);
-			$bitacora->setActividad("Ha eliminado un insumo");
+			$bitacora->setActividad("Ha {$text} un insumo");
 			$bitacora->setTabla("insumo");
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			error_log("Error en eliminar: " . $eliminacion);
+			echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el insumo."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -239,6 +261,14 @@ function editar()
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$bitacora = new ModeloBitacora();
@@ -282,7 +312,8 @@ function editar()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $edicion]);
+			error_log("Error en editar: " . $edicion);
+			echo json_encode(['ok' => false, 'error' => 'Error al modificar el insumo.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -300,56 +331,44 @@ function papelera($parametro)
 
 function papeleraInsumosAjax()
 {
-	$modeloInsumo = new ModeloInsumo();
-
-	echo json_encode($modeloInsumo->papelera());
-}
-
-function restablecerInsumo($datos)
-{
 	if (empty($_GET)) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
 		exit;
 	}
 
-	try {
-		$idUsuario = $_SESSION['id_usuario'];
+	$draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+	$inicio = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
-		$modeloInsumo = new ModeloInsumo();
-		$bitacora = new ModeloBitacora();
+	$columnasMapeadas = ['id_insumo','imagen','nombre','descripcion','marca','medida','precio','stockMinimo','iva','cantidad_inventario'];
 
-		$id_insumo = $datos[0];
-		$modeloInsumo->setIdInsumo($id_insumo);
-		$restablecimiento = $modeloInsumo->restablecerInsumo($idUsuario);
+	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 
+	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
-		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
 
-			$bitacora->setId_usuario($idUsuario);
-			$bitacora->setTabla("insumo");
-			$bitacora->setActividad("Ha restablecido un insumo");
-			$bitacora->insertarBitacora();
+	$modeloInsumo = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
 
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
-			exit;
-		}
-	} catch (InvalidArgumentException $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_insumo';
 	}
-}
+	$data= $sanetizar->sanitizeRecursive($modeloInsumo->papelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
-function permisos($id_rol, $permiso, $modulo)
-{
-	$permisos = new ModeloPermisos();
-	$permisos->setIdRol($id_rol);
-	$permisos->setPermiso($permiso);
-	$permisos->setModulo($modulo);
+	$totalRegistros = $modeloInsumo->contarTotal();
+	$totalFiltrados = !empty($buscar) ? $modeloInsumo->contarTotal($buscar) : $totalRegistros;
 
-	return $permisos->gestionarPermisos();
+	//datos que se le envia al js (esto es estandar de datatable)
+	$response = [
+		"draw" => $draw,
+		"recordsTotal" => $totalRegistros,
+		"recordsFiltered" => $totalFiltrados,
+		"data" => is_array($data) ? $data : []
+	];
+
+	echo json_encode($response);
+	exit;
 }

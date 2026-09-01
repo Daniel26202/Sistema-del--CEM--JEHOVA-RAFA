@@ -9,6 +9,8 @@
             <form class=" form-validable" id="modalAgregarSintoma">
 
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+
 
                 <div class="modal-body">
 

@@ -108,8 +108,7 @@ class ModeloHospitalizacion extends ModelBase
     public function selectsH($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_hospitalizacion', $ordenDir = 'DESC')
     {
         try {
-            $sql = "SELECT * FROM view_paciente_hospitalizado 
-                WHERE estado_usuario = 'ACT' AND estado_hospitalizacion = 'Pendiente'";
+            $sql = "SELECT * FROM view_paciente_hospitalizado WHERE estado_hospitalizacion = 'Pendiente'";
 
             $data = [];
 
@@ -125,8 +124,7 @@ class ModeloHospitalizacion extends ModelBase
             $data['inicio'] = (int)$inicio;
             $data['limite'] = (int)$limite;
 
-            $consulta = $this->search($data);
-            return !empty($consulta) ? $consulta : false;
+            return $this->search($data);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -161,17 +159,17 @@ class ModeloHospitalizacion extends ModelBase
     }
 
     // cuenta el total de hospitalizaciones según el estado (para recordsTotal/recordsFiltered de DataTable)
-    public function contarTotalH($estadoHosp, $buscar = '')
+    public function contarTotalH($estadoHosp= 'Pendiente', $buscar = '')
     {
         $data = [
             'estadoHosp' => $estadoHosp
         ];
 
-        $sql = "SELECT COUNT(DISTINCT id_hospitalizacion) as total FROM view_paciente_hospitalizado 
+        $sql = "SELECT COUNT(*) as total FROM view_paciente_hospitalizado 
             WHERE estado_hospitalizacion = :estadoHosp";
 
         if ($estadoHosp === 'Pendiente') {
-            $sql .= " AND estado_usuario = 'ACT'";
+            $sql .= " AND estado_usuario = 'ACT' ";
         }
 
         if (!empty($buscar)) {

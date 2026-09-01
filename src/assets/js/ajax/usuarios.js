@@ -15,7 +15,6 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
 
-
 const modalEditarUsuario = new bootstrap.Modal(
   document.getElementById("modal-exampleEditar"),
 );
@@ -96,14 +95,14 @@ const readUser = async () => {
     };
     const paginator = new Paginator(
       items,
-      1,
+      3,
       "cardContainer",
       "pagination",
       "searchInput",
       returnFragmentHtml,
       "id_usuario",
       mostrarInfo,
-      objValidationImg
+      objValidationImg,
     );
 
     paginator.displayItems();
@@ -245,8 +244,9 @@ const updateUser = async (form) => {
 
     if (result.ok) {
       alertSuccess(result.message);
-      readUser();
+      modalInfoBoots.hide();
       modalEditarUsuario.hide();
+      readUser();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
@@ -278,14 +278,16 @@ const updateUserPass = async (form) => {
 //delete
 const deleteUser = async (data) => {
   try {
-    console.log(url + `/borrarUsuario/${data[0]}/${data[1]}`);
+    const payload = { id: data[0] };
+
     const result = await executePetition(
-      url + `/borrarUsuario/${data[0]}/${data[1]}`,
-      "GET",
+      url + `/borrarUsuario`,
+      "POST",
+      payload,
     );
     if (result.ok) {
       alertSuccess(result.message);
-
+      modalInfoBoots.hide();
       readUser();
     } else throw new Error(`${result.error}`);
   } catch (error) {
@@ -331,9 +333,9 @@ btnOpenModal.addEventListener("click", function () {
   clearModalEnviar(parametros);
 });
 
-botonModal.addEventListener('click', function() {
-  contenedorImg.classList.add('d-none')
-})
+botonModal.addEventListener("click", function () {
+  contenedorImg.classList.add("d-none");
+});
 
 let verificarFormularioEdi = inicializarValidacionFormulario(formEdiUsuario);
 let verificarFormularioPass = inicializarValidacionFormulario(formEdiPass);

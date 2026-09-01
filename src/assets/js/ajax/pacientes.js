@@ -146,7 +146,7 @@ const readPatients = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            0,
           ];
           alertConfirm(
             "Esta seguro de eliminar el paciente?",
@@ -161,11 +161,11 @@ const readPatients = async () => {
         btn.addEventListener("click", function () {
           const data = [
             this.getAttribute("data-index"),
-            document.getElementById("id_usuario_session").value,
+            1,
           ];
           alertConfirm(
             "Esta seguro de restablecer el paciente?",
-            restablecerPattients,
+            deletePattients,
             data,
           );
         });
@@ -276,26 +276,15 @@ const updatePatients = async (form) => {
 
 //delete
 const deletePattients = async (data) => {
+
   try {
-    const result = await executePetition(url + `/eliminar/${data}`, "GET");
+    console.log(data);
+    
+    const payload = { id: data[0], estado: data[1] };
+    const result = await executePetition(url + `/eliminar`, "POST", payload);
     console.log(result);
-
     if (result.ok) {
       alertSuccess(result.message);
-      readPatients();
-    } else throw new Error(`${result.error}`);
-  } catch (error) {
-    alertError("Error", error);
-  }
-};
-
-//restablecer
-const restablecerPattients = async (data) => {
-  try {
-    const result = await executePetition(url + `/restablecer/${data}`, "GET");
-    if (result.ok) {
-      alertSuccess(result.message);
-
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {

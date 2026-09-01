@@ -1281,8 +1281,8 @@ const readInsumosHosp = (array, contenedor) => {
 //funcion para renderizar los insumo y meterlos en un array despues de la peticion para realizar las operaciones de manera mas facil
 const renderizarInsumosAndSerivicos = async () => {
   try {
-    dataInsumosModal = await executePetition(url + "/selectInsumos");
-    dataServicesModal = await executePetition(url + "/selectServiciosD");
+    dataInsumosModal = await executePetition(url + "/selectInsumos",'GET');
+    dataServicesModal = await executePetition(url + "/selectServiciosD",'GET');
     console.log('----------------');
     
     console.log(dataServicesModal);
@@ -1293,6 +1293,7 @@ const renderizarInsumosAndSerivicos = async () => {
     console.log(error);
   }
 };
+
 
 //delete
 const deleteHosp = async (data) => {
@@ -1401,6 +1402,7 @@ input_cedula.addEventListener("keyup", function () {
 //mostrar los servicios en el modal
 btn_open_modal_services.forEach((btn) => {
   btn.addEventListener("click", function () {
+    
     let modal = btn.closest(".modal");
     let modo = "agregar";
 

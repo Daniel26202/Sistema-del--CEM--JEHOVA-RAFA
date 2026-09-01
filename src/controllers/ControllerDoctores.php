@@ -2,12 +2,11 @@
 
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
 use App\modelos\ModeloServicios;
 use App\modelos\ModeloUsuarios;
 use App\modelos\ModeloRoles;
 use App\modelos\ModeloCategoria;
-
+use App\modelos\ModeloSanetizarJSON;
 
 //muestro los datos de las cuatro tablas
 function doctores($parametro)
@@ -44,24 +43,31 @@ function selectEspcAjax()
     $limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
     $buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
-    $columnasMapeadas = ['id_especialidad','nombre'];
+    $columnasMapeadas = ['id_especialidad', 'nombre'];
 
     $colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
     $ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_especialidad';
 
+    if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+        $ordenColumna = 'id_especialidad';
+    }
+
     $modeloDoctores = new ModeloDoctores();
+    $sanetizador = new ModeloSanetizarJSON();
     $especialidades = $modeloDoctores->selectTodasEspecialidades($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+    $especSanetizada = $sanetizador->sanitizeRecursive($especialidades);
 
     $totalRegistros = $modeloDoctores->contarTotalEspecialidades('ACT');
     $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalEspecialidades('ACT', $buscar) : $totalRegistros;
+
 
     echo json_encode([
         "draw"            => $draw,
         "recordsTotal"    => (int)$totalRegistros,
         "recordsFiltered" => (int)$totalFiltrados,
-        "data"            => $especialidades
+        "data"            => is_array($especSanetizada) ? $especSanetizada : []
     ]);
     exit;
 }
@@ -86,8 +92,14 @@ function DoctoresAjax()
 
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_personal';
 
+    if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+        $ordenColumna = 'id_personal';
+    }
+
     $modeloDoctores = new ModeloDoctores();
     $modeloServicio = new ModeloServicios();
+    $sanetizador = new ModeloSanetizarJSON();
+
 
     //variable final
     $result = [];
@@ -142,6 +154,7 @@ function DoctoresAjax()
         ];
     }
 
+    $resultSanetizado = $sanetizador->sanitizeRecursive($result);
     $totalRegistros = $modeloDoctores->contarTotalDoctores('ACT');
     $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalDoctores('ACT', $buscar) : $totalRegistros;
 
@@ -149,7 +162,7 @@ function DoctoresAjax()
         "draw"            => $draw,
         "recordsTotal"    => (int)$totalRegistros,
         "recordsFiltered" => (int)$totalFiltrados,
-        "data"            => $result
+        "data"            => is_array($resultSanetizado) ? $resultSanetizado : $resultSanetizado
     ]);
     exit;
 }
@@ -187,10 +200,16 @@ function papeleraDoctoresAjax()
 
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_personal';
 
+    if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+        $ordenColumna = 'id_personal';
+    }
+
     $modeloDoctores = new ModeloDoctores();
     $modeloServicio = new ModeloServicios();
+    $sanetizador = new ModeloSanetizarJSON();
 
-    $result =[];
+
+    $result = [];
     foreach ($modeloDoctores->desactivos($inicio, $limite, $buscar, $ordenColumna, $ordenDir) as $doctor) {
         $id_personal = $doctor['id_personal'];
 
@@ -242,6 +261,8 @@ function papeleraDoctoresAjax()
         ];
     }
 
+    $resultSanetizado = $sanetizador->sanitizeRecursive($result);
+
     $totalRegistros = $modeloDoctores->contarTotalDoctores('DES');
     $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalDoctores('DES', $buscar) : $totalRegistros;
 
@@ -249,7 +270,7 @@ function papeleraDoctoresAjax()
         "draw"            => $draw,
         "recordsTotal"    => (int)$totalRegistros,
         "recordsFiltered" => (int)$totalFiltrados,
-        "data"            => $result
+        "data"            => is_array($resultSanetizado) ? $resultSanetizado : []
     ]);
     exit;
 }
@@ -260,11 +281,11 @@ function serviciosDoctor()
     $modeloDoctores = new ModeloDoctores();
     $modeloCategiria = new ModeloCategoria();
 
-    echo json_encode([$modeloDoctores->select(), $modeloCategiria->seleccionarCategoria()]);
+    echo json_encode([$modeloDoctores->selectDoctores(), $modeloCategiria->seleccionarCategoria()]);
 }
 
 
-function guardarDoctores()
+function asignarServicioDoctor()
 {
 
     if (empty($_POST)) {
@@ -274,6 +295,16 @@ function guardarDoctores()
     }
 
     try {
+
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
 
         $idUsuario = $_SESSION['id_usuario'];
 
@@ -285,21 +316,20 @@ function guardarDoctores()
         $servicio->setIdDoctor($_POST["id_doctor"]);
         $servicio->setIdCategoria($_POST["id_categoria"]);
 
-        $bitacora->setId_usuario($idUsuario);
-        $bitacora->setActividad("Ha asignado un servicio medico a un doctor");
-        $bitacora->setTabla("Servicio Medico");
-
         $insercion = $servicio->asignarServicioDoctor($idUsuario);
-        echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 
-        // if (is_array($insercion) && $insercion[0] === "exito") {
-        //     $bitacora->insertarBitacora();
-        //     echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
-        // } else {
-        //     http_response_code(409);
-        //     echo json_encode(['ok' => false, 'error' => $insercion]);
-        //     exit;
-        // }
+        if (is_array($insercion) && $insercion[0] === "exito") {
+            $bitacora->setId_usuario($idUsuario);
+            $bitacora->setActividad("Ha asignado un servicio medico a un doctor");
+            $bitacora->setTabla("Servicio Medico");
+            $bitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
+        } else {
+            http_response_code(409);
+            error_log("Error en asignarServicioDoctor: " . $insercion);
+            echo json_encode(['ok' => false, 'error' => "Error al asignar el servicio al doctor."]);
+            exit;
+        }
     } catch (InvalidArgumentException $e) {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -315,6 +345,16 @@ function agregarDoctor()
         exit;
     }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         if (session_status() !== PHP_SESSION_ACTIVE) session_start();
         $idUsuario = $_SESSION['id_usuario'];
 
@@ -350,7 +390,8 @@ function agregarDoctor()
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $insercion]);
+            error_log("Error en agregarDoctor: " . $insercion);
+            echo json_encode(['ok' => false, 'error' => "Error al guardar el doctor."]);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -368,6 +409,16 @@ function editarDoctor()
         exit;
     }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario = $_SESSION['id_usuario'];
 
         $modeloDoctores = new ModeloDoctores();
@@ -406,7 +457,8 @@ function editarDoctor()
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $edicion]);
+            error_log("Error en editarDoctor: " . $edicion);
+            echo json_encode(['ok' => false, 'error' => "Error al editar el doctor."]);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -424,59 +476,40 @@ function borrarDoctor($datos)
         exit;
     }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario           = $_SESSION['id_usuario'];
-        $id_usuario_doctor   = $datos[0];
+        $input = json_decode(file_get_contents("php://input"), true);
+        $id = $input["id"] ?? null;
+
+        $estado = empty($input["estado"]) ? 'DES' : 'ACT';
+        $text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+        $text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
         $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloDoctores->setIdUsuario($id_usuario_doctor);
-        $eliminacion = $modeloDoctores->eliminacionLogica($idUsuario);
+        $modeloDoctores->setIdUsuario($id);
+        $eliminacion = $modeloDoctores->eliminacionLogica($idUsuario, $estado);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $modeloBitacora->setId_usuario($idUsuario);
             $modeloBitacora->setTabla("doctor");
-            $modeloBitacora->setActividad("Ha eliminado un doctor");
+            $modeloBitacora->setActividad("Ha {$text} un doctor");
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
-            exit;
-        }
-    } catch (InvalidArgumentException $e) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-        exit;
-    }
-}
-
-function restablecer($datos)
-{
-    if (empty($_GET)) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => "Error al realizar la peticion :("]);
-        exit;
-    }
-    try {
-        $idUsuario = $_SESSION['id_usuario'];
-
-        $modeloDoctores = new ModeloDoctores();
-        $modeloBitacora = new ModeloBitacora();
-
-
-        $modeloDoctores->setIdUsuario($datos[0]);
-        $restablecer = $modeloDoctores->restablecerDoctor($idUsuario);
-
-        if (is_array($restablecer) && $restablecer[0] === "exito") {
-            $modeloBitacora->setId_usuario($idUsuario);
-            $modeloBitacora->setTabla("doctor");
-            $modeloBitacora->setActividad("Ha restablecido un doctor");
-            $modeloBitacora->insertarBitacora($idUsuario);
-            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-        } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $restablecer]);
+            error_log("Error en borrarDoctor: " . $eliminacion);
+            echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el doctor."]);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -494,6 +527,16 @@ function registrarEspecialidad()
         exit;
     }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario = $_SESSION['id_usuario'];
 
         $modeloDoctores = new ModeloDoctores();
@@ -510,7 +553,8 @@ function registrarEspecialidad()
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $insercion]);
+            error_log("Error en registrarEspecialidad: " . $insercion);
+            echo json_encode(['ok' => false, 'error' => "Error al guardar la especialidad."]);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -520,7 +564,7 @@ function registrarEspecialidad()
     }
 }
 
-function eliminarEspecialidad($datos)
+function eliminarEspecialidad()
 {
     if (empty($_GET)) {
         http_response_code(409);
@@ -528,24 +572,40 @@ function eliminarEspecialidad($datos)
         exit;
     }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario       = $_SESSION['id_usuario'];
-        $id_especialidad = $datos[0];
+        $input = json_decode(file_get_contents("php://input"), true);
+        $id = $input["id"] ?? null;
+
+        $estado = empty($input["estado"]) ? 'DES' : 'ACT';
+        $text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+        $text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
         $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloDoctores->setIdEspecialidad($id_especialidad);
-        $eliminacion = $modeloDoctores->EspecialidadEliminar($idUsuario);
+        $modeloDoctores->setIdEspecialidad($id);
+        $eliminacion = $modeloDoctores->EspecialidadEliminar($idUsuario,$estado);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $modeloBitacora->setId_usuario($idUsuario);
             $modeloBitacora->setTabla("especialidad");
-            $modeloBitacora->setActividad("Ha eliminado una especialidad");
+            $modeloBitacora->setActividad("Ha {$text} una especialidad");
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $eliminacion]);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            error_log("Error en eliminarEspecialidad: " . $eliminacion);
+            echo json_encode(['ok' => false, 'error' => "Error al {$text_error} la especialidad"]);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -561,13 +621,4 @@ function buscarHorario($datos)
     $modeloDoctores->setIdDoctor($id_personal);
     $respuesta = $modeloDoctores->horarioDelDoctor();
     echo json_encode($respuesta);
-}
-
-function permisos($id_rol, $permiso, $modulo)
-{
-    $modeloPermisos = new ModeloPermisos();
-    $modeloPermisos->setIdRol($id_rol);
-    $modeloPermisos->setPermiso($permiso);
-    $modeloPermisos->setModulo($modulo);
-    return $modeloPermisos->gestionarPermisos();
 }

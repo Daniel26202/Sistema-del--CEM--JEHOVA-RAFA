@@ -11,6 +11,10 @@ class ModeloDoctores extends ModelBase
 {
     private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad, $imagenTemporal, $checkeds, $diasN, $diasEditar, $diasE, $usuario, $id_usuario, $id_rol, $password;
 
+    private $columnasPermitidasDoctores = ['id_personal','cedula', 'nombre_d', 'apellido', 'telefono', 'correo', 'nombre'];
+    private $columnasPermitidasEspec = ['id_especialidad','nombre'];
+    private $ordenesPermitidos = ['ASC', 'DESC'];
+
     public function __construct($dbSystem = true)
     {
         parent::__construct($dbSystem);
@@ -38,7 +42,8 @@ class ModeloDoctores extends ModelBase
                 $sql .= " AND (nombre LIKE :buscar)";
                 $data['buscar'] = "%$buscar%";
             }
-
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidasEspec) ? $ordenColumna : 'id_especialidad';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
 
@@ -94,10 +99,11 @@ class ModeloDoctores extends ModelBase
             $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
             $data = [];
             if (!empty($buscar)) {
-                $sql .= " AND (u.correo LIKE :buscar OR u.nacionalidad LIKE :buscar OR u.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
+                $sql .= " AND (u.correo LIKE :buscar OR p.nacionalidad LIKE :buscar OR p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
                 $data['buscar'] = "%$buscar%";
             }
-
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidasDoctores) ? $ordenColumna : 'id_personal';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
 
@@ -111,15 +117,24 @@ class ModeloDoctores extends ModelBase
         }
     }
 
+
+    public function selectDoctores() {
+        $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
+        $this->setSQL($sql);
+        return $this->read();
+    }
+
     public function desactivos($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_personal', $ordenDir = 'DESC')
     {
         try {
             $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "DES" AND es.id_especialidad IS NOT NULL';
             $data = [];
             if (!empty($buscar)) {
-                $sql .= " AND (u.correo LIKE :buscar OR u.nacionalidad LIKE :buscar OR u.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
+                $sql .= " AND (u.correo LIKE :buscar OR p.nacionalidad LIKE :buscar OR p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
                 $data['buscar'] = "%$buscar%";
             }
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidasDoctores) ? $ordenColumna : 'id_personal';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
@@ -141,7 +156,7 @@ class ModeloDoctores extends ModelBase
             $sql = 'SELECT COUNT(*) as total FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado =:estado AND es.id_especialidad IS NOT NULL';
 
             if (!empty($buscar)) {
-                $sql .= " AND (u.correo LIKE :buscar OR u.nacionalidad LIKE :buscar OR u.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
+                $sql .= " AND (u.correo LIKE :buscar OR p.nacionalidad LIKE :buscar OR p.cedula LIKE :buscar OR p.nombre LIKE :buscar OR p.apellido LIKE :buscar)  OR p.telefono LIKE :buscar";
                 $data['buscar'] = "%$buscar%";
             }
             $this->setSQL($sql);
@@ -274,6 +289,37 @@ class ModeloDoctores extends ModelBase
         }
     }
 
+    private function insertarAdmin()
+    {
+        try {
+            $this->beginTransaction();
+
+            if ($this->validarCedula(['cedula' => $this->getCedula()])) {
+                throw new \Exception("La cédula ya está registrada.");
+            }
+
+            $data = [
+                'nacionalidad'    => $this->getNacionalidad(),
+                'cedula'          => $this->getCedula(),
+                'nombre'          => $this->getNombre(),
+                'apellido'        => $this->getApellido(),
+                'telefono'        => $this->getTelefono(),
+                'tipodecategoria' => 'Administrador',
+                'id_espacialidad' => null,
+                'id_usuario'      => $this->getIdUsuario()
+            ];
+            $sql = 'INSERT INTO bd.personal (id_personal, nacionalidad, cedula, nombre, apellido, telefono, tipodecategoria, id_especialidad, usuario) VALUES (null, :nacionalidad, :cedula, :nombre, :apellido, :telefono, :tipodecategoria, :id_espacialidad, :id_usuario)';
+            $this->setSQL($sql);
+            $this->create($data);
+
+            $this->commit();
+            return ["exito", $data];
+        } catch (\Exception $e) {
+            $this->rollBack();
+            return $e->getMessage();
+        }
+    }
+
     private function updateDoctorDB()
     {
         try {
@@ -355,7 +401,7 @@ class ModeloDoctores extends ModelBase
         }
     }
 
-    private function eliminacionLogicaDB()
+    private function eliminacionLogicaDB($estado ='DES')
     {
         try {
             $data = ['id_usuario' => $this->getIdUsuario()];
@@ -364,9 +410,9 @@ class ModeloDoctores extends ModelBase
             if ($this->search($data, false) == []) {
                 throw new \Exception("El id del usuario no existe.");
             }
-            $sql = 'UPDATE segurity.usuario SET estado = "DES" WHERE id_usuario = :id';
+            $sql = 'UPDATE segurity.usuario SET estado =:estado WHERE id_usuario = :id';
             $this->setSQL($sql);
-            $this->update_logic($data['id_usuario']);
+            $this->update(['estado'=>$estado],$data['id_usuario']);
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -404,7 +450,7 @@ class ModeloDoctores extends ModelBase
         }
     }
 
-    private function especialidadEliminarDB()
+    private function especialidadEliminarDB($estado = 'DES')
     {
         try {
             $data = ['id_especialidad' => $this->getIdEspecialidad()];
@@ -413,9 +459,9 @@ class ModeloDoctores extends ModelBase
             if ($this->search($data, false) == []) {
                 throw new \Exception("El id de la especialidad no existe.");
             }
-            $sql = 'UPDATE especialidad SET estado = "DES" WHERE id_especialidad = :id';
+            $sql = 'UPDATE especialidad SET estado =:estado WHERE id_especialidad = :id';
             $this->setSQL($sql);
-            $this->update_logic($data['id_especialidad']);
+            $this->update(['estado'=>$estado],$data['id_especialidad']);
             return ["exito", $data];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -461,6 +507,20 @@ class ModeloDoctores extends ModelBase
         return $this->insertarDoctorDB();
     }
 
+    public function registrarAdmin($idUsuario = null)
+    {
+        $this->validarSesion($idUsuario);
+        $this->validarCamposObligatorios([
+            $this->cedula,
+            $this->nombre,
+            $this->apellido,
+            $this->telefono,
+            $this->nacionalidad,
+            $this->idEspecialidad,
+        ], ' al registrar un administrador');
+        return $this->insertarAdmin();
+    }
+
     public function updateDoctor($idUsuario = null)
     {
         $this->validarSesion($idUsuario);
@@ -477,11 +537,11 @@ class ModeloDoctores extends ModelBase
         return $this->updateDoctorDB();
     }
 
-    public function eliminacionLogica($idUsuario = null)
+    public function eliminacionLogica($idUsuario = null,$estado = 'DES')
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->id_usuario], ' al eliminar un doctor');
-        return $this->eliminacionLogicaDB();
+        return $this->eliminacionLogicaDB($estado);
     }
 
     public function restablecerDoctor($idUsuario = null)
@@ -498,11 +558,11 @@ class ModeloDoctores extends ModelBase
         return $this->especialidadRegistrarDB();
     }
 
-    public function EspecialidadEliminar($idUsuario = null)
+    public function EspecialidadEliminar($idUsuario = null,$estado ='DES')
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->idEspecialidad], ' al eliminar una especialidad');
-        return $this->especialidadEliminarDB();
+        return $this->especialidadEliminarDB($estado);
     }
 
     // ── Getters & Setters ──────────────────────────────────────

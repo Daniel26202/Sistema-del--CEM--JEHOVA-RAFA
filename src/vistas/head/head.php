@@ -29,6 +29,7 @@ if (!empty($parametro)) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? '' ?>">
 	<link rel="shortcut icon" href="<?= $urlBase ?>../src/assets/images/img/logotipo.jpg">
 	<title>J-R</title>
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/bootstrap/css/bootstrap.min.css">
@@ -41,6 +42,7 @@ if (!empty($parametro)) {
 </head>
 
 <body>
+
 	<input type="hidden" id="id_rol_global" value="<?= $_SESSION['id_rol']; ?>">
 	<div class="loader-wrapper">
 		<div id="content">
@@ -50,7 +52,6 @@ if (!empty($parametro)) {
 			</div>
 		</div>
 	</div>
-
 
 
 	<!-- Menú lateral -->

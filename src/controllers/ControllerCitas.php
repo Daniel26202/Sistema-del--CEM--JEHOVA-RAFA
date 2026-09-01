@@ -6,17 +6,25 @@ use App\modelos\ModeloServicios;
 use App\modelos\ModeloDoctores;
 use App\modelos\ModeloPacientes;
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloSanetizarJSON;
 use App\config\Cifrado;
 
 function mostrarDataPaciente($datos)
 {
 	try {
+
+		if (!isset($datos[0]) || !isset($datos[1])) {
+			throw new InvalidArgumentException("Faltan datos (nacionalidad y cédula).");
+		}
+
 		$cita = new ModeloCita();
+		$sanitizador = new ModeloSanetizarJSON();
 
 		$cita->setNacionalidad($datos[0]);
 		$cita->setCedula($datos[1]);
 
-		echo json_encode($cita->selectPaciente());
+		$resultado = $cita->selectPaciente();
+		echo json_encode($sanitizador->sanitizeRecursive($resultado));
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -133,12 +141,19 @@ function validarHorariosDisponlibles($datos)
 	}
 
 	try {
+		// if (!isset($datos[0]) || !isset($datos[1]) || !is_numeric($datos[0]) || !is_numeric($datos[1])) {
+		// 	throw new InvalidArgumentException("Datos inválidos (fecha y doctor).");
+		// }
+
 		$cita = new ModeloCita();
+		$sanitizador = new ModeloSanetizarJSON();
+
 
 		$cita->setIdDoctor($datos[1]);
 		$cita->setFecha($datos[0]);
 
-		echo  json_encode($cita->validarHorariosDisponlibles());
+		$resultado = $cita->validarHorariosDisponlibles();
+		echo json_encode($sanitizador->sanitizeRecursive($resultado));
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -160,6 +175,14 @@ function apartarCupo()
 
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$cita = new ModeloCita();
 		$bitacora = new ModeloBitacora();
 		$idUsuario = $_SESSION['id_usuario'];
@@ -198,12 +221,14 @@ function apartarCupo()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $reserva[1]]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $reserva]);
+			error_log("Error en apartarCupo: " . $reserva);
+			echo json_encode(['ok' => false, 'error' => 'Error interno del servidor']);
 			exit;
 		}
 	} catch (Exception $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		error_log("Error en apartarCupo: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error interno del servidor']);
 		exit;
 	}
 }
@@ -217,6 +242,14 @@ function guardarCita()
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+		
 		$idUsuario = $_SESSION['id_usuario'];
 		$bitacora = new ModeloBitacora();
 		$cita = new ModeloCita();
@@ -257,12 +290,13 @@ function guardarCita()
 		exit;
 	} catch (Exception $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		error_log("Error en guardarCita: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error al guardar la cita.']);
 		exit;
 	}
 }
 
-function eliminarCita($datos)
+function eliminarCita()
 {
 	if (empty($_GET)) {
 		http_response_code(409);
@@ -270,23 +304,39 @@ function eliminarCita($datos)
 		exit;
 	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 		$bitacora = new ModeloBitacora();
 		$cita = new ModeloCita();
 
-		$cita->setIdCita($datos[0]);
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input['id'] ?? null;
 
-		$eliminacion = $cita->eliminarCitaPublic($idUsuario);
+		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
+		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
+
+		$cita->setIdCita($id);
+
+		$eliminacion = $cita->eliminarCitaPublic($idUsuario,$estado);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
 			$bitacora->setId_usuario($idUsuario);
-			$bitacora->setActividad("Ha eliminado una  cita");
+			$bitacora->setActividad("Ha {$text} una  cita");
 			$bitacora->setTabla("cita");
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			error_log("Error en eliminarCita: " . $eliminacion);
+			echo json_encode(['ok' => false, 'error' => "Error al {$text_error} la cita."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -295,7 +345,8 @@ function eliminarCita($datos)
 		exit;
 	} catch (Exception $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		error_log("Error en eliminarCita: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error interno del servidor']);
 		exit;
 	}
 }
@@ -371,6 +422,14 @@ function editarCita()
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 		$bitacora = new ModeloBitacora();
 		$cita = new ModeloCita();
@@ -403,7 +462,8 @@ function editarCita()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $edicion]);
+			error_log("Error en editarCita: " . $edicion);
+			echo json_encode(['ok' => false, 'error' => 'Error al modificar la cita.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -412,7 +472,8 @@ function editarCita()
 		exit;
 	} catch (Exception $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		error_log("Error en editarCita: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error interno del servidor']);
 		exit;
 	}
 }

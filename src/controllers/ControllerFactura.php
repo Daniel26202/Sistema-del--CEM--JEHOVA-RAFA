@@ -2,26 +2,24 @@
 
 use App\modelos\ModeloFactura;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloCita;
-use App\modelos\ModeloCliente;
-use App\modelos\ModeloHospitalizacion;
 use App\modelos\ModeloInsumo;
-use App\modelos\ModeloPacientes;
-use App\modelos\ModeloPermisos;
+use App\modelos\ModeloSanetizarJSON;
 
 function factura($parametro)
 {
 
 	$modeloInsumos = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
 	$vistaActiva = 'factura';
 	$ayuda = "btnayudaFactura";
-	$insumos = $modeloInsumos->insumos();
+	$insumos = $sanetizar->sanitizeRecursive($modeloInsumos->insumos());
 	require_once './src/vistas/vistaFactura/factura.php';
 }
 
 function mostrarServicios()
 {
 	$modeloFactura = new ModeloFactura();
+	$sanetizar = new ModeloSanetizarJSON();
 	$result = [];
 
 	foreach ($modeloFactura->mostrarServicios() as $servicio) {
@@ -36,35 +34,39 @@ function mostrarServicios()
 			'categoria' => $servicio['categoria'],
 		];
 	}
-	echo json_encode($result);
+
+	echo json_encode($sanetizar->sanitizeRecursive($result));
 }
 
 function mostrarInsumos()
 {
 	$modeloInsumos = new ModeloInsumo();
-	echo json_encode($modeloInsumos->insumos(false));
+	$sanetizar = new ModeloSanetizarJSON();
+	echo json_encode($sanetizar->sanitizeRecursive($modeloInsumos->insumos()));
 }
 
 function mostrarMetodosDePago()
 {
 	$modeloFactura = new ModeloFactura();
-	echo json_encode($modeloFactura->mostrarTiposDePagos());
+	$sanetizar = new ModeloSanetizarJSON();
+	echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->mostrarTiposDePagos()));
 }
 
 function facturaCita($parametro)
 {
 	$modeloInsumos = new ModeloInsumo();
 	$modeloFactura = new ModeloFactura();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	$idCita = preg_replace('/\D/', '', $parametro[0]);
 
 	$modeloFactura->setIdCita($idCita);
 
-	$insumos = $modeloInsumos->insumos();
-	$tiposDePagos = $modeloFactura->mostrarTiposDePagos();
+	$insumos = $sanetizar->sanitizeRecursive($modeloInsumos->insumos());
+	$tiposDePagos = $sanetizar->sanitizeRecursive($modeloFactura->mostrarTiposDePagos());
 	$todosLosInsumos = $insumos;
-	$extras = $modeloFactura->mostrarServicios();
-	$citaFacturar = $modeloFactura->mostrarCitaFactura();
+	$extras = $sanetizar->sanitizeRecursive($modeloFactura->mostrarServicios());
+	$citaFacturar = $sanetizar->sanitizeRecursive($modeloFactura->mostrarCitaFactura());
 
 	require_once './src/vistas/vistaFactura/facturaCita.php';
 }
@@ -72,14 +74,16 @@ function facturaCita($parametro)
 function facturarHospitalizacion($parametro)
 {
 	$modeloFactura = new ModeloFactura();
+	$sanetizar = new ModeloSanetizarJSON();
+
 	$idHospitalizacion = preg_replace('/\D/', '', $parametro[0]);
 
 	$modeloFactura->setIdH($idHospitalizacion);
 
-	$insumosHospitalizacion = $modeloFactura->unirInsumosHospitalizacion();
-	$tiposDePagos = $modeloFactura->mostrarTiposDePagos();
-	$hostalizacionFacturar = $modeloFactura->mostrarHospitalizacion();
-	$serviciosDeHospitalizacion = $modeloFactura->serviciosIncluidosHospit();
+	$insumosHospitalizacion = $sanetizar->sanitizeRecursive($modeloFactura->unirInsumosHospitalizacion());
+	$tiposDePagos = $sanetizar->sanitizeRecursive($modeloFactura->mostrarTiposDePagos());
+	$hostalizacionFacturar = $sanetizar->sanitizeRecursive($modeloFactura->mostrarHospitalizacion());
+	$serviciosDeHospitalizacion = $sanetizar->sanitizeRecursive($modeloFactura->serviciosIncluidosHospit());
 
 	require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
 }
@@ -87,6 +91,7 @@ function facturarHospitalizacion($parametro)
 function datosHospitalizacion($parametro)
 {
 	$modeloFactura = new ModeloFactura();
+	$sanetizar = new ModeloSanetizarJSON();
 	$modeloFactura->setIdH($parametro[0]);
 
 	$result = [];
@@ -148,12 +153,13 @@ function datosHospitalizacion($parametro)
 		];
 	}
 
-	echo json_encode($result);
+	echo json_encode($sanetizar->sanitizeRecursive($result));
 }
 
 function comprobante($parametro)
 {
 	$modeloFactura = new ModeloFactura();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	if ($parametro == "") {
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
@@ -161,15 +167,15 @@ function comprobante($parametro)
 	}
 
 	$modeloFactura->setIdFactura($parametro[0]);
-	$datosFactura = $modeloFactura->consultarFactura();
-	$datosPago = $modeloFactura->consultarPagoFactura();
-	$datosServiciosExtras = $modeloFactura->consultarServiciosExtras();
-	$x = $modeloFactura->comprobarSiFueHospit();
-	$serviciosDeHospitalizacion = $modeloFactura->serviciosIncluidosHospit($x);
+	$datosFactura = $sanetizar->sanitizeRecursive($modeloFactura->consultarFactura());
+	$datosPago = $sanetizar->sanitizeRecursive($modeloFactura->consultarPagoFactura());
+	$datosServiciosExtras = $sanetizar->sanitizeRecursive($modeloFactura->consultarServiciosExtras());
+	$x = $sanetizar->sanitizeRecursive($modeloFactura->comprobarSiFueHospit());
+	$serviciosDeHospitalizacion = $sanetizar->sanitizeRecursive($modeloFactura->serviciosIncluidosHospit());
 
 	$vistaActiva = $x ? 1 : 0;
 
-	$datosInsumos = $vistaActiva ? $modeloFactura->unirInsumosHospitalizacion($x) : $modeloFactura->consultarFacturaInsumo($parametro[0]);
+	$datosInsumos = $vistaActiva ? $modeloFactura->unirInsumosHospitalizacion() : $modeloFactura->consultarFacturaInsumo();
 
 	require_once './src/vistas/vistaFactura/comprobante.php';
 }
@@ -183,8 +189,10 @@ function mostrarPaciente()
 	}
 	try {
 		$modeloFactura = new ModeloFactura();
+		$sanetizar = new ModeloSanetizarJSON();
+
 		$modeloFactura->setCedula($_POST['cedula']);
-		echo json_encode($modeloFactura->buscar());
+		echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscar()));
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -201,8 +209,10 @@ function mostrarCliente()
 	}
 	try {
 		$modeloFactura = new ModeloFactura();
+		$sanetizar = new ModeloSanetizarJSON();
+
 		$modeloFactura->setCedula($_POST['cedula']);
-		echo json_encode($modeloFactura->buscarCliente());
+		echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscarCliente()));
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
@@ -218,14 +228,25 @@ function mostrarPacienteConCita()
 		exit;
 	}
 	$modeloFactura = new ModeloFactura();
+	$sanetizar = new ModeloSanetizarJSON();
+
 	$modeloFactura->setCedula($_POST["cedula"]);
-	echo json_encode($modeloFactura->buscarPacientePorCita());
+	echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscarPacientePorCita()));
 }
 
 function guardarFactura()
 {
 	if (empty($_POST)) {
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
+		exit;
+	}
+
+	$headers = getallheaders();
+	$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+	if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+		http_response_code(403);
+		echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
 		exit;
 	}
 
@@ -278,11 +299,13 @@ function guardarFactura()
 function mostrarPDF($parametro)
 {
 	$modeloFactura = new ModeloFactura();
+	$sanetizar = new ModeloSanetizarJSON();
+
 	$modeloFactura->setIdFactura($parametro[0]);
-	$datosFactura = $modeloFactura->consultarFacturaSinCita();
-	$datosPago = $modeloFactura->consultarPagoFactura();
-	$datosServiciosExtras = $modeloFactura->consultarServiciosExtras();
-	$datosInsumos = $modeloFactura->consultarFacturaInsumo();
+	$datosFactura = $sanetizar->sanitizeRecursive($modeloFactura->consultarFacturaSinCita());
+	$datosPago = $sanetizar->sanitizeRecursive($modeloFactura->consultarPagoFactura());
+	$datosServiciosExtras = $sanetizar->sanitizeRecursive($modeloFactura->consultarServiciosExtras());
+	$datosInsumos = $sanetizar->sanitizeRecursive($modeloFactura->consultarFacturaInsumo());
 	require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
 }
 
@@ -294,13 +317,4 @@ function mostrarPDF2()
 function mostrarPDF3()
 {
 	require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
-}
-
-function permisos($id_rol, $permiso, $modulo)
-{
-	$modeloPermisos = new ModeloPermisos();
-	$modeloPermisos->setIdRol($id_rol);
-	$modeloPermisos->setPermiso($permiso);
-	$modeloPermisos->setModulo($modulo);
-	return $modeloPermisos->gestionarPermisos();
 }

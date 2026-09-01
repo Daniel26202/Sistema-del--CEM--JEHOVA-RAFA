@@ -13,6 +13,17 @@ class Rutas
 
     public function __construct($url)
     {
+        //configuracion de cookies seguras
+        $isLocal = ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1');
+
+        session_set_cookie_params([
+            'lifetime' => 0,               // hasta cerrar navegador
+            'path' => '/',
+            'domain' => $_SERVER['HTTP_HOST'] ?? 'localhost',
+            'secure' => !$isLocal,         // true en producción (HTTPS), false en local
+            'httponly' => true,            // no accesible desde JavaScript
+            'samesite' => 'Strict'         // previene CSRF a nivel de cookie
+        ]);
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -153,11 +164,11 @@ class Rutas
             return;
         }
 
-        // if (empty($_SESSION['id_rol'])) {
-        //     session_destroy();
-        //     header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
-        //     return;
-        // }
+        if (empty($_SESSION['id_rol'])) {
+            session_destroy();
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
+            return;
+        }
 
         $permiso = $this->equivalentes[$metodo] ?? $metodo;
         $this->modelo->setIdRol($_SESSION['id_rol']);

@@ -113,7 +113,7 @@ addEventListener("DOMContentLoaded", function () {
        //llamar las funcion de eliminar
        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
          btn.addEventListener("click", function () {
-           const data = [this.getAttribute("data-index")];
+           const data = [this.getAttribute("data-index"),0];
            alertConfirm(
              "Esta seguro de eliminar la entrada?",
              deleteEntrada,
@@ -128,11 +128,11 @@ addEventListener("DOMContentLoaded", function () {
          btn.addEventListener("click", function () {
            const data = [
              this.getAttribute("data-index"),
-             document.getElementById("id_usuario_session").value,
+             1,
            ];
            alertConfirm(
              "Esta seguro de restablecer la entrada ?",
-             restablecerEntrada,
+             deleteEntrada,
              data,
            );
          });
@@ -187,7 +187,8 @@ addEventListener("DOMContentLoaded", function () {
   //delete
   const deleteEntrada = async (data) => {
     try {
-      const result = await executePetition(url + `/eliminar/${data}`, "GET");
+      const payload = { id: data[0], estado: data[1] };
+      const result = await executePetition(url + `/eliminar/`, "POST",payload);
       if (result.ok) {
         alertSuccess(result.message);
 
@@ -236,23 +237,6 @@ addEventListener("DOMContentLoaded", function () {
       alertError("Error", error);
     } finally {
       finallyLoaderButton(botonModal)
-    }
-  };
-
-  //restablecer
-  const restablecerEntrada = async (data) => {
-    try {
-      const result = await executePetition(
-        url + `/restablecerEntrada/${data}`,
-        "GET",
-      );
-      if (result.ok) {
-        alertSuccess(result.message);
-
-        readEntrada();
-      } else throw new Error(`${result.error}`);
-    } catch (error) {
-      alertError("Error", error);
     }
   };
 

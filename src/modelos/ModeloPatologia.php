@@ -8,6 +8,8 @@ class ModeloPatologia extends ModelBase
 {
 
     private $idPatologia, $nombrePatologia, $cedulaPac;
+    private $columnasPermitidas = ['id_patologia', 'nombre_patologia'];
+    private $ordenesPermitidos = ['ASC', 'DESC'];
 
     public function __construct($dbSystem = true)
     {
@@ -26,6 +28,13 @@ class ModeloPatologia extends ModelBase
                 $sql .= " AND (nombre_patologia LIKE :buscar)";
                 $data['buscar'] = "%$buscar%";
             }
+
+            if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+                $ordenColumna = 'id_patologia';
+            }
+
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_patologia';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
             // Concatenamos las variables validadas de orden y añadimos los marcadores de límite
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
@@ -54,7 +63,12 @@ class ModeloPatologia extends ModelBase
                 $sql .= " AND (nombre_patologia LIKE :buscar)";
                 $data['buscar'] = "%$buscar%";
             }
+            if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+                $ordenColumna = 'id_paciente';
+            }
 
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_paciente';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
@@ -168,7 +182,7 @@ class ModeloPatologia extends ModelBase
         }
     }
 
-    private function eliminarPatologia()
+    private function eliminarPatologia($estado = 'DES')
     {
         try {
             $data = [
@@ -184,44 +198,15 @@ class ModeloPatologia extends ModelBase
                 throw new \Exception("El id de la patologia no existe");
             }
 
-            $sql = "UPDATE patologia SET estado= 'DES' WHERE id_patologia=:id";
+            $sql = "UPDATE patologia SET estado= :estado WHERE id_patologia=:id";
             $this->setSQL($sql);
-
-            $this->update_logic($data['id_patologia']);
+            $this->update(['estado'=>$estado],$data['id_patologia']);
 
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-
-    private function restablecer()
-    {
-        try {
-            $data = [
-                'id_patologia' => $this->getIdPatologia()
-            ];
-
-            $sql = "SELECT id_patologia from patologia where id_patologia=:id_patologia";
-            $this->setSQL($sql);
-
-            $validar  = $this->search($data, false);
-
-            if ($validar == []) {
-                throw new \Exception("El id de la patologia no existe");
-            }
-
-            $sql = "UPDATE patologia SET estado= 'ACT' WHERE id_patologia=:id";
-            $this->setSQL($sql);
-
-            $this->update_logic($data['id_patologia']);
-
-            return ["exito"];
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
     private function validarSesion($idUsuario): void
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -251,22 +236,13 @@ class ModeloPatologia extends ModelBase
         return $this->insertarPatologia();
     }
 
-    public function deletePatologia($idUsuario = null)
+    public function deletePatologia($idUsuario = null,$estado = 'DES')
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([
             $this->idPatologia
         ], 'al eliminar la patologia');
-        return $this->eliminarPatologia();
-    }
-
-    public function restablecerPatologia($idUsuario = null)
-    {
-        $this->validarSesion($idUsuario);
-        $this->validarCamposObligatorios([
-            $this->idPatologia
-        ], 'al restablecer la patologia');
-        return $this->restablecer();
+        return $this->eliminarPatologia($estado);
     }
 
     public function getCedulaPac()

@@ -117,6 +117,7 @@ return [
     "buscarDoctor" => "consultar",
     "buscarHorario" => "consultar",
     "guardarDoctores" => "guardar",
+    "asignarServicioDoctor"=>"guardar",
     "selectEspcAjax" => "guardar",
     "eliminarEspecialidad" => "consultar",
     "papeleraDoctoresAjax" => "consultar",

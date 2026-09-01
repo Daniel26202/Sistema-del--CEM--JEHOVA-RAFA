@@ -10,6 +10,8 @@ class ModeloServicios extends ModelBase
 {
 
     private $id_servicioMedico, $precio, $tipo, $id_doctor, $idCategoria;
+    private $columnasPermitidasServicios = ['categoria', 'precio_bolivar', 'precio_dolar', 'tipo', 'id_servicioMedico'];
+    private $ordenesPermitidosServicios = ['ASC', 'DESC'];
 
     public function __construct($dbSystem = true)
     {
@@ -32,7 +34,11 @@ class ModeloServicios extends ModelBase
     public function mostrarServicios($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_cita', $ordenDir = 'DESC')
     {
         try {
-            $sql =  "SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria FROM serviciomedico sm INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria WHERE cs.estado = 'ACT' AND sm.estado = 'ACT'";
+
+            $sql = "SELECT sm.id_servicioMedico,sm.id_categoria,sm.precio,sm.tipo,cs.nombre as categoria 
+                FROM serviciomedico sm 
+                INNER JOIN categoria_servicio cs ON cs.id_categoria = sm.id_categoria 
+                WHERE cs.estado = 'ACT' AND sm.estado = 'ACT'";
 
             $data = [];
             if (!empty($buscar)) {
@@ -40,6 +46,9 @@ class ModeloServicios extends ModelBase
                 $data['buscar'] = "%$buscar%";
             }
 
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidasServicios) ? $ordenColumna : 'id_servicioMedico';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidosServicios) ? $ordenDir : 'DESC';
+            
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
 
@@ -79,10 +88,10 @@ class ModeloServicios extends ModelBase
     public function mostrarServiciosDoctor()
     {
         try {
-            
+
 
             $sql = "SELECT categoria_nombre.nombre as categoria, serviciomedico.id_servicioMedico, p.nombre AS nombre_personal, p.apellido AS apellido_personal, p.id_personal AS id_personal, serviciomedico.precio, e.nombre AS nombre_especialidad, serviciomedico.id_servicioMedico, categoria_nombre.nombre AS nombre_categoria FROM bd.personal p INNER JOIN bd.personal_has_serviciomedico ps ON ps.personal_id_personal = p.id_personal INNER JOIN
-            bd.serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN bd.especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN bd.categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria  WHERE serviciomedico.estado = 'ACT' AND categoria_nombre.estado = 'ACT' AND serviciomedico.estado = 'ACT' ";
+            bd.serviciomedico ON ps.serviciomedico_id_servicioMedico = serviciomedico.id_servicioMedico INNER JOIN bd.especialidad e ON e.id_especialidad = p.id_especialidad INNER JOIN bd.categoria_servicio categoria_nombre ON categoria_nombre.id_categoria = serviciomedico.id_categoria  WHERE  categoria_nombre.estado = 'ACT' AND serviciomedico.estado = 'ACT' ";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -102,6 +111,9 @@ class ModeloServicios extends ModelBase
                 $data['buscar'] = "%$buscar%";
             }
 
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidasServicios) ? $ordenColumna : 'id_servicioMedico';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidosServicios) ? $ordenDir : 'DESC';
+            
             $sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
             $this->setSQL($sql);
 
@@ -232,7 +244,7 @@ class ModeloServicios extends ModelBase
 
             $sql = "SELECT id_categoria,id_servicioMedico FROM serviciomedico where id_categoria =:id_categoria";
             $this->setSQL($sql);
-            $dataSer =  $this->search($data1,false);
+            $dataSer =  $this->search($data1, false);
 
             $data3 = [
                 'id_doctor' => $this->getIdDoctor(),
@@ -244,7 +256,7 @@ class ModeloServicios extends ModelBase
 
             $validar  = $this->search($data1, false);
 
-            if ($validar == []) {
+            if (empty($validar)) {
                 throw new \Exception("El id del servicio no existe");
             }
 
@@ -253,7 +265,7 @@ class ModeloServicios extends ModelBase
 
             $validar  = $this->search($data2, false);
 
-            if ($validar == []) {
+            if (empty($validar)) {
                 throw new \Exception("El id del doctor no existe");
             }
             if ($this->validarServicioDoctor($data3)) {
@@ -479,7 +491,7 @@ class ModeloServicios extends ModelBase
     public function setPrecio($precio)
     {
         if (!preg_match("/^(?!0$)(?!1$)\d+([.,]\d+)?$/", $precio)) {
-            throw new \InvalidArgumentException("El precio esta mal.".$precio);
+            throw new \InvalidArgumentException("El precio esta mal." . $precio);
         }
 
         $this->precio  = $precio;

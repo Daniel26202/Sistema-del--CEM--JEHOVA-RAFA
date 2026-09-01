@@ -3,6 +3,7 @@
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
+use App\modelos\ModeloSanetizarJSON;
 
 
 function bitacoraUsuario($parametro)
@@ -58,12 +59,18 @@ function bitacoraAjaxUser()
 	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'fecha_hora';
-
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'fecha_hora';
+	}
 
 	$modeloBitacora = new ModeloBitacora(false);
 	$modeloInicio = new ModeloInicio();
+	$sanitizador = new ModeloSanetizarJSON();
+
 
 	$bitacoras = $modeloBitacora->consultarBitacora($_SESSION['id_usuario'], $inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$bitacora_sanetizada = $sanitizador->sanitizeRecursive($bitacoras);
 
 	$totalRegistros = $modeloBitacora->contarTotalBitacora($_SESSION['id_usuario']);
 	$totalFiltrados = !empty($buscar) ? $modeloBitacora->contarTotalBitacora($_SESSION['id_usuario'], $buscar) : $totalRegistros;
@@ -73,7 +80,7 @@ function bitacoraAjaxUser()
 		"draw" => $draw,
 		"recordsTotal" => $totalRegistros,
 		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($bitacoras) ? $bitacoras : [],
+		"data" => is_array($bitacora_sanetizada) ? $bitacora_sanetizada : [],
 	];
 
 	echo json_encode($response);
@@ -103,10 +110,18 @@ function bitacoraAjaxAdmin()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'fecha_hora';
 
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'fecha_hora';
+	}
+
 
 	$modeloBitacora = new ModeloBitacora(false);
+	$sanitizador = new ModeloSanetizarJSON();
+
 
 	$bitacoras = $modeloBitacora->consultarBitacora(0,$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+
+	$bitacora_sanetizada = $sanitizador->sanitizeRecursive($bitacoras);
 
 	$totalRegistros = $modeloBitacora->contarTotalBitacora(0);
 	$totalFiltrados = !empty($buscar) ? $modeloBitacora->contarTotalBitacora(0,$buscar) : $totalRegistros;
@@ -116,7 +131,7 @@ function bitacoraAjaxAdmin()
 		"draw" => $draw,
 		"recordsTotal" => $totalRegistros,
 		"recordsFiltered" => $totalFiltrados,
-		"data" => is_array($bitacoras) ? $bitacoras : [],
+		"data" => is_array($bitacora_sanetizada) ? $bitacora_sanetizada : [],
 	];
 
 	echo json_encode($response);

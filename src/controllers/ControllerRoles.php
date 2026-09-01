@@ -3,14 +3,17 @@
 use \App\modelos\ModeloRoles;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloSanetizarJSON;
+
 
 function mostrar($parametro)
 {
     $modeloRoles = new ModeloRoles();
+    $sanetizar = new ModeloSanetizarJSON();
 
     $ayuda = "btnayudaRoles";
     $vistaActiva = "roles";
-    $roles = $modeloRoles->roles();
+    $roles = $sanetizar->sanitizeRecursive($modeloRoles->roles());
     $modulos = require_once './src/vistas/vistaRoles/modal/listaModulos.php';
     require_once './src/vistas/vistaRoles/vistaRoles.php';
 }
@@ -18,8 +21,8 @@ function mostrar($parametro)
 function mostrarAjax()
 {
     $modeloRoles = new ModeloRoles();
-
-    echo json_encode($modeloRoles->roles());
+    $sanetizar = new ModeloSanetizarJSON();
+    echo json_encode($sanetizar->sanitizeRecursive($modeloRoles->roles()));
 }
 
 function mostrarPermisos($id_rol, $modulo)
@@ -35,15 +38,17 @@ function mostrarPermisos($id_rol, $modulo)
 function cargarPermisosGuardados($datos)
 {
     $modeloRoles = new ModeloRoles();
+    $sanetizar = new ModeloSanetizarJSON();
     $modeloRoles->setIdRol($datos["0"]);
-    echo json_encode($modeloRoles->mostrarPermisos());
+    echo json_encode($sanetizar->sanitizeRecursive($modeloRoles->mostrarPermisos()));
 }
 
 
 function returnPermisos()
 {
     $modeloRoles = new ModeloRoles();
-    echo json_encode($modeloRoles->returnPermisos());
+    $sanetizar = new ModeloSanetizarJSON();
+    echo json_encode($sanetizar->sanitizeRecursive($modeloRoles->returnPermisos()));
 }
 
 //guardar el rol
@@ -56,6 +61,15 @@ function guardarRol()
         exit;
     }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario = $_SESSION['id_usuario'];
         $modeloRoles = new ModeloRoles();
         $modeloBitacora = new ModeloBitacora();
@@ -76,7 +90,8 @@ function guardarRol()
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $insercion]);
+            error_log("Error en guardarRol: " . $insercion);
+            echo json_encode(['ok' => false, 'error' => 'Error al guardar el rol.']);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -96,6 +111,15 @@ function modificarRol()
         exit;
     }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
         $idUsuario = $_SESSION['id_usuario'];
 
         $modeloRoles = new ModeloRoles();
@@ -120,7 +144,8 @@ function modificarRol()
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $edicion]);
+            error_log("Error en modificarRol: " . $edicion);
+            echo json_encode(['ok' => false, 'error' => 'Error al editar el rol.']);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -131,20 +156,26 @@ function modificarRol()
 }
 
 //eliminar Rol
-function eliminarRol($datos)
+function eliminarRol()
 {
-    if (empty($_GET)) {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-        exit;
-    }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+        
         $idUsuario = $_SESSION['id_usuario'];
         $modeloRoles = new ModeloRoles();
         $modeloBitacora = new ModeloBitacora();
 
-        $id_rol = $datos[0];
-        $modeloRoles->setIdRol($id_rol);
+        $input = json_decode(file_get_contents("php://input"), true);
+        $id = $input["id"] ?? null;
+
+        $modeloRoles->setIdRol($id);
         $eliminacion = $modeloRoles->eliminarRol($idUsuario);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -156,7 +187,8 @@ function eliminarRol($datos)
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            error_log("Error en eliminarRol: " . $eliminacion);
+            echo json_encode(['ok' => false, 'error' => 'Error al eliminar el rol.']);
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -165,12 +197,3 @@ function eliminarRol($datos)
         exit;
     }
 }
-
-
-
-
-
-    //  function permisos($id_rol, $permiso, $modulo)
-    // {
-    //     return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-    // }

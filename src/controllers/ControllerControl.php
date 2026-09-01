@@ -4,11 +4,9 @@ use App\modelos\ModeloControl;
 use App\modelos\ModeloSintomas;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
 use App\modelos\ModeloPacientes;
-use App\modelos\ModeloUsuarios;
-use App\config\RateLimiter;
+use App\modelos\ModeloSanetizarJSON;
 
 function control($parametro)
 {
@@ -50,9 +48,15 @@ function returnSistomasPaciente()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_sintomas';
 
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_sintomas';
+	}
+
 	$modeloSintomas = new ModeloSintomas();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	$sintomas = $modeloSintomas->selectSintomas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$sintomasSanetizados = $sanetizar->sanitizeRecursive($sintomas);
 
 	$totalRegistros = $modeloSintomas->contarTotalSintomas('ACT');
 	$totalFiltrados = !empty($buscar) ? $modeloSintomas->contarTotalSintomas('ACT', $buscar) : $totalRegistros;
@@ -61,7 +65,7 @@ function returnSistomasPaciente()
 		"draw"            => $draw,
 		"recordsTotal"    => (int)$totalRegistros,
 		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $sintomas
+		"data"            => is_array($sintomasSanetizados) ? $sintomasSanetizados : []
 	]);
 	exit;
 }
@@ -69,19 +73,25 @@ function returnSistomasPaciente()
 function returnPatologiasPaciente()
 {
 	$modeloPatologia = new ModeloPatologia();
-	echo json_encode($modeloPatologia->mostrarPatologias());
+	$sanetizar = new ModeloSanetizarJSON();
+	$data = $sanetizar->sanitizeRecursive($modeloPatologia->mostrarPatologias());
+	echo json_encode($data);
 }
 
 function returnPatologiasPacienteId()
 {
 	$modeloPatologia = new ModeloControl();
-	echo json_encode($modeloPatologia->mostrarPatologiaC());
+	$sanetizar = new ModeloSanetizarJSON();
+	$data = $sanetizar->sanitizeRecursive($modeloPatologia->mostrarPatologiaC());
+	echo json_encode($data);
 }
 
 function returnDoctores()
 {
 	$modeloControl = new ModeloControl();
-	echo json_encode($modeloControl->mostrarDoctor());
+	$sanetizar = new ModeloSanetizarJSON();
+	$data = $sanetizar->sanitizeRecursive($modeloControl->mostrarDoctor());
+	echo json_encode($data);
 }
 
 function listPacientesJS()
@@ -104,9 +114,15 @@ function listPacientesJS()
 	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_paciente';
+	}
 
 	$modeloPaciente = new ModeloPacientes();
+	$sanetizar = new ModeloSanetizarJSON();
 	$pacientes = $modeloPaciente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$data = $sanetizar->sanitizeRecursive($pacientes);
+
 
 	$totalRegistros = $modeloPaciente->contarTotalPacientes('ACT');
 	$totalFiltrados = !empty($buscar) ? $modeloPaciente->contarTotalPacientes('ACT',$buscar) : $totalRegistros;
@@ -115,7 +131,7 @@ function listPacientesJS()
 		"draw"            => $draw,
 		"recordsTotal"    => (int)$totalRegistros,
 		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => $pacientes
+		"data"            => is_array($data) ? $data : []
 	]);
 	exit;
 }
@@ -123,12 +139,13 @@ function listPacientesJS()
 function mostrarBusquedaPacientesJS($datos)
 {
 	$modeloControl = new ModeloControl();
+	$sanetizar = new ModeloSanetizarJSON();
 	$modeloControl->setCedula($datos[0]);
 	$modeloControl->setNacionalidad($datos[1]);
 
-
 	$respuesta = $modeloControl->buscarPacientes();
-	echo json_encode($respuesta);
+	$data = $sanetizar->sanitizeRecursive($respuesta);
+	echo json_encode($data);
 }
 
 function mostrarControlPacientesJS($datos)
@@ -137,6 +154,7 @@ function mostrarControlPacientesJS($datos)
 	$modeloSintomas = new ModeloSintomas();
 	$modeloPatologia = new ModeloPatologia();
 	$modeloInicio = new ModeloInicio();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	// verifica si la sesión esta activa.
 	if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -148,16 +166,16 @@ function mostrarControlPacientesJS($datos)
 
 	$cedula = $datos[0];
 
-	$sintomas = $modeloSintomas->selects();
+	$sintomas = $sanetizar->sanitizeRecursive($modeloSintomas->selects());
 	// patologías
 	$modeloControl->setCedula($cedula);
-	$registradosP = $modeloPatologia->buscarPatologiaPaciente();
-	$patologias = $modeloPatologia->mostrarPatologias();
+	$registradosP = $sanetizar->sanitizeRecursive($modeloPatologia->buscarPatologiaPaciente());
+	$patologias = $sanetizar->sanitizeRecursive($modeloPatologia->mostrarPatologias());
 
 	// cero es administrador mas no doctor 
 	if ($validacionCargo == 0) {
 		$modeloControl->setCedula($cedula);
-		$respuestaP = $modeloControl->mostrarControlPacienteA();
+		$respuestaP = $sanetizar->sanitizeRecursive($modeloControl->mostrarControlPacienteA());
 
 		// este array tiene tres valores de tres funciones en el modelo
 		$arrayPSS = [$respuestaP, $sintomas, $registradosP, $patologias];
@@ -167,7 +185,7 @@ function mostrarControlPacientesJS($datos)
 		// devuelve solo los datos del paciente atendido por el mismo doctor que inicio sesión(Usuario)
 		$modeloControl->setIdUsuario($idUsuario);
 		$modeloControl->setCedula($cedula);
-		$respuesta = $modeloControl->mostrarControlPacienteU();
+		$respuesta = $sanetizar->sanitizeRecursive($modeloControl->mostrarControlPacienteU());
 
 		// este array tiene tres valores de tres funciones en el modelo
 		$arrayPSS = [$respuesta, $sintomas, $registradosP, $patologias];
@@ -178,11 +196,12 @@ function mostrarControlPacientesJS($datos)
 function mostrarPacienteJS($datos)
 {
 	$modeloControl = new ModeloControl();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	$modeloControl->setNacionalidad($datos[0]);
 	$modeloControl->setCedula($datos[1]);
 	// me traigo los datos de los pacientes
-	$respuesta = $modeloControl->mostrarPaciente();
+	$respuesta = $sanetizar->sanitizeRecursive($modeloControl->mostrarPaciente());
 
 	echo json_encode($respuesta);
 }
@@ -195,6 +214,16 @@ function insertarControl()
 		exit;
 	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modeloBitacora = new ModeloBitacora();
@@ -242,6 +271,16 @@ function editarControl()
 		exit;
 	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modeloBitacora = new ModeloBitacora();
@@ -279,18 +318,20 @@ function editarControl()
 function mostrarSP($datos)
 {
 	$modeloControl = new ModeloControl();
+	$sanetizar = new ModeloSanetizarJSON();
 	$cedula = $datos[0];
 
 	$modeloControl->setCedula($cedula);
 	$modeloControl->setIdControl($modeloControl->mostrarUltimoIdControl());
 
-	$respuestaS = $modeloControl->mostrarSintomasPaId();
+	$respuestaS = $sanetizar->sanitizeRecursive($modeloControl->mostrarSintomasPaId());
 	echo json_encode($respuestaS);
 }
 // mostrar patología de pacientes del ultimo  control
 function mostrarPP($datos)
 {
 	$modeloControl = new ModeloControl();
+	$sanetizar  = new ModeloSanetizarJSON();
 	$cedula = $datos[0];
 
 	$modeloControl->setCedula($cedula);
@@ -298,7 +339,7 @@ function mostrarPP($datos)
 	$id_control = ($modeloControl->mostrarUltimoIdControl() != null) ? $modeloControl->mostrarUltimoIdControl() : 0;
 	$modeloControl->setIdControl($id_control);
 
-	$registradosP = $modeloControl->mostrarPatologiaP();
+	$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaP());
 	echo json_encode($registradosP);
 }
 
@@ -307,18 +348,20 @@ function mostrarPP($datos)
 function mostrarSPAll($datos)
 {
 	$modeloControl = new ModeloControl();
+	$sanetizar = new ModeloSanetizarJSON();
 	$modeloControl->setIdControl($datos[0]);
 
-	$respuestaS = $modeloControl->mostrarSintomasPaId();
+	$respuestaS = $sanetizar->sanitizeRecursive($modeloControl->mostrarSintomasPaId());
 	echo json_encode($respuestaS);
 }
 // mostrar patología de pacientes
 function mostrarPPAll($datos)
 {
 	$modeloControl = new ModeloControl();
+	$sanetizar = new ModeloSanetizarJSON();
 	$modeloControl->setIdControl($datos[0]);
 
-	$registradosP = $modeloControl->mostrarPatologiaP();
+	$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaP());
 	echo json_encode($registradosP);
 }
 
@@ -328,10 +371,11 @@ function mostrarPPAll($datos)
 function mostrarPIdP($datos)
 {
 	$modeloControl = new ModeloControl();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	$idC = $datos[0];
 	$modeloControl->setIdControl($idC);
-	$registradosP = $modeloControl->mostrarPatologiaC();
+	$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaC());
 	echo json_encode($registradosP);
 }
 
@@ -339,26 +383,26 @@ function mostrarPIdP($datos)
 function eliminarSintoma($datos)
 {
 
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
-
 	try {
 
-		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		// $limiter = new RateLimiter();
-		// $limiter->verificar('eliminar_sintoma_' . $idUsuario, 5, 1);
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input["id"] ?? null;
+
+		$idUsuario = $_SESSION['id_usuario'];
 		$modeloSintomas = new ModeloSintomas();
 		$modeloBitacora = new ModeloBitacora();
 
-
-		$id_sintomas = $datos[0];
-		$modeloSintomas->setIdSintomas($id_sintomas);
+		$modeloSintomas->setIdSintomas($id);
 		$eliminar = $modeloSintomas->eliminarL();
 
 		if (is_array($eliminar) && $eliminar[0] === "exito") {
@@ -370,8 +414,8 @@ function eliminarSintoma($datos)
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminar]);
+			error_log("Error en eliminarSintoma: " . $eliminar);
+			echo json_encode(['ok' => false, 'error' => "Error en al eliminar el sintoma."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -390,11 +434,17 @@ function agregarSintoma()
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
 
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		// $limiter = new RateLimiter();
-		// $limiter->verificar('guardar_sintoma_' . $idUsuario, 5, 1);
 
 		$modeloSintomas = new ModeloSintomas();
 		$modeloBitacora = new ModeloBitacora();
@@ -411,7 +461,8 @@ function agregarSintoma()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $insertar]);
+			error_log("Error en agregarSintoma: " . $insertar);
+			echo json_encode(['ok' => false, 'error' => "Error en guardar el sintoma."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -419,13 +470,4 @@ function agregarSintoma()
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
 	}
-}
-
-function permisos($id_rol, $permiso, $modulo)
-{
-	$modeloPermisos = new ModeloPermisos();
-	$modeloPermisos->setIdRol($id_rol);
-	$modeloPermisos->setPermiso($permiso);
-	$modeloPermisos->setModulo($modulo);
-	return $modeloPermisos->gestionarPermisos();
 }

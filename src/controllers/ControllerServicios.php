@@ -4,7 +4,7 @@ use App\modelos\ModeloCategoria;
 use App\modelos\ModeloServicios;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloDoctores;
-use App\modelos\ModeloPermisos;
+use App\modelos\ModeloSanetizarJSON;
 
 function servicios($parametro)
 {
@@ -33,10 +33,15 @@ function datosServicios($parametro)
 {
 	$modeloServicios = new ModeloServicios();
 	$modeloCategoria = new ModeloCategoria();
+	$sanitizador = new ModeloSanetizarJSON();
 
 	$doctores = $modeloServicios->mostrarDoctores();
 	$todasLasCategorias = $modeloCategoria->seleccionarCategoria();
-	echo json_encode(["doctores" => $doctores, "categorias" => $todasLasCategorias]);
+	$data = [
+		"doctores" => $doctores,
+		"categorias" => $todasLasCategorias
+	];
+	echo json_encode($sanitizador->sanitizeRecursive($data));
 }
 
 function categoriasAjax()
@@ -158,6 +163,15 @@ function guardar()
 
 
 	try {
+		// ✅ CSRF
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$servicio = new ModeloServicios();
@@ -175,23 +189,24 @@ function guardar()
 		$servicio->setPrecio($numero);
 		$servicio->setTipo($_POST['tipo']);
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha Insertado un nuevo servicio medico");
-		$bitacora->setTabla("servicio Medico");
-
 		$insercion = $servicio->guardarServicio($idUsuario);
 
 		if (is_array($insercion) && $insercion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha Insertado un nuevo servicio medico");
+			$bitacora->setTabla("servicio Medico");
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $insercion]);
+			error_log("Error en guardarServicio: " . $insercion);
+			echo json_encode(['ok' => false, 'error' => 'Error al guardar el servicio.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		error_log("Error en guardar: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error interno del servidor']);
 		exit;
 	}
 }
@@ -206,24 +221,39 @@ function eliminar($datos)
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input['id'] ?? null;
+
+		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
+		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
+
 		$idUsuario = $_SESSION['id_usuario'];
 		$servicio = new ModeloServicios();
 		$bitacora = new ModeloBitacora();
 
-		$servicio->setIdServicioMedico($datos[0]);
+		$servicio->setIdServicioMedico($id);
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha eliminado un servicio medico");
-		$bitacora->setTabla("servicio Medico");
-
-		$eliminacion = $servicio->eliminarServicio($idUsuario);
+		$eliminacion = $servicio->eliminarServicio($idUsuario,$estado);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha {$text} un servicio medico");
+			$bitacora->setTabla("servicio Medico");
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			error_log("Error en eliminarServicio: " . $eliminacion);
+			echo json_encode(['ok' => false, 'error' => "Error al {$text_error} el servicio."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -233,41 +263,6 @@ function eliminar($datos)
 	}
 }
 
-function restablecer($datos)
-{
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-	try {
-		$idUsuario = $_SESSION['id_usuario'];
-
-		$servicio = new ModeloServicios();
-		$bitacora = new ModeloBitacora();
-
-		$servicio->setIdServicioMedico($datos[0]);
-
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha restablecido un servicio medico");
-		$bitacora->setTabla("servicio Medico");
-
-		$restablecimiento = $servicio->restablecerServicio($idUsuario);
-
-		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-			$bitacora->insertarBitacora();
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
-			exit;
-		}
-	} catch (InvalidArgumentException $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
-	}
-}
 
 function editar()
 {
@@ -277,6 +272,14 @@ function editar()
 		exit;
 	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$servicio = new ModeloServicios();
@@ -293,23 +296,24 @@ function editar()
 		$servicio->setPrecio($numero);
 		$servicio->setTipo($_POST['tipo']);
 
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha modificado un servicio medico");
-		$bitacora->setTabla("servicio Medico");
-
 		$edicion = $servicio->editarServicio($idUsuario);
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha modificado un servicio medico");
+			$bitacora->setTabla("servicio Medico");
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $edicion]);
+			error_log("Error en editarServicio: " . $edicion);
+			echo json_encode(['ok' => false, 'error' => 'Error al modificar el servicio.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		error_log("Error en editar: " . $e->getMessage());
+		echo json_encode(['ok' => false, 'error' => 'Error interno del servidor']);
 		exit;
 	}
 }
@@ -318,11 +322,19 @@ function mostrarEspecialidad($datos)
 {
 	$modeloServicio = new ModeloServicios();
 	$modeloDoctor = new ModeloDoctores();
+	$sanitizador = new ModeloSanetizarJSON();
 
-	$modeloDoctor->setIdDoctor($datos[0]);
-	echo json_encode($modeloServicio->especialidadDoctor());
+	// Validar entrada
+	if (!isset($datos[0]) || !is_numeric($datos[0])) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'ID de doctor inválido']);
+		exit;
+	}
+
+	$modeloDoctor->setIdDoctor((int)$datos[0]);
+	$resultado = $modeloServicio->especialidadDoctor();
+	echo json_encode($sanitizador->sanitizeRecursive($resultado));
 }
-
 
 function registrarCategoria()
 {
@@ -333,6 +345,16 @@ function registrarCategoria()
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$categoria = new ModeloCategoria();
@@ -350,7 +372,8 @@ function registrarCategoria()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $insercion]);
+			error_log("Error en registrarCategiria: " . $insercion);
+			echo json_encode(['ok' => false, 'error' => 'Error al guardar la categoria.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -368,26 +391,41 @@ function eliminarCategoria($datos)
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido eliminar']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input['id'] ?? null;
+
+		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
+		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
 		$categoria = new ModeloCategoria();
 		$bitacora = new ModeloBitacora();
 
-		$categoria->setIdCategoria($datos[0]);
-
-		$bitacora->setId_usuario($idUsuario);
-		$bitacora->setActividad("Ha eliminado una categoria");
-		$bitacora->setTabla("Categoria de servicio medico");
+		$categoria->setIdCategoria($id);
 
 		$eliminacion  = $categoria->eliminarCategoria($idUsuario);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+			$bitacora->setId_usuario($idUsuario);
+			$bitacora->setActividad("Ha {$text} una categoria");
+			$bitacora->setTabla("Categoria de servicio medico");
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			error_log("Error en eliminarCategoria: " . $eliminacion);
+			echo json_encode(['ok' => false, 'error' => "Error al {$text_error} una categoria."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -396,8 +434,3 @@ function eliminarCategoria($datos)
 		exit;
 	}
 }
-
-	//  function permisos($id_rol, $permiso, $modulo)
-	// {
-	// 	return $this->permisos->gestionarPermisos($id_rol, $permiso, $modulo);
-	// }

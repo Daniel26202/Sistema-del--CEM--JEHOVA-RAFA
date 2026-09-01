@@ -3,7 +3,7 @@
 use App\modelos\ModeloEntrada;
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloBitacora;
-use App\modelos\ModeloPermisos;
+use App\modelos\ModeloSanetizarJSON;
 
 
 
@@ -11,10 +11,11 @@ use App\modelos\ModeloPermisos;
 function entrada($parametro)
 {
 	$modeloEntrada = new ModeloEntrada();
+	$sanetizar = new ModeloSanetizarJSON();
 	$ayuda = "btnayudaEntrada";
 	$vistaActiva = "entradas";
-	$insumos = $modeloEntrada->insumos();
-	$proveedores = $modeloEntrada->selectProveedores();
+	$insumos = $sanetizar->sanitizeRecursive($modeloEntrada->insumos());
+	$proveedores = $sanetizar->sanitizeRecursive($modeloEntrada->selectProveedores());
 	require_once './src/vistas/vistaEntrada/vistaEntrada.php';
 }
 
@@ -39,9 +40,14 @@ function entradasAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
 
-	$modeloEntrada = new ModeloEntrada();
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_entrada';
+	}
 
-	$entradas = $modeloEntrada->todasLasEntradas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$modeloEntrada = new ModeloEntrada();
+	$sanetizar = new ModeloSanetizarJSON();
+
+	$entradas = $sanetizar->sanitizeRecursive($modeloEntrada->todasLasEntradas($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloEntrada->contarTotalEntradas('ACT');
 	$totalFiltrados = !empty($buscar) ? $modeloEntrada->contarTotalEntradas('ACT',$buscar) : $totalRegistros;
@@ -62,7 +68,8 @@ function entradasAjax()
 function papelera($parametro)
 {
 	$modeloEntrada = new ModeloEntrada();
-	$insumos = $modeloEntrada->insumos();
+	$sanetizar = new ModeloSanetizarJSON();
+	$insumos = $sanetizar->sanitizeRecursive($modeloEntrada->insumos());
 	require_once './src/vistas/vistaEntrada/vistaEntradaDesactiva.php';
 }
 
@@ -87,9 +94,14 @@ function entradasPapeleraAjax()
 
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_entrada';
 
-	$modeloEntrada = new ModeloEntrada();
+	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+		$ordenColumna = 'id_entrada';
+	}
 
-	$entradas = $modeloEntrada->seleccionarDesactivos($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$modeloEntrada = new ModeloEntrada();
+	$sanetizar = new ModeloSanetizarJSON();
+
+	$entradas = $sanetizar->sanitizeRecursive($modeloEntrada->seleccionarDesactivos($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloEntrada->contarTotalEntradas('DES');
 	$totalFiltrados = !empty($buscar) ? $modeloEntrada->contarTotalEntradas('DES', $buscar) : $totalRegistros;
@@ -106,50 +118,11 @@ function entradasPapeleraAjax()
 	exit;
 }
 
-function restablecerEntrada($datos)
-{
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
-	try {
-
-		$idUsuario = $_SESSION['id_usuario'];
-		$modeloEntrada = new ModeloEntrada();
-		$modeloBitacora = new ModeloBitacora();
-
-		$id_entrada = $datos[0];
-
-		$modeloEntrada->setIdEntrada($id_entrada);
-		$restablecimiento = $modeloEntrada->restablecerEntrada($idUsuario);
-
-
-		if (is_array($restablecimiento) && $restablecimiento[0] === "exito") {
-
-			$modeloBitacora->setActividad("Ha restablecido una entrada");
-			$modeloBitacora->setTabla("entrada");
-			$modeloBitacora->setId_usuario($idUsuario);
-			$modeloBitacora->insertarBitacora();
-
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $restablecimiento]);
-			exit;
-		}
-	} catch (InvalidArgumentException $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
-	}
-}
-
 function proveedoresEditar()
 {
 	$modeloEntrada = new ModeloEntrada();
-	$respuesta = $modeloEntrada->selectProveedores();
+	$sanetizar = new ModeloSanetizarJSON();
+	$respuesta = $sanetizar->sanitizeRecursive($modeloEntrada->selectProveedores());
 	echo json_encode($respuesta);
 }
 
@@ -163,6 +136,15 @@ function guardar()
 		exit;
 	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modeloEntrada = new ModeloEntrada();
@@ -192,11 +174,10 @@ function guardar()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $insercion]);
+			error_log("Error en guardar: " . $insercion);
+			echo json_encode(['ok' => false, 'error' => 'Error al guardar la entrada.']);
 			exit;
 		}
-
-		// echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
@@ -205,34 +186,42 @@ function guardar()
 	}
 }
 
-function eliminar($datos)
+function eliminar()
 {
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modeloEntrada = new ModeloEntrada();
 		$modeloBitacora = new ModeloBitacora();
 
-		$id_entrada = $datos[0];
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = $input["id"] ?? null;
 
-		$modeloEntrada->setIdEntrada($id_entrada);
-		$elimincion = $modeloEntrada->eliminarEntrada($idUsuario);
+		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
+		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
+		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
+
+		$modeloEntrada->setIdEntrada($id);
+		$elimincion = $modeloEntrada->eliminarEntrada($idUsuario,$estado);
 
 		if (is_array($elimincion) && $elimincion[0] === "exito") {
-			$modeloBitacora->setActividad("Ha eliminado una entrada");
+			$modeloBitacora->setActividad("Ha {$text} una entrada");
 			$modeloBitacora->setTabla("entrada");
 			$modeloBitacora->setId_usuario($idUsuario);
 			$modeloBitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $elimincion]);
+			error_log("Error en eliminar: " . $elimincion);
+			echo json_encode(['ok' => false, 'error' => "Error en {$text_error} le entrada."]);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -250,7 +239,14 @@ function editar()
 		exit;
 	}
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modeloEntrada = new ModeloEntrada();
@@ -280,7 +276,8 @@ function editar()
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $edicion]);
+			error_log("Error en edicion: " . $edicion);
+			echo json_encode(['ok' => false, 'error' => 'Error al editar la entrada.']);
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -294,17 +291,9 @@ function entradaInsumo()
 {
 	$modeloEntrada = new ModeloEntrada();
 	$modeloInsumo = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
 
 	$modeloInsumo->setIdInsumo($_GET['id_insumo']);
-	$respuesta = $modeloEntrada->insumosEntrada();
+	$respuesta = $sanetizar->sanitizeRecursive($modeloEntrada->insumosEntrada());
 	echo json_encode($respuesta);
-}
-
-function permisos($id_rol, $permiso, $modulo)
-{
-	$modeloPermisos = new ModeloPermisos();
-	$modeloPermisos->setIdRol($id_rol);
-	$modeloPermisos->setPermiso($permiso);
-	$modeloPermisos->setModulo($modulo);
-	return $modeloPermisos->gestionarPermisos();
 }
