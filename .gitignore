@@ -8,8 +8,9 @@
 
 # Ignorar archivos temporales de sistemas operativos
 *.swp
+src/config/keys
+src/config/keys/encrypt_public.key
 src/config/keys/private.key
-src/config/keys/public.key
 
 
 # Ignorar la carpeta de dependencias

@@ -211,14 +211,15 @@ function error()
 
 
 
-function iniciarSesionMovil()
+function iniciarSesionMovilApk()
 {
     $modelo = new ModeloInicioSesion();
     $bitacora = new ModeloBitacora();
 
     // Llegim el JSON en cru enviat per la App / Thunder Client
     $jsonContenido = file_get_contents('php://input');
-    $datosInput = json_decode($jsonContenido, true);
+    $payloadCifrado = json_decode($jsonContenido, true);
+    $datosInput = Cifrado::descifrarPeticion($payloadCifrado);
 
     $userParam = $datosInput['username'] ?? '';
     $passParam = $datosInput['password'] ?? '';

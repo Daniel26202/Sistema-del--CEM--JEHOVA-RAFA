@@ -40,9 +40,7 @@ class Rutas
         $accept_files_extensions = ["css", "js", "png", "jpg", "jpeg", "gif", "svg", "ico"];
         if (in_array(pathinfo($this->url, PATHINFO_EXTENSION), $accept_files_extensions)) {
             $file = true;
-        }
-        
-        else if ($this->rateLimit->evaluarLimiteDB()) {
+        } else if ($this->rateLimit->evaluarLimiteDB()) {
             header("HTTP/1.1 429 Too Many Requests");
             // header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
             die("Too Many Requests");
@@ -94,6 +92,9 @@ class Rutas
         // Captura el header sin importar si viene como Authorization, authorization o por las variables globales de servidor
         $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null;
 
+        // Detecta si la ruta solicitada es un endpoint pensado para la app móvil
+        $esRutaMovil = str_ends_with($metodo, 'Apk');
+
         if (isset($authHeader)) {
 
             $token = str_replace('Bearer ', '', $authHeader);
@@ -104,9 +105,8 @@ class Rutas
                 $datosToken = \Firebase\JWT\JWT::decode($token, new Key($secrtJWT, 'HS256'));
 
                 $_SESSION['id_usuario'] = $datosToken->id_usuario;
-
                 //  Asegurar mapeo correcto del ID de Rol desde el objeto JWT
-                $_SESSION['id_rol']     = $datosToken->id_rol ?? ($datosToken->rol ?? null);
+                $_SESSION['id_rol'] = $datosToken->id_rol ?? ($datosToken->rol ?? null);
 
                 call_user_func($metodo, $parametro ?? []);
                 exit;
@@ -120,6 +120,16 @@ class Rutas
                 ]);
                 exit;
             }
+        } elseif ($esRutaMovil) {
+            // Ruta pensada para la app móvil, pero llegó sin ningún token, responde JSON, no HTML
+            if (ob_get_length()) ob_clean();
+            header("Content-Type: application/json; charset=utf-8");
+            http_response_code(401);
+            echo json_encode([
+                'ok' => false,
+                'error' => 'No autenticado. Por favor, inicie sesión en la App.'
+            ]);
+            exit;
         }
         // VISTAS WEB............. 
         // Corregida sintaxis de validación de sesión activa
@@ -127,14 +137,14 @@ class Rutas
         //     echo "Session no iniciada";
         //     return;
         // } Otra vez, esto esta en el construct, por Dios
-        
-        
+
+
         $sessionId = session_id();
         $this->rateLimit->setSessionId($sessionId);
 
         if (!$file && $this->rateLimit->evaluar_rate_limit_by_user()) {
             http_response_code(429);
-            echo json_encode(['error' => 'Demasiadas peticiones. Por favor, intente ma tarde.']);
+            echo json_encode(['error' => 'Demasiadas peticiones. Por favor, intente más tarde.']);
             exit;
         }
 
