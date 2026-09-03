@@ -27,6 +27,7 @@ if (!empty($parametro)) {
 }
 
 $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
+$csrfRecuperacion = htmlspecialchars($_SESSION['recuperacion_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8');
 
 ?>
 
@@ -37,6 +38,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 <html lang="es">
 
 <head>
+    <meta name="csrf-token" content="<?= $csrfRecuperacion ?>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J-R</title>
@@ -178,10 +180,6 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                         <p class="error-msg d-none"></p>
                                     </div>
 
-                                    <div>
-                                        <input type="hidden" name="id_usuario" id="idUsuario">
-                                        <input type="hidden" name="" id="correoV">
-                                    </div>
                                 </div>
                             </form>
 
@@ -218,10 +216,6 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
 
 
-                                        <div>
-                                            <input type="hidden" name="id_usuario" id="idUsuarioDos">
-                                            <input type="hidden" name="correo" id="correoVDos">
-                                        </div>
                                     </div>
 
                                     <h5 id="divTextError" class="text-danger mt-3 mb-0 pb-0 fw-bold text-center d-none">
@@ -289,7 +283,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                                     <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
                                                 </svg>
                                             </span>
-                                            <input class="form-control txt-custom input-validar inputs" name="passwordNew" id="inputReescContr"
+                                            <input class="form-control txt-custom input-validar inputs" name="passwordConf" id="inputReescContr"
                                                 placeholder="Reescriba la contraseña" type="password">
                                             <span class="icono-der">
                                                 <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
@@ -318,10 +312,6 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                         <p class="error-msg d-none">Las contraseñas no coinciden.</p>
                                     </div>
 
-                                    <div>
-                                        <input type="hidden" name="id_usuario" id="idUsuarioTres">
-                                        <input type="hidden" name="correo" id="correoVTres">
-                                    </div>
                                 </div>
                             </form>
 

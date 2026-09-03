@@ -428,7 +428,7 @@ const deleteModule = async (data) => {
   try {
     const result = await executePetition(
       `/Sistema-del--CEM--JEHOVA-RAFA/Permisos/eliminar_modulo/${data}`,
-      "GET",
+      "POST",
     );
     if (result.ok) {
       alertSuccess(result.message);

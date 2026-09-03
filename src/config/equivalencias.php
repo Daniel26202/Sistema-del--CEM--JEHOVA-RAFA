@@ -250,6 +250,8 @@ return [
     'returnModules' => 'consultar',
     'eliminar_modulo' => 'eliminar',
     'returnPermisionModule' => 'consultar',
+    'hasPermision' => 'consultar',
+    'registrarModulo' => 'guardar',
 
     //Reportes
     "reportes" => "consultar",
