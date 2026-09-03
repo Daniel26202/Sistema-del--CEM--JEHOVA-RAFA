@@ -193,7 +193,7 @@ function guardar()
 	}
 
 	try {
-		// 🔒 Validar CSRF token
+		// Validar CSRF token
 		$headers = getallheaders();
 		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 

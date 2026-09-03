@@ -10,6 +10,10 @@ class ModeloHospitalizacion extends ModelBase
 
     private $idH, $fechaHora, $idInsumo, $nombreInsumo, $cantidadIns, $idServicio, $fechaControl, $idInsH, $idInsElim, $idInsumosA, $cantidadE, $cantidadA, $fechaHoraFinal, $monto, $montoME, $total, $totalME, $patologiasId, $sintomasId, $cantidadSer, $severidad, $nota, $fechaRegreso, $diagnostico, $historial, $indicaciones, $cedula, $id_paciente, $id_doctor, $idServiceElim;
 
+    // lista blanca de columnas permitidas
+    private $columnasPermitidas = ['cedula', 'nombre', 'apellido', 'diagnostico', 'nombredoc'];
+    private $ordenesPermitidos = ['ASC', 'DESC'];
+
     public function __construct($dbSystem = true)
     {
         parent::__construct($dbSystem);
@@ -117,6 +121,9 @@ class ModeloHospitalizacion extends ModelBase
                 $data['buscar'] = "%$buscar%";
             }
 
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_hospitalizacion';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
+
             $sql .= " GROUP BY id_hospitalizacion ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
             $this->setSQL($sql);
@@ -143,6 +150,9 @@ class ModeloHospitalizacion extends ModelBase
                 $sql .= " AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)";
                 $data['buscar'] = "%$buscar%";
             }
+
+            $ordenColumna = in_array($ordenColumna, $this->columnasPermitidas) ? $ordenColumna : 'id_hospitalizacion';
+            $ordenDir = in_array(strtoupper($ordenDir), $this->ordenesPermitidos) ? $ordenDir : 'DESC';
 
             $sql .= " GROUP BY id_hospitalizacion ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 

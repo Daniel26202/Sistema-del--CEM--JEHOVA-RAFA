@@ -1298,7 +1298,8 @@ const renderizarInsumosAndSerivicos = async () => {
 //delete
 const deleteHosp = async (data) => {
   try {
-    const result = await executePetition(url + `/eliminaL/${data}`, "GET");
+    const payload = { id: data[0]};
+    const result = await executePetition(url + `/eliminaL`, 'POST',payload);
     if (result.ok) {
       alertSuccess(result.message);
       readHosp();

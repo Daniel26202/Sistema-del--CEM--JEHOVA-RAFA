@@ -7,6 +7,7 @@ use App\modelos\ModeloPermisos;
 use App\modelos\ModeloInicio;
 use App\modelos\ModeloPatologia;
 use App\modelos\ModeloSintomas;
+use App\modelos\ModeloSanetizarJSON;
 
 // use App\config\RateLimiter;
 
@@ -44,6 +45,11 @@ function traerHospP()
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_hospitalizacion';
 
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
+
+    if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
+        $ordenColumna = 'id_hospitalizacion';
+    }
 
     $resultado = [];
 
@@ -93,7 +99,7 @@ function traerHospP()
         "data" => is_array($resultado) ? $resultado : []
     ];
 
-    echo json_encode($response);
+    echo json_encode($sanetizacion->sanitizeRecursive($response));
     exit;
 }
 
@@ -118,6 +124,7 @@ function traerHospR()
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_hospitalizacion';
 
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
 
     $datosH = $modeloHosp->selectsHR($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
@@ -131,7 +138,7 @@ function traerHospR()
         "data" => is_array($datosH) ? $datosH : []
     ];
 
-    echo json_encode($response);
+    echo json_encode($sanetizacion->sanitizeRecursive($response));
     exit;
 }
 
@@ -143,13 +150,14 @@ function traerIdURSesion()
         session_start();
     }
     $modeloInicio = new ModeloInicio();
+    $sanetizacion = new ModeloSanetizarJSON();
 
     $modeloInicio->setIdPersonal($_SESSION['id_personal']);
     $validacionCargo = $modeloInicio->comprobarCargo();
 
 
     $array = ["id_usuario" => $_SESSION["id_usuario"], "id_rol" => $_SESSION["id_rol"], "validacionCargo" => $validacionCargo, "semaforoH" => refrescarSemaforo()];
-    echo json_encode($array);
+    echo json_encode($sanetizacion->sanitizeRecursive($array));
 }
 
 function hospitalizacion($parametro)
@@ -162,6 +170,7 @@ function hospitalizacion($parametro)
     $modeloInicio = new ModeloInicio();
     $modeloSintomas = new ModeloSintomas();
     $modeloPatologia = new ModeloPatologia();
+
 
     $vistaActiva = 'hospitalizacion';
 
@@ -196,67 +205,78 @@ function hospitalizacionesRealizadas($parametro)
 function selectServiciosD()
 {
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
 
     $servicios = $modeloHosp->selectServiciosD();
-    echo json_encode($servicios);
+    echo json_encode($sanetizacion->sanitizeRecursive($servicios));
 }
 
 function serviciosDH($datos)
 {
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
+
 
     $idH = $datos[0];
     $modeloHosp->setIdH($idH);
     $servicios = $modeloHosp->selectServiciosDH();
-    echo json_encode($servicios);
+    echo json_encode($sanetizacion->sanitizeRecursive($servicios));
 }
 
 function selectInsumos()
 {
     // datos de los insumos
     $modeloHosp = new ModeloHospitalizacion();
-    echo json_encode($modeloHosp->selectsInsumos());
+    $sanetizacion = new ModeloSanetizarJSON();
+    echo json_encode($sanetizacion->sanitizeRecursive($modeloHosp->selectsInsumos()));
 }
 
 //validar paciente 
 function validarPaciente($parametro = [])
 {
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
+
 
     $modeloHosp->setCedula($parametro[0]);
     $vC = $modeloHosp->validarPacienteH();
-    echo json_encode($vC);
+    echo json_encode($sanetizacion->sanitizeRecursive($vC));
 }
 
 //mostrar la información de un paciente doctor y control de la db 
 function mostrarInformacionPCD($parametro = [])
 {
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
+
     $modeloHosp->setCedula($parametro[0]);
     $info = $modeloHosp->select();
-    echo json_encode($info);
+    echo json_encode($sanetizacion->sanitizeRecursive($info));
 }
 
 //mostrar la información de todos los insumos de la db 
 function mostrarInsumos($datos)
 {
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
+
 
     $nombre = $datos[0];
     $modeloHosp->setNombreInsumo($nombre);
     $infoInsumos = $modeloHosp->buscarInsumos();
-    echo json_encode($infoInsumos);
+    echo json_encode($sanetizacion->sanitizeRecursive($infoInsumos));
 }
 
 //mostrar la información de un insumo de la db 
 function mostrarUnInsumo($datos)
 {
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
 
     $id = $datos[0];
     $modeloHosp->setIdInsumo($id);
     $infoInsumo = $modeloHosp->buscarUnInsumo();
-    echo json_encode($infoInsumo);
+    echo json_encode($sanetizacion->sanitizeRecursive($infoInsumo));
 }
 
 //para agregar hospitalización
@@ -277,6 +297,14 @@ function agregarH()
         exit;
     }
     try {
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+            exit;
+        }
 
         $idUsuario = $_SESSION['id_usuario'];
         // RATE LIMIT: 5 peticiones cada 1 segundos
@@ -344,10 +372,12 @@ function agregarH()
 function traerInsuDHEd($datos)
 {
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
+
     $idH = $datos[0];
     $modeloHosp->setIdH($idH);
     $datosIDH = $modeloHosp->EInsumosM();
-    echo json_encode($datosIDH);
+    echo json_encode($sanetizacion->sanitizeRecursive($datosIDH));
 }
 
 // traer datos de los insumos correspondiendo a la hospitalización que se edita.
@@ -450,12 +480,17 @@ function traerInsuDHEd($datos)
 
 function modificarH()
 {
+    $headers = getallheaders();
+    $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+    if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+        exit;
+    }
+
     $modeloBitacora = new ModeloBitacora();
     $modeloHosp = new ModeloHospitalizacion();
-
-    // ========================================
-    // 🔥 RECIBIR INSUMOS ELIMINADOS (solo esto cambia)
-    // ========================================
 
     //guardar los insumos que se van a eliminar
     $idInsElim = isset($_POST["id_insumos_eliminados"]) ? $_POST["id_insumos_eliminados"] : false;
@@ -525,41 +560,51 @@ function modificarH()
 
 
 // elimina la hospitalización lógicamente (lo desactiva).
-function eliminaL($datos)
+function eliminaL()
 {
-    if (isset($datos)) {
-        // verifica si la sesión esta activa.
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
+    // verifica si la sesión esta activa.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
 
-        try {
-            $idUsuario = $_SESSION['id_usuario'];
+    try {
 
-            $modeloBitacora = new ModeloBitacora();
-            $modeloHosp = new ModeloHospitalizacion();
+        $headers = getallheaders();
+        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
-            $idH = $datos[0];
-
-            $modeloHosp->setIdH($idH);
-            $eliminacion = $modeloHosp->eliminaLogico($idUsuario);
-
-            if (is_array($eliminacion) && $eliminacion[0] === "exito") {
-                $modeloBitacora->setTabla("hospitalizacion");
-                $modeloBitacora->setActividad("Ha eliminado una hospitalizacion");
-                $modeloBitacora->setId_usuario($idUsuario);
-                $modeloBitacora->insertarBitacora();
-                echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
-            } else {
-                http_response_code(409);
-                echo json_encode(['ok' => false, 'error' => $eliminacion]);
-                exit;
-            }
-        } catch (InvalidArgumentException $e) {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+        if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
             exit;
         }
+
+
+        $idUsuario = $_SESSION['id_usuario'];
+
+        $modeloBitacora = new ModeloBitacora();
+        $modeloHosp = new ModeloHospitalizacion();
+
+        $input = json_decode(file_get_contents("php://input"), true);
+        $idH = $input["id"] ?? null;
+
+        $modeloHosp->setIdH($idH);
+        $eliminacion = $modeloHosp->eliminaLogico($idUsuario);
+
+        if (is_array($eliminacion) && $eliminacion[0] === "exito") {
+            $modeloBitacora->setTabla("hospitalizacion");
+            $modeloBitacora->setActividad("Ha eliminado una hospitalizacion");
+            $modeloBitacora->setId_usuario($idUsuario);
+            $modeloBitacora->insertarBitacora();
+            echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
+        } else {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            exit;
+        }
+    } catch (InvalidArgumentException $e) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+        exit;
     }
 }
 
@@ -567,9 +612,11 @@ function eliminaL($datos)
 function buscarIExH()
 {
     $modeloHosp = new ModeloHospitalizacion();
+    $sanetizacion = new ModeloSanetizarJSON();
+
 
     $datosIns = $modeloHosp->buscarIEH();
-    echo json_encode($datosIns);
+    echo json_encode($sanetizacion->sanitizeRecursive($datosIns));
 }
 
 // enviar los datos de la hospitalización a factura 
