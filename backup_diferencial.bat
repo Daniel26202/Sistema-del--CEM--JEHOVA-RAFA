@@ -174,6 +174,21 @@ if defined CURRENT_FILE if defined CURRENT_POSITION if exist "!STATE_FILE!" (
     )
 )
 
+set "START_BINLOG="
+set "START_POSITION="
+if exist "!STATE_FILE!" (
+    for /f "usebackq tokens=1,2" %%A in ("!STATE_FILE!") do (
+        set "START_BINLOG=%%A"
+        set "START_POSITION=%%B"
+    )
+)
+set "STARTED=0"
+if defined START_BINLOG if not defined START_POSITION (
+    echo ERROR: El estado del binlog esta incompleto. Ejecute un respaldo completo.
+    del /q "!BINLOG_LIST!" "!MASTER_STATUS!" >nul 2>&1
+    exit /b 1
+)
+
 >"!OUTPUT!" echo -- Backup diferencial generado desde !FULL_DATE!
 >>"!OUTPUT!" echo -- Generado: !NOW_DATE!
 >>"!OUTPUT!" echo -- Fuente: binlogs locales de XAMPP
@@ -182,16 +197,38 @@ if defined CURRENT_FILE if defined CURRENT_POSITION if exist "!STATE_FILE!" (
 rem Se usa SHOW BINARY LOGS para respetar el nombre real configurado por MySQL.
 rem Esto evita depender de MYSQL_BINLOG_PREFIX y excluye automaticamente el .index.
 for /f "usebackq tokens=1" %%F in ("!BINLOG_LIST!") do (
-    if exist "!BINLOG_DIR!\%%F" (
+    set "PROCESS_FILE=1"
+    set "POSITION_ARG="
+    if defined START_BINLOG if "!STARTED!"=="0" (
+        if /i "%%F"=="!START_BINLOG!" (
+            set "STARTED=1"
+            set "POSITION_ARG=--start-position=!START_POSITION!"
+        ) else (
+            set "PROCESS_FILE=0"
+        )
+    )
+    if "!PROCESS_FILE!"=="1" if exist "!BINLOG_DIR!\%%F" (
         set "FOUND=1"
         echo Procesando %%F...
         >>"!LOG_FILE!" echo Procesando %%F
-        "!MYSQLBINLOG_EXE!" --start-datetime="!START_DATE!" --stop-datetime="!NOW_DATE!" "!BINLOG_DIR!\%%F" >>"!OUTPUT!" 2>>"!LOG_FILE!"
+        if defined POSITION_ARG (
+            "!MYSQLBINLOG_EXE!" !POSITION_ARG! --stop-datetime="!NOW_DATE!" "!BINLOG_DIR!\%%F" >>"!OUTPUT!" 2>>"!LOG_FILE!"
+        ) else if defined START_BINLOG (
+            "!MYSQLBINLOG_EXE!" --stop-datetime="!NOW_DATE!" "!BINLOG_DIR!\%%F" >>"!OUTPUT!" 2>>"!LOG_FILE!"
+        ) else (
+            "!MYSQLBINLOG_EXE!" --start-datetime="!START_DATE!" --stop-datetime="!NOW_DATE!" "!BINLOG_DIR!\%%F" >>"!OUTPUT!" 2>>"!LOG_FILE!"
+        )
         if errorlevel 1 (
             echo ERROR: Fallo el procesamiento de %%F. Revise !LOG_FILE!
             exit /b 1
         )
     )
+)
+
+if defined START_BINLOG if "!STARTED!"=="0" (
+    del /q "!BINLOG_LIST!" "!MASTER_STATUS!" >nul 2>&1
+    echo ERROR: No se encontro !START_BINLOG! en la lista de binlogs.
+    exit /b 1
 )
 
 if "!FOUND!"=="0" (
