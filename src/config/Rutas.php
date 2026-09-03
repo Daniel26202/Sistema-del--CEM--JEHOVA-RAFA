@@ -111,7 +111,7 @@ class Rutas
             $token = str_replace('Bearer ', '', $authHeader);
 
             try {
-                // rsa
+                // HS256
                 $secrtJWT = $_ENV['JWT_SECRET'];
                 $datosToken = \Firebase\JWT\JWT::decode($token, new Key($secrtJWT, 'HS256'));
 

@@ -282,7 +282,7 @@ class ModeloInicio extends ModelBase
 		if (!$dt || $dt->format('Y-m-d') !== $fechaFinal) {
 			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
 		}
-		if ($fechaFinal >= $fechaHoy) {
+		if ($fechaFinal > $fechaHoy) {
 			throw new \InvalidArgumentException("La fecha no puede ser del futuro.");
 		}
 		$this->fechaFinal = $fechaFinal;

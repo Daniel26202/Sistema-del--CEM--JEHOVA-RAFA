@@ -5,8 +5,7 @@ use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloUsuarios;
 use App\modelos\ModeloDoctores;
-
-
+use App\config\Cifrado;
 
 
 function inicio($parametro)
@@ -127,7 +126,7 @@ function cerrarSession()
     $usuario->setTokenInicioSesion(null);
     $usuario->setIdUsuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
     $usuario->actualizarTokenInicioSesion();
-    
+
     $bitacora->setId_usuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
     $bitacora->setActividad("Ha cerrado la session");
     $bitacora->setTabla("cerrar session");
@@ -266,4 +265,65 @@ function diasConMasCitas($parametro)
     $id_personal = isset($parametro[0]) ? $parametro[0] : 0;
     $modelo->setIdPersonal($id_personal);
     echo json_encode($modelo->obtenerDiasConMasCitas());
+}
+
+
+function especialidadesApk()
+{
+    if (ob_get_length()) ob_clean();
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Access-Control-Allow-Origin: *");
+    date_default_timezone_set('America/Caracas');
+
+    try {
+        $modelo = new ModeloInicio();
+        if (isset($_GET['inicio']) && isset($_GET['final'])) {
+            $modelo->setFechaInicio($_GET['inicio']);
+            $modelo->setFechaFinal($_GET['final']);
+        }
+        $especialidades = $modelo->especialidades_solicitadas();
+        $totalEspecialidades = $modelo->todas_las_especialidades();
+
+        echo json_encode(Cifrado::cifrarRespuesta([
+            'especialidades' => $especialidades,
+            'totalEspecialidades' => $totalEspecialidades,
+        ]));
+    } catch (\InvalidArgumentException $e) {
+        http_response_code(400);
+        echo json_encode(Cifrado::cifrarRespuesta(["ok" => false, "error" => $e->getMessage()]));
+    } catch (\Throwable $e) {
+        http_response_code(500);
+        echo json_encode(Cifrado::cifrarRespuesta(["ok" => false, "error" => "Error interno: " . $e->getMessage()]));
+    }
+    exit;
+}
+
+function sintomasApk()
+{
+    if (ob_get_length()) ob_clean();
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Access-Control-Allow-Origin: *");
+    date_default_timezone_set('America/Caracas');
+
+    try {
+        $modelo = new ModeloInicio();
+        if (isset($_GET['inicio']) && isset($_GET['final'])) {
+            $modelo->setFechaInicio($_GET['inicio']);
+            $modelo->setFechaFinal($_GET['final']);
+        }
+        $sintomas = $modelo->sintomas_comunes();
+        $totalSintomas = $modelo->todos_los_sintomas();
+
+        echo json_encode(Cifrado::cifrarRespuesta([
+            'sintomas' => $sintomas,
+            'totalSintomas' => $totalSintomas,
+        ]));
+    } catch (\InvalidArgumentException $e) {
+        http_response_code(400);
+        echo json_encode(Cifrado::cifrarRespuesta(["ok" => false, "error" => $e->getMessage()]));
+    } catch (\Throwable $e) {
+        http_response_code(500);
+        echo json_encode(Cifrado::cifrarRespuesta(["ok" => false, "error" => "Error interno: " . $e->getMessage()]));
+    }
+    exit;
 }
