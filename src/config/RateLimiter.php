@@ -7,8 +7,8 @@ use App\modelos\ModelBase;
 
 class RateLimiter extends ModelBase
 {
-    private $limite_ip = 60;
-    private $ventana_tiempo_IP = 10;
+    private $limite_ip = 5;
+    private $ventana_tiempo_IP = 60;
     private $limite_user = 20;
     private $ventana_tiempo_user = 1;
     private $sessionId = '';    
