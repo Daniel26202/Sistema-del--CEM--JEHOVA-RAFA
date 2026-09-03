@@ -195,7 +195,7 @@ function iniciarSesion()
 
 
         http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $validar]);
+        echo json_encode(['ok' => false, 'error' =>'Los datos son incorrectos']);
         exit;
     }
 }

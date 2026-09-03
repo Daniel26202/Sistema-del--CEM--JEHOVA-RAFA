@@ -38,7 +38,7 @@ class ModeloCita extends ModelBase
 	public function mostrarServicioDoctor()
 	{
 		try {
-			$sql = "SELECT id_categoria, nombre FROM categoria_servicio WHERE estado = 'ACT'";
+			$sql = "SELECT cs.id_categoria, cs.nombre FROM categoria_servicio cs INNER JOIN serviciomedico sm ON sm.id_categoria = cs.id_categoria INNER JOIN personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = sm.id_servicioMedico WHERE cs.estado = 'ACT' AND sm.estado = 'ACT' GROUP BY cs.id_categoria ";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {

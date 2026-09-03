@@ -37,10 +37,17 @@ function guardar()
 	}
 
 	try {
+		$headers = getallheaders();
+		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+
+		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+			exit;
+		}
+
 		$idUsuario = $_SESSION['id_usuario'];
-		// RATE LIMIT: 5 peticiones cada 1 segundos
-		// $limiter = new RateLimiter();
-		// $limiter->verificar('guardar_perfil_' . $idUsuario, 5, 1);
+
 
 		$bitacora = new ModeloBitacora();
 		$modelo = new ModeloPerfil();
@@ -71,8 +78,15 @@ function guardar()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $edicion]);
+			if (is_string($edicion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $edicion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en guardar: " . print_r($edicion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al modificar el perfil.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

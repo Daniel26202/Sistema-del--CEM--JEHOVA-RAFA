@@ -31,6 +31,8 @@
                 <input type="hidden" name="id_paciente" id="input-id-paciente">
                 <input type="hidden" name="fecha" id="fechaHoy">
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+
 
                 <!-- SECCIÓN: BUSCAR PACIENTE -->
                 <div class="">
@@ -104,7 +106,7 @@
                 <div class="d-none" id="contenedorFormAgregar">
 
                     <!-- ── DOCTOR ── -->
-                     
+
                     <label class="label-custom">Seleccione el doctor</label>
 
                     <?php if (empty($doctores)): ?>

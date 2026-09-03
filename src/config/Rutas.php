@@ -67,7 +67,8 @@ class Rutas
         $this->controlador = ucfirst($this->partes[0]);
         $metodo = $this->partes[1];
         $parametro = "";
-        $modulo =  $this->controlador;
+        // La administración de permisos forma parte del módulo Roles.
+        $modulo = $this->controlador === 'Permisos' ? 'Roles' : $this->controlador;
 
 
         if (isset($this->partes[2])) {
@@ -107,6 +108,17 @@ class Rutas
         $esRutaMovil = str_ends_with($metodo, 'Apk');
 
         if (isset($authHeader)) {
+            // Un JWT solo puede acceder a endpoints explícitamente móviles.
+            if (!$esRutaMovil) {
+                if (ob_get_length()) ob_clean();
+                header("Content-Type: application/json; charset=utf-8");
+                http_response_code(401);
+                echo json_encode([
+                    'ok' => false,
+                    'error' => 'El token móvil no es válido para esta ruta.'
+                ]);
+                exit;
+            }
 
             $token = str_replace('Bearer ', '', $authHeader);
 
@@ -159,7 +171,7 @@ class Rutas
             exit;
         }
 
-        if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerBitacora" || $this->controlador == 'ControllerPermisos') {
+        if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerBitacora") {
             call_user_func($metodo, $parametro ?? []);
             return;
         }

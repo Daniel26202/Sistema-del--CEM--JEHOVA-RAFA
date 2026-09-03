@@ -192,9 +192,15 @@ function guardarInsumo()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
-			http_response_code(409);
-			error_log("Error en guardarInsumo: " . $insercion);
-			echo json_encode(['ok' => false, 'error' => 'Error al guardar el insumo.']);
+			if (is_string($insercion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en guardarInsumo: " . print_r($insercion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar el insumo.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -239,9 +245,15 @@ function eliminar()
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en eliminar: " . $eliminacion);
-			echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el insumo."]);
+			if (is_string($eliminacion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en eliminar: " . print_r($eliminacion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al '.$text_error.' el insumo.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -311,9 +323,15 @@ function editar()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {
-			http_response_code(409);
-			error_log("Error en editar: " . $edicion);
-			echo json_encode(['ok' => false, 'error' => 'Error al modificar el insumo.']);
+			if (is_string($edicion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $edicion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en editar: " . print_r($edicion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al editar el insumo.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

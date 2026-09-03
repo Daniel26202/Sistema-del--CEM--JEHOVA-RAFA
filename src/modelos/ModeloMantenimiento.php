@@ -128,7 +128,8 @@ class ModeloMantenimiento extends ModelBase
 				system($cmdSe, $estadoSe);
 
 				// SE AGREGÓ --events AQUÍ
-				$cmdSi = "{$mysqldump} {$auth} --flush-logs --delete-master-logs --single-transaction --routines --triggers --events {$this->dbname} > \"{$bdSistema}\"";
+				// Conservamos los binlogs; el script de respaldo diferencial los procesa después.
+				$cmdSi = "{$mysqldump} {$auth} --flush-logs --master-data=2 --single-transaction --routines --triggers --events {$this->dbname} > \"{$bdSistema}\"";
 				system($cmdSi, $estadoSi);
 			}
 

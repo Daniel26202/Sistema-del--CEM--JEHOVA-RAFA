@@ -145,19 +145,20 @@ function insertar()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			http_response_code(409);
-			error_log("Error en insertar: " . $insercion); // Registro interno
-			echo json_encode(['ok' => false, 'error' => $insercion]);
+			if (is_string($insercion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en insertar: " . print_r($insercion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar el proveedor.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
-	} catch (Exception $e) {
-		http_response_code(409);
-		error_log("Error en guardarProveedor: " . $e->getMessage());
-		echo json_encode(['ok' => false, 'error' => 'Error al guardar el proveedor']);
 		exit;
 	}
 }
@@ -198,19 +199,20 @@ function update()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en update: " . $eliminacion);
-			echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el proveedor."]);
+			if (is_string($eliminacion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en update: " . print_r($eliminacion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al '.$text_error.' el proveedor.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
-	} catch (Exception $e) {
-		http_response_code(409);
-		error_log("Error en guardarProveedor: " . $e->getMessage());
-		echo json_encode(['ok' => false, 'error' => 'Error al eliminar al proveedor']);
 		exit;
 	}
 }
@@ -258,19 +260,20 @@ function editar()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en editar: " . $editado); // Registro interno
-			echo json_encode(['ok' => false, 'error' => 'Error al editar el proveedor.']);
+			if (is_string($editado)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $editado]);
+			} else {
+				http_response_code(409);
+				error_log("Error en editar: " . print_r($editado, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al editar el proveedor.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
-	} catch (Exception $e) {
-		http_response_code(409);
-		error_log("Error en editar: " . $e->getMessage());
-		echo json_encode(['ok' => false, 'error' => 'Error al editar el proveedor']);
 		exit;
 	}
 }

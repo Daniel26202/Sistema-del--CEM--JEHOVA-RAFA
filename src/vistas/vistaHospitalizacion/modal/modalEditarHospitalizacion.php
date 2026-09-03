@@ -25,6 +25,7 @@
 
                 <!-- Campos ocultos (lógica intacta) -->
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="hidden" name="id_controlE" id="idCE">
                 <input type="hidden" name="id_h" id="idHptE">
                 <input type="hidden" name="id_insumos_eliminados[]" id="idInEli">

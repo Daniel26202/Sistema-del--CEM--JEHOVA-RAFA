@@ -4,6 +4,21 @@ use App\modelos\ModeloPermisos;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloSanetizarJSON;
 
+function validarCsrfPermisos()
+{
+    $headers = function_exists('getallheaders') ? getallheaders() : [];
+    $csrfToken = $headers['X-CSRF-Token']
+        ?? $headers['x-csrf-token']
+        ?? $_POST['csrf_token']
+        ?? null;
+
+    if (empty($_SESSION['csrf_token']) || empty($csrfToken) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+        exit;
+    }
+}
+
 // use App\config\RateLimiter;
 
 
@@ -58,16 +73,21 @@ function returnPermisionModule()  {
 
 function hasPermision($data)
 {
-    if (empty($_GET)) {
+    $idRol = $_SESSION['id_rol'] ?? null;
+    $modulo = $data[1] ?? null;
+    $permiso = $data[2] ?? null;
+
+    if (empty($idRol) || empty($modulo) || empty($permiso)) {
         http_response_code(409);
         echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
         exit;
     }
     try {
         $model = new ModeloPermisos();
-        $model->setIdRol($data[0]);
-        $model->setModulo($data[1]);
-        $model->setPermiso($data[2]);
+        // Nunca confiar en el rol recibido por URL para consultar permisos.
+        $model->setIdRol($idRol);
+        $model->setModulo($modulo);
+        $model->setPermiso($permiso);
         $id_modulo = $model->returnIdModule();
         if (!$id_modulo) {
             http_response_code(409);
@@ -94,10 +114,9 @@ function registrarModulo()
     }
 
     try {
+        validarCsrfPermisos();
+
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        // $limiter = new RateLimiter();
-        // $limiter->verificar('guardar_modulo_' . $idUsuario, 5, 1);
 
         $modulo = new ModeloPermisos();
         $bitacora = new ModeloBitacora();
@@ -107,14 +126,21 @@ function registrarModulo()
         $insercion = $modulo->registrarModulo();
 
         if (is_array($insercion) && $insercion[0] === "exito") {
-            $bitacora->setId_usuario($_POST['id_usuario']);
+            $bitacora->setId_usuario($idUsuario);
             $bitacora->setActividad("Ha Insertado un nuevo  modulo");
             $bitacora->setTabla("modulo");
             $bitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $insercion]);
+            if (is_string($insercion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $insercion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en registrarModulo: " . print_r($insercion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al guardar el modulo.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -134,18 +160,16 @@ function eliminar_modulo($datos)
     }
 
     try {
+        validarCsrfPermisos();
 
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        // $limiter = new RateLimiter();
-        // $limiter->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
 
         $modelo  = new ModeloPermisos();
         $bitacora = new ModeloBitacora();
 
         $modelo->setIdModulo($datos[0]);
 
-        $bitacora->setId_usuario($datos[1]);
+        $bitacora->setId_usuario($idUsuario);
         $bitacora->setActividad("Ha eliminado un  modulo del sistema");
         $bitacora->setTabla("modulo");
 
@@ -156,8 +180,15 @@ function eliminar_modulo($datos)
             $bitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            if (is_string($eliminacion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en eliminar_modulo: " . print_r($eliminacion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al eliminar el modulo.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {

@@ -173,9 +173,15 @@ function guardar()
 			$modeloBitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
-			http_response_code(409);
-			error_log("Error en guardar: " . $insercion);
-			echo json_encode(['ok' => false, 'error' => 'Error al guardar la entrada.']);
+			if (is_string($insercion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en guardar: " . print_r($insercion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar la entrada.']);
+				exit;
+			}
 			exit;
 		}
 
@@ -275,9 +281,15 @@ function editar()
 			$modeloBitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {
-			http_response_code(409);
-			error_log("Error en edicion: " . $edicion);
-			echo json_encode(['ok' => false, 'error' => 'Error al editar la entrada.']);
+			if (is_string($edicion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $edicion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en editar: " . print_r($edicion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al editar la entrada.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

@@ -50,18 +50,11 @@ addEventListener("DOMContentLoaded", function () {
                 btnEC.classList.add("d-none");
                 divTime.classList.add("d-none");
                 btnRC.classList.add("d-none");
-            } else if (resultado != "conexionFallida") {
+            } else if (resultado && resultado.ok === true) {
                 // mensaje de alerta
 
                 alertSuccess("Código enviado al correo exitosamente");
                 tituloPg.textContent = "Ingresé el código para la recuperación";
-
-                document.querySelector("#idUsuario").value = parseInt(resultado.id_usuario);
-                document.querySelector("#correoV").value = resultado.correo;
-                document.querySelector("#idUsuarioDos").value = parseInt(resultado.id_usuario);
-                document.querySelector("#correoVDos").value = resultado.correo;
-                document.querySelector("#idUsuarioTres").value = parseInt(resultado.id_usuario);
-                document.querySelector("#correoVTres").value = resultado.correo;
 
                 divFormUno.classList.add("d-none");
                 divFormDos.classList.remove("d-none");
@@ -95,6 +88,8 @@ addEventListener("DOMContentLoaded", function () {
                 // mensaje de alerta
 
                 alertError("Error", "Su código expiro.");
+            } else if (resultado === "demasiadosIntentos") {
+                alertError("Error", "Se excedió el número de intentos permitidos.");
             }
 
             // tercero formulario, nueva clave
@@ -118,6 +113,10 @@ addEventListener("DOMContentLoaded", function () {
                 btnVC.classList.add("d-none");
                 divTime.classList.add("d-none");
                 btnRC.classList.add("d-none");
+            } else if (resultado === "recuperacionInvalida") {
+                alertError("Error", "La recuperación no está validada o expiró.");
+            } else if (resultado === "passwordInvalida") {
+                alertError("Error", "La contraseña no cumple los requisitos.");
             }
         } else if (numero == "cuatro") {
             if (resultado === true) {

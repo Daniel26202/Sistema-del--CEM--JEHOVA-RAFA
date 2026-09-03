@@ -20,6 +20,9 @@
 
                     <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+
+
                     <input type="hidden" name="cedulaRegistrada" id="cedulaRegistrada">
 
                     <input type="hidden" name="id" id="id_paciente">

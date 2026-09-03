@@ -155,9 +155,15 @@ function guardar()
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
-            http_response_code(409);
-            error_log("Error en guardar: " . $insercion);
-            echo json_encode(['ok' => false, 'error' => "Error al guardar el cliente."]);
+            if (is_string($insercion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $insercion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en guardar: " . print_r($insercion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al guardar el cliente.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -210,9 +216,15 @@ function setCliente()
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en setCliente: " . $edicion);
-            echo json_encode(['ok' => false, 'error' => "Error al editar el cliente."]);
+            if (is_string($edicion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $edicion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en setCliente: " . print_r($edicion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al editar el cliente.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -262,9 +274,15 @@ function eliminar()
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en eliminar: " . $eliminacion);
-            echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el cliente."]);
+            if (is_string($eliminacion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en eliminarCliente: " . print_r($eliminacion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al ' . $text_error . ' el cliente.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {

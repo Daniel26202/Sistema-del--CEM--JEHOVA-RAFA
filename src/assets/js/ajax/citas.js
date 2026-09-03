@@ -369,8 +369,8 @@ addEventListener("DOMContentLoaded", function () {
   };
 
   const cargarDatosEditar = async (btn) => {
-    console.log(btn,'datoseditar');
-    
+    console.log(btn, "datoseditar");
+
     //cambiar el estilo del modal
     modalAgregarCita.classList.add("editar");
 
@@ -381,7 +381,7 @@ addEventListener("DOMContentLoaded", function () {
     inputIdCita.value = btn.getAttribute("data-index");
     cedulaCita.value = btn.closest("tr").children[0].innerText.slice(2);
     console.log(cedulaCita.value);
-    
+
     await traerPacienteCita();
 
     await traerServiciosMedicos();
@@ -467,9 +467,14 @@ addEventListener("DOMContentLoaded", function () {
       let metodo = "";
       let urlActual = window.location.href;
 
-      if (urlActual.includes("Hoy")) metodo = "citasHoyAjax";
-      else if (urlActual.includes("Realizadas")) metodo = "citasRealizadasAjax";
-      else metodo = "citasAjax";
+      if (urlActual.includes("Hoy")) {
+        metodo = "citasHoyAjax";
+      } else if (urlActual.includes("Realizadas")) {
+        metodo = "citasRealizadasAjax";
+        btnAgendarCita.classList.add('d-none');
+      } else {
+        metodo = "citasAjax";
+      }
 
       const selector = ".exampleTable";
 
@@ -553,10 +558,7 @@ addEventListener("DOMContentLoaded", function () {
         //llamar las funcion de eliminar
         document.querySelectorAll(".btn-eliminar").forEach((btn) => {
           btn.addEventListener("click", function () {
-            const data = [
-              this.getAttribute("data-index"),
-              0,
-            ];
+            const data = [this.getAttribute("data-index"), 0];
 
             alertConfirm("Esta seguro de eliminar la cita?", deleteCita, data);
           });
@@ -622,7 +624,8 @@ addEventListener("DOMContentLoaded", function () {
       const payload = { id: data[0], estado: data[1] };
       const result = await executePetition(
         url + `/eliminarCita/`,
-        "POST",payload
+        "POST",
+        payload,
       );
       if (result.ok) {
         alertSuccess(result.message);
@@ -808,6 +811,8 @@ addEventListener("DOMContentLoaded", function () {
 
     //ocultar btn paciente
     divBtnAddPat.classList.add("d-none");
+
+    modalFooter.classList.add("d-none");
   });
 
   traerServiciosMedicos();

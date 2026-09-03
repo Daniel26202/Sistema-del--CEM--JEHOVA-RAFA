@@ -31,50 +31,50 @@ $pdf->SetTextColor(14, 169, 181);
 foreach($entradas as $entrada){
 // AQUI PONES EL FOREACH
 $pdf->Cell(10);
-$pdf->Cell(40, 20, utf8_decode('INSUMO: '.$entrada["nombre"]), 0, 0, 'L');
+$pdf->Cell(40, 20, ('INSUMO: '.$entrada["nombre"]), 0, 0, 'L');
 $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 13);
-$pdf->Cell(40, 20, utf8_decode('PROVEEDOR: '.$entrada["nombre_proveedor"]), 0, 0, 'L');
+$pdf->Cell(40, 20, ('PROVEEDOR: '.$entrada["nombre_proveedor"]), 0, 0, 'L');
 $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 13);
-$pdf->Cell(40, 20, utf8_decode('RIF: '.$entrada["rif"]), 0, 0, 'L');
+$pdf->Cell(40, 20, ('RIF: '.$entrada["rif"]), 0, 0, 'L');
 $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 13);
-$pdf->Cell(30, 20, utf8_decode('FECHA DE INGRESO: '.$entrada["fechaDeIngreso"]), 0, 0, 'L');
+$pdf->Cell(30, 20, ('FECHA DE INGRESO: '.$entrada["fechaDeIngreso"]), 0, 0, 'L');
 $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 13);
-$pdf->Cell(40, 20, utf8_decode('FECHA DE VENCIMIENTO: '.$entrada["fechaDeVencimiento"]), 0, 0, 'L');
-$pdf->Ln(10);
-
-
-$pdf->Cell(10);
-$pdf->SetFont('Arial', 'B', 13);
-$pdf->Cell(40, 20, utf8_decode('NUMERO DE LOTE: '.$entrada["numero_de_lote"]), 0, 0, 'L');
+$pdf->Cell(40, 20, ('FECHA DE VENCIMIENTO: '.$entrada["fechaDeVencimiento"]), 0, 0, 'L');
 $pdf->Ln(10);
 
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 13);
-$pdf->Cell(10, 20, utf8_decode('CANTIDAD: '.$entrada["cantidad_entrada"]), 0, 0, 'L');
+$pdf->Cell(40, 20, ('NUMERO DE LOTE: '.$entrada["numero_de_lote"]), 0, 0, 'L');
+$pdf->Ln(10);
+
+
+$pdf->Cell(10);
+$pdf->SetFont('Arial', 'B', 13);
+$pdf->Cell(10, 20, ('CANTIDAD: '.$entrada["cantidad_entrada"]), 0, 0, 'L');
 $pdf->Ln(10);
 
 $pdf->Cell(10);
 $pdf->SetFont('Arial', 'B', 13);
-$pdf->Cell(40, 20, utf8_decode('PRECIO: '.$entrada["precio_entrada"]." BS"), 0, 0, 'L');
+$pdf->Cell(40, 20, ('PRECIO: '.$entrada["precio_entrada"]." BS"), 0, 0, 'L');
 $pdf->Ln(10);
 
 
 
 $pdf->Cell(10);
-$pdf->Cell(80, 20, utf8_decode('-------------------------------------------------------------------------------------------------'), 0, 0, 'L');
+$pdf->Cell(80, 20, ('-------------------------------------------------------------------------------------------------'), 0, 0, 'L');
 $pdf->Ln(12);
 
 }
