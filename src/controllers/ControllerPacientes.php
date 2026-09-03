@@ -114,7 +114,7 @@ function getHistorialSaludAjax()
 		"draw"            => $draw,
 		"recordsTotal"    => (int)$totalRegistros,
 		"recordsFiltered" => (int)$totalFiltrados,
-		"data"            => is_array($pacientesSanitizados) ? $pacientesSanitizados:[]
+		"data"            => is_array($pacientesSanitizados) ? $pacientesSanitizados : []
 	];
 
 	echo json_encode($respuesta);
@@ -227,9 +227,17 @@ function guardar()
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			http_response_code(409);
-			error_log("Error en guardarPaciente: " . $insercion); // Registro interno
-			echo json_encode(['ok' => false, 'error' => 'Error al guardar el paciente.']);
+			// error especifico
+			if (is_string($insercion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+			} else {
+				//error generico
+				http_response_code(409);
+				error_log("Error en guardarPaciente: " . print_r($insercion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar el paciente.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -251,7 +259,7 @@ function setPaciente()
 
 
 	try {
-		// 🔒 Validar CSRF token
+
 		$headers = getallheaders();
 		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
@@ -290,9 +298,15 @@ function setPaciente()
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en editarPaciente: " . $edicion);
-			echo json_encode(['ok' => false, 'error' => 'Error al modificar el paciente.']);
+			if (is_string($edicion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $edicion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en setPaciente: " . print_r($edicion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al editar el paciente.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -324,14 +338,14 @@ function eliminar()
 		$input = json_decode(file_get_contents("php://input"), true);
 		$id = $input["id"] ?? null;
 
-		$estado = empty($input["estado"]) ? 'DES':'ACT';
+		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
 		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
 		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
 
 		$modelo->setIdPaciente($id);
 
-		$eliminacion = $modelo->eliminarPaciente($idUsuario,$estado);
+		$eliminacion = $modelo->eliminarPaciente($idUsuario, $estado);
 
 		//Verifica si es un array con clave "exito"
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -341,9 +355,15 @@ function eliminar()
 			$bitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en {$text_error}: " . $eliminacion);
-			echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el paciente."]);
+			if (is_string($eliminacion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en eliminar: " . print_r($eliminacion, true));
+				echo json_encode(['ok' => false, 'error' => "Error al {$text_error} el paciente."]);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

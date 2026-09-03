@@ -117,9 +117,6 @@ function registrarModulo()
         validarCsrfPermisos();
 
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        // $limiter = new RateLimiter();
-        // $limiter->verificar('guardar_modulo_' . $idUsuario, 5, 1);
 
         $modulo = new ModeloPermisos();
         $bitacora = new ModeloBitacora();
@@ -135,8 +132,15 @@ function registrarModulo()
             $bitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
         } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $insercion]);
+            if (is_string($insercion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $insercion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en registrarModulo: " . print_r($insercion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al guardar el modulo.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -159,9 +163,6 @@ function eliminar_modulo($datos)
         validarCsrfPermisos();
 
         $idUsuario = $_SESSION['id_usuario'];
-        // RATE LIMIT: 5 peticiones cada 1 segundos
-        // $limiter = new RateLimiter();
-        // $limiter->verificar('eliminar_paciente_' . $idUsuario, 5, 1);
 
         $modelo  = new ModeloPermisos();
         $bitacora = new ModeloBitacora();
@@ -179,8 +180,15 @@ function eliminar_modulo($datos)
             $bitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            if (is_string($eliminacion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en eliminar_modulo: " . print_r($eliminacion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al eliminar el modulo.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {

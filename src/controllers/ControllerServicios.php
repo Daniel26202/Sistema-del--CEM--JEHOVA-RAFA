@@ -198,9 +198,15 @@ function guardar()
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			http_response_code(409);
-			error_log("Error en guardarServicio: " . $insercion);
-			echo json_encode(['ok' => false, 'error' => 'Error al guardar el servicio.']);
+			if (is_string($insercion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en guardar: " . print_r($insercion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar el servicio.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -251,9 +257,15 @@ function eliminar($datos)
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en eliminarServicio: " . $eliminacion);
-			echo json_encode(['ok' => false, 'error' => "Error al {$text_error} el servicio."]);
+			if (is_string($eliminacion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en eliminar: " . print_r($eliminacion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al '.$text_error.' el servicio.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -305,9 +317,15 @@ function editar()
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en editarServicio: " . $edicion);
-			echo json_encode(['ok' => false, 'error' => 'Error al modificar el servicio.']);
+			if (is_string($edicion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $edicion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en editar: " . print_r($edicion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al modificar el servicio.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -371,9 +389,15 @@ function registrarCategoria()
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			http_response_code(409);
-			error_log("Error en registrarCategiria: " . $insercion);
-			echo json_encode(['ok' => false, 'error' => 'Error al guardar la categoria.']);
+			if (is_string($insercion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en registrarCategoria: " . print_r($insercion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar la categoria.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -423,9 +447,15 @@ function eliminarCategoria($datos)
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en eliminarCategoria: " . $eliminacion);
-			echo json_encode(['ok' => false, 'error' => "Error al {$text_error} una categoria."]);
+			if (is_string($eliminacion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $eliminacion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en eliminarCategoria: " . print_r($eliminacion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al eliminar la categoria.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

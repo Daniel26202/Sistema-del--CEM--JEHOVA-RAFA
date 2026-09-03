@@ -355,8 +355,15 @@ function agregarH()
 
                 echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
             } else {
-                http_response_code(409);
-                echo json_encode(['ok' => false, 'error' => $registro]);
+                if (is_string($registro)) {
+                    http_response_code(409);
+                    echo json_encode(['ok' => false, 'error' => $registro]);
+                } else {
+                    http_response_code(409);
+                    error_log("Error en guardarH: " . print_r($registro, true));
+                    echo json_encode(['ok' => false, 'error' => 'Error al guardar la hospitalización.']);
+                    exit;
+                }
                 exit;
             }
         }
@@ -550,8 +557,15 @@ function modificarH()
 
         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
     } else {
-        http_response_code(409);
-        echo json_encode(['ok' => false, 'error' => $edicion]);
+        if (is_string($edicion)) {
+            http_response_code(409);
+            echo json_encode(['ok' => false, 'error' => $edicion]);
+        } else {
+            http_response_code(409);
+            error_log("Error en modificar: " . print_r($edicion, true));
+            echo json_encode(['ok' => false, 'error' => 'Error al editar la hospitalizacion.']);
+            exit;
+        }
         exit;
     }
 }
@@ -597,8 +611,15 @@ function eliminaL()
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            if (is_string($eliminacion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en eliminaL: " . print_r($eliminacion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al eliminar la hospitalizacion.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {

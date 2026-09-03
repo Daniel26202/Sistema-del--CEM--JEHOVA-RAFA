@@ -325,9 +325,15 @@ function asignarServicioDoctor()
             $bitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
         } else {
-            http_response_code(409);
-            error_log("Error en asignarServicioDoctor: " . $insercion);
-            echo json_encode(['ok' => false, 'error' => "Error al asignar el servicio al doctor."]);
+            if (is_string($insercion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $insercion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en asignarServicioDoctor: " . print_r($insercion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al asignar el servicio al doctor.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -389,9 +395,15 @@ function agregarDoctor()
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
         } else {
-            http_response_code(409);
-            error_log("Error en agregarDoctor: " . $insercion);
-            echo json_encode(['ok' => false, 'error' => "Error al guardar el doctor."]);
+            if (is_string($insercion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $insercion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en agregarDoctor: " . print_r($insercion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al guardar el doctor.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -456,9 +468,15 @@ function editarDoctor()
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
         } else {
-            http_response_code(409);
-            error_log("Error en editarDoctor: " . $edicion);
-            echo json_encode(['ok' => false, 'error' => "Error al editar el doctor."]);
+            if (is_string($edicion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $edicion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en editarDoctor: " . print_r($edicion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al editar el doctor.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -507,9 +525,15 @@ function borrarDoctor($datos)
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en borrarDoctor: " . $eliminacion);
-            echo json_encode(['ok' => false, 'error' => "Error en {$text_error} el doctor."]);
+            if (is_string($eliminacion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en borrarDoctor: " . print_r($eliminacion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al eliminar el doctor.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -552,9 +576,15 @@ function registrarEspecialidad()
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en registrarEspecialidad: " . $insercion);
-            echo json_encode(['ok' => false, 'error' => "Error al guardar la especialidad."]);
+            if (is_string($insercion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $insercion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en registrarEspecialidad: " . print_r($insercion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al guardar la especialidad.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -603,9 +633,15 @@ function eliminarEspecialidad()
             $modeloBitacora->insertarBitacora($idUsuario);
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $eliminacion]);
         } else {
-            http_response_code(409);
-            error_log("Error en eliminarEspecialidad: " . $eliminacion);
-            echo json_encode(['ok' => false, 'error' => "Error al {$text_error} la especialidad"]);
+            if (is_string($eliminacion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en eliminarEspecialidad: " . print_r($eliminacion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al '.$text_error.' la especialidad.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {

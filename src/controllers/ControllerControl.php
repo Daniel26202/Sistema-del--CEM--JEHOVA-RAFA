@@ -252,8 +252,15 @@ function insertarControl()
 			$modeloBitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $registro]);
+			if (is_string($registro)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $registro]);
+			} else {
+				http_response_code(409);
+				error_log("Error en insertarControl: " . print_r($registro, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar el control.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -303,8 +310,15 @@ function editarControl()
 			$modeloBitacora->insertarBitacora($idUsuario);
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
-			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $editar]);
+			if (is_string($editar)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $editar]);
+			} else {
+				http_response_code(409);
+				error_log("Error en editarControl: " . print_r($editar, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al editar el control.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -414,8 +428,15 @@ function eliminarSintoma($datos)
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			error_log("Error en eliminarSintoma: " . $eliminar);
-			echo json_encode(['ok' => false, 'error' => "Error en al eliminar el sintoma."]);
+			if (is_string($eliminar)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $eliminar]);
+			} else {
+				http_response_code(409);
+				error_log("Error en eliminarSintoma: " . print_r($eliminar, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al eliminar el sintoma.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -460,9 +481,15 @@ function agregarSintoma()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
 		} else {
-			http_response_code(409);
-			error_log("Error en agregarSintoma: " . $insertar);
-			echo json_encode(['ok' => false, 'error' => "Error en guardar el sintoma."]);
+			if (is_string($insertar)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insertar]);
+			} else {
+				http_response_code(409);
+				error_log("Error en agregarSintoma: " . print_r($insertar, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar el sintoma.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

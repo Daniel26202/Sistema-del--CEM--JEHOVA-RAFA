@@ -89,9 +89,15 @@ function guardarRol()
 
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
         } else {
-            http_response_code(409);
-            error_log("Error en guardarRol: " . $insercion);
-            echo json_encode(['ok' => false, 'error' => 'Error al guardar el rol.']);
+            if (is_string($insercion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $insercion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en guardarRol: " . print_r($insercion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al guardar el rol.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -143,9 +149,15 @@ function modificarRol()
 
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
         } else {
-            http_response_code(409);
-            error_log("Error en modificarRol: " . $edicion);
-            echo json_encode(['ok' => false, 'error' => 'Error al editar el rol.']);
+            if (is_string($edicion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $edicion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en modificar: " . print_r($edicion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al modificar el rol.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -186,9 +198,15 @@ function eliminarRol()
 
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en eliminarRol: " . $eliminacion);
-            echo json_encode(['ok' => false, 'error' => 'Error al eliminar el rol.']);
+            if (is_string($eliminacion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en eliminarRol: " . print_r($eliminacion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al elimminar el rol.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {

@@ -134,9 +134,15 @@ function registrarPatologia()
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion[1]]);
 		} else {
-			http_response_code(409);
-			error_log("Error en registrarPatologia: " . $insercion); // Registro interno
-			echo json_encode(['ok' => false, 'error' => 'Error al guardar la patologia.']);
+			if (is_string($insercion)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $insercion]);
+			} else {
+				http_response_code(409);
+				error_log("Error en registrarPatologia: " . print_r($insercion, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al guardar la patologia.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {
@@ -192,9 +198,15 @@ function eliminarPatologia()
 			$bitacora->insertarBitacora();
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
-			http_response_code(409);
-			error_log("Error en {$text_error}: " . $eliminar);
-			echo json_encode(['ok' => false, 'error' => "Error al {$text_error} la patologia."]);
+			if (is_string($eliminar)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $eliminar]);
+			} else {
+				http_response_code(409);
+				error_log("Error en eliminarPatologia: " . print_r($eliminar, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al '.$text_error.' la patologia.']);
+				exit;
+			}
 			exit;
 		}
 	} catch (InvalidArgumentException $e) {

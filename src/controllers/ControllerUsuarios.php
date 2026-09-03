@@ -139,8 +139,15 @@ function addUserBlackList()
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $add]);
         } else {
-            http_response_code(409);
-            echo json_encode(['ok' => false, 'error' => $add]);
+            if (is_string($add)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $add]);
+            } else {
+                http_response_code(409);
+                error_log("Error en addUseBlackList: " . print_r($add, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al agregar el usuario en la lista negra.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -188,9 +195,15 @@ function removeBlackList()
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en removeBlackLIst: " . $remove);
-            echo json_encode(['ok' => false, 'error' => "Error en al remover el usuario de la lista negra."]);
+            if (is_string($remove)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $remove]);
+            } else {
+                http_response_code(409);
+                error_log("Error en removeBlackList: " . print_r($remove, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al remover el usuario de la lista negra.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -244,9 +257,15 @@ function editarUsuario()
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
         } else {
-            http_response_code(409);
-            error_log("Error en editarUsuario: " . $edicion); // Registro interno
-            echo json_encode(['ok' => false, 'error' => 'Error al editar el usuario.']);
+            if (is_string($edicion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $edicion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en editarUsuario: " . print_r($edicion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al modificar usuario.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -290,9 +309,15 @@ function borrarUsuario()
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en borrarUsuario: " . $eliminacion);
-            echo json_encode(['ok' => false, 'error' => 'Error al eliminar el usuario.']);
+            if (is_string($eliminacion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $eliminacion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en borrarUsuario: " . print_r($eliminacion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al eliminar el usuario.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -353,9 +378,15 @@ function registrarAdmin()
             $modeloBitacora->insertarBitacora();
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en registrarAdmin: " . $insercion);
-            echo json_encode(['ok' => false, 'error' => 'Error al registrar el administrador.']);
+            if (is_string($insercion)) {
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $insercion]);
+            } else {
+                http_response_code(409);
+                error_log("Error en registrarAdmin: " . print_r($insercion, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al guardar el administrador.']);
+                exit;
+            }
             exit;
         }
     } catch (InvalidArgumentException $e) {
@@ -404,10 +435,16 @@ function editarAdministrador()
 
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
-            http_response_code(409);
-            error_log("Error en editarAdministrador: " . $id_usuario);
-            echo json_encode(['ok' => false, 'error' => 'Error al editar el administrador.']);
-            exit;
+            if (is_string($id_usuario)) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => $id_usuario]);
+			} else {
+				http_response_code(409);
+				error_log("Error en editarAdministrador: " . print_r($id_usuario, true));
+				echo json_encode(['ok' => false, 'error' => 'Error al editar el administrador.']);
+				exit;
+			}
+			exit;
         }
     } catch (InvalidArgumentException $e) {
         http_response_code(409);
