@@ -20,4 +20,13 @@ desktop.ini
 Thumbs.db
 src/assets/img_ingresadas_por_usuario/
 
+# Respaldos y archivos temporales generados localmente
+src/config/backups/
+src/config/backups/*.sql
+src/config/backups/*.log
+src/config/backups/*.tmp
+src/config/backups/*.error.log
+src/config/backups/*.zip
+src/config/backups/*.rar
+
 
