@@ -50,7 +50,7 @@ class ModeloHospitalizacion extends ModelBase
     public function mostrarHospitalizacionesApk()
     {
         try {
-            $sql = "SELECT  h.id_hospitalizacion, h.fecha_hora_inicio, h.fecha_hora_final, h.precio_horas, h.total, h.estado AS estado_h, p.id_paciente, p.nombre AS nombre_p, p.apellido AS apellido_p, p.cedula, p.nacionalidad, TIMESTAMPDIFF(YEAR, p.fn, CURDATE()) AS edad, pe.nombre AS nombre_d, pe.apellido AS apellido_d, u.id_usuario, con.id_control, con.diagnostico, con.historiaclinica, con.severidad FROM hospitalizacion h
+            $sql = "SELECT h.id_hospitalizacion, h.fecha_hora_inicio, h.fecha_hora_final, h.precio_horas, h.total, h.estado AS estado_h, p.id_paciente, p.nombre AS nombre_p, p.apellido AS apellido_p, p.cedula, p.nacionalidad, TIMESTAMPDIFF(YEAR, p.fn, CURDATE()) AS edad, pe.nombre AS nombre_d, pe.apellido AS apellido_d, u.id_usuario, con.id_control, con.diagnostico, con.historiaclinica, con.severidad FROM hospitalizacion h
                 INNER JOIN paciente p
                     ON p.id_paciente = h.id_paciente
                     AND p.estado = 'ACT'
