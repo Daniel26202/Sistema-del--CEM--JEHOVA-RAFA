@@ -498,7 +498,7 @@ addEventListener("DOMContentLoaded", function () {
             </ul>
 
             <div>
-              <div class="precio-principal">${res.precio.toFixed(2)} $ ${ (valorDelDolar * res.precio.toFixed(2)).toFixed(2) } BS</div>
+              <div class="precio-principal">${res.precio.toFixed(2)} $ ${(valorDelDolar * res.precio.toFixed(2)).toFixed(2)} BS</div>
             </div>
 
             <!-- Input estilo nuevo diseño -->
@@ -684,19 +684,18 @@ addEventListener("DOMContentLoaded", function () {
   // // Funcion para actualizar la tabla  servicios
 
   function mostrarServicios() {
-
     calcularTotal();
     // Aqui pondremos el codigo HTML que tendra el body de la tabla
     let html = ``;
     // Recorremos la lista de arriba y añadimos los datos a la variable html
     console.log(data);
-    
+
     data.forEach((element, index) => {
       let storedDolar = parseFloat(localStorage.getItem("valorDelDolar"));
       let montoBS = parseFloat(element["precio"]) * storedDolar;
       montoBS = montoBS.toFixed(2);
-      console.log(element["precio"],storedDolar, montoBS);
-      
+      console.log(element["precio"], storedDolar, montoBS);
+
       html += `
           <tr class="border-top">
           <td class="border-top"><div class="fw-bolder">SERVICIO :</div> ${element["servicio"]}</td>
@@ -975,15 +974,29 @@ addEventListener("DOMContentLoaded", function () {
 
     //validar que la cantidd del monto se la correcta
     const inputs = document.querySelectorAll(".input-modal-valida");
+    let longitud = inputs.length;
     let totalIngresado = 0;
 
     inputs.forEach((input) => {
       input.addEventListener("keyup", function () {
+        console.log(validarForm());
+
+        if (
+          longitud == 2 &&
+          parseFloat(inputTotalFactura.value) == parseFloat(inputs[0].value) &&
+          inputs[0].classList.contains("valido") &&
+          inputs[1].classList.contains("valido")
+        ) {
+          btnValidacion.classList.remove("d-none");
+          return;
+        }
+        
         if (!validarForm()) {
-          console.log("validacion mala");
+          // console.log("validacion mala");
           btnValidacion.classList.add("d-none");
           return;
         }
+
         totalIngresado = 0;
         document.querySelectorAll(".input-modal-monto").forEach((inp) => {
           totalIngresado += !isNaN(parseFloat(inp.value))
