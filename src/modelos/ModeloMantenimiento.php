@@ -5,6 +5,7 @@ namespace App\modelos;
 use App\modelos\Db;
 use App\modelos\ModeloUsuarios;
 use ZipArchive;
+use Exception;
 
 require_once __DIR__ . "/../config/config.php";
 
@@ -20,6 +21,10 @@ class ModeloMantenimiento extends ModelBase
 	private $dbHost;
 
 	private $contrRespaldb;
+	// para el diferencial
+	private $binlogCheckpoint;
+	// para el incremental
+	private $binlogIncrementalCheckpoint;
 
 
 	public function __construct($dbSystem = true)
@@ -32,6 +37,10 @@ class ModeloMantenimiento extends ModelBase
 		$this->dbsegname = dbsegname_cos;
 		$this->dbHost = host_cos;
 		$this->contrRespaldb = passwordResp_cos;
+		// Archivo donde guardaremos el último punto del respaldo diferencial
+		$this->binlogCheckpoint = __DIR__ . "/../config/backups/binlog_checkpoint.json";
+		// Archivo donde guardaremos el último punto del respaldo incremental
+		$this->binlogIncrementalCheckpoint = __DIR__ . "/../config/backups/binlog_incremental_checkpoint.json";
 	}
 
 	// obtener la ruta dele ejecutable segun SO
@@ -61,6 +70,66 @@ class ModeloMantenimiento extends ModelBase
 		return 'rclone'; // En Linux está en PATH
 	}
 
+	// diferencial
+	private function guardarCheckpointBinlog($archivo, $posicion)
+	{
+		$datos = [
+			'file' => $archivo,
+			'position' => (int)$posicion
+		];
+
+		file_put_contents(
+			$this->binlogCheckpoint,
+			json_encode($datos, JSON_PRETTY_PRINT)
+		);
+	}
+	// diferencial
+	private function obtenerCheckpointBinlog()
+	{
+		if (!file_exists($this->binlogCheckpoint)) {
+			return null;
+		}
+
+		$contenido = file_get_contents($this->binlogCheckpoint);
+		$datos = json_decode($contenido, true);
+
+		if (!isset($datos['file'], $datos['position'])) {
+			return null;
+		}
+
+		return $datos;
+	}
+
+	private function guardarCheckpointIncremental($archivo, $posicion)
+	{
+		$datos = [
+			'file' => $archivo,
+			'position' => (int)$posicion
+		];
+
+		// Guardamos el último punto procesado por el incremental
+		file_put_contents(
+			$this->binlogIncrementalCheckpoint,
+			json_encode($datos, JSON_PRETTY_PRINT)
+		);
+	}
+
+	private function obtenerCheckpointIncremental()
+	{
+		if (!file_exists($this->binlogIncrementalCheckpoint)) {
+			return null;
+		}
+
+		$contenido = file_get_contents($this->binlogIncrementalCheckpoint);
+		$datos = json_decode($contenido, true);
+
+		if (!isset($datos['file'], $datos['position'])) {
+			return null;
+		}
+
+		return $datos;
+	}
+
 	public function generateBackup($backupRuta, $tipo = 'completo')
 	{
 		try {
@@ -86,6 +155,36 @@ class ModeloMantenimiento extends ModelBase
 
 			$estadoSi = 1;
 			$estadoSe = 1;
+			$checkpointAntes = null;
+
+			if ($tipo === 'completo') {
+				// Consultamos el archivo y la posición actual del Binary Log
+				$cmdStatus = "{$mysqlBin} {$auth} -e \"SHOW MASTER STATUS\"";
+				exec($cmdStatus, $statusOutput, $statusCode);
+
+				if ($statusCode !== 0 || count($statusOutput) < 2) {
+					throw new \Exception("No se pudo obtener el estado del Binary Log.");
+				}
+
+				// Buscamos el nombre del archivo y la posición del Binary Log
+				foreach ($statusOutput as $line) {
+					if (strpos($line, 'mysql-bin.') !== false) {
+						preg_match('/(mysql-bin\.\d+)\s+(\d+)/', $line, $match);
+
+						if (!empty($match[1]) && !empty($match[2])) {
+							$checkpointAntes = [
+								'file' => $match[1],
+								'position' => (int)$match[2]
+							];
+							break;
+						}
+					}
+				}
+				// Si no encontramos el punto de control, detenemos el respaldo
+				if (!$checkpointAntes) {
+					throw new \Exception("No se pudo obtener el punto de control del Binary Log.");
+				}
+			}
 
 			// respaldo de logs (solo para el corte de logs binarios, sin datos ni estructuras, pero forzando el flush para marcar el punto de control)
 			if ($tipo === 'log') {
@@ -103,36 +202,203 @@ class ModeloMantenimiento extends ModelBase
 
 			//respaldo incremental (solo datos nuevos desde el último respaldo, sin estructuras ni triggers para evitar conflictos)
 			elseif ($tipo === 'incremental') {
-				// Solo datos nuevos desde el último respaldo. No guarda estructuras (--no-create-info) ni triggers
-				$cmdSi = "{$mysqldump} {$auth} --flush-logs --single-transaction --no-create-info --skip-triggers {$this->dbname} > \"{$bdSistema}\"";
+
+				$mysqlbinlog = $this->getEjecutable('mysqlbinlog');
+
+				// Obtener el último punto procesado por el respaldo incremental
+				$checkpoint = $this->obtenerCheckpointIncremental();
+
+				// Si es el primer incremental, usamos el checkpoint del respaldo completo
+				if (!$checkpoint) {
+					$checkpoint = $this->obtenerCheckpointBinlog();
+				}
+
+				if (!$checkpoint) {
+					throw new \Exception("No existe un checkpoint para iniciar el respaldo incremental.");
+				}
+
+				// Archivo y posición desde donde comenzarán los nuevos cambios
+				$binlogInicial = $checkpoint['file'];
+				$posicionInicial = $checkpoint['position'];
+
+				// Obtener el Binary Log actualmente activo
+				$cmdStatus = "{$mysqlBin} {$auth} -e \"SHOW MASTER STATUS\"";
+				exec($cmdStatus, $statusOutput, $statusCode);
+
+				if ($statusCode !== 0 || count($statusOutput) < 2) {
+					throw new \Exception("No se pudo obtener el estado del Binary Log.");
+				}
+
+				// Buscar el archivo Binary Log actual
+				$binlogActual = null;
+				$posicionActual = null;
+
+				foreach ($statusOutput as $line) {
+					if (strpos($line, 'mysql-bin.') !== false) {
+
+						preg_match('/(mysql-bin\.\d+)\s+(\d+)/', $line, $match);
+
+						if (!empty($match[1]) && !empty($match[2])) {
+							$binlogActual = $match[1];
+							$posicionActual = (int)$match[2];
+							break;
+						}
+					}
+				}
+
+				if (!$binlogActual || !$posicionActual) {
+					throw new \Exception("No se encontró el archivo o posición del Binary Log actual.");
+				}
+
+				// Rutas de los Binary Logs
+				$binlogInicialPath = "C:\\xampp\\mysql\\data\\{$binlogInicial}";
+				$binlogActualPath = "C:\\xampp\\mysql\\data\\{$binlogActual}";
+
+				// Extraer cambios nuevos de la BD principal
+				$cmdSi = "{$mysqlbinlog} --start-position={$posicionInicial} --database={$this->dbname} \"{$binlogInicialPath}\"";
+
+				if ($binlogActual !== $binlogInicial) {
+					$cmdSi .= " \"{$binlogActualPath}\"";
+				}
+
+				$cmdSi .= " > \"{$bdSistema}\"";
+
 				system($cmdSi, $estadoSi);
 
-				$cmdSe = "{$mysqldump} {$auth} --flush-logs --single-transaction --no-create-info --skip-triggers {$this->dbsegname} > \"{$bdSeguridad}\"";
+				// Extraer cambios nuevos de la BD de seguridad
+				$cmdSe = "{$mysqlbinlog} --start-position={$posicionInicial} --database={$this->dbsegname} \"{$binlogInicialPath}\"";
+
+				if ($binlogActual !== $binlogInicial) {
+					$cmdSe .= " \"{$binlogActualPath}\"";
+				}
+
+				$cmdSe .= " > \"{$bdSeguridad}\"";
+
 				system($cmdSe, $estadoSe);
+
+				// Guardar el nuevo punto hasta donde procesamos el Binary Log
+				if ($estadoSi === 0 && $estadoSe === 0) {
+
+					$this->guardarCheckpointIncremental(
+						$binlogActual,
+						$posicionActual
+					);
+				}
 			}
 
 			//respaldo diferencial (cambios desde el último completo, pero con estructuras limpias para evitar conflictos de llaves)
 			elseif ($tipo === 'diferencial') {
-				// Acumula cambios desde el último Completo. Guarda datos pero evita conflictos de llaves recreando estructuras limpias
-				$cmdSi = "{$mysqldump} {$auth} --single-transaction --quick --events {$this->dbname} > \"{$bdSistema}\"";
+
+				$mysqlbinlog = $this->getEjecutable('mysqlbinlog');
+
+				// Obtenemos el punto donde terminó el último respaldo completo
+				$checkpoint = $this->obtenerCheckpointBinlog();
+
+				if (!$checkpoint) {
+					throw new \Exception("No existe un checkpoint del respaldo completo.");
+				}
+
+				// Archivo y posición desde donde comenzará el diferencial
+				$binlogInicial = $checkpoint['file'];
+				$posicionInicial = $checkpoint['position'];
+
+				// Obtener el Binary Log actualmente activo
+				$cmdStatus = "{$mysqlBin} {$auth} -e \"SHOW MASTER STATUS\"";
+				exec($cmdStatus, $statusOutput, $statusCode);
+
+				if ($statusCode !== 0 || count($statusOutput) < 2) {
+					throw new \Exception("No se pudo obtener el estado del Binary Log.");
+				}
+
+				// Buscar el archivo Binary Log actual
+				$binlogActual = null;
+
+				foreach ($statusOutput as $line) {
+					if (strpos($line, 'mysql-bin.') !== false) {
+						preg_match('/mysql-bin\.\d+/', $line, $match);
+
+						if (!empty($match[0])) {
+							$binlogActual = $match[0];
+							break;
+						}
+					}
+				}
+
+				if (!$binlogActual) {
+					throw new \Exception("No se encontró el archivo Binary Log actual.");
+				}
+
+				// Rutas de los Binary Logs
+				$binlogInicialPath = "C:\\xampp\\mysql\\data\\{$binlogInicial}";
+				$binlogActualPath = "C:\\xampp\\mysql\\data\\{$binlogActual}";
+
+				// Extraer cambios de la base principal desde el checkpoint
+				$cmdSi = "{$mysqlbinlog} --start-position={$posicionInicial} --database={$this->dbname} \"{$binlogInicialPath}\"";
+
+				if ($binlogActual !== $binlogInicial) {
+					$cmdSi .= " \"{$binlogActualPath}\"";
+				}
+
+				$cmdSi .= " > \"{$bdSistema}\"";
+
 				system($cmdSi, $estadoSi);
 
-				$cmdSe = "{$mysqldump} {$auth} --single-transaction --quick --events {$this->dbsegname} > \"{$bdSeguridad}\"";
+				// Extraer cambios de la base de seguridad desde el checkpoint
+				$cmdSe = "{$mysqlbinlog} --start-position={$posicionInicial} --database={$this->dbsegname} \"{$binlogInicialPath}\"";
+
+				if ($binlogActual !== $binlogInicial) {
+					$cmdSe .= " \"{$binlogActualPath}\"";
+				}
+
+				$cmdSe .= " > \"{$bdSeguridad}\"";
+
 				system($cmdSe, $estadoSe);
 			}
 
 			//resplado completo o por defecto
+			// respaldo completo o por defecto
 			else {
-				// SE AGREGÓ --events AQUÍ
+
+				// Guardamos el estado del Binary Log antes del respaldo
+				// para saber desde qué punto comenzará el diferencial.
+				$cmdStatus = "{$mysqlBin} {$auth} -e \"SHOW MASTER STATUS\"";
+				exec($cmdStatus, $statusOutput, $statusCode);
+
+				$checkpointAntes = null;
+
+				// Buscamos el archivo y posición actual del Binary Log
+				foreach ($statusOutput as $line) {
+					if (strpos($line, 'mysql-bin.') !== false) {
+						preg_match('/(mysql-bin\.\d+)\s+(\d+)/', $line, $match);
+
+						if (!empty($match[1]) && !empty($match[2])) {
+							$checkpointAntes = [
+								'file' => $match[1],
+								'position' => (int)$match[2]
+							];
+							break;
+						}
+					}
+				}
+
+				// Respaldo completo de la base de seguridad
 				$cmdSe = "{$mysqldump} {$auth} --single-transaction --routines --triggers --events {$this->dbsegname} > \"{$bdSeguridad}\"";
 				system($cmdSe, $estadoSe);
 
-				// SE AGREGÓ --events AQUÍ
-				// Conservamos los binlogs; el script de respaldo diferencial los procesa después.
+				// Respaldo completo de la base principal
+				// --flush-logs inicia un nuevo archivo Binary Log después del respaldo.
 				$cmdSi = "{$mysqldump} {$auth} --flush-logs --master-data=2 --single-transaction --routines --triggers --events {$this->dbname} > \"{$bdSistema}\"";
 				system($cmdSi, $estadoSi);
-			}
 
+				// Guardamos el punto del Binary Log del respaldo completo
+				// para que el diferencial lo pueda utilizar posteriormente.
+				if ($estadoSi === 0 && $estadoSe === 0 && $checkpointAntes) {
+					$this->guardarCheckpointBinlog(
+						$checkpointAntes['file'],
+						$checkpointAntes['position']
+					);
+				}
+			}
 
 			$estado = ($estadoSi === 0 && $estadoSe === 0) ? 0 : 1;
 
@@ -244,22 +510,23 @@ class ModeloMantenimiento extends ModelBase
 			if (empty($archivosSql)) {
 				return "No se encontraron archivos SQL dentro del respaldo.";
 			}
-
-			// SEPARAR Y FORZAR ORDEN DE RESTAURACIÓN (Seguridad primero)..............
+			// SEPARAR Y FORZAR ORDEN DE RESTAURACIÓN (Seguridad primero)
+			// No ignoramos los incrementales porque también deben poder restaurarse.
 			$archivoSeguridad = null;
 			$archivoPrincipal = null;
 			$otrosArchivos = [];
 
 			foreach ($archivosSql as $archiSql) {
-				// Saltamos los archivos incrementales
-				if (strpos($archiSql, 'inc_') !== false) {
-					continue;
-				}
 
+				// Identificamos el SQL de la base de seguridad
 				if (strpos($archiSql, 'bdseguri') !== false) {
 					$archivoSeguridad = $archiSql;
+
+					// Identificamos el SQL de la base principal
 				} elseif (strpos($archiSql, 'bd_') !== false) {
 					$archivoPrincipal = $archiSql;
+
+					// Cualquier otro SQL queda separado
 				} else {
 					$otrosArchivos[] = $archiSql;
 				}
@@ -297,10 +564,10 @@ class ModeloMantenimiento extends ModelBase
 				$flagsBds = "--force";
 
 				if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-					// WINDOWS
+					// WINDOWS: ejecutamos directamente el SQL sobre la base correspondiente
 					$comando = "cmd /c \"\"{$mysqlBin}\" {$auth} --init-command=\"SET FOREIGN_KEY_CHECKS=0;\" {$bd} < \"{$archiSql}\" 2>&1\"";
 				} else {
-					// Linux
+					// Linux: usamos SOURCE para ejecutar el archivo SQL
 					$comando = "{$mysqlBin} {$auth} {$flagsBds} {$bd} -e \"SET FOREIGN_KEY_CHECKS=0; SOURCE {$archiSql}; SET FOREIGN_KEY_CHECKS=1;\" 2>&1";
 				}
 

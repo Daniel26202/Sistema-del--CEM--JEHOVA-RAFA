@@ -239,10 +239,8 @@ function iniciarSesionMovilApk()
         exit;
     }
 
-    $ipCliente = $_SERVER['REMOTE_ADDR'];
-    $modelo->setIpUsuario($ipCliente);
-
-
+    // $ipCliente = $_SERVER['REMOTE_ADDR'];
+    // $modelo->setIpUsuario($ipCliente);
 
     $modelo->setUsuario($userParam);
     $modelo->setPassword($passParam);
@@ -251,20 +249,16 @@ function iniciarSesionMovilApk()
         "usuario" => $modelo->getUsuario()
     ];
 
-    $validarUsuarioExistente = $modelo->validarUsuarioExistente($data);
     $validar = $modelo->validarIniciarSesion($data);
 
-    $modelo->setIdUsuario($validarUsuarioExistente != false ? $validarUsuarioExistente['id_usuario'] : null);
-
     if ($validar) {
-        $modelo->setIdUsuario($validar['id_usuario']);
 
         $secretJWT = $_ENV['JWT_SECRET'];
 
         $payload = [
             'iss'        => $_ENV['url_sistema_web'],
             'iat'        => time(),
-            'exp'        => time() + (60 * 60 * 36),
+            'exp'        => time() + (60 * 60 * 36), //36 horas
             'id_usuario' => $validar['id_usuario'],
             'id_rol'     => $validar['id_rol'],
             'usuario'    => $userParam,
