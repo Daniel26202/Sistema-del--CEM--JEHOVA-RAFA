@@ -2,7 +2,7 @@
 setlocal EnableExtensions EnableDelayedExpansion
 
 rem Configura binlog para MySQL/MariaDB de XAMPP. Requiere reiniciar MySQL.
-set "PROJECT_ROOT=%~dp0"
+set "PROJECT_ROOT=%~dp0..\..\.."
 for %%I in ("%PROJECT_ROOT%") do set "PROJECT_ROOT=%%~fI"
 set "ENV_FILE=%PROJECT_ROOT%\.env"
 

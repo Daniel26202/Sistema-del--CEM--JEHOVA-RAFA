@@ -4,7 +4,7 @@ setlocal EnableExtensions EnableDelayedExpansion
 rem Restaura el ultimo respaldo completo y los incrementales posteriores.
 rem Este proceso sobrescribe datos de las bases indicadas.
 
-set "PROJECT_ROOT=%~dp0"
+set "PROJECT_ROOT=%~dp0..\..\.."
 for %%I in ("%PROJECT_ROOT%") do set "PROJECT_ROOT=%%~fI"
 set "ENV_FILE=%PROJECT_ROOT%\.env"
 
@@ -17,11 +17,19 @@ if not exist "%ENV_FILE%" (
     exit /b 1
 )
 
+set "DB_PASS=__MISSING_DB_PASS__"
 for /f "usebackq eol=# tokens=1,* delims==" %%A in ("%ENV_FILE%") do (
     if not "%%A"=="" set "%%A=%%B"
 )
 
-for %%V in (DB_HOST DB_USER DB_PASS DB_NAME DB_NAME_SEGURITY XAMPP_MYSQL_BIN BACKUP_DIR) do (
+if "!DB_PASS!"=="__MISSING_DB_PASS__" (
+    echo ERROR: Falta DB_PASS en el .env. Use DB_PASS= si no hay contrasena.
+    pause
+    exit /b 1
+)
+for /f "delims=" %%A in ("!DB_PASS!") do set "DB_PASS=%%~A"
+set "DB_PASS=!DB_PASS:"=!"
+for %%V in (DB_HOST DB_NAME DB_NAME_SEGURITY XAMPP_MYSQL_BIN BACKUP_DIR) do (
     if not defined %%V (
         echo ERROR: Falta %%V en el .env
         pause
@@ -34,7 +42,8 @@ for %%V in (DB_HOST DB_USER DB_PASS DB_NAME DB_NAME_SEGURITY XAMPP_MYSQL_BIN BAC
 echo Configuracion cargada:
 echo DB_HOST=!DB_HOST!
 echo DB_USER=!DB_USER!
-echo DB_PASS=********
+if defined DB_PASS echo DB_PASS=********
+if not defined DB_PASS echo DB_PASS=sin_contrasena
 echo DB_NAME=!DB_NAME!
 echo DB_NAME_SEGURITY=!DB_NAME_SEGURITY!
 echo XAMPP_MYSQL_BIN=!XAMPP_MYSQL_BIN!

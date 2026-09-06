@@ -4,7 +4,7 @@ setlocal EnableExtensions EnableDelayedExpansion
 rem Genera un SQL con las transacciones del binlog posteriores al ultimo full.
 rem No elimina binlogs ni modifica el respaldo completo.
 
-set "PROJECT_ROOT=%~dp0"
+set "PROJECT_ROOT=%~dp0..\..\.."
 for %%I in ("%PROJECT_ROOT%") do set "PROJECT_ROOT=%%~fI"
 set "ENV_FILE=%PROJECT_ROOT%\.env"
 
@@ -17,12 +17,19 @@ if not exist "%ENV_FILE%" (
 )
 
 rem El .env del proyecto usa pares sencillos CLAVE=VALOR.
+set "DB_PASS=__MISSING_DB_PASS__"
 for /f "usebackq eol=# tokens=1,* delims==" %%A in ("%ENV_FILE%") do (
     if not "%%A"=="" set "%%A=%%B"
 )
 
 rem Acepta valores del .env con o sin comillas externas.
-for %%V in (DB_HOST DB_USER DB_PASS XAMPP_MYSQL_BIN MYSQL_BINLOG_DIR MYSQL_BINLOG_PREFIX BACKUP_DIR BACKUP_FULL_MAX_DAYS) do (
+if "!DB_PASS!"=="__MISSING_DB_PASS__" (
+    echo ERROR: Falta DB_PASS en el .env. Use DB_PASS= si no hay contrasena.
+    exit /b 1
+)
+for /f "delims=" %%A in ("!DB_PASS!") do set "DB_PASS=%%~A"
+set "DB_PASS=!DB_PASS:"=!"
+for %%V in (DB_HOST XAMPP_MYSQL_BIN MYSQL_BINLOG_DIR MYSQL_BINLOG_PREFIX BACKUP_DIR BACKUP_FULL_MAX_DAYS) do (
     for /f "delims=" %%A in ("!%%V!") do set "%%V=%%~A"
     set "%%V=!%%V:"=!"
 )
@@ -47,10 +54,6 @@ if not defined DB_USER (
     echo ERROR: Falta DB_USER en el .env
     exit /b 1
 )
-if not defined DB_PASS (
-    echo ERROR: Falta DB_PASS en el .env
-    exit /b 1
-)
 if not defined MYSQL_BINLOG_PREFIX (
     echo ERROR: Falta MYSQL_BINLOG_PREFIX en el .env
     exit /b 1
@@ -63,7 +66,8 @@ if not defined BACKUP_FULL_MAX_DAYS (
 echo Configuracion cargada:
 echo DB_HOST=!DB_HOST!
 echo DB_USER=!DB_USER!
-echo DB_PASS=********
+if defined DB_PASS echo DB_PASS=********
+if not defined DB_PASS echo DB_PASS=sin_contrasena
 echo XAMPP_MYSQL_BIN=!XAMPP_MYSQL_BIN!
 echo MYSQL_BINLOG_DIR=!MYSQL_BINLOG_DIR!
 echo MYSQL_BINLOG_PREFIX=!MYSQL_BINLOG_PREFIX!
@@ -102,7 +106,7 @@ for /f "delims=" %%A in ('powershell.exe -NoProfile -Command "$d=Get-ChildItem -
 
 if not defined FULL_FILE (
     echo No existe un respaldo completo. Ejecutando backup_completo.bat...
-    call "%PROJECT_ROOT%\backup_completo.bat"
+    call "%~dp0backup_completo.bat"
     exit /b !errorlevel!
 )
 
@@ -113,7 +117,7 @@ set "FULL_OLD=0"
 for /f "delims=" %%A in ('powershell.exe -NoProfile -Command "if((Get-Date) - [datetime]::Parse('!FULL_DATE!') -gt [timespan]::FromDays(!BACKUP_FULL_MAX_DAYS!)){1}else{0}"') do set "FULL_OLD=%%A"
 if "!FULL_OLD!"=="1" (
     echo El respaldo completo tiene mas de 7 dias. Ejecutando backup_completo.bat...
-    call "%PROJECT_ROOT%\backup_completo.bat"
+    call "%~dp0backup_completo.bat"
     exit /b !errorlevel!
 )
 
