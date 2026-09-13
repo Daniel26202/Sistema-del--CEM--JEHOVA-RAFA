@@ -149,11 +149,15 @@ function guardarInsumo()
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
 
-		// 1. Quitar separadores de miles
-		$valor = str_replace('.', '', $_POST['precioD']);
-		// 2. Cambiar coma decimal por punto
-		$valor = str_replace(',', '.', $valor);
-		// 3. Convertir a float
+		// 1. Validar la imagen ANTES de tocar el disco
+		if (!isset($_FILES['imagen'])) {
+			throw new InvalidArgumentException('No se recibió ninguna imagen.');
+		}
+		$modeloInsumo->validarImagen($_FILES['imagen']);
+
+		// 2. Procesar el precio
+		$valor = str_replace('.', '', $_POST['precioD']);   // quitar separador de miles
+		$valor = str_replace(',', '.', $valor);              // coma decimal -> punto
 		$numero = (float)$valor;
 		$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
 
@@ -161,13 +165,7 @@ function guardarInsumo()
 			$numero += $numero * 0.30;
 		}
 
-		$tiempo = new DateTime();
-		$fecha = date("Y-m-d");
-
-		$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
-		$imagen_temporal = $_FILES['imagen']['tmp_name'];
-		move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen);
-
+		// 3. Validar TODOS los demás campos (aún no se ha tocado el disco)
 		$modeloInsumo->setNombre($_POST['nombre']);
 		$modeloInsumo->setIdProveedor($_POST['proveedor']);
 		$modeloInsumo->setDescripcion($_POST['descripcion']);
@@ -179,8 +177,17 @@ function guardarInsumo()
 		$modeloInsumo->setMarca($_POST['marca']);
 		$modeloInsumo->setMedida($_POST['medida']);
 		$modeloInsumo->setIva($iva);
+		$modeloInsumo->setPrecio($numero);
+
+		// 4. Todo validado — recién ahora se mueve el archivo
+		$tiempo = new DateTime();
+		$fecha = date("Y-m-d");
+		$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . basename($_FILES['imagen']['name']);
+
+		if (!move_uploaded_file($_FILES['imagen']['tmp_name'], "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen)) {
+			throw new InvalidArgumentException('No se pudo guardar la imagen.');
+		}
 		$modeloInsumo->setImagen($imagen);
-		$modeloInsumo->setPrecio($valor);
 
 		$insercion = $modeloInsumo->guardarInsumo($idUsuario);
 
@@ -251,7 +258,7 @@ function eliminar()
 			} else {
 				http_response_code(409);
 				error_log("Error en eliminar: " . print_r($eliminacion, true));
-				echo json_encode(['ok' => false, 'error' => 'Error al '.$text_error.' el insumo.']);
+				echo json_encode(['ok' => false, 'error' => 'Error al ' . $text_error . ' el insumo.']);
 				exit;
 			}
 			exit;
@@ -262,10 +269,8 @@ function eliminar()
 		exit;
 	}
 }
-
 function editar()
 {
-
 	if (empty($_POST)) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
@@ -286,23 +291,15 @@ function editar()
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
 
-		// 1. Verificar si se subió una imagen nueva analizando el error de $_FILES
+		// 1. Verificar si se subió una imagen nueva
 		$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
 
+		// 2. Si hay imagen nueva, validarla ANTES de tocar el disco
 		if ($hayNuevaImagen) {
-			$tiempo = new DateTime();
-			$fecha = date("Y-m-d");
-			$nombreImagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . $_FILES['imagen']['name'];
-			$rutaTemporal = $_FILES['imagen']['tmp_name'];
-
-			// Mover el archivo físicamente
-			move_uploaded_file($rutaTemporal, "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $nombreImagen);
-
-			$modeloInsumo->setImagen($nombreImagen);
-		} else {
-			$modeloInsumo->setImagen(null); // Indicamos que no hay cambio de imagen
+			$modeloInsumo->validarImagen($_FILES['imagen']);
 		}
 
+		// 3. Validar el resto de los campos (aún no se ha tocado el disco)
 		$modeloInsumo->setIdInsumo($_POST["idInsumoOculto"]);
 		$modeloInsumo->setNombre($_POST["nombre"]);
 		$modeloInsumo->setDescripcion($_POST['descripcion']);
@@ -310,9 +307,21 @@ function editar()
 		$modeloInsumo->setMarca($_POST["marca"]);
 		$modeloInsumo->setMedida($_POST["medida"]);
 
+		// 4. Todo validado — recién ahora se mueve el archivo, si corresponde
+		if ($hayNuevaImagen) {
+			$tiempo = new DateTime();
+			$fecha = date("Y-m-d");
+			$nombreImagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . basename($_FILES['imagen']['name']);
+
+			if (!move_uploaded_file($_FILES['imagen']['tmp_name'], "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $nombreImagen)) {
+				throw new InvalidArgumentException('No se pudo guardar la imagen.');
+			}
+			$modeloInsumo->setImagen($nombreImagen);
+		} else {
+			$modeloInsumo->setImagen(null); // Indicamos que no hay cambio de imagen
+		}
 
 		$edicion = $modeloInsumo->editarInsumo($idUsuario);
-
 
 		if (is_array($edicion) && $edicion[0] === "exito") {
 			$bitacora->setId_usuario($idUsuario);
@@ -360,7 +369,7 @@ function papeleraInsumosAjax()
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
 	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
-	$columnasMapeadas = ['id_insumo','imagen','nombre','descripcion','marca','medida','precio','stockMinimo','iva','cantidad_inventario'];
+	$columnasMapeadas = ['id_insumo', 'imagen', 'nombre', 'descripcion', 'marca', 'medida', 'precio', 'stockMinimo', 'iva', 'cantidad_inventario'];
 
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 
@@ -374,7 +383,7 @@ function papeleraInsumosAjax()
 	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
 		$ordenColumna = 'id_insumo';
 	}
-	$data= $sanetizar->sanitizeRecursive($modeloInsumo->papelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
+	$data = $sanetizar->sanitizeRecursive($modeloInsumo->papelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloInsumo->contarTotal();
 	$totalFiltrados = !empty($buscar) ? $modeloInsumo->contarTotal($buscar) : $totalRegistros;

@@ -11,7 +11,7 @@ class ModeloInsumo extends ModelBase
 
 	private $idInsumo, $cantidadCero, $parametro, $nombre, $imagen, $descripcion, $fechaDeIngreso, $fechaDeVencimiento, $precio, $cantidad, $stockMinimo, $lote, $marca, $medida, $iva, $imagenAntigua, $insumosArray, $idProveedor;
 
-	private $columnasPermitidas = ['id_entrada','nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	private $columnasPermitidas = ['id_entrada', 'nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
 	private $ordenesPermitidos = ['ASC', 'DESC'];
 
 	public function __construct($dbSystem = true)
@@ -74,7 +74,7 @@ class ModeloInsumo extends ModelBase
 	public function contarTotalInsumosVencidos($buscar = '')
 	{
 		$data = [];
-		
+
 		$sql = "SELECT COUNT(*) as total  FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE";
 
 		if (!empty($buscar)) {
@@ -289,7 +289,7 @@ class ModeloInsumo extends ModelBase
 
 			$sql = "UPDATE insumo SET estado =:estado WHERE id_insumo =:id";
 			$this->setSQL($sql);
-			$consulta = $this->update(['estado'=>$estado], $this->getIdInsumo());
+			$consulta = $this->update(['estado' => $estado], $this->getIdInsumo());
 			return ["exito"];
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -415,7 +415,7 @@ class ModeloInsumo extends ModelBase
 		return $this->insertarInsumos();
 	}
 
-	public function eliminarInsumo($idUsuario = null,$estado ='DES')
+	public function eliminarInsumo($idUsuario = null, $estado = 'DES')
 	{
 		$this->validarSesion($idUsuario);
 		$this->validarCamposObligatorios([$this->idInsumo], ' al eliminar un insumo');
@@ -442,9 +442,42 @@ class ModeloInsumo extends ModelBase
 		return $this->vencer();
 	}
 
+	public function validarImagen($imagen): void
+	{
+		if ($imagen['error'] !== UPLOAD_ERR_OK) {
+			throw new \InvalidArgumentException('Error al subir la imagen.');
+		}
+
+		$extensionesPermitidas = ['jpg', 'jpeg', 'png'];
+		$extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+		if (!in_array($extension, $extensionesPermitidas)) {
+			throw new \InvalidArgumentException('Solo se permiten imágenes JPG o PNG.');
+		}
+
+		if ($imagen['size'] > 5 * 1024 * 1024) {
+			throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+		}
+
+		$infoImagen = @getimagesize($imagen['tmp_name']);
+		if ($infoImagen === false || !in_array($infoImagen['mime'], ['image/jpeg', 'image/png'])) {
+			throw new \InvalidArgumentException('El archivo no es una imagen válida.');
+		}
+	}
 
 	// getter y setter
 	// setter
+
+	public function setImagen($imagen)
+	{
+		if ($imagen === null) {
+			$this->imagen = null;
+			return;
+		}
+		// Ya viene validado por validarImagen(); aquí solo guarda el nombre generado
+		$this->imagen = $imagen;
+	}
+
+
 	public function setIdInsumo($idInsumo)
 	{
 
@@ -483,7 +516,7 @@ class ModeloInsumo extends ModelBase
 	public function setIva($iva)
 	{
 
-		if (!preg_match('/^[0-9]+$/', $iva)) {
+		if (!preg_match('/^[01]$/', (string)$iva)) {
 			throw new \InvalidArgumentException('El iva no es válido.');
 		}
 		$this->iva = $iva;
@@ -501,15 +534,12 @@ class ModeloInsumo extends ModelBase
 		$this->lote = $lote;
 	}
 
-	public function setPrecio($precio)
+	public function setPrecio($precioD)
 	{
-		if (!preg_match('/^\d+([.,]\d+)?$/', $precio)) {
-			throw new \InvalidArgumentException('no es válido.');
+		if (!preg_match('/^(?!0+([.,]0+)?$)\d+([.,]\d+)?$/', $precioD)) {
+			throw new \InvalidArgumentException('El precio debe ser mayor a 0.');
 		}
-		if ((int)$precio <= 0) {
-			throw new \InvalidArgumentException('El precio debe ser mayor que cero.');
-		}
-		$this->precio = $precio;
+		$this->precio = $precioD;
 	}
 
 	public function setCantidadCero($cantidadCero)
@@ -545,53 +575,6 @@ class ModeloInsumo extends ModelBase
 		}
 
 		$this->descripcion = $descripcion;
-	}
-
-	public function setImagen($imagen)
-	{
-		// Validar que el archivo se haya subido sin errores
-		// if ($imagen['error'] !== UPLOAD_ERR_OK) {
-		// 	throw new \InvalidArgumentException('Error al subir la imagen.');
-		// }
-
-		// // Validar extensión
-		// $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
-		// $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
-
-		// if (!in_array($extension, $extensionesPermitidas)) {
-		// 	throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
-		// }
-
-		// // Validar tamaño (ejemplo: máximo 5 MB)
-		// if ($imagen['size'] > 5 * 1024 * 1024) {
-		// 	throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-		// }
-
-		// Si todo está bien, guardamos el nombre temporal para moverlo después
-		$this->imagen = $imagen;
-	}
-	public function setImagenAntigua($imagen)
-	{
-		// Validar que el archivo se haya subido sin errores
-		if ($imagen['error'] !== UPLOAD_ERR_OK) {
-			throw new \InvalidArgumentException('Error al subir la imagen.');
-		}
-
-		// Validar extensión
-		$extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
-		$extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
-
-		if (!in_array($extension, $extensionesPermitidas)) {
-			throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
-		}
-
-		// Validar tamaño (ejemplo: máximo 5 MB)
-		if ($imagen['size'] > 5 * 1024 * 1024) {
-			throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-		}
-
-		// Si todo está bien, guardamos el nombre temporal para moverlo después
-		$this->imagen = $imagen;
 	}
 
 	public function setMarca($marca)
@@ -710,10 +693,6 @@ class ModeloInsumo extends ModelBase
 	public function getImagen()
 	{
 		return $this->imagen;
-	}
-	public function getImagenAntigua()
-	{
-		return $this->imagenAntigua;
 	}
 
 	public function getIdInsumo()
