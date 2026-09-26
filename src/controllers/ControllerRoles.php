@@ -10,6 +10,7 @@ function mostrar($parametro)
 {
     $modeloRoles = new ModeloRoles();
     $sanetizar = new ModeloSanetizarJSON();
+    $sanetizar->setHashKeys(['id_rol']);
 
     $ayuda = "btnayudaRoles";
     $vistaActiva = "roles";
@@ -22,6 +23,7 @@ function mostrarAjax()
 {
     $modeloRoles = new ModeloRoles();
     $sanetizar = new ModeloSanetizarJSON();
+    $sanetizar->setHashKeys(['id_rol']);
     echo json_encode($sanetizar->sanitizeRecursive($modeloRoles->roles()));
 }
 
@@ -30,7 +32,7 @@ function mostrarPermisos($id_rol, $modulo)
     $modeloPermisos = new ModeloPermisos();
     $modeloRoles = new ModeloRoles();
 
-    $modeloRoles->setIdRol($id_rol);
+    $modeloRoles->setIdRol(unhashId($id_rol));
     $modeloPermisos->setModulo($modulo);
     $modeloRoles->mostrarPermisos();
 }
@@ -39,7 +41,7 @@ function cargarPermisosGuardados($datos)
 {
     $modeloRoles = new ModeloRoles();
     $sanetizar = new ModeloSanetizarJSON();
-    $modeloRoles->setIdRol($datos["0"]);
+    $modeloRoles->setIdRol(unhashId($datos["0"]));
     echo json_encode($sanetizar->sanitizeRecursive($modeloRoles->mostrarPermisos()));
 }
 
@@ -131,7 +133,7 @@ function modificarRol()
         $modeloRoles = new ModeloRoles();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloRoles->setIdRol($_POST["id_rol"]);
+        $modeloRoles->setIdRol(unhashId($_POST["id_rol"]));
         $modeloRoles->setNombre($_POST["nombre"]);
         $modeloRoles->setNombreRegistrado($_POST["nombreRegiistrado"]);
         $modeloRoles->setDescripcion($_POST["descripcion"]);
@@ -187,7 +189,7 @@ function eliminarRol()
         $input = json_decode(file_get_contents("php://input"), true);
         $id = $input["id"] ?? null;
 
-        $modeloRoles->setIdRol($id);
+        $modeloRoles->setIdRol(unhashId($id));
         $eliminacion = $modeloRoles->eliminarRol($idUsuario);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {

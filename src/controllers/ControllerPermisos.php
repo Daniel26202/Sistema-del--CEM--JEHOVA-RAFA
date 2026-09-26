@@ -40,6 +40,7 @@ function returnModules()
 
     $model = new ModeloPermisos();
     $sanitizador = new ModeloSanetizarJSON();
+    $sanitizador->setHashKeys(['id_modulo']);
 
     if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
         $ordenColumna = 'id_modulo';
@@ -167,7 +168,7 @@ function eliminar_modulo($datos)
         $modelo  = new ModeloPermisos();
         $bitacora = new ModeloBitacora();
 
-        $modelo->setIdModulo($datos[0]);
+        $modelo->setIdModulo(unhashId($datos[0]));
 
         $bitacora->setId_usuario($idUsuario);
         $bitacora->setActividad("Ha eliminado un  modulo del sistema");

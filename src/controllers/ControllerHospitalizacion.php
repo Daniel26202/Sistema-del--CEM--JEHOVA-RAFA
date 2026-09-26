@@ -46,6 +46,7 @@ function traerHospP()
 
     $modeloHosp = new ModeloHospitalizacion();
     $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_hospitalizacion', 'id_control', 'id_paciente', 'id_usuario', 'id_servicioMedico', 'id_entradaDeInsumo', 'id_insumo', 'id_personal']);
 
     if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
         $ordenColumna = 'id_hospitalizacion';
@@ -125,6 +126,7 @@ function traerHospR()
 
     $modeloHosp = new ModeloHospitalizacion();
     $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_hospitalizacion', 'id_control', 'id_paciente', 'id_usuario', 'id_servicioMedico', 'id_entradaDeInsumo', 'id_insumo', 'id_personal']);
 
     $datosH = $modeloHosp->selectsHR($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
@@ -183,6 +185,12 @@ function hospitalizacion($parametro)
     $datosS = $modeloSintomas->selects();
     $datosPatologias = $modeloPatologia->mostrarPatologias();
 
+    $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_personal', 'id_sintomas', 'id_patologia']);
+    $doctores = $sanetizacion->sanitizeRecursive($doctores);
+    $datosS = $sanetizacion->sanitizeRecursive($datosS);
+    $datosPatologias = $sanetizacion->sanitizeRecursive($datosPatologias);
+
     require_once "./src/vistas/vistaHospitalizacion/hospitalizacion.php";
 }
 function hospitalizacionesRealizadas($parametro)
@@ -208,6 +216,7 @@ function selectServiciosD()
     $sanetizacion = new ModeloSanetizarJSON();
 
     $servicios = $modeloHosp->selectServiciosD();
+    $sanetizacion->setHashKeys(['id_servicioMedico']);
     echo json_encode($sanetizacion->sanitizeRecursive($servicios));
 }
 
@@ -217,9 +226,10 @@ function serviciosDH($datos)
     $sanetizacion = new ModeloSanetizarJSON();
 
 
-    $idH = $datos[0];
+    $idH = unhashId($datos[0]);
     $modeloHosp->setIdH($idH);
     $servicios = $modeloHosp->selectServiciosDH();
+    $sanetizacion->setHashKeys(['id_hospitalizacion', 'id_servicioMedico']);
     echo json_encode($sanetizacion->sanitizeRecursive($servicios));
 }
 
@@ -228,6 +238,7 @@ function selectInsumos()
     // datos de los insumos
     $modeloHosp = new ModeloHospitalizacion();
     $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_insumo']);
     echo json_encode($sanetizacion->sanitizeRecursive($modeloHosp->selectsInsumos()));
 }
 
@@ -240,6 +251,7 @@ function validarPaciente($parametro = [])
 
     $modeloHosp->setCedula($parametro[0]);
     $vC = $modeloHosp->validarPacienteH();
+    $sanetizacion->setHashKeys(['id_paciente']);
     echo json_encode($sanetizacion->sanitizeRecursive($vC));
 }
 
@@ -251,6 +263,7 @@ function mostrarInformacionPCD($parametro = [])
 
     $modeloHosp->setCedula($parametro[0]);
     $info = $modeloHosp->select();
+    $sanetizacion->setHashKeys(['id_control', 'id_paciente', 'id_usuario']);
     echo json_encode($sanetizacion->sanitizeRecursive($info));
 }
 
@@ -264,6 +277,7 @@ function mostrarInsumos($datos)
     $nombre = $datos[0];
     $modeloHosp->setNombreInsumo($nombre);
     $infoInsumos = $modeloHosp->buscarInsumos();
+    $sanetizacion->setHashKeys(['id_insumo', 'id_entradaDeInsumo']);
     echo json_encode($sanetizacion->sanitizeRecursive($infoInsumos));
 }
 
@@ -273,9 +287,10 @@ function mostrarUnInsumo($datos)
     $modeloHosp = new ModeloHospitalizacion();
     $sanetizacion = new ModeloSanetizarJSON();
 
-    $id = $datos[0];
+    $id = unhashId($datos[0]);
     $modeloHosp->setIdInsumo($id);
     $infoInsumo = $modeloHosp->buscarUnInsumo();
+    $sanetizacion->setHashKeys(['id_insumo', 'id_entradaDeInsumo']);
     echo json_encode($sanetizacion->sanitizeRecursive($infoInsumo));
 }
 
@@ -315,8 +330,8 @@ function agregarH()
         $modeloHosp = new ModeloHospitalizacion();
 
         $modeloHosp->setFechaControl(date("Y-m-d H:i:s"));
-        $modeloHosp->setIdPaciente($_POST["id_paciente"]);
-        $modeloHosp->setIdDoctor($_POST["id_personal"]);
+        $modeloHosp->setIdPaciente(unhashId($_POST["id_paciente"]));
+        $modeloHosp->setIdDoctor(unhashId($_POST["id_personal"]));
         $verificaH = $modeloHosp->verificaHA();
 
 
@@ -327,10 +342,10 @@ function agregarH()
             exit;
         } else {
             // no existe
-            $idInsumo = (isset($_POST["id_insumoA"])) ? $_POST["id_insumoA"] : false;
+            $idInsumo = (isset($_POST["id_insumoA"])) ? array_map('unhashId', (array)$_POST["id_insumoA"]) : false;
             $cantidadI = (isset($_POST["cantidadA"])) ? $_POST["cantidadA"] : false;
 
-            $idServicio = (isset($_POST["id_servicio"])) ? $_POST["id_servicio"] : false;
+            $idServicio = (isset($_POST["id_servicio"])) ? array_map('unhashId', (array)$_POST["id_servicio"]) : false;
             $cantidadS = (isset($_POST["cantidadS"])) ? $_POST["cantidadS"] : false;
 
             $modeloHosp->setFechaHora(date("Y-m-d H:i:s"));
@@ -341,8 +356,8 @@ function agregarH()
             $modeloHosp->setHistorial($_POST["historial"]);
             $modeloHosp->setSeveridad($_POST["severidad"]);
             $modeloHosp->setDiagnostico($_POST["diagnostico"]);
-            $modeloHosp->setIdDoctor($_POST["id_personal"]);
-            $modeloHosp->setIdPaciente($_POST["id_paciente"]);
+            $modeloHosp->setIdDoctor(unhashId($_POST["id_personal"]));
+            $modeloHosp->setIdPaciente(unhashId($_POST["id_paciente"]));
 
             $registro = $modeloHosp->insertarH();
 
@@ -381,9 +396,10 @@ function traerInsuDHEd($datos)
     $modeloHosp = new ModeloHospitalizacion();
     $sanetizacion = new ModeloSanetizarJSON();
 
-    $idH = $datos[0];
+    $idH = unhashId($datos[0]);
     $modeloHosp->setIdH($idH);
     $datosIDH = $modeloHosp->EInsumosM();
+    $sanetizacion->setHashKeys(['id_hospitalizacion', 'id_insumo', 'id_entradaDeInsumo']);
     echo json_encode($sanetizacion->sanitizeRecursive($datosIDH));
 }
 
@@ -519,7 +535,7 @@ function modificarH()
     }
 
     // Servicios
-    $idServicio = isset($_POST["id_servicio"]) ? $_POST["id_servicio"] : [];
+    $idServicio = isset($_POST["id_servicio"]) ? array_map('unhashId', (array)$_POST["id_servicio"]) : [];
     $cantidadS = isset($_POST["cantidadS"]) ? $_POST["cantidadS"] : false;
 
     //servicios se existentes se editan
@@ -527,7 +543,7 @@ function modificarH()
     $cantidadE = isset($_POST["cantidad"]) ? $_POST["cantidad"] : false;
 
     // 🔥 INSUMOS NUEVOS (se agregan)
-    $idInsumo = isset($_POST["id_insumoA"]) ? $_POST["id_insumoA"] : false;
+    $idInsumo = isset($_POST["id_insumoA"]) ? array_map('unhashId', (array)$_POST["id_insumoA"]) : false;
     $cantidadA = isset($_POST["cantidadA"]) ? $_POST["cantidadA"] : false;
     // 🔥 INSUMOS EXISTENTES (se editan)
     $idIDH = isset($_POST["id_idh"]) ? $_POST["id_idh"] : false;
@@ -542,7 +558,7 @@ function modificarH()
     $modeloHosp->setCantidadE($cantidadE);
     $modeloHosp->setIdServicio($idServicio);
     $modeloHosp->setCantidadSer($cantidadS);
-    $modeloHosp->setIdH($_POST['id_h']);
+    $modeloHosp->setIdH(unhashId($_POST['id_h']));
     $modeloHosp->setHistorial($_POST['historialE']);
     $modeloHosp->setDiagnostico($_POST['diagnostico']);
 
@@ -601,7 +617,7 @@ function eliminaL()
         $input = json_decode(file_get_contents("php://input"), true);
         $idH = $input["id"] ?? null;
 
-        $modeloHosp->setIdH($idH);
+        $modeloHosp->setIdH(unhashId($idH));
         $eliminacion = $modeloHosp->eliminaLogico($idUsuario);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -637,6 +653,7 @@ function buscarIExH()
 
 
     $datosIns = $modeloHosp->buscarIEH();
+    $sanetizacion->setHashKeys(['id_hospitalizacion', 'id_insumo']);
     echo json_encode($sanetizacion->sanitizeRecursive($datosIns));
 }
 
@@ -645,7 +662,7 @@ function enviarAFacturar()
 {
     $modeloHosp = new ModeloHospitalizacion();
 
-    $idH = $_POST["idH"];
+    $idH = unhashId($_POST["idH"]);
     date_default_timezone_set('America/Caracas');
     $fechaHF = date("Y-m-d H:i:s");
     $monto = round($_POST["monto"], 2);
@@ -662,8 +679,8 @@ function enviarAFacturar()
 
     $modeloHosp->setHistorial($_POST["historialEnF"]);
 
-    $modeloHosp->setSintomasId(isset($_POST["sintomas"]) ? $_POST["sintomas"] : []);
-    $modeloHosp->setPatologiasId(isset($_POST["patologias"]) ? $_POST["patologias"] : []);
+    $modeloHosp->setSintomasId(isset($_POST["sintomas"]) ? array_map('unhashId', (array)$_POST["sintomas"]) : []);
+    $modeloHosp->setPatologiasId(isset($_POST["patologias"]) ? array_map('unhashId', (array)$_POST["patologias"]) : []);
     $modeloHosp->setNota($_POST["nota"]);
     $modeloHosp->setIndicaciones($_POST["indicaciones"]);
     $modeloHosp->setFechaRegreso($_POST["fechaDeCita"]);
@@ -698,6 +715,10 @@ function hospitalizacionApk()
         if (!is_array($pacientes)) {
             throw new \Exception("Error al obtener hospitalizaciones: " . $pacientes);
         }
+
+        $sanetizacion = new ModeloSanetizarJSON();
+        $sanetizacion->setHashKeys(['id_hospitalizacion', 'id_paciente', 'id_usuario', 'id_control']);
+        $pacientes = $sanetizacion->sanitizeRecursive($pacientes);
 
         // Contar ingresos de hoy comparando con fecha PHP (no CURDATE de MySQL)
         $hoy = date("Y-m-d");

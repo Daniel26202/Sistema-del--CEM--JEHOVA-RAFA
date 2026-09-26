@@ -41,12 +41,13 @@ function clientesAjax()
 
     $modeloCliente = new ModeloCliente();
     $sanitizador = new ModeloSanetizarJSON();
+    $sanitizador->setHashKeys(['id_cliente']);
 
     if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
         $ordenColumna = 'id_paciente';
     }
 
-    $clientes = $modeloCliente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+    $clientes = $sanitizador->sanitizeRecursive($modeloCliente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
     $totalRegistros = $modeloCliente->contarTotalClientes('ACT');
     $totalFiltrados = !empty($buscar) ? $modeloCliente->contarTotalClientes('ACT', $buscar) : $totalRegistros;
@@ -92,12 +93,13 @@ function papeleraAjax()
 
     $modeloCliente = new ModeloCliente();
     $sanitizador = new ModeloSanetizarJSON();
+    $sanitizador->setHashKeys(['id_cliente']);
 
     if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
         $ordenColumna = 'id_paciente';
     }
 
-    $clientes = $modeloCliente->indexPapelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+    $clientes = $sanitizador->sanitizeRecursive($modeloCliente->indexPapelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
     $totalRegistros = $modeloCliente->contarTotalClientes('DES');
     $totalFiltrados = !empty($buscar) ? $modeloCliente->contarTotalClientes('DES', $buscar) : $totalRegistros;
@@ -196,7 +198,7 @@ function setCliente()
         $modeloCliente  = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloCliente->setIdCliente($_POST['id']);
+        $modeloCliente->setIdCliente(unhashId($_POST['id']));
         $modeloCliente->setNacionalidad(isset($_POST['nacionalidad']) ? $_POST['nacionalidad'] : 'V');
         $modeloCliente->setCedula($_POST['cedula']);
         $modeloCliente->setCedulaRegistrada($_POST['cedulaRegistrada']);
@@ -263,7 +265,7 @@ function eliminar()
         $modeloCliente  = new ModeloCliente();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloCliente->setIdCliente($id);
+        $modeloCliente->setIdCliente(unhashId($id));
 
         $eliminacion = $modeloCliente->eliminarCliente($idUsuario, $estado);
 

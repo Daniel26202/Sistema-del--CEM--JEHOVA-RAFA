@@ -197,14 +197,16 @@ function todos_los_sintomas()
 function mostrarHorario($datos)
 {
     $modelo = new ModeloCita();
-    $modelo->setIdDoctor($datos[0]);
+    $modelo->setIdDoctor(unhashId($datos[0]));
     echo json_encode($modelo->mostrarHorarioDoctores());
 }
 
 function retornarDoctores()
 {
     $modelo = new ModeloDoctores();
-    echo json_encode($modelo->select());
+    $sanitizador = new ModeloSanetizarJSON();
+    $sanitizador->setHashKeys(['id_personal', 'id_especialidad', 'id_usuario', 'id_horario', 'id_servicioMedico', 'id_categoria']);
+    echo json_encode($sanitizador->sanitizeRecursive($modelo->select()));
 }
 
 function exportar_pdf()
@@ -262,7 +264,7 @@ function exportar_pdf()
 function diasConMasCitas($parametro)
 {
     $modelo = new ModeloInicio();
-    $id_personal = isset($parametro[0]) ? $parametro[0] : 0;
+    $id_personal = isset($parametro[0]) && $parametro[0] !== '' ? unhashId($parametro[0]) : 0;
     $modelo->setIdPersonal($id_personal);
     echo json_encode($modelo->obtenerDiasConMasCitas());
 }

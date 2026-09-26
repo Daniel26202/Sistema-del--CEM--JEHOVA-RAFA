@@ -67,7 +67,7 @@ function bitacoraAjaxUser()
 	$modeloInicio = new ModeloInicio();
 	$sanitizador = new ModeloSanetizarJSON();
 
-
+	$sanitizador->setHashKeys(['id_bitacora']);
 	$bitacoras = $modeloBitacora->consultarBitacora($_SESSION['id_usuario'], $inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 
 	$bitacora_sanetizada = $sanitizador->sanitizeRecursive($bitacoras);
@@ -118,6 +118,7 @@ function bitacoraAjaxAdmin()
 	$modeloBitacora = new ModeloBitacora(false);
 	$sanitizador = new ModeloSanetizarJSON();
 
+	$sanitizador->setHashKeys(['id_bitacora']);
 
 	$bitacoras = $modeloBitacora->consultarBitacora(0,$inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 

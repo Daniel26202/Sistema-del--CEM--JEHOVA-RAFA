@@ -37,12 +37,15 @@ function getPacientesAjax()
 	//si ordena por el id por defecto
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
 
-	$modelo = new ModeloPacientes();
-	$sanitizador = new ModeloSanetizarJSON();
-
 	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
 		$ordenColumna = 'id_paciente';
 	}
+
+	$modelo = new ModeloPacientes();
+	$sanitizador = new ModeloSanetizarJSON();
+
+	$sanitizador->setHashKeys(['id_paciente']);
+
 	$pacientes = $modelo->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 	$pacientesSanitizados = $sanitizador->sanitizeRecursive($pacientes);
 
@@ -100,6 +103,7 @@ function getHistorialSaludAjax()
 
 	$modelo = new ModeloPacientes();
 	$sanitizador = new ModeloSanetizarJSON();
+
 
 	// traigo los datos de todos los registros
 	$pacientes = $modelo->indexHistorial($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
@@ -161,7 +165,8 @@ function papeleraPacienteAjax()
 
 	$modelo = new ModeloPacientes();
 	$sanitizador = new ModeloSanetizarJSON();
-
+	
+	$sanitizador->setHashKeys(['id_paciente']);
 	$pacientes = $modelo->indexPapelera($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 	$pacientesSanitizados = $sanitizador->sanitizeRecursive($pacientes);
 
@@ -269,13 +274,15 @@ function setPaciente()
 			exit;
 		}
 
+		$id = unhashId($_POST['id']);
+
 		$idUsuario = $_SESSION['id_usuario'];
 
 		$modelo  = new ModeloPacientes();
 		$bitacora = new ModeloBitacora();
 
 
-		$modelo->setIdPaciente(intval($_POST['id']));
+		$modelo->setIdPaciente(intval($id));
 		$modelo->setNacionalidad($_POST['nacionalidad']);
 		$modelo->setCedulaRegistrada($_POST['cedulaRegistrada']);
 		$modelo->setCedula($_POST['cedula']);
@@ -336,7 +343,7 @@ function eliminar()
 		$bitacora = new ModeloBitacora();
 
 		$input = json_decode(file_get_contents("php://input"), true);
-		$id = $input["id"] ?? null;
+		$id = unhashId($input["id"] ?? null);
 
 		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
 		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';

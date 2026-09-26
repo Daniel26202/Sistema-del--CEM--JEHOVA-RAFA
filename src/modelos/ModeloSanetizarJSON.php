@@ -6,11 +6,19 @@ class ModeloSanetizarJSON
 {
     //claves a exluir de la sanetizacion
     private array $skipKeys = [];
+    //claves id para hash
+    private array $hashKeys = [];
 
-    
+
     public function setSkipKeys(array $keys): self
     {
         $this->skipKeys = $keys;
+        return $this;
+    }
+
+    public function setHashKeys(array $keys): self
+    {
+        $this->hashKeys = $keys;
         return $this;
     }
 
@@ -28,7 +36,9 @@ class ModeloSanetizarJSON
         if (is_array($data)) {
             $result = [];
             foreach ($data as $key => $value) {
-                if (in_array($key, $this->skipKeys, true)) {
+                if (in_array($key, $this->hashKeys, true) && is_numeric($value)) {
+                    $result[$key] = hashId((int)$value);
+                } elseif (in_array($key, $this->skipKeys, true)) {
                     $result[$key] = $value;
                 } else {
                     $result[$key] = $this->sanitizeRecursive($value);
@@ -42,7 +52,9 @@ class ModeloSanetizarJSON
             $array = (array) $data;
             $result = [];
             foreach ($array as $key => $value) {
-                if (in_array($key, $this->skipKeys, true)) {
+                if (in_array($key, $this->hashKeys, true) && is_numeric($value)) {
+                    $result[$key] = hashId((int)$value);
+                }elseif (in_array($key, $this->skipKeys, true)) {
                     $result[$key] = $value;
                 } else {
                     $result[$key] = $this->sanitizeRecursive($value);
@@ -61,7 +73,6 @@ class ModeloSanetizarJSON
             return $data + 0;
         }
 
-        // booleanos, null y otros se devuelven sin cambios
         return $data;
     }
 }

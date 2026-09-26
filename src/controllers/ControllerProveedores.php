@@ -3,6 +3,7 @@
 use App\modelos\ModeloProveedores;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloSanetizarJSON;
 
 function proveedores($parametro)
 {
@@ -38,7 +39,9 @@ function proveedoresAjax()
 	}
 
 	$modeloProveedores = new ModeloProveedores();
-	$proveedores = $modeloProveedores->consultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$sanitizador = new ModeloSanetizarJSON();
+	$sanitizador->setHashKeys(['id_proveedor']);
+	$proveedores = $sanitizador->sanitizeRecursive($modeloProveedores->consultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloProveedores->contarTotalProveedores('ACT');
 	$totalFiltrados = !empty($buscar) ? $modeloProveedores->contarTotalProveedores('ACT', $buscar) : $totalRegistros;
@@ -87,7 +90,9 @@ function proveedoresPapeleraAjax()
 	}
 
 	$modeloProveedores = new ModeloProveedores();
-	$proveedores = $modeloProveedores->papeleraConsultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$sanitizador = new ModeloSanetizarJSON();
+	$sanitizador->setHashKeys(['id_proveedor']);
+	$proveedores = $sanitizador->sanitizeRecursive($modeloProveedores->papeleraConsultar($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloProveedores->contarTotalProveedores('DES');
 	$totalFiltrados = !empty($buscar) ? $modeloProveedores->contarTotalProveedores('DES', $buscar) : $totalRegistros;
@@ -188,7 +193,7 @@ function update()
 		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
 		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
-		$modeloProveedores->setIdProveedor($id);
+		$modeloProveedores->setIdProveedor(unhashId($id));
 		$eliminacion = $modeloProveedores->deleteEntrada($idUsuario,$estado);
 
 		if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -241,7 +246,7 @@ function editar()
 		$modeloProveedores = new ModeloProveedores();
 		$modeloBitacora = new ModeloBitacora();
 
-		$modeloProveedores->setIdProveedor($_POST["id_proveedor"]);
+		$modeloProveedores->setIdProveedor(unhashId($_POST["id_proveedor"]));
 		$modeloProveedores->setNombre($_POST["nombre"]);
 		$modeloProveedores->setRif($_POST["rif"]);
 		$modeloProveedores->setTelefono($_POST["telefono"]);

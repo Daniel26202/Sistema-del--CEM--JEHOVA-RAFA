@@ -263,10 +263,6 @@ addEventListener("DOMContentLoaded", function () {
 
   const validarHorarioDisponible = async (fecha, id, listHoraRegistrada) => {
     try {
-      console.log(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Citas/validarHorariosDisponlibles/${fecha}/${id}`,
-      );
-
       const result = await executePetition(
         `/Sistema-del--CEM--JEHOVA-RAFA/Citas/validarHorariosDisponlibles/${fecha}/${id}`,
         "GET",

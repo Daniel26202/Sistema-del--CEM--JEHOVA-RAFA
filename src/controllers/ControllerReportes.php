@@ -76,7 +76,7 @@ function returnDataFactura()
 		}
 
 		$result[] = [
-			'id_factura' => $factura['id_factura'],
+			'id_factura' => hashId((int)$factura['id_factura']),
 			'nacionalidad' => $factura['nacionalidad'],
 			'cedula_p' => $factura['cedula_p'],
 			'nombre_p' => $factura['nombre_p'],
@@ -102,7 +102,9 @@ function returnDataFactura()
 function returnDataFacturaAnulada()
 {
 	$modeloReporte = new ModeloReporte();
-	echo json_encode($modeloReporte->consultarFacturaAnuladas());
+	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_factura']);
+	echo json_encode($sanetizar->sanitizeRecursive($modeloReporte->consultarFacturaAnuladas()));
 }
 
 function buscarPDF()
@@ -238,7 +240,7 @@ function anularFactura($datos)
 		$modeloReporte = new ModeloReporte();
 		$modeloBitacora = new ModeloBitacora();
 
-		$modeloReporte->setIdFactura($datos["0"]);
+		$modeloReporte->setIdFactura(unhashId($datos["0"]));
 
 		// Guardo la bitacora
 		$modeloBitacora->setId_usuario($datos[1]);

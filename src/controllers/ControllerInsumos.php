@@ -16,6 +16,7 @@ function insumos($parametro)
 	$idUsuario = $_SESSION['id_usuario'];
 	$modeloInsumo = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_proveedor', 'id_insumo']);
 	$ayuda = "btnayudaInsumo";
 	$vistaActiva = "insumos";
 
@@ -32,6 +33,7 @@ function insumosAjax()
 {
 	$modeloInsumo = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_insumo']);
 	echo json_encode($sanetizar->sanitizeRecursive($modeloInsumo->insumos()));
 }
 
@@ -40,6 +42,7 @@ function InsumosVencidos($parametro)
 {
 	$modeloInsumo = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_insumo']);
 
 	$ayuda = "btnayudaVencido";
 	$vistaActiva = "vencidos";
@@ -73,6 +76,7 @@ function vencidos()
 
 	$modeloInsumo = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_insumo', 'id_insumo_e', 'id_entradaDeInsumo', 'id_entrada', 'id_proveedor']);
 
 	$vencidos = $sanetizar->sanitizeRecursive($modeloInsumo->InsumosVencidos($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
@@ -97,8 +101,9 @@ function info($datos)
 	$sanetizar = new ModeloSanetizarJSON();
 
 
-	$id_insumo = $datos[0];
+	$id_insumo = unhashId($datos[0]);
 	$modeloInsumo->setIdInsumo($id_insumo);
+	$sanetizar->setHashKeys(['id_insumo']);
 
 	$datosDeInsumo = $sanetizar->sanitizeRecursive($modeloInsumo->insumosInfo());
 	$datosDeVencimiento =  $sanetizar->sanitizeRecursive($modeloInsumo->retornarFechaDeVencimiento());
@@ -122,6 +127,7 @@ function mostrarBusquedaInsumo()
 	$sanetizar = new ModeloSanetizarJSON();
 
 	$modeloInsumo->setParametro($_POST['nombre']);
+	$sanetizar->setHashKeys(['id_insumo']);
 
 	$respuesta = $sanetizar->sanitizeRecursive($modeloInsumo->buscarInsumos());
 	echo json_encode($respuesta);
@@ -167,7 +173,7 @@ function guardarInsumo()
 
 		// 3. Validar TODOS los demás campos (aún no se ha tocado el disco)
 		$modeloInsumo->setNombre($_POST['nombre']);
-		$modeloInsumo->setIdProveedor($_POST['proveedor']);
+		$modeloInsumo->setIdProveedor(unhashId($_POST['proveedor']));
 		$modeloInsumo->setDescripcion($_POST['descripcion']);
 		$modeloInsumo->setFechaDeIngreso(date("Y-m-d"));
 		$modeloInsumo->setFechaDeVencimiento($_POST['fechaDeVencimiento']);
@@ -241,7 +247,7 @@ function eliminar()
 		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
 		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
-		$modeloInsumo->setIdInsumo($id);
+		$modeloInsumo->setIdInsumo(unhashId($id));
 
 		$eliminacion = $modeloInsumo->eliminarInsumo($idUsuario, $estado);
 
@@ -300,7 +306,7 @@ function editar()
 		}
 
 		// 3. Validar el resto de los campos (aún no se ha tocado el disco)
-		$modeloInsumo->setIdInsumo($_POST["idInsumoOculto"]);
+		$modeloInsumo->setIdInsumo(unhashId($_POST["idInsumoOculto"]));
 		$modeloInsumo->setNombre($_POST["nombre"]);
 		$modeloInsumo->setDescripcion($_POST['descripcion']);
 		$modeloInsumo->setStockMinimo($_POST["stockMinimo"]);
@@ -379,6 +385,7 @@ function papeleraInsumosAjax()
 
 	$modeloInsumo = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_insumo']);
 
 	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
 		$ordenColumna = 'id_insumo';

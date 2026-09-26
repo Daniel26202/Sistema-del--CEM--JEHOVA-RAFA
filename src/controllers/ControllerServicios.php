@@ -23,10 +23,12 @@ function datosServiciosPapelera($parametro)
 {
 	$modeloServicios = new ModeloServicios();
 	$modeloCategoria = new ModeloCategoria();
+	$sanitizador = new ModeloSanetizarJSON();
+	$sanitizador->setHashKeys(['id_personal', 'id_categoria']);
 
 	$doctores = $modeloServicios->mostrarDoctores();
 	$categorias = $modeloCategoria->seleccionarCategoria();
-	echo json_encode(["doctores" => $doctores, "categorias" => $categorias]);
+	echo json_encode($sanitizador->sanitizeRecursive(["doctores" => $doctores, "categorias" => $categorias]));
 }
 
 function datosServicios($parametro)
@@ -41,6 +43,7 @@ function datosServicios($parametro)
 		"doctores" => $doctores,
 		"categorias" => $todasLasCategorias
 	];
+	$sanitizador->setHashKeys(['id_personal', 'id_categoria']);
 	echo json_encode($sanitizador->sanitizeRecursive($data));
 }
 
@@ -67,6 +70,9 @@ function categoriasAjax()
 	$modeloCategoria = new ModeloCategoria();
 
 	$categorias = $modeloCategoria->seleccionarTodasLasCategoria($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$sanitizador = new ModeloSanetizarJSON();
+	$sanitizador->setHashKeys(['id_categoria']);
+	$categorias = $sanitizador->sanitizeRecursive($categorias);
 
 	$totalRegistros = $modeloCategoria->contarTotalCategorias();
 	$totalFiltrados = !empty($buscar) ? $modeloCategoria->contarTotalCategorias($buscar) : $totalRegistros;
@@ -101,8 +107,11 @@ function serviciosAjax()
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_servicioMedico';
 
 	$modeloServicios = new ModeloServicios();
+	$sanitizador = new ModeloSanetizarJSON();
+	$sanitizador->setHashKeys(['id_servicioMedico', 'id_categoria', 'id_personal']);
 
 	$servicios = $modeloServicios->mostrarServicios($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$servicios = $sanitizador->sanitizeRecursive($servicios);
 
 	$totalRegistros = $modeloServicios->contarTotalServicios('ACT');
 	$totalFiltrados = !empty($buscar) ? $modeloServicios->contarTotalServicios('ACT', $buscar) : $totalRegistros;
@@ -137,8 +146,11 @@ function papeleraAjax()
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_servicioMedico';
 
 	$modeloServicios = new ModeloServicios();
+	$sanitizador = new ModeloSanetizarJSON();
+	$sanitizador->setHashKeys(['id_servicioMedico', 'id_categoria', 'id_personal']);
 
 	$servicios = $modeloServicios->mostrarServiciosDes($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$servicios = $sanitizador->sanitizeRecursive($servicios);
 
 	$totalRegistros = $modeloServicios->contarTotalServicios('DES');
 	$totalFiltrados = !empty($buscar) ? $modeloServicios->contarTotalServicios('DES', $buscar) : $totalRegistros;
@@ -185,7 +197,7 @@ function guardar()
 		// 3. Convertir a float
 		$numero = (float)$valor;
 
-		$servicio->setIdCategoria($_POST['id_categoria']);
+		$servicio->setIdCategoria(unhashId($_POST['id_categoria']));
 		$servicio->setPrecio($numero);
 		$servicio->setTipo($_POST['tipo']);
 
@@ -246,7 +258,7 @@ function eliminar($datos)
 		$servicio = new ModeloServicios();
 		$bitacora = new ModeloBitacora();
 
-		$servicio->setIdServicioMedico($id);
+		$servicio->setIdServicioMedico(unhashId($id));
 
 		$eliminacion = $servicio->eliminarServicio($idUsuario,$estado);
 
@@ -303,8 +315,8 @@ function editar()
 		$valor = str_replace(',', '.', $valor);
 		$numero = (float)$valor;
 
-		$servicio->setIdCategoria($_POST['id_categoria']);
-		$servicio->setIdServicioMedico($_POST['id_servicioMedico']);
+		$servicio->setIdCategoria(unhashId($_POST['id_categoria']));
+		$servicio->setIdServicioMedico(unhashId($_POST['id_servicioMedico']));
 		$servicio->setPrecio($numero);
 		$servicio->setTipo($_POST['tipo']);
 
@@ -343,13 +355,13 @@ function mostrarEspecialidad($datos)
 	$sanitizador = new ModeloSanetizarJSON();
 
 	// Validar entrada
-	if (!isset($datos[0]) || !is_numeric($datos[0])) {
+	if (!isset($datos[0]) || empty($datos[0])) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => 'ID de doctor inválido']);
 		exit;
 	}
 
-	$modeloDoctor->setIdDoctor((int)$datos[0]);
+	$modeloDoctor->setIdDoctor(unhashId($datos[0]));
 	$resultado = $modeloServicio->especialidadDoctor();
 	echo json_encode($sanitizador->sanitizeRecursive($resultado));
 }
@@ -436,7 +448,7 @@ function eliminarCategoria($datos)
 		$categoria = new ModeloCategoria();
 		$bitacora = new ModeloBitacora();
 
-		$categoria->setIdCategoria($id);
+		$categoria->setIdCategoria(unhashId($id));
 
 		$eliminacion  = $categoria->eliminarCategoria($idUsuario);
 

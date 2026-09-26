@@ -583,11 +583,11 @@ addEventListener("DOMContentLoaded", function () {
   };
   const insertarServicio = (id, servicio, doctor, precio, id_doctor) => {
     const obj = {
-      id_servicio: parseInt(id),
+      id_servicio: id,
       servicio: servicio,
       doctor: doctor,
       precio: precio,
-      id_doctor: parseInt(id_doctor),
+      id_doctor: id_doctor,
     };
 
     data.push(obj);

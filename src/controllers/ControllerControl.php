@@ -54,6 +54,7 @@ function returnSistomasPaciente()
 
 	$modeloSintomas = new ModeloSintomas();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_sintomas']);
 
 	$sintomas = $modeloSintomas->selectSintomas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 	$sintomasSanetizados = $sanetizar->sanitizeRecursive($sintomas);
@@ -74,6 +75,7 @@ function returnPatologiasPaciente()
 {
 	$modeloPatologia = new ModeloPatologia();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_patologia', 'id_control', 'id_paciente']);
 	$data = $sanetizar->sanitizeRecursive($modeloPatologia->mostrarPatologias());
 	echo json_encode($data);
 }
@@ -82,6 +84,7 @@ function returnPatologiasPacienteId()
 {
 	$modeloPatologia = new ModeloControl();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_patologia', 'id_control', 'id_paciente']);
 	$data = $sanetizar->sanitizeRecursive($modeloPatologia->mostrarPatologiaC());
 	echo json_encode($data);
 }
@@ -90,6 +93,7 @@ function returnDoctores()
 {
 	$modeloControl = new ModeloControl();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_categoria', 'id_servicioMedico', 'id_personal', 'id_usuario']);
 	$data = $sanetizar->sanitizeRecursive($modeloControl->mostrarDoctor());
 	echo json_encode($data);
 }
@@ -120,6 +124,7 @@ function listPacientesJS()
 
 	$modeloPaciente = new ModeloPacientes();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_paciente']);
 	$pacientes = $modeloPaciente->index($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
 	$data = $sanetizar->sanitizeRecursive($pacientes);
 
@@ -140,6 +145,7 @@ function mostrarBusquedaPacientesJS($datos)
 {
 	$modeloControl = new ModeloControl();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_paciente']);
 	$modeloControl->setCedula($datos[0]);
 	$modeloControl->setNacionalidad($datos[1]);
 
@@ -155,6 +161,7 @@ function mostrarControlPacientesJS($datos)
 	$modeloPatologia = new ModeloPatologia();
 	$modeloInicio = new ModeloInicio();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_sintomas', 'id_patologia', 'id_control', 'id_paciente', 'id_usuario']);
 
 	// verifica si la sesión esta activa.
 	if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -197,6 +204,7 @@ function mostrarPacienteJS($datos)
 {
 	$modeloControl = new ModeloControl();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_paciente', 'id_control', 'id_usuario']);
 
 	$modeloControl->setNacionalidad($datos[0]);
 	$modeloControl->setCedula($datos[1]);
@@ -229,11 +237,11 @@ function insertarControl()
 		$modeloBitacora = new ModeloBitacora();
 		$modeloControl  = new ModeloControl();
 
-		$patologia = isset($_POST["patologias"]) ? $_POST["patologias"] : [null];
-		$sintoma   = isset($_POST["sintomas"])   ? $_POST["sintomas"]   : [null];
+		$patologia = isset($_POST["patologias"]) ? array_map('unhashId', (array)$_POST["patologias"]) : [null];
+		$sintoma   = isset($_POST["sintomas"])   ? array_map('unhashId', (array)$_POST["sintomas"])   : [null];
 
-		$modeloControl->setIdUsuario($_POST["doctor"]);
-		$modeloControl->setIdPaciente($_POST["id_paciente"]);
+		$modeloControl->setIdUsuario(unhashId($_POST["doctor"]));
+		$modeloControl->setIdPaciente(unhashId($_POST["id_paciente"]));
 		$modeloControl->setHistorial($_POST["historial"]);
 		$modeloControl->setDiagnostico($_POST["diagnostico"]);
 		$modeloControl->setSintomas($sintoma);
@@ -293,7 +301,7 @@ function editarControl()
 		$modeloBitacora = new ModeloBitacora();
 		$modeloControl  = new ModeloControl();
 
-		$modeloControl->setIdControl($_POST['id_control']);
+		$modeloControl->setIdControl(unhashId($_POST['id_control']));
 		$modeloControl->setHistorial($_POST["historial"]);
 		$modeloControl->setDiagnostico($_POST["diagnostico"]);
 		$modeloControl->setIndicaciones($_POST["indicaciones"]);
@@ -333,6 +341,7 @@ function mostrarSP($datos)
 {
 	$modeloControl = new ModeloControl();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_sintomas', 'id_control']);
 	$cedula = $datos[0];
 
 	$modeloControl->setCedula($cedula);
@@ -346,6 +355,7 @@ function mostrarPP($datos)
 {
 	$modeloControl = new ModeloControl();
 	$sanetizar  = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_patologia', 'id_control']);
 	$cedula = $datos[0];
 
 	$modeloControl->setCedula($cedula);
@@ -363,7 +373,8 @@ function mostrarSPAll($datos)
 {
 	$modeloControl = new ModeloControl();
 	$sanetizar = new ModeloSanetizarJSON();
-	$modeloControl->setIdControl($datos[0]);
+	$sanetizar->setHashKeys(['id_sintomas', 'id_control']);
+	$modeloControl->setIdControl(unhashId($datos[0]));
 
 	$respuestaS = $sanetizar->sanitizeRecursive($modeloControl->mostrarSintomasPaId());
 	echo json_encode($respuestaS);
@@ -373,7 +384,8 @@ function mostrarPPAll($datos)
 {
 	$modeloControl = new ModeloControl();
 	$sanetizar = new ModeloSanetizarJSON();
-	$modeloControl->setIdControl($datos[0]);
+	$sanetizar->setHashKeys(['id_patologia', 'id_control']);
+	$modeloControl->setIdControl(unhashId($datos[0]));
 
 	$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaP());
 	echo json_encode($registradosP);
@@ -388,7 +400,7 @@ function mostrarPIdP($datos)
 	$sanetizar = new ModeloSanetizarJSON();
 
 	$idC = $datos[0];
-	$modeloControl->setIdControl($idC);
+	$modeloControl->setIdControl(unhashId($idC));
 	$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaC());
 	echo json_encode($registradosP);
 }
@@ -416,7 +428,7 @@ function eliminarSintoma($datos)
 		$modeloSintomas = new ModeloSintomas();
 		$modeloBitacora = new ModeloBitacora();
 
-		$modeloSintomas->setIdSintomas($id);
+		$modeloSintomas->setIdSintomas(unhashId($id));
 		$eliminar = $modeloSintomas->eliminarL();
 
 		if (is_array($eliminar) && $eliminar[0] === "exito") {

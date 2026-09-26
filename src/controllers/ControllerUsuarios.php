@@ -14,6 +14,7 @@ function usuarios($parametro)
 {
     $modeloUsuarios = new ModeloUsuarios();
     $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_usuario', 'id_rol', 'id_personal']);
     $ayuda = "btnayudaUsuario";
     $datosU  = $sanetizacion->sanitizeRecursive($modeloUsuarios->select());
     $vistaActiva = "usuarios";
@@ -24,6 +25,7 @@ function usuariosAjax()
 {
     $modeloUsuarios = new ModeloUsuarios();
     $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_usuario', 'id_rol', 'id_personal']);
     echo json_encode($sanetizacion->sanitizeRecursive($modeloUsuarios->select()));
 }
 
@@ -32,6 +34,7 @@ function administradores($parametro)
     $modeloUsuarios = new ModeloUsuarios();
     $modeloRoles = new ModeloRoles();
     $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_usuario', 'id_rol', 'id_personal']);
 
     $ayuda = "btnayudaUsuario";
     $datosU  = $sanetizacion->sanitizeRecursive($modeloUsuarios->selectAdmin());
@@ -44,6 +47,7 @@ function administradoresAjax()
 {
     $modeloUsuarios = new ModeloUsuarios();
     $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_usuario', 'id_rol', 'id_personal']);
 
     echo json_encode($sanetizacion->sanitizeRecursive($modeloUsuarios->selectAdmin()));
 }
@@ -80,7 +84,9 @@ function listaNegraAjax()
     }
 
     $modeloUsuarios = new ModeloUsuarios();
-    $usuarios = $modeloUsuarios->selectUserInBlackList($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+    $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_usuario', 'id_rol', 'id_personal']);
+    $usuarios = $sanetizacion->sanitizeRecursive($modeloUsuarios->selectUserInBlackList($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
     $totalRegistros = $modeloUsuarios->contarTotalUsuariosBlackList();
     $totalFiltrados = !empty($buscar) ? $modeloUsuarios->contarTotalUsuariosBlackList($buscar) : $totalRegistros;
@@ -100,7 +106,9 @@ function listaNegraAjax()
 function listaUserAjax()
 {
     $modeloUsuarios = new ModeloUsuarios();
-    echo json_encode($modeloUsuarios->selectAllUser());
+    $sanetizacion = new ModeloSanetizarJSON();
+    $sanetizacion->setHashKeys(['id_usuario', 'id_rol', 'id_personal']);
+    echo json_encode($sanetizacion->sanitizeRecursive($modeloUsuarios->selectAllUser()));
 }
 
 // editar usuario
@@ -129,7 +137,7 @@ function addUserBlackList()
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloUsuarios->setIdUsuario($_POST["id_personal"]);
+        $modeloUsuarios->setIdUsuario(unhashId($_POST["id_personal"]));
         $add = $modeloUsuarios->addUserBlackList($idUsuario);
 
         if (is_array($add) && $add[0] === "exito") {
@@ -185,7 +193,7 @@ function removeBlackList()
         $input = json_decode(file_get_contents("php://input"), true);
         $id = $input["id"] ?? null;
 
-        $modeloUsuarios->setIdUsuario($id);
+        $modeloUsuarios->setIdUsuario(unhashId($id));
         $remove = $modeloUsuarios->removeUserBlackList($idUsuario);
 
         if (is_array($remove) && $remove[0] === "exito") {
@@ -241,7 +249,7 @@ function editarUsuario()
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
+        $modeloUsuarios->setIdUsuario(unhashId($_POST["id_usuario"]));
         $modeloUsuarios->setUsuario($_POST["usuario"]);
         $modeloUsuarios->setUsuarioRegistrado($_POST['usuarioRegistrado']);
         $modeloUsuarios->setImagen($_FILES['imagen']["name"]);
@@ -298,7 +306,7 @@ function borrarUsuario()
         $input = json_decode(file_get_contents("php://input"), true);
         $id = $input["id"] ?? null;
 
-        $modeloUsuarios->setIdUsuario($id);
+        $modeloUsuarios->setIdUsuario(unhashId($id));
 
         $eliminacion = $modeloUsuarios->eliminarUsuario($idUsuario);
 
@@ -356,7 +364,7 @@ function registrarAdmin()
         $modeloUsuarios->setUsuario($_POST["usuario"]);
         $modeloUsuarios->setPassword($passwordEncrip);
         $modeloUsuarios->setCorreo($_POST["correo"]);
-        $modeloUsuarios->setIdRol($_POST["id_rol"]);
+        $modeloUsuarios->setIdRol(unhashId($_POST["id_rol"]));
         $modeloUsuarios->setImagen($_FILES['imagen']);
 
         $id_usuario = $modeloUsuarios->agregarUsuario($idUsuario);
@@ -420,7 +428,7 @@ function editarAdministrador()
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloUsuarios->setIdUsuario($_POST["id_usuario"]);
+        $modeloUsuarios->setIdUsuario(unhashId($_POST["id_usuario"]));
         $modeloUsuarios->setUsuario($_POST["usuario"]);
         $modeloUsuarios->setImagen($_FILES['imagenUsuario']["name"]);
         $modeloUsuarios->setImagenTemporal($_FILES['imagenUsuario']['tmp_name']);

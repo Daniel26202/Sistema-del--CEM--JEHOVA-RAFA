@@ -12,6 +12,7 @@ function factura($parametro)
 	$sanetizar = new ModeloSanetizarJSON();
 	$vistaActiva = 'factura';
 	$ayuda = "btnayudaFactura";
+	$sanetizar->setHashKeys(['id_insumo']);
 	$insumos = $sanetizar->sanitizeRecursive($modeloInsumos->insumos());
 	require_once './src/vistas/vistaFactura/factura.php';
 }
@@ -20,11 +21,13 @@ function mostrarServicios()
 {
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
+
+	$sanetizar->setHashKeys(['id_servicioMedico', 'id_personal', 'id_categoria']);
 	$result = [];
 
 	foreach ($modeloFactura->mostrarServicios() as $servicio) {
 		$result[] = [
-			'id' => $servicio['id_servicioMedico'] . "" . $servicio['id_personal'],
+			'id' => hashId((int)$servicio['id_servicioMedico']) . hashId((int)$servicio['id_personal']),
 			'id_personal' => $servicio['id_personal'],
 			'id_servicioMedico' => $servicio['id_servicioMedico'],
 			'id_categoria' => $servicio['id_categoria'],
@@ -42,6 +45,8 @@ function mostrarInsumos()
 {
 	$modeloInsumos = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();
+
+	$sanetizar->setHashKeys(['id_insumo']);
 	echo json_encode($sanetizar->sanitizeRecursive($modeloInsumos->insumos()));
 }
 
@@ -49,6 +54,8 @@ function mostrarMetodosDePago()
 {
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
+
+	$sanetizar->setHashKeys(['id_pago']);
 	echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->mostrarTiposDePagos()));
 }
 
@@ -58,10 +65,11 @@ function facturaCita($parametro)
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
 
-	$idCita = preg_replace('/\D/', '', $parametro[0]);
+	$idCita = unhashId($parametro[0]);
 
 	$modeloFactura->setIdCita($idCita);
 
+	$sanetizar->setHashKeys(['id_insumo', 'id_pago', 'id_servicioMedico', 'id_personal', 'id_categoria', 'id_cita', 'id_paciente']);
 	$insumos = $sanetizar->sanitizeRecursive($modeloInsumos->insumos());
 	$tiposDePagos = $sanetizar->sanitizeRecursive($modeloFactura->mostrarTiposDePagos());
 	$todosLosInsumos = $insumos;
@@ -76,10 +84,11 @@ function facturarHospitalizacion($parametro)
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
 
-	$idHospitalizacion = preg_replace('/\D/', '', $parametro[0]);
+	$idHospitalizacion = unhashId($parametro[0]);
 
 	$modeloFactura->setIdH($idHospitalizacion);
 
+	$sanetizar->setHashKeys(['id_entradaDeInsumo', 'id_hospitalizacion', 'id_insumo', 'id_pago', 'id_paciente', 'id_personal', 'id_servicioMedico', 'id_doctor']);
 	$insumosHospitalizacion = $sanetizar->sanitizeRecursive($modeloFactura->unirInsumosHospitalizacion());
 	$tiposDePagos = $sanetizar->sanitizeRecursive($modeloFactura->mostrarTiposDePagos());
 	$hostalizacionFacturar = $sanetizar->sanitizeRecursive($modeloFactura->mostrarHospitalizacion());
@@ -92,7 +101,8 @@ function datosHospitalizacion($parametro)
 {
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
-	$modeloFactura->setIdH($parametro[0]);
+	$sanetizar->setHashKeys(['id_hospitalizacion', 'id_paciente', 'id_servicioMedico', 'id_doctor', 'id_entradaDeInsumo']);
+	$modeloFactura->setIdH(unhashId($parametro[0]));
 
 	$result = [];
 	$hospit = null;
@@ -166,7 +176,8 @@ function comprobante($parametro)
 		exit;
 	}
 
-	$modeloFactura->setIdFactura($parametro[0]);
+	$modeloFactura->setIdFactura(unhashId($parametro[0]));
+	$sanetizar->setHashKeys(['id_factura', 'id_pago', 'id_servicioMedico', 'id_doctor', 'id_hospitalizacion', 'id_entradaDeInsumo', 'id_insumo']);
 	$datosFactura = $sanetizar->sanitizeRecursive($modeloFactura->consultarFactura());
 	$datosPago = $sanetizar->sanitizeRecursive($modeloFactura->consultarPagoFactura());
 	$datosServiciosExtras = $sanetizar->sanitizeRecursive($modeloFactura->consultarServiciosExtras());
@@ -175,7 +186,7 @@ function comprobante($parametro)
 
 	$vistaActiva = $x ? 1 : 0;
 
-	$datosInsumos = $vistaActiva ? $modeloFactura->unirInsumosHospitalizacion() : $modeloFactura->consultarFacturaInsumo();
+	$datosInsumos = $sanetizar->sanitizeRecursive($vistaActiva ? $modeloFactura->unirInsumosHospitalizacion() : $modeloFactura->consultarFacturaInsumo());
 
 	require_once './src/vistas/vistaFactura/comprobante.php';
 }
@@ -191,6 +202,7 @@ function mostrarPaciente()
 		$modeloFactura = new ModeloFactura();
 		$sanetizar = new ModeloSanetizarJSON();
 
+		$sanetizar->setHashKeys(['id_paciente']);
 		$modeloFactura->setCedula($_POST['cedula']);
 		echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscar()));
 	} catch (InvalidArgumentException $e) {
@@ -211,6 +223,7 @@ function mostrarCliente()
 		$modeloFactura = new ModeloFactura();
 		$sanetizar = new ModeloSanetizarJSON();
 
+		$sanetizar->setHashKeys(['id_cliente']);
 		$modeloFactura->setCedula($_POST['cedula']);
 		echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscarCliente()));
 	} catch (InvalidArgumentException $e) {
@@ -230,6 +243,7 @@ function mostrarPacienteConCita()
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
 
+	$sanetizar->setHashKeys(['id_paciente', 'id_cita', 'id_servicioMedico', 'id_personal', 'id_categoria']);
 	$modeloFactura->setCedula($_POST["cedula"]);
 	echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscarPacientePorCita()));
 }
@@ -254,19 +268,24 @@ function guardarFactura()
 	$modeloBitacora = new ModeloBitacora();
 	$modeloFactura  = new ModeloFactura();
 
+	$id_cliente_input = !empty($_POST["id_cliente"]) ? unhashId($_POST["id_cliente"]) : 0;
+	$id_paciente_input = isset($_POST["id_paciente"]) && !empty($_POST["id_paciente"]) ? unhashId($_POST["id_paciente"]) : 0;
+	$id_cita_input = isset($_POST["id_cita"]) && !empty($_POST["id_cita"]) ? unhashId($_POST["id_cita"]) : 0;
+	$id_hosp_input = isset($_POST["id_hospitalizacion"]) && !empty($_POST["id_hospitalizacion"]) ? unhashId($_POST["id_hospitalizacion"]) : 0;
+
 	$modeloFactura->setFecha(date("Y-m-d"));
-	$modeloFactura->setServicios(isset($_POST["servicios"]) ? $_POST["servicios"] : []);
-	$modeloFactura->setInsumos(isset($_POST["insumos"]) ? $_POST["insumos"] : []);
+	$modeloFactura->setServicios(isset($_POST["servicios"]) ? array_map('unhashId', $_POST["servicios"]) : []);
+	$modeloFactura->setInsumos(isset($_POST["insumos"]) ? array_map('unhashId', $_POST["insumos"]) : []);
 	$modeloFactura->setCatidad(isset($_POST["cantidad"]) ? $_POST["cantidad"] : []);
 	$modeloFactura->setPrecioInsumo(isset($_POST["precioInsumo"]) ? $_POST["precioInsumo"] : []);
 	$modeloFactura->setPrecioServicio(isset($_POST["precioServicio"]) ? $_POST["precioServicio"] : []);
-	$modeloFactura->setIdCliente(!empty($_POST["id_cliente"]) ? $_POST["id_cliente"] : 0);
-	$modeloFactura->setIdPaciente(isset($_POST["id_paciente"]) ? $_POST["id_paciente"] : 0);
-	$modeloFactura->setIdCita(isset($_POST["id_cita"]) ? $_POST["id_cita"] : 0);
+	$modeloFactura->setIdCliente($id_cliente_input);
+	$modeloFactura->setIdPaciente($id_paciente_input);
+	$modeloFactura->setIdCita($id_cita_input);
 	$modeloFactura->setReferencia(!empty($_POST["referencia"]) ? $_POST["referencia"] : 0);
-	$modeloFactura->setIdH(isset($_POST["id_hospitalizacion"]) ? $_POST["id_hospitalizacion"] : 0);
+	$modeloFactura->setIdH($id_hosp_input);
 	$modeloFactura->setTotal($_POST["total"]);
-	$modeloFactura->setFormasDePago(isset($_POST["formasDePago"]) ? $_POST["formasDePago"] : []);
+	$modeloFactura->setFormasDePago(isset($_POST["formasDePago"]) ? array_map('unhashId', $_POST["formasDePago"]) : []);
 	$modeloFactura->setMontosPago($_POST["montosDePago"]);
 
 	// Resolver cliente
@@ -289,7 +308,7 @@ function guardarFactura()
 		$modeloBitacora->setTabla("factura");
 		$modeloBitacora->insertarBitacora($idUsuario);
 
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . $guardar[0]);
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . hashId((int)$guardar[0]));
 	} else {
 		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
 	}
@@ -301,7 +320,8 @@ function mostrarPDF($parametro)
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
 
-	$modeloFactura->setIdFactura($parametro[0]);
+	$sanetizar->setHashKeys(['id_factura', 'id_pago', 'id_servicioMedico', 'id_doctor', 'id_hospitalizacion', 'id_entradaDeInsumo', 'id_insumo']);
+	$modeloFactura->setIdFactura(unhashId($parametro[0]));
 	$datosFactura = $sanetizar->sanitizeRecursive($modeloFactura->consultarFacturaSinCita());
 	$datosPago = $sanetizar->sanitizeRecursive($modeloFactura->consultarPagoFactura());
 	$datosServiciosExtras = $sanetizar->sanitizeRecursive($modeloFactura->consultarServiciosExtras());

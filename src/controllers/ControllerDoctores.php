@@ -20,6 +20,12 @@ function doctores($parametro)
     $datosEspecialidades = $modeloDoctores->selectEspecialidad();
     $doctores = $modeloServicios->mostrarDoctores();
     $todasLasServicios = $modeloServicios->mostrarServicios();
+    $sanetizador = new ModeloSanetizarJSON();
+    $sanetizador->setHashKeys(['id_rol', 'id_especialidad', 'id_personal', 'id_servicioMedico', 'id_categoria', 'id_horario', 'id_usuario']);
+    $datosRoles = $sanetizador->sanitizeRecursive($datosRoles);
+    $datosEspecialidades = $sanetizador->sanitizeRecursive($datosEspecialidades);
+    $doctores = $sanetizador->sanitizeRecursive($doctores);
+    $todasLasServicios = $sanetizador->sanitizeRecursive($todasLasServicios);
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
 
@@ -27,7 +33,9 @@ function doctores($parametro)
 function mostrarDiasSemana()
 {
     $modeloDoctores = new ModeloDoctores();
-    echo json_encode($modeloDoctores->selectDias());
+    $sanetizador = new ModeloSanetizarJSON();
+    $sanetizador->setHashKeys(['id_horario']);
+    echo json_encode($sanetizador->sanitizeRecursive($modeloDoctores->selectDias()));
 }
 
 function selectEspcAjax()
@@ -56,6 +64,7 @@ function selectEspcAjax()
 
     $modeloDoctores = new ModeloDoctores();
     $sanetizador = new ModeloSanetizarJSON();
+    $sanetizador->setHashKeys(['id_especialidad']);
     $especialidades = $modeloDoctores->selectTodasEspecialidades($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
     $especSanetizada = $sanetizador->sanitizeRecursive($especialidades);
 
@@ -99,6 +108,7 @@ function DoctoresAjax()
     $modeloDoctores = new ModeloDoctores();
     $modeloServicio = new ModeloServicios();
     $sanetizador = new ModeloSanetizarJSON();
+    $sanetizador->setHashKeys(['id_personal', 'id_especialidad', 'id_usuario', 'id_horario', 'id_servicioMedico']);
 
 
     //variable final
@@ -177,6 +187,12 @@ function papelera($parametro)
     $datosEspecialidades = $modeloDoctores->selectEspecialidad();
     $doctores = $modeloServicios->mostrarDoctores();
     $todasLasServicios = $modeloServicios->mostrarServicios();
+    $sanetizador = new ModeloSanetizarJSON();
+    $sanetizador->setHashKeys(['id_rol', 'id_especialidad', 'id_personal', 'id_servicioMedico', 'id_categoria', 'id_horario', 'id_usuario']);
+    $datosDias = $sanetizador->sanitizeRecursive($datosDias);
+    $datosEspecialidades = $sanetizador->sanitizeRecursive($datosEspecialidades);
+    $doctores = $sanetizador->sanitizeRecursive($doctores);
+    $todasLasServicios = $sanetizador->sanitizeRecursive($todasLasServicios);
     require_once "./src/vistas/vistaDoctores/vistaDoctores.php";
 }
 
@@ -207,6 +223,7 @@ function papeleraDoctoresAjax()
     $modeloDoctores = new ModeloDoctores();
     $modeloServicio = new ModeloServicios();
     $sanetizador = new ModeloSanetizarJSON();
+    $sanetizador->setHashKeys(['id_personal', 'id_especialidad', 'id_usuario', 'id_horario', 'id_servicioMedico']);
 
 
     $result = [];
@@ -262,7 +279,6 @@ function papeleraDoctoresAjax()
     }
 
     $resultSanetizado = $sanetizador->sanitizeRecursive($result);
-
     $totalRegistros = $modeloDoctores->contarTotalDoctores('DES');
     $totalFiltrados = !empty($buscar) ? $modeloDoctores->contarTotalDoctores('DES', $buscar) : $totalRegistros;
 
@@ -280,8 +296,10 @@ function serviciosDoctor()
 {
     $modeloDoctores = new ModeloDoctores();
     $modeloCategiria = new ModeloCategoria();
+    $sanetizador = new ModeloSanetizarJSON();
+    $sanetizador->setHashKeys(['id_personal', 'id_categoria']);
 
-    echo json_encode([$modeloDoctores->selectDoctores(), $modeloCategiria->seleccionarCategoria()]);
+    echo json_encode($sanetizador->sanitizeRecursive([$modeloDoctores->selectDoctores(), $modeloCategiria->seleccionarCategoria()]));
 }
 
 
@@ -313,8 +331,8 @@ function asignarServicioDoctor()
         $doctores = new ModeloDoctores();
         $bitacora = new ModeloBitacora();
 
-        $servicio->setIdDoctor($_POST["id_doctor"]);
-        $servicio->setIdCategoria($_POST["id_categoria"]);
+        $servicio->setIdDoctor(unhashId($_POST["id_doctor"]));
+        $servicio->setIdCategoria(unhashId($_POST["id_categoria"]));
 
         $insercion = $servicio->asignarServicioDoctor($idUsuario);
 
@@ -378,11 +396,11 @@ function agregarDoctor()
         $modeloDoctores->setNacionalidad($_POST['nacionalidad']);
         $modeloDoctores->setImagen($imagen);
         $modeloDoctores->setImagenTemporal($_FILES['imagen']['tmp_name']);
-        $modeloDoctores->setIdEspecialidad($_POST["id_especialidad"]);
-        $modeloDoctores->setDias($_POST['dias']);
+        $modeloDoctores->setIdEspecialidad(unhashId($_POST["id_especialidad"]));
+        $modeloDoctores->setDias(array_map('unhashId', (array)$_POST['dias']));
         $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
         $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
-        $modeloDoctores->setIdRol($_POST['id_rol']);
+        $modeloDoctores->setIdRol(unhashId($_POST['id_rol']));
         $modeloDoctores->setUsuario($_POST["usuario"]);
         $modeloDoctores->setPassword($passwordEncrip);
 
@@ -436,8 +454,8 @@ function editarDoctor()
         $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
 
-        $dias      = isset($_POST["dias"])      ? $_POST["dias"]      : [];
-        $diaAnterio = isset($_POST["diaAnterio"]) ? $_POST["diaAnterio"] : [];
+        $dias      = isset($_POST["dias"])      ? array_map('unhashId', (array)$_POST["dias"])      : [];
+        $diaAnterio = isset($_POST["diaAnterio"]) ? array_map('unhashId', (array)$_POST["diaAnterio"]) : [];
 
         $idDiaDbE   = !empty($x = array_diff($diaAnterio, $dias))   ? $x : false;
         $idDiaNuevo = !empty($x = array_diff($dias, $diaAnterio))   ? $x : false;
@@ -447,7 +465,7 @@ function editarDoctor()
         $modeloDoctores->setNombre($_POST["nombre"]);
         $modeloDoctores->setApellido($_POST["apellido"]);
         $modeloDoctores->setTelefono($_POST["telefono"]);
-        $modeloDoctores->setIdEspecialidad($_POST["id_especialidad"]);
+        $modeloDoctores->setIdEspecialidad(unhashId($_POST["id_especialidad"]));
         $modeloDoctores->setEmail($_POST["correo"]);
         $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
         $modeloDoctores->setDiasE($idDiaDbE);
@@ -457,7 +475,7 @@ function editarDoctor()
         $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
         $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
         $modeloDoctores->setCedulaRegistrada($_POST['cedulaRegistrada']);
-        $modeloDoctores->setIdUsuario($_POST["id_usuario"]);
+        $modeloDoctores->setIdUsuario(unhashId($_POST["id_usuario"]));
 
         $edicion = $modeloDoctores->updateDoctor($idUsuario);
 
@@ -515,7 +533,7 @@ function borrarDoctor($datos)
         $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloDoctores->setIdUsuario($id);
+        $modeloDoctores->setIdUsuario(unhashId($id));
         $eliminacion = $modeloDoctores->eliminacionLogica($idUsuario, $estado);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -623,7 +641,7 @@ function eliminarEspecialidad()
         $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
 
-        $modeloDoctores->setIdEspecialidad($id);
+        $modeloDoctores->setIdEspecialidad(unhashId($id));
         $eliminacion = $modeloDoctores->EspecialidadEliminar($idUsuario,$estado);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
@@ -652,7 +670,7 @@ function eliminarEspecialidad()
 }
 function buscarHorario($datos)
 {
-    $id_personal = $datos[0];
+    $id_personal = unhashId($datos[0]);
     $modeloDoctores = new ModeloDoctores();
     $modeloDoctores->setIdDoctor($id_personal);
     $respuesta = $modeloDoctores->horarioDelDoctor();

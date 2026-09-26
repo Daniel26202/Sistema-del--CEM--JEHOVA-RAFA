@@ -20,6 +20,8 @@ function mostrarDataPaciente($datos)
 		$cita = new ModeloCita();
 		$sanitizador = new ModeloSanetizarJSON();
 
+		$sanitizador->setHashKeys(['id_paciente']);
+
 		$cita->setNacionalidad($datos[0]);
 		$cita->setCedula($datos[1]);
 
@@ -61,7 +63,10 @@ function citasAjax()
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
 
 	$modeloCita = new ModeloCita();
-	$citas = $modeloCita->mostrarCita($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$sanitizador = new ModeloSanetizarJSON();
+
+	$sanitizador->setHashKeys(['id_cita', 'id_paciente', 'id_categoria', 'doctor']);
+	$citas = $sanitizador->sanitizeRecursive($modeloCita->mostrarCita($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloCita->contarTotalCitas('pendiente', 'Pendiente');
 	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('pendiente', 'Pendiente', $buscar) : $totalRegistros;
@@ -105,7 +110,10 @@ function citasHoyAjax()
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
 
 	$modeloCita = new ModeloCita();
-	$citas = $modeloCita->mostrarCitaHoy($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$sanitizador = new ModeloSanetizarJSON();
+
+	$sanitizador->setHashKeys(['id_cita', 'id_paciente', 'id_categoria', 'doctor']);
+	$citas = $sanitizador->sanitizeRecursive($modeloCita->mostrarCitaHoy($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloCita->contarTotalCitas('hoy', 'Pendiente');
 	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('hoy', 'Pendiente', $buscar) : $totalRegistros;
@@ -121,15 +129,19 @@ function citasHoyAjax()
 function citasP($parametro)
 {
 	$cita = new ModeloCita();
+	$sanitizador = new ModeloSanetizarJSON();
 
-	echo json_encode($cita->mostrarCita());
+	$sanitizador->setHashKeys(['id_cita', 'id_paciente', 'id_categoria', 'doctor']);
+	echo json_encode($sanitizador->sanitizeRecursive($cita->mostrarCita()));
 }
 
 function mostrarServiciosMedicosAjax()
 {
 	$cita = new ModeloCita();
+	$sanitizador = new ModeloSanetizarJSON();
 
-	echo json_encode($cita->mostrarServicioDoctor());
+	$sanitizador->setHashKeys(['id_categoria']);
+	echo json_encode($sanitizador->sanitizeRecursive($cita->mostrarServicioDoctor()));
 }
 
 function validarHorariosDisponlibles($datos)
@@ -148,8 +160,7 @@ function validarHorariosDisponlibles($datos)
 		$cita = new ModeloCita();
 		$sanitizador = new ModeloSanetizarJSON();
 
-
-		$cita->setIdDoctor($datos[1]);
+		$cita->setIdDoctor(intval(unhashId($datos[1])));
 		$cita->setFecha($datos[0]);
 
 		$resultado = $cita->validarHorariosDisponlibles();
@@ -199,14 +210,14 @@ function apartarCupo()
 
 		$cita->setFecha($_POST['fecha']);
 		$cita->setHora($horaCita);
-		$cita->setIdDoctor(intval($_POST['doctor']));
+		$cita->setIdDoctor(intval(unhashId($_POST['doctor'])));
 
-		$cita->setIdPaciente(intval($_POST['id_paciente']));
-		$cita->setIdServicioMedico(intval($_POST['id_servicioMedico']));
+		$cita->setIdPaciente(intval(unhashId($_POST['id_paciente'])));
+		$cita->setIdServicioMedico(intval(unhashId($_POST['id_servicioMedico'])));
 		$cita->setHoraSalida($horaCitaSalida);
 
 		// Evaluamos si viene un ID anterior por cambio de opinión
-		$cita->setIdCita(isset($_POST['id_cita_anterior']) ? intval($_POST['id_cita_anterior']) : null, true);
+		$cita->setIdCita(isset($_POST['id_cita_anterior']) && $_POST['id_cita_anterior'] !== '' ? intval(unhashId($_POST['id_cita_anterior'])) : null, true);
 
 
 		$bitacora->setId_usuario($idUsuario);
@@ -269,13 +280,13 @@ function guardarCita()
 		$fechaHora2 = DateTime::createFromFormat('g:i A', $resultado[1]);
 		$horaCitaSalida = $fechaHora2->format('H:i:s');
 
-		$cita->setIdPaciente(intval($_POST["id_paciente"]));
-		$cita->setIdServicioMedico(intval($_POST["id_servicio"]));
+		$cita->setIdPaciente(intval(unhashId($_POST["id_paciente"])));
+		$cita->setIdServicioMedico(intval(unhashId($_POST["id_servicio"])));
 		$cita->setFecha($_POST["fechaDeCita"]);
 		$cita->setHora($horaCita);
 		$cita->setHoraSalida($horaCitaSalida);
 		$cita->setEstado("Pendiente");
-		$cita->setIdDoctor(intval($_POST["id_personal"]));
+		$cita->setIdDoctor(intval(unhashId($_POST["id_personal"])));
 
 		$insercion = $cita->guardarCita($idUsuario);
 
@@ -325,7 +336,7 @@ function eliminarCita()
 		$cita = new ModeloCita();
 
 		$input = json_decode(file_get_contents("php://input"), true);
-		$id = $input['id'] ?? null;
+		$id = unhashId($input['id'] ?? null);
 
 		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
 		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
@@ -362,8 +373,10 @@ function eliminarCita()
 function citasHoyP()
 {
 	$cita = new ModeloCita();
+	$sanitizador = new ModeloSanetizarJSON();
 
-	echo json_encode($cita->mostrarCitaHoy());
+	$sanitizador->setHashKeys(['id_cita', 'id_paciente', 'id_categoria', 'doctor']);
+	echo json_encode($sanitizador->sanitizeRecursive($cita->mostrarCitaHoy()));
 }
 
 function citasRealizadas($parametro)
@@ -394,7 +407,10 @@ function citasRealizadasAjax()
 	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'c.id_cita';
 
 	$modeloCita = new ModeloCita();
-	$citas = $modeloCita->mostrarCitaR($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
+	$sanitizador = new ModeloSanetizarJSON();
+
+	$sanitizador->setHashKeys(['id_cita', 'id_paciente', 'id_categoria', 'doctor']);
+	$citas = $sanitizador->sanitizeRecursive($modeloCita->mostrarCitaR($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
 	$totalRegistros = $modeloCita->contarTotalCitas('realizada', 'Realizadas');
 	$totalFiltrados = !empty($buscar) ? $modeloCita->contarTotalCitas('realizada', 'Realizadas', $buscar) : $totalRegistros;
@@ -411,15 +427,21 @@ function citasRealizadasAjax()
 function mostrarDoctoresCita($datos)
 {
 	$cita = new ModeloCita();
-	$cita->setIdServicioMedico($datos[0]);
-	echo json_encode($cita->mostrarDoctores());
+	$sanitizador = new ModeloSanetizarJSON();
+
+	$sanitizador->setHashKeys(['id_personal']);
+	$cita->setIdServicioMedico(intval(unhashId($datos[0])));
+	echo json_encode($sanitizador->sanitizeRecursive($cita->mostrarDoctores()));
 }
 
 function mostrarHorario($datos)
 {
 	$cita = new ModeloCita();
-	$cita->setIdDoctor($datos[0]);
-	echo json_encode($cita->mostrarHorarioDoctores());
+	$sanitizador = new ModeloSanetizarJSON();
+
+	$sanitizador->setHashKeys(['id_servicioMedico', 'id_horarioydoctor', 'id_personal', 'id_horario']);
+	$cita->setIdDoctor(intval(unhashId($datos[0])));
+	echo json_encode($sanitizador->sanitizeRecursive($cita->mostrarHorarioDoctores()));
 	// echo json_encode(['dffdf']);
 }
 function editarCita()
@@ -452,14 +474,14 @@ function editarCita()
 		$fechaHora2 = DateTime::createFromFormat('g:i A', $resultado[1]);
 		$horaCitaSalida = $fechaHora2->format('H:i:s');
 
-		$cita->setIdPaciente(intval($_POST["id_paciente"]));
-		$cita->setIdServicioMedico(intval($_POST["id_servicio"]));
+		$cita->setIdPaciente(intval(unhashId($_POST["id_paciente"])));
+		$cita->setIdServicioMedico(intval(unhashId($_POST["id_servicio"])));
 		$cita->setFecha($_POST["fechaDeCita"]);
 		$cita->setHora($horaCita);
 		$cita->setHoraSalida($horaCitaSalida);
 		$cita->setEstado("Pendiente");
-		$cita->setIdDoctor(intval($_POST["id_personal"]));
-		$cita->setIdCita($_POST['id_cita']);
+		$cita->setIdDoctor(intval(unhashId($_POST["id_personal"])));
+		$cita->setIdCita(unhashId($_POST['id_cita']));
 
 		$edicion = $cita->editarCita($idUsuario);
 
@@ -499,7 +521,10 @@ function citasHoyCompletasApk()
 	date_default_timezone_set('America/Caracas');
 	try {
 		$cita = new ModeloCita();
-		$resultado = $cita->mostrarTodasCitasHoy();
+		$sanitizador = new ModeloSanetizarJSON();
+
+		$sanitizador->setHashKeys(['id_cita', 'id_categoria', 'id_paciente']);
+		$resultado = $sanitizador->sanitizeRecursive($cita->mostrarTodasCitasHoy());
 
 		echo json_encode(Cifrado::cifrarRespuesta($resultado));
 	} catch (\Throwable $e) {

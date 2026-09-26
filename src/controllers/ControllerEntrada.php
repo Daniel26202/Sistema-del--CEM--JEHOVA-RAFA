@@ -12,6 +12,7 @@ function entrada($parametro)
 {
 	$modeloEntrada = new ModeloEntrada();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_insumo', 'id_proveedor']);
 	$ayuda = "btnayudaEntrada";
 	$vistaActiva = "entradas";
 	$insumos = $sanetizar->sanitizeRecursive($modeloEntrada->insumos());
@@ -46,6 +47,7 @@ function entradasAjax()
 
 	$modeloEntrada = new ModeloEntrada();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_entrada', 'id_entradaDeInsumo', 'id_insumo', 'id_proveedor']);
 
 	$entradas = $sanetizar->sanitizeRecursive($modeloEntrada->todasLasEntradas($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
@@ -69,6 +71,7 @@ function papelera($parametro)
 {
 	$modeloEntrada = new ModeloEntrada();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_insumo']);
 	$insumos = $sanetizar->sanitizeRecursive($modeloEntrada->insumos());
 	require_once './src/vistas/vistaEntrada/vistaEntradaDesactiva.php';
 }
@@ -100,6 +103,7 @@ function entradasPapeleraAjax()
 
 	$modeloEntrada = new ModeloEntrada();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_entrada', 'id_entradaDeInsumo', 'id_insumo', 'id_proveedor']);
 
 	$entradas = $sanetizar->sanitizeRecursive($modeloEntrada->seleccionarDesactivos($inicio, $limite, $buscar, $ordenColumna, $ordenDir));
 
@@ -122,6 +126,7 @@ function proveedoresEditar()
 {
 	$modeloEntrada = new ModeloEntrada();
 	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_proveedor']);
 	$respuesta = $sanetizar->sanitizeRecursive($modeloEntrada->selectProveedores());
 	echo json_encode($respuesta);
 }
@@ -156,9 +161,9 @@ function guardar()
 		$valor = str_replace(',', '.', $valor);
 		$precio = (float)$valor;
 
-		$modeloEntrada->setIdInsumo($_POST["id_insumo"]);
+		$modeloEntrada->setIdInsumo(unhashId($_POST["id_insumo"]));
 		$modeloEntrada->setLote($_POST["lote"]);
-		$modeloEntrada->setIdProveedor($_POST["proveedor"]);
+		$modeloEntrada->setIdProveedor(unhashId($_POST["proveedor"]));
 		$modeloEntrada->setFechaDeIngreso(date("Y-m-d"));
 		$modeloEntrada->setFechaDeVencimiento($_POST["fechaDeVencimiento"]);
 		$modeloEntrada->setCantidadDisponible($_POST["cantidad"]);
@@ -215,7 +220,7 @@ function eliminar()
 		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
 		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
-		$modeloEntrada->setIdEntrada($id);
+		$modeloEntrada->setIdEntrada(unhashId($id));
 		$elimincion = $modeloEntrada->eliminarEntrada($idUsuario,$estado);
 
 		if (is_array($elimincion) && $elimincion[0] === "exito") {
@@ -266,8 +271,8 @@ function editar()
 
 		// $modeloInsumo->setIdInsumo($_POST["id_insumo"]);
 		$modeloEntrada->setLote($_POST["lote"]);
-		$modeloEntrada->setIdProveedor($_POST["proveedor"]);
-		$modeloEntrada->setIdEntrada($_POST["id_entrada"]);
+		$modeloEntrada->setIdProveedor(unhashId($_POST["proveedor"]));
+		$modeloEntrada->setIdEntrada(unhashId($_POST["id_entrada"]));
 		$modeloEntrada->setFechaDeVencimiento($_POST["fechaDeVencimiento"]);
 		$modeloEntrada->setCantidadEntrante($_POST["cantidad"]);
 		$modeloEntrada->setPrecio($precio);
@@ -305,7 +310,8 @@ function entradaInsumo()
 	$modeloInsumo = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();
 
-	$modeloInsumo->setIdInsumo($_GET['id_insumo']);
+	$modeloInsumo->setIdInsumo(unhashId($_GET['id_insumo']));
+	$sanetizar->setHashKeys(['id_entrada', 'id_entradaDeInsumo', 'id_insumo', 'id_proveedor']);
 	$respuesta = $sanetizar->sanitizeRecursive($modeloEntrada->insumosEntrada());
 	echo json_encode($respuesta);
 }

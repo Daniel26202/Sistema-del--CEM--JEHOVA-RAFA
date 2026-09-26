@@ -32,8 +32,9 @@ function patologiasAjax()
 
     $ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_patologia';
 
-    $modelo = new ModeloPatologia();
+$modelo = new ModeloPatologia();
 	$sanitizador = new ModeloSanetizarJSON();
+	$sanitizador->setHashKeys(['id_patologia']);
 
 	if (!preg_match('/^[a-zA-Z_]+$/', $ordenColumna)) {
 		$ordenColumna = 'id_patologia';
@@ -82,6 +83,7 @@ function papeleraAjax()
 
 	$modelo = new ModeloPatologia();
 	$sanitizador = new ModeloSanetizarJSON();
+	$sanitizador->setHashKeys(['id_patologia']);
 
 
 	$patologias = $modelo->mostrarPatologiasEliminadas($inicio, $limite, $buscar, $ordenColumna, $ordenDir);
@@ -186,7 +188,7 @@ function eliminarPatologia()
 		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
 		$text_error = empty($input["estado"]) ? 'eliminar' : 'restablecer';
 
-		$modelo->setIdPatologia($id);
+		$modelo->setIdPatologia(unhashId($id));
 
 		$bitacora->setId_usuario($idUsuario);
 		$bitacora->setActividad("Ha {$text} una  patologia");
