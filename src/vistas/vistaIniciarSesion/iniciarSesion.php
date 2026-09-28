@@ -44,7 +44,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
     <link href="<?= $urlBase ?>./src/assets/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
-        integrity="sha384-3x/lgBw1vK5H5rQwKv6VkRKjqK6CkXhSgfIhHnXc33M6DvtZb6N1XW4hJ8J5mS8E"
+        integrity="sha384-QuGBSgV5Im3DzL2z+8Ko9/hqNy/N0O7zwvXAtfd1MvPKWa/UbeLV65cfm4BV5Wgq"
         crossorigin="anonymous">
     <!-- Intro.js para ayuda interactiva -->
     <link rel="stylesheet" href="<?= $urlBase ?>./src/assets/library/intro/introjs.min.css">
@@ -205,9 +205,9 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
 
     <script src="<?= $urlBase ?>./src/assets/library/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?= $urlBase ?>./src/assets/library/intro/intro.min.js"></script>
-    <script src="<?= $urlBase ?>./src/assets/js/generic/expresionesModulares.js"></script>
+    <script type="module" src="<?= $urlBase ?>./src/assets/js/generic/expresionesModulares.js"></script>
     <script src="<?= $urlBase ?>./src/assets/js/ayudaInteractiva/ayudaInteractiva.js"></script>
-    <script src="<?= $urlBase ?>./src/assets/app.js"></script>
+    <script type="module" src="<?= $urlBase ?>./src/assets/app.js"></script>
     <script type="module" src="<?= $urlBase ?>./src/assets/js/ajax/inicioSesion.js"></script>
 
     <script>

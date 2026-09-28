@@ -35,11 +35,12 @@ class ModeloInsumo extends ModelBase
 	public function insumos()
 	{
 		try {
-			$sql = "SELECT * from view_resumen_insumos where estado_insumo='ACT' ";
+			$sql = "SELECT * from view_resumen_insumos ";
 			$this->setSQL($sql);
 			return $this->read();
 		} catch (\Exception $e) {
-			return $e->getMessage();
+			error_log("Error en insumos(): " . $e->getMessage());
+			return [];
 		}
 	}
 
