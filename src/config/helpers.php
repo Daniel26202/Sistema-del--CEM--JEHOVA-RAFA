@@ -15,7 +15,12 @@ function unhashId(string $hash)
 {
     global $hashids;
     $decoded = $hashids->decode($hash);
-    return $decoded[0] ?? null;
+    //  si es invalido o manipulado el hash, lanza una excepción
+    if (!isset($decoded[0])) {
+        throw new \InvalidArgumentException('Identificador inválido o manipulado.');
+    }
+
+    return $decoded[0];
 }
 
 

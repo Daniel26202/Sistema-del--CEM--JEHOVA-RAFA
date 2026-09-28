@@ -107,30 +107,30 @@ const expresiones = {
     },
 
     proveedor: {
-        expresion: /^\d+$/,
+        expresion: /^[a-zA-Z0-9]{10,}$/,
         mensajeError: "El proveedor esta mal seleccionado",
     },
 
     id_personal: {
-        expresion: /^\d+$/,
+        expresion: /^[a-zA-Z0-9]{10,}$/,
         mensajeError: "El Doctor esta mal seleccionado",
     },
 
     id_rol: {
-        expresion: /^\d+$/,
+        expresion: /^[a-zA-Z0-9]{10,}$/,
         mensajeError: "El rol esta mal seleccionado",
     },
 
     id_insumo: {
-        expresion: /^\d+$/,
+        expresion: /^[a-zA-Z0-9]{10,}$/,
         mensajeError: "El insumo esta mal seleccionado",
     },
     id_categoria: {
-        expresion: /^\d+$/,
-        mensajeError: "El serivico esta mal seleccionado",
+        expresion: /^[a-zA-Z0-9]{10,}$/,
+        mensajeError: "El servicio esta mal seleccionado",
     },
     id_doctor: {
-        expresion: /^\d+$/,
+        expresion: /^[a-zA-Z0-9]{10,}$/,
         mensajeError: "El doctor esta mal seleccionado",
     },
     indicaciones: {
@@ -187,7 +187,7 @@ const expresiones = {
         mensajeError: "El precio debe ser un número válido, puede incluir decimales con punto o coma",
     },
     id_especialidad: {
-        expresion: /^\d+$/,
+        expresion: /^[a-zA-Z0-9]{10,}$/,
         mensajeError: "La especialidad esta mal selecionada",
     },
 };
