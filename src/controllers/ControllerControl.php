@@ -112,7 +112,7 @@ function listPacientesJS()
 	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
 	// Mapeo estricto del orden visual de las columnas en el JS de Citas
-	$columnasMapeadas = ['cedula','nombre','fn','genero'];
+	$columnasMapeadas = ['cedula', 'nombre', 'fn', 'genero'];
 
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
@@ -130,7 +130,7 @@ function listPacientesJS()
 
 
 	$totalRegistros = $modeloPaciente->contarTotalPacientes('ACT');
-	$totalFiltrados = !empty($buscar) ? $modeloPaciente->contarTotalPacientes('ACT',$buscar) : $totalRegistros;
+	$totalFiltrados = !empty($buscar) ? $modeloPaciente->contarTotalPacientes('ACT', $buscar) : $totalRegistros;
 
 	echo json_encode([
 		"draw"            => $draw,
@@ -176,6 +176,7 @@ function mostrarControlPacientesJS($datos)
 	$sintomas = $sanetizar->sanitizeRecursive($modeloSintomas->selects());
 	// patologías
 	$modeloControl->setCedula($cedula);
+	$modeloPatologia->setCedulaPac($cedula);
 	$registradosP = $sanetizar->sanitizeRecursive($modeloPatologia->buscarPatologiaPaciente());
 	$patologias = $sanetizar->sanitizeRecursive($modeloPatologia->mostrarPatologias());
 
