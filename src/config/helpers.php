@@ -24,6 +24,25 @@ function unhashId(string $hash)
 }
 
 
+/**
+ * Indica si un valor corresponde a un identificador generado por hashId().
+ *
+ * Permite comprobar el campo ANTES de llamar a unhashId(), para poder
+ * responder "vuelva a seleccionar el paciente" en lugar de recibir una
+ * excepción genérica que el usuario no sabe interpretar.
+ */
+function esHashIdValido(string $hash): bool
+{
+    global $hashids;
+
+    if ($hash === '') {
+        return false;
+    }
+
+    return !empty($hashids->decode($hash));
+}
+
+
 //valida que un ID real sea numérico y mayor a 0
 
 function validarIdReal(int $id)

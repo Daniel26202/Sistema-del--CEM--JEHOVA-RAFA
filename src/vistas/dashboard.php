@@ -145,8 +145,8 @@ require_once './src/vistas/head/head.php';
         </div>
 
         <!-- Contenedor de la lista de servicios -->
-        <div class="col-md-12 mt-3 " id="precioConsultas">
-            <div class="card shadow-sm">
+        <div class="col-md-12 mt-3 h-50" id="precioConsultas">
+            <div class="card shadow-sm h-100">
                 <?php if ($validarCargo): ?>
                     <?php foreach ($datos_de_personal as $d): ?>
 
@@ -226,24 +226,30 @@ require_once './src/vistas/head/head.php';
                         </div>
                     <?php else: ?>
                         <div class="card-tittle">
-                            <h5 class="mb-0">Precio consulta</h5>
+                            <h4 class="mb-0">Precio consulta</h4>
                         </div>
-                        <div class="card-body table table-responsive">
-                            <!-- Lista de servicios -->
-                            <table class="table table-borderless align-middle" id="precios">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Precio</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-
-
-                            </table>
-
-
+                        <div class="card-body p-0">
+                            <!-- Slider de servicios -->
+                            <div class="servicios-slider" id="serviciosSlider">
+                                <div class="servicios-slider-viewport">
+                                    <div class="servicios-slider-track" id="serviciosSliderTrack">
+                                        <!-- Los servicios se inyectan aquí vía JS -->
+                                    </div>
+                                </div>
+                                <div class="servicios-slider-nav">
+                                    <button class="servicios-slider-btn" id="serviciosSliderPrev" aria-label="Anterior">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                                        </svg>
+                                    </button>
+                                    <div class="servicios-slider-dots" id="serviciosSliderDots"></div>
+                                    <button class="servicios-slider-btn" id="serviciosSliderNext" aria-label="Siguiente">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     <?php endif; ?>
             </div>

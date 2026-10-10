@@ -1687,7 +1687,7 @@ ALTER TABLE `categoria_servicio`
 -- Indices de la tabla `cita`
 --
 ALTER TABLE `cita`
-  ADD PRIMARY KEY (`id_cita`,`paciente_id_paciente`),
+  ADD PRIMARY KEY (`id_cita`),
   ADD KEY `fk_cita_serviciomedico1_idx` (`serviciomedico_id_servicioMedico`),
   ADD KEY `fk_cita_paciente1_idx` (`paciente_id_paciente`);
 

@@ -9,7 +9,7 @@ use App\modelos\ModeloRoles;
 
 class ModeloDoctores extends ModelBase
 {
-    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $dias, $horaSalida, $horaEntrada, $imagen, $especialidad, $imagenTemporal, $checkeds, $diasN, $diasEditar, $diasE, $usuario, $id_usuario, $id_rol, $password;
+    private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $horarios, $imagen, $especialidad, $imagenTemporal, $usuario, $id_usuario, $id_rol, $password;
 
     private $columnasPermitidasDoctores = ['id_personal','cedula', 'nombre_d', 'apellido', 'telefono', 'correo', 'nombre'];
     private $columnasPermitidasEspec = ['id_especialidad','nombre'];
@@ -265,20 +265,17 @@ class ModeloDoctores extends ModelBase
                 move_uploaded_file($imagenTemporal, './src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $imagen);
             }
 
-            if (!empty($this->getDias())) {
-                $contador = 0;
-                foreach ($this->getDias() as $d) {
-                    $data = [
-                        'id_personal'      => $idPersonal,
-                        'id_horario'       => $d,
-                        'horarioDeEntrada' => $this->getHoraEntrada()[$contador],
-                        'horaDeSalida'     => $this->getHoraSalida()[$contador]
-                    ];
-                    $sql = "INSERT INTO bd.horarioydoctor (id_horarioydoctor, id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (null, :id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida)";
-                    $this->setSQL($sql);
-                    $this->create($data);
-                    $contador++;
-                }
+            $horarios = $this->getHorarios();
+            foreach ($horarios as $idHorario => $horario) {
+                $data = [
+                    'id_personal'      => $idPersonal,
+                    'id_horario'       => $idHorario,
+                    'horarioDeEntrada' => $horario['entrada'],
+                    'horaDeSalida'     => $horario['salida']
+                ];
+                $sql = "INSERT INTO bd.horarioydoctor (id_horarioydoctor, id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (null, :id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida)";
+                $this->setSQL($sql);
+                $this->create($data);
             }
 
             $this->commit();
@@ -336,9 +333,10 @@ class ModeloDoctores extends ModelBase
                 throw new \Exception("La cédula ya está registrada.");
             }
 
-            $sql       = 'SELECT id_personal FROM personal WHERE usuario = :idUsuario';
+            $sql = 'SELECT id_personal FROM personal WHERE usuario = :idUsuario';
             $this->setSQL($sql);
             $idPersonal = $this->search($data1, false);
+            $idPersonal = (int)$idPersonal['id_personal'];
 
             $data2 = [
                 'nacionalidad'    => $this->getNacionalidad(),
@@ -350,55 +348,108 @@ class ModeloDoctores extends ModelBase
             ];
             $sql = "UPDATE personal SET nacionalidad=:nacionalidad, cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono, id_especialidad=:id_espacialidad WHERE id_personal = :id";
             $this->setSQL($sql);
-            $this->update($data2, $idPersonal['id_personal']);
+            $this->update($data2, $idPersonal);
 
             $sql = 'UPDATE segurity.usuario SET correo = :correo WHERE id_usuario = :id';
             $this->setSQL($sql);
             $this->update(['correo' => $this->getEmail()], $this->getIdUsuario());
 
-            $checkeds   = $this->getCheckeds();
-            $diasN      = $this->getDiasN();
-            $diasEditar = $this->getDiasEditar();
-            $horaEntrada = $this->getHoraEntrada();
-            $horaSalida  = $this->getHoraSalida();
-            $diasE      = $this->getDiasE();
-            $contador   = 0;
-
-            foreach ($checkeds as $idD) {
-                if ($diasN && in_array($idD, $diasN)) {
-                    $data = [
-                        'id_personal'      => $idPersonal['id_personal'],
-                        'id_horario'       => $idD,
-                        'horarioDeEntrada' => $horaEntrada[$contador],
-                        'horaDeSalida'     => $horaSalida[$contador]
-                    ];
-                    $sql = "INSERT INTO horarioydoctor (id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida)";
-                    $this->setSQL($sql);
-                    $this->create($data);
-                }
-                if ($diasEditar && in_array($idD, $diasEditar)) {
-                    $data = ['id_horario' => $idD, 'horarioDeEntrada' => $horaEntrada[$contador], 'horaDeSalida' => $horaSalida[$contador]];
-                    $sql  = "UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada, horaDeSalida=:horaDeSalida WHERE id_personal = :id AND id_horario = :id_horario";
-                    $this->setSQL($sql);
-                    $this->update($data, $idPersonal['id_personal']);
-                }
-                $contador++;
-            }
-
-            if ($diasE) {
-                foreach ($diasE as $idE) {
-                    $sql = "DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario";
-                    $this->setSQL($sql);
-                    $this->delete(['id_personal' => $idPersonal['id_personal'], 'id_horario' => $idE]);
-                }
-            }
+            $this->sincronizarHorariosDoctor($idPersonal);
 
             $this->commit();
-            return ["exito", $data1, $data2, $idPersonal['id_personal']];
+            return ["exito", $data1, $data2, $idPersonal];
         } catch (\Exception $e) {
             $this->rollBack();
             return $e->getMessage();
         }
+    }
+
+    /**
+     * Sincroniza la tabla horarioydoctor con los horarios enviados desde el
+     * formulario. Compara contra lo que realmente existe en la base:
+     *  - Los días que ya existían y siguen marcados con la misma hora no se tocan.
+     *  - Los días que ya existían pero cambiaron de hora se actualizan.
+     *  - Los días nuevos se insertan.
+     *  - Los días que ya no están marcados se eliminan.
+     */
+    private function sincronizarHorariosDoctor($idPersonal)
+    {
+        $idPersonal  = (int)$idPersonal;
+        $nuevos      = $this->getHorarios();
+
+        $sql = "SELECT id_horario, horaDeEntrada, horaDeSalida FROM horarioydoctor WHERE id_personal = :id_personal";
+        $this->setSQL($sql);
+        $existentesRows = $this->search(['id_personal' => $idPersonal]);
+
+        //indexamos los horarios actuales de la base por id_horario
+        $existentes = [];
+        foreach (is_array($existentesRows) ? $existentesRows : [] as $fila) {
+            $existentes[(int)$fila['id_horario']] = [
+                'entrada' => $this->normalizarHora($fila['horaDeEntrada']),
+                'salida'  => $this->normalizarHora($fila['horaDeSalida']),
+            ];
+        }
+
+        //1) eliminar los días que ya no fueron seleccionados
+        foreach (array_diff_key($existentes, $nuevos) as $idHorario => $horario) {
+            $sql = "DELETE FROM horarioydoctor WHERE id_personal = :id_personal AND id_horario = :id_horario";
+            $this->setSQL($sql);
+            $this->delete(['id_personal' => $idPersonal, 'id_horario' => $idHorario]);
+        }
+
+        //2) insertar los días nuevos y actualizar únicamente los que cambiaron de hora
+        foreach ($nuevos as $idHorario => $horario) {
+            if (!isset($existentes[$idHorario])) {
+                $sql = "INSERT INTO horarioydoctor (id_personal, id_horario, horaDeEntrada, horaDeSalida) VALUES (:id_personal, :id_horario, :horarioDeEntrada, :horaDeSalida)";
+                $this->setSQL($sql);
+                $this->create([
+                    'id_personal'      => $idPersonal,
+                    'id_horario'       => $idHorario,
+                    'horarioDeEntrada' => $horario['entrada'],
+                    'horaDeSalida'     => $horario['salida'],
+                ]);
+                continue;
+            }
+
+            if ($existentes[$idHorario]['entrada'] !== $horario['entrada']
+                || $existentes[$idHorario]['salida'] !== $horario['salida']) {
+                $sql = "UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada, horaDeSalida=:horaDeSalida WHERE id_personal = :id_personal AND id_horario = :id_horario";
+                $this->setSQL($sql);
+                $this->updateHorario([
+                    'id_personal'      => $idPersonal,
+                    'id_horario'       => $idHorario,
+                    'horarioDeEntrada' => $horario['entrada'],
+                    'horaDeSalida'     => $horario['salida'],
+                ]);
+            }
+        }
+    }
+
+    /**
+     * UPDATE genérico sin depender de un ":id" fijo, para poder filtrar por
+     * id_personal e id_horario a la vez.
+     */
+    private function updateHorario($data)
+    {
+        $sql = $this->getSQL();
+        $stmt = $this->getPDO()->prepare($sql);
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        return $stmt->execute();
+    }
+
+    /**
+     * La base devuelve las horas como "08:00:00" y el formulario las envía como
+     * "08:00". Normalizamos a "HH:MM" para poder compararlas sin falsos positivos.
+     */
+    private function normalizarHora($hora)
+    {
+        $hora = trim((string)$hora);
+        if (strlen($hora) >= 5) {
+            $hora = substr($hora, 0, 5);
+        }
+        return $hora;
     }
 
     private function eliminacionLogicaDB($estado ='DES')
@@ -603,17 +654,12 @@ class ModeloDoctores extends ModelBase
     {
         return $this->idEspecialidad;
     }
-    public function getDias()
+    /**
+     * Devuelve los horarios como mapa: [id_horario => ['entrada' => 'HH:MM', 'salida' => 'HH:MM']]
+     */
+    public function getHorarios()
     {
-        return $this->dias;
-    }
-    public function getHoraEntrada()
-    {
-        return $this->horaEntrada;
-    }
-    public function getHoraSalida()
-    {
-        return $this->horaSalida;
+        return is_array($this->horarios) ? $this->horarios : [];
     }
     public function getImagen()
     {
@@ -626,22 +672,6 @@ class ModeloDoctores extends ModelBase
     public function getNombreEspecialidad()
     {
         return $this->especialidad;
-    }
-    public function getCheckeds()
-    {
-        return $this->checkeds;
-    }
-    public function getDiasN()
-    {
-        return $this->diasN;
-    }
-    public function getDiasEditar()
-    {
-        return $this->diasEditar;
-    }
-    public function getDiasE()
-    {
-        return $this->diasE;
     }
     public function getUsuario()
     {
@@ -658,23 +688,6 @@ class ModeloDoctores extends ModelBase
     public function getPassword()
     {
         return $this->password;
-    }
-
-    public function setDiasEditar($diasEditar)
-    {
-        $this->diasEditar = $diasEditar;
-    }
-    public function setDiasE($diasE)
-    {
-        $this->diasE = $diasE;
-    }
-    public function setDiasN($diasN)
-    {
-        $this->diasN = $diasN;
-    }
-    public function setCheckeds($checkeds)
-    {
-        $this->checkeds = $checkeds;
     }
 
     public function setIdDoctor($id_doctor)
@@ -749,28 +762,43 @@ class ModeloDoctores extends ModelBase
         $this->idEspecialidad = $id_especialidad;
     }
 
-    public function setDias($dias = [])
+    /**
+     * Recibe el horario como mapa: [id_horario => ['entrada' => 'HH:MM', 'salida' => 'HH:MM']]
+     * y valida cada bloque antes de guardarlo.
+     */
+    public function setHorarios(array $horarios)
     {
-        if (empty($dias)) {
-            throw new \InvalidArgumentException("Los días no pueden estar vacíos.");
+        if (empty($horarios)) {
+            throw new \InvalidArgumentException("Debe indicar al menos un día laborable con su horario.");
         }
-        $this->dias = $dias;
-    }
 
-    public function setHoraEntrada($horaEntrada = [])
-    {
-        if (!is_array($horaEntrada)) {
-            throw new \InvalidArgumentException("Las horas de entrada no pueden estar vacías.");
-        }
-        $this->horaEntrada = $horaEntrada;
-    }
+        $patronHora = '/^([01][0-9]|2[0-3]):[0-5][0-9]$/';
+        $validados  = [];
 
-    public function setHoraSalida($horaSalida = [])
-    {
-        if (!is_array($horaSalida)) {
-            throw new \InvalidArgumentException("Las horas de salida no pueden estar vacías.");
+        foreach ($horarios as $idHorario => $bloque) {
+            if (!preg_match("/^[0-9]+$/", (string)$idHorario) || (int)$idHorario <= 0) {
+                throw new \InvalidArgumentException("El día del horario no es válido.");
+            }
+
+            $entrada = $this->normalizarHora($bloque['entrada'] ?? '');
+            $salida  = $this->normalizarHora($bloque['salida']  ?? '');
+
+            if (!preg_match($patronHora, $entrada) || !preg_match($patronHora, $salida)) {
+                throw new \InvalidArgumentException("Las horas del horario deben tener el formato HH:MM.");
+            }
+
+            if ($entrada === $salida) {
+                throw new \InvalidArgumentException("La hora de entrada y la de salida no pueden ser iguales.");
+            }
+
+            if ($salida < $entrada) {
+                throw new \InvalidArgumentException("La hora de salida debe ser posterior a la hora de entrada.");
+            }
+
+            $validados[(int)$idHorario] = ['entrada' => $entrada, 'salida' => $salida];
         }
-        $this->horaSalida = $horaSalida;
+
+        $this->horarios = $validados;
     }
 
     public function setImagenTemporal($imagenTemporal)

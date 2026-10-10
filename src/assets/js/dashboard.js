@@ -501,53 +501,143 @@ const traerHorarioDoctor = async (id) => {
     }
 };
 
-// Carga los datos de la tabla de precios
+// Carga los datos de servicios en el slider
 const traerDatosServicios = async () => {
     try {
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/servicios");
         let resultado = await peticion.json();
-        const tbody = document.querySelector("#precios tbody");
-        tbody.innerHTML = "";
+        const track = document.getElementById("serviciosSliderTrack");
+        const dotsContainer = document.getElementById("serviciosSliderDots");
+        track.innerHTML = "";
+        dotsContainer.innerHTML = "";
 
-        resultado.forEach((element) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `<td>${element.categoria}</td><td>${element.precio}</td>`;
-            tbody.appendChild(row);
-        });
-
-        // Inicializa DataTable
-        if ($.fn.DataTable.isDataTable("#precios")) {
-            $("#precios").DataTable().destroy();
+        if (!resultado || resultado.length === 0) {
+            track.innerHTML = '<div class="servicios-slider-empty">No hay servicios disponibles</div>';
+            return;
         }
 
-        $("#precios").DataTable({
-            paging: true,
-            pageLength: 3,
-            searching: true,
-            info: false,
-            ordering: true,
-            lengthChange: false,
-            dom: '<"top"f>rt<"bottom"p><"clear">',
-            language: {
-                decimal: ",",
-                thousands: ".",
-                zeroRecords: "No se encontraron resultados",
-                infoEmpty: "No hay registros disponibles",
-                search: "Buscar:",
-            },
-            columns: [
-                { data: "categoria" },
-                {
-                    data: "precio",
-                    render: function (data, type, row) {
-                        return data + " BSs";
-                    },
-                },
-            ],
+        // Crear tarjetas de servicios
+        resultado.forEach((element, index) => {
+            const card = document.createElement("div");
+            card.className = "servicios-slider-card";
+            card.innerHTML = `
+                <div class="servicios-slider-card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11.5 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5h7zm-7-1A1.5 1.5 0 0 0 3 2.5v7A1.5 1.5 0 0 0 4.5 11h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 11.5 1h-7z"/>
+                        <path d="M6.5 4a.5.5 0 0 0-1 0v1.5H4a.5.5 0 0 0 0 1h1.5V8a.5.5 0 0 0 1 0V6.5H8a.5.5 0 0 0 0-1H6.5V4z"/>
+                    </svg>
+                </div>
+                <div class="servicios-slider-card-body">
+                    <h6 class="servicios-slider-card-title">${element.categoria}</h6>
+                    <p class="servicios-slider-card-price">${element.precio} <span>BSs</span></p>
+                </div>
+            `;
+            track.appendChild(card);
+
+            // Crear dot
+            const dot = document.createElement("button");
+            dot.className = `servicios-slider-dot${index === 0 ? " active" : ""}`;
+            dot.setAttribute("data-index", index);
+            dot.setAttribute("aria-label", `Ir al servicio ${index + 1}`);
+            dotsContainer.appendChild(dot);
         });
+
+        // Inicializar el slider
+        initServiciosSlider();
     } catch (error) {
         console.log("Error al traer los datos:", error);
     }
+};
+
+// Inicializar el slider de servicios
+const initServiciosSlider = () => {
+    const slider = document.getElementById("serviciosSlider");
+    const track = document.getElementById("serviciosSliderTrack");
+    const cards = track.querySelectorAll(".servicios-slider-card");
+    const dots = document.querySelectorAll(".servicios-slider-dot");
+    const prevBtn = document.getElementById("serviciosSliderPrev");
+    const nextBtn = document.getElementById("serviciosSliderNext");
+
+    if (!slider || cards.length === 0) return;
+
+    let currentIndex = 0;
+    let autoPlayInterval;
+    const autoPlayDelay = 3000;
+
+    const getVisibleCards = () => {
+        const cardWidth = cards[0].offsetWidth + 12;
+        const sliderWidth = slider.offsetWidth;
+        return Math.max(1, Math.floor(sliderWidth / cardWidth));
+    };
+
+    const getMaxIndex = () => {
+        return Math.max(0, cards.length - getVisibleCards());
+    };
+
+    const updateSlider = () => {
+        const cardWidth = cards[0].offsetWidth + 12;
+        const maxIndex = getMaxIndex();
+        currentIndex = Math.min(currentIndex, maxIndex);
+        track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+
+        dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === currentIndex);
+        });
+
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex >= maxIndex;
+    };
+
+    const goTo = (index) => {
+        const maxIndex = getMaxIndex();
+        currentIndex = Math.max(0, Math.min(index, maxIndex));
+        updateSlider();
+    };
+
+    const next = () => {
+        const maxIndex = getMaxIndex();
+        currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
+        updateSlider();
+    };
+
+    const prev = () => {
+        currentIndex = currentIndex <= 0 ? getMaxIndex() : currentIndex - 1;
+        updateSlider();
+    };
+
+    const startAutoPlay = () => {
+        stopAutoPlay();
+        autoPlayInterval = setInterval(next, autoPlayDelay);
+    };
+
+    const stopAutoPlay = () => {
+        if (autoPlayInterval) clearInterval(autoPlayInterval);
+    };
+
+    nextBtn.addEventListener("click", () => {
+        next();
+        startAutoPlay();
+    });
+
+    prevBtn.addEventListener("click", () => {
+        prev();
+        startAutoPlay();
+    });
+
+    dots.forEach((dot) => {
+        dot.addEventListener("click", () => {
+            goTo(parseInt(dot.getAttribute("data-index")));
+            startAutoPlay();
+        });
+    });
+
+    slider.addEventListener("mouseenter", stopAutoPlay);
+    slider.addEventListener("mouseleave", startAutoPlay);
+
+    window.addEventListener("resize", updateSlider);
+
+    updateSlider();
+    startAutoPlay();
 };
 
 // Carga las citas pendientes

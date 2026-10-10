@@ -64,6 +64,21 @@ addEventListener("DOMContentLoaded", function () {
   let fechaGlobal = "";
   let id_doctor = 0;
 
+  // Estado de la validación personalizada de la fecha de la cita
+  let fechaValidaParaDoctor = false;
+  let ultimaFechaProcesada = "";
+
+  // Bandera para evitar peticiones duplicadas al hacer doble clic en un horario
+  let apartandoCupo = false;
+
+  // Normaliza un texto eliminando acentos y pasándolo a minúsculas,
+  // así los días laborables se comparan sin importar tildes (ej: "miércoles" === "miercoles")
+  const normalizarDia = (texto) =>
+    String(texto)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
   const traerPacienteCita = async () => {
     try {
       let [addClass, removeClass] = ["", ""];
@@ -74,10 +89,23 @@ addEventListener("DOMContentLoaded", function () {
         );
 
         console.log(result, `${nacionalidadCita.value}/${cedulaCita.value}`);
-        if (result != []) {
+
+        // Solo se acepta la respuesta si trae un identificador hasheado real.
+        // Antes la condición era "if (result != [])", que es verdadera para
+        // cualquier objeto: si la petición fallaba (límite de peticiones,
+        // sesión vencida, etc.) se entraba a la rama "encontrado" y se
+        // guardaba la cadena "undefined" en el campo oculto. El servidor no
+        // podía descifrarla y respondía "No se pudo validar la selección".
+        const idRecibido = result ? result.id_paciente : null;
+        const tieneIdValido =
+          idRecibido !== undefined &&
+          idRecibido !== null &&
+          /^[a-zA-Z0-9]{4,}$/.test(String(idRecibido));
+
+        if (tieneIdValido) {
           inputPaciente.value = result.nombre + " " + result.apellido;
           inputTelefono.value = result.telefono;
-          inputIdPaciente.value = result.id_paciente;
+          inputIdPaciente.value = idRecibido;
           [addClass, removeClass] = ["valido", "invalido"];
           divDataPaciente.classList.remove("d-none");
 
@@ -85,7 +113,7 @@ addEventListener("DOMContentLoaded", function () {
         } else {
           inputPaciente.value = "Paciente no encontrado";
           inputTelefono.value = "Telefono no encontrado";
-          inputIdPaciente.value = 0;
+          inputIdPaciente.value = "0";
           [addClass, removeClass] = ["invalido", "valido"];
           divDataPaciente.classList.add("d-none");
 
@@ -93,6 +121,12 @@ addEventListener("DOMContentLoaded", function () {
           divBtnAddPat.classList.remove("d-none");
 
           modalFooter.classList.add("d-none");
+
+          // Si la consulta no llegó a completarse se explica por qué, en
+          // lugar de dejar que el fallo aparezca más adelante al apartar
+          if (result && result.error && !result.nombre) {
+            alertError("No se pudo buscar el paciente", result.error);
+          }
         }
       } else {
         divDataPaciente.classList.add("d-none");
@@ -109,7 +143,7 @@ addEventListener("DOMContentLoaded", function () {
         "GET",
       );
       console.log(result);
-      let html = `<option class="option-select-background" selected="" disabled value="0">Seleccionar Servicio médico</option>`;
+      let html = `<option class="option-select-background" selected="" disabled value="">Seleccionar Servicio médico</option>`;
 
       if (result.length > 0) {
         result.forEach((res) => {
@@ -161,6 +195,12 @@ addEventListener("DOMContentLoaded", function () {
       divHorariosDisp.classList.add("d-none");
       modalFooter.classList.add("d-none");
 
+      // Limpiar los horarios disponibles y el estado de la fecha
+      // al cambiar de servicio (evita dejar una hora apartada huérfana)
+      accordionBodyDisp.innerHTML = "";
+      fechaValidaParaDoctor = false;
+      ultimaFechaProcesada = "";
+
       inputFechaCita.value = "";
     } catch (error) {
       alertError("Error", error);
@@ -177,7 +217,6 @@ addEventListener("DOMContentLoaded", function () {
       );
       let html = "";
       diasLaborablesDoctor = [];
-      let object = {};
       if (result.length > 0) {
         result.forEach((res) => {
           html += `
@@ -188,16 +227,25 @@ addEventListener("DOMContentLoaded", function () {
                 </div> 
                 `;
 
-          object[res.diaslaborables] = {
-            entrada: convertirHora(res.horaDeEntrada),
-            salida: convertirHora(res.horaDeSalida),
-          };
-
-          diasLaborablesDoctor.push(object);
+          // Se crea un objeto nuevo por cada día laborable y se normaliza su clave
+          // para que la comparación con el día seleccionado sea sin tildes
+          const dia = normalizarDia(res.diaslaborables);
+          diasLaborablesDoctor.push({
+            [dia]: {
+              entrada: convertirHora(res.horaDeEntrada),
+              salida: convertirHora(res.horaDeSalida),
+            },
+          });
         });
         console.log("aqui", diasLaborablesDoctor);
         divFecha.classList.remove("d-none");
         divHorarios.classList.remove("d-none");
+
+        // Limpiar los horarios disponibles anteriores al cambiar de doctor
+        accordionBodyDisp.innerHTML = "";
+        divHorariosDisp.classList.add("d-none");
+        fechaValidaParaDoctor = false;
+        ultimaFechaProcesada = "";
       } else {
         divFecha.classList.add("d-none");
         divHorarios.classList.remove("d-none");
@@ -211,54 +259,98 @@ addEventListener("DOMContentLoaded", function () {
   };
 
   const validarFechaCita = (input, listHoraRegistrada = []) => {
-    let partesFecha = input.value.split("-");
-    let fecha = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
-    let dateName = fecha
-      .toLocaleDateString("es-ES", { weekday: "long" })
-      .toLowerCase();
-    fechaGlobal = input.value;
+    const campoCustom = input.closest(".campo-custom");
+    const inputCustom = campoCustom.querySelector(".input-custom");
+    const check = campoCustom.querySelector(".check");
+    const error = campoCustom.querySelector(".error");
+    const pError = campoCustom.querySelector(".error-msg");
 
-    console.log(diasLaborablesDoctor);
-    // dateName = dateName.charAt(0).toUpperCase() + dateName.slice(1);
-    console.log(dateName);
-    //no se encontraron registros
-    if (!diasLaborablesDoctor.length > 0) {
-      divHorariosDisp.classList.add("d-none");
-      alertError("Error", `Lamentablemente no se encontraron dias del doctor `);
+    // Si el campo está vacío o la fecha no es válida, se deja en estado neutro
+    const partesFecha = (input.value || "").split("-");
+    const fecha = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
+    if (!input.value || isNaN(fecha.getTime())) {
+      fechaValidaParaDoctor = false;
       return;
     }
 
-    diasLaborablesDoctor.forEach((ele) => {
-      console.log(ele[dateName]);
-      if (!ele[dateName]) {
-        //agregar clase de invalido al input ya que el dia no esta dentro del horario  del doctor
-        let campoCustom = input.closest(".campo-custom");
-        let inputCustom = campoCustom.querySelector(".input-custom");
-        let check = campoCustom.querySelector(".check");
-        let error = campoCustom.querySelector(".error");
+    // Nombre del día sin tildes para compararlo con los días laborables del doctor
+    const dateName = normalizarDia(
+      fecha.toLocaleDateString("es-ES", { weekday: "long" }),
+    );
+    fechaGlobal = input.value;
 
-        inputCustom.classList.remove("valido");
-        inputCustom.classList.add("invalido");
-
-        check.classList.add("d-none");
-        error.classList.remove("d-none");
-
-        console.log(campoCustom, inputCustom, check, error);
-
-        divHorariosDisp.classList.add("d-none");
-        alertError(
-          "Error",
-          `El ${dateName} no esta dentro del horario del doctor.`,
-        );
-        return;
+    // No se encontraron registros de horario para el doctor
+    if (diasLaborablesDoctor.length === 0) {
+      fechaValidaParaDoctor = false;
+      divHorariosDisp.classList.add("d-none");
+      if (input.value !== ultimaFechaProcesada) {
+        ultimaFechaProcesada = input.value;
+        alertError("Error", "Lamentablemente no se encontraron días del doctor");
       }
-      if (ele[dateName]) {
-        divHorariosDisp.classList.remove("d-none");
-        validarHorarioDisponible(fechaGlobal, id_doctor, listHoraRegistrada);
-        console.log("El dia es valido para el doctor");
-        return;
+      return;
+    }
+
+    // ¿El día seleccionado está dentro de los días laborables del doctor?
+    const esDiaLaborable = diasLaborablesDoctor.some((ele) => ele[dateName]);
+
+    if (!esDiaLaborable) {
+      // Agregar clase de inválido al input ya que el día no está dentro del horario del doctor
+      fechaValidaParaDoctor = false;
+      inputCustom.classList.remove("valido");
+      inputCustom.classList.add("invalido");
+
+      check.classList.add("d-none");
+      error.classList.remove("d-none");
+
+      if (pError) {
+        pError.textContent = `El ${dateName} no está dentro del horario del doctor.`;
+        pError.classList.remove("d-none");
       }
-    });
+
+      divHorariosDisp.classList.add("d-none");
+
+      // Se avisa solo cuando la fecha cambia para no duplicar alertas
+      if (input.value !== ultimaFechaProcesada) {
+        ultimaFechaProcesada = input.value;
+        alertError("Error", `El ${dateName} no está dentro del horario del doctor.`);
+      }
+      return;
+    }
+
+    // El día es válido para el doctor
+    fechaValidaParaDoctor = true;
+    inputCustom.classList.remove("invalido");
+    inputCustom.classList.add("valido");
+
+    check.classList.remove("d-none");
+    error.classList.add("d-none");
+
+    if (pError) {
+      pError.classList.add("d-none");
+    }
+
+    divHorariosDisp.classList.remove("d-none");
+
+    // Solo consulta los horarios disponibles cuando la fecha cambia
+    if (input.value !== ultimaFechaProcesada) {
+      ultimaFechaProcesada = input.value;
+      validarHorarioDisponible(fechaGlobal, id_doctor, listHoraRegistrada);
+    }
+  };
+
+  // Convierte el inicio de una tarjeta ("8:00 PM a 9:00 PM" o "8:00 PM") a
+  // "20:00:00". Es la MISMA clave que usa el servidor para detectar el
+  // conflicto (cita.hora), así la UI y el backend coinciden exactamente.
+  const convertirA24Hora = (textoHora) => {
+    const partes = String(textoHora).split(" a ")[0].trim();
+    const coincidencia = partes.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+
+    if (!coincidencia) return "";
+
+    let horas = parseInt(coincidencia[1], 10) % 12;
+    if (/pm/i.test(coincidencia[3])) horas += 12;
+
+    return `${String(horas).padStart(2, "0")}:${coincidencia[2]}:00`;
   };
 
   const validarHorarioDisponible = async (fecha, id, listHoraRegistrada) => {
@@ -271,51 +363,46 @@ addEventListener("DOMContentLoaded", function () {
 
       let html = "";
 
-      let horasLibres1 = [];
-      let horasLibres2 = [];
+      if (!Array.isArray(result) || result.length < 2) {
+        accordionBodyDisp.innerHTML = "";
+        return;
+      }
 
       const [horasDeTrabajo, horasOcupadas] = result;
 
-      let horasOcupadasUnidas = horasOcupadas.flat();
+      // Los horarios pueden venir como arreglo de arreglos o plano, .flat() normaliza ambos
+      const horasTrabajo = (Array.isArray(horasDeTrabajo) ? horasDeTrabajo : []).flat();
+      const horasOcupadasUnidas = (Array.isArray(horasOcupadas) ? horasOcupadas : []).flat();
 
-      if (horasDeTrabajo.length > 0) {
-        horasDeTrabajo.forEach((horaT, index) => {
-          horasLibres1 = horaT.filter(
-            (item) => !horasOcupadasUnidas.includes(item),
-          );
-          horasLibres2 = horasOcupadasUnidas.filter(
-            (item) => !horaT.includes(item),
-          );
+      // Horarios laborables del doctor que aún no están ocupados por otra cita
+      // Se compara por la hora de INICIO, que es exactamente lo que el
+      // servidor bloquea al apartar el cupo
+      let horasLibres = horasTrabajo.filter(
+        (item) => !horasOcupadasUnidas.includes(convertirA24Hora(item)),
+      );
+
+      // Al editar una cita se incluye su hora actual, aunque ya esté ocupada por la misma cita
+      if (Array.isArray(listHoraRegistrada) && listHoraRegistrada.length > 0) {
+        listHoraRegistrada.forEach((hora) => {
+          if (!horasLibres.includes(hora)) horasLibres.push(hora);
         });
+      }
 
-        const horasLibres = [...horasLibres1, ...horasLibres2];
-        if (listHoraRegistrada != []) {
-          horasLibres.push(...listHoraRegistrada);
-        }
-
-        console.log(horasLibres);
-
-        if (
-          listHoraRegistrada.length == 0 &&
-          listHoraRegistrada[0] != undefined
-        ) {
-          horasLibres.push(listHoraRegistrada[0]);
-        }
-        console.log(horasLibres);
-
-        horasLibres.forEach((res, index) => {
-          html += `
+      horasLibres.forEach((res, index) => {
+        html += `
           <div class="contenido card cards-horario" data-index=${index} selection=false >
             <input type='hidden' class="valorHorasEntrada" >
             <h5 style="font-size: 15;" class="text-center">${res}</h5>
           </div>`;
-        });
-      }
+      });
 
       accordionBodyDisp.innerHTML = html;
 
       document.querySelectorAll(".cards-horario").forEach((card) => {
         card.addEventListener("click", function () {
+          // Ignorar clics mientras se está apartando un cupo (evita doble clic)
+          if (apartandoCupo) return;
+
           //aparecer el boton de guardar
           modalFooter.classList.remove("d-none");
 
@@ -375,8 +462,30 @@ addEventListener("DOMContentLoaded", function () {
     btnModal.innerText = "Modificar";
 
     inputIdCita.value = btn.getAttribute("data-index");
-    cedulaCita.value = btn.closest("tr").children[0].innerText.slice(2);
+    // Cédula y fecha se leen de los atributos del botón (datos crudos de la
+    // base) en vez del texto de la tabla, para que el flujo de edición no
+    // dependa de cómo se vea cada columna en pantalla
+    cedulaCita.value =
+      btn.getAttribute("data-cedula") ||
+      btn.closest("tr").children[0].innerText.slice(2);
     console.log(cedulaCita.value);
+
+    // La nacionalidad se ajusta a la del paciente: antes se buscaba con la que
+    // estuviera en el <select> (siempre "V" por defecto) y un paciente de
+    // otra nacionalidad aparecía como "no encontrado" al modificar su cita
+    const nacionalidadPaciente = btn.getAttribute("data-nacionalidad");
+
+    if (nacionalidadPaciente) {
+      nacionalidadCita.value = nacionalidadPaciente;
+
+      if (nacionalidadCita.value !== nacionalidadPaciente) {
+        alertError(
+          "Nacionalidad no disponible",
+          `Este paciente tiene la nacionalidad "${nacionalidadPaciente}" y no está en la lista del formulario. Agrega esa opción para poder modificar su cita.`,
+        );
+        return;
+      }
+    }
 
     await traerPacienteCita();
 
@@ -395,19 +504,24 @@ addEventListener("DOMContentLoaded", function () {
       }
     });
     await traerHorarioDoctor(valorABuscar);
-    inputFechaCita.value = btn.closest("tr").children[5].innerText;
+    inputFechaCita.value =
+      btn.getAttribute("data-fecha") || btn.closest("tr").children[5].innerText;
 
-    //disparar el evento input para que se activr la validacion
-    inputFechaCita.dispatchEvent(new Event("keyup", { bubbles: true }));
+    //disparar el evento keyup para que se active la validación genérica de la cédula
     cedulaCita.dispatchEvent(new Event("keyup", { bubbles: true }));
 
-    let horaTable = btn.closest("tr").children[6].innerText;
+    // La hora se toma del atributo data-hora (formato 24 horas de la base),
+    // no del texto de la tabla, que ahora se muestra en 12 horas
+    let horaTable = btn.getAttribute("data-hora") || btn.closest("tr").children[6].innerText;
 
     let horaEntradaEdi = convertirHora(sumarUnaHora(horaTable));
     let horaSalidaEdi = convertirHora(sumarUnaHora(horaTable, 1));
 
     const listHourEdit = [`${horaEntradaEdi} a ${horaSalidaEdi}`];
 
+    // Se reinicia el control de fechas para forzar la carga de horarios
+    // incluyendo la hora actual de la cita que se está editando
+    ultimaFechaProcesada = "";
     validarFechaCita(inputFechaCita, listHourEdit);
 
     // //seleccionar la hora en base a la cita
@@ -416,7 +530,7 @@ addEventListener("DOMContentLoaded", function () {
         let horaCard = card.children[1].innerText;
         let input = card.children[0];
         console.log(horaCard, listHourEdit);
-        if (horaCard == listHourEdit) {
+        if (horaCard == listHourEdit[0]) {
           modalFooter.classList.remove("d-none");
           console.log("se tecleo este input");
           console.log(card.children[0]);
@@ -436,6 +550,10 @@ addEventListener("DOMContentLoaded", function () {
 
   const resetForm = (form) => {
     form.reset();
+
+    // Reiniciar el estado de la validación de fecha/horarios
+    fechaValidaParaDoctor = false;
+    ultimaFechaProcesada = "";
 
     divDataPaciente.classList.add("d-none");
     inputPaciente.value = "";
@@ -483,7 +601,7 @@ addEventListener("DOMContentLoaded", function () {
         {
           data: "paciente_cedula",
           render: function (data, type, row) {
-            return `${row.nacionalidad}-${row.paciente_cedula}`;
+            return `${row.paciente_nacionalidad}-${row.paciente_cedula}`;
           },
         },
         {
@@ -492,7 +610,7 @@ addEventListener("DOMContentLoaded", function () {
             return `${row.paciente_nombre} ${row.apellido_p}`;
           },
         },
-        { data: "telefono" },
+        { data: "telefono_p" },
         {
           data: "doctor_nombre",
           render: function (data, type, row) {
@@ -503,9 +621,13 @@ addEventListener("DOMContentLoaded", function () {
         { data: "fecha" },
         {
           data: "hora",
-          render: function (data) {
-            // Reutiliza tu función global para formatear la hora a formato amigable si la tienes
-            return data;
+          render: function (data, type, row) {
+            // Se muestra en formato de 12 horas ("8:00 PM") para que sea
+            // más intuitivo. Solo se transforma en pantalla: la base de
+            // datos sigue guardando y comparando la hora en 24 horas.
+            if (type !== "display" || !data) return data;
+
+            return convertirHora(data);
           },
         },
         { data: "estado" },
@@ -522,6 +644,7 @@ addEventListener("DOMContentLoaded", function () {
                                             <button class="btn btn-tabla botonesEditar botonesEdi btn-dt-tabla"
                                                 data-bs-toggle="modal" data-bs-target="#exampleModalCita" id="btnOpenModal" 
                                                 data-index="${row.id_cita}" data-id-categoria="${row.id_categoria}" data-id-doctor="${row.doctor}" uk-tooltip="Modificar Cita"
+                                                data-hora="${row.hora}" data-fecha="${row.fecha}" data-cedula="${row.paciente_cedula}" data-nacionalidad="${row.paciente_nacionalidad}"
                                                 id="btnEditarCitaPendiente">
                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
@@ -603,11 +726,25 @@ addEventListener("DOMContentLoaded", function () {
         //funvcion para resetaer el formulario
         resetForm(form);
         readCita();
-      } else throw new Error(`${result.error}`);
+
+        // Refrescar la grilla de horarios del día: la hora recién usada deja
+        // de estar disponible y se descartan las tarjetas anteriores que ya
+        // no corresponden a la selección actual
+        if (fechaGlobal && id_doctor) {
+          ultimaFechaProcesada = "";
+          validarHorarioDisponible(fechaGlobal, id_doctor, []);
+        } else {
+          accordionBodyDisp.innerHTML = "";
+          divHorariosDisp.classList.add("d-none");
+        }
+      } else {
+        // Mostrar el error real que devolvió el servidor
+        alertError("Error", result.error || "No se pudo registrar la cita.");
+      }
     } catch (error) {
       alertError(
         "Error",
-        "El Formulario debe estar lleno para poder enviarlo.",
+        "No se pudo comunicar con el servidor. Verifique su conexión.",
       );
     } finally {
       finallyLoaderButton(btnModal);
@@ -627,9 +764,11 @@ addEventListener("DOMContentLoaded", function () {
         alertSuccess(result.message);
 
         readCita();
-      } else throw new Error(`${result.error}`);
+      } else {
+        alertError("Error", result.error || "No se pudo eliminar la cita.");
+      }
     } catch (error) {
-      alertError("Error", error);
+      alertError("Error", "No se pudo comunicar con el servidor.");
     }
   };
 
@@ -646,12 +785,15 @@ addEventListener("DOMContentLoaded", function () {
         resetForm(form);
         readCita();
         console.log(result.error);
-      } else throw new Error(`${result.error}`);
+      } else {
+        // Mostrar el error real que devolvió el servidor
+        alertError("Error", result.error || "No se pudo modificar la cita.");
+      }
     } catch (error) {
       console.log(error);
       alertError(
         "Error",
-        "El Formulario debe estar lleno para poder enviarlo.",
+        "No se pudo comunicar con el servidor. Verifique su conexión.",
       );
     } finally {
       finallyLoaderButton(btnModal);
@@ -682,15 +824,51 @@ addEventListener("DOMContentLoaded", function () {
         readCita();
         modalCita.show();
         modalPaciente.hide();
-      } else throw new Error(`${result.error}`);
+      } else {
+        alertError("Error", result.error || "No se pudo registrar el paciente.");
+      }
     } catch (error) {
-      alertError("Error", error);
+      alertError("Error", "No se pudo comunicar con el servidor.");
     }
   };
 
   // Agregamos "async" al inicio de la función
   const seleccionarHorarioDisponibilidad = async (elementoTarjetaHora) => {
     console.log("id_doctor" + id_doctor);
+
+    // Validaciones previas. Sin esto se enviaban identificadores vacíos o con
+    // el "0" del <option> placeholder y el servidor respondía
+    // "Error interno del servidor" al no poder aplicar unhashId()
+    if (!inputFechaCita.value || !id_doctor) {
+      alertError(
+        "Datos incompletos",
+        "Seleccione la fecha y el doctor antes de elegir un horario.",
+      );
+      return;
+    }
+
+    if (!inputIdPaciente.value || inputIdPaciente.value === "0") {
+      alertError(
+        "Datos incompletos",
+        "Debe seleccionar o registrar un paciente antes de apartar el horario.",
+      );
+      // inputPaciente es de solo lectura, el campo accionable es la cédula
+      cedulaCita.focus();
+      return;
+    }
+
+    if (!selectServicios.value || selectServicios.value === "0") {
+      alertError(
+        "Datos incompletos",
+        "Seleccione un servicio médico antes de apartar el horario.",
+      );
+      selectServicios.focus();
+      return;
+    }
+
+    // Evitar peticiones duplicadas por doble clic en el horario
+    if (apartandoCupo) return;
+    apartandoCupo = true;
 
     const form = new FormData();
     form.append("fecha", inputFechaCita.value);
@@ -708,14 +886,13 @@ addEventListener("DOMContentLoaded", function () {
     try {
       // Reemplazamos el .then() por "await"
       const data = await executePetition(url + "/apartarCupo", "POST", form);
-      let result = await executePetition(url + "/guardarCita", "POST", data);
 
       if (data.ok) {
         console.log(
           "Cupo apartado de manera optimista en MariaDB con async/await.",
         );
 
-        // Guardamos el ID de la nueva cita generada
+        // Guardamos el ID (hasheado) de la nueva reserva generada
         inputIdCita.value = data.id_cita;
 
         // DISPARAMOS LAS ALERTAS SILENCIOSAS EN SEGUNDO PLANO
@@ -737,11 +914,21 @@ addEventListener("DOMContentLoaded", function () {
           "Horario No Disponible",
           data.error || "Este cupo ya fue apartado por otro usuario.",
         );
+
+        // Revertir la selección visual del horario que no se pudo apartar
+        elementoTarjetaHora.style.backgroundColor = "";
+        const inputTarjeta = elementoTarjetaHora.querySelector("input");
+        if (inputTarjeta) {
+          inputTarjeta.value = "";
+          inputTarjeta.removeAttribute("name");
+        }
       }
     } catch (error) {
       // Reemplazamos el .catch() tradicional
       console.error("Error en la petición asíncrona con async/await:", error);
       alertError("Error de Conexión", "No se pudo comunicar con el servidor.");
+    } finally {
+      apartandoCupo = false;
     }
   };
 
@@ -761,10 +948,6 @@ addEventListener("DOMContentLoaded", function () {
     traerDoctores(this.value);
   });
 
-  inputFechaCita.addEventListener("input", function () {
-    validarFechaCita(this);
-  });
-
   btnAgendarCita.addEventListener("click", function () {
     modalAgregarCita.classList.remove("editar");
 
@@ -772,6 +955,10 @@ addEventListener("DOMContentLoaded", function () {
     btnModal.innerText = "Registrar";
 
     modalAgregarCita.reset();
+
+    // Reiniciar el estado de la validación de fecha/horarios
+    fechaValidaParaDoctor = false;
+    ultimaFechaProcesada = "";
 
     inputFechaCita.parentElement.classList.remove("valido");
     cedulaCita.parentElement.classList.remove("valido");
@@ -819,6 +1006,17 @@ addEventListener("DOMContentLoaded", function () {
 
   let verificarFormulario = inicializarValidacionFormulario(modalAgregarCita);
 
+  // La validación personalizada de la fecha se registra DESPUÉS de la
+  // validación genérica para que la clase "invalido" (día no laborable)
+  // no sea sobrescrita. Se re-aplica en keyup/blur porque la validación
+  // genérica también se ejecuta en esos eventos.
+  const revalidarFechaCita = function () {
+    validarFechaCita(inputFechaCita);
+  };
+  inputFechaCita.addEventListener("input", revalidarFechaCita);
+  inputFechaCita.addEventListener("keyup", revalidarFechaCita);
+  inputFechaCita.addEventListener("blur", revalidarFechaCita);
+
   //enviar formulario de cita
   modalAgregarCita.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -826,7 +1024,24 @@ addEventListener("DOMContentLoaded", function () {
     let inputs = this.querySelectorAll(".input-validar");
     console.log(inputs);
 
-    if (inputs.length == 2) {
+    // Debe existir la hora seleccionada (apartada o heredada al editar)
+    const horaSeleccionada = this.querySelector('input[name="listHoras"]');
+
+    // El paciente debe estar resuelto (id hasheado real) y el servicio
+    // seleccionado: si no, el servidor recibiría identificadores vacíos
+    const pacienteResuelto =
+      inputIdPaciente.value && inputIdPaciente.value !== "0";
+    const servicioSeleccionado =
+      selectServicios.value && selectServicios.value !== "0";
+
+    if (
+      inputs.length == 2 &&
+      verificarFormulario() &&
+      fechaValidaParaDoctor &&
+      horaSeleccionada &&
+      pacienteResuelto &&
+      servicioSeleccionado
+    ) {
       console.log(modalAgregarCita);
       if (modalAgregarCita.classList.contains("editar")) {
         console.log("editar");

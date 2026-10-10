@@ -46,7 +46,36 @@ export const executePetition = async (url, method, data = null) => {
     }
 
     let response = await fetch(url, options);
-    let result =  await response.json();
+
+    // Si el servidor no responde JSON (ej: redirección al login por sesión
+    // expirada, 429 del limitador de peticiones o un error 500), se devuelve
+    // un error legible en lugar de lanzar y perder la causa real
+    if (!response.ok) {
+      try {
+        const cuerpoError = await response.json();
+        return {
+          ok: false,
+          error:
+            cuerpoError.error || `Error del servidor (HTTP ${response.status}).`,
+        };
+      } catch (errorJson) {
+        return {
+          ok: false,
+          error: `Error del servidor (HTTP ${response.status}). Verifique que la sesión esté activa.`,
+        };
+      }
+    }
+
+    let result;
+    try {
+      result = await response.json();
+    } catch (errorJson) {
+      return {
+        ok: false,
+        error:
+          "Respuesta inesperada del servidor. Verifique que la sesión esté activa.",
+      };
+    }
 
     if (result.message) {
       result.message = sanitizeText(result.message);

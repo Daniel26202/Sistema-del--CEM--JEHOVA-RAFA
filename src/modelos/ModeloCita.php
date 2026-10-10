@@ -85,16 +85,15 @@ class ModeloCita extends ModelBase
 	{
 		try {
 			$sql = 'SELECT c.doctor, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.id_categoria, cs.nombre as categoria,
-                        c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
+                        c.id_cita, e.nombre as especialidad, sm.precio, c.fecha, c.hora, c.estado,
                         pe.nacionalidad, pe.cedula, pe.nombre as doctor_nombre, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
-                        p.nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
+                        p.nacionalidad as paciente_nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
                     FROM bd.serviciomedico sm
                     INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
                     INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
                     INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
-                    INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
                     INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
                     WHERE c.estado = "Pendiente" AND c.doctor = psm.personal_id_personal AND p.estado = "ACT" AND c.fecha >= CURRENT_DATE';
 
@@ -125,16 +124,15 @@ class ModeloCita extends ModelBase
 		try {
 			try {
 				$sql = 'SELECT c.doctor, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.id_categoria, cs.nombre as categoria,
-                        c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
+                        c.id_cita, e.nombre as especialidad, sm.precio, c.fecha, c.hora, c.estado,
                         pe.nacionalidad, pe.cedula, pe.nombre as doctor_nombre, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
-                        p.nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
+                        p.nacionalidad as paciente_nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
                     FROM bd.serviciomedico sm
                     INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
                     INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
                     INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
-                    INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
                     INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
                     WHERE c.estado = "Pendiente" AND c.doctor = psm.personal_id_personal AND p.estado = "ACT" AND c.fecha = CURRENT_DATE';
 
@@ -167,16 +165,15 @@ class ModeloCita extends ModelBase
 	{
 		try {
 			$sql = "SELECT c.doctor, p.id_paciente, c.serviciomedico_id_servicioMedico, cs.id_categoria, cs.nombre as categoria,
-                        c.id_cita, e.nombre as especialidad, u.*, sm.precio, sm.estado, c.fecha, c.hora, c.estado,
+                        c.id_cita, e.nombre as especialidad, sm.precio, c.fecha, c.hora, c.estado,
                         pe.nacionalidad, pe.cedula, pe.nombre as doctor_nombre, pe.apellido as apellido_d, pe.telefono, pe.id_especialidad,
-                        p.nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
+                        p.nacionalidad as paciente_nacionalidad, p.cedula  as paciente_cedula, p.nombre AS paciente_nombre, p.apellido apellido_p, p.telefono as telefono_p, p.fn, p.direccion
                     FROM bd.serviciomedico sm
                     INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
                     INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
                     INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
-                    INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
                     INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
                     WHERE c.estado = 'Realizadas' AND c.doctor = psm.personal_id_personal";
 			$data = [];
@@ -212,7 +209,6 @@ class ModeloCita extends ModelBase
                     INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
                     INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
                     INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
-                    INNER JOIN segurity.usuario u ON pe.usuario = u.id_usuario
                     INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
                 WHERE c.estado = :estado AND c.doctor = psm.personal_id_personal";
 			
@@ -262,18 +258,8 @@ class ModeloCita extends ModelBase
 	public function validarHorariosDisponlibles()
 	{
 		try {
-			$diasEsp = [
-				1 => 'lunes',
-				2 => 'martes',
-				3 => 'miercoles',
-				4 => 'jueves',
-				5 => 'viernes',
-				6 => 'sabado',
-				7 => 'domingo'
-			];
-
-			$date       = new DateTime($this->getFecha());
-			$nombreDia  = $diasEsp[$date->format('N')];
+			// Los días se guardan en la BD con tilde (ej: "miércoles", "sábado")
+			$nombreDia = $this->nombreDiaEspanol($this->getFecha());
 
 			$data1 = ['fecha'      => $this->getFecha(), 'id_personal' => $this->getIdDoctor()];
 			$data2 = ['dia'        => $nombreDia,        'id_personal' => $this->getIdDoctor()];
@@ -281,7 +267,11 @@ class ModeloCita extends ModelBase
 			$sql = 'SELECT c.hora as hora_entrada, c.hora_salida 
                     FROM cita c 
                     INNER JOIN personal p ON p.id_personal = c.doctor 
-                    WHERE c.fecha = :fecha AND p.id_personal = :id_personal AND c.estado = "Pendiente"';
+                    WHERE c.fecha = :fecha AND p.id_personal = :id_personal 
+                    AND (
+                         c.estado = "Pendiente" 
+                         OR (c.estado = "Reservado" AND c.creado_en >= NOW() - INTERVAL 5 MINUTE)
+                        )';
 			$this->setSQL($sql);
 			$horasOcupadas = $this->search($data1);
 
@@ -291,16 +281,33 @@ class ModeloCita extends ModelBase
                     INNER JOIN horario h ON h.id_horario = hd.id_horario 
                     WHERE p.id_personal = :id_personal AND h.diaslaborables = :dia';
 			$this->setSQL($sql);
-			$horasCompletas = $this->search($data2, false);
+			$horasCompletas = $this->search($data2);
 
+			// Se devuelven las horas de ENTRADA ocupadas (HH:MM:SS) y no un
+			// intervalo "entrada a salida". Antes se armaba el intervalo con
+			// seccionarHoras(), que devuelve [] cuando hora_salida es inválida
+			// (00:00:00 o igual a la hora), por lo que el horario ocupado NO se
+			// ocultaba en la UI pero el servidor sí lo bloqueaba al reservar
+			// (falso positivo de "este cupo ya fue apartado por otro usuario")
 			$listHoraOcupada = [];
 			foreach ($horasOcupadas as $hora) {
-				array_push($listHoraOcupada, $this->seccionarHoras($hora['hora_entrada'], $hora['hora_salida']));
+				if (!empty($hora['hora_entrada'])) {
+					$listHoraOcupada[] = $hora['hora_entrada'];
+				}
+			}
+			$listHoraOcupada = array_values(array_unique($listHoraOcupada));
+
+			// Se unen los intervalos de todos los turnos del doctor para ese día
+			// (un doctor puede tener más de un horario el mismo día)
+			$intervalo = [];
+			foreach ($horasCompletas as $horario) {
+				$intervalo = array_merge(
+					$intervalo,
+					$this->seccionarHoras($horario['horaDeEntrada'], $horario['horaDeSalida'])
+				);
 			}
 
-			$intervalo = [$this->seccionarHoras($horasCompletas['horaDeEntrada'], $horasCompletas['horaDeSalida'])];
-
-			return [$intervalo, $listHoraOcupada];
+			return [array_values(array_unique($intervalo)), $listHoraOcupada];
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -308,34 +315,148 @@ class ModeloCita extends ModelBase
 
 	// ── PRIVADOS─────────────────────────────────────────
 
+	/**
+	 * Nombre del día en español con tilde, tal como se guarda en
+	 * horario.diaslaborables (ej: "miércoles", "sábado")
+	 */
+	private function nombreDiaEspanol($fecha)
+	{
+		$diasEsp = [
+			1 => 'lunes',
+			2 => 'martes',
+			3 => 'miércoles',
+			4 => 'jueves',
+			5 => 'viernes',
+			6 => 'sábado',
+			7 => 'domingo'
+		];
+
+		$date = new DateTime($fecha);
+
+		return $diasEsp[$date->format('N')] ?? '';
+	}
+
+	/**
+	 * Devuelve el id del servicio médico si existe y está activo.
+	 * Antes se hacía $fila['id_servicioMedico'] directamente sobre un
+	 * fetch() que podía ser false y terminaba guardando un NULL silencioso.
+	 */
+	private function obtenerServicioActivo()
+	{
+		$this->setSQL("SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria = :id AND estado = 'ACT'");
+		$servicio = $this->search(['id' => $this->getIdServicioMedico()], false);
+
+		if (!$servicio || empty($servicio['id_servicioMedico'])) {
+			throw new \Exception("El servicio seleccionado no se encuentra activo.");
+		}
+
+		return (int)$servicio['id_servicioMedico'];
+	}
+
+	/**
+	 * Verifica que el paciente exista realmente antes de agendarle una cita
+	 */
+	private function validarPacienteExiste()
+	{
+		$this->setSQL("SELECT id_paciente FROM paciente WHERE id_paciente = :id");
+
+		if (empty($this->search(['id' => $this->getIdPaciente()], false))) {
+			throw new \Exception("El paciente seleccionado no existe. Regístrelo antes de agendar la cita.");
+		}
+	}
+
+	/**
+	 * Verifica que la hora solicitada sea una hora de inicio real del turno
+	 * del doctor para ese día. Sin esto el backend aceptaba apartar o mover
+	 * citas a horarios fuera del horario laboral.
+	 */
+	private function validarTurnoDelDoctor()
+	{
+		$dia = $this->nombreDiaEspanol($this->getFecha());
+
+		if ($dia === '') {
+			throw new \Exception("La fecha de la cita no es válida.");
+		}
+
+		$this->setSQL('SELECT hd.id_horarioydoctor, hd.horaDeSalida AS turno_fin 
+					   FROM horarioydoctor hd 
+					   INNER JOIN horario h ON h.id_horario = hd.id_horario 
+					   WHERE hd.id_personal = :id_personal 
+					     AND h.diaslaborables = :dia 
+					     AND hd.horaDeEntrada <= :hora_inicio 
+					     AND ADDTIME(:hora_fin, "01:00:00") <= hd.horaDeSalida');
+
+		$turno = $this->search([
+			'id_personal' => $this->getIdDoctor(),
+			'dia'         => $dia,
+			'hora_inicio' => $this->getHora(),
+			'hora_fin'    => $this->getHora()
+		], false);
+
+		if (empty($turno)) {
+			throw new \Exception("El doctor no atiende en ese día o a esa hora. Actualice los horarios del doctor.");
+		}
+
+		return $turno['turno_fin'];
+	}
+
+	/**
+	 * Hora de salida de la cita. Si el cliente manda una hora de salida
+	 * incoherente (vacía, 00:00:00 o anterior a la de entrada) se calcula
+	 * como una hora después, porque una fila con intervalo inválido es
+	 * justamente lo que hacía que el horario se mostrara libre en la UI
+	 * pero estuviera bloqueado en el servidor.
+	 */
+	private function calcularHoraSalidaSegura()
+	{
+		$entrada = $this->getHora();
+		$salida  = $this->getHoraSalida();
+
+		if (!empty($salida) && strtotime($salida) > strtotime($entrada)) {
+			return $salida;
+		}
+
+		return date('H:i:s', strtotime($entrada . ' +1 hour'));
+	}
+
 	private function reservar()
 	{
 		try {
 			$this->beginTransaction();
 
-			$sql = "SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria = :id AND estado = 'ACT'";
-			$this->setSQL($sql);
-			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico()], false);
-			$id = $id_servicioMedico['id_servicioMedico'];
+			// Limpiar reservas vencidas. Fallback por si el evento de MySQL
+			// "limpiar_reservas_vencidas" está deshabilitado en el servidor,
+			// así los cupos abandonados quedan libres de inmediato
+			$sqlLimpiar = "UPDATE cita SET estado = 'Expirado' WHERE estado = 'Reservado' AND creado_en < NOW() - INTERVAL 5 MINUTE";
+			$this->setSQL($sqlLimpiar);
+			$this->query();
+
+			// Servicio, paciente y turno se validan ANTES de insertar la reserva
+			$id = $this->obtenerServicioActivo();
+			$this->validarPacienteExiste();
+			$this->validarTurnoDelDoctor();
 
 			// 1. SI HUBO CAMBIO DE OPINIÓN: Liberamos el cupo viejo poniéndolo en 'Expirado'
 			if ($this->getIdCita() !== null && $this->getIdCita()  > 0) {
-				$sqlLiberar = "UPDATE cita SET estado = 'Expirado' WHERE id_cita = :id_ant AND estado = 'Reservado'";
+				$sqlLiberar = "UPDATE cita SET estado = 'Expirado' WHERE id_cita = :id AND estado = 'Reservado'";
 				$this->setSQL($sqlLiberar);
-				$this->update_logic(['id_ant' => $this->getIdCita()]);
+				$this->update_logic($this->getIdCita());
 			}
 
 			// 2. VALIDACIÓN OPTIMISTA CONCURRENTE
+			// (se excluye la propia reserva anterior en caso de cambio de opinión)
 			$data = [
-				'doctor' => $this->getIdDoctor(),
-				'fecha'  => $this->getFecha(),
-				'hora'   => $this->getHora()
+				'doctor'         => $this->getIdDoctor(),
+				'fecha'          => $this->getFecha(),
+				'hora'           => $this->getHora(),
+				'id_cita_actual' => $this->getIdCita() ?? 0
 			];
 
 			$sqlValidar = "SELECT id_cita FROM cita 
                        WHERE doctor = :doctor 
                          AND fecha = :fecha 
                          AND hora = :hora 
+                         AND id_cita <> :id_cita_actual
                          AND (
                               estado IN ('Pendiente', 'Realizadas') 
                               OR (estado = 'Reservado' AND creado_en >= NOW() - INTERVAL 5 MINUTE)
@@ -343,7 +464,7 @@ class ModeloCita extends ModelBase
 
 			$this->setSQL($sqlValidar);
 			if (!empty($this->search($data, false))) {
-				throw new \Exception("Este horario ya fue seleccionado por otro usuario en tiempo real.");
+				throw new \Exception("Este horario ya está ocupado o fue seleccionado por otro usuario en tiempo real. Por favor, elija otro horario.");
 			}
 
 			// 3. REGISTRO DE LA NUEVA RESERVA
@@ -353,7 +474,7 @@ class ModeloCita extends ModelBase
 				'estado'            => 'Reservado',
 				'id_servicio'       => $id,
 				'id_paciente'       => $this->getIdPaciente(),
-				'hora_salida'       => $this->getHoraSalida(),
+				'hora_salida'       => $this->calcularHoraSalidaSegura(),
 				'doctor'            => $this->getIdDoctor()
 			];
 
@@ -364,7 +485,9 @@ class ModeloCita extends ModelBase
 			$idCitaGenerada = $this->create($dataInsert);
 
 			$this->commit();
-			return ["exito", $data];
+			// Se retorna el ID de la reserva para que el controlador lo hashe
+			// y el JS pueda enviarlo como "id_cita_anterior" si cambia de opinión
+			return ["exito", $idCitaGenerada];
 		} catch (\Exception $e) {
 			$this->rollBack();
 			return $e->getMessage();
@@ -382,10 +505,14 @@ class ModeloCita extends ModelBase
 			$this->setSQL($sql);
 			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico(), 'estado' => 'ACT'], false);
 
-			if (!$id_servicioMedico) {
+			if (!$id_servicioMedico || empty($id_servicioMedico['id_servicioMedico'])) {
 				throw new \Exception("El servicio seleccionado no se encuentra activo.");
 			}
-			$idService = $id_servicioMedico['id_servicioMedico'];
+			$idService = (int)$id_servicioMedico['id_servicioMedico'];
+
+			// El paciente y el turno se validan también al confirmar la cita
+			$this->validarPacienteExiste();
+			$this->validarTurnoDelDoctor();
 
 			$sqlConfirmar = "UPDATE cita 
 						 SET estado = :estado, 
@@ -395,7 +522,8 @@ class ModeloCita extends ModelBase
 						 WHERE doctor = :id 
 						   AND fecha = :fecha 
 						   AND hora = :hora 
-						   AND estado = 'Reservado'";
+						   AND estado = 'Reservado'
+						   AND creado_en >= NOW() - INTERVAL 5 MINUTE";
 
 			$dataUpdate = [
 				'id_paciente' => $this->getIdPaciente(),
@@ -403,7 +531,7 @@ class ModeloCita extends ModelBase
 				'fecha'       => $this->getFecha(),
 				'hora'        => $this->getHora(),
 				'estado'      => $this->getEstado(), // Pasará a 'Pendiente'
-				'hora_salida' => $this->getHoraSalida()
+				'hora_salida' => $this->calcularHoraSalidaSegura()
 			];
 
 			$this->setSQL($sqlConfirmar);
@@ -433,7 +561,9 @@ class ModeloCita extends ModelBase
 
 			$sql = "SELECT id_cita FROM cita WHERE id_cita = :id_cita";
 			$this->setSQL($sql);
-			if ($this->search($data, false) == []) {
+			// search(..., false) devuelve false cuando no hay filas (no un
+			// arreglo vacío), por eso la comparación con [] nunca se cumplía
+			if (empty($this->search($data, false))) {
 				throw new \Exception("El id de la cita no existe.");
 			}
 
@@ -450,10 +580,42 @@ class ModeloCita extends ModelBase
 	private function update_cita()
 	{
 		try {
-			$sql = "SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria = :id AND estado = 'ACT'";
-			$this->setSQL($sql);
-			$id_servicioMedico = $this->search(['id' => $this->getIdServicioMedico()], false);
-			$id = $id_servicioMedico['id_servicioMedico'];
+			// La cita a modificar debe existir y estar en estado editable.
+			// Sin esta comprobación un id manipurado o una cita ya realizada
+			// podían terminar en un UPDATE que no afectaba filas (error
+			// silencioso) o que revolvía el estado a "Pendiente".
+			$this->setSQL("SELECT estado FROM cita WHERE id_cita = :id_cita");
+			$citaActual = $this->search(['id_cita' => $this->getIdCita()], false);
+
+			if (empty($citaActual)) {
+				throw new \Exception("La cita que intenta modificar no existe.");
+			}
+
+			if ($citaActual['estado'] !== 'Pendiente') {
+				throw new \Exception("Solo se pueden modificar citas en estado Pendiente.");
+			}
+
+			// Validar que el horario no esté ocupado por otra cita al editar
+			$sqlVal = "SELECT id_cita FROM cita 
+                       WHERE doctor = :doctor 
+                         AND fecha = :fecha 
+                         AND hora = :hora 
+                         AND id_cita <> :id_cita 
+                         AND estado IN ('Pendiente', 'Realizadas')";
+			$this->setSQL($sqlVal);
+			if (!empty($this->search([
+				'doctor'  => $this->getIdDoctor(),
+				'fecha'   => $this->getFecha(),
+				'hora'    => $this->getHora(),
+				'id_cita' => $this->getIdCita()
+			], false))) {
+				throw new \Exception("El horario seleccionado ya está ocupado por otra cita.");
+			}
+
+			// Servicio, paciente y turno también se validan al modificar
+			$id = $this->obtenerServicioActivo();
+			$this->validarPacienteExiste();
+			$this->validarTurnoDelDoctor();
 
 			$data = [
 				'id_paciente'       => $this->getIdPaciente(),
@@ -462,7 +624,7 @@ class ModeloCita extends ModelBase
 				'hora'              => $this->getHora(),
 				'estado'            => $this->getEstado(),
 				'doctor'            => $this->getIdDoctor(),
-				'hora_salida'       => $this->getHoraSalida()
+				'hora_salida'       => $this->calcularHoraSalidaSegura()
 			];
 
 			$sql = "UPDATE cita SET fecha=:fecha, hora=:hora, estado=:estado,
@@ -485,7 +647,8 @@ class ModeloCita extends ModelBase
 		if (session_status() !== PHP_SESSION_ACTIVE) {
 			session_start();
 		}
-		if (!isset($_SESSION['id_usuario']) && $idUsuario === null) {
+		// Basta con que falte uno de los dos para rechazar la operación
+		if (empty($_SESSION['id_usuario']) || empty($idUsuario)) {
 			throw new \Exception('No hay sesión activa o usuario no autenticado.');
 		}
 	}

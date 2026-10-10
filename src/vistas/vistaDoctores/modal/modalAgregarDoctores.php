@@ -265,12 +265,12 @@
                     </div>
 
 
-                    <!-- // Aquí va el código del horario -->
-                    <div>
-
-                    </div>
-
                     <label class="label-custom">Dias laborables</label>
+                    <p class="text-muted mb-2" style="font-size: 12px;">
+                        Active el interruptor de un día para asignarle horario. Los días
+                        desactivados quedan como día de descanso. Al guardar, los días que
+                        deje de marcar se quitarán del horario del doctor.
+                    </p>
 
                     <!-- acordion de horarios -->
                     <div class="accordion " id="accordionExampleHorarios">
@@ -282,7 +282,10 @@
                             </h2>
                             <div id="horarioOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleHorarios">
                                 <div class="accordion-body row g-2" id="div-horarios">
-
+                                    <div class="col-12 text-center py-3">
+                                        <div class="spinner-border text-primary" role="status"></div>
+                                        <p class="mt-2 mb-0 text-muted" style="font-size: 12px;">Cargando días laborables...</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

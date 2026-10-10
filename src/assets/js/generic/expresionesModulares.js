@@ -303,6 +303,7 @@ export function inicializarValidacionFormulario(formulario) {
         inputs.forEach((input) => {
             if (input.parentElement.classList.contains("valido")) inputsTrue.push(true);
         });
+
         // Retornar función verificadora
         if (inputsTrue.length == longitudInputs) {
             return true;

@@ -68,22 +68,15 @@ console.log(urlActual);
 
 //funcion para mostrar mas informacion del doctor
 const info = (id_personal) => {
-  let data = [];
   let htmlHorario = "";
   let textServicios = "";
 
-  for (const item of dataDoctor) {
-    if(item['id_personal'] == id_personal){
-        data.push({...item});
-    }
-  }
+  const doctor = dataDoctor.find((item) => item.id_personal == id_personal);
 
-  console.log(data);
-  
-
-  if (data.length > 0) {
-    for (const item of data[0].datosHorarios) {
-      htmlHorario = `
+  if (doctor) {
+    if (Array.isArray(doctor.datosHorarios) && doctor.datosHorarios.length > 0) {
+      doctor.datosHorarios.forEach((item) => {
+        htmlHorario += `
     <!-- Nombre -->
                 <div class="info-group mb-3">
                     <p class="fw-bold mb-3">
@@ -105,14 +98,16 @@ const info = (id_personal) => {
                     </p>
                 </div>
     `;
+      });
+    } else {
+      htmlHorario =
+        '<h5 class="text-center">El doctor no tiene un horario disponible</h5>';
     }
 
-    console.log(data[0]);
-    
-    if (data[0].servicios.length > 0) {
-      for (const item of data[0].servicios) {
-        textServicios += item.nombre + " ,  ";
-      }
+    if (Array.isArray(doctor.servicios) && doctor.servicios.length > 0) {
+      textServicios = doctor.servicios.map((item) => item.nombre).join(" ,  ");
+    } else {
+      textServicios = "De momento el doctor no ofrece ningun servicio";
     }
   } else {
     htmlHorario =
@@ -138,7 +133,7 @@ const mostrarDiasSemana = async () => {
         <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="fw-bold text-dark">${element.diaslaborables}</span>
             <div class="form-check form-switch p-0 m-0">
-                <input class="form-check-input day-toggle m-0" name="dias[]" value=${element.id_horario} type="checkbox"  style="width: 2.4em; height: 1.2em; cursor:pointer;">
+                <input class="form-check-input day-toggle m-0" value="${element.id_horario}" type="checkbox"  style="width: 2.4em; height: 1.2em; cursor:pointer;">
             </div>
         </div>
 
@@ -146,12 +141,12 @@ const mostrarDiasSemana = async () => {
             <div class="row g-2">
                 <div class="col-6">
                     <label class="text-muted fw-bold mb-1" style="font-size: 10px; letter-spacing: 0.5px;">ENTRADA</label>
-                    <input type="time" class="form-control form-control-sm border-0 bg-light py-2 px-1" 
+                    <input type="time" class="form-control form-control-sm border-0 bg-light py-2 px-1 hora-entrada" step="60"
                            style="font-size: 0.8rem; min-height: auto;" value="">
                 </div>
                 <div class="col-6">
                     <label class="text-muted fw-bold mb-1" style="font-size: 10px; letter-spacing: 0.5px;">SALIDA</label>
-                    <input type="time" class="form-control form-control-sm border-0 bg-light py-2 px-1" 
+                    <input type="time" class="form-control form-control-sm border-0 bg-light py-2 px-1 hora-salida" step="60"
                            style="font-size: 0.8rem; min-height: auto;" value="">
                 </div>
             </div>
@@ -175,6 +170,50 @@ const mostrarDiasSemana = async () => {
     alertError("Error", error);
     console.log(error);
   }
+};
+
+/**
+ * Aplica el estado visual y los name de un día según esté marcado o no.
+ * Solo los días marcados envían sus datos al servidor, por eso el name del
+ * checkbox y de las horas se agrega/quita aquí en un único lugar.
+ */
+const sincronizarDia = (checkbox) => {
+  const card = checkbox.closest(".card-schedule");
+  if (!card) return;
+
+  const timeContainer = card.querySelector(".time-container");
+  const restBadge = card.querySelector(".rest-badge");
+  const inputEntrada = card.querySelector(".hora-entrada");
+  const inputSalida = card.querySelector(".hora-salida");
+
+  if (checkbox.checked) {
+    checkbox.setAttribute("name", "dias[]");
+    inputEntrada.setAttribute("name", "horaEntrada[]");
+    inputSalida.setAttribute("name", "horaSalida[]");
+
+    timeContainer.style.display = "block";
+    restBadge.style.display = "none";
+    card.style.opacity = "1";
+  } else {
+    checkbox.removeAttribute("name");
+    inputEntrada.removeAttribute("name");
+    inputSalida.removeAttribute("name");
+
+    timeContainer.style.display = "none";
+    restBadge.style.display = "block";
+    card.style.opacity = "0.8";
+  }
+};
+
+/** Marca o desmarca todos los días y deja el bloque de horario en su estado inicial */
+const resetearHorarios = () => {
+  divHorarios.querySelectorAll(".day-toggle").forEach((checkbox) => {
+    checkbox.checked = false;
+    const card = checkbox.closest(".card-schedule");
+    card.querySelector(".hora-entrada").value = "";
+    card.querySelector(".hora-salida").value = "";
+    sincronizarDia(checkbox);
+  });
 };
 
 //read
@@ -313,8 +352,13 @@ const readDoctor = async () => {
 
       //llamar a la uncion de editar
       document.querySelectorAll(".botonesEdi").forEach((btn) => {
-        btn.addEventListener("click", function () {
+        btn.addEventListener("click", async function () {
           let tr = btn.closest("tr");
+
+          //los días laborables se cargan de forma asíncrona: esperamos a que
+          //estén en el DOM para poder marcar los que el doctor ya tiene
+          await promesaDiasCargados;
+
           inputs[1].value = parseInt(tr.children[0].innerText.slice(2));
           inputs[2].value = tr.children[1].innerText;
           inputs[3].value = tr.children[2].innerText;
@@ -353,66 +397,48 @@ const readDoctor = async () => {
             `../src/assets/images/img_ingresadas_por_usuarios/insumos/${srcImg}`,
           );
 
-          let id_personal = parseInt(btn.getAttribute("data-index"));
+          //el id_personal viene hasheado, por eso se compara como texto
+          //(parseInt sobre un hash daría NaN y no encontraría al doctor)
+          const id_personal = btn.getAttribute("data-index");
 
-          let coincidencias = dataDoctor.filter(
-            (doc) => doc.id_personal == id_personal,
+          const doctor = dataDoctor.find(
+            (doc) => String(doc.id_personal) === String(id_personal),
           );
 
-          // Crear un conjunto para almacenar todos los id_horario únicos
-          const idHorariosSet = new Set();
-
-          // Recorrer cada objeto en data y agregar sus id_horario al conjunto
-          coincidencias.forEach((item) => {
-            item.datosHorarios.forEach((item2) => {
-              idHorariosSet.add(item2.id_horario);
+          //id_horario viene hasheado, por eso se compara como texto (Number() daría NaN)
+          const horariosActuales = {};
+          if (doctor && Array.isArray(doctor.datosHorarios)) {
+            doctor.datosHorarios.forEach((horario) => {
+              horariosActuales[String(horario.id_horario)] = horario;
             });
-          });
+          }
 
-          // Convertir el conjunto a un array para facilitar la comparación
-          const idHorarios = Array.from(idHorariosSet);
-
-          // Iterar sobre cada checkbox
-
+          //marcamos solo los días que el doctor ya tiene asignados y cargamos sus horas
           formDoctor.querySelectorAll(".day-toggle").forEach((checkbox) => {
-            const timeContainer = checkbox.querySelector(".time-container");
-            const restBadge = checkbox.querySelector(".rest-badge");
-
-            checkbox.setAttribute("name", "dias[]");
-
-            // Comprobar si el value del checkbox está incluido en id_horarios
+            const horarioGuardado = horariosActuales[String(checkbox.value)];
             const card = checkbox.closest(".card-schedule");
-            const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
-            const inputSalida = card.querySelectorAll('input[type="time"]')[1];
-            if (idHorarios.includes(Number(checkbox.value))) {
-              checkbox.checked = true; // Marcar el checkbox
-              checkbox.setAttribute("name", "diaAnterio[]");
+            const inputEntrada = card.querySelector(".hora-entrada");
+            const inputSalida = card.querySelector(".hora-salida");
 
-              const dataHorario = buscarcarHorarioPorId(
-                dataDoctor,
-                checkbox.value,
-                btn.getAttribute("data-index"),
-              ).datosHorarios;
-
-              inputEntrada.setAttribute("name", "horaEntrada[]");
-              inputSalida.setAttribute("name", "horaSalida[]");
-
-              console.log(dataHorario[0].horaDeEntrada);
-              inputEntrada.value = dataHorario[0].horaDeEntrada;
-              inputSalida.value = dataHorario[0].horaDeSalida;
+            if (horarioGuardado) {
+              checkbox.checked = true;
+              inputEntrada.value = horarioGuardado.horaDeEntrada;
+              inputSalida.value = horarioGuardado.horaDeSalida;
             } else {
-              checkbox.checked = false; // Desmarcar el checkbox
-              inputEntrada.setAttribute("name", "");
-              inputSalida.setAttribute("name", "");
+              checkbox.checked = false;
+              inputEntrada.value = "";
+              inputSalida.value = "";
             }
+
+            //igual que al crear: los días marcados envían sus horas, los demás no
+            sincronizarDia(checkbox);
           });
 
           labelModal.innerText = "Modificar Doctor";
           btnModal.innerText = "Modificar";
           contenedorImgEditar.classList.add("d-none");
+          formDoctor.classList.add("editar");
         });
-
-        formDoctor.classList.add("editar");
       });
 
       //////gestionar persmisos
@@ -446,19 +472,6 @@ const readDoctor = async () => {
     alertError("Error", error);
     console.log(error);
   }
-};
-
-//funcion par abuscar horarios especiicos por id\
-const buscarcarHorarioPorId = (list, id_horario, id_personal) => {
-  for (const item of list) {
-    const horario = item.datosHorarios.find(
-      (h) => h.id_horario == id_horario && h.id_personal == id_personal,
-    );
-    if (horario) {
-      return { ...item };
-    }
-  }
-  return null;
 };
 
 //read
@@ -694,96 +707,139 @@ openBtnModalEspecialidad.addEventListener("click", function () {
   clearModalEnviar(parametros);
 });
 
-// Variable externa para contar cuántos días están activos
-let diasActivosContador = 0;
+//cargamos los días y los dejamos todos en estado "descanso" hasta que se marque
+//alguno. Guardamos la promesa para que el modal de editar la reutilice: así no
+//se dispara una segunda petición que borraría los checks ya precargados
+var promesaDiasCargados = mostrarDiasSemana().then(() => resetearHorarios());
 
-mostrarDiasSemana();
+divHorarios.addEventListener("change", (e) => {
+  const objetivo = e.target;
 
-divHorarios.addEventListener("change", async (e) => {
-  if (e.target.classList.contains("day-toggle")) {
-    const checkbox = e.target;
-    const card = checkbox.closest(".card-schedule");
-    const timeContainer = card.querySelector(".time-container");
-    const restBadge = card.querySelector(".rest-badge");
-    const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
-    const inputSalida = card.querySelectorAll('input[type="time"]')[1];
+  // 1) se marcó/desmarcó un día
+  if (objetivo.classList.contains("day-toggle")) {
+    const card = objetivo.closest(".card-schedule");
 
-    // 1. LÓGICA VISUAL
-    if (checkbox.checked) {
-      timeContainer.style.display = "block";
-      restBadge.style.display = "none";
-      card.style.opacity = "1";
-      inputEntrada.setAttribute("name", "horaEntrada[]");
-      inputSalida.setAttribute("name", "horaSalida[]");
-    } else {
-      timeContainer.style.display = "none";
-      restBadge.style.display = "block";
-      card.style.opacity = "0.8";
-      inputEntrada.setAttribute("name", "");
-      inputSalida.setAttribute("name", "");
+    // 2) VALIDACIÓN: AL MENOS UN DÍA ACTIVO
+    const diasActivos = divHorarios.querySelectorAll(".day-toggle:checked");
+    if (!objetivo.checked && diasActivos.length === 0) {
+      alertInfo(
+        "Información",
+        "Debe mantener al menos un día de trabajo seleccionado.",
+      );
+      objetivo.checked = true;
     }
 
-    // 2. VALIDACIÓN: AL MENOS UN DÍA ACTIVO
-    diasActivosContador = divHorarios.querySelectorAll(
-      ".day-toggle:checked",
-    ).length;
-    if (diasActivosContador === 0) {
-      alert("¡Error! Debe haber al menos un día de trabajo seleccionado.");
-      checkbox.checked = true;
-      timeContainer.style.display = "block";
-      restBadge.style.display = "none";
-      card.style.opacity = "1";
-      return;
-    }
+    //el estado visual y los name se aplican siempre, tras validar
+    sincronizarDia(objetivo);
 
-    // 3. VALIDACIÓN DE HORAS (Solo si el día está activo)
-    if (checkbox.checked) {
+    if (objetivo.checked) {
       validarBloquesCompletos(card);
     }
+    return;
+  }
+
+  // 3) se modificaron las horas manualmente
+  if (objetivo.type === "time") {
+    validarBloquesCompletos(objetivo.closest(".card-schedule"));
   }
 });
 
-// Escuchar cuando cambian las horas manualmente
-divHorarios.addEventListener("change", (e) => {
-  if (e.target.type === "time") {
-    const card = e.target.closest(".card-schedule");
-    validarBloquesCompletos(card);
-  }
-});
+/**
+ * Convierte "HH:MM" a minutos totales del día.
+ * Devuelve null si el valor no tiene un formato válido.
+ */
+const horaEnMinutos = (hora) => {
+  if (!/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(hora)) return null;
+  const [h, m] = hora.split(":").map(Number);
+  return h * 60 + m;
+};
+
+/** Convierte minutos totales del día a "HH:MM" (recortado a 23:59) */
+const minutosEnHora = (minutos) => {
+  const tope = Math.min(Math.max(minutos, 0), 23 * 60 + 59);
+  const h = Math.floor(tope / 60);
+  const m = tope % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+};
 
 function validarBloquesCompletos(card) {
-  const inputEntrada = card.querySelectorAll('input[type="time"]')[0];
-  const inputSalida = card.querySelectorAll('input[type="time"]')[1];
+  if (!card) return;
 
-  // Extraemos hora y minutos por separado
-  let [hEntrada, mEntrada] = inputEntrada.value.split(":").map(Number);
-  let [hSalida, mSalida] = inputSalida.value.split(":").map(Number);
+  const inputEntrada = card.querySelector(".hora-entrada");
+  const inputSalida = card.querySelector(".hora-salida");
 
-  // REGLA 1: Forzar minutos a 00 (No permitir 14:30, 14:15, etc.)
-  if (mEntrada !== 0 || mSalida !== 0) {
-    alertError(
-      "Error",
-      "Los turnos deben ser en horas exactas (ejemplo: 14:00). Se han ajustado los minutos.",
-    );
-    inputEntrada.value = `${String(hEntrada).padStart(2, "0")}:00`;
-    inputSalida.value = `${String(hSalida).padStart(2, "0")}:00`;
-    // Actualizamos las variables locales después del ajuste
-    mEntrada = 0;
-    mSalida = 0;
-  }
+  if (!inputEntrada.value || !inputSalida.value) return; //aún falta completar
 
-  // REGLA 2: Diferencia mínima de 1 hora
-  const diferencia = hSalida - hEntrada;
+  const entrada = horaEnMinutos(inputEntrada.value);
+  const salida = horaEnMinutos(inputSalida.value);
 
-  if (diferencia < 1) {
+  if (entrada === null || salida === null) return;
+
+  //REGLA: la salida debe ser al menos 1 hora después de la entrada.
+  //Se compara en minutos (no en horas) para que también funcione con
+  //horas que llevan minutos, por ejemplo 13:20 -> 14:10 son 50 minutos.
+  if (salida - entrada < 60) {
     alertInfo(
-      "Informacion",
+      "Información",
       "El horario de salida debe ser al menos 1 hora después de la entrada.",
     );
-    // Si hay error, reseteamos a un rango válido por defecto
-    inputSalida.value = `${String(hEntrada + 1).padStart(2, "0")}:00`;
+    //se corrige sumando 60 minutos exactos a la hora de entrada
+    inputSalida.value = minutosEnHora(entrada + 60);
   }
 }
+
+/**
+ * Valida que todos los días marcados tengan su par de horas completo.
+ * Devuelve true si el bloque de horario está listo para enviarse.
+ */
+const validarHorariosCompletos = () => {
+  const marcados = divHorarios.querySelectorAll(".day-toggle:checked");
+
+  if (marcados.length === 0) {
+    alertError("Horario", "Debe seleccionar al menos un día laborable.");
+    return false;
+  }
+
+  for (const checkbox of marcados) {
+    const card = checkbox.closest(".card-schedule");
+    const nombreDia = card.querySelector(".fw-bold").innerText.trim();
+    const inputEntrada = card.querySelector(".hora-entrada");
+    const inputSalida = card.querySelector(".hora-salida");
+
+    //se reafirma el estado para garantizar que solo lo marcado se envía
+    sincronizarDia(checkbox);
+
+    if (!inputEntrada.value || !inputSalida.value) {
+      alertError(
+        "Horario",
+        `Complete la hora de entrada y de salida del día ${nombreDia}.`,
+      );
+      return false;
+    }
+
+    //refuerzo de la regla de duración justo antes de enviar
+    const entrada = horaEnMinutos(inputEntrada.value);
+    const salida = horaEnMinutos(inputSalida.value);
+
+    if (entrada === null || salida === null) {
+      alertError(
+        "Horario",
+        `La hora del día ${nombreDia} no es válida.`,
+      );
+      return false;
+    }
+
+    if (salida - entrada < 60) {
+      alertError(
+        "Horario",
+        `En el día ${nombreDia} la salida debe ser al menos 1 hora después de la entrada.`,
+      );
+      return false;
+    }
+  }
+
+  return true;
+};
 
 //funcion para limpiar el formulario
 btnagregarDoctor.addEventListener("click", function () {
@@ -795,14 +851,17 @@ btnagregarDoctor.addEventListener("click", function () {
     divParent.querySelector(".check").classList.add("d-none");
     divParent.querySelector(".error").classList.add("d-none");
     divParent.querySelector(".error-msg").classList.add("d-none");
-    console.log(divParent);
 
     ele.value = "";
   });
   labelModal.innerText = "Registrar Doctor";
   btnModal.innerText = "Registrar";
   contenedorImgEditar.classList.add("d-none");
+  contenedorImg.classList.remove("d-none");
   formDoctor.classList.remove("editar");
+
+  //los horarios del doctor anterior no deben arrastrarse al registrar uno nuevo
+  resetearHorarios();
 });
 
 imagenDoctor.addEventListener("change", function (e) {
@@ -820,15 +879,17 @@ let verifcarFormAsignar = inicializarValidacionFormulario(formAsignarServicio);
 formDoctor.addEventListener("submit", function (e) {
   e.preventDefault();
 
+  //el horario se valida primero: es lo más común que falte y evita un envío inútil
+  if (!validarHorariosCompletos()) return;
+
   let esValido = verificarFormulario();
+  console.log(esValido);
+  
 
   if (esValido) {
     if (formDoctor.classList.contains("editar")) {
-      console.log("editar");
-
       updateDoctor(this);
     } else {
-      console.log("guardar");
       createDoctor(this);
     }
   } else {

@@ -8,6 +8,16 @@ use App\modelos\ModeloRoles;
 use App\modelos\ModeloCategoria;
 use App\modelos\ModeloSanetizarJSON;
 
+/**
+ * La BD guarda las horas como "08:00:00" y el input type="time" trabaja con
+ * "HH:MM". Normalizamos para precargar el formulario y mostrar la info del doctor.
+ */
+function normalizarHoraFrontend($hora)
+{
+    $hora = trim((string)$hora);
+    return strlen($hora) >= 5 ? substr($hora, 0, 5) : $hora;
+}
+
 //muestro los datos de las cuatro tablas
 function doctores($parametro)
 {
@@ -131,8 +141,8 @@ function DoctoresAjax()
 
         foreach ($horarioDelDoctor as $hora) {
             $datosHorarios[] = [
-                'horaDeEntrada' => $hora['horaDeEntrada'],
-                'horaDeSalida' => $hora['horaDeSalida'],
+                'horaDeEntrada' => normalizarHoraFrontend($hora['horaDeEntrada']),
+                'horaDeSalida' => normalizarHoraFrontend($hora['horaDeSalida']),
                 'id_horario' => $hora['id_horario'],
                 'diaslaborables' => $hora['diaslaborables'],
                 'id_personal' => $id_personal,
@@ -245,8 +255,8 @@ function papeleraDoctoresAjax()
 
         foreach ($horarioDelDoctor as $hora) {
             $datosHorarios[] = [
-                'horaDeEntrada' => $hora['horaDeEntrada'],
-                'horaDeSalida' => $hora['horaDeSalida'],
+                'horaDeEntrada' => normalizarHoraFrontend($hora['horaDeEntrada']),
+                'horaDeSalida' => normalizarHoraFrontend($hora['horaDeSalida']),
                 'id_horario' => $hora['id_horario'],
                 'diaslaborables' => $hora['diaslaborables'],
                 'id_personal' => $id_personal,
@@ -361,6 +371,45 @@ function asignarServicioDoctor()
     }
 }
 
+/**
+ * Construye el mapa de horarios del formulario:
+ *   [id_horario => ['entrada' => 'HH:MM', 'salida' => 'HH:MM']]
+ *
+ * El frontend envía tres arreglos alineados por índice:
+ *   dias[] → id_horario hasheado, horaEntrada[] y horaSalida[] → sus horas.
+ * Solo los días marcados se envían, así que las posiciones siempre coinciden.
+ */
+function construirHorarios(array $post)
+{
+    $dias        = isset($post['dias'])        ? (array)$post['dias']        : [];
+    $horaEntrada = isset($post['horaEntrada']) ? (array)$post['horaEntrada'] : [];
+    $horaSalida  = isset($post['horaSalida'])  ? (array)$post['horaSalida']  : [];
+
+    if (empty($dias)) {
+        throw new \InvalidArgumentException("Debe seleccionar al menos un día laborable.");
+    }
+
+    if (count($dias) !== count($horaEntrada) || count($dias) !== count($horaSalida)) {
+        throw new \InvalidArgumentException("Debe indicar la hora de entrada y la de salida de cada día seleccionado.");
+    }
+
+    $horarios = [];
+    foreach (array_values($dias) as $indice => $dia) {
+        $idHorario = (int)unhashId($dia);
+
+        if (isset($horarios[$idHorario])) {
+            continue; //evita duplicar un mismo día si el usuario lo marca dos veces
+        }
+
+        $horarios[$idHorario] = [
+            'entrada' => (string)$horaEntrada[$indice],
+            'salida'  => (string)$horaSalida[$indice],
+        ];
+    }
+
+    return $horarios;
+}
+
 function agregarDoctor()
 {
     if (empty($_POST)) {
@@ -397,9 +446,7 @@ function agregarDoctor()
         $modeloDoctores->setImagen($imagen);
         $modeloDoctores->setImagenTemporal($_FILES['imagen']['tmp_name']);
         $modeloDoctores->setIdEspecialidad(unhashId($_POST["id_especialidad"]));
-        $modeloDoctores->setDias(array_map('unhashId', (array)$_POST['dias']));
-        $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
-        $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
+        $modeloDoctores->setHorarios(construirHorarios($_POST));
         $modeloDoctores->setIdRol(unhashId($_POST['id_rol']));
         $modeloDoctores->setUsuario($_POST["usuario"]);
         $modeloDoctores->setPassword($passwordEncrip);
@@ -454,13 +501,6 @@ function editarDoctor()
         $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
 
-        $dias      = isset($_POST["dias"])      ? array_map('unhashId', (array)$_POST["dias"])      : [];
-        $diaAnterio = isset($_POST["diaAnterio"]) ? array_map('unhashId', (array)$_POST["diaAnterio"]) : [];
-
-        $idDiaDbE   = !empty($x = array_diff($diaAnterio, $dias))   ? $x : false;
-        $idDiaNuevo = !empty($x = array_diff($dias, $diaAnterio))   ? $x : false;
-        $igualesDb  = !empty($x = array_intersect($dias, $diaAnterio)) ? $x : false;
-
         $modeloDoctores->setCedula($_POST["cedula"]);
         $modeloDoctores->setNombre($_POST["nombre"]);
         $modeloDoctores->setApellido($_POST["apellido"]);
@@ -468,12 +508,7 @@ function editarDoctor()
         $modeloDoctores->setIdEspecialidad(unhashId($_POST["id_especialidad"]));
         $modeloDoctores->setEmail($_POST["correo"]);
         $modeloDoctores->setNacionalidad($_POST["nacionalidad"]);
-        $modeloDoctores->setDiasE($idDiaDbE);
-        $modeloDoctores->setDiasN($idDiaNuevo);
-        $modeloDoctores->setDiasEditar($igualesDb);
-        $modeloDoctores->setCheckeds($dias);
-        $modeloDoctores->setHoraEntrada($_POST["horaEntrada"]);
-        $modeloDoctores->setHoraSalida($_POST["horaSalida"]);
+        $modeloDoctores->setHorarios(construirHorarios($_POST));
         $modeloDoctores->setCedulaRegistrada($_POST['cedulaRegistrada']);
         $modeloDoctores->setIdUsuario(unhashId($_POST["id_usuario"]));
 
