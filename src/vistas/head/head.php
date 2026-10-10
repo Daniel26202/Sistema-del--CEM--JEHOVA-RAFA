@@ -30,6 +30,7 @@ if (!empty($parametro)) {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? '' ?>">
+	<meta name="iva-tasa" content="<?= defined('TASA_IMPUESTO') ? TASA_IMPUESTO : '0.16' ?>">
 	<link rel="shortcut icon" href="<?= $urlBase ?>../src/assets/images/img/logotipo.jpg">
 	<title>J-R</title>
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/bootstrap/css/bootstrap.min.css">

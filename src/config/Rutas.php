@@ -210,6 +210,19 @@ class Rutas
 
 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+/*
+ * Modo de desarrollo vs producción.
+ *
+ * Con display_errors=1 cualquier excepción no controlada muestra la traza
+ * completa al usuario, incluyendo rutas de archivos y estructura interna. En el
+ * módulo de facturación los errores se manejan con try/catch y responden JSON,
+ * por lo que solo se registra en el log del servidor.
+ *
+ * Para depurar en local: APP_ENV=local en el archivo .env.
+ */
+$esProduccion = (($_ENV['APP_ENV'] ?? 'production') !== 'local');
+
+ini_set('display_errors', $esProduccion ? '0' : '1');
+ini_set('display_startup_errors', $esProduccion ? '0' : '1');
 error_reporting(E_ALL);
+ini_set('log_errors', 1);

@@ -184,5 +184,8 @@
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 
-<script type="module" src="<?= $urlBase ?>../src/assets/factura.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaFactura.js"></script>
+<!-- Rutas corregidas: ambas devueltaban 404. "src/assets/factura.js" no existe
+     (el archivo real es src/assets/js/factura.js) y la ayuda interactiva vive en
+     src/assets/js/ayudaInteractiva/. Con los 404 la vista quedaba sin eventos. -->
+<script type="module" src="<?= $urlBase ?>../src/assets/js/f.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaFactura.js"></script>

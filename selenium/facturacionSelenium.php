@@ -33,7 +33,9 @@ class FacturacionSelenium extends ComunSelenium {
             
             $formSearch = $this->waitElement('#form-buscador-factura');
 
-            $formSearch->findElement(WebDriverBy::cssSelector('#inputBusPaCi'))->sendKeys("30218990");
+            // El input tenía dos id (input-cedula-paciente e inputBusPaCi); el segundo
+// se ignoraba por ser duplicado. Ahora solo existe input-cedula-paciente.
+$formSearch->findElement(WebDriverBy::cssSelector('#input-cedula-paciente'))->sendKeys("30218990");
             $formSearch->findElement(WebDriverBy::cssSelector('button.btn-buscar'))->click();
             $this->addSteps('p', 'Ingreso al modulo de facturación y búsqueda de paciente por cédula.');
             sleep(1);

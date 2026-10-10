@@ -1,7 +1,17 @@
 <?php require_once './src/vistas/head/head.php'; ?>
 
+<?php
+// El JS de hospitalización (f.js) espera los mismos ids que la factura normal.
+// La vista ahora delega en f.js; antes cargaba "src/assets/factura.js", ruta que
+// no existe (el archivo real es src/assets/js/factura.js), por lo que la página
+// quedaba sin eventos y los botones no hacían nada.
+$idHospitalizacion = '';
+if (!empty($hostalizacionFacturar)) {
+    $idHospitalizacion = preg_replace('/[^0-9A-Za-z]/', '', (string)($hostalizacionFacturar[0]['id_hospitalizacion'] ?? ''));
+}
+?>
 
-<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
+<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;"<?= $idHospitalizacion !== '' ? ' data-id-hospitalizacion="' . htmlspecialchars($idHospitalizacion, ENT_QUOTES, 'UTF-8') . '"' : '' ?>>
     <h5 style="width: 95%; " class="m-auto mb-3">Facturación
 
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
@@ -141,30 +151,22 @@
                     </thead>
                     <?php foreach ($insumosHospitalizacion as $datoH):
                         $totalDoller = $totalDoller + $datoH["precio"]; ?>
+                        <tr>
+                            <td class="border-top">
+                                <div class="fw-bolder">NOMBRE:</div>
+                                <?= htmlspecialchars((string)$datoH["nombre"], ENT_QUOTES, "UTF-8"); ?>
+                            </td>
 
-                        <tbody id="tbody-insumos">
-                            <tr>
-                                <td class="border-top">
-                                    <div class="fw-bolder">NOMBRE:</div>
-                                    <?= $datoH["nombre"]; ?>
-                                </td>
+                            <td class="border-top">
+                                <div class="fw-bolder">MEDIDA:</div>
+                                <?= htmlspecialchars((string)$datoH["medida"], ENT_QUOTES, "UTF-8"); ?>
+                            </td>
 
-
-                                <td class="border-top">
-                                    <div class="fw-bolder">MEDIDA:</div>
-                                    <?= $datoH["medida"]; ?>
-                                </td>
-
-                                <td class="border-top">
-                                    <div class="fw-bolder">PRECIO:</div>
-                                    <?= $datoH["precio"] . '   $'; ?>
-                                </td>
-
-
-
-                            </tr>
-                        </tbody>
-
+                            <td class="border-top">
+                                <div class="fw-bolder">PRECIO:</div>
+                                <?= number_format((float)$datoH["precio"], 2, ".", "") . "   $"; ?>
+                            </td>
+                        </tr>
                     <?php endforeach; ?>
                 </table>
                 <!-- caja de los botones de vaciar , siguiente, total -->
@@ -172,8 +174,8 @@
                 <div class="d-flex justify-content-between align-items-center mt-5">
 
                     <div class="d-flex" id="cajaVaciarTotalSiguiente">
-                        <button class="ico btn btn-agregarConsulta ms-3 me-4 " id="vaciarTabla">VACIAR</button>
-                        <button id="siguienteFact" class="ico btn btn-agregarConsulta " data-bs-toggle="modal"
+                        <button type="button" class="ico btn btn-agregarConsulta ms-3 me-4 " id="vaciarTabla">VACIAR</button>
+                        <button type="button" id="btnSiguiente" class="ico btn btn-agregarConsulta " data-bs-toggle="modal"
                             data-bs-target="#modal-cliente">SIGUIENTE</button>
                     </div>
 
@@ -181,30 +183,29 @@
                         <label class="fw-bolder">TOTAL: </label>
                         <?php foreach ($hostalizacionFacturar as $datoH): ?>
                             <input type="text" style="margin-left: -1px; padding-left: 6px;"
-                                class="ico w-25 input-buscar text-center" id="totalFactura" disabled value=<?= $datoH['total_MoEx'] ?>>
+                                class="ico w-25 input-buscar text-center" id="totalFactura" disabled
+                                value="<?= number_format((float)$datoH["total_MoEx"], 2, ".", "") ?>">
                             <label>BS</label>
                             <input type="text" style="margin-left: -1px; padding-left: 6px;"
-                                class="ico w-25 input-buscar text-center" id="" disabled value=<?= $totalDoller + $datoH['total_MoEx'] ?>>
+                                class="ico w-25 input-buscar text-center" id="totalFacturaDolares" disabled
+                                value="<?= number_format((float)($totalDoller + $datoH["total_MoEx"]), 2, ".", "") ?>">
                             <label>$</label>
-                            <input type="hidden" id="inputTotalCita" value="<?= $totalDoller + $datoH['total_MoEx'] ?>">
+                            <!-- El total en divisa viaja por aquí: es la base que
+                                 f.js suma al subtotal de servicios e insumos. -->
+                            <input type="hidden" id="inputTotalCita"
+                                value="<?= number_format((float)($totalDoller + $datoH["total_MoEx"]), 2, ".", "") ?>">
                         <?php endforeach; ?>
-
-
                     </div>
                 </div>
             <?php endforeach ?>
-
-            <!-- caja de los botones de vaciar , siguiente, total -->
-            <!-- recoradatorio acomodar esto del color -->
-
-
         </div>
 
     </div>
 </div>
 
 
-<?php require_once 'modalAgregarFactura.php'; ?>
-<?php require_once './src/vistas/head/footer.php'; ?>
+<?php require_once "modalAgregarFactura.php"; ?>
+<?php require_once "./src/vistas/head/footer.php"; ?>
 
-<script type="module" src="<?= $urlBase ?>../src/assets/factura.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/f.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaFactura.js"></script>

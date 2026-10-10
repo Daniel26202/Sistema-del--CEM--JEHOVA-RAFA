@@ -25,9 +25,39 @@ class Paginator {
 
     // Agregar evento de búsqueda
     const searchInput = document.getElementById(this.searchId);
-    searchInput.addEventListener("input", () =>
-      this.searchItems(searchInput.value),
-    );
+    // Se registra el listener una sola vez por instancia. Si el módulo vuelve a
+    // crear el Paginator, `searchListenerRef` permite liberar el anterior y así
+    // no acumular N listeners sobre el mismo input.
+    if (searchInput) {
+      this._detachSearchListener?.();
+      this.searchListenerRef = searchInput;
+      this._searchHandler = () => this.searchItems(searchInput.value);
+      searchInput.addEventListener("input", this._searchHandler);
+    }
+  }
+
+  /** Libera el listener de búsqueda previamente registrado por esta instancia. */
+  _detachSearchListener() {
+    if (this.searchListenerRef && this._searchHandler) {
+      this.searchListenerRef.removeEventListener("input", this._searchHandler);
+    }
+    this.searchListenerRef = null;
+    this._searchHandler = null;
+  }
+
+  /**
+   * Actualiza los datos del paginador reutilizando la instancia actual.
+   * Evita crear un Paginator nuevo (y por tanto otro listener) en cada render.
+   */
+  setItems(items, { resetSearch = true } = {}) {
+    this.items = items;
+    this.filteredItems = items;
+    this.currentPage = 1;
+
+    const searchInput = document.getElementById(this.searchId);
+    if (resetSearch && searchInput) searchInput.value = "";
+
+    this.displayItems();
   }
 
   displayItems() {
@@ -35,6 +65,7 @@ class Paginator {
     const endIndex = startIndex + this.itemsPerPage;
 
     const cardContainer = document.getElementById(this.containerId);
+    if (!cardContainer) return;
     cardContainer.innerHTML = "";
 
     const currentItems = this.filteredItems.slice(startIndex, endIndex);
@@ -60,17 +91,20 @@ class Paginator {
       let idFilter = this.idFilter;
 
       button.addEventListener("click", (e) => {
-        const itemId = e.target.getAttribute("data-index");
+        // e.target puede ser un hijo (svg/path/span) y no traer el data-index.
+        const target = e.target.closest("[data-index]") ?? e.target;
+        const itemId = target.getAttribute("data-index");
         const itemFilter = currentItems.find(
           (item) => item[idFilter] == itemId,
         );
-        console.log(itemFilter[idFilter]);
+
+        // Si no hay coincidencia no se invoca el callback: antes esto reventaba
+        // con "Cannot read properties of undefined".
+        if (!itemFilter) return;
         this.callbackButton(itemFilter[idFilter]);
       });
     });
 
-    console.log(this.objValidationImg);
-    
     ///validar si la card tiene una imagen colocar una por defecto si no tiene pues no pasa nada.
     if (this.objValidationImg) {
       let imgSrcDefecto = this.objValidationImg.imgSrcDefecto;
@@ -84,6 +118,7 @@ class Paginator {
 
   updatePagination() {
     const pagination = document.getElementById(this.paginationId);
+    if (!pagination) return;
     pagination.innerHTML = "";
 
     const totalPages = Math.ceil(this.filteredItems.length / this.itemsPerPage);

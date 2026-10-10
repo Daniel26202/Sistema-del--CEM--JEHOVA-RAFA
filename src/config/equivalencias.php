@@ -53,7 +53,9 @@ return [
     "mostrarPDF2" => "consultar",
     "mostrarPDF3" => "consultar",
     "guardarFactura" => "guardar",
-    "guardarFacturaHospit" => "guardar",
+    // Alta de insumos usados en hospitalizacion: antes se desccontaban por
+    // separado (DescontarLotes) sin validar el stock ni registrar el lote real.
+    "registrarInsumosHospitalizacion" => "guardar",
     "facturarHospitalizacion" => "consultar",
     "coincidenciaPacienteCliente" => "consultar",
     "guardarCliente" => "consultar",

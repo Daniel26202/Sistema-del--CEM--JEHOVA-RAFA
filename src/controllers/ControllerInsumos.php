@@ -110,7 +110,9 @@ function info($datos)
 	$informacion = array(
 		'insumo' => $datosDeInsumo,
 		'vencimiento' => $datosDeVencimiento,
-		'dolar' => $_SESSION["dolar"]
+		// Se resuelve aquí (no con $_SESSION) para que la primera carga ya traiga
+        // el valor del día: la sesión la llenaba el navegador después.
+        'dolar' => tasaCambioActual()
 	);
 	echo json_encode($informacion);
 }
