@@ -51,39 +51,41 @@ addEventListener("DOMContentLoaded", function () {
   let urlActual = window.location.href;
 
   const traerInsumoCasiVencidos = async () => {
-    let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Insumos/retornarLasEntradas",
-    );
-    let resultado = await peticion.json();
-    console.log(resultado);
-
-    const botones = document.querySelectorAll(".botones-mostrar");
-    const alertasVencidos = document.querySelectorAll(".alertas-vencidos");
-
-    botones.forEach((ele, index) => {
-      const dataIndex = ele.getAttribute("data-index");
-      const insumoEncontrado = resultado.find(
-        (res) => res && res.id_insumo_e == dataIndex,
+    try {
+      let peticion = await fetch(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Insumos/retornarLasEntradas",
       );
-      console.log(alertasVencidos[index].children[1]);
-      if (insumoEncontrado) {
-        alertasVencidos[index].classList.remove("d-none");
-        alertasVencidos[index].classList.add("uk-alert-danger");
-        alertasVencidos[index].children[1].classList.add(
-          "p-error-validaciones",
+      if (!peticion.ok) return;
+      let resultado = await peticion.json();
+      if (!Array.isArray(resultado)) return;
+
+      const alertasVencidos = document.querySelectorAll(".alertas-vencidos");
+      // Las tarjetas actuales no muestran alertas de vencimiento: si no hay
+      // contenedores, no hay nada que actualizar (evita errores en consola).
+      if (!alertasVencidos.length) return;
+
+      const botones = document.querySelectorAll(".botones-mostrar");
+      botones.forEach((ele, index) => {
+        const contenedor = alertasVencidos[index];
+        if (!contenedor || !contenedor.children[1]) return;
+        const dataIndex = ele.getAttribute("data-index");
+        const insumoEncontrado = resultado.find(
+          (res) => res && res.id_insumo_e == dataIndex,
         );
-        alertasVencidos[index].children[1].innerText =
-          `El insumo ${insumoEncontrado.nombre} del lote ${insumoEncontrado.numero_de_lote} vence el ${insumoEncontrado.fechaDeVencimiento}.`;
-        document.getElementById("id_entradaDeInsumo").value =
-          insumoEncontrado.id_entradaDeInsumo;
-        document.getElementById("id_insumo").value =
-          insumoEncontrado.id_insumo_e;
-      } else {
-        let tarjeta =
-          alertasVencidos[index].parentElement.parentElement.parentElement;
-        tarjeta.children[0].style.height = "56%";
-      }
-    });
+        if (insumoEncontrado) {
+          contenedor.classList.remove("d-none");
+          contenedor.classList.add("uk-alert-danger");
+          contenedor.children[1].classList.add("p-error-validaciones");
+          contenedor.children[1].innerText =
+            `El insumo ${insumoEncontrado.nombre} del lote ${insumoEncontrado.numero_de_lote} vence el ${insumoEncontrado.fechaDeVencimiento}.`;
+        } else {
+          let tarjeta = contenedor.parentElement.parentElement.parentElement;
+          if (tarjeta && tarjeta.children[0]) tarjeta.children[0].style.height = "56%";
+        }
+      });
+    } catch (error) {
+      console.warn("No se pudieron cargar los insumos próximos a vencer:", error);
+    }
   };
 
   const infoInsumos = async (id_insumo) => {

@@ -63,7 +63,7 @@ function vencidos()
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
 	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
-	$columnasMapeadas = ['nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	$columnasMapeadas = ['nombre', 'proveedor', 'fechaDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
 
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 
@@ -93,6 +93,15 @@ function vencidos()
 
 	echo json_encode($response);
 	exit;
+}
+
+function retornarLasEntradas()
+{
+	$modeloInsumo = new ModeloInsumo();
+	$sanetizar = new ModeloSanetizarJSON();
+	$sanetizar->setHashKeys(['id_entrada', 'id_entradaDeInsumo', 'id_insumo_e', 'id_proveedor']);
+	$data = $modeloInsumo->todasLasEntradas();
+	echo json_encode($data ? $sanetizar->sanitizeRecursive($data) : []);
 }
 
 function info($datos)
@@ -170,7 +179,7 @@ function guardarInsumo()
 		$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
 
 		if ($iva === 1) {
-			$numero += $numero * 0.30;
+			$numero += $numero * (defined('TASA_IMPUESTO') ? (float)TASA_IMPUESTO : 0.16);
 		}
 
 		// 3. Validar TODOS los demás campos (aún no se ha tocado el disco)
@@ -383,7 +392,7 @@ function papeleraInsumosAjax()
 
 	$ordenDir = isset($_GET['order'][0]['dir']) && in_array(strtoupper($_GET['order'][0]['dir']), ['ASC', 'DESC']) ? strtoupper($_GET['order'][0]['dir']) : 'DESC';
 
-	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_paciente';
+	$ordenColumna = isset($columnasMapeadas[$colIndex]) ? $columnasMapeadas[$colIndex] : 'id_insumo';
 
 	$modeloInsumo = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();

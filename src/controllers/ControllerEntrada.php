@@ -33,7 +33,7 @@ function entradasAjax()
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
 	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
-	$columnasMapeadas = ['nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	$columnasMapeadas = ['nombre', 'proveedor', 'fechaDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
 
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 
@@ -89,7 +89,7 @@ function entradasPapeleraAjax()
 	$limite = isset($_GET['length']) ? (int)$_GET['length'] : 10;
 	$buscar = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
 
-	$columnasMapeadas = ['nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	$columnasMapeadas = ['nombre', 'proveedor', 'fechaDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
 
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 

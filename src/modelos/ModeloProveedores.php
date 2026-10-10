@@ -22,7 +22,7 @@ class ModeloProveedores extends ModelBase
 			$sql = "SELECT id_proveedor,nombre,rif,telefono,direccion,email as correo FROM proveedor WHERE estado='ACT' ";
 			$data=[];
 			if (!empty($buscar)) {
-				$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR descripcion LIKE :buscar)";
+				$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR email LIKE :buscar OR direccion LIKE :buscar)";
 				$data['buscar'] = "%$buscar%";
 			}
 
@@ -48,7 +48,7 @@ class ModeloProveedores extends ModelBase
 			$sql = "SELECT id_proveedor,nombre,rif,telefono,direccion,email as correo FROM proveedor WHERE estado='DES' ";
 			$data = [];
 			if (!empty($buscar)) {
-				$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR descripcion LIKE :buscar)";
+				$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR email LIKE :buscar OR direccion LIKE :buscar)";
 				$data['buscar'] = "%$buscar%";
 			}
 
@@ -69,19 +69,25 @@ class ModeloProveedores extends ModelBase
 
 	public function contarTotalProveedores($estado ='ACT', $buscar = '')
 	{
-		$data = [
-			'estado' => $estado
-		];
-		$sql = "SELECT COUNT(*) as total FROM proveedor WHERE estado=:estado";
-		if (!empty($buscar)) {
-			$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR descripcion LIKE :buscar)";
-			$data['buscar'] = "%$buscar%";
+		try {
+			$data = [
+				'estado' => $estado
+			];
+			$sql = "SELECT COUNT(*) as total FROM proveedor WHERE estado=:estado";
+			if (!empty($buscar)) {
+				$sql .= " AND (nombre LIKE :buscar OR rif LIKE :buscar OR telefono LIKE :buscar OR email LIKE :buscar OR direccion LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$this->setSQL($sql);
+			$resultado = $this->search($data, false);
+
+			return $resultado['total'] ?? 0;
+		} catch (\Exception $e) {
+			// Un término de búsqueda no debe tumbar la paginación (evita HTTP 500).
+			error_log("Error en contarTotalProveedores(): " . $e->getMessage());
+			return 0;
 		}
-
-		$this->setSQL($sql);
-		$resultado = $this->search($data, false);
-
-		return $resultado['total'] ?? 0;
 	}
 
 	// ── PRIVADOS─────────────────────────────────────────

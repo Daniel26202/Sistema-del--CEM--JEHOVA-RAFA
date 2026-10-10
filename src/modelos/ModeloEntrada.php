@@ -10,7 +10,7 @@ class ModeloEntrada extends ModelBase
 
 	private $fechaDeVencimiento, $fechaDeIngreso, $precio, $cantidadDisponible, $idEntrada, $cantidadEntrante, $idProveedor, $lote, $idInsumo;
 
-	private $columnasPermitidas = ['id_entrada','nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	private $columnasPermitidas = ['id_entrada','nombre', 'proveedor', 'fechaDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
 	private $ordenesPermitidos = ['ASC', 'DESC'];
 
 	public function __construct($dbSystem = true)
@@ -334,7 +334,7 @@ class ModeloEntrada extends ModelBase
 		if (!preg_match('/^\d+([.,]\d+)?$/', $precio)) {
 			throw new \InvalidArgumentException('no es válido.');
 		}
-		if ((int)$precio <= 0) {
+		if ((float)$precio <= 0) {
 			throw new \InvalidArgumentException('El precio debe ser mayor que cero.');
 		}
 		$this->precio = $precio;
