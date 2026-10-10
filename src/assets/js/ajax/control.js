@@ -41,8 +41,6 @@ const textStartControl = document.getElementById("text-start");
 const loaderControlMedico = document.getElementById("loader-control-medico");
 const modalAddControl = document.getElementById("modalAgregarControl"); //modal control
 const cedulaControl = document.getElementById("cedulaControl"); //input cedula
-const Not_Patient = document.getElementById("No_paciente");
-console.log(Not_Patient);
 const divSintomasParent = document.getElementById("div-sintomas");
 const divSintomas = document.getElementById("divSintomas");
 const divPatologiasParent = document.getElementById("div-patologias");
@@ -57,6 +55,7 @@ const inputIdControl = document.getElementById("id_control");
 const boxDoctor = document.getElementById("div-doc");
 const btnControl = document.getElementById("btnControl");
 const inputs = modalAddControl.querySelectorAll(".input-validar");
+const severidadSelect = document.getElementById("severidad");
 const buscarDoctores = document.getElementById("buscarDoctores");
 const buscarPatologias = document.getElementById("buscarPatologias");
 const buscarSintomas = document.getElementById("buscarSintomas");
@@ -90,9 +89,15 @@ const traerPaciente = async () => {
       );
 
       console.log(result);
+      // Si la petición falló (sesión expirada, 409, 500) el resultado es un
+      // objeto {ok:false}: tratar ese caso como "no encontrado" en vez de
+      // mostrar "undefined undefined" en el campo del paciente.
+      const encontrado =
+        result && result.ok !== false && result.id_paciente ? result : null;
+
       let edad = "";
-      if (result.fn) {
-        const fechaNacimiento = new Date(result.fn);
+      if (encontrado && encontrado.fn) {
+        const fechaNacimiento = new Date(encontrado.fn);
         const fechaActual = new Date();
         edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
         const mes = fechaActual.getMonth() - fechaNacimiento.getMonth();
@@ -104,7 +109,7 @@ const traerPaciente = async () => {
         }
       }
 
-      if (result != []) {
+      if (encontrado) {
         inputPaciente.value = result.nombre + " " + result.apellido;
         inputEdad.value = edad + " años";
         inputIdPaciente.value = result.id_paciente;
@@ -139,8 +144,10 @@ const traerPaciente = async () => {
 
 const traerDoctorSintomasPatologias = async () => {
   try {
+    // Se envían parámetros de DataTables: el endpoint rechaza peticiones sin
+    // query string (409) y además trae solo 10 síntomas por defecto.
     const sintomas = await executePetition(
-      url + "/returnSistomasPaciente/",
+      url + "/returnSistomasPaciente/?draw=1&start=0&length=1000",
       "GET",
     );
     const patologias = await executePetition(
@@ -151,8 +158,14 @@ const traerDoctorSintomasPatologias = async () => {
     let htmlSintomas = ``;
     let htmlPatologias = ``;
 
-    if (sintomas["data"].length > 0) {
-      sintomas["data"].forEach((res) => {
+    const listaSintomas = sintomas && sintomas.ok !== false ? sintomas.data : [];
+    const listaPatologias =
+      patologias && patologias.ok !== false && Array.isArray(patologias)
+        ? patologias
+        : [];
+
+    if (listaSintomas.length > 0) {
+      listaSintomas.forEach((res) => {
         htmlSintomas += `<div class="form-check form-switch d-flex align-items-center">
     <div class="form-check-sintomas">
         <input value="${res.id_sintomas}" name="sintomas[]" class="" type="checkbox" value="${res.id_sintomas}" id="checkChecked${res.id_sintomas}" style="width: 2.4em; height: 1.2em; cursor:pointer;">
@@ -163,8 +176,8 @@ const traerDoctorSintomasPatologias = async () => {
 </div>`;
       });
     }
-    if (patologias.length > 0) {
-      patologias.forEach((res) => {
+    if (listaPatologias.length > 0) {
+      listaPatologias.forEach((res) => {
         htmlPatologias += `<div class="form-check form-switch d-flex align-items-center">
     <div class="form-check-patologias">
         <input value="${res.id_patologia}" name="patologias[]" class="" type="checkbox" value="${res.id_patologia}" id="checkChecked${res.id_patologia}" style="width: 2.4em; height: 1.2em; cursor:pointer;">
@@ -179,11 +192,10 @@ const traerDoctorSintomasPatologias = async () => {
     divSintomas.innerHTML = htmlSintomas;
     divPatologias.innerHTML = htmlPatologias;
 
-    checkedCheckboxes(
-      document.querySelectorAll(".check-patologias:checked"),
-      "mostrarPP/",
-      cedulaControl.value,
-    );
+    // Marcar como checkeadas las patologías que el paciente ya tiene
+    // registradas (misma lógica que antes, pero explícita y sin selectores
+    // que no existían en el DOM).
+    marcarRegistrados("mostrarPP/", cedulaControl.value);
   } catch (error) {
     alertError("Error", "Lamentablemente algo salió mal. " + error);
   }
@@ -249,35 +261,19 @@ const traerDoctores = async () => {
     alertError("Error", "Lamentablemente algo salió mal. " + error);
   }
 };
-const checkedCheckboxes = async (
-  checkboxes,
-  metodo,
-  cedula,
-  editar = false,
-) => {
+// Marca como checkeadas las patologías (o síntomas) que el paciente ya
+// tiene registradas, consultando el endpoint correspondiente.
+const marcarRegistrados = async (metodo, cedula) => {
   try {
     const result = await executePetition(`${url}/${metodo}/${cedula}`, "GET");
-    const ids = Array.from(checkboxes).map((checkbox) => checkbox.value);
+    if (!result || result.ok === false || !Array.isArray(result)) return;
 
-    if (result.length > 0) {
-      result.forEach((res) => {
-        console.log(res);
-
-        if (!ids.includes(res.id_sintoma || res.id_patologia)) {
-          let checkbox = document.getElementById(
-            `checkChecked${res.id_sintoma || res.id_patologia}`,
-          );
-
-          if (checkbox) {
-            checkbox.setAttribute("checked", true);
-          }
-
-          if (editar && checkbox) {
-            checkbox.setAttribute("disabled", true);
-          }
-        }
-      });
-    }
+    result.forEach((res) => {
+      const id = res.id_patologia || res.id_sintoma;
+      if (!id) return;
+      const checkbox = document.getElementById(`checkChecked${id}`);
+      if (checkbox) checkbox.checked = true;
+    });
   } catch (error) {
     alertError("Error", "Lamentablemente algo salió mal... " + error);
   }
@@ -293,20 +289,30 @@ const returnFragmentControl = async (data, element, index, disabled) => {
     "GET",
   );
 
-  let sintomasText = sintomas.map((e) => e.nombreS).join(", ");
-  let patologiasText = patologias.map((e) => e.nombre_patologia).join(", ");
+  const listaSintomas =
+    sintomas && sintomas.ok !== false && Array.isArray(sintomas)
+      ? sintomas
+      : [];
+  const listaPatologias =
+    patologias && patologias.ok !== false && Array.isArray(patologias)
+      ? patologias
+      : [];
+
+  let sintomasText = listaSintomas.map((e) => e.nombreS).join(", ");
+  let patologiasText = listaPatologias.map((e) => e.nombre_patologia).join(", ");
+
+  // fecha_control viene como "YYYY-MM-DD HH:MM:SS"; si viene vacío no romper.
+  const fechaControl = (element.fecha_control || "").split(" ")[0];
 
   let fragment;
   fragment = `
               <tr>
-                              <td>${element.fecha_control.split(" ")[0]}</td>
+                              <td>${fechaControl}</td>
                               <td>${element.fechaRegreso}</td>
                               <td>
                                   <button class="btn col-3  btn-tabla btn-dt-tabla btn-agregarcita-modal editar btnEditar buttomEditControl" type="button"
                                       data-bs-toggle="modal" data-bs-target="#exampleModalagregarControl" 
-                                      data-id-Patient="${
-                                        element.id_Patient
-                                      }" data-cedula=${element.cedula} data-control=${element.id_control} ${disabled}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                      data-cedula="${element.cedula}" data-control="${element.id_control}" data-severidad="${element.severidad || "LEVE"}" ${disabled}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                           class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                           <path
                                               d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
@@ -377,6 +383,9 @@ const showDataModalEdit = (ele, cedula, id_control) => {
   inputs[3].value = divDataControl[5].innerText;
   nota.value = divDataControl[11].innerText;
   inputs[4].value = tds[1].innerText;
+  // La severidad viaja en el data-attribute del botón: si no se restaura,
+  // editar un control MODERADA/GRAVE lo guardaba como LEVE.
+  severidadSelect.value = ele.getAttribute("data-severidad") || "LEVE";
   //disparar la validacion de los inputs
   inputs.forEach((input) => {
     input.dispatchEvent(new Event("keyup", { bubbles: true }));
@@ -393,6 +402,11 @@ const clickButtonOpenModal = () => {
   botonModal.innerText = "Registrar";
   modalAddControl.classList.remove("editar");
   boxDoctor.classList.remove("d-none");
+
+  // limpiar nota y severidad (no son .input-validar, quedaban con el valor
+  // del último control editado)
+  nota.value = "";
+  severidadSelect.value = "LEVE";
 
   inputs.forEach((input) => {
     input.value = "";
@@ -500,6 +514,21 @@ const readControl = async (cedulaPatient) => {
       url + "/mostrarControlPacientesJS/" + cedulaPatient,
       "GET",
     );
+
+    // El endpoint puede NO devolver el array esperado: sesión expirada (el
+    // router redirige al login), error 429/500 o un 409 de validación.
+    // Antes se hacía result[0].length sin comprobar y la consola explotaba
+    // con "can't access property 'length', result[0] is undefined".
+    if (!result || result.ok === false) {
+      throw new Error(
+        (result && result.error) ||
+          "No se pudo cargar el control del paciente. Verifique que la sesión siga activa.",
+      );
+    }
+    if (!Array.isArray(result) || !Array.isArray(result[0])) {
+      throw new Error("Respuesta inesperada del servidor.");
+    }
+
     console.log("readControl", result, result[0].length > 0);
     let html = "";
     tbodyControl.innerHTML = ``;
@@ -553,7 +582,12 @@ const readControl = async (cedulaPatient) => {
     hasPermision(id_rol_global, "Control", "editar", ".buttomEditControl"); //editar
   } catch (error) {
     console.error("hola el error es :" + error);
-    alertError("Error", error);
+    alertError(
+      "Error",
+      typeof error === "string"
+        ? error
+        : error.message || "No se pudo cargar la información del paciente.",
+    );
     semaforo = 0;
   } finally {
     loaderControlMedico.classList.add("d-none");
@@ -594,7 +628,11 @@ const updateControl = async () => {
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal);
+    // En modo edición el botón dice "Modificar": sin esto quedaba "Registrar".
+    finallyLoaderButton(
+      botonModal,
+      modalAddControl.classList.contains("editar") ? "Modificar" : "Registrar",
+    );
   }
 };
 
@@ -669,7 +707,7 @@ const readSintomas = async () => {
   }
 };
 
-const insertarSintoma = async (data) => {
+const insertarSintoma = async () => {
   try {
     initLoaderButton(botonModalSintomas);
     const data = new FormData(modalAgregarSintoma);

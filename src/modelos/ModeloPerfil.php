@@ -275,7 +275,9 @@ class ModeloPerfil extends ModelBase
 
 	public function setCedulaRegistrada($cedula)
 	{
-		if (!preg_match("/^([1-9]{1})([0-9]{7,8})$/", $cedula)) {
+		// 7-8 dígitos, igual que setCedula(): el {7,8} anterior rechazaba las
+		// cédulas de 7 dígitos al validar duplicados en el perfil.
+		if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
 			throw new \InvalidArgumentException("La cédula registrada debe contener entre 7 y 8 dígitos.");
 		}
 		$this->cedulaRegistrada = $cedula;

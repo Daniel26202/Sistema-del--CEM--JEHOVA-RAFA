@@ -7,12 +7,6 @@ use App\modelos\ModeloSanetizarJSON;
 
 function insumos($parametro)
 {
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
-		exit;
-	}
-
 	$idUsuario = $_SESSION['id_usuario'];
 	$modeloInsumo = new ModeloInsumo();
 	$sanetizar = new ModeloSanetizarJSON();
@@ -106,26 +100,36 @@ function retornarLasEntradas()
 
 function info($datos)
 {
-	$modeloInsumo = new ModeloInsumo();
-	$sanetizar = new ModeloSanetizarJSON();
+	try {
+		if (!isset($datos[0]) || !esHashIdValido((string)$datos[0])) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'Identificador inválido.']);
+			exit;
+		}
 
+		$modeloInsumo = new ModeloInsumo();
+		$sanetizar = new ModeloSanetizarJSON();
 
-	$id_insumo = unhashId($datos[0]);
-	$modeloInsumo->setIdInsumo($id_insumo);
-	$sanetizar->setHashKeys(['id_insumo']);
+		$id_insumo = unhashId($datos[0]);
+		$modeloInsumo->setIdInsumo($id_insumo);
+		$sanetizar->setHashKeys(['id_insumo']);
 
-	$datosDeInsumo = $sanetizar->sanitizeRecursive($modeloInsumo->insumosInfo());
-	$datosDeVencimiento =  $sanetizar->sanitizeRecursive($modeloInsumo->retornarFechaDeVencimiento());
-	$informacion = array(
-		'insumo' => $datosDeInsumo,
-		'vencimiento' => $datosDeVencimiento,
-		// Se resuelve aquí (no con $_SESSION) para que la primera carga ya traiga
-        // el valor del día: la sesión la llenaba el navegador después.
-        'dolar' => tasaCambioActual()
-	);
-	echo json_encode($informacion);
+		$datosDeInsumo = $sanetizar->sanitizeRecursive($modeloInsumo->insumosInfo());
+		$datosDeVencimiento =  $sanetizar->sanitizeRecursive($modeloInsumo->retornarFechaDeVencimiento());
+		$informacion = array(
+			'insumo' => $datosDeInsumo,
+			'vencimiento' => $datosDeVencimiento,
+			// Se resuelve aquí (no con $_SESSION) para que la primera carga ya traiga
+			// el valor del día: la sesión la llenaba el navegador después.
+			'dolar' => tasaCambioActual()
+		);
+		echo json_encode($informacion);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
-
 
 function mostrarBusquedaInsumo()
 {
@@ -134,14 +138,31 @@ function mostrarBusquedaInsumo()
 		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
 		exit;
 	}
-	$modeloInsumo = new ModeloInsumo();
-	$sanetizar = new ModeloSanetizarJSON();
+	try {
+		if (!isset($_POST['nombre']) || $_POST['nombre'] === '') {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'El término de búsqueda es obligatorio.']);
+			exit;
+		}
 
-	$modeloInsumo->setParametro($_POST['nombre']);
-	$sanetizar->setHashKeys(['id_insumo']);
+		$modeloInsumo = new ModeloInsumo();
+		$sanetizar = new ModeloSanetizarJSON();
 
-	$respuesta = $sanetizar->sanitizeRecursive($modeloInsumo->buscarInsumos());
-	echo json_encode($respuesta);
+		$modeloInsumo->setParametro($_POST['nombre']);
+		$sanetizar->setHashKeys(['id_insumo']);
+
+		$respuesta = $sanetizar->sanitizeRecursive($modeloInsumo->buscarInsumos());
+		echo json_encode($respuesta);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	} catch (\Throwable $e) {
+		error_log("Error inesperado en mostrarBusquedaInsumo: " . $e->getMessage());
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Error al buscar el insumo.']);
+		exit;
+	}
 }
 
 function guardarInsumo()
@@ -165,6 +186,22 @@ function guardarInsumo()
 		$idUsuario = $_SESSION['id_usuario'];
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
+
+		// Validación explícita de los campos que se usan sin isset(): un campo
+		// ausente provocaba warnings y TypeError no capturado (HTTP 500).
+		$requeridos = ['nombre', 'proveedor', 'descripcion', 'fechaDeVencimiento', 'cantidad', 'stockMinimo', 'lote', 'marca', 'medida', 'precioD'];
+		foreach ($requeridos as $campo) {
+			if (!isset($_POST[$campo]) || $_POST[$campo] === '') {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => 'Faltan datos obligatorios del insumo.']);
+				exit;
+			}
+		}
+		if (!esHashIdValido((string)$_POST['proveedor'])) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'Identificador inválido o manipulado.']);
+			exit;
+		}
 
 		// 1. Validar la imagen ANTES de tocar el disco
 		if (!isset($_FILES['imagen'])) {
@@ -231,6 +268,11 @@ function guardarInsumo()
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
+	} catch (\Throwable $e) {
+		error_log("Error inesperado en guardarInsumo: " . $e->getMessage());
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Error al guardar el insumo.']);
+		exit;
 	}
 }
 
@@ -238,6 +280,15 @@ function eliminar()
 {
 
 	try {
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = is_array($input) ? ($input["id"] ?? null) : null;
+
+		if (empty($id) || !esHashIdValido((string)$id)) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'Identificador inválido o manipulado.']);
+			exit;
+		}
+
 		$headers = getallheaders();
 		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
@@ -250,9 +301,6 @@ function eliminar()
 		$idUsuario = $_SESSION['id_usuario'];
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
-
-		$input = json_decode(file_get_contents("php://input"), true);
-		$id = $input["id"] ?? null;
 
 		$estado = empty($input["estado"]) ? 'DES' : 'ACT';
 		$text = empty($input["estado"]) ? 'eliminado' : 'restablecido';
@@ -284,6 +332,11 @@ function eliminar()
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
+	} catch (\Throwable $e) {
+		error_log("Error inesperado en eliminar insumo: " . $e->getMessage());
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Error al eliminar el insumo.']);
+		exit;
 	}
 }
 function editar()
@@ -307,6 +360,20 @@ function editar()
 
 		$bitacora = new ModeloBitacora();
 		$modeloInsumo = new ModeloInsumo();
+
+		$requeridos = ['idInsumoOculto', 'nombre', 'descripcion', 'stockMinimo', 'marca', 'medida'];
+		foreach ($requeridos as $campo) {
+			if (!isset($_POST[$campo]) || $_POST[$campo] === '') {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => 'Faltan datos obligatorios del insumo.']);
+				exit;
+			}
+		}
+		if (!esHashIdValido((string)$_POST['idInsumoOculto'])) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'Identificador inválido o manipulado.']);
+			exit;
+		}
 
 		// 1. Verificar si se subió una imagen nueva
 		$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
@@ -363,6 +430,11 @@ function editar()
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	} catch (\Throwable $e) {
+		error_log("Error inesperado en editar insumo: " . $e->getMessage());
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Error al editar el insumo.']);
 		exit;
 	}
 }

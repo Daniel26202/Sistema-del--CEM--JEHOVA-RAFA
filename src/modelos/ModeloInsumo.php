@@ -244,10 +244,16 @@ class ModeloInsumo extends ModelBase
 				throw new \Exception("Ya existe un insumo registrado con este nombre en el catálogo.");
 			}
 
-			// También validamos que el proveedor esté activo y bloqueamos su lectura
-			// para que no sea eliminado o modificado durante la carga de la mercancía.
-			$this->setSQL("SELECT id_proveedor FROM proveedor WHERE id_proveedor = :id_prov FOR UPDATE");
-			$this->search(['id_prov' => $this->getIdProveedor()], false);
+			// También validamos que el proveedor exista y esté activo, bloqueando
+			// su lectura para que no sea eliminado durante la carga de la mercancía.
+			// Antes el resultado de esta consulta se ignoraba: se podía crear un
+			// insumo apuntando a un proveedor inexistente.
+			$this->setSQL("SELECT id_proveedor FROM proveedor WHERE id_proveedor = :id_prov AND estado = 'ACT' FOR UPDATE");
+			$proveedor = $this->search(['id_prov' => $this->getIdProveedor()], false);
+
+			if (!$proveedor) {
+				throw new \Exception("El proveedor especificado no existe o no está activo.");
+			}
 
 
 			$data = [
@@ -388,7 +394,9 @@ class ModeloInsumo extends ModelBase
 	{
 		foreach ($campos as $campo) {
 			if (empty($campo)) {
-				throw new \Exception("No se permiten campos vacíos{$contexto}.");
+				// InvalidArgumentException (no \Exception) para que el controlador
+				// la capture y responda 409 en vez de un HTTP 500.
+				throw new \InvalidArgumentException("No se permiten campos vacíos{$contexto}.");
 			}
 		}
 	}
@@ -425,8 +433,10 @@ class ModeloInsumo extends ModelBase
 	public function editarInsumo($idUsuario = null)
 	{
 		$this->validarSesion($idUsuario);
+		// La imagen NO es obligatoria: si no se sube una nueva, el controlador
+		// manda null y el UPDATE simplemente conserva la anterior. Validarla
+		// aquí hacía que editar sin cambiar la imagen fallara siempre.
 		$this->validarCamposObligatorios([
-			$this->imagen,
 			$this->nombre,
 			$this->descripcion,
 			$this->stockMinimo,
@@ -562,6 +572,11 @@ class ModeloInsumo extends ModelBase
 
 	public function setNombre($nombre)
 	{
+		// La columna es varchar(25): sin el límite, un nombre largo hacía
+		// fallar el INSERT con "Data too long".
+		if (!is_string($nombre) || mb_strlen($nombre) > 25) {
+			throw new \InvalidArgumentException("El nombre no puede superar los 25 caracteres.");
+		}
 		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/", $nombre)) {
 			throw new \InvalidArgumentException("El nombre debe iniciar con mayúscula, tener al menos 3 letras y puede incluir un segundo nombre separado por un espacio.");
 		}
@@ -596,9 +611,15 @@ class ModeloInsumo extends ModelBase
 	}
 	public function setFechaDeIngreso($fechaDeIngreso)
 	{
-		$d = new \DateTime($fechaDeIngreso);
+		// Se valida el formato antes de construir el DateTime: con basura en el
+		// POST, new \DateTime() lanzaba una excepción que el controlador no
+		// capturaba (HTTP 500).
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaDeIngreso);
+		if (!$dt || $dt->format('Y-m-d') !== $fechaDeIngreso) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+		}
 		$hoy = new \DateTime();
-		if ($d > $hoy) {
+		if ($dt > $hoy) {
 			throw new \InvalidArgumentException("La fecha no puede ser futura");
 		}
 		$this->fechaDeIngreso = $fechaDeIngreso;
