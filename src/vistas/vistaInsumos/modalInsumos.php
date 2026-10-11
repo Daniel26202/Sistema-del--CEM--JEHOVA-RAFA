@@ -460,7 +460,7 @@
                     <!-- IVA Switch -->
                     <div class="campo-custom">
                         <div class="form-check form-switch">
-                            <input class="form-check-input checkboxIva" type="checkbox" role="switch" id="flexSwitchCheckIVA" name="iva" value="0">
+                            <input class="form-check-input checkboxIva" type="checkbox" role="switch" id="flexSwitchCheckIVA" name="iva" value="1">
                             <label class="form-check-label" for="flexSwitchCheckIVA">IVA</label>
                         </div>
                     </div>

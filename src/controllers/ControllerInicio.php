@@ -59,11 +59,49 @@ function inicio($parametro)
     require_once './src/vistas/dashboard.php';
 }
 
-//Retorna el precio  del dolar y guardarlo en la session
+/**
+ * Recibe la tasa del día desde el navegador y la guarda en la sesión.
+ *
+ * El navegador la obtiene de https://ve.dolarapi.com/v1/dolares/oficial
+ * (ver src/assets/js/generic/coversion.js) y la manda por la URL.
+ *
+ * Dos correcciones importantes:
+ *
+ * 1) number_format() con separador de miles '.' producía "1.000.00" para tasas
+ *    de 1000 en adelante. Los consumidores hacen (float)"1.000.00" => 1.0, es
+ *    decir, recibían mil veces menos. El cuarto parámetro debe ser cadena vacía.
+ *
+ * 2) La tasa se valida antes de guardarse. Antes cualquiera podía pedir
+ *    .../Inicio/valorDolar/1 y dejar su sesión con una tasa inventada.
+ */
 function valorDolar($datos)
 {
-    $_SESSION["dolar"] = number_format($datos[0], 2, '.', '.');
-    echo json_encode($_SESSION["dolar"]);
+    $tasa = is_array($datos) ? ($datos[0] ?? null) : null;
+
+    if (!is_numeric($tasa)) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => 'Tasa de cambio inválida.']);
+        exit;
+    }
+
+    $tasa = (float)$tasa;
+
+    // Rango plausible para el dólar. Fuera de él lo más probable es un error
+    // de formato o una manipulación.
+    if ($tasa <= 0 || $tasa > 100000) {
+        http_response_code(409);
+        echo json_encode(['ok' => false, 'error' => 'Tasa de cambio fuera de rango razonable.']);
+        exit;
+    }
+
+    // Redondeo a 2 decimales SIN separador de miles.
+    $tasa = round($tasa, 2);
+
+    $_SESSION["dolar"] = $tasa;
+    $_SESSION["dolar_fecha"] = date('Y-m-d');
+
+    header('Content-Type: application/json');
+    echo json_encode(['ok' => true, 'tasa' => $tasa]);
 }
 
 

@@ -143,76 +143,112 @@ function listPacientesJS()
 
 function mostrarBusquedaPacientesJS($datos)
 {
-	$modeloControl = new ModeloControl();
-	$sanetizar = new ModeloSanetizarJSON();
-	$sanetizar->setHashKeys(['id_paciente']);
-	$modeloControl->setCedula($datos[0]);
-	$modeloControl->setNacionalidad($datos[1]);
+	try {
+		if (!isset($datos[0]) || !isset($datos[1])) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Faltan datos (nacionalidad y cédula)."]);
+			exit;
+		}
 
-	$respuesta = $modeloControl->buscarPacientes();
-	$data = $sanetizar->sanitizeRecursive($respuesta);
-	echo json_encode($data);
+		$modeloControl = new ModeloControl();
+		$sanetizar = new ModeloSanetizarJSON();
+		$sanetizar->setHashKeys(['id_paciente']);
+		$modeloControl->setCedula($datos[0]);
+		$modeloControl->setNacionalidad($datos[1]);
+
+		$respuesta = $modeloControl->buscarPacientes();
+		$data = $sanetizar->sanitizeRecursive($respuesta);
+		echo json_encode($data);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
 function mostrarControlPacientesJS($datos)
 {
-	$modeloControl = new ModeloControl();
-	$modeloSintomas = new ModeloSintomas();
-	$modeloPatologia = new ModeloPatologia();
-	$modeloInicio = new ModeloInicio();
-	$sanetizar = new ModeloSanetizarJSON();
-	$sanetizar->setHashKeys(['id_sintomas', 'id_patologia', 'id_control', 'id_paciente', 'id_usuario']);
+	try {
+		if (!isset($datos[0]) || $datos[0] === '') {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Falta la cedula del paciente."]);
+			exit;
+		}
 
-	// verifica si la sesión esta activa.
-	if (session_status() !== PHP_SESSION_ACTIVE) {
-		session_start();
-	}
-	$idUsuario = $_SESSION['id_usuario'];
-	$modeloInicio->setIdPersonal($_SESSION['id_personal']);
-	$validacionCargo = $modeloInicio->comprobarCargo();
+		$modeloControl = new ModeloControl();
+		$modeloSintomas = new ModeloSintomas();
+		$modeloPatologia = new ModeloPatologia();
+		$modeloInicio = new ModeloInicio();
+		$sanetizar = new ModeloSanetizarJSON();
+		$sanetizar->setHashKeys(['id_sintomas', 'id_patologia', 'id_control', 'id_paciente', 'id_usuario']);
 
-	$cedula = $datos[0];
+		// verifica si la sesión esta activa.
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
+		$idUsuario = $_SESSION['id_usuario'];
+		$modeloInicio->setIdPersonal($_SESSION['id_personal']);
+		$validacionCargo = $modeloInicio->comprobarCargo();
 
-	$sintomas = $sanetizar->sanitizeRecursive($modeloSintomas->selects());
-	// patologías
-	$modeloControl->setCedula($cedula);
-	$modeloPatologia->setCedulaPac($cedula);
-	$registradosP = $sanetizar->sanitizeRecursive($modeloPatologia->buscarPatologiaPaciente());
-	$patologias = $sanetizar->sanitizeRecursive($modeloPatologia->mostrarPatologias());
+		$cedula = $datos[0];
 
-	// cero es administrador mas no doctor 
-	if ($validacionCargo == 0) {
+		$sintomas = $sanetizar->sanitizeRecursive($modeloSintomas->selects());
+		// patologías
 		$modeloControl->setCedula($cedula);
-		$respuestaP = $sanetizar->sanitizeRecursive($modeloControl->mostrarControlPacienteA());
+		$modeloPatologia->setCedulaPac($cedula);
+		$registradosP = $sanetizar->sanitizeRecursive($modeloPatologia->buscarPatologiaPaciente());
+		$patologias = $sanetizar->sanitizeRecursive($modeloPatologia->mostrarPatologias());
 
-		// este array tiene tres valores de tres funciones en el modelo
-		$arrayPSS = [$respuestaP, $sintomas, $registradosP, $patologias];
-		echo json_encode($arrayPSS);
-		// uno es doctor
-	} else if ($validacionCargo == 1) {
-		// devuelve solo los datos del paciente atendido por el mismo doctor que inicio sesión(Usuario)
-		$modeloControl->setIdUsuario($idUsuario);
-		$modeloControl->setCedula($cedula);
-		$respuesta = $sanetizar->sanitizeRecursive($modeloControl->mostrarControlPacienteU());
+		// cero es administrador mas no doctor
+		if ($validacionCargo == 0) {
+			$modeloControl->setCedula($cedula);
+			$respuestaP = $sanetizar->sanitizeRecursive($modeloControl->mostrarControlPacienteA());
 
-		// este array tiene tres valores de tres funciones en el modelo
-		$arrayPSS = [$respuesta, $sintomas, $registradosP, $patologias];
-		echo json_encode($arrayPSS);
+			// este array tiene tres valores de tres funciones en el modelo
+			$arrayPSS = [$respuestaP, $sintomas, $registradosP, $patologias];
+			echo json_encode($arrayPSS);
+			// uno es doctor
+		} else if ($validacionCargo == 1) {
+			// devuelve solo los datos del paciente atendido por el mismo doctor que inicio sesión(Usuario)
+			$modeloControl->setIdUsuario($idUsuario);
+			$modeloControl->setCedula($cedula);
+			$respuesta = $sanetizar->sanitizeRecursive($modeloControl->mostrarControlPacienteU());
+
+			// este array tiene tres valores de tres funciones en el modelo
+			$arrayPSS = [$respuesta, $sintomas, $registradosP, $patologias];
+			echo json_encode($arrayPSS);
+		}
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 }
 
 function mostrarPacienteJS($datos)
 {
-	$modeloControl = new ModeloControl();
-	$sanetizar = new ModeloSanetizarJSON();
-	$sanetizar->setHashKeys(['id_paciente', 'id_control', 'id_usuario']);
+	try {
+		if (!isset($datos[0]) || !isset($datos[1])) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Faltan datos (nacionalidad y cédula)."]);
+			exit;
+		}
 
-	$modeloControl->setNacionalidad($datos[0]);
-	$modeloControl->setCedula($datos[1]);
-	// me traigo los datos de los pacientes
-	$respuesta = $sanetizar->sanitizeRecursive($modeloControl->mostrarPaciente());
+		$modeloControl = new ModeloControl();
+		$sanetizar = new ModeloSanetizarJSON();
+		$sanetizar->setHashKeys(['id_paciente', 'id_control', 'id_usuario']);
 
-	echo json_encode($respuesta);
+		$modeloControl->setNacionalidad($datos[0]);
+		$modeloControl->setCedula($datos[1]);
+		// me traigo los datos de los pacientes
+		$respuesta = $sanetizar->sanitizeRecursive($modeloControl->mostrarPaciente());
+
+		echo json_encode($respuesta);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
 function insertarControl()
@@ -238,6 +274,22 @@ function insertarControl()
 		$modeloBitacora = new ModeloBitacora();
 		$modeloControl  = new ModeloControl();
 
+		// Validación explícita: antes un campo ausente provocaba un TypeError
+		// no capturado (HTTP 500) al llegar a unhashId().
+		$requeridos = ['doctor', 'id_paciente', 'historial', 'diagnostico', 'indicaciones', 'fechaDeCita', 'severidad'];
+		foreach ($requeridos as $campo) {
+			if (!isset($_POST[$campo]) || ($_POST[$campo] === '' && $campo !== 'nota')) {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => 'Faltan datos obligatorios del control.']);
+				exit;
+			}
+		}
+		if (!esHashIdValido((string)$_POST['doctor']) || !esHashIdValido((string)$_POST['id_paciente'])) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'Identificador inválido o manipulado.']);
+			exit;
+		}
+
 		$patologia = isset($_POST["patologias"]) ? array_map('unhashId', (array)$_POST["patologias"]) : [null];
 		$sintoma   = isset($_POST["sintomas"])   ? array_map('unhashId', (array)$_POST["sintomas"])   : [null];
 
@@ -249,7 +301,7 @@ function insertarControl()
 		$modeloControl->setIndicaciones($_POST["indicaciones"]);
 		$modeloControl->setFechaRegreso($_POST["fechaDeCita"]);
 		$modeloControl->setPatologias($patologia);
-		$modeloControl->setNota($_POST["nota"]);
+		$modeloControl->setNota($_POST["nota"] ?? '');
 		$modeloControl->setSeveridad($_POST["severidad"]);
 
 		$registro = $modeloControl->insertControl($idUsuario);
@@ -259,7 +311,16 @@ function insertarControl()
 			$modeloBitacora->setTabla("control");
 			$modeloBitacora->setActividad("Ha Insertado un nuevo control medico");
 			$modeloBitacora->insertarBitacora($idUsuario);
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+			// Se devuelve solo lo que el JS necesita: devolver $_POST completo
+			// filtraba a la respuesta campos internos (p. ej. el token CSRF).
+			echo json_encode([
+				'ok' => true,
+				'message' => 'La operación se realizó con éxito',
+				'data' => [
+					'cedula' => $_POST['cedula'] ?? '',
+					'cedulaOculta' => $_POST['cedulaOculta'] ?? '',
+				]
+			]);
 		} else {
 			if (is_string($registro)) {
 				http_response_code(409);
@@ -275,6 +336,11 @@ function insertarControl()
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	} catch (\Throwable $e) {
+		error_log("Error inesperado en insertarControl: " . $e->getMessage());
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Error al guardar el control.']);
 		exit;
 	}
 }
@@ -302,12 +368,26 @@ function editarControl()
 		$modeloBitacora = new ModeloBitacora();
 		$modeloControl  = new ModeloControl();
 
+		$requeridos = ['id_control', 'historial', 'diagnostico', 'indicaciones', 'fechaDeCita', 'severidad'];
+		foreach ($requeridos as $campo) {
+			if (!isset($_POST[$campo]) || $_POST[$campo] === '') {
+				http_response_code(409);
+				echo json_encode(['ok' => false, 'error' => 'Faltan datos obligatorios del control.']);
+				exit;
+			}
+		}
+		if (!esHashIdValido((string)$_POST['id_control'])) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'Identificador inválido o manipulado.']);
+			exit;
+		}
+
 		$modeloControl->setIdControl(unhashId($_POST['id_control']));
 		$modeloControl->setHistorial($_POST["historial"]);
 		$modeloControl->setDiagnostico($_POST["diagnostico"]);
 		$modeloControl->setIndicaciones($_POST["indicaciones"]);
-		$modeloControl->setFechaRegreso($_POST["fechaDeCita"]);
-		$modeloControl->setNota($_POST["nota"]);
+		$modeloControl->setFechaRegreso($_POST["fechaDeCita"], true);
+		$modeloControl->setNota($_POST["nota"] ?? '');
 		$modeloControl->setSeveridad($_POST["severidad"]);
 
 		$editar = $modeloControl->editarControl($idUsuario);
@@ -317,7 +397,14 @@ function editarControl()
 			$modeloBitacora->setTabla("control");
 			$modeloBitacora->setActividad("Ha modificado un control medico");
 			$modeloBitacora->insertarBitacora($idUsuario);
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+			echo json_encode([
+				'ok' => true,
+				'message' => 'La operación se realizó con éxito',
+				'data' => [
+					'cedula' => $_POST['cedula'] ?? '',
+					'cedulaOculta' => $_POST['cedulaOculta'] ?? '',
+				]
+			]);
 		} else {
 			if (is_string($editar)) {
 				http_response_code(409);
@@ -334,38 +421,72 @@ function editarControl()
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
+	} catch (\Throwable $e) {
+		error_log("Error inesperado en editarControl: " . $e->getMessage());
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Error al editar el control.']);
+		exit;
 	}
 }
 
 // mostrar síntomas de pacientes del ultimo  control
 function mostrarSP($datos)
 {
-	$modeloControl = new ModeloControl();
-	$sanetizar = new ModeloSanetizarJSON();
-	$sanetizar->setHashKeys(['id_sintomas', 'id_control']);
-	$cedula = $datos[0];
+	try {
+		if (!isset($datos[0]) || $datos[0] === '') {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Falta la cedula del paciente."]);
+			exit;
+		}
 
-	$modeloControl->setCedula($cedula);
-	$modeloControl->setIdControl($modeloControl->mostrarUltimoIdControl());
+		$modeloControl = new ModeloControl();
+		$sanetizar = new ModeloSanetizarJSON();
+		$sanetizar->setHashKeys(['id_sintomas', 'id_control']);
+		$cedula = $datos[0];
 
-	$respuestaS = $sanetizar->sanitizeRecursive($modeloControl->mostrarSintomasPaId());
-	echo json_encode($respuestaS);
+		$modeloControl->setCedula($cedula);
+		$idControl = $modeloControl->mostrarUltimoIdControl();
+		if ($idControl === null) {
+			echo json_encode([]);
+			exit;
+		}
+		$modeloControl->setIdControl($idControl);
+
+		$respuestaS = $sanetizar->sanitizeRecursive($modeloControl->mostrarSintomasPaId());
+		echo json_encode($respuestaS);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 // mostrar patología de pacientes del ultimo  control
 function mostrarPP($datos)
 {
-	$modeloControl = new ModeloControl();
-	$sanetizar  = new ModeloSanetizarJSON();
-	$sanetizar->setHashKeys(['id_patologia', 'id_control']);
-	$cedula = $datos[0];
+	try {
+		if (!isset($datos[0]) || $datos[0] === '') {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Falta la cedula del paciente."]);
+			exit;
+		}
 
-	$modeloControl->setCedula($cedula);
+		$modeloControl = new ModeloControl();
+		$sanetizar  = new ModeloSanetizarJSON();
+		$sanetizar->setHashKeys(['id_patologia', 'id_control']);
+		$cedula = $datos[0];
 
-	$id_control = ($modeloControl->mostrarUltimoIdControl() != null) ? $modeloControl->mostrarUltimoIdControl() : 0;
-	$modeloControl->setIdControl($id_control);
+		$modeloControl->setCedula($cedula);
 
-	$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaP());
-	echo json_encode($registradosP);
+		$id_control = ($modeloControl->mostrarUltimoIdControl() != null) ? $modeloControl->mostrarUltimoIdControl() : 0;
+		$modeloControl->setIdControl($id_control);
+
+		$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaP());
+		echo json_encode($registradosP);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
 
@@ -397,20 +518,40 @@ function mostrarPPAll($datos)
 // mostrar patología de paciente por id del paciente
 function mostrarPIdP($datos)
 {
-	$modeloControl = new ModeloControl();
-	$sanetizar = new ModeloSanetizarJSON();
+	try {
+		if (!isset($datos[0]) || !esHashIdValido((string)$datos[0])) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => "Identificador inválido."]);
+			exit;
+		}
 
-	$idC = $datos[0];
-	$modeloControl->setIdControl(unhashId($idC));
-	$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaC());
-	echo json_encode($registradosP);
+		$modeloControl = new ModeloControl();
+		$sanetizar = new ModeloSanetizarJSON();
+
+		$idC = $datos[0];
+		$modeloControl->setIdControl(unhashId($idC));
+		$registradosP = $sanetizar->sanitizeRecursive($modeloControl->mostrarPatologiaC());
+		echo json_encode($registradosP);
+	} catch (InvalidArgumentException $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 }
 
-// síntomas 
+// síntomas
 function eliminarSintoma($datos)
 {
 
 	try {
+		$input = json_decode(file_get_contents("php://input"), true);
+		$id = is_array($input) ? ($input["id"] ?? null) : null;
+
+		if (empty($id) || !esHashIdValido((string)$id)) {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'Identificador inválido o manipulado.']);
+			exit;
+		}
 
 		$headers = getallheaders();
 		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
@@ -421,9 +562,6 @@ function eliminarSintoma($datos)
 			echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
 			exit;
 		}
-
-		$input = json_decode(file_get_contents("php://input"), true);
-		$id = $input["id"] ?? null;
 
 		$idUsuario = $_SESSION['id_usuario'];
 		$modeloSintomas = new ModeloSintomas();
@@ -456,6 +594,11 @@ function eliminarSintoma($datos)
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 		exit;
+	} catch (\Throwable $e) {
+		error_log("Error inesperado en eliminarSintoma: " . $e->getMessage());
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Error al eliminar el sintoma.']);
+		exit;
 	}
 }
 
@@ -468,6 +611,12 @@ function agregarSintoma()
 	}
 
 	try {
+		if (!isset($_POST["nombre"]) || trim($_POST["nombre"]) === '') {
+			http_response_code(409);
+			echo json_encode(['ok' => false, 'error' => 'El nombre del síntoma es obligatorio.']);
+			exit;
+		}
+
 		$headers = getallheaders();
 		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
@@ -492,7 +641,7 @@ function agregarSintoma()
 			$modeloBitacora->setActividad("Ha Insertado un  sintoma");
 			$modeloBitacora->insertarBitacora();
 
-			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $_POST]);
+			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => ['nombre' => $_POST['nombre']]]);
 		} else {
 			if (is_string($insertar)) {
 				http_response_code(409);
@@ -508,6 +657,11 @@ function agregarSintoma()
 	} catch (InvalidArgumentException $e) {
 		http_response_code(409);
 		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	} catch (\Throwable $e) {
+		error_log("Error inesperado en agregarSintoma: " . $e->getMessage());
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Error al guardar el sintoma.']);
 		exit;
 	}
 }

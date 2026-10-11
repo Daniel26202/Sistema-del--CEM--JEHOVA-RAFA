@@ -1,6 +1,7 @@
 <?php
 
 use App\modelos\ModeloFactura;
+use App\modelos\ModeloFacturaHospitalizacion;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloSanetizarJSON;
@@ -137,7 +138,8 @@ function datosHospitalizacion($parametro)
 				'nombre' => $insumo['nombre'],
 				'medida' => $insumo['medida'],
 				'precio' => $insumo['precio'],
-				'iva' => $insumo['iva'],
+				// f.js lee el atributo `iva` de la tarjeta para decidir la tasa.
+				'iva' => $insumo['aplica_iva'] ?? $insumo['iva'] ?? 0,
 				'cantidad' => $insumo['cantidad'],
 			];
 		}
@@ -176,17 +178,37 @@ function comprobante($parametro)
 		exit;
 	}
 
-	$modeloFactura->setIdFactura(unhashId($parametro[0]));
+	try {
+		$modeloFactura->setIdFactura(unhashId($parametro[0]));
+	} catch (\Throwable $e) {
+		// Identificador manipulado o vacío: no se intenta cargar la factura.
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
+		exit;
+	}
+
 	$sanetizar->setHashKeys(['id_factura', 'id_pago', 'id_servicioMedico', 'id_doctor', 'id_hospitalizacion', 'id_entradaDeInsumo', 'id_insumo']);
 	$datosFactura = $sanetizar->sanitizeRecursive($modeloFactura->consultarFactura());
+
+	// Factura inexistente o de otro usuario: se avisa con 404 en vez de
+	// renderizar un comprobante vacío.
+	if (!is_array($datosFactura) || count($datosFactura) === 0) {
+		http_response_code(404);
+		echo "La factura solicitada no existe.";
+		exit;
+	}
+
 	$datosPago = $sanetizar->sanitizeRecursive($modeloFactura->consultarPagoFactura());
 	$datosServiciosExtras = $sanetizar->sanitizeRecursive($modeloFactura->consultarServiciosExtras());
 	$x = $sanetizar->sanitizeRecursive($modeloFactura->comprobarSiFueHospit());
 	$serviciosDeHospitalizacion = $sanetizar->sanitizeRecursive($modeloFactura->serviciosIncluidosHospit());
 
-	$vistaActiva = $x ? 1 : 0;
+	$vistaActiva = is_array($x) ? 1 : (int)$x;
 
-	$datosInsumos = $sanetizar->sanitizeRecursive($vistaActiva ? $modeloFactura->unirInsumosHospitalizacion() : $modeloFactura->consultarFacturaInsumo());
+	// Los insumos de una hospitalización se leen SIEMPRE del detalle de la
+	// factura: unirInsumosHospitalizacion() devuelve los insumos pendientes del
+	// registro y, si el hospitalizado ya fue cerrado, devolvía una lista vacía y
+	// el comprobante salía sin insumos pese a haberlos cobrado.
+	$datosInsumos = $sanetizar->sanitizeRecursive($modeloFactura->consultarFacturaInsumo());
 
 	require_once './src/vistas/vistaFactura/comprobante.php';
 }
@@ -243,9 +265,58 @@ function mostrarPacienteConCita()
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
 
-	$sanetizar->setHashKeys(['id_paciente', 'id_cita', 'id_servicioMedico', 'id_personal', 'id_categoria']);
+	$sanetizar->setHashKeys([
+		'id_paciente', 'id_cita', 'id_servicioMedico', 'id_personal', 'id_categoria',
+		// La consulta aliasa el doctor como `id_doctor_c`. Sin hashearlo, el
+		// navegador manda el id crudo en `doctores[]` y unhashId() lanza
+		// "Identificador inválido o manipulado" al confirmar la factura.
+		'id_doctor_c',
+	]);
 	$modeloFactura->setCedula($_POST["cedula"]);
 	echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscarPacientePorCita()));
+}
+
+/**
+ * Descuenta del inventario los insumos consumidos durante una hospitalización.
+ *
+ * Se invoca al cerrar la hospitalización. El flujo anterior lo hacía el
+ * procedimiento DescontarLotes, que recorría los lotes y terminaba sin error
+ * aunque no alcanzara el stock.
+ */
+function registrarInsumosHospitalizacion()
+{
+	if (empty($_POST)) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => 'Petición vacía.']);
+		exit;
+	}
+
+	$csrf = $_POST['csrf_token'] ?? (getallheaders()['X-CSRF-Token'] ?? null);
+	if (empty($_SESSION['csrf_token']) || empty($csrf) || !hash_equals($_SESSION['csrf_token'], $csrf)) {
+		http_response_code(403);
+		echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+		exit;
+	}
+
+	try {
+		$idH = !empty($_POST['id_hospitalizacion']) ? unhashId($_POST['id_hospitalizacion']) : 0;
+		$modelo = new ModeloFacturaHospitalizacion();
+		$modelo->setIdH($idH);
+		$resultado = $modelo->registrarConsumo($_SESSION['id_usuario'] ?? null);
+	} catch (\Throwable $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
+
+	if (!empty($resultado['exito'])) {
+		echo json_encode(['ok' => true, 'message' => 'Consumo de insumos registrado.']);
+		exit;
+	}
+
+	http_response_code(409);
+	echo json_encode(['ok' => false, 'error' => $resultado['error']]);
+	exit;
 }
 
 function guardarFactura()
@@ -264,54 +335,95 @@ function guardarFactura()
 		exit;
 	}
 
-	$idUsuario = $_SESSION['id_usuario'];
+	$idUsuario = $_SESSION['id_usuario'] ?? null;
 	$modeloBitacora = new ModeloBitacora();
 	$modeloFactura  = new ModeloFactura();
 
-	$id_cliente_input = !empty($_POST["id_cliente"]) ? unhashId($_POST["id_cliente"]) : 0;
-	$id_paciente_input = isset($_POST["id_paciente"]) && !empty($_POST["id_paciente"]) ? unhashId($_POST["id_paciente"]) : 0;
-	$id_cita_input = isset($_POST["id_cita"]) && !empty($_POST["id_cita"]) ? unhashId($_POST["id_cita"]) : 0;
-	$id_hosp_input = isset($_POST["id_hospitalizacion"]) && !empty($_POST["id_hospitalizacion"]) ? unhashId($_POST["id_hospitalizacion"]) : 0;
+	try {
+		$id_cliente_input = !empty($_POST["id_cliente"]) ? unhashId($_POST["id_cliente"]) : 0;
+		$id_paciente_input = isset($_POST["id_paciente"]) && !empty($_POST["id_paciente"]) ? unhashId($_POST["id_paciente"]) : 0;
+		$id_cita_input = isset($_POST["id_cita"]) && !empty($_POST["id_cita"]) ? unhashId($_POST["id_cita"]) : 0;
+		$id_hosp_input = isset($_POST["id_hospitalizacion"]) && !empty($_POST["id_hospitalizacion"]) ? unhashId($_POST["id_hospitalizacion"]) : 0;
 
-	$modeloFactura->setFecha(date("Y-m-d"));
-	$modeloFactura->setServicios(isset($_POST["servicios"]) ? array_map('unhashId', $_POST["servicios"]) : []);
-	$modeloFactura->setInsumos(isset($_POST["insumos"]) ? array_map('unhashId', $_POST["insumos"]) : []);
-	$modeloFactura->setCatidad(isset($_POST["cantidad"]) ? $_POST["cantidad"] : []);
-	$modeloFactura->setPrecioInsumo(isset($_POST["precioInsumo"]) ? $_POST["precioInsumo"] : []);
-	$modeloFactura->setPrecioServicio(isset($_POST["precioServicio"]) ? $_POST["precioServicio"] : []);
-	$modeloFactura->setIdCliente($id_cliente_input);
-	$modeloFactura->setIdPaciente($id_paciente_input);
-	$modeloFactura->setIdCita($id_cita_input);
-	$modeloFactura->setReferencia(!empty($_POST["referencia"]) ? $_POST["referencia"] : 0);
-	$modeloFactura->setIdH($id_hosp_input);
-	$modeloFactura->setTotal($_POST["total"]);
-	$modeloFactura->setFormasDePago(isset($_POST["formasDePago"]) ? array_map('unhashId', $_POST["formasDePago"]) : []);
-	$modeloFactura->setMontosPago($_POST["montosDePago"]);
+		$modeloFactura->setFecha(date("Y-m-d"));
+		$modeloFactura->setServicios(isset($_POST["servicios"]) ? array_map('unhashId', $_POST["servicios"]) : []);
+		$modeloFactura->setInsumos(isset($_POST["insumos"]) ? array_map('unhashId', $_POST["insumos"]) : []);
+		$modeloFactura->setDoctores(isset($_POST["doctores"]) ? array_map(
+			fn($d) => ($d === '' ? null : unhashId($d)),
+			$_POST["doctores"]
+		) : []);
+		$modeloFactura->setCatidad($_POST["cantidad"] ?? []);
+		$modeloFactura->setPrecioInsumo($_POST["precioInsumo"] ?? []);
+		// Tasa con la que el navegador calculó los importes: se guarda en la
+		// factura y se contrasta contra la del servidor (nunca se confía en ella).
+		$modeloFactura->setTipoCambio($_POST["tipo_cambio"] ?? 0);
+		// Indicador de IVA por insumo, para persistirlo en detalle_factura y que
+		// el comprobante pueda separar base e impuesto sin inventarse un 30%.
+		$modeloFactura->setAplicaIVA($_POST["aplicaIVA"] ?? []);
+		$modeloFactura->setPrecioServicio($_POST["precioServicio"] ?? []);
+		$modeloFactura->setIdCliente($id_cliente_input);
+		$modeloFactura->setIdPaciente($id_paciente_input);
+		$modeloFactura->setIdCita($id_cita_input);
+		$modeloFactura->setReferencia(!empty($_POST["referencia"]) ? $_POST["referencia"] : 0);
+		$modeloFactura->setIdH($id_hosp_input);
+		$modeloFactura->setTotal($_POST["total"] ?? 0);
+		$modeloFactura->setFormasDePago(isset($_POST["formasDePago"]) ? array_map('unhashId', $_POST["formasDePago"]) : []);
+		$modeloFactura->setMontosPago($_POST["montosDePago"] ?? []);
+	} catch (\Throwable $e) {
+		// Errores de validación/identificadores: se responde al usuario en vez
+		// de reventar con un error 500 y la traza completa en pantalla
+		// (display_errors está activo en este proyecto).
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
+	}
 
-	// Resolver cliente
-	if (!$modeloFactura->getIdCliente()) {
-		$coincidencia = $modeloFactura->coincidenciaPacienteCliente();
-		if ($coincidencia) {
-			$id_cliente = $coincidencia;
-		} else {
-			$guardado = $modeloFactura->guardarCliente($idUsuario);
-			$id_cliente = $guardado[1];
+	// Resolver cliente: se necesita un id_cliente válido para la factura.
+	try {
+		if (!$modeloFactura->getIdCliente()) {
+			if (!$id_paciente_input) {
+				throw new \DomainException("Debe seleccionar un paciente o un cliente antes de facturar.");
+			}
+
+			$coincidencia = $modeloFactura->coincidenciaPacienteCliente();
+			if ($coincidencia && !is_array($coincidencia)) {
+				$id_cliente = $coincidencia;
+			} else {
+				$guardado = $modeloFactura->guardarCliente($idUsuario);
+				if (!is_array($guardado) || !isset($guardado[1])) {
+					throw new \DomainException("No se pudo obtener el cliente de la factura.");
+				}
+				$id_cliente = $guardado[1];
+			}
+			$modeloFactura->setIdCliente($id_cliente);
 		}
-		$modeloFactura->setIdCliente($id_cliente);
+	} catch (\Throwable $e) {
+		http_response_code(409);
+		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		exit;
 	}
 
 	$guardar = $modeloFactura->guardarFactura($idUsuario);
 
-	if ($guardar) {
+	// El modelo devuelve SIEMPRE ['exito' => bool, ...]. Antes devolvía un string
+	// con el mensaje de error, que al ser truthy se tomaba como éxito: se
+	// escribía la bitácora y se redirigía a un comprobante inexistente,
+	// perdiendo la factura sin avisar al usuario.
+	if (is_array($guardar) && !empty($guardar['exito'])) {
 		$modeloBitacora->setId_usuario($idUsuario);
 		$modeloBitacora->setActividad("Ha facturado servicios y/o insumos");
 		$modeloBitacora->setTabla("factura");
 		$modeloBitacora->insertarBitacora($idUsuario);
 
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . hashId((int)$guardar[0]));
-	} else {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura/errorSistem");
+		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . hashId((int)$guardar['id_factura']));
+		exit;
 	}
+
+	$error = is_array($guardar) ? ($guardar['error'] ?? 'No se pudo registrar la factura.') : 'No se pudo registrar la factura.';
+	error_log("Factura rechazado: " . $error);
+
+	http_response_code(409);
+	echo json_encode(['ok' => false, 'error' => $error]);
 	exit;
 }
 

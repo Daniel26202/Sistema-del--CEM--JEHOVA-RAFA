@@ -246,7 +246,10 @@
             </button>
           </form>
 
-          <h5 style="margin-bottom: 20px;margin-top: 20px;" class="text-center" id="data-cliente"></h5>
+          <!-- id propio: si se repitiera "data-cliente" (que ya existe en la pantalla
+               principal), getElementById devolvería el primero y el nombre del
+               cliente nunca aparecería dentro de este modal. -->
+          <h5 style="margin-bottom: 20px;margin-top: 20px;" class="text-center" id="data-cliente-modal"></h5>
 
           <div id="div-cliente-no-encontrado" class=" d-none">
             <h5 class="text-center">El cliente no fue encontrado por favor añadalo</h5>
@@ -405,7 +408,7 @@
       <div class="modal-footer ">
         <button type="button" class="btn btn-modals-cancelar me-2"
           data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-modals d-none suguiente" data-bs-toggle="modal"
+        <button type="button" class="btn btn-modals  suguiente" data-bs-toggle="modal"
           data-bs-target="#modal-confirmacion" id="btnValidacion">Siguiente</button>
       </div>
 
@@ -441,79 +444,77 @@
         </a>
       </div>
 
-      <?php if (isset($_GET["idH"])): ?>
-        <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFacturaHospit" method="POST" class="" style="overflow-y: auto;">
-          <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
-          <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
-        <?php else: ?>
-          <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" class="">
-            <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
-            <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
-          <?php endif; ?>
-          <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" class="">
-            <!-- este input va a guardar el id del usuario que inicie sesion para la bitacora -->
-            <input type="hidden" id="id_usuario_bitacora" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
+      <?php
+      // Un único <form>. Antes había tres anidados: el HTML es inválido y el
+      // navegador descartaba el interno, dejando campos huérfanos.
+      ?>
+      <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" id="formConfirmarFactura" class="">
 
-            <table class="table table-striped" id="tablaConfirmaroperacion">
-              <thead>
-                <tr>
-                  <p class="fw-bolder mb-0 mt-2 border-bottom">SERVICIOS</p>
-                </tr>
-              </thead>
-              <tbody style="font-size: 14px;" id="cuerpoTablaConfirmaroperacion">
+        <table class="table table-striped" id="tablaConfirmaroperacion">
+          <thead>
+            <tr>
+              <p class="fw-bolder mb-0 mt-2 border-bottom">SERVICIOS</p>
+            </tr>
+          </thead>
+          <tbody style="font-size: 14px;" id="cuerpoTablaConfirmaroperacion">
 
 
-              </tbody>
-            </table>
-            <table class="table table-striped">
-              <thead>
+          </tbody>
+        </table>
+        <table class="table table-striped">
+          <thead>
 
-              </thead>
-              <tbody id="tbodyDelModal" style="font-size: 14px;">
+          </thead>
+          <tbody id="tbodyDelModal" style="font-size: 14px;">
 
-              </tbody>
-            </table>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <p class="fw-bolder mb-0 mt-3 border-bottom">INSUMOS</p>
-                </tr>
-              </thead>
-              <tbody style="font-size: 14px;" id="tbodyInsumos">
+          </tbody>
+        </table>
+        <table class="table table-striped">
+          <thead>
+            <p class="fw-bolder mb-0 mt-3 border-bottom">INSUMOS</p>
+          </thead>
+          <tbody style="font-size: 14px;" id="tbodyInsumos">
 
-              </tbody>
-            </table>
+          </tbody>
+        </table>
 
+        <input type="hidden" name="id_cita" id="inputIdCita">
+        <!-- El JS leía #inputCliente / #inputHospitalizacion pero estos inputs no
+             existían en el HTML: por eso "facturar a nombre de otra persona" y
+             la hospitalización nunca llegaban al servidor. -->
+        <input type="hidden" id="inputCliente" name="id_cliente">
+        <input type="hidden" id="inputHospitalizacion" name="id_hospitalizacion">
 
-            <input type="hidden" name="id_cita" id="inputIdCita">
+        <p class="fw-bolder mb-0 mt-2">TIPOS DE PAGO</p>
+        <div id="divTypePagoCofirm">
 
-            <p class="fw-bolder mb-0 mt-2">TIPOS DE PAGO</p>
-            <div id="divTypePagoCofirm">
+          <!-- js -->
+        </div>
+        <hr>
+        <p class="fw-bolder mb-0 mt-2">TOTAL</p>
 
-              <!-- js -->
-            </div>
-            <hr>
-            <p class="fw-bolder mb-0 mt-2">TOTAL</p>
+        <div id="totalDeConfirmacion"></div>
 
-            <div id="totalDeConfirmacion"></div>
+        <p id="p-referencia"></p>
 
-            <p id="p-referencia"></p>
-
-            <input type="text" class="d-none" id="inputTotalDeConfirmacion" name="total">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+        <input type="text" class="d-none" id="inputTotalDeConfirmacion" name="total">
+        <!-- Tasa con la que se calcularon los importes. El servidor la contrasta
+             con la del día y la guarda en la factura para poder auditarla. -->
+        <input type="hidden" id="inputTipoCambio" name="tipo_cambio" value="">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
 
 
-            <input type="hidden" id="referencia_confirmar" name="referencia">
-            <input type="hidden" id="inputPaciente" name="id_paciente">
+        <input type="hidden" id="referencia_confirmar" name="referencia">
+        <input type="hidden" id="inputPaciente" name="id_paciente">
 
-            <div class="modal-footer">
-              <button type="button" class="btn btn-modals-cancelar me-2"
-                data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-modals">Confirmar</button>
-            </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-modals-cancelar me-2"
+            data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-modals" id="btnConfirmarFactura">Confirmar</button>
+        </div>
 
-          </form>
+      </form>
 
     </div>
   </div>

@@ -10,7 +10,7 @@ class ModeloEntrada extends ModelBase
 
 	private $fechaDeVencimiento, $fechaDeIngreso, $precio, $cantidadDisponible, $idEntrada, $cantidadEntrante, $idProveedor, $lote, $idInsumo;
 
-	private $columnasPermitidas = ['id_entrada','nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	private $columnasPermitidas = ['id_entrada','nombre', 'proveedor', 'fechaDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
 	private $ordenesPermitidos = ['ASC', 'DESC'];
 
 	public function __construct($dbSystem = true)
@@ -196,11 +196,24 @@ class ModeloEntrada extends ModelBase
 				throw new \Exception("Fallo");
 			}
 
-			$sql = "UPDATE entrada_insumo SET fechaDeVencimiento=:fechaDeVencimiento,  precio=:precio,cantidad_entrante=:cantidad_entrante WHERE id_entrada=:id";
+			// Valor actual del lote DENTRO de la transacción: hace falta para
+			// mover cantidad_disponible junto con cantidad_entrante y que el
+			// inventario no quede inflado (o incompleto) tras una edición.
+			$this->setSQL("SELECT cantidad_entrante, cantidad_disponible FROM entrada_insumo WHERE id_entrada = :id_entrada");
+			$loteActual = $this->search(["id_entrada" => $this->getIdEntrada()], false);
+			if (!$loteActual) {
+				throw new \Exception("Fallo: la entrada no tiene lotes asociados.");
+			}
+
+			$delta = (int)$this->getCantidadEntrante() - (int)$loteActual['cantidad_entrante'];
+			$nuevaDisponible = max(0, (int)$loteActual['cantidad_disponible'] + $delta);
+
+			$sql = "UPDATE entrada_insumo SET fechaDeVencimiento=:fechaDeVencimiento,  precio=:precio,cantidad_entrante=:cantidad_entrante, cantidad_disponible=:cantidad_disponible WHERE id_entrada=:id";
 			$this->setSQL($sql);
 			$data = [
 				'fechaDeVencimiento' => $this->getFechaDeVencimiento(),
 				'cantidad_entrante' => $this->getCantidadEntrante(),
+				'cantidad_disponible' => $nuevaDisponible,
 				'precio' => $this->getPrecio(),
 			];
 			$this->update($data, $this->getIdEntrada());
@@ -252,7 +265,9 @@ class ModeloEntrada extends ModelBase
 	{
 		foreach ($campos as $campo) {
 			if (empty($campo)) {
-				throw new \Exception("No se permiten campos vacíos{$contexto}.");
+				// InvalidArgumentException (no \Exception) para que el controlador
+				// la capture y responda 409 en vez de un HTTP 500.
+				throw new \InvalidArgumentException("No se permiten campos vacíos{$contexto}.");
 			}
 		}
 	}
@@ -308,12 +323,20 @@ class ModeloEntrada extends ModelBase
 	}
 
 	// setter
-	public function setFechaDeVencimiento($fechaDeVencimiento)
+	public function setFechaDeVencimiento($fechaDeVencimiento, $esEdicion = false)
 	{
+		// Se valida el formato: antes se comparaba texto plano y una fecha
+		// basura terminaba guardándose (o reventaba el INSERT).
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaDeVencimiento);
+		if (!$dt || $dt->format('Y-m-d') !== $fechaDeVencimiento) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+		}
 		$fecha = date("Y-m-d");
 
-		if ($fecha > $fechaDeVencimiento) {
-			throw new \Exception("La fecha no puede ser del pasado.");
+		// Al editar se permite una fecha pasada: el usuario está corrigiendo
+		// un registro histórico, no cargando mercancía nueva.
+		if (!$esEdicion && $fecha > $fechaDeVencimiento) {
+			throw new \InvalidArgumentException("La fecha no puede ser del pasado.");
 		}
 
 		$this->fechaDeVencimiento = $fechaDeVencimiento;
@@ -321,9 +344,12 @@ class ModeloEntrada extends ModelBase
 
 	public function setFechaDeIngreso($fechaDeIngreso)
 	{
-		$d = new \DateTime($fechaDeIngreso);
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaDeIngreso);
+		if (!$dt || $dt->format('Y-m-d') !== $fechaDeIngreso) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+		}
 		$hoy = new \DateTime();
-		if ($d > $hoy) {
+		if ($dt > $hoy) {
 			throw new \InvalidArgumentException("La fecha no puede ser futura");
 		}
 		$this->fechaDeIngreso = $fechaDeIngreso;
@@ -334,7 +360,7 @@ class ModeloEntrada extends ModelBase
 		if (!preg_match('/^\d+([.,]\d+)?$/', $precio)) {
 			throw new \InvalidArgumentException('no es válido.');
 		}
-		if ((int)$precio <= 0) {
+		if ((float)$precio <= 0) {
 			throw new \InvalidArgumentException('El precio debe ser mayor que cero.');
 		}
 		$this->precio = $precio;

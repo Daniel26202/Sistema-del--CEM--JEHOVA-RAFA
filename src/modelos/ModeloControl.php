@@ -25,7 +25,7 @@ class ModeloControl extends ModelBase
 	public function mostrarControlPacienteA()
 	{
 		$data = ['cedula' => $this->getCedula(), 'estado' => 'ACT'];
-		$sql  = "SELECT co.id_control,co.id_usuario,co.diagnostico,co.medicamentosRecetados,co.fecha_control,co.fechaRegreso,co.nota, co.historiaclinica,co.severidad, p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud  FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula = :cedula AND co.estado = :estado";
+		$sql  = "SELECT co.id_control,co.id_usuario,co.diagnostico,co.medicamentosRecetados,co.fecha_control,co.fechaRegreso,co.nota, co.historiaclinica,co.severidad, p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud  FROM paciente p INNER JOIN control co ON co.id_paciente = p.id_paciente WHERE p.cedula = :cedula AND co.estado = :estado ORDER BY co.fecha_control ASC";
 		$this->setSQL($sql);
 		return $this->search($data);
 	}
@@ -33,7 +33,7 @@ class ModeloControl extends ModelBase
 	public function mostrarControlPacienteU()
 	{
 		$data = ['cedula' => $this->getCedula(), 'estado' => 'ACT', 'id' => $this->getIdUsuario()];
-		$sql  = "SELECT co.id_control,co.id_usuario,co.diagnostico,co.medicamentosRecetados,co.fecha_control,co.fechaRegreso,co.nota, co.historiaclinica,co.severidad, p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud, usu.id_usuario FROM control co INNER JOIN paciente p ON co.id_paciente = p.id_paciente INNER JOIN segurity.usuario usu ON co.id_usuario = usu.id_usuario WHERE p.cedula = :cedula AND co.estado = :estado AND usu.id_usuario = :id";
+		$sql  = "SELECT co.id_control,co.id_usuario,co.diagnostico,co.medicamentosRecetados,co.fecha_control,co.fechaRegreso,co.nota, co.historiaclinica,co.severidad, p.id_paciente, p.nacionalidad, p.cedula, p.nombre, p.apellido , p.telefono, p.direccion, p.fn, p.genero, p.estado_salud, usu.id_usuario FROM control co INNER JOIN paciente p ON co.id_paciente = p.id_paciente INNER JOIN segurity.usuario usu ON co.id_usuario = usu.id_usuario WHERE p.cedula = :cedula AND co.estado = :estado AND usu.id_usuario = :id ORDER BY co.fecha_control ASC";
 		$this->setSQL($sql);
 		return $this->search($data);
 	}
@@ -116,8 +116,11 @@ class ModeloControl extends ModelBase
 				throw new \Exception("El id del usuario no existe.");
 			}
 
-			if (!empty($this->getPatologias())) {
-				foreach ($this->getPatologias() as $patologia) {
+			// El controlador manda [null] cuando no se marcó ningún check:
+			// se filtran para no intentar insertar NULL en columnas NOT NULL.
+			$patologias = array_filter((array)$this->getPatologias(), fn($p) => $p !== null && $p !== '');
+			if (!empty($patologias)) {
+				foreach ($patologias as $patologia) {
 					$data = [
 						'id_paciente'    => $this->getIdPaciente(),
 						'id_patologia'   => $patologia,
@@ -145,8 +148,9 @@ class ModeloControl extends ModelBase
 			$this->setSQL($sql);
 			$idControl = $this->create($data);
 
-			if (!empty($this->getSintomas())) {
-				foreach ($this->getSintomas() as $sintoma) {
+			$sintomas = array_filter((array)$this->getSintomas(), fn($s) => $s !== null && $s !== '');
+			if (!empty($sintomas)) {
+				foreach ($sintomas as $sintoma) {
 					$data = ['sintoma' => $sintoma, 'idControl' => $idControl];
 					$sql  = "INSERT INTO sintomas_control (id_sintomas_control, id_sintomas, id_control) VALUES (null, :sintoma, :idControl)";
 					$this->setSQL($sql);
@@ -329,6 +333,14 @@ class ModeloControl extends ModelBase
 		if (!is_array($sintomas)) {
 			throw new \InvalidArgumentException("Síntomas no puede estar vacío.");
 		}
+		foreach ($sintomas as $sintoma) {
+			if ($sintoma === null || $sintoma === '') {
+				continue; // el controlador manda [null] cuando no se marca ningún check
+			}
+			if (!preg_match("/^[0-9]+$/", (string)$sintoma) || (int)$sintoma <= 0) {
+				throw new \InvalidArgumentException("Síntoma seleccionado inválido.");
+			}
+		}
 		$this->sintomas = $sintomas;
 	}
 
@@ -340,13 +352,15 @@ class ModeloControl extends ModelBase
 		$this->indicaciones = $indicaciones;
 	}
 
-	public function setFechaRegreso($fechaRegreso)
+	public function setFechaRegreso($fechaRegreso, $esEdicion = false)
 	{
 		$dt = \DateTime::createFromFormat('Y-m-d', $fechaRegreso);
 		if (!$dt || $dt->format('Y-m-d') !== $fechaRegreso) {
 			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
 		}
-		if ($fechaRegreso <= date("Y-m-d")) {
+		// Al editar un control histórico la fecha de regreso puede ya haber
+		// pasado: el usuario está corrigiendo un registro, no agendando uno nuevo.
+		if (!$esEdicion && $fechaRegreso <= date("Y-m-d")) {
 			throw new \InvalidArgumentException("La fecha no puede ser del pasado.");
 		}
 		$this->fechaRegreso = $fechaRegreso;
@@ -357,15 +371,43 @@ class ModeloControl extends ModelBase
 		if (!is_array($patologias)) {
 			throw new \InvalidArgumentException("La patología no puede estar vacía.");
 		}
+		foreach ($patologias as $patologia) {
+			if ($patologia === null || $patologia === '') {
+				continue; // el controlador manda [null] cuando no se marca ningún check
+			}
+			if (!preg_match("/^[0-9]+$/", (string)$patologia) || (int)$patologia <= 0) {
+				throw new \InvalidArgumentException("Patología seleccionada inválida.");
+			}
+		}
 		$this->patologias = $patologias;
 	}
 
 	public function setNota($nota)
 	{
+		// La nota es opcional, pero la columna es varchar(40) NOT NULL: sin esta
+		// validación un texto largo rompía el INSERT con un error SQL crudo.
+		if ($nota === null) {
+			$nota = '';
+		}
+		if (!is_string($nota)) {
+			throw new \InvalidArgumentException("La nota no es válida.");
+		}
+		$nota = trim($nota);
+		if (mb_strlen($nota) > 40) {
+			throw new \InvalidArgumentException("La nota no puede superar los 40 caracteres.");
+		}
+		if (preg_match('/[<>]/', $nota)) {
+			throw new \InvalidArgumentException("La nota contiene caracteres no permitidos.");
+		}
 		$this->nota = $nota;
 	}
 	public function setSeveridad($severidad)
 	{
+		// La columna es enum('LEVE','MODERADA','GRAVE'): cualquier otro valor
+		// hacía que MySQL truncara el dato y fallara el INSERT.
+		if (!in_array($severidad, ['LEVE', 'MODERADA', 'GRAVE'], true)) {
+			throw new \InvalidArgumentException("La severidad debe ser LEVE, MODERADA o GRAVE.");
+		}
 		$this->severidad = $severidad;
 	}
 

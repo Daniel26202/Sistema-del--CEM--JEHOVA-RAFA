@@ -25,9 +25,16 @@ class ModeloSintomas extends ModelBase
         }
     }
 
-    public function selectSintomas($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_paciente', $ordenDir = 'DESC')
+    public function selectSintomas($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_sintomas', $ordenDir = 'DESC')
     {
         try {
+            // Lista blanca defensiva: la columna se interpola en el ORDER BY.
+            $columnasPermitidas = ['id_sintomas', 'nombre'];
+            if (!in_array($ordenColumna, $columnasPermitidas, true)) {
+                $ordenColumna = 'id_sintomas';
+            }
+            $ordenDir = strtoupper($ordenDir) === 'ASC' ? 'ASC' : 'DESC';
+
             $sql = 'SELECT id_sintomas,nombre FROM sintomas WHERE estado = "ACT"';
             $data = [];
 
@@ -96,8 +103,8 @@ class ModeloSintomas extends ModelBase
 
             $validar  = $this->search($data, false);
 
-            if ($validar == []) {
-                throw new \Exception("El id del sintomas no existe");
+            if (empty($validar)) {
+                throw new \Exception("El id del sintoma no existe.");
             }
 
             $sql = "UPDATE sintomas SET estado = 'DES' WHERE id_sintomas =:id";
@@ -106,7 +113,8 @@ class ModeloSintomas extends ModelBase
             $this->update_logic($data['id_sintomas']);
             return ["exito"];
         } catch (\Exception $e) {
-            return 0;
+            // Antes se devolvía 0 y el controlador perdía el motivo real.
+            return $e->getMessage();
         }
     }
 
@@ -137,6 +145,11 @@ class ModeloSintomas extends ModelBase
 
     public function setNombre($nombre)
     {
+        // La columna es varchar(25): sin el límite, un nombre largo hacía
+        // fallar el INSERT con "Data too long".
+        if (!is_string($nombre) || mb_strlen($nombre) > 25) {
+            throw new \InvalidArgumentException("El nombre no puede superar los 25 caracteres.");
+        }
         if (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$/", $nombre)) {
             throw new \InvalidArgumentException("El Nombre debe contener solo letras ademas iniciar con una letra mayúscula y tenga al menos 3 caracteres");
         }

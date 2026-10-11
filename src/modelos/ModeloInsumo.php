@@ -11,7 +11,7 @@ class ModeloInsumo extends ModelBase
 
 	private $idInsumo, $cantidadCero, $parametro, $nombre, $imagen, $descripcion, $fechaDeIngreso, $fechaDeVencimiento, $precio, $cantidad, $stockMinimo, $lote, $marca, $medida, $iva, $imagenAntigua, $insumosArray, $idProveedor;
 
-	private $columnasPermitidas = ['id_entrada', 'nombre', 'proveedor', 'fechDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
+	private $columnasPermitidas = ['id_entrada', 'nombre', 'proveedor', 'fechaDeIngreso', 'fechaDeVencimiento', 'cantidad_entrada', 'precio_entrada', 'numero_de_lote'];
 	private $ordenesPermitidos = ['ASC', 'DESC'];
 
 	public function __construct($dbSystem = true)
@@ -53,7 +53,7 @@ class ModeloInsumo extends ModelBase
 			$data = [];
 
 			if (!empty($buscar)) {
-				$sql .= " AND (i.nombre LIKE :buscar OR p.nombre LIKE :buscar OR ei.fechaDeVencimiento LIKE :buscar OR ei.fechaDeIngreso LIKE :buscar OR ei.cantidad_entrada LIKE :buscar OR ei.precio LIKE :buscar OR e.numero_de_lote LIKE :buscar)";
+				$sql .= " AND (i.nombre LIKE :buscar OR p.nombre LIKE :buscar OR ei.fechaDeVencimiento LIKE :buscar OR e.fechaDeIngreso LIKE :buscar OR ei.cantidad_entrante LIKE :buscar OR ei.precio LIKE :buscar OR e.numero_de_lote LIKE :buscar)";
 				$data['buscar'] = "%$buscar%";
 			}
 
@@ -79,7 +79,7 @@ class ModeloInsumo extends ModelBase
 		$sql = "SELECT COUNT(*) as total  FROM entrada_insumo ei INNER JOIN insumo i ON i.id_insumo = ei.id_insumo INNER JOIN entrada e ON e.id_entrada = ei.id_entrada INNER JOIN proveedor p ON p.id_proveedor = e.id_proveedor WHERE ei.fechaDeVencimiento <= CURRENT_DATE";
 
 		if (!empty($buscar)) {
-			$sql .= " AND (i.nombre LIKE :buscar OR p.nombre LIKE :buscar OR ei.fechaDeVencimiento LIKE :buscar OR ei.fechaDeIngreso LIKE :buscar OR ei.cantidad_entrada LIKE :buscar OR ei.precio LIKE :buscar OR e.numero_de_lote LIKE :buscar)";
+			$sql .= " AND (i.nombre LIKE :buscar OR p.nombre LIKE :buscar OR ei.fechaDeVencimiento LIKE :buscar OR e.fechaDeIngreso LIKE :buscar OR ei.cantidad_entrante LIKE :buscar OR ei.precio LIKE :buscar OR e.numero_de_lote LIKE :buscar)";
 			$data['buscar'] = "%$buscar%";
 		}
 
@@ -168,19 +168,21 @@ class ModeloInsumo extends ModelBase
 	}
 
 	//
-	public function papelera($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_insumo', $ordenDir = 'DESC')
+		public function papelera($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_insumo', $ordenDir = 'DESC')
 	{
 		try {
-			$sql = "SELECT i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0 GROUP BY inv.id_insumo ";
+			// El filtro va en el WHERE (antes del GROUP BY) y usa columnas reales:
+			// el alias "cantidad_inventario" no puede usarse en el WHERE.
+			$sql = "SELECT i.id_insumo,i.imagen,i.nombre,i.descripcion,i.marca,i.medida,i.precio,i.stockMinimo,i.iva,inv.cantidad_disponible as cantidad_inventario  FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0";
 
 			$data = [];
 
 			if (!empty($buscar)) {
-				$sql .= " AND (i.nombre LIKE :buscar OR i.descripcion LIKE :buscar OR i.marca LIKE :buscar  OR i.medida LIKE :buscar  OR i.precio LIKE :buscar  OR i.stockMinimo LIKE :buscar  OR cantidad_inventario LIKE :buscar)";
+				$sql .= " AND (i.nombre LIKE :buscar OR i.descripcion LIKE :buscar OR i.marca LIKE :buscar  OR i.medida LIKE :buscar  OR i.precio LIKE :buscar  OR i.stockMinimo LIKE :buscar  OR inv.cantidad_disponible LIKE :buscar)";
 				$data['buscar'] = "%$buscar%";
 			}
 
-			$sql .= " ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
+			$sql .= " GROUP BY inv.id_insumo ORDER BY {$ordenColumna} {$ordenDir} LIMIT :inicio, :limite";
 
 			$this->setSQL($sql);
 
@@ -188,25 +190,32 @@ class ModeloInsumo extends ModelBase
 			$data['limite'] = (int)$limite;
 			return $this->search($data);
 		} catch (\Exception $e) {
-			return $e->getMessage();
+			error_log("Error en papelera(): " . $e->getMessage());
+			return [];
 		}
 	}
 
-	public function contarTotal($buscar = '')
+		public function contarTotal($buscar = '')
 	{
-		$data = [];
+		try {
+			$data = [];
 
-		$sql = "SELECT COUNT(*) as total FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0 GROUP BY inv.id_insumo  ";
+			// Total de insumos distintos en la papelera (coincide con el GROUP BY de papelera()).
+			$sql = "SELECT COUNT(DISTINCT inv.id_insumo) as total FROM entrada_insumo inv INNER JOIN insumo i ON i.id_insumo =  inv.id_insumo WHERE i.estado ='DES' AND inv.cantidad_disponible >= 0";
 
-		if (!empty($buscar)) {
-			$sql .= " AND (i.nombre LIKE :buscar OR i.descripcion LIKE :buscar OR i.marca LIKE :buscar  OR i.medida LIKE :buscar  OR i.precio LIKE :buscar  OR i.stockMinimo LIKE :buscar  OR cantidad_inventario LIKE :buscar)";
-			$data['buscar'] = "%$buscar%";
+			if (!empty($buscar)) {
+				$sql .= " AND (i.nombre LIKE :buscar OR i.descripcion LIKE :buscar OR i.marca LIKE :buscar  OR i.medida LIKE :buscar  OR i.precio LIKE :buscar  OR i.stockMinimo LIKE :buscar  OR inv.cantidad_disponible LIKE :buscar)";
+				$data['buscar'] = "%$buscar%";
+			}
+
+			$this->setSQL($sql);
+			$resultado = $this->search($data, false);
+
+			return $resultado['total'] ?? 0;
+		} catch (\Exception $e) {
+			error_log("Error en contarTotal(): " . $e->getMessage());
+			return 0;
 		}
-
-		$this->setSQL($sql);
-		$resultado = $this->search($data, false);
-
-		return $resultado['total'] ?? 0;
 	}
 
 
@@ -235,10 +244,16 @@ class ModeloInsumo extends ModelBase
 				throw new \Exception("Ya existe un insumo registrado con este nombre en el catálogo.");
 			}
 
-			// También validamos que el proveedor esté activo y bloqueamos su lectura
-			// para que no sea eliminado o modificado durante la carga de la mercancía.
-			$this->setSQL("SELECT id_proveedor FROM proveedor WHERE id_proveedor = :id_prov FOR UPDATE");
-			$this->search(['id_prov' => $this->getIdProveedor()], false);
+			// También validamos que el proveedor exista y esté activo, bloqueando
+			// su lectura para que no sea eliminado durante la carga de la mercancía.
+			// Antes el resultado de esta consulta se ignoraba: se podía crear un
+			// insumo apuntando a un proveedor inexistente.
+			$this->setSQL("SELECT id_proveedor FROM proveedor WHERE id_proveedor = :id_prov AND estado = 'ACT' FOR UPDATE");
+			$proveedor = $this->search(['id_prov' => $this->getIdProveedor()], false);
+
+			if (!$proveedor) {
+				throw new \Exception("El proveedor especificado no existe o no está activo.");
+			}
 
 
 			$data = [
@@ -354,23 +369,13 @@ class ModeloInsumo extends ModelBase
 
 
 
-	private function vencer()
+		private function vencer()
 	{
-		try {
-			$insumos = $this->insumos();
-			foreach ($insumos as $key) {
-				//echo $key["id_insumo"]."<br>";
-				$inventario = $this->actualizar_cantidad_insumo($key["id_insumo"]);
-				// print_r($cantidad[0]["cantidad"]);
-
-				//esto es para actualizar la cantidad de insumos
-				$sql = "UPDATE inventario SET cantidad=:cantidad WHERE id_insumo=:id";
-				$this->setSQL($sql);
-				$this->update(['cantidad' => $inventario[0]["cantidad"]], $key["id_insumo"]);
-			}
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
+		// El stock disponible ya se calcula en vivo con la vista view_resumen_insumos
+		// (suma de lotes activos y no vencidos). No existe una tabla física "inventario"
+		// en la base, por lo que el UPDATE anterior fallaba en cada carga de la página.
+		// La expiración es implícita en la vista: no hay nada que persistir aquí.
+		return true;
 	}
 
 
@@ -389,7 +394,9 @@ class ModeloInsumo extends ModelBase
 	{
 		foreach ($campos as $campo) {
 			if (empty($campo)) {
-				throw new \Exception("No se permiten campos vacíos{$contexto}.");
+				// InvalidArgumentException (no \Exception) para que el controlador
+				// la capture y responda 409 en vez de un HTTP 500.
+				throw new \InvalidArgumentException("No se permiten campos vacíos{$contexto}.");
 			}
 		}
 	}
@@ -426,8 +433,10 @@ class ModeloInsumo extends ModelBase
 	public function editarInsumo($idUsuario = null)
 	{
 		$this->validarSesion($idUsuario);
+		// La imagen NO es obligatoria: si no se sube una nueva, el controlador
+		// manda null y el UPDATE simplemente conserva la anterior. Validarla
+		// aquí hacía que editar sin cambiar la imagen fallara siempre.
 		$this->validarCamposObligatorios([
-			$this->imagen,
 			$this->nombre,
 			$this->descripcion,
 			$this->stockMinimo,
@@ -563,6 +572,11 @@ class ModeloInsumo extends ModelBase
 
 	public function setNombre($nombre)
 	{
+		// La columna es varchar(25): sin el límite, un nombre largo hacía
+		// fallar el INSERT con "Data too long".
+		if (!is_string($nombre) || mb_strlen($nombre) > 25) {
+			throw new \InvalidArgumentException("El nombre no puede superar los 25 caracteres.");
+		}
 		if (!preg_match("/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,})*$/", $nombre)) {
 			throw new \InvalidArgumentException("El nombre debe iniciar con mayúscula, tener al menos 3 letras y puede incluir un segundo nombre separado por un espacio.");
 		}
@@ -597,9 +611,15 @@ class ModeloInsumo extends ModelBase
 	}
 	public function setFechaDeIngreso($fechaDeIngreso)
 	{
-		$d = new \DateTime($fechaDeIngreso);
+		// Se valida el formato antes de construir el DateTime: con basura en el
+		// POST, new \DateTime() lanzaba una excepción que el controlador no
+		// capturaba (HTTP 500).
+		$dt = \DateTime::createFromFormat('Y-m-d', $fechaDeIngreso);
+		if (!$dt || $dt->format('Y-m-d') !== $fechaDeIngreso) {
+			throw new \InvalidArgumentException("La fecha debe tener el formato YYYY-MM-DD.");
+		}
 		$hoy = new \DateTime();
-		if ($d > $hoy) {
+		if ($dt > $hoy) {
 			throw new \InvalidArgumentException("La fecha no puede ser futura");
 		}
 		$this->fechaDeIngreso = $fechaDeIngreso;

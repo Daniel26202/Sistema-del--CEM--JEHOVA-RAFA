@@ -14,7 +14,10 @@
     </h5>
     <input type="hidden" name="id_usuario" id="id_usuario_session" value="<?= $_SESSION['id_usuario'] ?>">
 
-    <input type="hidden" id="dolar" value="<?= $_SESSION["dolar"] ?>">
+    <!-- tasaCambioActual() la resuelve desde la API si la sesión aún no la tiene.
+             Leer $_SESSION["dolar"] directamente devolvía vacío en la primera
+             carga de cada sesión, porque el JS que la llena corre después. -->
+    <input type="hidden" id="dolar" value="<?= number_format(tasaCambioActual(), 2, '.', '') ?>">
 
     <div class="caja-contenedor-tabla fondo-tabla p-3 mb-3 m-auto" style="width: 95%; ">
 

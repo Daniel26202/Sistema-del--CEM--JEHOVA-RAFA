@@ -6,202 +6,379 @@ import {
 } from "./generic/funtionGeneric.js";
 import Paginator from "./generic/Paginator.js";
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
+import { valorDolar, guardarTasaManual, tasaGuardada } from "./generic/coversion.js";
 
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
+/** Obtiene un elemento por id devolviendo null en vez de lanzar. */
+const byId = (id) => document.getElementById(id);
+/** Igual que byId pero lanza un error claro si el elemento no existe. */
+const need = (id) => {
+  const el = byId(id);
+  if (!el) throw new Error(`Elemento obligatorio ausente en el DOM: #${id}`);
+  return el;
+};
+/** Convierte a número devolviendo 0 ante valores no numéricos (evita NaN). */
+const num = (v) => {
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : 0;
+};
+/** Compara dos importes en céntimos enteros (evita los fallos de coma flotante). */
+const sameMoney = (a, b) => Math.round(num(a) * 100) === Math.round(num(b) * 100);
 
-addEventListener("DOMContentLoaded", function () {
-  console.log("factura.:)");
-  // Creamos la variable donde van a estar los datos, y de una vez le ponemos una fila para probar
-  console.log(window.location.href.includes("facturaCita"));
+// async porque el arranque espera a que carguen servicios, insumos y metodos
+// de pago antes de renderizar (antes se usaba un setTimeout(600) fragil).
+addEventListener("DOMContentLoaded", async function () {
   let data = [];
   let dataInsumo = [];
-  let listaModalServicio = [];
   let listaModalInsumo = [];
-  // console.log(data)
-
-  let valorDelDolar = localStorage.getItem("valorDelDolar")
-    ? parseFloat(localStorage.getItem("valorDelDolar"))
-    : 0;
-
-  const modalPaciente = new bootstrap.Modal(
-    document.getElementById("exampleModalagregarPaciente"),
-  );
-
-  const modalAgregarPaciente = document.getElementById("modalAgregar");
-
-  // // Creamos las variables html que usaremos
-  const tabla = document.getElementById("tbody");
-
-  const tbodyInsumos = document.getElementById("tbody-insumos");
-
-  const inputCedulaPaciente = document.getElementById("input-cedula-paciente");
-  const cedulaPaciente = document.getElementById("cedulaPaciente");
-
-  const pacienteClienteCheck = document.querySelector(
-    ".paciente-cliente-check",
-  );
-  const cajaBuscadorCliente = document.getElementById("caja-buscar-cliente");
-  const buscadorCliente = document.getElementById("form-buscador-cliente");
-  const formBuscadorOtroCliente = document.getElementById(
-    "form-buscador-otro-cliente",
-  );
-  const dataCliente = document.getElementById("data-cliente");
-
-  const divClienteNoEncontrado = document.getElementById(
-    "div-cliente-no-encontrado",
-  );
-
-  //botones de acciones en la factura
-  const btnAddPac = document.getElementById("btnAddPac");
-  const btnAddCli = document.getElementById("btnAddCli");
-  const btnServicio = document.getElementById("botonAgregar");
-  const btnInsumos = document.getElementById("btnInsumos");
-  const btnVaciarTabla = document.getElementById("vaciarTabla");
-  const btnSiguiente = document.getElementById("btnSiguiente");
-  const inputTotalCita = document.getElementById("inputTotalCita");
-  const inputTotalFactura = document.getElementById("totalFactura");
-  const totalDeConfirmacion = document.getElementById("totalDeConfirmacion");
-  const inputTotalDeConfirmacion = document.getElementById(
-    "inputTotalDeConfirmacion",
-  );
-  const totalModalValidacion = document.getAnimations("total-modal-validacion");
-  const bodyModalPago = document.getElementById("body-modal-pago");
-  const inputPaciente = document.getElementById("inputPaciente");
-  const inputHospitalizacion = document.getElementById("inputHospitalizacion");
-  const btnTipoDePago = document.querySelector("#btnTipoDePago");
-  //input de la referencia
-  const inputRefencia = document.getElementById("inputRefencia");
-  const inputReferenciaConfir = document.getElementById("referencia_confirmar");
-  const pReferencia = document.getElementById("p-referencia");
-  const divReferencia = document.getElementById("divReferencia");
-  const inputIdCita = document.getElementById("inputIdCita");
-  const botonPC = document.getElementById("botonPC");
-  //boton del modal de validacion
-  const btnValidacion = document.getElementById("btnValidacion");
-  const divModalValidacion = document.getElementById("divModalValidacion");
-  const divInputValidation = document.getElementById("divInputValidation");
-  const divTypePagoCofirm = document.getElementById("divTypePagoCofirm");
   let listTypePago = [];
 
-  //funcion para comprobar si el paciente es el mismo cliente
+  // Tasas y tipo de cambio: única fuente de verdad.
+  // IVA_TASA llega del meta tag renderizado por PHP con src/config/config.php.
+  const IVA_TASA = num(
+    document.querySelector('meta[name="iva-tasa"]')?.getAttribute("content"),
+  ) || 0.16;
+
+// ── Tasa de cambio ─────────────────────────────────────────────────────
+  // Antes se leía localStorage al instante: app.js arranca la petición a la API
+  // pero no había terminado, así que la pantalla se pintaba con la tasa del día
+  // anterior y se corregía sola recién al recargar.
+  //
+  // Regla: NUNCA se bloquea el primer pintado esperando a la red. Se aplica la
+  // tasa cacheada de inmediato (si existe) y la de la API llega después para
+  // repintar. Si la API no responde, la pantalla ya está usable.
+  //
+  // TIPO_CAMBIO es `let` a propósito: todas las funciones de cálculo leen el
+  // mismo binding, así que un cambio manual se refleja en toda la pantalla.
+  let TIPO_CAMBIO = 0;
+
+  /** Fija la tasa y repinta los importes de toda la pantalla. */
+  const aplicarTasa = (tasa) => {
+    TIPO_CAMBIO = num(tasa);
+
+    const caja = byId("cajaTasaCambio");
+    const valor = byId("tasaCambioActual");
+    const oculto = byId("inputTipoCambio");
+
+    if (valor) {
+      valor.innerText =
+        TIPO_CAMBIO > 0 ? `${TIPO_CAMBIO.toFixed(2)} BS/$` : "Sin tasa";
+    }
+    if (caja) caja.classList.toggle("d-none", TIPO_CAMBIO > 0);
+    // El formulario viaja con la tasa real usada en pantalla.
+    if (oculto) oculto.value = TIPO_CAMBIO > 0 ? TIPO_CAMBIO.toFixed(4) : "";
+
+    // Durante el arranque aún no hay datos que pintar: no se repinta nada.
+    if (datosListos) {
+      calcularTotal();
+      mostrarServicios();
+      mostrarInsumo();
+    }
+    return TIPO_CAMBIO;
+  };
+
+  /** Fecha de hoy en formato YYYY-MM-DD (hora local, no UTC). */
+  const fechaDeHoy = () => {
+    const d = new Date();
+    const mes = String(d.getMonth() + 1).padStart(2, "0");
+    const dia = String(d.getDate()).padStart(2, "0");
+    return `${d.getFullYear()}-${mes}-${dia}`;
+  };
+
+  // Marca que los datos base ya cargaron: a partir de aquí los recálculos de
+  // la tasa sí repintan la pantalla.
+  let datosListos = false;
+
+  /**
+   * Pinta lo antes posible y refresca la tasa en segundo plano.
+   *
+   * No se espera a la red: cualquier fallo de la API deja la pantalla
+   * funcionando con la tasa cacheada (o Avisa para que se ajuste a mano).
+   */
+  const inicializarTasa = () => {
+    // 1):Tasa cacheada, de forma síncrona. La pantalla se pinta ya.
+    const cache = tasaGuardada();
+    if (cache > 0) aplicarTasa(cache);
+
+    // 2) Botón para fijarla a mano (siempre disponible).
+    byId("btnGuardarTasa")?.addEventListener("click", () => {
+      const entered = prompt(
+        "Ingrese la tasa de cambio (BS por dólar):",
+        String(TIPO_CAMBIO || cache),
+      );
+      if (entered === null) return;
+
+      try {
+        aplicarTasa(guardarTasaManual(entered));
+        alertSuccess("Tasa de cambio actualizada.");
+      } catch (error) {
+        alertError("Error", error.message);
+      }
+    });
+
+// 3) Refresco desde la API en segundo plano. No bloquea nada.
+    // `actualizada` indica si la API trajo datos de verdad. Antes se ignoraba el
+    // resultado, así que una API caída pasaba sin avisar y el cajero facturaba
+    // con una tasa vieja sin saberlo.
+    valorDolar()
+      .then((info) => {
+        // a) La API respondió con una tasa válida.
+        if (info.actualizada && info.tasa > 0) {
+          aplicarTasa(info.tasa);
+          datosListos = true;
+
+          // El navegador puede bloquear localStorage (modo incógnito estricto):
+          // la tasa funciona en esta pantalla pero se pierde al recargar.
+          if (info.persistida === false) {
+            alertError(
+              "Tasa de cambio",
+              "La tasa se obtuvo, pero el navegador no permite guardarla. Se perderá al recargar.",
+            );
+          }
+          return;
+        }
+
+        // b) La API falló, pero hay una tasa guardada: se usa y se avisa.
+        if (info.tasa > 0) {
+          aplicarTasa(info.tasa);
+
+          const motivo = info.error ? ` (${info.error})` : "";
+          // alertError(
+          //   "Tasa de cambio",
+          //   `La API no respondió${motivo}. Se usa la última tasa registrada ` +
+          //     `(${info.tasa.toFixed(2)} BS/$ del ${info.fecha || "día anterior"}). ` +
+          //     `Verifíquela con el botón "cambiar".`,
+          // );
+          return;
+        }
+
+        // c) No hay tasa en ninguna parte: hay que obtenerla a mano.
+        aplicarTasa(0);
+        alertError(
+          "Error",
+          "No se pudo obtener la tasa de cambio. Use el botón 'cambiar' para ingresarla manualmente antes de facturar.",
+        );
+      })
+      .catch((error) => {
+        // La API nunca debe romper la pantalla.
+        console.warn("Fallo al refrescar la tasa:", error?.message);
+      });
+  };
+
+  const modalPaciente = bootstrap.Modal.getOrCreateInstance(
+    byId("exampleModalagregarPaciente") ?? document.createElement("div"),
+  );
+
+  // Modal de "agregar cliente", el mismo que usa el módulo de Clientes.
+  const modalCliente = bootstrap.Modal.getOrCreateInstance(
+    byId("modalCliente") ?? document.createElement("div"),
+  );
+
+  const modalAgregarPaciente = byId("modalAgregar");
+
+  // ── Referencias del DOM ────────────────────────────────────────────────
+  const tabla = byId("tbody");
+  const tbodyInsumos = byId("tbody-insumos");
+
+  const inputCedulaPaciente = byId("input-cedula-paciente");
+  const cedulaPaciente = byId("cedulaPaciente");
+
+  const pacienteClienteCheck = document.querySelector(".paciente-cliente-check");
+  const cajaBuscadorCliente = byId("caja-buscar-cliente");
+  const formBuscadorOtroCliente = byId("form-buscador-otro-cliente");
+  // Nombre del paciente/cliente en la pantalla principal.
+  const dataCliente = byId("data-cliente");
+  // Nombre del cliente cuando la factura es a nombre de otra persona. Tiene su
+  // propio id: si compartiera "data-cliente", getElementById devolvería el de
+  // la pantalla y el modal nunca mostraría el nombre.
+  const dataClienteModal = byId("data-cliente-modal");
+  const divClienteNoEncontrado = byId("div-cliente-no-encontrado");
+
+  //botones de acciones en la factura
+  const btnAddPac = byId("btnAddPac");
+  const btnAddCli = byId("btnAddCli");
+  const btnServicio = byId("botonAgregar");
+  const btnInsumos = byId("btnInsumos");
+  const btnVaciarTabla = byId("vaciarTabla");
+  const btnSiguiente = byId("btnSiguiente");
+  const inputTotalCita = byId("inputTotalCita");
+  const inputTotalFactura = byId("totalFactura");
+  const totalDeConfirmacion = byId("totalDeConfirmacion");
+  const inputTotalDeConfirmacion = byId("inputTotalDeConfirmacion");
+  // OJO: antes era document.getAnimations(...) que devuelve un array de
+  // Animation; escribir .innerText sobre él no pintaba nada (fallo silencioso).
+  const totalModalValidacion = byId("total-modal-validacion");
+  const bodyModalPago = byId("body-modal-pago");
+  const inputPaciente = byId("inputPaciente");
+  const inputHospitalizacion = byId("inputHospitalizacion");
+  const inputCliente = byId("inputCliente");
+  const btnTipoDePago = need("btnTipoDePago");
+  //input de la referencia
+  const inputRefencia = byId("inputRefencia");
+  const inputReferenciaConfir = byId("referencia_confirmar");
+  const pReferencia = byId("p-referencia");
+  const divReferencia = byId("divReferencia");
+  const inputIdCita = byId("inputIdCita");
+  const botonPC = byId("botonPC");
+  //boton del modal de validacion
+  const btnValidacion = byId("btnValidacion");
+  const divModalValidacion = byId("divModalValidacion");
+  const divInputValidation = byId("divInputValidation");
+  const divTypePagoCofirm = byId("divTypePagoCofirm");
+
+  
+
+  // Paginadores reutilizables: se crean una vez y se actualizan con setItems(),
+  // de lo contrario cada render añadía otro listener al input de búsqueda.
+  //
+  // Se declaran aquí SIN instanciar y se construyen al final del handler
+  // (ver "Creación de los paginadores"), cuando todas las funciones ya existen.
+  // Instanciarlos aquí pasaba `addServicioTable` y `addInsumoTable` — declarados
+  // más abajo con `const` — y lanzaba en tiempo de ejecución:
+  //     ReferenceError: Cannot access 'addServicioTable' before initialization
+  // Ese error abortaba TODO el handler: ningún listener quedaba registrado y el
+  // buscador recargaba la página en vez de mostrar los datos del paciente.
+  let paginadorServicios = null;
+  let paginadorInsumos = null;
+
+  /** Construye los paginadores. Debe ejecutarse tras declarar las funciones. */
+  const crearPaginadores = () => {
+    paginadorServicios = new Paginator(
+      [],
+      1,
+      "div-modal-servicio",
+      "paginationSer",
+      "searchInputSer",
+      (res) => returnFragmentHtmlSer(res),
+      "id",
+      (id) => addServicioTable(id),
+    );
+
+    paginadorInsumos = new Paginator(
+      [],
+      1,
+      "div-modal-insumo",
+      "pagination",
+      "searchInput",
+      (res) => returnFragmentHtml(res),
+      "id_insumo",
+      (id) => addInsumoTable(id),
+    );
+  };
+  /** Muestra u oculta los botones de servicio/insumo según haya un paciente válido. */
+  const setAccionesVisibles = (visibles) => {
+    const clase = visibles ? "d-none" : "c";
+    [btnServicio, btnInsumos].forEach((b) => {
+      if (!b) return;
+      b.classList.toggle("d-none", !visibles);
+      b.classList.toggle("c", visibles);
+    });
+    void clase;
+  };
+
+  /** Calcula la edad en años a partir de una fecha de nacimiento. */
+  const calcularEdad = (fechaNacimiento) => {
+    if (!fechaNacimiento) return 0;
+    const nac = new Date(fechaNacimiento);
+    if (Number.isNaN(nac.getTime())) return 0;
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - nac.getFullYear();
+    const mes = hoy.getMonth() - nac.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nac.getDate())) edad--;
+    return Math.max(0, edad);
+  };
 
   const buscarCliente = async (formulario) => {
     try {
-      let [addClass, removeClass] = ["", ""];
       const datos = new FormData(formulario);
-      const contenido = { method: "POST", body: datos };
-      let peticion = await fetch(
+      let resultado = await executePetition(
         "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente",
-        contenido,
+        "POST",
+        datos,
       );
-      let resultado = await peticion.json();
-      console.log(resultado);
-      if (resultado.length > 0) {
-        resultado.forEach((res) => {
-          console.log(res);
-          // calcula la edad
-          const fechaNac = new Date(res.fn);
-          const edadDif = Date.now() - fechaNac.getTime();
-          const edadFecha = new Date(edadDif);
-          const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
-          dataCliente.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
 
-          if (edad >= 18) {
-            [addClass, removeClass] = ["c", "d-none"];
-
-            document.getElementById("botonPC").classList.remove("d-none");
-          } else {
-            [addClass, removeClass] = ["d-none", "c"];
-            document.getElementById("botonPC").classList.add("d-none");
-          }
-          document.getElementById("inputCliente").value = res.id_cliente;
-        });
-
-        divClienteNoEncontrado.classList.add("d-none");
-        btnAddCli.classList.add("d-none");
-      } else {
-        [addClass, removeClass] = ["d-none", "c"];
-
-        dataCliente.innerText = ``;
-
-        divClienteNoEncontrado.classList.remove("d-none");
-        document.getElementById("inputCliente").value = "";
-        document.getElementById("botonPC").classList.add("d-none");
-
-        btnAddCli.classList.remove("d-none");
+      // executePetition devuelve {ok:false,error} ante HTTP >= 400 (p. ej. cédula
+      // inválida). Antes se hacía .length sobre ese objeto y se rompía.
+      if (!Array.isArray(resultado)) {
+        throw new Error(resultado?.error ?? "Respuesta inválida del servidor.");
       }
 
-      btnServicio.classList.add(addClass);
-      btnInsumos.classList.add(addClass);
-      btnServicio.classList.remove(removeClass);
-      btnInsumos.classList.remove(removeClass);
+      if (resultado.length > 0) {
+        const res = resultado[0];
+        const edad = calcularEdad(res.fn);
+
+        // Se muestra dentro del modal de "otra persona", no en la pantalla principal.
+        if (dataClienteModal) {
+          dataClienteModal.innerText = `CLIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+        }
+        if (inputCliente) inputCliente.value = res.id_cliente;
+
+        divClienteNoEncontrado?.classList.add("d-none");
+        btnAddCli?.classList.add("d-none");
+
+        // El botón "Siguiente" del modal depende de la edad del cliente.
+        setAccionesVisibles(true);
+        if (botonPC) botonPC.classList.toggle("d-none", edad < 18);
+      } else {
+        if (dataClienteModal) dataClienteModal.innerText = "";
+        if (inputCliente) inputCliente.value = "";
+        divClienteNoEncontrado?.classList.remove("d-none");
+        botonPC?.classList.add("d-none");
+        btnAddCli?.classList.remove("d-none");
+        setAccionesVisibles(false);
+      }
     } catch (error) {
-      alertError("Error", "Lamentablemente ocurrio un error" + error);
-      console.log(error);
+      alertError("Error", "Lamentablemente ocurrio un error: " + error.message);
+      console.error(error);
     }
   };
 
   //buscador paciente cuando no tiene cita
   const buscarPaciente = async (formularioPaciente) => {
-    // try {
-    let [addClass, removeClass] = ["", ""];
-    const datos = new FormData(formularioPaciente);
-    let resultado = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
-      "POST",
-      datos,
-    );
-    console.log("paciente", resultado);
-    if (resultado.length > 0) {
-      resultado.forEach((res) => {
-        console.log(res);
-        // calcula la edad
-        const fechaNac = new Date(res.fn);
-        const edadDif = Date.now() - fechaNac.getTime();
-        const edadFecha = new Date(edadDif);
-        const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+    try {
+      const datos = new FormData(formularioPaciente);
+      let resultado = await executePetition(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
+        "POST",
+        datos,
+      );
+
+      if (!Array.isArray(resultado)) {
+        throw new Error(resultado?.error ?? "Respuesta inválida del servidor.");
+      }
+
+      if (resultado.length > 0) {
+        const res = resultado[0];
+        const edad = calcularEdad(res.fn);
+
         dataCliente.innerText = `PACIENTE: ${res.nombre} ${res.apellido} Edad: ${edad}`;
+        if (inputPaciente) inputPaciente.value = res.id_paciente;
+        if (inputCliente) inputCliente.value = "";
 
-        if (edad >= 18) {
-          [addClass, removeClass] = ["c", "d-none"];
+        divClienteNoEncontrado?.classList.add("d-none");
+        btnAddPac?.classList.add("d-none"); // ya existe, no hace falta registrarlo
 
-          document.getElementById("botonPC").classList.remove("d-none");
-        } else {
-          [addClass, removeClass] = ["d-none", "c"];
-          document.getElementById("botonPC").classList.add("d-none");
-        }
-        console.log(inputPaciente);
+        setAccionesVisibles(true);
+        if (botonPC) botonPC.classList.toggle("d-none", edad < 18);
+      } else {
+        // Paciente inexistente: se ofrece el registro. Antes el TypeError sobre
+        // #inputCliente abortaba aquí y el botón "Agregar Paciente" nunca aparecía.
+        dataCliente.innerText = `El paciente no fue encontrado, debe registrarlo por favor.`;
+        if (inputCliente) inputCliente.value = "";
+        if (inputPaciente) inputPaciente.value = 0;
+        if (inputIdCita) inputIdCita.value = "";
+        botonPC?.classList.add("d-none");
 
-        inputPaciente.value = res.id_paciente;
-      });
-
-      divClienteNoEncontrado.classList.add("d-none");
-      //desaparecer el btn de agregar un paciente
-      btnAddPac.classList.add("d-none");
-    } else {
-      [addClass, removeClass] = ["d-none", "c"];
-
-      dataCliente.innerText = ``;
-
-      divClienteNoEncontrado.classList.remove("d-none");
-      document.getElementById("inputCliente").value = "";
-      document.getElementById("botonPC").classList.add("d-none");
-      inputPaciente.value = 0;
-      //aparecer el btn de agregar paciente
-      dataCliente.innerText = `El paciente no fue encontrado  debe registrarlo por favor.`;
-      btnAddPac.classList.remove("d-none");
+        divClienteNoEncontrado?.classList.remove("d-none");
+        btnAddPac?.classList.remove("d-none");
+        setAccionesVisibles(false);
+      }
+    } catch (error) {
+      alertError("Error", "Ocurrió un error al buscar el paciente: " + error.message);
+      console.error(error);
     }
-
-    btnServicio.classList.add(addClass);
-    btnInsumos.classList.add(addClass);
-    btnServicio.classList.remove(removeClass);
-    btnInsumos.classList.remove(removeClass);
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
 
-  const createPatients = async (form, inputs) => {
+  const createPatients = async (form) => {
     try {
       const data = new FormData(form);
       let result = await executePetition(
@@ -209,22 +386,80 @@ addEventListener("DOMContentLoaded", function () {
         "POST",
         data,
       );
-      console.log(result);
-      if (result.ok) {
+
+      if (result?.ok) {
         alertSuccess(result.message);
-        inputCedulaPaciente.value = cedulaPaciente.value;
-        inputCedulaPaciente.dispatchEvent(
-          new Event("keyup", { bubbles: true }),
-        );
-
-        form.reset();
-        modalPaciente.hide();
-
-        // buscarPacienteConCita(formularioPaciente);
-      } else throw new Error(`${result.error}`);
+        // Se dispara el flujo de busqueda real en vez de un "keyup" suelto:
+        // antes solo copiaba la cedula y no volvia a consultar al servidor.
+        if (inputCedulaPaciente && cedulaPaciente) {
+          inputCedulaPaciente.value = cedulaPaciente.value;
+          form.reset();
+          modalPaciente.hide();
+          buscarPacienteConCita(byId("form-buscador-factura") ?? form);
+        }
+      } else {
+        throw new Error(`${result?.error ?? "No se pudo registrar el paciente."}`);
+      }
     } catch (error) {
-      alertError("Error", error);
+      alertError("Error", error.message ?? String(error));
     }
+  };
+
+  /**
+   * Registra un cliente nuevo y lo asigna a la factura.
+   *
+   * Mismo comportamiento que el módulo de Clientes:
+   *   - valida todos los campos con las expresiones modulares,
+   *   - guarda por POST,
+   *   - al volver a la factura rellena #inputCliente y muestra "Siguiente".
+   */
+  const createCliente = async (form, modal) => {
+    try {
+      const data = new FormData(form);
+      const result = await executePetition(
+        "/Sistema-del--CEM--JEHOVA-RAFA/Clientes/guardar",
+        "POST",
+        data,
+      );
+
+      if (result?.ok) {
+        // El cliente recién creado se busca por la cédula que se acaba de
+        // escribir: así se obtiene su id_cliente sin depender de la respuesta.
+        const cedulaGuardada = form.querySelector('[name="cedula"]')?.value;
+        modal?.hide();
+        form.reset();
+
+        if (cedulaGuardada) {
+          const buscador = byId("form-buscador-otro-cliente");
+          if (buscador) {
+            const input = buscador.querySelector('[name="cedula"]');
+            if (input) input.value = cedulaGuardada;
+          }
+          await buscarCliente(form);
+        }
+
+        alertSuccess(result.message ?? "Cliente registrado correctamente.");
+      } else {
+        throw new Error(result?.error ?? "No se pudo registrar el cliente.");
+      }
+    } catch (error) {
+      alertError("Error", error.message ?? String(error));
+    }
+  };
+
+
+  /** Limpia todo el estado de la factura antes de cargar un paciente nuevo. */
+  const limpiarFactura = ({ conservarInsumos = false } = {}) => {
+    data = [];
+    if (!conservarInsumos) dataInsumo = [];
+    if (inputIdCita) inputIdCita.value = "";
+    if (inputHospitalizacion) inputHospitalizacion.value = "";
+    if (inputCliente) inputCliente.value = "";
+    if (tabla) tabla.innerHTML = "";
+    if (tbodyInsumos) tbodyInsumos.innerHTML = "";
+    ocultarBotones();
+    calcularTotal();
+    mostrarConfirmacion();
   };
 
   //buscar cuando el paciente una tiene cita
@@ -237,51 +472,49 @@ addEventListener("DOMContentLoaded", function () {
         "POST",
         datos,
       );
-      console.log(resultado[0]);
+
+      if (!Array.isArray(resultado)) {
+        throw new Error(resultado?.error ?? "Respuesta inválida del servidor.");
+      }
+
       if (resultado.length > 0) {
         // Cita encontrada, actualizar UI con datos de la cita
         const cita = resultado[0];
 
-        // 1. Actualizar datos del paciente
-        const fechaNac = new Date(cita.fecha_de_nacimiento);
-        const edadDif = Date.now() - fechaNac.getTime();
-        const edadFecha = new Date(edadDif);
-        const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+        // 1. Limpiar la factura anterior: buscar un segundo paciente arrastraba
+        //    los insumos y el id_cita del primero (datos cruzados entre pacientes).
+        limpiarFactura();
+
+        // 2. Actualizar datos del paciente
+        const edad = calcularEdad(cita.fecha_de_nacimiento);
         dataCliente.innerText = `PACIENTE: ${cita.nombre_p} ${cita.apellido_p} Edad: ${edad} años`;
-        inputPaciente.value = cita.id_paciente;
+        if (inputPaciente) inputPaciente.value = cita.id_paciente;
+        if (botonPC) botonPC.classList.toggle("d-none", edad < 18);
 
-        if (edad >= 18) {
-          document.getElementById("botonPC").classList.remove("d-none");
-        } else {
-          document.getElementById("botonPC").classList.add("d-none");
-        }
+        divClienteNoEncontrado?.classList.add("d-none");
+        btnAddPac?.classList.add("d-none");
 
-        divClienteNoEncontrado.classList.add("d-none");
-        btnAddPac.classList.add("d-none");
-
-        // 2. Limpiar datos previos y agregar servicio de la cita
-        data = []; // Limpiar servicios anteriores
-
+        // 3. Agregar el servicio de la cita
         insertarServicio(
           cita.id_servicioMedico,
           cita.categoria,
           `DR: ${cita.nombre_d} ${cita.apellido_d}`,
-          parseFloat(cita.precio),
+          num(cita.precio),
           cita.id_doctor_c,
         );
 
-        //agregar el id cita para enviarlo
-        inputIdCita.value = cita.id_cita;
+        // 4. Agregar el id cita para enviarlo
+        if (inputIdCita) inputIdCita.value = cita.id_cita;
 
-        // 3. Habilitar botones de acción
-        btnServicio.classList.remove("d-none");
-        btnInsumos.classList.remove("d-none");
+        // 5. Habilitar botones de acción
+        setAccionesVisibles(true);
       } else {
         // No se encontró cita, buscar solo paciente
-        buscarPaciente(formularioPaciente);
+        limpiarFactura();
+        await buscarPaciente(formularioPaciente);
       }
     } catch (error) {
-      alertError("Error", "Ocurrió un error al buscar la cita del paciente.");
+      alertError("Error", "Ocurrió un error al buscar la cita del paciente: " + error.message);
       console.error(error);
     }
   };
@@ -294,10 +527,10 @@ addEventListener("DOMContentLoaded", function () {
         "GET",
       );
 
-      if (!resultado.length > 0) {
+      if (!Array.isArray(resultado) || resultado.length === 0) {
         alertError(
           "Error",
-          "Lamentablememte no hay hospitalizaciones con ese numero",
+          "Lamentablemente no hay hospitalizaciones con ese número",
         );
         return;
       }
@@ -306,39 +539,34 @@ addEventListener("DOMContentLoaded", function () {
       const hospit = resultado[0];
 
       // 1. Actualizar datos del paciente
-      const fechaNac = new Date(hospit.fecha_de_nacimiento);
-      const edadDif = Date.now() - fechaNac.getTime();
-      const edadFecha = new Date(edadDif);
-      const edad = Math.abs(edadFecha.getUTCFullYear() - 1970);
+      const edad = calcularEdad(hospit.fecha_de_nacimiento);
       dataCliente.innerText = `PACIENTE: ${hospit.nombre_p} ${hospit.apellido_p} Edad: ${edad} años`;
-      inputPaciente.value = hospit.id_paciente;
-      inputHospitalizacion.value = hospit.id_hospitalizacion;
-      console.log(inputPaciente);
+      if (inputPaciente) inputPaciente.value = hospit.id_paciente;
+      if (inputHospitalizacion) inputHospitalizacion.value = hospit.id_hospitalizacion;
 
-      if (edad >= 18) {
-        document.getElementById("botonPC").classList.remove("d-none");
-      } else {
-        document.getElementById("botonPC").classList.add("d-none");
-      }
+      // En hospitalización el botón de "otra persona" no aplica al flujo actual.
+      if (botonPC) botonPC.classList.remove("d-none");
 
-      divClienteNoEncontrado.classList.add("d-none");
-      btnAddPac.classList.add("d-none");
+      divClienteNoEncontrado?.classList.add("d-none");
+      btnAddPac?.classList.add("d-none");
 
-      // 2. Limpiar datos previos y agregar servicio de la cita
-      data = []; // Limpiar servicios anteriores
-      dataInsumo = []; //Limpiar insumos anteriores
+      // 2. Limpiar datos previos (conservando insumos: se recargan abajo)
+      limpiarFactura();
 
-      hospit.servicios.forEach((servicio) => {
+      // 3. Cargar servicios e insumos de la hospitalización
+      (hospit.servicios ?? []).forEach((servicio) => {
         insertarServicio(
           servicio.id_servicioMedico,
           servicio.categoria,
           `${servicio.nombre_d} ${servicio.apellido_d}`,
-          parseFloat(servicio.precios_servicio),
+          num(servicio.precios_servicio),
           servicio.id_doctor,
         );
       });
 
-      hospit.insumos.forEach((insumo) => {
+      (hospit.insumos ?? []).forEach((insumo) => {
+        // insertarInsumoSeleccionado() avisa con un Swal por cada insumo: en
+        // hospitalización son varios y se acumulan. Se inserta en silencio.
         insertarInsumoSeleccionado(
           insumo.id_entradaDeInsumo,
           insumo.cantidad,
@@ -346,17 +574,19 @@ addEventListener("DOMContentLoaded", function () {
           insumo.precio,
           insumo.iva,
           insumo.medida,
+          { silencioso: true },
         );
       });
 
-      botonPC.classList.remove("d-none");
       calcularTotal();
     } catch (error) {
-      alertError("Error", error);
+      alertError("Error", error.message ?? String(error));
+      console.error(error);
     }
   };
 
   const returnFragmentHtmlSer = (res) => {
+    const precio = num(res.precio);
     return `<div class="card card-servicio p-4" style="cursor: pointer;" data-index=${res.id_servicioMedico + "" + res.id_personal} data-id-servicio="${res.id_servicioMedico}" data-doctor="${res.id_personal}">
         <!-- nombre del insumo (podemos cambiarlo dinámicamente) -->
         <div class="text-center nombre-card-factura">
@@ -364,22 +594,22 @@ addEventListener("DOMContentLoaded", function () {
         </div>
         <span class="text-center mb-2">DR: ${res.nombre_d} ${res.apellido_d}</span>
 
-        <span class="text-center mb-2">Precio $: ${res.precio.toFixed(2)} $</span>
-        <span class="text-center mb-2">Precio Bs: ${(valorDelDolar * res.precio.toFixed(2)).toFixed(2)} BS</span>
-        
-        <input type="hidden" value=${res.precio.toFixed(2)} class="precio-servicio">
+        <span class="text-center mb-2">Precio $: ${precio.toFixed(2)} $</span>
+        <span class="text-center mb-2">Precio Bs: ${(precio * TIPO_CAMBIO).toFixed(2)} BS</span>
+
+        <input type="hidden" value=${precio.toFixed(2)} class="precio-servicio">
 
         <!-- pequeños detalles decorativos al estilo bootstrap pero con personalidad -->
-        
-                 <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
+
+                 <button type="button" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
                    res.id_servicioMedico + "" + res.id_personal
                  }">Agregar</button>
     </div>`;
   };
 
   const addServicioTable = (id) => {
-    let cardServicios = document.querySelector(`.card[data-index="${id}"]`);
-    console.log(cardServicios);
+    const cardServicios = document.querySelector(`.card[data-index="${id}"]`);
+    if (!cardServicios) return;
 
     let filterService = data.find(
       (d) =>
@@ -387,8 +617,6 @@ addEventListener("DOMContentLoaded", function () {
         d.id_doctor == cardServicios.getAttribute("data-doctor"),
     );
     if (filterService) {
-      console.log("no");
-
       alertError(
         "Error",
         "No puede agregar el mismo servicio con el mismo doctor.",
@@ -412,22 +640,17 @@ addEventListener("DOMContentLoaded", function () {
         `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarServicios`,
         "GET",
       );
-      console.log(result);
 
-      const paginator = new Paginator(
-        result,
-        1,
-        "div-modal-servicio",
-        "paginationSer",
-        "searchInputSer",
-        returnFragmentHtmlSer,
-        "id",
-        addServicioTable,
-      );
+      if (!Array.isArray(result)) {
+        throw new Error(result?.error ?? "Respuesta inválida del servidor.");
+      }
 
-      paginator.displayItems();
+      // Reutiliza el paginador: antes se creaba uno nuevo en cada llamada y
+      // cadaPaginator añadía otro listener al input de búsqueda.
+      paginadorServicios.setItems(result);
     } catch (error) {
-      alertError("Error", `Lamentablemente algo salio mal ${error}`);
+      alertError("Error", `Lamentablemente algo salio mal ${error.message}`);
+      console.error(error);
     }
   };
 
@@ -437,24 +660,31 @@ addEventListener("DOMContentLoaded", function () {
         `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarInsumos`,
         "GET",
       );
-      //darle el valor a este array para usarlo en la validacion de cantidad de los insumos
-      listaModalInsumo = result;
-      console.log(listaModalInsumo);
+
+      if (!Array.isArray(result)) {
+        throw new Error(result?.error ?? "Respuesta inválida del servidor.");
+      }
+
+      // Stock original por insumo. `disponible` se descuenta sobre una copia
+      // para que el filtro del modal no destruya el stock real (al borrar un
+      // insumo, este debe poder volver a aparecer).
+      listaModalInsumo = result.map((i) => ({
+        ...i,
+        disponible: num(i.disponible),
+        disponibleOriginal: num(i.disponible),
+        precio: num(i.precio),
+      }));
     } catch (error) {
-      alertError("Error", `Lamentablemente algo salio mal ${error}`);
+      alertError("Error", `Lamentablemente algo salio mal ${error.message}`);
+      console.error(error);
     }
   };
 
   const addInsumoTable = (id_insumo) => {
-    //insertar insumos
+    const card = document.querySelector(`.card-insumo[data-index="${id_insumo}"]`);
+    if (!card) return;
 
-    console.log(id_insumo);
-
-    const card = document.querySelector(
-      `.card-insumo[data-index="${id_insumo}"]`,
-    );
-
-    const cantidadSpan = parseInt(card.querySelector(".cantidadDisplay").value);
+    const cantidad = parseInt(card.querySelector(".cantidadDisplay").value);
     const id = card.getAttribute("data-index");
     const nombre = card.querySelector(".title-insumo").innerText;
     const precio = card.getAttribute("data-precio");
@@ -462,8 +692,8 @@ addEventListener("DOMContentLoaded", function () {
     const medida = card.getAttribute("data-medida");
     const stockDisponible = parseInt(card.getAttribute("data-cantidad"));
 
-    if (cantidadSpan > 0 && cantidadSpan <= stockDisponible) {
-      insertarInsumoSeleccionado(id, cantidadSpan, nombre, precio, iva, medida);
+    if (cantidad > 0 && cantidad <= stockDisponible) {
+      insertarInsumoSeleccionado(id, cantidad, nombre, precio, iva, medida);
       return;
     }
     alertError("Error", "No hay stock suficiente de " + nombre);
@@ -493,12 +723,12 @@ addEventListener("DOMContentLoaded", function () {
 
             <ul class="lista-detalles ps-0 mb-0">
               <li class=""><strong>Medida:</strong> ${res.medida}</li>
-              <li class=""><strong>IVA:</strong> ${res.iva ? "Sí" : "No"}</li>
+              <li class=""><strong>IVA:</strong> ${String(res.iva) === "1" ? `Sí (${(IVA_TASA * 100).toFixed(0)}%)` : "No"}</li>
               <li class=""><strong>Stock:</strong> ${res.disponible} unidades</li>
             </ul>
 
             <div>
-              <div class="precio-principal">${res.precio.toFixed(2)} $ ${(valorDelDolar * res.precio.toFixed(2)).toFixed(2)} BS</div>
+              <div class="precio-principal">${num(res.precio).toFixed(2)} $ ${(num(res.precio) * TIPO_CAMBIO).toFixed(2)} BS</div>
             </div>
 
             <!-- Input estilo nuevo diseño -->
@@ -544,54 +774,51 @@ addEventListener("DOMContentLoaded", function () {
   };
 
   const renderizarInsumos = () => {
-    listaModalInsumo = listaModalInsumo.filter((list) => list.disponible > 0);
-    const paginator = new Paginator(
-      listaModalInsumo,
-      1,
-      "div-modal-insumo",
-      "pagination",
-      "searchInput",
-      returnFragmentHtml,
-      "id_insumo",
-      addInsumoTable,
-    );
+    // Filtro NO destructivo: antes `listaModalInsumo = listaModalInsumo.filter(...)`
+    // eliminaba del array los insumos agotados, asi que al borrar uno ya nunca
+    // volvia a aparecer en el modal.
+    const conStock = listaModalInsumo.filter((l) => num(l.disponible) > 0);
+    paginadorInsumos.setItems(conStock);
 
-    paginator.displayItems();
-
-    document.querySelectorAll(".input-cantidad-custom").forEach((input) => {
+    // Clamp del input de cantidad. Antes se buscaba la clase
+    // ".input-cantidad-custom", que no existe en el HTML: todo este bloque era
+    // codigo muerto y el usuario podia escribir cualquier cantidad.
+    document.querySelectorAll(".cantidadDisplay").forEach((input) => {
       const card = input.closest(".card-insumo");
-      const MAX = parseInt(input.getAttribute("max")) || 99;
-      const MIN = 0;
+      if (!card) return;
+      const MAX = parseInt(input.getAttribute("max")) || 1;
+      const MIN = 1;
 
-      function actualizarEstado(valor) {
-        if (valor < MIN) valor = MIN;
-        if (valor > MAX) valor = MAX;
+      const actualizarEstado = () => {
+        let valor = parseInt(input.value);
+        if (!Number.isFinite(valor) || valor < MIN) valor = MIN;
+        if (valor > MAX) {
+          valor = MAX;
+          alertError("Error", `Solo hay ${MAX} unidades disponibles de este insumo.`);
+        }
         input.value = valor;
         card.classList.toggle("seleccionada", valor > 0);
-      }
+      };
 
-      input.addEventListener("input", function () {
-        actualizarEstado(parseInt(this.value) || 0);
-      });
-
-      input.addEventListener("keydown", function (e) {
+      input.addEventListener("input", actualizarEstado);
+      input.addEventListener("keydown", (e) => {
         if (e.key === "-" || e.key === "e") e.preventDefault();
       });
 
-      actualizarEstado(0);
+      actualizarEstado();
     });
   };
+
   const insertarServicio = (id, servicio, doctor, precio, id_doctor) => {
     const obj = {
       id_servicio: id,
       servicio: servicio,
       doctor: doctor,
-      precio: precio,
+      precio: num(precio),
       id_doctor: id_doctor,
     };
 
     data.push(obj);
-    console.log(data);
     mostrarServicios();
   };
 
@@ -602,40 +829,45 @@ addEventListener("DOMContentLoaded", function () {
     precio,
     iva,
     medida,
+    { silencioso = false } = {},
   ) => {
-    const obj = {
-      id_insumo: id,
-      cantidad: cantidad,
-      nombre: nombre,
-      precio: precio,
-      medida: medida,
-      iva: iva,
-    };
+    const cant = parseInt(cantidad);
+    if (!(cant > 0)) return;
 
-    //insumos selecionados
-    const insumoSeleccionado = dataInsumo.find(
-      (insumo) => insumo.id_insumo == id,
-    );
+    const insumoBase = listaModalInsumo.find((i) => i.id_insumo == id);
 
-    //lista para restar
-    const insumosARestar = listaModalInsumo.find(
-      (insumo) => insumo.id_insumo == id,
-    );
+    // Nunca dejar que lo seleccionado supere el stock disponible real.
+    if (insumoBase && cant > num(insumoBase.disponible)) {
+      alertError(
+        "Error",
+        `No hay stock suficiente de ${nombre}. Disponibles: ${insumoBase.disponible}.`,
+      );
+      return;
+    }
 
-    const insumosRegistrados = dataInsumo.find(
-      (insumo) => insumo.id_insumo == id,
-    );
+    const insumoSeleccionado = dataInsumo.find((i) => i.id_insumo == id);
 
-    insumosARestar ? (insumosARestar.disponible -= cantidad) : 0;
+    // Si ya estaba en la factura se acumula la cantidad, si no se agrega.
+    if (insumoSeleccionado) {
+      insumoSeleccionado.cantidad += cant;
+    } else {
+      dataInsumo.push({
+        id_insumo: id,
+        cantidad: cant,
+        nombre: nombre,
+        precio: num(precio),
+        medida: medida,
+        iva: iva,
+      });
+    }
 
-    insumoSeleccionado
-      ? (insumosRegistrados.cantidad += cantidad)
-      : dataInsumo.push(obj);
+    // El stock restante se descuenta sobre el original, nunca sobre el filtro.
+    if (insumoBase) insumoBase.disponible = num(insumoBase.disponible) - cant;
 
     renderizarInsumos();
     mostrarInsumo();
 
-    alertSuccess("Se agrego correctamente el insumo.");
+    if (!silencioso) alertSuccess("Se agrego correctamente el insumo.");
   };
 
   //esto es para ocultar los botones de siguiente y  vaciar
@@ -649,36 +881,50 @@ addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  btnSiguiente.addEventListener("click", () => {
+    botonPC?.classList.remove("d-none");
+  });
+
+  /**
+   * Precio unitario final de un insumo en divisa.
+   * `insumo.iva` es un booleano (tinyint 0/1), NO un monto: antes se hacía
+   * parseFloat(iva) y se sumaba como si fueran dólares.
+   */
+  const precioUnitarioInsumo = (insumo) => {
+    const base = num(insumo.precio);
+    return String(insumo.iva) === "1" ? base * (1 + IVA_TASA) : base;
+  };
+
+  /** Subtotal en divisa de todos los insumos de la factura. */
+  const subtotalInsumosDivisa = () =>
+    dataInsumo.reduce(
+      (acc, i) => acc + precioUnitarioInsumo(i) * (parseInt(i.cantidad) || 0),
+      0,
+    );
+
+  /** Subtotal en divisa de los servicios (incluye el de la cita). */
+  const subtotalServiciosDivisa = () =>
+    data.reduce((acc, s) => acc + num(s.precio), 0);
+
   function calcularTotal() {
-    let totalFactura = parseFloat(inputTotalCita.value);
-    let subTotal = 0;
-    let insumos = 0;
-    for (let i = 0; i < data.length; i++) {
-      subTotal += data[i]["precio"];
-    }
-    for (let i = 0; i < dataInsumo.length; i++) {
-      insumos +=
-        (dataInsumo[i]["iva"] != "No contiene"
-          ? (parseFloat(dataInsumo[i]["precio"]) +
-              parseFloat(dataInsumo[i]["iva"])) *
-            dataInsumo[i]["cantidad"]
-          : parseFloat(dataInsumo[i]["precio"])) * dataInsumo[i]["cantidad"];
-    }
-    let total =
-      parseFloat(totalFactura) + parseFloat(subTotal) + parseFloat(insumos);
-    total = parseFloat(total.toFixed(2));
+    // Base de la cita / hospitalizacion (en divisa)
+    const baseCita = num(inputTotalCita?.value);
 
-    let storedDolar = localStorage.getItem("valorDelDolar");
-    let montoBS = total * storedDolar;
-    montoBS = montoBS.toFixed(2);
+    const totalDivisa =
+      baseCita + subtotalServiciosDivisa() + subtotalInsumosDivisa();
 
-    inputTotalFactura.value = montoBS;
-    totalDeConfirmacion.innerText = `${montoBS} BS`;
-    inputTotalDeConfirmacion.value = montoBS;
+    const totalBS = parseFloat((totalDivisa * TIPO_CAMBIO).toFixed(2));
+
+    if (inputTotalFactura) inputTotalFactura.value = totalBS.toFixed(2);
+    if (totalDeConfirmacion) totalDeConfirmacion.innerText = `${totalBS.toFixed(2)} BS`;
+    if (inputTotalDeConfirmacion) inputTotalDeConfirmacion.value = totalBS.toFixed(2);
 
     //validacion de el modal de validacion...
-    totalModalValidacion.innerText = `Total a pagar ${montoBS} BS`;
-    // inputValidacionPago.value = montoBS;
+    if (totalModalValidacion) {
+      totalModalValidacion.innerText = `Total a pagar ${totalBS.toFixed(2)} BS`;
+    }
+
+    return totalBS;
   }
 
   // // Funcion para actualizar la tabla  servicios
@@ -687,48 +933,41 @@ addEventListener("DOMContentLoaded", function () {
     calcularTotal();
     // Aqui pondremos el codigo HTML que tendra el body de la tabla
     let html = ``;
-    // Recorremos la lista de arriba y añadimos los datos a la variable html
-    console.log(data);
 
     data.forEach((element, index) => {
-      let storedDolar = parseFloat(localStorage.getItem("valorDelDolar"));
-      let montoBS = parseFloat(element["precio"]) * storedDolar;
-      montoBS = montoBS.toFixed(2);
-      console.log(element["precio"], storedDolar, montoBS);
+      const precioDivisa = num(element.precio);
+      const montoBS = (precioDivisa * TIPO_CAMBIO).toFixed(2);
 
       html += `
           <tr class="border-top">
-          <td class="border-top"><div class="fw-bolder">SERVICIO :</div> ${element["servicio"]}</td>
-          <td class="border-top"><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
+          <td class="border-top"><div class="fw-bolder">SERVICIO :</div> ${element.servicio}</td>
+          <td class="border-top"><div class="fw-bolder">DOCTOR:</div> ${element.doctor}</td>
           <td class="border-top">
             <div class="fw-bolder">PRECIO:</div>
-            <p class="mb-1">${montoBS} dfBS</p>
+            <p class="mb-1">${montoBS} BS</p>
             <p class="m-0 p-0">o</p>
-            <p class="mt-1">${parseFloat(element["precio"]).toFixed(2)} $</p>
+            <p class="mt-1">${precioDivisa.toFixed(2)} $</p>
           </td>
           <td class="border-top"></td>
-  
+
           <td class="border-top">
-  
-          <button class="eliminar btn btn-tabla mt-1" data-index=${index}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+
+          <button type="button" class="eliminar btn btn-tabla mt-1" data-index="${index}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
           <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
           </svg></button>
-          <td>
-          <tr>`;
+          </td>
+          </tr>`;
     });
-    tabla.innerHTML = html;
+
+    if (tabla) tabla.innerHTML = html;
+
     // Añadimos los eventos a los botones de eliminar
     document.querySelectorAll(".eliminar").forEach((ele) => {
       ele.addEventListener("click", function () {
-        alertConfirm(
-          "Desea eliminar este servicio medico?",
-          eliminarElement,
-          this,
-        );
+        alertConfirm("Desea eliminar este servicio medico?", eliminarElement, this);
       });
     });
 
-    //funncion para mostrar los botones de vaciar y siguiente
     ocultarBotones();
     mostrarConfirmacion();
   }
@@ -737,84 +976,89 @@ addEventListener("DOMContentLoaded", function () {
   function mostrarInsumo() {
     calcularTotal();
     let html = ``;
+
     dataInsumo.forEach((element, index) => {
-      let storedDolar = localStorage.getItem("valorDelDolar");
-      let montoBSSubTotal =
-        (parseFloat(element["precio"]) * parseInt(element["cantidad"]) +
-          parseFloat(element["iva"])) *
-        storedDolar;
-      montoBSSubTotal = montoBSSubTotal.toFixed(2);
+      const cantidad = parseInt(element.cantidad) || 0;
+      const precioUnitario = precioUnitarioInsumo(element); // ya con IVA aplicado
+      const subtotalDivisa = precioUnitario * cantidad;
+      const aplicaIVA = String(element.iva) === "1";
+      const ivaDivisa = aplicaIVA ? (precioUnitario - num(element.precio)) * cantidad : 0;
 
       html += `
           <tr class="border-top tr">
-          <th class="id_insumo_escondido d-none">${element["id_insumo"]}</th>
-          <td class="border-top nombre"><div class="fw-bolder">INSUMO:</div> ${element["nombre"]}</td>
-          <td class="border-top nombre"><div class="fw-bolder">Medida:</div> ${element["medida"]}</td>
-          <td class="border-top"><div class="fw-bolder">CANTIDAD:</div> ${element["cantidad"]}</td>
+          <th class="id_insumo_escondido d-none">${element.id_insumo}</th>
+          <td class="border-top nombre"><div class="fw-bolder">INSUMO:</div> ${element.nombre}</td>
+          <td class="border-top nombre"><div class="fw-bolder">Medida:</div> ${element.medida}</td>
+          <td class="border-top"><div class="fw-bolder">CANTIDAD:</div> ${cantidad}</td>
           <td class="border-top"><div class="fw-bolder">PRECIO:</div>
-          ${(element["precio"] * storedDolar).toFixed(2)} BS</td>
-          <td class="border-top"><div class="fw-bolder">IVA:</div>${(parseFloat(element["iva"]) * storedDolar).toFixed(2)} BS</td>
+          ${(num(element.precio) * TIPO_CAMBIO).toFixed(2)} BS</td>
+          <td class="border-top"><div class="fw-bolder">IVA:</div>${(ivaDivisa * TIPO_CAMBIO).toFixed(2)} BS</td>
           <td class="border-top">
             <div class="fw-bolder">SUB-TOTAL:</div>
-            <p class="mb-1">${montoBSSubTotal} BS</p>
+            <p class="mb-1">${(subtotalDivisa * TIPO_CAMBIO).toFixed(2)} BS</p>
             <p class="m-0 p-0">o</p>
-            <p class="mt-1">${(parseFloat(element["precio"]) * parseInt(element["cantidad"]) + parseFloat(element["iva"])).toFixed(2)} $</p>
+            <p class="mt-1">${subtotalDivisa.toFixed(2)} $</p>
           </td>
           <td class="border-top"></td>
-  
+
           <td class="border-top">
-  
-          <button class="eliminar-insumo btn btn-tabla mt-1" style="margin-right: 7px;" data-cantidad=${element["cantidad"]} data-id-insumo=${element["id_insumo"]} data-index=${index}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+
+          <button type="button" class="eliminar-insumo btn btn-tabla mt-1" style="margin-right: 7px;" data-cantidad="${cantidad}" data-id-insumo="${element.id_insumo}" data-index="${index}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
           <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
           </svg></button>
-          <td>
-          <tr>`;
+          </td>
+          </tr>`;
     });
-    tbodyInsumos.innerHTML = html;
-    // Añadimos los eventos a los botones de eliminar
 
+    if (tbodyInsumos) tbodyInsumos.innerHTML = html;
+
+    // Añadimos los eventos a los botones de eliminar
     document.querySelectorAll(".eliminar-insumo").forEach((ele) => {
       ele.addEventListener("click", function () {
         alertConfirm("Desea eliminar este insumo?", eliminarInsumo, this);
       });
     });
 
-    //funncion para mostrar los botones de vaciar y siguiente
     ocultarBotones();
     mostrarConfirmacion();
   }
 
   const eliminarElement = (btn) => {
-    data.splice(parseFloat(btn.dataset["index"]), 1);
-    alertSuccess();
+    data.splice(Number(btn.dataset.index), 1);
     mostrarServicios();
   };
 
   const eliminarInsumo = (btn) => {
-    dataInsumo.splice(parseFloat(btn.dataset["index"]), 1);
-    alertSuccess();
-    let id = btn.getAttribute("data-id-insumo");
-    let cantidad = parseInt(btn.getAttribute("data-cantidad"));
-    //actualizar cantidad de insumo
-    const insumoSeleccionado = dataInsumo.find(
-      (insumo) => insumo.id_insumo == id,
-    );
+    const id = btn.getAttribute("data-id-insumo");
+    const cantidad = parseInt(btn.getAttribute("data-cantidad")) || 0;
 
-    //lista para restar
-    const insumosARestar = listaModalInsumo.find(
-      (insumo) => insumo.id_insumo == id,
-    );
+    dataInsumo.splice(Number(btn.dataset.index), 1);
 
-    const insumosRegistrados = dataInsumo.find(
-      (insumo) => insumo.id_insumo == id,
-    );
-
-    insumosARestar ? (insumosARestar.disponible += cantidad) : 0;
-
-    insumoSeleccionado ? (insumosRegistrados.cantidad -= cantidad) : 0;
+    // Devolver el stock al array original para que el insumo vuelva a aparecer
+    // en el modal si queda existencias.
+    const insumoBase = listaModalInsumo.find((i) => i.id_insumo == id);
+    if (insumoBase) insumoBase.disponible = num(insumoBase.disponible) + cantidad;
 
     renderizarInsumos();
     mostrarInsumo();
+    alertSuccess("Se elimino correctamente el insumo.");
+  };
+
+  /** Boton VACIAR: limpia servicios, insumos y devuelve todo el stock. */
+  const vaciarFactura = () => {
+    data = [];
+    dataInsumo = [];
+    listaModalInsumo.forEach((i) => {
+      i.disponible = i.disponibleOriginal ?? i.disponible;
+    });
+    if (inputIdCita) inputIdCita.value = "";
+    if (tabla) tabla.innerHTML = "";
+    if (tbodyInsumos) tbodyInsumos.innerHTML = "";
+    renderizarInsumos();
+    ocultarBotones();
+    calcularTotal();
+    mostrarConfirmacion();
+    alertSuccess("Se vacio la factura.");
   };
 
   const mostrarTiposDePago = async () => {
@@ -823,8 +1067,11 @@ addEventListener("DOMContentLoaded", function () {
         "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarMetodosDePago",
         "GET",
       );
+      if (!Array.isArray(result)) {
+        throw new Error(result?.error ?? "Respuesta inválida del servidor.");
+      }
+
       let html = "";
-      console.log(result);
       if (result.length > 0) {
         result.forEach((res, index) => {
           html += `
@@ -858,82 +1105,92 @@ addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  /**
+   * Metodos de pago que exigen referencia bancaria.
+   * Antes la comparacion era por texto ("Pago Movil"/"Transferencia"), lo que
+   * hacia que un metodo renombrado en la BD se quedara sin validacion.
+   */
+  const METODOS_CON_REFERENCIA = ["pago movil", "transferencia", "pago móvil"];
+
+  const requiereReferencia = (nombre) =>
+    METODOS_CON_REFERENCIA.includes(String(nombre).trim().toLowerCase());
+
   //funcion para realizar las debidas validaciones de los tipos de pago
   const checkearTiposDePago = (tiposDePago) => {
     listTypePago = [];
-    let htmlPAgo = "";
 
     tiposDePago.forEach((tipo) => {
       if (tipo.checked) {
-        let name = tipo
-          .closest(".form-check")
-          .querySelector(".form-check-label").innerText;
-        let obj = {
+        const label = tipo.closest(".form-check")?.querySelector(".form-check-label");
+        listTypePago.push({
           id: tipo.value,
-          name: name,
-        };
-        listTypePago.push(obj);
+          name: (label?.innerText ?? "").trim(),
+        });
       }
     });
 
-    const objP = listTypePago.find((list) => list.name == "Pago Movil");
-    const objT = listTypePago.find((list) => list.name == "Transferencia");
-    const objD = listTypePago.find((list) => list.name == "Divisas");
-    const objE = listTypePago.find((list) => list.name == "Efectivo");
+    // Restablecer siempre el estado del boton antes de evaluar.
+    btnTipoDePago.classList.add("d-none");
 
-    if (listTypePago.length == 0) {
-      btnTipoDePago.classList.add("d-none");
+    if (listTypePago.length === 0) {
+      if (divTypePagoCofirm) divTypePagoCofirm.innerHTML = "";
       return;
     }
 
-    if ((objP != undefined && objT != undefined) || objP > 3) {
-      btnTipoDePago.classList.add("d-none");
-      return;
+    // Pago Movil y Transferencia son excluyentes entre si (no tiene sentido
+    // splits por dos canales que exigen el mismo tipo de referencia).
+    const conRef = listTypePago.filter((t) => requiereReferencia(t.name));
+    if (conRef.length > 1) {
+      alertError(
+        "Error",
+        "Solo puede elegir un metodo de pago con referencia (Pago Movil o Transferencia).",
+      );
+      tiposDePago.forEach((t) => {
+        if (t.checked && requiereReferencia(t.name)) t.checked = false;
+      });
+      listTypePago = listTypePago.filter((t) => !requiereReferencia(t.name));
+      if (listTypePago.length === 0) return;
     }
 
-    if (
-      listTypePago.length >= 2 &&
-      listTypePago.length <= 3 &&
-      (objP != undefined || objT != undefined)
-    ) {
+    const necesitaInput = listTypePago.some((t) => requiereReferencia(t.name));
+    const montoTotal = num(inputTotalFactura?.value);
+
+    // Si hay un metodo con referencia se muestra el campo de referencia.
+    if (necesitaInput && divReferencia) {
       divReferencia.classList.remove("d-none");
-      btnTipoDePago.classList.remove("d-none");
-      btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-      return;
-    }
-
-    if (objD != undefined && objE != undefined) {
+      // La referencia debe validarse de verdad: se limpia el estado previo
+      // para que el usuario no herede el "valido" forzado de otra combinacion.
+      inputRefencia.parentElement.classList.remove("valido", "invalido");
+    } else if (divReferencia) {
       divReferencia.classList.add("d-none");
-      inputRefencia.parentElement.classList.add("valido");
-      inputRefencia.parentElement.classList.remove("invalido");
-      btnTipoDePago.classList.remove("d-none");
-      btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-      return;
+      inputRefencia.parentElement.classList.remove("valido", "invalido");
     }
 
-    if (objP != undefined || objT != undefined) {
-      inputRefencia.parentElement.classList.remove("invalido", "valido");
-      divReferencia.classList.remove("d-none");
-      listTypePago[0].monto = parseFloat(inputTotalFactura.value);
-      btnTipoDePago.classList.remove("d-none");
-      btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-      return;
-    }
-    //esto es por si elige un solo metodo de pago
-    listTypePago.forEach((type) => {
-      htmlPAgo += `
-        <input type="hidden" name="formasDePago[]" value="${type.id}">
-        <input type="hidden" name="montosDePago[]" value="${inputTotalFactura.value}">
-
-        <p>${type.name} monto: ${inputTotalFactura.value} Bs</p>
-        `;
-    });
-    divTypePagoCofirm.innerHTML = htmlPAgo;
-
-    divReferencia.classList.add("d-none");
-    listTypePago[0].monto = parseFloat(inputTotalFactura.value);
     btnTipoDePago.classList.remove("d-none");
-    btnTipoDePago.setAttribute("data-bs-target", "#modal-confirmacion");
+
+    if (necesitaInput) {
+      // Varios metodos -> modal de validacion con el desglose de montos.
+      btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
+    } else {
+      // Metodos sin referencia: se paga el total de una sola vez.
+      let htmlPAgo = "";
+      listTypePago.forEach((type) => {
+        type.monto = montoTotal;
+        htmlPAgo += `
+        <input type="hidden" name="formasDePago[]" value="${type.id}">
+        <input type="hidden" name="montosDePago[]" value="${montoTotal}">
+
+        <p>${type.name} monto: ${montoTotal} BS</p>
+        `;
+      });
+      if (divTypePagoCofirm) divTypePagoCofirm.innerHTML = htmlPAgo;
+
+      // Limpiar referencia por si venia de una combinacion anterior.
+      if (inputReferenciaConfir) inputReferenciaConfir.value = "";
+      if (pReferencia) pReferencia.innerText = "";
+
+      btnTipoDePago.setAttribute("data-bs-target", "#modal-confirmacion");
+    }
   };
 
   //funcion para llenar el el modal de validacion
@@ -967,66 +1224,70 @@ addEventListener("DOMContentLoaded", function () {
         `;
     });
 
-    divInputValidation.innerHTML = htmlTypePago;
+    if (divInputValidation) divInputValidation.innerHTML = htmlTypePago;
 
     //inicializar validacion de los input
-    let validarForm = inicializarValidacionFormulario(divModalValidacion);
+    const validarForm = inicializarValidacionFormulario(divModalValidacion);
 
-    //validar que la cantidd del monto se la correcta
-    const inputs = document.querySelectorAll(".input-modal-valida");
-    let longitud = inputs.length;
-    let totalIngresado = 0;
+    // Solo los campos de monto se suman; la referencia NO es un monto.
+    // Antes se usaba ".input-modal-valida", que también incluía #inputRefencia,
+    // y la referencia se sumaba como si fueran bolivares.
+    const inputsMonto = () =>
+      Array.from(document.querySelectorAll(".input-modal-monto"));
 
-    inputs.forEach((input) => {
-      input.addEventListener("keyup", function () {
-        console.log(validarForm());
+    const totalIngresado = () =>
+      inputsMonto().reduce((acc, inp) => acc + num(inp.value), 0);
 
-        if (
-          longitud == 2 &&
-          parseFloat(inputTotalFactura.value) == parseFloat(inputs[0].value) &&
-          inputs[0].classList.contains("valido") &&
-          inputs[1].classList.contains("valido")
-        ) {
-          btnValidacion.classList.remove("d-none");
-          return;
-        }
-        
-        if (!validarForm()) {
-          // console.log("validacion mala");
-          btnValidacion.classList.add("d-none");
-          return;
-        }
+    const refrescarBoton = () => {
+      const camposOk = validarForm();
+      const montoOk = sameMoney(totalIngresado(), inputTotalFactura?.value);
 
-        totalIngresado = 0;
-        document.querySelectorAll(".input-modal-monto").forEach((inp) => {
-          totalIngresado += !isNaN(parseFloat(inp.value))
-            ? parseFloat(inp.value)
-            : 1;
-        });
+      btnValidacion.classList.toggle("d-none", !(camposOk && montoOk));
 
-        if (totalIngresado == parseFloat(inputTotalFactura.value)) {
-          console.log("total ingredado buno");
-          btnValidacion.classList.remove("d-none");
-          return;
-        }
-        btnValidacion.classList.add("d-none");
-      });
+      // La alerta se muestra solo mientras el formulario está incompleto,
+      // para explicar por qué el botón "Siguiente" sigue oculto.
+      const alerta = document.querySelector(".alerta-varios-metodos");
+      if (alerta) alerta.classList.toggle("d-none", camposOk && montoOk);
+    };
+
+    // Se escucha en los eventos de entrada, no solo en "keyup": antes, pegar con
+    // el raton no activaba nada y el boton Siguiente quedaba oculto para siempre.
+    document.querySelectorAll("#divModalValidacion .input-validar").forEach((input) => {
+      ["keyup", "input", "paste", "change"].forEach((evt) =>
+        input.addEventListener(evt, refrescarBoton),
+      );
     });
+
+    refrescarBoton();
   };
 
   const showTypePagoCofirm = () => {
-    inputReferenciaConfir.value = inputRefencia.value;
-    pReferencia.innerText = `Numero de Referencia: ${inputRefencia.value}`;
+    // La referencia solo se copia si el campo esta visible y tiene 4 digitos.
+    const referenciaVisible =
+      divReferencia && !divReferencia.classList.contains("d-none");
+    const referencia = referenciaVisible ? inputRefencia.value.trim() : "";
 
-    const inputs = document.querySelectorAll(".input-modal-valida");
-    let htmlPAgo = "";
-    console.log(listTypePago);
+    if (referencia && !/^\d{4}$/.test(referencia)) {
+      alertError("Error", "La referencia debe tener los ultimos 4 digitos.");
+      return false;
+    }
 
-    inputs.forEach((inp, index) => {
-      if (listTypePago[index]) {
-        listTypePago[index].monto = parseFloat(inp.value);
-      }
+    if (inputReferenciaConfir) inputReferenciaConfir.value = referencia || "0";
+    if (pReferencia) {
+      pReferencia.innerText = referencia
+        ? `Numero de Referencia: ${referencia}`
+        : "";
+    }
+
+    // Los montos se toman SOLO de los inputs de monto, en el mismo orden que
+    // listTypePago (antes se emparejaban por indice sobre un NodeList que
+    // incluía la referencia, corrriendo el importe de los métodos).
+    const inputsMonto = Array.from(document.querySelectorAll(".input-modal-monto"));
+    listTypePago.forEach((type, index) => {
+      type.monto = num(inputsMonto[index]?.value);
     });
+
+    let htmlPAgo = "";
     listTypePago.forEach((type) => {
       htmlPAgo += `
         <input type="hidden" name="formasDePago[]" value="${type.id}">
@@ -1036,7 +1297,8 @@ addEventListener("DOMContentLoaded", function () {
         `;
     });
 
-    divTypePagoCofirm.innerHTML = htmlPAgo;
+    if (divTypePagoCofirm) divTypePagoCofirm.innerHTML = htmlPAgo;
+    return true;
   };
 
   btnTipoDePago.addEventListener("click", function () {
@@ -1044,111 +1306,122 @@ addEventListener("DOMContentLoaded", function () {
   });
 
   btnValidacion.addEventListener("click", function () {
-    showTypePagoCofirm();
+    // Si la referencia no es valida no se deja avanzar al modal de confirmacion.
+    if (showTypePagoCofirm() === false) return;
   });
 
   //funcion para llenar el modal de confirmacion
   const mostrarConfirmacion = () => {
-    const tbodyDelModal = document.getElementById("tbodyDelModal");
-    // Aqui pondremos el codigo HTML que tendra el body de la tabla
-    let html = ``;
+    const tbodyDelModal = byId("tbodyDelModal");
+    const tbodyInsumosModal = byId("tbodyInsumos");
+    let html = "";
     let htmlInsumos = "";
-    data.forEach((element, index) => {
-      let storedDolar = localStorage.getItem("valorDelDolar");
-      let montoBS = element["precio"] * storedDolar;
-      montoBS = montoBS.toFixed(2);
-      console.log("confirmaciopn", element["id_servicio"]);
+
+    data.forEach((element) => {
+      const precioDivisa = num(element.precio);
+      const montoBS = precioDivisa * TIPO_CAMBIO;
+
       html += `
         <tr>
-        <td><input type="hidden" name="servicios[]" value="${element["id_servicio"]}">
-        <div class="fw-bolder">S/E:</div>${element["servicio"]}</td>
-        <td><input type="hidden" name="doctores[]" value="${element["id_doctor"]}"><div class="fw-bolder">DOCTOR:</div> ${element["doctor"]}</td>
-        <td><input type="hidden" name="precioServicio[]" value="${element["precio"]}"><div class="fw-bolder">PRECIO:</div> ${element["precio"]} BS</td>
-        <td>
-        <tr>`;
+        <td><input type="hidden" name="servicios[]" value="${element.id_servicio}">
+        <div class="fw-bolder">S/E:</div>${element.servicio}</td>
+        <td><input type="hidden" name="doctores[]" value="${element.id_doctor ?? ""}"><div class="fw-bolder">DOCTOR:</div> ${element.doctor}</td>
+        <td><input type="hidden" name="precioServicio[]" value="${precioDivisa.toFixed(2)}"><div class="fw-bolder">PRECIO:</div> ${montoBS.toFixed(2)} BS</td>
+        </tr>`;
     });
 
-    dataInsumo.forEach((element, index) => {
-      let storedDolar = localStorage.getItem("valorDelDolar");
-      let montoBS = element["precio"] * storedDolar;
-      montoBS = montoBS.toFixed(2);
+    dataInsumo.forEach((element) => {
+      const cantidad = parseInt(element.cantidad) || 0;
+      const precioDivisa = num(element.precio);
+      const aplicaIVA = String(element.iva) === "1";
+      // Se envia el precio unitario CON IVA y la tasa, para que el servidor
+      // pueda validar y persistir el detalle sin depender del navegador.
+      const precioUnitarioFinal = precioUnitarioInsumo(element);
+      const subtotalBS = precioUnitarioFinal * cantidad * TIPO_CAMBIO;
 
       htmlInsumos += `
         <tr>
-        <td><input type="hidden" name="insumos[]" value="${element["id_insumo"]}">
-        <div class="fw-bolder">INSUMO:</div>${element["nombre"]}</td>
+        <td><input type="hidden" name="insumos[]" value="${element.id_insumo}">
+        <div class="fw-bolder">INSUMO:</div>${element.nombre}</td>
 
-        <td><div class="fw-bolder">MEDIDA:</div>${element["medida"]}</td>
+        <td><div class="fw-bolder">MEDIDA:</div>${element.medida}</td>
 
-        <td><input type="hidden" name="cantidad[]" value="${element["cantidad"]}"><div class="fw-bolder">CANTIDAD</div> ${
-          element["cantidad"]
-        }</td>
-        <td><input type="hidden" name="precioInsumo[]" value="${montoBS}"><div class="fw-bolder">PRECIO:</div> ${montoBS} BS</td>
-        <td class="border-top"><div class="fw-bolder">SUB-TOTAL:</div>${(montoBS * storedDolar).toFixed(2)} BS</td>
-        <td>
-        <tr>`;
+        <td><input type="hidden" name="cantidad[]" value="${cantidad}"><div class="fw-bolder">CANTIDAD</div> ${cantidad}</td>
+        <td><input type="hidden" name="precioInsumo[]" value="${precioUnitarioFinal.toFixed(2)}"><div class="fw-bolder">PRECIO:</div> ${(precioDivisa * TIPO_CAMBIO).toFixed(2)} BS</td>
+        <td><input type="hidden" name="aplicaIVA[]" value="${aplicaIVA ? 1 : 0}"><div class="fw-bolder">IVA:</div> ${(((precioUnitarioFinal - precioDivisa) * cantidad) * TIPO_CAMBIO).toFixed(2)} BS</td>
+        <td><div class="fw-bolder">SUB-TOTAL:</div>${subtotalBS.toFixed(2)} BS</td>
+        </tr>`;
     });
-    // Recorremos la lista de arriba y añadimos los datos a la variable html
-    tbodyDelModal.innerHTML = html;
-    if (window.location.href.includes("idH")) {
-      console.log("si es hospitalizacion");
-    } else {
-      document.getElementById("tbodyInsumos").innerHTML = htmlInsumos;
-    }
 
-    console.log(data);
+    if (tbodyDelModal) tbodyDelModal.innerHTML = html;
+    if (tbodyInsumosModal) tbodyInsumosModal.innerHTML = htmlInsumos;
   };
 
-  traerServiciosMedicos();
-  traerInsumos();
-  calcularTotal();
-  mostrarTiposDePago();
+// ── Arranque ─────────────────────────────────────────────────────────
+  // ORDEN CRÍTICO: primero se cablea la interfaz, después se cargan datos.
+  //
+  // Antes el `await Promise.all([...])` estaba aquí arriba y TODOS los
+  // addEventListener de abajo quedaban detrás. Si esa carga fallaba o tardaba,
+  // ningún listener se registraba y el formulario de búsqueda hacía submit
+  // normal: la página se recargaba en vez de mostrar el paciente.
+  //
+  // Regla: la interfaz no puede depender de la red para responder.
 
-  //////EVEntos
-  //llamar la uncion de buscar el paciente
-  pacienteClienteCheck.addEventListener("change", function () {
+  // 1) Tasa cacheada al instante (síncrono). La API llega después, sin bloquear.
+  inicializarTasa();
+
+  // ── Eventos ─────────────────────────────────────────────────────────
+  // Se registran aquí, de forma síncrona, antes de cualquier await.
+
+  /** Evita el submit por defecto: sin esto, Enter recarga la página. */
+  const evitarSubmit = (form) =>
+    form?.addEventListener("submit", (e) => e.preventDefault());
+
+  //llamar la funcion de buscar el paciente
+  pacienteClienteCheck?.addEventListener("change", function () {
     if (this.checked) {
-      cajaBuscadorCliente.classList.remove("d-none");
-      document.getElementById("botonPC").classList.add("d-none");
-      console.log(document.getElementById("botonPC"));
+      cajaBuscadorCliente?.classList.remove("d-none");
+      // Con el switch activo hay que elegir un cliente antes de continuar.
+      botonPC?.classList.add("d-none");
     } else {
-      cajaBuscadorCliente.classList.add("d-none");
-      document.getElementById("inputCliente").value = "";
-      document.getElementById("botonPC").classList.remove("d-none");
+      cajaBuscadorCliente?.classList.add("d-none");
+      if (inputCliente) inputCliente.value = "";
+      botonPC?.classList.remove("d-none");
     }
   });
 
   //buscar otro cliente
-  formBuscadorOtroCliente.addEventListener("submit", function (e) {
+  formBuscadorOtroCliente?.addEventListener("submit", function (e) {
     e.preventDefault();
     buscarCliente(formBuscadorOtroCliente);
   });
 
-  //metodo para que cuando le de click al boton de abrir el modal de agregar pacientw ase le de el valor a la cediula de manera automatica
+  // Boton VACIAR: antes no tenia ningun listener, el boton no hacia nada.
+  btnVaciarTabla?.addEventListener("click", function () {
+    alertConfirm("Desea vaciar la factura actual?", () => vaciarFactura());
+  });
 
-  btnAddPac.addEventListener("click", function () {
+  //metodo para que cuando le de click al boton de abrir el modal de agregar
+  //paciente se le de el valor a la cedula de manera automatica
+  btnAddPac?.addEventListener("click", function () {
+    if (!cedulaPaciente || !inputCedulaPaciente) return;
     cedulaPaciente.value = inputCedulaPaciente.value;
     cedulaPaciente.dispatchEvent(new Event("keyup", { bubbles: true }));
   });
 
-  //llamar a la validacion para los fformularios tanto de guardar paciente como cliente
-  let verificarFormularioPaciente =
-    inicializarValidacionFormulario(modalAgregarPaciente);
+  //llamar a la validacion para los formularios tanto de guardar paciente como cliente
+  const verificarFormularioPaciente = modalAgregarPaciente
+    ? inicializarValidacionFormulario(modalAgregarPaciente)
+    : null;
 
-  //enviar firmulario de paciente
-  modalAgregarPaciente.addEventListener("submit", function (e) {
+  //enviar formulario de paciente
+  modalAgregarPaciente?.addEventListener("submit", function (e) {
     e.preventDefault();
+    if (!verificarFormularioPaciente) return;
 
-    let inputsBuenos = [];
-    this.querySelectorAll(".input-validar").forEach((input) => {
-      if (input.parentElement.classList.contains("valido"))
-        inputsBuenos.push(true);
-    });
-
-    let esValido = verificarFormularioPaciente();
-
+    const esValido = verificarFormularioPaciente();
     if (esValido) {
-      createPatients(this, inputsBuenos);
+      createPatients(this);
     } else {
       alertError(
         "Error",
@@ -1157,25 +1430,133 @@ addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  let url_factura = window.location.href.split("/")[6];
-  console.log(url_factura);
-  if (url_factura != undefined) {
-    let idH = parseInt(url_factura.slice(1));
-    buscarPacienteConHospit(idH);
-  } else {
-    console.log("factura normal");
-    const formularioPaciente = document.getElementById("form-buscador-factura");
-    if (formularioPaciente) {
-      formularioPaciente.addEventListener("submit", function (e) {
-        e.preventDefault();
-        //buscarPaciente(formularioPaciente);
-        buscarPacienteConCita(formularioPaciente);
-      });
+  // ── Modal de cliente: mismas validaciones que en el módulo de Clientes ──
+  // Antes no tenía ni validación ni submit: el modal se abría y no hacía nada.
+  const modalAgregarCliente = byId("modalAgregarCliente");
+  const verificarFormularioCliente = modalAgregarCliente
+    ? inicializarValidacionFormulario(modalAgregarCliente)
+    : null;
+
+  modalAgregarCliente?.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!verificarFormularioCliente) return;
+
+    if (verificarFormularioCliente()) {
+      createCliente(this, modalCliente);
+    } else {
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
     }
+  });
+
+  // ── Búsqueda del paciente ───────────────────────────────────────────
+  // El id de hospitalizacion lo inyecta PHP en un data-attribute.
+  // Antes se sacaba de window.location.href.split("/")[6], que casi nunca
+  // existia y, cuando existia, no tenia nada que ver con la hospitalizacion.
+  const idHospitalizacion =
+    document.querySelector("[data-id-hospitalizacion]")?.dataset
+      ?.idHospitalizacion;
+  const formularioPaciente = byId("form-buscador-factura");
+
+  if (formularioPaciente) {
+    // submit cubre tanto el Enter como el clic en el botón de búsqueda.
+    formularioPaciente.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const cedula = (inputCedulaPaciente?.value ?? "").trim();
+      if (!/^[1-9]\d{6,7}$/.test(cedula)) {
+        alertError(
+          "Error",
+          "Ingrese una cédula válida de 7 u 8 dígitos.",
+        );
+        return;
+      }
+
+      if (idHospitalizacion) {
+        buscarPacienteConHospit(idHospitalizacion);
+      } else {
+        buscarPacienteConCita(formularioPaciente);
+      }
+    });
+
+    // Red de seguridad: si por lo que sea el submit se dispara sin pasar por
+    // el listener anterior, se cancela igual. Una búsqueda NUNCA recarga.
+    evitarSubmit(document);
   }
 
-  //rendirizar los insumos
-  setTimeout(() => {
-    renderizarInsumos();
-  }, 600);
+  if (idHospitalizacion) {
+    buscarPacienteConHospit(idHospitalizacion);
+  }
+
+  // ── Envío de la factura ──────────────────────────────────────────────
+  // El backend responde JSON cuando algo falla (total descuadrado, stock
+  // insuficiente, error de validación). Antes el formulario se enviaba a ciegas
+  // y el navegador seguía la redirección sin enterarse del fallo.
+  const formConfirmar = byId("formConfirmarFactura");
+
+  if (formConfirmar) {
+    formConfirmar.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const btn = byId("btnConfirmarFactura");
+      if (btn) btn.disabled = true;
+
+      try {
+        const response = await fetch(this.action, {
+          method: "POST",
+          body: new FormData(this),
+          headers: {
+            "X-CSRF-Token":
+              document.querySelector('meta[name="csrf-token"]')?.content ?? "",
+          },
+          redirect: "follow",
+        });
+
+        // Si el servidor redirige al comprobante, la factura quedó registrada.
+        if (response.redirected && response.url.includes("comprobante")) {
+          window.location.href = response.url;
+          return;
+        }
+
+        let error = "No se pudo registrar la factura.";
+        try {
+          const cuerpo = await response.json();
+          error = cuerpo.error ?? error;
+        } catch (_) {
+          /* respuesta no-JSON */
+        }
+        alertError("Error", error);
+      } catch (error) {
+        alertError("Error", "Error de conexión al guardar la factura.");
+        console.error(error);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+  }
+
+  // ── Carga de datos ───────────────────────────────────────────────────
+  // Va al final a propósito. Cada petición se aísla: un fallo en servicios,
+  // insumos o pagos no puede impedir que la pantalla siga siendo usable.
+  // Creación de los paginadores: aquí ya están declaradas todas las funciones
+  // que les sirven de callback (si se instanciaran antes, daría ReferenceError).
+  crearPaginadores();
+
+  const cargar = (etiqueta, promesa) =>
+    Promise.resolve(promesa).catch((error) => {
+      console.error(`Error cargando ${etiqueta}:`, error);
+    });
+
+  await Promise.all([
+    cargar("servicios", traerServiciosMedicos()),
+    cargar("insumos", traerInsumos()),
+    cargar("métodos de pago", mostrarTiposDePago()),
+  ]);
+
+  datosListos = true;
+  renderizarInsumos();
+  calcularTotal();
+  mostrarConfirmacion();
 });

@@ -1,8 +1,13 @@
 <?php require_once './src/vistas/head/head.php'; ?>
 <link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/styleAdicional.css">
 
-
-<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
+<?php
+// El id de hospitalización viaja en un data-attribute en lugar de deducirse de
+// window.location.href.split("/")[6], que casi nunca existía y cuando existía
+// no tenía relación con la hospitalización que se iba a facturar.
+$idHospitalizacion = isset($_GET['idH']) ? preg_replace('/[^0-9]/', '', (string)$_GET['idH']) : '';
+?>
+<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;"<?= $idHospitalizacion !== '' ? ' data-id-hospitalizacion="' . htmlspecialchars($idHospitalizacion, ENT_QUOTES, 'UTF-8') . '"' : '' ?>>
     <h5 style="width: 95%; " class="m-auto mb-3">Facturación
 
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
@@ -67,13 +72,14 @@
             <div class="d-flex">
 
                 <div class="mt-4 validar caja-buscador-paciente-factura" id="form-buscador">
-                    <form id="form-buscador-factura" class=" d-flex justify-content-end" autocomplete="off">
+                    <!-- El submit se cancela en f.js: buscar nunca recarga la página. -->
+                    <form id="form-buscador-factura" class="d-flex justify-content-end" autocomplete="off" novalidate>
                         <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
                             placeholder="Ingrese Cedula" id="input-cedula-paciente" required maxlength="8" minlength="6"
-                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                            id="inputBusPaCi">
+                            inputmode="numeric" pattern="[0-9]{7,8}"
+                            oninput="javascript: this.value = this.value.replace(/[^0-9]/g, '').slice(0, this.maxLength);">
 
-                        <button class="btn btn-buscar " title="Buscar">
+                        <button type="submit" class="btn btn-buscar " title="Buscar">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-search" viewBox="0 0 16 16">
                                 <path
@@ -135,13 +141,24 @@
                             data-bs-toggle="modal" data-bs-target="#modal-cliente">SIGUIENTE</button>
                     </div>
                 </div>
-                <div id="totalFac">
+                <div id="totalFac" class="d-flex align-items-center gap-3 flex-wrap">
 
-                    <label class="fw-bolder">TOTAL: </label>
-                    <label>BS</label>
-                    <input type="number" style="margin-left: -1px; padding-left: 6px;"
-                        class=" w-25 input-buscar text-center" id="totalFactura" disabled>
-                    <input type="hidden" id="inputTotalCita" value="0">
+                    <div id="cajaTasaCambio" class="d-none d-flex align-items-center gap-2 me-2">
+                        <label class="fw-bolder mb-0" title="Tasa de cambio del día en curso. Clic para ajustarla.">
+                            TASA:
+                        </label>
+                        <span id="tasaCambioActual" class="fw-bolder"></span>
+                        <button type="button" id="btnGuardarTasa" class="btn btn-sm btn-outline-secondary py-0 px-2"
+                            title="Ajustar la tasa de cambio manualmente">cambiar</button>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <label class="fw-bolder mb-0">TOTAL: </label>
+                        <label class="mb-0">BS</label>
+                        <input type="text" style="margin-left: -1px; padding-left: 6px;"
+                            class=" w-25 input-buscar text-center" id="totalFactura" disabled>
+                        <input type="hidden" id="inputTotalCita" value="0">
+                    </div>
                 </div>
             </div>
 

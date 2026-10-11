@@ -14,7 +14,8 @@ class ModeloFactura extends ModelBase
 {
 	private $id_factura, $fecha, $total, $formasDePago, $servicios, $insumos,
 		$precioInsumo, $cantidad, $montosDePago, $referencia, $precioServicio,
-		$doctor, $cedula, $id_cliente, $id_paciente, $id_cita, $idH, $idInsumo, $precio;
+		$doctor, $cedula, $id_cliente, $id_paciente, $id_cita, $idH, $idInsumo, $precio,
+		$doctores, $aplicaIVA, $tipoCambio;
 
 	public function __construct($dbSystem = true)
 	{
@@ -149,7 +150,7 @@ class ModeloFactura extends ModelBase
 		try {
 			$data = ['id_hospitalizacion' => $this->getIdH()];
 			$sql  = 'SELECT ei.id_entradaDeInsumo, h.id_hospitalizacion,
-                            i.nombre, i.medida, i.precio, i.iva, ih.cantidad
+                            i.nombre, i.medida, i.precio, i.iva AS aplica_iva, ih.cantidad
                     FROM hospitalizacion h
                     INNER JOIN insumodehospitalizacion ih ON h.id_hospitalizacion = ih.id_hospitalizacion
                     INNER JOIN entrada_insumo ei ON ei.id_entradaDeInsumo = ih.id_entradaDeInsumo
@@ -250,15 +251,19 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = ['id_factura' => $this->getIdFactura()];
-			$sql = "SELECT cs.nombre As categoria_servicio, sf.*, s.*,
-                            p.nombre AS nombre_d, p.apellido AS apellido_d
+			// Sin LIMIT 1: el comprobante debe listar TODOS los servicios
+			// facturados. Antes solo mostraba el primero. El doctor se toma
+			// del que se guardó en el detalle (LEFT JOIN para no perder filas).
+			$sql = "SELECT cs.nombre AS categoria_servicio, sf.*,
+                            COALESCE(pd.nombre, 'Sin asignar') AS nombre_d,
+                            COALESCE(pd.apellido, '') AS apellido_d
                     FROM detalle_factura sf
                     INNER JOIN serviciomedico s ON s.id_servicioMedico = sf.serviciomedico_id_servicioMedico
                     INNER JOIN categoria_servicio cs ON cs.id_categoria = s.id_categoria
-                    INNER JOIN personal_has_serviciomedico ps ON ps.serviciomedico_id_servicioMedico = s.id_servicioMedico
-                    INNER JOIN personal p ON p.id_personal = ps.personal_id_personal
-                    WHERE id_factura = :id_factura
-                    LIMIT 1";
+                    LEFT JOIN personal pd ON pd.id_personal = sf.personal_id_personal
+                    WHERE sf.id_factura = :id_factura
+                        AND sf.tipo = 'Servicio'
+                    ORDER BY sf.id_datelle_factura ASC";
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {
@@ -286,12 +291,18 @@ class ModeloFactura extends ModelBase
 	{
 		try {
 			$data = ['id_factura' => $this->getIdFactura()];
-			$sql  = "SELECT i.*, fi.*, f.*, ins.nombre, ins.precio, ins.iva
-                    FROM entrada_insumo i
-                    INNER JOIN detalle_factura fi ON i.id_entradaDeInsumo = fi.entrada_insumo_id_entradaDeInsumo
-                    INNER JOIN factura f ON f.id_factura = fi.id_factura
+			// Se lee el precio y el IVA desde detalle_factura (lo que se cobró de
+			// verdad) en lugar del catálogo actual: si el precio del insumo cambia
+			// después, el comprobante antiguo seguía mostrando el valor nuevo.
+			$sql  = "SELECT ins.nombre, ins.medida, ins.iva AS aplica_iva,
+                            fi.cantidad, fi.precio_unitario, fi.subtotal,
+                            fi.iva_aplicado, fi.tasa_iva
+                    FROM detalle_factura fi
+                    INNER JOIN entrada_insumo i ON i.id_entradaDeInsumo = fi.entrada_insumo_id_entradaDeInsumo
                     INNER JOIN insumo ins ON ins.id_insumo = i.id_insumo
-                    WHERE f.id_factura = :id_factura";
+                    WHERE fi.id_factura = :id_factura
+                        AND fi.tipo = 'Insumo'
+                    ORDER BY fi.id_datelle_factura ASC";
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {
@@ -424,21 +435,127 @@ class ModeloFactura extends ModelBase
 
 	// ── PRIVADOS──────────────────────────────────
 
-	private function selectId_entrada($id_insumo)
+	/**
+	 * Reserva y devuelve los lotes (entradas) que cubren la cantidad solicitada.
+	 *
+	 * Hace el bloqueo de filas ANTES de decidir, de modo que dos cajeros
+	 * simultaneos no puedan vender el mismo stock. Antes el SELECT del lote
+	 * ocurría sin bloqueo y DescontarLotes no fallaba si no alcanzaba.
+	 *
+	 * @return array lista de ['id_entradaDeInsumo' => int, 'cantidad' => int]
+	 * @throws \DomainException si el stock no alcanza
+	 */
+	private function reservarLotes($id_insumo, $cantidad)
 	{
-		try {
-			$data = ['id_insumo' => $id_insumo];
-			$sql = "SELECT ei.id_entradaDeInsumo
+		$this->setSQL("SELECT ei.id_entradaDeInsumo, ei.cantidad_disponible
                     FROM entrada_insumo ei
                     INNER JOIN entrada e ON e.id_entrada = ei.id_entrada
-                    WHERE ei.id_insumo = :id_insumo AND ei.cantidad_disponible > 0
-                    ORDER BY e.fechaDeIngreso LIMIT 1";
-			$this->setSQL($sql);
-			$datos = $this->search($data, false);
-			return $datos["id_entradaDeInsumo"];
-		} catch (\Exception $e) {
-			return 0;
+                    INNER JOIN insumo i ON i.id_insumo = ei.id_insumo
+                    WHERE ei.id_insumo = :id_insumo
+                        AND ei.cantidad_disponible > 0
+                        AND i.estado = 'ACT'
+                        AND e.estado = 'ACT'
+                        AND ei.fechaDeVencimiento > CURDATE()
+                    ORDER BY e.fechaDeIngreso ASC
+                    FOR UPDATE");
+
+		$lotes = $this->search(['id_insumo' => $id_insumo]);
+
+		$disponible = 0;
+		foreach ($lotes as $lote) {
+			$disponible += (int)$lote['cantidad_disponible'];
 		}
+
+		if ($disponible < $cantidad) {
+			throw new \DomainException(
+				"El insumo seleccionado no tiene stock suficiente. Disponible: $disponible, solicitado: $cantidad."
+			);
+		}
+
+		// Reparte la cantidad entre los lotes mas antiguos primero (FIFO).
+		$restante = $cantidad;
+		$reserva = [];
+		foreach ($lotes as $lote) {
+			if ($restante <= 0) {
+				break;
+			}
+			$usar = min((int)$lote['cantidad_disponible'], $restante);
+			$reserva[] = [
+				'id_entradaDeInsumo' => (int)$lote['id_entradaDeInsumo'],
+				'cantidad' => $usar,
+			];
+			$restante -= $usar;
+		}
+
+		return $reserva;
+	}
+
+	/**
+	 * Recalcula el total de la factura a partir del detalle.
+	 *
+	 * Este total es el ÚNICO que se guarda. El navegador puede mandar el valor
+	 * que quiera: se ignora y se usa esta suma.
+	 */
+	private function calcularTotalDesdeDetalle($id_factura)
+	{
+		$this->setSQL("SELECT COALESCE(SUM(subtotal), 0) AS total FROM detalle_factura WHERE id_factura = :id_factura");
+		$fila = $this->search(['id_factura' => $id_factura], false);
+
+		return round((float)($fila['total'] ?? 0), 2);
+	}
+
+	/**
+	 * Precio real de un servicio médico, en DIVISA.
+	 *
+	 * Se lee de la base, no del navegador: si alguien manipula precioServicio[]
+	 * en el formulario, su valor se descarta y se cobra el precio del catálogo.
+	 *
+	 * @throws \DomainException si el servicio no existe o no está activo.
+	 */
+	private function precioRealServicio($idServicio)
+	{
+		$id = (int)$idServicio;
+		if ($id <= 0) {
+			throw new \DomainException("El servicio facturado no es válido.");
+		}
+
+		$this->setSQL("SELECT precio FROM serviciomedico
+                       WHERE id_servicioMedico = :id AND estado = 'ACT'");
+		$fila = $this->search(['id' => $id], false);
+
+		if (!$fila || (float)$fila['precio'] <= 0) {
+			throw new \DomainException("El servicio seleccionado no existe o no está disponible.");
+		}
+
+		return round((float)$fila['precio'], 2);
+	}
+
+	/**
+	 * Precio real de un insumo y si lleva IVA, en DIVISA.
+	 *
+	 * Igual que los servicios: manda la base de datos, no el navegador.
+	 *
+	 * @return array{precio: float, iva: int}
+	 * @throws \DomainException si el insumo no existe o no está activo.
+	 */
+	private function datosRealesInsumo($idInsumo)
+	{
+		$id = (int)$idInsumo;
+		if ($id <= 0) {
+			throw new \DomainException("El insumo facturado no es válido.");
+		}
+
+		$this->setSQL("SELECT precio, iva FROM insumo WHERE id_insumo = :id AND estado = 'ACT'");
+		$fila = $this->search(['id' => $id], false);
+
+		if (!$fila || (float)$fila['precio'] <= 0) {
+			throw new \DomainException("El insumo seleccionado no existe o no está disponible.");
+		}
+
+		return [
+			'precio' => round((float)$fila['precio'], 2),
+			'iva'    => (int)$fila['iva'] === 1 ? 1 : 0,
+		];
 	}
 
 	private function insertar()
@@ -452,22 +569,47 @@ class ModeloFactura extends ModelBase
 			$transaccionActiva = true; // Marcamos que la transacción está abierta
 
 			
-			$this->setSQL("SELECT * FROM cliente WHERE id_cliente = :id_cliente");
-			if ($this->search(['id_cliente' => $this->getIdCliente()], false) == []) {
-				throw new \Exception("El id del cliente no existe.");
-			}
+			// ── Tasa de cambio ───────────────────────────────────────────────────
+		// La que usó el navegador para mostrar los importes al cliente. Se
+		// contrasta con la del servidor: si se aleja más de un 10% se rechaza,
+		// para que nadie pueda facturar con una tasa inventada desde el POST.
+		$tasaServidor = tasaCambioActual();
+		$tasaCliente  = (float)($this->tipoCambio ?? 0);
+
+		if ($tasaCliente <= 0 || !is_numeric($this->tipoCambio)) {
+			throw new \DomainException("No se recibió la tasa de cambio de la factura.");
+		}
+
+		$desvio = abs($tasaCliente - $tasaServidor) / max($tasaServidor, 0.0001);
+		if ($tasaServidor > 0 && $desvio > 0.10) {
+			throw new \DomainException(
+				"La tasa de cambio enviada ($tasaCliente) no coincide con la del día ($tasaServidor)."
+			);
+		}
+
+		// Con la que se calculan todos los importes de esta factura.
+		$tasa = $tasaCliente;
 
 		
-			$this->setSQL("INSERT INTO factura VALUES (null, :fecha, :total, :estado, :id_cliente)");
-			$id_factura = $this->create([
-				'fecha'      => $this->getFecha(),
-				'total'      => $this->getTotal(),
-				'estado'     => 'ACT',
-				'id_cliente' => $this->getIdCliente()
-			]);
+		$this->setSQL("SELECT * FROM cliente WHERE id_cliente = :id_cliente");
+		if ($this->search(['id_cliente' => $this->getIdCliente()], false) == []) {
+			throw new \Exception("El id del cliente no existe.");
+		}
 
-			
-			if ($this->getIdCita() != null) {
+	
+		// El total se recalcula más abajo desde detalle_factura; aquí se inserta
+		// un provisional que se valida al final de la transacción.
+		$this->setSQL("INSERT INTO factura (fecha, total, tipo_cambio, estado, id_cliente)
+                            VALUES (:fecha, :total, :tipo_cambio, :estado, :id_cliente)");
+		$id_factura = $this->create([
+			'fecha'      => $this->getFecha(),
+			'total'      => 0,
+			'tipo_cambio' => $tasa,
+			'estado'     => 'ACT',
+			'id_cliente' => $this->getIdCliente()
+		]);
+
+			if (!empty($this->getIdCita())) {
 				// Bloqueo pesimista de fila seguro
 				$this->setSQL("SELECT id_cita FROM cita WHERE id_cita = :id FOR UPDATE");
 				$this->search(['id' => $this->getIdCita()], false);
@@ -484,18 +626,28 @@ class ModeloFactura extends ModelBase
 				$this->setSQL("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion = :id");
 				$this->update_logic($this->getIdH());
 
-				$this->setSQL("INSERT INTO detalle_factura VALUES (null,:id_factura,:tipo,:cantidad,:precioServIndividual,:precioServCompleto,:id_hospitalizacion,:id_servicio,:id_entrada)");
+
+				// El total se toma del registro, no del POST.
+				// OJO: hospitalizacion.total_MoEx está en DIVISA (lo genera
+				// hospitalizacion.js dividiendo los bolívares entre la tasa);
+				// `total` ya está en bolívares. Se usa total_MoEx para que el
+				// servidor aplique la MISMA conversión que a servicios e insumos.
+				$this->setSQL("SELECT total_MoEx FROM hospitalizacion WHERE id_hospitalizacion = :idH");
+				$hospit = $this->search(['idH' => $this->getIdH()], false);
+				$totalHospitDivisa = round((float)($hospit['total_MoEx'] ?? 0), 2);
+
+				$this->setSQL("INSERT INTO detalle_factura
+                            (id_factura, tipo, cantidad, precio_divisa, precio_unitario, subtotal, hospitalizacion_id_hospitalizacion)
+                            VALUES (:id_factura, :tipo, :cantidad, :precio_divisa, :precio_unitario, :subtotal, :id_hospitalizacion)");
 				$this->create([
 					'id_factura' => $id_factura,
 					'tipo' => 'Hospitalizacion',
 					'cantidad' => 1,
-					'precioServIndividual' => $this->getTotal(),
-					'precioServCompleto' => $this->getTotal(),
-					'id_hospitalizacion' => $this->getIdH(),
-					'id_servicio' => null,
-					'id_entrada' => null
+					'precio_divisa' => $totalHospitDivisa,
+					'precio_unitario' => round($totalHospitDivisa * $tasa, 2),
+					'subtotal' => round($totalHospitDivisa * $tasa, 2),
+					'id_hospitalizacion' => $this->getIdH()
 				]);
-
 				// Actualizar historial clínico del último control
 				$this->setSQL("SELECT con.id_control, con.id_paciente, con.historiaclinica
                                 FROM control con
@@ -529,12 +681,18 @@ class ModeloFactura extends ModelBase
 			// Insertar formas de pago
 			$contador = 0;
 			foreach ($this->getFormasDePago() as $id_pago) {
-				$this->setSQL("INSERT INTO pagodefactura VALUES (null, :id_pago, :id_factura, :referencia, :montosDePago)");
+				$monto = $this->getMontosPagos()[$contador] ?? null;
+				if ($monto === null) {
+					throw new \DomainException("Falta el monto del metodo de pago seleccionado.");
+				}
+
+				$this->setSQL("INSERT INTO pagodefactura (id_pago, id_factura, referencia, monto)
+                            VALUES (:id_pago, :id_factura, :referencia, :monto)");
 				$this->create([
 					'id_pago' => $id_pago,
 					'id_factura' => $id_factura,
 					'referencia' => $this->getReferencia(),
-					'montosDePago' => $this->getMontosPagos()[$contador]
+					'monto' => round((float)$monto, 2)
 				]);
 				$contador++;
 			}
@@ -543,16 +701,26 @@ class ModeloFactura extends ModelBase
 			if ($this->getServicios()) {
 				$contador = 0;
 				foreach ($this->getServicios() as $s) {
-					$this->setSQL("INSERT INTO detalle_factura VALUES (null,:id_factura,:tipo,:cantidad,:precioUnitario,:precioServicio,:idH,:s,:idInsumo)");
+					// SEGURIDAD: el precio se busca en serviciomedico. Lo que venga
+					// en precioServicio[] se ignora, así que manipular el formulario
+					// no cambia el importe cobrado.
+					$precioDivisa = $this->precioRealServicio($s);
+					$precio = round($precioDivisa * $tasa, 2);
+
+					$this->setSQL("INSERT INTO detalle_factura
+                            (id_factura, tipo, cantidad, precio_divisa, precio_unitario, subtotal, serviciomedico_id_servicioMedico, personal_id_personal)
+                            VALUES (:id_factura, :tipo, :cantidad, :precio_divisa, :precio_unitario, :subtotal, :servicio, :personal)");
 					$this->create([
 						'id_factura' => $id_factura,
 						'tipo' => 'Servicio',
 						'cantidad' => 1,
-						'precioUnitario' => $this->getPrecioServicio()[$contador],
-						'precioServicio' => $this->getPrecioServicio()[$contador],
-						'idH' => null,
-						's' => $s,
-						'idInsumo' => null
+						'precio_divisa' => round($precioDivisa, 2),
+						'precio_unitario' => $precio,
+						'subtotal' => $precio,
+						// El doctor ahora sí se persiste: antes se enviaba
+						// doctores[] y el modelo lo ignoraba por completo.
+						'servicio' => $s,
+						'personal' => $this->getDoctores()[$contador] ?? null
 					]);
 					$contador++;
 				}
@@ -562,39 +730,126 @@ class ModeloFactura extends ModelBase
 			if ($this->getInsumos() && $this->getIdH() == 0) {
 				$contador = 0;
 				foreach ($this->getInsumos() as $i) {
-					$id_entrada = $this->selectId_entrada($i);
+					$cantidad = (int)($this->getCantidad()[$contador] ?? 0);
+					if ($cantidad <= 0) {
+						throw new \DomainException("La cantidad de insumos debe ser mayor a cero.");
+					}
 
-					// Bloqueo de fila exclusivo para los lotes del insumo actual
-					$this->setSQL("SELECT id_entradaDeInsumo FROM entrada_insumo WHERE id_insumo = :insumo FOR UPDATE");
-					$this->search(['insumo' => $i]);
+					// Bloquea los lotes y verifica que alcancen ANTES de facturar.
+					// Antes se llamaba al procedimiento DescontarLotes, que consume
+					// lo que puede y no falla aunque falte stock: la factura
+					// quedaba guardada con una cantidad que nunca se descontó.
+					$reserva = $this->reservarLotes($i, $cantidad);
 
-					$this->setSQL("INSERT INTO detalle_factura VALUES (null,:id_factura,:tipo,:cantidad,:precioInsumo,:subtotal,null,null,:i)");
-					$this->create([
-						'id_factura' => $id_factura,
-						'tipo' => 'Insumo',
-						'cantidad' => $this->getCantidad()[$contador],
-						'precioInsumo' => $this->getPrecioInsumo()[$contador],
-						'subtotal' => $this->getPrecioInsumo()[$contador] * $this->getCantidad()[$contador],
-						'i' => $id_entrada
-					]);
+					// SEGURIDAD: precio e IVA salen de la tabla insumo. Lo que el
+					// navegador mande en precioInsumo[] y aplicaIVA[] se ignora.
+					$datosInsumo = $this->datosRealesInsumo($i);
+					$aplicaIVA = $datosInsumo['iva'] === 1;
 
-					$this->setSQL("CALL DescontarLotes(:i, :cantidad)");
-					$this->storedProcedure(['i' => $i, 'cantidad' => $this->getCantidad()[$contador]]);
+					// El IVA solo se aplica al precio unitario, nunca a la cantidad.
+					$precioUnitarioDivisa = $aplicaIVA
+						? round($datosInsumo['precio'] * (1 + (defined('TASA_IMPUESTO') ? TASA_IMPUESTO : 0.16)), 2)
+						: $datosInsumo['precio'];
+					$precioUnitario = round($precioUnitarioDivisa * $tasa, 2);
+
+					foreach ($reserva as $lote) {
+						// precio_divisa guarda la BASE sin IVA: el impuesto va en
+						// tasa_iva, para poder mostrarlo desglosado en el comprobante.
+						$baseDivisa = $datosInsumo['precio'];
+
+						$this->setSQL("INSERT INTO detalle_factura
+                            (id_factura, tipo, cantidad, precio_divisa, precio_unitario, subtotal, iva_aplicado, tasa_iva, entrada_insumo_id_entradaDeInsumo)
+                            VALUES (:id_factura, :tipo, :cantidad, :precio_divisa, :precio_unitario, :subtotal, :iva_aplicado, :tasa_iva, :id_entrada)");
+						$this->create([
+							'id_factura' => $id_factura,
+							'tipo' => 'Insumo',
+							'cantidad' => $lote['cantidad'],
+							'precio_divisa' => $baseDivisa,
+							'precio_unitario' => $precioUnitario,
+							'subtotal' => round($precioUnitario * $lote['cantidad'], 2),
+							'iva_aplicado' => $aplicaIVA ? 1 : 0,
+							'tasa_iva' => $aplicaIVA ? (defined('TASA_IMPUESTO') ? TASA_IMPUESTO : 0.16) : 0,
+							'id_entrada' => $lote['id_entradaDeInsumo']
+						]);
+
+						// Descuento con guardia: si otro proceso consumió el lote entre el
+						// SELECT ... FOR UPDATE y este UPDATE, la condición no se
+						// cumple y se aborta en lugar de dejar el stock negativo.
+						$this->setSQL("UPDATE entrada_insumo
+                            SET cantidad_disponible = cantidad_disponible - :c
+                            WHERE id_entradaDeInsumo = :id AND cantidad_disponible >= :c");
+// :id lo enlaza update(); no debe ir en el array o se enlaza dos veces
+						// y PDO lanza "Invalid parameter number".
+						// :c y :c2 son marcadores distintos a propósito. Un mismo nombre
+						// repetido funciona con EMULATE_PREPARES=true (valor por defecto
+						// de PDO en MySQL) pero lanza HY093 si alguien lo desactiva:
+						// mejor no depender de una configuración implícita.
+						$this->setSQL("UPDATE entrada_insumo
+                            SET cantidad_disponible = cantidad_disponible - :c
+                            WHERE id_entradaDeInsumo = :id AND cantidad_disponible >= :c2");
+						$this->update([
+							'c' => $lote['cantidad'],
+							'c2' => $lote['cantidad']
+						], $lote['id_entradaDeInsumo']);
+
+						$this->setSQL("SELECT cantidad_disponible FROM entrada_insumo WHERE id_entradaDeInsumo = :id");
+						$tras = $this->search(['id' => $lote['id_entradaDeInsumo']], false);
+						if ((int)($tras['cantidad_disponible'] ?? -1) < 0) {
+							throw new \DomainException("El stock del insumo cambió durante la operación. Intente de nuevo.");
+						}
+					}
 
 					$contador++;
 				}
 			}
+			// ── Total autoritativo ──────────────────────────────────────────────
+			// El total sale del detalle que ACABA de guardarse con los precios
+			// reales de la base. Ese valor es el único que se persiste.
+			//
+			// Si alguien manipula `total` (o precioServicio[] / precioInsumo[]) en
+			// el navegador, su valor se descarta: la factura se guarda con la suma
+			// real. No se rechaza, se corrige.
+			$totalReal = $this->calcularTotalDesdeDetalle($id_factura);
+
+			// Los montos de pago deben cubrir exactamente el total real.
+			$sumaMontos = array_sum(array_map('floatval', (array)$this->getMontosPagos()));
+			if ($totalReal > 0 && abs($sumaMontos - $totalReal) > 0.01) {
+				throw new \DomainException(
+					"La suma de los montos de pago ($sumaMontos BS) no cubre el total de la factura ($totalReal BS)."
+				);
+			}
+
+			// Se persiste el total verificado
+			// OJO: update() enlaza SIEMPRE el parámetro :id, por eso la cláusula
+			// WHERE usa :id y el id no se manda dentro del array.
+			$this->setSQL("UPDATE factura SET total = :total, tipo_cambio = :tipo_cambio WHERE id_factura = :id");
+			$this->update([
+				'total' => $totalReal,
+				'tipo_cambio' => $tasa
+			], $id_factura);
+
+			// Queda constancia de lo que el navegador intentó enviar.
+			error_log(sprintf(
+				'Factura %d: total real %.2f BS (el navegador envio %.2f)',
+				$id_factura,
+				$totalReal,
+				(float)$this->getTotal()
+			));
 
 			//confitmar
 			$this->commit();
-			return [$id_factura, "exito", $this->getInsumos()];
-		} catch (\Exception $e) {
+			return ['exito' => true, 'id_factura' => $id_factura, 'total' => $totalReal];
+		} catch (\Throwable $e) {
 			// rollback si algo fallo
 			if ($transaccionActiva) {
 				$this->rollBack();
 			}
-			//error
-			return $e->getMessage();
+			error_log("Error al guardar factura: " . $e->getMessage());
+			// Se devuelve SIEMPRE un array para que el controlador distinga
+			// exito de error. Antes devolvía un string, que el controlador
+			// interpretaba como éxito (truthy) y redirigía a un comprobante
+			// inexistente: la factura se perdía en silencio.
+			return ['exito' => false, 'error' => $e->getMessage()];
 		}
 	}
 
@@ -632,6 +887,12 @@ class ModeloFactura extends ModelBase
 			$this->formasDePago,
 			$this->montosDePago
 		], ' al registrar una factura');
+
+		// Debe existir al menos un concepto facturable.
+		if (empty($this->servicios) && empty($this->insumos) && empty($this->idH)) {
+			throw new \DomainException("No se puede registrar una factura sin servicios ni insumos.");
+		}
+
 		return $this->insertar();
 	}
 
@@ -680,6 +941,14 @@ class ModeloFactura extends ModelBase
 	public function getPrecioServicio()
 	{
 		return $this->precioServicio;
+	}
+	public function getDoctores()
+	{
+		return $this->doctores ?? [];
+	}
+	public function getAplicaIVA()
+	{
+		return $this->aplicaIVA ?? [];
 	}
 	public function getCedula()
 	{
@@ -748,10 +1017,19 @@ class ModeloFactura extends ModelBase
 
 	public function setReferencia($referencia)
 	{
-		if (!preg_match("/^[0-9]+$/", $referencia)) {
-			throw new \InvalidArgumentException("La referencia debe ser numérica.");
+		// "0" significa "sin referencia" y es válido para efectivo/divisas.
+		if ((string)$referencia === '0') {
+			$this->referencia = '0';
+			return;
 		}
-		$this->referencia = $referencia;
+
+		// El resto debe ser exactamente 4 dígitos (los últimos del comprobante).
+		// Antes solo se comprobaba que fuera numérico, de modo que "12" se
+		// guardaba como referencia válida.
+		if (!preg_match("/^[0-9]{4}$/", (string)$referencia)) {
+			throw new \InvalidArgumentException("La referencia debe tener los ultimos 4 digitos.");
+		}
+		$this->referencia = (string)$referencia;
 	}
 
 	public function setMontosPago($montosDePago = [])
@@ -759,7 +1037,12 @@ class ModeloFactura extends ModelBase
 		if (!is_array($montosDePago)) {
 			throw new \InvalidArgumentException("Los montos de pago deben ser un arreglo.");
 		}
-		$this->montosDePago = $montosDePago;
+		foreach ($montosDePago as $monto) {
+			if (!is_numeric($monto) || (float)$monto <= 0) {
+				throw new \InvalidArgumentException("El monto del metodo de pago no es valido.");
+			}
+		}
+		$this->montosDePago = array_map('floatval', $montosDePago);
 	}
 
 	public function setInsumos($insumos = [])
@@ -767,7 +1050,12 @@ class ModeloFactura extends ModelBase
 		if (!is_array($insumos)) {
 			throw new \InvalidArgumentException("Los insumos deben ser un arreglo.");
 		}
-		$this->insumos = $insumos;
+		foreach ($insumos as $insumo) {
+			if (!preg_match("/^[0-9]+$/", (string)$insumo)) {
+				throw new \InvalidArgumentException("El insumo seleccionado no es valido.");
+			}
+		}
+		$this->insumos = array_map('intval', $insumos);
 	}
 
 	public function setServicios($servicios = [])
@@ -775,7 +1063,12 @@ class ModeloFactura extends ModelBase
 		if (!is_array($servicios)) {
 			throw new \InvalidArgumentException("Los servicios deben ser un arreglo.");
 		}
-		$this->servicios = $servicios;
+		foreach ($servicios as $servicio) {
+			if (!preg_match("/^[0-9]+$/", (string)$servicio)) {
+				throw new \InvalidArgumentException("El servicio seleccionado no es valido.");
+			}
+		}
+		$this->servicios = array_map('intval', $servicios);
 	}
 
 	public function setCatidad($cantidad = [])
@@ -783,7 +1076,12 @@ class ModeloFactura extends ModelBase
 		if (!is_array($cantidad)) {
 			throw new \InvalidArgumentException("La cantidad debe ser un arreglo.");
 		}
-		$this->cantidad = $cantidad;
+		foreach ($cantidad as $c) {
+			if (!is_numeric($c) || (int)$c <= 0 || (int)$c > 100000) {
+				throw new \InvalidArgumentException("La cantidad de insumos no es valida.");
+			}
+		}
+		$this->cantidad = array_map('intval', $cantidad);
 	}
 
 	public function setPrecioInsumo($precioInsumo = [])
@@ -791,7 +1089,12 @@ class ModeloFactura extends ModelBase
 		if (!is_array($precioInsumo)) {
 			throw new \InvalidArgumentException("Los precios de insumo deben ser un arreglo.");
 		}
-		$this->precioInsumo = $precioInsumo;
+		foreach ($precioInsumo as $precio) {
+			if (!is_numeric($precio) || (float)$precio <= 0) {
+				throw new \InvalidArgumentException("El precio del insumo es invalido.");
+			}
+		}
+		$this->precioInsumo = array_map('floatval', $precioInsumo);
 	}
 
 	public function setPrecioServicio($precioServicio = [])
@@ -799,7 +1102,52 @@ class ModeloFactura extends ModelBase
 		if (!is_array($precioServicio)) {
 			throw new \InvalidArgumentException("Los precios de servicio deben ser un arreglo.");
 		}
-		$this->precioServicio = $precioServicio;
+		// Antes estos valores coming straight del POST sin validar: un total
+		// manipulado o un precio negativo se guardaban tal cual.
+		foreach ($precioServicio as $precio) {
+			if (!is_numeric($precio) || (float)$precio <= 0) {
+				throw new \InvalidArgumentException("El precio del servicio es invalido.");
+			}
+		}
+		$this->precioServicio = array_map('floatval', $precioServicio);
+	}
+
+	public function setAplicaIVA($aplicaIVA = [])
+	{
+		if (!is_array($aplicaIVA)) {
+			throw new \InvalidArgumentException("El indicador de IVA debe ser un arreglo.");
+		}
+		$this->aplicaIVA = array_map(fn($v) => $v ? 1 : 0, $aplicaIVA);
+	}
+
+	/**
+	 * Tasa de cambio usada por el navegador (Bs por unidad de divisa).
+	 * Se guarda en la factura para poder auditar el comprobante.
+	 */
+	public function setTipoCambio($tipoCambio)
+	{
+		if (!is_numeric($tipoCambio) || (float)$tipoCambio <= 0) {
+			throw new \InvalidArgumentException("La tasa de cambio no es valida.");
+		}
+		$this->tipoCambio = round((float)$tipoCambio, 4);
+	}
+
+	public function getTipoCambio()
+	{
+		return $this->tipoCambio;
+	}
+
+	public function setDoctores($doctores = [])
+	{
+		if (!is_array($doctores)) {
+			throw new \InvalidArgumentException("Los doctores deben ser un arreglo.");
+		}
+		foreach ($doctores as $doctor) {
+			if ($doctor !== null && $doctor !== '' && !preg_match("/^[0-9]+$/", (string)$doctor)) {
+				throw new \InvalidArgumentException("El doctor seleccionado no es valido.");
+			}
+		}
+		$this->doctores = $doctores;
 	}
 
 	public function setPrecio($precio)
