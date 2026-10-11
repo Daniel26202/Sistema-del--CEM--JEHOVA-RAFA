@@ -1,4 +1,5 @@
 <?php
+
 use App\config\Cifrado;
 use App\modelos\ModeloPerfil;
 use App\modelos\ModeloPermisos;
@@ -119,6 +120,51 @@ function perfilApk()
 	} catch (\Throwable $e) {
 		http_response_code(500);
 		echo json_encode(Cifrado::cifrarRespuesta(["ok" => false, "error" => $e->getMessage()]));
+	}
+	exit;
+}
+
+function editarPerfilApk()
+{
+	if (ob_get_length()) ob_clean();
+	header("Content-Type: application/json; charset=UTF-8");
+	header("Access-Control-Allow-Origin: *");
+
+	try {
+		$jsonContenido = file_get_contents('php://input');
+		$payloadCifrado = json_decode($jsonContenido, true);
+		$datosInput = Cifrado::descifrarPeticion($payloadCifrado);
+
+		$modelo = new ModeloPerfil();
+
+		$modelo->setIdUsuario($_SESSION['id_usuario']);
+
+		$modelo->setUsuario($datosInput['usuario'] ?? '');
+		$modelo->setCorreo($datosInput['correo'] ?? '');
+		$modelo->setCedula($datosInput['cedula'] ?? '');
+		$modelo->setNombre($datosInput['nombre'] ?? '');
+		$modelo->setApellido($datosInput['apellido'] ?? '');
+		$modelo->setTelefono($datosInput['telefono'] ?? '');
+
+		// la imagen es opcional: si el usuario no tocó la foto, estos vienen null
+		// y el modelo sabe que debe dejar la foto actual tal cual
+		$resultado = $modelo->update_perfil_apk(
+			$datosInput['imagen_base64'] ?? null,
+			$datosInput['imagen_extension'] ?? null
+		);
+
+		if (is_array($resultado) && $resultado[0] === "exito") {
+			echo json_encode(Cifrado::cifrarRespuesta(['ok' => true, 'imagen' => $resultado[1]]));
+		} else {
+			http_response_code(409);
+			echo json_encode(Cifrado::cifrarRespuesta(['ok' => false, 'error' => is_string($resultado) ? $resultado : 'No se pudo actualizar el perfil.']));
+		}
+	} catch (\InvalidArgumentException $e) {
+		http_response_code(400);
+		echo json_encode(Cifrado::cifrarRespuesta(['ok' => false, 'error' => $e->getMessage()]));
+	} catch (\Throwable $e) {
+		http_response_code(500);
+		echo json_encode(Cifrado::cifrarRespuesta(['ok' => false, 'error' => 'Error interno: ' . $e->getMessage()]));
 	}
 	exit;
 }

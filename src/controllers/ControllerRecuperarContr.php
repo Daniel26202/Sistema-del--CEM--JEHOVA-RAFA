@@ -148,7 +148,7 @@ function generarCodigo($correoM, $idUsuario)
         ];
     } catch (Exception $e) {
         $validarCorreo = "conexionFallida";
-        $mensajeError = "Error al enviar el correo: {$mail->ErrorInfo}";
+        error_log("Error PHPMailer: " . $mail->ErrorInfo); // va al log de PHP/Apache de XAMPP
     }
 
     return $validarCorreo;
@@ -338,10 +338,9 @@ function generarCodigoApk($correoM, $codigoV)
         $mail->send();
 
         $validarCorreo = true;
-
     } catch (Exception $e) {
         $validarCorreo = "conexionFallida";
-        $mensajeError = "Error al enviar el correo: {$mail->ErrorInfo}";
+        error_log("Error PHPMailer: " . $mail->ErrorInfo); // va al log de PHP/Apache de XAMPP
     }
 
     return $validarCorreo;
