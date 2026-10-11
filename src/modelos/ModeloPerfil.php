@@ -27,6 +27,90 @@ class ModeloPerfil extends ModelBase
 			return $e->getMessage();
 		}
 	}
+	
+	public function update_perfil_apk($imagenBase64 = null, $extensionImagen = null)
+	{
+		try {
+			$data1 = [
+				'cedula' => $this->getCedula(),
+				'nombre' => $this->getNombre(),
+				'apellido' => $this->getApellido(),
+				'telefono' => $this->getTelefono(),
+			];
+
+			$sql = "SELECT imagen FROM segurity.usuario WHERE id_usuario = :id_usuario";
+			$this->setSQL($sql);
+			$actual = $this->search(['id_usuario' => $this->getIdUsuario()], false);
+
+			if (!$actual) {
+				throw new \Exception("El usuario no existe.");
+			}
+
+			$sql = "UPDATE bd.personal SET cedula=:cedula, nombre=:nombre, apellido=:apellido, telefono=:telefono WHERE usuario = :id";
+			$this->setSQL($sql);
+			$this->update($data1, $this->getIdUsuario());
+
+			if ($imagenBase64 === null) {
+				$data2 = [
+					'correo' => $this->getCorreo(),
+					'usuario' => $this->getUsuario(),
+				];
+				$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo=:correo WHERE id_usuario = :id";
+				$this->setSQL($sql);
+				$this->update($data2, $this->getIdUsuario());
+
+				return ["exito", $actual['imagen']];
+			}
+
+			// --- hay imagen nueva ---
+			$extensionesPermitidas = ['jpg', 'jpeg', 'png'];
+			$extensionImagen = strtolower((string) $extensionImagen);
+			if (!in_array($extensionImagen, $extensionesPermitidas)) {
+				throw new \InvalidArgumentException("Solo se permiten imágenes JPG o PNG.");
+			}
+
+			$binario = base64_decode($imagenBase64, true);
+			if ($binario === false || strlen($binario) === 0) {
+				throw new \InvalidArgumentException("La imagen enviada no es válida.");
+			}
+			if (strlen($binario) > 5 * 1024 * 1024) {
+				throw new \InvalidArgumentException("La imagen no debe superar los 5 MB.");
+			}
+
+			// valida el contenido real del archivo, no solo la extensión declarada
+			$finfo = new \finfo(FILEINFO_MIME_TYPE);
+			$mimesPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
+			if (!isset($mimesPermitidos[$finfo->buffer($binario)])) {
+				throw new \InvalidArgumentException("El archivo enviado no es una imagen válida.");
+			}
+
+			$nombreImagenNueva = uniqid() . "." . $extensionImagen;
+			$rutaDestino = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenNueva;
+
+			if (file_put_contents($rutaDestino, $binario) === false) {
+				throw new \Exception("No se pudo guardar la imagen.");
+			}
+
+			$nombreImagenAntigua = $actual['imagen'];
+			$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenAntigua;
+			if ($nombreImagenAntigua && $nombreImagenAntigua != "doctor.png" && file_exists($rutaImagenAntigua)) {
+				unlink($rutaImagenAntigua);
+			}
+
+			$data2 = [
+				'correo' => $this->getCorreo(),
+				'usuario' => $this->getUsuario(),
+				'imagen' => $nombreImagenNueva,
+			];
+			$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo=:correo, imagen=:imagen WHERE id_usuario = :id";
+			$this->setSQL($sql);
+			$this->update($data2, $this->getIdUsuario());
+
+			return ["exito", $nombreImagenNueva];
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
 
 	public function seleccionarUsuario()
 	{
