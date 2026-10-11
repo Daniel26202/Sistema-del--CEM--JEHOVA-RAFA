@@ -2,6 +2,19 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+// El servidor se lanza desde consola (php webSocket.php) cuando el usuario
+// inicia sesión. En CLI $_ENV viene vacío porque php.ini usa
+// variables_order="GPCS" (no incluye la "E"), así que config.php se quedaba
+// sin los datos de la base de datos y el servidor moría al arrancar.
+// Cargamos el .env igual que hace index.php para que funcione en los dos casos.
+if (empty($_ENV['DB_HOST'])) {
+	try {
+		Dotenv\Dotenv::createImmutable(__DIR__)->load();
+	} catch (\Throwable $e) {
+		error_log("WebSocket: no se pudo cargar el archivo .env (" . $e->getMessage() . ").");
+	}
+}
+
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 

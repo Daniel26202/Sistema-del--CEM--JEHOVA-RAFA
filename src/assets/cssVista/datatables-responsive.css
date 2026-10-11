@@ -1,0 +1,254 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ESTILOS DEL MODO RESPONSIVE DE LAS DATATABLES
+   -----------------------------------------------------------------------
+   Los usa initDataTable() (src/assets/js/generic/funtionGeneric.js).
+   Se carga en src/vistas/head/head.php para que aplique en TODOS los
+   módulos que usan DataTables.
+   ═══════════════════════════════════════════════════════════════════════ */
+   }
+    /* ═══════════════════════════════════════════════════════════════════════
+       FILA HIJA DE LAS TABLAS RESPONSIVE
+       -----------------------------------------------------------------------
+       Cuando la tabla no cabe en la pantalla, `initDataTable()` oculta las
+       columnas menos importantes y las muestra aquí, dentro de la fila que se
+       abre con el botón ▶.
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* El botón ▶ */
+    table.dataTable td.dtr-control,
+    table.dataTable th.dtr-control {
+        cursor: pointer;
+        padding-left: 1.6em !important;
+        position: relative;
+    }
+
+    table.dataTable td.dtr-control::before,
+    table.dataTable th.dtr-control::before {
+        position: absolute;
+        left: 0.5em;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    /* Fila expandida: un ligero fondo para diferenciarla */
+    table.dataTable tbody tr.dtr-expanded > td {
+        background-color: var(--color-surface) !important;
+    }
+
+    /* La lista "campo: valor" de la fila hija */
+    table.dataTable ul.dtr-details {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0.25em 0 0.5em;
+        list-style: none;
+    }
+
+    table.dataTable ul.dtr-details > li {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.15em 0.5em;
+        border-bottom: 1px dashed var(--color-border);
+        padding: 0.4em 0;
+    }
+
+    table.dataTable ul.dtr-details > li:last-child {
+        border-bottom: none;
+    }
+
+    table.dataTable ul.dtr-details .dtr-title {
+        display: inline-block;
+        min-width: 8em;
+        font-weight: 600;
+        color: var(--color-primary);
+    }
+
+    table.dataTable ul.dtr-details .dtr-data {
+        display: inline-block;
+        flex: 1 1 auto;
+        color: var(--color-text-card);
+    }
+
+    /* Los botones que se ven en la fila hija mantienen su tamaño */
+    table.dataTable ul.dtr-details .dtr-data .btn {
+        margin: 0 0.15em;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       BOTONES DE ACCIONES: que no se salgan de la tabla
+       -----------------------------------------------------------------------
+       La columna de botones nunca se oculta (para que sus eventos sigan
+       funcionando), así que hay que asegurar que quepa. Con esto los botones
+       se colocan en fila y sólo bajan de línea cuando no caben, en lugar de
+       estirar la celda y empujar la tabla hacia afuera.
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* Contenedores de botones dentro de una celda: ancho automático */
+    table.dataTable td .tdTBtn,
+    table.dataTable th .tdTBtn {
+        width: auto !important;   /* anula el width: 24vh del proyecto */
+        min-width: 0;
+        max-width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Cada envoltura de botón ocupa sólo lo que mide el botón */
+    table.dataTable td .tdTBtn > div,
+    table.dataTable th .tdTBtn > div {
+        width: auto !important;   /* anula col-12 / col-md-6 / col-lg-3 */
+        flex: 0 0 auto;
+    }
+
+    /* Los botones se aprietan un poco y comparten el espacio */
+    table.dataTable td .btn,
+    table.dataTable th .btn {
+        margin-right: 0.15rem !important;
+        margin-bottom: 0.15rem !important;
+        white-space: nowrap;
+    }
+
+    /* En pantallas chicas, botones más compactos para que quepan todos */
+    @media (max-width: 576px) {
+        table.dataTable td .btn-tabla,
+        table.dataTable th .btn-tabla {
+            padding: 0.2rem 0.4rem;
+        }
+
+        table.dataTable td .btn-tabla svg,
+        table.dataTable th .btn-tabla svg {
+            width: 14px;
+            height: 14px;
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       BOTONES DE ACCIONES EN MÓVIL: que no saquen a la tabla
+       -----------------------------------------------------------------------
+       Problema real (verificado): los contenedores de botones son
+       `.d-flex justify-content-center align-items-center` SIN `flex-wrap`.
+       Sin eso los botones no pueden bajar de línea, así que el ancho de la
+       celda es la SUMA de todos los botones y, cuando la pantalla es muy
+       pequeña, la tabla queda más ancha que su contenedor y la columna de
+       acciones se sale.
+
+       Con `flex-wrap: wrap` los botones bajan solos y el ancho mínimo de la
+       celda pasa a ser el de UN botón.
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* 1) Que los botones puedan bajar de línea (clave) */
+    table.dataTable td .d-flex,
+    table.dataTable th .d-flex,
+    table.dataTable td .tdTBtn,
+    table.dataTable th .tdTBtn,
+    table.dataTable td .btn-group,
+    table.dataTable th .btn-group {
+        flex-wrap: wrap !important;
+    }
+
+    /* 2) Cada envoltura de botón mide sólo lo suyo */
+    table.dataTable td .d-flex > div,
+    table.dataTable th .d-flex > div,
+    table.dataTable td .tdTBtn > div,
+    table.dataTable th .tdTBtn > div {
+        width: auto !important;   /* anula col-12 / col-md-6 / col-lg-3 */
+        flex: 0 0 auto;
+    }
+
+    /* 3) La celda nunca se estira más allá de su contenido */
+    table.dataTable td,
+    table.dataTable th {
+        min-width: 0;
+    }
+
+    /* 4) Textos larguísimos: que se partan dentro de la celda y no estiren
+          la tabla (ej. un diagnóstico largo) */
+    table.dataTable tbody td {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    }
+
+    /* 5) En pantallas chicas, botones más compactos para que quepan todos */
+    @media (max-width: 576px) {
+        table.dataTable td .btn,
+        table.dataTable th .btn {
+            margin: 0 0.1rem 0.1rem 0 !important;
+            padding: 0.2rem 0.4rem !important;
+        }
+
+        table.dataTable td .btn svg,
+        table.dataTable th .btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* La fila hija también debe poder encogerse */
+        table.dataTable ul.dtr-details .dtr-title {
+            min-width: 0;
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       BUSCADORES EN MÓVIL: que no desborden
+       -----------------------------------------------------------------------
+       Verificado: el buscador que crea DataTables (input + botón lupa) es el
+       que se salía de la pantalla. El input se queda con su ancho por defecto
+       (~217 px) y el botón queda fuera. En un viewport de 280 px el documento
+       se desbordaba 45 px y en 320 px, 5 px.
+
+       Arreglado: en pantallas chicas el input se encoge y el botón baja con
+       él en lugar de salirse.
+       ═══════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 576px) {
+
+        /* Buscador de las vistas (input + botón) */
+        .input-buscar,
+        .tamaño-input-buscar {
+            width: 100% !important;
+        }
+
+        .caja-insumos,
+        .form-responsive,
+        .children-caja-insumos {
+            flex-wrap: wrap !important;
+        }
+
+        /* Buscador que arma DataTables: input + lupa */
+        .dt-container .dt-search, .dataTables_wrapper .dt-search {
+            display: flex !important;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .dt-container .dt-search input.dt-input,
+        .dataTables_wrapper .dt-search input.dt-input {
+            width: auto !important;   /* anula el width: 60% de modificacion.js */
+            flex: 1 1 60%;
+            min-width: 0;
+        }
+
+        .dt-container .dt-search .btn-search-datatable,
+        .dataTables_wrapper .dt-search .btn-search-datatable {
+            flex: 0 0 auto;
+        }
+
+        /* Selector de "Mostrar por página" */
+        .dt-container .dt-length select.dt-input,
+        .dataTables_wrapper .dt-length select.dt-input {
+            width: auto !important;
+            max-width: 100%;
+        }
+
+        /* Garantía: nada dentro del contenedor de la tabla empuja la página */
+        .dt-container, .dataTables_wrapper {
+            max-width: 100%;
+        }
+
+        /* Fila hija: que también pueda encogerse */
+        table.dataTable ul.dtr-details .dtr-title {
+            min-width: 0;
+        }
+    }
+

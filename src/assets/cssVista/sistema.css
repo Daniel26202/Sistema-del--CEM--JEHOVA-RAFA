@@ -1,0 +1,87 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ESTILOS GENERALES DEL SISTEMA
+   -----------------------------------------------------------------------
+   1) Fuente general: una sola para todo el sistema, chica pero legible.
+   2) Botones de registrar / guardar: más pequeños, SIN negrita y responsive.
+
+   Se carga en `src/vistas/head/head.php`, por eso aplica en TODOS los módulos.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Fuente general ──────────────────────────────────────────────────────
+   En style.css hay `* { font-family: "Arial" }`. como esa regla universal se
+   aplica elemento por elemento, hay que sobreescribirla también con `*`
+   (una regla en body no bastaría: lo heredado pierde contra lo aplicado
+   directo).
+   Pila de fuentes del sistema: Segoe UI (Windows), SF (Mac/iOS),
+   Roboto (Android), Arial (resto). Sin dependencias externas. */
+*, html, body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 0.95rem ≈ 15 px: un poco más chico que el 1rem de Bootstrap, pero sin
+   llegar a molestar a la vista. */
+body {
+    font-size: 0.95rem;
+    line-height: 1.45;
+}
+
+/* ── 2. Botones de registrar / guardar ──────────────────────────────────────
+   Clases que usan estos botones en las vistas:
+     btn-modals            → "Registrar" / "Modificar" (submit de los modales)
+     btn-modals-cancelar   → "Cancelar" de los modales
+     btn-guardar-responsive→ "Añadir / Agregar" de las vistas
+     btn-agregarcita-modal → "Registrar" de citas y facturas
+     btn-agregar-doctores  → enlace-botón de agregar
+     btn-open-editar, btnrestablecer, btnMostrar → botones de modales
+   Objetivo: que queden compactos y sin negrita. */
+.btn-modals,
+.btn-modals-cancelar,
+.btn-guardar-responsive,
+.btn-agregarcita-modal,
+.btn-agregarcita-modal-cancelar,
+.btn-agregar-doctores,
+.btn-open-editar,
+.btnrestablecer,
+.btnMostrar {
+    font-size: 0.82rem !important;   /* más chico */
+    font-weight: 400 !important;     /* sin negrita: gana a .fw-bold */
+    padding: 0.35rem 1rem !important;
+    border-radius: 16px;
+    transition: all 0.25s ease;
+}
+
+/* El resto del diseño (color, hover, borde redondeado) lo conserva cada clase. */
+
+/* ── 3. Responsive de esos botones ──────────────────────────────────────────
+   En móvil / tablet el botón ocupa (casi) todo el ancho y queda centrado,
+   en lugar del `col-2` / `width: 20%` que los deja diminutos. */
+@media (max-width: 768px) {
+    .btn-modals,
+    .btn-modals-cancelar,
+    .btn-guardar-responsive,
+    .btn-agregarcita-modal,
+    .btn-agregar-doctores,
+    .btn-open-editar,
+    .btnrestablecer,
+    .btnMostrar {
+        display: block;
+        width: 100% !important;        /* anula col-2 / col-8 */
+        max-width: 320px;              /* pero no se estira de más */
+        margin-left: auto !important;  /* anula caja-btn-margin */
+        margin-right: auto !important;
+        text-align: center;
+    }
+}
+
+/* En escritorio, que tenga aire y no quede pegado a los bordes */
+@media (min-width: 769px) {
+    .btn-modals,
+    .btn-guardar-responsive,
+    .btn-agregarcita-modal,
+    .btn-agregar-doctores,
+    .btn-open-editar,
+    .btnrestablecer,
+    .btnMostrar {
+        margin-bottom: 0.4rem;
+    }
+}

@@ -14,6 +14,266 @@ function mostrarIniciarSesion($parametro)
     require_once __DIR__ . "/../../src/vistas/vistaIniciarSesion/iniciarSesion.php";
 }
 
+// ──────────────────────────────────────────────────────────────
+// SERVIDOR WEBSOCKET (Ratchet)
+// Se arranca en segundo plano desde el inicio de sesión para que las
+// notificaciones de "citas próximas" funcionen igual en Linux y en Windows.
+// ──────────────────────────────────────────────────────────────
+
+/**
+ * Configuración del servidor WebSocket.
+ * Se puede cambiar sin tocar el código con WS_HOST y WS_PORT en el .env.
+ *
+ * @return array{host: string, puerto: int}
+ */
+function websocketConfiguracion(): array
+{
+    $host = $_ENV['WS_HOST'] ?? getenv('WS_HOST');
+    if (!is_string($host) || trim($host) === '') {
+        $host = '127.0.0.1';
+    }
+
+    $puerto = $_ENV['WS_PORT'] ?? getenv('WS_PORT');
+    if (!is_numeric($puerto) || (int) $puerto <= 0) {
+        $puerto = 8080;
+    }
+
+    return ['host' => trim($host), 'puerto' => (int) $puerto];
+}
+
+/**
+ * Indica si hay un servidor escuchando en host:puerto.
+ */
+function websocketEstaActivo(string $host, int $puerto, float $timeout = 0.5): bool
+{
+    $errno = 0;
+    $errstr = '';
+
+    $socket = @fsockopen($host, $puerto, $errno, $errstr, $timeout);
+
+    if (is_resource($socket)) {
+        fclose($socket);
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Localiza el ejecutable de PHP (CLI) para lanzar el servidor.
+ *
+ * Antes sólo se probaba "C:\xampp" y "D:\xampp", por lo que en un Windows con
+ * XAMPP en otra unidad, o con Laragon/WampServer, el servidor no arrancaba.
+ */
+function websocketBinarioPhp(): ?string
+{
+    $esWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+    $candidatos = [];
+
+    // El propio binario con el que corre PHP. Ojo: bajo Apache/mod_php
+    // PHP_BINARY apunta al servidor web (httpd.exe), de ahí el filtro por nombre.
+    $actual = defined('PHP_BINARY') ? PHP_BINARY : '';
+    if (is_string($actual) && $actual !== '' && stripos(basename($actual), 'php') !== false && is_file($actual)) {
+        $candidatos[] = $actual;
+    }
+
+    // Directorio de instalación que declara PHP (en XAMPP/LAMPP es /opt/lampp/bin).
+    if (defined('PHP_BINDIR') && is_dir(PHP_BINDIR)) {
+        $candidatos[] = rtrim(PHP_BINDIR, '/\\') . ($esWindows ? '\\php.exe' : '/php');
+    }
+
+    if ($esWindows) {
+        // XAMPP puede estar en cualquier unidad; se recorren las habituales y
+        // también los caminos de otros stacks usados en Windows.
+        foreach (['C', 'D', 'E', 'F'] as $unidad) {
+            $candidatos[] = $unidad . ':\\xampp\\php\\php.exe';
+        }
+        $candidatos[] = 'C:\\laragon\\bin\\php\\php.exe';
+        $candidatos[] = 'C:\\wamp64\\bin\\php\\php.exe';
+        $candidatos[] = 'C:\\php\\php.exe';
+    } else {
+        $candidatos[] = '/opt/lampp/bin/php';   // XAMPP/LAMPP en Linux
+        $candidatos[] = '/usr/local/bin/php';
+        $candidatos[] = '/usr/bin/php';
+        $candidatos[] = '/bin/php';
+    }
+
+    foreach ($candidatos as $candidato) {
+        if ($candidato !== '' && is_file($candidato) && is_executable($candidato)) {
+            return $candidato;
+        }
+    }
+
+    // Último recurso: buscarlo en el PATH del sistema.
+    if (function_exists('exec')) {
+        $salida = [];
+        $codigo = 0;
+        @exec($esWindows ? 'where php' : 'command -v php', $salida, $codigo);
+
+        foreach ((array) $salida as $linea) {
+            $linea = trim((string) $linea);
+            if ($linea !== '' && is_file($linea)) {
+                return $linea;
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Pone una ruta entre comillas para que funcione aunque contenga espacios
+ * ("C:\xampp\htdocs\Mi Sistema\webSocket.php").
+ */
+function websocketEntreComillas(string $valor): string
+{
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        return '"' . $valor . '"';
+    }
+
+    return escapeshellarg($valor);
+}
+
+/**
+ * Lanza el servidor WebSocket en segundo plano, desvinculado del proceso de
+ * Apache, y devuelve true si la orden se ejecutó.
+ */
+function websocketLanzarServidor(string $php, string $script): bool
+{
+    $phpArg = websocketEntreComillas($php);
+    $scriptArg = websocketEntreComillas($script);
+
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        // start /B  -> sin ventana nueva y sin bloquear la respuesta
+        // > NUL 2>&1 -> se descarta la salida (si se llena el búfer de un pipe
+        //               que nadie lee, el servidor se queda colgado).
+        $comando = 'start "" /B ' . $phpArg . ' ' . $scriptArg . ' > NUL 2>&1';
+
+        // WScript.Shell es lo más fiable cuando Apache corre como servicio:
+        // devuelve el control de inmediato y deja el proceso vivo.
+        if (class_exists('COM')) {
+            try {
+                $shell = new COM('WScript.Shell');
+                $shell->Run('cmd /C ' . $comando, 0, false);
+                return true;
+            } catch (\Throwable $e) {
+                error_log('JEHOVA-RAFA WebSocket: fallo al lanzar con COM (' . $e->getMessage() . ').');
+            }
+        }
+
+        if (function_exists('popen')) {
+            $proceso = @popen($comando, 'r');
+            if (is_resource($proceso)) {
+                pclose($proceso);
+                return true;
+            }
+            error_log('JEHOVA-RAFA WebSocket: popen() no pudo ejecutar el comando en Windows.');
+        }
+
+        return false;
+    }
+
+    // Linux: setsid crea una sesión nueva para que el servidor no muera cuando
+    // termina la petición de Apache (ni al reiniciar el worker).
+    $prefijo = (is_executable('/usr/bin/setsid') || is_executable('/bin/setsid')) ? 'setsid ' : '';
+    $comando = $prefijo . $phpArg . ' ' . $scriptArg . ' > /dev/null 2>&1 &';
+
+    if (function_exists('exec')) {
+        @exec($comando, $salida, $codigo);
+        return true;
+    }
+
+    if (function_exists('proc_open')) {
+        $proceso = @proc_open($comando, [1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']], $pipes);
+        if (is_resource($proceso)) {
+            proc_close($proceso);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Espera hasta $intentos décimas de segundo a que el puerto se abra.
+ */
+function websocketEsperarPuerto(string $host, int $puerto, int $intentos): void
+{
+    for ($i = 0; $i < $intentos; $i++) {
+        usleep(100000);
+
+        if (websocketEstaActivo($host, $puerto)) {
+            return;
+        }
+    }
+}
+
+/**
+ * Arranca el servidor WebSocket si no está levantado todavía.
+ * Es segura de llamar en cada inicio de sesión y funciona en Linux y Windows.
+ */
+function iniciarServidorWebSocket(): void
+{
+    $config = websocketConfiguracion();
+    $host = $config['host'];
+    $puerto = $config['puerto'];
+
+    // Ya está corriendo: no hay que hacer nada.
+    if (websocketEstaActivo($host, $puerto)) {
+        return;
+    }
+
+    $script = realpath(__DIR__ . '/../../webSocket.php');
+    if ($script === false || !is_file($script)) {
+        error_log('JEHOVA-RAFA WebSocket: no se encontró webSocket.php en la raíz del proyecto.');
+        return;
+    }
+
+    $php = websocketBinarioPhp();
+    if ($php === null) {
+        error_log('JEHOVA-RAFA WebSocket: no se encontró el ejecutable de PHP (php / php.exe) para lanzar el servidor.');
+        return;
+    }
+
+    // Candado en el directorio temporal del sistema (a diferencia de la carpeta
+    // del proyecto, sí es escribible por el usuario con el que corre Apache).
+    // Evita que varios inicios de sesión simultáneos lancen varios servidores
+    // sobre el mismo puerto.
+    $rutaCandado = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'cem_jehova_rafa_websocket.lock';
+    $candado = @fopen($rutaCandado, 'c+');
+    $bloqueado = is_resource($candado) && @flock($candado, LOCK_EX | LOCK_NB);
+
+    try {
+        // Mientras esperábamos el candado otro proceso pudo levantarlo.
+        if (websocketEstaActivo($host, $puerto)) {
+            return;
+        }
+
+        // Otro inicio de sesión tiene el candado, es decir, está arrancando el
+        // servidor: solo esperamos a que abra el puerto.
+        if (is_resource($candado) && !$bloqueado) {
+            websocketEsperarPuerto($host, $puerto, 15);
+            return;
+        }
+
+        if (websocketLanzarServidor($php, $script)) {
+            // Espera máxima de 1 s a que abra el puerto, saliendo antes en
+            // cuanto responde (antes se esperaba 0.5 s a ciegas).
+            websocketEsperarPuerto($host, $puerto, 10);
+        } else {
+            error_log('JEHOVA-RAFA WebSocket: no se pudo lanzar el servidor con ' . $php . '.');
+        }
+    } finally {
+        if ($bloqueado) {
+            @flock($candado, LOCK_UN);
+        }
+
+        if (is_resource($candado)) {
+            fclose($candado);
+        }
+    }
+}
+
 // iniciar sesión 
 
 function iniciarSesion()
@@ -148,47 +408,9 @@ function iniciarSesion()
         $bitacora->setTabla("inicio sesion");
 
         $bitacora->insertarBitacora();
-        //websoket
-        $host = '127.0.0.1';
-        $puerto = 8080;
 
-        $socket_activo = @fsockopen($host, $puerto, $errno, $errstr, 1);
-
-        if (!$socket_activo) {
-
-            $ruta_base = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "webSocket.php";
-            $ruta_real = realpath($ruta_base);
-
-            if ($ruta_real && file_exists($ruta_real)) {
-
-                //para windows
-                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-
-                    $php_exe = "C:\\xampp\\php\\php.exe";
-
-                    if (!file_exists($php_exe)) {
-
-                        $php_exe = "D:\\xampp\\php\\php.exe";
-                    }
-
-                    if (file_exists($php_exe)) {
-                        pclose(popen("start /B \"\" \"$php_exe\" \"$ruta_real\" > NUL 2>&1", "r"));
-                    } else {
-                        error_log("JEHOVA-RAFA: No se encontró php.exe en las rutas de XAMPP.");
-                    }
-                } else {
-                    //para linux
-                    exec("php \"$ruta_real\" > /dev/null 2>&1 &");
-                }
-
-                usleep(500000); // 0.5 segundos
-            } else {
-                error_log("JEHOVA-RAFA Error: No se encontró webSocket.php en: " . ($ruta_real ?: $ruta_base));
-            }
-        } else {
-
-            fclose($socket_activo);
-        }
+        // Arranca el servidor de WebSocket si no está levantado (Linux/Windows)
+        iniciarServidorWebSocket();
 
         echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
     } else {

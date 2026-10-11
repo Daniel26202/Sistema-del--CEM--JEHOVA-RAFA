@@ -35,7 +35,13 @@ if (!empty($parametro)) {
 	<title>J-R</title>
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/DataTable/datatables.css">
+	<!-- CSS de la extensión Responsive: necesaria para el botón ▶ y la fila hija -->
+	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/library/DataTable/responsive.dataTables.css">
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/style.css">
+	<!-- Fuente general + botones de registrar: aplica en TODOS los modulos -->
+	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/sistema.css">
+	<!-- Responsive de las DataTables (initDataTable): aplica en TODOS los modulos -->
+	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/datatables-responsive.css">
 	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/library/intro/introjs.min.css">
 	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/library/intro/introjs-modern.css">
 	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/cssVista/ayudaInteractiva.css">
