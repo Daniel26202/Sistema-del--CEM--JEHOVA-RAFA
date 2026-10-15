@@ -1,0 +1,458 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MÓDULO CHAT (ASISTENTE IA) · estilos propios
+   -----------------------------------------------------------------------
+   Se carga SOLO en src/vistas/vistaChat/chat.php, por eso no afecta al resto
+   de los módulos.
+
+   Reglas seguidas para que el modo oscuro funcione sin tocar nada:
+     · Nada de colores fijos: todo sale de las variables de style.css
+       (--color-primary, --color-bg-main, --color-bg-card, --color-surface,
+        --color-text-card, --color-border).
+     · Los componentes reutilizan clases del sistema (.btn-modals,
+       .input-custom, .txt-custom, .chip, .sin-circulos, .fondo-tabla).
+     · Los textos llevan !important donde style.css tiene reglas globales
+       (a { color: … !important }, p { color: … }), igual que el resto del
+       sistema (ver .parrafo-offcanvas, .label-custom).
+     · Los iconos son SVG inline con fill="currentColor", así acompañan al
+       color del botón también en el hover.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Reparto de columnas ───────────────────────────────────────────────── */
+.chat-lateral {
+    border-right: 1px solid var(--color-border);
+    padding-right: 1rem;
+}
+
+.chat-principal {
+    padding-left: 1rem;
+}
+
+@media (max-width: 991.98px) {
+    .chat-lateral {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+        padding-right: 0;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .chat-principal {
+        padding-left: 0;
+    }
+}
+
+/* ── 2. Lista de conversaciones ───────────────────────────────────────────── */
+.chat-lateral-titulo {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    opacity: 0.55;
+    color: var(--color-text-card) !important;
+    margin-bottom: 0.5rem;
+}
+
+.chat-lista {
+    max-height: calc(100vh - 340px);
+    overflow-y: auto;
+}
+
+@media (max-width: 991.98px) {
+    .chat-lista {
+        max-height: 40vh;
+    }
+}
+
+.chat-item {
+    border-left: 3px solid transparent;
+    border-radius: 10px;
+    padding: 0.5rem 0.65rem;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.chat-item:hover {
+    background: var(--color-bg-main);
+}
+
+.chat-item.activo {
+    background: var(--color-bg-main);
+    border-left-color: var(--color-primary);
+}
+
+.chat-item-titulo {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-card) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-item-fecha {
+    font-size: 0.72rem;
+    font-weight: 400;
+    opacity: 0.55;
+    color: var(--color-text-card) !important;
+}
+
+/* ── 3. Área de mensajes ──────────────────────────────────────────────────── */
+.chat-area {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 330px);
+    overflow-y: auto;
+    padding: 0.25rem 0.5rem;
+    scroll-behavior: smooth;
+}
+
+@media (max-width: 991.98px) {
+    .chat-area {
+        height: 55vh;
+    }
+}
+
+.chat-mensajes {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ── 4. Burbujas de la conversación ───────────────────────────────────────── */
+.chat-fila {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+}
+
+.chat-fila.usuario {
+    flex-direction: row-reverse;
+}
+
+/* Avatar con el logo del sistema (respuestas del asistente). */
+.chat-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    object-fit: cover;
+}
+
+/* Avatar con icono (mensajes del usuario, igual que el menú lateral). */
+.chat-avatar-icono {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary);
+    color: #ffffff;
+}
+
+.chat-burbuja {
+    max-width: 78%;
+    border-radius: 16px;
+    padding: 0.7rem 1rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+/* La burbuja y sus acciones comparten columna para que la hora y los botones
+   queden alineados con el ancho de la burbuja. */
+.chat-burbuja-columna {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.chat-fila.usuario .chat-burbuja-columna {
+    align-items: flex-end;
+}
+
+.chat-hora {
+    font-size: 0.68rem;
+    opacity: 0.5;
+    color: var(--color-text-card);
+    margin-right: auto;
+    padding-left: 0.15rem;
+}
+
+.chat-fila.usuario .chat-burbuja {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+/* style.css pinta los <p>, <li> y <strong> con --color-text-card: dentro de
+   la burbuja del usuario todo tiene que quedar blanco. */
+.chat-fila.usuario .chat-burbuja p,
+.chat-fila.usuario .chat-burbuja li,
+.chat-fila.usuario .chat-burbuja strong,
+.chat-fila.usuario .chat-burbuja em,
+.chat-fila.usuario .chat-burbuja a,
+.chat-fila.usuario .chat-burbuja code {
+    color: #ffffff !important;
+}
+
+.chat-fila.asistente .chat-burbuja {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-card);
+    border-bottom-left-radius: 4px;
+}
+
+@media (max-width: 575.98px) {
+    .chat-burbuja {
+        max-width: 88%;
+    }
+}
+
+/* Contenido con formato (Markdown básico) dentro de la burbuja. */
+.chat-burbuja p {
+    margin-bottom: 0.5rem;
+}
+
+.chat-burbuja p:last-child {
+    margin-bottom: 0;
+}
+
+.chat-burbuja ul,
+.chat-burbuja ol {
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.chat-burbuja li {
+    margin-bottom: 0.2rem;
+}
+
+.chat-burbuja h6 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-card) !important;
+    margin-bottom: 0.35rem;
+}
+
+.chat-burbuja code {
+    background: rgba(56, 122, 223, 0.14);
+    border-radius: 6px;
+    padding: 0.05rem 0.3rem;
+    font-size: 0.85em;
+}
+
+.chat-burbuja pre {
+    background: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    overflow-x: auto;
+    margin-bottom: 0.5rem;
+}
+
+.chat-burbuja pre code {
+    background: none;
+    padding: 0;
+}
+
+.chat-burbuja blockquote {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 0.7rem;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+}
+
+/* ── 5. Acciones sobre cada respuesta ─────────────────────────────────────── */
+.chat-acciones {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.chat-fila:hover .chat-acciones,
+.chat-fila:focus-within .chat-acciones {
+    opacity: 1;
+}
+
+/* En táctil no existe el hover: se dejan siempre visibles. */
+@media (hover: none) {
+    .chat-acciones {
+        opacity: 1;
+    }
+}
+
+.chat-accion {
+    font-size: 0.72rem;
+    line-height: 1;
+    padding: 0.3rem 0.55rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    color: var(--color-text-card) !important;
+    cursor: pointer;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.chat-accion:hover {
+    color: var(--color-primary) !important;
+    border-color: var(--color-primary);
+}
+
+/* ── 6. Indicador de "el asistente está escribiendo" ─────────────────────── */
+.chat-escribiendo {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.6rem 0.2rem 0;
+}
+
+.chat-punto {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    animation: chat-punto 1.2s infinite ease-in-out;
+}
+
+.chat-punto:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.chat-punto:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.chat-escribiendo-texto {
+    font-size: 0.78rem;
+    opacity: 0.55;
+    color: var(--color-text-card);
+    margin-left: 0.3rem;
+}
+
+@keyframes chat-punto {
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.35;
+    }
+
+    30% {
+        transform: translateY(-5px);
+        opacity: 1;
+    }
+}
+
+/* ── 7. Zona de escritura ────────────────────────────────────────────────── */
+/* .input-custom ya trae el borde azul y el radio del resto del sistema. */
+.chat-composer {
+    align-items: flex-end;
+    margin-top: 0.8rem;
+}
+
+.chat-textarea {
+    max-height: 160px;
+    resize: none;
+}
+
+.chat-enviar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+.chat-ayuda-texto {
+    font-size: 0.72rem;
+    opacity: 0.55;
+    color: var(--color-text-card);
+    text-align: center;
+    margin-top: 0.4rem;
+}
+
+/* ── 8. Estado vacío (conversación nueva) ───────────────────────────────── */
+.chat-vacio {
+    text-align: center;
+    margin: auto;
+    padding: 2rem 1rem;
+    max-width: 520px;
+}
+
+.chat-vacio-logo {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 0.35rem;
+}
+
+.chat-vacio-titulo {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-card);
+    margin: 0.8rem 0 0.3rem;
+}
+
+.chat-vacio-texto {
+    font-size: 0.85rem;
+    opacity: 0.65;
+    color: var(--color-text-card);
+}
+
+.chat-sugerencias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.chat-chip {
+    cursor: pointer;
+}
+
+.chat-chip:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary) !important;
+}
+
+/* ── 9. Botón "Conversaciones" (solo móvil) ─────────────────────────────── */
+.chat-toggle-lateral {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+@media (min-width: 992px) {
+    .chat-toggle-lateral {
+        display: none !important;
+    }
+}
+
+/* En móvil la lista de conversaciones se abre y se cierra con el botón. */
+@media (max-width: 991.98px) {
+    .chat-lateral {
+        display: none;
+    }
+
+    .chat-lateral.chat-lateral-abierto {
+        display: block;
+    }
+}
