@@ -22,7 +22,7 @@ function validarApiKeyCompartida()
     $recibida = $headers['X-API-Key'] ?? $headers['x-api-key'] ?? '';
     $esperada = $_ENV['API_KEY_IA'] ?? '';
 
-    if (empty($esperada) || $recibida !== $esperada) {
+    if ($esperada === '' || !hash_equals($esperada, $recibida)) {
         http_response_code(401);
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['ok' => false, 'error' => 'API key inválida o ausente']);
