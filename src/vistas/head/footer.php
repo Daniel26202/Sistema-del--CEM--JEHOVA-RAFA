@@ -27,6 +27,7 @@
 <script type="module" src="<?= $urlBase ?>../src/assets/js/generic/expresionesModulares.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/sweetalert2/sweetalert2@11.js"></script>
 <script src="<?= $urlBase ?>../src/assets/js/webSocket.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/chatModal.js"></script>
 
 
 <script>

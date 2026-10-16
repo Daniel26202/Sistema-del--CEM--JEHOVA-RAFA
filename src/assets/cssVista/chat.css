@@ -1,8 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    MÓDULO CHAT (ASISTENTE IA) · estilos propios
    -----------------------------------------------------------------------
-   Se carga SOLO en src/vistas/vistaChat/chat.php, por eso no afecta al resto
-   de los módulos.
+   Se carga en src/vistas/head/head.php (todas las páginas), porque el modal
+   del asistente reutiliza estas clases. Todas están prefijadas con .chat-
+   (o viven dentro de .chat-*), así que no chocan con el resto de módulos.
 
    Reglas seguidas para que el modo oscuro funcione sin tocar nada:
      · Nada de colores fijos: todo sale de las variables de style.css

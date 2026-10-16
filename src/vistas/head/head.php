@@ -45,6 +45,9 @@ if (!empty($parametro)) {
 	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/library/intro/introjs.min.css">
 	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/library/intro/introjs-modern.css">
 	<link rel="stylesheet" type="text/css" href="<?= $urlBase ?>../src/assets/cssVista/ayudaInteractiva.css">
+	<!-- Asistente IA: componentes reutilizados del chat + botón flotante y modal -->
+	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/chat.css">
+	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/chatModal.css">
 
 </head>
 
@@ -325,11 +328,11 @@ if (!empty($parametro)) {
 			</nav>
 		</div>
 
-		<a class="nav-link d-flex  <?= $vistaActiva == 'chat' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Chat/chat" uk-tooltip="Reportes Estadisticos" id="menuReportesEstadisticos">
+		<a class="nav-link d-flex  <?= $vistaActiva == 'chat' ? 'active' : '' ?>" href="#chatModal" data-bs-toggle="modal" data-bs-target="#chatModal" uk-tooltip="Asistente IA" id="menuReportesEstadisticos">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
 					<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
 				</svg></div>
-			Chatbot
+			Asistente IA
 		</a>
 
 
@@ -341,6 +344,9 @@ if (!empty($parametro)) {
 
 	<!-- modal de cerrar sesión -->
 	<?php require_once './src/vistas/modalCierreS/modalCierreS.php'; ?>
+
+	<!-- Asistente IA: botón flotante + modal -->
+	<?php require_once './src/vistas/vistaChat/modalChat.php'; ?>
 
 	<!-- Contenido principal -->
 	<div id="main">
