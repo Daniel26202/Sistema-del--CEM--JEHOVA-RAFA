@@ -171,7 +171,7 @@ class Rutas
             exit;
         }
 
-        if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerBitacora" || $this->controlador == "ControllerChat") {
+        if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerApi" || $this->controlador == "ControllerBitacora" || $this->controlador == "ControllerChat") {
             call_user_func($metodo, $parametro ?? []);
             return;
         }
