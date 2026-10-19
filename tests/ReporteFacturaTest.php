@@ -18,15 +18,15 @@ class ReporteFacturaTest extends TestCase
     //Factura
     public function testConsultaFactura()
     {
-        $id_factura = 61;
+        $id_factura = 213;
 
-        $consulta = $this->pdo->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente WHERE f.id_factura = :id_factura AND f.estado='ACT' ORDER BY id_factura ASC");
+        $consulta = $this->pdo->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente WHERE f.id_factura = :id_factura AND f.estado='ACT' ORDER BY id_factura ASC");
         $consulta->bindParam(":id_factura", $id_factura);
         $consulta->execute();
         $resultado = $consulta->fetchAll();
         echo "EXISTE FACTURA CON EL ID (" . $id_factura . "): " . (empty($resultado) ? "FAIL" : "OK");
 
-        // Verificamos que la cira si exista
+        // Verificamos que la factura si exista
         $this->assertNotEmpty($resultado, "La factura con ID (" . $id_factura . ") existe en la BD");
     }
 
@@ -34,12 +34,12 @@ class ReporteFacturaTest extends TestCase
     {
         $id_factura = 99999;
 
-        $consulta = $this->pdo->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN paciente p ON p.id_paciente = f.paciente_id_paciente WHERE f.id_factura = :id_factura AND f.estado='ACT' ORDER BY id_factura ASC");
+        $consulta = $this->pdo->prepare("SELECT f.*, p.nombre as nombre_p , p.apellido AS apellido_p, nacionalidad, p.cedula AS cedula_p FROM factura f INNER JOIN cliente p ON p.id_cliente = f.id_cliente WHERE f.id_factura = :id_factura AND f.estado='ACT' ORDER BY id_factura ASC");
         $consulta->bindParam(":id_factura", $id_factura);
         $consulta->execute();
         $resultado = $consulta->fetchAll();
 
-        // Verificamos que la cira si exista
-        $this->assertNotEmpty($resultado, "La factura con ID (" . $id_factura . ") no existe en la BD");
+        // Verificamos que la factura no exista
+        $this->assertEmpty($resultado, "La factura con ID (" . $id_factura . ") no existe en la BD");
     }
 }

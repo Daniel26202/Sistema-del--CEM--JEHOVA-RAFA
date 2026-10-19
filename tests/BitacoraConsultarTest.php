@@ -17,7 +17,7 @@ class BitacoraConsultarTest extends TestCase
 
     public function testConsultaBitacoraExistente()
     {
-        $id_usuario = 47; // hay q asegurarse q este id exista en la bd
+        $id_usuario = 42; // hay q asegurarse q este id exista en la bd (usuario "Usuario123")
         $sql = $this->pdo->prepare("SELECT p.nombre, p.apellido, u.usuario,b.tabla, b.actividad, b.fecha_hora FROM segurity.bitacora b INNER JOIN segurity.usuario u ON u.id_usuario = b.id_usuario INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE b.id_usuario =:id_usuario");
         $sql->bindParam(":id_usuario", $id_usuario);
         $sql->execute();

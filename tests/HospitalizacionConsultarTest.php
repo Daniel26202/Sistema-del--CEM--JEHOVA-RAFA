@@ -17,7 +17,7 @@ class HospitalizacionConsultarTest extends TestCase
 
     public function testConsultaHospitalizacionExistente()
     {
-        $id_hospitalizacion = 27; // hay q asegurarse q este id exista en la bd
+        $id_hospitalizacion = 41; // hay q asegurarse q este id exista en la bd
         $sql = $this->pdo->prepare("SELECT * FROM hospitalizacion WHERE id_hospitalizacion = :id_hospitalizacion");
         $sql->bindParam(":id_hospitalizacion", $id_hospitalizacion);
         $sql->execute();

@@ -2,21 +2,43 @@
 
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloPatologia;
+use App\modelos\Db;
 
 class PatologiaEliminarTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $modelo;
+    private $db;
+    private $idCreado = null;
 
     protected function setUp(): void
     {
         $this->modelo = new ModeloPatologia();
+        $this->db = (new Db())->connectionSistema();
+        $this->iniciarSesionDePrueba();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->idCreado !== null) {
+            $this->borrarRegistro('bd', 'patologia', 'id_patologia', $this->idCreado);
+        }
+        $this->cerrarSesionDePrueba();
     }
 
     public function testEliminarPatologia()
     {
-        $this->modelo->setId_patologia(203);
-        $resultado = $this->modelo->eliminarPatologia();
-        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
-        $this->assertEquals("exito", $resultado);
+        // Se crea una patología propia para eliminarla sin afectar datos reales
+        $this->modelo->setNombrePatologia("GenericaPrueba");
+        $this->modelo->guardarPatologia(1);
+        $this->idCreado = $this->ultimoIdGenerado('bd', 'patologia', 'id_patologia');
+
+        // Ahora se elimina lógicamente el registro recién creado
+        $this->modelo = new ModeloPatologia();
+        $this->modelo->setIdPatologia($this->idCreado);
+        $resultado = $this->modelo->deletePatologia(1);
+
+        $this->assertEquals("exito", $resultado[0]);
     }
 }

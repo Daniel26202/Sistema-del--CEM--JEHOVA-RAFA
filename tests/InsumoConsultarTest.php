@@ -17,15 +17,15 @@ class InsumoConsultarTest extends TestCase
 
     public function testConsultaInsumoExistente()
     {
-        $id_insumo = 51; // hay q asegurarse q este id exista en la bd
+        $id_insumo = 49; // hay q asegurarse q este id exista en la bd
         $sql = $this->pdo->prepare("SELECT * FROM insumo WHERE id_insumo = :id_insumo");
         $sql->bindParam(":id_insumo", $id_insumo);
         $sql->execute();
         $resultado = $sql->fetchAll();
-        echo "EXISTE (51): " . (empty($resultado) ? "FAIL" : "OK");
+        echo "EXISTE (49): " . (empty($resultado) ? "FAIL" : "OK");
 
         // Verificamos que el insumo siexista
-        $this->assertNotEmpty($resultado, "El insumo con ID 51 debería existir en la BD");
+        $this->assertNotEmpty($resultado, "El insumo con ID 49 debería existir en la BD");
     }
 
     public function testConsultaInsumoInexistente()

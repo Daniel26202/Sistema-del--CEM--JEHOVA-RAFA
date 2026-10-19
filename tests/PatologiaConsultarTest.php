@@ -17,15 +17,15 @@ class PatologiaConsultarTest extends TestCase
 
     public function testConsultaPatologiaExistente()
     {
-        $id_patologia = 51; // hay q asegurarse q este id exista en la bd
+        $id_patologia = 2; // hay q asegurarse q este id exista en la bd
         $sql = $this->pdo->prepare("SELECT * FROM patologia WHERE id_patologia = :id_patologia");
         $sql->bindParam(":id_patologia", $id_patologia);
         $sql->execute();
         $resultado = $sql->fetchAll();
-        echo "EXISTE (51): " . (empty($resultado) ? "FAIL" : "OK");
+        echo "EXISTE (2): " . (empty($resultado) ? "FAIL" : "OK");
 
         // Verificamos que el insumo siexista
-        $this->assertNotEmpty($resultado, "La patologia con ID 51 debería existir en la BD");
+        $this->assertNotEmpty($resultado, "La patologia con ID 2 debería existir en la BD");
     }
 
     public function testConsultaPatologiaInexistente()

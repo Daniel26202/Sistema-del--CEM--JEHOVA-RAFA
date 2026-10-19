@@ -67,7 +67,7 @@ class ReporteEstadisticoMorbilidadTest extends TestCase
         $consulta->execute();
         $resultado =  $consulta->fetchAll();
 
-        // Verificamos que la cira si exista
-        $this->assertNotEmpty($resultado, "Los datos de morbilidad con las fechas (" . $desdeFecha . " A " . $fechaHasta . ")  no existen en la BD");
+        // Verificamos que no existan datos de morbilidad en ese rango
+        $this->assertEmpty($resultado, "Los datos de morbilidad con las fechas (" . $desdeFecha . " A " . $fechaHasta . ")  no existen en la BD");
     }
 }

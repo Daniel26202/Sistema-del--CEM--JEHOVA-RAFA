@@ -2,26 +2,47 @@
 
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloControl;
+use App\modelos\Db;
 
 class ControlInsertaTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $modelo;
+    private $db;
+    private $idCreado = null;
 
     protected function setUp(): void
     {
         $this->modelo = new ModeloControl();
+        $this->db = (new Db())->connectionSistema();
+        $this->iniciarSesionDePrueba();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->idCreado !== null) {
+            $this->db->exec("DELETE FROM bd.sintomas_control WHERE id_control = " . (int)$this->idCreado);
+            $this->borrarRegistro('bd', 'control', 'id_control', $this->idCreado);
+        }
+        $this->cerrarSesionDePrueba();
     }
 
     public function testInsertarControl()
     {
-        $this->modelo->setId_usuario(25);
-        $this->modelo->setTipo_control("historial");
-        $this->modelo->setFecha_control("2025-11-01");
-        $this->modelo->setIndicaciones("indicaciones");
-        $this->modelo->setDiagnostico("diagnostico");
-        $this->modelo->setId_cita(1);
-        $this->modelo->setNota("nota");
-        $resultado = $this->modelo->insertControl();
+        $this->modelo->setIdUsuario(1);
+        $this->modelo->setIdPaciente(25);
+        $this->modelo->setHistorial("Paciente refiere sintomas leves");
+        $this->modelo->setDiagnostico("Diagnostico de prueba automatizada");
+        $this->modelo->setIndicaciones("Reposo y control en una semana");
+        $this->modelo->setFechaRegreso("2027-01-15");
+        $this->modelo->setSeveridad("LEVE");
+        $this->modelo->setNota("nota de prueba");
+        $this->modelo->setSintomas([8]);
+        $this->modelo->setPatologias([2]);
+
+        $resultado = $this->modelo->insertControl(1);
+        $this->idCreado = $this->ultimoIdGenerado('bd', 'control', 'id_control');
 
         $this->assertEquals("exito", $resultado[0]);
     }

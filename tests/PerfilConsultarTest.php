@@ -17,9 +17,9 @@ class PerfilConsultarTest extends TestCase
 
     public function testConsultaPerfilExistente()
     {
-        $id_usuario = 47; // hay q asegurarse q este id exista en la bd
-        $sql = $this->pdo->prepare("SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario");
-        $sql->bindParam(":usuario", $id_usuario);
+        $id_usuario = 42; // hay q asegurarse q este id exista en la bd (usuario "Usuario123")
+        $sql = $this->pdo->prepare("SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.id_usuario =:id_usuario");
+        $sql->bindParam(":id_usuario", $id_usuario);
         $sql->execute();
         $resultado = $sql->fetchAll();
         echo "EXISTE (" . $id_usuario . "): " . (empty($resultado) ? "FAIL" : "OK");
@@ -30,11 +30,11 @@ class PerfilConsultarTest extends TestCase
     public function testConsultaPerfilInexistente()
     {
         $id_usuario = 999999; // Caso borde, no debería existir
-        $sql = $this->pdo->prepare("SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario");
-        $sql->bindParam(":usuario", $id_usuario);
+        $sql = $this->pdo->prepare("SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.id_usuario =:id_usuario");
+        $sql->bindParam(":id_usuario", $id_usuario);
         $sql->execute();
         $resultado = $sql->fetchAll();
 
-        $this->assertNotEmpty($resultado, "El perfil de usuario con ID (" . $id_usuario . ") no  existe en la BD");
+        $this->assertEmpty($resultado, "El perfil de usuario con ID (" . $id_usuario . ") no  existe en la BD");
     }
 }
