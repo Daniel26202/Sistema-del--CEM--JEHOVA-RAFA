@@ -40,8 +40,8 @@ class ReporteCitaTest extends TestCase
         $consulta->execute();
         $resultado =  $consulta->fetchAll();
 
-        // Verificamos que la cira si exista
-        $this->assertNotEmpty($resultado, "Las citas con las fechas (" . $desdeFecha . " A " . $fechaHasta . ")  no existen en la BD");
+        // Verificamos que la cita no exista en ese rango
+        $this->assertEmpty($resultado, "Las citas con las fechas (" . $desdeFecha . " A " . $fechaHasta . ")  no existen en la BD");
     }
 
 

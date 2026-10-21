@@ -2,35 +2,46 @@
 
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloRoles;
+use App\modelos\Db;
 
 class RolInsertarTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $modelo;
+    private $db;
+    private $idCreado = null;
 
     protected function setUp(): void
     {
+        // ModeloRoles usa por defecto la conexión a segurity
         $this->modelo = new ModeloRoles();
+        $this->db = (new Db())->connectionSegurity();
+        $this->iniciarSesionDePrueba();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->idCreado !== null) {
+            $this->borrarRegistro('segurity', 'permisos_de_rol', 'id_rol', $this->idCreado);
+            $this->borrarRegistro('segurity', 'rol', 'id_rol', $this->idCreado);
+        }
+        $this->cerrarSesionDePrueba();
     }
 
     public function testInsertarRol()
     {
+        $this->modelo->setNombre("RolPrueba");
+        $this->modelo->setDescripcion("Descripcion desde el test");
+        $this->modelo->setModulos(["Usuarios", "Roles"]);
+        $this->modelo->setPermisos([
+            "Usuarios" => [30, 31, 32],
+            "Roles"    => [30, 31]
+        ]);
 
-        $this->modelo->setNombre("Nombre");
-        $this->modelo->setDescripcion("Descripción desde el test");
+        $resultado = $this->modelo->guardarRol(1);
+        $this->idCreado = $this->ultimoIdGenerado('segurity', 'rol', 'id_rol');
 
-        // El modelo espera que los módulos sean un array de strings
-        $modulos = ["Usuarios", "Roles"];
-        $this->modelo->setModulos($modulos);
-
-        // El modelo espera que los permisos sean un array asociativo: ['Modulo' => [id1, id2]]
-        $permisos = [
-            "Usuarios" => [1, 2, 3], // IDs de los permisos para Usuarios
-            "Roles"    => [1, 2]     // IDs de los permisos para Roles
-        ];
-        $this->modelo->setPermisos($permisos);
-
-        $resultado = $this->modelo->insertar();
-        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
         $this->assertEquals("exito", $resultado[0]);
     }
 }

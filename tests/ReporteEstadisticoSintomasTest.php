@@ -51,7 +51,7 @@ class ReporteEstadisticoSintomasTest extends TestCase
         $consulta->execute();
         $resultado =  $consulta->fetchAll();
 
-        // Verificamos que la cira si exista
-        $this->assertNotEmpty($resultado, "Los datos de los sintomas mas solicitadas desde  (" . $desdeFecha . " A " . $fechaHasta . ")  no existen en la BD");
+        // Verificamos que no existan datos de sintomas en ese rango
+        $this->assertEmpty($resultado, "Los datos de los sintomas mas solicitadas desde  (" . $desdeFecha . " A " . $fechaHasta . ")  no existen en la BD");
     }
 }

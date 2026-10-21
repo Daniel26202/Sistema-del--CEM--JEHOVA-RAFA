@@ -2,27 +2,53 @@
 
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloProveedores;
+use App\modelos\Db;
 
 class ProveedorEditarTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $modelo;
+    private $db;
+    private $idCreado = null;
 
     protected function setUp(): void
     {
         $this->modelo = new ModeloProveedores();
+        $this->db = (new Db())->connectionSistema();
+        $this->iniciarSesionDePrueba();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->idCreado !== null) {
+            $this->borrarRegistro('bd', 'proveedor', 'id_proveedor', $this->idCreado);
+        }
+        $this->cerrarSesionDePrueba();
     }
 
     public function testProvedorEditar()
     {
-        $this->modelo->setId_proveedor(8);
-        $this->modelo->setNombre_proveedor("Luis Empresa");
-        $this->modelo->setRif("J122334");
-        $this->modelo->setTelefono("0424354556");
-        $this->modelo->setCorreo("luis12345@gmail.com");
+        // Se crea un proveedor propio para poder editarlo sin afectar datos reales
+        $this->modelo->setNombre("Carlos");
+        $this->modelo->setRif("J122305");
+        $this->modelo->setTelefono("04243545561");
+        $this->modelo->setEmail("CCC12345@gmail.com");
         $this->modelo->setDireccion("El Tocuyo");
-        $resultado = $this->modelo->editar();
+        $this->modelo->guardarEntrada(1);
+        $this->idCreado = $this->ultimoIdGenerado('bd', 'proveedor', 'id_proveedor');
 
-        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
-        $this->assertEquals("exito", $resultado);
+        // Ahora se edita el registro recién creado
+        $this->modelo = new ModeloProveedores();
+        $this->modelo->setIdProveedor($this->idCreado);
+        $this->modelo->setNombre("Luis Empresa");
+        $this->modelo->setRif("J122305");
+        $this->modelo->setRifRegistrado("J122305");
+        $this->modelo->setTelefono("04243545561");
+        $this->modelo->setEmail("luis12345@gmail.com");
+        $this->modelo->setDireccion("El Tocuyo");
+        $resultado = $this->modelo->editarEntrada(1);
+
+        $this->assertEquals("exito", $resultado[0]);
     }
 }

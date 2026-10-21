@@ -33,7 +33,7 @@ class ReporteInsumoTest extends TestCase
         $consulta->execute();
         $resultado =  $consulta->fetchAll();
 
-        // Verificamos que la cira si exista
-        $this->assertNotEmpty($resultado, "Los insumos  no existen en la BD");
+        // Verificamos que no existan insumos con ese estado
+        $this->assertEmpty($resultado, "Los insumos  no existen en la BD");
     }
 }

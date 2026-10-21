@@ -2,24 +2,44 @@
 
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloUsuarios;
+use App\modelos\Db;
 
 class UsuarioEditarTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $modelo;
+    private $db;
+    private $idCreado = null;
+    private $usuarioNombre = "UsrPrueba001";
 
     protected function setUp(): void
     {
         $this->modelo = new ModeloUsuarios();
+        $this->db = (new Db())->connectionSegurity();
+        $this->iniciarSesionDePrueba();
+
+        // Se crea un usuario de prueba directamente en segurity
+        $stmt = $this->db->prepare("INSERT INTO usuario (id_rol, imagen, usuario, correo, password, estado) VALUES (11, 'doctor.png', :usuario, 'usrprueba@test.com', 'x', 'ACT')");
+        $stmt->execute(['usuario' => $this->usuarioNombre]);
+        $this->idCreado = (int)$this->db->lastInsertId();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->idCreado !== null) {
+            $this->borrarRegistro('segurity', 'usuario', 'id_usuario', $this->idCreado);
+        }
+        $this->cerrarSesionDePrueba();
     }
 
     public function testEditarUsuario()
     {
-        $this->modelo->setIdUsuario(1); // Asegúrate de que este ID exista en tu base de datos para que la prueba sea válida
-        $this->modelo->setNombre("Pedro123");
-        $this->modelo->setEdad(50);
-        $this->modelo->setImagen("imagen1.png");
-        $resultado = $this->modelo->updateUsuario();
-        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
-        $this->assertEquals("exito", $resultado);
+        $this->modelo->setIdUsuario($this->idCreado);
+        $this->modelo->setUsuario("UsrEditado01");
+        $this->modelo->setUsuarioRegistrado($this->usuarioNombre);
+        $resultado = $this->modelo->editarUsuario(1);
+
+        $this->assertEquals("exito", $resultado[0]);
     }
 }

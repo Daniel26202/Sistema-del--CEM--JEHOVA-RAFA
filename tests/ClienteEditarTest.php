@@ -2,29 +2,58 @@
 
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloCliente;
+use App\modelos\Db;
 
 class ClienteEditarTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $modelo;
+    private $db;
+    private $idCreado = null;
 
     protected function setUp(): void
     {
         $this->modelo = new ModeloCliente();
+        $this->db = (new Db())->connectionSistema();
+        $this->iniciarSesionDePrueba();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->idCreado !== null) {
+            $this->borrarRegistro('bd', 'cliente', 'id_cliente', $this->idCreado);
+        }
+        $this->cerrarSesionDePrueba();
     }
 
     public function testEditarCliente()
     {
-        $this->modelo->setId_cliente(2);
-        $this->modelo->setTipo_identificacion("V");
-        $this->modelo->setNumero_identificacion(2000002);
+        $this->modelo->setNacionalidad("V");
+        $this->modelo->setCedula("9912345");
         $this->modelo->setNombre("Editado");
         $this->modelo->setApellido("Modificado");
         $this->modelo->setTelefono("04123454320");
         $this->modelo->setDireccion("en su casa");
-        $this->modelo->setFecha_nacimiento("2002-02-20");
+        $this->modelo->setFn("2002-02-20");
         $this->modelo->setGenero("Masculino");
-        $resultado = $this->modelo->update();
-        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
-        $this->assertEquals("exito", $resultado);
+        $this->modelo->guardarCliente(1);
+        $this->idCreado = $this->ultimoIdGenerado('bd', 'cliente', 'id_cliente');
+
+        // Ahora se edita el registro recién creado
+        $this->modelo = new ModeloCliente();
+        $this->modelo->setIdCliente($this->idCreado);
+        $this->modelo->setNacionalidad("V");
+        $this->modelo->setCedula("9912345");
+        $this->modelo->setCedulaRegistrada("9912345");
+        $this->modelo->setNombre("Editadoss");
+        $this->modelo->setApellido("Modificados");
+        $this->modelo->setTelefono("04123454320");
+        $this->modelo->setDireccion("en su casa editada");
+        $this->modelo->setFn("2002-02-20");
+        $this->modelo->setGenero("Masculino");
+        $resultado = $this->modelo->editarCliente(1);
+
+        $this->assertEquals("exito", $resultado[0]);
     }
 }

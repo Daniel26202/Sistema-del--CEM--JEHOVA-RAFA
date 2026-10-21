@@ -17,7 +17,7 @@ class FacturaConsultarTest extends TestCase
 
     public function testConsultaFacturaExistente()
     {
-        $id_factura = 182; // hay q asegurarse q este id exista en la bd
+        $id_factura = 213; // hay q asegurarse q este id exista en la bd
         $sql = $this->pdo->prepare("SELECT * FROM factura WHERE id_factura = :id_factura");
         $sql->bindParam(":id_factura", $id_factura);
         $sql->execute();

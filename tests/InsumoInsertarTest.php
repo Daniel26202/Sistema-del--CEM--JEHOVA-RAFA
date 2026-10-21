@@ -2,43 +2,63 @@
 
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloInsumo;
+use App\modelos\Db;
 
 class InsumoInsertarTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $modelo;
+    private $db;
+    private $nombre = "Insumo Prueba";
 
     protected function setUp(): void
     {
         $this->modelo = new ModeloInsumo();
+        $this->db = (new Db())->connectionSistema();
+        $this->iniciarSesionDePrueba();
+    }
 
-        // internet dice q asi pa q no de error por la carga d la imagen
-        $_FILES['imagen'] = [
-            'name' => 'prueba.jpg',
-            'tmp_name' => __DIR__ . '/dummy.png'
-        ];
-        file_put_contents($_FILES['imagen']['tmp_name'], 'fakeimage');
+    protected function tearDown(): void
+    {
+        $this->limpiar();
+        $this->cerrarSesionDePrueba();
+    }
+
+    private function limpiar(): void
+    {
+        $fila = $this->db->query("SELECT id_insumo FROM bd.insumo WHERE nombre = '{$this->nombre}'")->fetch(\PDO::FETCH_ASSOC);
+        if ($fila) {
+            $idInsumo = (int)$fila['id_insumo'];
+            $idsEntrada = $this->db->query("SELECT id_entrada FROM bd.entrada_insumo WHERE id_insumo = {$idInsumo}")->fetchAll(\PDO::FETCH_COLUMN);
+            $this->db->exec("DELETE FROM bd.entrada_insumo WHERE id_insumo = {$idInsumo}");
+            if ($idsEntrada) {
+                $lista = implode(',', array_map('intval', $idsEntrada));
+                $this->db->exec("DELETE FROM bd.entrada WHERE id_entrada IN ({$lista})");
+            }
+        }
+        $this->db->exec("DELETE FROM bd.insumo WHERE nombre = '{$this->nombre}'");
     }
 
     public function testInsertarInsumos()
     {
-        $this->modelo->setNombre_insumo("Insumophpinit");
-        $this->modelo->setId_categoria(6);
-        $this->modelo->setDescripcion("descripcion prueba");
-        $this->modelo->setFecha_vencimiento("2025-01-01");
-        $this->modelo->setFecha_compra("2025-12-31");
-        $this->modelo->setStock_minimo(100);
-        $this->modelo->setStock_actual(50);
+        $this->limpiar();
+
+        $this->modelo->setNombre($this->nombre);
+        $this->modelo->setIdProveedor(6);
+        $this->modelo->setDescripcion("descripcion prueba de insumo");
+        $this->modelo->setFechaDeIngreso(date("Y-m-d"));
+        $this->modelo->setFechaDeVencimiento("2027-12-31");
         $this->modelo->setPrecio(10);
-        $this->modelo->setEstado("ACT");
-        $this->modelo->setCodigo_barras("123456789");
+        $this->modelo->setCantidad(50);
+        $this->modelo->setStockMinimo(5);
+        $this->modelo->setLote(12345);
         $this->modelo->setMarca("MarcaX");
-        $this->modelo->setPeso("100 g");
-        $this->modelo->setImagen($_FILES['imagen']['tmp_name']);
-        
-        $resultado = $this->modelo->insertarInsumos();
+        $this->modelo->setMedida("100 g");
+        $this->modelo->setIva(0);
+        $this->modelo->setImagen("insumo_default.png");
 
-        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
-
+        $resultado = $this->modelo->guardarInsumo(1);
 
         $this->assertEquals("exito", $resultado[0]);
     }

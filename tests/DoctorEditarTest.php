@@ -2,35 +2,70 @@
 
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloDoctores;
+use App\modelos\Db;
 
 class DoctorEditarTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $modelo;
+    private $db;
+    private $cedula = "9912345";
+    private $usuario = "docprueba9";
 
     protected function setUp(): void
     {
         $this->modelo = new ModeloDoctores();
+        $this->db = (new Db())->connectionSistema();
+        $this->iniciarSesionDePrueba();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->limpiar();
+        $this->cerrarSesionDePrueba();
+    }
+
+    private function limpiar(): void
+    {
+        $this->db->exec("DELETE FROM bd.horarioydoctor WHERE id_personal IN (SELECT id_personal FROM bd.personal WHERE cedula = '{$this->cedula}')");
+        $this->db->exec("DELETE FROM bd.personal WHERE cedula = '{$this->cedula}'");
+        $this->db->exec("DELETE FROM segurity.usuario WHERE usuario = '{$this->usuario}'");
     }
 
     public function testEditarDoctor()
     {
-        $this->modelo->setId_usuario(47);
+        $this->limpiar();
+
+        $this->modelo->setNacionalidad("V");
+        $this->modelo->setCedula($this->cedula);
         $this->modelo->setNombre("Garek");
         $this->modelo->setApellido("Croket");
         $this->modelo->setTelefono("04123454327");
-        $this->modelo->setId_doctor(21);
-        $this->modelo->setCorreo("Garek123@mail.com");
-        $this->modelo->setTipo_identificacion("V");
-        $this->modelo->setNumero_identificacion(3722990);
-        $this->modelo->setId_especialidad([0 => 9]);
-        $this->modelo->setId_horario([0 => 10]);
-        $this->modelo->setId_dia([0 => 9]);
-        $this->modelo->setId_sala([0 => 10]);
-        $this->modelo->setId_estado([0 => 2]);
-        $this->modelo->setHora_inicio([0 => "10:00"]);
-        $this->modelo->setHora_fin([0 => "20:00"]);
-        $resultado = $this->modelo->updateDoctor();
-        // Esperamos que devuelva exito, si no, algo falló, hay que revisar (antes era 1 y ahora es "exito", hay q tener cuidado con los datos de entrada)
-        $this->assertEquals("exito", $resultado);
+        $this->modelo->setUsuario($this->usuario);
+        $this->modelo->setPassword("Garek123*");
+        $this->modelo->setEmail("garekprueba@mail.com");
+        $this->modelo->setIdRol(5);
+        $this->modelo->setIdEspecialidad(4);
+        $this->modelo->setHorarios([9 => ['entrada' => '10:00', 'salida' => '20:00']]);
+        $this->modelo->insertarDoctor(1);
+
+        $idUsuario = $this->db->query("SELECT id_usuario FROM segurity.usuario WHERE usuario = '{$this->usuario}'")->fetch(\PDO::FETCH_ASSOC)['id_usuario'];
+
+        $this->modelo = new ModeloDoctores();
+        $this->modelo->setIdUsuario($idUsuario);
+        $this->modelo->setNacionalidad("V");
+        $this->modelo->setCedula($this->cedula);
+        $this->modelo->setCedulaRegistrada($this->cedula);
+        $this->modelo->setNombre("Garek");
+        $this->modelo->setApellido("Crokett");
+        $this->modelo->setTelefono("04123454328");
+        $this->modelo->setEmail("garekprueba2@mail.com");
+        $this->modelo->setIdEspecialidad(5);
+        $this->modelo->setHorarios([9 => ['entrada' => '08:00', 'salida' => '18:00']]);
+
+        $resultado = $this->modelo->updateDoctor(1);
+
+        $this->assertEquals("exito", $resultado[0]);
     }
 }

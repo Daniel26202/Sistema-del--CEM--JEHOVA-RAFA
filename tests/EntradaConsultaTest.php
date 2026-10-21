@@ -17,7 +17,7 @@ class EntradaConsultaTest extends TestCase
 
     public function testConsultaEntradaExistente()
     {
-        $id_entrada = 38; // hay q asegurarse q este id exista en la bd
+        $id_entrada = 81; // hay q asegurarse q este id exista en la bd
         $sql = $this->pdo->prepare("SELECT * FROM entrada WHERE id_entrada = :id_entrada");
         $sql->bindParam(":id_entrada", $id_entrada);
         $sql->execute();
