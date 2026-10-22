@@ -11,6 +11,7 @@ import { mdRender, textoPlano, escaparHtml } from "./generic/chatMarkdown.js";
 const BASE = "/Sistema-del--CEM--JEHOVA-RAFA";
 const ENDPOINT = `${BASE}/Chat/preguntar`;
 const CLAVE_SESION = "cem_chat_session_id";
+const CLAVE_HISTORIAL = "cem_chat_historial";
 
 const $btnFlotante = document.getElementById("chatFlotante");
 const $modalEl = document.getElementById("chatModal");
@@ -49,6 +50,35 @@ if ($btnFlotante && $modalEl) {
     const csrfToken = () =>
         document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
 
+    // ── Persistencia (para sobrevivir a la recarga al cambiar de módulo) ────
+    function guardarHistorial() {
+        try {
+            // Se acota para no crecer sin límite en localStorage.
+            localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(historial.slice(-100)));
+        } catch (e) {
+            /* sin espacio o almacenamiento no disponible: no es crítico */
+        }
+    }
+
+    function cargarHistorial() {
+        try {
+            const datos = JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]");
+            return Array.isArray(datos) ? datos : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function limpiarChat() {
+        historial = [];
+        try {
+            localStorage.removeItem(CLAVE_HISTORIAL);
+            localStorage.removeItem(CLAVE_SESION);
+        } catch (e) {
+            /* ignore */
+        }
+    }
+
     // ── Pintado ─────────────────────────────────────────────────────────────
     function pintarVacio() {
         if (!historial.length) {
@@ -69,7 +99,7 @@ if ($btnFlotante && $modalEl) {
         }
     }
 
-    function burbujaUsuario(texto) {
+    function burbujaUsuario(texto, hora) {
         return `
             <div class="chat-fila usuario">
                 <div class="chat-avatar-icono">
@@ -79,12 +109,13 @@ if ($btnFlotante && $modalEl) {
                 </div>
                 <div class="chat-burbuja-columna">
                     <div class="chat-burbuja">${textoPlano(texto)}</div>
-                    <span class="chat-hora">${horaActual()}</span>
+                    <span class="chat-hora">${hora || horaActual()}</span>
                 </div>
             </div>`;
     }
 
-    function burbujaAsistente(resp) {
+    function burbujaAsistente(resp, hora) {
+        resp = resp || {};
         let contenido = mdRender(resp.mensaje || "");
 
         if (resp.pregunta_aclaratoria) {
@@ -112,7 +143,7 @@ if ($btnFlotante && $modalEl) {
                 <img class="chat-avatar" src="${LOGO}" alt="Asistente">
                 <div class="chat-burbuja-columna">
                     <div class="chat-burbuja${claseEmergencia}">${contenido}</div>
-                    <span class="chat-hora">${horaActual()}</span>
+                    <span class="chat-hora">${hora || horaActual()}</span>
                 </div>
             </div>`;
     }
@@ -123,11 +154,54 @@ if ($btnFlotante && $modalEl) {
         $mensajes.innerHTML = historial
             .map((m) =>
                 m.rol === "usuario"
-                    ? burbujaUsuario(m.contenido)
-                    : burbujaAsistente(m.resp),
+                    ? burbujaUsuario(m.contenido, m.hora)
+                    : burbujaAsistente(m.resp, m.hora),
             )
             .join("");
         scrollAbajo();
+    }
+
+    // ── Reanudar conversación tras recargar la página ───────────────────────
+    function pintarReanudar() {
+        $mensajes.innerHTML = `
+            <div class="chat-reanudar">
+                <img class="chat-vacio-logo" src="${LOGO}" alt="Asistente IA">
+                <p class="chat-vacio-titulo">Tienes una conversación anterior</p>
+                <p class="chat-vacio-texto">Puedes continuarla o empezar de cero.</p>
+                <div class="chat-reanudar-acciones">
+                    <button type="button" class="btn btn-modals" data-chat-accion="continuar">Continuar chat</button>
+                    <button type="button" class="btn btn-modals-cancelar" data-chat-accion="nuevo">Nuevo chat</button>
+                </div>
+            </div>`;
+    }
+
+    function continuarChat() {
+        historial = cargarHistorial();
+        const ultimoAsistente = [...historial].reverse().find((m) => m.rol === "asistente");
+        pintar();
+        pintarAccion(ultimoAsistente?.resp?.accion_sugerida ?? null);
+        $input.focus();
+    }
+
+    function nuevoChat() {
+        limpiarChat();
+        pintarAccion(null);
+        pintar();
+        $input.focus();
+    }
+
+    /** Decide qué mostrar al abrir el modal (chat actual, reanudar o vacío). */
+    function prepararApertura() {
+        if (historial.length) {
+            pintar();
+            return;
+        }
+        const guardado = cargarHistorial();
+        if (guardado.length) {
+            if (!$mensajes.querySelector(".chat-reanudar")) pintarReanudar();
+        } else {
+            pintar();
+        }
     }
 
     // ── Botón de acción sugerida ────────────────────────────────────────────
@@ -154,7 +228,8 @@ if ($btnFlotante && $modalEl) {
         const limpio = texto.trim();
         if (!limpio || cargando) return;
 
-        historial.push({ rol: "usuario", contenido: limpio });
+        historial.push({ rol: "usuario", contenido: limpio, hora: horaActual() });
+        guardarHistorial();
         $input.value = "";
         ajustarAltura();
         pintarAccion(null);
@@ -184,19 +259,22 @@ if ($btnFlotante && $modalEl) {
                 localStorage.setItem(CLAVE_SESION, datos.session_id);
             }
 
-            historial.push({ rol: "asistente", resp: datos });
+            historial.push({ rol: "asistente", resp: datos, hora: horaActual() });
+            guardarHistorial();
             pintar();
             pintarAccion(datos.accion_sugerida);
         } catch (error) {
             console.error("Asistente IA:", error);
             historial.push({
                 rol: "asistente",
+                hora: horaActual(),
                 resp: {
                     tipo_respuesta: "derivar",
                     mensaje:
                         "No se pudo obtener una respuesta del asistente. Verifique que el servicio esté activo e inténtelo de nuevo.",
                 },
             });
+            guardarHistorial();
             pintar();
         } finally {
             estadoCargando(false);
@@ -211,11 +289,9 @@ if ($btnFlotante && $modalEl) {
     }
 
     // ── Eventos ─────────────────────────────────────────────────────────────
-    $btnFlotante.addEventListener("click", () => {
-        pintar();
-        modal.show();
-    });
+    $btnFlotante.addEventListener("click", () => modal.show());
 
+    $modalEl.addEventListener("show.bs.modal", prepararApertura);
     $modalEl.addEventListener("shown.bs.modal", () => $input.focus());
 
     $form.addEventListener("submit", (e) => {
@@ -234,8 +310,16 @@ if ($btnFlotante && $modalEl) {
 
     $mensajes.addEventListener("click", (e) => {
         const chip = e.target.closest("[data-sugerencia]");
-        if (chip) enviar(chip.dataset.sugerencia);
+        if (chip) {
+            enviar(chip.dataset.sugerencia);
+            return;
+        }
+
+        const accion = e.target.closest("[data-chat-accion]");
+        if (!accion) return;
+        if (accion.dataset.chatAccion === "continuar") continuarChat();
+        if (accion.dataset.chatAccion === "nuevo") nuevoChat();
     });
 
-    pintarVacio();
+    prepararApertura();
 }

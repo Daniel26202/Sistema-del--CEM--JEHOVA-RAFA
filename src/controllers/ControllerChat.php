@@ -115,7 +115,7 @@ function preguntar()
  */
 function enviarConsultaIA(string $url, string $payload, array $headers): ?string
 {
-	$timeout = 30; // Gemini puede tardar; no bloquear la petición por menos.
+	$timeout = 60; // Gemini puede tardar (o probar modelos de respaldo); no cortar antes.
 
 	if (function_exists('curl_init')) {
 		$ch = curl_init($url);

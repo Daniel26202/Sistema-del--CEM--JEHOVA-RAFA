@@ -102,3 +102,19 @@
 .chat-modal-footer .chat-composer {
     margin-top: 0;
 }
+
+/* ── Reanudar conversación tras recargar ─────────────────────────────────── */
+.chat-reanudar {
+    text-align: center;
+    margin: auto;
+    padding: 2rem 1rem;
+    max-width: 460px;
+}
+
+.chat-reanudar-acciones {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+}
