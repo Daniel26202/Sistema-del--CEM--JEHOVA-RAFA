@@ -1,0 +1,11 @@
+{
+  "fecha": "2026-10-19 20:57:48",
+  "veredictos": {
+    "SRV-01": "Pasó — inventario verificable: las versiones se comprobaron con los propios binarios y con las cabeceras HTTP del servicio.",
+    "SRV-02": "Falló (hallazgo real) — el sitio responde por HTTP sin redirigir a HTTPS; certificado autofirmado y vencido; sin cabecera HSTS; cookie de sesión sin atributo Secure.",
+    "SRV-03": "Pasó con observación — los errores están controlados (display_errors=Off, sin rutas ni trazas en las respuestas), pero las cabeceras divulgan versiones: cabecera X-Powered-By divulga PHP/8.2.12; cabecera Server divulga Apache/OpenSSL/PHP/mod_perl.",
+    "SRV-04": "Falló (hallazgo real) — 12 recursos sensibles descargables por HTTP sin autenticación: /.env, /.git/HEAD, /.git/config, /composer.json, /composer.lock, /phpunit.xml, /README.md, /database/bd.sql, /database/segurity.sql, /src/config/keys/private.key, /src/config/keys/encrypt_public.key, /src/config/backups/diff_bd-2026-09-04_04-11-48.zip. El listado de directorios está deshabilitado y los scripts de respaldo rechazan la ejecución web.",
+    "SRV-05": "Pasó con observación — el inicio de sesión válido quedó auditado (+1 evento(s), sin contraseñas en bitácora ni en los logs); el intento denegado NO genera evento de auditoría y tampoco suma intentos fallidos, por lo que no queda constancia del intento de acceso fallido.",
+    "SRV-06": "Pasó (parcial) — el servicio responde de forma estable en todas las rutas probadas y existen respaldos junto con su script de restauración; la restauración no se ejecutó por falta de autorización."
+  }
+}

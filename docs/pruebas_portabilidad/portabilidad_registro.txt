@@ -1,0 +1,42 @@
+PRUEBAS DE PORTABILIDAD — SISTEMA CEM JEHOVÁ RAFA
+Fecha de ejecución: 2026-10-19 20:47:03
+Ambiente: http://localhost/Sistema-del--CEM--JEHOVA-RAFA (XAMPP local)
+Resoluciones: 1920x1080, 1366x768, 768x1024, 375x667
+Recorrido: login -> Inicio/inicio -> Pacientes/getPacientes
+
+==============================================================================
+NAVEGADOR: chrome
+==============================================================================
+  User-Agent : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.8059.84 Safari/537.36
+  Versión    : 5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.8059.84 Safari/537.36
+  [OK] inicio de sesión con cuenta de prueba en chrome
+  [captura] inicio    1920x1080 -> chrome_inicio_1920x1080.png         156186 bytes
+  [captura] pacientes 1920x1080 -> chrome_pacientes_1920x1080.png      157729 bytes
+  [captura] inicio    1366x768  -> chrome_inicio_1366x768.png          138373 bytes
+  [captura] pacientes 1366x768  -> chrome_pacientes_1366x768.png       142737 bytes
+  [captura] inicio     768x1024 -> chrome_inicio_768x1024.png           85731 bytes
+  [captura] pacientes  768x1024 -> chrome_pacientes_768x1024.png        90946 bytes
+  [captura] inicio     375x667  -> chrome_inicio_375x667.png            34865 bytes
+  [captura] pacientes  375x667  -> chrome_pacientes_375x667.png         37127 bytes
+  [composite] chrome_inicio_resoluciones.png  298888 bytes
+  [composite] chrome_pacientes_resoluciones.png  368146 bytes
+
+==============================================================================
+NAVEGADOR: firefox
+==============================================================================
+  User-Agent : Mozilla/5.0 (X11; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0
+  Versión    : 5.0 (X11)
+  [OK] inicio de sesión con cuenta de prueba en firefox
+  [captura] inicio    1920x1080 -> firefox_inicio_1920x1080.png        229811 bytes
+  [captura] pacientes 1920x1080 -> firefox_pacientes_1920x1080.png     220179 bytes
+  [captura] inicio    1366x768  -> firefox_inicio_1366x768.png         165997 bytes
+  [captura] pacientes 1366x768  -> firefox_pacientes_1366x768.png      162205 bytes
+  [captura] inicio     768x1024 -> firefox_inicio_768x1024.png         107684 bytes
+  [captura] pacientes  768x1024 -> firefox_pacientes_768x1024.png      118484 bytes
+  [aviso] firefox limita el ancho: solicitado 375x667, renderizado 500x667
+  [captura] inicio     375x667  -> firefox_inicio_375x667.png           43189 bytes
+  [captura] pacientes  375x667  -> firefox_pacientes_375x667.png        45112 bytes
+  [composite] firefox_inicio_resoluciones.png  274793 bytes
+  [composite] firefox_pacientes_resoluciones.png  336042 bytes
+
+RESUMEN DE LA EJECUCIÓN: chrome=True · firefox=True
