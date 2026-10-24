@@ -16,6 +16,9 @@ src/config/keys/private.key
 # Ignorar la carpeta de dependencias
 vendor/
 
+# Ignorar la documentacion que ponen por error
+src/docs/
+
 desktop.ini
 Thumbs.db
 src/assets/img_ingresadas_por_usuario/
