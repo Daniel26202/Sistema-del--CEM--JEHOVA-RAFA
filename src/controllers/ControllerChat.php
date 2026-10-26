@@ -14,6 +14,28 @@ function chat()
 }
 
 /**
+ * Exige sesión activa y token CSRF (ControllerChat está exento del router).
+ */
+function validarSesionYCsrf(): void
+{
+	if (empty($_SESSION['id_usuario'])) {
+		http_response_code(401);
+		echo json_encode(['ok' => false, 'error' => 'Sesión no válida o expirada. Vuelva a iniciar sesión.']);
+		exit;
+	}
+
+	$headers = function_exists('getallheaders') ? getallheaders() : [];
+	$headers = array_change_key_case($headers, CASE_LOWER);
+	$csrf = $headers['x-csrf-token'] ?? ($_POST['csrf_token'] ?? null);
+
+	if (empty($_SESSION['csrf_token']) || empty($csrf) || !hash_equals($_SESSION['csrf_token'], $csrf)) {
+		http_response_code(403);
+		echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido.']);
+		exit;
+	}
+}
+
+/**
  * Endpoint que consume el modal del navegador (POST /Chat/preguntar).
  *
  * Hace de proxy hacia el componente inteligente en FastAPI: FastAPI nunca
@@ -25,26 +47,9 @@ function preguntar()
 	if (ob_get_length()) ob_clean();
 	header('Content-Type: application/json; charset=utf-8');
 
-	// 1) Sesión activa (ControllerChat está exento del chequeo de permisos del
-	//    router, por eso aquí se valida explícitamente).
-	if (empty($_SESSION['id_usuario'])) {
-		http_response_code(401);
-		echo json_encode(['ok' => false, 'error' => 'Sesión no válida o expirada. Vuelva a iniciar sesión.']);
-		exit;
-	}
+	validarSesionYCsrf();
 
-	// 2) Token CSRF (el mismo que usa el resto del sistema).
-	$headers = function_exists('getallheaders') ? getallheaders() : [];
-	$headersLower = array_change_key_case($headers, CASE_LOWER);
-	$csrf = $headersLower['x-csrf-token'] ?? ($_POST['csrf_token'] ?? null);
-
-	if (empty($_SESSION['csrf_token']) || empty($csrf) || !hash_equals($_SESSION['csrf_token'], $csrf)) {
-		http_response_code(403);
-		echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido.']);
-		exit;
-	}
-
-	// 3) Cuerpo de la petición: { consulta, session_id }.
+	// 2) Cuerpo de la petición: { consulta, session_id }.
 	$cuerpo = json_decode(file_get_contents('php://input'), true);
 	if (!is_array($cuerpo)) {
 		http_response_code(400);
@@ -55,9 +60,9 @@ function preguntar()
 	$consulta  = trim((string)($cuerpo['consulta'] ?? ''));
 	$sessionId = $cuerpo['session_id'] ?? null;
 
-	if (mb_strlen($consulta) < 2 || mb_strlen($consulta) > 2000) {
+	if (mb_strlen($consulta) < 1 || mb_strlen($consulta) > 2000) {
 		http_response_code(422);
-		echo json_encode(['ok' => false, 'error' => 'La consulta debe tener entre 2 y 2000 caracteres.']);
+		echo json_encode(['ok' => false, 'error' => 'La consulta debe tener entre 1 y 2000 caracteres.']);
 		exit;
 	}
 
@@ -160,4 +165,66 @@ function enviarConsultaIA(string $url, string $payload, array $headers): ?string
 	}
 
 	return $cuerpo;
+}
+
+/**
+ * Borra la memoria del usuario en el componente IA (proxy a DELETE /memoria).
+ */
+function borrarMemoria()
+{
+	if (ob_get_length()) ob_clean();
+	header('Content-Type: application/json; charset=utf-8');
+
+	validarSesionYCsrf();
+
+	$url    = $_ENV['IA_API_URL'] ?? '';
+	$apiKey = $_ENV['API_KEY_IA'] ?? '';
+
+	if ($url === '' || $apiKey === '') {
+		http_response_code(503);
+		echo json_encode(['ok' => false, 'error' => 'El asistente no está configurado.']);
+		exit;
+	}
+
+	$base = preg_replace('#/orientar/?$#', '', $url);
+	$memoriaUrl = rtrim($base, '/') . '/memoria';
+	$headers = [
+		'X-API-Key: ' . $apiKey,
+		'X-Usuario-Id: ' . ($_SESSION['id_usuario'] ?? ''),
+	];
+
+	if (function_exists('curl_init')) {
+		$ch = curl_init($memoriaUrl);
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_CUSTOMREQUEST  => 'DELETE',
+			CURLOPT_HTTPHEADER     => $headers,
+			CURLOPT_TIMEOUT        => 10,
+			CURLOPT_CONNECTTIMEOUT => 5,
+		]);
+		$cuerpo = curl_exec($ch);
+		$codigo = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+	} else {
+		$contexto = stream_context_create([
+			'http' => [
+				'method'        => 'DELETE',
+				'header'        => implode("\r\n", $headers),
+				'timeout'       => 10,
+				'ignore_errors' => true,
+			],
+		]);
+		$cuerpo = @file_get_contents($memoriaUrl, false, $contexto);
+		$codigo = $cuerpo === false ? 0 : 200;
+	}
+
+	if ($cuerpo === false || $codigo < 200 || $codigo >= 300) {
+		error_log("Asistente IA: no se pudo borrar la memoria (HTTP $codigo)");
+		http_response_code(503);
+		echo json_encode(['ok' => false, 'error' => 'No se pudo borrar la memoria.']);
+		exit;
+	}
+
+	echo json_encode(['ok' => true]);
+	exit;
 }

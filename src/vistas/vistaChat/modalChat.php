@@ -20,9 +20,14 @@
 			<div class="modal-header chat-modal-header">
 				<h5 class="modal-title d-flex align-items-center" id="chatModalLabel">
 					<img src="<?= $urlBase ?>../src/assets/images/icons/logo.png" alt="" class="chat-modal-logo me-2">
-					Asistente IA
+					MIDI
 				</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				<div class="d-flex align-items-center">
+					<button type="button" id="chatBorrarMemoria" class="btn btn-sm btn-outline-light me-2" title="Borrar la memoria guardada del usuario">
+						Borrar memoria
+					</button>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
 			</div>
 
 			<div class="modal-body chat-modal-cuerpo">

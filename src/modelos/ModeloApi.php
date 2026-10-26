@@ -97,4 +97,82 @@ class ModeloApi extends ModelBase
 
         return $this->search(['id_paciente' => $idPaciente]) ?: [];
     }
+
+    /**
+     * Busca pacientes por cédula, nombre o apellido (máximo 10 resultados).
+     */
+    public function buscarPacientes(string $q): array
+    {
+        $buscar = '%' . $q . '%';
+        $this->setSQL(
+            "SELECT id_paciente, nacionalidad, cedula, nombre, apellido
+             FROM paciente
+             WHERE estado = 'ACT'
+               AND (cedula LIKE :buscar OR nombre LIKE :buscar OR apellido LIKE :buscar)
+             ORDER BY nombre, apellido
+             LIMIT 10"
+        );
+
+        return $this->search(['buscar' => $buscar]) ?: [];
+    }
+
+    /**
+     * Controles de los últimos $meses (por defecto 6), con sus síntomas.
+     * Si no hay controles en esa ventana (datos históricos), devuelve los
+     * últimos 5 para no dejar la ficha vacía.
+     */
+    public function controlesRecientes(int $idPaciente, int $meses = 6): array
+    {
+        $meses = max(1, min($meses, 24));
+
+        $this->setSQL(
+            "SELECT c.id_control, c.fecha_control, c.diagnostico, c.historiaclinica,
+                    c.medicamentosRecetados, c.nota, c.severidad,
+                    GROUP_CONCAT(s.nombre SEPARATOR ', ') AS sintomas
+             FROM control c
+             LEFT JOIN sintomas_control sc ON sc.id_control = c.id_control
+             LEFT JOIN sintomas s ON s.id_sintomas = sc.id_sintomas
+             WHERE c.id_paciente = :id_paciente
+               AND c.fecha_control >= (NOW() - INTERVAL {$meses} MONTH)
+             GROUP BY c.id_control
+             ORDER BY c.fecha_control DESC
+             LIMIT 20"
+        );
+
+        $recientes = $this->search(['id_paciente' => $idPaciente]) ?: [];
+        if ($recientes) {
+            return $recientes;
+        }
+
+        $this->setSQL(
+            "SELECT c.id_control, c.fecha_control, c.diagnostico, c.historiaclinica,
+                    c.medicamentosRecetados, c.nota, c.severidad,
+                    GROUP_CONCAT(s.nombre SEPARATOR ', ') AS sintomas
+             FROM control c
+             LEFT JOIN sintomas_control sc ON sc.id_control = c.id_control
+             LEFT JOIN sintomas s ON s.id_sintomas = sc.id_sintomas
+             WHERE c.id_paciente = :id_paciente
+             GROUP BY c.id_control
+             ORDER BY c.fecha_control DESC
+             LIMIT 5"
+        );
+
+        return $this->search(['id_paciente' => $idPaciente]) ?: [];
+    }
+
+    /**
+     * Patologías diagnosticadas al paciente (con fecha de registro).
+     */
+    public function patologiasDePaciente(int $idPaciente): array
+    {
+        $this->setSQL(
+            "SELECT p.nombre_patologia, pd.fecha_registro
+             FROM patologiadepaciente pd
+             INNER JOIN patologia p ON p.id_patologia = pd.id_patologia
+             WHERE pd.id_paciente = :id_paciente
+             ORDER BY pd.fecha_registro DESC"
+        );
+
+        return $this->search(['id_paciente' => $idPaciente]) ?: [];
+    }
 }

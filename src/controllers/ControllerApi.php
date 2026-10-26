@@ -130,3 +130,97 @@ function apiDatosUsuario($datos)
     ]);
     exit;
 }
+
+/**
+ * Exige que la petición venga identificada con un usuario del personal.
+ * Se usa en los endpoints que exponen datos clínicos de terceros.
+ */
+function validarPersonalDelCentroApi(): int
+{
+    $headers = function_exists('getallheaders') ? getallheaders() : [];
+    $headers = array_change_key_case($headers, CASE_LOWER);
+    $idUsuario = $headers['x-usuario-id'] ?? '';
+
+    if ($idUsuario === '' || !is_numeric($idUsuario)) {
+        http_response_code(403);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['ok' => false, 'error' => 'Usuario no identificado']);
+        exit;
+    }
+
+    $modelo = new ModeloApi();
+    if (!$modelo->esPersonalDelCentro((int)$idUsuario)) {
+        http_response_code(403);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['ok' => false, 'error' => 'Sin permiso para consultar pacientes']);
+        exit;
+    }
+
+    return (int)$idUsuario;
+}
+
+/**
+ * Busca pacientes por cédula, nombre o apellido.
+ * Query: ?q=texto
+ */
+function apiBuscarPaciente($datos = [])
+{
+    if (ob_get_length()) ob_clean();
+    validarApiKeyCompartida();
+    validarPersonalDelCentroApi();
+    header('Content-Type: application/json; charset=utf-8');
+
+    $q = trim($_GET['q'] ?? '');
+    if (mb_strlen($q) < 2) {
+        echo json_encode([]);
+        exit;
+    }
+
+    $modelo = new ModeloApi();
+    echo json_encode($modelo->buscarPacientes($q));
+    exit;
+}
+
+/**
+ * Controles de los últimos 6 meses del paciente.
+ * Parámetro: id_paciente (entero).
+ */
+function apiControlesPaciente($datos)
+{
+    if (ob_get_length()) ob_clean();
+    validarApiKeyCompartida();
+    validarPersonalDelCentroApi();
+    header('Content-Type: application/json; charset=utf-8');
+
+    if (empty($datos[0]) || !is_numeric($datos[0])) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'error' => 'ID de paciente requerido']);
+        exit;
+    }
+
+    $modelo = new ModeloApi();
+    echo json_encode($modelo->controlesRecientes((int)$datos[0]));
+    exit;
+}
+
+/**
+ * Patologías diagnosticadas al paciente.
+ * Parámetro: id_paciente (entero).
+ */
+function apiPatologiasPaciente($datos)
+{
+    if (ob_get_length()) ob_clean();
+    validarApiKeyCompartida();
+    validarPersonalDelCentroApi();
+    header('Content-Type: application/json; charset=utf-8');
+
+    if (empty($datos[0]) || !is_numeric($datos[0])) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'error' => 'ID de paciente requerido']);
+        exit;
+    }
+
+    $modelo = new ModeloApi();
+    echo json_encode($modelo->patologiasDePaciente((int)$datos[0]));
+    exit;
+}

@@ -22,6 +22,7 @@ const $btnEnviar = document.getElementById("chatModalEnviar");
 const $btnEnviarTexto = document.getElementById("chatModalEnviarTexto");
 const $escribiendo = document.getElementById("chatModalEscribiendo");
 const $accion = document.getElementById("chatModalAccion");
+const $borrarMemoria = document.getElementById("chatBorrarMemoria");
 
 if ($btnFlotante && $modalEl) {
     const modal = new bootstrap.Modal($modalEl);
@@ -114,12 +115,22 @@ if ($btnFlotante && $modalEl) {
             </div>`;
     }
 
+    function listaSeccion(titulo, items) {
+        if (!Array.isArray(items) || !items.length) return "";
+        return `
+            <div class="chat-seccion">
+                <p class="chat-seccion-titulo">${escaparHtml(titulo)}</p>
+                <ul>${items.map((i) => `<li>${escaparHtml(i)}</li>`).join("")}</ul>
+            </div>`;
+    }
+
     function burbujaAsistente(resp, hora) {
         resp = resp || {};
         let contenido = mdRender(resp.mensaje || "");
 
-        if (resp.pregunta_aclaratoria) {
-            contenido += mdRender(resp.pregunta_aclaratoria);
+        const pregunta = resp.pregunta_activa || resp.pregunta_aclaratoria;
+        if (pregunta) {
+            contenido += mdRender(pregunta);
         }
 
         if (resp.tipo_respuesta === "catalogo" && Array.isArray(resp.especialidades_disponibles) && resp.especialidades_disponibles.length) {
@@ -129,6 +140,23 @@ if ($btnFlotante && $modalEl) {
                     .map((e) => `<li>${escaparHtml(e)}</li>`)
                     .join("") +
                 "</ul>";
+        }
+
+        if (resp.tipo_respuesta === "orientacion") {
+            contenido += listaSeccion("Posibles asociaciones", resp.posibles_asociaciones);
+            contenido += listaSeccion("Habría que descartar", resp.a_descartar);
+            contenido += listaSeccion("Pruebas que suelen indicarse", resp.pruebas_sugeridas);
+            if (resp.recomendacion) {
+                contenido += `<p class="chat-recomendacion">${escaparHtml(resp.recomendacion)}</p>`;
+            }
+        }
+
+        if (typeof resp.progreso === "number" && resp.progreso > 0 && resp.progreso < 100) {
+            contenido += `
+                <div class="chat-progreso">
+                    <div class="chat-progreso-barra" style="width:${resp.progreso}%"></div>
+                </div>
+                <span class="chat-progreso-texto">Cuestionario: ${resp.progreso}%</span>`;
         }
 
         if (resp.observacion) {
@@ -188,6 +216,29 @@ if ($btnFlotante && $modalEl) {
         pintarAccion(null);
         pintar();
         $input.focus();
+    }
+
+    async function borrarMemoriaRemota() {
+        if (!confirm("¿Borrar la memoria guardada de este usuario? Se perderán los resúmenes de pacientes.")) {
+            return;
+        }
+
+        try {
+            await fetch(`${BASE}/Chat/borrarMemoria`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": csrfToken(),
+                },
+                body: JSON.stringify({ session_id: localStorage.getItem(CLAVE_SESION) }),
+            });
+        } catch (e) {
+            console.error("No se pudo borrar la memoria remota:", e);
+        }
+
+        limpiarChat();
+        pintarAccion(null);
+        pintar();
     }
 
     /** Decide qué mostrar al abrir el modal (chat actual, reanudar o vacío). */
@@ -293,6 +344,10 @@ if ($btnFlotante && $modalEl) {
 
     $modalEl.addEventListener("show.bs.modal", prepararApertura);
     $modalEl.addEventListener("shown.bs.modal", () => $input.focus());
+
+    if ($borrarMemoria) {
+        $borrarMemoria.addEventListener("click", borrarMemoriaRemota);
+    }
 
     $form.addEventListener("submit", (e) => {
         e.preventDefault();

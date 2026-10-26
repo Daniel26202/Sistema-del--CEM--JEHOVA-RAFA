@@ -80,6 +80,21 @@
     padding: 0.25rem 0.25rem 0;
 }
 
+/* Evita que la burbuja colapse a una letra por línea dentro del modal:
+   se limita el ancho de la columna y la burbuja ocupa hasta el 100% de ella. */
+.chat-modal-mensajes .chat-fila {
+    width: 100%;
+}
+
+.chat-modal-mensajes .chat-burbuja-columna {
+    max-width: calc(100% - 46px);
+}
+
+.chat-modal-mensajes .chat-burbuja {
+    max-width: 100%;
+    width: fit-content;
+}
+
 /* Botón de acción sugerida debajo de la conversación. */
 .chat-modal-accion {
     display: none;
@@ -117,4 +132,57 @@
     justify-content: center;
     margin-top: 1.2rem;
     flex-wrap: wrap;
+}
+
+/* ── Interpretación orientativa ─────────────────────────────────────────── */
+.chat-seccion {
+    margin-top: 0.65rem;
+}
+
+.chat-seccion-titulo {
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+    color: var(--color-text-card) !important;
+}
+
+.chat-seccion ul {
+    margin: 0 0 0.4rem 1.1rem;
+    padding: 0;
+}
+
+.chat-seccion li {
+    font-size: 0.86rem;
+    margin-bottom: 0.15rem;
+}
+
+.chat-recomendacion {
+    margin-top: 0.6rem;
+    font-weight: 600;
+    color: var(--color-primary) !important;
+}
+
+.chat-progreso {
+    margin-top: 0.6rem;
+    height: 8px;
+    background: var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.chat-progreso-barra {
+    height: 100%;
+    background: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.chat-progreso-texto {
+    font-size: 0.72rem;
+    opacity: 0.6;
+    color: var(--color-text-card);
+}
+
+.chat-burbuja-emergencia {
+    border-color: #dc3545 !important;
+    background: rgba(220, 53, 69, 0.08) !important;
 }
