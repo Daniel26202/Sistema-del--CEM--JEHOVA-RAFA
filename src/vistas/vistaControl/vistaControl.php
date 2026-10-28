@@ -23,15 +23,15 @@
     <div class="container">
         <!-- Tabla de Pacientes -->
         <div class="tabla-control-medico pacientes" id="pacientes">
-            <button class="caja-btn-margin btn btn-modals btnOpenModal" style="width: 50% !important" data-bs-toggle="modal" data-bs-target="#exampleModalagregarControl" id="btnControl">
+            <button class="caja-btn-margin btn btn-modals btnOpenModal btn-guardar-responsive" data-bs-toggle="modal" data-bs-target="#exampleModalagregarControl" id="btnControl">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-person-lines-fill me-1" viewBox="0 0 16 16">
                     <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />
                 </svg>Registrar Control Médico
             </button>
-            <h5>Pacientes</h5>
-            <div class="scrollable">
-                <table class="table table-striped examplePaciente   hover-control-m">
+            <h5 class="fw-bold mt-2 mb-2">Pacientes</h5>
+            <div class="scrollable table-responsive">
+                <table class="table table-striped examplePaciente hover-control-m">
                     <thead>
                         <tr>
                             <th>Cédula</th>
@@ -48,15 +48,15 @@
         </div>
 
         <!-- Tabla de Registros con scroll -->
-        <div class="tabla-control-medico  registros" id="controles">
-            <button class=" caja-btn-margin btn btn-modals btnOpenModalSin" data-bs-toggle="modal" data-bs-target="#exampleModalConsultarSintoma" id="btnOpenModal">
+        <div class="tabla-control-medico registros" id="controles">
+            <button class="caja-btn-margin btn btn-modals btnOpenModalSin btn-guardar-responsive" data-bs-toggle="modal" data-bs-target="#exampleModalConsultarSintoma" id="btnOpenModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-person-lines-fill me-1" viewBox="0 0 16 16">
                     <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />
                 </svg>Registrar Síntomas
             </button>
-            <h5>Registros</h5>
-            <div class="scrollable">
+            <h5 class="fw-bold mt-2 mb-2">Registros</h5>
+            <div class="scrollable table-responsive">
                 <table class="table table-striped exampleControl d-none">
                     <thead>
                         <tr>
@@ -72,8 +72,8 @@
                     </tbody>
 
                 </table>
-                <h5 class="text-center " id="text-start">Selecciona un paciente en la otra tarjeta para visualizar su control médico</h5>
-                <h5 class="text-center d-none" id="loader-control-medico">Cargando...</h5>
+                <h5 class="text-center p-3" id="text-start">Selecciona un paciente en la otra tarjeta para visualizar su control médico</h5>
+                <h5 class="text-center p-3 d-none" id="loader-control-medico">Cargando...</h5>
             </div>
         </div>
     </div>

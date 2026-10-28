@@ -1,12 +1,12 @@
 <!-- agregar Entrada -->
 <div class="modal fade" id="exampleModalagregarEntrada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog ">
-        <div class="modal-content tamaño-modal">
+        <div class="modal-content tamaño-modal modal-insumos-content">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelEntrada">Registrar Entrada</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class=" form-validable" id="formAgregarEntrada">
+            <form class=" form-validable modal-insumos-form" id="formAgregarEntrada">
 
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario']; ?>">
                 <input type="hidden" name="id_entrada" id="id_entrada">

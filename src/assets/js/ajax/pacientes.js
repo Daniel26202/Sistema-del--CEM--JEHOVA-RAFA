@@ -18,13 +18,19 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
 const modalPaciente = new bootstrap.Modal(
   document.getElementById("exampleModalagregarPaciente"),
 );
+const modalEditarPacienteEl = document.getElementById("modalEditarPaciente");
+const modalEditarPaciente = modalEditarPacienteEl
+  ? new bootstrap.Modal(modalEditarPacienteEl)
+  : null;
 const modalInfo = new bootstrap.Modal(document.getElementById("info-paciente"));
 
 const modalAgregar = document.getElementById("modalAgregar");
+const formEditarPaciente = document.getElementById("formEditarPaciente");
 const exampleModalLabel = document.getElementById("labelPaciente");
 
 const inputs = document.querySelectorAll(".inputs");
 const botonModal = document.getElementById("botonModal");
+const botonModalEditar = document.getElementById("botonModalEditarPaciente");
 const cedulaRegistrada = document.getElementById("cedulaRegistrada");
 const btnOpenModal = document.getElementById("btnOpenModal");
 const id_paciente = document.getElementById("id_paciente");
@@ -78,7 +84,7 @@ const readPatients = async () => {
           return `<button class="${
             !urlActual.includes("getPacientes") ? "d-none" : ""
           } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
-                            data-bs-toggle="modal" data-bs-target="#exampleModalagregarPaciente" data-index="${
+                            data-bs-toggle="modal" data-bs-target="#modalEditarPaciente" data-index="${
                               row.id_paciente
                             }">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -171,35 +177,76 @@ const readPatients = async () => {
         });
       });
 
-      //llamar las funcion de eliminar
+      //llamar la funcion de editar
       document.querySelectorAll(".botonesEdi").forEach((btn) => {
         btn.addEventListener("click", function () {
           let paciente = searchObectPattiens(btn.getAttribute("data-index"));
+          if (!paciente) return;
 
-          //objetos con todos los parametros de la funcion
-          const parametros = {
-            labelModal: exampleModalLabel,
-            textLabelModal: "Modificar Paciente",
-            form: modalAgregar,
-            modal: modalAgregar.parentElement.parentElement.parentElement,
-            btnModal: botonModal,
-            btnTextModal: "Modificar",
-            data: {
-              nacionalidad: paciente.nacionalidad,
-              cedula: paciente.cedula,
-              nombre: paciente.nombre,
-              apellido: paciente.apellido,
-              telefono: paciente.telefono,
-              direccion: paciente.direccion,
-              fn: paciente.fn,
-              genero: paciente.genero,
-              id: paciente.id_paciente,
-            },
-            inputs: inputs,
-            cedulaOculta: cedulaRegistrada,
-            idOculto: id_paciente,
-          };
-          showDataModal(parametros);
+          // Si existe el modal dedicado de edición
+          if (formEditarPaciente) {
+            const idOculto = document.getElementById("id_paciente_editar");
+            const cedulaOculta = document.getElementById("cedulaRegistradaEditar");
+            const nacInput = document.getElementById("nacionalidadEditar");
+            const cedInput = document.getElementById("cedulaPacienteEditar");
+            const nomInput = document.getElementById("nombrePacienteEditar");
+            const apeInput = document.getElementById("apellidoPacienteEditar");
+            const telInput = document.getElementById("telefonoPacienteEditar");
+            const dirInput = document.getElementById("direccionPacienteEditar");
+            const fnInput = document.getElementById("feNacimientoEditar");
+            const genInput = document.getElementById("generoPacienteEditar");
+
+            if (idOculto) idOculto.value = paciente.id_paciente;
+            if (cedulaOculta) cedulaOculta.value = paciente.cedula;
+            if (nacInput) nacInput.value = paciente.nacionalidad || "V";
+            if (cedInput) cedInput.value = paciente.cedula;
+            if (nomInput) nomInput.value = paciente.nombre;
+            if (apeInput) apeInput.value = paciente.apellido;
+            if (telInput) telInput.value = paciente.telefono;
+            if (dirInput) dirInput.value = paciente.direccion;
+            if (fnInput) fnInput.value = paciente.fn;
+            if (genInput) genInput.value = paciente.genero;
+
+            // Limpiar validaciones previas en el modal de editar
+            formEditarPaciente.querySelectorAll(".input-validar").forEach((input) => {
+              input.parentElement.classList.remove("invalido");
+              input.parentElement.classList.add("valido");
+              const campoCustom = input.closest(".campo-custom");
+              const check = campoCustom?.querySelector(".check");
+              const error = campoCustom?.querySelector(".error");
+              const pError = campoCustom?.querySelector("p");
+              if (check) check.classList.remove("d-none");
+              if (error) error.classList.add("d-none");
+              if (pError) pError.classList.add("d-none");
+            });
+          }
+
+          // Compatibilidad con modalAgregar por si se invoca showDataModal
+          if (modalAgregar && exampleModalLabel) {
+            const parametros = {
+              labelModal: exampleModalLabel,
+              textLabelModal: "Modificar Paciente",
+              form: modalAgregar,
+              modal: modalAgregar.parentElement.parentElement.parentElement,
+              btnModal: botonModal,
+              btnTextModal: "Modificar",
+              data: {
+                nacionalidad: paciente.nacionalidad,
+                cedula: paciente.cedula,
+                nombre: paciente.nombre,
+                apellido: paciente.apellido,
+                telefono: paciente.telefono,
+                direccion: paciente.direccion,
+                fn: paciente.fn,
+                genero: paciente.genero,
+                id: paciente.id_paciente,
+              },
+              inputs: inputs,
+              cedulaOculta: cedulaRegistrada,
+              idOculto: id_paciente,
+            };
+            showDataModal(parametros);
+          }
         });
       });
 
@@ -256,21 +303,23 @@ const createPatients = async (form) => {
 
 //update
 const updatePatients = async (form) => {
+  const currentBtn = form.querySelector('button[type="submit"]') || botonModalEditar || botonModal;
   try {
-    initLoaderButton(botonModal);
+    initLoaderButton(currentBtn);
     const data = new FormData(form);
     let result = await executePetition(url + "/setPaciente", "POST", data);
     console.log(result);
     if (result.ok) {
       alertSuccess(result.message);
-      modalPaciente.hide();
+      modalEditarPaciente?.hide();
+      modalPaciente?.hide();
       readPatients();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     console.log(error);
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal);
+    finallyLoaderButton(currentBtn);
   }
 };
 
@@ -328,3 +377,23 @@ modalAgregar.addEventListener("submit", function (e) {
     );
   }
 });
+
+// Validación y envío del modal dedicado de edición de paciente
+if (formEditarPaciente) {
+  let verificarFormularioEditar = inicializarValidacionFormulario(formEditarPaciente);
+
+  formEditarPaciente.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let esValido = verificarFormularioEditar();
+
+    if (esValido) {
+      updatePatients(this);
+    } else {
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
+    }
+  });
+}

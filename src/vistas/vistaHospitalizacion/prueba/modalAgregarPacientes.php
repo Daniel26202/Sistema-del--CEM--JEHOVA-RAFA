@@ -8,7 +8,7 @@
     <p class="text-center text-white fw-bolder d-none" id="pModalOculto" data-bs-dismiss="modal">Presione clic</p>
 
     <div class="modal-dialog modal-md" id="divModal">
-        <div class="modal-content tamaño-modal hospit">
+        <div class="modal-content tamaño-modal hospit modal-insumos-content">
 
             <!-- HEADER -->
             <div class="modal-header border-0 pb-0">
@@ -23,7 +23,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
-            <form class="modal-body form-validable" id="formularioAgregarH" method="POST" action="#">
+            <form class="modal-body form-validable modal-insumos-form" id="formularioAgregarH" method="POST" action="#">
 
                 <!-- Campos ocultos -->
                 <input type="hidden" name="id_paciente" id="input-id-paciente">

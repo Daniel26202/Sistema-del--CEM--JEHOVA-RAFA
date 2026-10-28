@@ -147,7 +147,7 @@ openBotonModalServicio.addEventListener("click", function () {
   clearModalEnviar(parametros);
 });
 
-btnAgregarCategoria.addEventListener("click", function () {
+btnAgregarCategoria?.addEventListener("click", function () {
   readCategory();
 });
 

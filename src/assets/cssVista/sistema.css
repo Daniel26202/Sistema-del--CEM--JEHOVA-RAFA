@@ -85,3 +85,109 @@ body {
         margin-bottom: 0.4rem;
     }
 }
+
+/* ── 4. Control Médico Responsive & Scroll Suave ───────────────────────── */
+.tabla-control-medico .scrollable {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+}
+
+.tabla-control-medico .scrollable::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.tabla-control-medico .scrollable::-webkit-scrollbar-thumb {
+    background-color: rgba(56, 122, 223, 0.4);
+    border-radius: 4px;
+}
+
+.tabla-control-medico .scrollable table {
+    min-width: 460px;
+}
+
+.tabla-control-medico .scrollable th,
+.tabla-control-medico .scrollable td {
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .tabla-control-medico {
+        flex: 1 1 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-bottom: 1rem;
+    }
+
+    .tabla-control-medico .btn-modals {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ── 5. Paginación Global Adaptativa (Mobile First) ─────────────────────────
+   En Entradas, Proveedores, Vencidos, Insumos y globalmente:
+   Los botones de paginación se envuelven (flex-wrap: wrap) y se compactan
+   sin desbordar ni cortarse en pantallas pequeñas. */
+.pagination-div,
+.dt-container .dt-paging,
+.dataTables_wrapper .dataTables_paginate,
+.dt-paging nav,
+ul.pagination {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center;
+    gap: 0.25rem !important;
+}
+
+#paginationInsumos ul {
+    flex-wrap: wrap !important;
+}
+
+@media (max-width: 768px) {
+    .pagination-div,
+    .dt-container .dt-paging,
+    .dataTables_wrapper .dataTables_paginate,
+    .dt-paging nav,
+    ul.pagination {
+        justify-content: center !important;
+        width: 100% !important;
+        margin: 0.75rem auto !important;
+    }
+
+    .pagination-porpia {
+        min-width: 30px !important;
+        height: 30px !important;
+        padding: 2px 6px !important;
+        font-size: 0.8rem !important;
+        margin: 2px !important;
+    }
+
+    .dt-paging .page-link,
+    .dt-paging-button,
+    .pagination .page-link {
+        min-width: 32px !important;
+        min-height: 32px !important;
+        padding: 0.2rem 0.45rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    #paginationInsumos {
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+
+    #paginationInsumos ul {
+        justify-content: center !important;
+        gap: 0.4rem !important;
+    }
+
+    #paginationInsumos .borde-menu a {
+        font-size: 0.85rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+}
