@@ -81,3 +81,11 @@ En la sección final de cobro/checkout, las métricas principales se muestran en
 > 1. Respeta este flujo de cálculo sin alterar las fórmulas multimoneda existentes en el backend.
 > 2. Garantiza que en la UI siempre se muestren los precios en ambas monedas de forma clara y sin recargar la pantalla (usa jerarquía de colores/tamaños).
 > 3. Utiliza los helpers de formateo de moneda estándar del proyecto (`formatUSD()` / `formatBS()`).
+
+### 3.1 Captura de precios y conversiones
+
+- Los formularios con importes en ambas monedas deben enlazar sus campos usando `initConversion(form)` de `src/assets/js/generic/coversion.js`.
+- Identifica los campos con las clases `.precioDolares` y `.precioBolivares`; conserva sus `name`, IDs y validaciones para no cambiar el contrato con el backend.
+- La conversión usa la tasa compartida del sistema. El formulario informa la tasa aplicada y normaliza el importe al salir del campo; acepta separadores decimales locales e internacionales.
+- USD sigue siendo la referencia para los precios de servicios e insumos. El campo equivalente en Bs. facilita la captura y no debe cambiar la moneda ni la semántica que cada endpoint ya guarda.
+- Evita agregar cálculos de conversión duplicados por módulo; reutiliza la función compartida para nuevos campos de precio.

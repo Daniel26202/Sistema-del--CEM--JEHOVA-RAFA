@@ -9,6 +9,7 @@ import {
 } from "../../js/generic/funtionGeneric.js";
 import { traerSerevicio } from "../../js/hospitalizacion/reutilizableHospitalizacion.js";
 import { inicializarValidacionFormulario, chulitoYX } from "../generic/expresionesModulares.js";
+import { initConversion } from "../generic/coversion.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
 const modalAHospBoots = new bootstrap.Modal(document.getElementById("modal-agregar-hospitalizacion"));
@@ -28,6 +29,7 @@ let iCS = document.querySelector("#inpCostoHS");
 
 let iHME = document.querySelector("#inpHorasMoEx");
 let iCME = document.querySelector("#inpCostoHMoEx");
+initConversion(document.querySelector("#formCostoHora"));
 iHS.addEventListener("keyup", function () {
     iHME.value = iHS.value;
 });
@@ -39,18 +41,6 @@ let storedDolar = localStorage.getItem("valorDelDolar");
 let mPDolar = localStorage.getItem("costoMoEx");
 let bsM = mPDolar * storedDolar;
 localStorage.setItem("costo", bsM);
-
-iCS.addEventListener("keyup", function () {
-    let storedDolar = localStorage.getItem("valorDelDolar");
-    let montoDolar = iCS.value / storedDolar;
-    iCME.value = montoDolar.toFixed(2);
-});
-
-iCME.addEventListener("keyup", function () {
-    let storedDolar = localStorage.getItem("valorDelDolar");
-    let montoBS = iCME.value * storedDolar;
-    iCS.value = montoBS.toFixed(2);
-});
 
 function validarPrecioHora() {
     const precioHora = localStorage.getItem("costo");
@@ -107,6 +97,9 @@ const traerHoraCosto = async () => {
         costoHorasMoEx.innerText = 0;
         iCME.value = 0;
     }
+
+    const precioBase = iCME.value.trim() !== "" ? iCME : iCS;
+    precioBase.dispatchEvent(new Event("input", { bubbles: true }));
 };
 
 // para traerme la hora y su costo

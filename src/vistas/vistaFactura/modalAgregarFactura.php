@@ -288,7 +288,7 @@
 
 <div class="modal fade" id="modal-pago" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog tamaño-modal">
+  <div class="modal-dialog ">
     <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
@@ -365,7 +365,7 @@
 
 <div class="modal fade" id="modal-validacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog tamaño-modal">
+  <div class="modal-dialog ">
     <div class="modal-content agregar">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">
@@ -476,7 +476,7 @@
 
 <div class="modal fade" id="modal-confirmacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog tamaño-modal modal-xl">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content agregar table-responsive">
       <div class="modal-header">
         <div class="fw-bolder d-flex" id="staticBackdropLabel">

@@ -1,3 +1,5 @@
+import { formatBS, parseMonto } from "./moneda.js";
+
 /**
  * Tasa de cambio del dólar.
  *
@@ -50,6 +52,7 @@ export const tasaGuardada = () => {
     return 0;
   }
 };
+tipoCambio = tasaGuardada();
 
 /** Fecha en que se obtuvo la tasa guardada ("" si nunca se obtuvo). */
 export const fechaTasaGuardada = () => {
@@ -199,53 +202,121 @@ const enviarValorDolar = (tipo) => {
     .catch((e) => console.warn("No se pudo guardar la tasa en la sesión:", e.message));
 };
 
-const conversion = (inputD, inputBS, tipo) => {
-  const valorDesde = parseFloat(inputD.value);
-  if (isNaN(valorDesde)) {
-    inputBS.value = "";
-    return;
-  }
-
-  // Sin tasa (la API todavía no respondió) es mejor dejar el otro campo como
-  // está que escribir 0.00 y que el usuario lo guarde.
-  if (!Number.isFinite(tipoCambio) || tipoCambio <= 0) return;
-
-  // En la rama "bolivares" quien llama invierte los argumentos:
-  // inputD es el campo en Bs que se edita e inputBS el de dólares.
-  const resultado =
-    tipo === "dolar" ? valorDesde * tipoCambio : valorDesde / tipoCambio;
-
-  inputBS.value = resultado.toFixed(2);
-
-  // Se avisa con "input" (no con "keyup") para que el campo destino se
-  // revalide. Con "keyup" su listener de conversión se disparaba otra vez y
-  // entraba en recursión ("Maximum call stack size exceeded").
-  inputBS.dispatchEvent(new Event("input", { bubbles: true }));
-};
+const formulariosInicializados = new WeakSet();
 
 export const initConversion = (form) => {
-  valorDolar();
+  if (!(form instanceof Element) || formulariosInicializados.has(form)) return;
 
-  let inputDolares = form.querySelector(".precioDolares");
-  let inputBolivares = form.querySelector(".precioBolivares");
+  const dolares = Array.from(form.querySelectorAll(".precioDolares"));
+  const bolivares = Array.from(form.querySelectorAll(".precioBolivares"));
+  const pares = dolares.slice(0, Math.min(dolares.length, bolivares.length))
+    .map((usd, index) => ({ usd, bs: bolivares[index] }));
 
-  // No todos los formularios traen ambos campos; sin esta guarda se lanzaba
-  // "Cannot read properties of null (reading 'addEventListener')".
-  if (!inputDolares || !inputBolivares) return;
+  if (pares.length === 0) return;
+  formulariosInicializados.add(form);
 
-  inputDolares.addEventListener("keyup", () =>
-    conversion(inputDolares, inputBolivares, "dolar"),
-  );
+  const paresEditados = new Map();
+  let actualizando = false;
+  let indicacion = form.querySelector(".currency-conversion-hint");
 
-  inputBolivares.addEventListener("keyup", () =>
-    conversion(inputBolivares, inputDolares, "bolivares"),
-  );
+  if (!indicacion) {
+    indicacion = document.createElement("p");
+    indicacion.className = "currency-conversion-hint form-text";
+    indicacion.setAttribute("role", "status");
+    indicacion.setAttribute("aria-live", "polite");
+    const campoBs = pares[0].bs.closest(".campo-custom");
+    if (campoBs) {
+      campoBs.insertAdjacentElement("afterend", indicacion);
+    } else {
+      form.append(indicacion);
+    }
+  }
 
-  inputDolares.addEventListener("blur", () =>
-    conversion(inputDolares, inputBolivares, "dolar"),
-  );
+  const mostrarTasa = (resultado = {}) => {
+    if (!tipoCambio || tipoCambio <= 0) {
+      indicacion.textContent =
+        "No hay una tasa de cambio disponible. Verifica la tasa para convertir el precio.";
+      indicacion.classList.add("text-danger");
+      return;
+    }
 
-  inputBolivares.addEventListener("blur", () =>
-    conversion(inputBolivares, inputDolares, "bolivares"),
-  );
+    const fecha = fechaTasaGuardada();
+    const fechaTexto = fecha ? ` · actualizada ${fecha}` : "";
+    const avisoError = resultado.error
+      ? " No se pudo actualizar; se usa la última tasa disponible."
+      : "";
+    indicacion.textContent =
+      `Escribe el precio en cualquiera de las monedas; el otro se calcula automáticamente. Tasa: ${formatBS(tipoCambio)} por USD${fechaTexto}.${avisoError}`;
+    indicacion.classList.toggle("text-danger", Boolean(resultado.error));
+  };
+
+  const actualizarPar = (par, origen) => {
+    if (actualizando) return;
+
+    paresEditados.set(par, origen);
+    const destino = origen === "usd" ? par.bs : par.usd;
+    const monto = parseMonto(origen === "usd" ? par.usd.value : par.bs.value);
+
+    if (monto === null || (origen === "usd" ? par.usd.value : par.bs.value).trim() === "") {
+      destino.value = "";
+      actualizando = true;
+      destino.dispatchEvent(new Event("input", { bubbles: true }));
+      actualizando = false;
+      return;
+    }
+
+    if (!Number.isFinite(tipoCambio) || tipoCambio <= 0) {
+      destino.value = "";
+      actualizando = true;
+      destino.dispatchEvent(new Event("input", { bubbles: true }));
+      actualizando = false;
+      mostrarTasa();
+      return;
+    }
+
+    const convertido = origen === "usd" ? monto * tipoCambio : monto / tipoCambio;
+    destino.value = convertido.toFixed(2);
+    actualizando = true;
+    destino.dispatchEvent(new Event("input", { bubbles: true }));
+    actualizando = false;
+  };
+
+  pares.forEach((par) => {
+    par.usd.addEventListener("input", () => actualizarPar(par, "usd"));
+    par.bs.addEventListener("input", () => actualizarPar(par, "bs"));
+
+    [par.usd, par.bs].forEach((input) => {
+      input.addEventListener("blur", () => {
+        const monto = parseMonto(input.value);
+        if (monto === null || input.value.trim() === "") return;
+        input.value = monto.toFixed(2);
+        actualizarPar(par, input === par.usd ? "usd" : "bs");
+      });
+    });
+  });
+
+  mostrarTasa();
+  valorDolar().then((resultado) => {
+    tipoCambio = resultado.tasa;
+    mostrarTasa(resultado);
+    if (tipoCambio <= 0) return;
+
+    pares.forEach((par) => {
+      const origen = paresEditados.get(par) ??
+        (par.usd.value.trim() !== "" ? "usd" : "bs");
+      const monto = parseMonto(origen === "usd" ? par.usd.value : par.bs.value);
+      if (monto !== null) actualizarPar(par, origen);
+    });
+  });
+
+  form.addEventListener("submit", () => {
+    pares.forEach(({ usd, bs }) => {
+      [usd, bs].forEach((input) => {
+        const monto = parseMonto(input.value);
+        if (monto !== null && input.value.trim() !== "") {
+          input.value = monto.toFixed(2);
+        }
+      });
+    });
+  });
 };

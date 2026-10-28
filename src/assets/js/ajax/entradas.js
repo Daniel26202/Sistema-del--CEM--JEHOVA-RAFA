@@ -11,6 +11,7 @@ import {
   finallyLoaderButton,
 } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
+import { initConversion } from "../generic/coversion.js";
 
 addEventListener("DOMContentLoaded", function () {
   console.log("entradas.js ...");
@@ -20,6 +21,7 @@ addEventListener("DOMContentLoaded", function () {
   const url = "/Sistema-del--CEM--JEHOVA-RAFA/Entrada";
 
   const formAgregarEntrada = document.getElementById("formAgregarEntrada");
+  initConversion(formAgregarEntrada);
   const inputs = formAgregarEntrada.querySelectorAll(".input-validar");
   const modalAgregarEntrada = new bootstrap.Modal(
     document.getElementById("exampleModalagregarEntrada"),

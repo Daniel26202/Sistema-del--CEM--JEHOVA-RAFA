@@ -15,6 +15,7 @@ import {
   inicializarValidacionFormulario,
   chulitoYX,
 } from "../generic/expresionesModulares.js";
+import { initConversion } from "../generic/coversion.js";
 
 const modalHospitGuardar = new bootstrap.Modal(
   document.getElementById("modal-agregar-hospitalizacion"),
@@ -35,6 +36,7 @@ const modalAgregarPaciente = new bootstrap.Modal(
 const formularioAgregar = document.getElementById("formularioAgregarH");
 const formularioEditar = document.getElementById("formularioEditarH");
 const formCostoHoras = document.getElementById("formCostoHora");
+initConversion(formCostoHoras);
 const formAgregarPaciente = document.getElementById("modalAgregar");
 const cedulaPaciente = document.getElementById("cedulaPaciente");
 const parrafoExP = document.getElementById("p-paciente");
@@ -580,6 +582,9 @@ const traerHoraCosto = async () => {
     costoHorasMoEx.innerText = 0;
     iCME.value = 0;
   }
+
+  const precioBase = iCME.value.trim() !== "" ? iCME : iCS;
+  precioBase.dispatchEvent(new Event("input", { bubbles: true }));
 };
 
 const validarPrecioHora = () => {
