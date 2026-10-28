@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 04-07-2026 a las 23:30:51
--- Versión del servidor: 10.4.32-MariaDB-log
+-- Tiempo de generación: 28-10-2026 a las 23:35:25
+-- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -26,194 +26,60 @@ DELIMITER $$
 -- Procedimientos
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `DescontarLotes` (IN `insumo_id` INT, IN `cantidad_requerida` INT)   BEGIN
-
-
-
-
     DECLARE cantidad_restante INT DEFAULT cantidad_requerida;
-
-
-
-
-    DECLARE lote_id INT;
-
-
-
-
-    DECLARE lote_cantidad INT;
-
-
-
-
-
-
-
-
-
-    DECLARE done INT DEFAULT FALSE;
-
-
-
+    DECLARE lote_id          INT;
+    DECLARE lote_cantidad    INT;
+    DECLARE done             INT DEFAULT FALSE;
 
     DECLARE lote_cursor CURSOR FOR
-
-
-
-
         SELECT ei.id_entradaDeInsumo, ei.cantidad_disponible
-
-
-
-
-        FROM entrada_insumo ei INNER JOIN entrada e 
-
-
-
-
-        ON e.id_entrada = ei.id_entrada
-
-
-
-
-        WHERE ei.id_insumo = insumo_id AND ei.cantidad_disponible > 0
-
-
-
-
-        ORDER BY e.fechaDeIngreso ASC; 
-
-
-
-
-
-
-
+        FROM entrada_insumo ei
+        INNER JOIN entrada e ON e.id_entrada = ei.id_entrada
+        WHERE ei.id_insumo = insumo_id
+          AND ei.cantidad_disponible > 0
+        ORDER BY e.fechaDeIngreso ASC;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-
-
-
-
-
-
-
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
 
     OPEN lote_cursor;
 
-
-
-
-
-
-
-
-
     lectura_lote: LOOP
-
-
-
-
         FETCH lote_cursor INTO lote_id, lote_cantidad;
 
-
-
-
         IF done THEN
-
-
-
-
             LEAVE lectura_lote;
-
-
-
-
         END IF;
-
-
-
-
-
-
-
-
 
         IF cantidad_restante <= lote_cantidad THEN
-
-
-
-
             UPDATE entrada_insumo
-
-
-
-
             SET cantidad_disponible = cantidad_disponible - cantidad_restante
-
-
-
-
             WHERE id_entradaDeInsumo = lote_id;
-
-
-
 
             SET cantidad_restante = 0;
-
-
-
-
             LEAVE lectura_lote;
-
-
-
-
         ELSE
-
-
-
-
             UPDATE entrada_insumo
-
-
-
-
             SET cantidad_disponible = 0
-
-
-
-
             WHERE id_entradaDeInsumo = lote_id;
 
-
-
-
             SET cantidad_restante = cantidad_restante - lote_cantidad;
-
-
-
-
         END IF;
-
-
-
-
     END LOOP;
-
-
-
-
-
-
-
-
 
     CLOSE lote_cursor;
 
-
-
-
+    
+    IF cantidad_restante > 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Stock insuficiente del insumo solicitado';
+    END IF;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devolver_cantidad_insumos` (IN `id_factura` INT)   BEGIN
@@ -574,7 +440,7 @@ INSERT INTO `cita` (`id_cita`, `fecha`, `hora`, `estado`, `serviciomedico_id_ser
 (91, '2026-06-11', '05:00:00', 'DES', 24, 25, '06:00:00', 20, '2026-06-12 01:20:57'),
 (92, '2026-06-15', '21:00:00', 'Pendiente', 24, 108, '22:00:00', 19, '2026-06-05 00:55:25'),
 (93, '2026-06-15', '22:00:00', 'Pendiente', 24, 25, '23:00:00', 19, '2026-06-05 00:55:05'),
-(94, '2026-06-22', '21:00:00', 'Pendiente', 24, 25, '22:00:00', 19, '2026-06-12 01:11:58');
+(137, '2026-11-02', '20:00:00', 'Pendiente', 26, 25, '21:00:00', 19, '2026-10-28 02:49:51');
 
 -- --------------------------------------------------------
 
@@ -600,7 +466,7 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`id_cliente`, `nacionalidad`, `cedula`, `nombre`, `apellido`, `telefono`, `direccion`, `fn`, `genero`, `estado`) VALUES
-(1, 'V', '12098234', 'Jose', 'Lara', '04123213212', 'esuna direccion', '2005-10-02', 'Masculino', 'ACT'),
+(1, 'V', '12098234', 'Jose', 'Larao', '04123213212', 'esuna direccion', '2005-10-02', 'Masculino', 'ACT'),
 (2, 'V', '2000002', 'Editado', 'Modificado', '04123454320', 'en su casa', '2002-02-20', 'Masculino', 'ACT'),
 (3, 'V', '3722999', 'Pedro', 'Perez', '04123454327', 'en su casa', '2002-02-20', 'Masculino', 'ACT'),
 (4, 'V', '30554144', 'Carlos', 'Hernadéz', '04121232343', 'Eb su casa', '2012-02-11', 'Masculino', 'ACT'),
@@ -697,10 +563,14 @@ CREATE TABLE `detalle_factura` (
   `id_factura` int(11) NOT NULL,
   `tipo` varchar(35) NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `precio_unitario` float(12,2) NOT NULL,
-  `subtotal` float(12,2) NOT NULL,
+  `precio_unitario` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `subtotal` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `precio_divisa` decimal(12,2) NOT NULL DEFAULT 0.00 COMMENT 'Precio unitario en dolares (lo que manda el navegador)',
   `hospitalizacion_id_hospitalizacion` int(11) DEFAULT NULL,
   `serviciomedico_id_servicioMedico` int(11) DEFAULT NULL,
+  `personal_id_personal` int(11) DEFAULT NULL COMMENT 'Doctor que atendio el servicio facturado',
+  `iva_aplicado` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 = el precio_unitario ya incluye IVA',
+  `tasa_iva` decimal(6,4) NOT NULL DEFAULT 0.0000 COMMENT 'Tasa de IVA aplicada (0.1600 = 16%)',
   `entrada_insumo_id_entradaDeInsumo` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -708,8 +578,12 @@ CREATE TABLE `detalle_factura` (
 -- Volcado de datos para la tabla `detalle_factura`
 --
 
-INSERT INTO `detalle_factura` (`id_datelle_factura`, `id_factura`, `tipo`, `cantidad`, `precio_unitario`, `subtotal`, `hospitalizacion_id_hospitalizacion`, `serviciomedico_id_servicioMedico`, `entrada_insumo_id_entradaDeInsumo`) VALUES
-(16, 213, 'Servicio', 1, 1000.00, 1000.00, NULL, 25, NULL);
+INSERT INTO `detalle_factura` (`id_datelle_factura`, `id_factura`, `tipo`, `cantidad`, `precio_unitario`, `subtotal`, `precio_divisa`, `hospitalizacion_id_hospitalizacion`, `serviciomedico_id_servicioMedico`, `personal_id_personal`, `iva_aplicado`, `tasa_iva`, `entrada_insumo_id_entradaDeInsumo`) VALUES
+(16, 213, 'Servicio', 1, 1000.00, 1000.00, 0.00, NULL, 25, NULL, 0, 0.0000, NULL),
+(107, 363, 'Servicio', 1, 886230.00, 886230.00, 1000.00, NULL, 25, 18, 0, 0.0000, NULL),
+(131, 405, 'Insumo', 1, 88623.00, 88623.00, 100.00, NULL, NULL, NULL, 0, 0.0000, 75),
+(160, 452, 'Servicio', 1, 887300.00, 887300.00, 1000.00, NULL, 25, 18, 0, 0.0000, NULL),
+(161, 453, 'Servicio', 1, 888120.00, 888120.00, 1000.00, NULL, 25, 18, 0, 0.0000, NULL);
 
 -- --------------------------------------------------------
 
@@ -773,7 +647,7 @@ CREATE TABLE `entrada_insumo` (
 INSERT INTO `entrada_insumo` (`id_entradaDeInsumo`, `id_insumo`, `id_entrada`, `fechaDeVencimiento`, `precio`, `cantidad_entrante`, `cantidad_disponible`) VALUES
 (73, 49, 81, '2029-06-11', 10000.00, 1, 0),
 (74, 50, 82, '2026-06-24', 100.00, 12, 0),
-(75, 49, 83, '2029-07-12', 650.00, 10, 1),
+(75, 49, 83, '2029-07-12', 650.00, 10, 0),
 (76, 49, 84, '2026-07-12', 65000.00, 20, 18);
 
 -- --------------------------------------------------------
@@ -797,8 +671,7 @@ INSERT INTO `especialidad` (`id_especialidad`, `nombre`, `estado`) VALUES
 (4, 'Paramedico', 'ACT'),
 (5, 'Enfermeria', 'ACT'),
 (6, 'administrador', 'DES'),
-(7, 'Cirugia', 'ACT'),
-(8, 'Especialidad', 'DES');
+(7, 'Cirugia', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -821,7 +694,8 @@ CREATE TABLE `especialidades_solicitadas` (
 CREATE TABLE `factura` (
   `id_factura` int(11) NOT NULL,
   `fecha` date NOT NULL,
-  `total` float(12,2) NOT NULL,
+  `total` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `tipo_cambio` decimal(12,4) NOT NULL DEFAULT 0.0000 COMMENT 'Tasa Bs/$ aplicada al cerrar la factura',
   `estado` varchar(10) NOT NULL,
   `id_cliente` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -830,8 +704,12 @@ CREATE TABLE `factura` (
 -- Volcado de datos para la tabla `factura`
 --
 
-INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `estado`, `id_cliente`) VALUES
-(213, '2026-06-09', 0.00, 'ACT', 5);
+INSERT INTO `factura` (`id_factura`, `fecha`, `total`, `tipo_cambio`, `estado`, `id_cliente`) VALUES
+(213, '2026-06-09', 0.00, 0.0000, 'ACT', 5),
+(363, '2026-10-25', 886230.00, 886.2300, 'ACT', 4),
+(405, '2026-10-25', 88623.00, 886.2300, 'ACT', 5),
+(452, '2026-10-27', 887300.00, 887.3000, 'ACT', 4),
+(453, '2026-10-28', 888120.00, 888.1200, 'ACT', 5);
 
 -- --------------------------------------------------------
 
@@ -1118,7 +996,7 @@ CREATE TABLE `pagodefactura` (
   `id_pago` int(11) NOT NULL,
   `id_factura` int(11) NOT NULL,
   `referencia` varchar(25) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `monto` float(12,2) NOT NULL
+  `monto` decimal(12,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1126,7 +1004,14 @@ CREATE TABLE `pagodefactura` (
 --
 
 INSERT INTO `pagodefactura` (`id_pagoDeFactura`, `id_pago`, `id_factura`, `referencia`, `monto`) VALUES
-(247, 5, 213, '0', 0.00);
+(247, 5, 213, '0', 0.00),
+(327, 5, 363, '1233', 180624.64),
+(328, 7, 363, '1233', 500000.00),
+(329, 8, 363, '1233', 205605.36),
+(353, 6, 405, '1232', 50000.00),
+(354, 8, 405, '1232', 38623.00),
+(380, 5, 452, '0', 887300.00),
+(381, 5, 453, '0', 888120.00);
 
 -- --------------------------------------------------------
 
@@ -1176,7 +1061,8 @@ INSERT INTO `patologia` (`id_patologia`, `nombre_patologia`, `estado`) VALUES
 (203, 'COVID-19', 'ACT'),
 (204, 'Tuberculosis', 'ACT'),
 (205, 'Insuficiencia renal', 'ACT'),
-(207, 'Generica', 'ACT');
+(207, 'Generica', 'ACT'),
+(244, 'Wee', 'ACT');
 
 -- --------------------------------------------------------
 
@@ -1256,7 +1142,29 @@ INSERT INTO `patologiadepaciente` (`id_patologiaDePaciente`, `id_paciente`, `id_
 (252, 102, 7, '2025-11-04 13:11:48'),
 (253, 102, 5, '2025-11-04 13:41:16'),
 (254, 102, 5, '2025-11-04 17:31:58'),
-(255, 102, 5, '2025-11-04 18:23:02');
+(255, 102, 5, '2025-11-04 18:23:02'),
+(256, 25, 2, '2026-10-19 00:00:00'),
+(257, 25, 2, '2026-10-19 00:00:00'),
+(258, 25, 2, '2026-10-19 00:00:00'),
+(259, 25, 2, '2026-10-19 00:00:00'),
+(260, 25, 2, '2026-10-19 00:00:00'),
+(261, 25, 2, '2026-10-19 00:00:00'),
+(262, 25, 2, '2026-10-19 00:00:00'),
+(263, 25, 2, '2026-10-19 00:00:00'),
+(264, 25, 2, '2026-10-19 00:00:00'),
+(265, 25, 2, '2026-10-25 00:00:00'),
+(266, 25, 202, '2026-10-25 00:00:00'),
+(267, 25, 2, '2026-10-25 00:00:00'),
+(268, 25, 2, '2026-10-25 00:00:00'),
+(269, 25, 2, '2026-10-25 00:00:00'),
+(270, 25, 2, '2026-10-25 00:00:00'),
+(271, 25, 2, '2026-10-25 00:00:00'),
+(272, 25, 2, '2026-10-25 00:00:00'),
+(273, 25, 2, '2026-10-27 00:00:00'),
+(274, 25, 2, '2026-10-27 00:00:00'),
+(275, 25, 2, '2026-10-27 00:00:00'),
+(276, 25, 2, '2026-10-27 00:00:00'),
+(277, 25, 2, '2026-10-27 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -1383,7 +1291,9 @@ INSERT INTO `serviciomedico` (`id_servicioMedico`, `id_categoria`, `precio`, `es
 (35, 103, 60.66, 'ACT', 'Cita'),
 (36, 102, 4681.00, 'ACT', 'Examenes'),
 (37, 105, 5.48, 'ACT', 'Examenes'),
-(38, 9, 100.00, 'ACT', 'Cita');
+(38, 9, 100.00, 'ACT', 'Cita'),
+(111, 100, 0.14, 'ACT', 'Examenes'),
+(112, 111, 0.11, 'ACT', 'Cita');
 
 -- --------------------------------------------------------
 
@@ -1545,7 +1455,7 @@ CREATE TABLE `view_detalle_entradas` (
 CREATE TABLE `view_factura` (
 `id_factura` int(11)
 ,`fecha` date
-,`total` float(12,2)
+,`total` decimal(12,2)
 ,`id_cliente` int(11)
 ,`nombre_p` varchar(25)
 ,`apellido_p` varchar(25)
@@ -1687,7 +1597,7 @@ ALTER TABLE `categoria_servicio`
 -- Indices de la tabla `cita`
 --
 ALTER TABLE `cita`
-  ADD PRIMARY KEY (`id_cita`),
+  ADD PRIMARY KEY (`id_cita`,`paciente_id_paciente`),
   ADD KEY `fk_cita_serviciomedico1_idx` (`serviciomedico_id_servicioMedico`),
   ADD KEY `fk_cita_paciente1_idx` (`paciente_id_paciente`);
 
@@ -1713,7 +1623,8 @@ ALTER TABLE `detalle_factura`
   ADD KEY `id_factura` (`id_factura`),
   ADD KEY `hospitalizacion_id_hospitalizacion` (`hospitalizacion_id_hospitalizacion`,`serviciomedico_id_servicioMedico`,`entrada_insumo_id_entradaDeInsumo`),
   ADD KEY `entrada_insumo_id_entradaDeInsumo` (`entrada_insumo_id_entradaDeInsumo`),
-  ADD KEY `serviciomedico_id_servicioMedico` (`serviciomedico_id_servicioMedico`);
+  ADD KEY `serviciomedico_id_servicioMedico` (`serviciomedico_id_servicioMedico`),
+  ADD KEY `detalle_factura_ibfk_personal` (`personal_id_personal`);
 
 --
 -- Indices de la tabla `entrada`
@@ -1878,55 +1789,55 @@ ALTER TABLE `sintomas_control`
 -- AUTO_INCREMENT de la tabla `categoria_servicio`
 --
 ALTER TABLE `categoria_servicio`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=177;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT de la tabla `control`
 --
 ALTER TABLE `control`
-  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_factura`
 --
 ALTER TABLE `detalle_factura`
-  MODIFY `id_datelle_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_datelle_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada`
 --
 ALTER TABLE `entrada`
-  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id_entrada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=248;
 
 --
 -- AUTO_INCREMENT de la tabla `entrada_insumo`
 --
 ALTER TABLE `entrada_insumo`
-  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id_entradaDeInsumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=240;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidad`
 --
 ALTER TABLE `especialidad`
-  MODIFY `id_especialidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_especialidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=214;
+  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=454;
 
 --
 -- AUTO_INCREMENT de la tabla `horario`
@@ -1938,19 +1849,19 @@ ALTER TABLE `horario`
 -- AUTO_INCREMENT de la tabla `horarioydoctor`
 --
 ALTER TABLE `horarioydoctor`
-  MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id_horarioydoctor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 
 --
 -- AUTO_INCREMENT de la tabla `hospitalizacion`
 --
 ALTER TABLE `hospitalizacion`
-  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id_hospitalizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
 
 --
 -- AUTO_INCREMENT de la tabla `insumo`
 --
 ALTER TABLE `insumo`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
 
 --
 -- AUTO_INCREMENT de la tabla `insumodehospitalizacion`
@@ -1962,7 +1873,7 @@ ALTER TABLE `insumodehospitalizacion`
 -- AUTO_INCREMENT de la tabla `paciente`
 --
 ALTER TABLE `paciente`
-  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
+  MODIFY `id_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
@@ -1974,37 +1885,37 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pagodefactura`
 --
 ALTER TABLE `pagodefactura`
-  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=248;
+  MODIFY `id_pagoDeFactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=382;
 
 --
 -- AUTO_INCREMENT de la tabla `patologia`
 --
 ALTER TABLE `patologia`
-  MODIFY `id_patologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=211;
+  MODIFY `id_patologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=266;
 
 --
 -- AUTO_INCREMENT de la tabla `patologiadepaciente`
 --
 ALTER TABLE `patologiadepaciente`
-  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=256;
+  MODIFY `id_patologiaDePaciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=278;
 
 --
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_personal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 
 --
 -- AUTO_INCREMENT de la tabla `serviciomedico`
 --
 ALTER TABLE `serviciomedico`
-  MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id_servicioMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
 -- AUTO_INCREMENT de la tabla `servicios_hospitalizacion`
@@ -2016,13 +1927,13 @@ ALTER TABLE `servicios_hospitalizacion`
 -- AUTO_INCREMENT de la tabla `sintomas`
 --
 ALTER TABLE `sintomas`
-  MODIFY `id_sintomas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_sintomas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT de la tabla `sintomas_control`
 --
 ALTER TABLE `sintomas_control`
-  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id_sintomas_control` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- Restricciones para tablas volcadas
@@ -2048,7 +1959,8 @@ ALTER TABLE `detalle_factura`
   ADD CONSTRAINT `detalle_factura_ibfk_1` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id_factura`),
   ADD CONSTRAINT `detalle_factura_ibfk_2` FOREIGN KEY (`hospitalizacion_id_hospitalizacion`) REFERENCES `hospitalizacion` (`id_hospitalizacion`),
   ADD CONSTRAINT `detalle_factura_ibfk_3` FOREIGN KEY (`entrada_insumo_id_entradaDeInsumo`) REFERENCES `entrada_insumo` (`id_entradaDeInsumo`),
-  ADD CONSTRAINT `detalle_factura_ibfk_4` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`);
+  ADD CONSTRAINT `detalle_factura_ibfk_4` FOREIGN KEY (`serviciomedico_id_servicioMedico`) REFERENCES `serviciomedico` (`id_servicioMedico`),
+  ADD CONSTRAINT `detalle_factura_ibfk_personal` FOREIGN KEY (`personal_id_personal`) REFERENCES `personal` (`id_personal`);
 
 --
 -- Filtros para la tabla `entrada`
