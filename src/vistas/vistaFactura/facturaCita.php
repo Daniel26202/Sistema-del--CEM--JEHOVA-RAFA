@@ -163,6 +163,8 @@
                         <?php foreach ($citaFacturar as $datoCita): ?>
                             <input type="number" style="margin-left: -1px; padding-left: 6px;"
                                 class=" w-25 input-buscar text-center" id="totalFactura" disabled>
+                            <!-- Equivalente en divisa del total (lo pinta f.js). -->
+                            <span id="totalFacturaDivisa" class="fw-bolder ms-2"></span>
                             <input type="hidden" id="inputTotalCita" value="<?= $datoCita['precio'] ?>">
                         <?php endforeach; ?>
 

@@ -272,8 +272,8 @@
       <div class="modal-footer ">
         <button type="button" class="btn btn-modals-cancelar me-2"
           data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-modals" data-bs-toggle="modal"
-          data-bs-target="#modal-pago" id="botonPC">Siguiente</button>
+        <button type="button" class="btn btn-modals"
+          id="botonPC">Siguiente</button>
       </div>
 
     </div>
@@ -316,15 +316,39 @@
 
       <div class="form-modal" id="body-modal-pago">
 
-        <!-- js -->
+        <!-- Resumen fijo del cobro: el total y la tasa se ven mientras se
+             eligen los métodos, sin depender de la pantalla que queda detrás. -->
+        <div id="resumenPago" class="border rounded p-2 mb-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <p class=" small mb-1">Total a pagar</p>
+              <p class="fs-5 mb-0" id="resumenTotalPagoUSD"></p>
+              <p class=" small mb-0" id="resumenTotalPagoBS"></p>
+            </div>
+            <div class="text-end">
+              <p class=" small mb-1">Tasa del día</p>
+              <p class="fw-bolder mb-0" id="resumenTasaPago"></p>
+            </div>
+          </div>
+        </div>
 
+        <p class="fw-bolder mb-1">Métodos de pago</p>
+        <p class=" small mb-2">Puede combinar varios métodos (pago mixto).</p>
+
+        <div id="listaMetodosPago">
+
+          <!-- js -->
+
+        </div>
+
+        <div id="avisoPago" class="alert alert-primary p-1 text-center m-auto d-none"></div>
 
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-modals-cancelar me-2"
           data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class=" btn btn-modals d-none" data-bs-dismiss="modal" data-bs-toggle='modal'
+        <button type="button" class=" btn btn-modals d-none"
           id="btnTipoDePago">Siguiente</button>
       </div>
 
@@ -362,21 +386,49 @@
         </a>
       </div>
 
-      <div class="alert alert-primary p-1 text-center m-auto alerta-varios-metodos d-none" style="width: 96%;">La cantidad total de todos los campos tiene que ser equivalente al total y si alguno de los metodos de pago requiere referencia tambien es obligatoria</div>
+      <div class="alert alert-primary p-1 text-center m-auto alerta-varios-metodos d-none" id="alertaValidacion" style="width: 96%;"></div>
 
       <div class="form-modal mt-2" id="divModalValidacion">
-        <div id="divInputValidation">
 
-          <!-- 
-        <div>
-          <p id="total-modal-validacion"></p>
-          <input type="hidden" id="input-validacion-pago">
-        </div> -->
+        <!-- Punto de control del cobro: total, pagado, pendiente y vuelto,
+             siempre en las dos monedas (guía de flujo de pago). -->
+        <div id="resumenValidacionPago" class="border rounded p-2 mb-2">
+          <p class=" small mb-1">Total a pagar</p>
+          <p class="fs-5 mb-0" id="validacionTotalUSD"></p>
+          <p class=" small mb-0" id="validacionTotalBS"></p>
+        </div>
+
+        <div class="row g-2 mb-3" id="metricasValidacion">
+          <div class="col-4">
+            <div class="border rounded p-2 h-100">
+              <p class=" small mb-1">Pagado</p>
+              <p class="fw-bolder mb-0" id="validacionPagadoUSD"></p>
+              <p class=" small mb-0" id="validacionPagado"></p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="border rounded p-2 h-100">
+              <p class=" small mb-1">Falta por pagar</p>
+              <p class="fw-bolder mb-0" id="validacionPendienteUSD"></p>
+              <p class=" small mb-0" id="validacionPendiente"></p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="border rounded p-2 h-100">
+              <p class=" small mb-1">Vuelto</p>
+              <p class="fw-bolder mb-0" id="validacionVueltoUSD"></p>
+              <p class=" small mb-0" id="validacionVuelto"></p>
+            </div>
+          </div>
+        </div>
+
+        <p class="fw-bolder mb-1">Monto por método</p>
+        <div id="divInputValidation" class="modal-fields-grid">
 
         </div>
 
         <!-- input referencia -->
-        <div id="divReferencia" class='d-none'>
+        <div id="divReferencia" class='d-none mt-2'>
           <label class="label-custom">Referencia</label>
           <div class="campo-custom">
             <div class="input-custom">
@@ -388,7 +440,7 @@
                   <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z"></path>
                 </svg>
               </span>
-              <input id="inputRefencia" class="form-control txt-custom input-validar  inputs input-modal-valida" name="referencia" type="text" placeholder="Referencia (ultimos 4 numeros)">
+              <input id="inputRefencia" class="form-control txt-custom input-validar  inputs input-modal-valida" name="referencia" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Referencia (ultimos 4 numeros)">
               <span class="icono-der">
                 <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                   <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
@@ -401,15 +453,15 @@
             <p class="error-msg d-none p-error-validaciones"></p>
           </div>
         </div>
+
+        <input type="hidden" id="input-validacion-pago">
       </div>
 
 
 
       <div class="modal-footer ">
-        <button type="button" class="btn btn-modals-cancelar me-2"
-          data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-modals  suguiente" data-bs-toggle="modal"
-          data-bs-target="#modal-confirmacion" id="btnValidacion">Siguiente</button>
+        <button type="button" class="btn btn-modals-cancelar me-2" id="btnAtrasValidacion">Atrás</button>
+        <button type="button" class="btn btn-modals suguiente" id="btnValidacion" disabled>Siguiente</button>
       </div>
 
     </div>
@@ -450,65 +502,98 @@
       ?>
       <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" id="formConfirmarFactura" class="">
 
-        <table class="table table-striped" id="tablaConfirmaroperacion">
-          <thead>
-            <tr>
-              <p class="fw-bolder mb-0 mt-2 border-bottom">SERVICIOS</p>
-            </tr>
-          </thead>
-          <tbody style="font-size: 14px;" id="cuerpoTablaConfirmaroperacion">
+        <!-- El contenido del modal respira respecto a los bordes de la tarjeta;
+             el pie queda fuera del bloque con padding para que su borde y sus
+             botones sigan pegados al ancho completo. -->
+        <div class="modal-body px-3 px-md-4 py-3">
+
+          <p class="fw-bolder mb-0 mt-2 border-bottom">SERVICIOS</p>
+          <table class="table table-striped" id="tablaConfirmaroperacion">
+            <thead>
+              <tr>
+                <th>Concepto</th>
+                <th>Doctor</th>
+                <th class="text-end">Importe</th>
+              </tr>
+            </thead>
+            <tbody style="font-size: 14px;" id="tbodyDelModal">
+  
+            </tbody>
+          </table>
+  
+          <p class="fw-bolder mb-0 mt-3 border-bottom">INSUMOS</p>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Concepto</th>
+                <th>IVA</th>
+                <th class="text-end">Importe</th>
+              </tr>
+            </thead>
+            <tbody style="font-size: 14px;" id="tbodyInsumos">
+  
+            </tbody>
+          </table>
+  
+          <input type="hidden" name="id_cita" id="inputIdCita">
+          <!-- El JS leía #inputCliente / #inputHospitalizacion pero estos inputs no
+               existían en el HTML: por eso "facturar a nombre de otra persona" y
+               la hospitalización nunca llegaban al servidor. -->
+          <input type="hidden" id="inputCliente" name="id_cliente">
+          <input type="hidden" id="inputHospitalizacion" name="id_hospitalizacion">
+  
+          <p class="fw-bolder mb-0 mt-2">TIPOS DE PAGO</p>
+          <div id="divTypePagoCofirm" class="border rounded p-2 mb-2">
+  
+            <!-- js -->
+          </div>
+  
+          <p class="fw-bolder mb-0 mt-2">TOTAL</p>
+          <div id="totalDeConfirmacion" class="mb-2"></div>
+  
+          <!-- Desglose del pago: lo cobrado, el vuelto y lo que falta,
+               siempre en las dos monedas. -->
+          <div class="row g-2" id="resumenConfirmacionPago">
+            <div class="col-4">
+              <div class="border rounded p-2 h-100">
+                <p class=" small mb-1">Pagado</p>
+                <p class="fw-bolder mb-0" id="confirmacionPagadoUSD"></p>
+                <p class=" small mb-0" id="confirmacionPagado"></p>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="border rounded p-2 h-100">
+                <p class=" small mb-1">Vuelto</p>
+                <p class="fw-bolder mb-0" id="confirmacionVueltoUSD"></p>
+                <p class=" small mb-0" id="confirmacionVuelto"></p>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="border rounded p-2 h-100">
+                <p class=" small mb-1">Falta por pagar</p>
+                <p class="fw-bolder mb-0" id="confirmacionPendienteUSD"></p>
+                <p class=" small mb-0" id="confirmacionPendiente"></p>
+              </div>
+            </div>
+          </div>
+  
+          <p id="p-referencia" class="mt-2 mb-0"></p>
+  
+          <input type="text" class="d-none" id="inputTotalDeConfirmacion" name="total">
+          <!-- Tasa con la que se calcularon los importes. El servidor la contrasta
+               con la del día y la guarda en la factura para poder auditarla. -->
+          <input type="hidden" id="inputTipoCambio" name="tipo_cambio" value="">
+          <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
 
-          </tbody>
-        </table>
-        <table class="table table-striped">
-          <thead>
 
-          </thead>
-          <tbody id="tbodyDelModal" style="font-size: 14px;">
+          <input type="hidden" id="referencia_confirmar" name="referencia">
+          <input type="hidden" id="inputPaciente" name="id_paciente">
 
-          </tbody>
-        </table>
-        <table class="table table-striped">
-          <thead>
-            <p class="fw-bolder mb-0 mt-3 border-bottom">INSUMOS</p>
-          </thead>
-          <tbody style="font-size: 14px;" id="tbodyInsumos">
-
-          </tbody>
-        </table>
-
-        <input type="hidden" name="id_cita" id="inputIdCita">
-        <!-- El JS leía #inputCliente / #inputHospitalizacion pero estos inputs no
-             existían en el HTML: por eso "facturar a nombre de otra persona" y
-             la hospitalización nunca llegaban al servidor. -->
-        <input type="hidden" id="inputCliente" name="id_cliente">
-        <input type="hidden" id="inputHospitalizacion" name="id_hospitalizacion">
-
-        <p class="fw-bolder mb-0 mt-2">TIPOS DE PAGO</p>
-        <div id="divTypePagoCofirm">
-
-          <!-- js -->
         </div>
-        <hr>
-        <p class="fw-bolder mb-0 mt-2">TOTAL</p>
-
-        <div id="totalDeConfirmacion"></div>
-
-        <p id="p-referencia"></p>
-
-        <input type="text" class="d-none" id="inputTotalDeConfirmacion" name="total">
-        <!-- Tasa con la que se calcularon los importes. El servidor la contrasta
-             con la del día y la guarda en la factura para poder auditarla. -->
-        <input type="hidden" id="inputTipoCambio" name="tipo_cambio" value="">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-
-
-
-        <input type="hidden" id="referencia_confirmar" name="referencia">
-        <input type="hidden" id="inputPaciente" name="id_paciente">
 
         <div class="modal-footer">
+          <button type="button" class="btn btn-modals-cancelar me-2" id="btnAtrasConfirmacion">Atrás</button>
           <button type="button" class="btn btn-modals-cancelar me-2"
             data-bs-dismiss="modal">Cancelar</button>
           <button type="submit" class="btn btn-modals" id="btnConfirmarFactura">Confirmar</button>

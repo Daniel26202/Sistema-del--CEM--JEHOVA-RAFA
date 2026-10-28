@@ -33,10 +33,12 @@
 <script>
 	function openNav() {
 		document.getElementById("mySidenav").classList.add("open-sidenav");
+		document.body.classList.add("sidenav-open");
 	}
 
 	function closeNav() {
 		document.getElementById("mySidenav").classList.remove("open-sidenav");
+		document.body.classList.remove("sidenav-open");
 	}
 </script>
 </body>

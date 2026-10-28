@@ -1,10 +1,9 @@
 <?php
 
-
-
+require_once './src/config/FacturaPdf.php';
 
 // Creación del objeto de la clase heredada
-$pdf = new FPDF();
+$pdf = new FacturaPdf();
 
 
 
@@ -63,7 +62,7 @@ $pdf->SetTextColor(14, 169, 181);
 
 $pdf->Cell(55, 10, strtoupper('SERVICIO: '.$d['categoria_servicio']), 0, 0, 'L',0);
 $pdf->Cell(80, 10, strtoupper('DOCTOR: '.$d['nombre_d'].' '.$d['apellido_d']), 0, 0, 'L',0);
-$pdf->Cell(70, 10, strtoupper('PRECIO: '.$d['precio'].' $'), 0, 0, 'L',0);
+$pdf->Cell(70, 10, 'PRECIO: '.number_format((float)$d['precio_divisa'], 2, '.', '').' $', 0, 0, 'L',0);
 
 
 }
@@ -88,7 +87,7 @@ $pdf->SetFillColor(228, 235, 240);
 $pdf->SetTextColor(14, 169, 181);
 $pdf->Cell(73, 10, strtoupper('NOMBRE: '.$insumo['nombre']), 0, 0, 'L',0);
 $pdf->Cell(55, 10, strtoupper('CANTIDAD: '.$insumo['cantidad']), 0, 0, 'L',0);
-$pdf->Cell(85, 10, strtoupper('PRECIO: '.$insumo['precio'].' $'), 0, 0, 'L',0);
+$pdf->Cell(85, 10, 'PRECIO: '.number_format((float)$insumo['precio_divisa'], 2, '.', '').' $', 0, 0, 'L',0);
 
 }
 
@@ -102,7 +101,7 @@ $pdf->SetTextColor(14, 169, 181);
 $pdf->Cell(110, 10, 'METODOS DE PAGO', 0, 0, 'L',0);
 $pdf->SetTextColor(255,255,255);
 $pdf->SetFillColor(14, 169, 181);
-$pdf->Cell(50, 10, 'TOTAL:  '.$datosFactura[0]['total'] . " BS", 0, 1, 'C',1);
+$pdf->Cell(50, 10, 'TOTAL:  '.number_format((float)$datosFactura[0]['total'], 2, '.', '') . " BS", 0, 1, 'C',1);
 $pdf->SetTextColor(14, 169, 181);
 
 foreach($datosPago as $Value){

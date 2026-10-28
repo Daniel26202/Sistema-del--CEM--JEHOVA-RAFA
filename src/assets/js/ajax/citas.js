@@ -59,7 +59,6 @@ addEventListener("DOMContentLoaded", function () {
 
   const id_rol_global = document.getElementById("id_rol_global").value;
 
-  let nombreDoctorSelect = "";
   let diasLaborablesDoctor = [];
   let fechaGlobal = "";
   let id_doctor = 0;
@@ -168,11 +167,13 @@ addEventListener("DOMContentLoaded", function () {
       );
       let html = "";
       if (result.length > 0) {
-        result.forEach((res) => {
-          nombreDoctorSelect = `Horarios de Dr ${res.nombre_doctor} ${res.apellido_doctor}`;
+        result.forEach((res, index) => {
+          // El id debe ser único: si todos los radios comparten id, el label
+          // siempre activa el primer doctor y el resto no se puede seleccionar.
+          const radioId = `doctorCita${index}`;
           html += `<div class="form-check">
-                  <input class="form-check-input checks-doctores" type="radio" value='${res.id_personal}' name="id_personal" id="flexRadioDefault2">
-                  <label class="form-check-label" for="flexRadioDefault2">
+                  <input class="form-check-input checks-doctores" type="radio" value='${res.id_personal}' name="id_personal" id="${radioId}">
+                  <label class="form-check-label" for="${radioId}">
                     Dr ${res.nombre_doctor} ${res.apellido_doctor}
                   </label>
                 </div>`;
@@ -251,7 +252,19 @@ addEventListener("DOMContentLoaded", function () {
         divHorarios.classList.remove("d-none");
       }
 
-      accordionButtonHorario.innerText = nombreDoctorSelect;
+      // El nombre del doctor seleccionado sale del radio marcado. Antes se
+      // guardaba en la variable global durante el forEach de doctores, así que
+      // el acordeón terminaba mostrando siempre el último doctor de la lista.
+      const radioSeleccionado = document.querySelector(
+        `.checks-doctores[value="${id}"]`,
+      );
+      const labelSeleccionado = radioSeleccionado
+        ?.closest(".form-check")
+        ?.querySelector("label")
+        ?.innerText.trim();
+      accordionButtonHorario.innerText = labelSeleccionado
+        ? `Horarios de ${labelSeleccionado}`
+        : "Horarios del doctor seleccionado";
       accordionBodyHorario.innerHTML = html;
     } catch (error) {
       alertError("Error", error);

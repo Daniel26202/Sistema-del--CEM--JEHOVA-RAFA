@@ -60,8 +60,27 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    /* `fixed` produce parpadeo/jitter en móviles: scroll es más estable */
+    background-attachment: scroll;
     background-color: #a4cce7;
+}
+
+@media (min-width: 992px) {
+    body {
+        background-attachment: fixed;
+    }
+}
+
+/* La tarjeta flota centrada verticalmente en cualquier alto de pantalla */
+.container {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.container > .row {
+    margin-top: 0;
 }
 
 /* Overlay semi-transparente opcional */
@@ -81,8 +100,9 @@ body::before {
 .cardStyle {
     z-index: 10;
     background: rgba(255, 255, 255, 0.555) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
-    border-radius: 3.9vh !important;
+    box-shadow: var(--shadow-2, 0 2px 4px rgba(15, 42, 78, 0.07),
+        0 6px 16px rgba(15, 42, 78, 0.1)) !important;
+    border-radius: var(--radius-lg, 18px) !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -108,7 +128,8 @@ body::before {
 }
 
 .logo {
-  width: 13%;
+    width: clamp(96px, 22%, 150px);
+    height: auto;
 }
 /* EFECTOS DEL LOGO */
 .logo-icon {
@@ -173,7 +194,7 @@ body::before {
 /* Input con padding para el icono */
 .styleInputs {
     padding-left: 40px !important;
-    padding-right: 40px !important;
+    padding-right: 48px !important;  /* despeja el toggle de 44px */
     border-width: 1.9px;
     border-radius: 16.7px !important;
     transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
@@ -208,14 +229,24 @@ body::before {
     color: #387adf !important;
 }
 
-/* BOTON TOGGLE DE CONTRASEÑA */
+/* Botón de mostrar/ocultar contraseña: target táctil ≥ 44px */
 .password-toggle {
     position: absolute;
-    right: 7px;
+    right: 2px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+}
+
+.password-toggle:focus-visible {
+    box-shadow: var(--ring, 0 0 0 3px rgba(56, 122, 223, 0.35));
 }
 
 .password-toggle:hover {
@@ -239,7 +270,23 @@ body::before {
     font-weight: 620;
     letter-spacing: 2px;
     text-transform: uppercase;
-    width: 108.5%;
+    width: 100%;            /* nunca más del 100%: 108.5% desbordaba la pantalla */
+}
+
+/* reCAPTCHA centrado sin hacks inline */
+.g-recaptcha {
+    display: flex;
+    justify-content: center;
+    margin-inline: auto;
+    transform-origin: center;
+    max-width: 100%;
+}
+
+@media (max-width: 380px) {
+    .g-recaptcha > div {
+        transform: scale(0.85);
+        transform-origin: center;
+    }
 }
 
 .btnPrimaryEditado:hover {
@@ -303,4 +350,13 @@ body::before {
 
 .text-secondary-custom {
     color: #64748b !important;
+}
+
+/* Botón INGRESAR: cómodo en móvil, sin encogerse ni desbordar */
+@media (max-width: 576px) {
+    .container .d-grid.col-7 {
+        width: 100% !important;
+        max-width: 340px;
+        margin-inline: auto;
+    }
 }

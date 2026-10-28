@@ -12,6 +12,13 @@ const CLAVE_TASA = "valorDelDolar";
 const CLAVE_TASA_FECHA = "valorDelDolarFecha";
 const URL_API = "https://ve.dolarapi.com/v1/dolares/oficial";
 
+/**
+ * Redondea la tasa a 2 decimales, igual que hace el lado PHP (tasaCambio.php).
+ * Sin esto el navegador guardaba/comparaba 886.2271 mientras el servidor
+ * redondeaba a 886.23: el mismo flujo calculaba importes distintos.
+ */
+const redondearTasa = (tasa) => Math.round(tasa * 100) / 100;
+
 // Tasa en memoria, compartida por los módulos de la página.
 let tipoCambio = 0;
 
@@ -37,7 +44,8 @@ const hoyISO = () => {
 export const tasaGuardada = () => {
   try {
     const valor = parseFloat(localStorage.getItem(CLAVE_TASA));
-    return Number.isFinite(valor) && valor > 0 ? valor : 0;
+    const redondeada = Number.isFinite(valor) ? redondearTasa(valor) : 0;
+    return redondeada > 0 ? redondeada : 0;
   } catch (_) {
     return 0;
   }
@@ -71,7 +79,7 @@ export const tasaEsDeHoy = () => fechaTasaGuardada() === hoyISO();
 
 /** Permite al usuario fijar la tasa a mano (si la API no responde o no coincide con el mercado). */
 export const guardarTasaManual = (valor) => {
-  const tasa = parseFloat(valor);
+  const tasa = redondearTasa(parseFloat(valor));
   if (!Number.isFinite(tasa) || tasa <= 0) {
     throw new Error("La tasa debe ser un número mayor que cero.");
   }
@@ -139,7 +147,7 @@ export const valorDolar = async ({ forzar = false } = {}) => {
         throw new Error("La API no devolvio un objeto valido");
       }
 
-      const tasa = Number(cuerpo.promedio);
+      const tasa = redondearTasa(Number(cuerpo.promedio));
 
       // 3) ¿El valor sirve? Debe ser un numero mayor que cero.
       //    Antes se guardaba tal cual: si la API mandaba null o 0, se guardaba
@@ -198,17 +206,21 @@ const conversion = (inputD, inputBS, tipo) => {
     return;
   }
 
-  if (tipo === "dolar") {
-    const resultado = valorDesde * tipoCambio;
-    inputBS.value = resultado.toFixed(2);
-    inputBS.dispatchEvent(new Event("keyup", { bubbles: true }));
-    return;
-  }
-  if (tipo === "bolivares") {
-    const resultado = valorDesde / tipoCambio;
-    inputBS.value = resultado.toFixed(2);
-    return;
-  }
+  // Sin tasa (la API todavía no respondió) es mejor dejar el otro campo como
+  // está que escribir 0.00 y que el usuario lo guarde.
+  if (!Number.isFinite(tipoCambio) || tipoCambio <= 0) return;
+
+  // En la rama "bolivares" quien llama invierte los argumentos:
+  // inputD es el campo en Bs que se edita e inputBS el de dólares.
+  const resultado =
+    tipo === "dolar" ? valorDesde * tipoCambio : valorDesde / tipoCambio;
+
+  inputBS.value = resultado.toFixed(2);
+
+  // Se avisa con "input" (no con "keyup") para que el campo destino se
+  // revalide. Con "keyup" su listener de conversión se disparaba otra vez y
+  // entraba en recursión ("Maximum call stack size exceeded").
+  inputBS.dispatchEvent(new Event("input", { bubbles: true }));
 };
 
 export const initConversion = (form) => {
@@ -216,6 +228,10 @@ export const initConversion = (form) => {
 
   let inputDolares = form.querySelector(".precioDolares");
   let inputBolivares = form.querySelector(".precioBolivares");
+
+  // No todos los formularios traen ambos campos; sin esta guarda se lanzaba
+  // "Cannot read properties of null (reading 'addEventListener')".
+  if (!inputDolares || !inputBolivares) return;
 
   inputDolares.addEventListener("keyup", () =>
     conversion(inputDolares, inputBolivares, "dolar"),

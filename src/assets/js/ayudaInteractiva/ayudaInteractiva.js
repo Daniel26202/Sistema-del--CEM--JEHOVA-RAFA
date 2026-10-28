@@ -1,7 +1,9 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    document.getElementById("btnayudaInicioSesion").addEventListener("click", function() {
+    // El botón no existe en todas las vistas; sin la guarda se lanzaba
+    // "Cannot read properties of null (reading 'addEventListener')".
+    document.getElementById("btnayudaInicioSesion")?.addEventListener("click", function() {
       introJs().setOptions({
         steps: [
           {

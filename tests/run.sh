@@ -67,6 +67,10 @@ echo "▸ Tasa de cambio del día"
 $PHP tests/tasa_cambio_test.php || fallos=$((fallos + 1))
 
 echo ""
+echo "▸ Formato de moneda (USD / BS)"
+$PHP tests/formato_moneda_test.php || fallos=$((fallos + 1))
+
+echo ""
 echo "▸ Integración frontend ↔ backend"
 $PHP tests/factura_integracion_test.php || fallos=$((fallos + 1))
 

@@ -1,4 +1,5 @@
-document.getElementById('btnayudaFactura').addEventListener("click", function() {
+const btnAyudaFactura = document.getElementById('btnayudaFactura');
+btnAyudaFactura?.addEventListener("click", function() {
     introJs().setOptions({
       steps: [
         {
@@ -55,7 +56,9 @@ document.getElementById('btnayudaFactura').addEventListener("click", function() 
   });
 
 
-  document.getElementById('btnayudaFacturaIDCita').addEventListener("click", function() {
+  // Este botón solo existe cuando la factura viene de una cita; en la vista
+  // normal no está y sin la guarda se lanzaba un TypeError al cargar.
+  document.getElementById('btnayudaFacturaIDCita')?.addEventListener("click", function() {
     introJs().setOptions({
       steps: [
         {

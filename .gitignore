@@ -33,3 +33,11 @@ src/config/backups/*.zip
 src/config/backups/*.rar
 
 
+# Ignorar carpetas y archivos de agentes
+.agents/*
+.opencode/*
+skills-lock.json
+AGENTS.md
+
+#test
+.phpunit.cache/*

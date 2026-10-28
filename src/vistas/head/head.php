@@ -48,6 +48,9 @@ if (!empty($parametro)) {
 	<!-- Asistente IA: componentes reutilizados del chat + botón flotante y modal -->
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/chat.css">
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/chatModal.css">
+	<!-- Fundación de diseño: tokens, responsividad total y controles indestructibles.
+	     SIEMPRE la última: sus reglas ganan sobre el resto del sistema. -->
+	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/base.css">
 
 </head>
 

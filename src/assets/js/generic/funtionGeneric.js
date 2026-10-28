@@ -207,7 +207,7 @@ export const alertError = (title, text) => {
 export const alertSuccess = (text) => {
   Swal.fire({
     icon: "success",
-    title: "Exito",
+    title: "Éxito",
     text: text,
     customClass: {
       popup: "switAlert",

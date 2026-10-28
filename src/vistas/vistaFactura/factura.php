@@ -157,6 +157,9 @@ $idHospitalizacion = isset($_GET['idH']) ? preg_replace('/[^0-9]/', '', (string)
                         <label class="mb-0">BS</label>
                         <input type="text" style="margin-left: -1px; padding-left: 6px;"
                             class=" w-25 input-buscar text-center" id="totalFactura" disabled>
+                        <!-- Equivalente en divisa del total: el cajero ve ambos
+                             importes sin tener que hacer la conversión mental. -->
+                        <span id="totalFacturaDivisa" class="fw-bolder ms-2"></span>
                         <input type="hidden" id="inputTotalCita" value="0">
                     </div>
                 </div>

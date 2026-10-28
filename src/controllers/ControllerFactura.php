@@ -441,12 +441,15 @@ function mostrarPDF($parametro)
 	require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
 }
 
-function mostrarPDF2()
+function mostrarPDF2($parametro)
 {
-	require_once './src/vistas/vistaFactura/vistaFacturaPdf2.php';
+	// Vista duplicada que ya no corresponde a un flujo vivo: se delega a la
+	// vista canónica para que el hash de la factura llegue al modelo correcto.
+	mostrarPDF($parametro);
 }
 
-function mostrarPDF3()
+function mostrarPDF3($parametro)
 {
-	require_once './src/vistas/vistaFactura/vistaFacturaPdf3.php';
+	// Igual que mostrarPDF2: ruta heredada que debe usar el flujo vigente.
+	mostrarPDF($parametro);
 }

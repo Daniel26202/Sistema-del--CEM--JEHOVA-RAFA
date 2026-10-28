@@ -61,8 +61,28 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
         <div class="text-center mb-4">
             <small class="text-bg-light-custom text-uppercase fw-medium" style="font-size: 0.7rem; letter-spacing: 0.5px;">
                 <?php
-                setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'Spanish_Spain');
-                echo strtotime("%A, %d DE %B, %Y");
+                // Fecha local en español: IntlDateFormatter (ICU) con
+                // respaldo manual por si la extensión/locale no existe.
+                if (class_exists('IntlDateFormatter')) {
+                    try {
+                        $fmtFecha = new IntlDateFormatter(
+                            'es_ES',
+                            IntlDateFormatter::FULL,
+                            IntlDateFormatter::NONE,
+                            date_default_timezone_get(),
+                            IntlDateFormatter::GREGORIAN,
+                            "EEEE, d 'de' MMMM 'de' y"
+                        );
+                        echo htmlspecialchars($fmtFecha->format(new DateTimeImmutable('now')) ?? '');
+                    } catch (Throwable $e) {
+                        echo '';
+                    }
+                } else {
+                    $dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+                    $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+                    $t = time();
+                    echo htmlspecialchars($dias[(int) date('w', $t)] . ', ' . date('j', $t) . ' de ' . $meses[(int) date('n', $t) - 1] . ' de ' . date('Y', $t));
+                }
                 ?>
             </small>
         </div>
@@ -149,10 +169,8 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                             </div>
 
                             <!-- Google reCAPTCHA -->
-                            <div class="d-flex justify-content-center ">
-
-                                <div class="mt-2 mb-1 g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1" style="margin-left: 15%; transform: scale(0.95); transform-origin: center; transform: scale(0.88);"></div>
-
+                            <div class="d-flex justify-content-center">
+                                <div class="mt-2 mb-1 g-recaptcha" data-sitekey="6Le_rOgqAAAAANVWXtJV-5eOd2CEzOFgzphoNkd1"></div>
                             </div>
 
                             <!-- Botón de Ingresar con Bootstrap -->

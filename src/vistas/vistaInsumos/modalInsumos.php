@@ -1,7 +1,7 @@
 <!-- Modal Mostrar Información -->
 <div class="modal fade" id="modal-exampleMostrar" tabindex="-1" aria-labelledby="exampleModalLabelMostrar" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content tamaño-modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-insumos-dialog">
+        <div class="modal-content tamaño-modal modal-insumos-content">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelMostrar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-info-circle-fill azul mb-1 me-2" viewBox="0 0 16 16">
@@ -13,7 +13,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="modalInfo">
+                <form id="modalInfo" class="modal-fields-grid">
 
                     <!-- Nombre -->
                     <div class="info-group mb-3">
@@ -149,13 +149,13 @@
 <!--MODAL REGISTRAR-->
 <!-- Modal Agregar y editar Insumos -->
 <div class="modal fade" id="exampleModalagregarInsumos" tabindex="-1" aria-labelledby="modalLabelInsumos" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content tamaño-modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-insumos-dialog">
+        <div class="modal-content tamaño-modal modal-insumos-content">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="modalLabelInsumos">Agregar Insumos</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class="form-validable" id="modalAgregarInsumos" enctype="multipart/form-data">
+            <form class="form-validable modal-insumos-form" id="modalAgregarInsumos" enctype="multipart/form-data">
 
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
                 <input type="hidden" name="idInsumoOculto" id="idInsumoOculto">
@@ -168,7 +168,7 @@
                     <div id="contenedor-img" class="mb-2"></div>
 
                     <div id="contenedor-img-editar" class="d-none mb-2">
-                        <img style="height: 200px;width: 100%;" id="imgEditar" src="">
+                        <img id="imgEditar" src="">
                     </div>
                     <!-- Imagen -->
                     <label class="label-custom">Imagen</label>

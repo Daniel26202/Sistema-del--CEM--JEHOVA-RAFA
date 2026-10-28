@@ -1,7 +1,38 @@
 import { valorDolar } from "./js/generic/coversion.js";
 
+const acomodarCamposDeModales = (contenedor = document) => {
+  const etiquetas = contenedor.querySelectorAll(".modal label.label-custom");
+  const gruposPorContenedor = new Map();
+
+  etiquetas.forEach((etiqueta) => {
+    const campo = etiqueta.nextElementSibling;
+    if (!campo?.classList.contains("campo-custom")) return;
+
+    const grupos = gruposPorContenedor.get(etiqueta.parentElement) ?? [];
+    grupos.push({ etiqueta, campo });
+    gruposPorContenedor.set(etiqueta.parentElement, grupos);
+  });
+
+  gruposPorContenedor.forEach((grupos, padre) => {
+    if (grupos.length < 2 || padre.classList.contains("row")) return;
+
+    grupos.forEach(({ etiqueta, campo }) => {
+      const grupo = document.createElement("div");
+      grupo.className = "modal-form-field";
+      padre.insertBefore(grupo, etiqueta);
+      grupo.append(etiqueta, campo);
+    });
+
+    padre.classList.add("modal-form-grid");
+  });
+};
 
 document.addEventListener("DOMContentLoaded", () => {
+  acomodarCamposDeModales();
+  document.addEventListener("show.bs.modal", (event) => {
+    if (event.target instanceof Element) acomodarCamposDeModales(event.target);
+  });
+
   const root = document.documentElement;
   const themeToggleCheckbox = document.getElementById("themeToggleCheckbox");
   const textModo = document.getElementById("text-modo");
@@ -31,7 +62,18 @@ document.addEventListener("DOMContentLoaded", () => {
       window.dispatchEvent(new Event("themeChanged"));
     });
   }
-  $(".loader-wrapper").fadeOut("slow");
+  // El login no carga jQuery (solo el footer de las vistas internas lo hace),
+  // así que aquí no se puede usar $: lanzaba "$ is not defined" en consola.
+  const loader = document.querySelector(".loader-wrapper");
+  if (loader) {
+    if (window.jQuery) {
+      window.jQuery(loader).fadeOut("slow");
+    } else {
+      loader.style.transition = "opacity .3s";
+      loader.style.opacity = "0";
+      setTimeout(() => loader.remove(), 300);
+    }
+  }
 
 
   //Activar la funcion para actualizar el valor del dolar
