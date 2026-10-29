@@ -237,8 +237,9 @@ function guardarInsumo()
 		$tiempo = new DateTime();
 		$fecha = date("Y-m-d");
 		$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . basename($_FILES['imagen']['name']);
+		$rutaImagen = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen;
 
-		if (!move_uploaded_file($_FILES['imagen']['tmp_name'], "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen)) {
+		if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaImagen)) {
 			throw new InvalidArgumentException('No se pudo guardar la imagen.');
 		}
 		$modeloInsumo->setImagen($imagen);
@@ -253,6 +254,9 @@ function guardarInsumo()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $insercion]);
 		} else {
+			if (file_exists($rutaImagen)) {
+				unlink($rutaImagen);
+			}
 			if (is_string($insercion)) {
 				http_response_code(409);
 				echo json_encode(['ok' => false, 'error' => $insercion]);
@@ -377,7 +381,7 @@ function editar()
 
 		// 1. Verificar si se subió una imagen nueva
 		$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
-
+		$rutaImagen = null;
 		// 2. Si hay imagen nueva, validarla ANTES de tocar el disco
 		if ($hayNuevaImagen) {
 			$modeloInsumo->validarImagen($_FILES['imagen']);
@@ -396,8 +400,8 @@ function editar()
 			$tiempo = new DateTime();
 			$fecha = date("Y-m-d");
 			$nombreImagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . basename($_FILES['imagen']['name']);
-
-			if (!move_uploaded_file($_FILES['imagen']['tmp_name'], "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $nombreImagen)) {
+			$rutaImagen = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $nombreImagen;
+			if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaImagen)) {
 				throw new InvalidArgumentException('No se pudo guardar la imagen.');
 			}
 			$modeloInsumo->setImagen($nombreImagen);
@@ -416,6 +420,9 @@ function editar()
 
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito', 'data' => $edicion]);
 		} else {
+			if ($rutaImagen !== null && file_exists($rutaImagen)) { 
+				unlink($rutaImagen);
+			}
 			if (is_string($edicion)) {
 				http_response_code(409);
 				echo json_encode(['ok' => false, 'error' => $edicion]);
