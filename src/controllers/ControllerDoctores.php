@@ -435,7 +435,13 @@ function agregarDoctor()
         $modeloBitacora = new ModeloBitacora();
 
         $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
-        $imagen         = isset($_FILES['imagen']['name']) ? $_FILES['imagen']['name'] : false;
+
+        // validar la imagen (si viene una)
+        $hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+        if ($hayImagen) {
+            $modeloDoctores->validarImagen($_FILES['imagen']);
+        }
+
 
         $modeloDoctores->setCedula($_POST["cedula"]);
         $modeloDoctores->setNombre($_POST["nombre"]);
@@ -443,13 +449,16 @@ function agregarDoctor()
         $modeloDoctores->setTelefono($_POST["telefono"]);
         $modeloDoctores->setEmail($_POST['correo']);
         $modeloDoctores->setNacionalidad($_POST['nacionalidad']);
-        $modeloDoctores->setImagen($imagen);
-        $modeloDoctores->setImagenTemporal($_FILES['imagen']['tmp_name']);
+        $modeloDoctores->setImagenTemporal($_FILES['imagen']['tmp_name'] ?? '');
         $modeloDoctores->setIdEspecialidad(unhashId($_POST["id_especialidad"]));
         $modeloDoctores->setHorarios(construirHorarios($_POST));
         $modeloDoctores->setIdRol(unhashId($_POST['id_rol']));
         $modeloDoctores->setUsuario($_POST["usuario"]);
         $modeloDoctores->setPassword($passwordEncrip);
+        
+        // con todo validado, se procesa la imagen
+        $imagen = $hayImagen ? basename($_FILES['imagen']['name']) : false;
+        $modeloDoctores->setImagen($imagen);
 
         $insercion = $modeloDoctores->insertarDoctor($idUsuario);
 
@@ -677,7 +686,7 @@ function eliminarEspecialidad()
         $modeloBitacora = new ModeloBitacora();
 
         $modeloDoctores->setIdEspecialidad(unhashId($id));
-        $eliminacion = $modeloDoctores->EspecialidadEliminar($idUsuario,$estado);
+        $eliminacion = $modeloDoctores->EspecialidadEliminar($idUsuario, $estado);
 
         if (is_array($eliminacion) && $eliminacion[0] === "exito") {
             $modeloBitacora->setId_usuario($idUsuario);
@@ -692,7 +701,7 @@ function eliminarEspecialidad()
             } else {
                 http_response_code(409);
                 error_log("Error en eliminarEspecialidad: " . print_r($eliminacion, true));
-                echo json_encode(['ok' => false, 'error' => 'Error al '.$text_error.' la especialidad.']);
+                echo json_encode(['ok' => false, 'error' => 'Error al ' . $text_error . ' la especialidad.']);
                 exit;
             }
             exit;

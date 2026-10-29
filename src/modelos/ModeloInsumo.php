@@ -168,7 +168,7 @@ class ModeloInsumo extends ModelBase
 	}
 
 	//
-		public function papelera($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_insumo', $ordenDir = 'DESC')
+	public function papelera($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_insumo', $ordenDir = 'DESC')
 	{
 		try {
 			// El filtro va en el WHERE (antes del GROUP BY) y usa columnas reales:
@@ -195,7 +195,7 @@ class ModeloInsumo extends ModelBase
 		}
 	}
 
-		public function contarTotal($buscar = '')
+	public function contarTotal($buscar = '')
 	{
 		try {
 			$data = [];
@@ -329,11 +329,6 @@ class ModeloInsumo extends ModelBase
 			$imagenAntigua = $datos["imagen"];
 
 			if ($imagenNueva != null) {
-				// SI HAY IMAGEN NUEVA: Borrar la vieja y actualizar campo
-				$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagenAntigua;
-				if (!empty($imagenAntigua) && file_exists($rutaImagenAntigua)) {
-					unlink($rutaImagenAntigua);
-				}
 
 				$sql = "UPDATE insumo SET imagen = :imagen, nombre = :nombre, descripcion = :descripcion, 
                     stockMinimo = :stockMinimo, marca = :marca, medida = :medida WHERE id_insumo = :id";
@@ -361,6 +356,12 @@ class ModeloInsumo extends ModelBase
 			$this->setSQL($sql);
 			$this->update($data, $this->getIdInsumo());
 
+			// SI HAY IMAGEN NUEVA: Borrar la vieja y actualizar campo
+			$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagenAntigua;
+			if (!empty($imagenAntigua) && file_exists($rutaImagenAntigua)) {
+				unlink($rutaImagenAntigua);
+			}
+
 			return ["exito", $imagenNueva];
 		} catch (\Exception $e) {
 			return $e->getMessage();
@@ -369,7 +370,7 @@ class ModeloInsumo extends ModelBase
 
 
 
-		private function vencer()
+	private function vencer()
 	{
 		// El stock disponible ya se calcula en vivo con la vista view_resumen_insumos
 		// (suma de lotes activos y no vencidos). No existe una tabla física "inventario"

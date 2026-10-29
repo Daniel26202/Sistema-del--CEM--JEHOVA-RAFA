@@ -249,11 +249,16 @@ function editarUsuario()
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();
 
+        $hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+        if ($hayImagen) {
+            $modeloUsuarios->validarImagen($_FILES['imagen']);
+        }
+
         $modeloUsuarios->setIdUsuario(unhashId($_POST["id_usuario"]));
         $modeloUsuarios->setUsuario($_POST["usuario"]);
         $modeloUsuarios->setUsuarioRegistrado($_POST['usuarioRegistrado']);
-        $modeloUsuarios->setImagen($_FILES['imagen']["name"]);
-        $modeloUsuarios->setImagenTemporal($_FILES['imagen']['tmp_name']);
+        $modeloUsuarios->setImagenTemporal($_FILES['imagen']['tmp_name'] ?? '');
+        $modeloUsuarios->setImagen($hayImagen ? basename($_FILES['imagen']['name']) : null);
 
         $edicion = $modeloUsuarios->editarUsuario($idUsuario);
 
@@ -361,11 +366,16 @@ function registrarAdmin()
         // Generamos la contraseña encriptada de la contraseña ingresada
         $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
+        $hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+        if ($hayImagen) {
+            $modeloUsuarios->validarImagen($_FILES['imagen']);
+        }
+
         $modeloUsuarios->setUsuario($_POST["usuario"]);
         $modeloUsuarios->setPassword($passwordEncrip);
         $modeloUsuarios->setCorreo($_POST["correo"]);
         $modeloUsuarios->setIdRol(unhashId($_POST["id_rol"]));
-        $modeloUsuarios->setImagen($_FILES['imagen']);
+        $modeloUsuarios->setImagen($_FILES['imagen'] ?? null);
 
         $id_usuario = $modeloUsuarios->agregarUsuario($idUsuario);
 
@@ -428,10 +438,15 @@ function editarAdministrador()
         $modeloUsuarios = new ModeloUsuarios();
         $modeloBitacora = new ModeloBitacora();
 
+        $hayImagen = isset($_FILES['imagenUsuario']) && $_FILES['imagenUsuario']['error'] !== UPLOAD_ERR_NO_FILE;
+        if ($hayImagen) {
+            $modeloUsuarios->validarImagen($_FILES['imagenUsuario']);
+        }
+
         $modeloUsuarios->setIdUsuario(unhashId($_POST["id_usuario"]));
         $modeloUsuarios->setUsuario($_POST["usuario"]);
-        $modeloUsuarios->setImagen($_FILES['imagenUsuario']["name"]);
-        $modeloUsuarios->setImagenTemporal($_FILES['imagenUsuario']['tmp_name']);
+        $modeloUsuarios->setImagenTemporal($_FILES['imagenUsuario']['tmp_name'] ?? '');
+        $modeloUsuarios->setImagen($hayImagen ? basename($_FILES['imagenUsuario']['name']) : null);
 
         $id_usuario = $modeloUsuarios->editarUsuario($idUsuario);
 
@@ -444,15 +459,15 @@ function editarAdministrador()
             echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
         } else {
             if (is_string($id_usuario)) {
-				http_response_code(409);
-				echo json_encode(['ok' => false, 'error' => $id_usuario]);
-			} else {
-				http_response_code(409);
-				error_log("Error en editarAdministrador: " . print_r($id_usuario, true));
-				echo json_encode(['ok' => false, 'error' => 'Error al editar el administrador.']);
-				exit;
-			}
-			exit;
+                http_response_code(409);
+                echo json_encode(['ok' => false, 'error' => $id_usuario]);
+            } else {
+                http_response_code(409);
+                error_log("Error en editarAdministrador: " . print_r($id_usuario, true));
+                echo json_encode(['ok' => false, 'error' => 'Error al editar el administrador.']);
+                exit;
+            }
+            exit;
         }
     } catch (InvalidArgumentException $e) {
         http_response_code(409);

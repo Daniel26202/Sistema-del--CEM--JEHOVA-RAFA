@@ -11,8 +11,8 @@ class ModeloDoctores extends ModelBase
 {
     private $id_doctor, $cedula, $cedulaRegistrada, $nombre, $apellido, $telefono, $email, $nacionalidad, $idEspecialidad, $horarios, $imagen, $especialidad, $imagenTemporal, $usuario, $id_usuario, $id_rol, $password;
 
-    private $columnasPermitidasDoctores = ['id_personal','cedula', 'nombre_d', 'apellido', 'telefono', 'correo', 'nombre'];
-    private $columnasPermitidasEspec = ['id_especialidad','nombre'];
+    private $columnasPermitidasDoctores = ['id_personal', 'cedula', 'nombre_d', 'apellido', 'telefono', 'correo', 'nombre'];
+    private $columnasPermitidasEspec = ['id_especialidad', 'nombre'];
     private $ordenesPermitidos = ['ASC', 'DESC'];
 
     public function __construct($dbSystem = true)
@@ -94,7 +94,7 @@ class ModeloDoctores extends ModelBase
 
     public function select($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_personal', $ordenDir = 'DESC')
     {
-        
+
         try {
             $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
             $data = [];
@@ -118,7 +118,8 @@ class ModeloDoctores extends ModelBase
     }
 
 
-    public function selectDoctores() {
+    public function selectDoctores()
+    {
         $sql = 'SELECT u.id_usuario,u.id_rol,u.usuario,u.correo,u.password,p.id_personal,p.nacionalidad,p.cedula, p.nombre as nombre_d,p.apellido, p.telefono,p.id_especialidad, es.nombre FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad INNER JOIN segurity.rol r ON r.id_rol = u.id_rol WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
         $this->setSQL($sql);
         return $this->read();
@@ -411,8 +412,10 @@ class ModeloDoctores extends ModelBase
                 continue;
             }
 
-            if ($existentes[$idHorario]['entrada'] !== $horario['entrada']
-                || $existentes[$idHorario]['salida'] !== $horario['salida']) {
+            if (
+                $existentes[$idHorario]['entrada'] !== $horario['entrada']
+                || $existentes[$idHorario]['salida'] !== $horario['salida']
+            ) {
                 $sql = "UPDATE horarioydoctor SET horaDeEntrada=:horarioDeEntrada, horaDeSalida=:horaDeSalida WHERE id_personal = :id_personal AND id_horario = :id_horario";
                 $this->setSQL($sql);
                 $this->updateHorario([
@@ -452,7 +455,7 @@ class ModeloDoctores extends ModelBase
         return $hora;
     }
 
-    private function eliminacionLogicaDB($estado ='DES')
+    private function eliminacionLogicaDB($estado = 'DES')
     {
         try {
             $data = ['id_usuario' => $this->getIdUsuario()];
@@ -463,7 +466,7 @@ class ModeloDoctores extends ModelBase
             }
             $sql = 'UPDATE segurity.usuario SET estado =:estado WHERE id_usuario = :id';
             $this->setSQL($sql);
-            $this->update(['estado'=>$estado],$data['id_usuario']);
+            $this->update(['estado' => $estado], $data['id_usuario']);
             return ["exito"];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -512,7 +515,7 @@ class ModeloDoctores extends ModelBase
             }
             $sql = 'UPDATE especialidad SET estado =:estado WHERE id_especialidad = :id';
             $this->setSQL($sql);
-            $this->update(['estado'=>$estado],$data['id_especialidad']);
+            $this->update(['estado' => $estado], $data['id_especialidad']);
             return ["exito", $data];
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -588,7 +591,7 @@ class ModeloDoctores extends ModelBase
         return $this->updateDoctorDB();
     }
 
-    public function eliminacionLogica($idUsuario = null,$estado = 'DES')
+    public function eliminacionLogica($idUsuario = null, $estado = 'DES')
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->id_usuario], ' al eliminar un doctor');
@@ -609,11 +612,33 @@ class ModeloDoctores extends ModelBase
         return $this->especialidadRegistrarDB();
     }
 
-    public function EspecialidadEliminar($idUsuario = null,$estado ='DES')
+    public function EspecialidadEliminar($idUsuario = null, $estado = 'DES')
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([$this->idEspecialidad], ' al eliminar una especialidad');
         return $this->especialidadEliminarDB($estado);
+    }
+
+    public function validarImagen($imagen): void
+    {
+        if ($imagen['error'] !== UPLOAD_ERR_OK) {
+            throw new \InvalidArgumentException('Error al subir la imagen.');
+        }
+
+        $extensionesPermitidas = ['jpg', 'jpeg', 'png'];
+        $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+        if (!in_array($extension, $extensionesPermitidas)) {
+            throw new \InvalidArgumentException('Solo se permiten imágenes JPG o PNG.');
+        }
+
+        if ($imagen['size'] > 5 * 1024 * 1024) {
+            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+        }
+
+        $infoImagen = @getimagesize($imagen['tmp_name']);
+        if ($infoImagen === false || !in_array($infoImagen['mime'], ['image/jpeg', 'image/png'])) {
+            throw new \InvalidArgumentException('El archivo no es una imagen válida.');
+        }
     }
 
     // ── Getters & Setters ──────────────────────────────────────
@@ -689,6 +714,7 @@ class ModeloDoctores extends ModelBase
     {
         return $this->password;
     }
+
 
     public function setIdDoctor($id_doctor)
     {
@@ -805,8 +831,14 @@ class ModeloDoctores extends ModelBase
     {
         $this->imagenTemporal = $imagenTemporal;
     }
+
     public function setImagen($imagen)
     {
+        if ($imagen === null) {
+            $this->imagen = null;
+            return;
+        }
+        // viene validado por validarImagen(); 
         $this->imagen = $imagen;
     }
 

@@ -10,7 +10,7 @@ class ModeloUsuarios extends ModelBase
 
     private $id_usuario, $usuario, $password, $correo, $imagen, $imagenTemporal, $id_rol, $usuarioRegistrado, $token_inicio_sesion;
 
-    private $columnasPermitidas = ['id_usuario','cedula', 'nombre', 'apellido', 'telefono', 'correo', 'user'];
+    private $columnasPermitidas = ['id_usuario', 'cedula', 'nombre', 'apellido', 'telefono', 'correo', 'user'];
     private $ordenesPermitidos = ['ASC', 'DESC'];
 
     public function __construct($dbSystem = false)
@@ -88,8 +88,7 @@ class ModeloUsuarios extends ModelBase
 
     public function contarTotalUsuariosBlackList($buscar = '')
     {
-        $data = [
-        ];
+        $data = [];
         $sql = "SELECT COUNT(*) as total  FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.estado= 'BLOQUED' ";
 
         if (!empty($buscar)) {
@@ -298,7 +297,7 @@ class ModeloUsuarios extends ModelBase
                     ];
                     $id_usuario = $this->create($data);
 
-                    $imagen = $id_usuario . "_" . $imagenU['name'];
+                    $imagen = $id_usuario . "_" . basename($imagenU['name']);
 
                     $imagen_temporal = $imagenU['tmp_name'];
                     move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $imagen);
@@ -406,6 +405,29 @@ class ModeloUsuarios extends ModelBase
 
 
 
+    public function validarImagen($imagen): void
+    {
+        if ($imagen['error'] !== UPLOAD_ERR_OK) {
+            throw new \InvalidArgumentException('Error al subir la imagen.');
+        }
+
+        $extensionesPermitidas = ['jpg', 'jpeg', 'png'];
+        $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+        if (!in_array($extension, $extensionesPermitidas)) {
+            throw new \InvalidArgumentException('Solo se permiten imágenes JPG o PNG.');
+        }
+
+        if ($imagen['size'] > 5 * 1024 * 1024) {
+            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+        }
+
+        $infoImagen = @getimagesize($imagen['tmp_name']);
+        if ($infoImagen === false || !in_array($infoImagen['mime'], ['image/jpeg', 'image/png'])) {
+            throw new \InvalidArgumentException('El archivo no es una imagen válida.');
+        }
+    }
+
+
     // GETTERS Y SETTERS
     public function getIdUsuario()
     {
@@ -473,27 +495,14 @@ class ModeloUsuarios extends ModelBase
         $this->imagenTemporal = $imagenT;
     }
 
+
     public function setImagen($imagen)
     {
-        // Validar que el archivo se haya subido sin errores
-        // if ($imagen['error'] !== UPLOAD_ERR_OK) {
-        //     throw new \InvalidArgumentException('Error al subir la imagen.');
-        // }
-
-        // // Validar extensión
-        // $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'gif'];
-        // $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
-
-        // if (!in_array($extension, $extensionesPermitidas)) {
-        //     throw new \InvalidArgumentException('Solo se permiten imágenes JPG, PNG o GIF.');
-        // }
-
-        // // Validar tamaño (ejemplo: máximo 5 MB)
-        // if ($imagen['size'] > 5 * 1024 * 1024) {
-        //     throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-        // }
-
-        // Si todo está bien, guardamos el nombre temporal para moverlo después
+        if ($imagen === null) {
+            $this->imagen = null;
+            return;
+        }
+        // viene validado por validarImagen()
         $this->imagen = $imagen;
     }
 
