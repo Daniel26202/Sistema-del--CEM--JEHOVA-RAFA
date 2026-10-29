@@ -17,12 +17,18 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Clientes";
 const modalAgregarCliente = new bootstrap.Modal(
   document.getElementById("modalCliente"),
 );
+const modalEditarClienteEl = document.getElementById("modalEditarCliente");
+const modalEditarCliente = modalEditarClienteEl
+  ? new bootstrap.Modal(modalEditarClienteEl)
+  : null;
 const modalAgregar = document.getElementById("modalAgregarCliente");
+const formEditarCliente = document.getElementById("formEditarCliente");
 const modalInfo = new bootstrap.Modal(document.getElementById("info-cliente"));
 
 const selectGenero = document.getElementById("selectGenero");
 const exampleModalLabel = document.getElementById("exampleModalLabelCliente");
 const botonModal = document.getElementById("botonModal");
+const botonModalEditar = document.getElementById("botonModalEditarCliente");
 const btnOpenModal = document.getElementById("btnOpenModal");
 const inputs = document.querySelectorAll(".inputs");
 const cedulaRegistrada = document.getElementById("cedulaOculta");
@@ -69,7 +75,7 @@ const readCustomer = async () => {
           return `<button class="${
             urlActual.includes("papelera") ? "d-none" : ""
           } btn btn-tabla mb-1 btn-js editar botonesEdi btnModalEditarPaciente btn-dt-tabla"
-                                data-bs-toggle="modal" data-bs-target="#modalCliente" data-index="${row.id_cliente}">
+                                data-bs-toggle="modal" data-bs-target="#modalEditarCliente" data-index="${row.id_cliente}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -143,34 +149,76 @@ const readCustomer = async () => {
         });
       });
 
-      //llamar las funcion de eliminar
+      //llamar la funcion de editar
       document.querySelectorAll(".botonesEdi").forEach((btn) => {
         btn.addEventListener("click", function () {
           let customer = searchObectCustomer(btn.getAttribute("data-index"));
-          //objetos con todos los parametros de la funcion
-          const parametros = {
-            labelModal: exampleModalLabel,
-            textLabelModal: "Modificar Cliente",
-            form: modalAgregar,
-            modal: modalAgregar.parentElement.parentElement.parentElement,
-            btnModal: botonModal,
-            btnTextModal: "Modificar",
-            data: {
-              nacionalidad: customer.nacionalidad,
-              cedula: customer.cedula,
-              nombre: customer.nombre,
-              apellido: customer.apellido,
-              telefono: customer.telefono,
-              direccion: customer.direccion,
-              fn: customer.fn,
-              genero: customer.genero,
-              id: customer.id_cliente,
-            },
-            inputs: inputs,
-            cedulaOculta: cedulaRegistrada,
-            idOculto: id_cliente,
-          };
-          showDataModal(parametros);
+          if (!customer) return;
+
+          // Si existe el modal dedicado de edición de cliente
+          if (formEditarCliente) {
+            const idOculto = document.getElementById("id_cliente_editar");
+            const cedulaOculta = document.getElementById("cedulaRegistradaClienteEditar");
+            const nacInput = document.getElementById("nacionalidadClienteEditar");
+            const cedInput = document.getElementById("cedulaClienteEditar");
+            const nomInput = document.getElementById("nombreClienteEditar");
+            const apeInput = document.getElementById("apellidoClienteEditar");
+            const telInput = document.getElementById("telefonoClienteEditar");
+            const dirInput = document.getElementById("direccionClienteEditar");
+            const fnInput = document.getElementById("feNacimientoClienteEditar");
+            const genInput = document.getElementById("generoClienteEditar");
+
+            if (idOculto) idOculto.value = customer.id_cliente;
+            if (cedulaOculta) cedulaOculta.value = customer.cedula;
+            if (nacInput) nacInput.value = customer.nacionalidad || "V";
+            if (cedInput) cedInput.value = customer.cedula;
+            if (nomInput) nomInput.value = customer.nombre;
+            if (apeInput) apeInput.value = customer.apellido;
+            if (telInput) telInput.value = customer.telefono;
+            if (dirInput) dirInput.value = customer.direccion;
+            if (fnInput) fnInput.value = customer.fn;
+            if (genInput) genInput.value = customer.genero;
+
+            // Limpiar validaciones previas en el formulario de edición
+            formEditarCliente.querySelectorAll(".input-validar").forEach((input) => {
+              input.parentElement.classList.remove("invalido");
+              input.parentElement.classList.add("valido");
+              const campoCustom = input.closest(".campo-custom");
+              const check = campoCustom?.querySelector(".check");
+              const error = campoCustom?.querySelector(".error");
+              const pError = campoCustom?.querySelector("p");
+              if (check) check.classList.remove("d-none");
+              if (error) error.classList.add("d-none");
+              if (pError) pError.classList.add("d-none");
+            });
+          }
+
+          // Compatibilidad adicional con showDataModal si modalAgregar se utiliza
+          if (modalAgregar && exampleModalLabel) {
+            const parametros = {
+              labelModal: exampleModalLabel,
+              textLabelModal: "Modificar Cliente",
+              form: modalAgregar,
+              modal: modalAgregar.parentElement.parentElement.parentElement,
+              btnModal: botonModal,
+              btnTextModal: "Modificar",
+              data: {
+                nacionalidad: customer.nacionalidad,
+                cedula: customer.cedula,
+                nombre: customer.nombre,
+                apellido: customer.apellido,
+                telefono: customer.telefono,
+                direccion: customer.direccion,
+                fn: customer.fn,
+                genero: customer.genero,
+                id: customer.id_cliente,
+              },
+              inputs: inputs,
+              cedulaOculta: cedulaRegistrada,
+              idOculto: id_cliente,
+            };
+            showDataModal(parametros);
+          }
         });
       });
 
@@ -226,21 +274,23 @@ const createCustomer = async (form) => {
 
 //update
 const updateCustomers = async (form) => {
+  const currentBtn = form.querySelector('button[type="submit"]') || botonModalEditar || botonModal;
   try {
-    initLoaderButton(botonModal);
+    initLoaderButton(currentBtn);
     const data = new FormData(form);
     let result = await executePetition(url + "/setCliente", "POST", data);
     console.log(result);
 
     if (result.ok) {
       alertSuccess(result.message);
-      modalAgregarCliente.hide();
+      modalEditarCliente?.hide();
+      modalAgregarCliente?.hide();
       readCustomer();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
   } finally {
-    finallyLoaderButton(botonModal);
+    finallyLoaderButton(currentBtn);
   }
 };
 
@@ -291,10 +341,10 @@ modalAgregar.addEventListener("submit", function (e) {
   if (esValido) {
     if (modalAgregar.classList.contains("editar")) {
       console.log("Actualizar cliente");
-      updateCustomers(this, inputsBuenos);
+      updateCustomers(this);
     } else {
       console.log("Crear cliente");
-      createCustomer(this, inputsBuenos);
+      createCustomer(this);
     }
   } else {
     alertError(
@@ -303,3 +353,23 @@ modalAgregar.addEventListener("submit", function (e) {
     );
   }
 });
+
+// Validación y envío del modal dedicado de edición de cliente
+if (formEditarCliente) {
+  let verificarFormularioEditar = inicializarValidacionFormulario(formEditarCliente);
+
+  formEditarCliente.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let esValido = verificarFormularioEditar();
+
+    if (esValido) {
+      updateCustomers(this);
+    } else {
+      alertError(
+        "Error",
+        "Por favor verifique que todos los datos estén correctos.",
+      );
+    }
+  });
+}

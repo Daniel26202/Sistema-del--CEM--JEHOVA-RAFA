@@ -1,11 +1,11 @@
 <div class="modal fade" id="exampleModalCita" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
-        <div class="modal-content tamaño-modal">
+    <div class="modal-dialog modal-citas-dialog">
+        <div class="modal-content tamaño-modal modal-citas-content">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="modalTitleCita">Agendar Cita</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class=" form-validable" id="modalAgregarCita">
+            <form class="form-validable modal-citas-form" id="modalAgregarCita">
 
                 <div class="alert alert-warning d-none justify-content-between align-items-center mb-3" id="alerta-temporizador">
                     <span>⚠️ Asegure su cupo completando el formulario.</span>
@@ -260,13 +260,13 @@
 
 <!-- Modal Agregar-->
 <div class="modal fade" id="exampleModalagregarPaciente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
-        <div class="modal-content tamaño-modal">
+    <div class="modal-dialog modal-citas-dialog">
+        <div class="modal-content tamaño-modal modal-citas-content">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelPaciente">Registrar Paciente</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class=" form-validable" id="modalAgregar">
+            <form class="form-validable modal-citas-form" id="modalAgregar">
 
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 

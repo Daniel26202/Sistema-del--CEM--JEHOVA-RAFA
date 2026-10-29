@@ -1,13 +1,13 @@
 <!-- agregar contorl 2.0 -->
 
 <div class="modal fade" id="exampleModalAgregarControl" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
-        <div class="modal-content tamaño-modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-control-dialog">
+        <div class="modal-content tamaño-modal modal-control-content">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="modalTitleControl">Nuevo Control</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class=" form-validable" id="modalAgregarControl">
+            <form class="form-validable modal-control-form" id="modalAgregarControl">
 
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 

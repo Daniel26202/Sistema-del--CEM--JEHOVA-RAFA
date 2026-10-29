@@ -29,11 +29,18 @@ class CitaInsertarTest extends TestCase
 
     public function testInsertarCita()
     {
-        // Doctor 21 atiende los lunes de 10:00 a 12:00 (horarioydoctor)
+        // Doctor 21 atiende los lunes de 10:00 a 12:00 (horarioydoctor).
+        // La fecha NO puede estar fija: el modelo rechaza fechas del pasado y
+        // el test empezaba a fallar solo porque pasó el día. Se calcula el
+        // próximo lunes a partir de hoy.
+        $fecha = new DateTimeImmutable('today');
+        $diasHastaLunes = (8 - (int)$fecha->format('N')) % 7;
+        $lunes = $fecha->modify("+{$diasHastaLunes} day");
+
         $this->modelo->setIdServicioMedico(2);
         $this->modelo->setIdPaciente(25);
         $this->modelo->setIdDoctor(21);
-        $this->modelo->setFecha("2026-10-26");
+        $this->modelo->setFecha($lunes->format('Y-m-d'));
         $this->modelo->setHora("10:00");
         $this->modelo->setHoraSalida("11:00");
 

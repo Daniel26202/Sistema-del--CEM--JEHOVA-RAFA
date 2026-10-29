@@ -1,13 +1,12 @@
 <?php
 require_once 'vendor/autoload.php';
-require_once 'selenium/apiController.php';
-require_once 'selenium/user_config.php';
-
-require_once 'selenium/comun.php';          
-require_once 'selenium/loginSelenium.php';  
-require_once 'selenium/PacientesSelenium.php';
-require_once 'selenium/CitasSelenium.php';  
-require_once 'selenium/facturacionSelenium.php'; 
+require_once 'tests/caja_negra/apiController.php';
+require_once 'tests/caja_negra/user_config.php';
+require_once 'tests/caja_negra/comun.php';
+require_once 'tests/caja_negra/loginSelenium.php';
+require_once 'tests/caja_negra/PacientesSelenium.php';
+require_once 'tests/caja_negra/CitasSelenium.php';
+require_once 'tests/caja_negra/facturacionSelenium.php';
 /*
     php scriptTest.php [test1 test2 ...]
     ❌

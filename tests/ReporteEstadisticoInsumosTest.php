@@ -25,11 +25,15 @@ class ReporteEstadisticoInsumosTest extends TestCase
         $resultado =  $consulta->fetchAll();
         echo "CONSULTA DE INSUMOS CON SALIDA DEL INVENTARIO " . (is_array($resultado) ? "OK" : "FAIL");
 
-        // La vista insumos_estadisticas solo se alimenta con detalles de factura de
-        // tipo Insumo; actualmente no existen, por lo que la consulta debe ser válida
-        // pero retornar un conjunto vacío.
+        // La vista solo se alimenta con detalles de factura de tipo Insumo.
+        // No se exige que esté vacía: en una base con datos reales (o tras
+        // facturar insumos) tiene filas. Lo que se verifica es que la consulta
+        // funcione y devuelva las columnas de la vista.
         $this->assertIsArray($resultado, "La vista insumos_estadisticas debe poder consultarse");
-        $this->assertEmpty($resultado, "Actualmente no existen insumos con salida registrada en la BD");
+        foreach ($resultado as $fila) {
+            $this->assertArrayHasKey('nombre_insumo', $fila);
+            $this->assertArrayHasKey('total_usado', $fila);
+        }
     }
     
 }

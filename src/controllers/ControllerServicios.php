@@ -309,11 +309,8 @@ function editar()
 		$servicio = new ModeloServicios();
 		$bitacora = new ModeloBitacora();
 
-		//Quitar separadores de miles
-		$valor = str_replace('.', '', $_POST['precioD']);
-		//Cambiar coma decimal por punto
-		$valor = str_replace(',', '.', $valor);
-		$numero = (float)$valor;
+		// Acepta "10.00" (punto decimal del JS) y "1.160,00" (formato local).
+		$numero = parsearPrecio($_POST['precioD'] ?? '');
 
 		$servicio->setIdCategoria(unhashId($_POST['id_categoria']));
 		$servicio->setIdServicioMedico(unhashId($_POST['id_servicioMedico']));

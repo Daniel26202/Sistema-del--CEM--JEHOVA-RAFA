@@ -302,8 +302,9 @@ require_once './src/vistas/head/head.php';
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/jspdf.umd.min.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/html2canvas.min.js"></script>
-<script type=" text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/jquery-3.7.1.js"></script>
-<script type="text/javascript" src="<?= $urlBase ?>../src/assets/DataTable/datatables.js"></script>
+<!-- jQuery y DataTables ya se cargan en head/footer.php; aquí solo se
+     referenciaban con una ruta inexistente (src/assets/DataTable/...),
+     lo que generaba dos 404 en cada carga del panel. -->
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/dashboard.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/ayudaInteractiva/ayudaDashboard.js"></script>
 <?php

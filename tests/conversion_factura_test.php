@@ -51,14 +51,16 @@ function subtotalInsumoServidor(float $precioDivisa, int $cantidad, float $tasa)
 /** Lo que hace calcularTotal() del navegador. */
 function totalNavegador(array $serviciosDivisa, array $insumos, float $baseDivisa, float $tasa): float
 {
-    $suma = $baseDivisa;
+    // Réplica de f.js: redondeo POR LÍNEA (igual que el servidor), no al final.
+    $suma = round(round($baseDivisa, 2) * $tasa, 2);
     foreach ($serviciosDivisa as $p) {
-        $suma += (float)$p;
+        $suma += round((float)$p * $tasa, 2);
     }
     foreach ($insumos as $i) {
-        $suma += (float)$i['precio'] * (int)$i['cantidad'];
+        $unitario = round((float)$i['precio'] * $tasa, 2);
+        $suma += round($unitario * (int)$i['cantidad'], 2);
     }
-    return (float)number_format($suma * $tasa, 2, '.', '');
+    return round($suma, 2);
 }
 
 echo "\n=== Servicio: divisa -> bolivares ===\n";

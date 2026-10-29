@@ -5,6 +5,7 @@ use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloUsuarios;
 use App\modelos\ModeloDoctores;
+use App\modelos\ModeloSanetizarJSON;
 use App\config\Cifrado;
 
 

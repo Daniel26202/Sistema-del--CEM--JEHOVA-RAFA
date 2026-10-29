@@ -210,14 +210,12 @@ function guardarInsumo()
 		$modeloInsumo->validarImagen($_FILES['imagen']);
 
 		// 2. Procesar el precio
-		$valor = str_replace('.', '', $_POST['precioD']);   // quitar separador de miles
-		$valor = str_replace(',', '.', $valor);              // coma decimal -> punto
-		$numero = (float)$valor;
+		// Acepta "10.00" (punto decimal del JS) y "1.160,00" (formato local).
+		$numero = parsearPrecio($_POST['precioD']);
 		$iva = isset($_POST["iva"]) && $_POST["iva"] == 1 ? 1 : 0;
 
-		if ($iva === 1) {
-			$numero += $numero * (defined('TASA_IMPUESTO') ? (float)TASA_IMPUESTO : 0.16);
-		}
+		// El IVA se suma al facturar (ModeloFactura/f.js), no al crear el
+		// insumo: guardarlo aquí con IVA lo cobraba dos veces.
 
 		// 3. Validar TODOS los demás campos (aún no se ha tocado el disco)
 		$modeloInsumo->setNombre($_POST['nombre']);

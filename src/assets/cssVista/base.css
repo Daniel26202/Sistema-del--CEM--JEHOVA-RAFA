@@ -1,0 +1,789 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE.CSS — FUNDACIÓN DE DISEÑO DEL SISTEMA (se carga al final en head.php)
+   -----------------------------------------------------------------------
+   Capa global que garantiza en TODOS los módulos:
+     1) Cero scroll horizontal (mobile-first, clamp de imágenes y tablas).
+     2) Controles indestructibles: botones/inputs que no se deforman,
+        touch targets ≥ 44×44 px y textos que nunca rompen su caja.
+     3) Estados cohesivos: hover, active, focus-visible y disabled con
+        transiciones suaves y un único anillo de foco.
+     4) Sistema de sombras por capas y radios cohesivos (tokens).
+
+   No rediseña nada: conserva el mundo visual existente (azul #387adf,
+   radios 12–16px, tema claro/oscuro) y lo refuerza.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Tokens de diseño ─────────────────────────────────────────────────── */
+:root {
+    /* Radios cohesivos (el proyecto ya usa 12–16px en tarjetas) */
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-pill: 999px;
+
+    /* Sombras por capas: difusas, con desplazamiento (nunca halo plano) */
+    --shadow-1: 0 1px 2px rgba(15, 42, 78, 0.06),
+                0 2px 6px rgba(15, 42, 78, 0.07);
+    --shadow-2: 0 2px 4px rgba(15, 42, 78, 0.07),
+                0 6px 16px rgba(15, 42, 78, 0.10);
+    --shadow-3: 0 4px 8px rgba(15, 42, 78, 0.08),
+                0 14px 32px rgba(15, 42, 78, 0.14);
+
+    /* Anillo de foco y movimiento */
+    --ring: 0 0 0 3px rgba(56, 122, 223, 0.35);
+    --ring-strong: 0 0 0 3px rgba(56, 122, 223, 0.55);
+    --ease: cubic-bezier(0.33, 1, 0.68, 1);
+    --dur-fast: 140ms;
+    --dur: 220ms;
+
+    /* Touch target mínimo */
+    --tt: 44px;
+}
+
+[data-theme="dark"] {
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.30),
+                0 2px 6px rgba(0, 0, 0, 0.32);
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.34),
+                0 6px 16px rgba(0, 0, 0, 0.42);
+    --shadow-3: 0 4px 8px rgba(0, 0, 0, 0.38),
+                0 14px 32px rgba(0, 0, 0, 0.52);
+    --ring: 0 0 0 3px rgba(120, 170, 245, 0.45);
+    --ring-strong: 0 0 0 3px rgba(120, 170, 245, 0.65);
+}
+
+/* ── 2. Cero scroll horizontal ───────────────────────────────────────────── */
+html {
+    overflow-x: clip;   /* clip no crea contenedor de scroll nuevo */
+}
+
+body {
+    overflow-x: clip;
+}
+
+/* Ningún medio rompe su caja */
+img,
+svg,
+video,
+canvas,
+iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+svg {
+    flex-shrink: 0;    /* los iconos no se aplastan en flexbox */
+}
+
+pre,
+code {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+/* Textos largos sin espacios (cédulas, correos) no empujan el layout */
+td,
+th,
+.modal-body,
+.card-body {
+    overflow-wrap: break-word;
+}
+
+/* Toasts/notificaciones fijas nunca más anchas que la pantalla */
+#citas-proximas,
+[id*="toast"] {
+    max-width: calc(100vw - 24px);
+}
+
+/* ── 3. Foco visible y estados ───────────────────────────────────────────── */
+/* Un solo sistema de foco para teclado; el clic no pinta anillo */
+:focus {
+    outline: none;
+}
+
+:focus-visible {
+    outline: none;
+    box-shadow: var(--ring-strong);
+    border-radius: var(--radius-sm);
+}
+
+::selection {
+    background: rgba(56, 122, 223, 0.22);
+}
+
+::placeholder {
+    opacity: 1;
+    color: #8a99ab;
+}
+
+[data-theme="dark"] ::placeholder {
+    color: #9fb4c9;
+}
+
+/* Transición estándar de la capa interactiva */
+.btn,
+.form-control,
+.form-select,
+.form-check-input,
+a,
+button {
+    transition: color var(--dur-fast) var(--ease),
+                background-color var(--dur-fast) var(--ease),
+                border-color var(--dur-fast) var(--ease),
+                box-shadow var(--dur) var(--ease),
+                transform var(--dur-fast) var(--ease);
+}
+
+/* Botón: elevación al pasar, presión al activar */
+.btn:hover {
+    box-shadow: var(--shadow-1);
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(1px) scale(0.99);
+}
+
+.btn:disabled,
+.btn.disabled,
+fieldset:disabled .btn {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* ── 4. Controles indestructibles ────────────────────────────────────────── */
+.btn,
+button.btn {
+    min-height: var(--tt);
+    min-width: 0;
+    max-width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    white-space: normal;            /* el texto baja de línea antes de desbordar */
+    text-wrap: balance;
+    user-select: none;
+    touch-action: manipulation;     /* sin retardo ni doble-tap zoom */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* En escritorio, botones con espacio no parten su etiqueta */
+@media (min-width: 769px) {
+    .btn:not(.w-100):not([class*="col-"]) {
+        white-space: nowrap;
+    }
+}
+
+/* Botones de puro icono: caja cuadrada ≥ 44px */
+.btn.btn-sm:not([class*="btn-table"]):has(svg:only-child),
+.btn:has(svg:only-child):not(.w-100) {
+    min-width: var(--tt);
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Inputs y selects: cómodos, sin colapso dentro de flexbox */
+.form-control,
+.form-select,
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="tel"],
+select,
+textarea {
+    min-width: 0;
+    min-height: var(--tt);
+    max-width: 100%;
+    transition: border-color var(--dur-fast) var(--ease),
+                box-shadow var(--dur) var(--ease),
+                background-color var(--dur-fast) var(--ease);
+}
+
+/* Foco consistente en campos de formulario */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: var(--ring);
+}
+
+textarea {
+    min-height: 96px;
+}
+
+/* El campo crece dentro de grupos flex y nunca aplasta a su vecino */
+.input-group .form-control,
+.form-floating > .form-control {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+/* Checkbox/radio con área de toque real */
+.form-check-input {
+    width: 1.25em;
+    height: 1.25em;
+    cursor: pointer;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+
+/* ── 5. Modales a prueba de pantallas chicas ─────────────────────────────── */
+.modal-content {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-3);
+}
+
+/* El ancho compacto de Bootstrap se reserva para los diálogos pequeños;
+   los modales normales aprovechan hasta 800px sin alterar modal-lg/modal-xl. */
+@media (min-width: 576px) {
+    .modal-dialog:not(.modal-sm):not(.modal-lg):not(.modal-xl):not(.modal-fullscreen) {
+        max-width: 800px;
+    }
+}
+
+/* Sólo en pantallas chicas el diálogo ocupa todo el ancho disponible;
+   en escritorio se respetan los tamaños de Bootstrap (modal-lg, modal-xl…). */
+@media (max-width: 575.98px) {
+    .modal-dialog {
+        max-width: 100%;
+        margin: 0.5rem;
+    }
+}
+
+.modal-dialog-centered {
+    min-height: calc(100% - 1rem);
+}
+
+@media (min-width: 576px) {
+    .modal-dialog-centered {
+        min-height: calc(100% - 3.5rem);
+    }
+}
+
+.modal-body {
+    padding-block-end: calc(1rem + env(safe-area-inset-bottom));
+}
+
+/* Los formularios de modal agrupan cada etiqueta con su campo y distribuyen
+   los pares en dos columnas sin alterar el ancho interno de los controles. */
+.modal-form-grid,
+.modal-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.modal-form-field,
+.modal-fields-grid > * {
+    min-width: 0;
+}
+
+.modal-form-field > .label-custom {
+    margin: 0 0 0.35rem;
+}
+
+.modal-form-field > .campo-custom {
+    margin-bottom: 0;
+}
+
+.modal-form-grid > :not(.modal-form-field):not([type="hidden"]) {
+    grid-column: 1 / -1;
+}
+
+.currency-conversion-hint {
+    color: var(--bs-secondary-color, #5b6470);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    margin-block: 0.35rem 0.75rem;
+}
+
+@media (max-width: 639.98px) {
+    .modal-form-grid,
+    .modal-fields-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Los modales con muchos campos (control médico, admisión, factura…) no deben
+   desbordar el viewport: el diálogo se limita a la altura disponible y el cuerpo
+   scrollea si el contenido excede. En pantallas de ~900px un modal sin este
+   límite quedaba cortado y no se podía ver el resto del formulario. */
+.modal-content.tamaño-modal {
+    max-height: calc(100vh - 2rem);
+}
+
+.modal-content.tamaño-modal .modal-body {
+    overflow-y: auto;
+}
+
+/* El formulario de control ocupa el ancho disponible y mantiene cabecera,
+   contenido desplazable y acciones dentro del alto visible de la pantalla. */
+.modal-control-dialog {
+    width: min(96vw, 1200px);
+    max-width: min(96vw, 1200px);
+}
+
+.modal-control-content {
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    overflow: hidden;
+}
+
+.modal-control-form {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.modal-control-form > .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.modal-control-form > .modal-footer {
+    flex-shrink: 0;
+}
+
+/* Los modales de citas usan el mismo ancho amplio y scroll interno que control
+   e insumos, manteniendo el encabezado y las acciones accesibles. */
+.modal-citas-dialog {
+    width: min(96vw, 1200px);
+    max-width: min(96vw, 1200px);
+}
+
+.modal-citas-content {
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    overflow: hidden;
+}
+
+.modal-citas-form {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.modal-citas-form > .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.modal-citas-form > .modal-footer {
+    flex-shrink: 0;
+}
+
+/* Los modales de insumos comparten ancho, límite de altura y acciones visibles
+   mientras el formulario o el detalle largo se desplazan en su propio cuerpo. */
+.modal-insumos-dialog {
+    width: min(96vw, 1200px);
+    max-width: min(96vw, 1200px);
+}
+
+.modal-insumos-content {
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    overflow: hidden;
+}
+
+.modal-insumos-form {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.modal-insumos-form > .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.modal-insumos-form > .modal-footer {
+    flex-shrink: 0;
+}
+
+.modal-insumos-form .modal-form-grid > #vencimiento {
+    grid-column: auto;
+}
+
+.modal-insumos-form #contenedor-img img,
+.modal-insumos-form #contenedor-img-editar img,
+.modal-insumos-form .img-editar {
+    width: 100%;
+    max-height: 8rem;
+    object-fit: contain;
+}
+
+.modal-fields-grid > .d-flex {
+    grid-column: 1 / -1;
+}
+
+.modal .btn-close {
+    min-width: var(--tt);
+    min-height: var(--tt);
+    margin: -0.5rem -0.5rem 0 auto;
+    border-radius: 50%;
+}
+
+.modal .btn-close:focus-visible {
+    box-shadow: var(--ring-strong);
+}
+
+/* ── 6. Tablas (DataTables): botones de acciones nunca se deforman ───────── */
+/* Los botones dentro de celdas miden lo suyo: el ancho completo de
+   sistema.css es sólo para botones fuera de tablas (formularios). */
+table.dataTable td .btn,
+table.dataTable th .btn,
+table.dataTable ul.dtr-details .btn {
+    width: auto !important;
+    max-width: 100%;
+    min-height: 40px;
+    padding-inline: 0.65rem !important;
+}
+
+table.dataTable td .btn svg,
+table.dataTable th .btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Fila hija y paginación con área táctil digna */
+table.dataTable td.dtr-control {
+    min-height: var(--tt);
+}
+
+.dt-paging .page-link,
+.dt-paging-button,
+.pagination .page-link {
+    min-width: 40px;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+}
+
+/* Buscador DataTables: el input cede y la lupa no se sale */
+.dt-container .dt-search,
+.dataTables_wrapper .dt-search {
+    max-width: 100%;
+}
+
+/* ── 7. Menú lateral y barra superior: touch targets ─────────────────────── */
+.sidenav a,
+.sidenav .nav-link {
+    min-height: var(--tt);
+    display: flex;
+    align-items: center;
+}
+
+.sidenav a:focus-visible {
+    color: #387adf !important;
+    background-color: #ffffff;
+    box-shadow: inset var(--ring-strong);
+    border-radius: 8px;
+}
+
+.navbar-toggler {
+    min-width: var(--tt);
+    min-height: var(--tt);
+}
+
+/* Velo que acompaña al menú abierto en móvil (clase puesta por footer.php) */
+body.sidenav-open::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 30, 60, 0.45);
+    z-index: 999;
+    animation: velar var(--dur) var(--ease);
+}
+
+@keyframes velar {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── 8. Modales legibles en tema claro y oscuro ──────────────────────────── */
+/* El texto de los modales NO puede depender del color heredado: las reglas
+   globales de style.css pintan `p`, `label`, `h5` y `.text-muted` con valores
+   fijos, y en oscuro quedaban gris oscuro sobre fondo oscuro.
+
+   Regla del sistema:
+     · tema claro → tinta negra
+     · tema oscuro → tinta blanca
+   Los tokens se apoyan en las variables del proyecto siempre que alcanzan
+   (--color-text-card, --color-surface, --color-primary…); sólo se declaran
+   valores propios donde el token existente no da contraste (campos, rayas). */
+:root {
+    --modal-texto: #1b1a1a;                          /* = --color-text-card claro */
+    --modal-texto-suave: #4d5865;                    /* secundario, sigue leyéndose negro */
+    --modal-campo-bg: #ffffff;
+    --modal-campo-texto: #1b1a1a;
+    --modal-campo-linea: #c9d3dd;
+    --modal-linea: rgba(27, 26, 26, 0.12);
+    --modal-raya: rgba(27, 26, 26, 0.05);
+    --modal-alerta-bg: #cfe2ff;
+    --modal-alerta-texto: #052c65;
+    --modal-alerta-linea: #b6d4fe;
+}
+
+[data-theme="dark"] {
+    --modal-texto: #ffffff;
+    --modal-texto-suave: rgba(255, 255, 255, 0.76);
+    --modal-campo-bg: rgba(9, 24, 42, 0.42);
+    --modal-campo-texto: #ffffff;
+    --modal-campo-linea: rgba(255, 255, 255, 0.26);
+    --modal-linea: rgba(255, 255, 255, 0.18);
+    --modal-raya: rgba(255, 255, 255, 0.06);
+    --modal-alerta-bg: rgba(56, 122, 223, 0.22);
+    --modal-alerta-texto: #ffffff;
+    --modal-alerta-linea: rgba(120, 170, 245, 0.55);
+}
+
+/* Tinta base del modal y de cada etiqueta de texto. Se listan una por una
+   porque style.css les asigna color directo (y en `label`, !important). */
+.modal-content {
+    background-color: var(--color-surface);
+    color: var(--modal-texto) !important;
+}
+
+/* Las vistas de estadísticas usan un fondo propio más oscuro. */
+.modal-content.contenido {
+    background-color: var(--color-bg-main);
+}
+
+/* Los hijos heredan la tinta del modal (y no la de style.css). `inherit`
+   respeta las cabeceras de color propio (chat, cabecera azul de factura). */
+.modal-content p,
+.modal-content h1,
+.modal-content h2,
+.modal-content h3,
+.modal-content h4,
+.modal-content h5,
+.modal-content h6,
+.modal-content .modal-title,
+.modal-content small,
+.modal-content dt,
+.modal-content dd,
+.modal-content li,
+.modal-content legend,
+.modal-content .form-label,
+.modal-content .form-check-label,
+.modal-content .form-text {
+    color: inherit;
+}
+
+.modal-content label,
+.modal-content .label-custom {
+    color: inherit !important;
+}
+
+/* style.css tiene un selector global accidental:
+   `.toast-notif strong, small, span { color: … !important }`, que alcanza a
+   TODOS los `small` y `span` del sistema. Dentro del modal deben heredar. */
+.modal-content small,
+.modal-content span:not([class*="text-"]) {
+    color: inherit !important;
+}
+
+/* dashboard.css fuerza h1, h2, h5 y th con !important; dentro de los modales
+   manda el tema (el `th` ya se cubre en el bloque de tablas). */
+.modal-content h1,
+.modal-content h2,
+.modal-content h5,
+.modal-content .modal-title {
+    color: inherit !important;
+}
+
+/* Botones de color del sistema: su tinta es blanca en ambos temas, también
+   en los enlaces con clase de botón. */
+.modal-content .btn-modals,
+.modal-content .btn-modals-cancelar,
+.modal-content .btn-agregarcita-modal,
+.modal-content .btn-agregarcita-modal-cancelar,
+.modal-content a.btn-modals,
+.modal-content a.btn-modals-cancelar,
+.modal-content a.btn-primary,
+.modal-content a.btn-secondary {
+    color: #ffffff !important;
+}
+
+/* Azul de texto: en oscuro se aclara para no perderse en el fondo; en claro
+   se oscurece un punto para llegar al contraste AA. */
+.modal-content .text-primary {
+    color: #0b5ed7 !important;
+}
+
+[data-theme="dark"] .modal-content .text-primary {
+    color: #c3d9fb !important;
+}
+
+/* Enlaces de texto: blancos como el resto del modal, salvo los que son
+   botones (btn-link, btn-primary…), que conservan su color propio. */
+.modal-content a:not(.btn) {
+    color: inherit !important;
+}
+
+/* "Ver en USD/Bs" y demás btn-link: el azul de marca no se lee en oscuro. */
+[data-theme="dark"] .modal-content .btn-link {
+    --bs-btn-color: #c3d9fb;
+    --bs-btn-hover-color: #e3eeff;
+    --bs-btn-active-color: #e3eeff;
+    color: #c3d9fb !important;
+}
+
+/* Texto secundario: en oscuro es blanco atenuado, nunca gris de Bootstrap. */
+.modal-content .text-muted,
+.modal-content .text-body-secondary,
+.modal-content .text-body-tertiary {
+    color: var(--modal-texto-suave) !important;
+}
+
+/* Clases que fuerzan tinta oscura (encabezados de tablas, notas). */
+.modal-content .text-dark,
+.modal-content .text-black,
+.modal-content .text-body {
+    color: var(--modal-texto) !important;
+}
+
+/* Mensajes de validación y estados del cobro (falta / vuelto). El rojo y el
+   verde de Bootstrap no alcanzan contraste sobre el modal oscuro. */
+.modal-content .error-msg,
+.modal-content .p-error-validaciones,
+.modal-content .text-danger {
+    color: #c62828 !important;
+}
+
+.modal-content .text-success {
+    color: #146c43 !important;
+}
+
+[data-theme="dark"] .modal-content .error-msg,
+[data-theme="dark"] .modal-content .p-error-validaciones,
+[data-theme="dark"] .modal-content .text-danger {
+    color: #ffc9c9 !important;
+}
+
+[data-theme="dark"] .modal-content .text-success {
+    color: #9ef0c0 !important;
+}
+
+/* Campos: fondo y tinta del tema, con el texto del usuario siempre legible. */
+.modal-content .form-control,
+.modal-content .form-select,
+.modal-content textarea,
+.modal-content select {
+    background-color: var(--modal-campo-bg);
+    color: var(--modal-campo-texto);
+    border-color: var(--modal-campo-linea);
+}
+
+.modal-content .form-control:focus,
+.modal-content .form-select:focus {
+    background-color: var(--modal-campo-bg);
+    color: var(--modal-campo-texto);
+    border-color: var(--color-primary);
+}
+
+/* Los buscadores del sistema conservan su subrayado azul. */
+.modal-content .input-buscar {
+    border-bottom-color: var(--color-primary);
+}
+
+/* Campos compuestos (icono + input): el contenedor aporta el fondo. */
+.modal-content .input-custom {
+    background-color: var(--modal-campo-bg) !important;
+}
+
+.modal-content .txt-custom,
+.modal-content .input-u {
+    color: var(--modal-campo-texto) !important;
+}
+
+[data-theme="dark"] .modal-content .input-custom.valido {
+    background-color: rgba(40, 167, 69, 0.16) !important;
+}
+
+[data-theme="dark"] .modal-content .input-custom.invalido {
+    background-color: rgba(220, 53, 69, 0.16) !important;
+}
+
+.modal-content ::placeholder {
+    color: var(--modal-texto-suave);
+    opacity: 1;
+}
+
+/* Tablas dentro de modales: cabeceras, filas y rayas del tema. */
+.modal-content .table {
+    --bs-table-color: var(--modal-texto);
+    --bs-table-bg: transparent;
+    --bs-table-striped-color: var(--modal-texto);
+    --bs-table-striped-bg: var(--modal-raya);
+    --bs-table-hover-color: var(--modal-texto);
+    --bs-table-border-color: var(--modal-linea);
+    color: var(--modal-texto);
+}
+
+/* style.css pinta th/td con !important y var(--color-text-card): se repite
+   aquí la tinta del modal para que en oscuro el texto sea blanco pleno.
+   Se excluyen las celdas con color semántico (text-danger, text-success…). */
+.modal-content .table th:not([class*="text-"]),
+.modal-content .table td:not([class*="text-"]) {
+    color: var(--modal-texto) !important;
+}
+
+/* Avisos: fondo translúcido y texto blanco en oscuro. */
+.modal-content .alert-primary {
+    --bs-alert-color: var(--modal-alerta-texto);
+    --bs-alert-bg: var(--modal-alerta-bg);
+    --bs-alert-border-color: var(--modal-alerta-linea);
+}
+
+/* Separadores del modal y bordes de tarjetas internas. */
+.modal-content .modal-header,
+.modal-content .modal-footer {
+    border-color: var(--modal-linea);
+}
+
+.modal-content .border {
+    border-color: var(--modal-linea) !important;
+}
+
+/* Insignias claras (moneda del método de pago): en oscuro se atemperan para
+   que su texto también sea blanco. */
+[data-theme="dark"] .modal-content .badge.bg-light,
+[data-theme="dark"] .modal-content .bg-light {
+    background-color: rgba(255, 255, 255, 0.14) !important;
+    border-color: var(--modal-linea) !important;
+    color: var(--modal-texto) !important;
+}
+
+/* La X de Bootstrap es negra; en oscuro se invierte para no desaparecer. */
+[data-theme="dark"] .modal-content .btn-close {
+    filter: invert(1) grayscale(1);
+}
+
+/* ── 9. Movimiento respetuoso ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

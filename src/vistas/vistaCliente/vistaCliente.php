@@ -67,4 +67,5 @@
 <script type="module" src="<?= $urlBase; ?>../src/assets/js/ajax/clientes.js"></script>
 
 <?php require_once './src/vistas/vistaCliente/modalAgregarCliente.php'; ?>
+<?php require_once './src/vistas/vistaCliente/modalEditarCliente.php'; ?>
 <?php require_once './src/vistas/head/footer.php'; ?>

@@ -295,7 +295,7 @@ class ModeloFactura extends ModelBase
 			// verdad) en lugar del catálogo actual: si el precio del insumo cambia
 			// después, el comprobante antiguo seguía mostrando el valor nuevo.
 			$sql  = "SELECT ins.nombre, ins.medida, ins.iva AS aplica_iva,
-                            fi.cantidad, fi.precio_unitario, fi.subtotal,
+                            fi.cantidad, fi.precio_unitario, fi.precio_divisa, fi.subtotal,
                             fi.iva_aplicado, fi.tasa_iva
                     FROM detalle_factura fi
                     INNER JOIN entrada_insumo i ON i.id_entradaDeInsumo = fi.entrada_insumo_id_entradaDeInsumo
@@ -502,6 +502,35 @@ class ModeloFactura extends ModelBase
 		$fila = $this->search(['id_factura' => $id_factura], false);
 
 		return round((float)($fila['total'] ?? 0), 2);
+	}
+
+	/**
+	 * Corrige la diferencia de céntimos entre la suma de pagos y el total.
+	 *
+	 * El navegador redondea una vez y el servidor redondea cada línea del
+	 * detalle: con varias líneas la suma puede quedar 1-2 céntimos por debajo
+	 * (o por encima) del total y la factura se rechazaba. Si la diferencia es
+	 * mínima se ajusta el pago de mayor monto, que es el que admite vuelto.
+	 */
+	private function ajustarPagoPorRedondeo($id_factura, $diferencia)
+	{
+		$this->setSQL("SELECT id_pagoDeFactura, monto FROM pagodefactura
+			WHERE id_factura = :id_factura
+			ORDER BY monto DESC, id_pagoDeFactura ASC
+			LIMIT 1");
+		$pago = $this->search(['id_factura' => $id_factura], false);
+
+		if (empty($pago['id_pagoDeFactura'])) {
+			return;
+		}
+
+		$nuevoMonto = round((float)$pago['monto'] + (float)$diferencia, 2);
+		if ($nuevoMonto <= 0) {
+			return;
+		}
+
+		$this->setSQL("UPDATE pagodefactura SET monto = :monto WHERE id_pagoDeFactura = :id");
+		$this->update(['monto' => $nuevoMonto], $pago['id_pagoDeFactura']);
 	}
 
 	/**
@@ -812,11 +841,21 @@ class ModeloFactura extends ModelBase
 			$totalReal = $this->calcularTotalDesdeDetalle($id_factura);
 
 			// Los montos de pago deben cubrir exactamente el total real.
-			$sumaMontos = array_sum(array_map('floatval', (array)$this->getMontosPagos()));
-			if ($totalReal > 0 && abs($sumaMontos - $totalReal) > 0.01) {
+			$montosPago = array_map('floatval', (array)$this->getMontosPagos());
+			$sumaMontos = array_sum($montosPago);
+			$diferencia = round($totalReal - $sumaMontos, 2);
+
+			if ($totalReal > 0 && abs($diferencia) > 0.10) {
 				throw new \DomainException(
 					"La suma de los montos de pago ($sumaMontos BS) no cubre el total de la factura ($totalReal BS)."
 				);
+			}
+
+			// Tolerancia de redondeo (máx. 10 céntimos): el navegador redondea
+			// una sola vez y el servidor redondea por línea. Se ajusta el pago
+			// de mayor monto para que lo persistido cuadre con el total.
+			if ($totalReal > 0 && abs($diferencia) >= 0.005) {
+				$this->ajustarPagoPorRedondeo($id_factura, $diferencia);
 			}
 
 			// Se persiste el total verificado

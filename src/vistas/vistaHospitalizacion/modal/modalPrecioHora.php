@@ -40,7 +40,7 @@
 
                     <div class="me-3 ms-3 mt-2">
                         <div class="m-auto mt-4 pt-1 col-12">
-                            <h5 class="text-center fw-bold">Hora y precio</h5>
+                            <h5 class="text-center fw-bold">Tarifa por hora en bolívares (Bs.)</h5>
                         </div>
 
                         <div class="d-flex justify-content-center align-items-center mt-4 ">
@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="col-6 d-flex">
                                         <input type="number" step="any" name="precioHorasSe" id="inpCostoHS"
-                                            class="input-agregar w-50 input-modal" placeholder="Precio" value="0" min="0.10" required>
+                                            class="input-agregar w-50 input-modal precioBolivares" placeholder="Precio" value="0" min="0.10" required>
                                         <p class="mt-3 ps-1 color-letras">bs</p>
 
                                     </div>
@@ -72,7 +72,7 @@
                     </div>
                     <div class="me-3 ms-3 mt-2">
                         <div class="m-auto mt-4 pt-1 col-12">
-                            <h5 class="text-center fw-bold">Hora y precio en moneda extranjera</h5>
+                            <h5 class="text-center fw-bold">Tarifa por hora en dólares (USD)</h5>
                         </div>
 
                         <div class="d-flex justify-content-center align-items-center mt-4 ">
@@ -92,15 +92,15 @@
                                     </div>
                                     <div class="col-6 d-flex">
                                         <input type="number" step="any" name="precioHorasMoEx" id="inpCostoHMoEx"
-                                            class="input-agregar w-50 input-modal" placeholder="Precio" value="" min="0.10" required>
+                                            class="input-agregar w-50 input-modal precioDolares" placeholder="Precio" value="" min="0.10" required>
                                         <p class="mt-3 ps-1 color-letras">$</p>
                                     </div>
-
 
                                 </div>
                             </div>
 
                         </div>
+                        <p class="currency-conversion-hint form-text mt-3" role="status" aria-live="polite"></p>
                     </div>
 
 

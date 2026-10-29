@@ -241,6 +241,26 @@
             max-width: 100%;
         }
 
+        /* Paginación en móvil: que se centre y envuelva */
+        .dt-container .dt-paging,
+        .dataTables_wrapper .dt-paging,
+        .dataTables_wrapper .dataTables_paginate {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            width: 100% !important;
+            margin-top: 0.5rem !important;
+        }
+
+        .dt-container .dt-paging .dt-paging-button,
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            min-width: 32px !important;
+            height: 32px !important;
+            padding: 0.2rem 0.4rem !important;
+            margin: 2px !important;
+            font-size: 0.8rem !important;
+        }
+
         /* Garantía: nada dentro del contenedor de la tabla empuja la página */
         .dt-container, .dataTables_wrapper {
             max-width: 100%;

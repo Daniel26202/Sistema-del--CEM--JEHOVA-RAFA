@@ -387,22 +387,47 @@ input[type="number"] {
 }
 
 /* ///////////estilo de paginacion ////// */
+/* ///////////estilo de paginacion ////// */
 .pagination-porpia {
-    width: 28px;
-    color: black;
-    background-color: rgb(230, 230, 230);
-    border: 1px solid white;
-    padding: 5px;
-    margin: 1px;
-    border-radius: 3px;
+    min-width: 32px;
+    height: 32px;
+    width: auto !important;
+    color: var(--color-text-card, #212529);
+    background-color: var(--color-bg-card, #e9ecef);
+    border: 1px solid var(--color-border, #ced4da);
+    padding: 4px 8px !important;
+    margin: 2px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.pagination-porpia:hover:not(:disabled) {
+    background-color: var(--color-primary, #0d6efd);
+    color: #ffffff;
+    border-color: var(--color-primary, #0d6efd);
 }
 
 .pagination-disbled{
-    color: rgb(71, 71, 71);
+    color: #ffffff !important;
+    background-color: var(--color-primary, #0d6efd) !important;
+    border-color: var(--color-primary, #0d6efd) !important;
+    font-weight: 600;
+    cursor: default;
 }
 .pagination-div{
-    display: flex;
-    justify-content: end;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    margin-top: 0.5rem;
 }
 
 .div-result-none{
@@ -1661,9 +1686,10 @@ nuevos estilos de control medico */
     min-width: 290px;
     max-width: 630px;
     background-color: var(--color-bg-card);
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     border: 1px solid #add8e6;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .hover-control-m tr:hover {
@@ -1687,8 +1713,24 @@ table {
 .scrollable {
     max-height: 500px;
     overflow-y: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
     border: 1px solid #add8e6;
     border-radius: 6px;
+    width: 100%;
+}
+
+.tabla-control-medico .scrollable table {
+    width: 100%;
+    min-width: 460px;
+    margin-bottom: 0;
+}
+
+.tabla-control-medico .scrollable th,
+.tabla-control-medico .scrollable td {
+    white-space: nowrap;
+    padding: 0.55rem 0.65rem;
 }
 
 .fila-oculta {
@@ -1704,6 +1746,25 @@ table {
     .container {
         flex-direction: column;
         align-items: stretch;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .tabla-control-medico {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        padding: 10px;
+        flex: 1 1 100%;
+    }
+
+    .tabla-control-medico .scrollable {
+        max-height: 420px;
+    }
+
+    .tabla-control-medico .btn-modals {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
     }
 
     .tabla {

@@ -1,3 +1,5 @@
+import { formatBS, parseMonto } from "./moneda.js";
+
 /**
  * Tasa de cambio del dólar.
  *
@@ -11,6 +13,13 @@
 const CLAVE_TASA = "valorDelDolar";
 const CLAVE_TASA_FECHA = "valorDelDolarFecha";
 const URL_API = "https://ve.dolarapi.com/v1/dolares/oficial";
+
+/**
+ * Redondea la tasa a 2 decimales, igual que hace el lado PHP (tasaCambio.php).
+ * Sin esto el navegador guardaba/comparaba 886.2271 mientras el servidor
+ * redondeaba a 886.23: el mismo flujo calculaba importes distintos.
+ */
+const redondearTasa = (tasa) => Math.round(tasa * 100) / 100;
 
 // Tasa en memoria, compartida por los módulos de la página.
 let tipoCambio = 0;
@@ -37,11 +46,13 @@ const hoyISO = () => {
 export const tasaGuardada = () => {
   try {
     const valor = parseFloat(localStorage.getItem(CLAVE_TASA));
-    return Number.isFinite(valor) && valor > 0 ? valor : 0;
+    const redondeada = Number.isFinite(valor) ? redondearTasa(valor) : 0;
+    return redondeada > 0 ? redondeada : 0;
   } catch (_) {
     return 0;
   }
 };
+tipoCambio = tasaGuardada();
 
 /** Fecha en que se obtuvo la tasa guardada ("" si nunca se obtuvo). */
 export const fechaTasaGuardada = () => {
@@ -71,7 +82,7 @@ export const tasaEsDeHoy = () => fechaTasaGuardada() === hoyISO();
 
 /** Permite al usuario fijar la tasa a mano (si la API no responde o no coincide con el mercado). */
 export const guardarTasaManual = (valor) => {
-  const tasa = parseFloat(valor);
+  const tasa = redondearTasa(parseFloat(valor));
   if (!Number.isFinite(tasa) || tasa <= 0) {
     throw new Error("La tasa debe ser un número mayor que cero.");
   }
@@ -139,7 +150,7 @@ export const valorDolar = async ({ forzar = false } = {}) => {
         throw new Error("La API no devolvio un objeto valido");
       }
 
-      const tasa = Number(cuerpo.promedio);
+      const tasa = redondearTasa(Number(cuerpo.promedio));
 
       // 3) ¿El valor sirve? Debe ser un numero mayor que cero.
       //    Antes se guardaba tal cual: si la API mandaba null o 0, se guardaba
@@ -191,45 +202,121 @@ const enviarValorDolar = (tipo) => {
     .catch((e) => console.warn("No se pudo guardar la tasa en la sesión:", e.message));
 };
 
-const conversion = (inputD, inputBS, tipo) => {
-  const valorDesde = parseFloat(inputD.value);
-  if (isNaN(valorDesde)) {
-    inputBS.value = "";
-    return;
-  }
-
-  if (tipo === "dolar") {
-    const resultado = valorDesde * tipoCambio;
-    inputBS.value = resultado.toFixed(2);
-    inputBS.dispatchEvent(new Event("keyup", { bubbles: true }));
-    return;
-  }
-  if (tipo === "bolivares") {
-    const resultado = valorDesde / tipoCambio;
-    inputBS.value = resultado.toFixed(2);
-    return;
-  }
-};
+const formulariosInicializados = new WeakSet();
 
 export const initConversion = (form) => {
-  valorDolar();
+  if (!(form instanceof Element) || formulariosInicializados.has(form)) return;
 
-  let inputDolares = form.querySelector(".precioDolares");
-  let inputBolivares = form.querySelector(".precioBolivares");
+  const dolares = Array.from(form.querySelectorAll(".precioDolares"));
+  const bolivares = Array.from(form.querySelectorAll(".precioBolivares"));
+  const pares = dolares.slice(0, Math.min(dolares.length, bolivares.length))
+    .map((usd, index) => ({ usd, bs: bolivares[index] }));
 
-  inputDolares.addEventListener("keyup", () =>
-    conversion(inputDolares, inputBolivares, "dolar"),
-  );
+  if (pares.length === 0) return;
+  formulariosInicializados.add(form);
 
-  inputBolivares.addEventListener("keyup", () =>
-    conversion(inputBolivares, inputDolares, "bolivares"),
-  );
+  const paresEditados = new Map();
+  let actualizando = false;
+  let indicacion = form.querySelector(".currency-conversion-hint");
 
-  inputDolares.addEventListener("blur", () =>
-    conversion(inputDolares, inputBolivares, "dolar"),
-  );
+  if (!indicacion) {
+    indicacion = document.createElement("p");
+    indicacion.className = "currency-conversion-hint form-text";
+    indicacion.setAttribute("role", "status");
+    indicacion.setAttribute("aria-live", "polite");
+    const campoBs = pares[0].bs.closest(".campo-custom");
+    if (campoBs) {
+      campoBs.insertAdjacentElement("afterend", indicacion);
+    } else {
+      form.append(indicacion);
+    }
+  }
 
-  inputBolivares.addEventListener("blur", () =>
-    conversion(inputBolivares, inputDolares, "bolivares"),
-  );
+  const mostrarTasa = (resultado = {}) => {
+    if (!tipoCambio || tipoCambio <= 0) {
+      indicacion.textContent =
+        "No hay una tasa de cambio disponible. Verifica la tasa para convertir el precio.";
+      indicacion.classList.add("text-danger");
+      return;
+    }
+
+    const fecha = fechaTasaGuardada();
+    const fechaTexto = fecha ? ` · actualizada ${fecha}` : "";
+    const avisoError = resultado.error
+      ? " No se pudo actualizar; se usa la última tasa disponible."
+      : "";
+    indicacion.textContent =
+      `Escribe el precio en cualquiera de las monedas; el otro se calcula automáticamente. Tasa: ${formatBS(tipoCambio)} por USD${fechaTexto}.${avisoError}`;
+    indicacion.classList.toggle("text-danger", Boolean(resultado.error));
+  };
+
+  const actualizarPar = (par, origen) => {
+    if (actualizando) return;
+
+    paresEditados.set(par, origen);
+    const destino = origen === "usd" ? par.bs : par.usd;
+    const monto = parseMonto(origen === "usd" ? par.usd.value : par.bs.value);
+
+    if (monto === null || (origen === "usd" ? par.usd.value : par.bs.value).trim() === "") {
+      destino.value = "";
+      actualizando = true;
+      destino.dispatchEvent(new Event("input", { bubbles: true }));
+      actualizando = false;
+      return;
+    }
+
+    if (!Number.isFinite(tipoCambio) || tipoCambio <= 0) {
+      destino.value = "";
+      actualizando = true;
+      destino.dispatchEvent(new Event("input", { bubbles: true }));
+      actualizando = false;
+      mostrarTasa();
+      return;
+    }
+
+    const convertido = origen === "usd" ? monto * tipoCambio : monto / tipoCambio;
+    destino.value = convertido.toFixed(2);
+    actualizando = true;
+    destino.dispatchEvent(new Event("input", { bubbles: true }));
+    actualizando = false;
+  };
+
+  pares.forEach((par) => {
+    par.usd.addEventListener("input", () => actualizarPar(par, "usd"));
+    par.bs.addEventListener("input", () => actualizarPar(par, "bs"));
+
+    [par.usd, par.bs].forEach((input) => {
+      input.addEventListener("blur", () => {
+        const monto = parseMonto(input.value);
+        if (monto === null || input.value.trim() === "") return;
+        input.value = monto.toFixed(2);
+        actualizarPar(par, input === par.usd ? "usd" : "bs");
+      });
+    });
+  });
+
+  mostrarTasa();
+  valorDolar().then((resultado) => {
+    tipoCambio = resultado.tasa;
+    mostrarTasa(resultado);
+    if (tipoCambio <= 0) return;
+
+    pares.forEach((par) => {
+      const origen = paresEditados.get(par) ??
+        (par.usd.value.trim() !== "" ? "usd" : "bs");
+      const monto = parseMonto(origen === "usd" ? par.usd.value : par.bs.value);
+      if (monto !== null) actualizarPar(par, origen);
+    });
+  });
+
+  form.addEventListener("submit", () => {
+    pares.forEach(({ usd, bs }) => {
+      [usd, bs].forEach((input) => {
+        const monto = parseMonto(input.value);
+        if (monto !== null && input.value.trim() !== "") {
+          input.value = monto.toFixed(2);
+        }
+      });
+    });
+  });
 };

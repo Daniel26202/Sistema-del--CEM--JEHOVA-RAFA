@@ -49,3 +49,49 @@ function validarIdReal(int $id)
 {
     return is_numeric($id) && (int)$id > 0;
 }
+
+
+/**
+ * Convierte el texto de un precio a float aceptando los formatos que llegan
+ * desde la interfaz: "1160.00" (JS con punto decimal), "1.160,00" (formato
+ * venezolano) o "1,160.00" (formato inglés).
+ *
+ * Antes cada controlador hacía str_replace('.', '', ...): si el navegador
+ * enviaba "10.00" el punto decimal se eliminaba y se guardaba 1000.
+ */
+function parsearPrecio($valor): float
+{
+    $limpio = preg_replace('/[^0-9,.\-]/', '', trim((string)$valor));
+
+    if ($limpio === '') {
+        return 0.0;
+    }
+
+    $ultimaComa = strrpos($limpio, ',');
+    $ultimoPunto = strrpos($limpio, '.');
+
+    if ($ultimaComa !== false && $ultimoPunto !== false) {
+        if ($ultimaComa > $ultimoPunto) {
+            // 1.160,00 -> separador de miles el punto, decimal la coma
+            $limpio = str_replace(',', '.', str_replace('.', '', $limpio));
+        } else {
+            // 1,160.00 -> separador de miles la coma, decimal el punto
+            $limpio = str_replace(',', '', $limpio);
+        }
+    } elseif ($ultimaComa !== false) {
+        $decimales = strlen($limpio) - $ultimaComa - 1;
+        // Con 1 o 2 dígitos se asume decimal; con más, separador de miles.
+        $limpio = ($decimales > 0 && $decimales <= 2)
+            ? str_replace(',', '.', $limpio)
+            : str_replace(',', '', $limpio);
+    } elseif ($ultimoPunto !== false) {
+        $decimales = strlen($limpio) - $ultimoPunto - 1;
+        $cantidadPuntos = substr_count($limpio, '.');
+        // "1.234.567" o "10.000" son separadores de miles.
+        if ($cantidadPuntos > 1 || $decimales > 2) {
+            $limpio = str_replace('.', '', $limpio);
+        }
+    }
+
+    return (float)$limpio;
+}

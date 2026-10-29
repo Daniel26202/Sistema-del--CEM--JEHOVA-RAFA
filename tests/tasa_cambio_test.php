@@ -155,7 +155,7 @@ if ($cuerpoApi !== false && $httpApi === 200) {
     check(is_array($json), 'la respuesta es un objeto JSON');
     check(array_key_exists('promedio', $json), "existe el campo 'promedio' que lee el JS");
 
-    $jsLee = (float)($json['promedio'] ?? 0);   // lo que hace Number(cuerpo.promedio)
+    $jsLee = round((float)($json['promedio'] ?? 0), 2); // redondea a 2 decimales como el lado PHP
     $phpLee = round((float)($json['promedio'] ?? 0), 2);
     $desdeApi = tasaDesdeRespuesta($cuerpoApi);
 
@@ -180,6 +180,10 @@ check(
 // La clave de localStorage debe ser la misma para todos los modulos.
 $js = file_get_contents($raiz . 'src/assets/js/generic/coversion.js');
 check(strpos($js, 'CLAVE_TASA = "valorDelDolar"') !== false, 'la clave de localStorage es valorDelDolar');
+check(
+    strpos($js, 'Math.round') !== false && strpos($js, '* 100') !== false,
+    'coversion.js redondea la tasa a 2 decimales antes de guardarla/como la guarda'
+);
 
 $jsDir = [];
 // Se recorren también los subdirectorios (ajax/, generic/, ...).

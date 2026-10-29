@@ -113,13 +113,13 @@
 
                 <!-- Modal editar -->
                 <div class="modal fade" id="exampleModalEditarInsumos" tabindex="-1" aria-labelledby="exampleModalLabelInsumos" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content tamaño-modal">
+                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-insumos-dialog">
+                        <div class="modal-content tamaño-modal modal-insumos-content">
                             <div class="modal-header">
                                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelInsumos">Editar Insumos</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form class="form-validable" id="modalEditarInsumos" method="POST">
+                            <form class="form-validable modal-insumos-form" id="modalEditarInsumos" method="POST">
 
                                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
                                 <input type="hidden" class="value-img" name="value-img">
@@ -128,7 +128,7 @@
 
                                     <!-- Imagen Preview -->
                                     <div class="mb-3">
-                                        <img src="" class="img-editar img-fluid rounded" style="height: 200px; width: 100%; object-fit: cover;">
+                                        <img src="" class="img-editar img-fluid rounded">
                                     </div>
 
                                     <!-- Campo Imagen -->

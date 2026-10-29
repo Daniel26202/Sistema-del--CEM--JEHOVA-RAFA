@@ -47,7 +47,17 @@ function assertTrue($condicion, string $mensaje): void
 function precioUnitarioInsumo(array $i): float
 {
     $base = (float)$i['precio'];
-    return ((string)$i['iva'] === '1') ? $base * (1 + IVA_TASA) : $base;
+    if ((string)$i['iva'] !== '1') {
+        return $base;
+    }
+    // f.js redondea a 2 decimales en divisa, igual que ModeloFactura.
+    return round($base * (1 + IVA_TASA), 2);
+}
+
+/** Réplica exacta de f.js: divisaABs */
+function divisaABs(float $divisa, float $tasa = TIPO_CAMBIO): float
+{
+    return round($divisa * $tasa, 2);
 }
 
 /** Réplica exacta de f.js: subtotalInsumosDivisa */
@@ -72,8 +82,17 @@ function subtotalServiciosDivisa(array $data): float
 
 function calcularTotal(array $data, array $dataInsumo, float $baseCita = 0.0): float
 {
-    $totalDivisa = $baseCita + subtotalServiciosDivisa($data) + subtotalInsumosDivisa($dataInsumo);
-    return (float)number_format($totalDivisa * TIPO_CAMBIO, 2, '.', '');
+    // Réplica exacta de f.js: se redondea CADA línea a 2 decimales (como hace
+    // el servidor al guardar detalle_factura) y luego se suman.
+    $total = divisaABs(round($baseCita, 2));
+    foreach ($data as $s) {
+        $total += divisaABs((float)$s['precio']);
+    }
+    foreach ($dataInsumo as $i) {
+        $unitario = divisaABs(precioUnitarioInsumo($i));
+        $total += $unitario * ((int)$i['cantidad']);
+    }
+    return round($total, 2);
 }
 
 /** El buggy anterior, para demostrar la magnitud del error */

@@ -171,11 +171,8 @@ function guardar()
 			exit;
 		}
 
-		// Quitar separadores de miles
-		$valor = str_replace('.', '', $_POST['precioD']);
-		//Cambiar coma decimal por punto
-		$valor = str_replace(',', '.', $valor);
-		$precio = (float)$valor;
+		// Acepta "10.00" (punto decimal del JS) y "1.160,00" (formato local).
+		$precio = parsearPrecio($_POST['precioD'] ?? '');
 
 		$modeloEntrada->setIdInsumo(unhashId($_POST["id_insumo"]));
 		$modeloEntrada->setLote($_POST["lote"]);
@@ -309,11 +306,8 @@ function editar()
 			exit;
 		}
 
-		//Quitar separadores de miles
-		$valor = str_replace('.', '', $_POST['precioD']);
-		//Cambiar coma decimal por punto
-		$valor = str_replace(',', '.', $valor);
-		$precio = (float)$valor;
+		// Acepta "10.00" (punto decimal del JS) y "1.160,00" (formato local).
+		$precio = parsearPrecio($_POST['precioD'] ?? '');
 
 		// $modeloInsumo->setIdInsumo($_POST["id_insumo"]);
 		$modeloEntrada->setLote($_POST["lote"]);

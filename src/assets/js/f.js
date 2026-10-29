@@ -7,6 +7,13 @@ import {
 import Paginator from "./generic/Paginator.js";
 import { inicializarValidacionFormulario } from "./generic/expresionesModulares.js";
 import { valorDolar, guardarTasaManual, tasaGuardada } from "./generic/coversion.js";
+import {
+  formatUSD,
+  formatBS,
+  parseMonto,
+  valorEditable,
+  montoDualHTML,
+} from "./generic/moneda.js";
 
 /** Obtiene un elemento por id devolviendo null en vez de lanzar. */
 const byId = (id) => document.getElementById(id);
@@ -16,9 +23,11 @@ const need = (id) => {
   if (!el) throw new Error(`Elemento obligatorio ausente en el DOM: #${id}`);
   return el;
 };
-/** Convierte a número devolviendo 0 ante valores no numéricos (evita NaN). */
+/** Convierte a número devolviendo 0 ante valores no numéricos (evita NaN).
+ *  Acepta coma decimal ("10,50"), que es como se escribe en Venezuela. */
 const num = (v) => {
-  const n = parseFloat(v);
+  if (typeof v === "number") return Number.isFinite(v) ? v : 0;
+  const n = parseFloat(String(v ?? "").trim().replace(",", "."));
   return Number.isFinite(n) ? n : 0;
 };
 /** Compara dos importes en céntimos enteros (evita los fallos de coma flotante). */
@@ -30,7 +39,15 @@ addEventListener("DOMContentLoaded", async function () {
   let data = [];
   let dataInsumo = [];
   let listaModalInsumo = [];
-  let listTypePago = [];
+
+  // ── Estado del flujo de pago ─────────────────────────────────────────
+  // metodosPago: métodos marcados en #modal-pago.
+  // lineasPago:  filas de monto renderizadas en #modal-validacion.
+  // Se declaran aquí (y no en el bloque de pagos) para que calcularTotal()
+  // pueda refrescar los resúmenes sin caer en la zona muerta temporal.
+  let metodosPago = [];
+  let lineasPago = [];
+  let refrescarResumenesPago = () => {};
 
   // Tasas y tipo de cambio: única fuente de verdad.
   // IVA_TASA llega del meta tag renderizado por PHP con src/config/config.php.
@@ -61,7 +78,7 @@ addEventListener("DOMContentLoaded", async function () {
 
     if (valor) {
       valor.innerText =
-        TIPO_CAMBIO > 0 ? `${TIPO_CAMBIO.toFixed(2)} BS/$` : "Sin tasa";
+        TIPO_CAMBIO > 0 ? `1 USD = ${formatBS(TIPO_CAMBIO)}` : "Sin tasa";
     }
     if (caja) caja.classList.toggle("d-none", TIPO_CAMBIO > 0);
     // El formulario viaja con la tasa real usada en pantalla.
@@ -202,12 +219,12 @@ addEventListener("DOMContentLoaded", async function () {
   const btnSiguiente = byId("btnSiguiente");
   const inputTotalCita = byId("inputTotalCita");
   const inputTotalFactura = byId("totalFactura");
+  const totalFacturaDivisa = byId("totalFacturaDivisa");
   const totalDeConfirmacion = byId("totalDeConfirmacion");
   const inputTotalDeConfirmacion = byId("inputTotalDeConfirmacion");
   // OJO: antes era document.getAnimations(...) que devuelve un array de
   // Animation; escribir .innerText sobre él no pintaba nada (fallo silencioso).
-  const totalModalValidacion = byId("total-modal-validacion");
-  const bodyModalPago = byId("body-modal-pago");
+  // El total del modal de validación lo pinta refrescarResumenesPago().
   const inputPaciente = byId("inputPaciente");
   const inputHospitalizacion = byId("inputHospitalizacion");
   const inputCliente = byId("inputCliente");
@@ -221,7 +238,6 @@ addEventListener("DOMContentLoaded", async function () {
   const botonPC = byId("botonPC");
   //boton del modal de validacion
   const btnValidacion = byId("btnValidacion");
-  const divModalValidacion = byId("divModalValidacion");
   const divInputValidation = byId("divInputValidation");
   const divTypePagoCofirm = byId("divTypePagoCofirm");
 
@@ -594,8 +610,8 @@ addEventListener("DOMContentLoaded", async function () {
         </div>
         <span class="text-center mb-2">DR: ${res.nombre_d} ${res.apellido_d}</span>
 
-        <span class="text-center mb-2">Precio $: ${precio.toFixed(2)} $</span>
-        <span class="text-center mb-2">Precio Bs: ${(precio * TIPO_CAMBIO).toFixed(2)} BS</span>
+        <span class="text-center mb-2">Precio: ${formatUSD(precio)}</span>
+        <span class="text-center mb-2 ">${formatBS(precio * TIPO_CAMBIO)}</span>
 
         <input type="hidden" value=${precio.toFixed(2)} class="precio-servicio">
 
@@ -728,7 +744,7 @@ addEventListener("DOMContentLoaded", async function () {
             </ul>
 
             <div>
-              <div class="precio-principal">${num(res.precio).toFixed(2)} $ ${(num(res.precio) * TIPO_CAMBIO).toFixed(2)} BS</div>
+              <div class="precio-principal">${formatUSD(num(res.precio))} <span class=" small">(${formatBS(num(res.precio) * TIPO_CAMBIO)})</span></div>
             </div>
 
             <!-- Input estilo nuevo diseño -->
@@ -892,8 +908,16 @@ addEventListener("DOMContentLoaded", async function () {
    */
   const precioUnitarioInsumo = (insumo) => {
     const base = num(insumo.precio);
-    return String(insumo.iva) === "1" ? base * (1 + IVA_TASA) : base;
+    if (String(insumo.iva) !== "1") return base;
+    // El servidor redondea el precio unitario CON IVA a 2 decimales antes de
+    // pasarlo a bolívares. Sin ese redondeo el navegador cobraba unos céntimos
+    // de divisa de más (varios bolívares con la tasa actual).
+    return Math.round(base * (1 + IVA_TASA) * 100) / 100;
   };
+
+  /** Importe en divisa -> bolívares, con el redondeo por línea del servidor. */
+  const divisaABs = (divisa) =>
+    Math.round(num(divisa) * TIPO_CAMBIO * 100) / 100;
 
   /** Subtotal en divisa de todos los insumos de la factura. */
   const subtotalInsumosDivisa = () =>
@@ -908,21 +932,42 @@ addEventListener("DOMContentLoaded", async function () {
 
   function calcularTotal() {
     // Base de la cita / hospitalizacion (en divisa)
-    const baseCita = num(inputTotalCita?.value);
+    const baseCita = Math.round(num(inputTotalCita?.value) * 100) / 100;
 
-    const totalDivisa =
-      baseCita + subtotalServiciosDivisa() + subtotalInsumosDivisa();
-
-    const totalBS = parseFloat((totalDivisa * TIPO_CAMBIO).toFixed(2));
+    // El servidor guarda el detalle redondeando CADA línea a 2 decimales y
+    // luego suma (ver ModeloFactura::calcularTotalDesdeDetalle). Redondear una
+    // sola vez al final, como se hacía antes, descuadraba la factura en unos
+    // céntimos por línea y el backend la rechazaba por "no cubre el total".
+    const totalBS = parseFloat(
+      (
+        divisaABs(baseCita) +
+        data.reduce((acc, s) => acc + divisaABs(s.precio), 0) +
+        dataInsumo.reduce(
+          (acc, insumo) =>
+            acc +
+            divisaABs(precioUnitarioInsumo(insumo)) *
+              (parseInt(insumo.cantidad) || 0),
+          0,
+        )
+      ).toFixed(2),
+    );
 
     if (inputTotalFactura) inputTotalFactura.value = totalBS.toFixed(2);
-    if (totalDeConfirmacion) totalDeConfirmacion.innerText = `${totalBS.toFixed(2)} BS`;
+    if (totalFacturaDivisa) {
+      // Equivalente en divisa junto al total (guía: ambas monedas siempre).
+      totalFacturaDivisa.innerHTML =
+        TIPO_CAMBIO > 0 ? `≈ ${formatUSD(totalBS / TIPO_CAMBIO)}` : "";
+    }
+    // Total del modal de confirmación: USD resaltado + Bs atenuado.
+    if (totalDeConfirmacion) {
+      totalDeConfirmacion.innerHTML = montoDualHTML(totalBS, TIPO_CAMBIO);
+    }
     if (inputTotalDeConfirmacion) inputTotalDeConfirmacion.value = totalBS.toFixed(2);
 
-    //validacion de el modal de validacion...
-    if (totalModalValidacion) {
-      totalModalValidacion.innerText = `Total a pagar ${totalBS.toFixed(2)} BS`;
-    }
+    // Mantiene sincronizados los resúmenes de pago (total, pagado, pendiente
+    // y vuelto) cuando cambia el contenido de la factura o la tasa.
+
+    refrescarResumenesPago();
 
     return totalBS;
   }
@@ -936,7 +981,7 @@ addEventListener("DOMContentLoaded", async function () {
 
     data.forEach((element, index) => {
       const precioDivisa = num(element.precio);
-      const montoBS = (precioDivisa * TIPO_CAMBIO).toFixed(2);
+      const montoBS = divisaABs(precioDivisa);
 
       html += `
           <tr class="border-top">
@@ -944,9 +989,7 @@ addEventListener("DOMContentLoaded", async function () {
           <td class="border-top"><div class="fw-bolder">DOCTOR:</div> ${element.doctor}</td>
           <td class="border-top">
             <div class="fw-bolder">PRECIO:</div>
-            <p class="mb-1">${montoBS} BS</p>
-            <p class="m-0 p-0">o</p>
-            <p class="mt-1">${precioDivisa.toFixed(2)} $</p>
+            <p class="mb-1">${montoDualHTML(montoBS, TIPO_CAMBIO)}</p>
           </td>
           <td class="border-top"></td>
 
@@ -980,9 +1023,10 @@ addEventListener("DOMContentLoaded", async function () {
     dataInsumo.forEach((element, index) => {
       const cantidad = parseInt(element.cantidad) || 0;
       const precioUnitario = precioUnitarioInsumo(element); // ya con IVA aplicado
-      const subtotalDivisa = precioUnitario * cantidad;
-      const aplicaIVA = String(element.iva) === "1";
-      const ivaDivisa = aplicaIVA ? (precioUnitario - num(element.precio)) * cantidad : 0;
+      const precioUnitarioBs = divisaABs(precioUnitario);
+      const precioBaseBs = divisaABs(element.precio);
+      const subtotalBs = precioUnitarioBs * cantidad;
+      const ivaBs = Math.max(0, precioUnitarioBs - precioBaseBs) * cantidad;
 
       html += `
           <tr class="border-top tr">
@@ -991,13 +1035,11 @@ addEventListener("DOMContentLoaded", async function () {
           <td class="border-top nombre"><div class="fw-bolder">Medida:</div> ${element.medida}</td>
           <td class="border-top"><div class="fw-bolder">CANTIDAD:</div> ${cantidad}</td>
           <td class="border-top"><div class="fw-bolder">PRECIO:</div>
-          ${(num(element.precio) * TIPO_CAMBIO).toFixed(2)} BS</td>
-          <td class="border-top"><div class="fw-bolder">IVA:</div>${(ivaDivisa * TIPO_CAMBIO).toFixed(2)} BS</td>
+          ${montoDualHTML(precioBaseBs, TIPO_CAMBIO)}</td>
+          <td class="border-top"><div class="fw-bolder">IVA:</div>${montoDualHTML(ivaBs, TIPO_CAMBIO)}</td>
           <td class="border-top">
             <div class="fw-bolder">SUB-TOTAL:</div>
-            <p class="mb-1">${(subtotalDivisa * TIPO_CAMBIO).toFixed(2)} BS</p>
-            <p class="m-0 p-0">o</p>
-            <p class="mt-1">${subtotalDivisa.toFixed(2)} $</p>
+            <p class="mb-1">${montoDualHTML(subtotalBs, TIPO_CAMBIO)}</p>
           </td>
           <td class="border-top"></td>
 
@@ -1061,6 +1103,211 @@ addEventListener("DOMContentLoaded", async function () {
     alertSuccess("Se vacio la factura.");
   };
 
+  // ══════════════════════════════════════════════════════════════════════
+  //  FLUJO DE PAGO (único y mixto)
+  // ══════════════════════════════════════════════════════════════════════
+  // Estado:
+  //   metodosPago -> métodos marcados en #modal-pago.
+  //   lineasPago  -> filas de monto de #modal-validacion. El importe SIEMPRE
+  //                  se guarda en céntimos de bolívar, sin importar la moneda
+  //                  con la que se escriba en pantalla.
+  //
+  // Secuencia (guía Promp_metodo_pago.md):
+  //   1. #modal-pago         elegir uno o varios métodos.
+  //   2. #modal-validacion   repartir montos y ver pendiente/vuelto en Bs y USD.
+  //   3. #modal-confirmacion revisar el detalle y confirmar.
+  //
+  // Reglas:
+  //   · Todas las combinaciones pasan por la verificación: es la única pantalla
+  //     donde se registra lo que recibió el cajero y se calcula el vuelto. Un
+  //     único método llega con el total precargado, así que avanzar es un clic.
+  //   · Pago Móvil y Transferencia no se combinan: comparten una sola
+  //     `referencia` en la factura.
+  //   · El vuelto solo puede salir de métodos que lo admiten (efectivo y
+  //     divisas) y se descuenta del monto NETO que viaja al servidor, porque
+  //     el backend exige que la suma de montos sea exactamente el total.
+
+  const MODAL_PAGO = "modal-pago";
+  const MODAL_VALIDACION = "modal-validacion";
+  const MODAL_CONFIRMACION = "modal-confirmacion";
+
+  /** Métodos de pago que exigen referencia bancaria. */
+  const METODOS_CON_REFERENCIA = ["pago movil", "pago móvil", "transferencia"];
+
+  const normalizarTexto = (v) => String(v ?? "").trim().toLowerCase();
+
+  const requiereReferencia = (nombre) =>
+    METODOS_CON_REFERENCIA.includes(normalizarTexto(nombre));
+
+  /** Divisas se capturan en USD; el resto en bolívares. */
+  const esDivisa = (nombre) => /divisa|d[oó]lar|zelle|usd/.test(normalizarTexto(nombre));
+
+  /** Solo el efectivo y las divisas pueden devolver vuelto. */
+  const admiteVuelto = (nombre) =>
+    /efectivo|divisa|d[oó]lar|zelle|usd/.test(normalizarTexto(nombre));
+
+  // ── Importes ──────────────────────────────────────────────────────────
+  // Todo el flujo trabaja en céntimos enteros: sumar 0.1 + 0.2 en floats
+  // hacía que el total "no cuadrara" por un céntimo y el botón nunca se
+  // habilitara.
+
+  const aCentimos = (v) => Math.round(num(v) * 100);
+  const deCentimos = (c) => c / 100;
+
+  /** Importe en bolívares: `Bs. 1.949.706,00`. */
+  const enBs = (cent) => formatBS(deCentimos(Math.round(num(cent))));
+
+  /** Equivalente en dólares ("" si todavía no hay tasa). */
+  const enUsd = (cent) =>
+    TIPO_CAMBIO > 0 ? formatUSD(deCentimos(Math.round(num(cent))) / TIPO_CAMBIO) : "";
+
+  /**
+   * Bloque estándar de doble moneda de la guía:
+   * `$ 50.00` resaltado + `Bs. 44.311,50` atenuado.
+   */
+  const dual = (cent, principal = "USD") =>
+    montoDualHTML(deCentimos(Math.round(num(cent))), TIPO_CAMBIO, principal);
+
+  /** Texto para los avisos: no admite HTML, así que va en una sola línea. */
+  const textoDual = (cent) => {
+    const bolivares = enBs(cent);
+    const dolares = enUsd(cent);
+    return dolares ? `${bolivares} (${dolares})` : bolivares;
+  };
+
+  const totalFacturaCent = () =>
+    Math.max(0, aCentimos(inputTotalFactura?.value));
+
+  const setTexto = (id, texto) => {
+    const el = byId(id);
+    if (el) el.innerText = texto;
+  };
+
+  const setHTML = (id, html) => {
+    const el = byId(id);
+    if (el) el.innerHTML = html;
+  };
+
+  const resaltar = (id, activo, clase) => {
+    const el = byId(id);
+    if (el) el.classList.toggle(clase, activo);
+  };
+
+  /**
+   * Convierte lo escrito por el cajero a céntimos de bolívar.
+   * Acepta "1.234,56", "1234.56", "Bs. 45.643,25" y "$ 50.00"; en modo divisa
+   * multiplica por la tasa. Devuelve null si el texto no es un número.
+   */
+  const parsearMontoCent = (texto, moneda) => {
+    const valor = parseMonto(texto);
+    if (valor === null || valor < 0) return null;
+
+    const enBolivares = moneda === "USD" ? valor * TIPO_CAMBIO : valor;
+    if (!Number.isFinite(enBolivares)) return null;
+
+    return Math.round(enBolivares * 100);
+  };
+
+  /** Importe editable que se pinta en el input según la moneda de la línea. */
+  const formatearMontoLinea = (linea) => {
+    if (!linea || !linea.montoCent) return "";
+    if (linea.moneda === "USD") {
+      // 4 decimales: con 2, el ida y vuelta USD -> Bs -> USD movía el importe
+      // varios bolívares por el redondeo.
+      return TIPO_CAMBIO > 0
+        ? valorEditable(deCentimos(linea.montoCent) / TIPO_CAMBIO, 4)
+        : "";
+    }
+    return valorEditable(deCentimos(linea.montoCent), 2);
+  };
+
+  /** Equivalencia de la línea, siempre con las dos monedas. */
+  const textoEquivalencia = (linea) => {
+    if (!linea || !Number.isFinite(linea.montoCent) || linea.montoCent <= 0) return "";
+    return `Ingresado: ${dual(linea.montoCent)}`;
+  };
+
+  // ── Navegación entre modales ─────────────────────────────────────────
+  /**
+   * Abre un modal cerrando antes el actual. Bootstrap no soporta dos modales
+   * abiertos a la vez: al abrirlos en paralelo el backdrop queda huérfano y
+   * el <body> pierde `modal-open` (la página de atrás se puede desplazar).
+   */
+  const abrirModalSecuencial = (idDestino) => {
+    const destino = byId(idDestino);
+    if (!destino) return;
+
+    const actual = Array.from(document.querySelectorAll(".modal.show")).find(
+      (modal) => modal !== destino,
+    );
+
+    let abierto = false;
+    const abrir = () => {
+      if (abierto) return;
+      abierto = true;
+      bootstrap.Modal.getOrCreateInstance(destino).show();
+    };
+
+    if (!actual) {
+      abrir();
+      return;
+    }
+
+    actual.addEventListener("hidden.bs.modal", abrir, { once: true });
+    bootstrap.Modal.getOrCreateInstance(actual).hide();
+    // Red de seguridad: si la animación no dispara el evento (modal ya
+    // oculto), el destino se abre igualmente.
+    window.setTimeout(abrir, 600);
+  };
+
+  // ── Selección de métodos ─────────────────────────────────────────────
+
+  const etiquetaMetodo = (check) =>
+    (check.closest(".form-check")?.querySelector(".form-check-label")?.innerText ??
+      "").trim();
+
+  const leerMetodosSeleccionados = () =>
+    Array.from(document.querySelectorAll(".tiposDePago"))
+      .filter((check) => check.checked)
+      .map((check) => ({ id: String(check.value), nombre: etiquetaMetodo(check) }));
+
+  const mostrarAvisoPago = (texto) => {
+    const aviso = byId("avisoPago");
+    if (!aviso) return;
+    aviso.innerText = texto;
+    aviso.classList.toggle("d-none", !texto);
+  };
+
+  /** Sincroniza el estado, el aviso y el botón "Siguiente" del modal de pago. */
+  const actualizarSeleccionPago = () => {
+    let seleccion = leerMetodosSeleccionados();
+
+    // Pago Móvil y Transferencia comparten la única `referencia` de la
+    // factura, así que no se pueden combinar. Se conserva el último marcado.
+    const conReferencia = seleccion.filter((m) => requiereReferencia(m.nombre));
+    if (conReferencia.length > 1) {
+      const conservado = conReferencia[conReferencia.length - 1];
+      document.querySelectorAll(".tiposDePago").forEach((check) => {
+        if (
+          check.checked &&
+          String(check.value) !== conservado.id &&
+          requiereReferencia(etiquetaMetodo(check))
+        ) {
+          check.checked = false;
+        }
+      });
+      seleccion = leerMetodosSeleccionados();
+      mostrarAvisoPago(
+        `Solo puede usar un método con referencia a la vez. Se mantuvo ${conservado.nombre}.`,
+      );
+    } else {
+      mostrarAvisoPago("");
+    }
+
+    metodosPago = seleccion;
+    btnTipoDePago.classList.toggle("d-none", metodosPago.length === 0);
+  };
+
   const mostrarTiposDePago = async () => {
     try {
       const result = await executePetition(
@@ -1072,242 +1319,496 @@ addEventListener("DOMContentLoaded", async function () {
       }
 
       let html = "";
-      if (result.length > 0) {
-        result.forEach((res, index) => {
-          html += `
-            <div class="form-check form-switch d-flex align-items-center">
+      result.forEach((res, index) => {
+        const nombre = String(res.nombre ?? "");
+        // La moneda en la que se captura el método se muestra en la propia
+        // fila: evita que el cajero escriba dólares en un campo de bolívares.
+        const moneda = esDivisa(nombre) ? "USD" : "Bs.";
+
+        html += `
+          <div class="form-check form-switch d-flex align-items-center">
             <div>
-              <input class="form-check-input tiposDePago" type="checkbox" role="switch" id="flexSwitchCheckDefault${index}"
-                value="${res.id_pago}">
+              <input class="form-check-input tiposDePago" type="checkbox" role="switch"
+                id="flexSwitchCheckDefault${index}" value="${res.id_pago}">
             </div>
-            <div><label class="form-check-label mt-2" for="flexSwitchCheckDefault${index}">
-               ${res.nombre}
-              </label></div>
-
-          </div>
-          `;
-        });
-      }
-      bodyModalPago.innerHTML = html;
-
-      //aqui se ejecuta el checkeo de los tipos de  llamando a la funcion checkearTiposDePago
-      const tiposDePago = document.querySelectorAll(".tiposDePago");
-
-      tiposDePago.forEach((tipoDePago) => {
-        tipoDePago.addEventListener("change", function () {
-          checkearTiposDePago(tiposDePago);
-        });
+            <div class="flex-grow-1">
+              <label class="form-check-label mt-2" for="flexSwitchCheckDefault${index}">
+                ${nombre}
+              </label>
+            </div>
+            <span class="badge bg-light text-dark border" title="Moneda del método">${moneda}</span>
+          </div>`;
       });
 
-      //funcionalidad de los checkbox
+      // Solo se reemplaza la lista: el resumen del modal se conserva.
+      const lista = byId("listaMetodosPago");
+      if (lista) lista.innerHTML = html;
+
+      document.querySelectorAll(".tiposDePago").forEach((check) => {
+        check.addEventListener("change", actualizarSeleccionPago);
+      });
+
+      actualizarSeleccionPago();
     } catch (error) {
-      alertError("Error", "error: " + error);
-    }
-  };
-
-  /**
-   * Metodos de pago que exigen referencia bancaria.
-   * Antes la comparacion era por texto ("Pago Movil"/"Transferencia"), lo que
-   * hacia que un metodo renombrado en la BD se quedara sin validacion.
-   */
-  const METODOS_CON_REFERENCIA = ["pago movil", "transferencia", "pago móvil"];
-
-  const requiereReferencia = (nombre) =>
-    METODOS_CON_REFERENCIA.includes(String(nombre).trim().toLowerCase());
-
-  //funcion para realizar las debidas validaciones de los tipos de pago
-  const checkearTiposDePago = (tiposDePago) => {
-    listTypePago = [];
-
-    tiposDePago.forEach((tipo) => {
-      if (tipo.checked) {
-        const label = tipo.closest(".form-check")?.querySelector(".form-check-label");
-        listTypePago.push({
-          id: tipo.value,
-          name: (label?.innerText ?? "").trim(),
-        });
-      }
-    });
-
-    // Restablecer siempre el estado del boton antes de evaluar.
-    btnTipoDePago.classList.add("d-none");
-
-    if (listTypePago.length === 0) {
-      if (divTypePagoCofirm) divTypePagoCofirm.innerHTML = "";
-      return;
-    }
-
-    // Pago Movil y Transferencia son excluyentes entre si (no tiene sentido
-    // splits por dos canales que exigen el mismo tipo de referencia).
-    const conRef = listTypePago.filter((t) => requiereReferencia(t.name));
-    if (conRef.length > 1) {
       alertError(
         "Error",
-        "Solo puede elegir un metodo de pago con referencia (Pago Movil o Transferencia).",
+        "No se pudieron cargar los métodos de pago: " + (error?.message ?? error),
       );
-      tiposDePago.forEach((t) => {
-        if (t.checked && requiereReferencia(t.name)) t.checked = false;
-      });
-      listTypePago = listTypePago.filter((t) => !requiereReferencia(t.name));
-      if (listTypePago.length === 0) return;
-    }
-
-    const necesitaInput = listTypePago.some((t) => requiereReferencia(t.name));
-    const montoTotal = num(inputTotalFactura?.value);
-
-    // Si hay un metodo con referencia se muestra el campo de referencia.
-    if (necesitaInput && divReferencia) {
-      divReferencia.classList.remove("d-none");
-      // La referencia debe validarse de verdad: se limpia el estado previo
-      // para que el usuario no herede el "valido" forzado de otra combinacion.
-      inputRefencia.parentElement.classList.remove("valido", "invalido");
-    } else if (divReferencia) {
-      divReferencia.classList.add("d-none");
-      inputRefencia.parentElement.classList.remove("valido", "invalido");
-    }
-
-    btnTipoDePago.classList.remove("d-none");
-
-    if (necesitaInput) {
-      // Varios metodos -> modal de validacion con el desglose de montos.
-      btnTipoDePago.setAttribute("data-bs-target", "#modal-validacion");
-    } else {
-      // Metodos sin referencia: se paga el total de una sola vez.
-      let htmlPAgo = "";
-      listTypePago.forEach((type) => {
-        type.monto = montoTotal;
-        htmlPAgo += `
-        <input type="hidden" name="formasDePago[]" value="${type.id}">
-        <input type="hidden" name="montosDePago[]" value="${montoTotal}">
-
-        <p>${type.name} monto: ${montoTotal} BS</p>
-        `;
-      });
-      if (divTypePagoCofirm) divTypePagoCofirm.innerHTML = htmlPAgo;
-
-      // Limpiar referencia por si venia de una combinacion anterior.
-      if (inputReferenciaConfir) inputReferenciaConfir.value = "";
-      if (pReferencia) pReferencia.innerText = "";
-
-      btnTipoDePago.setAttribute("data-bs-target", "#modal-confirmacion");
     }
   };
 
-  //funcion para llenar el el modal de validacion
-  const validarTypeDePago = () => {
-    let htmlTypePago = "";
-    listTypePago.forEach((list) => {
-      htmlTypePago += `
-        <label class="label-custom">${list.name}</label>
-        <div class="campo-custom">
-                        <div class="input-custom">
-                            <span class="icono-izq">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cash-coin azul" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0z"></path>
-                                    <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1h-.003zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195l.054.012z"></path>
-                                    <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083c.058-.344.145-.678.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1H1z"></path>
-                                    <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z"></path>
-                                </svg>
-                            </span>
-                            <input data-name="${list.name}"   class="form-control txt-custom input-validar input-modal-valida  input-modal-monto inputs precioBolivares" name="precio" type="text" placeholder="Monto en ${list.name}">
-                            <span class="icono-der">
-                                <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
-                                </svg>
-                                <svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <p class="error-msg d-none p-error-validaciones"></p>
-                    </div>
-        `;
-    });
+  // ── Validación del pago ──────────────────────────────────────────────
 
-    if (divInputValidation) divInputValidation.innerHTML = htmlTypePago;
+  const ICONO_DINERO = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cash-coin azul" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0z"></path>
+    <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1h-.003zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195l.054.012z"></path>
+    <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083c.058-.344.145-.678.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1H1z"></path>
+    <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z"></path>
+  </svg>`;
 
-    //inicializar validacion de los input
-    const validarForm = inicializarValidacionFormulario(divModalValidacion);
+  const ICONO_CHECK = `<svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+  </svg>`;
 
-    // Solo los campos de monto se suman; la referencia NO es un monto.
-    // Antes se usaba ".input-modal-valida", que también incluía #inputRefencia,
-    // y la referencia se sumaba como si fueran bolivares.
-    const inputsMonto = () =>
-      Array.from(document.querySelectorAll(".input-modal-monto"));
+  const ICONO_ERROR = `<svg class="error d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+  </svg>`;
 
-    const totalIngresado = () =>
-      inputsMonto().reduce((acc, inp) => acc + num(inp.value), 0);
+  /**
+   * Pinta el estado de un campo (borde, icono y mensaje) sin depender de
+   * expresionesModulares: su expresión de "precio" rechaza importes como
+   * 0.50 o 1.00, que aquí son perfectamente válidos.
+   */
+  const marcarCampo = (input, mensajeError) => {
+    if (!input) return;
+    const campo = input.closest(".campo-custom");
+    const contenedor = input.closest(".input-custom");
+    const check = campo?.querySelector(".check");
+    const error = campo?.querySelector(".error");
+    const pError = campo?.querySelector(".error-msg");
 
-    const refrescarBoton = () => {
-      const camposOk = validarForm();
-      const montoOk = sameMoney(totalIngresado(), inputTotalFactura?.value);
+    const vacio = String(input.value ?? "").trim() === "";
+    const ok = !mensajeError;
 
-      btnValidacion.classList.toggle("d-none", !(camposOk && montoOk));
-
-      // La alerta se muestra solo mientras el formulario está incompleto,
-      // para explicar por qué el botón "Siguiente" sigue oculto.
-      const alerta = document.querySelector(".alerta-varios-metodos");
-      if (alerta) alerta.classList.toggle("d-none", camposOk && montoOk);
-    };
-
-    // Se escucha en los eventos de entrada, no solo en "keyup": antes, pegar con
-    // el raton no activaba nada y el boton Siguiente quedaba oculto para siempre.
-    document.querySelectorAll("#divModalValidacion .input-validar").forEach((input) => {
-      ["keyup", "input", "paste", "change"].forEach((evt) =>
-        input.addEventListener(evt, refrescarBoton),
-      );
-    });
-
-    refrescarBoton();
+    contenedor?.classList.toggle("valido", ok);
+    contenedor?.classList.toggle("invalido", !ok && !vacio);
+    if (check) check.classList.toggle("d-none", !ok);
+    if (error) error.classList.toggle("d-none", ok || vacio);
+    if (pError) {
+      pError.innerText = ok || vacio ? "" : mensajeError;
+      pError.classList.toggle("d-none", ok || vacio);
+    }
   };
 
-  const showTypePagoCofirm = () => {
-    // La referencia solo se copia si el campo esta visible y tiene 4 digitos.
-    const referenciaVisible =
-      divReferencia && !divReferencia.classList.contains("d-none");
-    const referencia = referenciaVisible ? inputRefencia.value.trim() : "";
+  const marcarReferencia = () => {
+    if (!inputRefencia) return;
+    const valor = inputRefencia.value.trim();
+    marcarCampo(
+      inputRefencia,
+      /^\d{4}$/.test(valor) ? "" : "La referencia debe tener los últimos 4 dígitos.",
+    );
+  };
 
-    if (referencia && !/^\d{4}$/.test(referencia)) {
-      alertError("Error", "La referencia debe tener los ultimos 4 digitos.");
+  /** Reparte el vuelto entre los métodos que pueden devolverlo. */
+  const netearPagos = (exceso) => {
+    const netas = lineasPago.map((linea) => ({
+      ...linea,
+      neto: Math.max(0, linea.montoCent || 0),
+    }));
+
+    let resto = Math.max(0, exceso);
+    const orden = netas
+      .map((linea, index) => ({ index, linea }))
+      .filter(({ linea }) => admiteVuelto(linea.nombre))
+      .sort((a, b) => b.linea.neto - a.linea.neto);
+
+    for (const { index } of orden) {
+      if (resto <= 0) break;
+      // Cada método debe conservar al menos un céntimo: el backend rechaza
+      // cualquier monto en cero.
+      const disponible = Math.max(0, netas[index].neto - 1);
+      const quitar = Math.min(resto, disponible);
+      netas[index].neto -= quitar;
+      resto -= quitar;
+    }
+
+    return { netas, resto };
+  };
+
+  const calcularEstadoPago = () => {
+    const total = totalFacturaCent();
+    const pagado = lineasPago.reduce(
+      (acc, linea) =>
+        acc + (Number.isFinite(linea.montoCent) ? Math.max(0, linea.montoCent) : 0),
+      0,
+    );
+    const falta = Math.max(0, total - pagado);
+    const vuelto = Math.max(0, pagado - total);
+    return { total, pagado, falta, vuelto };
+  };
+
+  /** Devuelve el primer problema que impide continuar (o null si todo está bien). */
+  const validarPago = () => {
+    const estado = calcularEstadoPago();
+
+    if (estado.total <= 0) return "La factura no tiene ningún monto que cobrar.";
+    if (lineasPago.length === 0) return "Seleccione al menos un método de pago.";
+
+    // Montos: todos deben existir y ser mayores a cero.
+    const sinMonto = lineasPago.find(
+      (linea) => !Number.isFinite(linea.montoCent) || linea.montoCent <= 0,
+    );
+    if (sinMonto) return `Indique el monto de ${sinMonto.nombre}.`;
+
+    if (estado.falta > 0) {
+      return `Falta ${textoDual(estado.falta)} por cubrir.`;
+    }
+
+    if (estado.vuelto > 0) {
+      const { resto } = netearPagos(estado.vuelto);
+      if (resto > 0) {
+        return `El vuelto de ${textoDual(estado.vuelto)} no puede entregarse con los métodos elegidos. Ajuste los montos o reduzca el efectivo/divisas.`;
+      }
+    }
+
+    const necesitaReferencia = lineasPago.some((linea) =>
+      requiereReferencia(linea.nombre),
+    );
+    if (necesitaReferencia && !/^\d{4}$/.test((inputRefencia?.value ?? "").trim())) {
+      return "La referencia debe tener los últimos 4 dígitos.";
+    }
+
+    return null;
+  };
+
+  const actualizarBotonValidacion = () => {
+    if (!btnValidacion) return;
+    const problema = validarPago();
+    btnValidacion.disabled = problema !== null;
+
+    const alerta = byId("alertaValidacion");
+    if (alerta) {
+      alerta.innerText = problema ?? "";
+      alerta.classList.toggle("d-none", problema === null);
+    }
+
+    if (divReferencia && !divReferencia.classList.contains("d-none")) {
+      marcarReferencia();
+    }
+  };
+
+  /** Construye y pinta las filas de monto del modal de validación. */
+  const renderizarLineasPago = () => {
+    if (!divInputValidation) return;
+
+    divInputValidation.innerHTML = lineasPago
+      .map((linea, index) => {
+        const enUsd = linea.moneda === "USD";
+        return `
+        <div class="linea-pago border rounded p-2 mb-2" data-index="${index}">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="label-custom mb-0" for="monto-pago-${index}">${linea.nombre}</label>
+            <button type="button" class="btn btn-link p-0 small cambiar-moneda" data-index="${index}">
+              ${enUsd ? "Ver en Bs" : "Ver en USD"}
+            </button>
+          </div>
+          <div class="campo-custom">
+            <div class="input-custom">
+              <span class="icono-izq">${ICONO_DINERO}</span>
+              <input id="monto-pago-${index}" class="form-control txt-custom input-modal-monto"
+                data-index="${index}" type="text" inputmode="decimal" autocomplete="off"
+                placeholder="Monto en ${enUsd ? "USD" : "Bs"}">
+              <span class="icono-der">${ICONO_CHECK}${ICONO_ERROR}</span>
+            </div>
+            <p class="error-msg d-none p-error-validaciones"></p>
+          </div>
+          <p class="equivalente-moneda small  mb-0" data-index="${index}"></p>
+        </div>`;
+      })
+      .join("");
+
+    // Valor inicial: si hay un único método se precarga el total; con varios
+    // el cajero decide cómo repartirlo.
+    divInputValidation.querySelectorAll(".input-modal-monto").forEach((input) => {
+      const index = Number(input.dataset.index);
+      const linea = lineasPago[index];
+      if (!linea) return;
+      input.value = formatearMontoLinea(linea);
+
+      input.addEventListener("input", () => {
+        linea.montoCent = parsearMontoCent(input.value, linea.moneda);
+        refrescarResumenesPago();
+      });
+
+      // Al salir del campo se muestra el importe ya normalizado.
+      input.addEventListener("blur", () => {
+        if (!input.value.trim()) return;
+        input.value = formatearMontoLinea(linea);
+        refrescarResumenesPago();
+      });
+
+      // Enter avanza como el botón "Siguiente" (no recarga la página).
+      input.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        input.blur();
+        if (!btnValidacion.disabled) btnValidacion.click();
+      });
+    });
+
+    // Conversión bidireccional: el importe canónico (céntimos de bolívar) no
+    // cambia, solo la forma de mostrarlo.
+    divInputValidation.querySelectorAll(".cambiar-moneda").forEach((boton) => {
+      boton.addEventListener("click", () => {
+        const index = Number(boton.dataset.index);
+        const linea = lineasPago[index];
+        if (!linea) return;
+
+        if (linea.moneda !== "USD" && TIPO_CAMBIO <= 0) {
+          alertError("Error", "No hay tasa de cambio disponible para mostrar el monto en divisa.");
+          return;
+        }
+
+        linea.moneda = linea.moneda === "USD" ? "BS" : "USD";
+        boton.innerText = linea.moneda === "USD" ? "Ver en Bs" : "Ver en USD";
+
+        const input = divInputValidation.querySelector(
+          `.input-modal-monto[data-index="${index}"]`,
+        );
+        if (input) {
+          input.value = formatearMontoLinea(linea);
+          input.placeholder = `Monto en ${linea.moneda === "USD" ? "USD" : "Bs"}`;
+          input.focus();
+        }
+
+        refrescarResumenesPago();
+      });
+    });
+
+    refrescarResumenesPago();
+  };
+
+  /** Prepara el reparto de montos del modal de validación. */
+  const prepararValidacion = () => {
+    const totalCent = totalFacturaCent();
+    if (totalCent <= 0) {
+      alertError("Error", "La factura no tiene ningún monto que cobrar.");
       return false;
     }
 
-    if (inputReferenciaConfir) inputReferenciaConfir.value = referencia || "0";
-    if (pReferencia) {
-      pReferencia.innerText = referencia
-        ? `Numero de Referencia: ${referencia}`
-        : "";
+    metodosPago = leerMetodosSeleccionados();
+    if (metodosPago.length === 0) return false;
+
+    if (metodosPago.some((m) => esDivisa(m.nombre)) && TIPO_CAMBIO <= 0) {
+      alertError("Error", "No hay tasa de cambio disponible. Actualice la tasa e intente de nuevo.");
+      return false;
     }
 
-    // Los montos se toman SOLO de los inputs de monto, en el mismo orden que
-    // listTypePago (antes se emparejaban por indice sobre un NodeList que
-    // incluía la referencia, corrriendo el importe de los métodos).
-    const inputsMonto = Array.from(document.querySelectorAll(".input-modal-monto"));
-    listTypePago.forEach((type, index) => {
-      type.monto = num(inputsMonto[index]?.value);
-    });
+    const unico = metodosPago.length === 1;
+    lineasPago = metodosPago.map((metodo) => ({
+      id: metodo.id,
+      nombre: metodo.nombre,
+      moneda: esDivisa(metodo.nombre) ? "USD" : "BS",
+      montoCent: unico ? totalCent : 0,
+    }));
 
-    let htmlPAgo = "";
-    listTypePago.forEach((type) => {
-      htmlPAgo += `
-        <input type="hidden" name="formasDePago[]" value="${type.id}">
-        <input type="hidden" name="montosDePago[]" value="${type.monto}">
+    const necesitaReferencia = lineasPago.some((linea) =>
+      requiereReferencia(linea.nombre),
+    );
+    if (divReferencia) divReferencia.classList.toggle("d-none", !necesitaReferencia);
+    if (!necesitaReferencia && inputRefencia) {
+      inputRefencia.value = "";
+      marcarCampo(inputRefencia, "");
+    }
 
-        <p>${type.name} monto: ${type.monto} Bs</p>
-        `;
-    });
-
-    if (divTypePagoCofirm) divTypePagoCofirm.innerHTML = htmlPAgo;
+    renderizarLineasPago();
     return true;
   };
 
-  btnTipoDePago.addEventListener("click", function () {
-    validarTypeDePago();
+  /** Lleva los montos al formulario de confirmación, netos de vuelto. */
+  const construirConfirmacion = () => {
+    const problema = validarPago();
+    if (problema) {
+      alertError("Error", problema);
+      return false;
+    }
+
+    const estado = calcularEstadoPago();
+    const { netas, resto } = netearPagos(estado.vuelto);
+    if (resto > 0) {
+      alertError(
+        "Error",
+        `El vuelto de ${textoDual(estado.vuelto)} no puede entregarse con los métodos elegidos.`,
+      );
+      return false;
+    }
+
+    const usaReferencia = lineasPago.some((linea) =>
+      requiereReferencia(linea.nombre),
+    );
+    const referencia = usaReferencia ? (inputRefencia?.value ?? "").trim() : "";
+
+    if (inputReferenciaConfir) {
+      inputReferenciaConfir.value = usaReferencia ? referencia : "0";
+    }
+    if (pReferencia) {
+      pReferencia.innerText = usaReferencia
+        ? `Número de referencia: ${referencia}`
+        : "";
+    }
+
+    let html = "";
+    netas.forEach((linea) => {
+      const recibido = Math.max(0, linea.montoCent || 0);
+      const cambio = Math.max(0, recibido - linea.neto);
+      html += `
+        <input type="hidden" name="formasDePago[]" value="${linea.id}">
+        <input type="hidden" name="montosDePago[]" value="${deCentimos(linea.neto).toFixed(2)}">
+        <div class="d-flex justify-content-between align-items-start mb-1">
+          <div>
+            <p class="mb-0">${linea.nombre}</p>
+            ${
+              cambio > 0
+                ? `<p class=" small mb-0">Recibido ${dual(recibido)} · Vuelto ${dual(cambio)}</p>`
+                : ""
+            }
+          </div>
+          <p class="mb-0 text-end">${dual(linea.neto)}</p>
+        </div>`;
+    });
+    if (divTypePagoCofirm) divTypePagoCofirm.innerHTML = html;
+
+    ponerMetricas("confirmacion", {
+      pagado: estado.pagado,
+      vuelto: estado.vuelto,
+      pendiente: 0,
+    });
+
+    return true;
+  };
+
+  /**
+   * Pinta una métrica del cobro con las dos monedas:
+   * `#<prefijo>PagadoUSD` (resaltado) y `#<prefijo>Pagado` (atenuado).
+   */
+  const ponerMetricas = (prefijo, valores) => {
+    const pares = [
+      ["Pagado", valores.pagado],
+      ["Vuelto", valores.vuelto],
+      ["Pendiente", valores.pendiente],
+    ];
+
+    pares.forEach(([nombre, cent]) => {
+      setTexto(`${prefijo}${nombre}USD`, enUsd(cent) || enBs(cent));
+      setTexto(`${prefijo}${nombre}`, enUsd(cent) ? enBs(cent) : "");
+    });
+
+    // El pendiente y el vuelto no pueden estar resaltados a la vez: si falta
+    // dinero, el aviso tiene prioridad sobre un vuelto que ya no aplica.
+    resaltar(`${prefijo}PendienteUSD`, valores.pendiente > 0, "text-danger");
+    resaltar(`${prefijo}VueltoUSD`, valores.vuelto > 0, "text-success");
+  };
+
+  // Refresca todos los resúmenes con el estado actual del reparto.
+  refrescarResumenesPago = () => {
+    const estado = calcularEstadoPago();
+    const hayTasa = TIPO_CAMBIO > 0;
+    const totalUsd = enUsd(estado.total);
+
+    setTexto("resumenTotalPagoUSD", totalUsd || enBs(estado.total));
+    setTexto("resumenTotalPagoBS", totalUsd ? enBs(estado.total) : "");
+    setTexto(
+      "resumenTasaPago",
+      hayTasa ? `1 USD = ${formatBS(TIPO_CAMBIO)}` : "sin tasa de cambio",
+    );
+
+    setTexto("validacionTotalUSD", totalUsd || enBs(estado.total));
+    setTexto("validacionTotalBS", totalUsd ? enBs(estado.total) : "");
+    ponerMetricas("validacion", {
+      pagado: estado.pagado,
+      vuelto: estado.vuelto,
+      pendiente: estado.falta,
+    });
+
+    const oculto = byId("input-validacion-pago");
+    if (oculto) oculto.value = deCentimos(estado.total).toFixed(2);
+
+    // Estado visual y equivalencia de cada línea.
+    lineasPago.forEach((linea, index) => {
+      const input = divInputValidation?.querySelector(
+        `.input-modal-monto[data-index="${index}"]`,
+      );
+      if (input) {
+        const invalido =
+          linea.montoCent === null ||
+          (Number.isFinite(linea.montoCent) && linea.montoCent <= 0);
+        marcarCampo(input, invalido ? "Ingrese un monto mayor a cero." : "");
+      }
+
+      const equivalencia = divInputValidation?.querySelector(
+        `.equivalente-moneda[data-index="${index}"]`,
+      );
+      if (equivalencia) equivalencia.innerHTML = textoEquivalencia(linea);
+    });
+
+    actualizarBotonValidacion();
+  };
+
+  // ── Eventos del flujo ────────────────────────────────────────────────
+
+  // El botón "Siguiente" del modal de cliente abre el de pagos. Antes lo hacía
+  // con data-bs-toggle y data-bs-dismiss en el mismo botón, y eso dejaba el
+  // backdrop descuadrado; ahora la transición la controla este listener.
+  botonPC?.addEventListener("click", () => {
+    actualizarSeleccionPago();
+    refrescarResumenesPago();
+    abrirModalSecuencial(MODAL_PAGO);
   });
 
-  btnValidacion.addEventListener("click", function () {
-    // Si la referencia no es valida no se deja avanzar al modal de confirmacion.
-    if (showTypePagoCofirm() === false) return;
+  btnTipoDePago.addEventListener("click", () => {
+    metodosPago = leerMetodosSeleccionados();
+    if (metodosPago.length === 0) return;
+
+    // Siempre se pasa por la verificación: allí se registra lo recibido y se
+    // muestra el vuelto en las dos monedas (guía de flujo de pago).
+    if (!prepararValidacion()) return;
+    abrirModalSecuencial(MODAL_VALIDACION);
+  });
+
+  btnValidacion.addEventListener("click", () => {
+    if (!construirConfirmacion()) return;
+    abrirModalSecuencial(MODAL_CONFIRMACION);
+  });
+
+  byId("btnAtrasValidacion")?.addEventListener("click", () => {
+    abrirModalSecuencial(MODAL_PAGO);
+  });
+
+  byId("btnAtrasConfirmacion")?.addEventListener("click", () => {
+    // Se vuelve a la pantalla donde el cajero puede corregir los montos.
+    abrirModalSecuencial(lineasPago.length > 0 ? MODAL_VALIDACION : MODAL_PAGO);
+  });
+
+  // La referencia solo admite 4 dígitos: se filtra al escribir para que el
+  // usuario no descubra el límite cuando el botón no se habilita.
+  inputRefencia?.addEventListener("input", () => {
+    inputRefencia.value = inputRefencia.value.replace(/\D/g, "").slice(0, 4);
+    marcarReferencia();
+    actualizarBotonValidacion();
+  });
+
+  byId(MODAL_PAGO)?.addEventListener("shown.bs.modal", () => {
+    actualizarSeleccionPago();
+    refrescarResumenesPago();
+  });
+
+  byId(MODAL_VALIDACION)?.addEventListener("shown.bs.modal", () => {
+    const primero = divInputValidation?.querySelector(".input-modal-monto");
+    if (primero) primero.focus();
+  });
+
+  byId(MODAL_CONFIRMACION)?.addEventListener("shown.bs.modal", () => {
+    refrescarResumenesPago();
   });
 
   //funcion para llenar el modal de confirmacion
@@ -1319,14 +1820,15 @@ addEventListener("DOMContentLoaded", async function () {
 
     data.forEach((element) => {
       const precioDivisa = num(element.precio);
-      const montoBS = precioDivisa * TIPO_CAMBIO;
+      const montoBS = divisaABs(precioDivisa);
 
       html += `
         <tr>
         <td><input type="hidden" name="servicios[]" value="${element.id_servicio}">
         <div class="fw-bolder">S/E:</div>${element.servicio}</td>
         <td><input type="hidden" name="doctores[]" value="${element.id_doctor ?? ""}"><div class="fw-bolder">DOCTOR:</div> ${element.doctor}</td>
-        <td><input type="hidden" name="precioServicio[]" value="${precioDivisa.toFixed(2)}"><div class="fw-bolder">PRECIO:</div> ${montoBS.toFixed(2)} BS</td>
+        <td class="text-end"><input type="hidden" name="precioServicio[]" value="${precioDivisa.toFixed(2)}">
+        <div class="fw-bolder">PRECIO:</div>${montoDualHTML(montoBS, TIPO_CAMBIO)}</td>
         </tr>`;
     });
 
@@ -1337,19 +1839,24 @@ addEventListener("DOMContentLoaded", async function () {
       // Se envia el precio unitario CON IVA y la tasa, para que el servidor
       // pueda validar y persistir el detalle sin depender del navegador.
       const precioUnitarioFinal = precioUnitarioInsumo(element);
-      const subtotalBS = precioUnitarioFinal * cantidad * TIPO_CAMBIO;
+      const precioUnitarioBs = divisaABs(precioUnitarioFinal);
+      const precioBaseBs = divisaABs(precioDivisa);
+      // Mismo redondeo por línea que el servidor: unitario en Bs * cantidad.
+      const subtotalBS = precioUnitarioBs * cantidad;
+      const ivaBS = Math.max(0, precioUnitarioBs - precioBaseBs) * cantidad;
 
       htmlInsumos += `
         <tr>
-        <td><input type="hidden" name="insumos[]" value="${element.id_insumo}">
-        <div class="fw-bolder">INSUMO:</div>${element.nombre}</td>
-
-        <td><div class="fw-bolder">MEDIDA:</div>${element.medida}</td>
-
-        <td><input type="hidden" name="cantidad[]" value="${cantidad}"><div class="fw-bolder">CANTIDAD</div> ${cantidad}</td>
-        <td><input type="hidden" name="precioInsumo[]" value="${precioUnitarioFinal.toFixed(2)}"><div class="fw-bolder">PRECIO:</div> ${(precioDivisa * TIPO_CAMBIO).toFixed(2)} BS</td>
-        <td><input type="hidden" name="aplicaIVA[]" value="${aplicaIVA ? 1 : 0}"><div class="fw-bolder">IVA:</div> ${(((precioUnitarioFinal - precioDivisa) * cantidad) * TIPO_CAMBIO).toFixed(2)} BS</td>
-        <td><div class="fw-bolder">SUB-TOTAL:</div>${subtotalBS.toFixed(2)} BS</td>
+        <td>
+          <input type="hidden" name="insumos[]" value="${element.id_insumo}">
+          <input type="hidden" name="cantidad[]" value="${cantidad}">
+          <input type="hidden" name="precioInsumo[]" value="${precioUnitarioFinal.toFixed(2)}">
+          <div class="fw-bolder">INSUMO:</div>${element.nombre}
+          <div class=" small">${element.medida} · ${cantidad} × ${montoDualHTML(precioBaseBs, TIPO_CAMBIO)}</div>
+        </td>
+        <td><input type="hidden" name="aplicaIVA[]" value="${aplicaIVA ? 1 : 0}">
+          <div class="fw-bolder">IVA:</div>${montoDualHTML(ivaBS, TIPO_CAMBIO)}</td>
+        <td class="text-end"><div class="fw-bolder">SUB-TOTAL:</div>${montoDualHTML(subtotalBS, TIPO_CAMBIO)}</td>
         </tr>`;
     });
 

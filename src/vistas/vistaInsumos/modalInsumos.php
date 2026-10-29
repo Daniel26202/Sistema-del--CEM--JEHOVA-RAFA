@@ -1,7 +1,7 @@
 <!-- Modal Mostrar Información -->
 <div class="modal fade" id="modal-exampleMostrar" tabindex="-1" aria-labelledby="exampleModalLabelMostrar" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content tamaño-modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-insumos-dialog">
+        <div class="modal-content tamaño-modal modal-insumos-content">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelMostrar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-info-circle-fill azul mb-1 me-2" viewBox="0 0 16 16">
@@ -13,7 +13,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="modalInfo">
+                <form id="modalInfo" class="modal-fields-grid">
 
                     <!-- Nombre -->
                     <div class="info-group mb-3">
@@ -149,13 +149,13 @@
 <!--MODAL REGISTRAR-->
 <!-- Modal Agregar y editar Insumos -->
 <div class="modal fade" id="exampleModalagregarInsumos" tabindex="-1" aria-labelledby="modalLabelInsumos" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content tamaño-modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-insumos-dialog">
+        <div class="modal-content tamaño-modal modal-insumos-content">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="modalLabelInsumos">Agregar Insumos</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class="form-validable" id="modalAgregarInsumos" enctype="multipart/form-data">
+            <form class="form-validable modal-insumos-form" id="modalAgregarInsumos" enctype="multipart/form-data">
 
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
                 <input type="hidden" name="idInsumoOculto" id="idInsumoOculto">
@@ -168,7 +168,7 @@
                     <div id="contenedor-img" class="mb-2"></div>
 
                     <div id="contenedor-img-editar" class="d-none mb-2">
-                        <img style="height: 200px;width: 100%;" id="imgEditar" src="">
+                        <img id="imgEditar" src="">
                     </div>
                     <!-- Imagen -->
                     <label class="label-custom">Imagen</label>
@@ -359,7 +359,7 @@
                     </div>
 
                     <!-- Precio en $ -->
-                    <label class="label-custom">Precio en $</label>
+                    <label class="label-custom">Precio en dólares (USD)</label>
                     <div class="campo-custom">
                         <div class="input-custom">
                             <span class="icono-izq">
@@ -367,7 +367,7 @@
                                     <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z" />
                                 </svg>
                             </span>
-                            <input class="form-control txt-custom input-validar inputs precioDolares" name="precioD" type="text" placeholder="Precio en $">
+                            <input class="form-control txt-custom input-validar inputs precioDolares" name="precioD" type="text" placeholder="Ej.: 10.50">
                             <span class="icono-der">
                                 <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
@@ -383,7 +383,7 @@
 
 
                     <!-- Precio en BS -->
-                    <label class="label-custom">Precio en BS</label>
+                    <label class="label-custom">Precio en bolívares (Bs.)</label>
                     <div class="campo-custom">
                         <div class="input-custom">
                             <span class="icono-izq">
@@ -394,7 +394,7 @@
                                     <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z" />
                                 </svg>
                             </span>
-                            <input class="form-control txt-custom input-validar inputs precioBolivares" name="precio" type="text" placeholder="Precio en BS">
+                            <input class="form-control txt-custom input-validar inputs precioBolivares" name="precio" type="text" placeholder="Ej.: 1.250,00 o 1250.00">
                             <span class="icono-der">
                                 <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />

@@ -367,7 +367,7 @@ addEventListener("DOMContentLoaded", function () {
 
   //llamar a la funcion para cargar la imagen del insumo
   imagenInsumo.addEventListener("change", function (e) {
-    let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
+    let newImg = `<img src='' class="img-fluid rounded">`;
 
     contenedorImg.classList.remove("d-none");
     contenedorImgEditar.classList.add("d-none");

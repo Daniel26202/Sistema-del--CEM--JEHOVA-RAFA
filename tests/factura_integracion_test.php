@@ -399,6 +399,71 @@ comprobar(
     'al encontrar cliente se quita el d-none del boton Siguiente'
 );
 
+echo "\n=== Formato de moneda (guía de flujo de pago) ===\n";
+$moneda = file_get_contents("$raiz/src/assets/js/generic/moneda.js");
+foreach (['formatUSD', 'formatBS', 'parseMonto', 'montoDualHTML'] as $fn) {
+    comprobar(
+        strpos($moneda, "export const $fn") !== false,
+        "moneda.js exporta $fn()"
+    );
+}
+comprobar(
+    strpos($js, 'from "./generic/moneda.js"') !== false,
+    'f.js usa los helpers de formato del proyecto'
+);
+comprobar(
+    strpos($js, 'formatUSD(') !== false && strpos($js, 'formatBS(') !== false,
+    'f.js formatea con formatUSD() / formatBS()'
+);
+comprobar(
+    strpos($js, 'total-modal-validacion') === false,
+    'el total de validación ya no se arma con texto suelto'
+);
+
+// Los tres modales del flujo (pago, verificación y confirmación) muestran los
+// importes en las dos monedas.
+foreach (['resumenTotalPagoUSD', 'resumenTotalPagoBS', 'resumenTasaPago',
+          'validacionTotalUSD', 'validacionTotalBS', 'validacionPagadoUSD',
+          'validacionPendienteUSD', 'validacionVueltoUSD', 'confirmacionPagadoUSD',
+          'confirmacionVueltoUSD', 'confirmacionPendienteUSD',
+          'divTypePagoCofirm', 'totalDeConfirmacion'] as $id) {
+    comprobar(strpos($modal, 'id="' . $id . '"') !== false, "#$id en los modales de pago");
+}
+
+echo "\n=== Tema claro/oscuro en los modales ===\n";
+$baseCss = file_get_contents("$raiz/src/assets/cssVista/base.css");
+$head = file_get_contents("$raiz/src/vistas/head/head.php");
+comprobar(
+    strpos($head, 'cssVista/base.css') !== false
+        && strpos($head, 'cssVista/base.css') > strpos($head, 'cssVista/style.css'),
+    'base.css se carga después de style.css: sus reglas de tema ganan'
+);
+comprobar(
+    preg_match('/:root\s*\{[^}]*--modal-texto:\s*#1b1a1a/s', $baseCss) === 1,
+    'en tema claro el texto de los modales es negro (--modal-texto)'
+);
+comprobar(
+    preg_match('/\[data-theme="dark"\]\s*\{[^}]*--modal-texto:\s*#ffffff/s', $baseCss) === 1,
+    'en tema oscuro el texto de los modales es blanco (--modal-texto)'
+);
+comprobar(
+    strpos($baseCss, 'background-color: var(--color-surface);') !== false,
+    'el fondo del modal sale de la variable de superficie del proyecto'
+);
+foreach ([
+    '.modal-content p,' => 'los párrafos heredan la tinta del modal',
+    '.modal-content .text-muted,' => 'el texto atenuado sigue el tema',
+    '.modal-content .text-dark,' => 'las clases de tinta oscura se corrigen en oscuro',
+    '.modal-content .table {' => 'las tablas del modal siguen el tema',
+    '.modal-content .form-control,' => 'los campos del modal siguen el tema',
+    '.modal-content .alert-primary {' => 'los avisos del modal siguen el tema',
+    '[data-theme="dark"] .modal-content .btn-close' => 'la X de Bootstrap se invierte en oscuro',
+    '[data-theme="dark"] .modal-content .text-danger' => 'el rojo se aclara en oscuro',
+    '[data-theme="dark"] .modal-content .text-success' => 'el verde se aclara en oscuro',
+] as $selector => $descripcion) {
+    comprobar(strpos($baseCss, $selector) !== false, $descripcion);
+}
+
 echo "\n=== Comprobacion final ===\n";
 printf("\n%d pruebas, %d fallos\n", $pruebas, $fallos);
 exit($fallos === 0 ? 0 : 1);
