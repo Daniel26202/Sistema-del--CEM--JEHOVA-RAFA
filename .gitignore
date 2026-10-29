@@ -31,6 +31,7 @@ src/config/backups/*.tmp
 src/config/backups/*.error.log
 src/config/backups/*.zip
 src/config/backups/*.rar
+tests/huracan/resultados/
 
 
 # Ignorar carpetas y archivos de agentes
