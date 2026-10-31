@@ -51,6 +51,9 @@ if (!empty($parametro)) {
 	<!-- Fundación de diseño: tokens, responsividad total y controles indestructibles.
 	     SIEMPRE la última: sus reglas ganan sobre el resto del sistema. -->
 	<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/base.css">
+	<?php if (in_array(($vistaActiva ?? ''), ['doctores', 'papelera'], true)): ?>
+		<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/doctores.css">
+	<?php endif; ?>
 
 </head>
 

@@ -1,0 +1,190 @@
+.vista-doctores {
+    min-height: 100vh;
+    height: auto !important;
+    padding-bottom: 1.5rem;
+}
+
+.vista-doctores .caja-contenedor-tabla {
+    max-width: 1440px;
+}
+
+.vista-doctores .caja-boton {
+    gap: 0.75rem;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+}
+
+.vista-doctores .caja-boton > button {
+    flex: 1 1 180px;
+    width: auto;
+    min-height: 42px;
+}
+
+.vista-doctores .caja-boton > div {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+.filtro-especialidades {
+    margin: 1.25rem 0;
+    padding: 1rem;
+    border: 1px solid var(--color-border, #dce5ef);
+    border-radius: 0.85rem;
+    background: var(--color-bg-card, #fdfdff);
+    color: var(--color-text-card, #1b1a1a);
+}
+
+.filtro-especialidades__titulo {
+    margin: 0;
+    color: var(--color-text-card, #1b1a1a);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.filtro-especialidades__ayuda {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-card, #1b1a1a);
+    opacity: 0.72;
+    font-size: 0.875rem;
+}
+
+.filtro-especialidades__encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.filtro-especialidades__toggle,
+.filtro-pagina {
+    min-height: 38px;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--color-primary, #387adf);
+    border-radius: 0.55rem;
+    background: transparent;
+    color: var(--color-primary, #387adf);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.filtro-especialidades__toggle:hover,
+.filtro-pagina:hover:not(:disabled) {
+    background: var(--color-primary, #387adf);
+    color: var(--color-primary-contrast, #ffffff);
+}
+
+.filtro-pagina:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.filtro-especialidades__botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.85rem;
+    min-height: 40px;
+}
+
+.filtro-especialidades__paginacion,
+.filtro-especialidades__controles {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+}
+
+.filtro-especialidades__paginacion {
+    margin-top: 0.85rem;
+    color: var(--color-text-card, #1b1a1a);
+    font-size: 0.85rem;
+}
+
+.filtro-especialidades__controles {
+    justify-content: flex-end;
+}
+
+.filtro-especialidades__pagina {
+    min-width: 7rem;
+    text-align: center;
+}
+
+.filtro-especialidad {
+    min-height: 40px;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--color-primary, #387adf);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-primary, #387adf);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.filtro-especialidad:hover,
+.filtro-especialidad:focus-visible,
+.filtro-especialidad.is-active {
+    background: var(--color-primary, #387adf);
+    color: var(--color-primary-contrast, #ffffff);
+}
+
+.filtro-especialidad:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-primary, #387adf) 35%, transparent);
+    outline-offset: 2px;
+}
+
+@media (max-width: 575.98px) {
+    .vista-doctores {
+        padding-inline: 0.5rem;
+    }
+
+    .vista-doctores .caja-contenedor-tabla {
+        width: 100% !important;
+        padding: 0.75rem !important;
+    }
+
+    .vista-doctores .caja-boton > button {
+        flex-basis: 100%;
+    }
+
+    .filtro-especialidades {
+        padding: 0.85rem;
+    }
+
+    .filtro-especialidades__encabezado {
+        align-items: flex-start;
+    }
+
+    .filtro-especialidades__toggle {
+        flex: 0 0 auto;
+    }
+
+    .filtro-especialidades__paginacion {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .filtro-especialidades__controles {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .filtro-especialidades__botones {
+        gap: 0.45rem;
+    }
+
+    .filtro-especialidad {
+        flex: 1 1 auto;
+        min-height: 42px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .filtro-especialidad {
+        transition: none;
+    }
+}

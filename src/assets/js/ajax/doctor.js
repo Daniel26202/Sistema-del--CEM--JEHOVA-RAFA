@@ -17,6 +17,11 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Doctores";
 
 let dataDoctor;
+let tablaDoctores;
+let especialidadesFiltro = [];
+let paginaEspecialidades = 0;
+const especialidadesPorPagina = 5;
+const especialidadesSeleccionadas = new Set();
 
 const modalGestionarEspecialidad = new bootstrap.Modal(
   document.getElementById("exampleModalConsultarEspecialidad"),
@@ -224,7 +229,7 @@ const readDoctor = async () => {
     if (!urlActual.includes("papelera")) metodo = "DoctoresAjax";
     else metodo = "papeleraDoctoresAjax";
 
-    let id_usuario = 0;
+    const esPapelera = urlActual.includes("papelera");
     const selector = ".exampleTable";
 
     // si ya existe DataTable, destrúyela
@@ -451,27 +456,280 @@ const readDoctor = async () => {
       hasPermision(id_rol_global, "Doctores", "editar", ".botonesEdi"); //editar
     };
 
-    // re-inicializa
-    initDataTable(
+    const doctores = esPapelera
+      ? null
+      : await cargarTodosLosDoctores(`${url}/${metodo}`);
+    if (!esPapelera) dataDoctor = doctores;
+
+    // La ruta existente pagina en el servidor; se recorren sus páginas una vez
+    // para que el filtro de especialidad pueda aplicarse sobre todo el directorio.
+    tablaDoctores = initDataTable(
       selector,
       `${url}/${metodo}`,
       columnsDoctores,
       (datosServer) => {
-        dataDoctor = [];
-        dataDoctor.push(...datosServer);
-        console.log(datosServer);
-        
+        if (esPapelera) dataDoctor = datosServer;
       },
       asignarEventos,
+      esPapelera
+        ? {}
+        : {
+            dataTable: {
+              serverSide: false,
+              ajax: null,
+              data: doctores,
+              deferRender: true,
+            },
+          },
     );
 
-    console.log(columnsDoctores);
+    if (!esPapelera) {
+      inicializarFiltroEspecialidades();
+      await actualizarFiltroEspecialidades();
+    }
 
     console.log("cargada...");
   } catch (error) {
     alertError("Error", error);
     console.log(error);
   }
+};
+
+const cargarTodosLosDoctores = async (endpoint) => {
+  const tamanoPagina = 100;
+
+  const solicitarPagina = async (inicio) => {
+    const parametros = new URLSearchParams({
+      draw: "1",
+      start: String(inicio),
+      length: String(tamanoPagina),
+      "search[value]": "",
+    });
+    const response = await fetch(`${endpoint}?${parametros.toString()}`, {
+      headers: { Accept: "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`No se pudo cargar el directorio (HTTP ${response.status}).`);
+    }
+
+    const resultado = await response.json();
+    if (
+      !Array.isArray(resultado.data) ||
+      !Number.isFinite(Number(resultado.recordsTotal))
+    ) {
+      throw new Error("La respuesta del directorio tiene un formato inválido.");
+    }
+
+    return resultado;
+  };
+
+  const primeraPagina = await solicitarPagina(0);
+  const doctores = [...primeraPagina.data];
+  const totalDoctores = Number(primeraPagina.recordsTotal);
+
+  for (
+    let inicio = doctores.length;
+    inicio < totalDoctores;
+    inicio += tamanoPagina
+  ) {
+    const pagina = await solicitarPagina(inicio);
+    if (pagina.data.length === 0) {
+      throw new Error("No se pudieron cargar todos los doctores del directorio.");
+    }
+    doctores.push(...pagina.data);
+  }
+
+  if (doctores.length !== totalDoctores) {
+    throw new Error(
+      "El directorio recibido está incompleto. Intenta actualizar la página.",
+    );
+  }
+
+  return doctores;
+};
+
+const inicializarFiltroEspecialidades = () => {
+  const seccion = document.querySelector(".filtro-especialidades");
+  if (!seccion || seccion.dataset.inicializado === "true") return;
+
+  seccion.dataset.inicializado = "true";
+  const toggle = seccion.querySelector(".filtro-especialidades__toggle");
+  const contenido = seccion.querySelector(".filtro-especialidades__contenido");
+  const botones = seccion.querySelector(".filtro-especialidades__botones");
+
+  toggle.addEventListener("click", () => {
+    const expandido = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expandido));
+    toggle.textContent = expandido ? "Mostrar filtros" : "Ocultar filtros";
+    contenido.hidden = expandido;
+  });
+
+  botones.addEventListener("click", (event) => {
+    const boton = event.target.closest(".filtro-especialidad");
+    if (!boton || !botones.contains(boton)) return;
+
+    const idEspecialidad = boton.dataset.especialidad;
+    if (!idEspecialidad) {
+      especialidadesSeleccionadas.clear();
+    } else if (especialidadesSeleccionadas.has(idEspecialidad)) {
+      especialidadesSeleccionadas.delete(idEspecialidad);
+    } else {
+      especialidadesSeleccionadas.add(idEspecialidad);
+    }
+
+    renderizarBotonesEspecialidades();
+    aplicarFiltroEspecialidad();
+  });
+
+  seccion.querySelectorAll(".filtro-pagina").forEach((boton) => {
+    boton.addEventListener("click", () => {
+      paginaEspecialidades += Number(boton.dataset.direccion);
+      renderizarBotonesEspecialidades();
+    });
+  });
+};
+
+const actualizarFiltroEspecialidades = async () => {
+  const endpoint = `${url}/selectEspcAjax`;
+  const tamanoPagina = 100;
+
+  try {
+    const solicitarPagina = async (inicio) => {
+      const parametros = new URLSearchParams({
+        draw: "1",
+        start: String(inicio),
+        length: String(tamanoPagina),
+        "search[value]": "",
+      });
+      const response = await fetch(`${endpoint}?${parametros.toString()}`, {
+        headers: { Accept: "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`No se pudieron actualizar las especialidades (HTTP ${response.status}).`);
+      }
+
+      const resultado = await response.json();
+      if (
+        !Array.isArray(resultado.data) ||
+        !Number.isFinite(Number(resultado.recordsTotal))
+      ) {
+        throw new Error("La respuesta de especialidades tiene un formato inválido.");
+      }
+
+      return resultado;
+    };
+
+    const primeraPagina = await solicitarPagina(0);
+    const especialidades = [...primeraPagina.data];
+    const totalEspecialidades = Number(primeraPagina.recordsTotal);
+
+    for (
+      let inicio = especialidades.length;
+      inicio < totalEspecialidades;
+      inicio += tamanoPagina
+    ) {
+      const pagina = await solicitarPagina(inicio);
+      if (pagina.data.length === 0) {
+        throw new Error("La lista de especialidades recibida está incompleta.");
+      }
+      especialidades.push(...pagina.data);
+    }
+
+    if (especialidades.length !== totalEspecialidades) {
+      throw new Error("La lista de especialidades recibida está incompleta.");
+    }
+
+    especialidadesFiltro = especialidades;
+    const idsDisponibles = new Set(
+      especialidades.map((especialidad) => String(especialidad.id_especialidad)),
+    );
+    especialidadesSeleccionadas.forEach((id) => {
+      if (!idsDisponibles.has(id)) especialidadesSeleccionadas.delete(id);
+    });
+
+    const paginas = Math.max(
+      1,
+      Math.ceil(especialidadesFiltro.length / especialidadesPorPagina),
+    );
+    paginaEspecialidades = Math.min(paginaEspecialidades, paginas - 1);
+    renderizarBotonesEspecialidades();
+    aplicarFiltroEspecialidad();
+  } catch (error) {
+    alertError("Error", error.message);
+    console.error(error);
+  }
+};
+
+const renderizarBotonesEspecialidades = () => {
+  const seccion = document.querySelector(".filtro-especialidades");
+  if (!seccion) return;
+
+  const contenedor = seccion.querySelector(".filtro-especialidades__botones");
+  const inicio = paginaEspecialidades * especialidadesPorPagina;
+  const visibles = especialidadesFiltro.slice(
+    inicio,
+    inicio + especialidadesPorPagina,
+  );
+  const fragmento = document.createDocumentFragment();
+  const botonTodas = document.createElement("button");
+  botonTodas.className = "filtro-especialidad";
+  botonTodas.type = "button";
+  botonTodas.dataset.especialidad = "";
+  botonTodas.setAttribute(
+    "aria-pressed",
+    String(especialidadesSeleccionadas.size === 0),
+  );
+  botonTodas.classList.toggle("is-active", especialidadesSeleccionadas.size === 0);
+  botonTodas.textContent = "Todas";
+  fragmento.appendChild(botonTodas);
+
+  visibles.forEach((especialidad) => {
+    const boton = document.createElement("button");
+    const id = String(especialidad.id_especialidad);
+    const seleccionado = especialidadesSeleccionadas.has(id);
+    boton.className = "filtro-especialidad";
+    boton.type = "button";
+    boton.dataset.especialidad = id;
+    boton.setAttribute("aria-pressed", String(seleccionado));
+    boton.classList.toggle("is-active", seleccionado);
+    boton.textContent = especialidad.nombre;
+    fragmento.appendChild(boton);
+  });
+
+  contenedor.replaceChildren(fragmento);
+
+  const paginas = Math.max(
+    1,
+    Math.ceil(especialidadesFiltro.length / especialidadesPorPagina),
+  );
+  const controles = seccion.querySelector(".filtro-especialidades__controles");
+  controles.classList.toggle("d-none", paginas <= 1);
+  seccion.querySelector(".filtro-especialidades__pagina").textContent =
+    `Página ${paginaEspecialidades + 1} de ${paginas}`;
+  seccion.querySelector(".filtro-especialidades__estado").textContent =
+    especialidadesSeleccionadas.size === 0
+      ? `${especialidadesFiltro.length} especialidades disponibles`
+      : `${especialidadesSeleccionadas.size} especialidad(es) seleccionada(s)`;
+  seccion.querySelectorAll(".filtro-pagina").forEach((boton) => {
+    boton.disabled =
+      boton.dataset.direccion === "-1"
+        ? paginaEspecialidades === 0
+        : paginaEspecialidades >= paginas - 1;
+  });
+};
+
+const aplicarFiltroEspecialidad = () => {
+  if (!tablaDoctores || !Array.isArray(dataDoctor)) return;
+
+  const doctoresFiltrados = especialidadesSeleccionadas.size
+    ? dataDoctor.filter((doctor) =>
+        especialidadesSeleccionadas.has(String(doctor.id_especialidad)),
+      )
+    : dataDoctor;
+
+  tablaDoctores.clear().rows.add(doctoresFiltrados).draw();
 };
 
 //read
@@ -610,6 +868,7 @@ const deleteEspecialidad = async (data) => {
     if (result.ok) {
       alertSuccess(result.message);
       readEspecialidad();
+      await actualizarFiltroEspecialidades();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);
@@ -631,6 +890,7 @@ const createEspecialidad = async (form) => {
       modaAgregarEspecialidad.hide();
       modalGestionarEspecialidad.show();
       readEspecialidad();
+      await actualizarFiltroEspecialidades();
     } else throw new Error(`${result.error}`);
   } catch (error) {
     alertError("Error", error);

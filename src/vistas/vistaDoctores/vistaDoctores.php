@@ -3,7 +3,7 @@
 
 
 <!-- Contenido  -->
-<div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
+<div class="col-12 m-auto pt-3 contenedor-fondo vista-doctores">
 
     <h5 style="width: 95%; " class="m-auto mb-3">Directorio Médico<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
             class="bi bi-clipboard2-pulse ms-2" viewBox="0 0 16 16">
@@ -66,6 +66,39 @@
         </div>
 
 
+
+        <?php if ($vistaActiva !== 'papelera'): ?>
+            <section class="filtro-especialidades" aria-label="Filtrar doctores por especialidad">
+                <div class="filtro-especialidades__encabezado">
+                    <div>
+                        <h2 class="filtro-especialidades__titulo">Filtrar por especialidad</h2>
+                        <p class="filtro-especialidades__ayuda">Puedes combinar varias especialidades.</p>
+                    </div>
+                    <button
+                        class="filtro-especialidades__toggle"
+                        type="button"
+                        aria-expanded="true"
+                        aria-controls="contenidoFiltroEspecialidades">
+                        Ocultar filtros
+                    </button>
+                </div>
+                <div class="filtro-especialidades__contenido" id="contenidoFiltroEspecialidades">
+                    <div class="filtro-especialidades__botones" role="group" aria-label="Especialidades"></div>
+                    <div class="filtro-especialidades__paginacion">
+                        <span class="filtro-especialidades__estado" aria-live="polite"></span>
+                        <div class="filtro-especialidades__controles">
+                            <button class="filtro-pagina" type="button" data-direccion="-1" aria-label="Especialidades anteriores">
+                                Anterior
+                            </button>
+                            <span class="filtro-especialidades__pagina" aria-live="polite"></span>
+                            <button class="filtro-pagina" type="button" data-direccion="1" aria-label="Especialidades siguientes">
+                                Siguiente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <?php endif; ?>
 
         <div class="table table-responsive">
             <table class="exampleTable table table-striped ">
