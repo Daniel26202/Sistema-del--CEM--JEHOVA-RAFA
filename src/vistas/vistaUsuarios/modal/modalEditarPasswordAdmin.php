@@ -17,6 +17,7 @@
                     <div class="uk-grid-small uk-flex-middle d-flex justify-content-center" uk-grid>
                         <div class="uk-width-auto">
                             <img src="<?= in_array($dato['imagen'], ['doctor.png', 'imagen-generica.svg'], true) ? $urlBase . '../src/assets/images/img/' . rawurlencode($dato['imagen']) : $urlBase . '../src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $dato['id_usuario'] . '_' . rawurlencode($dato['imagen']) ?>"
+                                data-image-fallback="<?= $urlBase ?>../src/assets/images/img/imagen-generica.svg"
                                 class="uk-border-circle" width="55" height="55" alt="Avatar">
 
                         </div>

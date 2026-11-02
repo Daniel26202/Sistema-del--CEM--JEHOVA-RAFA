@@ -205,6 +205,9 @@ class ModeloUsuarios extends ModelBase
     //esto es para editar un usuario.
     private function updateUsuario()
     {
+        $rutaImagenNueva = null;
+        $rutaImagenAntigua = null;
+
         try {
             $this->beginTransaction();
             $sql = "SELECT id_usuario from usuario where id_usuario=:id_usuario";
@@ -223,38 +226,52 @@ class ModeloUsuarios extends ModelBase
                 }
             }
 
-            if ($this->getImagen() == null) {
-
-                $sql = 'UPDATE usuario SET  usuario = :usuario WHERE id_usuario = :id';
-                $this->setSQL($sql);
-                $this->update(['usuario' => $this->getUsuario()], $this->getIdUsuario());
-            } else {
+            $datosActualizacion = ['usuario' => $this->getUsuario()];
+            $sql = 'UPDATE usuario SET usuario = :usuario';
+            if ($this->getImagen() !== null) {
                 $sql = "SELECT imagen FROM usuario WHERE id_usuario=:id_usuario";
                 $this->setSQL($sql);
                 $img = $this->search(['id_usuario' => $this->getIdUsuario()], false);
                 $nombreImagenAntigua = $img["imagen"];
 
-                // Editar el usuario.
-                $data = [
-                    'imagen' => $this->getImagen(),
-                    'usuario' => $this->getUsuario()
-                ];
-                $sql = 'UPDATE usuario SET imagen = :imagen, usuario = :usuario WHERE id_usuario = :id';
-                $this->setSQL($sql);
-
-                $this->update($data, $this->getIdUsuario());
-
-                $rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenAntigua;
-                if (file_exists($rutaImagenAntigua) && $nombreImagenAntigua != "doctor.png") {
-                    unlink($rutaImagenAntigua);
+                $sql = 'UPDATE usuario SET usuario = :usuario';
+                $nombreImagenNueva = basename((string)$this->getImagen());
+                if ($nombreImagenNueva === '' || $nombreImagenNueva !== $this->getImagen()) {
+                    throw new \InvalidArgumentException('El nombre de imagen no es válido.');
+                }
+                $rutaImagenNueva = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/"
+                    . $this->getIdUsuario() . "_" . $nombreImagenNueva;
+                if (!move_uploaded_file($this->getImagenTemporal(), $rutaImagenNueva)) {
+                    throw new \RuntimeException('No se pudo guardar la imagen del usuario.');
                 }
 
-                move_uploaded_file($this->getImagenTemporal(), "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $this->getImagen());
+                $rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/"
+                    . $this->getIdUsuario() . "_" . $nombreImagenAntigua;
+                $datosActualizacion['imagen'] = $nombreImagenNueva;
+                $sql .= ', imagen = :imagen';
             }
+
+            $sql .= ' WHERE id_usuario = :id';
+            $this->setSQL($sql);
+            $this->update($datosActualizacion, $this->getIdUsuario());
+
             $this->commit();
+
+            if (
+                $rutaImagenAntigua !== null
+                && !in_array($nombreImagenAntigua, ['doctor.png', 'imagen-generica.svg'], true)
+                && file_exists($rutaImagenAntigua)
+                && !unlink($rutaImagenAntigua)
+            ) {
+                error_log('No se pudo eliminar la imagen anterior del usuario: ' . $rutaImagenAntigua);
+            }
+
             return ["exito"];
         } catch (\Exception $e) {
             $this->rollBack();
+            if ($rutaImagenNueva !== null && file_exists($rutaImagenNueva) && !unlink($rutaImagenNueva)) {
+                error_log('No se pudo eliminar la nueva imagen del usuario: ' . $rutaImagenNueva);
+            }
             return $e->getMessage();
         }
     }

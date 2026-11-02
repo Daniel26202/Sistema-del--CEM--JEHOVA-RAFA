@@ -136,6 +136,14 @@ addEventListener("DOMContentLoaded", function () {
       contenedorImg.classList.add("d-none");
       //ahora gestionar la imagen del insumo es decir mostrar un previsualizacion en el modal de editar
       contenedorImgEditar.classList.remove("d-none");
+      const rutaImagen = srcImg === "imagen-generica.svg"
+        ? `${urlBase}../src/assets/images/img/imagen-generica.svg`
+        : `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${encodeURIComponent(srcImg)}`;
+      setImgWithFallback(
+        imgEditar,
+        rutaImagen,
+        `${urlBase}../src/assets/images/img/imagen-generica.svg`,
+      );
 
       document
         .querySelector(".btn-eliminar")
@@ -165,7 +173,7 @@ addEventListener("DOMContentLoaded", function () {
       console.log(items);
       let objValidationImg = {
         setImgWithFallback,
-        imgSrcDefecto: `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+        imgSrcDefecto: `${urlBase}../src/assets/images/img/imagen-generica.svg`,
       };
 
       const paginator = new Paginator(
@@ -324,6 +332,11 @@ addEventListener("DOMContentLoaded", function () {
       if (result.ok) {
         alertSuccess(result.message);
 
+        const inputImagen = form.querySelector('input[type="file"]');
+        if (inputImagen) {
+          inputImagen.value = "";
+          inputImagen.dispatchEvent(new Event("change", { bubbles: true }));
+        }
         modalAgreInsumos.hide();
         readInsumos(divTarjetsInsumo);
       } else throw new Error(`${result.error}`);
@@ -376,6 +389,9 @@ addEventListener("DOMContentLoaded", function () {
       console.log(input.parentElement);
 
       input.value = "";
+      if (input.type === "file") {
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
       input.parentElement.classList.remove("valido");
       input.parentElement.classList.remove("invalido");
 

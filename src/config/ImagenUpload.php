@@ -26,7 +26,28 @@ final class ImagenUpload
             throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
         }
 
-        $extension = strtolower(pathinfo((string)($archivo['name'] ?? ''), PATHINFO_EXTENSION));
+        $contenido = file_get_contents($rutaTemporal);
+        if ($contenido === false) {
+            throw new \InvalidArgumentException('No se pudo leer el archivo de imagen.');
+        }
+
+        return self::validarContenido(
+            $contenido,
+            strtolower(pathinfo((string)($archivo['name'] ?? ''), PATHINFO_EXTENSION))
+        );
+    }
+
+    public static function validarContenido(string $contenido, string $extension): string
+    {
+        $tamano = strlen($contenido);
+        if ($tamano === 0) {
+            throw new \InvalidArgumentException('El archivo de imagen está vacío.');
+        }
+        if ($tamano > self::TAMANO_MAXIMO) {
+            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
+        }
+
+        $extension = strtolower($extension);
         if (!in_array($extension, ['jpg', 'jpeg', 'png'], true)) {
             throw new \InvalidArgumentException('Solo se permiten imágenes JPG o PNG.');
         }
@@ -36,8 +57,8 @@ final class ImagenUpload
             'jpeg' => 'image/jpeg',
             'png' => 'image/png',
         ];
-        $mimeDetectado = (new \finfo(FILEINFO_MIME_TYPE))->file($rutaTemporal);
-        $infoImagen = @getimagesize($rutaTemporal);
+        $mimeDetectado = (new \finfo(FILEINFO_MIME_TYPE))->buffer($contenido);
+        $infoImagen = @getimagesizefromstring($contenido);
 
         if (
             $mimeDetectado !== $mimesPorExtension[$extension]
@@ -50,12 +71,10 @@ final class ImagenUpload
             throw new \InvalidArgumentException('El archivo no es una imagen JPG o PNG válida.');
         }
 
-        $contenido = file_get_contents($rutaTemporal);
-        $imagenDecodificada = $contenido === false ? false : @imagecreatefromstring($contenido);
+        $imagenDecodificada = @imagecreatefromstring($contenido);
         if ($imagenDecodificada === false) {
             throw new \InvalidArgumentException('No se pudo verificar el contenido de la imagen.');
         }
-        imagedestroy($imagenDecodificada);
 
         return $extension;
     }

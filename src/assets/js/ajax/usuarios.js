@@ -89,7 +89,7 @@ const readUser = async () => {
     const items = await executePetition(url + "/" + metodo, "GET");
     let objValidationImg = {
       setImgWithFallback,
-      imgSrcDefecto: `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+      imgSrcDefecto: `${urlBase}../src/assets/images/img/imagen-generica.svg`,
     };
     const paginator = new Paginator(
       items,
@@ -104,15 +104,6 @@ const readUser = async () => {
     );
 
     paginator.displayItems();
-
-    // Aplicar fallback a las imágenes de las tarjetas
-    document.querySelectorAll(".card-img-top").forEach((img) => {
-      setImgWithFallback(
-        img,
-        img.src,
-        `${urlBase}../src/assets/images/img/logoRol.jpeg`,
-      );
-    });
 
     document.querySelectorAll(".id_usuario_bitacora").forEach((ele) => {
       ele.value = document.getElementById("id_usuario_session").value;
@@ -179,18 +170,19 @@ const mostrarInfo = (id) => {
   const src = ["doctor.png", "imagen-generica.svg"].includes(nombreImagen)
     ? `${urlBase}../src/assets/images/img/${encodeURIComponent(nombreImagen)}`
     : `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${btn.getAttribute("data-index")}_${encodeURIComponent(nombreImagen)}`;
+  const imagenAlternativa = `${urlBase}../src/assets/images/img/imagen-generica.svg`;
 
   contenedorImgEditar.classList.remove("d-none");
 
   setImgWithFallback(
     imgInfo,
     src,
-    `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+    imagenAlternativa,
   );
   setImgWithFallback(
     imgEditar,
     src,
-    `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+    imagenAlternativa,
   );
 
   nameUser = card.querySelector(".user-name").innerText;
@@ -244,6 +236,11 @@ const updateUser = async (form) => {
 
     if (result.ok) {
       alertSuccess(result.message);
+      const inputImagen = form.querySelector('input[type="file"]');
+      if (inputImagen) {
+        inputImagen.value = "";
+        inputImagen.dispatchEvent(new Event("change", { bubbles: true }));
+      }
       modalInfoBoots.hide();
       modalEditarUsuario.hide();
       readUser();

@@ -235,6 +235,12 @@ if (file_exists($htaccess)) {
     foreach (['script-src', 'style-src', 'img-src'] as $directiva) {
         check(strpos($csp, $directiva) !== false, "la politica mantiene $directiva");
     }
+
+    preg_match("/(^|;)\s*img-src([^;]*)/", $csp, $im);
+    check(
+        strpos($im[2] ?? '', 'blob:') !== false,
+        'img-src permite las vistas previas locales de imágenes'
+    );
 }
 
 echo "\n=== Comprobacion final ===\n";

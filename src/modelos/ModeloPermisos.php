@@ -41,6 +41,26 @@ class ModeloPermisos extends ModelBase
         return !empty($listData) ?  $listData['id_modulo'] : 0;
     }
 
+    public function modulosConPermiso($permiso)
+    {
+        $sql = "SELECT DISTINCT m.nombre
+                FROM modulos m
+                INNER JOIN permisos_de_rol pr ON pr.id_modulo = m.id_modulo
+                INNER JOIN permisos p ON p.id_permiso = pr.id_permiso
+                WHERE pr.id_rol = :id_rol
+                    AND p.permisos = :permiso
+                    AND m.estado = 'ACT'
+                ORDER BY m.nombre";
+        $this->setSQL($sql);
+        $modulos = $this->search([
+            'id_rol' => (int)$this->getIdRol(),
+            'permiso' => $permiso,
+        ]);
+
+        return array_column(is_array($modulos) ? $modulos : [], 'nombre');
+    }
+
+
     public function returnModules()
     {
         try {

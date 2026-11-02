@@ -10,6 +10,7 @@ import {
   initLoaderButton,
   finallyLoaderButton,
   clearModalEnviar,
+  setImgWithFallback,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -372,9 +373,14 @@ const readDoctor = async () => {
             (doc) => String(doc.id_personal) === String(id_personal),
           );
           const nombreImagen = doctor?.imagen || "imagen-generica.svg";
-          imgEditar.src = ["doctor.png", "imagen-generica.svg"].includes(nombreImagen)
+          const rutaImagen = ["doctor.png", "imagen-generica.svg"].includes(nombreImagen)
             ? `../src/assets/images/img/${encodeURIComponent(nombreImagen)}`
             : `../src/assets/images/img_ingresadas_por_usuarios/usuarios/${doctor?.id_usuario || btn.getAttribute("data-index-usuario")}_${encodeURIComponent(nombreImagen)}`;
+          setImgWithFallback(
+            imgEditar,
+            rutaImagen,
+            "../src/assets/images/img/imagen-generica.svg",
+          );
 
           //id_horario viene hasheado, por eso se compara como texto (Number() daría NaN)
           const horariosActuales = {};
@@ -1079,6 +1085,9 @@ btnagregarDoctor.addEventListener("click", function () {
     divParent.querySelector(".error-msg").classList.add("d-none");
 
     ele.value = "";
+    if (ele.type === "file") {
+      ele.dispatchEvent(new Event("change", { bubbles: true }));
+    }
   });
   labelModal.innerText = "Registrar Doctor";
   btnModal.innerText = "Registrar";

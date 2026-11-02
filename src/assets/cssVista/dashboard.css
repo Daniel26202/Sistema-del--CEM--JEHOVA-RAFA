@@ -254,6 +254,288 @@ h5 {
   width: 25%;
 }
 
+.doctor-profile-card {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  color: var(--color-text-card);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(27, 55, 87, 0.08);
+  box-sizing: border-box;
+}
+
+.doctor-profile-legacy {
+  display: none !important;
+}
+
+.doctor-agenda-card {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  color: var(--color-text-card);
+  background: var(--color-bg-card);
+}
+
+.doctor-agenda-card .table {
+  margin-bottom: 0;
+}
+
+.dashboard-shortcuts-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 1.25rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  color: var(--color-text-card);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(27, 55, 87, 0.06);
+}
+
+.dashboard-shortcuts-eyebrow {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-shortcuts-card h5 {
+  margin: 0;
+  color: var(--color-text-card);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.dashboard-shortcuts-card p {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-card);
+  font-size: 0.85rem;
+  opacity: 0.72;
+}
+
+.dashboard-shortcuts-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dashboard-shortcuts-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.4rem;
+  padding: 0.5rem 0.8rem;
+  color: var(--color-primary);
+  background: rgba(56, 122, 223, 0.1);
+  border: 1px solid rgba(56, 122, 223, 0.16);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dashboard-shortcuts-list a:hover,
+.dashboard-shortcuts-list a:focus-visible {
+  color: var(--color-primary-contrast);
+  background: var(--color-primary);
+}
+
+.dashboard-shortcuts-card .dashboard-shortcuts-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0.75rem;
+  background: var(--color-surface);
+  border-radius: 10px;
+}
+
+.doctor-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.doctor-profile-avatar {
+  width: 5rem;
+  height: 5rem;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border: 3px solid rgba(56, 122, 223, 0.16);
+  border-radius: 50%;
+}
+
+.doctor-profile-heading {
+  min-width: 0;
+}
+
+.doctor-profile-eyebrow {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.doctor-profile-heading h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-text-card);
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.doctor-profile-heading p {
+  margin: 0.25rem 0 0;
+  overflow-wrap: anywhere;
+  color: var(--color-text-card);
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.doctor-profile-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.doctor-profile-detail {
+  min-width: 0;
+  padding: 0.75rem;
+  background: var(--color-surface);
+  border-radius: 12px;
+}
+
+.doctor-profile-detail span {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-text-card);
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.doctor-profile-detail strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--color-text-card);
+  font-size: 0.9rem;
+}
+
+.doctor-weekly-schedule {
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.doctor-weekly-schedule-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.doctor-weekly-schedule-heading h3 {
+  margin: 0;
+  color: var(--color-text-card);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.doctor-weekly-schedule-badge {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.6rem;
+  color: var(--color-primary);
+  background: rgba(56, 122, 223, 0.1);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.doctor-weekly-schedule-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.doctor-weekly-schedule-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.65rem 0.7rem;
+  background: var(--color-surface);
+  border-radius: 10px;
+  font-size: 0.8rem;
+}
+
+.doctor-weekly-schedule-list li > span:first-child {
+  color: var(--color-text-card);
+  font-weight: 600;
+}
+
+.doctor-weekly-schedule-list time {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 0.2rem;
+  color: var(--color-text-card);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.doctor-weekly-schedule-list .is-working-day {
+  border-left: 3px solid #35a879;
+}
+
+.doctor-weekly-schedule-list .is-day-off {
+  border-left: 3px solid var(--color-border);
+}
+
+.doctor-weekly-day-off {
+  color: var(--color-text-card);
+  font-size: 0.72rem;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+.doctor-profile-link {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-primary-contrast);
+  background: var(--color-primary);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: filter 0.2s ease;
+}
+
+.doctor-profile-link:hover,
+.doctor-profile-link:focus-visible {
+  color: var(--color-primary-contrast);
+  filter: brightness(0.92);
+}
+
 @media screen and (max-width: 340px) {
   .caja_buscador_calendario {
     flex-direction: column;
@@ -267,4 +549,26 @@ h5 {
       width: 100%;
       text-align: center;
     }
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-shortcuts-card {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-profile-header {
+    align-items: flex-start;
+  }
+
+  .doctor-profile-avatar {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .doctor-profile-details,
+  .doctor-weekly-schedule-list {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,6 +1,13 @@
 // Variables globales
 const { jsPDF } = window.jspdf;
 
+const dashboardConfig = document.getElementById("dashboardConfig");
+const puedeVerEstadisticas = dashboardConfig.dataset.puedeVerEstadisticas === "true";
+const puedeConsultarCitas = dashboardConfig.dataset.puedeConsultarCitas === "true";
+const esDoctor = dashboardConfig.dataset.esDoctor === "true";
+const mostrarCalendario = dashboardConfig.dataset.mostrarCalendario === "true";
+const idPersonalCalendario = dashboardConfig.dataset.idPersonalCalendario;
+
 let currentYear, currentMonth;
 let events = []; // Estructura: [{ date: 'YYYY-MM-DD', title: '...', recurrent: false }, ...]
 
@@ -18,14 +25,26 @@ const expresiones = {
 
 // Inicialización del DOM
 document.addEventListener("DOMContentLoaded", function () {
-    initCalendar(); // Inicializa el calendario
-    traerCitas(); // Carga las citas pendientes
-    traerCitashoy(); // Carga las citas del día
-    pacientes_hospitalizados(); // Carga los pacientes hospitalizados
-    traerDatosServicios(); // Carga los datos de la tabla de precios
-    especialidades_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas"); // Genera el gráfico de especialidades
-    sintomas_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes"); // Genera el gráfico de sintomas comunes
-    traerDoctor(); //Cargar doctores en el select
+    if (mostrarCalendario) {
+        initCalendar();
+    }
+
+    if (puedeVerEstadisticas) {
+        if (puedeConsultarCitas) {
+            traerCitas();
+            traerCitashoy();
+        }
+        pacientes_hospitalizados();
+        especialidades_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/especialidades_solicitadas");
+        sintomas_chart("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/sintomas_comunes");
+    }
+
+    if (document.getElementById("serviciosSlider")) {
+        traerDatosServicios();
+    }
+    if (puedeVerEstadisticas && document.getElementById("selectDoctor")) {
+        traerDoctor();
+    }
 
     //mostrar una aaler si eun poersona no tiene permiso
     if (window.location.href.includes("permiso")) {
@@ -290,8 +309,16 @@ function renderCalendar(year, month) {
     const daysInMonth = 32 - new Date(year, month, 32).getDate();
 
     // Realiza la petición AJAX para obtener los días con mayor carga de trabajo
-    fetch(`/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas`)
-        .then((response) => response.json())
+    const rutaAgenda = esDoctor && idPersonalCalendario
+        ? `/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas/${encodeURIComponent(idPersonalCalendario)}`
+        : "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/diasConMasCitas";
+    fetch(rutaAgenda)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("No se pudo consultar la agenda.");
+            }
+            return response.json();
+        })
         .then((workDays) => {
             // workDays es un array con los días que más trabaja el doctor, por ejemplo: [{ date: "2025-04-05", citas: 10 }, { date: "2025-04-12", citas: 15 }]
 
@@ -607,7 +634,7 @@ const traerCitas = async () => {
     try {
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/citas");
         let resultado = await peticion.json();
-        document.getElementById("citasPendentes").textContent = resultado.length;
+        document.getElementById("citasPendentes").textContent = resultado.total;
     } catch (error) {
         console.log("Error al traer las citas pendientes:", error);
     }
@@ -618,7 +645,7 @@ const traerCitashoy = async () => {
     try {
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/citasDeHoy");
         let resultado = await peticion.json();
-        document.getElementById("citasDeHoy").textContent = resultado.length;
+        document.getElementById("citasDeHoy").textContent = resultado.total;
     } catch (error) {
         console.log("Error al traer las citas de hoy:", error);
     }

@@ -1,4 +1,8 @@
-const MIME_PERMITIDOS = new Set(["image/jpeg", "image/png"]);
+const EXTENSIONES_PERMITIDAS = new Map([
+  ["jpg", "image/jpeg"],
+  ["jpeg", "image/jpeg"],
+  ["png", "image/png"],
+]);
 const TAMANO_MAXIMO = 5 * 1024 * 1024;
 const PIXELES_MAXIMOS = 12_000_000;
 
@@ -31,11 +35,30 @@ const mostrarMensaje = (input, mensaje) => {
 document.querySelectorAll('input[type="file"][data-image-upload]').forEach((input) => {
   const vistaPrevia = resolverVistaPrevia(input);
   const formulario = input.closest("form");
+  const vistaPreviaOriginal = vistaPrevia?.cloneNode(true) ?? null;
   const vistaActual = input.dataset.imageCurrent
     ? formulario?.querySelector(input.dataset.imageCurrent)
     : null;
   let urlAnterior = null;
   let solicitudImagen = 0;
+
+  const restaurarVistaPrevia = () => {
+    if (!vistaPrevia || !vistaPreviaOriginal) return;
+    vistaPrevia.className = vistaPreviaOriginal.className;
+    vistaPrevia.style.cssText = vistaPreviaOriginal.style.cssText;
+
+    if (vistaPrevia.tagName === "IMG") {
+      const srcOriginal = vistaPreviaOriginal.getAttribute("src");
+      if (srcOriginal === null) vistaPrevia.removeAttribute("src");
+      else vistaPrevia.setAttribute("src", srcOriginal);
+      vistaPrevia.alt = vistaPreviaOriginal.alt;
+      return;
+    }
+
+    vistaPrevia.replaceChildren(
+      ...Array.from(vistaPreviaOriginal.childNodes, (nodo) => nodo.cloneNode(true)),
+    );
+  };
 
   input.dataset.imageValid = input.dataset.optionalFile === "true" ? "true" : "false";
 
@@ -48,6 +71,7 @@ document.querySelectorAll('input[type="file"][data-image-upload]').forEach((inpu
     if (!archivo) {
       input.dataset.imageValid = input.dataset.optionalFile === "true" ? "true" : "false";
       mostrarMensaje(input, "");
+      restaurarVistaPrevia();
       vistaActual?.classList.remove("d-none");
       if (vistaPrevia && vistaPrevia !== vistaActual) vistaPrevia.classList.add("d-none");
       return;
@@ -55,13 +79,15 @@ document.querySelectorAll('input[type="file"][data-image-upload]').forEach((inpu
 
     const rechazar = (mensaje) => {
       input.value = "";
-      input.dataset.imageValid = "false";
+      input.dataset.imageValid = input.dataset.optionalFile === "true" ? "true" : "false";
       mostrarMensaje(input, mensaje);
+      restaurarVistaPrevia();
       vistaActual?.classList.remove("d-none");
       if (vistaPrevia && vistaPrevia !== vistaActual) vistaPrevia.classList.add("d-none");
     };
 
-    if (!MIME_PERMITIDOS.has(archivo.type)) {
+    const extension = archivo.name.split(".").pop()?.toLowerCase() ?? "";
+    if (EXTENSIONES_PERMITIDAS.get(extension) !== archivo.type) {
       rechazar("El archivo debe ser una imagen JPG o PNG válida.");
       return;
     }
@@ -110,4 +136,34 @@ document.querySelectorAll('input[type="file"][data-image-upload]').forEach((inpu
     };
     imagen.src = urlTemporal;
   });
+});
+
+const aplicarImagenAlternativa = (imagen) => {
+  const alternativa = imagen.dataset.imageFallback;
+  if (!alternativa) return;
+
+  const urlAlternativa = new URL(alternativa, document.baseURI).href;
+  if (imagen.src === urlAlternativa) return;
+
+  const urlFallida = imagen.src;
+  if (imagen.dataset.imageFallbackSource === urlFallida) return;
+
+  imagen.dataset.imageFallbackSource = urlFallida;
+  imagen.src = urlAlternativa;
+};
+
+document.addEventListener(
+  "error",
+  (evento) => {
+    if (evento.target instanceof HTMLImageElement) {
+      aplicarImagenAlternativa(evento.target);
+    }
+  },
+  true,
+);
+
+document.querySelectorAll("img[data-image-fallback]").forEach((imagen) => {
+  if (imagen.complete && imagen.naturalWidth === 0) {
+    aplicarImagenAlternativa(imagen);
+  }
 });

@@ -8,15 +8,13 @@
             </div>
             <div class="modal-body">
 
-                <div class="m-auto w-50">
-
-                    <img src="<?= $urlBase ?>../src/assets/images/img/imagen-generica.svg" alt="Vista previa del perfil" class="img-perfil-modal" id="img-perfil-modal">
-                </div>
-
                 <form class=" form-validable" id="formPerfil" enctype="multipart/form-data">
 
+                    <div class="m-auto w-50">
+                        <img src="<?= $urlBase ?>../src/assets/images/img/imagen-generica.svg" alt="Vista previa del perfil" class="img-perfil-modal" id="img-perfil-modal">
+                    </div>
 
-
+                    <div id="preview-perfil" class="image-preview d-none mb-2"></div>
 
                     <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
@@ -38,7 +36,7 @@
                                         <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" />
                                     </svg>
                                 </span>
-                                <input class="form-control txt-custom input-validar inputs campo-editar" type="file" name="imagen" id="inputImagen" accept="image/jpeg,image/png" data-image-upload data-optional-file="true" data-image-preview="#img-perfil-modal" placeholder="Seleccionar imagen">
+                                <input class="form-control txt-custom input-validar inputs campo-editar" type="file" name="imagen" id="inputImagen" accept="image/jpeg,image/png" data-image-upload data-optional-file="true" data-image-preview="#preview-perfil" data-image-current="#img-perfil-modal" placeholder="Seleccionar imagen">
                                 <span class="icono-der">
                                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />

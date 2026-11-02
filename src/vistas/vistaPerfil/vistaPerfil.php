@@ -25,7 +25,7 @@
       <?= $urlBase ?>
       <div class="m-auto">
 
-        <img id="imgUser" src="" alt="" class="img-perfil">
+        <img id="imgUser" src="<?= $urlBase ?>../src/assets/images/img/imagen-generica.svg" alt="" class="img-perfil">
       </div>
 
 

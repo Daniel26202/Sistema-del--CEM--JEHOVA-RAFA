@@ -135,6 +135,13 @@ class ModeloDoctores extends ModelBase
         return $this->read();
     }
 
+    public function selectDoctoresParaEstadisticas()
+    {
+        $sql = 'SELECT p.id_personal, p.nombre AS nombre_d, p.apellido FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario INNER JOIN bd.especialidad es ON es.id_especialidad = p.id_especialidad WHERE u.estado = "ACT" AND es.id_especialidad IS NOT NULL';
+        $this->setSQL($sql);
+        return $this->read();
+    }
+
     public function desactivos($inicio = 0, $limite = 10, $buscar = '', $ordenColumna = 'id_personal', $ordenDir = 'DESC')
     {
         try {
@@ -232,6 +239,8 @@ class ModeloDoctores extends ModelBase
 
     private function insertarDoctorDB()
     {
+        $rutaImagenNueva = null;
+
         try {
             $this->beginTransaction();
 
@@ -273,7 +282,8 @@ class ModeloDoctores extends ModelBase
 
             if ($idUsuario && $imagenTemporal !== '') {
                 $imagen = $idUsuario . '_' . $imagen;
-                if (!move_uploaded_file($imagenTemporal, './src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $imagen)) {
+                $rutaImagenNueva = './src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $imagen;
+                if (!move_uploaded_file($imagenTemporal, $rutaImagenNueva)) {
                     throw new \RuntimeException('No se pudo guardar la imagen del doctor.');
                 }
             }
@@ -295,6 +305,9 @@ class ModeloDoctores extends ModelBase
             return ["exito", $data1, $data2];
         } catch (\Exception $e) {
             $this->rollBack();
+            if ($rutaImagenNueva !== null && file_exists($rutaImagenNueva) && !unlink($rutaImagenNueva)) {
+                error_log('No se pudo eliminar la imagen del doctor: ' . $rutaImagenNueva);
+            }
             return $e->getMessage();
         }
     }

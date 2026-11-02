@@ -19,12 +19,13 @@
                         <div class="uk-grid-small uk-flex-middle d-flex justify-content-center" uk-grid>
                             <div class="uk-width-auto">
                                         <img src="<?= in_array($dato['imagen'], ['doctor.png', 'imagen-generica.svg'], true) ? $urlBase . '../src/assets/images/img/' . rawurlencode($dato['imagen']) : $urlBase . '../src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $dato['id_usuario'] . '_' . rawurlencode($dato['imagen']) ?>"
-                                                class="uk-border-circle" width="55" height="55" alt="Avatar">
+                                                data-image-fallback="<?= $urlBase ?>../src/assets/images/img/imagen-generica.svg" class="uk-border-circle" width="55" height="55" alt="Avatar">
 
                             </div>
 
                         </div>
                     </div>
+                    <div class="image-preview d-none mb-2"></div>
                     <div class="uk-card-body pt-2">
 
                         <div class="d-flex flex-column w-auto ">
@@ -38,7 +39,7 @@
                                     </svg>
                                 </span>
                                 <input class="form-control input-modal input-disabled imagenesUsuarios " type="file"
-                                    name="imagenUsuario" placeholder="Imagen" accept="image/jpeg,image/png" data-image-upload data-optional-file="true" data-image-preview=".caja-imagen">
+                                    name="imagenUsuario" placeholder="Imagen" accept="image/jpeg,image/png" data-image-upload data-optional-file="true" data-image-preview=".image-preview" data-image-current=".caja-imagen">
                             </div>
 
                             <p class="text-center fw-bolder mb-1 mt-3">Nombre de usuario</p>

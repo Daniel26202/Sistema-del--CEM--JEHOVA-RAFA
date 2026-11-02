@@ -57,7 +57,7 @@
 
                 <form action="" id="formEdiUsuario" enctype="multipart/form-data">
                     <!-- Contenedor para vista previa de imagen -->
-                    <div id="contenedor-img" class="image-preview mb-2"></div>
+                    <div id="contenedor-img" class="image-preview d-none mb-2"></div>
 
                     <div id="contenedor-img-editar" class="image-preview-current d-none mb-2">
                         <img style="height: 200px;width: 100%;" id="imgEditar" src="">
@@ -315,7 +315,7 @@
                     <input type="hidden" name="id_usuario" id="id_doctor">
 
 
-                    <div id="contenedor-img" class="image-preview mb-2"></div>
+                    <div id="contenedor-img" class="image-preview d-none mb-2"></div>
 
                     <div id="contenedor-img-editar" class="image-preview-current d-none mb-2">
                         <img style="height: 200px;width: 100%;" id="imgEditar" src="">

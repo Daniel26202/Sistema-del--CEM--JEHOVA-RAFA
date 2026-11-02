@@ -37,6 +37,30 @@ function guardar()
 		exit;
 	}
 
+	$idUsuario = filter_var(
+		$_SESSION['id_usuario'] ?? null,
+		FILTER_VALIDATE_INT,
+		['options' => ['min_range' => 1]]
+	);
+	if ($idUsuario === false) {
+		http_response_code(401);
+		echo json_encode(['ok' => false, 'error' => 'Debe iniciar sesión para modificar su perfil.']);
+		exit;
+	}
+
+	if (isset($_POST['id_usuario'])) {
+		$idSolicitado = filter_var(
+			$_POST['id_usuario'],
+			FILTER_VALIDATE_INT,
+			['options' => ['min_range' => 1]]
+		);
+		if ($idSolicitado === false || $idSolicitado !== $idUsuario) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'No puede modificar el perfil de otro usuario.']);
+			exit;
+		}
+	}
+
 	try {
 		$headers = getallheaders();
 		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
@@ -47,9 +71,6 @@ function guardar()
 			exit;
 		}
 
-		$idUsuario = $_SESSION['id_usuario'];
-
-
 		$bitacora = new ModeloBitacora();
 		$modelo = new ModeloPerfil();
 		$hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
@@ -59,7 +80,7 @@ function guardar()
 			$archivoImagen['name'] = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
 		}
 
-		$modelo->setIdUsuario($_POST["id_usuario"]);
+		$modelo->setIdUsuario($idUsuario);
 		$modelo->setUsuario($_POST["usuario"]);
 		$modelo->setCorreo($_POST["correo"]);
 
@@ -78,7 +99,7 @@ function guardar()
 			$_SESSION['nombre'] = $_POST['nombre'];
 			$_SESSION['apellido'] = $_POST['apellido'];
 
-			$bitacora->setId_usuario($_POST["id_usuario"]);
+			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setTabla("Perfil");
 			$bitacora->setActividad("Ha modificado un perfil");
 			$bitacora->insertarBitacora();

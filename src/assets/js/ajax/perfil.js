@@ -1,4 +1,4 @@
-import { executePetition, alertError, alertSuccess,initLoaderButton, finallyLoaderButton } from "../generic/funtionGeneric.js";
+import { executePetition, alertError, alertSuccess, initLoaderButton, finallyLoaderButton, setImgWithFallback } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
 const url = "/Sistema-del--CEM--JEHOVA-RAFA/Perfil";
@@ -21,6 +21,11 @@ const updatePerfil = async (form) => {
         console.log(result);
         if (result.ok) {
             alertSuccess(result.message);
+            const inputImagen = form.querySelector('input[type="file"]');
+            if (inputImagen) {
+                inputImagen.value = "";
+                inputImagen.dispatchEvent(new Event("change", { bubbles: true }));
+            }
             modalPerfil.hide();
             readProfile();
         } else throw new Error(`${result.error}`);
@@ -50,7 +55,8 @@ const readProfile = async () => {
             const imagen = ["doctor.png", "imagen-generica.svg"].includes(element.imagen)
                 ? `../src/assets/images/img/${encodeURIComponent(element.imagen)}`
                 : `../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${encodeURIComponent(element.imagen)}`;
-            imgUser.src = imagen;
+            const imagenAlternativa = "../src/assets/images/img/imagen-generica.svg";
+            setImgWithFallback(imgUser, imagen, imagenAlternativa);
 
             inputsValidacion[1].value = element.cedula;
             inputsValidacion[2].value = element.nombre;
@@ -59,7 +65,7 @@ const readProfile = async () => {
             inputsValidacion[5].value = element.correo;
             inputsValidacion[6].value = element.user;
 
-            imgPerfilModal.src = imagen;
+            setImgWithFallback(imgPerfilModal, imagen, imagenAlternativa);
         });
         inputsCard.forEach((e) => {
             e.setAttribute("disabled", true);

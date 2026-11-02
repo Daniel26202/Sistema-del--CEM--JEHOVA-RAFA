@@ -159,6 +159,13 @@ export const clearModalEnviar = (parametros) => {
   parametros.form.classList.remove("editar");
 
   parametros.inputs.forEach((input) => {
+    if (input.type === "file") {
+      input.value = "";
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      input.parentElement.classList.remove("valido", "invalido");
+      return;
+    }
+
     let campoCustom = input.closest(".campo-custom");
     let spamP = campoCustom.querySelector(".icono-der");
     let check = spamP.children[0];
