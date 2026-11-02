@@ -67,13 +67,19 @@ export const executePetition = async (url, method, data = null) => {
     }
 
     let result;
+    let cosa;
+    let txt
     try {
-      result = await response.json();
+      // cosa =  response
+      // txt = await cosa.text()
+      // result = await cosa.json();
+      result = await response.json()
     } catch (errorJson) {
       return {
         ok: false,
         error:
-          "Respuesta inesperada del servidor. Verifique que la sesión esté activa.",
+          // "Respuesta inesperada del servidor. Verifique que la sesión esté activa.",
+          cosa
       };
     }
 

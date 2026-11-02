@@ -3,8 +3,15 @@
 namespace App\config;
 
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloUsuarios;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+
+use function PHPUnit\Framework\equalTo;
+
+function noigual($value1, $value2){
+    return !($value1 == $value2);
+}
 
 class Rutas
 {
@@ -61,7 +68,7 @@ class Rutas
 
         $this->partes = explode("/", $this->url);
         if (strpos($this->url, ".php") !== false) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            header("location: Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion");
             exit;
         }
 
@@ -84,14 +91,14 @@ class Rutas
 
         $directorio = __DIR__ . "/../../src/controllers/" . $this->controlador . ".php";
         if (!file_exists($directorio)) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
             die("Directorio no encontrado");
         }
 
         require_once $directorio;
 
         if (!function_exists($metodo)) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
             die("Método no encontrado");
         }
 
@@ -172,6 +179,23 @@ class Rutas
             exit;
         }
 
+        if (isset($_SESSION["id_usuario"]) && $_SESSION["id_usuario"] != ''){
+            $modelo_u = new ModeloUsuarios($_SESSION["id_usuario"]);
+            $modelo_u->setIdUsuario($_SESSION["id_usuario"]);
+            $us = $modelo_u->buscar_por_id();
+            // print_r($us["token"]);
+            // echo "\n--------";
+            // print_r($_SESSION);
+            // echo "\n --------";
+            
+            // print_r((isset($_SESSION["token_de_session"]) && $_SESSION["token_de_session"] != "" && $_SESSION["token_de_session"] =! $us["token"]) ? "b" : "a" );
+            // echo "linea 35";
+
+            if (noigual($us["token"],$_SESSION["token_de_session"])){
+                header("location: Sistema-del--CEM--JEHOVA-RAFA/");
+            }
+
+        }
         if ($this->controlador == "ControllerInicio" || $this->controlador == "ControllerPerfil" || $this->controlador == "ControllerApi" || $this->controlador == "ControllerBitacora" || $this->controlador == "ControllerChat") {
             call_user_func($metodo, $parametro ?? []);
             return;
