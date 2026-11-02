@@ -3,6 +3,7 @@
 namespace App\config;
 
 use App\modelos\ModeloPermisos;
+use App\modelos\ModeloUsuarios;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -28,6 +29,10 @@ class Rutas
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+        $modelo_u = new ModeloUsuarios($_SESSION["id_usuario"]);
+        // if ($_SESSION["token_session"] =! $modelo_u->select()) {
+        //     session_destroy();
+        // }
 
         $this->rateLimit = new RateLimiter();
         $this->url = $url;
