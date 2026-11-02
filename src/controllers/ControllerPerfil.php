@@ -48,20 +48,18 @@ function guardar()
 		exit;
 	}
 
-	if (isset($_POST['id_usuario'])) {
-		$idSolicitado = filter_var(
-			$_POST['id_usuario'],
-			FILTER_VALIDATE_INT,
-			['options' => ['min_range' => 1]]
-		);
-		if ($idSolicitado === false || $idSolicitado !== $idUsuario) {
+	try {
+		if (!isset($_POST['id_usuario']) || !is_string($_POST['id_usuario'])) {
+			throw new InvalidArgumentException('El identificador del perfil no es válido.');
+		}
+
+		$idSolicitado = unhashId($_POST['id_usuario']);
+		if ($idSolicitado !== $idUsuario) {
 			http_response_code(403);
 			echo json_encode(['ok' => false, 'error' => 'No puede modificar el perfil de otro usuario.']);
 			exit;
 		}
-	}
 
-	try {
 		$headers = getallheaders();
 		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 

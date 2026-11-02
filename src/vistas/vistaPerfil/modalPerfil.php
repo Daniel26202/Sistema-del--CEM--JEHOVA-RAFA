@@ -16,7 +16,7 @@
 
                     <div id="preview-perfil" class="image-preview d-none mb-2"></div>
 
-                    <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
+                    <input type="hidden" name="id_usuario" value="<?= hashId((int) $_SESSION['id_usuario']) ?>">
 
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 

@@ -123,11 +123,8 @@ class ModeloPerfil extends ModelBase
 	public function seleccionarUsuario()
 	{
 		try {
-			$data = [
-				'id_usuario' => $this->getIdUsuario(),
-				'usuario' => $this->getUsuario()
-			];
-			$sql = "SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario and id_usuario=:id_usuario";
+			$data = ['id_usuario' => $this->getIdUsuario()];
+			$sql = "SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.id_usuario = :id_usuario";
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {
@@ -146,15 +143,12 @@ class ModeloPerfil extends ModelBase
 		try {
 			$this->assertAuthenticatedUserOwnsProfile();
 
-			$dataActual = [
-				'id_usuario' => $this->getIdUsuario(),
-				'usuario' => $this->getUsuario(),
-			];
-			$sql = "SELECT * FROM segurity.usuario WHERE id_usuario = :id_usuario AND usuario = :usuario";
+			$dataActual = ['id_usuario' => $this->getIdUsuario()];
+			$sql = "SELECT * FROM segurity.usuario WHERE id_usuario = :id_usuario";
 			$this->setSQL($sql);
 			$actual = $this->search($dataActual, false);
 			if ($actual == []) {
-				throw new \Exception("El id del usuario o doctor no existe");
+				throw new \Exception("El usuario no existe.");
 			}
 
 			if ($this->getImagen() !== null) {
