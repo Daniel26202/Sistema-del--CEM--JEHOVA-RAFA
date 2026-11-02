@@ -443,7 +443,7 @@ const readPatients = async () => {
       {
         data: "nombre",
         render: function (data, type, row) {
-          return `${data} `;
+          return `${data} ${row.apellido}`;
         },
       },
       { data: "fn" },

@@ -51,7 +51,7 @@
                                 <div class="d-flex justify-content-between  ">
                                     <h5 class="h5-comprobante ">Código:</h5>
                                     <h5 class="h5-comprobante ">
-                                        <?php echo $datoFactura['id_factura'] ?>
+                                        <?php echo htmlspecialchars((string)($numeroFactura ?? $datoFactura['id_factura']), ENT_QUOTES, 'UTF-8') ?>
                                     </h5>
 
                                 </div>

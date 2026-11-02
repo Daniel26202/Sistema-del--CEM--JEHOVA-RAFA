@@ -18,15 +18,8 @@
                     <div class="caja-imagen">
                         <div class="uk-grid-small uk-flex-middle d-flex justify-content-center" uk-grid>
                             <div class="uk-width-auto">
-                                <?php if ($dato["imagen"] != "doctor.png"): ?>
-
-                                    <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['id_usuario'] . "_" . $dato['imagen'] ?>"
-                                        class="uk-border-circle" width="55" height="55" alt="Avatar">
-                                <?php else: ?>
-
-                                    <img src="<?= $urlBase ?>../src/assets/img_ingresadas_por_usuarios/usuarios/<?= $dato['imagen'] ?>"
-                                        class="uk-border-circle" width="55" height="55" alt="Avatar">
-                                <?php endif; ?>
+                                        <img src="<?= in_array($dato['imagen'], ['doctor.png', 'imagen-generica.svg'], true) ? $urlBase . '../src/assets/images/img/' . rawurlencode($dato['imagen']) : $urlBase . '../src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $dato['id_usuario'] . '_' . rawurlencode($dato['imagen']) ?>"
+                                                class="uk-border-circle" width="55" height="55" alt="Avatar">
 
                             </div>
 
@@ -45,7 +38,7 @@
                                     </svg>
                                 </span>
                                 <input class="form-control input-modal input-disabled imagenesUsuarios " type="file"
-                                    name="imagenUsuario" placeholder="Imagen">
+                                    name="imagenUsuario" placeholder="Imagen" accept="image/jpeg,image/png" data-image-upload data-optional-file="true" data-image-preview=".caja-imagen">
                             </div>
 
                             <p class="text-center fw-bolder mb-1 mt-3">Nombre de usuario</p>

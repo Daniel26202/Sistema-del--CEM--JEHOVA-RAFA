@@ -1,16 +1,5 @@
 <?php
-/**
- * Pruebas de coherencia de monedas entre el navegador y el servidor.
- *
- * El navegador manda los precios unitarios en DIVISA (serviciomedico.precio e
- * insumo.precio están en dólares) y el TOTAL en bolívares. Si el servidor no
- * aplica la conversión, subtotal (divisa) nunca cuadra con el total (Bs) y
- * TODA factura se rechaza.
- *
- * Estas pruebas reproducen el cálculo de los dos lados y comprueban que cuadran.
- *
- * Ejecutar: /opt/lampp/bin/php tests/conversion_factura_test.php
- */
+//verifica la conversión de montos entre divisa y bolívares.
 
 declare(strict_types=1);
 

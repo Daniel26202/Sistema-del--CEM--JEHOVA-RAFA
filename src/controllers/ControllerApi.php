@@ -1,22 +1,11 @@
 <?php
-/**
- * Endpoints internos para el componente inteligente (FastAPI).
- *
- * A diferencia del resto del sistema, estos endpoints NO usan sesión de usuario
- * porque son consumidos servicio-a-servicio por el backend Python. En su lugar
- * exigen una API key compartida, guardada en el .env del sistema.
- *
- * Son solo de lectura: el componente inteligente nunca modifica datos.
- */
+//expone consultas internas de solo lectura para el componente FastAPI.
 
 use App\modelos\ModeloCategoria;
 use App\modelos\ModeloCita;
 use App\modelos\ModeloApi;
 
-/**
- * Verifica que la petición traiga la API key compartida correcta.
- * Si falta o no coincide, corta con 401.
- */
+//valida la API key de las peticiones del componente FastAPI.
 function validarApiKeyCompartida()
 {
     $headers  = function_exists('getallheaders') ? getallheaders() : [];
@@ -48,10 +37,7 @@ function apiEspecialidades()
     exit;
 }
 
-/**
- * Devuelve los doctores activos de una categoría.
- * Parámetro: id_categoria (entero, uso interno sin hash).
- */
+//devuelve los doctores activos de una categoría.
 function apiDoctoresPorEspecialidad($datos)
 {
     if (ob_get_length()) ob_clean();
@@ -74,15 +60,7 @@ function apiDoctoresPorEspecialidad($datos)
     exit;
 }
 
-/**
- * Datos clínicos del PACIENTE asociado al usuario logueado (por cédula).
- *
- * Todo se resuelve a partir del id_usuario: el componente inteligente nunca
- * elige qué paciente leer. Solo el personal del centro tiene acceso; un
- * "usuario normal" recibe acceso denegado.
- *
- * Parámetro: id_usuario (entero, uso interno sin hash).
- */
+//devuelve los datos clínicos del paciente asociado a un usuario del personal.
 function apiDatosUsuario($datos)
 {
     if (ob_get_length()) ob_clean();
@@ -131,10 +109,7 @@ function apiDatosUsuario($datos)
     exit;
 }
 
-/**
- * Exige que la petición venga identificada con un usuario del personal.
- * Se usa en los endpoints que exponen datos clínicos de terceros.
- */
+//valida que el usuario de la petición pertenezca al personal del centro.
 function validarPersonalDelCentroApi(): int
 {
     $headers = function_exists('getallheaders') ? getallheaders() : [];
@@ -159,10 +134,7 @@ function validarPersonalDelCentroApi(): int
     return (int)$idUsuario;
 }
 
-/**
- * Busca pacientes por cédula, nombre o apellido.
- * Query: ?q=texto
- */
+//busca pacientes por cédula, nombre o apellido.
 function apiBuscarPaciente($datos = [])
 {
     if (ob_get_length()) ob_clean();
@@ -181,10 +153,7 @@ function apiBuscarPaciente($datos = [])
     exit;
 }
 
-/**
- * Controles de los últimos 6 meses del paciente.
- * Parámetro: id_paciente (entero).
- */
+//devuelve los controles recientes de un paciente.
 function apiControlesPaciente($datos)
 {
     if (ob_get_length()) ob_clean();
@@ -203,10 +172,7 @@ function apiControlesPaciente($datos)
     exit;
 }
 
-/**
- * Patologías diagnosticadas al paciente.
- * Parámetro: id_paciente (entero).
- */
+//devuelve las patologías diagnosticadas de un paciente.
 function apiPatologiasPaciente($datos)
 {
     if (ob_get_length()) ob_clean();

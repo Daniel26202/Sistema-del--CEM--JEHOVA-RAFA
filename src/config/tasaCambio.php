@@ -1,22 +1,6 @@
 <?php
 
-/**
- * Tasa de cambio del día.
- *
- * Fuente: https://ve.dolarapi.com/v1/dolares/oficial (API de terceros).
- *
- * Por qué se resuelve en PHP y no solo en el navegador:
- * las vistas leen la tasa mientras se genera el HTML (por ejemplo
- * vistaServiciosMedicos.php:17), y eso ocurre ANTES de que corra app.js, que
- * es quien llama a la API. Con la tasa solo en sesión, la primera carga de cada
- * sesión renderizaba el input vacío y el JS leía NaN.
- *
- * Orden de resolución:
- *   1) tasa de hoy ya en sesión          → se usa, sin llamar a la API
- *   2) consulta a la API (3 s de timeout) → se guarda en sesión
- *   3) tasa de un día anterior           → mejor un valor viejo que ninguno
- *   4) 0                                   → el JS avisa y permite fijarla a mano
- */
+//resuelve la tasa de cambio vigente para el sistema.
 
 if (!function_exists('tasaCambioActual')) {
     /**

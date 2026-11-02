@@ -17,7 +17,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="">
+            <div class="table table-responsive">
                 <table class="table exampleTableCategoria table-striped " id="tablaPatologia">
                     <thead>
                         <tr>

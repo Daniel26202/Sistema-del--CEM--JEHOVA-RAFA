@@ -66,14 +66,19 @@ class ModeloCita extends ModelBase
 	{
 		try {
 			$data = ['id_doctor' => $this->getIdDoctor()];
-			$sql  = "SELECT sm.*, hyd.*, h.diaslaborables 
+			$sql  = "SELECT hyd.id_horarioydoctor, hyd.id_personal, hyd.id_horario,
+                            hyd.horaDeEntrada, hyd.horaDeSalida, h.diaslaborables
                     FROM horarioydoctor hyd 
-                    INNER JOIN personal d ON d.id_personal = hyd.id_personal 
                     INNER JOIN horario h ON h.id_horario = hyd.id_horario 
-                    INNER JOIN personal_has_serviciomedico psm ON d.id_personal = psm.personal_id_personal 
-                    INNER JOIN serviciomedico sm ON sm.id_servicioMedico = psm.serviciomedico_id_servicioMedico 
-                    WHERE d.id_personal = :id_doctor 
-                    GROUP BY hyd.id_horarioydoctor";
+                    WHERE hyd.id_personal = :id_doctor
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM horarioydoctor hyd_reciente
+                        WHERE hyd_reciente.id_personal = hyd.id_personal
+                        AND hyd_reciente.id_horario = hyd.id_horario
+                        AND hyd_reciente.id_horarioydoctor > hyd.id_horarioydoctor
+                    )
+                    ORDER BY hyd.id_horarioydoctor DESC";
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {
@@ -262,7 +267,7 @@ class ModeloCita extends ModelBase
 			$nombreDia = $this->nombreDiaEspanol($this->getFecha());
 
 			$data1 = ['fecha'      => $this->getFecha(), 'id_personal' => $this->getIdDoctor()];
-			$data2 = ['dia'        => $nombreDia,        'id_personal' => $this->getIdDoctor()];
+			$data2 = ['id_personal' => $this->getIdDoctor()];
 
 			$sql = 'SELECT c.hora as hora_entrada, c.hora_salida 
                     FROM cita c 
@@ -275,11 +280,19 @@ class ModeloCita extends ModelBase
 			$this->setSQL($sql);
 			$horasOcupadas = $this->search($data1);
 
-			$sql = 'SELECT hd.horaDeEntrada, hd.horaDeSalida 
+			$sql = 'SELECT hd.horaDeEntrada, hd.horaDeSalida, h.diaslaborables
                     FROM personal p 
                     INNER JOIN horarioydoctor hd ON hd.id_personal = p.id_personal 
                     INNER JOIN horario h ON h.id_horario = hd.id_horario 
-                    WHERE p.id_personal = :id_personal AND h.diaslaborables = :dia';
+                    WHERE p.id_personal = :id_personal
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM horarioydoctor hyd_reciente
+                        WHERE hyd_reciente.id_personal = hd.id_personal
+                        AND hyd_reciente.id_horario = hd.id_horario
+                        AND hyd_reciente.id_horarioydoctor > hd.id_horarioydoctor
+                    )
+                    ORDER BY hd.id_horarioydoctor DESC';
 			$this->setSQL($sql);
 			$horasCompletas = $this->search($data2);
 
@@ -301,6 +314,9 @@ class ModeloCita extends ModelBase
 			// (un doctor puede tener más de un horario el mismo día)
 			$intervalo = [];
 			foreach ($horasCompletas as $horario) {
+				if (!$this->horarioIncluyeDia($horario['diaslaborables'], $nombreDia)) {
+					continue;
+				}
 				$intervalo = array_merge(
 					$intervalo,
 					$this->seccionarHoras($horario['horaDeEntrada'], $horario['horaDeSalida'])
@@ -315,10 +331,7 @@ class ModeloCita extends ModelBase
 
 	// ── PRIVADOS─────────────────────────────────────────
 
-	/**
-	 * Nombre del día en español con tilde, tal como se guarda en
-	 * horario.diaslaborables (ej: "miércoles", "sábado")
-	 */
+	//devuelve el nombre del día en español según la base de datos.
 	private function nombreDiaEspanol($fecha)
 	{
 		$diasEsp = [
@@ -336,11 +349,46 @@ class ModeloCita extends ModelBase
 		return $diasEsp[$date->format('N')] ?? '';
 	}
 
-	/**
-	 * Devuelve el id del servicio médico si existe y está activo.
-	 * Antes se hacía $fila['id_servicioMedico'] directamente sobre un
-	 * fetch() que podía ser false y terminaba guardando un NULL silencioso.
-	 */
+	private function horarioIncluyeDia($diasLaborables, $dia)
+	{
+		$diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+		$normalizar = static function ($valor) {
+			$valor = strtolower(trim((string)$valor));
+			return strtr($valor, [
+				'á' => 'a',
+				'é' => 'e',
+				'í' => 'i',
+				'ó' => 'o',
+				'ú' => 'u',
+				'ü' => 'u',
+			]);
+		};
+
+		$partes = preg_split('/\s+a\s+/u', $normalizar($diasLaborables), 2);
+		$inicio = array_search($partes[0] ?? '', $diasSemana, true);
+		$fin = count($partes) === 2
+			? array_search($partes[1], $diasSemana, true)
+			: $inicio;
+		$diaNormalizado = $normalizar($dia);
+
+		if ($inicio === false || $fin === false || !in_array($diaNormalizado, $diasSemana, true)) {
+			return false;
+		}
+
+		for ($indice = $inicio, $recorridos = 0; $recorridos < count($diasSemana); $recorridos++) {
+			if ($diasSemana[$indice] === $diaNormalizado) {
+				return true;
+			}
+			if ($indice === $fin) {
+				return false;
+			}
+			$indice = ($indice + 1) % count($diasSemana);
+		}
+
+		return false;
+	}
+
+	//obtiene el ID del servicio médico si existe y está activo.
 	private function obtenerServicioActivo()
 	{
 		$this->setSQL("SELECT id_servicioMedico FROM serviciomedico WHERE id_categoria = :id AND estado = 'ACT'");
@@ -365,11 +413,7 @@ class ModeloCita extends ModelBase
 		}
 	}
 
-	/**
-	 * Verifica que la hora solicitada sea una hora de inicio real del turno
-	 * del doctor para ese día. Sin esto el backend aceptaba apartar o mover
-	 * citas a horarios fuera del horario laboral.
-	 */
+	//valida que la cita coincida con el horario laboral del doctor.
 	private function validarTurnoDelDoctor()
 	{
 		$dia = $this->nombreDiaEspanol($this->getFecha());
@@ -378,35 +422,37 @@ class ModeloCita extends ModelBase
 			throw new \Exception("La fecha de la cita no es válida.");
 		}
 
-		$this->setSQL('SELECT hd.id_horarioydoctor, hd.horaDeSalida AS turno_fin 
+		$this->setSQL('SELECT hd.id_horarioydoctor, hd.horaDeSalida AS turno_fin, h.diaslaborables
 					   FROM horarioydoctor hd 
 					   INNER JOIN horario h ON h.id_horario = hd.id_horario 
 					   WHERE hd.id_personal = :id_personal 
-					     AND h.diaslaborables = :dia 
 					     AND hd.horaDeEntrada <= :hora_inicio 
-					     AND ADDTIME(:hora_fin, "01:00:00") <= hd.horaDeSalida');
+					     AND ADDTIME(:hora_fin, "01:00:00") <= hd.horaDeSalida
+					     AND NOT EXISTS (
+							SELECT 1
+							FROM horarioydoctor hyd_reciente
+							WHERE hyd_reciente.id_personal = hd.id_personal
+							AND hyd_reciente.id_horario = hd.id_horario
+							AND hyd_reciente.id_horarioydoctor > hd.id_horarioydoctor
+						 )
+					   ORDER BY hd.id_horarioydoctor DESC');
 
-		$turno = $this->search([
+		$turnos = $this->search([
 			'id_personal' => $this->getIdDoctor(),
-			'dia'         => $dia,
 			'hora_inicio' => $this->getHora(),
 			'hora_fin'    => $this->getHora()
-		], false);
+		]);
 
-		if (empty($turno)) {
-			throw new \Exception("El doctor no atiende en ese día o a esa hora. Actualice los horarios del doctor.");
+		foreach ($turnos as $turno) {
+			if ($this->horarioIncluyeDia($turno['diaslaborables'], $dia)) {
+				return $turno['turno_fin'];
+			}
 		}
 
-		return $turno['turno_fin'];
+		throw new \Exception("El doctor no atiende en ese día o a esa hora. Actualice los horarios del doctor.");
 	}
 
-	/**
-	 * Hora de salida de la cita. Si el cliente manda una hora de salida
-	 * incoherente (vacía, 00:00:00 o anterior a la de entrada) se calcula
-	 * como una hora después, porque una fila con intervalo inválido es
-	 * justamente lo que hacía que el horario se mostrara libre en la UI
-	 * pero estuviera bloqueado en el servidor.
-	 */
+	//calcula una hora de salida válida para la cita.
 	private function calcularHoraSalidaSegura()
 	{
 		$entrada = $this->getHora();

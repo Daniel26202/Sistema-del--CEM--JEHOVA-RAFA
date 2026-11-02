@@ -52,6 +52,12 @@ function guardar()
 
 		$bitacora = new ModeloBitacora();
 		$modelo = new ModeloPerfil();
+		$hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+		$archivoImagen = $hayImagen ? $_FILES['imagen'] : null;
+		if ($hayImagen) {
+			$extensionImagen = \App\config\ImagenUpload::validar($archivoImagen);
+			$archivoImagen['name'] = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
+		}
 
 		$modelo->setIdUsuario($_POST["id_usuario"]);
 		$modelo->setUsuario($_POST["usuario"]);
@@ -61,8 +67,8 @@ function guardar()
 		$modelo->setNombre($_POST["nombre"]);
 		$modelo->setApellido($_POST["apellido"]);
 		$modelo->setTelefono($_POST["telefono"]);
-		$modelo->setImagen($_FILES['imagen']["name"]);
-		$modelo->setImagenTemporal($_FILES['imagen']['tmp_name']);
+		$modelo->setImagen($archivoImagen['name'] ?? null);
+		$modelo->setImagenTemporal($archivoImagen['tmp_name'] ?? '');
 
 
 		$edicion = $modelo->update_perfil();

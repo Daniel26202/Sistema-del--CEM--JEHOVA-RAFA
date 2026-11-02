@@ -1,12 +1,12 @@
 <!-- Modal Agregar rol-->
-<div class="modal fade" id="exampleGuardarRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
+<div class="modal fade" id="exampleGuardarRol" tabindex="-1" aria-labelledby="title-modal" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable roles-modal-dialog">
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="title-modal">Registrar Rol</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form class=" form-validable" id="formAgregarRol">
+            <form class="form-validable roles-modal-form" id="formAgregarRol">
 
                 <input type="hidden" name="id_usuario" value="<?= $_SESSION['id_usuario'] ?>">
 
@@ -15,7 +15,7 @@
                 <input type="hidden" name="id_rol" id="id_rol">
 
 
-                <div class="modal-body">
+                <div class="modal-body roles-modal-body">
                     <label class="label-custom">Nombre</label>
                     <div class="campo-custom">
                         <div class="input-custom">
@@ -66,30 +66,31 @@
 
 
 
-                    <div class=''>
-                        <label class="label-custom">Permisos</label>
-
-
-
-                        <!-- acordion de horarios -->
-                        <div class="accordion " id="accordionExampleDisp">
-                            <div class="accordion-item bg-theme">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button bg-theme text-center" type="button" data-bs-toggle="collapse" data-bs-target="#dispOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Permisos Disponibles
-                                    </button>
-                                </h2>
-                                <div id="dispOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDisp">
-                                    <div class="accordion-body d-flex justify-content-between flex-wrap cards-hours" id="accordion-div">
-
-                                    </div>
-                                </div>
+                    <section class="roles-permissions">
+                        <div class="roles-permissions-heading">
+                            <div>
+                                <h2 class="label-custom mb-1">Permisos</h2>
+                                <p class="roles-permissions-help mb-0">Selecciona las acciones que podrá realizar en cada módulo.</p>
                             </div>
-
+                            <div class="form-check form-switch roles-permissions-all">
+                                <input class="form-check-input" id="permisosAbsolutos" type="checkbox" role="switch">
+                                <label class="form-check-label" for="permisosAbsolutos">Permisos absolutos</label>
+                            </div>
                         </div>
 
-
-                    </div>
+                        <div class="accordion roles-permissions-accordion" id="accordionExampleDisp">
+                            <div class="accordion-item">
+                                <h3 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#dispOne" aria-expanded="true" aria-controls="dispOne">
+                                        Permisos disponibles
+                                    </button>
+                                </h3>
+                                <div id="dispOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExampleDisp">
+                                    <div class="accordion-body roles-permissions-categories" id="accordion-div"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
 
@@ -132,7 +133,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="">
+            <div class="table table-responsive">
                 <table class="table exampleTableModulo table-striped " id="tablaPatologia">
                     <thead>
                         <tr>

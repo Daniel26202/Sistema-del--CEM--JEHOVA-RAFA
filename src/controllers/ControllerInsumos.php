@@ -203,11 +203,9 @@ function guardarInsumo()
 			exit;
 		}
 
-		// 1. Validar la imagen ANTES de tocar el disco
-		if (!isset($_FILES['imagen'])) {
-			throw new InvalidArgumentException('No se recibió ninguna imagen.');
-		}
-		$modeloInsumo->validarImagen($_FILES['imagen']);
+		// 1. Validar la imagen antes de tocar el disco; si se omite, se usa la genérica.
+		$hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+		$extensionImagen = $hayImagen ? $modeloInsumo->validarImagen($_FILES['imagen']) : null;
 
 		// 2. Procesar el precio
 		// Acepta "10.00" (punto decimal del JS) y "1.160,00" (formato local).
@@ -232,13 +230,15 @@ function guardarInsumo()
 		$modeloInsumo->setPrecio($numero);
 
 		// 4. Todo validado — recién ahora se mueve el archivo
-		$tiempo = new DateTime();
-		$fecha = date("Y-m-d");
-		$imagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . basename($_FILES['imagen']['name']);
-		$rutaImagen = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen;
-
-		if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaImagen)) {
-			throw new InvalidArgumentException('No se pudo guardar la imagen.');
+		$rutaImagen = null;
+		if ($hayImagen) {
+			$imagen = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
+			$rutaImagen = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $imagen;
+			if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaImagen)) {
+				throw new InvalidArgumentException('No se pudo guardar la imagen.');
+			}
+		} else {
+			$imagen = 'imagen-generica.svg';
 		}
 		$modeloInsumo->setImagen($imagen);
 
@@ -378,11 +378,12 @@ function editar()
 		}
 
 		// 1. Verificar si se subió una imagen nueva
-		$hayNuevaImagen = (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK);
+		$hayNuevaImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
 		$rutaImagen = null;
 		// 2. Si hay imagen nueva, validarla ANTES de tocar el disco
+		$extensionImagen = null;
 		if ($hayNuevaImagen) {
-			$modeloInsumo->validarImagen($_FILES['imagen']);
+			$extensionImagen = $modeloInsumo->validarImagen($_FILES['imagen']);
 		}
 
 		// 3. Validar el resto de los campos (aún no se ha tocado el disco)
@@ -395,9 +396,7 @@ function editar()
 
 		// 4. Todo validado — recién ahora se mueve el archivo, si corresponde
 		if ($hayNuevaImagen) {
-			$tiempo = new DateTime();
-			$fecha = date("Y-m-d");
-			$nombreImagen = $fecha . "_" . $tiempo->getTimestamp() . "_" . basename($_FILES['imagen']['name']);
+			$nombreImagen = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
 			$rutaImagen = "./src/assets/images/img_ingresadas_por_usuarios/insumos/" . $nombreImagen;
 			if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaImagen)) {
 				throw new InvalidArgumentException('No se pudo guardar la imagen.');

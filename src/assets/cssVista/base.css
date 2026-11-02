@@ -776,6 +776,51 @@ body.sidenav-open::after {
     filter: invert(1) grayscale(1);
 }
 
+/* El acordeón y los controles nativos del módulo médico siguen el tema activo. */
+:is(#exampleModalAgregarControl, #exampleModalAgregarSintoma, #exampleModalConsultarSintoma) .modal-content {
+    color-scheme: light;
+    --bs-accordion-bg: var(--color-bg-card);
+    --bs-accordion-color: var(--modal-texto);
+    --bs-accordion-border-color: var(--modal-linea);
+    --bs-accordion-btn-bg: var(--color-bg-card);
+    --bs-accordion-btn-color: var(--modal-texto);
+    --bs-accordion-active-bg: var(--color-bg-main);
+    --bs-accordion-active-color: var(--modal-texto);
+}
+
+[data-theme="dark"] :is(#exampleModalAgregarControl, #exampleModalAgregarSintoma, #exampleModalConsultarSintoma) .modal-content {
+    color-scheme: dark;
+}
+
+:is(#exampleModalAgregarControl, #exampleModalAgregarSintoma, #exampleModalConsultarSintoma) .accordion-item {
+    color: var(--modal-texto);
+    background-color: var(--color-bg-card);
+    border-color: var(--modal-linea);
+}
+
+#exampleModalAgregarControl #divDoctores .text-doctor {
+    color: var(--modal-texto) !important;
+}
+
+:is(#exampleModalAgregarControl, #exampleModalAgregarSintoma, #exampleModalConsultarSintoma) .accordion-button {
+    color: var(--modal-texto) !important;
+    background-color: var(--color-bg-card) !important;
+    box-shadow: none;
+}
+
+:is(#exampleModalAgregarControl, #exampleModalAgregarSintoma, #exampleModalConsultarSintoma) .accordion-button:not(.collapsed) {
+    color: var(--modal-texto) !important;
+    background-color: var(--color-bg-main) !important;
+}
+
+:is(#exampleModalAgregarControl, #exampleModalAgregarSintoma, #exampleModalConsultarSintoma) input[type="checkbox"] {
+    accent-color: var(--color-primary);
+}
+
+[data-theme="dark"] :is(#exampleModalAgregarControl, #exampleModalAgregarSintoma, #exampleModalConsultarSintoma) .accordion-button::after {
+    filter: invert(1);
+}
+
 /* ── 9. Movimiento respetuoso ────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
     *,

@@ -231,34 +231,6 @@ document.getElementById("especialidades").addEventListener("click", function () 
     console.log("hola");
 });
 
-///
-const convertirHora = (horaMilitar) => {
-    // Separamos hora y minutos
-    let [horaStr, minutoStr] = horaMilitar.split(":");
-
-    let hora = parseInt(horaStr, 10);
-    let minutos = parseInt(minutoStr, 10);
-
-    // Validamos rango
-    if (isNaN(hora) || isNaN(minutos) || hora < 0 || hora > 23 || minutos < 0 || minutos > 59) {
-        return "Hora inválida";
-    }
-
-    // Determinamos AM o PM
-    let sufijo = hora >= 12 ? "PM" : "AM";
-
-    // Convertimos a formato 12 horas
-    let hora12 = hora % 12;
-    if (hora12 === 0) {
-        hora12 = 12;
-    }
-
-    // Aseguramos que los minutos siempre tengan dos dígitos
-    let minutosFormateados = minutos.toString().padStart(2, "0");
-
-    return `${hora12}:${minutosFormateados} ${sufijo}`;
-};
-
 //validar que el elemento exista
 
 if (document.getElementById("selectDoctor")) {
@@ -427,37 +399,24 @@ const traerDoctor = async () => {
 };
 
 traerHorarioEspecificoDelDr = async (id) => {
+    const contenedorHorario = document.querySelector(".horario-insertar");
+    window.renderDoctorSchedules(contenedorHorario, [], { cargando: true });
+
     try {
-        // Realiza la petición AJAX
         let peticion = await fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/mostrarHorario/" + id);
+        if (!peticion.ok) {
+            throw new Error("No se pudieron cargar los horarios del doctor.");
+        }
         let resultado = await peticion.json();
 
-        document.querySelector(".horario-insertar").innerHTML = "";
-        let div = document.createElement("div");
-        // diaNumero = []; // Reiniciar el arreglo para evitar acumulación de datos previos
-        // let diasLaborablesMap = {}; // Mapa para almacenar los días y sus horarios
-        if (resultado.length > 0) {
-            resultado.forEach((res) => {
-                div.innerHTML += `
-                <div class="mb-2 " >
-                <div class="d-flex text-horario">Día Laborable: <p class="fw-bold text-horario"> ${res.diaslaborables}</p> </div>
-              
-                <div class="d-flex text-horario">Hora de Entrada: <p class="fw-bold text-horario"> ${convertirHora(
-                    res.horaDeEntrada,
-                )}</p></div>
-                <div class="d-flex text-horario">Hora de Salida: <p class="fw-bold text-horario"> ${convertirHora(
-                    res.horaDeSalida,
-                )}</p></div>
-                </div> 
-                `;
-            });
-
-            document.getElementById("titulo").innerText = `Horario del Doctor`;
+        if (!Array.isArray(resultado)) {
+            throw new Error("La respuesta de horarios no tiene un formato válido.");
         }
 
-        document.querySelector(".horario-insertar").appendChild(div);
+        window.renderDoctorSchedules(contenedorHorario, resultado);
     } catch (error) {
-        console.log(error);
+        window.renderDoctorSchedules(contenedorHorario, [], { error: true });
+        console.error("Error al traer el horario del doctor:", error);
     }
 };
 
@@ -472,6 +431,9 @@ const traerHorarioDoctor = async (id) => {
             date.classList.remove("diasOcupados");
             date.removeAttribute("data-bs-original-title");
         });
+        const botonHorario = document.getElementById("btnHorario");
+        botonHorario.innerText = "Horario del doctor seleccionado";
+
         // Itera sobre las fechas recibidas
         resultado.forEach((res) => {
             // Busca el <td> con el atributo data-date que coincida con la fecha
@@ -488,14 +450,14 @@ const traerHorarioDoctor = async (id) => {
                 );
             }
             //Darle el teto al boton del horario
-            document.getElementById("btnHorario").innerText = `Horario del Dr ${res.personal} especialidad (${res.especialidad})`;
-
-            //Llamar funcion para el horario especifico
-            traerHorarioEspecificoDelDr(id);
+            botonHorario.innerText = `Horario del Dr ${res.personal} especialidad (${res.especialidad})`;
         });
 
+        // El horario no depende de la cantidad de días con citas.
+        await traerHorarioEspecificoDelDr(id);
+
         //Aparecer el boton del horario cuando seleccione el doctor
-        document.getElementById("btnHorario").classList.remove("d-none");
+        botonHorario.classList.remove("d-none");
     } catch (error) {
         console.error("Error al traer el horario del doctor:", error);
     }

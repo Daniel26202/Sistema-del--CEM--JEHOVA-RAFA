@@ -1,13 +1,6 @@
 <?php
 
-/**
- * FPDF trabaja con las fuentes core en Latin-1 (Windows-1252), pero la
- * aplicación entrega los textos en UTF-8. Sin convertir, el comprobante
- * mostraba "HernadÃ©z" en lugar de "Hernadéz".
- *
- * Esta subclase centraliza la conversión en Cell() y MultiCell() para que las
- * vistas de los comprobantes no tengan que envolver cada llamada.
- */
+//convierte textos UTF-8 a Windows-1252 al generar comprobantes PDF.
 if (!class_exists('FacturaPdf')) {
     class FacturaPdf extends FPDF
     {

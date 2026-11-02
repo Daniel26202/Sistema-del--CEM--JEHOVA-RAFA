@@ -283,6 +283,12 @@ export function inicializarValidacionFormulario(formulario) {
     // Inicializar campos
     inputs.forEach((input) => {
         campos[input.name] = false;
+        if (input.type === "file") {
+            input.addEventListener("change", (e) => {
+                validarFormulario(e, formulario, campos);
+            });
+            return;
+        }
         // Marcar como modificado cuando el usuario interactúa
         input.addEventListener("keyup", (e) => {
             validarFormulario(e, formulario, campos);
@@ -297,29 +303,34 @@ export function inicializarValidacionFormulario(formulario) {
 
     // Retornar función verificadora
     return function verificarFormulario() {
-        let longitudInputs = inputs.length;
-        let inputsTrue = [];
-
-        inputs.forEach((input) => {
-            if (input.parentElement.classList.contains("valido")) inputsTrue.push(true);
+        return Array.from(inputs).every((input) => {
+            if (input.type === "file") {
+                if (!input.files.length && input.dataset.optionalFile === "true") return true;
+                return input.dataset.imageValid === "true";
+            }
+            return input.parentElement.classList.contains("valido");
         });
-
-        // Retornar función verificadora
-        if (inputsTrue.length == longitudInputs) {
-            return true;
-        } else return false;
     };
 }
 // Función que valida los campos cada vez que ocurre un evento en un input
 function validarFormulario(e, formulario, campos) {
     const input = e.target;
     const nameInput = input.name;
-    let mensajeError = expresiones[input.name].mensajeError;
+    let mensajeError = expresiones[input.name]?.mensajeError ?? "Seleccione una imagen JPG o PNG válida.";
     let campoCustom = input.closest(".campo-custom");
 
-    let pError = campoCustom.querySelector("p");
-    let check = campoCustom.querySelector(".check");
-    let error = campoCustom.querySelector(".error");
+    if (input.type === "file") {
+        const archivoOpcionalVacio = !input.files.length && input.dataset.optionalFile === "true";
+        const valido = archivoOpcionalVacio || input.dataset.imageValid === "true";
+        input.parentElement.classList.toggle("valido", valido);
+        input.parentElement.classList.toggle("invalido", !valido);
+        campos[nameInput] = valido;
+        return;
+    }
+
+    let pError = campoCustom?.querySelector("p");
+    let check = campoCustom?.querySelector(".check");
+    let error = campoCustom?.querySelector(".error");
     let arrayElementos = {
         pError: pError,
         check: check,
@@ -331,19 +342,6 @@ function validarFormulario(e, formulario, campos) {
         validarSelect(input, arrayElementos, campos, formulario, nameInput);
     } else if (nameInput === "fn" || nameInput === "fechaDeCita" || nameInput === "fechaDeVencimiento") {
         campos[nameInput] = validarFecha(input, arrayElementos, nameInput, formulario);
-    } else if (nameInput === "imagen" && input.type === "file") {
-        const nombreArchivo = input.files.length > 0 ? input.files[0].name : "";
-        campos[nameInput] = false;
-        validarCampo(
-            expresiones.imagen.expresion,
-            input, // el input real, para poder pintarlo visualmente
-            nameInput,
-            campos,
-            formulario,
-            arrayElementos,
-            mensajeError,
-            nombreArchivo, // el valor real a validar
-        );
     } else {
         const expresion = expresiones[nameInput].expresion;
         if (expresion) {

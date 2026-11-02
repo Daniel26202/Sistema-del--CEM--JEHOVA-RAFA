@@ -156,7 +156,7 @@ require_once './src/vistas/head/head.php';
                                     <div class="form-modal perfil " id="perfil">
                                         <div class="mx-5">
 
-                                            <img id="imgUser" src="../src/assets/images/img_ingresadas_por_usuarios/usuarios/<?= $d['id_usuario'] ?>_<?= $d['imagen'] ?>" alt="" class="img-perfil-inicio">
+                                            <img id="imgUser" src="<?= in_array($d['imagen'], ['doctor.png', 'imagen-generica.svg'], true) ? '../src/assets/images/img/' . rawurlencode($d['imagen']) : '../src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $d['id_usuario'] . '_' . rawurlencode($d['imagen']) ?>" alt="Foto de perfil" class="img-perfil-inicio">
                                         </div>
                                         <div class="">
                                             <label class="label-custom">Cédula</label>
@@ -263,35 +263,32 @@ require_once './src/vistas/head/head.php';
 
 <!-- Modal de horario del doctor -->
 
-<div class="modal fade" id="exampleModalInfoDoctor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content tamaño-modal">
+<div class="modal fade" id="exampleModalInfoDoctor" tabindex="-1" aria-labelledby="exampleModalLabelDoctores" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content tamaño-modal doctor-schedule-modal">
             <div class="modal-header">
-                <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelDoctores">Informacion sobre Doctor</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body ">
-                <hr>
-
-                <h5>Horario del doctor:</h5>
-
-                <div class="horario-insertar d-flex justify-content-between ">
-
+                <div class="doctor-schedule-heading">
+                    <span class="doctor-schedule-heading-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <rect x="3.5" y="5" width="17" height="16" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9.5h17M8 13h3M8 16.5h3M14 13h2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelDoctores">Disponibilidad médica</h5>
+                        <p class="doctor-schedule-subtitle mb-0">Horario de atención</p>
+                    </div>
                 </div>
-
-                <hr>
-
-
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
-
-
-
-
-
-
-
+            <div class="modal-body">
+                <div class="horario-insertar" aria-live="polite" aria-busy="false">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -302,6 +299,7 @@ require_once './src/vistas/head/head.php';
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/jspdf.umd.min.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/html2canvas.min.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/doctorSchedule.js"></script>
 <!-- jQuery y DataTables ya se cargan en head/footer.php; aquí solo se
      referenciaban con una ruta inexistente (src/assets/DataTable/...),
      lo que generaba dos 404 en cada carga del panel. -->

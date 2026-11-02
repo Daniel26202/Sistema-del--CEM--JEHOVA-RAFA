@@ -1,16 +1,5 @@
 <?php
-/**
- * Formato de moneda del proyecto (guía Promp_metodo_pago.md).
- *
- * Réplica de src/assets/js/generic/moneda.js:
- *   USD -> $ 1,250.50     (coma de miles, punto decimal)
- *   BS  -> Bs. 45.643,25  (punto de miles, coma decimal)
- *
- * Y de la lectura de importes escritos por el cajero, que convive con las dos
- * convenciones ("1.234,56" y "1,234.56").
- *
- * Ejecutar:  /opt/lampp/bin/php tests/formato_moneda_test.php
- */
+//verifica los formatos de moneda que utiliza el sistema.
 
 declare(strict_types=1);
 

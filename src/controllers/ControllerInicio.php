@@ -60,21 +60,7 @@ function inicio($parametro)
     require_once './src/vistas/dashboard.php';
 }
 
-/**
- * Recibe la tasa del día desde el navegador y la guarda en la sesión.
- *
- * El navegador la obtiene de https://ve.dolarapi.com/v1/dolares/oficial
- * (ver src/assets/js/generic/coversion.js) y la manda por la URL.
- *
- * Dos correcciones importantes:
- *
- * 1) number_format() con separador de miles '.' producía "1.000.00" para tasas
- *    de 1000 en adelante. Los consumidores hacen (float)"1.000.00" => 1.0, es
- *    decir, recibían mil veces menos. El cuarto parámetro debe ser cadena vacía.
- *
- * 2) La tasa se valida antes de guardarse. Antes cualquiera podía pedir
- *    .../Inicio/valorDolar/1 y dejar su sesión con una tasa inventada.
- */
+//valida y guarda en sesión la tasa de cambio recibida del navegador.
 function valorDolar($datos)
 {
     $tasa = is_array($datos) ? ($datos[0] ?? null) : null;

@@ -51,7 +51,6 @@ class DoctorEditarTest extends TestCase
         $this->modelo->insertarDoctor(1);
 
         $idUsuario = $this->db->query("SELECT id_usuario FROM segurity.usuario WHERE usuario = '{$this->usuario}'")->fetch(\PDO::FETCH_ASSOC)['id_usuario'];
-
         $this->modelo = new ModeloDoctores();
         $this->modelo->setIdUsuario($idUsuario);
         $this->modelo->setNacionalidad("V");

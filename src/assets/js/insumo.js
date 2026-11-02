@@ -4,7 +4,6 @@ import {
   alertError,
   alertSuccess,
   initDataTable,
-  cargarImg,
   hasPermision,
   initLoaderButton,
   finallyLoaderButton,
@@ -26,8 +25,6 @@ addEventListener("DOMContentLoaded", function () {
   );
 
   const divTarjetsInsumo = document.getElementById("div-tarjets");
-  const imagenInsumo = document.getElementById("imagen");
-
   const formInsumos = document.getElementById("modalAgregarInsumos");
   const inputEditar = formInsumos.querySelectorAll(".campo-editar");
 
@@ -340,11 +337,12 @@ addEventListener("DOMContentLoaded", function () {
 
   //RETURN fragment html card
   const returnFragmentHtml = (element) => {
-    return `
-    <div class="card contenido mb-4 mx-2" style="width: 18rem;">
-        <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${
-          element.imagen
-        }" class="card-img-top" style="width: 100%; height: 200px; object-fit: cover;" alt="...">
+            const imagen = element.imagen === "imagen-generica.svg"
+              ? `${urlBase}../src/assets/images/img/imagen-generica.svg`
+              : `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${encodeURIComponent(element.imagen)}`;
+            return `
+          <div class="card contenido mb-4 mx-2" style="width: 18rem;">
+                <img src="${imagen}" class="card-img-top" style="width: 100%; height: 200px; object-fit: cover;" alt="Imagen de ${element.nombre}">
         <div class="card-body">
             <h5 class=" titulo">${element.nombre}</h5>
 
@@ -362,17 +360,6 @@ addEventListener("DOMContentLoaded", function () {
         </div>
     </div>`;
   };
-
-  //funcion la imagen en el formulario para  que se visualize
-
-  //llamar a la funcion para cargar la imagen del insumo
-  imagenInsumo.addEventListener("change", function (e) {
-    let newImg = `<img src='' class="img-fluid rounded">`;
-
-    contenedorImg.classList.remove("d-none");
-    contenedorImgEditar.classList.add("d-none");
-    cargarImg(this.files, newImg, contenedorImg);
-  });
 
   traerInsumoCasiVencidos();
 

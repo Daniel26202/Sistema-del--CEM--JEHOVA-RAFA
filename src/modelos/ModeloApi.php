@@ -2,13 +2,7 @@
 
 namespace App\modelos;
 
-/**
- * Consultas de solo lectura para el componente inteligente (FastAPI).
- *
- * Reúne los datos clínicos de un PACIENTE (no del usuario): el vínculo
- * usuario → paciente se resuelve por cédula (personal.cedula = paciente.cedula),
- * porque no existe una relación explícita en el esquema.
- */
+//consulta datos clínicos de pacientes para el componente FastAPI.
 class ModeloApi extends ModelBase
 {
     public function __construct(bool $dbSystem = true)
@@ -16,10 +10,7 @@ class ModeloApi extends ModelBase
         parent::__construct($dbSystem);
     }
 
-    /**
-     * Indica si el usuario pertenece al personal del centro (doctor, secretaria
-     * o administrador). Un "usuario normal" sin fila en `personal` no tiene acceso.
-     */
+    //comprueba si el usuario pertenece al personal del centro.
     public function esPersonalDelCentro(int $idUsuario): bool
     {
         $this->setSQL("SELECT 1 AS existe FROM personal WHERE usuario = :id_usuario LIMIT 1");
@@ -45,10 +36,7 @@ class ModeloApi extends ModelBase
         return $fila ?: null;
     }
 
-    /**
-     * Historial de controles del paciente, con los síntomas de cada control
-     * agregados en un solo campo.
-     */
+    //devuelve el historial de controles y síntomas de un paciente.
     public function historialDePaciente(int $idPaciente): array
     {
         $this->setSQL(
@@ -116,11 +104,7 @@ class ModeloApi extends ModelBase
         return $this->search(['buscar' => $buscar]) ?: [];
     }
 
-    /**
-     * Controles de los últimos $meses (por defecto 6), con sus síntomas.
-     * Si no hay controles en esa ventana (datos históricos), devuelve los
-     * últimos 5 para no dejar la ficha vacía.
-     */
+    //devuelve controles recientes del paciente y sus síntomas.
     public function controlesRecientes(int $idPaciente, int $meses = 6): array
     {
         $meses = max(1, min($meses, 24));

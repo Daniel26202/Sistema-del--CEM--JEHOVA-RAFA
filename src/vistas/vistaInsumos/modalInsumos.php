@@ -165,9 +165,9 @@
                 <div class="modal-body">
 
                     <!-- Contenedor para vista previa de imagen -->
-                    <div id="contenedor-img" class="mb-2"></div>
+                    <div id="contenedor-img" class="image-preview mb-2"></div>
 
-                    <div id="contenedor-img-editar" class="d-none mb-2">
+                    <div id="contenedor-img-editar" class="image-preview-current d-none mb-2">
                         <img id="imgEditar" src="">
                     </div>
                     <!-- Imagen -->
@@ -180,7 +180,7 @@
                                     <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" />
                                 </svg>
                             </span>
-                            <input class="form-control txt-custom input-validar inputs campo-editar" type="file" name="imagen" id="imagen" placeholder="Seleccionar imagen">
+                            <input class="form-control txt-custom input-validar inputs campo-editar" type="file" name="imagen" id="imagen" accept="image/jpeg,image/png" data-image-upload data-optional-file="true" data-image-preview="#contenedor-img" data-image-current="#contenedor-img-editar" placeholder="Seleccionar imagen">
                             <span class="icono-der">
                                 <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
@@ -190,6 +190,7 @@
                                 </svg>
                             </span>
                         </div>
+                        <small class="form-text text-muted">Opcional. JPG o PNG, máximo 5 MB.</small>
                         <p class="error-msg d-none  p-error-validaciones"></p>
                     </div>
 

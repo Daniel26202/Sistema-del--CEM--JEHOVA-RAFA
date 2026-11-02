@@ -71,7 +71,17 @@ class ModeloDoctores extends ModelBase
     public function selectDiasDoctor()
     {
         try {
-            $sql = "SELECT h.id_horario, h.diaslaborables, hyd.horaDeEntrada, hyd.horaDeSalida, hyd.id_personal FROM horario h INNER JOIN horarioydoctor hyd ON h.id_horario = hyd.id_horario INNER JOIN personal p ON p.id_personal = hyd.id_personal";
+            $sql = "SELECT h.id_horario, h.diaslaborables, hyd.horaDeEntrada, hyd.horaDeSalida, hyd.id_personal
+                    FROM horario h
+                    INNER JOIN horarioydoctor hyd ON h.id_horario = hyd.id_horario
+                    WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM horarioydoctor hyd_reciente
+                        WHERE hyd_reciente.id_personal = hyd.id_personal
+                        AND hyd_reciente.id_horario = hyd.id_horario
+                        AND hyd_reciente.id_horarioydoctor > hyd.id_horarioydoctor
+                    )
+                    ORDER BY hyd.id_horarioydoctor DESC";
             $this->setSQL($sql);
             return $this->read();
         } catch (\Exception $e) {
@@ -232,7 +242,7 @@ class ModeloDoctores extends ModelBase
                 throw new \Exception("El usuario ya está registrado.");
             }
 
-            $imagen         = $this->getImagen() ?: 'doctor.png';
+            $imagen         = $this->getImagen() ?: 'imagen-generica.svg';
             $imagenTemporal = $this->getImagenTemporal() ?: '';
 
             $data1 = [
@@ -263,7 +273,9 @@ class ModeloDoctores extends ModelBase
 
             if ($idUsuario && $imagenTemporal !== '') {
                 $imagen = $idUsuario . '_' . $imagen;
-                move_uploaded_file($imagenTemporal, './src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $imagen);
+                if (!move_uploaded_file($imagenTemporal, './src/assets/images/img_ingresadas_por_usuarios/usuarios/' . $imagen)) {
+                    throw new \RuntimeException('No se pudo guardar la imagen del doctor.');
+                }
             }
 
             $horarios = $this->getHorarios();
@@ -320,6 +332,8 @@ class ModeloDoctores extends ModelBase
 
     private function updateDoctorDB()
     {
+        $rutaImagenNueva = null;
+        $rutaImagenAntigua = null;
         try {
             $this->beginTransaction();
 
@@ -351,41 +365,73 @@ class ModeloDoctores extends ModelBase
             $this->setSQL($sql);
             $this->update($data2, $idPersonal);
 
-            $sql = 'UPDATE segurity.usuario SET correo = :correo WHERE id_usuario = :id';
+            $datosUsuario = ['correo' => $this->getEmail()];
+            $sql = 'UPDATE segurity.usuario SET correo = :correo';
+            if ($this->getImagen() !== null) {
+                $this->setSQL('SELECT imagen FROM segurity.usuario WHERE id_usuario = :id_usuario');
+                $imagenActual = $this->search(['id_usuario' => $this->getIdUsuario()], false);
+                $rutaImagenAntigua = './src/assets/images/img_ingresadas_por_usuarios/usuarios/'
+                    . $this->getIdUsuario() . '_' . ($imagenActual['imagen'] ?? '');
+                $datosUsuario['imagen'] = $this->getImagen();
+                $sql .= ', imagen = :imagen';
+            }
+            $sql .= ' WHERE id_usuario = :id';
             $this->setSQL($sql);
-            $this->update(['correo' => $this->getEmail()], $this->getIdUsuario());
+            $this->update($datosUsuario, $this->getIdUsuario());
+
+            if ($this->getImagen() !== null) {
+                $rutaImagenNueva = './src/assets/images/img_ingresadas_por_usuarios/usuarios/'
+                    . $this->getIdUsuario() . '_' . $this->getImagen();
+                if (!move_uploaded_file($this->getImagenTemporal(), $rutaImagenNueva)) {
+                    throw new \RuntimeException('No se pudo guardar la imagen del doctor.');
+                }
+            }
 
             $this->sincronizarHorariosDoctor($idPersonal);
 
             $this->commit();
+            if (
+                $rutaImagenAntigua !== null
+                && file_exists($rutaImagenAntigua)
+                && !str_ends_with($rutaImagenAntigua, '_imagen-generica.svg')
+                && !str_ends_with($rutaImagenAntigua, '_doctor.png')
+            ) {
+                unlink($rutaImagenAntigua);
+            }
             return ["exito", $data1, $data2, $idPersonal];
         } catch (\Exception $e) {
             $this->rollBack();
+            if ($rutaImagenNueva !== null && file_exists($rutaImagenNueva)) {
+                unlink($rutaImagenNueva);
+            }
             return $e->getMessage();
         }
     }
 
-    /**
-     * Sincroniza la tabla horarioydoctor con los horarios enviados desde el
-     * formulario. Compara contra lo que realmente existe en la base:
-     *  - Los días que ya existían y siguen marcados con la misma hora no se tocan.
-     *  - Los días que ya existían pero cambiaron de hora se actualizan.
-     *  - Los días nuevos se insertan.
-     *  - Los días que ya no están marcados se eliminan.
-     */
+    //sincroniza los horarios del formulario con los registros de la base de datos.
     private function sincronizarHorariosDoctor($idPersonal)
     {
         $idPersonal  = (int)$idPersonal;
         $nuevos      = $this->getHorarios();
 
-        $sql = "SELECT id_horario, horaDeEntrada, horaDeSalida FROM horarioydoctor WHERE id_personal = :id_personal";
+        $sql = "SELECT id_horarioydoctor, id_horario, horaDeEntrada, horaDeSalida
+                FROM horarioydoctor
+                WHERE id_personal = :id_personal
+                ORDER BY id_horario, id_horarioydoctor DESC";
         $this->setSQL($sql);
         $existentesRows = $this->search(['id_personal' => $idPersonal]);
 
-        //indexamos los horarios actuales de la base por id_horario
+        //Conserva el registro más reciente de cada día y elimina asignaciones antiguas duplicadas.
         $existentes = [];
         foreach (is_array($existentesRows) ? $existentesRows : [] as $fila) {
-            $existentes[(int)$fila['id_horario']] = [
+            $idHorario = (int)$fila['id_horario'];
+            if (isset($existentes[$idHorario])) {
+                $this->setSQL("DELETE FROM horarioydoctor WHERE id_horarioydoctor = :id_horarioydoctor");
+                $this->delete(['id_horarioydoctor' => (int)$fila['id_horarioydoctor']]);
+                continue;
+            }
+
+            $existentes[$idHorario] = [
                 'entrada' => $this->normalizarHora($fila['horaDeEntrada']),
                 'salida'  => $this->normalizarHora($fila['horaDeSalida']),
             ];
@@ -428,10 +474,7 @@ class ModeloDoctores extends ModelBase
         }
     }
 
-    /**
-     * UPDATE genérico sin depender de un ":id" fijo, para poder filtrar por
-     * id_personal e id_horario a la vez.
-     */
+    //ejecuta una actualización usando los parámetros recibidos.
     private function updateHorario($data)
     {
         $sql = $this->getSQL();
@@ -442,10 +485,7 @@ class ModeloDoctores extends ModelBase
         return $stmt->execute();
     }
 
-    /**
-     * La base devuelve las horas como "08:00:00" y el formulario las envía como
-     * "08:00". Normalizamos a "HH:MM" para poder compararlas sin falsos positivos.
-     */
+    //normaliza una hora al formato HH:MM para compararla con el formulario.
     private function normalizarHora($hora)
     {
         $hora = trim((string)$hora);
@@ -619,26 +659,9 @@ class ModeloDoctores extends ModelBase
         return $this->especialidadEliminarDB($estado);
     }
 
-    public function validarImagen($imagen): void
+    public function validarImagen($imagen): string
     {
-        if ($imagen['error'] !== UPLOAD_ERR_OK) {
-            throw new \InvalidArgumentException('Error al subir la imagen.');
-        }
-
-        $extensionesPermitidas = ['jpg', 'jpeg', 'png'];
-        $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
-        if (!in_array($extension, $extensionesPermitidas)) {
-            throw new \InvalidArgumentException('Solo se permiten imágenes JPG o PNG.');
-        }
-
-        if ($imagen['size'] > 5 * 1024 * 1024) {
-            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-        }
-
-        $infoImagen = @getimagesize($imagen['tmp_name']);
-        if ($infoImagen === false || !in_array($infoImagen['mime'], ['image/jpeg', 'image/png'])) {
-            throw new \InvalidArgumentException('El archivo no es una imagen válida.');
-        }
+        return \App\config\ImagenUpload::validar($imagen);
     }
 
     // ── Getters & Setters ──────────────────────────────────────
@@ -788,10 +811,7 @@ class ModeloDoctores extends ModelBase
         $this->idEspecialidad = $id_especialidad;
     }
 
-    /**
-     * Recibe el horario como mapa: [id_horario => ['entrada' => 'HH:MM', 'salida' => 'HH:MM']]
-     * y valida cada bloque antes de guardarlo.
-     */
+    //valida y establece los horarios seleccionados.
     public function setHorarios(array $horarios)
     {
         if (empty($horarios)) {

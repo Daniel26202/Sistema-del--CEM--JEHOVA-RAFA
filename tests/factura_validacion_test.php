@@ -1,15 +1,5 @@
 <?php
-/**
- * Pruebas de las validaciones del modelo de facturación.
- *
- * Verifica que los setters rechazan lo que antes pasaba de largo:
- * precios negativos, cantidades absurdas, identificadores manipulados y
- * montos de pago no numéricos.
- *
- * No requiere base de datos: solo exercise la validación de entrada.
- *
- * Ejecutar:  /opt/lampp/bin/php tests/factura_validacion_test.php
- */
+//verifica las validaciones de entrada del modelo de facturación.
 
 declare(strict_types=1);
 

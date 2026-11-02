@@ -1,10 +1,5 @@
 <?php
-/**
- * Asistente IA — botón flotante + modal.
- *
- * Se incluye desde src/vistas/head/head.php, así que comparte el scope y
- * dispone de $urlBase. La lógica vive en src/assets/js/chatModal.js.
- */
+//muestra el botón flotante y el modal del asistente IA.
 ?>
 <!-- Botón flotante que abre el asistente -->
 <button type="button" id="chatFlotante" class="chat-flotante" title="Asistente IA" aria-label="Abrir asistente IA">

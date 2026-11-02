@@ -1,6 +1,10 @@
 <?php require_once './src/vistas/head/head.php'; ?>
 
 <?php
+// Salida escapada: los datos del paciente/doctor vienen de la base y no deben
+// interpretarse como HTML (XSS almacenado en la pantalla de facturación).
+$e = static fn($v) => htmlspecialchars(htmlspecialchars_decode((string)$v, ENT_QUOTES), ENT_QUOTES, 'UTF-8');
+
 // El JS de hospitalización (f.js) espera los mismos ids que la factura normal.
 // La vista ahora delega en f.js; antes cargaba "src/assets/factura.js", ruta que
 // no existe (el archivo real es src/assets/js/factura.js), por lo que la página
@@ -73,18 +77,18 @@ if (!empty($hostalizacionFacturar)) {
                         <tr>
                             <td class="border-top">
                                 <div class="fw-bolder">CI:</div>
-                                <?= $datoH["nacionalidad"] . "-" . $datoH["cedula"]; ?>
+                                <?= $e($datoH["nacionalidad"] . "-" . $datoH["cedula"]); ?>
                             </td>
                             <td class="border-top">
                                 <div class="fw-bolder">PACIENTE:</div>
-                                <?= $datoH["nombre"]; ?>
-                                <?= $datoH["apellido"]; ?>
+                                <?= $e($datoH["nombre"]); ?>
+                                <?= $e($datoH["apellido"]); ?>
                             </td>
 
                             <td class="border-top">
                                 <div class="fw-bolder">DOCTOR:</div>
-                                <?= $datoH["nombredoc"]; ?>
-                                <?= $datoH["apellidodoc"]; ?>
+                                <?= $e($datoH["nombredoc"]); ?>
+                                <?= $e($datoH["apellidodoc"]); ?>
                             </td>
 
 
@@ -119,13 +123,13 @@ if (!empty($hostalizacionFacturar)) {
                             <tr>
                                 <td class="border-top">
                                     <div class="fw-bolder">SERVICIO:</div>
-                                    <?= $datoH["nombre"]; ?>
+                                    <?= $e($datoH["nombre"]); ?>
                                 </td>
 
 
                                 <td class="border-top">
                                     <div class="fw-bolder">PRECIO:</div>
-                                    <?= $datoH["precio"] . '   $'; ?>
+                                    <?= $e($datoH["precio"]) . '   $'; ?>
                                 </td>
 
 

@@ -6,7 +6,6 @@ const formPerfil = document.getElementById("formPerfil");
 const inputsCard = document.querySelectorAll(".fondo-perfil .input-validar");
 const inputsValidacion = document.querySelectorAll(".form-validable .input-validar");
 const imgPerfilModal = document.getElementById("img-perfil-modal");
-const inputImagen = document.getElementById("inputImagen");
 const imgUser = document.getElementById("imgUser");
 const botonModal = document.getElementById('botonModal')
 
@@ -48,7 +47,10 @@ const readProfile = async () => {
             inputsCard[5].value = element.correo;
 
             //img
-            imgUser.src = `../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${element.imagen}`;
+            const imagen = ["doctor.png", "imagen-generica.svg"].includes(element.imagen)
+                ? `../src/assets/images/img/${encodeURIComponent(element.imagen)}`
+                : `../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${encodeURIComponent(element.imagen)}`;
+            imgUser.src = imagen;
 
             inputsValidacion[1].value = element.cedula;
             inputsValidacion[2].value = element.nombre;
@@ -57,7 +59,7 @@ const readProfile = async () => {
             inputsValidacion[5].value = element.correo;
             inputsValidacion[6].value = element.user;
 
-            imgPerfilModal.src = `../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${element.imagen}`;
+            imgPerfilModal.src = imagen;
         });
         inputsCard.forEach((e) => {
             e.setAttribute("disabled", true);
@@ -76,26 +78,9 @@ const readProfile = async () => {
     }
 };
 
-//funvion generica para cargar imagenes en js
-const cargarImgPerfil = (archivo) => {
-    console.log(archivo);
-    for (var i = 0; i < archivo.length; i++) {
-        const reader = new FileReader();
-        reader.readAsDataURL(archivo[i]);
-        reader.addEventListener("load", function (e) {
-            console.log(imgPerfilModal);
-            imgPerfilModal.src = e.currentTarget.result;
-        });
-    }
-};
-
 readProfile();
 
 let verificarForm = inicializarValidacionFormulario(formPerfil);
-
-inputImagen.addEventListener("change", function () {
-    cargarImgPerfil(this.files);
-});
 
 formPerfil.addEventListener("submit", function (e) {
     e.preventDefault();

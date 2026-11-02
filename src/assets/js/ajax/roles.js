@@ -16,6 +16,7 @@ const url = "/Sistema-del--CEM--JEHOVA-RAFA/Roles";
 const urlBase = document.getElementById("urlBase").value;
 
 const formAgregarRol = document.getElementById("formAgregarRol");
+const permisosAbsolutos = document.getElementById("permisosAbsolutos");
 const rol = document.getElementById("rol");
 const btnRegistrarRol = document.getElementById("btnRegistrarrol");
 const inputs = formAgregarRol.querySelectorAll(".input-validar");
@@ -108,6 +109,7 @@ const returnModuleCategiry = async () => {
     });
 
     listModule = categorias;
+    await readPermisos();
   } catch (error) {
     alertError("Error", error);
   }
@@ -119,6 +121,36 @@ const readRol = async () => {
 
     const items = await executePetition(url + "/mostrarAjax", "GET");
 
+    const mostrarRol = async (idRol) => {
+      const rolSeleccionado = items.find((item) => item.id_rol == idRol);
+      if (!rolSeleccionado) return;
+
+      botonModal.innerHTML = "Modificar";
+      titleModal.innerText = "Modificar Rol";
+      document.querySelector(".btn-eliminar").classList.remove("d-none");
+
+      id_rol.value = rolSeleccionado.id_rol;
+      nombreRegiistrado.value = rolSeleccionado.nombre;
+      inputs[0].value = rolSeleccionado.nombre;
+      inputs[1].value = rolSeleccionado.descripcion;
+
+      document
+        .querySelector(".btn-eliminar")
+        .setAttribute("data-index", rolSeleccionado.id_rol);
+
+      inputs.forEach((input) => {
+        input.dispatchEvent(new Event("keyup", { bubbles: true }));
+      });
+
+      formAgregarRol.classList.add("editar");
+      modalRegistrarRol.show();
+      const permisosGuardados = await traerPermisosGuardados(
+        rolSeleccionado.id_rol,
+      );
+      console.log(rolSeleccionado.id_rol, permisosGuardados);
+      readPermisos(permisosGuardados);
+    };
+
     const paginator = new Paginator(
       items,
       3,
@@ -126,6 +158,8 @@ const readRol = async () => {
       "pagination",
       "searchInput",
       returnFragmentHtml,
+      "id_rol",
+      mostrarRol,
     );
 
     paginator.displayItems();
@@ -145,37 +179,6 @@ const readRol = async () => {
         console.log(data);
         alertConfirm("Esta seguro de eliminar el rol?", deleteUser, data);
       });
-
-    //mostrar modal
-    document.querySelectorAll(".botones-mostrar").forEach((btn) => {
-      btn.addEventListener("click", async function () {
-        botonModal.innerHTML = "Modificar";
-        titleModal.innerText = "Modificar Rol";
-        document.querySelector(".btn-eliminar").classList.remove("d-none");
-
-        id_rol.value = this.getAttribute("data-index");
-        nombreRegiistrado.value = this.getAttribute("data-name");
-        inputs[0].value = this.getAttribute("data-name");
-        inputs[1].value = this.getAttribute("data-descripcion");
-
-        //btn eliminar
-        document
-          .querySelector(".btn-eliminar")
-          .setAttribute("data-index", this.getAttribute("data-index"));
-
-        inputs.forEach((input) => {
-          input.dispatchEvent(new Event("keyup", { bubbles: true }));
-        });
-
-        formAgregarRol.classList.add("editar");
-        modalRegistrarRol.show();
-        let permisosGuardados = await traerPermisosGuardados(
-          this.getAttribute("data-index"),
-        );
-        console.log(this.getAttribute("data-index"), permisosGuardados);
-        readPermisos(permisosGuardados);
-      });
-    });
 
     //////gestionar persmisos
     hasPermision(id_rol_global, "Roles", "guardar", ".btnOpenModal"); //guardar
@@ -246,6 +249,36 @@ const traerPermisosGuardados = async (id_rol) => {
     return error;
   }
 };
+
+const actualizarPermisosModulo = (modulo) => {
+  const consultar = modulo.querySelector(
+    '.roles-permission-option input[data-permission="consultar"]',
+  );
+  const permisosDependientes = modulo.querySelectorAll(
+    '.roles-permission-option input:not([data-permission="consultar"])',
+  );
+  const puedeAdministrar = consultar?.checked ?? false;
+
+  permisosDependientes.forEach((permiso) => {
+    if (!puedeAdministrar) permiso.checked = false;
+    permiso.disabled = !puedeAdministrar;
+  });
+};
+
+const actualizarSelectorAbsoluto = () => {
+  if (!permisosAbsolutos) return;
+
+  const permisos = document.querySelectorAll(
+    "#accordion-div .roles-permission-option input",
+  );
+  const seleccionados = [...permisos].filter((permiso) => permiso.checked);
+
+  permisosAbsolutos.checked =
+    permisos.length > 0 && seleccionados.length === permisos.length;
+  permisosAbsolutos.indeterminate =
+    seleccionados.length > 0 && seleccionados.length < permisos.length;
+};
+
 const readPermisos = async (permisosGuardados = {}) => {
   const accordionContainer = document.getElementById("accordion-div");
   if (!accordionContainer) return;
@@ -266,18 +299,22 @@ const readPermisos = async (permisosGuardados = {}) => {
       const categoriaCollapseId = `collapse-${categoriaSlug}`;
 
       const categoriaDiv = document.createElement("div");
-      categoriaDiv.classList.add("card", "mb-3", "w-100");
+      categoriaDiv.classList.add(
+        "accordion-item",
+        "roles-permission-category",
+      );
 
       categoriaDiv.innerHTML = `
-          <h2 class="accordion-header" id="${categoriaId}">
-              <button class="accordion-button bg-theme text-center" type="button" 
-                      data-bs-toggle="collapse" data-bs-target="#${categoriaCollapseId}">
+          <h3 class="accordion-header" id="${categoriaId}">
+              <button class="accordion-button" type="button"
+                      data-bs-toggle="collapse" data-bs-target="#${categoriaCollapseId}"
+                      aria-expanded="false" aria-controls="${categoriaCollapseId}">
                   ${categoria}
               </button>
-          </h2>
+          </h3>
           <div id="${categoriaCollapseId}" class="accordion-collapse collapse" 
                aria-labelledby="${categoriaId}" data-bs-parent="#accordion-div">
-              <div class="accordion-body d-flex flex-wrap cards-hours">
+              <div class="accordion-body roles-permissions-grid">
                   ${modulos
                     .map((modulo) => {
                       const modName = modulo.modulo;
@@ -300,14 +337,20 @@ const readPermisos = async (permisosGuardados = {}) => {
                             ? "checked"
                             : "";
 
+                          const permisoNormalizado = p.permisos
+                            .toString()
+                            .trim()
+                            .toLocaleLowerCase();
+
                           return `
-                              <div class="form-check form-switch d-flex align-items-center">
+                              <div class="form-check form-switch roles-permission-option">
                                   <input class="form-check-input" type="checkbox" role="switch" 
                                       id="check-${index}-${modId}" 
                                       name="permisos[${modName}][]" 
                                       value="${p.id_permiso}" 
+                                      data-permission="${permisoNormalizado}"
                                       ${isChecked}>
-                                  <label class="form-check-label ms-2 mt-1" for="check-${index}-${modId}">
+                                  <label class="form-check-label" for="check-${index}-${modId}">
                                       ${p.permisos.charAt(0).toUpperCase() + p.permisos.slice(1)}
                                   </label>
                               </div>
@@ -316,19 +359,36 @@ const readPermisos = async (permisosGuardados = {}) => {
                         .join("");
 
                       return `
-                      <div class="card fondo-tabla mb-3 m-auto w-100" style="width: 14rem;">
+                      <section class="roles-permission-module" data-permission-module="${modId}">
                           <input type='hidden' name="modulos[]" value="${modName}">
-                          <div class="card-body">
-                              <h5 class="card-title">${modName}</h5>
-                              ${switchesHTML}
-                          </div>
-                      </div>`;
+                          <h4 class="roles-permission-module-title">${modName}</h4>
+                          <div class="roles-permission-options">${switchesHTML}</div>
+                      </section>`;
                     })
                     .join("")}
               </div>
           </div>
       `;
       accordionContainer.appendChild(categoriaDiv);
+    }
+
+    accordionContainer
+      .querySelectorAll(".roles-permission-module")
+      .forEach(actualizarPermisosModulo);
+    actualizarSelectorAbsoluto();
+
+    if (!accordionContainer.dataset.permissionRulesBound) {
+      accordionContainer.addEventListener("change", (event) => {
+        const permiso = event.target.closest(
+          ".roles-permission-option input",
+        );
+        if (!permiso) return;
+
+        const modulo = permiso.closest(".roles-permission-module");
+        if (modulo) actualizarPermisosModulo(modulo);
+        actualizarSelectorAbsoluto();
+      });
+      accordionContainer.dataset.permissionRulesBound = "true";
     }
   } catch (error) {
     console.error("Error al renderizar permisos:", error);
@@ -447,12 +507,32 @@ readPermisos();
 
 readModule();
 
+permisosAbsolutos?.addEventListener("change", () => {
+  const permisos = document.querySelectorAll(
+    "#accordion-div .roles-permission-option input",
+  );
+
+  permisos.forEach((permiso) => {
+    permiso.checked = permisosAbsolutos.checked;
+  });
+  document
+    .querySelectorAll("#accordion-div .roles-permission-module")
+    .forEach(actualizarPermisosModulo);
+  actualizarSelectorAbsoluto();
+});
+
 //abrir el modal de agregar
 btnRegistrarRol.addEventListener("click", function () {
   modalRegistrarRol.show();
   botonModal.innerHTML = "Registrar";
   titleModal.innerText = "Registrar Rol";
   btnEliminar.classList.add("d-none");
+  formAgregarRol.classList.remove("editar");
+  if (permisosAbsolutos) {
+    permisosAbsolutos.checked = false;
+    permisosAbsolutos.indeterminate = false;
+  }
+  readPermisos();
 
   formAgregarRol.querySelectorAll(".input-validar").forEach((input) => {
     input.value = "";

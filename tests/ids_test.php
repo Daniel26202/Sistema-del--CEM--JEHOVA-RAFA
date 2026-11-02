@@ -1,19 +1,5 @@
 <?php
-/**
- * Verifica el contrato de identificadores entre el navegador y el servidor.
- *
- * Error que previene: "Identificador inválido o manipulado."
- *   El navegador manda los ids en servicios[], doctores[], insumos[], id_cita,
- *   id_paciente, id_cliente, id_hospitalizacion, formasDePago[]. El controlador
- *   hace unhashId() de todos, así que cada endpoint que alimenta esos campos
- *   debe devolver el id HASHEADO (setHashKeys).
- *
- * El bug real: buscarPacientePorCita() aliasa el doctor como `id_doctor_c`
- * mientras setHashKeys() solo enumeraba `id_personal`, así que ese campo viajaba
- * crudo y unhashId() lanzaba al confirmar la factura.
- *
- * Ejecutar: /opt/lampp/bin/php tests/ids_test.php
- */
+//verifica que los identificadores enviados entre navegador y servidor estén hasheados.
 
 declare(strict_types=1);
 

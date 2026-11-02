@@ -1,19 +1,6 @@
 <?php
 
-/**
- * Prueba de integración / UI con navegador real (Chrome headless + ChromeDriver).
- *
- * Recorre la aplicación web como lo haría un usuario:
- *   1. Abre la pantalla de inicio de sesión.
- *   2. Inicia sesión con un usuario real.
- *   3. Navega por los módulos principales del sistema.
- *   4. Guarda una captura de pantalla por cada paso en /tmp/opencode/ui_shots.
- *
- * Uso:
- *   /opt/lampp/bin/php scripts/../tests/IntegracionUI.php    (o)  php tests/IntegracionUI.php
- *
- * Requiere ChromeDriver escuchando en http://localhost:9516
- */
+//recorre la interfaz del sistema con un navegador real.
 
 require __DIR__ . '/../vendor/autoload.php';
 

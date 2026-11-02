@@ -17,6 +17,7 @@
 
 
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="<?= $urlBase ?>../src/assets/js/generic/imagePreview.js"></script>
 <script type="module" src="<?= $urlBase ?>../src/assets/app.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/intro/intro.min.js"></script>
 <script type="text/javascript" src="<?= $urlBase ?>../src/assets/library/DataTable/jquery-3.7.1.js"></script>

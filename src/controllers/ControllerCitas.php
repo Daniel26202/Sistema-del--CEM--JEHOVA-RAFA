@@ -181,16 +181,7 @@ function validarHorariosDisponlibles($datos)
 	}
 }
 
-/**
- * Emite la respuesta JSON y termina la ejecución.
- *
- * Descarta cualquier salida accidental (warnings/notices de PHP, porque el
- * proyecto tiene display_errors activo) antes de imprimir. Sin esto, un
- * simple warning delante del JSON producía un cuerpo con dos objetos
- * concatenados, el fetch no lograba parsearlo y el navegador terminaba
- * mostrando "Este cupo ya fue apartado por otro usuario" aunque el servidor
- * hubiera apartado el horario correctamente.
- */
+//emite una respuesta JSON sin incluir salida accidental de PHP.
 function responderJson($datos, $codigo = 200)
 {
 	if (ob_get_length()) {
@@ -202,16 +193,7 @@ function responderJson($datos, $codigo = 200)
 	exit;
 }
 
-/**
- * Convierte el texto de una tarjeta de horario ("8:00 PM a 9:00 PM") en el
- * par [hora_entrada, hora_salida] con formato H:i:s.
- *
- * Devuelve null si el texto no tiene el formato esperado. Antes se llamaba
- * format() directamente sobre el resultado de createFromFormat(), que
- * devuelve false cuando la hora no existe: en PHP 8 eso es un Error fatal
- * (no una excepción) y terminaba en un 500 con página HTML en lugar de un
- * mensaje de validación.
- */
+//convierte el rango horario del formulario a horas de entrada y salida.
 function convertirHorarioCita($horaString)
 {
 	$resultado = preg_split('/\s+a\s+/i', trim($horaString));

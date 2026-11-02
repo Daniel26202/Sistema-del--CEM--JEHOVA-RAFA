@@ -1,15 +1,5 @@
 <?php
-/**
- * Pruebas del cálculo de facturación.
- *
- * Regresión sobre los fallos encontrados en la auditoría del módulo:
- *   - el IVA se multiplicaba dos veces por la cantidad (total = precio * qty²)
- *   - insumo.iva es un booleano (0/1), no un monto
- *   - el total se armaba comparando floats sin redondear
- *   - la suma de montos de pago se validaba con == sobre floats
- *
- * Ejecutar:  /opt/lampp/bin/php tests/factura_calculo_test.php
- */
+//verifica los cálculos del flujo de facturación.
 
 declare(strict_types=1);
 

@@ -230,11 +230,6 @@ h5 {
   background-color: var(--color-primary) !important;
 }
 
-/* Le damos mas tamaño al teto del modal del doctor */
-.text-horario {
-  font-size: 18px;
-}
-
 /* .diasOcupados {
     background-color: #E4EBF0 !important;
     color: black;

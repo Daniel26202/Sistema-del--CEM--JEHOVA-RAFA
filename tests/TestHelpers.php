@@ -2,14 +2,7 @@
 
 namespace Tests;
 
-/**
- * Utilidades compartidas por la suite de pruebas unitarias.
- *
- * Los modelos del sistema validan que exista una sesión autenticada
- * ($_SESSION['id_usuario']) o que se les pase el id del usuario por
- * parámetro. Estas pruebas son unitarias (sin navegador), así que se
- * simula esa sesión con un usuario real de la base de datos.
- */
+//proporciona utilidades compartidas para las pruebas unitarias.
 trait TestHelpers
 {
     /** Id de un usuario real y activo en segurity.usuario. */
@@ -30,11 +23,7 @@ trait TestHelpers
         unset($_SESSION['id_usuario']);
     }
 
-    /**
-     * Devuelve el ÚLTIMO id generado en una tabla (la unidad de trabajo
-     * de la prueba). Se usa para restaurar/limpiar el dato creado y que
-     * la suite sea idempotente.
-     */
+    //obtiene el último ID generado para limpiar datos de prueba.
     protected function ultimoIdGenerado(string $db, string $tabla, string $columna)
     {
         $pdo = (new \App\modelos\Db())->connectionSistema();

@@ -127,7 +127,7 @@
 <?php require_once 'modalsReportes.php'; ?>
 
 <!-- <script src="<?= $urlBase ?>../src/assets/js/reporteCitaYEntradasDeInsumos.js"></script> -->
-<script type="module" src="<?= $urlBase ?>../src/assets/js/reportes.js"></script>
+<script type="module" src="<?= $urlBase ?>../src/assets/js/reportes.js?v=20261101"></script>
 
 <?php require_once './src/vistas/head/footer.php'; ?>
 

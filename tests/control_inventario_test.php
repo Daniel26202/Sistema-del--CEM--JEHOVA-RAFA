@@ -1,12 +1,5 @@
 <?php
-/**
- * Pruebas de los módulos de CONTROL e INVENTARIO (Insumos / Entradas).
- *
- * Ejecutan el camino real de los modelos contra la base de datos y TODO dato
- * creado se borra al final (una suite de pruebas nunca debe dejar datos).
- *
- * Ejecutar: /opt/lampp/bin/php tests/control_inventario_test.php
- */
+//verifica los módulos de control e inventario.
 
 declare(strict_types=1);
 

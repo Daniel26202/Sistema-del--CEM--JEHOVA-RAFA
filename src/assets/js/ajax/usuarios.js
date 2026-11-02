@@ -3,7 +3,6 @@ import {
   alertConfirm,
   alertError,
   alertSuccess,
-  cargarImg,
   setImgWithFallback,
   hasPermision,
   clearModalEnviar,
@@ -37,7 +36,6 @@ const formEdiPass = document.getElementById("formEdiPass");
 const contenedorImgEditar = document.getElementById("contenedor-img-editar");
 const imgEditar = document.getElementById("imgEditar");
 const contenedorImg = document.getElementById("contenedor-img");
-const inputImg = document.getElementById("inputImg");
 const usuarioRegistrado = document.getElementById("usuarioRegistrado");
 const id_usuario = document.getElementById("id_usuario");
 const usurioHiddenPass = document.getElementById("usurioHiddenPass");
@@ -150,10 +148,11 @@ const readUser = async () => {
 
 //funciona para retirnar el html de las tarjetas
 const returnFragmentHtml = (element) => {
+  const imagen = ["doctor.png", "imagen-generica.svg"].includes(element.imagen)
+    ? `${urlBase}../src/assets/images/img/${encodeURIComponent(element.imagen)}`
+    : `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${encodeURIComponent(element.imagen)}`;
   return ` <div class="card contenido mb-4 mx-3" style="width: 18rem;">
-        <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${element.id_usuario}_${
-          element.imagen
-        }" class="card-img-top" style="width: 100%; height: 200px; object-fit: cover;" alt="...">
+        <img src="${imagen}" class="card-img-top" style="width: 100%; height: 200px; object-fit: cover;" alt="Foto de ${element.user}">
         <div class="card-body">
             <h5 class="titulo user-name">Usuario: ${element.user}</h5>
 
@@ -164,7 +163,7 @@ const returnFragmentHtml = (element) => {
 
                                     <button href="#" class=" caja-btn-margin btn btn-modals botones-mostrar" data-index="${
                                       element.id_usuario
-                                    }" data-img=${element.imagen}
+                                    }"                                     data-img="${encodeURIComponent(element.imagen)}"
                                         data-bs-toggle="modal" data-bs-target="#modal-exampleMostrar">Mostrar</button>
         </div>
     </div>`;
@@ -176,9 +175,10 @@ const mostrarInfo = (id) => {
   modalInfoBoots.show();
   const btn = document.querySelector(`.botones-mostrar[data-index="${id}"]`);
   const card = btn.closest(".card");
-  let src = `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${btn.getAttribute("data-index")}_${btn.getAttribute(
-    "data-img",
-  )}`;
+  const nombreImagen = decodeURIComponent(btn.getAttribute("data-img") || "");
+  const src = ["doctor.png", "imagen-generica.svg"].includes(nombreImagen)
+    ? `${urlBase}../src/assets/images/img/${encodeURIComponent(nombreImagen)}`
+    : `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/usuarios/${btn.getAttribute("data-index")}_${encodeURIComponent(nombreImagen)}`;
 
   contenedorImgEditar.classList.remove("d-none");
 
@@ -296,15 +296,6 @@ const deleteUser = async (data) => {
 };
 
 readUser();
-
-//llamar a la funcion para cargar la imagen del insumo
-inputImg.addEventListener("change", function (e) {
-  let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
-
-  contenedorImg.classList.remove("d-none");
-  contenedorImgEditar.classList.add("d-none");
-  cargarImg(this.files, newImg, contenedorImg);
-});
 
 activarMostrarContra.forEach((act) => {
   act.addEventListener("click", function () {

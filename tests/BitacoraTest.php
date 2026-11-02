@@ -3,10 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloBitacora;
 
-/**
- * Módulo: Bitácora.
- * Sub-módulo: Registro y consulta de la actividad de los usuarios.
- */
+//verifica el registro y consulta de actividad de los usuarios.
 class BitacoraTest extends TestCase
 {
     use Tests\TestHelpers;

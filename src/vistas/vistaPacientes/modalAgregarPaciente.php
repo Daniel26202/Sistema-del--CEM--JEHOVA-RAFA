@@ -55,7 +55,7 @@
                       <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                     </svg>
                   </span>
-                  <input class="form-control txt-custom input-validar inputs" name="nombre" type="text" placeholder="Nombre del paciente">
+                  <input class="form-control txt-custom input-validar inputs" name="nombre" type="text" placeholder="Nombre del paciente" maxlength="55">
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
@@ -76,7 +76,7 @@
                       <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                     </svg>
                   </span>
-                  <input class="form-control txt-custom input-validar inputs" name="apellido" type="text" placeholder="Apellido del paciente">
+                  <input class="form-control txt-custom input-validar inputs" name="apellido" type="text" placeholder="Apellido del paciente" maxlength="25">
                   <span class="icono-der">
                     <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />

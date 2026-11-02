@@ -275,55 +275,32 @@ class ModeloUsuarios extends ModelBase
         try {
             $this->beginTransaction();
             $imagenU = $this->getImagen();
-
-            $resultadoDeUsuario = $this->validarUsuario(['usuario' => $this->getUsuario()]);
-
-            if ($resultadoDeUsuario) {
-
+            if ($this->validarUsuario(['usuario' => $this->getUsuario()])) {
                 throw new \Exception("Fallo el usuario ya existe...");
-            } else {
-                $imagenComprobacion = isset($imagenU['name']) ? $imagenU['name'] : false;
-                if ($imagenComprobacion) {
-                    $nombreImagenUsuario = $imagenU['name'];
+            }
 
-                    $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, :id_rol, :imagen, :usuario, :correo, :password, "ACT")';
-                    $this->setSQL($sqlUsuario);
-                    $data = [
-                        'imagen' => $nombreImagenUsuario,
-                        'usuario' => $this->getUsuario(),
-                        'correo' => $this->getCorreo(),
-                        'password' => $this->getPassword(),
-                        'id_rol' => $this->getIdRol()
-                    ];
-                    $id_usuario = $this->create($data);
+            $nombreImagen = is_array($imagenU) && !empty($imagenU['name'])
+                ? basename($imagenU['name'])
+                : 'imagen-generica.svg';
+            $this->setSQL('INSERT INTO usuario VALUES (Null, :id_rol, :imagen, :usuario, :correo, :password, "ACT")');
+            $idUsuarioNuevo = $this->create([
+                'imagen' => $nombreImagen,
+                'usuario' => $this->getUsuario(),
+                'correo' => $this->getCorreo(),
+                'password' => $this->getPassword(),
+                'id_rol' => $this->getIdRol()
+            ]);
 
-                    $imagen = $id_usuario . "_" . basename($imagenU['name']);
-
-                    $imagen_temporal = $imagenU['tmp_name'];
-                    move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $imagen);
-                    return ($id_usuario);
-                } else {
-                    $nombreImagenUsuario = "doctor.png";
-
-                    $sqlUsuario = 'INSERT INTO  usuario VALUES (Null, :id_rol, :imagen, :usuario, :correo, :password, "ACT")';
-                    $this->setSQL($sqlUsuario);
-                    $data = [
-                        'imagen' => $nombreImagenUsuario,
-                        'usuario' => $this->getUsuario(),
-                        'correo' => $this->getCorreo(),
-                        'password' => $this->getPassword(),
-                        'id_rol' => $this->getIdRol()
-                    ];
-                    $id_usuario = $this->create($data);
-                    $imagen = $nombreImagenUsuario;
-
-                    $imagen_temporal = $imagenU['tmp_name'];
-                    move_uploaded_file($imagen_temporal, "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $imagen);
-
-                    $this->commit();
-                    return ($id_usuario);
+            if (is_array($imagenU) && !empty($imagenU['tmp_name'])) {
+                $rutaImagen = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/"
+                    . $idUsuarioNuevo . "_" . $nombreImagen;
+                if (!move_uploaded_file($imagenU['tmp_name'], $rutaImagen)) {
+                    throw new \RuntimeException('No se pudo guardar la imagen del usuario.');
                 }
             }
+
+            $this->commit();
+            return $idUsuarioNuevo;
         } catch (\Exception $e) {
             $this->rollBack();
             return $e->getMessage();
@@ -394,7 +371,6 @@ class ModeloUsuarios extends ModelBase
     {
         $this->validarSesion($idUsuario);
         $this->validarCamposObligatorios([
-            $this->imagen,
             $this->usuario,
             $this->correo,
             $this->password,
@@ -405,26 +381,9 @@ class ModeloUsuarios extends ModelBase
 
 
 
-    public function validarImagen($imagen): void
+    public function validarImagen($imagen): string
     {
-        if ($imagen['error'] !== UPLOAD_ERR_OK) {
-            throw new \InvalidArgumentException('Error al subir la imagen.');
-        }
-
-        $extensionesPermitidas = ['jpg', 'jpeg', 'png'];
-        $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
-        if (!in_array($extension, $extensionesPermitidas)) {
-            throw new \InvalidArgumentException('Solo se permiten imágenes JPG o PNG.');
-        }
-
-        if ($imagen['size'] > 5 * 1024 * 1024) {
-            throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-        }
-
-        $infoImagen = @getimagesize($imagen['tmp_name']);
-        if ($infoImagen === false || !in_array($infoImagen['mime'], ['image/jpeg', 'image/png'])) {
-            throw new \InvalidArgumentException('El archivo no es una imagen válida.');
-        }
+        return \App\config\ImagenUpload::validar($imagen);
     }
 
 

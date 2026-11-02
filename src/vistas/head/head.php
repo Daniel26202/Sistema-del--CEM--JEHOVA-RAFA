@@ -54,6 +54,12 @@ if (!empty($parametro)) {
 	<?php if (in_array(($vistaActiva ?? ''), ['doctores', 'papelera'], true)): ?>
 		<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/doctores.css">
 	<?php endif; ?>
+	<?php if (in_array(($vistaActiva ?? ''), ['inicio', 'doctores', 'papelera', 'citas'], true)): ?>
+		<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/doctor-schedule.css">
+	<?php endif; ?>
+	<?php if (($vistaActiva ?? '') === 'roles'): ?>
+		<link rel="stylesheet" href="<?= $urlBase ?>../src/assets/cssVista/roles.css">
+	<?php endif; ?>
 
 </head>
 

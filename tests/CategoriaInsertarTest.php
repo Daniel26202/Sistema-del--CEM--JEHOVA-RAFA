@@ -4,13 +4,7 @@ use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloCategoria;
 use Tests\TestHelpers;
 
-/**
- * Módulo: Consultas — Sub. Módulo: Registrar Categoría
- *
- * Verifica que el modelo registre una nueva categoría de servicio y que
- * rechace duplicados. La prueba es idempotente: elimina el registro que
- * creó al terminar.
- */
+//verifica el registro de categorías y el rechazo de duplicados.
 class CategoriaInsertarTest extends TestCase
 {
     use TestHelpers;

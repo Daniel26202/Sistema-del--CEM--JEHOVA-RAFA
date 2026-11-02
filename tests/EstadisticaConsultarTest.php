@@ -3,11 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloEstadisticas;
 
-/**
- * Módulo: Estadísticas.
- * Sub-módulo: Consulta de gráficas y reportes estadísticos
- * (distribución por edad/género, insumos y tasa de morbilidad).
- */
+//verifica la consulta de estadísticas y reportes.
 class EstadisticaConsultarTest extends TestCase
 {
     use Tests\TestHelpers;

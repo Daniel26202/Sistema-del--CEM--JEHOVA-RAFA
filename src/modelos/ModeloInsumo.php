@@ -453,26 +453,9 @@ class ModeloInsumo extends ModelBase
 		return $this->vencer();
 	}
 
-	public function validarImagen($imagen): void
+	public function validarImagen($imagen): string
 	{
-		if ($imagen['error'] !== UPLOAD_ERR_OK) {
-			throw new \InvalidArgumentException('Error al subir la imagen.');
-		}
-
-		$extensionesPermitidas = ['jpg', 'jpeg', 'png'];
-		$extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
-		if (!in_array($extension, $extensionesPermitidas)) {
-			throw new \InvalidArgumentException('Solo se permiten imágenes JPG o PNG.');
-		}
-
-		if ($imagen['size'] > 5 * 1024 * 1024) {
-			throw new \InvalidArgumentException('La imagen no debe superar los 5 MB.');
-		}
-
-		$infoImagen = @getimagesize($imagen['tmp_name']);
-		if ($infoImagen === false || !in_array($infoImagen['mime'], ['image/jpeg', 'image/png'])) {
-			throw new \InvalidArgumentException('El archivo no es una imagen válida.');
-		}
+		return \App\config\ImagenUpload::validar($imagen);
 	}
 
 	// getter y setter

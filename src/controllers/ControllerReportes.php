@@ -24,25 +24,37 @@ function returnDataFactura()
 {
 	$modeloReporte = new ModeloReporte();
 
+	$facturas = $modeloReporte->consultarFactura();
+	$todosServicios = $modeloReporte->consultarServiciosExtras();
+	$todosInsumos = $modeloReporte->consultarFacturaInsumo();
+	$todosPagos = $modeloReporte->consultarPagoFactura();
+
+	if (!is_array($facturas) || !is_array($todosServicios) || !is_array($todosInsumos) || !is_array($todosPagos)) {
+		http_response_code(500);
+		header('Content-Type: application/json; charset=utf-8');
+		echo json_encode(['ok' => false, 'error' => 'No se pudieron cargar las facturas.']);
+		return;
+	}
+
 	//variable final
 	$result = [];
-	foreach ($modeloReporte->consultarFactura() as $factura) {
-		$id_factura = $factura["id_factura"];
+	foreach ($facturas as $factura) {
+		$id_factura = (int)$factura['id_factura'];
 
 		//filtrar los servicios para la factura
-		$servicios = array_filter($modeloReporte->consultarServiciosExtras(), function ($servicio) use ($id_factura) {
-			return $servicio['id_factura'] === $id_factura;
+		$servicios = array_filter($todosServicios, function ($servicio) use ($id_factura) {
+			return (int)$servicio['id_factura'] === $id_factura;
 		});
 
-		//filtrar los servicios para la factura
-		$insumos = array_filter($modeloReporte->consultarFacturaInsumo(), function ($insumo) use ($id_factura) {
-			return $insumo['id_factura'] === $id_factura;
+		//filtrar los insumos para la factura
+		$insumos = array_filter($todosInsumos, function ($insumo) use ($id_factura) {
+			return (int)$insumo['id_factura'] === $id_factura;
 		});
 
 
-		//filtrar los servicios para la factura
-		$pagos = array_filter($modeloReporte->consultarPagoFactura(), function ($pago) use ($id_factura) {
-			return $pago['id_factura'] === $id_factura;
+		//filtrar los pagos para la factura
+		$pagos = array_filter($todosPagos, function ($pago) use ($id_factura) {
+			return (int)$pago['id_factura'] === $id_factura;
 		});
 
 
@@ -76,7 +88,10 @@ function returnDataFactura()
 		}
 
 		$result[] = [
+			// El hash se conserva como clave de navegación (data-index, URL de
+			// PDF y anulación); numero_factura es solo el texto que ve el usuario.
 			'id_factura' => hashId((int)$factura['id_factura']),
+			'numero_factura' => numeroFacturaLegible((int)$factura['id_factura']),
 			'nacionalidad' => $factura['nacionalidad'],
 			'cedula_p' => $factura['cedula_p'],
 			'nombre_p' => $factura['nombre_p'],
@@ -110,10 +125,11 @@ function returnDataFacturaAnulada()
 function buscarPDF()
 {
 	$modeloReporte = new ModeloReporte();
-	$modeloReporte->setFechaInicio($_POST["desdeFecha"]);
-	$modeloReporte->setFinal($_POST["fechaHasta"]);
+	$modeloReporte->setFechaInicio($_POST['desdeFecha'] ?? '');
+	$modeloReporte->setFinal($_POST['fechaHasta'] ?? '');
 
-	print_r($_POST);
+	// No imprimir datos de depuración: el navegador recibe un PDF y cualquier
+	// texto adicional corrompe el archivo.
 	$citas = $modeloReporte->Citaspdf();
 	require_once './src/vistas/vistaReportes/vistaReporteCitasPdf.php';
 }
@@ -231,19 +247,36 @@ function buscarCita()
 
 function anularFactura($datos)
 {
-	if (empty($_GET)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error  al realizar la peticion :("]);
+	// La anulación es una operación destructiva: solo por POST y con CSRF.
+	if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+		http_response_code(405);
+		header('Content-Type: application/json; charset=utf-8');
+		echo json_encode(['ok' => false, 'error' => 'Método no permitido.']);
 		exit;
 	}
+
+	$headers = function_exists('getallheaders') ? getallheaders() : [];
+	$csrf = $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? $_POST['csrf_token'] ?? null;
+
+	if (empty($_SESSION['csrf_token']) || !is_string($csrf) || !hash_equals($_SESSION['csrf_token'], $csrf)) {
+		http_response_code(403);
+		header('Content-Type: application/json; charset=utf-8');
+		echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
+		exit;
+	}
+
 	try {
 		$modeloReporte = new ModeloReporte();
 		$modeloBitacora = new ModeloBitacora();
 
-		$modeloReporte->setIdFactura(unhashId($datos["0"]));
+		$modeloReporte->setIdFactura(unhashId($datos[0]));
+
+		// El usuario sale de la sesión, nunca de la URL: antes cualquiera podía
+		// enviar el id de otro usuario y falsear la bitácora.
+		$idUsuario = $_SESSION['id_usuario'] ?? null;
 
 		// Guardo la bitacora
-		$modeloBitacora->setId_usuario($datos[1]);
+		$modeloBitacora->setId_usuario($idUsuario);
 		$modeloBitacora->setTabla("factura");
 		$modeloBitacora->setActividad("Ha anulado una factura");
 
@@ -255,12 +288,14 @@ function anularFactura($datos)
 			echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 		} else {
 			http_response_code(409);
-			echo json_encode(['ok' => false, 'error' => $anular]);
+			header('Content-Type: application/json; charset=utf-8');
+			echo json_encode(['ok' => false, 'error' => is_string($anular) ? $anular : 'No se pudo anular la factura.']);
 			exit;
 		}
-	} catch (InvalidArgumentException $e) {
+	} catch (\Throwable $e) {
 		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+		header('Content-Type: application/json; charset=utf-8');
+		echo json_encode(['ok' => false, 'error' => $e instanceof InvalidArgumentException ? $e->getMessage() : 'No se pudo procesar la solicitud.']);
 		exit;
 	}
 }

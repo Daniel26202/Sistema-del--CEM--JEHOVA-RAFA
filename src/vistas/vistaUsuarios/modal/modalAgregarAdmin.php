@@ -12,7 +12,7 @@
             <div id="padre">
                 <div class="alert alert-danger text-center d-none" id="alertaAdmin">VERIFIQUE EL FORMULARIO ANTES DE
                     ENVIARLO</div>
-                <div class="caja-imagen" id="contenedor-img">
+                <div class="caja-imagen image-preview" id="contenedor-img">
                     <!-- <div class="uk-grid-small uk-flex-middle d-flex justify-content-center" uk-grid>
                             <div class="uk-width-auto">
                             <?php if ($dato["imagen"] != "doctor.png"): ?>
@@ -40,7 +40,8 @@
                                 </svg>
                             </span>
                             <input class="form-control input-modal input-disabled input-validar imagenesUsuarios " type="file"
-                                name="imagenUsuario" placeholder="Imagen" id="imagen">
+                                name="imagen" placeholder="Imagen" id="imagen" accept="image/jpeg,image/png" data-image-upload data-optional-file="true" data-image-preview="#contenedor-img">
+                            <small class="form-text text-muted">Opcional. JPG o PNG, máximo 5 MB.</small>
                         </div>
 
                         <div class="input-group flex-nowrap margin-inputs" id="grp_cedula">

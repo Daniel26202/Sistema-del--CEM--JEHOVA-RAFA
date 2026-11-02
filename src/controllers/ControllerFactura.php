@@ -6,6 +6,94 @@ use App\modelos\ModeloBitacora;
 use App\modelos\ModeloInsumo;
 use App\modelos\ModeloSanetizarJSON;
 
+//responde errores de facturación con un formato JSON uniforme.
+function facturaResponderError(int $codigo, string $mensaje): void
+{
+	http_response_code($codigo);
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode(['ok' => false, 'error' => $mensaje], JSON_UNESCAPED_UNICODE);
+	exit;
+}
+
+/**
+ * Lee el token CSRF del header o del formulario sin depender de getallheaders().
+ */
+function facturaTokenCsrf(): ?string
+{
+	$headers = function_exists('getallheaders') ? getallheaders() : [];
+	$token = $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? $_POST['csrf_token'] ?? null;
+
+	return is_string($token) ? $token : null;
+}
+
+/**
+ * Comprueba el CSRF de una petición que modifica datos.
+ */
+function facturaValidarCsrf(): void
+{
+	$token = facturaTokenCsrf();
+
+	if (empty($_SESSION['csrf_token']) || $token === null || !hash_equals($_SESSION['csrf_token'], $token)) {
+		facturaResponderError(403, 'Token CSRF inválido');
+	}
+}
+
+//obtiene el ID de una URL y responde 404 si el hash no es válido.
+function facturaIdDesdeUrl($parametro, string $mensaje = 'El recurso solicitado no existe.'): int
+{
+	$hash = is_array($parametro) ? ($parametro[0] ?? null) : $parametro;
+	if (!is_string($hash) || $hash === '') {
+		facturaResponderError(404, $mensaje);
+	}
+
+	try {
+		return (int)unhashId($hash);
+	} catch (\Throwable $e) {
+		facturaResponderError(404, $mensaje);
+	}
+}
+
+//genera o reutiliza el token de idempotencia de la factura.
+function facturaPrepararIdempotencia(): string
+{
+	if (empty($_SESSION['factura_idempotencia'])) {
+		$_SESSION['factura_idempotencia'] = bin2hex(random_bytes(16));
+	}
+
+	return $_SESSION['factura_idempotencia'];
+}
+
+//reserva el token para impedir que la factura se procese más de una vez.
+function facturaReservarIdempotencia(?string $token): void
+{
+	$guardado = $_SESSION['factura_idempotencia'] ?? null;
+
+	if (
+		$token === null
+		|| !is_string($guardado)
+		|| !hash_equals($guardado, $token)
+		|| !empty($_SESSION['factura_idempotencia_en_uso'])
+	) {
+		facturaResponderError(409, 'La factura ya fue enviada. Recargue la página para intentarlo de nuevo.');
+	}
+
+	$_SESSION['factura_idempotencia_en_uso'] = $token;
+}
+
+//libera el token para permitir reintentar tras corregir errores de validación.
+function facturaLiberarIdempotencia(): void
+{
+	unset($_SESSION['factura_idempotencia_en_uso']);
+}
+
+/**
+ * Consume el token cuando la factura se guardó correctamente.
+ */
+function facturaConsumirIdempotencia(): void
+{
+	unset($_SESSION['factura_idempotencia'], $_SESSION['factura_idempotencia_en_uso']);
+}
+
 function factura($parametro)
 {
 
@@ -13,6 +101,7 @@ function factura($parametro)
 	$sanetizar = new ModeloSanetizarJSON();
 	$vistaActiva = 'factura';
 	$ayuda = "btnayudaFactura";
+	$facturaToken = facturaPrepararIdempotencia();
 	$sanetizar->setHashKeys(['id_insumo']);
 	$insumos = $sanetizar->sanitizeRecursive($modeloInsumos->insumos());
 	require_once './src/vistas/vistaFactura/factura.php';
@@ -66,7 +155,7 @@ function facturaCita($parametro)
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
 
-	$idCita = unhashId($parametro[0]);
+	$idCita = facturaIdDesdeUrl($parametro, 'La cita solicitada no existe.');
 
 	$modeloFactura->setIdCita($idCita);
 
@@ -76,6 +165,11 @@ function facturaCita($parametro)
 	$todosLosInsumos = $insumos;
 	$extras = $sanetizar->sanitizeRecursive($modeloFactura->mostrarServicios());
 	$citaFacturar = $sanetizar->sanitizeRecursive($modeloFactura->mostrarCitaFactura());
+	$facturaToken = facturaPrepararIdempotencia();
+
+	if (!is_array($citaFacturar) || count($citaFacturar) === 0) {
+		facturaResponderError(404, 'La cita solicitada no existe.');
+	}
 
 	require_once './src/vistas/vistaFactura/facturaCita.php';
 }
@@ -85,7 +179,7 @@ function facturarHospitalizacion($parametro)
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
 
-	$idHospitalizacion = unhashId($parametro[0]);
+	$idHospitalizacion = facturaIdDesdeUrl($parametro, 'La hospitalización solicitada no existe.');
 
 	$modeloFactura->setIdH($idHospitalizacion);
 
@@ -94,6 +188,11 @@ function facturarHospitalizacion($parametro)
 	$tiposDePagos = $sanetizar->sanitizeRecursive($modeloFactura->mostrarTiposDePagos());
 	$hostalizacionFacturar = $sanetizar->sanitizeRecursive($modeloFactura->mostrarHospitalizacion());
 	$serviciosDeHospitalizacion = $sanetizar->sanitizeRecursive($modeloFactura->serviciosIncluidosHospit());
+	$facturaToken = facturaPrepararIdempotencia();
+
+	if (!is_array($hostalizacionFacturar) || count($hostalizacionFacturar) === 0) {
+		facturaResponderError(404, 'La hospitalización solicitada no existe.');
+	}
 
 	require_once './src/vistas/vistaFactura/facturaHospitalizacion.php';
 }
@@ -103,7 +202,7 @@ function datosHospitalizacion($parametro)
 	$modeloFactura = new ModeloFactura();
 	$sanetizar = new ModeloSanetizarJSON();
 	$sanetizar->setHashKeys(['id_hospitalizacion', 'id_paciente', 'id_servicioMedico', 'id_doctor', 'id_entradaDeInsumo']);
-	$modeloFactura->setIdH(unhashId($parametro[0]));
+	$modeloFactura->setIdH(facturaIdDesdeUrl($parametro, 'La hospitalización solicitada no existe.'));
 
 	$result = [];
 	$hospit = null;
@@ -174,16 +273,17 @@ function comprobante($parametro)
 	$sanetizar = new ModeloSanetizarJSON();
 
 	if ($parametro == "") {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
-		exit;
+		facturaResponderError(404, 'La factura solicitada no existe.');
 	}
 
 	try {
-		$modeloFactura->setIdFactura(unhashId($parametro[0]));
+		// Se conserva el id crudo para poder mostrar un número legible en el
+		// comprobante; la URL y la navegación siguen usando el hash.
+		$idFacturaComprobante = unhashId($parametro[0]);
+		$modeloFactura->setIdFactura($idFacturaComprobante);
 	} catch (\Throwable $e) {
 		// Identificador manipulado o vacío: no se intenta cargar la factura.
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
-		exit;
+		facturaResponderError(404, 'La factura solicitada no existe.');
 	}
 
 	$sanetizar->setHashKeys(['id_factura', 'id_pago', 'id_servicioMedico', 'id_doctor', 'id_hospitalizacion', 'id_entradaDeInsumo', 'id_insumo']);
@@ -192,9 +292,7 @@ function comprobante($parametro)
 	// Factura inexistente o de otro usuario: se avisa con 404 en vez de
 	// renderizar un comprobante vacío.
 	if (!is_array($datosFactura) || count($datosFactura) === 0) {
-		http_response_code(404);
-		echo "La factura solicitada no existe.";
-		exit;
+		facturaResponderError(404, 'La factura solicitada no existe.');
 	}
 
 	$datosPago = $sanetizar->sanitizeRecursive($modeloFactura->consultarPagoFactura());
@@ -210,93 +308,85 @@ function comprobante($parametro)
 	// el comprobante salía sin insumos pese a haberlos cobrado.
 	$datosInsumos = $sanetizar->sanitizeRecursive($modeloFactura->consultarFacturaInsumo());
 
+	$numeroFactura = numeroFacturaLegible((int)$idFacturaComprobante);
+
 	require_once './src/vistas/vistaFactura/comprobante.php';
 }
 
 function mostrarPaciente()
 {
 	if (empty($_POST)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
-		exit;
+		facturaResponderError(409, 'Error al realizar la petición :(');
 	}
 	try {
+		if (!isset($_POST['cedula']) || !is_scalar($_POST['cedula'])) {
+			facturaResponderError(409, 'La cédula debe contener entre 7 y 8 dígitos.');
+		}
 		$modeloFactura = new ModeloFactura();
 		$sanetizar = new ModeloSanetizarJSON();
 
 		$sanetizar->setHashKeys(['id_paciente']);
-		$modeloFactura->setCedula($_POST['cedula']);
+		$modeloFactura->setCedula((string)$_POST['cedula']);
 		echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscar()));
-	} catch (InvalidArgumentException $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
+	} catch (\Throwable $e) {
+		facturaResponderError(409, $e instanceof InvalidArgumentException ? $e->getMessage() : 'No se pudo procesar la solicitud.');
 	}
 }
 
 function mostrarCliente()
 {
 	if (empty($_POST)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
-		exit;
+		facturaResponderError(409, 'Error al realizar la petición :(');
 	}
 	try {
+		if (!isset($_POST['cedula']) || !is_scalar($_POST['cedula'])) {
+			facturaResponderError(409, 'La cédula debe contener entre 7 y 8 dígitos.');
+		}
 		$modeloFactura = new ModeloFactura();
 		$sanetizar = new ModeloSanetizarJSON();
 
 		$sanetizar->setHashKeys(['id_cliente']);
-		$modeloFactura->setCedula($_POST['cedula']);
+		$modeloFactura->setCedula((string)$_POST['cedula']);
 		echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscarCliente()));
-	} catch (InvalidArgumentException $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
+	} catch (\Throwable $e) {
+		facturaResponderError(409, $e instanceof InvalidArgumentException ? $e->getMessage() : 'No se pudo procesar la solicitud.');
 	}
 }
 
 function mostrarPacienteConCita()
 {
 	if (empty($_POST)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => "Error al realizar la petición :("]);
-		exit;
+		facturaResponderError(409, 'Error al realizar la petición :(');
 	}
-	$modeloFactura = new ModeloFactura();
-	$sanetizar = new ModeloSanetizarJSON();
+	try {
+		if (!isset($_POST['cedula']) || !is_scalar($_POST['cedula'])) {
+			facturaResponderError(409, 'La cédula debe contener entre 7 y 8 dígitos.');
+		}
+		$modeloFactura = new ModeloFactura();
+		$sanetizar = new ModeloSanetizarJSON();
 
-	$sanetizar->setHashKeys([
-		'id_paciente', 'id_cita', 'id_servicioMedico', 'id_personal', 'id_categoria',
-		// La consulta aliasa el doctor como `id_doctor_c`. Sin hashearlo, el
-		// navegador manda el id crudo en `doctores[]` y unhashId() lanza
-		// "Identificador inválido o manipulado" al confirmar la factura.
-		'id_doctor_c',
-	]);
-	$modeloFactura->setCedula($_POST["cedula"]);
-	echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscarPacientePorCita()));
+		$sanetizar->setHashKeys([
+			'id_paciente', 'id_cita', 'id_servicioMedico', 'id_personal', 'id_categoria',
+			// La consulta aliasa el doctor como `id_doctor_c`. Sin hashearlo, el
+			// navegador manda el id crudo en `doctores[]` y unhashId() lanza
+			// "Identificador inválido o manipulado" al confirmar la factura.
+			'id_doctor_c',
+		]);
+		$modeloFactura->setCedula((string)$_POST["cedula"]);
+		echo json_encode($sanetizar->sanitizeRecursive($modeloFactura->buscarPacientePorCita()));
+	} catch (\Throwable $e) {
+		facturaResponderError(409, $e instanceof InvalidArgumentException ? $e->getMessage() : 'No se pudo procesar la solicitud.');
+	}
 }
 
-/**
- * Descuenta del inventario los insumos consumidos durante una hospitalización.
- *
- * Se invoca al cerrar la hospitalización. El flujo anterior lo hacía el
- * procedimiento DescontarLotes, que recorría los lotes y terminaba sin error
- * aunque no alcanzara el stock.
- */
+//registra y descuenta los insumos consumidos al cerrar una hospitalización.
 function registrarInsumosHospitalizacion()
 {
 	if (empty($_POST)) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => 'Petición vacía.']);
-		exit;
+		facturaResponderError(409, 'Petición vacía.');
 	}
 
-	$csrf = $_POST['csrf_token'] ?? (getallheaders()['X-CSRF-Token'] ?? null);
-	if (empty($_SESSION['csrf_token']) || empty($csrf) || !hash_equals($_SESSION['csrf_token'], $csrf)) {
-		http_response_code(403);
-		echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
-		exit;
-	}
+	facturaValidarCsrf();
 
 	try {
 		$idH = !empty($_POST['id_hospitalizacion']) ? unhashId($_POST['id_hospitalizacion']) : 0;
@@ -304,9 +394,7 @@ function registrarInsumosHospitalizacion()
 		$modelo->setIdH($idH);
 		$resultado = $modelo->registrarConsumo($_SESSION['id_usuario'] ?? null);
 	} catch (\Throwable $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
+		facturaResponderError(409, $e instanceof InvalidArgumentException ? $e->getMessage() : 'No se pudo registrar el consumo.');
 	}
 
 	if (!empty($resultado['exito'])) {
@@ -314,26 +402,19 @@ function registrarInsumosHospitalizacion()
 		exit;
 	}
 
-	http_response_code(409);
-	echo json_encode(['ok' => false, 'error' => $resultado['error']]);
-	exit;
+	facturaResponderError(409, $resultado['error'] ?? 'No se pudo registrar el consumo.');
 }
 
 function guardarFactura()
 {
 	if (empty($_POST)) {
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/factura");
-		exit;
+		facturaResponderError(409, 'La petición está vacía.');
 	}
 
-	$headers = getallheaders();
-	$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+	facturaValidarCsrf();
 
-	if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
-		http_response_code(403);
-		echo json_encode(['ok' => false, 'error' => 'Token CSRF inválido']);
-		exit;
-	}
+	$idempotencia = $_POST['factura_token'] ?? null;
+	facturaReservarIdempotencia(is_string($idempotencia) ? $idempotencia : null);
 
 	$idUsuario = $_SESSION['id_usuario'] ?? null;
 	$modeloBitacora = new ModeloBitacora();
@@ -373,9 +454,8 @@ function guardarFactura()
 		// Errores de validación/identificadores: se responde al usuario en vez
 		// de reventar con un error 500 y la traza completa en pantalla
 		// (display_errors está activo en este proyecto).
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
+		facturaLiberarIdempotencia();
+		facturaResponderError(409, $e->getMessage());
 	}
 
 	// Resolver cliente: se necesita un id_cliente válido para la factura.
@@ -398,9 +478,8 @@ function guardarFactura()
 			$modeloFactura->setIdCliente($id_cliente);
 		}
 	} catch (\Throwable $e) {
-		http_response_code(409);
-		echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
-		exit;
+		facturaLiberarIdempotencia();
+		facturaResponderError(409, $e->getMessage());
 	}
 
 	$guardar = $modeloFactura->guardarFactura($idUsuario);
@@ -410,6 +489,7 @@ function guardarFactura()
 	// escribía la bitácora y se redirigía a un comprobante inexistente,
 	// perdiendo la factura sin avisar al usuario.
 	if (is_array($guardar) && !empty($guardar['exito'])) {
+		facturaConsumirIdempotencia();
 		$modeloBitacora->setId_usuario($idUsuario);
 		$modeloBitacora->setActividad("Ha facturado servicios y/o insumos");
 		$modeloBitacora->setTabla("factura");
@@ -422,9 +502,8 @@ function guardarFactura()
 	$error = is_array($guardar) ? ($guardar['error'] ?? 'No se pudo registrar la factura.') : 'No se pudo registrar la factura.';
 	error_log("Factura rechazado: " . $error);
 
-	http_response_code(409);
-	echo json_encode(['ok' => false, 'error' => $error]);
-	exit;
+	facturaLiberarIdempotencia();
+	facturaResponderError(409, $error);
 }
 
 function mostrarPDF($parametro)
@@ -433,11 +512,18 @@ function mostrarPDF($parametro)
 	$sanetizar = new ModeloSanetizarJSON();
 
 	$sanetizar->setHashKeys(['id_factura', 'id_pago', 'id_servicioMedico', 'id_doctor', 'id_hospitalizacion', 'id_entradaDeInsumo', 'id_insumo']);
-	$modeloFactura->setIdFactura(unhashId($parametro[0]));
+	$modeloFactura->setIdFactura(facturaIdDesdeUrl($parametro, 'La factura solicitada no existe.'));
 	$datosFactura = $sanetizar->sanitizeRecursive($modeloFactura->consultarFacturaSinCita());
+
+	if (!is_array($datosFactura) || count($datosFactura) === 0) {
+		facturaResponderError(404, 'La factura solicitada no existe.');
+	}
 	$datosPago = $sanetizar->sanitizeRecursive($modeloFactura->consultarPagoFactura());
 	$datosServiciosExtras = $sanetizar->sanitizeRecursive($modeloFactura->consultarServiciosExtras());
 	$datosInsumos = $sanetizar->sanitizeRecursive($modeloFactura->consultarFacturaInsumo());
+
+	$numeroFactura = numeroFacturaLegible((int)$modeloFactura->getIdFactura());
+
 	require_once './src/vistas/vistaFactura/vistaFacturaPdf.php';
 }
 

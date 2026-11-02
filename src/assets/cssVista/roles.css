@@ -1,0 +1,230 @@
+.roles-modal-dialog {
+    --roles-permissions-border: var(--modal-linea, rgba(27, 26, 26, 0.12));
+    --roles-permissions-surface: var(--color-bg-card, #fdfdff);
+    --roles-permissions-muted: var(--modal-texto-suave, #4d5865);
+    max-width: min(96vw, 1120px);
+}
+
+.roles-modal-dialog .modal-content {
+    overflow: hidden;
+}
+
+.roles-modal-dialog .roles-modal-form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.roles-modal-dialog .roles-modal-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.roles-permissions {
+    margin-top: 1.75rem;
+}
+
+.roles-permissions-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.85rem;
+}
+
+.roles-permissions-heading .label-custom {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.roles-permissions-help {
+    color: var(--roles-permissions-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.roles-permissions-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--roles-permissions-border);
+    border-radius: 9px;
+    background: var(--roles-permissions-surface);
+}
+
+.roles-permissions-all .form-check-input {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.roles-permissions-all .form-check-label {
+    color: var(--modal-texto, var(--color-text-card, #1b1a1a));
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.roles-permissions-accordion,
+.roles-permissions-accordion .accordion-item {
+    border-color: var(--roles-permissions-border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.roles-permissions-accordion .accordion-button {
+    min-height: 3.25rem;
+    color: var(--modal-texto, var(--color-text-card, #1b1a1a));
+    font-weight: 650;
+}
+
+.roles-permissions-accordion .accordion-button::after {
+    filter: var(--roles-accordion-icon-filter, none);
+}
+
+[data-theme="dark"] .roles-permissions-accordion .accordion-button {
+    --roles-accordion-icon-filter: invert(1);
+}
+
+.roles-permissions-accordion .accordion-button:not(.collapsed) {
+    color: var(--modal-texto, var(--color-text-card, #1b1a1a));
+    background: var(--roles-permissions-surface);
+    box-shadow: inset 0 -1px 0 var(--roles-permissions-border);
+}
+
+.roles-permissions-accordion .accordion-button:focus-visible,
+.roles-permissions-accordion .form-check-input:focus-visible {
+    outline: 3px solid rgba(56, 122, 223, 0.45);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+.roles-permissions-categories {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+}
+
+.roles-permission-category {
+    min-width: 0;
+    border: 1px solid var(--roles-permissions-border);
+    border-radius: 10px;
+    background: var(--roles-permissions-surface);
+    overflow: hidden;
+}
+
+.roles-permission-category .accordion-button {
+    min-height: 3rem;
+    padding: 0.8rem 1rem;
+    background: var(--roles-permissions-surface);
+}
+
+.roles-permission-category .accordion-body {
+    padding: 1rem;
+}
+
+.roles-permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.roles-permission-module {
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid var(--roles-permissions-border);
+    border-radius: 10px;
+    background: var(--color-bg-main, #f2f9ff);
+}
+
+.roles-permission-module-title {
+    margin: 0 0 0.75rem;
+    color: var(--modal-texto, var(--color-text-card, #1b1a1a));
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.roles-permission-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.roles-permission-option {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    min-height: 2.75rem;
+    margin: 0;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--roles-permissions-border);
+    border-radius: 8px;
+    background: var(--roles-permissions-surface);
+}
+
+.roles-permission-option .form-check-input {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.roles-permission-option .form-check-label {
+    min-width: 0;
+    color: var(--modal-texto, var(--color-text-card, #1b1a1a));
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+.roles-permission-option .form-check-input:disabled ~ .form-check-label {
+    color: var(--roles-permissions-muted);
+    cursor: not-allowed;
+}
+
+.roles-permission-option:has(.form-check-input:disabled) {
+    background: var(--color-bg-main, #f2f9ff);
+}
+
+.roles-permission-option:focus-within {
+    border-color: var(--color-primary, #387adf);
+}
+
+@media (max-width: 767.98px) {
+    .roles-modal-dialog {
+        max-width: calc(100vw - 1rem);
+        margin: 0.5rem auto;
+    }
+
+    .roles-modal-dialog .modal-content {
+        max-height: calc(100dvh - 1rem);
+    }
+
+    .roles-permissions-categories {
+        padding: 0.75rem;
+    }
+
+    .roles-permissions-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .roles-permissions-all {
+        align-self: stretch;
+    }
+
+    .roles-permission-category .accordion-body {
+        padding: 0.75rem;
+    }
+
+    .roles-permissions-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 420px) {
+    .roles-permission-options {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

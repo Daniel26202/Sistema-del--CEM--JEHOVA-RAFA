@@ -1,16 +1,5 @@
 <?php
-/**
- * Pruebas de la tasa de cambio del día.
- *
- * Regresión sobre dos problemas reales:
- *   1. number_format con separador de miles '.' producía "1.000.00" para tasas
- *      de 1000 en adelante; los consumidores lo leían como 1.0 (mil veces menos).
- *   2. La tasa se resolvía en el navegador, pero las vistas la leen mientras se
- *      genera el HTML. En la primera carga de cada sesión el input quedaba
- *      vacío y el JS obtenía NaN.
- *
- * Ejecutar: /opt/lampp/bin/php tests/tasa_cambio_test.php
- */
+//verifica la tasa de cambio y su inicialización en el sistema.
 
 declare(strict_types=1);
 

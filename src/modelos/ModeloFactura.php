@@ -435,16 +435,7 @@ class ModeloFactura extends ModelBase
 
 	// ── PRIVADOS──────────────────────────────────
 
-	/**
-	 * Reserva y devuelve los lotes (entradas) que cubren la cantidad solicitada.
-	 *
-	 * Hace el bloqueo de filas ANTES de decidir, de modo que dos cajeros
-	 * simultaneos no puedan vender el mismo stock. Antes el SELECT del lote
-	 * ocurría sin bloqueo y DescontarLotes no fallaba si no alcanzaba.
-	 *
-	 * @return array lista de ['id_entradaDeInsumo' => int, 'cantidad' => int]
-	 * @throws \DomainException si el stock no alcanza
-	 */
+	//reserva los lotes necesarios para cubrir la cantidad solicitada.
 	private function reservarLotes($id_insumo, $cantidad)
 	{
 		$this->setSQL("SELECT ei.id_entradaDeInsumo, ei.cantidad_disponible
@@ -490,12 +481,7 @@ class ModeloFactura extends ModelBase
 		return $reserva;
 	}
 
-	/**
-	 * Recalcula el total de la factura a partir del detalle.
-	 *
-	 * Este total es el ÚNICO que se guarda. El navegador puede mandar el valor
-	 * que quiera: se ignora y se usa esta suma.
-	 */
+	//calcula el total de la factura a partir de sus detalles.
 	private function calcularTotalDesdeDetalle($id_factura)
 	{
 		$this->setSQL("SELECT COALESCE(SUM(subtotal), 0) AS total FROM detalle_factura WHERE id_factura = :id_factura");
@@ -504,14 +490,7 @@ class ModeloFactura extends ModelBase
 		return round((float)($fila['total'] ?? 0), 2);
 	}
 
-	/**
-	 * Corrige la diferencia de céntimos entre la suma de pagos y el total.
-	 *
-	 * El navegador redondea una vez y el servidor redondea cada línea del
-	 * detalle: con varias líneas la suma puede quedar 1-2 céntimos por debajo
-	 * (o por encima) del total y la factura se rechazaba. Si la diferencia es
-	 * mínima se ajusta el pago de mayor monto, que es el que admite vuelto.
-	 */
+	//ajusta el pago de mayor monto para compensar diferencias de redondeo.
 	private function ajustarPagoPorRedondeo($id_factura, $diferencia)
 	{
 		$this->setSQL("SELECT id_pagoDeFactura, monto FROM pagodefactura
@@ -533,14 +512,7 @@ class ModeloFactura extends ModelBase
 		$this->update(['monto' => $nuevoMonto], $pago['id_pagoDeFactura']);
 	}
 
-	/**
-	 * Precio real de un servicio médico, en DIVISA.
-	 *
-	 * Se lee de la base, no del navegador: si alguien manipula precioServicio[]
-	 * en el formulario, su valor se descarta y se cobra el precio del catálogo.
-	 *
-	 * @throws \DomainException si el servicio no existe o no está activo.
-	 */
+	//obtiene el precio vigente de un servicio médico desde la base de datos.
 	private function precioRealServicio($idServicio)
 	{
 		$id = (int)$idServicio;
@@ -559,14 +531,7 @@ class ModeloFactura extends ModelBase
 		return round((float)$fila['precio'], 2);
 	}
 
-	/**
-	 * Precio real de un insumo y si lleva IVA, en DIVISA.
-	 *
-	 * Igual que los servicios: manda la base de datos, no el navegador.
-	 *
-	 * @return array{precio: float, iva: int}
-	 * @throws \DomainException si el insumo no existe o no está activo.
-	 */
+	//obtiene el precio y el indicador de IVA de un insumo activo.
 	private function datosRealesInsumo($idInsumo)
 	{
 		$id = (int)$idInsumo;
@@ -599,9 +564,10 @@ class ModeloFactura extends ModelBase
 
 			
 			// ── Tasa de cambio ───────────────────────────────────────────────────
-		// La que usó el navegador para mostrar los importes al cliente. Se
-		// contrasta con la del servidor: si se aleja más de un 10% se rechaza,
-		// para que nadie pueda facturar con una tasa inventada desde el POST.
+		// La tasa del SERVIDOR es la única que se usa para calcular importes.
+		// La del navegador solo se acepta como referencia si no se aleja más de
+		// un 10 %; aun así no se usa para cobrar. Antes se aceptaba y se usaba
+		// la tasa del cliente, lo que permitía reducir el total hasta un 10 %.
 		$tasaServidor = tasaCambioActual();
 		$tasaCliente  = (float)($this->tipoCambio ?? 0);
 
@@ -617,7 +583,7 @@ class ModeloFactura extends ModelBase
 		}
 
 		// Con la que se calculan todos los importes de esta factura.
-		$tasa = $tasaCliente;
+		$tasa = $tasaServidor > 0 ? $tasaServidor : $tasaCliente;
 
 		
 		$this->setSQL("SELECT * FROM cliente WHERE id_cliente = :id_cliente");
@@ -639,20 +605,36 @@ class ModeloFactura extends ModelBase
 		]);
 
 			if (!empty($this->getIdCita())) {
-				// Bloqueo pesimista de fila seguro
-				$this->setSQL("SELECT id_cita FROM cita WHERE id_cita = :id FOR UPDATE");
-				$this->search(['id' => $this->getIdCita()], false);
+				// Bloqueo pesimista de fila seguro.
+				$this->setSQL("SELECT estado FROM cita WHERE id_cita = :id FOR UPDATE");
+				$cita = $this->search(['id' => $this->getIdCita()], false);
 
-				$this->setSQL("UPDATE cita SET estado = 'Realizadas' WHERE id_cita = :id");
+				if (!$cita) {
+					throw new \DomainException("La cita indicada no existe.");
+				}
+				if (($cita['estado'] ?? '') === 'Realizadas') {
+					throw new \DomainException("La cita ya fue facturada.");
+				}
+
+				// La condición de estado evita que dos peticiones simultáneas
+				// marquen la misma cita como realizada.
+				$this->setSQL("UPDATE cita SET estado = 'Realizadas' WHERE id_cita = :id AND estado <> 'Realizadas'");
 				$this->update_logic($this->getIdCita());
 			}
 
 			// Cerrar hospitalización si aplica
 			if ($this->getIdH() != 0) {
-				$this->setSQL("SELECT id_hospitalizacion FROM hospitalizacion WHERE id_hospitalizacion = :id FOR UPDATE");
-				$this->search(['id' => $this->getIdH()], false);
+				$this->setSQL("SELECT estado FROM hospitalizacion WHERE id_hospitalizacion = :id FOR UPDATE");
+				$hospitEstado = $this->search(['id' => $this->getIdH()], false);
 
-				$this->setSQL("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion = :id");
+				if (!$hospitEstado) {
+					throw new \DomainException("La hospitalización indicada no existe.");
+				}
+				if (($hospitEstado['estado'] ?? '') !== 'Pendiente') {
+					throw new \DomainException("La hospitalización ya fue cerrada o facturada.");
+				}
+
+				$this->setSQL("UPDATE hospitalizacion SET estado = 'Realizada' WHERE id_hospitalizacion = :id AND estado = 'Pendiente'");
 				$this->update_logic($this->getIdH());
 
 
@@ -888,7 +870,11 @@ class ModeloFactura extends ModelBase
 			// exito de error. Antes devolvía un string, que el controlador
 			// interpretaba como éxito (truthy) y redirigía a un comprobante
 			// inexistente: la factura se perdía en silencio.
-			return ['exito' => false, 'error' => $e->getMessage()];
+			$mensaje = $e instanceof \PDOException
+				? 'No se pudo registrar la factura por un error interno. Intente de nuevo.'
+				: $e->getMessage();
+
+			return ['exito' => false, 'error' => $mensaje];
 		}
 	}
 
@@ -1040,7 +1026,7 @@ class ModeloFactura extends ModelBase
 
 	public function setTotal($total)
 	{
-		if (!preg_match("/^(?!0$)(?!1$)\d+([.,]\d+)?$/", $total)) {
+		if (!is_scalar($total) || strlen((string)$total) > 20 || !preg_match("/^(?!0$)(?!1$)\d+([.,]\d{1,2})?$/", (string)$total)) {
 			throw new \InvalidArgumentException("El total es inválido.");
 		}
 		$this->total = $total;
@@ -1065,7 +1051,7 @@ class ModeloFactura extends ModelBase
 		// El resto debe ser exactamente 4 dígitos (los últimos del comprobante).
 		// Antes solo se comprobaba que fuera numérico, de modo que "12" se
 		// guardaba como referencia válida.
-		if (!preg_match("/^[0-9]{4}$/", (string)$referencia)) {
+		if (!is_scalar($referencia) || !preg_match("/^[0-9]{4}$/", (string)$referencia)) {
 			throw new \InvalidArgumentException("La referencia debe tener los ultimos 4 digitos.");
 		}
 		$this->referencia = (string)$referencia;
@@ -1116,7 +1102,9 @@ class ModeloFactura extends ModelBase
 			throw new \InvalidArgumentException("La cantidad debe ser un arreglo.");
 		}
 		foreach ($cantidad as $c) {
-			if (!is_numeric($c) || (int)$c <= 0 || (int)$c > 100000) {
+			// Solo enteros positivos. Antes is_numeric() aceptaba 3.9 y el
+			// cast lo convertía en 3 sin avisar al usuario.
+			if (!is_scalar($c) || !ctype_digit((string)$c) || (int)$c <= 0 || (int)$c > 100000) {
 				throw new \InvalidArgumentException("La cantidad de insumos no es valida.");
 			}
 		}
@@ -1159,10 +1147,7 @@ class ModeloFactura extends ModelBase
 		$this->aplicaIVA = array_map(fn($v) => $v ? 1 : 0, $aplicaIVA);
 	}
 
-	/**
-	 * Tasa de cambio usada por el navegador (Bs por unidad de divisa).
-	 * Se guarda en la factura para poder auditar el comprobante.
-	 */
+	//establece la tasa de cambio que se guardará en la factura.
 	public function setTipoCambio($tipoCambio)
 	{
 		if (!is_numeric($tipoCambio) || (float)$tipoCambio <= 0) {
@@ -1199,10 +1184,10 @@ class ModeloFactura extends ModelBase
 
 	public function setCedula($cedula)
 	{
-		if (!preg_match("/^([1-9]{1})([0-9]{6,7})$/", $cedula)) {
+		if (!is_scalar($cedula) || !preg_match("/^([1-9]{1})([0-9]{6,7})$/", (string)$cedula)) {
 			throw new \InvalidArgumentException("La cédula debe contener entre 7 y 8 dígitos.");
 		}
-		$this->cedula = $cedula;
+		$this->cedula = (string)$cedula;
 	}
 
 	public function setIdCliente($id_cliente)
