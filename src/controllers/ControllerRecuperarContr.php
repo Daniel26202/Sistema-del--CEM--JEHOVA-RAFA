@@ -5,6 +5,7 @@ use App\modelos\ModeloRecuperarContr;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use App\config\Cifrado;
+use App\config\Mailer;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -93,33 +94,9 @@ function generarCodigo($correoM, $idUsuario)
 
 
     // Crear una instancia de PHPMailer
-    $mail = new PHPMailer(true);
-
     try {
-        // Configuración del servidor
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        // correo del sistema 
-        $mail->Username = $_ENV["NameCorreoClinica"];
-        $mail->Password = $_ENV["PasswordCorreoClinica"];
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+        $mail = Mailer::crear();
 
-        // Opciones de SSL
-        $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-            )
-        );
-
-        // para que acepte los caracteres especiales 
-        $mail->CharSet = 'UTF-8';
-
-        // Remitente
-        $mail->setFrom($_ENV["NameCorreoClinica"], 'Clínica JEHOVA RAFA');
         // destinatario. correo del usuario
         $mail->addAddress($correoM);
 
@@ -148,7 +125,7 @@ function generarCodigo($correoM, $idUsuario)
         ];
     } catch (Exception $e) {
         $validarCorreo = "conexionFallida";
-        error_log("Error PHPMailer: " . $mail->ErrorInfo); // va al log de PHP/Apache de XAMPP
+        error_log("Error PHPMailer: " . (isset($mail) ? $mail->ErrorInfo : $e->getMessage())); // va al log de PHP/Apache de XAMPP
     }
 
     return $validarCorreo;
@@ -299,33 +276,9 @@ function generarCodigoApk($correoM, $codigoV)
 
 
     // Crear una instancia de PHPMailer
-    $mail = new PHPMailer(true);
-
     try {
-        // Configuración del servidor
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        // correo del sistema 
-        $mail->Username = $_ENV["NameCorreoClinica"];
-        $mail->Password = $_ENV["PasswordCorreoClinica"];
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+        $mail = Mailer::crear();
 
-        // Opciones de SSL
-        $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-            )
-        );
-
-        // para que acepte los caracteres especiales 
-        $mail->CharSet = 'UTF-8';
-
-        // Remitente
-        $mail->setFrom($_ENV["NameCorreoClinica"], 'Clínica JEHOVA RAFA');
         // destinatario. correo del usuario
         $mail->addAddress($correoM);
 
@@ -340,7 +293,7 @@ function generarCodigoApk($correoM, $codigoV)
         $validarCorreo = true;
     } catch (Exception $e) {
         $validarCorreo = "conexionFallida";
-        error_log("Error PHPMailer: " . $mail->ErrorInfo); // va al log de PHP/Apache de XAMPP
+        error_log("Error PHPMailer: " . (isset($mail) ? $mail->ErrorInfo : $e->getMessage())); // va al log de PHP/Apache de XAMPP
     }
 
     return $validarCorreo;
