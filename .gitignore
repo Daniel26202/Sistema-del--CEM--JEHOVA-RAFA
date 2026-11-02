@@ -37,6 +37,8 @@ tests/huracan/resultados/
 # Ignorar carpetas y archivos de agentes
 .agents/*
 .opencode/*
+.playwright-cli/*
+.phpunit.cache/*
 skills-lock.json
 AGENTS.md
 

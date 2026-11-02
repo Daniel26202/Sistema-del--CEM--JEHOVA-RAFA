@@ -30,8 +30,12 @@ class ModeloPerfil extends ModelBase
 
 	public function update_perfil_apk($imagenBase64 = null, $extensionImagen = null)
 	{
+		$rutaImagenNueva = null;
+		$rutaImagenAntigua = null;
+		$transaccionIniciada = false;
+
 		try {
-			$this->beginTransaction();
+			$this->assertAuthenticatedUserOwnsProfile();
 
 			$sql = "SELECT imagen, usuario FROM segurity.usuario WHERE id_usuario = :id_usuario";
 			$this->setSQL($sql);
@@ -41,43 +45,34 @@ class ModeloPerfil extends ModelBase
 				throw new \Exception("El usuario no existe.");
 			}
 
-			if ($this->getUsuario() !== $actual['usuario']) {
-				$sql = "SELECT id_usuario FROM segurity.usuario WHERE usuario = :usuario AND id_usuario != :id_usuario";
-				$this->setSQL($sql);
-				$existe = $this->search(['usuario' => $this->getUsuario(), 'id_usuario' => $this->getIdUsuario()], false);
-				if ($existe) {
-					throw new \Exception("El usuario ya está registrado.");
-				}
-			}
-
-			// --- validar la imagen ANTES de escribir nada en la BD ---
-			$nombreImagenNueva = null;
 			$binario = null;
+			$nombreImagenNueva = null;
 			if ($imagenBase64 !== null) {
-				$extensionesPermitidas = ['jpg', 'jpeg', 'png'];
-				$extensionImagen = strtolower((string) $extensionImagen);
-				if (!in_array($extensionImagen, $extensionesPermitidas)) {
-					throw new \InvalidArgumentException("Solo se permiten imágenes JPG o PNG.");
-				}
-
-				$binario = base64_decode($imagenBase64, true);
-				if ($binario === false || strlen($binario) === 0) {
+				if (!is_string($imagenBase64)) {
 					throw new \InvalidArgumentException("La imagen enviada no es válida.");
 				}
-				if (strlen($binario) > 5 * 1024 * 1024) {
-					throw new \InvalidArgumentException("La imagen no debe superar los 5 MB.");
+				$binario = base64_decode($imagenBase64, true);
+				if ($binario === false) {
+					throw new \InvalidArgumentException("La imagen enviada no es válida.");
 				}
-
-				$finfo = new \finfo(FILEINFO_MIME_TYPE);
-				$mimesPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
-				if (!isset($mimesPermitidos[$finfo->buffer($binario)])) {
-					throw new \InvalidArgumentException("El archivo enviado no es una imagen válida.");
-				}
-
-				$nombreImagenNueva = uniqid() . "." . $extensionImagen;
+				$extensionImagen = strtolower((string)$extensionImagen);
+				\App\config\ImagenUpload::validarContenido($binario, $extensionImagen);
+				$nombreImagenNueva = bin2hex(random_bytes(16)) . "." . $extensionImagen;
+				$rutaImagenNueva = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/"
+					. $this->getIdUsuario() . "_" . $nombreImagenNueva;
+				$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/"
+					. $this->getIdUsuario() . "_" . ($actual['imagen'] ?? '');
 			}
 
-			// --- ya todo validado: ahora sí se escribe ---
+			$this->beginTransaction();
+			$transaccionIniciada = true;
+			if ($rutaImagenNueva !== null) {
+				$bytesEscritos = file_put_contents($rutaImagenNueva, $binario, LOCK_EX);
+				if ($bytesEscritos !== strlen($binario)) {
+					throw new \RuntimeException("No se pudo guardar la imagen.");
+				}
+			}
+
 			$data1 = [
 				'cedula' => $this->getCedula(),
 				'nombre' => $this->getNombre(),
@@ -88,43 +83,39 @@ class ModeloPerfil extends ModelBase
 			$this->setSQL($sql);
 			$this->update($data1, $this->getIdUsuario());
 
-			if ($imagenBase64 === null) {
-				$data2 = [
-					'correo' => $this->getCorreo(),
-					'usuario' => $this->getUsuario(),
-				];
-				$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo=:correo WHERE id_usuario = :id";
-				$this->setSQL($sql);
-				$this->update($data2, $this->getIdUsuario());
-
-				$this->commit();
-				return ["exito", $actual['imagen']];
-			}
-
-			$rutaDestino = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenNueva;
-			if (file_put_contents($rutaDestino, $binario) === false) {
-				throw new \Exception("No se pudo guardar la imagen.");
-			}
-
-			$nombreImagenAntigua = $actual['imagen'];
-			$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenAntigua;
-			if ($nombreImagenAntigua && $nombreImagenAntigua != "doctor.png" && file_exists($rutaImagenAntigua)) {
-				unlink($rutaImagenAntigua);
-			}
-
 			$data2 = [
 				'correo' => $this->getCorreo(),
 				'usuario' => $this->getUsuario(),
-				'imagen' => $nombreImagenNueva,
 			];
-			$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo=:correo, imagen=:imagen WHERE id_usuario = :id";
+			$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo=:correo";
+			if ($nombreImagenNueva !== null) {
+				$data2['imagen'] = $nombreImagenNueva;
+				$sql .= ", imagen=:imagen";
+			}
+			$sql .= " WHERE id_usuario = :id";
 			$this->setSQL($sql);
 			$this->update($data2, $this->getIdUsuario());
 
 			$this->commit();
-			return ["exito", $nombreImagenNueva];
+			$transaccionIniciada = false;
+
+			if (
+				$rutaImagenAntigua !== null
+				&& !in_array($actual['imagen'], ['doctor.png', 'imagen-generica.svg'], true)
+				&& file_exists($rutaImagenAntigua)
+				&& !unlink($rutaImagenAntigua)
+			) {
+				error_log('No se pudo eliminar la imagen anterior del perfil: ' . $rutaImagenAntigua);
+			}
+
+			return ["exito", $nombreImagenNueva ?? $actual['imagen']];
 		} catch (\Exception $e) {
-			$this->rollBack();
+			if ($transaccionIniciada) {
+				$this->rollBack();
+			}
+			if ($rutaImagenNueva !== null && file_exists($rutaImagenNueva) && !unlink($rutaImagenNueva)) {
+				error_log('No se pudo eliminar la nueva imagen del perfil: ' . $rutaImagenNueva);
+			}
 			return $e->getMessage();
 		}
 	}
@@ -132,11 +123,8 @@ class ModeloPerfil extends ModelBase
 	public function seleccionarUsuario()
 	{
 		try {
-			$data = [
-				'id_usuario' => $this->getIdUsuario(),
-				'usuario' => $this->getUsuario()
-			];
-			$sql = "SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN  bd.personal p ON p.usuario = u.id_usuario  WHERE u.usuario =:usuario and id_usuario=:id_usuario";
+			$data = ['id_usuario' => $this->getIdUsuario()];
+			$sql = "SELECT *,u.usuario as user FROM segurity.usuario u INNER JOIN bd.personal p ON p.usuario = u.id_usuario WHERE u.id_usuario = :id_usuario";
 			$this->setSQL($sql);
 			return $this->search($data);
 		} catch (\Exception $e) {
@@ -148,78 +136,97 @@ class ModeloPerfil extends ModelBase
 
 	public function update_perfil()
 	{
-		try {
+		$rutaImagenNueva = null;
+		$rutaImagenAntigua = null;
+		$transaccionIniciada = false;
 
-			$data1 = [
+		try {
+			$this->assertAuthenticatedUserOwnsProfile();
+
+			$dataActual = ['id_usuario' => $this->getIdUsuario()];
+			$sql = "SELECT * FROM segurity.usuario WHERE id_usuario = :id_usuario";
+			$this->setSQL($sql);
+			$actual = $this->search($dataActual, false);
+			if ($actual == []) {
+				throw new \Exception("El usuario no existe.");
+			}
+
+			if ($this->getImagen() !== null) {
+				$nombreImagenNueva = basename((string)$this->getImagen());
+				if ($nombreImagenNueva === '' || $nombreImagenNueva !== $this->getImagen()) {
+					throw new \InvalidArgumentException('El nombre de imagen no es válido.');
+				}
+				$rutaImagenNueva = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/"
+					. $this->getIdUsuario() . "_" . $nombreImagenNueva;
+				$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/"
+					. $this->getIdUsuario() . "_" . ($actual['imagen'] ?? '');
+			}
+
+			$this->beginTransaction();
+			$transaccionIniciada = true;
+			if (
+				$rutaImagenNueva !== null
+				&& !move_uploaded_file($this->getImagenTemporal(), $rutaImagenNueva)
+			) {
+				throw new \RuntimeException('No se pudo guardar la imagen del perfil.');
+			}
+
+			$dataPersonal = [
 				'cedula' => $this->getCedula(),
 				'nombre' => $this->getNombre(),
 				'apellido' => $this->getApellido(),
 				'telefono' => $this->getTelefono(),
 			];
-
-
-
-			$data3 = [
-				'id_usuario' => $this->getIdUsuario(),
-				'usuario' => $this->getUsuario(),
-
-			];
-
-			$sql = "SELECT * FROM segurity.usuario WHERE id_usuario = :id_usuario AND usuario = :usuario";
+			$sql = "UPDATE bd.personal SET cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono WHERE usuario = :id";
 			$this->setSQL($sql);
+			$this->update($dataPersonal, $this->getIdUsuario());
 
-			$validar  = $this->search($data3, false);
-
-			if ($validar == []) {
-				throw new \Exception("El id del usuario o doctor no existe");
+			$dataUsuario = [
+				'correo' => $this->getCorreo(),
+				'usuario' => $this->getUsuario(),
+			];
+			$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo=:correo";
+			if ($this->getImagen() !== null) {
+				$dataUsuario['imagen'] = $this->getImagen();
+				$sql .= ", imagen=:imagen";
 			}
+			$sql .= " WHERE id_usuario = :id";
+			$this->setSQL($sql);
+			$this->update($dataUsuario, $this->getIdUsuario());
 
-			if ($this->getImagen() == null) {
-				$data2 = [
-					'correo' => $this->getCorreo(),
-					'usuario' => $this->getUsuario(),
-				];
-				$sql = "UPDATE bd.personal SET cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono WHERE usuario = :id";
+			$this->commit();
+			$transaccionIniciada = false;
 
-				$this->setSQL($sql);
-				$this->update($data1, $this->getIdUsuario());
-
-				$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo =:correo WHERE id_usuario = :id";
-
-				$this->setSQL($sql);
-				$this->update($data2, $this->getIdUsuario());
-			} else {
-				$sql = "SELECT imagen FROM segurity.usuario WHERE id_usuario=:id_usuario";
-				$this->setSQL($sql);
-				$img = $this->search(['id_usuario' => $this->getIdUsuario()], false);
-				$nombreImagenAntigua = $img["imagen"];
-
-				$data2 = [
-					'correo' => $this->getCorreo(),
-					'usuario' => $this->getUsuario(),
-					'imagen' => $this->getImagen(),
-				];
-				$sql = "UPDATE bd.personal SET cedula=:cedula,nombre=:nombre,apellido=:apellido,telefono=:telefono WHERE usuario = :id";
-
-				$this->setSQL($sql);
-				$this->update($data1, $this->getIdUsuario());
-
-				$sql = "UPDATE segurity.usuario SET usuario=:usuario, correo =:correo, imagen=:imagen WHERE id_usuario = :id";
-
-				$this->setSQL($sql);
-				$this->update($data2, $this->getIdUsuario());
-
-				$rutaImagenAntigua = "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $nombreImagenAntigua;
-				if (file_exists($rutaImagenAntigua) && $nombreImagenAntigua != "doctor.png") {
-					unlink($rutaImagenAntigua);
-				}
-
-				move_uploaded_file($this->getImagenTemporal(), "./src/assets/images/img_ingresadas_por_usuarios/usuarios/" . $this->getIdUsuario() . "_" . $this->getImagen());
+			if (
+				$rutaImagenAntigua !== null
+				&& !in_array($actual['imagen'], ['doctor.png', 'imagen-generica.svg'], true)
+				&& file_exists($rutaImagenAntigua)
+				&& !unlink($rutaImagenAntigua)
+			) {
+				error_log('No se pudo eliminar la imagen anterior del perfil: ' . $rutaImagenAntigua);
 			}
-
 			return ["exito"];
 		} catch (\Exception $e) {
+			if ($transaccionIniciada) {
+				$this->rollBack();
+			}
+			if ($rutaImagenNueva !== null && file_exists($rutaImagenNueva) && !unlink($rutaImagenNueva)) {
+				error_log('No se pudo eliminar la nueva imagen del perfil: ' . $rutaImagenNueva);
+			}
 			return $e->getMessage();
+		}
+	}
+
+	private function assertAuthenticatedUserOwnsProfile(): void
+	{
+		$idSesion = filter_var(
+			$_SESSION['id_usuario'] ?? null,
+			FILTER_VALIDATE_INT,
+			['options' => ['min_range' => 1]]
+		);
+
+		if ($idSesion === false || $idSesion !== (int)$this->getIdUsuario()) {
+			throw new \DomainException('No se puede modificar un perfil distinto al usuario autenticado.');
 		}
 	}
 

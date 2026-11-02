@@ -59,7 +59,7 @@ addEventListener("DOMContentLoaded", function () {
 
   const id_rol_global = document.getElementById("id_rol_global").value;
 
-  let diasLaborablesDoctor = [];
+  let diasLaborablesDoctor = new Set();
   let fechaGlobal = "";
   let id_doctor = 0;
 
@@ -216,26 +216,26 @@ addEventListener("DOMContentLoaded", function () {
         `/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/${id}`,
         "GET",
       );
-      let html = "";
-      diasLaborablesDoctor = [];
-      if (result.length > 0) {
-        result.forEach((res) => {
-          html += `
-                <div class="mb-2" id="divAcordion">
-                  <div class="d-flex "><p class="fw-bold"> Día Laborable: ${res.diaslaborables}<p></div>
-                  <div class="d-flex"> <p class="fw-bold">Hora de: ${convertirHora(res.horaDeEntrada)} a ${convertirHora(res.horaDeSalida)}<p></div>
-                  <hr>
-                </div> 
-                `;
+      if (!Array.isArray(result)) {
+        throw new TypeError("La respuesta de horarios no tiene un formato válido.");
+      }
 
-          // Se crea un objeto nuevo por cada día laborable y se normaliza su clave
-          // para que la comparación con el día seleccionado sea sin tildes
-          const dia = normalizarDia(res.diaslaborables);
-          diasLaborablesDoctor.push({
-            [dia]: {
-              entrada: convertirHora(res.horaDeEntrada),
-              salida: convertirHora(res.horaDeSalida),
-            },
+      diasLaborablesDoctor = new Set();
+      if (result.length > 0) {
+        const scheduleUtils = window.doctorScheduleUtils;
+        if (!scheduleUtils || typeof window.renderDoctorSchedules !== "function") {
+          throw new Error("No se pudo inicializar la visualización de horarios.");
+        }
+
+        result.forEach((horario) => {
+          if (
+            !scheduleUtils.convertirHora(horario.horaDeEntrada) ||
+            !scheduleUtils.convertirHora(horario.horaDeSalida)
+          ) {
+            return;
+          }
+          scheduleUtils.obtenerDiasDelHorario(horario.diaslaborables).forEach((dia) => {
+            diasLaborablesDoctor.add(dia.nombre);
           });
         });
         console.log("aqui", diasLaborablesDoctor);
@@ -251,6 +251,7 @@ addEventListener("DOMContentLoaded", function () {
         divFecha.classList.add("d-none");
         divHorarios.classList.remove("d-none");
       }
+      window.renderDoctorSchedules(accordionBodyHorario, result);
 
       // El nombre del doctor seleccionado sale del radio marcado. Antes se
       // guardaba en la variable global durante el forEach de doctores, así que
@@ -265,7 +266,6 @@ addEventListener("DOMContentLoaded", function () {
       accordionButtonHorario.innerText = labelSeleccionado
         ? `Horarios de ${labelSeleccionado}`
         : "Horarios del doctor seleccionado";
-      accordionBodyHorario.innerHTML = html;
     } catch (error) {
       alertError("Error", error);
     }
@@ -293,7 +293,7 @@ addEventListener("DOMContentLoaded", function () {
     fechaGlobal = input.value;
 
     // No se encontraron registros de horario para el doctor
-    if (diasLaborablesDoctor.length === 0) {
+    if (diasLaborablesDoctor.size === 0) {
       fechaValidaParaDoctor = false;
       divHorariosDisp.classList.add("d-none");
       if (input.value !== ultimaFechaProcesada) {
@@ -304,7 +304,7 @@ addEventListener("DOMContentLoaded", function () {
     }
 
     // ¿El día seleccionado está dentro de los días laborables del doctor?
-    const esDiaLaborable = diasLaborablesDoctor.some((ele) => ele[dateName]);
+    const esDiaLaborable = diasLaborablesDoctor.has(dateName);
 
     if (!esDiaLaborable) {
       // Agregar clase de inválido al input ya que el día no está dentro del horario del doctor
@@ -994,7 +994,7 @@ addEventListener("DOMContentLoaded", function () {
 
     //limpiar las divs con datos en el formulario
     accordionBodyDoctor.innerHTML = "";
-    accordionBodyHorario.innerHTML = "";
+    accordionBodyHorario.replaceChildren();
     accordionBodyDisp.innerHTML = "";
 
     divDoctor.classList.add("d-none");

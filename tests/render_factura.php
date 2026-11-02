@@ -1,10 +1,5 @@
 <?php
-/**
- * Renderiza factura.php fuera del navegador para inspeccionar el HTML real:
- * detects formas anidadas, ids duplicados y elementos que el parser descartaría.
- *
- * Uso: /opt/lampp/bin/php tests/render_factura.php > /tmp/factura.html
- */
+//renderiza la factura para revisar el HTML generado.
 
 $_SESSION = [
     'usuario' => 'admin',

@@ -24,13 +24,7 @@ function unhashId(string $hash)
 }
 
 
-/**
- * Indica si un valor corresponde a un identificador generado por hashId().
- *
- * Permite comprobar el campo ANTES de llamar a unhashId(), para poder
- * responder "vuelva a seleccionar el paciente" en lugar de recibir una
- * excepción genérica que el usuario no sabe interpretar.
- */
+//indica si un valor es un identificador generado por hashId().
 function esHashIdValido(string $hash): bool
 {
     global $hashids;
@@ -51,14 +45,14 @@ function validarIdReal(int $id)
 }
 
 
-/**
- * Convierte el texto de un precio a float aceptando los formatos que llegan
- * desde la interfaz: "1160.00" (JS con punto decimal), "1.160,00" (formato
- * venezolano) o "1,160.00" (formato inglés).
- *
- * Antes cada controlador hacía str_replace('.', '', ...): si el navegador
- * enviaba "10.00" el punto decimal se eliminaba y se guardaba 1000.
- */
+//Número de factura legible para el usuario Ejemplo: id 213 -> "FAC-000213".
+function numeroFacturaLegible(int $id): string
+{
+    return 'FAC-' . str_pad((string)max(0, $id), 6, '0', STR_PAD_LEFT);
+}
+
+
+//convierte el texto de un precio a float.
 function parsearPrecio($valor): float
 {
     $limpio = preg_replace('/[^0-9,.\-]/', '', trim((string)$valor));

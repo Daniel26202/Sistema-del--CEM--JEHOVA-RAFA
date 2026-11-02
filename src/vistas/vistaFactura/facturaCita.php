@@ -1,5 +1,11 @@
 <?php require_once './src/vistas/head/head.php'; ?>
 
+<?php
+// Salida escapada: los nombres vienen de la base y un paciente con HTML en el
+// nombre no debe ejecutar script en la pantalla de facturación.
+$e = static fn($v) => htmlspecialchars(htmlspecialchars_decode((string)$v, ENT_QUOTES), ENT_QUOTES, 'UTF-8');
+?>
+
 
 <div class="col-12 m-auto pt-3 contenedor-fondo" style="height: 100vh;">
     <h5 style="width: 95%; " class="m-auto mb-3">Facturación
@@ -100,27 +106,27 @@
                         <tr>
                             <td class="border-top">
                                 <div class="fw-bolder">CI:</div>
-                                <?= $datoCita["nacionalidad"] . "-" . $datoCita["cedula_p"]; ?>
+                                <?= $e($datoCita["nacionalidad"] . "-" . $datoCita["cedula_p"]); ?>
                             </td>
                             <td class="border-top">
                                 <div class="fw-bolder">PACIENTE:</div>
-                                <?= $datoCita["nombre_p"]; ?>
-                                <?= $datoCita["apellido_p"]; ?>
+                                <?= $e($datoCita["nombre_p"]); ?>
+                                <?= $e($datoCita["apellido_p"]); ?>
                             </td>
 
                             <td class="border-top">
                                 <div class="fw-bolder">DOCTOR:</div>
-                                <?= $datoCita["nombre_d"]; ?>
-                                <?= $datoCita["apellido_d"]; ?>
+                                <?= $e($datoCita["nombre_d"]); ?>
+                                <?= $e($datoCita["apellido_d"]); ?>
                             </td>
 
                             <td class="border-top">
                                 <div class="fw-bolder">S/M:</div>
-                                <?= $datoCita["especialidad"]; ?>
+                                <?= $e($datoCita["especialidad"]); ?>
                             </td>
                             <td class="border-top">
                                 <div class="fw-bolder">FECHA:</div>
-                                <?= $datoCita["fecha"]; ?>
+                                <?= $e($datoCita["fecha"]); ?>
                             </td>
 
 
@@ -165,7 +171,7 @@
                                 class=" w-25 input-buscar text-center" id="totalFactura" disabled>
                             <!-- Equivalente en divisa del total (lo pinta f.js). -->
                             <span id="totalFacturaDivisa" class="fw-bolder ms-2"></span>
-                            <input type="hidden" id="inputTotalCita" value="<?= $datoCita['precio'] ?>">
+                            <input type="hidden" id="inputTotalCita" value="<?= $e($datoCita['precio']) ?>">
                         <?php endforeach; ?>
 
 

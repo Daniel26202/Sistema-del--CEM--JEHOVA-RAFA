@@ -5,12 +5,12 @@ import {
   alertInfo,
   alertSuccess,
   initDataTable,
-  cargarImg,
   showDataModal,
   hasPermision,
   initLoaderButton,
   finallyLoaderButton,
   clearModalEnviar,
+  setImgWithFallback,
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
@@ -73,54 +73,24 @@ console.log(urlActual);
 
 //funcion para mostrar mas informacion del doctor
 const info = (id_personal) => {
-  let htmlHorario = "";
-  let textServicios = "";
-
   const doctor = dataDoctor.find((item) => item.id_personal == id_personal);
 
-  if (doctor) {
-    if (Array.isArray(doctor.datosHorarios) && doctor.datosHorarios.length > 0) {
-      doctor.datosHorarios.forEach((item) => {
-        htmlHorario += `
-    <!-- Nombre -->
-                <div class="info-group mb-3">
-                    <p class="fw-bold mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-capsule azul mb-1 me-1" viewBox="0 0 16 16">
-                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-2.6 5.854a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
-                        </svg>
-                        Dia:
-                        <span class="parrafo ms-4 h6">${item.diaslaborables}</span>
+  window.renderDoctorSchedules(cajaDeInfo, doctor?.datosHorarios ?? []);
 
-                    </p>
-
-                    <p class="fw-bold mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-capsule azul mb-1 me-1" viewBox="0 0 16 16">
-                            <path d="M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zm2.5 5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z" />
-                        </svg>
-                        Horario:
-                        <span class="parrafo ms-4 h6">${item.horaDeEntrada} a ${item.horaDeSalida}</span>
-
-                    </p>
-                </div>
-    `;
-      });
-    } else {
-      htmlHorario =
-        '<h5 class="text-center">El doctor no tiene un horario disponible</h5>';
-    }
-
-    if (Array.isArray(doctor.servicios) && doctor.servicios.length > 0) {
-      textServicios = doctor.servicios.map((item) => item.nombre).join(" ,  ");
-    } else {
-      textServicios = "De momento el doctor no ofrece ningun servicio";
-    }
+  pServicios.replaceChildren();
+  if (Array.isArray(doctor?.servicios) && doctor.servicios.length > 0) {
+    doctor.servicios.forEach((servicio) => {
+      const etiqueta = document.createElement("span");
+      etiqueta.className = "doctor-schedule-service";
+      etiqueta.textContent = servicio.nombre;
+      pServicios.appendChild(etiqueta);
+    });
   } else {
-    htmlHorario =
-      '<h5 class="text-center">El doctor no tiene un horario disponible</h5>';
-    textServicios = "De momento el doctor no ofrece ningun servicio";
+    const vacio = document.createElement("p");
+    vacio.className = "doctor-schedule-service-empty";
+    vacio.textContent = "Sin servicios asignados.";
+    pServicios.appendChild(vacio);
   }
-  cajaDeInfo.innerHTML = htmlHorario;
-  pServicios.innerText = textServicios;
 };
 
 //funcion para mostrar los dias de la semana
@@ -353,8 +323,6 @@ const readDoctor = async () => {
         });
       });
 
-      let srcImg = "";
-
       //llamar a la uncion de editar
       document.querySelectorAll(".botonesEdi").forEach((btn) => {
         btn.addEventListener("click", async function () {
@@ -395,12 +363,7 @@ const readDoctor = async () => {
           });
 
           contenedorImg.classList.add("d-none");
-          //ahora gestionar la imagen del insumo es decir mostrar un previsualizacion en el modal de editar
           contenedorImgEditar.classList.remove("d-none");
-          imgEditar.setAttribute(
-            "src",
-            `../src/assets/images/img_ingresadas_por_usuarios/insumos/${srcImg}`,
-          );
 
           //el id_personal viene hasheado, por eso se compara como texto
           //(parseInt sobre un hash daría NaN y no encontraría al doctor)
@@ -408,6 +371,15 @@ const readDoctor = async () => {
 
           const doctor = dataDoctor.find(
             (doc) => String(doc.id_personal) === String(id_personal),
+          );
+          const nombreImagen = doctor?.imagen || "imagen-generica.svg";
+          const rutaImagen = ["doctor.png", "imagen-generica.svg"].includes(nombreImagen)
+            ? `../src/assets/images/img/${encodeURIComponent(nombreImagen)}`
+            : `../src/assets/images/img_ingresadas_por_usuarios/usuarios/${doctor?.id_usuario || btn.getAttribute("data-index-usuario")}_${encodeURIComponent(nombreImagen)}`;
+          setImgWithFallback(
+            imgEditar,
+            rutaImagen,
+            "../src/assets/images/img/imagen-generica.svg",
           );
 
           //id_horario viene hasheado, por eso se compara como texto (Number() daría NaN)
@@ -1113,6 +1085,9 @@ btnagregarDoctor.addEventListener("click", function () {
     divParent.querySelector(".error-msg").classList.add("d-none");
 
     ele.value = "";
+    if (ele.type === "file") {
+      ele.dispatchEvent(new Event("change", { bubbles: true }));
+    }
   });
   labelModal.innerText = "Registrar Doctor";
   btnModal.innerText = "Registrar";
@@ -1122,14 +1097,6 @@ btnagregarDoctor.addEventListener("click", function () {
 
   //los horarios del doctor anterior no deben arrastrarse al registrar uno nuevo
   resetearHorarios();
-});
-
-imagenDoctor.addEventListener("change", function (e) {
-  let newImg = `<img  style="height: 200px;width: 100%;" src=''>`;
-
-  contenedorImg.classList.remove("d-none");
-  contenedorImgEditar.classList.add("d-none");
-  cargarImg(this.files, newImg, contenedorImg);
 });
 
 let verificarFormulario = inicializarValidacionFormulario(formDoctor);

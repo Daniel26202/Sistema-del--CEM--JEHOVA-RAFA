@@ -956,7 +956,7 @@ addEventListener("DOMContentLoaded", async function () {
     if (totalFacturaDivisa) {
       // Equivalente en divisa junto al total (guía: ambas monedas siempre).
       totalFacturaDivisa.innerHTML =
-        TIPO_CAMBIO > 0 ? `≈ ${formatUSD(totalBS / TIPO_CAMBIO)}` : "";
+        TIPO_CAMBIO > 0 ? `= ${formatUSD(totalBS / TIPO_CAMBIO)}` : "";
     }
     // Total del modal de confirmación: USD resaltado + Bs atenuado.
     if (totalDeConfirmacion) {

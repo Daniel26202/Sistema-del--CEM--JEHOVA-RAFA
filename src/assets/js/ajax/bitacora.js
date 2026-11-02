@@ -18,12 +18,12 @@ const readBitacora = async () => {
       { data: "tabla" },
       { data: "actividad" },
       {
-        data: "fecha",
-        render: (data, type, row) => `${row.fecha_hora.split(" ")[0]}`,
+        data: "fecha_hora",
+        render: (data) => data?.split(" ")[0] ?? "",
       },
       {
-        data: "hora",
-        render: (data, type, row) => `${row.fecha_hora.split(" ")[1]}`,
+        data: "fecha_hora",
+        render: (data) => data?.split(" ")[1] ?? "",
       },
     ];
 

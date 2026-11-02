@@ -119,7 +119,7 @@
                                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelInsumos">Editar Insumos</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form class="form-validable modal-insumos-form" id="modalEditarInsumos" method="POST">
+                            <form class="form-validable modal-insumos-form" id="modalEditarInsumos" method="POST" enctype="multipart/form-data">
 
                                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
                                 <input type="hidden" class="value-img" name="value-img">
@@ -127,8 +127,9 @@
                                 <div class="modal-body">
 
                                     <!-- Imagen Preview -->
+                                    <div class="image-preview d-none mb-3"></div>
                                     <div class="mb-3">
-                                        <img src="" class="img-editar img-fluid rounded">
+                                        <img src="" class="img-editar img-fluid rounded" data-image-fallback="<?= $urlBase ?>../src/assets/images/img/imagen-generica.svg">
                                     </div>
 
                                     <!-- Campo Imagen -->
@@ -141,7 +142,7 @@
                                                     <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" />
                                                 </svg>
                                             </span>
-                                            <input class="form-control txt-custom input-validar inputs" type="file" name="imagen" placeholder="Seleccionar imagen">
+                                            <input class="form-control txt-custom input-validar inputs" type="file" name="imagen" accept="image/jpeg,image/png" data-image-upload data-optional-file="true" data-image-preview=".image-preview" data-image-current=".img-editar" placeholder="Seleccionar imagen">
                                             <span class="icono-der">
                                                 <svg class="check d-none" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                                                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />

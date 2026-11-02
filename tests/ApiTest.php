@@ -3,10 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloApi;
 
-/**
- * Módulo: API de integración (componente inteligente).
- * Sub-módulo: Consultas clínicas de solo lectura por paciente/usuario.
- */
+//verifica las consultas clínicas de solo lectura de la API.
 class ApiTest extends TestCase
 {
     use Tests\TestHelpers;

@@ -4,14 +4,7 @@ namespace App\modelos;
 
 use App\modelos\ModelBase;
 
-/**
- * Consumos de insumos de una hospitalización.
- *
- * Se separó de ModeloFactura porque el descuento de stock en hospitalización
- * es un flujo distinto al de la venta: aquí el insumo ya fue usado durante la
- * internación y lo que se registra al cerrar es la cantidad consumida y el
- * lote del que salió.
- */
+//registra los consumos de insumos de una hospitalización.
 class ModeloFacturaHospitalizacion extends ModelBase
 {
 	private $idH, $idInsumo, $cantidad;
@@ -21,15 +14,7 @@ class ModeloFacturaHospitalizacion extends ModelBase
 		parent::__construct($dbSystem);
 	}
 
-	/**
-	 * Registra el consumo de insumos de la hospitalización.
-	 *
-	 * Valida el stock bajo bloqueo pesimista ANTES de descontar: la versión
-	 * anterior llamaba a DescontarLotes, que consume lo que puede y sale sin
-	 * error aunque falte stock, dejando el inventario descuadrado.
-	 *
-	 * @return array ['exito' => bool, 'error' => string|null]
-	 */
+	//valida el stock y registra el consumo de insumos de la hospitalización.
 	public function registrarConsumo($idUsuario = null)
 	{
 		$transaccionActiva = false;
@@ -43,6 +28,21 @@ class ModeloFacturaHospitalizacion extends ModelBase
 
 			$this->beginTransaction();
 			$transaccionActiva = true;
+
+			// Bloquea la hospitalización y exige que siga pendiente. Antes, un
+			// segundo cierre entraba, no encontraba consumos pendientes y
+			// respondía "éxito" sin haber hecho nada.
+			$this->setSQL("SELECT estado FROM hospitalizacion
+                            WHERE id_hospitalizacion = :idH
+                            FOR UPDATE");
+			$hospitalizacion = $this->search(['idH' => $this->getIdH()], false);
+
+			if (!$hospitalizacion) {
+				throw new \DomainException("La hospitalización indicada no existe.");
+			}
+			if (($hospitalizacion['estado'] ?? '') !== 'Pendiente') {
+				throw new \DomainException("La hospitalización ya fue cerrada o facturada.");
+			}
 
 			$this->setSQL("SELECT ih.id_insumo, ih.id_entradaDeInsumo, ih.cantidad
                             FROM insumodehospitalizacion ih
@@ -91,10 +91,10 @@ class ModeloFacturaHospitalizacion extends ModelBase
 
 					$this->setSQL("UPDATE entrada_insumo
                                     SET cantidad_disponible = cantidad_disponible - :c
-                                    WHERE id_entradaDeInsumo = :id AND cantidad_disponible >= :c");
+                                    WHERE id_entradaDeInsumo = :id AND cantidad_disponible >= :c2");
 					$this->update([
 						'c' => $usar,
-						'id' => $lote['id_entradaDeInsumo']
+						'c2' => $usar
 					], $lote['id_entradaDeInsumo']);
 
 					$restante -= $usar;

@@ -4,13 +4,7 @@ use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloCategoria;
 use Tests\TestHelpers;
 
-/**
- * Módulo: Consultas — Sub. Módulo: Eliminar Categoría
- *
- * Verifica la eliminación lógica de una categoría de servicio. Para no
- * depender de datos concretos, la prueba crea su propia categoría, la
- * elimina y luego la borra físicamente.
- */
+//verifica la eliminación lógica de categorías.
 class CategoriaEliminarTest extends TestCase
 {
     use TestHelpers;

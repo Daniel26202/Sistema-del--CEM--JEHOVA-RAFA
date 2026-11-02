@@ -233,7 +233,7 @@
 
           <form style="margin-bottom: 20px;margin-top: 20px;" id="form-buscador-otro-cliente" class="d-flex justify-content-end" autocomplete="off">
             <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
-              placeholder="Ingrese Cedula" required maxlength="8" minlength="6"
+              placeholder="Ingrese Cedula" required maxlength="9" minlength="7"
               oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
               id="inputBusPaCi">
 
@@ -584,6 +584,9 @@
                con la del día y la guarda en la factura para poder auditarla. -->
           <input type="hidden" id="inputTipoCambio" name="tipo_cambio" value="">
           <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+          <!-- Token de idempotencia: el servidor solo procesa una factura por
+               envío, aunque el navegador repita el POST (doble clic). -->
+          <input type="hidden" name="factura_token" value="<?= $facturaToken ?? '' ?>">
 
 
 

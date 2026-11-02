@@ -1,12 +1,5 @@
 <?php
-/**
- * Bootstrap para la suite de pruebas PHPUnit.
- *
- * - Carga el autoloader de Composer (App\ -> src/).
- * - Carga las variables de entorno desde .env para que la clase Db
- *   (src/modelos/Db.php -> src/config/config.php) pueda conectarse.
- * - Carga los helpers usados por los modelos/controladores.
- */
+//configura el entorno de ejecución de las pruebas PHPUnit.
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

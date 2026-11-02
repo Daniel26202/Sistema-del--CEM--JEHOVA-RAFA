@@ -62,16 +62,8 @@ const sendData = async (form) => {
 };
 
 const closedSession = async () => {
-  try {
-    let result = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/cerrarSession",
-      "GET",
-    );
-    console.log(result);
-    alertSuccess();
-  } catch (error) {
-    alertError("Error", error);
-  }
+  window.location = "inicio"
+  console.error("no hace nada")
 };
 
 addEventListener("DOMContentLoaded", function () {

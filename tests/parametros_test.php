@@ -1,16 +1,5 @@
 <?php
-/**
- * Comprueba que en cada consulta de ModeloFactura el número de marcadores
- * (:algo) coincide con el de variables que se enlazan.
- *
- * Es el error que provocaba: "SQLSTATE[HY093]: Invalid parameter number".
- *
- * Método: para cada setSQL(...) se recogen los marcadores de la SQL y las
- * claves del array que se pasa a create()/update()/search(), y se comparan.
- * create() y search() enlazan solo el array; update() añade siempre :id.
- *
- * Ejecutar: /opt/lampp/bin/php tests/parametros_test.php
- */
+//verifica que las consultas de facturación enlacen todos sus parámetros.
 
 declare(strict_types=1);
 

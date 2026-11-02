@@ -75,9 +75,9 @@ $idHospitalizacion = isset($_GET['idH']) ? preg_replace('/[^0-9]/', '', (string)
                     <!-- El submit se cancela en f.js: buscar nunca recarga la página. -->
                     <form id="form-buscador-factura" class="d-flex justify-content-end" autocomplete="off" novalidate>
                         <input class="form-control input-buscar tamaño-input-buscar" type="text" name="cedula"
-                            placeholder="Ingrese Cedula" id="input-cedula-paciente" required maxlength="8" minlength="6"
+                            placeholder="Ingrese Cedula" id="input-cedula-paciente" required maxlength="9" minlength="7"
                             inputmode="numeric" pattern="[0-9]{7,8}"
-                            oninput="javascript: this.value = this.value.replace(/[^0-9]/g, '').slice(0, this.maxLength);">
+                            oninput="javascript: this.value = this.value.replace(/[^0-9]/g, '');">
 
                         <button type="submit" class="btn btn-buscar " title="Buscar">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

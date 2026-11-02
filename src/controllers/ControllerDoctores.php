@@ -8,10 +8,7 @@ use App\modelos\ModeloRoles;
 use App\modelos\ModeloCategoria;
 use App\modelos\ModeloSanetizarJSON;
 
-/**
- * La BD guarda las horas como "08:00:00" y el input type="time" trabaja con
- * "HH:MM". Normalizamos para precargar el formulario y mostrar la info del doctor.
- */
+//normaliza las horas para mostrarlas en el formulario del doctor.
 function normalizarHoraFrontend($hora)
 {
     $hora = trim((string)$hora);
@@ -371,14 +368,7 @@ function asignarServicioDoctor()
     }
 }
 
-/**
- * Construye el mapa de horarios del formulario:
- *   [id_horario => ['entrada' => 'HH:MM', 'salida' => 'HH:MM']]
- *
- * El frontend envía tres arreglos alineados por índice:
- *   dias[] → id_horario hasheado, horaEntrada[] y horaSalida[] → sus horas.
- * Solo los días marcados se envían, así que las posiciones siempre coinciden.
- */
+//construye el mapa de horarios seleccionados en el formulario.
 function construirHorarios(array $post)
 {
     $dias        = isset($post['dias'])        ? (array)$post['dias']        : [];
@@ -438,8 +428,10 @@ function agregarDoctor()
 
         // validar la imagen (si viene una)
         $hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+        $archivoImagen = $hayImagen ? $_FILES['imagen'] : null;
         if ($hayImagen) {
-            $modeloDoctores->validarImagen($_FILES['imagen']);
+            $extensionImagen = $modeloDoctores->validarImagen($archivoImagen);
+            $archivoImagen['name'] = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
         }
 
 
@@ -449,7 +441,7 @@ function agregarDoctor()
         $modeloDoctores->setTelefono($_POST["telefono"]);
         $modeloDoctores->setEmail($_POST['correo']);
         $modeloDoctores->setNacionalidad($_POST['nacionalidad']);
-        $modeloDoctores->setImagenTemporal($_FILES['imagen']['tmp_name'] ?? '');
+        $modeloDoctores->setImagenTemporal($archivoImagen['tmp_name'] ?? '');
         $modeloDoctores->setIdEspecialidad(unhashId($_POST["id_especialidad"]));
         $modeloDoctores->setHorarios(construirHorarios($_POST));
         $modeloDoctores->setIdRol(unhashId($_POST['id_rol']));
@@ -457,7 +449,7 @@ function agregarDoctor()
         $modeloDoctores->setPassword($passwordEncrip);
         
         // con todo validado, se procesa la imagen
-        $imagen = $hayImagen ? basename($_FILES['imagen']['name']) : false;
+        $imagen = $archivoImagen['name'] ?? null;
         $modeloDoctores->setImagen($imagen);
 
         $insercion = $modeloDoctores->insertarDoctor($idUsuario);
@@ -510,6 +502,13 @@ function editarDoctor()
         $modeloDoctores = new ModeloDoctores();
         $modeloBitacora = new ModeloBitacora();
 
+        $hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+        $archivoImagen = $hayImagen ? $_FILES['imagen'] : null;
+        if ($hayImagen) {
+            $extensionImagen = $modeloDoctores->validarImagen($archivoImagen);
+            $archivoImagen['name'] = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
+        }
+
         $modeloDoctores->setCedula($_POST["cedula"]);
         $modeloDoctores->setNombre($_POST["nombre"]);
         $modeloDoctores->setApellido($_POST["apellido"]);
@@ -520,6 +519,8 @@ function editarDoctor()
         $modeloDoctores->setHorarios(construirHorarios($_POST));
         $modeloDoctores->setCedulaRegistrada($_POST['cedulaRegistrada']);
         $modeloDoctores->setIdUsuario(unhashId($_POST["id_usuario"]));
+        $modeloDoctores->setImagenTemporal($archivoImagen['tmp_name'] ?? '');
+        $modeloDoctores->setImagen($archivoImagen['name'] ?? null);
 
         $edicion = $modeloDoctores->updateDoctor($idUsuario);
 

@@ -20,12 +20,7 @@ function mostrarIniciarSesion($parametro)
 // notificaciones de "citas próximas" funcionen igual en Linux y en Windows.
 // ──────────────────────────────────────────────────────────────
 
-/**
- * Configuración del servidor WebSocket.
- * Se puede cambiar sin tocar el código con WS_HOST y WS_PORT en el .env.
- *
- * @return array{host: string, puerto: int}
- */
+//obtiene la configuración del servidor WebSocket.
 function websocketConfiguracion(): array
 {
     $host = $_ENV['WS_HOST'] ?? getenv('WS_HOST');
@@ -59,12 +54,7 @@ function websocketEstaActivo(string $host, int $puerto, float $timeout = 0.5): b
     return false;
 }
 
-/**
- * Localiza el ejecutable de PHP (CLI) para lanzar el servidor.
- *
- * Antes sólo se probaba "C:\xampp" y "D:\xampp", por lo que en un Windows con
- * XAMPP en otra unidad, o con Laragon/WampServer, el servidor no arrancaba.
- */
+//localiza el ejecutable PHP de consola para iniciar el servidor.
 function websocketBinarioPhp(): ?string
 {
     $esWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
@@ -121,10 +111,7 @@ function websocketBinarioPhp(): ?string
     return null;
 }
 
-/**
- * Pone una ruta entre comillas para que funcione aunque contenga espacios
- * ("C:\xampp\htdocs\Mi Sistema\webSocket.php").
- */
+//prepara una ruta para usarla como argumento de consola.
 function websocketEntreComillas(string $valor): string
 {
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
@@ -134,10 +121,7 @@ function websocketEntreComillas(string $valor): string
     return escapeshellarg($valor);
 }
 
-/**
- * Lanza el servidor WebSocket en segundo plano, desvinculado del proceso de
- * Apache, y devuelve true si la orden se ejecutó.
- */
+//inicia el servidor WebSocket en segundo plano.
 function websocketLanzarServidor(string $php, string $script): bool
 {
     $phpArg = websocketEntreComillas($php);
@@ -208,10 +192,7 @@ function websocketEsperarPuerto(string $host, int $puerto, int $intentos): void
     }
 }
 
-/**
- * Arranca el servidor WebSocket si no está levantado todavía.
- * Es segura de llamar en cada inicio de sesión y funciona en Linux y Windows.
- */
+//inicia el servidor WebSocket si todavía no está activo.
 function iniciarServidorWebSocket(): void
 {
     $config = websocketConfiguracion();
@@ -286,22 +267,6 @@ function iniciarSesion()
     // Obtenemos la IP del que intenta entrar
     $ipCliente = $_SERVER['REMOTE_ADDR'];
 
-
-
-    //  Esto es hacerlo po segunda vez, pero ya esta en el index
-    // RATE LIMIT estricto para login: 5 intentos por minuto por IP
-    // $rateLimit = new RateLimiter();
-    // $rateLimit->setIP($ipCliente);
-    // $rateLimit->setEndpoind('iniciarSesion');
-    // $rateLimit->setLimitePeticiones(20);
-
-
-    // if ($rateLimit->checkRateLimitByIP()) {
-    //     http_response_code(429);
-    //     header('Content-Type: application/json; charset=utf-8');
-    //     echo json_encode(['ok' => false, 'error' => 'Demasiados intentos. Espere un momento antes de volver a intentarlo.']);
-    //     exit;
-    // }
 
     $modelo = new ModeloInicioSesion();
     $bitacora = new ModeloBitacora();
@@ -397,7 +362,9 @@ function iniciarSesion()
         $_SESSION['id_personal'] = $validar['id_personal'] ?? null;
         $_SESSION['nombre'] = $validar['nombre_personal'] ?? null;
         $_SESSION['apellido'] = $validar['apellido_personal'] ?? null;
-        $_SESSION['token_session'] = $token_session ?? null;
+        $_SESSION['token_de_session'] = $token_session;
+        // print_r($_SESSION);
+        
 
         // token csrf
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));

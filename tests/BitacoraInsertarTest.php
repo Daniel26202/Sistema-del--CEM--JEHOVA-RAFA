@@ -4,12 +4,7 @@ use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloBitacora;
 use Tests\TestHelpers;
 
-/**
- * Módulo: Bitácora — Sub. Módulo: Registrar actividad
- *
- * Verifica que el modelo registre correctamente una actividad en la
- * tabla segurity.bitacora y que respete la validación de sesión.
- */
+//verifica el registro de actividades en la bitácora.
 class BitacoraInsertarTest extends TestCase
 {
     use TestHelpers;

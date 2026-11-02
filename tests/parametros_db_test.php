@@ -1,15 +1,5 @@
 <?php
-/**
- * Prueba REAL de los INSERT/UPDATE del flujo de facturación.
- *
- * El error "SQLSTATE[HY093]: Invalid parameter number" solo aparece al ejecutar,
- * así que aquí se ejecutan de verdad contra la base: se prepara la consulta, se
- * enlazan exactamente los parámetros que usa el modelo y se comprueba que PDO
- * no lance. Todo dentro de una transacción que se revierte al final, así que no
- * queda ningún dato en la base.
- *
- * Ejecutar: /opt/lampp/bin/php tests/parametros_db_test.php
- */
+//verifica los parámetros SQL del flujo de facturación contra la base de datos.
 
 declare(strict_types=1);
 

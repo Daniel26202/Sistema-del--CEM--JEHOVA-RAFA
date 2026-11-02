@@ -250,15 +250,17 @@ function editarUsuario()
         $modeloBitacora = new ModeloBitacora();
 
         $hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+        $archivoImagen = $hayImagen ? $_FILES['imagen'] : null;
         if ($hayImagen) {
-            $modeloUsuarios->validarImagen($_FILES['imagen']);
+            $extensionImagen = $modeloUsuarios->validarImagen($archivoImagen);
+            $archivoImagen['name'] = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
         }
 
         $modeloUsuarios->setIdUsuario(unhashId($_POST["id_usuario"]));
         $modeloUsuarios->setUsuario($_POST["usuario"]);
         $modeloUsuarios->setUsuarioRegistrado($_POST['usuarioRegistrado']);
-        $modeloUsuarios->setImagenTemporal($_FILES['imagen']['tmp_name'] ?? '');
-        $modeloUsuarios->setImagen($hayImagen ? basename($_FILES['imagen']['name']) : null);
+        $modeloUsuarios->setImagenTemporal($archivoImagen['tmp_name'] ?? '');
+        $modeloUsuarios->setImagen($archivoImagen['name'] ?? null);
 
         $edicion = $modeloUsuarios->editarUsuario($idUsuario);
 
@@ -367,15 +369,17 @@ function registrarAdmin()
         $passwordEncrip = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
         $hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+        $archivoImagen = $hayImagen ? $_FILES['imagen'] : null;
         if ($hayImagen) {
-            $modeloUsuarios->validarImagen($_FILES['imagen']);
+            $extensionImagen = $modeloUsuarios->validarImagen($archivoImagen);
+            $archivoImagen['name'] = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
         }
 
         $modeloUsuarios->setUsuario($_POST["usuario"]);
         $modeloUsuarios->setPassword($passwordEncrip);
         $modeloUsuarios->setCorreo($_POST["correo"]);
         $modeloUsuarios->setIdRol(unhashId($_POST["id_rol"]));
-        $modeloUsuarios->setImagen($_FILES['imagen'] ?? null);
+        $modeloUsuarios->setImagen($archivoImagen);
 
         $id_usuario = $modeloUsuarios->agregarUsuario($idUsuario);
 
@@ -439,14 +443,16 @@ function editarAdministrador()
         $modeloBitacora = new ModeloBitacora();
 
         $hayImagen = isset($_FILES['imagenUsuario']) && $_FILES['imagenUsuario']['error'] !== UPLOAD_ERR_NO_FILE;
+        $archivoImagen = $hayImagen ? $_FILES['imagenUsuario'] : null;
         if ($hayImagen) {
-            $modeloUsuarios->validarImagen($_FILES['imagenUsuario']);
+            $extensionImagen = $modeloUsuarios->validarImagen($archivoImagen);
+            $archivoImagen['name'] = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
         }
 
         $modeloUsuarios->setIdUsuario(unhashId($_POST["id_usuario"]));
         $modeloUsuarios->setUsuario($_POST["usuario"]);
-        $modeloUsuarios->setImagenTemporal($_FILES['imagenUsuario']['tmp_name'] ?? '');
-        $modeloUsuarios->setImagen($hayImagen ? basename($_FILES['imagenUsuario']['name']) : null);
+        $modeloUsuarios->setImagenTemporal($archivoImagen['tmp_name'] ?? '');
+        $modeloUsuarios->setImagen($archivoImagen['name'] ?? null);
 
         $id_usuario = $modeloUsuarios->editarUsuario($idUsuario);
 

@@ -9,7 +9,7 @@ date_default_timezone_set("America/Caracas");
 class ModeloBitacora extends ModelBase
 {
     private $id_usuario, $tabla, $actividad;
-    private $columnasPermitidas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha', 'hora'];
+    private $columnasPermitidas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha_hora'];
     private $ordenesPermitidos = ['ASC', 'DESC'];
 
     public function __construct($dbSystem = false)

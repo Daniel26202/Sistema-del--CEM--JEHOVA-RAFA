@@ -4,10 +4,7 @@ use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloPermisos;
 use App\modelos\Db;
 
-/**
- * Módulo: Roles y Permisos.
- * Sub-módulo: Gestión de módulos y verificación de permisos.
- */
+//verifica la consulta de módulos y permisos.
 class PermisoConsultarTest extends TestCase
 {
     use Tests\TestHelpers;

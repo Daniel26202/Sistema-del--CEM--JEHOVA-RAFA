@@ -3,10 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloRecuperarContr;
 
-/**
- * Módulo: Recuperar contraseña.
- * Sub-módulo: Validación de usuario/correo y actualización de la clave.
- */
+//verifica la recuperación de contraseña.
 class RecuperarContrTest extends TestCase
 {
     use Tests\TestHelpers;

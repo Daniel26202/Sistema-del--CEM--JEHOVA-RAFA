@@ -1,12 +1,5 @@
 <?php
-/**
- * Dispatcher de pruebas a nivel CONTROLADOR (proceso independiente por caso,
- * porque incluir dos controladores en el mismo proceso colisiona por nombres
- * de función: eliminar(), editar(), papelera()...).
- *
- * Uso: /opt/lampp/bin/php tests/modulos_controller_test.php <caso> [extra]
- * Imprime SOLO el JSON del endpoint por stdout; mensajes de estado por stderr.
- */
+//ejecuta pruebas de controladores en procesos independientes.
 
 $caso = $argv[1] ?? '';
 $extra = $argv[2] ?? '';

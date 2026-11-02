@@ -62,7 +62,7 @@ class PerfilEditarTest extends TestCase
         $this->modelo->setNombre("Editado");
         $this->modelo->setApellido("Modificado");
         $this->modelo->setTelefono("04123454321");
-        $this->modelo->setUsuario($this->usuarioOriginal['usuario']);
+        $this->modelo->setUsuario('PerfilIdTest' . $this->idUsuario);
         $this->modelo->setCorreo("modificado@gmail.com");
 
         $resultado = $this->modelo->update_perfil();

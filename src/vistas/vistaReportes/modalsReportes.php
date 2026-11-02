@@ -280,16 +280,14 @@
 
 <!-- info factura -->
 <div class="modal fade" id="modal-info-factura" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content tamaño-modal">
             <div class="modal-header">
                 <h5 class="modal-title fs-4 fw-bold" id="exampleModalLabelDoctores">Informacion de la Factura</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-
-
-            <div class="container-fluid me-4">
+            <div class="modal-body p-0 container-fluid px-2 px-md-4">
                 <div class="mt-3 mb-5">
                     <div class="row justify-content-center">
 
@@ -350,8 +348,6 @@
                                     </a>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>

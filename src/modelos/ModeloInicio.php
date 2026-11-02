@@ -31,6 +31,71 @@ class ModeloInicio extends ModelBase
 		}
 	}
 
+	public function contarCitasPendientes()
+	{
+		$sql = "SELECT COUNT(DISTINCT c.id_cita) AS total
+				FROM bd.serviciomedico sm
+				INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+				INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
+				INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+				INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
+				INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
+				WHERE c.estado = 'Pendiente' AND c.doctor = psm.personal_id_personal
+					AND p.estado = 'ACT' AND c.fecha >= CURRENT_DATE";
+		$this->setSQL($sql);
+		return $this->read(false);
+	}
+
+	public function contarCitasDeHoy()
+	{
+		$sql = "SELECT COUNT(DISTINCT c.id_cita) AS total
+				FROM bd.serviciomedico sm
+				INNER JOIN bd.cita c ON c.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+				INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
+				INNER JOIN bd.personal_has_serviciomedico psm ON psm.serviciomedico_id_servicioMedico = sm.id_servicioMedico
+				INNER JOIN bd.personal pe ON pe.id_personal = psm.personal_id_personal
+				INNER JOIN bd.especialidad e ON e.id_especialidad = pe.id_especialidad
+				WHERE c.estado = 'Pendiente' AND c.doctor = psm.personal_id_personal
+					AND p.estado = 'ACT' AND c.fecha = CURRENT_DATE";
+		$this->setSQL($sql);
+		return $this->read(false);
+	}
+
+	public function obtenerAgendaPersonal($idPersonal)
+	{
+		$sql = "SELECT c.fecha, c.hora, c.estado, cs.nombre AS categoria
+				FROM bd.cita c
+				INNER JOIN bd.serviciomedico sm ON sm.id_servicioMedico = c.serviciomedico_id_servicioMedico
+				INNER JOIN bd.categoria_servicio cs ON cs.id_categoria = sm.id_categoria
+				INNER JOIN bd.paciente p ON p.id_paciente = c.paciente_id_paciente
+				WHERE c.doctor = :id_personal
+					AND c.fecha >= CURRENT_DATE
+					AND c.estado = 'Pendiente'
+					AND p.estado = 'ACT'
+				ORDER BY c.fecha, c.hora
+				LIMIT 5";
+		$this->setSQL($sql);
+		return $this->search(['id_personal' => (int)$idPersonal]);
+	}
+
+	public function obtenerHorarioSemanal($idPersonal)
+	{
+		$sql = "SELECT h.id_horario, h.diaslaborables, hyd.horaDeEntrada, hyd.horaDeSalida
+				FROM bd.horario h
+				INNER JOIN bd.horarioydoctor hyd ON hyd.id_horario = h.id_horario
+				WHERE hyd.id_personal = :id_personal
+					AND NOT EXISTS (
+						SELECT 1
+						FROM bd.horarioydoctor hyd_reciente
+						WHERE hyd_reciente.id_personal = hyd.id_personal
+							AND hyd_reciente.id_horario = hyd.id_horario
+							AND hyd_reciente.id_horarioydoctor > hyd.id_horarioydoctor
+					)
+				ORDER BY h.id_horario";
+		$this->setSQL($sql);
+		return $this->search(['id_personal' => (int)$idPersonal]);
+	}
+
 
 	public function servicios()
 	{
@@ -200,17 +265,17 @@ class ModeloInicio extends ModelBase
 		}
 	}
 
-	// 	//Treae los datos del doctor como los personlaes y los profesionales
-	public function datos_doctor($data)
+	public function datos_personal($data)
 	{
-		try {
-			$sql = "SELECT * FROM bd.personal p INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario WHERE p.usuario =:id_usuario AND p.id_especialidad IS NOT null";
-
-			$this->setSQL($sql);
-			return $this->search($data);
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
+		$sql = "SELECT p.id_personal, p.nacionalidad, p.cedula, p.nombre, p.apellido,
+					p.telefono, p.tipodecategoria, p.id_especialidad,
+					e.nombre AS especialidad_nombre, u.id_usuario, u.usuario, u.correo, u.imagen
+				FROM bd.personal p
+				INNER JOIN segurity.usuario u ON u.id_usuario = p.usuario
+				LEFT JOIN bd.especialidad e ON e.id_especialidad = p.id_especialidad
+				WHERE p.usuario = :id_usuario";
+		$this->setSQL($sql);
+		return $this->search($data);
 	}
 
 

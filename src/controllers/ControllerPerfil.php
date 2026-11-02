@@ -37,7 +37,29 @@ function guardar()
 		exit;
 	}
 
+	$idUsuario = filter_var(
+		$_SESSION['id_usuario'] ?? null,
+		FILTER_VALIDATE_INT,
+		['options' => ['min_range' => 1]]
+	);
+	if ($idUsuario === false) {
+		http_response_code(401);
+		echo json_encode(['ok' => false, 'error' => 'Debe iniciar sesión para modificar su perfil.']);
+		exit;
+	}
+
 	try {
+		if (!isset($_POST['id_usuario']) || !is_string($_POST['id_usuario'])) {
+			throw new InvalidArgumentException('El identificador del perfil no es válido.');
+		}
+
+		$idSolicitado = unhashId($_POST['id_usuario']);
+		if ($idSolicitado !== $idUsuario) {
+			http_response_code(403);
+			echo json_encode(['ok' => false, 'error' => 'No puede modificar el perfil de otro usuario.']);
+			exit;
+		}
+
 		$headers = getallheaders();
 		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
 
@@ -47,13 +69,16 @@ function guardar()
 			exit;
 		}
 
-		$idUsuario = $_SESSION['id_usuario'];
-
-
 		$bitacora = new ModeloBitacora();
 		$modelo = new ModeloPerfil();
+		$hayImagen = isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE;
+		$archivoImagen = $hayImagen ? $_FILES['imagen'] : null;
+		if ($hayImagen) {
+			$extensionImagen = \App\config\ImagenUpload::validar($archivoImagen);
+			$archivoImagen['name'] = bin2hex(random_bytes(16)) . '.' . $extensionImagen;
+		}
 
-		$modelo->setIdUsuario($_POST["id_usuario"]);
+		$modelo->setIdUsuario($idUsuario);
 		$modelo->setUsuario($_POST["usuario"]);
 		$modelo->setCorreo($_POST["correo"]);
 
@@ -61,8 +86,8 @@ function guardar()
 		$modelo->setNombre($_POST["nombre"]);
 		$modelo->setApellido($_POST["apellido"]);
 		$modelo->setTelefono($_POST["telefono"]);
-		$modelo->setImagen($_FILES['imagen']["name"]);
-		$modelo->setImagenTemporal($_FILES['imagen']['tmp_name']);
+		$modelo->setImagen($archivoImagen['name'] ?? null);
+		$modelo->setImagenTemporal($archivoImagen['tmp_name'] ?? '');
 
 
 		$edicion = $modelo->update_perfil();
@@ -72,7 +97,7 @@ function guardar()
 			$_SESSION['nombre'] = $_POST['nombre'];
 			$_SESSION['apellido'] = $_POST['apellido'];
 
-			$bitacora->setId_usuario($_POST["id_usuario"]);
+			$bitacora->setId_usuario($idUsuario);
 			$bitacora->setTabla("Perfil");
 			$bitacora->setActividad("Ha modificado un perfil");
 			$bitacora->insertarBitacora();

@@ -5,8 +5,41 @@ use App\modelos\ModeloCita;
 use App\modelos\ModeloBitacora;
 use App\modelos\ModeloUsuarios;
 use App\modelos\ModeloDoctores;
+use App\modelos\ModeloPermisos;
 use App\modelos\ModeloSanetizarJSON;
 use App\config\Cifrado;
+
+
+function inicioTienePermiso($modulo, $permiso = 'consultar')
+{
+    if (empty($_SESSION['id_usuario']) || empty($_SESSION['id_rol'])) {
+        return false;
+    }
+
+    $modeloPermisos = new ModeloPermisos();
+    $modeloPermisos->setIdRol((string)$_SESSION['id_rol']);
+    $modeloPermisos->setModulo($modulo);
+    $idModulo = $modeloPermisos->returnIdModule();
+    if (!$idModulo) {
+        return false;
+    }
+
+    $modeloPermisos->setIdModulo($idModulo);
+    $modeloPermisos->setPermiso($permiso);
+    return (bool)$modeloPermisos->gestionarPermisos();
+}
+
+function exigirPermisoInicio($modulo)
+{
+    if (inicioTienePermiso($modulo)) {
+        return true;
+    }
+
+    http_response_code(403);
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode(['ok' => false, 'error' => 'No tiene permiso para consultar esta información.']);
+    return false;
+}
 
 
 function inicio($parametro)
@@ -20,13 +53,6 @@ function inicio($parametro)
         // if (session_status() !== PHP_SESSION_ACTIVE) {
         //     session_start();
         // } que esto ya esta en index
-
-        //actualizar el token de inicio de session a su estado original es decir Null
-        //actualizar el token del usuario
-        $usuario->setIdUsuario($_SESSION['id_usuario']);
-        $usuario->setTokenInicioSesion(NULL);
-        $usuario->actualizarTokenInicioSesion();
-
 
         // Guardar la bitácora
 
@@ -50,9 +76,27 @@ function inicio($parametro)
         exit();
     }
 
-    $validarCargo = $modeloInicio->setIdPersonal($_SESSION["id_personal"]);
+    $modeloInicio->setIdPersonal($_SESSION["id_personal"]);
     $validarCargo = $modeloInicio->comprobarCargo();
-    $datos_de_personal =  $modeloInicio->datos_doctor(['id_usuario' => $_SESSION["id_usuario"]]);
+    if (!is_numeric($validarCargo)) {
+        throw new \RuntimeException('No se pudo determinar el cargo del usuario.');
+    }
+    $validarCargo = (int)$validarCargo === 1;
+    $datos_de_personal = $modeloInicio->datos_personal(['id_usuario' => $_SESSION["id_usuario"]]);
+    if (empty($datos_de_personal)) {
+        throw new \RuntimeException('No se encontraron los datos del personal autenticado.');
+    }
+
+    $puedeVerEstadisticas = inicioTienePermiso('Estadisticas');
+    $puedeConsultarCitas = inicioTienePermiso('Citas');
+    $puedeMostrarCalendario = $puedeVerEstadisticas || ($validarCargo && $puedeConsultarCitas);
+    $agendaPersonal = ($validarCargo && $puedeConsultarCitas)
+        ? $modeloInicio->obtenerAgendaPersonal($_SESSION['id_personal'])
+        : [];
+    $horarioSemanal = $validarCargo
+        ? $modeloInicio->obtenerHorarioSemanal($_SESSION['id_personal'])
+        : [];
+    $idPersonalCalendario = $validarCargo ? hashId((int)$_SESSION['id_personal']) : '';
 
     $ayuda = "btnayudaInicio";
     $vistaActiva = "inicio";
@@ -60,21 +104,7 @@ function inicio($parametro)
     require_once './src/vistas/dashboard.php';
 }
 
-/**
- * Recibe la tasa del día desde el navegador y la guarda en la sesión.
- *
- * El navegador la obtiene de https://ve.dolarapi.com/v1/dolares/oficial
- * (ver src/assets/js/generic/coversion.js) y la manda por la URL.
- *
- * Dos correcciones importantes:
- *
- * 1) number_format() con separador de miles '.' producía "1.000.00" para tasas
- *    de 1000 en adelante. Los consumidores hacen (float)"1.000.00" => 1.0, es
- *    decir, recibían mil veces menos. El cuarto parámetro debe ser cadena vacía.
- *
- * 2) La tasa se valida antes de guardarse. Antes cualquiera podía pedir
- *    .../Inicio/valorDolar/1 y dejar su sesión con una tasa inventada.
- */
+//valida y guarda en sesión la tasa de cambio recibida del navegador.
 function valorDolar($datos)
 {
     $tasa = is_array($datos) ? ($datos[0] ?? null) : null;
@@ -144,8 +174,12 @@ function servicios()
 
 function citasDeHoy()
 {
-    $modelo = new ModeloCita();
-    echo json_encode($modelo->mostrarCitaHoy());
+    if (!exigirPermisoInicio('Citas')) {
+        return;
+    }
+
+    $modelo = new ModeloInicio();
+    echo json_encode($modelo->contarCitasDeHoy());
 }
 
 function cerrarSession()
@@ -158,13 +192,6 @@ function cerrarSession()
         exit;
     }
 
-    // if (session_status() !== PHP_SESSION_ACTIVE) {
-    //     session_start();
-    // } Y otra vez
-    // Guardar la bitácora
-    $usuario->setTokenInicioSesion(null);
-    $usuario->setIdUsuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
-    $usuario->actualizarTokenInicioSesion();
 
     $bitacora->setId_usuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
     $bitacora->setActividad("Ha cerrado la session");
@@ -172,31 +199,48 @@ function cerrarSession()
 
     $bitacora->insertarBitacora();
     // Destruyen las variables de las sesión 
-    session_unset();
     session_destroy();
+    // session_unset();
+
 
     echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 }
 
 function citas()
 {
-    $modelo = new ModeloCita();
-    echo json_encode($modelo->mostrarCita());
+    if (!exigirPermisoInicio('Citas')) {
+        return;
+    }
+
+    $modelo = new ModeloInicio();
+    echo json_encode($modelo->contarCitasPendientes());
 }
 
 function pacientes_hospitalizados()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     $modelo = new ModeloInicio();
     echo json_encode($modelo->pacientes_hospitalizados());
 }
 
 function especialidades_solicitadas()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     $modelo = new ModeloInicio();
     echo json_encode($modelo->especialidades_solicitadas());
 }
 function especialidades_solicitadas_filtradas($datos)
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     $modelo = new ModeloInicio();
     $modelo->setFechaInicio($datos[0]);
     $modelo->setFechaFinal($datos[1]);
@@ -205,6 +249,10 @@ function especialidades_solicitadas_filtradas($datos)
 
 function todas_las_especialidades()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     $modelo = new ModeloInicio();
 
     echo json_encode($modelo->todas_las_especialidades());
@@ -212,6 +260,10 @@ function todas_las_especialidades()
 
 function sintomas_comunes()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     $modelo = new ModeloInicio();
 
     echo json_encode($modelo->sintomas_comunes());
@@ -219,6 +271,10 @@ function sintomas_comunes()
 
 function sintomas_comunes_filtrados($datos)
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     $modelo = new ModeloInicio();
     $modelo->setFechaInicio($datos[0]);
     $modelo->setFechaFinal($datos[1]);
@@ -227,6 +283,10 @@ function sintomas_comunes_filtrados($datos)
 
 function todos_los_sintomas()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     $modelo = new ModeloInicio();
 
     echo json_encode($modelo->todos_los_sintomas());
@@ -242,14 +302,22 @@ function mostrarHorario($datos)
 
 function retornarDoctores()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     $modelo = new ModeloDoctores();
     $sanitizador = new ModeloSanetizarJSON();
-    $sanitizador->setHashKeys(['id_personal', 'id_especialidad', 'id_usuario', 'id_horario', 'id_servicioMedico', 'id_categoria']);
-    echo json_encode($sanitizador->sanitizeRecursive($modelo->select()));
+    $sanitizador->setHashKeys(['id_personal']);
+    echo json_encode($sanitizador->sanitizeRecursive($modelo->selectDoctoresParaEstadisticas()));
 }
 
 function exportar_pdf()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        return;
+    }
+
     // Leer los datos JSON enviados por AJAX
     $data = json_decode(file_get_contents("php://input"), true);
 
@@ -303,7 +371,26 @@ function exportar_pdf()
 function diasConMasCitas($parametro)
 {
     $modelo = new ModeloInicio();
-    $id_personal = isset($parametro[0]) && $parametro[0] !== '' ? unhashId($parametro[0]) : 0;
+    if (!inicioTienePermiso('Estadisticas')) {
+        $id_personal = $_SESSION['id_personal'] ?? 0;
+        if (!inicioTienePermiso('Citas') || !$id_personal) {
+            exigirPermisoInicio('Estadisticas');
+            return;
+        }
+
+        $modelo->setIdPersonal($id_personal);
+        $esDoctor = $modelo->comprobarCargo();
+        if (!is_numeric($esDoctor)) {
+            throw new \RuntimeException('No se pudo determinar el cargo del usuario.');
+        }
+        if ((int)$esDoctor !== 1) {
+            exigirPermisoInicio('Estadisticas');
+            return;
+        }
+    } else {
+        $id_personal = isset($parametro[0]) && $parametro[0] !== '' ? unhashId($parametro[0]) : 0;
+    }
+
     $modelo->setIdPersonal($id_personal);
     echo json_encode($modelo->obtenerDiasConMasCitas());
 }
@@ -311,6 +398,10 @@ function diasConMasCitas($parametro)
 
 function especialidadesApk()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        exit;
+    }
+
     if (ob_get_length()) ob_clean();
     header("Content-Type: application/json; charset=UTF-8");
     header("Access-Control-Allow-Origin: *");
@@ -341,6 +432,10 @@ function especialidadesApk()
 
 function sintomasApk()
 {
+    if (!exigirPermisoInicio('Estadisticas')) {
+        exit;
+    }
+
     if (ob_get_length()) ob_clean();
     header("Content-Type: application/json; charset=UTF-8");
     header("Access-Control-Allow-Origin: *");

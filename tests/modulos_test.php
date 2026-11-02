@@ -1,14 +1,5 @@
 <?php
-/**
- * Suite de pruebas para los módulos de PROVEEDORES, ENTRADA e INSUMOS
- * (incluye verificación del INVENTARIO).
- *
- * Ejecuta la lógica real de los modelos contra la base de datos y valida la
- * coherencia del inventario (vista view_resumen_insumos vs. lotes reales).
- * Las pruebas de escritura limpian todo lo que crean: nunca deben quedar datos.
- *
- * Ejecutar: /opt/lampp/bin/php tests/modulos_test.php
- */
+//verifica los módulos de proveedores, entradas e inventario.
 
 declare(strict_types=1);
 

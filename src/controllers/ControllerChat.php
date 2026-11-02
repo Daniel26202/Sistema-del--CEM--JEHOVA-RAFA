@@ -2,11 +2,7 @@
 
 use App\modelos\ModeloBitacora;
 
-/**
- * La vista de chat de página completa quedó desusada: ahora el asistente se
- * abre como un modal flotante en cualquier pantalla (ver modalChat.php).
- * Cualquier enlace viejo a /Chat/chat vuelve al inicio.
- */
+//redirige al inicio los enlaces antiguos del chat.
 function chat()
 {
 	header("location: /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio");
@@ -35,13 +31,7 @@ function validarSesionYCsrf(): void
 	}
 }
 
-/**
- * Endpoint que consume el modal del navegador (POST /Chat/preguntar).
- *
- * Hace de proxy hacia el componente inteligente en FastAPI: FastAPI nunca
- * habla directo con el navegador, así no se expone la API key ni el gemelo
- * de Gemini. Requiere sesión activa y token CSRF.
- */
+//procesa consultas del modal y las envía al componente IA.
 function preguntar()
 {
 	if (ob_get_length()) ob_clean();
@@ -112,12 +102,7 @@ function preguntar()
 	exit;
 }
 
-/**
- * Envía la consulta al componente FastAPI.
- *
- * @return string|null Cuerpo de la respuesta (JSON) o null si falló la
- *                     comunicación con el servicio.
- */
+//envía la consulta al componente FastAPI y devuelve su respuesta.
 function enviarConsultaIA(string $url, string $payload, array $headers): ?string
 {
 	$timeout = 60; // Gemini puede tardar (o probar modelos de respaldo); no cortar antes.

@@ -7,12 +7,7 @@ require_once 'tests/caja_negra/loginSelenium.php';
 require_once 'tests/caja_negra/PacientesSelenium.php';
 require_once 'tests/caja_negra/CitasSelenium.php';
 require_once 'tests/caja_negra/facturacionSelenium.php';
-/*
-    php scriptTest.php [test1 test2 ...]
-    ❌
-    ✅
-    🔎
-*/
+
 define("LIST_TESTS", ["login", "pacientes","citas","facturacion"]);
 
 

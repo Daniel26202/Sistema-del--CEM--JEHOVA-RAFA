@@ -67,13 +67,19 @@ export const executePetition = async (url, method, data = null) => {
     }
 
     let result;
+    let cosa;
+    let txt
     try {
-      result = await response.json();
+      // cosa =  response
+      // txt = await cosa.text()
+      // result = await cosa.json();
+      result = await response.json()
     } catch (errorJson) {
       return {
         ok: false,
         error:
-          "Respuesta inesperada del servidor. Verifique que la sesión esté activa.",
+          // "Respuesta inesperada del servidor. Verifique que la sesión esté activa.",
+          cosa
       };
     }
 
@@ -153,6 +159,13 @@ export const clearModalEnviar = (parametros) => {
   parametros.form.classList.remove("editar");
 
   parametros.inputs.forEach((input) => {
+    if (input.type === "file") {
+      input.value = "";
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      input.parentElement.classList.remove("valido", "invalido");
+      return;
+    }
+
     let campoCustom = input.closest(".campo-custom");
     let spamP = campoCustom.querySelector(".icono-der");
     let check = spamP.children[0];

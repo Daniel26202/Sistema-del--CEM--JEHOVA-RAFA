@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="title description">
+  <title id="title">Imagen no disponible</title>
+  <desc id="description">Ilustración genérica de una imagen pendiente</desc>
+  <rect width="640" height="420" rx="24" fill="#eef5fb"/>
+  <rect x="190" y="88" width="260" height="214" rx="18" fill="#fff" stroke="#9bb6cb" stroke-width="8"/>
+  <circle cx="274" cy="158" r="22" fill="#78a8c9"/>
+  <path d="m212 270 72-70 48 45 38-34 58 59v18H212z" fill="#aac8dc"/>
+  <path d="M253 344h134" fill="none" stroke="#557b98" stroke-linecap="round" stroke-width="10"/>
+</svg>

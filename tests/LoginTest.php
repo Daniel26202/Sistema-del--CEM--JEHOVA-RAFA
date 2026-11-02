@@ -3,13 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use App\modelos\ModeloInicioSesion;
 
-/**
- * Módulo: Autenticación de Usuario.
- * Sub-módulo: Iniciar sesión.
- *
- * Cubre la validación de credenciales contra la base de datos real
- * (segurity.usuario + bd.personal + segurity.rol).
- */
+//verifica el inicio de sesión y la validación de credenciales.
 class LoginTest extends TestCase
 {
     private $modelo;

@@ -1,15 +1,5 @@
 <?php
-/**
- * Pruebas de integración frontend ↔ backend del módulo de facturación.
- *
- * Verifica los contratos que se rompieron en la auditoría:
- *   - cada ruta que f.js llama existe en el controlador
- *   - cada id que f.js busca existe en las vistas
- *   - cada campo que f.js envía viaja dentro del <form> de confirmación
- *   - las vistas no referencian scripts inexistentes
- *
- * Ejecutar:  /opt/lampp/bin/php tests/factura_integracion_test.php
- */
+//verifica la integración entre el frontend y el backend de facturación.
 
 declare(strict_types=1);
 

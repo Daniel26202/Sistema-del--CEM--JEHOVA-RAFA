@@ -2,6 +2,20 @@
 
 
 return [
+    // Inicio y sus consultas asíncronas se autorizan además en ControllerInicio.
+    "inicio" => "consultar",
+    "citasDeHoy" => "consultar",
+    "pacientes_hospitalizados" => "consultar",
+    "especialidades_solicitadas" => "consultar",
+    "especialidades_solicitadas_filtradas" => "consultar",
+    "todas_las_especialidades" => "consultar",
+    "sintomas_comunes" => "consultar",
+    "sintomas_comunes_filtrados" => "consultar",
+    "todos_los_sintomas" => "consultar",
+    "diasConMasCitas" => "consultar",
+    "mostrarHorario" => "consultar",
+    "retornarDoctores" => "consultar",
+
     //Pacientes
     "getPacientes" => "consultar",
     "getPacientesAjax" => "consultar",

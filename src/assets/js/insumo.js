@@ -4,7 +4,6 @@ import {
   alertError,
   alertSuccess,
   initDataTable,
-  cargarImg,
   hasPermision,
   initLoaderButton,
   finallyLoaderButton,
@@ -26,8 +25,6 @@ addEventListener("DOMContentLoaded", function () {
   );
 
   const divTarjetsInsumo = document.getElementById("div-tarjets");
-  const imagenInsumo = document.getElementById("imagen");
-
   const formInsumos = document.getElementById("modalAgregarInsumos");
   const inputEditar = formInsumos.querySelectorAll(".campo-editar");
 
@@ -139,6 +136,14 @@ addEventListener("DOMContentLoaded", function () {
       contenedorImg.classList.add("d-none");
       //ahora gestionar la imagen del insumo es decir mostrar un previsualizacion en el modal de editar
       contenedorImgEditar.classList.remove("d-none");
+      const rutaImagen = srcImg === "imagen-generica.svg"
+        ? `${urlBase}../src/assets/images/img/imagen-generica.svg`
+        : `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${encodeURIComponent(srcImg)}`;
+      setImgWithFallback(
+        imgEditar,
+        rutaImagen,
+        `${urlBase}../src/assets/images/img/imagen-generica.svg`,
+      );
 
       document
         .querySelector(".btn-eliminar")
@@ -168,7 +173,7 @@ addEventListener("DOMContentLoaded", function () {
       console.log(items);
       let objValidationImg = {
         setImgWithFallback,
-        imgSrcDefecto: `${urlBase}../src/assets/images/img/logoRol.jpeg`,
+        imgSrcDefecto: `${urlBase}../src/assets/images/img/imagen-generica.svg`,
       };
 
       const paginator = new Paginator(
@@ -327,6 +332,11 @@ addEventListener("DOMContentLoaded", function () {
       if (result.ok) {
         alertSuccess(result.message);
 
+        const inputImagen = form.querySelector('input[type="file"]');
+        if (inputImagen) {
+          inputImagen.value = "";
+          inputImagen.dispatchEvent(new Event("change", { bubbles: true }));
+        }
         modalAgreInsumos.hide();
         readInsumos(divTarjetsInsumo);
       } else throw new Error(`${result.error}`);
@@ -340,11 +350,12 @@ addEventListener("DOMContentLoaded", function () {
 
   //RETURN fragment html card
   const returnFragmentHtml = (element) => {
-    return `
-    <div class="card contenido mb-4 mx-2" style="width: 18rem;">
-        <img src="${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${
-          element.imagen
-        }" class="card-img-top" style="width: 100%; height: 200px; object-fit: cover;" alt="...">
+            const imagen = element.imagen === "imagen-generica.svg"
+              ? `${urlBase}../src/assets/images/img/imagen-generica.svg`
+              : `${urlBase}../src/assets/images/img_ingresadas_por_usuarios/insumos/${encodeURIComponent(element.imagen)}`;
+            return `
+          <div class="card contenido mb-4 mx-2" style="width: 18rem;">
+                <img src="${imagen}" class="card-img-top" style="width: 100%; height: 200px; object-fit: cover;" alt="Imagen de ${element.nombre}">
         <div class="card-body">
             <h5 class=" titulo">${element.nombre}</h5>
 
@@ -363,17 +374,6 @@ addEventListener("DOMContentLoaded", function () {
     </div>`;
   };
 
-  //funcion la imagen en el formulario para  que se visualize
-
-  //llamar a la funcion para cargar la imagen del insumo
-  imagenInsumo.addEventListener("change", function (e) {
-    let newImg = `<img src='' class="img-fluid rounded">`;
-
-    contenedorImg.classList.remove("d-none");
-    contenedorImgEditar.classList.add("d-none");
-    cargarImg(this.files, newImg, contenedorImg);
-  });
-
   traerInsumoCasiVencidos();
 
   console.log(urlActual);
@@ -389,6 +389,9 @@ addEventListener("DOMContentLoaded", function () {
       console.log(input.parentElement);
 
       input.value = "";
+      if (input.type === "file") {
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
       input.parentElement.classList.remove("valido");
       input.parentElement.classList.remove("invalido");
 

@@ -1,11 +1,5 @@
 <?php
-/**
- * Invoca el endpoint real de "paciente con cita" con sesión simulada y comprueba
- * que el doctor llega HASHEADO (el campo que provocaba
- * "Identificador inválido o manipulado" al confirmar la factura).
- *
- * Ejecutar: /opt/lampp/bin/php tests/endpoint_cita_test.php
- */
+//verifica que el endpoint de citas devuelva el ID del doctor hasheado.
 
 declare(strict_types=1);
 

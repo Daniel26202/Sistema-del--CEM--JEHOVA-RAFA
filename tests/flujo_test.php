@@ -1,25 +1,5 @@
 <?php
-/**
- * Pruebas de flujo completo: casos típicos y atípicos.
- *
- * Ejecutan el camino real de guardarFactura() contra la base de datos, dentro
- * de transacciones que se revierten, así que no queda ningún dato.
- *
- * Cubre:
- *   T1  cita: servicio + sin insumos
- *   T2  varios servicios
- *   T3  insumos con y sin IVA
- *   T4  pago dividido en dos métodos
- *   A1  el navegador manda un total manipulado -> se guarda el real
- *   A2  el navegador manda un precio manipulado -> se cobra el del catálogo
- *   A3  la suma de pagos no cubre el total -> rechazo
- *   A4  cantidad de insumo superior al stock -> rechazo
- *   A5  servicio inexistente -> rechazo
- *   A6  tasa de cambio absurda -> rechazo
- *   I1..I4  inventario: descuento, FIFO, sin negativos, lote registrado
- *
- * Ejecutar: /opt/lampp/bin/php tests/flujo_test.php
- */
+//verifica el flujo completo de facturación y sus casos límite.
 
 declare(strict_types=1);
 
@@ -94,11 +74,7 @@ printf(
 );
 
 /** Stock disponible de un insumo. */
-/**
- * Stock VENDIBLE: lotes activos, de entradas activas y no vencidos.
- * Es exactamente lo que cuenta view_resumen_insumos y lo que acepta
- * reservarLotes(); si se suma todo, el stock vencido falsea la comparación.
- */
+//obtiene el stock vendible disponible de un insumo.
 function stock(PDO $pdo, int $id): int
 {
     $s = $pdo->prepare(
@@ -115,11 +91,7 @@ function stock(PDO $pdo, int $id): int
     return (int)$s->fetchColumn();
 }
 
-/**
- * Facturas creadas por esta prueba. Se registran aqui para poder borrarlas al
- * final aunque un rollback falle: una suite de pruebas NUNCA debe dejar datos
- * reales en la base.
- */
+//registra las facturas de prueba para eliminarlas al finalizar.
 
 /** Inserta una factura vacía y devuelve su id. */
 function nuevaFactura(PDO $pdo, int $cliente, float $tasa): int

@@ -213,26 +213,75 @@ class ModeloReporte extends ModelBase
 	}
 	public function anularFac()
 	{
+		$transaccionActiva = false;
 		try {
+			$this->beginTransaction();
+			$transaccionActiva = true;
+
 			$data = [
 				'id_factura' => $this->getIdFactura()
 			];
 
-			$sql = "SELECT * from factura where id_factura=:id_factura";
+			// Bloqueo de la factura: dos anulaciones simultáneas no pueden pasar
+			// ambas la comprobación de estado.
+			$sql = "SELECT * FROM factura WHERE id_factura = :id_factura FOR UPDATE";
 			$this->setSQL($sql);
-			$validar  = $this->search($data, false);
+			$validar = $this->search($data, false);
 
 			if ($validar == []) {
-				throw new \Exception("El id de la factura no existe");
+				throw new \DomainException("El id de la factura no existe");
 			}
-			
-			$sql = "UPDATE factura SET estado = 'Anulada' WHERE id_factura = :id";
+			if (($validar['estado'] ?? '') !== 'ACT') {
+				throw new \DomainException("La factura ya fue anulada.");
+			}
+
+			// Devolver al inventario las unidades de los insumos facturados.
+			$this->setSQL("SELECT entrada_insumo_id_entradaDeInsumo AS id_entrada, cantidad
+				FROM detalle_factura
+				WHERE id_factura = :id_factura
+					AND tipo = 'Insumo'
+					AND entrada_insumo_id_entradaDeInsumo IS NOT NULL");
+			$insumos = $this->search($data);
+
+			foreach ($insumos as $insumo) {
+				$cantidad = (int)($insumo['cantidad'] ?? 0);
+				if ($cantidad <= 0) {
+					continue;
+				}
+				$this->setSQL("UPDATE entrada_insumo
+					SET cantidad_disponible = cantidad_disponible + :c
+					WHERE id_entradaDeInsumo = :id");
+				$this->update(['c' => $cantidad], $insumo['id_entrada']);
+			}
+
+			// Reabrir la hospitalización vinculada al detalle, si existe.
+			$this->setSQL("SELECT DISTINCT hospitalizacion_id_hospitalizacion AS id_hospitalizacion
+				FROM detalle_factura
+				WHERE id_factura = :id_factura
+					AND hospitalizacion_id_hospitalizacion IS NOT NULL");
+			$hospitalizaciones = $this->search($data);
+
+			foreach ($hospitalizaciones as $hospitalizacion) {
+				$this->setSQL("UPDATE hospitalizacion
+					SET estado = 'Pendiente'
+					WHERE id_hospitalizacion = :id AND estado = 'Realizada'");
+				$this->update_logic($hospitalizacion['id_hospitalizacion']);
+			}
+
+			$sql = "UPDATE factura SET estado = 'Anulada' WHERE id_factura = :id AND estado = 'ACT'";
 			$this->setSQL($sql);
 			$this->update_logic($data['id_factura']);
-			
+
+			$this->commit();
 			return ['exito'];
-		} catch (\Exception $e) {
-			return $e->getMessage();
+		} catch (\Throwable $e) {
+			if ($transaccionActiva) {
+				$this->rollBack();
+			}
+			error_log("Error anulando factura: " . $e->getMessage());
+			return $e instanceof \PDOException
+				? 'No se pudo anular la factura por un error interno.'
+				: $e->getMessage();
 		}
 	}
 	public function consultarFacturaSinCita()

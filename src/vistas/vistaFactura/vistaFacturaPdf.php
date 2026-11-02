@@ -24,7 +24,7 @@ $pdf->SetFont('Arial', 'B', 15);
 
 $pdf->Ln(40);
 $pdf->SetTextColor(14, 169, 181);
-$pdf->Cell(62, 10, 'CODIGO:  '.$datosFactura[0]['id_factura'], 0, 0, 'C') ;
+$pdf->Cell(62, 10, 'CODIGO:  '.($numeroFactura ?? $datosFactura[0]['id_factura']), 0, 0, 'C') ;
 
 
 $pdf->Ln(15);

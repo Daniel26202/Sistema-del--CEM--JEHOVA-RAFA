@@ -52,7 +52,7 @@ function bitacoraAjaxUser()
 
 
 	//mapeada en el mismo orden que la tabla (para ordenar datatable)
-	$columnasMapeadas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha', 'hora'];
+	$columnasMapeadas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha_hora', 'fecha_hora'];
 
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 
@@ -102,7 +102,7 @@ function bitacoraAjaxAdmin()
 
 
 	//mapeada en el mismo orden que la tabla (para ordenar datatable)
-	$columnasMapeadas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha', 'hora'];
+	$columnasMapeadas = ['nombre', 'usuario', 'tabla', 'actividad', 'fecha_hora', 'fecha_hora'];
 
 	$colIndex = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
 

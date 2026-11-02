@@ -1,12 +1,8 @@
 <?php require_once './src/vistas/head/head.php'; ?>
 
 <?php
-/**
- * Escapa cualquier valor antes de imprimirlo. Los datos vienen de la base y
- * antes se imprimían con echo desnudo (XSS almacenado: un insumo o paciente
- * con HTML en el nombre se ejecutaba en el comprobante de todos).
- */
-$e = static fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+//escapa los valores antes de imprimirlos en el comprobante.
+$e = static fn($v) => htmlspecialchars(htmlspecialchars_decode((string)$v, ENT_QUOTES), ENT_QUOTES, 'UTF-8');
 $bs = static fn($v) => number_format((float)$v, 2, '.', '');
 $tasa = defined('TASA_IMPUESTO') ? (float)TASA_IMPUESTO : 0.16;
 ?>
@@ -62,7 +58,7 @@ $tasa = defined('TASA_IMPUESTO') ? (float)TASA_IMPUESTO : 0.16;
 
                                 <div class="row mb-1">
                                     <div class="col-6 text-start text-comprobante"><span class="fw-bold ">Código:</span></div>
-                                    <div class="col-6 text-end text-comprobante"><span><?= $e($datoFactura['id_factura'] ?? '') ?></span></div>
+                                    <div class="col-6 text-end text-comprobante"><span><?= $e($numeroFactura ?? ($datoFactura['id_factura'] ?? '')) ?></span></div>
                                 </div>
                                 <div class="row mb-1">
                                     <div class="col-6 text-start text-comprobante"><span class="fw-bold">Fecha:</span></div>
@@ -110,15 +106,31 @@ $tasa = defined('TASA_IMPUESTO') ? (float)TASA_IMPUESTO : 0.16;
                             <h6 class="text-center text-uppercase fw-bold mb-3 text-primary" style="letter-spacing: 1px;">Insumos</h6>
 
                             <?php
-                            /*
-                             * Antes el IVA se recalculaba aquí con un 30% fijo sobre
-                             * un precio que además se imprimía como "BS" siendo la
-                             * columna del catálogo en divisa. Ahora:
-                             *   - la base y el IVA salen del detalle guardado,
-                             *   - el precio unitario del insumo viene con IVA incluido
-                             *     (columna precio_unitario de detalle_factura).
-                             */
+                          
                             $hayInsumos = false;
+
+                            $insumosAgrupados = [];
+                            if (is_array($datosInsumos)) {
+                                foreach ($datosInsumos as $d) {
+                                    if (!is_array($d)) {
+                                        continue;
+                                    }
+                                    $clave = implode('|', [
+                                        $d['nombre'] ?? '',
+                                        $d['precio_unitario'] ?? 0,
+                                        $d['iva_aplicado'] ?? 0,
+                                        $d['tasa_iva'] ?? 0,
+                                    ]);
+                                    if (!isset($insumosAgrupados[$clave])) {
+                                        $insumosAgrupados[$clave] = $d;
+                                        $insumosAgrupados[$clave]['cantidad'] = 0;
+                                        $insumosAgrupados[$clave]['subtotal'] = 0;
+                                    }
+                                    $insumosAgrupados[$clave]['cantidad'] += (int)($d['cantidad'] ?? 0);
+                                    $insumosAgrupados[$clave]['subtotal'] += (float)($d['subtotal'] ?? 0);
+                                }
+                            }
+                            $datosInsumos = array_values($insumosAgrupados);
                             foreach ($datosInsumos as $d) : $hayInsumos = true; ?>
                                 <div class="p-2 rounded mb-3 border-start border-primary border-3 bg-comprobante">
                                     <div class="d-flex justify-content-between">
