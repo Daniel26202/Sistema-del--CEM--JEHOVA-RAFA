@@ -287,22 +287,6 @@ function iniciarSesion()
     $ipCliente = $_SERVER['REMOTE_ADDR'];
 
 
-
-    //  Esto es hacerlo po segunda vez, pero ya esta en el index
-    // RATE LIMIT estricto para login: 5 intentos por minuto por IP
-    // $rateLimit = new RateLimiter();
-    // $rateLimit->setIP($ipCliente);
-    // $rateLimit->setEndpoind('iniciarSesion');
-    // $rateLimit->setLimitePeticiones(20);
-
-
-    // if ($rateLimit->checkRateLimitByIP()) {
-    //     http_response_code(429);
-    //     header('Content-Type: application/json; charset=utf-8');
-    //     echo json_encode(['ok' => false, 'error' => 'Demasiados intentos. Espere un momento antes de volver a intentarlo.']);
-    //     exit;
-    // }
-
     $modelo = new ModeloInicioSesion();
     $bitacora = new ModeloBitacora();
     $usuario = new ModeloUsuarios();
@@ -397,7 +381,9 @@ function iniciarSesion()
         $_SESSION['id_personal'] = $validar['id_personal'] ?? null;
         $_SESSION['nombre'] = $validar['nombre_personal'] ?? null;
         $_SESSION['apellido'] = $validar['apellido_personal'] ?? null;
-        $_SESSION['token_session'] = $token_session ?? null;
+        $_SESSION['token_de_session'] = $token_session;
+        // print_r($_SESSION);
+        
 
         // token csrf
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));

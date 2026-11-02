@@ -21,6 +21,15 @@ class ModeloUsuarios extends ModelBase
     // ── READ ────────────────────────────────────────────────
     //select all user
 
+    public function buscar_por_id(){
+        $sql = 'SELECT u.usuario as user, u.id_usuario, u.id_rol, u.imagen, u.correo, p.id_personal,p.nacionalidad,p.cedula,p.nombre,p.apellido,p.telefono, u.token_session as token FROM segurity.usuario u INNER JOIN bd.personal p on p.usuario = u.id_usuario INNER JOIN segurity.rol r on u.id_rol = r.id_rol WHERE u.id_usuario=:id  ';
+        $pdo = $this->getPDO();
+        $query = $pdo->prepare($sql);
+        $query->bindValue(":id",$this->id_usuario);
+        $query->execute();
+        return $query->fetch();
+    }
+
     public function selectAllUser()
     {
         try {
@@ -124,15 +133,14 @@ class ModeloUsuarios extends ModelBase
     public function actualizarTokenInicioSesion()
     {
         try {
-            $data = [
-                'token_session' => $this->getTokenInicioSesion(),
-            ];
+            $sql =  "UPDATE usuario SET token_session = :token_session WHERE id_usuario = :id";
 
-            $sql = "UPDATE usuario SET token_session = :token_session WHERE id_usuario = :id";
-            $this->setSQL($sql);
+            $pdo = $this->getPDO();
+            $query = $pdo->prepare($sql);
+            $query->bindValue(':id',$this->id_usuario);
+            $query->bindValue(':token_session',$this->token_inicio_sesion);
 
-            $this->update($data, $this->getIdUsuario());
-            return ['exito', $data];
+            $query->execute();
         } catch (\Exception $e) {
             return $e->getMessage();
         }

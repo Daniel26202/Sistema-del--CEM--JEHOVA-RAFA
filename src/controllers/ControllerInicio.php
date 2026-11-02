@@ -21,13 +21,6 @@ function inicio($parametro)
         //     session_start();
         // } que esto ya esta en index
 
-        //actualizar el token de inicio de session a su estado original es decir Null
-        //actualizar el token del usuario
-        $usuario->setIdUsuario($_SESSION['id_usuario']);
-        $usuario->setTokenInicioSesion(NULL);
-        $usuario->actualizarTokenInicioSesion();
-
-
         // Guardar la bitácora
 
         $bitacora->setId_usuario($_SESSION['id_usuario']);
@@ -158,13 +151,6 @@ function cerrarSession()
         exit;
     }
 
-    // if (session_status() !== PHP_SESSION_ACTIVE) {
-    //     session_start();
-    // } Y otra vez
-    // Guardar la bitácora
-    $usuario->setTokenInicioSesion(null);
-    $usuario->setIdUsuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
-    $usuario->actualizarTokenInicioSesion();
 
     $bitacora->setId_usuario(empty($_SESSION['id_usuario']) ? $_SESSION['id_usuario_verificar'] : $_SESSION['id_usuario']);
     $bitacora->setActividad("Ha cerrado la session");
@@ -172,8 +158,9 @@ function cerrarSession()
 
     $bitacora->insertarBitacora();
     // Destruyen las variables de las sesión 
-    session_unset();
     session_destroy();
+    // session_unset();
+
 
     echo json_encode(['ok' => true, 'message' => 'La operación se realizó con éxito']);
 }
