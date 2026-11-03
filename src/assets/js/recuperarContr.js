@@ -24,7 +24,7 @@ addEventListener("DOMContentLoaded", function () {
 
     let alertaError = document.getElementById("alerta_error");
 
-    const verificar = async (ruta, formulario, numero) => {
+    const verificarPeticion = async (ruta, formulario, numero) => {
         // try {
         console.log("resultado");
         const data = new FormData(formulario);
@@ -105,6 +105,23 @@ addEventListener("DOMContentLoaded", function () {
                 formRC.reset();
                 formUCE.reset();
 
+                // Los campos quedaron vacíos: se limpia su estado de validación
+                // para que no pasen como válidos sin haberse escrito.
+                [formUCE, formC, formRC].forEach((formulario) => {
+                    formulario.querySelectorAll(".input-validar").forEach((input) => {
+                        input.parentElement.classList.remove("valido", "invalido");
+
+                        let campoCustom = input.closest(".campo-custom");
+                        let pError = campoCustom?.querySelector("p");
+                        if (pError) pError.classList.add("d-none");
+
+                        let iconoDer = campoCustom?.querySelector(".icono-der");
+                        if (iconoDer && iconoDer.children[0] && iconoDer.children[1]) {
+                            chulitoYX(iconoDer.children[0], iconoDer.children[1], "vacio");
+                        }
+                    });
+                });
+
                 divFormUno.classList.remove("d-none");
                 divFormDos.classList.add("d-none");
                 divFormTres.classList.add("d-none");
@@ -133,6 +150,43 @@ addEventListener("DOMContentLoaded", function () {
         // } catch (error) {
         // console.log(error);
         // }
+    };
+
+    // Mientras la petición está en curso el botón se bloquea y muestra el
+    // estado. Así no se envían solicitudes duplicadas y el usuario no cree
+    // que el clic no hizo nada mientras el correo se está enviando.
+    const verificar = async (ruta, formulario, numero) => {
+        const boton = {
+            uno: document.querySelector("#btnVerificarUCE"),
+            dos: document.querySelector("#btnVerificarC"),
+            tres: document.querySelector("#btnVerificarRC"),
+            cuatro: document.querySelector("#btnEviarCod"),
+        }[numero];
+
+        const textoCargando = {
+            uno: "Enviando...",
+            dos: "Verificando...",
+            tres: "Actualizando...",
+            cuatro: "Enviando...",
+        }[numero];
+
+        const textoOriginal = boton ? boton.textContent : "";
+
+        if (boton) {
+            boton.style.pointerEvents = "none";
+            boton.style.opacity = "0.6";
+            boton.textContent = textoCargando;
+        }
+
+        try {
+            await verificarPeticion(ruta, formulario, numero);
+        } finally {
+            if (boton) {
+                boton.style.pointerEvents = "";
+                boton.style.opacity = "";
+                boton.textContent = textoOriginal;
+            }
+        }
     };
 
     function evitarEnvio(form) {
@@ -194,18 +248,10 @@ addEventListener("DOMContentLoaded", function () {
 
         if (esValido) {
             // envío del I(1) formularios, en donde este el uno realiza la función
+            // No se limpia el estado de validación aquí: si el servidor rechaza
+            // los datos, el usuario solo corrige un campo y vuelve a intentar,
+            // y los demás deben seguir marcados como válidos.
             verificar("/verificarUC", formUCE, "uno");
-            document.querySelectorAll(".input-validar").forEach((input) => {
-                let campoCustom = input.closest(".campo-custom");
-                let iconoDer = campoCustom.querySelector(".icono-der");
-                let check = iconoDer.children[0];
-                let error = iconoDer.children[1];
-                input.parentElement.classList.remove("invalido");
-                input.parentElement.classList.remove("valido");
-                let pError = campoCustom.querySelector("p");
-                pError.classList.add("d-none");
-                if (check && error) chulitoYX(check, error, "vacio");
-            });
         } else {
             alertError("Error", "Por favor verifique que todos los datos estén correctos.");
         }
@@ -224,17 +270,6 @@ addEventListener("DOMContentLoaded", function () {
         if (esValido) {
             // envío del II(2) formularios en donde este el dos realiza la función
             verificar("/verificarCodigo", formC, "dos");
-            document.querySelectorAll(".input-validar").forEach((input) => {
-                let campoCustom = input.closest(".campo-custom");
-                let iconoDer = campoCustom.querySelector(".icono-der");
-                let check = iconoDer.children[0];
-                let error = iconoDer.children[1];
-                input.parentElement.classList.remove("invalido");
-                input.parentElement.classList.remove("valido");
-                let pError = campoCustom.querySelector("p");
-                pError.classList.add("d-none");
-                if (check && error) chulitoYX(check, error, "vacio");
-            });
         } else {
             alertError("Error", "Por favor verifique que todos los datos estén correctos.");
         }
@@ -260,18 +295,6 @@ addEventListener("DOMContentLoaded", function () {
             if (validar) {
                 // envío del III(3) formularios en donde este el tres realiza la función
                 verificar("/cambiarC", formRC, "tres");
-
-                document.querySelectorAll(".input-validar").forEach((input) => {
-                    let campoCustom = input.closest(".campo-custom");
-                    let iconoDer = campoCustom.querySelector(".icono-der");
-                    let check = iconoDer.children[0];
-                    let error = iconoDer.children[1];
-                    input.parentElement.classList.remove("invalido");
-                    input.parentElement.classList.remove("valido");
-                    let pError = campoCustom.querySelector("p");
-                    pError.classList.add("d-none");
-                    if (check && error) chulitoYX(check, error, "vacio");
-                });
             } else {
                 alertError("Error", "La contraseña nueva y reescrita no coinciden.");
             }
