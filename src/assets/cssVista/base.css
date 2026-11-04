@@ -313,9 +313,9 @@ textarea {
    desbordar el viewport: el diálogo se limita a la altura disponible y el cuerpo
    scrollea si el contenido excede. En pantallas de ~900px un modal sin este
    límite quedaba cortado y no se podía ver el resto del formulario. */
-.modal-content.tamaño-modal {
+/* .modal-content.tamaño-modal {
     max-height: calc(100vh - 2rem);
-}
+} */
 
 .modal-content.tamaño-modal .modal-body {
     overflow-y: auto;
