@@ -9,7 +9,8 @@ use Firebase\JWT\Key;
 
 use function PHPUnit\Framework\equalTo;
 
-function noigual($value1, $value2){
+function noigual($value1, $value2)
+{
     return !($value1 == $value2);
 }
 
@@ -23,7 +24,7 @@ class Rutas
         //configuracion de cookies seguras
         $isLocal = ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1');
         $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-    || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+            || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
         session_set_cookie_params([
             'secure' => $https,
             'lifetime' => 0,               // hasta cerrar navegador
@@ -68,7 +69,7 @@ class Rutas
 
         $this->partes = explode("/", $this->url);
         if (strpos($this->url, ".php") !== false) {
-            header("location: Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion");
+            header("location: /IniciarSesion");
             exit;
         }
 
@@ -118,7 +119,8 @@ class Rutas
         if (isset($authHeader)) {
             // Un JWT solo puede acceder a endpoints explícitamente móviles.
             if (!$esRutaMovil) {
-                if (ob_get_length()) ob_clean();
+                if (ob_get_length())
+                    ob_clean();
                 header("Content-Type: application/json; charset=utf-8");
                 http_response_code(401);
                 echo json_encode([
@@ -142,7 +144,8 @@ class Rutas
                 call_user_func($metodo, $parametro ?? []);
                 exit;
             } catch (\Exception $e) {
-                if (ob_get_length()) ob_clean();
+                if (ob_get_length())
+                    ob_clean();
                 header("Content-Type: application/json; charset=utf-8");
                 http_response_code(401);
                 echo json_encode([
@@ -153,7 +156,8 @@ class Rutas
             }
         } elseif ($esRutaMovil) {
             // Ruta pensada para la app móvil, pero llegó sin ningún token, responde JSON, no HTML
-            if (ob_get_length()) ob_clean();
+            if (ob_get_length())
+                ob_clean();
             header("Content-Type: application/json; charset=utf-8");
             http_response_code(401);
             echo json_encode([
@@ -179,7 +183,7 @@ class Rutas
             exit;
         }
 
-        if (isset($_SESSION["id_usuario"]) && $_SESSION["id_usuario"] != ''){
+        if (isset($_SESSION["id_usuario"]) && $_SESSION["id_usuario"] != '') {
             $modelo_u = new ModeloUsuarios($_SESSION["id_usuario"]);
             $modelo_u->setIdUsuario($_SESSION["id_usuario"]);
             $us = $modelo_u->buscar_por_id();
@@ -187,12 +191,12 @@ class Rutas
             // echo "\n--------";
             // print_r($_SESSION);
             // echo "\n --------";
-            
+
             // print_r((isset($_SESSION["token_de_session"]) && $_SESSION["token_de_session"] != "" && $_SESSION["token_de_session"] =! $us["token"]) ? "b" : "a" );
             // echo "linea 35";
 
-            if (noigual($us["token"],$_SESSION["token_de_session"])){
-                header("location: Sistema-del--CEM--JEHOVA-RAFA/");
+            if (noigual($us["token"], $_SESSION["token_de_session"])) {
+                header("location: /");
             }
 
         }

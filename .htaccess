@@ -1,10 +1,18 @@
 Options All -Indexes
+<FilesMatch "(^\.env$|^\.env\..*$|\.sql$|^composer\.(json|lock)$|^phpunit\.xml$|^\.gitignore$)">
+    Require all denied
+</FilesMatch>
 RewriteEngine On
 RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # Bloquea el acceso directo a archivos .php en las carpetas "controllers" y "modelos"
 RewriteRule ^src/(controllers|modelos)/.*\.php$ - [F,L]
+
+#*/Bloqueo de acceso a archivos y carpetas sensibles ya que no se de quien es la ip que apareció en el log/*
+RewriteRule ^\.git(/|$) - [F,L]
+RewriteRule ^database(/|$) - [F,L]
+
 
 # Redirige todo excepto archivos y carpetas existentes
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -14,7 +22,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
 
 # Redirige errores 403 a la página de error 404
-ErrorDocument 403 /Sistema-del--CEM--JEHOVA-RAFA/404.php
+ErrorDocument 403 /404.php
 
 
 # CABECERAS DE SEGURIDAD HTTP
