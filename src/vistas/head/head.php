@@ -1,7 +1,7 @@
 <?php
 if (isset($_SESSION['usuario'])) {
 } else {
-	header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+	header("location: /IniciarSesion/mostrarIniciarSesion");
 }
 
 $cargarPermisosMenu = !isset($modulosAutorizados) || !is_array($modulosAutorizados);
@@ -123,7 +123,7 @@ if (!empty($parametro)) {
 
 		<div class="collapse " id="collapseUsuario" aria-labelledby="headingCitas" data-bs-parent="#sidenavAccordion d-flex">
 			<nav class="sb-sidenav-menu-nested nav">
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil" uk-tooltip="Perfil">
+				<a class="nav-link mx-5" href="/Perfil/perfil" uk-tooltip="Perfil">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
 						<path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
 					</svg> Perfil
@@ -143,7 +143,7 @@ if (!empty($parametro)) {
 			</nav>
 		</div>
 
-		<a class="nav-link d-flex <?= $vistaActiva == 'inicio' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio" uk-tooltip="Inicio" id="menuInicio">
+		<a class="nav-link d-flex <?= $vistaActiva == 'inicio' ? 'active' : '' ?>" href="/Inicio/inicio" uk-tooltip="Inicio" id="menuInicio">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
 					<path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"></path>
 					<path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"></path>
@@ -153,7 +153,7 @@ if (!empty($parametro)) {
 
 
 		<?php if (isset($menuPuede['Pacientes'])): ?>
-		<a class="nav-link d-flex <?= $vistaActiva == 'pacientes' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes" uk-tooltip="Pacientes" id="menuPacientes">
+		<a class="nav-link d-flex <?= $vistaActiva == 'pacientes' ? 'active' : '' ?>" href="/Pacientes/getPacientes" uk-tooltip="Pacientes" id="menuPacientes">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-people-fill" viewBox="0 0 16 16">
 					<path
@@ -164,7 +164,7 @@ if (!empty($parametro)) {
 		<?php endif; ?>
 
 		<?php if (isset($menuPuede['Clientes'])): ?>
-		<a class="nav-link d-flex <?= $vistaActiva == 'clientes' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes" uk-tooltip="Pacientes" id="menuClientes">
+		<a class="nav-link d-flex <?= $vistaActiva == 'clientes' ? 'active' : '' ?>" href="/Clientes/Clientes" uk-tooltip="Pacientes" id="menuClientes">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-people-fill" viewBox="0 0 16 16">
 					<path
@@ -175,7 +175,7 @@ if (!empty($parametro)) {
 		<?php endif; ?>
 
 		<?php if (isset($menuPuede['Patologias'])): ?>
-		<a class="nav-link d-flex <?= $vistaActiva == 'patologias' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias" uk-tooltip="Patologias" id="menuPatologias">
+		<a class="nav-link d-flex <?= $vistaActiva == 'patologias' ? 'active' : '' ?>" href="/Patologias/patologias" uk-tooltip="Patologias" id="menuPatologias">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bandaid-fill" viewBox="0 0 16 16">
 					<path d="m2.68 7.676 6.49-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492.001-.002Zm5.71-2.858a.5.5 0 1 0-.708.707.5.5 0 0 0 .707-.707ZM6.974 6.939a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707ZM5.56 8.354a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm2.828 2.828a.5.5 0 1 0-.707-.707.5.5 0 0 0 .707.707Zm1.414-2.121a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.706-.708.5.5 0 0 0 .707.708Zm-4.242.707a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707Zm1.414-.707a.5.5 0 1 0-.707-.708.5.5 0 0 0 .707.708Zm1.414-2.122a.5.5 0 1 0-.707.707.5.5 0 0 0 .707-.707ZM8.646 3.354l4 4 .708-.708-4-4-.708.708Zm-1.292 9.292-4-4-.708.708 4 4 .708-.708Z" />
 				</svg></div>
@@ -184,7 +184,7 @@ if (!empty($parametro)) {
 		<?php endif; ?>
 
 		<?php if (isset($menuPuede['Factura'])): ?>
-		<a class="nav-link d-flex <?= $vistaActiva == 'factura' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura" uk-tooltip="Facturacion" id="menuFacturacion">
+		<a class="nav-link d-flex <?= $vistaActiva == 'factura' ? 'active' : '' ?>" href="/Factura/factura" uk-tooltip="Facturacion" id="menuFacturacion">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
 					<path
@@ -195,7 +195,7 @@ if (!empty($parametro)) {
 		<?php endif; ?>
 
 		<?php if (isset($menuPuede['Citas'])): ?>
-		<a class="nav-link collapsed d-flex" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" uk-tooltip="Citas" id="menuCitas" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCitas" aria-expanded="false" aria-controls="collapseCitas">
+		<a class="nav-link collapsed d-flex" href="/Citas/citas" uk-tooltip="Citas" id="menuCitas" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCitas" aria-expanded="false" aria-controls="collapseCitas">
 			<div class="sb-nav-link-icon mx-2">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-heart-fill" viewBox="0 0 16 16">
 					<path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5Zm-2 4v-1c0-.276.244-.5.545-.5h10.91c.3 0 .545.224.545.5v1c0 .276-.244.5-.546.5H2.545C2.245 5 2 4.776 2 4.5Zm6 3.493c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132Z" />
@@ -210,16 +210,16 @@ if (!empty($parametro)) {
 		</a>
 		<div class="collapse" id="collapseCitas" aria-labelledby="headingCitas" data-bs-parent="#sidenavAccordion d-flex">
 			<nav class="sb-sidenav-menu-nested nav">
-				<a class="nav-link mx-5  <?= $vistaActiva == 'pendientes' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas">Pendientes</a>
-				<a class="nav-link mx-5  <?= $vistaActiva == 'hoy' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoy">Hoy</a>
-				<a class="nav-link mx-5  <?= $vistaActiva == 'realizadas' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas">Realizadas</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'pendientes' ? 'active' : '' ?>" href="/Citas/citas">Pendientes</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'hoy' ? 'active' : '' ?>" href="/Citas/citasHoy">Hoy</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'realizadas' ? 'active' : '' ?>" href="/Citas/citasRealizadas">Realizadas</a>
 			</nav>
 		</div>
 		<?php endif; ?>
 
 
 		<?php if (isset($menuPuede['Servicios'])): ?>
-		<a class="nav-link d-flex  <?= $vistaActiva == 'servicios' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Servicios/servicios" uk-tooltip="Servicios" id="menuServicios">
+		<a class="nav-link d-flex  <?= $vistaActiva == 'servicios' ? 'active' : '' ?>" href="/Servicios/servicios" uk-tooltip="Servicios" id="menuServicios">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-heart-fill" viewBox="0 0 16 16">
 					<path fill-rule="evenodd" d="M10.058.501a.501.501 0 0 0-.5-.501h-2.98c-.276 0-.5.225-.5.501A.499.499 0 0 1 5.582 1a.497.497 0 0 0-.497.497V2a.5.5 0 0 0 .5.5h4.968a.5.5 0 0 0 .5-.5v-.503A.497.497 0 0 0 10.555 1a.499.499 0 0 1-.497-.499Z" />
 					<path fill-rule="evenodd" d="M4.174 1h-.57a1.5 1.5 0 0 0-1.5 1.5v12a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-12a1.5 1.5 0 0 0-1.5-1.5h-.642c.055.156.085.325.085.5V2c0 .828-.668 1.5-1.492 1.5H5.581A1.496 1.496 0 0 1 4.09 2v-.5c0-.175.03-.344.085-.5Zm3.894 5.482c1.656-1.673 5.795 1.254 0 5.018-5.795-3.764-1.656-6.69 0-5.018Z" />
@@ -229,7 +229,7 @@ if (!empty($parametro)) {
 		<?php endif; ?>
 
 		<?php if (isset($menuPuede['Doctores'])): ?>
-		<a class="nav-link d-flex <?= $vistaActiva == 'doctores' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores" uk-tooltip="Directorio Médico" id="menuDirectorioMedico">
+		<a class="nav-link d-flex <?= $vistaActiva == 'doctores' ? 'active' : '' ?>" href="/Doctores/doctores" uk-tooltip="Directorio Médico" id="menuDirectorioMedico">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-clipboard2-pulse-fill" viewBox="0 0 16 16">
 					<path
@@ -242,7 +242,7 @@ if (!empty($parametro)) {
 		<?php endif; ?>
 
 		<?php if (isset($menuPuede['Control'])): ?>
-		<a class="nav-link d-flex <?= $vistaActiva == 'control' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
+		<a class="nav-link d-flex <?= $vistaActiva == 'control' ? 'active' : '' ?>" href="/Control/control" uk-tooltip="Control Médico" id="menuControlMedico">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-person-fill-gear" viewBox="0 0 16 16">
 					<path
@@ -252,7 +252,7 @@ if (!empty($parametro)) {
 		</a>
 		<?php endif; ?>
 		<?php if (isset($menuPuede['Hospitalizacion'])): ?>
-		<a class="nav-link d-flex <?= $vistaActiva == 'hospitalizacion' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
+		<a class="nav-link d-flex <?= $vistaActiva == 'hospitalizacion' ? 'active' : '' ?>" href="/Hospitalizacion/hospitalizacion" uk-tooltip="Hospitalización"
 			id="menuHospitalizacion">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-heart-pulse-fill" viewBox="0 0 16 16">
@@ -285,19 +285,19 @@ if (!empty($parametro)) {
 
 
 				<?php if (isset($menuPuede['Insumos'])): ?>
-				<a class="nav-link mx-5 <?= $vistaActiva == 'insumos' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos" uk-tooltip="Insumos" id="menuInsumos">Insumos</a>
+				<a class="nav-link mx-5 <?= $vistaActiva == 'insumos' ? 'active' : '' ?>" href="/Insumos/insumos" uk-tooltip="Insumos" id="menuInsumos">Insumos</a>
 				<?php endif; ?>
 
 				<?php if (isset($menuPuede['Entrada'])): ?>
-				<a class="nav-link mx-5 <?= $vistaActiva == 'entradas' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada" uk-tooltip="Entradas">Entradas</a>
+				<a class="nav-link mx-5 <?= $vistaActiva == 'entradas' ? 'active' : '' ?>" href="/Entrada/entrada" uk-tooltip="Entradas">Entradas</a>
 				<?php endif; ?>
 
 				<?php if (isset($menuPuede['Proveedores'])): ?>
-				<a class="nav-link mx-5 <?= $vistaActiva == 'proveedores' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores" uk-tooltip="Poveedores">Proveedores</a>
+				<a class="nav-link mx-5 <?= $vistaActiva == 'proveedores' ? 'active' : '' ?>" href="/Proveedores/proveedores" uk-tooltip="Poveedores">Proveedores</a>
 				<?php endif; ?>
 
 				<?php if (isset($menuPuede['Insumos'])): ?>
-				<a class="nav-link mx-5 <?= $vistaActiva == 'vencidos' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Insumos/InsumosVencidos" uk-tooltip="Vencidos">Vencidos</a>
+				<a class="nav-link mx-5 <?= $vistaActiva == 'vencidos' ? 'active' : '' ?>" href="/Insumos/InsumosVencidos" uk-tooltip="Vencidos">Vencidos</a>
 				<?php endif; ?>
 
 			</nav>
@@ -323,13 +323,13 @@ if (!empty($parametro)) {
 			<nav class="sb-sidenav-menu-nested nav">
 
 				<?php if (isset($menuPuede['Usuarios'])): ?>
-				<a class="nav-link mx-5  <?= $vistaActiva == 'usuarios' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios" uk-tooltip="Usuarios">Usuarios</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'usuarios' ? 'active' : '' ?>" href="/Usuarios/usuarios" uk-tooltip="Usuarios">Usuarios</a>
 
-				<a class="nav-link mx-5  <?= $vistaActiva == 'administradores' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/administradores" uk-tooltip="Administradores">Administradores</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'administradores' ? 'active' : '' ?>" href="/Usuarios/administradores" uk-tooltip="Administradores">Administradores</a>
 				<?php endif; ?>
 
 				<?php if (isset($menuPuede['Roles'])): ?>
-				<a class="nav-link mx-5  <?= $vistaActiva == 'roles' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar" uk-tooltip="Roles">Roles</a>
+				<a class="nav-link mx-5  <?= $vistaActiva == 'roles' ? 'active' : '' ?>" href="/Roles/mostrar" uk-tooltip="Roles">Roles</a>
 				<?php endif; ?>
 
 			</nav>
@@ -337,7 +337,7 @@ if (!empty($parametro)) {
 		<?php endif; ?>
 
 		<?php if (isset($menuPuede['Reportes'])): ?>
-		<a class="nav-link d-flex  <?= $vistaActiva == 'reportes' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes" uk-tooltip="Reportes" id="menuReportes">
+		<a class="nav-link d-flex  <?= $vistaActiva == 'reportes' ? 'active' : '' ?>" href="/Reportes/reportes" uk-tooltip="Reportes" id="menuReportes">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
 					class="bi bi-clipboard-data-fill" viewBox="0 0 16 16">
 					<path
@@ -350,7 +350,7 @@ if (!empty($parametro)) {
 		<?php endif; ?>
 
 		<?php if (isset($menuPuede['Estadisticas'])): ?>
-		<a class="nav-link d-flex  <?= $vistaActiva == 'estadisticas' ? 'active' : '' ?>" href="/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/estadisticas" uk-tooltip="Reportes Estadisticos" id="menuReportesEstadisticos">
+		<a class="nav-link d-flex  <?= $vistaActiva == 'estadisticas' ? 'active' : '' ?>" href="/Estadisticas/estadisticas" uk-tooltip="Reportes Estadisticos" id="menuReportesEstadisticos">
 			<div class="sb-nav-link-icon mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-fill" viewBox="0 0 16 16">
 					<path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
 				</svg></div>
@@ -379,17 +379,17 @@ if (!empty($parametro)) {
 		<div class="collapse " id="collapseMantenimiento" aria-labelledby="headingCitas" data-bs-parent="#sidenavAccordion d-flex">
 			<nav class="sb-sidenav-menu-nested nav">
 				<?php if (isset($menuPuede['Mantenimiento'])): ?>
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento" uk-tooltip="Perfil">
+				<a class="nav-link mx-5" href="/Mantenimiento/mantenimiento" uk-tooltip="Perfil">
 					Mantenimiento
 				</a>
 				<?php endif; ?>
 
 				<?php if (isset($menuPuede['Bitacora'])): ?>
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacoraUsuario" uk-tooltip="Bitacora">Bitácora</a>
+				<a class="nav-link mx-5" href="/Bitacora/bitacoraUsuario" uk-tooltip="Bitacora">Bitácora</a>
 				<?php endif; ?>
 
 				<?php if (isset($menuPuede['Usuarios'])): ?>
-				<a class="nav-link mx-5" href="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/listaNegra" uk-tooltip="Lista Negra">Lista Negra</a>
+				<a class="nav-link mx-5" href="/Usuarios/listaNegra" uk-tooltip="Lista Negra">Lista Negra</a>
 				<?php endif; ?>
 
 

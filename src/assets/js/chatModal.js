@@ -8,7 +8,7 @@
 
 import { mdRender, textoPlano, escaparHtml } from "./generic/chatMarkdown.js";
 
-const BASE = "/Sistema-del--CEM--JEHOVA-RAFA";
+const BASE = "";
 const ENDPOINT = `${BASE}/Chat/preguntar`;
 const CLAVE_SESION = "cem_chat_session_id";
 const CLAVE_HISTORIAL = "cem_chat_historial";

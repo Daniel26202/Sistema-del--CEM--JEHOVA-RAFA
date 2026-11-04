@@ -12,7 +12,7 @@ import {
 } from "./generic/expresionesModulares.js";
 
 addEventListener("DOMContentLoaded", function () {
-  const url = "/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento";
+  const url = "/Mantenimiento";
   const modalBaseDatos = new bootstrap.Modal(
     document.getElementById("modalBaseDatos"),
   );

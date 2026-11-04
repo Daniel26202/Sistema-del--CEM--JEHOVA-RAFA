@@ -13,7 +13,7 @@ import {
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
+const url = "/Usuarios";
 
 addEventListener("DOMContentLoaded", function () {
   console.log("hola");

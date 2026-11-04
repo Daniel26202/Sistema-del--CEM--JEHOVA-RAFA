@@ -16,7 +16,7 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 addEventListener("DOMContentLoaded", function () {
   console.log("Citas....");
 
-  const url = "/Sistema-del--CEM--JEHOVA-RAFA/Citas";
+  const url = "/Citas";
 
   const modalCita = new bootstrap.Modal(
     document.getElementById("exampleModalCita"),
@@ -83,7 +83,7 @@ addEventListener("DOMContentLoaded", function () {
       let [addClass, removeClass] = ["", ""];
       if (cedulaCita.value.length == 7 || cedulaCita.value.length == 8) {
         const result = await executePetition(
-          `/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDataPaciente/${nacionalidadCita.value}/${cedulaCita.value}`,
+          `/Citas/mostrarDataPaciente/${nacionalidadCita.value}/${cedulaCita.value}`,
           "GET",
         );
 
@@ -138,7 +138,7 @@ addEventListener("DOMContentLoaded", function () {
   const traerServiciosMedicos = async () => {
     try {
       const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarServiciosMedicosAjax`,
+        `/Citas/mostrarServiciosMedicosAjax`,
         "GET",
       );
       console.log(result);
@@ -162,7 +162,7 @@ addEventListener("DOMContentLoaded", function () {
       id_doctor = id;
       console.log(id_doctor);
       const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarDoctoresCita/${id}`,
+        `/Citas/mostrarDoctoresCita/${id}`,
         "GET",
       );
       let html = "";
@@ -213,7 +213,7 @@ addEventListener("DOMContentLoaded", function () {
       id_doctor = id;
       console.log(id);
       const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Citas/mostrarHorario/${id}`,
+        `/Citas/mostrarHorario/${id}`,
         "GET",
       );
       if (!Array.isArray(result)) {
@@ -369,7 +369,7 @@ addEventListener("DOMContentLoaded", function () {
   const validarHorarioDisponible = async (fecha, id, listHoraRegistrada) => {
     try {
       const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Citas/validarHorariosDisponlibles/${fecha}/${id}`,
+        `/Citas/validarHorariosDisponlibles/${fecha}/${id}`,
         "GET",
       );
       console.log(result);
@@ -819,7 +819,7 @@ addEventListener("DOMContentLoaded", function () {
     try {
       const data = new FormData(form);
       let result = await executePetition(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar",
+        "/Pacientes/guardar",
         "POST",
         data,
       );

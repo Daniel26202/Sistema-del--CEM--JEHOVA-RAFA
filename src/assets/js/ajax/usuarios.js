@@ -12,7 +12,7 @@ import {
 import Paginator from "../generic/Paginator.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
+const url = "/Usuarios";
 
 const modalEditarUsuario = new bootstrap.Modal(
   document.getElementById("modal-exampleEditar"),

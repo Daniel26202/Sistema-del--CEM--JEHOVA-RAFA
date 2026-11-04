@@ -40,7 +40,7 @@
             </div>
 
             <div class="d-flex flex-column flex-md-row">
-                <a href="<?= $vistaActiva == 'papelera' ? '/Sistema-del--CEM--JEHOVA-RAFA/Servicios/servicios' : '/Sistema-del--CEM--JEHOVA-RAFA/Servicios/papeleraServicio' ?>" class="btn me-md-2 lista-menu-pacientes text-decoration-none"><?= $vistaActiva == 'papelera' ? 'Servicios' : 'Papelera' ?></a>
+                <a href="<?= $vistaActiva == 'papelera' ? '/Servicios/servicios' : '/Servicios/papeleraServicio' ?>" class="btn me-md-2 lista-menu-pacientes text-decoration-none"><?= $vistaActiva == 'papelera' ? 'Servicios' : 'Papelera' ?></a>
             </div>
         </div>
 

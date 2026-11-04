@@ -13,7 +13,7 @@ import {
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
+const url = "/Pacientes";
 
 const modalPaciente = new bootstrap.Modal(
   document.getElementById("exampleModalagregarPaciente"),

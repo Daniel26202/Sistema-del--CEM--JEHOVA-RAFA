@@ -118,7 +118,7 @@
 
             <div class="modal-body text-center"></div>
 
-            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Roles/guardarRol" method="post" class="form-validable form form-ajax">
+            <form action="/Roles/guardarRol" method="post" class="form-validable form form-ajax">
 
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">
 

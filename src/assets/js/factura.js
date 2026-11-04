@@ -4,7 +4,7 @@ import {
   alertError,
   alertSuccess,
 } from "./generic/funtionGeneric.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
+const url = "/Pacientes";
 
 // Creamos la variable donde van a estar los datos, y de una vez le ponemos una fila para probar
 var data = [];
@@ -76,7 +76,7 @@ const buscarPaciente = async (formularioPaciente) => {
     const datos = new FormData(formularioPaciente);
     const contenido = { method: "POST", body: datos };
     let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
+      "/Factura/mostrarPaciente",
       contenido,
     );
     console.log(peticion);
@@ -168,7 +168,7 @@ const insertarPaciente = async (form) => {
       body: datosFormulario,
     };
     let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Citas/insertaPaciente",
+      "/Citas/insertaPaciente",
       contenido,
     );
     let resultado = await peticion.json();
@@ -234,7 +234,7 @@ const buscarPacienteConCita = async (formularioPaciente) => {
   console.log(contenido);
 
   let peticion = await fetch(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
+    "/Factura/mostrarPacienteConCita",
     contenido,
   );
   let resultado = await peticion.json();
@@ -248,7 +248,7 @@ const buscarPacienteConCita = async (formularioPaciente) => {
     });
     console.log(id_cita);
     window.location.href =
-      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/facturaCita" + id_cita;
+      "/Factura/facturaCita" + id_cita;
   } else {
     buscarPaciente(formularioPaciente);
   }
@@ -955,7 +955,7 @@ const buscarCliente = async (formulario) => {
     const datos = new FormData(formulario);
     const contenido = { method: "POST", body: datos };
     let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente",
+      "/Factura/mostrarCliente",
       contenido,
     );
     console.log(peticion);

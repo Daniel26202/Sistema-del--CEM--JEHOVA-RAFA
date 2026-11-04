@@ -6,7 +6,7 @@ import {
   initLoaderButton,
   finallyLoaderButton,
 } from "../generic/funtionGeneric.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/iniciarSesion";
+const url = "/iniciarSesion";
 const formLog = document.getElementById("loginForm");
 const btnLoginEnviar = document.getElementById("btnLoginEnviar");
 

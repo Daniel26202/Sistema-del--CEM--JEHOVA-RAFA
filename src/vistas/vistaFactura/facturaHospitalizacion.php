@@ -40,7 +40,7 @@ if (!empty($hostalizacionFacturar)) {
             <div class="d-flex">
 
                 <div class="mt-4 w-25 d-flex justify-content-center">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion" class="text-decoration-none"
+                    <a href="/Hospitalizacion/hospitalizacion" class="text-decoration-none"
                         uk-tooltip="Retroceder">
                         <button class="btnRetroceder" id="btnRetrocederFactura"><svg
                                 xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"

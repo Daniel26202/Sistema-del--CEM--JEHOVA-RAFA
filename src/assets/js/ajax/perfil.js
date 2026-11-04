@@ -1,7 +1,7 @@
 import { executePetition, alertError, alertSuccess, initLoaderButton, finallyLoaderButton, setImgWithFallback } from "../generic/funtionGeneric.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Perfil";
+const url = "/Perfil";
 const formPerfil = document.getElementById("formPerfil");
 const inputsCard = document.querySelectorAll(".fondo-perfil .input-validar");
 const inputsValidacion = document.querySelectorAll(".form-validable .input-validar");

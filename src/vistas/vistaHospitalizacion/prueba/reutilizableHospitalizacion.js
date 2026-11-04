@@ -11,7 +11,7 @@
 
 import { executePetition } from "../../js/generic/funtionGeneric.js";
 
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
+const url = "/Hospitalizacion";
 
 // ─── Catálogo de servicios (se llena al inicializar) ───────────────────────
 export let objServiciosBD = {};

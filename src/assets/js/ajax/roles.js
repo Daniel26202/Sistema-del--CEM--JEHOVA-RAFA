@@ -11,7 +11,7 @@ import { inicializarValidacionFormulario } from "../generic/expresionesModulares
 
 console.log("roles");
 
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Roles";
+const url = "/Roles";
 
 const urlBase = document.getElementById("urlBase").value;
 
@@ -68,7 +68,7 @@ const returnFragmentHtml = (element) => {
 const returnModuleCategiry = async () => {
   try {
     const modulos = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/returnPermisionModule",
+      "/Permisos/returnPermisionModule",
       "GET",
     );
 
@@ -288,7 +288,7 @@ const readPermisos = async (permisosGuardados = {}) => {
   try {
     // 1. Obtenemos la lista maestra de permisos (id_permiso y nombre del permiso)
     const listaPermisosDB = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Roles/returnPermisos","GET"
+      "/Roles/returnPermisos","GET"
     );
     
     // 2. Traemos los módulos agrupados por categorías
@@ -447,7 +447,7 @@ const readModule = async () => {
       });
     };
     // re-inicializa
-    let url_contoller = "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/returnModules";
+    let url_contoller = "/Permisos/returnModules";
     initDataTable(
       selector,
       url_contoller,
@@ -467,7 +467,7 @@ const createModule = async (form) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Permisos/registrarModulo",
+      "/Permisos/registrarModulo",
       "POST",
       data,
     );
@@ -487,7 +487,7 @@ const createModule = async (form) => {
 const deleteModule = async (data) => {
   try {
     const result = await executePetition(
-      `/Sistema-del--CEM--JEHOVA-RAFA/Permisos/eliminar_modulo/${data}`,
+      `/Permisos/eliminar_modulo/${data}`,
       "POST",
     );
     if (result.ok) {

@@ -186,7 +186,7 @@ $urlBase = $concatenarRuta . '' . $concatenadorEspecial;
                                 </div>
                             </div>
                             <div class="text-center m-3">
-                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr/mostrarRecuperarContr" class="text-decoration-none text-primary-custom small fw-medium ">Has olvidado tu contraseña?</a>
+                                <a href="/RecuperarContr/mostrarRecuperarContr" class="text-decoration-none text-primary-custom small fw-medium ">Has olvidado tu contraseña?</a>
                             </div>
 
                             <!-- Mensaje de Seguridad -->

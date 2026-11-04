@@ -6,7 +6,7 @@
         <div class="uk-modal-dialog uk-modal-body tamaño-modal uk-card  uk-width-1-2@m">
 
             <form method="POST" class="formEditarUsuario"
-                action="/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/editarAdministrador/<?php echo $dato["usuario"]; ?>"
+                action="/Usuarios/editarAdministrador/<?php echo $dato["usuario"]; ?>"
                 enctype="multipart/form-data">
 
                 <input type="hidden" name="id_usuario_bitacora" value="<?= $_SESSION['id_usuario'] ?>">

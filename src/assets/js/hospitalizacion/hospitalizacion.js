@@ -77,7 +77,7 @@ let iHME = document.getElementById("inpHorasMoEx");
 let iCME = document.getElementById("inpCostoHMoEx");
 
 const selector = ".exampleTable";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
+const url = "/Hospitalizacion";
 let valorDelDolar = localStorage.getItem("valorDelDolar")
   ? parseFloat(localStorage.getItem("valorDelDolar"))
   : 0;
@@ -1320,7 +1320,7 @@ const createPatients = async (form, inputs) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar",
+      "/Pacientes/guardar",
       "POST",
       data,
     );

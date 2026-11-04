@@ -13,11 +13,11 @@
 
      const api = {
        conversaciones: () => executePetition(
-         "/Sistema-del--CEM--JEHOVA-RAFA/Chat/chatConversacionesAjax", "GET"),
+         "/Chat/chatConversacionesAjax", "GET"),
        mensajes: (id) => executePetition(
-         `/Sistema-del--CEM--JEHOVA-RAFA/Chat/chatMensajesAjax/${id}`, "GET"),
+         `/Chat/chatMensajesAjax/${id}`, "GET"),
        enviar: (texto, id) => executePetition(
-         "/Sistema-del--CEM--JEHOVA-RAFA/Chat/chatEnviarAjax", "POST",
+         "/Chat/chatEnviarAjax", "POST",
          { id_conversacion: id, mensaje: texto }),
      };
 

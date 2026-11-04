@@ -12,8 +12,8 @@ use Firebase\JWT\Key;
 function validarCsrfRecuperacion()
 {
     $headers = function_exists('getallheaders') ? getallheaders() : [];
-    $csrfToken = $headers['X-CSRF-Token']
-        ?? $headers['x-csrf-token']
+    $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN']
+        ?? $_SERVER['HTTP_X_CSRF_TOKEN']
         ?? $_POST['csrf_token']
         ?? null;
 

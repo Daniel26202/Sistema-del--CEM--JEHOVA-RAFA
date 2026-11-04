@@ -28,7 +28,7 @@
 
 
       <div class="d-flex flex-column flex-md-row">
-        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Clientes/<?= $vistaActiva == 'papelera' ? 'Clientes' : 'papelera' ?>" class="btn me-md-2 lista-menu-pacientes text-decoration-none"><?= $vistaActiva == 'clientes' ? 'Papelera' : 'Clientes' ?></a>
+        <a href="/Clientes/<?= $vistaActiva == 'papelera' ? 'Clientes' : 'papelera' ?>" class="btn me-md-2 lista-menu-pacientes text-decoration-none"><?= $vistaActiva == 'clientes' ? 'Papelera' : 'Clientes' ?></a>
       </div>
 
 

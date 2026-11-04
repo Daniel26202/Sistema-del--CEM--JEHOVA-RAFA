@@ -3,7 +3,7 @@ import { inicializarValidacionFormulario, chulitoYX } from "./generic/expresione
 
 addEventListener("DOMContentLoaded", function () {
     /////////////////////////////////////////////////////////////////////
-    const url = "/Sistema-del--CEM--JEHOVA-RAFA/RecuperarContr";
+    const url = "/RecuperarContr";
 
     //formulario, usuario correo electr
     const formUCE = document.getElementById("formVerificarUCE");

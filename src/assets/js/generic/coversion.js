@@ -197,7 +197,7 @@ export const valorDolar = async ({ forzar = false } = {}) => {
 };
 
 const enviarValorDolar = (tipo) => {
-  fetch("/Sistema-del--CEM--JEHOVA-RAFA/Inicio/valorDolar/" + tipo)
+  fetch("/Inicio/valorDolar/" + tipo)
     .then((r) => r.text())
     .catch((e) => console.warn("No se pudo guardar la tasa en la sesión:", e.message));
 };

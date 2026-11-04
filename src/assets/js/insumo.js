@@ -44,13 +44,13 @@ addEventListener("DOMContentLoaded", function () {
 
   const selector = ".exampleTable";
 
-  let url = "/Sistema-del--CEM--JEHOVA-RAFA/Insumos";
+  let url = "/Insumos";
   let urlActual = window.location.href;
 
   const traerInsumoCasiVencidos = async () => {
     try {
       let peticion = await fetch(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Insumos/retornarLasEntradas",
+        "/Insumos/retornarLasEntradas",
       );
       if (!peticion.ok) return;
       let resultado = await peticion.json();
@@ -87,7 +87,7 @@ addEventListener("DOMContentLoaded", function () {
 
   const infoInsumos = async (id_insumo) => {
     let peticion = await fetch(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Insumos/info/" + id_insumo,
+      "/Insumos/info/" + id_insumo,
     );
     let resultado = await peticion.json();
     let parrafos = document.querySelectorAll(".parrafo");

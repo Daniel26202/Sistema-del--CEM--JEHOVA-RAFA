@@ -70,7 +70,7 @@ $e = static fn($v) => htmlspecialchars(htmlspecialchars_decode((string)$v, ENT_Q
                     </div>
                 </div>
                 <div class="mt-4 w-25 d-flex justify-content-center">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura" class="text-decoration-none"
+                    <a href="/Factura/factura" class="text-decoration-none"
                         uk-tooltip="Retroceder">
                         <button class="btnRetroceder" id="btnRetrocederFactura"><svg
                                 xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"

@@ -123,8 +123,8 @@ function addUserBlackList()
 
     try {
 
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -175,8 +175,8 @@ function removeBlackList()
     }
     try {
 
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -234,8 +234,8 @@ function editarUsuario()
 
     try {
 
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -295,8 +295,8 @@ function borrarUsuario()
 {
     try {
 
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -350,8 +350,8 @@ function registrarAdmin()
     }
 
     try {
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -428,8 +428,8 @@ function editarAdministrador()
     }
 
     try {
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -493,8 +493,8 @@ function verificarPassw()
     }
 
     try {
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {

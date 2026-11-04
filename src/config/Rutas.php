@@ -22,13 +22,13 @@ class Rutas
     {
         //configuracion de cookies seguras
         $isLocal = ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1');
-
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
         session_set_cookie_params([
-            'secure' => false,
+            'secure' => $https,
             'lifetime' => 0,               // hasta cerrar navegador
             'path' => '/',
             'domain' => $_SERVER['HTTP_HOST'] ?? 'localhost',
-            'secure' => !$isLocal,         // true en producción (HTTPS), false en local
             'httponly' => true,            // no accesible desde JavaScript
             'samesite' => 'Strict'         // previene CSRF a nivel de cookie
         ]);
@@ -61,7 +61,7 @@ class Rutas
             $file = true;
         } else if ($this->rateLimit->evaluarLimiteDB()) {
             header("HTTP/1.1 429 Too Many Requests");
-            // header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/error");
+            // header("location: /IniciarSesion/error");
             die("Too Many Requests");
         }
 
@@ -91,14 +91,14 @@ class Rutas
 
         $directorio = __DIR__ . "/../../src/controllers/" . $this->controlador . ".php";
         if (!file_exists($directorio)) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+            header("location: /IniciarSesion/mostrarIniciarSesion");
             die("Directorio no encontrado");
         }
 
         require_once $directorio;
 
         if (!function_exists($metodo)) {
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+            header("location: /IniciarSesion/mostrarIniciarSesion");
             die("Método no encontrado");
         }
 
@@ -203,7 +203,7 @@ class Rutas
 
         if (empty($_SESSION['id_rol'])) {
             session_destroy();
-            header("location: /Sistema-del--CEM--JEHOVA-RAFA/");
+            header("location: /");
             return;
         }
 
@@ -215,7 +215,7 @@ class Rutas
         $id_modulo = $this->modelo->returnIdModule();
 
         if (!$id_modulo) {
-            header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
+            header("location:  /Inicio/inicio/permiso");
             die("Módulo no encontrado");
         }
 
@@ -224,7 +224,7 @@ class Rutas
         $permitido = $this->modelo->gestionarPermisos();
 
         if (!$permitido) {
-            header("location:  /Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/permiso");
+            header("location:  /Inicio/inicio/permiso");
             die("Permiso denegado");
         }
 

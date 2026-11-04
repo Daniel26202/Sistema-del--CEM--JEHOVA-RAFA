@@ -22,7 +22,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-modals-cancelar me-2" data-bs-toggle="modal">Cancelar</button>
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Inicio/inicio/cerrar" class="btn btn-modals">Cerrar</a>
+                    <a href="/Inicio/inicio/cerrar" class="btn btn-modals">Cerrar</a>
                 </div>
                 </form>
             </div>

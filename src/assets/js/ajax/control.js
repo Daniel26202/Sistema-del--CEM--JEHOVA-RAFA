@@ -77,14 +77,14 @@ const botonModalSintomas = document.getElementById("botonModalSintomas");
 const btnOpenManagerSintomas = document.getElementById("btnOpenModal");
 let semaforo = 0;
 
-let url = "/Sistema-del--CEM--JEHOVA-RAFA/Control";
+let url = "/Control";
 
 const traerPaciente = async () => {
   try {
     let [addClass, removeClass] = ["", ""];
     if (cedulaControl.value.length == 7 || cedulaControl.value.length == 8) {
       const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Control/mostrarPacienteJS/${nacionalidadCita.value}/${cedulaControl.value}`,
+        `/Control/mostrarPacienteJS/${nacionalidadCita.value}/${cedulaControl.value}`,
         "GET",
       );
 
@@ -750,7 +750,7 @@ const createPatients = async (form) => {
   try {
     const data = new FormData(form);
     let result = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar",
+      "/Pacientes/guardar",
       "POST",
       data,
     );

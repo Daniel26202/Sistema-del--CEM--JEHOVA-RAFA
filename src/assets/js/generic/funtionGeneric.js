@@ -740,7 +740,7 @@ export const hasPermision = async (id_rol, module, permision, btns) => {
     const btnsList = document.querySelectorAll(btns);
 
     const result = await executePetition(
-      `/Sistema-del--CEM--JEHOVA-RAFA/Permisos/hasPermision/${id_rol}/${module}/${permision}`,
+      `/Permisos/hasPermision/${id_rol}/${module}/${permision}`,
       "GET",
     );
     if (!result) {

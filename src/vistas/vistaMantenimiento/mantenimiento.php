@@ -6,7 +6,7 @@
         <div class="mt-3 mb-5">
             <ul class="sin-circulos d-flex justify-content-end ">
                 <li class="borde-menu activo <?= $vistaActiva == 'pendientes'  ? ' activo-borde ' : '' ?>">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Bitacora/bitacora" class="ico text-decoration-none me-3 color-letras"
+                    <a href="/Bitacora/bitacora" class="ico text-decoration-none me-3 color-letras"
                         id="citaPendiente">
                         <svg xmlns="http://www.w3.org/2000/svg"
                             width="16" height="16" fill="currentColor" class="bi bi-question-octagon-fill  me-1"

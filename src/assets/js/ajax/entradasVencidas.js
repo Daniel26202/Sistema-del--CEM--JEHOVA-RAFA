@@ -3,7 +3,7 @@ import {
   alertError,
   initDataTable,
 } from "../generic/funtionGeneric.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Insumos";
+const url = "/Insumos";
 
 const readVencidos = async () => {
   try {

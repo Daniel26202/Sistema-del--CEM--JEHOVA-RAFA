@@ -500,7 +500,7 @@
       // Un único <form>. Antes había tres anidados: el HTML es inválido y el
       // navegador descartaba el interno, dejando campos huérfanos.
       ?>
-      <form action="/Sistema-del--CEM--JEHOVA-RAFA/Factura/guardarFactura" method="POST" id="formConfirmarFactura" class="">
+      <form action="/Factura/guardarFactura" method="POST" id="formConfirmarFactura" class="">
 
         <!-- El contenido del modal respira respecto a los bordes de la tarjeta;
              el pie queda fuera del bloque con padding para que su borde y sus

@@ -15,7 +15,7 @@
                 <div class="">
 
 
-                    <form action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarPDF" method="POST" id="formularioCita">
+                    <form action="/Reportes/buscarPDF" method="POST" id="formularioCita">
 
 
                         <div class="d-flex justify-content-between flex-wrap aling-items-center">
@@ -119,7 +119,7 @@
                         <div class="">
 
 
-                            <form action="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/buscarEntradasInsumosPDF" method="POST" id="formularioEntradas">
+                            <form action="/Reportes/buscarEntradasInsumosPDF" method="POST" id="formularioEntradas">
 
                                 <div class="campo-custom  w-100">
                                     <div class="input-custom ">

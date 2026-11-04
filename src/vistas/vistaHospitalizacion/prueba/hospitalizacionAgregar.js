@@ -14,7 +14,7 @@ import {
 import { traerSerevicio } from "../../js/hospitalizacion/reutilizableHospitalizacion.js";
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
+const url = "/Hospitalizacion";
 
 // ─── Elementos ────────────────────────────────────────────────────────────────
 const btnInformacionPaciente = document.querySelector("#inforPaciente");

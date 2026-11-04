@@ -13,7 +13,7 @@ import {
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
 import { initConversion } from "../generic/coversion.js";
 
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Servicios";
+const url = "/Servicios";
 const dolar = parseFloat(document.getElementById("dolar").value);
 const id_rol_global = document.getElementById("id_rol_global").value;
 

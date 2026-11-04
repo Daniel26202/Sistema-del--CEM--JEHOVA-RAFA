@@ -321,8 +321,8 @@ function asignarServicioDoctor()
 
     try {
 
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -408,8 +408,8 @@ function agregarDoctor()
         exit;
     }
     try {
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -487,8 +487,8 @@ function editarDoctor()
         exit;
     }
     try {
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -557,8 +557,8 @@ function borrarDoctor($datos)
         exit;
     }
     try {
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -614,8 +614,8 @@ function registrarEspecialidad()
         exit;
     }
     try {
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -665,8 +665,8 @@ function eliminarEspecialidad()
         exit;
     }
     try {
-        $headers = getallheaders();
-        $csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+        // $headers = getallheaders();
+        $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
         if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {

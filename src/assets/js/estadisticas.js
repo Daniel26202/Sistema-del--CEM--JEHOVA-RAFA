@@ -2,7 +2,7 @@
 const { jsPDF } = window.jspdf;
 
 // ─── URLs por chart ─────────────────────────────────────────────────────────
-const URL_BASE = "/Sistema-del--CEM--JEHOVA-RAFA";
+const URL_BASE = "";
 const URLS = {
   especialidades: {
     default: `${URL_BASE}/Inicio/especialidades_solicitadas`,
@@ -45,12 +45,12 @@ const alertMorbilidad = document.querySelector(".alert-no-encontrado-m");
 
 document.addEventListener("DOMContentLoaded", function () {
   distribucion_edad_genero(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/edadGenero",
+    "/Estadisticas/edadGenero",
   );
   tasa_morbilidad(URLS.morbilidad.default);
   especialidades_chart(URLS.especialidades.default);
   sintomas_chart(URLS.sintomas.default);
-  insumos(`/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/insumos`);
+  insumos(`/Estadisticas/insumos`);
 });
 
 let distribucion_pacientes_chart = null;
@@ -756,7 +756,7 @@ const especialidades_chart = async (url) => {
 
 async function totalDeEspecialidades(data) {
   let peticion = await fetch(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todas_las_especialidades",
+    "/Inicio/todas_las_especialidades",
   );
   let resultado = await peticion.json();
   document.getElementById("texto").innerHTML = ``;
@@ -974,7 +974,7 @@ const sintomas_chart = async (url) => {
 
 async function totalDeSintomas(data) {
   let peticion = await fetch(
-    "/Sistema-del--CEM--JEHOVA-RAFA/Inicio/todos_los_sintomas",
+    "/Inicio/todos_los_sintomas",
   );
   let resultado = await peticion.json();
   console.log(resultado);

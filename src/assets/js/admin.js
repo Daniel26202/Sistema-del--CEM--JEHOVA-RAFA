@@ -1,5 +1,5 @@
 import { executePetition, alertConfirm, alertError, alertSuccess } from "../ajax/funtionExecutePetition.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Usuarios";
+const url = "/Usuarios";
 
 const btnEPassword = document.querySelectorAll(".btn_editarPassword");
 const btnEUsuario = document.getElementById("btnEUsuario");
@@ -30,7 +30,7 @@ const verificarPassw = async () => {
       method: "POST",
       body: datosFormulario,
     };
-    let peticion = await fetch(`/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/verificarPassw`, contenido);
+    let peticion = await fetch(`/Usuarios/verificarPassw`, contenido);
     let resultado = await peticion.json();
 
     console.log(resultado);

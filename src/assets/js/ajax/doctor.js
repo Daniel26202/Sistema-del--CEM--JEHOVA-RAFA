@@ -14,7 +14,7 @@ import {
 } from "../generic/funtionGeneric.js";
 
 import { inicializarValidacionFormulario } from "../generic/expresionesModulares.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Doctores";
+const url = "/Doctores";
 
 let dataDoctor;
 let tablaDoctores;
@@ -97,7 +97,7 @@ const info = (id_personal) => {
 const mostrarDiasSemana = async () => {
   try {
     const result = await executePetition(
-      "/Sistema-del--CEM--JEHOVA-RAFA/Doctores/mostrarDiasSemana",
+      "/Doctores/mostrarDiasSemana",
       "GET",
     );
     let html = "";
@@ -833,7 +833,7 @@ const deleteEspecialidad = async (data) => {
   try {
     const payload = { id: data[0], estado: data[1] };
     const result = await executePetition(
-      `/Sistema-del--CEM--JEHOVA-RAFA/Doctores/eliminarEspecialidad`,
+      `/Doctores/eliminarEspecialidad`,
       "POST",
       payload
     );

@@ -191,7 +191,7 @@ $tasa = defined('TASA_IMPUESTO') ? (float)TASA_IMPUESTO : 0.16;
 
                         <div class="card-footer bg-transparent border-0 pb-4 bg-comprobante">
                             <div class="d-flex justify-content-center">
-                                <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPDF/<?= $e($id_factura) ?>"
+                                <a href="/Factura/mostrarPDF/<?= $e($id_factura) ?>"
                                     class="btn btn-outline-primary rounded-circle p-3 d-flex align-items-center justify-content-center shadow-sm"
                                     style="width: 60px; height: 60px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">

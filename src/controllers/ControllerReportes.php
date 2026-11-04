@@ -256,7 +256,7 @@ function anularFactura($datos)
 	}
 
 	$headers = function_exists('getallheaders') ? getallheaders() : [];
-	$csrf = $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? $_POST['csrf_token'] ?? null;
+	$csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 	if (empty($_SESSION['csrf_token']) || !is_string($csrf) || !hash_equals($_SESSION['csrf_token'], $csrf)) {
 		http_response_code(403);

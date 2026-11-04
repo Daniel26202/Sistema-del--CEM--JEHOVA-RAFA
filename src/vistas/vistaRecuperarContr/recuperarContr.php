@@ -343,7 +343,7 @@ $csrfRecuperacion = htmlspecialchars($_SESSION['recuperacion_csrf_token'] ?? '',
                         </div>
 
                         <div class="mt-2 margenL ">
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion"
+                            <a href="/IniciarSesion/mostrarIniciarSesion"
                                 class="fw-bold pointer-event text-decoration-none text-theme margen-resposive-iniciar-sesion"
                                 id="iniciarsesionEnlace">Iniciar
                                 sesión</a>

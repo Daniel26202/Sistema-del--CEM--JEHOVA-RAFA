@@ -1,5 +1,5 @@
 import { executePetition, alertConfirm, alertError, alertSuccess } from "./funtionExecutePetition.js";
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes";
+const url = "/Pacientes";
 
 //restablecer
 const restablecerPattients = async (data) => {

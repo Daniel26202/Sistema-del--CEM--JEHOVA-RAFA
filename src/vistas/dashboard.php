@@ -128,23 +128,23 @@ require_once './src/vistas/head/head.php';
                     </div>
                     <?php
                     $atajosDisponibles = [
-                        'Citas' => ['Citas', '/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas'],
-                        'Pacientes' => ['Pacientes', '/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/getPacientes'],
-                        'Clientes' => ['Clientes', '/Sistema-del--CEM--JEHOVA-RAFA/Clientes/Clientes'],
-                        'Patologias' => ['Patologías', '/Sistema-del--CEM--JEHOVA-RAFA/Patologias/patologias'],
-                        'Factura' => ['Facturación', '/Sistema-del--CEM--JEHOVA-RAFA/Factura/factura'],
-                        'Servicios' => ['Servicios', '/Sistema-del--CEM--JEHOVA-RAFA/Servicios/servicios'],
-                        'Doctores' => ['Directorio médico', '/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores'],
-                        'Control' => ['Control médico', '/Sistema-del--CEM--JEHOVA-RAFA/Control/control'],
-                        'Hospitalizacion' => ['Hospitalización', '/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion/hospitalizacion'],
-                        'Insumos' => ['Insumos', '/Sistema-del--CEM--JEHOVA-RAFA/Insumos/insumos'],
-                        'Entrada' => ['Entradas', '/Sistema-del--CEM--JEHOVA-RAFA/Entrada/entrada'],
-                        'Proveedores' => ['Proveedores', '/Sistema-del--CEM--JEHOVA-RAFA/Proveedores/proveedores'],
-                        'Usuarios' => ['Usuarios', '/Sistema-del--CEM--JEHOVA-RAFA/Usuarios/usuarios'],
-                        'Roles' => ['Roles', '/Sistema-del--CEM--JEHOVA-RAFA/Roles/mostrar'],
-                        'Reportes' => ['Reportes', '/Sistema-del--CEM--JEHOVA-RAFA/Reportes/reportes'],
-                        'Estadisticas' => ['Estadísticas', '/Sistema-del--CEM--JEHOVA-RAFA/Estadisticas/estadisticas'],
-                        'Mantenimiento' => ['Mantenimiento', '/Sistema-del--CEM--JEHOVA-RAFA/Mantenimiento/mantenimiento'],
+                        'Citas' => ['Citas', '/Citas/citas'],
+                        'Pacientes' => ['Pacientes', '/Pacientes/getPacientes'],
+                        'Clientes' => ['Clientes', '/Clientes/Clientes'],
+                        'Patologias' => ['Patologías', '/Patologias/patologias'],
+                        'Factura' => ['Facturación', '/Factura/factura'],
+                        'Servicios' => ['Servicios', '/Servicios/servicios'],
+                        'Doctores' => ['Directorio médico', '/Doctores/doctores'],
+                        'Control' => ['Control médico', '/Control/control'],
+                        'Hospitalizacion' => ['Hospitalización', '/Hospitalizacion/hospitalizacion'],
+                        'Insumos' => ['Insumos', '/Insumos/insumos'],
+                        'Entrada' => ['Entradas', '/Entrada/entrada'],
+                        'Proveedores' => ['Proveedores', '/Proveedores/proveedores'],
+                        'Usuarios' => ['Usuarios', '/Usuarios/usuarios'],
+                        'Roles' => ['Roles', '/Roles/mostrar'],
+                        'Reportes' => ['Reportes', '/Reportes/reportes'],
+                        'Estadisticas' => ['Estadísticas', '/Estadisticas/estadisticas'],
+                        'Mantenimiento' => ['Mantenimiento', '/Mantenimiento/mantenimiento'],
                     ];
                     $atajosDisponibles = array_filter(
                         $atajosDisponibles,
@@ -313,7 +313,7 @@ require_once './src/vistas/head/head.php';
                                     <?php endforeach; ?>
                                 </ul>
                             </section>
-                            <a class="doctor-profile-link" href="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil">Ver mi perfil completo</a>
+                            <a class="doctor-profile-link" href="/Perfil/perfil">Ver mi perfil completo</a>
                         </article>
                         <div class="card-body doctor-profile-legacy" aria-hidden="true">
                             <div class="d-flex mt-1">
@@ -404,7 +404,7 @@ require_once './src/vistas/head/head.php';
                             <?php if (!empty($perfil['especialidad_nombre'])): ?>
                                 <p><strong>Especialidad:</strong> <?= htmlspecialchars($perfil['especialidad_nombre'], ENT_QUOTES, 'UTF-8') ?></p>
                             <?php endif; ?>
-                            <a class="btn btn-primary" href="/Sistema-del--CEM--JEHOVA-RAFA/Perfil/perfil">Ver mi perfil</a>
+                            <a class="btn btn-primary" href="/Perfil/perfil">Ver mi perfil</a>
                         </div>
                     <?php else: ?>
                         <div class="card-tittle">

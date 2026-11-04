@@ -2,7 +2,7 @@ import { executePetition } from "../../js/generic/funtionGeneric.js";
 
 
 //function genérica para ejecutar la petición ajax
-const url = "/Sistema-del--CEM--JEHOVA-RAFA/Hospitalizacion";
+const url = "/Hospitalizacion";
 
 let objServiciosBD = {};
 

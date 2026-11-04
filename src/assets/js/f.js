@@ -307,7 +307,7 @@ addEventListener("DOMContentLoaded", async function () {
     try {
       const datos = new FormData(formulario);
       let resultado = await executePetition(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarCliente",
+        "/Factura/mostrarCliente",
         "POST",
         datos,
       );
@@ -353,7 +353,7 @@ addEventListener("DOMContentLoaded", async function () {
     try {
       const datos = new FormData(formularioPaciente);
       let resultado = await executePetition(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPaciente",
+        "/Factura/mostrarPaciente",
         "POST",
         datos,
       );
@@ -398,7 +398,7 @@ addEventListener("DOMContentLoaded", async function () {
     try {
       const data = new FormData(form);
       let result = await executePetition(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Pacientes/guardar",
+        "/Pacientes/guardar",
         "POST",
         data,
       );
@@ -433,7 +433,7 @@ addEventListener("DOMContentLoaded", async function () {
     try {
       const data = new FormData(form);
       const result = await executePetition(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Clientes/guardar",
+        "/Clientes/guardar",
         "POST",
         data,
       );
@@ -484,7 +484,7 @@ addEventListener("DOMContentLoaded", async function () {
       const datos = new FormData(formularioPaciente);
 
       let resultado = await executePetition(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPacienteConCita",
+        "/Factura/mostrarPacienteConCita",
         "POST",
         datos,
       );
@@ -539,7 +539,7 @@ addEventListener("DOMContentLoaded", async function () {
   const buscarPacienteConHospit = async (id) => {
     try {
       let resultado = await executePetition(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/datosHospitalizacion/" + id,
+        "/Factura/datosHospitalizacion/" + id,
         "GET",
       );
 
@@ -653,7 +653,7 @@ addEventListener("DOMContentLoaded", async function () {
   const traerServiciosMedicos = async () => {
     try {
       const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarServicios`,
+        `/Factura/mostrarServicios`,
         "GET",
       );
 
@@ -673,7 +673,7 @@ addEventListener("DOMContentLoaded", async function () {
   const traerInsumos = async () => {
     try {
       const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarInsumos`,
+        `/Factura/mostrarInsumos`,
         "GET",
       );
 
@@ -1311,7 +1311,7 @@ addEventListener("DOMContentLoaded", async function () {
   const mostrarTiposDePago = async () => {
     try {
       const result = await executePetition(
-        "/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarMetodosDePago",
+        "/Factura/mostrarMetodosDePago",
         "GET",
       );
       if (!Array.isArray(result)) {

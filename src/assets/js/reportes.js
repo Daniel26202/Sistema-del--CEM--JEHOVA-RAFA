@@ -56,7 +56,7 @@ addEventListener("DOMContentLoaded", function () {
   //funcion para llenar el array con todos los datos de la factura
   const loadDataFactura = async () => {
     const result = await executePetition(
-      `/Sistema-del--CEM--JEHOVA-RAFA/Reportes/returnDataFactura`,
+      `/Reportes/returnDataFactura`,
       "GET",
     );
 
@@ -267,7 +267,7 @@ addEventListener("DOMContentLoaded", function () {
     //darle la direccion del pdf al boton
     btnImprimirFactura.setAttribute(
       "href",
-      `/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPDF/${factura.id_factura}`,
+      `/Factura/mostrarPDF/${factura.id_factura}`,
     );
   };
 
@@ -278,7 +278,7 @@ addEventListener("DOMContentLoaded", function () {
       // sesión. Enviar el arreglo [idFactura, idUsuario] generaba la ruta
       // ".../hash,1", que unhashId() rechazaba y la factura nunca se anulaba.
       const result = await executePetition(
-        `/Sistema-del--CEM--JEHOVA-RAFA/Reportes/anularFactura/${encodeURIComponent(idFactura)}`,
+        `/Reportes/anularFactura/${encodeURIComponent(idFactura)}`,
         "POST",
       );
 

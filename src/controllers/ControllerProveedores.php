@@ -118,8 +118,8 @@ function insertar()
 	}
 	try {
 
-		$headers = getallheaders();
-		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		// $headers = getallheaders();
+		$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
 		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -172,8 +172,8 @@ function insertar()
 function update()
 {
 	try {
-		$headers = getallheaders();
-		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		// $headers = getallheaders();
+		$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
 		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -231,8 +231,8 @@ function editar()
 		exit;
 	}
 	try {
-		$headers = getallheaders();
-		$csrf_token = $headers['X-CSRF-Token'] ?? $_POST['csrf_token'] ?? null;
+		// $headers = getallheaders();
+		$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 
 		if (empty($_SESSION['csrf_token']) || empty($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {

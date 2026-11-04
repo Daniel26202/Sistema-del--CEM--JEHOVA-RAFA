@@ -19,7 +19,7 @@
             <div class="mt-3 mb-5">
                 <ul class="sin-circulos d-flex justify-content-end ">
                     <li class="borde-menu activo <?= $vistaActiva == 'pendientes'  ? ' activo-borde ' : '' ?>">
-                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citas" class="ico text-decoration-none me-3 color-letras"
+                        <a href="/Citas/citas" class="ico text-decoration-none me-3 color-letras"
                             id="citaPendiente">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-clock-history me-1" viewBox="0 0 16 16">
@@ -31,7 +31,7 @@
                             </svg>Pendientes</a>
                     </li>
                     <li class="borde-menu activo <?= $vistaActiva == 'hoy'  ? ' activo-borde ' : '' ?>">
-                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasHoy" class="ico text-decoration-none me-3 color-letras"
+                        <a href="/Citas/citasHoy" class="ico text-decoration-none me-3 color-letras"
                             id="citaHoy">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-calendar2-check me-1" viewBox="0 0 16 16">
@@ -44,7 +44,7 @@
                     </li>
 
                     <li class="borde-menu activo <?= $vistaActiva == 'realizadas'  ? ' activo-borde ' : '' ?>">
-                        <a href="/Sistema-del--CEM--JEHOVA-RAFA/Citas/citasRealizadas" class="ico text-decoration-none text-black"
+                        <a href="/Citas/citasRealizadas" class="ico text-decoration-none text-black"
                             id="citaRealizada">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-clipboard2-check me-1" viewBox="0 0 16 16">

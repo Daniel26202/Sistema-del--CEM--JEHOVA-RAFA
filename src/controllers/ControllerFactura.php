@@ -21,7 +21,7 @@ function facturaResponderError(int $codigo, string $mensaje): void
 function facturaTokenCsrf(): ?string
 {
 	$headers = function_exists('getallheaders') ? getallheaders() : [];
-	$token = $headers['X-CSRF-Token'] ?? $headers['x-csrf-token'] ?? $_POST['csrf_token'] ?? null;
+	$token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? null;
 
 	return is_string($token) ? $token : null;
 }
@@ -495,7 +495,7 @@ function guardarFactura()
 		$modeloBitacora->setTabla("factura");
 		$modeloBitacora->insertarBitacora($idUsuario);
 
-		header("location: /Sistema-del--CEM--JEHOVA-RAFA/Factura/comprobante/" . hashId((int)$guardar['id_factura']));
+		header("location: /Factura/comprobante/" . hashId((int)$guardar['id_factura']));
 		exit;
 	}
 

@@ -67,12 +67,12 @@ function inicio($parametro)
 
         // Redireccionar al inicio
 
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+        header("location: /IniciarSesion/mostrarIniciarSesion");
         exit();
     }
 
     if (!isset($_SESSION['id_personal'])) {
-        header("location: /Sistema-del--CEM--JEHOVA-RAFA/IniciarSesion/mostrarIniciarSesion");
+        header("location: /IniciarSesion/mostrarIniciarSesion");
         exit();
     }
 

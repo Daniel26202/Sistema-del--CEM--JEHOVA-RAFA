@@ -42,7 +42,7 @@
             <div class="card cardReporte reporte-pacientes tajeta-estadistica-m mb-5 contenido">
                 <h3 class="card-header ">Pacientes</h3>
                 <div class="card-body ">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/pacientePDF&pdf" class="text-decoration-none">
+                    <a href="/Reportes/pacientePDF&pdf" class="text-decoration-none">
                         <div class="card-body cartaRepor d-flex justify-content-center align-items-center  h-100 ">
                             <div class="ico  d-flex flex-column align-items-center w-100">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
@@ -80,7 +80,7 @@
             <div class="card cardReporte reporte-insumos tajeta-estadistica-m mb-5 contenido">
                 <h3 class="card-header ">Insumos</h3>
                 <div class="card-body ">
-                    <a href="/Sistema-del--CEM--JEHOVA-RAFA/Reportes/insumosPDF&pdf" class="text-decoration-none">
+                    <a href="/Reportes/insumosPDF&pdf" class="text-decoration-none">
                         <div class="card-body cartaRepor d-flex justify-content-center align-items-center  h-100 ">
                             <div class="ico icono-card-reporte d-flex flex-column align-items-center w-100">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"

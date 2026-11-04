@@ -144,7 +144,7 @@
                     <hr>
                     <div class="d-flex justify-content-end">
                         <div class="uk-card-footer">
-                            <a href="/Sistema-del--CEM--JEHOVA-RAFA/Factura/mostrarPDF/<?php echo $id_factura; ?>"
+                            <a href="/Factura/mostrarPDF/<?php echo $id_factura; ?>"
                                 class="btn btn-tabla">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
                                     class="bi bi-printer-fill" viewBox="0 0 16 16">

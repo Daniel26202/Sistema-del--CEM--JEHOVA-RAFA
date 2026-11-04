@@ -57,7 +57,7 @@
 
             <div class="col-1">
                 <a href="<?= $vistaActiva == "papelera" ?
-                                '/Sistema-del--CEM--JEHOVA-RAFA/Doctores/doctores' : '/Sistema-del--CEM--JEHOVA-RAFA/Doctores/papelera' ?>" class="btn me-md-2 lista-menu-pacientes text-decoration-none <?= $vistaActiva == 'papelera' ? 'active' : '' ?>"><?= $vistaActiva == "papelera" ? 'Doctores' : 'Papelera' ?></a>
+                                '/Doctores/doctores' : '/Doctores/papelera' ?>" class="btn me-md-2 lista-menu-pacientes text-decoration-none <?= $vistaActiva == 'papelera' ? 'active' : '' ?>"><?= $vistaActiva == "papelera" ? 'Doctores' : 'Papelera' ?></a>
             </div>
 
 
