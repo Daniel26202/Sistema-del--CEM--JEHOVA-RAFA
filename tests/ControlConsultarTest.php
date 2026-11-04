@@ -17,15 +17,12 @@ class ControlConsultarTest extends TestCase
 
     public function testConsultaControlExistente()
     {
-        $id_control = 26; // hay q asegurarse q este id exista en la bd
-        $sql = $this->pdo->prepare("SELECT * FROM control WHERE id_control = :id_control");
-        $sql->bindParam(":id_control", $id_control);
-        $sql->execute();
-        $resultado = $sql->fetchAll();
-        echo "EXISTE (" . $id_control . "): " . (empty($resultado) ? "FAIL" : "OK");
+        $resultado = $this->pdo
+            ->query("SELECT * FROM bd.control ORDER BY id_control DESC LIMIT 1")
+            ->fetchAll();
+        echo "EXISTE CONTROL: " . (empty($resultado) ? "FAIL" : "OK");
 
-        // Verificamos que el insumo siexista
-        $this->assertNotEmpty($resultado, "El control con ID (" . $id_control . ") debería existir en la BD");
+        $this->assertNotEmpty($resultado, "Debería existir al menos un control en la BD.");
     }
 
     public function testConsultaControlInexistente()

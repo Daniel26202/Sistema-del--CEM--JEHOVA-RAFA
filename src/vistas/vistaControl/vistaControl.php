@@ -23,7 +23,7 @@
     <div class="container">
         <!-- Tabla de Pacientes -->
         <div class="tabla-control-medico pacientes" id="pacientes">
-            <button class="caja-btn-margin btn btn-modals btnOpenModal btn-guardar-responsive w-100" data-bs-toggle="modal" data-bs-target="#exampleModalagregarControl" id="btnControl">
+            <button class="caja-btn-margin btn btn-modals btnOpenModal btn-guardar-responsive w-100" id="btnControl">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
                     class="bi bi-person-lines-fill me-1" viewBox="0 0 16 16">
                     <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />

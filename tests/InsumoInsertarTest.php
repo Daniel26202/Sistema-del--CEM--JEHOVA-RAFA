@@ -45,7 +45,7 @@ class InsumoInsertarTest extends TestCase
         $this->limpiar();
 
         $this->modelo->setNombre($this->nombre);
-        $this->modelo->setIdProveedor(6);
+        $this->modelo->setIdProveedor($this->idProveedorActivo());
         $this->modelo->setDescripcion("descripcion prueba de insumo");
         $this->modelo->setFechaDeIngreso(date("Y-m-d"));
         $this->modelo->setFechaDeVencimiento("2027-12-31");
@@ -60,6 +60,6 @@ class InsumoInsertarTest extends TestCase
 
         $resultado = $this->modelo->guardarInsumo(1);
 
-        $this->assertEquals("exito", $resultado[0]);
+        $this->assertSame("exito", $resultado[0] ?? null, json_encode($resultado));
     }
 }

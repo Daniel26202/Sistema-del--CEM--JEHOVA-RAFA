@@ -11,6 +11,7 @@ class ControlEditarTest extends TestCase
     private $modelo;
     private $db;
     private $idCreado = null;
+    private $idPacienteCreado = null;
 
     protected function setUp(): void
     {
@@ -21,28 +22,31 @@ class ControlEditarTest extends TestCase
 
     protected function tearDown(): void
     {
-        if ($this->idCreado !== null) {
-            $this->db->exec("DELETE FROM bd.sintomas_control WHERE id_control = " . (int)$this->idCreado);
-            $this->borrarRegistro('bd', 'control', 'id_control', $this->idCreado);
+        if ($this->idPacienteCreado !== null) {
+            $this->borrarPacienteSintetico($this->idPacienteCreado);
         }
         $this->cerrarSesionDePrueba();
     }
 
     public function testEditarControl()
     {
-        // Se crea un control propio para editarlo
+        $this->idPacienteCreado = $this->crearPacienteSintetico();
         $this->modelo->setIdUsuario(1);
-        $this->modelo->setIdPaciente(25);
+        $this->modelo->setIdPaciente($this->idPacienteCreado);
         $this->modelo->setHistorial("Paciente refiere sintomas leves");
         $this->modelo->setDiagnostico("Diagnostico de prueba automatizada");
         $this->modelo->setIndicaciones("Reposo y control en una semana");
         $this->modelo->setFechaRegreso("2027-01-15");
         $this->modelo->setSeveridad("LEVE");
         $this->modelo->setNota("nota de prueba");
-        $this->modelo->insertControl(1);
-        $this->idCreado = $this->ultimoIdGenerado('bd', 'control', 'id_control');
+        $resultadoInsercion = $this->modelo->insertControl(1);
+        $this->assertIsArray($resultadoInsercion);
+        $this->assertSame("exito", $resultadoInsercion[0]);
+        $stmt = $this->db->prepare('SELECT id_control FROM bd.control WHERE id_paciente = :id_paciente');
+        $stmt->execute(['id_paciente' => $this->idPacienteCreado]);
+        $this->idCreado = (int)$stmt->fetchColumn();
+        $this->assertGreaterThan(0, $this->idCreado);
 
-        // Ahora se edita
         $this->modelo = new ModeloControl();
         $this->modelo->setIdControl($this->idCreado);
         $this->modelo->setHistorial("Historial actualizado por la prueba");
@@ -54,6 +58,20 @@ class ControlEditarTest extends TestCase
 
         $resultado = $this->modelo->editarControl(1);
 
-        $this->assertEquals("exito", $resultado[0]);
+        $this->assertIsArray($resultado);
+        $this->assertSame("exito", $resultado[0]);
+
+        $stmt = $this->db->prepare(
+            'SELECT diagnostico, medicamentosRecetados, fechaRegreso, nota, historiaclinica, severidad
+             FROM bd.control WHERE id_control = :id_control AND id_paciente = :id_paciente'
+        );
+        $stmt->execute(['id_control' => $this->idCreado, 'id_paciente' => $this->idPacienteCreado]);
+        $control = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->assertSame('Diagnostico editado por prueba', $control['diagnostico']);
+        $this->assertSame('Indicaciones editadas por prueba', $control['medicamentosRecetados']);
+        $this->assertSame('2027-02-20', $control['fechaRegreso']);
+        $this->assertSame('nota editada', $control['nota']);
+        $this->assertSame('Historial actualizado por la prueba', $control['historiaclinica']);
+        $this->assertSame('MODERADA', $control['severidad']);
     }
 }

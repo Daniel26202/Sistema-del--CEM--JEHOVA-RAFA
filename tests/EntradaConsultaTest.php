@@ -5,6 +5,8 @@ use App\modelos\Db;
 
 class EntradaConsultaTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $pdo;
     /* private $id = 51; // lo puse directamente abajo, algo me daba error y no llegaba el numero xd */
 
@@ -17,14 +19,12 @@ class EntradaConsultaTest extends TestCase
 
     public function testConsultaEntradaExistente()
     {
-        $id_entrada = 81; // hay q asegurarse q este id exista en la bd
+        $id_entrada = (int)$this->pdo->query("SELECT MIN(id_entrada) FROM bd.entrada")->fetchColumn();
+        $this->assertGreaterThan(0, $id_entrada, 'La prueba requiere al menos una entrada existente.');
         $sql = $this->pdo->prepare("SELECT * FROM entrada WHERE id_entrada = :id_entrada");
         $sql->bindParam(":id_entrada", $id_entrada);
         $sql->execute();
         $resultado = $sql->fetchAll();
-        echo "EXISTE (" . $id_entrada . "): " . (empty($resultado) ? "FAIL" : "OK");
-
-        // Verificamos que el entrada siexista
         $this->assertNotEmpty($resultado, "la entrada con ID " . $id_entrada . " debería existir en la BD");
     }
 

@@ -5,6 +5,8 @@ use App\modelos\Db;
 
 class ProveedorConsultaTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $pdo;
     /* private $id = 51; // lo puse directamente abajo, algo me daba error y no llegaba el numero xd */
 
@@ -17,15 +19,12 @@ class ProveedorConsultaTest extends TestCase
 
     public function testConsultaProveedorExistente()
     {
-        $id_proveedor = 7; // hay q asegurarse q este id exista en la bd
+        $id_proveedor = $this->idProveedorActivo();
         $sql = $this->pdo->prepare("SELECT * FROM proveedor WHERE id_proveedor = :id_proveedor");
         $sql->bindParam(":id_proveedor", $id_proveedor);
         $sql->execute();
         $resultado = $sql->fetchAll();
-        echo "EXISTE (" . $id_proveedor . "): " . (empty($resultado) ? "FAIL" : "OK");
-
-        // Verificamos que el insumo siexista
-        $this->assertNotEmpty($resultado, "El proveedor con ID (" . $id_proveedor . ") debería existir en la BD");
+        $this->assertNotEmpty($resultado, "El proveedor con ID ({$id_proveedor}) debería existir en la BD");
     }
 
     public function testConsultaProveedorInexistente()

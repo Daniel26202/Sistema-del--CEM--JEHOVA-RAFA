@@ -311,7 +311,6 @@ const returnFragmentControl = async (data, element, index, disabled) => {
                               <td>${element.fechaRegreso}</td>
                               <td>
                                   <button class="btn col-3  btn-tabla btn-dt-tabla btn-agregarcita-modal editar btnEditar buttomEditControl" type="button"
-                                      data-bs-toggle="modal" data-bs-target="#exampleModalagregarControl" 
                                       data-cedula="${element.cedula}" data-control="${element.id_control}" data-severidad="${element.severidad || "LEVE"}" ${disabled}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                           class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                           <path
@@ -573,6 +572,7 @@ const readControl = async (cedulaPatient) => {
           btn.getAttribute("data-cedula"),
           btn.getAttribute("data-control"),
         );
+        modalControlBoots.show();
       });
     });
 
@@ -800,6 +800,7 @@ cedulaControl.addEventListener("keyup", function () {
 
 btnControl.addEventListener("click", function () {
   clickButtonOpenModal();
+  modalControlBoots.show();
 });
 
 //cuando se abra elmodal de agregar paciente se le da el valor de la cedula directamente

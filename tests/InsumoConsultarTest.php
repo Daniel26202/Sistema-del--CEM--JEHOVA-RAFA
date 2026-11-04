@@ -5,6 +5,8 @@ use App\modelos\Db;
 
 class InsumoConsultarTest extends TestCase
 {
+    use Tests\TestHelpers;
+
     private $pdo;
     /* private $id = 51; // lo puse directamente abajo, algo me daba error y no llegaba el numero xd */
 
@@ -17,15 +19,12 @@ class InsumoConsultarTest extends TestCase
 
     public function testConsultaInsumoExistente()
     {
-        $id_insumo = 49; // hay q asegurarse q este id exista en la bd
+        $id_insumo = $this->idInsumoActivo();
         $sql = $this->pdo->prepare("SELECT * FROM insumo WHERE id_insumo = :id_insumo");
         $sql->bindParam(":id_insumo", $id_insumo);
         $sql->execute();
         $resultado = $sql->fetchAll();
-        echo "EXISTE (49): " . (empty($resultado) ? "FAIL" : "OK");
-
-        // Verificamos que el insumo siexista
-        $this->assertNotEmpty($resultado, "El insumo con ID 49 debería existir en la BD");
+        $this->assertNotEmpty($resultado, "El insumo activo con ID {$id_insumo} debería existir en la BD");
     }
 
     public function testConsultaInsumoInexistente()

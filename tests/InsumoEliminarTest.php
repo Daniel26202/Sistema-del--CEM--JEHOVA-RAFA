@@ -45,7 +45,7 @@ class InsumoEliminarTest extends TestCase
         $this->limpiar();
         $m = new ModeloInsumo();
         $m->setNombre($this->nombre);
-        $m->setIdProveedor(6);
+        $m->setIdProveedor($this->idProveedorActivo());
         $m->setDescripcion("descripcion prueba de insumo");
         $m->setFechaDeIngreso(date("Y-m-d"));
         $m->setFechaDeVencimiento("2027-12-31");
@@ -57,9 +57,11 @@ class InsumoEliminarTest extends TestCase
         $m->setMedida("100 g");
         $m->setIva(0);
         $m->setImagen("insumo_default.png");
-        $m->guardarInsumo(1);
+        $resultado = $m->guardarInsumo(1);
+        $this->assertSame("exito", $resultado[0] ?? null, json_encode($resultado));
 
         $fila = $this->db->query("SELECT id_insumo FROM bd.insumo WHERE nombre = '{$this->nombre}' ORDER BY id_insumo DESC LIMIT 1")->fetch(\PDO::FETCH_ASSOC);
+        $this->assertNotEmpty($fila, 'El insumo sintético debe haberse creado.');
         return (int)$fila['id_insumo'];
     }
 

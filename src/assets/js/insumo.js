@@ -384,33 +384,32 @@ addEventListener("DOMContentLoaded", function () {
   }
 
   //limipiar formularion
-  btnRegistrarInsumo.addEventListener("click", function () {
-    formInsumos.querySelectorAll(".input-validar").forEach((input) => {
-      console.log(input.parentElement);
+  if (btnRegistrarInsumo) {
+    btnRegistrarInsumo.addEventListener("click", function () {
+      formInsumos.querySelectorAll(".input-validar").forEach((input) => {
+        input.value = "";
+        if (input.type === "file") {
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+        input.parentElement.classList.remove("valido");
+        input.parentElement.classList.remove("invalido");
 
-      input.value = "";
-      if (input.type === "file") {
-        input.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-      input.parentElement.classList.remove("valido");
-      input.parentElement.classList.remove("invalido");
+        input.nextElementSibling.children[0].classList.add("d-none");
+        input.nextElementSibling.children[1].classList.add("d-none");
 
-      input.nextElementSibling.children[0].classList.add("d-none");
-      input.nextElementSibling.children[1].classList.add("d-none");
+        let div = input.closest(".campo-custom");
+        div.querySelector(".error-msg").classList.add("d-none");
+      });
 
-      let div = input.closest(".campo-custom");
-      div.querySelector(".error-msg").classList.add("d-none");
+      document.getElementById("vencimiento").classList.remove("d-none");
+      contenedorImgEditar.classList.add("d-none");
+
+      modalLabelInsumos.innerText = "Agrega Insumos";
+      btnModalInsumos.innerText = "Agregar";
+
+      contenedorImg.classList.add("d-none");
     });
-
-    document.getElementById("vencimiento").classList.remove("d-none");
-    contenedorImgEditar.classList.add("d-none");
-
-    modalLabelInsumos.innerText = "Agrega Insumos";
-    btnModalInsumos.innerText = "Agregar";
-
-    //oculatar img
-    contenedorImg.classList.add("d-none");
-  });
+  }
 
   let verificarFormularioInsumo = inicializarValidacionFormulario(formInsumos);
 

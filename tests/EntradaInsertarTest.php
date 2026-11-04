@@ -36,8 +36,8 @@ class EntradaInsertarTest extends TestCase
     {
         $this->limpiar();
 
-        $this->modelo->setIdProveedor(6);
-        $this->modelo->setIdInsumo(49);
+        $this->modelo->setIdProveedor($this->idProveedorActivo());
+        $this->modelo->setIdInsumo($this->idInsumoActivo());
         $this->modelo->setFechaDeIngreso(date("Y-m-d"));
         $this->modelo->setFechaDeVencimiento("2027-12-31");
         $this->modelo->setPrecio(100);
@@ -46,6 +46,6 @@ class EntradaInsertarTest extends TestCase
 
         $resultado = $this->modelo->guardarEntrada(1);
 
-        $this->assertEquals("exito", $resultado[0]);
+        $this->assertSame("exito", $resultado[0] ?? null, json_encode($resultado));
     }
 }

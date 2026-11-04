@@ -35,16 +35,18 @@ class EntradaRestablecerTest extends TestCase
     {
         $this->limpiar();
         $m = new ModeloEntrada();
-        $m->setIdProveedor(6);
-        $m->setIdInsumo(49);
+        $m->setIdProveedor($this->idProveedorActivo());
+        $m->setIdInsumo($this->idInsumoActivo());
         $m->setFechaDeIngreso(date("Y-m-d"));
         $m->setFechaDeVencimiento("2027-12-31");
         $m->setPrecio(100);
         $m->setCantidadDisponible(5);
         $m->setLote($this->lote);
-        $m->guardarEntrada(1);
+        $resultado = $m->guardarEntrada(1);
+        $this->assertSame("exito", $resultado[0] ?? null, json_encode($resultado));
 
         $fila = $this->db->query("SELECT id_entrada FROM bd.entrada WHERE numero_de_lote = '{$this->lote}' ORDER BY id_entrada DESC LIMIT 1")->fetch(\PDO::FETCH_ASSOC);
+        $this->assertNotEmpty($fila, 'La entrada sintética debe haberse creado.');
         return (int)$fila['id_entrada'];
     }
 
